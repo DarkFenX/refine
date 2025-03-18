@@ -194,6 +194,10 @@ impl SolVast {
                     }
                 }
             }
+            SolItem::Service(service) => {
+                let extras = service.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Service);
+            }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Ship);
@@ -361,6 +365,10 @@ impl SolVast {
                     fit_data.mods_rigs_max_group_fitted_all.remove_entry(&grp_id, &item_id);
                     fit_data.mods_rigs_max_group_fitted_limited.remove(&item_id);
                 }
+            }
+            SolItem::Service(service) => {
+                let extras = service.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Service);
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();

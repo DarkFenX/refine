@@ -38,6 +38,7 @@ class ValResultDetails(AttrDict):
             'drone_bandwidth': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
             'rig_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'service_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
             'subsystem_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
             'launched_drone_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
             'launched_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),

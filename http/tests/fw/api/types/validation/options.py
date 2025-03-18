@@ -16,6 +16,7 @@ class ValOptions:
     drone_bandwidth: ValOption = Absent
     fighter_bay_volume: ValOption = Absent
     rig_slot_count: ValOption = Absent
+    service_slot_count: ValOption = Absent
     subsystem_slot_count: ValOption = Absent
     launched_drone_count: ValOption = Absent
     launched_fighter_count: ValOption = Absent

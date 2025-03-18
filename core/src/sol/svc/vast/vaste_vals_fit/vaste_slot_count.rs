@@ -32,6 +32,15 @@ impl SolVastFitData {
     ) -> bool {
         validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
     }
+    pub(in crate::sol::svc::vast) fn validate_service_slot_count_fast(
+        &self,
+        kfs: &StSet<SolItemId>,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::SERVICE_SLOTS, &fit.services)
+    }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_fast(
         &self,
         kfs: &StSet<SolItemId>,
@@ -230,6 +239,15 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
         validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
+    }
+    pub(in crate::sol::svc::vast) fn validate_service_slot_count_verbose(
+        &self,
+        kfs: &StSet<SolItemId>,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolValSlotCountFail> {
+        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::SERVICE_SLOTS, &fit.services)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_verbose(
         &self,

@@ -24,6 +24,16 @@ impl SolVastFitData {
         let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT);
         SolStatSlot { used, total }
     }
+    pub(in crate::sol::svc::vast) fn get_stats_service_slots(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        let used = fit.services.len() as Count;
+        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::SERVICE_SLOTS);
+        SolStatSlot { used, total }
+    }
     pub(in crate::sol::svc::vast) fn get_stats_subsystem_slots(
         &self,
         uad: &SolUad,

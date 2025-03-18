@@ -89,6 +89,7 @@ pub(crate) const CAN_FIT_SHIP_TYPE5: EAttrId = 1944;
 pub(crate) const GATE_SCRAMBLE_STATUS: EAttrId = 1973;
 pub(crate) const GATE_SCRAMBLE_STRENGTH: EAttrId = 1974;
 pub(crate) const FTR_CAPACITY: EAttrId = 2055;
+pub(crate) const SERVICE_SLOTS: EAttrId = 2056;
 pub(crate) const CAN_FIT_SHIP_GROUP9: EAttrId = 2065;
 pub(crate) const CAN_FIT_SHIP_TYPE6: EAttrId = 2103;
 pub(crate) const REMOTE_RESISTANCE_ID: EAttrId = 2138;

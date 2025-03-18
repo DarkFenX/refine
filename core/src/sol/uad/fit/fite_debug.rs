@@ -215,6 +215,21 @@ impl SolFit {
             }
             item.debug_consistency_check(uad)?;
         }
+        // Services
+        for item_id in self.services.iter() {
+            seen_items.push(*item_id);
+            let item = match uad.items.get_item(item_id) {
+                Ok(item) => item,
+                _ => return Err(SolDebugError::new()),
+            };
+            if item.get_fit_id() != Some(self.id) {
+                return Err(SolDebugError::new());
+            }
+            if !matches!(item, SolItem::Service(_)) {
+                return Err(SolDebugError::new());
+            }
+            item.debug_consistency_check(uad)?;
+        }
         // Drones
         for item_id in self.drones.iter() {
             seen_items.push(*item_id);

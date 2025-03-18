@@ -13,6 +13,7 @@ pub struct SolValResult {
     pub drone_bandwidth: Option<SolValResFail>,
     pub fighter_bay_volume: Option<SolValResFail>,
     pub rig_slot_count: Option<SolValSlotCountFail>,
+    pub service_slot_count: Option<SolValSlotCountFail>,
     pub subsystem_slot_count: Option<SolValSlotCountFail>,
     pub launched_drone_count: Option<SolValSlotCountFail>,
     pub launched_fighter_count: Option<SolValSlotCountFail>,
@@ -67,6 +68,7 @@ impl SolValResult {
             drone_bandwidth: None,
             fighter_bay_volume: None,
             rig_slot_count: None,
+            service_slot_count: None,
             subsystem_slot_count: None,
             launched_drone_count: None,
             launched_fighter_count: None,
@@ -120,6 +122,7 @@ impl SolValResult {
             && self.drone_bandwidth.is_none()
             && self.fighter_bay_volume.is_none()
             && self.rig_slot_count.is_none()
+            && self.service_slot_count.is_none()
             && self.subsystem_slot_count.is_none()
             && self.launched_drone_count.is_none()
             && self.launched_fighter_count.is_none()

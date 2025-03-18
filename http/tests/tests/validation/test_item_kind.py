@@ -291,6 +291,34 @@ def test_kind_rig(client, consts):
         api_other3.id: (consts.ApiValItemType.rig, consts.ApiValItemType.implant)}
 
 
+def test_kind_service(client, consts):
+    eve_rig_effect_id = client.mk_eve_effect(id_=consts.EveEffect.service_slot)
+    eve_ship_service_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_rig_effect_id])
+    eve_struct_service_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module, eff_ids=[eve_rig_effect_id])
+    eve_other_id = client.mk_eve_item(grp_id=consts.EveItemGrp.character)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_service(type_id=eve_ship_service_id)
+    api_fit.add_service(type_id=eve_struct_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_other1 = api_fit.add_service(type_id=eve_other_id)
+    api_other2 = api_fit.add_implant(type_id=eve_ship_service_id)
+    api_other3 = api_fit.add_implant(type_id=eve_struct_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.service),
+        api_other2.id: (consts.ApiValItemType.service, consts.ApiValItemType.implant),
+        api_other3.id: (consts.ApiValItemType.service, consts.ApiValItemType.implant)}
+
+
 def test_kind_ship(client, consts):
     eve_ship_id = client.mk_eve_item(cat_id=consts.EveItemCat.ship)
     eve_other_id = client.mk_eve_item(cat_id=consts.EveItemCat.drone)

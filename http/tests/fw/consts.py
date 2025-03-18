@@ -79,6 +79,7 @@ class EveEffect(IntEnum):
     adaptive_armor_hardener = 4928
     fueled_armor_repair = 5275
     structure_warp_scramble_block_mwd_with_npc = 6222
+    service_slot = 6306
     doomsday_aoe_web = 6476
     fighter_ability_launch_bomb = 6485
     ship_module_arar = 6651
@@ -257,6 +258,7 @@ class EveAttr(IntEnum):
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
     ftr_capacity = 2055
+    service_slots = 2056
     can_fit_ship_group9 = 2065
     can_fit_ship_type6 = 2103
     remote_resistance_id = 2138
@@ -418,6 +420,7 @@ class ApiValItemType(StrEnum):
     module_mid = 'module_mid'
     module_low = 'module_low'
     rig = 'rig'
+    service = 'service'
     ship = 'ship'
     skill = 'skill'
     stance = 'stance'

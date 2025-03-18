@@ -49,6 +49,11 @@ impl SolVast {
         {
             return false;
         }
+        if options.service_slot_count.enabled
+            && !fit_data.validate_service_slot_count_fast(&options.service_slot_count.kfs, uad, calc, fit)
+        {
+            return false;
+        }
         if options.subsystem_slot_count.enabled
             && !fit_data.validate_subsystem_slot_count_fast(&options.subsystem_slot_count.kfs, uad, calc, fit)
         {
@@ -338,6 +343,10 @@ impl SolVast {
         if options.rig_slot_count.enabled {
             result.rig_slot_count =
                 fit_data.validate_rig_slot_count_verbose(&options.rig_slot_count.kfs, uad, calc, fit);
+        }
+        if options.service_slot_count.enabled {
+            result.service_slot_count =
+                fit_data.validate_service_slot_count_verbose(&options.service_slot_count.kfs, uad, calc, fit);
         }
         if options.subsystem_slot_count.enabled {
             result.subsystem_slot_count =

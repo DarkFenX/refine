@@ -21,6 +21,8 @@ pub(crate) struct HValidateFitCmd {
     #[serde(default)]
     rig_slot_count: Option<HValidationOption>,
     #[serde(default)]
+    service_slot_count: Option<HValidationOption>,
+    #[serde(default)]
     subsystem_slot_count: Option<HValidationOption>,
     #[serde(default)]
     launched_drone_count: Option<HValidationOption>,
@@ -125,6 +127,7 @@ impl HValidateFitCmd {
         process_option(&self.drone_bandwidth, &mut core_options.drone_bandwidth);
         process_option(&self.fighter_bay_volume, &mut core_options.fighter_bay_volume);
         process_option(&self.rig_slot_count, &mut core_options.rig_slot_count);
+        process_option(&self.service_slot_count, &mut core_options.service_slot_count);
         process_option(&self.subsystem_slot_count, &mut core_options.subsystem_slot_count);
         process_option(&self.launched_drone_count, &mut core_options.launched_drone_count);
         process_option(&self.launched_fighter_count, &mut core_options.launched_fighter_count);
@@ -230,6 +233,7 @@ impl Default for HValidateFitCmd {
             drone_bandwidth: None,
             fighter_bay_volume: None,
             rig_slot_count: None,
+            service_slot_count: None,
             subsystem_slot_count: None,
             launched_drone_count: None,
             launched_fighter_count: None,

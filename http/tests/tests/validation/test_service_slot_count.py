@@ -1,0 +1,300 @@
+from tests import approx, check_no_field
+from tests.fw.api import ValOptions
+
+
+def test_fail_single(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
+
+
+def test_fail_multiple_ship(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_service1 = api_fit.add_service(type_id=eve_service_id)
+    api_service2 = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == sorted([api_service1.id, api_service2.id])
+
+
+def test_fail_multiple_struct(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service1 = api_fit.add_service(type_id=eve_service_id)
+    api_service2 = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == sorted([api_service1.id, api_service2.id])
+
+
+def test_equal(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_known_failures(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 1})
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service1 = api_fit.add_service(type_id=eve_service_id)
+    api_service2 = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=(True, [api_service1.id])))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == [api_service2.id]
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=(True, [api_service2.id])))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == [api_service1.id]
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=(True, [api_service1.id, api_service2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        service_slot_count=(True, [api_service1.id, api_other.id, api_service2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_modified_max(client, consts):
+    # Unrealistic scenario, but modification of max count is supported
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.struct,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_max_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 1}, eff_ids=[eve_effect_id])
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(0)
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
+    # Action
+    api_fit.add_implant(type_id=eve_implant_id)
+    # Verification
+    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(1)
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_fractional_max(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_ship1_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0.4})
+    eve_ship2_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0.6})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship1_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
+    # Action
+    api_fit.set_ship(type_id=eve_ship2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_no_ship(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
+    client.mk_eve_item(attrs={eve_max_attr_id: 5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max is None
+    assert api_val.details.service_slot_count.users == [api_service.id]
+
+
+def test_not_loaded_user(client, consts):
+    # Not loaded services still take slot
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0})
+    eve_service_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
+
+
+def test_not_loaded_ship(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
+    client.mk_eve_item(attrs={eve_max_attr_id: 5})
+    eve_struct_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max is None
+    assert api_val.details.service_slot_count.users == [api_service.id]
+
+
+def test_no_value_max(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct()
+    # Make an item to ensure that max attribute is not cleaned up
+    client.mk_eve_item(attrs={eve_max_attr_id: 50})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
+
+
+def test_no_attr_max(client, consts):
+    # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
+    # irrelevant
+    eve_max_attr_id = consts.EveAttr.service_slots
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max is None
+    assert api_val.details.service_slot_count.users == [api_service.id]
+
+
+def test_criterion_state(client, consts):
+    # Slot is taken even when service is disabled
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_service_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
+    # Action
+    api_service.change_service(state=False)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
+
+
+def test_criterion_item_kind(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
+    eve_subsystem_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_fit.add_subsystem(type_id=eve_subsystem_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
