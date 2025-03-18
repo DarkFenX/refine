@@ -146,66 +146,6 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
-    def set_char(
-            self, *,
-            type_id: int,
-            state: bool | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 201,
-    ) -> Item | None:
-        resp = self._client.set_char_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 201:
-            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return None
-
-    def add_skill(
-            self, *,
-            type_id: int,
-            level: int,
-            state: bool | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 201,
-            json_predicate: dict | None = None,
-    ) -> Item | None:
-        resp = self._client.add_skill_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            type_id=type_id,
-            level=level,
-            state=state,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code, json_predicate=json_predicate)
-        if resp.status_code == 201:
-            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return None
-
-    def add_implant(
-            self, *,
-            type_id: int,
-            state: bool | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 201,
-    ) -> Item | None:
-        resp = self._client.add_implant_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 201:
-            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return None
-
     def add_booster(
             self, *,
             type_id: int,
@@ -227,99 +167,14 @@ class Fit(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
-    def set_ship(
+    def set_char(
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
-        resp = self._client.set_ship_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 201:
-            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return None
-
-    def set_stance(
-            self, *,
-            type_id: int,
-            state: bool | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 201,
-    ) -> Item | None:
-        resp = self._client.set_stance_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 201:
-            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return None
-
-    def add_subsystem(
-            self, *,
-            type_id: int,
-            state: bool | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 201,
-    ) -> Item | None:
-        resp = self._client.add_subsystem_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 201:
-            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return None
-
-    def add_mod(
-            self, *,
-            type_id: int,
-            rack: ApiRack = ApiRack.high,
-            state: ApiModuleState = ApiModuleState.offline,
-            mutation: MutaAdd | type[Absent] = Absent,
-            charge_type_id: int | type[Absent] = Absent,
-            mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 201,
-            text_predicate: str | None = None,
-    ) -> Item | None:
-        resp = self._client.add_mod_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            rack=rack,
-            type_id=type_id,
-            state=state,
-            mutation=mutation,
-            charge_type_id=charge_type_id,
-            mode=mode,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code, text_predicate=text_predicate)
-        if resp.status_code == 201:
-            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return None
-
-    def add_rig(
-            self, *,
-            type_id: int,
-            state: bool | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 201,
-    ) -> Item | None:
-        resp = self._client.add_rig_request(
+        resp = self._client.set_char_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             type_id=type_id,
@@ -381,6 +236,170 @@ class Fit(AttrDict):
             status_code: int = 201,
     ) -> Item | None:
         resp = self._client.add_fw_effect_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def add_implant(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Item | None:
+        resp = self._client.add_implant_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def add_mod(
+            self, *,
+            type_id: int,
+            rack: ApiRack = ApiRack.high,
+            state: ApiModuleState = ApiModuleState.offline,
+            mutation: MutaAdd | type[Absent] = Absent,
+            charge_type_id: int | type[Absent] = Absent,
+            mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+            text_predicate: str | None = None,
+    ) -> Item | None:
+        resp = self._client.add_mod_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            rack=rack,
+            type_id=type_id,
+            state=state,
+            mutation=mutation,
+            charge_type_id=charge_type_id,
+            mode=mode,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code, text_predicate=text_predicate)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def add_rig(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Item | None:
+        resp = self._client.add_rig_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def add_service(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Item | None:
+        resp = self._client.add_service_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def set_ship(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Item | None:
+        resp = self._client.set_ship_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def add_skill(
+            self, *,
+            type_id: int,
+            level: int,
+            state: bool | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+            json_predicate: dict | None = None,
+    ) -> Item | None:
+        resp = self._client.add_skill_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            level=level,
+            state=state,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def set_stance(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Item | None:
+        resp = self._client.set_stance_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def add_subsystem(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Item | None:
+        resp = self._client.add_subsystem_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             type_id=type_id,

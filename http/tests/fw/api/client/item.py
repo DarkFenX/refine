@@ -51,24 +51,8 @@ class ApiClientItem(ApiClientBase):
             kwargs['json'] = body
         return Request(client=self, **kwargs)
 
-    # Character methods
-    def set_char_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            state: bool | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='character',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
-
-    def change_char_request(
+    # Autocharge methods
+    def change_autocharge_request(
             self, *,
             sol_id: str,
             item_id: int,
@@ -77,87 +61,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
-            cmd_name='character',
-            sol_id=sol_id,
-            item_id=item_id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
-
-    # Skill methods
-    def add_skill_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            level: int,
-            state: bool | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        body = {
-            'type': 'skill',
-            'fit_id': fit_id,
-            'type_id': type_id,
-            'level': level}
-        conditional_insert(container=body, key='state', value=state)
-        params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
-
-    def change_skill_request(
-            self, *,
-            sol_id: str,
-            item_id: str,
-            level: int | type[Absent],
-            state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        body = {'type': 'skill'}
-        conditional_insert(container=body, key='level', value=level)
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='effect_modes', value=effect_modes)
-        params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
-
-    # Implant methods
-    def add_implant_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            state: bool | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='implant',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
-
-    def change_implant_request(
-            self, *,
-            sol_id: str,
-            item_id: int,
-            state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='implant',
+            cmd_name='autocharge',
             sol_id=sol_id,
             item_id=item_id,
             state=state,
@@ -209,24 +113,8 @@ class ApiClientItem(ApiClientBase):
             params=params,
             json=body)
 
-    # Ship methods
-    def set_ship_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            state: bool | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='ship',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
-
-    def change_ship_request(
+    # Charge methods
+    def change_charge_request(
             self, *,
             sol_id: str,
             item_id: int,
@@ -235,15 +123,15 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
-            cmd_name='ship',
+            cmd_name='charge',
             sol_id=sol_id,
             item_id=item_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
-    # Stance methods
-    def set_stance_request(
+    # Character methods
+    def set_char_request(
             self, *,
             sol_id: str,
             fit_id: str,
@@ -252,31 +140,14 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
-            cmd_name='stance',
+            cmd_name='character',
             sol_id=sol_id,
             fit_id=fit_id,
             type_id=type_id,
             state=state,
             item_info_mode=item_info_mode)
 
-    # Subsystem methods
-    def add_subsystem_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            state: bool | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='subsystem',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
-
-    def change_subsystem_request(
+    def change_char_request(
             self, *,
             sol_id: str,
             item_id: int,
@@ -285,101 +156,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
-            cmd_name='subsystem',
-            sol_id=sol_id,
-            item_id=item_id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
-
-    # Module methods
-    def add_mod_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            rack: ApiRack,
-            state: ApiModuleState,
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
-            charge_type_id: int | type[Absent],
-            mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        body = {
-            'type': 'module',
-            'fit_id': fit_id,
-            'rack': rack,
-            'type_id': type_id,
-            'state': state}
-        conditional_insert(container=body, key='mutation', value=mutation)
-        conditional_insert(container=body, key='charge_type_id', value=charge_type_id)
-        conditional_insert(container=body, key='add_mode', value=mode)
-        params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
-
-    def change_mod_request(
-            self, *,
-            sol_id: str,
-            item_id: str,
-            state: ApiModuleState | type[Absent],
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
-            charge: int | None | type[Absent],
-            add_projs: list[tuple[str, float | None] | str] | type[Absent],
-            change_projs: list[tuple[str, float | None]] | type[Absent],
-            rm_projs: list[str] | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        body = {'type': 'module'}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='mutation', value=mutation)
-        conditional_insert(container=body, key='charge', value=charge)
-        conditional_insert(container=body, key='add_projs', value=add_projs)
-        conditional_insert(container=body, key='change_projs', value=change_projs)
-        conditional_insert(container=body, key='rm_projs', value=rm_projs)
-        conditional_insert(container=body, key='effect_modes', value=effect_modes)
-        params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
-
-    # Rig methods
-    def add_rig_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            state: bool | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='rig',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
-
-    def change_rig_request(
-            self, *,
-            sol_id: str,
-            item_id: int,
-            state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='rig',
+            cmd_name='character',
             sol_id=sol_id,
             item_id=item_id,
             state=state,
@@ -492,75 +269,6 @@ class ApiClientItem(ApiClientBase):
             params=params,
             json=body)
 
-    # Charge methods
-    def change_charge_request(
-            self, *,
-            sol_id: str,
-            item_id: int,
-            state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='charge',
-            sol_id=sol_id,
-            item_id=item_id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
-
-    # Autocharge methods
-    def change_autocharge_request(
-            self, *,
-            sol_id: str,
-            item_id: int,
-            state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='autocharge',
-            sol_id=sol_id,
-            item_id=item_id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
-
-    # System-wide effect methods
-    def add_sw_effect_request(
-            self, *,
-            sol_id: str,
-            type_id: int,
-            state: bool | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        body = {'type': 'sw_effect', 'type_id': type_id}
-        conditional_insert(container=body, key='state', value=state)
-        params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
-
-    def change_sw_effect_request(
-            self, *,
-            sol_id: str,
-            item_id: int,
-            state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='sw_effect',
-            sol_id=sol_id,
-            item_id=item_id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
-
     # Fit-wide effect methods
     def add_fw_effect_request(
             self, *,
@@ -593,6 +301,100 @@ class ApiClientItem(ApiClientBase):
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
+
+    # Implant methods
+    def add_implant_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__add_simple_item_request(
+            cmd_name='implant',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    def change_implant_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='implant',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    # Module methods
+    def add_mod_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            rack: ApiRack,
+            state: ApiModuleState,
+            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
+            charge_type_id: int | type[Absent],
+            mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        body = {
+            'type': 'module',
+            'fit_id': fit_id,
+            'rack': rack,
+            'type_id': type_id,
+            'state': state}
+        conditional_insert(container=body, key='mutation', value=mutation)
+        conditional_insert(container=body, key='charge_type_id', value=charge_type_id)
+        conditional_insert(container=body, key='add_mode', value=mode)
+        params = {}
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
+
+    def change_mod_request(
+            self, *,
+            sol_id: str,
+            item_id: str,
+            state: ApiModuleState | type[Absent],
+            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
+            charge: int | None | type[Absent],
+            add_projs: list[tuple[str, float | None] | str] | type[Absent],
+            change_projs: list[tuple[str, float | None]] | type[Absent],
+            rm_projs: list[str] | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        body = {'type': 'module'}
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='mutation', value=mutation)
+        conditional_insert(container=body, key='charge', value=charge)
+        conditional_insert(container=body, key='add_projs', value=add_projs)
+        conditional_insert(container=body, key='change_projs', value=change_projs)
+        conditional_insert(container=body, key='rm_projs', value=rm_projs)
+        conditional_insert(container=body, key='effect_modes', value=effect_modes)
+        params = {}
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
+            params=params,
+            json=body)
 
     # Projected effect methods
     def add_proj_effect_request(
@@ -634,6 +436,237 @@ class ApiClientItem(ApiClientBase):
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
             json=body)
+
+    # Rig methods
+    def add_rig_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__add_simple_item_request(
+            cmd_name='rig',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    def change_rig_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='rig',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    # Service methods
+    def add_service_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__add_simple_item_request(
+            cmd_name='service',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    def change_service_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='service',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    # Ship methods
+    def set_ship_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__add_simple_item_request(
+            cmd_name='ship',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    def change_ship_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='ship',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    # Skill methods
+    def add_skill_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            level: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        body = {
+            'type': 'skill',
+            'fit_id': fit_id,
+            'type_id': type_id,
+            'level': level}
+        conditional_insert(container=body, key='state', value=state)
+        params = {}
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
+
+    def change_skill_request(
+            self, *,
+            sol_id: str,
+            item_id: str,
+            level: int | type[Absent],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        body = {'type': 'skill'}
+        conditional_insert(container=body, key='level', value=level)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='effect_modes', value=effect_modes)
+        params = {}
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
+            params=params,
+            json=body)
+
+    # Stance methods
+    def set_stance_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__add_simple_item_request(
+            cmd_name='stance',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    # Subsystem methods
+    def add_subsystem_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__add_simple_item_request(
+            cmd_name='subsystem',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    def change_subsystem_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='subsystem',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    # System-wide effect methods
+    def add_sw_effect_request(
+            self, *,
+            sol_id: str,
+            type_id: int,
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        body = {'type': 'sw_effect', 'type_id': type_id}
+        conditional_insert(container=body, key='state', value=state)
+        params = {}
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
+
+    def change_sw_effect_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='sw_effect',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
 
     # Auxiliary methods
     def __add_simple_item_request(

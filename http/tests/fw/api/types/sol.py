@@ -183,14 +183,14 @@ class SolarSystem(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None
 
-    def add_sw_effect(
+    def add_proj_effect(
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
-        resp = self._client.add_sw_effect_request(
+        resp = self._client.add_proj_effect_request(
             sol_id=self.id,
             type_id=type_id,
             state=state,
@@ -201,14 +201,14 @@ class SolarSystem(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None
 
-    def add_proj_effect(
+    def add_sw_effect(
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
-        resp = self._client.add_proj_effect_request(
+        resp = self._client.add_sw_effect_request(
             sol_id=self.id,
             type_id=type_id,
             state=state,

@@ -95,56 +95,14 @@ class Item(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
 
-    def change_char(
+    def change_autocharge(
             self, *,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_char_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 200:
-            self._data = resp.json()
-            return self
-        return None
-
-    def change_skill(
-            self, *,
-            level: int | type[Absent] = Absent,
-            state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-    ) -> Item | None:
-        resp = self._client.change_skill_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
-            level=level,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 200:
-            self._data = resp.json()
-            return self
-        return None
-
-    def change_implant(
-            self, *,
-            state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-    ) -> Item | None:
-        resp = self._client.change_implant_request(
+        resp = self._client.change_autocharge_request(
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
@@ -178,14 +136,14 @@ class Item(AttrDict):
             return self
         return None
 
-    def change_ship(
+    def change_char(
             self, *,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_ship_request(
+        resp = self._client.change_char_request(
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
@@ -198,65 +156,14 @@ class Item(AttrDict):
             return self
         return None
 
-    def change_subsystem(
+    def change_charge(
             self, *,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_subsystem_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 200:
-            self._data = resp.json()
-            return self
-        return None
-
-    def change_mod(
-            self, *,
-            state: ApiModuleState | type[Absent] = Absent,
-            mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
-            charge: int | None | type[Absent] = Absent,
-            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
-            change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
-            rm_projs: list[str] | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-            json_predicate: dict | None = None,
-    ) -> Item | None:
-        resp = self._client.change_mod_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
-            state=state,
-            mutation=mutation,
-            charge=charge,
-            add_projs=add_projs,
-            change_projs=change_projs,
-            rm_projs=rm_projs,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code, json_predicate=json_predicate)
-        if resp.status_code == 200:
-            self._data = resp.json()
-            return self
-        return None
-
-    def change_rig(
-            self, *,
-            state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-    ) -> Item | None:
-        resp = self._client.change_rig_request(
+        resp = self._client.change_charge_request(
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
@@ -325,14 +232,14 @@ class Item(AttrDict):
             return self
         return None
 
-    def change_charge(
+    def change_fw_effect(
             self, *,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_charge_request(
+        resp = self._client.change_fw_effect_request(
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
@@ -345,14 +252,169 @@ class Item(AttrDict):
             return self
         return None
 
-    def change_autocharge(
+    def change_implant(
             self, *,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_autocharge_request(
+        resp = self._client.change_implant_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_mod(
+            self, *,
+            state: ApiModuleState | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
+            charge: int | None | type[Absent] = Absent,
+            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
+            change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
+            rm_projs: list[str] | type[Absent] = Absent,
+            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+            json_predicate: dict | None = None,
+    ) -> Item | None:
+        resp = self._client.change_mod_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            mutation=mutation,
+            charge=charge,
+            add_projs=add_projs,
+            change_projs=change_projs,
+            rm_projs=rm_projs,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_proj_effect(
+            self, *,
+            state: bool | type[Absent] = Absent,
+            add_projs: list[str] | type[Absent] = Absent,
+            rm_projs: list[str] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Item | None:
+        resp = self._client.change_proj_effect_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            add_projs=add_projs,
+            rm_projs=rm_projs,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_rig(
+            self, *,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Item | None:
+        resp = self._client.change_rig_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_service(
+            self, *,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Item | None:
+        resp = self._client.change_service_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_ship(
+            self, *,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Item | None:
+        resp = self._client.change_ship_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_skill(
+            self, *,
+            level: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Item | None:
+        resp = self._client.change_skill_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            level=level,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_subsystem(
+            self, *,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Item | None:
+        resp = self._client.change_subsystem_request(
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
@@ -377,48 +439,6 @@ class Item(AttrDict):
             item_id=self.id,
             state=state,
             effect_modes=effect_modes,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 200:
-            self._data = resp.json()
-            return self
-        return None
-
-    def change_fw_effect(
-            self, *,
-            state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-    ) -> Item | None:
-        resp = self._client.change_fw_effect_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-        if resp.status_code == 200:
-            self._data = resp.json()
-            return self
-        return None
-
-    def change_proj_effect(
-            self, *,
-            state: bool | type[Absent] = Absent,
-            add_projs: list[str] | type[Absent] = Absent,
-            rm_projs: list[str] | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-    ) -> Item | None:
-        resp = self._client.change_proj_effect_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
-            state=state,
-            add_projs=add_projs,
-            rm_projs=rm_projs,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
