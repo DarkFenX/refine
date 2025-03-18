@@ -1,8 +1,8 @@
 use crate::info::valid::details::{
     HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
-    HValFighterCountFail, HValItemKindFail, HValMaxGroupFail, HValModuleStateFail, HValOverloadSkillFail, HValResFail,
-    HValRigSizeFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail,
-    HValUnusableResFail, HValUnusableSlotFail,
+    HValFighterCountFail, HValItemKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail,
+    HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail,
+    HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 #[derive(serde::Serialize)]
@@ -126,6 +126,8 @@ struct HValidInfoDetails {
     ship_stance: Option<HValShipStanceFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     overload_skill: Option<HValOverloadSkillFail>,
+    #[serde(skip_serializing_if = "HValMaxTypeFail::is_empty")]
+    max_type_fitted: HValMaxTypeFail,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -180,6 +182,7 @@ impl HValidInfoDetails {
             && self.unlaunchable_standup_heavy_fighter.is_none()
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
+            && self.max_type_fitted.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -257,6 +260,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
                 .map(|v| v.into()),
             ship_stance: core_val_result.ship_stance.as_ref().map(|v| v.into()),
             overload_skill: core_val_result.overload_skill.as_ref().map(|v| v.into()),
+            max_type_fitted: (&core_val_result.max_type_fitted).into(),
         }
     }
 }
