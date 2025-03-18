@@ -114,6 +114,13 @@ impl SolarSystem {
                     }
                     self.remove_rig(&rig_info.id).unwrap();
                 }
+                ad::AItemKind::Service => {
+                    let service_info = self.add_service(*fit_id, *type_id, true).unwrap();
+                    if self.validate_fit_fast(fit_id, val_options).unwrap() {
+                        valid.push(*type_id)
+                    }
+                    self.remove_service(&service_info.id).unwrap();
+                }
                 ad::AItemKind::Subsystem => {
                     let subsystem_info = self.add_subsystem(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
