@@ -13,6 +13,7 @@ from .not_loaded_item import ValNotLoadedItemFail
 from .overload_skill import ValOverloadSkillFail
 from .resources import ValResourceFail
 from .rig_size import ValRigSizeFail
+from .sec_zone import ValSecZoneFail
 from .ship_limit import ValShipLimitFail
 from .ship_stance import ValShipStanceFail
 from .skill_reqs import ValSrqFail
@@ -83,4 +84,5 @@ class ValResultDetails(AttrDict):
             'unlaunchable_standup_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
             'ship_stance': AttrHookDef(func=lambda d: ValShipStanceFail(data=d)),
             'overload_skill': AttrHookDef(func=lambda d: ValOverloadSkillFail(data=d)),
-            'max_type_fitted': AttrHookDef(func=lambda d: ValMaxTypeFail(data=d))})
+            'max_type_fitted': AttrHookDef(func=lambda d: ValMaxTypeFail(data=d)),
+            'sec_zone_online': AttrHookDef(func=lambda d: ValSecZoneFail(data=d))})
