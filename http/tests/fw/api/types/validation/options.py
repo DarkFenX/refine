@@ -61,7 +61,9 @@ class ValOptions:
     ship_stance: ValOption = Absent
     overload_skill: ValOption = Absent
     max_type_fitted: ValOption = Absent
+    sec_zone_fitted: ValOption = Absent
     sec_zone_online: ValOption = Absent
+    sec_zone_active: ValOption = Absent
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
