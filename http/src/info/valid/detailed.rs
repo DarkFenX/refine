@@ -1,8 +1,8 @@
 use crate::info::valid::details::{
     HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
     HValFighterCountFail, HValItemKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail,
-    HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail,
-    HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
+    HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail,
+    HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 #[derive(serde::Serialize)]
@@ -128,6 +128,8 @@ struct HValidInfoDetails {
     overload_skill: Option<HValOverloadSkillFail>,
     #[serde(skip_serializing_if = "HValMaxTypeFail::is_empty")]
     max_type_fitted: HValMaxTypeFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sec_zone_online: Option<HValSecZoneFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -183,6 +185,7 @@ impl HValidInfoDetails {
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
             && self.max_type_fitted.is_empty()
+            && self.sec_zone_online.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -261,6 +264,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             ship_stance: core_val_result.ship_stance.as_ref().map(|v| v.into()),
             overload_skill: core_val_result.overload_skill.as_ref().map(|v| v.into()),
             max_type_fitted: (&core_val_result.max_type_fitted).into(),
+            sec_zone_online: core_val_result.sec_zone_online.as_ref().map(|v| v.into()),
         }
     }
 }

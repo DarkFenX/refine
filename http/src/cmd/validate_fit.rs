@@ -110,6 +110,8 @@ pub(crate) struct HValidateFitCmd {
     overload_skill: Option<HValidationOption>,
     #[serde(default)]
     max_type_fitted: Option<HValidationOption>,
+    #[serde(default)]
+    sec_zone_online: Option<HValidationOption>,
 }
 impl HValidateFitCmd {
     pub(crate) fn execute(
@@ -213,6 +215,7 @@ impl HValidateFitCmd {
         process_option(&self.ship_stance, &mut core_options.ship_stance);
         process_option(&self.overload_skill, &mut core_options.overload_skill);
         process_option(&self.max_type_fitted, &mut core_options.max_type_fitted);
+        process_option(&self.sec_zone_online, &mut core_options.sec_zone_online);
         // Run validation
         match valid_mode {
             HValidInfoMode::Simple => core_sol.validate_fit_fast(fit_id, &core_options).map(|v| v.into()),
@@ -281,6 +284,7 @@ impl Default for HValidateFitCmd {
             ship_stance: None,
             overload_skill: None,
             max_type_fitted: None,
+            sec_zone_online: None,
         }
     }
 }
