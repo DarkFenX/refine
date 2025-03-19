@@ -12,6 +12,7 @@ from .item import Item
 if typing.TYPE_CHECKING:
     from tests.fw import eve
     from tests.fw.api import ApiClient
+    from tests.fw.consts import ApiSecZone
 
 
 class SolarSystem(AttrDict):
@@ -77,6 +78,28 @@ class SolarSystem(AttrDict):
 
     def check(self) -> None:
         self._client.check_sol(sol_id=self.id)
+
+    def set_sec_zone(
+            self, *,
+            sec_zone: ApiSecZone | type[Absent],
+            sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
+            fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> SolarSystem:
+        resp = self._client.set_sol_sec_zone_request(
+            sol_id=self.id,
+            sec_zone=sec_zone,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
+        self.check()
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()['solar_system']
+        return self
 
     def set_default_incoming_dmg(
             self, *,

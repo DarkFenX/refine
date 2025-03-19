@@ -10,7 +10,7 @@ from tests.fw.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
+    from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone
 
 
 class ApiSolCheckError(Exception):
@@ -26,6 +26,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def create_sol_request(
             self, *,
             data: eve.EveObjects | type[Absent | Default],
+            sec_zone: ApiSecZone | type[Absent],
             default_incoming_dmg: tuple[float, float, float, float] | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
@@ -42,6 +43,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             if data is Default:
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
+        conditional_insert(container=body, key='sec_zone', value=sec_zone)
         conditional_insert(container=body, key='default_incoming_dmg', value=default_incoming_dmg)
         kwargs = {
             'method': 'POST',
@@ -56,6 +58,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def create_sol(
             self, *,
             data: eve.EveObjects | type[Absent | Default] = Default,
+            sec_zone: ApiSecZone | type[Absent] = Absent,
             default_incoming_dmg: tuple[float, float, float, float] | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
@@ -66,6 +69,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             data = self._get_default_eve_data()
         resp = self.create_sol_request(
             data=data,
+            sec_zone=sec_zone,
             default_incoming_dmg=default_incoming_dmg,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
@@ -166,6 +170,29 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def cleanup_sols(self) -> None:
         for sol in self.__created_sols.copy():
             sol.remove()
+
+    def set_sol_sec_zone_request(
+            self, *,
+            sol_id: str,
+            sec_zone: ApiSecZone | type[Absent],
+            sol_info_mode: ApiSolInfoMode | type[Absent],
+            fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        command = {'type': 'set_sec_zone'}
+        conditional_insert(container=command, key='sec_zone', value=sec_zone)
+        params = {}
+        conditional_insert(container=params, key='sol', value=sol_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}',
+            params=params,
+            json={'commands': [command]})
 
     def set_sol_default_incoming_dmg_request(
             self, *,

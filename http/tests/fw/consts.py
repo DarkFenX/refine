@@ -312,6 +312,17 @@ class EveAttrUnit(IntEnum):
 
 
 @unique
+class ApiSecZone(StrEnum):
+    hisec = 'hisec'
+    hisec_c5 = 'hisec_c5'
+    lowsec = 'lowsec'
+    lowsec_c5 = 'lowsec_c5'
+    nullsec = 'nullsec'
+    wspace = 'wspace'
+    hazard = 'hazard'
+
+
+@unique
 class ApiItemKind(StrEnum):
     autocharge = 'autocharge'
     booster = 'booster'
