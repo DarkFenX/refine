@@ -143,7 +143,9 @@ def test_mutation_limit_priority(client, consts):
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_online)
     eve_base_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 2})
     eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module_id], eve_mutated_module_id)],
+        attrs={eve_limit_attr_id: (1, 5)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -170,6 +172,14 @@ def test_mutation_limit_priority(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
+    # Action
+    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: {consts.ApiAttrMutation.absolute: 2}}))
+    # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
+    api_val = api_fit.validate(options=ValOptions(max_group_online=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_mutation_limit_inheritance(client, consts):
@@ -179,7 +189,9 @@ def test_mutation_limit_inheritance(client, consts):
     eve_base_module_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_limit_attr_id: 1})
     eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_other_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module_id], eve_mutated_module_id)],
+        attrs={eve_limit_attr_id: (1, 5)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -202,6 +214,14 @@ def test_mutation_limit_inheritance(client, consts):
     api_module2.change_module(mutation=None)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
+    api_val = api_fit.validate(options=ValOptions(max_group_online=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: {consts.ApiAttrMutation.absolute: 2}}))
+    # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is True
     with check_no_field():
