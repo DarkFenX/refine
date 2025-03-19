@@ -19,6 +19,7 @@ use super::{
     kind::get_item_kind,
     max_state::get_max_state,
     overload_td_lvl::get_overload_td_lvl,
+    sec_zone::is_sec_zone_limitable,
     ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
@@ -80,6 +81,8 @@ pub struct AItemExtras {
     pub max_type_fitted: Option<Count>,
     /// Max security class this module can be online in (2 hisec, 1 lowsec, 0 the rest).
     pub online_max_sec_class: Option<AttrVal>,
+    /// Can be limited to specific security zones if some of the limit attributes are defined.
+    pub sec_zone_limitable: bool,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -109,6 +112,7 @@ impl AItemExtras {
             overload_td_lvl: Option::default(),
             max_type_fitted: Option::default(),
             online_max_sec_class: Option::default(),
+            sec_zone_limitable: bool::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -140,6 +144,7 @@ impl AItemExtras {
             overload_td_lvl: get_overload_td_lvl(attrs),
             max_type_fitted: get_max_type_fitted_count(attrs),
             online_max_sec_class: get_online_max_sec_class(attrs),
+            sec_zone_limitable: is_sec_zone_limitable(attrs),
         }
     }
     pub(crate) fn fill(
@@ -189,5 +194,6 @@ impl AItemExtras {
         self.overload_td_lvl = get_overload_td_lvl(item_attrs);
         self.max_type_fitted = get_max_type_fitted_count(item_attrs);
         self.online_max_sec_class = get_online_max_sec_class(item_attrs);
+        self.sec_zone_limitable = is_sec_zone_limitable(item_attrs);
     }
 }

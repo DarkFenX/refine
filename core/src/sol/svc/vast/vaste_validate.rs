@@ -309,7 +309,17 @@ impl SolVast {
         if options.max_type_fitted.enabled && !fit_data.validate_max_type_fitted_fast(&options.max_type_fitted.kfs) {
             return false;
         }
+        if options.sec_zone_fitted.enabled
+            && !fit_data.validate_sec_zone_fitted_fast(&options.sec_zone_fitted.kfs, uad, calc)
+        {
+            return false;
+        }
         if options.sec_zone_online.enabled && !fit_data.validate_sec_zone_online_fast(&options.sec_zone_online.kfs, uad)
+        {
+            return false;
+        }
+        if options.sec_zone_active.enabled
+            && !fit_data.validate_sec_zone_active_fast(&options.sec_zone_active.kfs, uad, calc)
         {
             return false;
         }
@@ -570,8 +580,14 @@ impl SolVast {
         if options.max_type_fitted.enabled {
             result.max_type_fitted = fit_data.validate_max_type_fitted_verbose(&options.max_type_fitted.kfs);
         }
+        if options.sec_zone_fitted.enabled {
+            result.sec_zone_fitted = fit_data.validate_sec_zone_fitted_verbose(&options.sec_zone_fitted.kfs, uad, calc);
+        }
         if options.sec_zone_online.enabled {
             result.sec_zone_online = fit_data.validate_sec_zone_online_verbose(&options.sec_zone_online.kfs, uad);
+        }
+        if options.sec_zone_active.enabled {
+            result.sec_zone_active = fit_data.validate_sec_zone_active_verbose(&options.sec_zone_active.kfs, uad, calc);
         }
         result
     }

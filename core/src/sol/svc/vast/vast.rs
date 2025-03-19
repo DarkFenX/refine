@@ -87,7 +87,9 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) fighter_count: StMap<SolItemId, SolValFighterCountFail>,
     pub(in crate::sol::svc::vast) overload_td_lvl: StMap<SolItemId, SkillLevel>,
     pub(in crate::sol::svc::vast) mods_svcs_max_type_fitted: StMapMap<EItemId, SolItemId, Count>,
-    pub(in crate::sol::svc::vast) mods_svcs_sec_class_online: StMap<SolItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) sec_zone_fitted: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) sec_zone_online_class: StMap<SolItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) sec_zone_active: StSet<SolItemId>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -138,7 +140,9 @@ impl SolVastFitData {
             fighter_count: StMap::new(),
             overload_td_lvl: StMap::new(),
             mods_svcs_max_type_fitted: StMapMap::new(),
-            mods_svcs_sec_class_online: StMap::new(),
+            sec_zone_fitted: StSet::new(),
+            sec_zone_online_class: StMap::new(),
+            sec_zone_active: StSet::new(),
         }
     }
 }

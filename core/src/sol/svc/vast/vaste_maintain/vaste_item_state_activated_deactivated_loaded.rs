@@ -46,7 +46,7 @@ impl SolVast {
                         }
                     }
                     if let Some(sec_class) = extras.online_max_sec_class {
-                        fit_data.mods_svcs_sec_class_online.insert(module.get_id(), sec_class);
+                        fit_data.sec_zone_online_class.insert(module.get_id(), sec_class);
                     }
                     if let ad::AState::Offline = extras.max_state {
                         fit_data.mods_state.insert(
@@ -73,7 +73,7 @@ impl SolVast {
                         }
                     }
                     if let Some(sec_class) = extras.online_max_sec_class {
-                        fit_data.mods_svcs_sec_class_online.insert(service.get_id(), sec_class);
+                        fit_data.sec_zone_online_class.insert(service.get_id(), sec_class);
                     }
                 }
                 _ => (),
@@ -171,7 +171,7 @@ impl SolVast {
                         fit_data.mods_svcs_max_group_online_limited.remove(&module.get_id());
                     }
                     if extras.online_max_sec_class.is_some() {
-                        fit_data.mods_svcs_sec_class_online.remove(&module.get_id());
+                        fit_data.sec_zone_online_class.remove(&module.get_id());
                     }
                     if let ad::AState::Offline = extras.max_state {
                         fit_data.mods_state.remove(&module.get_id());
@@ -187,7 +187,7 @@ impl SolVast {
                         fit_data.mods_svcs_max_group_online_limited.remove(&service.get_id());
                     }
                     if extras.online_max_sec_class.is_some() {
-                        fit_data.mods_svcs_sec_class_online.remove(&service.get_id());
+                        fit_data.sec_zone_online_class.remove(&service.get_id());
                     }
                 }
                 _ => (),

@@ -14,6 +14,7 @@ mod fighter_kind;
 mod kind;
 mod max_state;
 mod overload_td_lvl;
+mod sec_zone;
 mod ship_kind;
 mod ship_limit;
 mod slot_index;

@@ -27,6 +27,7 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) overload_td_lvl: Option<rc::SkillLevel>,
     pub(in crate::handler_json) max_type_fitted: Option<rc::Count>,
     pub(in crate::handler_json) online_max_sec_class: Option<rc::AttrVal>,
+    pub(in crate::handler_json) sec_zone_limitable: bool,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -56,6 +57,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             overload_td_lvl: a_item_extras.overload_td_lvl,
             max_type_fitted: a_item_extras.max_type_fitted,
             online_max_sec_class: a_item_extras.online_max_sec_class,
+            sec_zone_limitable: a_item_extras.sec_zone_limitable,
         }
     }
 }
@@ -87,6 +89,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             overload_td_lvl: c_item_extras.overload_td_lvl,
             max_type_fitted: c_item_extras.max_type_fitted,
             online_max_sec_class: c_item_extras.online_max_sec_class,
+            sec_zone_limitable: c_item_extras.sec_zone_limitable,
         }
     }
 }

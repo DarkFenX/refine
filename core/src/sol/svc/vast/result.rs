@@ -59,7 +59,9 @@ pub struct SolValResult {
     pub ship_stance: Option<SolValShipStanceFail>,
     pub overload_skill: Option<SolValOverloadSkillFail>,
     pub max_type_fitted: Vec<SolValMaxTypeFail>,
+    pub sec_zone_fitted: Option<SolValSecZoneFail>,
     pub sec_zone_online: Option<SolValSecZoneFail>,
+    pub sec_zone_active: Option<SolValSecZoneFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -116,7 +118,9 @@ impl SolValResult {
             ship_stance: None,
             overload_skill: None,
             max_type_fitted: Vec::new(),
+            sec_zone_fitted: None,
             sec_zone_online: None,
+            sec_zone_active: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -172,6 +176,8 @@ impl SolValResult {
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
             && self.max_type_fitted.is_empty()
+            && self.sec_zone_fitted.is_none()
             && self.sec_zone_online.is_none()
+            && self.sec_zone_active.is_none()
     }
 }

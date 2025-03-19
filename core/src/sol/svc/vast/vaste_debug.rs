@@ -190,7 +190,13 @@ impl SolVastFitData {
                 check_item(uad, item_id, true)?;
             }
         }
-        for item_id in self.mods_svcs_sec_class_online.keys() {
+        for item_id in self.sec_zone_fitted.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.sec_zone_online_class.keys() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.sec_zone_active.iter() {
             check_item(uad, item_id, true)?;
         }
         Ok(())

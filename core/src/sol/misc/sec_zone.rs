@@ -9,6 +9,6 @@ pub enum SolSecZone {
 
 #[derive(Copy, Clone)]
 pub enum SolSecZoneCorruption {
-    Any,
+    None,
     C5,
 }

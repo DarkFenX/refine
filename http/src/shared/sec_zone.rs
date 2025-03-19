@@ -18,9 +18,9 @@ pub(crate) enum HSecZone {
 impl From<&rc::SolSecZone> for HSecZone {
     fn from(core_sec_zone: &rc::SolSecZone) -> Self {
         match core_sec_zone {
-            rc::SolSecZone::HiSec(rc::SolSecZoneCorruption::Any) => Self::HiSec,
+            rc::SolSecZone::HiSec(rc::SolSecZoneCorruption::None) => Self::HiSec,
             rc::SolSecZone::HiSec(rc::SolSecZoneCorruption::C5) => Self::HiSecC5,
-            rc::SolSecZone::LowSec(rc::SolSecZoneCorruption::Any) => Self::LowSec,
+            rc::SolSecZone::LowSec(rc::SolSecZoneCorruption::None) => Self::LowSec,
             rc::SolSecZone::LowSec(rc::SolSecZoneCorruption::C5) => Self::LowSecC5,
             rc::SolSecZone::NullSec => Self::NullSec,
             rc::SolSecZone::WSpace => Self::WSpace,
@@ -31,9 +31,9 @@ impl From<&rc::SolSecZone> for HSecZone {
 impl From<&HSecZone> for rc::SolSecZone {
     fn from(h_sec_zone: &HSecZone) -> Self {
         match h_sec_zone {
-            HSecZone::HiSec => Self::HiSec(rc::SolSecZoneCorruption::Any),
+            HSecZone::HiSec => Self::HiSec(rc::SolSecZoneCorruption::None),
             HSecZone::HiSecC5 => Self::HiSec(rc::SolSecZoneCorruption::C5),
-            HSecZone::LowSec => Self::LowSec(rc::SolSecZoneCorruption::Any),
+            HSecZone::LowSec => Self::LowSec(rc::SolSecZoneCorruption::None),
             HSecZone::LowSecC5 => Self::LowSec(rc::SolSecZoneCorruption::C5),
             HSecZone::NullSec => Self::NullSec,
             HSecZone::WSpace => Self::WSpace,
