@@ -296,6 +296,7 @@ class EveAttr(IntEnum):
     can_fit_ship_type10 = 2488
     warfare_buff_4_id = 2536
     warfare_buff_4_value = 2537
+    online_max_security_class = 2581
     ftr_standup_light_slots = 2737
     ftr_standup_support_slots = 2738
     ftr_standup_heavy_slots = 2739
