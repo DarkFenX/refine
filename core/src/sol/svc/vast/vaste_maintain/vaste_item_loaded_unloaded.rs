@@ -198,6 +198,9 @@ impl SolVast {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.insert(item_id, grp_id);
                     }
                 }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_fitted.insert(item_id);
+                }
             }
             SolItem::Service(service) => {
                 let extras = service.get_a_extras().unwrap();
@@ -216,6 +219,9 @@ impl SolVast {
                         .mods_svcs_max_type_fitted
                         .add_value(service.get_type_id(), item_id, max_fitted);
                 }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_fitted.insert(item_id);
+                }
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
@@ -232,6 +238,9 @@ impl SolVast {
                             }
                         }
                     }
+                }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_fitted.insert(item_id);
                 }
             }
             SolItem::Skill(skill) => {
@@ -393,6 +402,9 @@ impl SolVast {
                         .remove_entry(&grp_id, &item_id);
                     fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_id);
                 }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_fitted.remove(&item_id);
+                }
             }
             SolItem::Service(service) => {
                 let extras = service.get_a_extras().unwrap();
@@ -411,6 +423,9 @@ impl SolVast {
                         .mods_svcs_max_type_fitted
                         .remove_l2(&service.get_type_id(), &item_id);
                 }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_fitted.remove(&item_id);
+                }
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
@@ -419,6 +434,9 @@ impl SolVast {
                 if !fit_data.drone_group_limit.is_empty() {
                     fit_data.drone_group_limit.clear();
                     fit_data.drone_groups.clear();
+                }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_fitted.remove(&item_id);
                 }
             }
             SolItem::Skill(skill) => {
