@@ -8,7 +8,7 @@ use crate::{
 };
 
 use super::{
-    attr_val::{get_bandwidth_use, get_max_type_fitted_count, get_volume},
+    attr_val::{get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_volume},
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
     fighter_count::get_max_fighter_count,
@@ -78,6 +78,8 @@ pub struct AItemExtras {
     pub overload_td_lvl: Option<SkillLevel>,
     /// Max amount of items with this type ID a fit can have.
     pub max_type_fitted: Option<Count>,
+    /// Max security class this module can be online in (2 hisec, 1 lowsec, 0 the rest).
+    pub online_max_sec_class: Option<AttrVal>,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -106,6 +108,7 @@ impl AItemExtras {
             bandwidth_use: Option::default(),
             overload_td_lvl: Option::default(),
             max_type_fitted: Option::default(),
+            online_max_sec_class: Option::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -136,6 +139,7 @@ impl AItemExtras {
             bandwidth_use: get_bandwidth_use(attrs),
             overload_td_lvl: get_overload_td_lvl(attrs),
             max_type_fitted: get_max_type_fitted_count(attrs),
+            online_max_sec_class: get_online_max_sec_class(attrs),
         }
     }
     pub(crate) fn fill(
@@ -184,5 +188,6 @@ impl AItemExtras {
         self.bandwidth_use = get_bandwidth_use(item_attrs);
         self.overload_td_lvl = get_overload_td_lvl(item_attrs);
         self.max_type_fitted = get_max_type_fitted_count(item_attrs);
+        self.online_max_sec_class = get_online_max_sec_class(item_attrs);
     }
 }

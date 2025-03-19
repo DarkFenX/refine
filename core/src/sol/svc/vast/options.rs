@@ -54,6 +54,7 @@ pub struct SolValOptions {
     pub ship_stance: SolValOption,
     pub overload_skill: SolValOption,
     pub max_type_fitted: SolValOption,
+    pub sec_zone_online: SolValOption,
 }
 impl SolValOptions {
     pub fn all_enabled() -> Self {
@@ -110,6 +111,7 @@ impl SolValOptions {
             ship_stance: SolValOption::enabled(),
             overload_skill: SolValOption::enabled(),
             max_type_fitted: SolValOption::enabled(),
+            sec_zone_online: SolValOption::enabled(),
         }
     }
     pub fn all_disabled() -> Self {
@@ -166,6 +168,7 @@ impl SolValOptions {
             ship_stance: SolValOption::disabled(),
             overload_skill: SolValOption::disabled(),
             max_type_fitted: SolValOption::disabled(),
+            sec_zone_online: SolValOption::disabled(),
         }
     }
 }

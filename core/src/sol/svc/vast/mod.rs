@@ -10,9 +10,9 @@ pub use vaste_vals_fit::{
     SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterCountFail, SolValItemKindFail,
     SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValMaxTypeFail, SolValMaxTypeItemInfo, SolValModuleStateFail,
     SolValNotLoadedItemFail, SolValOverloadSkillFail, SolValOverloadSkillItemInfo, SolValResFail, SolValResItemInfo,
-    SolValRigSizeFail, SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValShipStanceFail,
-    SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail,
-    SolValUnusableResItemInfo, SolValUnusableSlotFail,
+    SolValRigSizeFail, SolValRigSizeItemInfo, SolValSecZoneFail, SolValSecZoneItemInfo, SolValShipLimitFail,
+    SolValShipLimitItemInfo, SolValShipStanceFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
+    SolValSrqSkillInfo, SolValUnusableResFail, SolValUnusableResItemInfo, SolValUnusableSlotFail,
 };
 
 mod cache;

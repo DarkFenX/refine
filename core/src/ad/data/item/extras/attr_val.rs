@@ -13,3 +13,6 @@ pub(super) fn get_bandwidth_use(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<
 pub(super) fn get_max_type_fitted_count(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<Count> {
     item_attrs.get(&ec::attrs::MAX_TYPE_FITTED).map(|v| v.round() as Count)
 }
+pub(super) fn get_online_max_sec_class(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AttrVal> {
+    item_attrs.get(&ec::attrs::ONLINE_MAX_SECURITY_CLASS).copied()
+}

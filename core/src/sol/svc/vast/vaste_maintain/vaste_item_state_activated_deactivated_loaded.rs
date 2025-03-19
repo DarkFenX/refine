@@ -33,9 +33,9 @@ impl SolVast {
                     }
                 }
                 SolItem::Module(module) => {
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                     let extras = module.get_a_extras().unwrap();
                     if let Some(grp_id) = extras.val_online_group_id {
-                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data
                             .mods_svcs_max_group_online_all
                             .add_entry(grp_id, module.get_id());
@@ -45,8 +45,10 @@ impl SolVast {
                                 .insert(module.get_id(), grp_id);
                         }
                     }
+                    if let Some(sec_class) = extras.online_max_sec_class {
+                        fit_data.mods_svcs_sec_class_online.insert(module.get_id(), sec_class);
+                    }
                     if let ad::AState::Offline = extras.max_state {
-                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_state.insert(
                             module.get_id(),
                             SolValModuleStateFail {
@@ -58,9 +60,9 @@ impl SolVast {
                     }
                 }
                 SolItem::Service(service) => {
+                    let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
                     let extras = service.get_a_extras().unwrap();
                     if let Some(grp_id) = extras.val_online_group_id {
-                        let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
                         fit_data
                             .mods_svcs_max_group_online_all
                             .add_entry(grp_id, service.get_id());
@@ -69,6 +71,9 @@ impl SolVast {
                                 .mods_svcs_max_group_online_limited
                                 .insert(service.get_id(), grp_id);
                         }
+                    }
+                    if let Some(sec_class) = extras.online_max_sec_class {
+                        fit_data.mods_svcs_sec_class_online.insert(service.get_id(), sec_class);
                     }
                 }
                 _ => (),
@@ -157,27 +162,32 @@ impl SolVast {
                     }
                 }
                 SolItem::Module(module) => {
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                     let extras = module.get_a_extras().unwrap();
                     if let Some(grp_id) = extras.val_online_group_id {
-                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data
                             .mods_svcs_max_group_online_all
                             .remove_entry(&grp_id, &module.get_id());
                         fit_data.mods_svcs_max_group_online_limited.remove(&module.get_id());
                     }
+                    if extras.online_max_sec_class.is_some() {
+                        fit_data.mods_svcs_sec_class_online.remove(&module.get_id());
+                    }
                     if let ad::AState::Offline = extras.max_state {
-                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_state.remove(&module.get_id());
                     }
                 }
                 SolItem::Service(service) => {
+                    let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
                     let extras = service.get_a_extras().unwrap();
                     if let Some(grp_id) = extras.val_online_group_id {
-                        let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
                         fit_data
                             .mods_svcs_max_group_online_all
                             .remove_entry(&grp_id, &service.get_id());
                         fit_data.mods_svcs_max_group_online_limited.remove(&service.get_id());
+                    }
+                    if extras.online_max_sec_class.is_some() {
+                        fit_data.mods_svcs_sec_class_online.remove(&service.get_id());
                     }
                 }
                 _ => (),

@@ -24,7 +24,8 @@ pub use defs::{
     Idx, MutaRoll, OF, SkillLevel, SlotIndex, SolFitId, SolFleetId, SolItemId, VERSION,
 };
 pub use sol::{
-    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolSecZone, SolarSystem,
+    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolSecZone, SolSecZoneCorruption,
+    SolarSystem,
     info::{
         SolAttrMutationInfo, SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo,
         SolFighterInfo, SolFitInfo, SolFleetInfo, SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolItemMutationInfo,
@@ -39,9 +40,9 @@ pub use sol::{
             SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValMaxTypeFail, SolValMaxTypeItemInfo,
             SolValModuleStateFail, SolValNotLoadedItemFail, SolValOption, SolValOptions, SolValOverloadSkillFail,
             SolValOverloadSkillItemInfo, SolValResFail, SolValResItemInfo, SolValResult, SolValRigSizeFail,
-            SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValShipStanceFail,
-            SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail,
-            SolValUnusableResItemInfo, SolValUnusableSlotFail,
+            SolValRigSizeItemInfo, SolValSecZoneFail, SolValSecZoneItemInfo, SolValShipLimitFail,
+            SolValShipLimitItemInfo, SolValShipStanceFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
+            SolValSrqSkillInfo, SolValUnusableResFail, SolValUnusableResItemInfo, SolValUnusableSlotFail,
         },
     },
     uad::{
