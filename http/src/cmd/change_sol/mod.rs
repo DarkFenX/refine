@@ -18,6 +18,7 @@ pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
+pub(in crate::cmd) use sec_zone::HSetSecZone;
 
 use crate::{
     cmd::{HAddFitCmd, HCmdResp},
@@ -44,6 +45,7 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
+mod sec_zone;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
@@ -88,6 +90,7 @@ pub(crate) enum HChangeSolCommand {
     AddSwEffect(HAddSwEffectCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
     // Misc
+    SetSecZone(HSetSecZone),
     SetDefaultIncomingDmg(HSetDefaultIncomingDmg),
 }
 impl HChangeSolCommand {
@@ -133,6 +136,7 @@ impl HChangeSolCommand {
             Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
             // Misc
+            Self::SetSecZone(cmd) => cmd.execute(core_sol),
             Self::SetDefaultIncomingDmg(cmd) => cmd.execute(core_sol),
         }
     }
