@@ -622,6 +622,60 @@ def test_modified(client, consts):
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
 
 
+def test_mutation(client, consts):
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 0})
+    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module_id], eve_mutated_module_id)],
+        attrs={eve_attr_id: (0, 3)})
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(mutation=eve_mutator_id)
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].extra == approx(1)
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_active.items == {
+        api_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    # Action
+    api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0}})
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}})
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].extra == approx(0.9)
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_active.items == {
+        api_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    # Action
+    api_module.change_module(mutation=None)
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+
 def test_values(client, consts):
     # Check that only absence of attribute value, or value equal to 0 is treated as flag disabled
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)

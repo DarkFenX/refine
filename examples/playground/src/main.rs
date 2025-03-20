@@ -8,7 +8,8 @@ use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
 use rc::{
-    SolAddMode, SolMinionState, SolModRack, SolModuleState, SolValOptions, SolarSystem, Src, VERSION,
+    SolAddMode, SolMinionState, SolModRack, SolModuleState, SolSecZone, SolSecZoneCorruption, SolValOptions,
+    SolarSystem, Src, VERSION,
     ad::{AItemKind, AState, AdaptedDataHandler},
     ed::EveDataHandler,
 };
@@ -103,6 +104,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     let src = Src::new(dh, ch).unwrap();
 
     let mut sol_sys = SolarSystem::new(src);
+    sol_sys.set_sec_zone(SolSecZone::HiSec(SolSecZoneCorruption::None));
     let fit = sol_sys.add_fit();
 
     // Character
