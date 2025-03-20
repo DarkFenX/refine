@@ -513,9 +513,16 @@ def test_assist_dscript(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active, charge_type_id=eve_script_id)
+    api_module = api_fit.add_module(
+        type_id=eve_wdfg_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
+    # Action
+    api_module.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
 
 
 def test_assist_sscript(client, consts):
@@ -535,6 +542,13 @@ def test_assist_sscript(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active, charge_type_id=eve_script_id)
+    api_module = api_fit.add_module(
+        type_id=eve_wdfg_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
+    # Action
+    api_module.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
