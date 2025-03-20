@@ -90,6 +90,8 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) sec_zone_fitted: StSet<SolItemId>,
     pub(in crate::sol::svc::vast) sec_zone_online_class: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) sec_zone_active: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) sec_zone_unonlineable_class: StMap<SolItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) sec_zone_unactivable: StSet<SolItemId>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -143,6 +145,8 @@ impl SolVastFitData {
             sec_zone_fitted: StSet::new(),
             sec_zone_online_class: StMap::new(),
             sec_zone_active: StSet::new(),
+            sec_zone_unonlineable_class: StMap::new(),
+            sec_zone_unactivable: StSet::new(),
         }
     }
 }

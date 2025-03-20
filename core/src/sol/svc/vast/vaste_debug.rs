@@ -199,6 +199,12 @@ impl SolVastFitData {
         for item_id in self.sec_zone_active.iter() {
             check_item(uad, item_id, true)?;
         }
+        for item_id in self.sec_zone_unonlineable_class.keys() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.sec_zone_unactivable.iter() {
+            check_item(uad, item_id, true)?;
+        }
         Ok(())
     }
 }

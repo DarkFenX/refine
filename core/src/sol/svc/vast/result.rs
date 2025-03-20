@@ -62,6 +62,8 @@ pub struct SolValResult {
     pub sec_zone_fitted: Option<SolValSecZoneFail>,
     pub sec_zone_online: Option<SolValSecZoneFail>,
     pub sec_zone_active: Option<SolValSecZoneFail>,
+    pub sec_zone_unonlineable: Option<SolValSecZoneFail>,
+    pub sec_zone_unactivable: Option<SolValSecZoneFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -121,6 +123,8 @@ impl SolValResult {
             sec_zone_fitted: None,
             sec_zone_online: None,
             sec_zone_active: None,
+            sec_zone_unonlineable: None,
+            sec_zone_unactivable: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -179,5 +183,7 @@ impl SolValResult {
             && self.sec_zone_fitted.is_none()
             && self.sec_zone_online.is_none()
             && self.sec_zone_active.is_none()
+            && self.sec_zone_unonlineable.is_none()
+            && self.sec_zone_unactivable.is_none()
     }
 }

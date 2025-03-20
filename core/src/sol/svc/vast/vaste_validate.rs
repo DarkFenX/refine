@@ -325,6 +325,16 @@ impl SolVast {
         {
             return false;
         }
+        if options.sec_zone_unonlineable.enabled
+            && !fit_data.validate_sec_zone_unonlineable_fast(&options.sec_zone_unonlineable.kfs, uad)
+        {
+            return false;
+        }
+        if options.sec_zone_unactivable.enabled
+            && !fit_data.validate_sec_zone_unactivable_fast(&options.sec_zone_unactivable.kfs, uad, calc)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -590,6 +600,14 @@ impl SolVast {
         }
         if options.sec_zone_active.enabled {
             result.sec_zone_active = fit_data.validate_sec_zone_active_verbose(&options.sec_zone_active.kfs, uad, calc);
+        }
+        if options.sec_zone_unonlineable.enabled {
+            result.sec_zone_unonlineable =
+                fit_data.validate_sec_zone_unonlineable_verbose(&options.sec_zone_unonlineable.kfs, uad);
+        }
+        if options.sec_zone_unactivable.enabled {
+            result.sec_zone_unactivable =
+                fit_data.validate_sec_zone_unactivable_verbose(&options.sec_zone_unactivable.kfs, uad, calc);
         }
         result
     }
