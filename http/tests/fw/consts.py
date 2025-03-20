@@ -219,6 +219,7 @@ class EveAttr(IntEnum):
     mass_addition = 796
     disallow_assistance = 854
     max_group_online = 978
+    disallow_in_empire_space = 1074
     boosterness = 1087
     upgrade_capacity = 1132
     upgrade_cost = 1153
@@ -255,6 +256,7 @@ class EveAttr(IntEnum):
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
     can_fit_ship_type5 = 1944
+    disallow_in_hisec = 1970
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
     ftr_capacity = 2055
@@ -304,6 +306,9 @@ class EveAttr(IntEnum):
     ftr_sq_is_standup_support = 2741
     ftr_sq_is_standup_heavy = 2742
     can_fit_ship_type11 = 2758
+    disallow_in_hazard = 5561
+    allow_in_fully_corrupted_lowsec = 5599
+    allow_in_fully_corrupted_hisec = 5600
 
 
 @unique
