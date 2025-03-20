@@ -4,7 +4,7 @@ from .charge_group import ValChargeGroupFail
 from .charge_size import ValChargeSizeFail
 from .charge_volume import ValChargeVolumeFail
 from .drone_group import ValDroneGroupFail
-from .fighter_count import ValFighterCountFail
+from .fighter_squad_size import ValFighterSquadSizeFail
 from .item_kind import ValItemKindFail
 from .max_group import ValMaxGroupFail
 from .max_type import ValMaxTypeFail
@@ -72,7 +72,7 @@ class ValResultDetails(AttrDict):
             'module_state': AttrHookDef(func=lambda d: ValModuleStateFail(data=d)),
             'item_kind': AttrHookDef(func=lambda d: ValItemKindFail(data=d)),
             'drone_group': AttrHookDef(func=lambda d: ValDroneGroupFail(data=d)),
-            'fighter_count': AttrHookDef(func=lambda d: ValFighterCountFail(data=d)),
+            'fighter_squad_size': AttrHookDef(func=lambda d: ValFighterSquadSizeFail(data=d)),
             'unlaunchable_drone_slot': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
             'unlaunchable_drone_bandwidth': AttrHookDef(func=lambda d: ValUnusableResFail(data=d)),
             'unlaunchable_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),

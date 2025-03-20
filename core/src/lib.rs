@@ -37,7 +37,7 @@ pub use sol::{
         calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
         vast::{
             SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail,
-            SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterCountFail,
+            SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterSquadSizeFail,
             SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValMaxTypeFail, SolValMaxTypeItemInfo,
             SolValModuleStateFail, SolValNotLoadedItemFail, SolValOption, SolValOptions, SolValOverloadSkillFail,
             SolValOverloadSkillItemInfo, SolValResFail, SolValResItemInfo, SolValResult, SolValRigSizeFail,

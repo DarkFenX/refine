@@ -48,7 +48,7 @@ class ValOptions:
     module_state: ValOption = Absent
     item_kind: ValOption = Absent
     drone_group: ValOption = Absent
-    fighter_count: ValOption = Absent
+    fighter_squad_size: ValOption = Absent
     unlaunchable_drone_slot: ValOption = Absent
     unlaunchable_drone_bandwidth: ValOption = Absent
     unlaunchable_fighter: ValOption = Absent

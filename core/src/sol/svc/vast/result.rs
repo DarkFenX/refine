@@ -1,6 +1,6 @@
 use crate::sol::svc::vast::{
     SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
-    SolValFighterCountFail, SolValItemKindFail, SolValMaxGroupFail, SolValMaxTypeFail, SolValModuleStateFail,
+    SolValFighterSquadSizeFail, SolValItemKindFail, SolValMaxGroupFail, SolValMaxTypeFail, SolValModuleStateFail,
     SolValNotLoadedItemFail, SolValOverloadSkillFail, SolValResFail, SolValRigSizeFail, SolValSecZoneFail,
     SolValShipLimitFail, SolValShipStanceFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
     SolValUnusableResFail, SolValUnusableSlotFail,
@@ -46,7 +46,7 @@ pub struct SolValResult {
     pub module_state: Vec<SolValModuleStateFail>,
     pub item_kind: Vec<SolValItemKindFail>,
     pub drone_group: Option<SolValDroneGroupFail>,
-    pub fighter_count: Vec<SolValFighterCountFail>,
+    pub fighter_squad_size: Vec<SolValFighterSquadSizeFail>,
     pub unlaunchable_drone_slot: Option<SolValUnusableSlotFail>,
     pub unlaunchable_drone_bandwidth: Option<SolValUnusableResFail>,
     pub unlaunchable_fighter: Option<SolValUnusableSlotFail>,
@@ -105,7 +105,7 @@ impl SolValResult {
             module_state: Vec::new(),
             item_kind: Vec::new(),
             drone_group: None,
-            fighter_count: Vec::new(),
+            fighter_squad_size: Vec::new(),
             unlaunchable_drone_slot: None,
             unlaunchable_drone_bandwidth: None,
             unlaunchable_fighter: None,
@@ -163,7 +163,7 @@ impl SolValResult {
             && self.module_state.is_empty()
             && self.item_kind.is_empty()
             && self.drone_group.is_none()
-            && self.fighter_count.is_empty()
+            && self.fighter_squad_size.is_empty()
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
             && self.unlaunchable_fighter.is_none()

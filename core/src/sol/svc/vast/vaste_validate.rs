@@ -217,7 +217,9 @@ impl SolVast {
         if options.drone_group.enabled && !fit_data.validate_drone_group_fast(&options.drone_group.kfs) {
             return false;
         }
-        if options.fighter_count.enabled && !fit_data.validate_fighter_count_fast(&options.fighter_count.kfs) {
+        if options.fighter_squad_size.enabled
+            && !fit_data.validate_fighter_squad_size_fast(&options.fighter_squad_size.kfs)
+        {
             return false;
         }
         if options.unlaunchable_drone_slot.enabled
@@ -503,8 +505,8 @@ impl SolVast {
         if options.drone_group.enabled {
             result.drone_group = fit_data.validate_drone_group_verbose(&options.drone_group.kfs);
         }
-        if options.fighter_count.enabled {
-            result.fighter_count = fit_data.validate_fighter_count_verbose(&options.fighter_count.kfs);
+        if options.fighter_squad_size.enabled {
+            result.fighter_squad_size = fit_data.validate_fighter_squad_size_verbose(&options.fighter_squad_size.kfs);
         }
         if options.unlaunchable_drone_slot.enabled {
             result.unlaunchable_drone_slot =

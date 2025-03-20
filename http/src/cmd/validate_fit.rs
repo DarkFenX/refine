@@ -85,7 +85,7 @@ pub(crate) struct HValidateFitCmd {
     #[serde(default)]
     drone_group: Option<HValidationOption>,
     #[serde(default)]
-    fighter_count: Option<HValidationOption>,
+    fighter_squad_size: Option<HValidationOption>,
     #[serde(default)]
     unlaunchable_drone_slot: Option<HValidationOption>,
     #[serde(default)]
@@ -185,7 +185,7 @@ impl HValidateFitCmd {
         process_option(&self.module_state, &mut core_options.module_state);
         process_option(&self.item_kind, &mut core_options.item_kind);
         process_option(&self.drone_group, &mut core_options.drone_group);
-        process_option(&self.fighter_count, &mut core_options.fighter_count);
+        process_option(&self.fighter_squad_size, &mut core_options.fighter_squad_size);
         process_option(&self.unlaunchable_drone_slot, &mut core_options.unlaunchable_drone_slot);
         process_option(
             &self.unlaunchable_drone_bandwidth,
@@ -277,7 +277,7 @@ impl Default for HValidateFitCmd {
             module_state: None,
             item_kind: None,
             drone_group: None,
-            fighter_count: None,
+            fighter_squad_size: None,
             unlaunchable_drone_slot: None,
             unlaunchable_drone_bandwidth: None,
             unlaunchable_fighter: None,

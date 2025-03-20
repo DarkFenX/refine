@@ -7,7 +7,7 @@ use crate::{
     sol::{
         SolModRack,
         svc::vast::{
-            SolValCache, SolValFighterCountFail, SolValItemKindFail, SolVast, SolVastFitData, SolVastSkillReq,
+            SolValCache, SolValFighterSquadSizeFail, SolValItemKindFail, SolVast, SolVastFitData, SolVastSkillReq,
         },
         uad::{
             SolUad,
@@ -106,12 +106,12 @@ impl SolVast {
                         .insert(item_id, volume * AttrVal::from(count.current));
                 }
                 if count.current > count.max {
-                    fit_data.fighter_count.insert(
+                    fit_data.fighter_squad_size.insert(
                         item_id,
-                        SolValFighterCountFail {
+                        SolValFighterSquadSizeFail {
                             item_id,
-                            count: count.current,
-                            max_count: count.max,
+                            size: count.current,
+                            max_size: count.max,
                         },
                     );
                 }
@@ -333,7 +333,7 @@ impl SolVast {
                 fit_data.fighters_volume.remove(&item_id);
                 let count = fighter.get_count().unwrap();
                 if count.current > count.max {
-                    fit_data.fighter_count.remove(&item_id);
+                    fit_data.fighter_squad_size.remove(&item_id);
                 }
                 if extras.is_light_fighter {
                     fit_data.light_fighters.remove(&fighter.get_id());

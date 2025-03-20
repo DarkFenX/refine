@@ -9,20 +9,20 @@ def test_add_remove(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter.id: (10, 9)}
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
     api_fighter.remove()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -36,33 +36,33 @@ def test_change(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter.change_fighter(count=10)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter.id: (10, 9)}
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
     api_fighter.change_fighter(count=5)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter.change_fighter(count=11)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter.id: (11, 9)}
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (11, 9)}
     # Action
     api_fighter.change_fighter(count=None)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -76,21 +76,21 @@ def test_equal(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter.change_fighter(count=9)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter.change_fighter(count=None)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -107,18 +107,18 @@ def test_known_failures(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, count=11)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=(True, [api_fighter1.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=(True, [api_fighter1.id])))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter2.id: (11, 9)}
-    api_val = api_fit.validate(options=ValOptions(fighter_count=(True, [api_fighter2.id])))
+    assert api_val.details.fighter_squad_size == {api_fighter2.id: (11, 9)}
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=(True, [api_fighter2.id])))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter1.id: (10, 9)}
-    api_val = api_fit.validate(options=ValOptions(fighter_count=(True, [api_fighter1.id, api_fighter2.id])))
+    assert api_val.details.fighter_squad_size == {api_fighter1.id: (10, 9)}
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=(True, [api_fighter1.id, api_fighter2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        fighter_count=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
+        fighter_squad_size=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -147,7 +147,7 @@ def test_modified_max(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(6)
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -155,21 +155,21 @@ def test_modified_max(client, consts):
     api_fighter.change_fighter(count=10)
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(6)
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter.id: (10, 9)}
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
     api_implant.remove()
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(9)
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter.id: (10, 9)}
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
     api_fighter.change_fighter(count=None)
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(9)
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -185,9 +185,9 @@ def test_rounding(client, consts):
     api_fit.add_fighter(type_id=eve_fighter1_id, count=9)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, count=9)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter2.id: (9, 8)}
+    assert api_val.details.fighter_squad_size == {api_fighter2.id: (9, 8)}
 
 
 def test_not_positive_max(client, consts):
@@ -200,9 +200,9 @@ def test_not_positive_max(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id, count=10)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, count=10)
     # Verification - when not specified, max amount is assumed to be 1
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter1.id: (10, 1), api_fighter2.id: (10, 1)}
+    assert api_val.details.fighter_squad_size == {api_fighter1.id: (10, 1), api_fighter2.id: (10, 1)}
 
 
 def test_not_loaded(client, consts):
@@ -215,7 +215,7 @@ def test_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_fighter(type_id=eve_fighter_id, count=10)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -230,16 +230,16 @@ def test_no_value(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
     # Verification - when not specified, max amount is assumed to be 1
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter.id: (10, 1)}
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 1)}
 
 
 def test_no_attr(client, consts):
@@ -249,13 +249,13 @@ def test_no_attr(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_count == {api_fighter.id: (10, 9)}
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}

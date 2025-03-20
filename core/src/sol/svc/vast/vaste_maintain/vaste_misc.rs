@@ -1,7 +1,7 @@
 use crate::{
     AttrVal,
     sol::{
-        svc::vast::{SolValFighterCountFail, SolVast, SolVastSkillReq},
+        svc::vast::{SolValFighterSquadSizeFail, SolVast, SolVastSkillReq},
         uad::{
             SolUad,
             item::{SolFighter, SolSkill},
@@ -46,15 +46,15 @@ impl SolVast {
                 .insert(fighter.get_id(), volume * AttrVal::from(count.current));
         }
         match count.current > count.max {
-            true => fit_data.fighter_count.insert(
+            true => fit_data.fighter_squad_size.insert(
                 fighter.get_id(),
-                SolValFighterCountFail {
+                SolValFighterSquadSizeFail {
                     item_id: fighter.get_id(),
-                    count: count.current,
-                    max_count: count.max,
+                    size: count.current,
+                    max_size: count.max,
                 },
             ),
-            false => fit_data.fighter_count.remove(&fighter.get_id()),
+            false => fit_data.fighter_squad_size.remove(&fighter.get_id()),
         };
     }
 }

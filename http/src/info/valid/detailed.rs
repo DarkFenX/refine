@@ -1,6 +1,6 @@
 use crate::info::valid::details::{
     HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
-    HValFighterCountFail, HValItemKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail,
+    HValFighterSquadSizeFail, HValItemKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail,
     HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail,
     HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
@@ -102,8 +102,8 @@ struct HValidInfoDetails {
     item_kind: HValItemKindFail,
     #[serde(skip_serializing_if = "Option::is_none")]
     drone_group: Option<HValDroneGroupFail>,
-    #[serde(skip_serializing_if = "HValFighterCountFail::is_empty")]
-    fighter_count: HValFighterCountFail,
+    #[serde(skip_serializing_if = "HValFighterSquadSizeFail::is_empty")]
+    fighter_squad_size: HValFighterSquadSizeFail,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_drone_slot: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -176,7 +176,7 @@ impl HValidInfoDetails {
             && self.module_state.is_empty()
             && self.item_kind.is_empty()
             && self.drone_group.is_none()
-            && self.fighter_count.is_empty()
+            && self.fighter_squad_size.is_empty()
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
             && self.unlaunchable_fighter.is_none()
@@ -248,7 +248,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             module_state: (&core_val_result.module_state).into(),
             item_kind: (&core_val_result.item_kind).into(),
             drone_group: core_val_result.drone_group.as_ref().map(|v| v.into()),
-            fighter_count: (&core_val_result.fighter_count).into(),
+            fighter_squad_size: (&core_val_result.fighter_squad_size).into(),
             unlaunchable_drone_slot: core_val_result.unlaunchable_drone_slot.as_ref().map(|v| v.into()),
             unlaunchable_drone_bandwidth: core_val_result.unlaunchable_drone_bandwidth.as_ref().map(|v| v.into()),
             unlaunchable_fighter: core_val_result.unlaunchable_fighter.as_ref().map(|v| v.into()),

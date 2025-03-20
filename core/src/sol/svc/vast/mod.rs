@@ -7,12 +7,13 @@ use vast::SolVastFitData;
 use vaste_stats_fit::{SolStatRes, SolStatSlot};
 pub use vaste_vals_fit::{
     SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail,
-    SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterCountFail, SolValItemKindFail,
-    SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValMaxTypeFail, SolValMaxTypeItemInfo, SolValModuleStateFail,
-    SolValNotLoadedItemFail, SolValOverloadSkillFail, SolValOverloadSkillItemInfo, SolValResFail, SolValResItemInfo,
-    SolValRigSizeFail, SolValRigSizeItemInfo, SolValSecZoneFail, SolValSecZoneItemInfo, SolValShipLimitFail,
-    SolValShipLimitItemInfo, SolValShipStanceFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
-    SolValSrqSkillInfo, SolValUnusableResFail, SolValUnusableResItemInfo, SolValUnusableSlotFail,
+    SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterSquadSizeFail,
+    SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValMaxTypeFail, SolValMaxTypeItemInfo,
+    SolValModuleStateFail, SolValNotLoadedItemFail, SolValOverloadSkillFail, SolValOverloadSkillItemInfo,
+    SolValResFail, SolValResItemInfo, SolValRigSizeFail, SolValRigSizeItemInfo, SolValSecZoneFail,
+    SolValSecZoneItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValShipStanceFail, SolValSlotCountFail,
+    SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail, SolValUnusableResItemInfo,
+    SolValUnusableSlotFail,
 };
 
 mod cache;
