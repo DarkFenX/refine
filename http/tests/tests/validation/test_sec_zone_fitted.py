@@ -98,12 +98,12 @@ def test_main_service(client, consts):
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
-    api_service1 = api_fit.add_service(type_id=eve_service1_id)
+    api_fit.add_service(type_id=eve_service1_id)
     api_service2 = api_fit.add_service(type_id=eve_service2_id)
     api_service3 = api_fit.add_service(type_id=eve_service3_id)
     api_service4 = api_fit.add_service(type_id=eve_service4_id)
-    api_service5 = api_fit.add_service(type_id=eve_service5_id)
-    api_service6 = api_fit.add_service(type_id=eve_service6_id)
+    api_fit.add_service(type_id=eve_service5_id)
+    api_fit.add_service(type_id=eve_service6_id)
     api_service7 = api_fit.add_service(type_id=eve_service7_id)
     api_service8 = api_fit.add_service(type_id=eve_service8_id)
     api_service9 = api_fit.add_service(type_id=eve_service9_id)
@@ -113,7 +113,7 @@ def test_main_service(client, consts):
     api_service13 = api_fit.add_service(type_id=eve_service13_id)
     api_service14 = api_fit.add_service(type_id=eve_service14_id)
     api_service15 = api_fit.add_service(type_id=eve_service15_id)
-    api_service16 = api_fit.add_service(type_id=eve_service16_id)
+    api_fit.add_service(type_id=eve_service16_id)
     api_service17 = api_fit.add_service(type_id=eve_service17_id)
     api_service18 = api_fit.add_service(type_id=eve_service18_id)
     api_service19 = api_fit.add_service(type_id=eve_service19_id)
@@ -404,3 +404,50 @@ def test_main_service(client, consts):
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace])}
+
+
+def test_rig(client, consts):
+    eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_rig_id = client.mk_eve_item(attrs={eve_ban_empire_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.items == {
+        api_rig.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    # Action
+    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.nullsec)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_ship(client, consts):
+    eve_ban_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hisec)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ban_hisec_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.items == {api_ship.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
+    # Action
+    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.nullsec)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
