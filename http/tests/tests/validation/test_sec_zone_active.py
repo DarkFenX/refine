@@ -2,7 +2,7 @@ from tests import approx, check_no_field
 from tests.fw.api import ValOptions
 
 
-def test_main_service(client, consts):
+def test_main_module(client, consts):
     eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_ban_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hisec)
     eve_ban_hazard_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hazard)
@@ -771,11 +771,30 @@ def test_state(client, consts):
 def test_criterion_item_kind(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_item_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_autocharge_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_fighter_id = client.mk_eve_item(
+        attrs={eve_autocharge_attr_id: eve_item_id, eve_attr_id: 1},
+        eff_ids=[eve_autocharge_effect_id])
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.lowsec)
     api_fit = api_sol.create_fit()
+    api_fit.add_booster(type_id=eve_item_id)
+    api_fit.set_character(type_id=eve_item_id)
+    api_fit.add_drone(type_id=eve_item_id, state=consts.ApiMinionState.engaging)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_fit.add_fw_effect(type_id=eve_item_id)
+    api_fit.add_implant(type_id=eve_item_id)
+    api_fit.add_rig(type_id=eve_item_id)
+    api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.online)
+    api_fit.set_ship(type_id=eve_item_id)
+    api_fit.add_skill(type_id=eve_item_id, level=5)
+    api_fit.set_stance(type_id=eve_item_id)
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
+    assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():

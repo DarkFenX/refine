@@ -935,17 +935,31 @@ def test_criterion_state(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
-    eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
-    eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
-    eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
-    eve_module_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_allowed_ship_id})
+    eve_ship_id = client.mk_eve_ship()
+    eve_item_id = client.mk_eve_ship(attrs={eve_type_attr_id: eve_ship_id})
+    eve_module_id = client.mk_eve_ship()
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_autocharge_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_fighter_id = client.mk_eve_item(
+        attrs={eve_autocharge_attr_id: eve_item_id, eve_type_attr_id: eve_ship_id},
+        eff_ids=[eve_autocharge_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_fit.add_implant(type_id=eve_module_id)
+    api_fit.add_booster(type_id=eve_item_id)
+    api_fit.set_character(type_id=eve_item_id)
+    api_fit.add_drone(type_id=eve_item_id, state=consts.ApiMinionState.engaging)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_fit.add_fw_effect(type_id=eve_item_id)
+    api_fit.add_implant(type_id=eve_item_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload, charge_type_id=eve_item_id)
+    api_fit.set_ship(type_id=eve_item_id)
+    api_fit.add_skill(type_id=eve_item_id, level=5)
     # Verification
+    assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():

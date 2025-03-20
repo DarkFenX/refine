@@ -502,23 +502,36 @@ def test_state(client, consts):
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
 
 
-def test_autocharge_fighter(client, consts):
-    # Autocharges / fighters are not subject for the validation
+def test_criterion_item_kind(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_item_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_group_attr_id: eve_grp2_id})
+    eve_module_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
-    eve_effect_id = client.mk_eve_effect(
+    eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)
-    eve_charge_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_fighter_id = client.mk_eve_item(
-        attrs={eve_autocharge_attr_id: eve_charge_id, eve_group_attr_id: eve_grp2_id},
-        eff_ids=[eve_effect_id])
+        grp_id=eve_grp1_id,
+        attrs={eve_autocharge_attr_id: eve_item_id, eve_group_attr_id: eve_grp2_id},
+        eff_ids=[eve_autocharge_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    api_fit.add_booster(type_id=eve_item_id)
+    api_fit.set_character(type_id=eve_item_id)
+    api_fit.add_drone(type_id=eve_item_id, state=consts.ApiMinionState.engaging)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_fit.add_fw_effect(type_id=eve_item_id)
+    api_fit.add_implant(type_id=eve_item_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload, charge_type_id=eve_item_id)
+    api_fit.add_rig(type_id=eve_item_id)
+    api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.online)
+    api_fit.set_ship(type_id=eve_item_id)
+    api_fit.add_skill(type_id=eve_item_id, level=5)
+    api_fit.set_stance(type_id=eve_item_id)
+    api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(charge_group=True))

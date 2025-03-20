@@ -347,15 +347,35 @@ def test_not_loaded_drone(client, consts):
 def test_criterion_item_kind(client, consts):
     eve_group1_id = client.mk_eve_item_group()
     eve_group2_id = client.mk_eve_item_group()
+    eve_group3_id = client.mk_eve_ship_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1, unit_id=consts.EveAttrUnit.group_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_group1_id})
-    eve_fighter_id = client.mk_eve_item(grp_id=eve_group2_id)
+    eve_ship_id = client.mk_eve_ship(grp_id=eve_group3_id, attrs={eve_limit_attr_id: eve_group1_id})
+    eve_item_id = client.mk_eve_item(grp_id=eve_group2_id)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_autocharge_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_fighter_id = client.mk_eve_item(
+        grp_id=eve_group2_id,
+        attrs={eve_autocharge_attr_id: eve_item_id},
+        eff_ids=[eve_autocharge_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_fit.add_booster(type_id=eve_item_id)
+    api_fit.set_character(type_id=eve_item_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_fit.add_fw_effect(type_id=eve_item_id)
+    api_fit.add_implant(type_id=eve_item_id)
+    api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.overload, charge_type_id=eve_item_id)
+    api_fit.add_rig(type_id=eve_item_id)
+    api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.online)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(type_id=eve_fighter_id)
+    api_fit.add_skill(type_id=eve_item_id, level=5)
+    api_fit.set_stance(type_id=eve_item_id)
+    api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
+    assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
