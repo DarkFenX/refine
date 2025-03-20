@@ -108,7 +108,10 @@ impl SolVastFitData {
 fn is_flag_set(uad: &SolUad, calc: &mut SolCalc, item_id: &SolItemId, attr_id: &EAttrId) -> bool {
     match calc.get_item_attr_val_simple(uad, item_id, attr_id) {
         Some(val) => val != OF(0.0),
-        None => false,
+        None => match uad.items.get_item(item_id).unwrap().get_attrs().unwrap().get(attr_id) {
+            Some(val) => *val != OF(0.0),
+            None => false,
+        },
     }
 }
 fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, items: &StSet<SolItemId>) -> bool {

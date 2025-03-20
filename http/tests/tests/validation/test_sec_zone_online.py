@@ -337,7 +337,7 @@ def test_criterion_state(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_item_kind(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class)
     eve_rig_id = client.mk_eve_item(attrs={eve_attr_id: 1})
     client.mk_eve_item()
