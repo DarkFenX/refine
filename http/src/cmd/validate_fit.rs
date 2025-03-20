@@ -116,6 +116,10 @@ pub(crate) struct HValidateFitCmd {
     sec_zone_online: Option<HValidationOption>,
     #[serde(default)]
     sec_zone_active: Option<HValidationOption>,
+    #[serde(default)]
+    sec_zone_unonlineable: Option<HValidationOption>,
+    #[serde(default)]
+    sec_zone_unactivable: Option<HValidationOption>,
 }
 impl HValidateFitCmd {
     pub(crate) fn execute(
@@ -222,6 +226,8 @@ impl HValidateFitCmd {
         process_option(&self.sec_zone_fitted, &mut core_options.sec_zone_fitted);
         process_option(&self.sec_zone_online, &mut core_options.sec_zone_online);
         process_option(&self.sec_zone_active, &mut core_options.sec_zone_active);
+        process_option(&self.sec_zone_unonlineable, &mut core_options.sec_zone_unonlineable);
+        process_option(&self.sec_zone_unactivable, &mut core_options.sec_zone_unactivable);
         // Run validation
         match valid_mode {
             HValidInfoMode::Simple => core_sol.validate_fit_fast(fit_id, &core_options).map(|v| v.into()),
@@ -293,6 +299,8 @@ impl Default for HValidateFitCmd {
             sec_zone_fitted: None,
             sec_zone_online: None,
             sec_zone_active: None,
+            sec_zone_unonlineable: None,
+            sec_zone_unactivable: None,
         }
     }
 }

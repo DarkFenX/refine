@@ -134,6 +134,10 @@ struct HValidInfoDetails {
     sec_zone_online: Option<HValSecZoneFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sec_zone_active: Option<HValSecZoneFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sec_zone_unonlineable: Option<HValSecZoneFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sec_zone_unactivable: Option<HValSecZoneFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -192,6 +196,8 @@ impl HValidInfoDetails {
             && self.sec_zone_fitted.is_none()
             && self.sec_zone_online.is_none()
             && self.sec_zone_active.is_none()
+            && self.sec_zone_unonlineable.is_none()
+            && self.sec_zone_unactivable.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -273,6 +279,8 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             sec_zone_fitted: core_val_result.sec_zone_fitted.as_ref().map(|v| v.into()),
             sec_zone_online: core_val_result.sec_zone_online.as_ref().map(|v| v.into()),
             sec_zone_active: core_val_result.sec_zone_active.as_ref().map(|v| v.into()),
+            sec_zone_unonlineable: core_val_result.sec_zone_unonlineable.as_ref().map(|v| v.into()),
+            sec_zone_unactivable: core_val_result.sec_zone_unactivable.as_ref().map(|v| v.into()),
         }
     }
 }
