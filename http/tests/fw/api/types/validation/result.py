@@ -87,4 +87,6 @@ class ValResultDetails(AttrDict):
             'max_type_fitted': AttrHookDef(func=lambda d: ValMaxTypeFail(data=d)),
             'sec_zone_fitted': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
             'sec_zone_online': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
-            'sec_zone_active': AttrHookDef(func=lambda d: ValSecZoneFail(data=d))})
+            'sec_zone_active': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
+            'sec_zone_unonlineable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
+            'sec_zone_unactivable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d))})

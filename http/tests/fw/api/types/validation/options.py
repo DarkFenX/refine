@@ -64,6 +64,8 @@ class ValOptions:
     sec_zone_fitted: ValOption = Absent
     sec_zone_online: ValOption = Absent
     sec_zone_active: ValOption = Absent
+    sec_zone_unonlineable: ValOption = Absent
+    sec_zone_unactivable: ValOption = Absent
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

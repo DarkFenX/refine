@@ -79,6 +79,9 @@ impl SolVast {
                             .insert(charge.get_cont_id(), SolValCache::Todo(volume));
                     }
                 }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_unactivable.insert(item_id);
+                }
             }
             SolItem::Drone(drone) => {
                 let extras = drone.get_a_extras().unwrap();
@@ -116,22 +119,22 @@ impl SolVast {
                     );
                 }
                 if extras.is_light_fighter {
-                    fit_data.light_fighters.insert(fighter.get_id());
+                    fit_data.light_fighters.insert(item_id);
                 }
                 if extras.is_heavy_fighter {
-                    fit_data.heavy_fighters.insert(fighter.get_id());
+                    fit_data.heavy_fighters.insert(item_id);
                 }
                 if extras.is_support_fighter {
-                    fit_data.support_fighters.insert(fighter.get_id());
+                    fit_data.support_fighters.insert(item_id);
                 }
                 if extras.is_standup_light_fighter {
-                    fit_data.standup_light_fighters.insert(fighter.get_id());
+                    fit_data.standup_light_fighters.insert(item_id);
                 }
                 if extras.is_standup_heavy_fighter {
-                    fit_data.standup_heavy_fighters.insert(fighter.get_id());
+                    fit_data.standup_heavy_fighters.insert(item_id);
                 }
                 if extras.is_standup_support_fighter {
-                    fit_data.standup_support_fighters.insert(fighter.get_id());
+                    fit_data.standup_support_fighters.insert(item_id);
                 }
             }
             SolItem::Implant(implant) => {
@@ -183,6 +186,12 @@ impl SolVast {
                     // Unwrap, since item ship kind is set to capital only when volume is available
                     fit_data.mods_capital.insert(item_id, extras.volume.unwrap());
                 }
+                if let Some(sec_class) = extras.online_max_sec_class {
+                    fit_data.sec_zone_unonlineable_class.insert(item_id, sec_class);
+                }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_unactivable.insert(item_id);
+                }
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -221,6 +230,9 @@ impl SolVast {
                 }
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_fitted.insert(item_id);
+                }
+                if let Some(sec_class) = extras.online_max_sec_class {
+                    fit_data.sec_zone_unonlineable_class.insert(item_id, sec_class);
                 }
             }
             SolItem::Ship(ship) => {
@@ -315,6 +327,9 @@ impl SolVast {
                     }
                 }
                 fit_data.mods_charge_volume.remove(&charge.get_cont_id());
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_unactivable.remove(&item_id);
+                }
             }
             SolItem::Drone(drone) => {
                 let extras = drone.get_a_extras().unwrap();
@@ -336,22 +351,22 @@ impl SolVast {
                     fit_data.fighter_squad_size.remove(&item_id);
                 }
                 if extras.is_light_fighter {
-                    fit_data.light_fighters.remove(&fighter.get_id());
+                    fit_data.light_fighters.remove(&item_id);
                 }
                 if extras.is_heavy_fighter {
-                    fit_data.heavy_fighters.remove(&fighter.get_id());
+                    fit_data.heavy_fighters.remove(&item_id);
                 }
                 if extras.is_support_fighter {
-                    fit_data.support_fighters.remove(&fighter.get_id());
+                    fit_data.support_fighters.remove(&item_id);
                 }
                 if extras.is_standup_light_fighter {
-                    fit_data.standup_light_fighters.remove(&fighter.get_id());
+                    fit_data.standup_light_fighters.remove(&item_id);
                 }
                 if extras.is_standup_heavy_fighter {
-                    fit_data.standup_heavy_fighters.remove(&fighter.get_id());
+                    fit_data.standup_heavy_fighters.remove(&item_id);
                 }
                 if extras.is_standup_support_fighter {
-                    fit_data.standup_support_fighters.remove(&fighter.get_id());
+                    fit_data.standup_support_fighters.remove(&item_id);
                 }
             }
             SolItem::Implant(implant) => {
@@ -387,6 +402,12 @@ impl SolVast {
                     fit_data
                         .mods_svcs_max_type_fitted
                         .remove_l2(&module.get_type_id(), &item_id);
+                }
+                if extras.online_max_sec_class.is_some() {
+                    fit_data.sec_zone_unonlineable_class.remove(&item_id);
+                }
+                if extras.sec_zone_limitable {
+                    fit_data.sec_zone_unactivable.remove(&item_id);
                 }
             }
             SolItem::Rig(rig) => {
@@ -425,6 +446,9 @@ impl SolVast {
                 }
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_fitted.remove(&item_id);
+                }
+                if extras.online_max_sec_class.is_some() {
+                    fit_data.sec_zone_unonlineable_class.remove(&item_id);
                 }
             }
             SolItem::Ship(ship) => {
