@@ -1,4 +1,5 @@
 from tests.fw.util import AttrDict, AttrHookDef
+from .activation_blocked import ValActivationBlockedFail
 from .capital_module import ValCapModuleFail
 from .charge_group import ValChargeGroupFail
 from .charge_size import ValChargeSizeFail
@@ -89,4 +90,5 @@ class ValResultDetails(AttrDict):
             'sec_zone_online': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
             'sec_zone_active': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
             'sec_zone_unonlineable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
-            'sec_zone_unactivable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d))})
+            'sec_zone_unactivable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
+            'activation_blocked': AttrHookDef(func=lambda d: ValActivationBlockedFail(data=d))})

@@ -335,6 +335,11 @@ impl SolVast {
         {
             return false;
         }
+        if options.activation_blocked.enabled
+            && !fit_data.validate_activation_blocked_fast(&options.activation_blocked.kfs, uad, calc)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -608,6 +613,10 @@ impl SolVast {
         if options.sec_zone_unactivable.enabled {
             result.sec_zone_unactivable =
                 fit_data.validate_sec_zone_unactivable_verbose(&options.sec_zone_unactivable.kfs, uad, calc);
+        }
+        if options.activation_blocked.enabled {
+            result.activation_blocked =
+                fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, uad, calc);
         }
         result
     }
