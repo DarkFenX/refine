@@ -377,6 +377,34 @@ def test_no_charge(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_non_positive(client, consts):
+    # Size of 0 is actually used in EVE, small RASB charges
+    eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 0})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: -3})
+    eve_module1_id = client.mk_eve_item(attrs={eve_size_attr_id: 0})
+    eve_module2_id = client.mk_eve_item(attrs={eve_size_attr_id: -3})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge2_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=True)
+    assert api_val.passed is False
+    assert api_val.details.charge_size == {
+        api_module1.charge.id: (api_module1.id, -3, 0),
+        api_module2.charge.id: (api_module2.id, 0, -3)}
+    # Action
+    api_module1.change_module(charge=eve_charge1_id)
+    api_module2.change_module(charge=eve_charge2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_no_value_module(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
     eve_charge_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})

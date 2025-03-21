@@ -152,6 +152,32 @@ def test_ship_absent(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_non_positive(client, consts):
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.rig_size)
+    eve_rig1_id = client.mk_eve_item(attrs={eve_attr_id: 0})
+    eve_rig2_id = client.mk_eve_item(attrs={eve_attr_id: -3})
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_attr_id: 0})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_attr_id: -3})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship1_id)
+    api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
+    api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
+    assert api_val.passed is False
+    assert api_val.details.rig_size.allowed_size == 0
+    assert api_val.details.rig_size.rig_sizes == {api_rig2.id: -3}
+    # Action
+    api_fit.set_ship(type_id=eve_ship2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
+    assert api_val.passed is False
+    assert api_val.details.rig_size.allowed_size == -3
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 0}
+
+
 def test_no_value_ship(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.rig_size)
     eve_rig_id = client.mk_eve_item(attrs={eve_attr_id: 2})
