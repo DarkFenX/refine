@@ -59,7 +59,8 @@ def test_affected_fleeted_child_ship(client, consts):
 
 
 def test_affected_charge(client, consts):
-    # Reflects currently real EVE scenario: mining preservation fleet bonus
+    # As of 2025-03-21, mining preservation fleet bonus is implemented using location-skillreq
+    # filter
     eve_skill_id = client.mk_eve_item()
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

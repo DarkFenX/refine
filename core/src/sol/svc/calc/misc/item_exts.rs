@@ -58,7 +58,7 @@ impl SolItem {
             Self::Autocharge(_) => false,
             Self::Booster(_) => false,
             Self::Character(_) => false,
-            Self::Charge(_) => true, // TODO: check if it needs to be true?
+            Self::Charge(_) => true,
             Self::Drone(_) => false,
             Self::Fighter(_) => false,
             Self::FwEffect(_) => false,
@@ -79,7 +79,7 @@ impl SolItem {
             Self::Autocharge(_) => false,
             Self::Booster(_) => false,
             Self::Character(_) => false,
-            Self::Charge(_) => true, // TODO: check if it needs to be true?
+            Self::Charge(_) => true,
             Self::Drone(_) => false,
             Self::Fighter(_) => false,
             Self::FwEffect(_) => false,

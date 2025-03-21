@@ -26,7 +26,7 @@ def test_affected(client, consts):
 
 
 def test_affected_charge(client, consts):
-    # Reflects currently real EVE scenario: ninazu/lif cap boost amount bonus
+    # As of 2025-03-21, ninazu/lif cap boost amount bonus is implemented using location-group filter
     eve_grp_id = client.mk_eve_item_group()
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()

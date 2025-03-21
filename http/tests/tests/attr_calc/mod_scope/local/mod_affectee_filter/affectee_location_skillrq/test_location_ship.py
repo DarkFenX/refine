@@ -25,6 +25,30 @@ def test_affected(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
+def test_affected_charge(client, consts):
+    # As of 2025-03-21, jackdaw missile dmg bonus is implemented using location-skillreq filter
+    eve_skill_id = client.mk_eve_item()
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_srq,
+        loc=consts.EveModLoc.ship,
+        srq=eve_skill_id,
+        op=consts.EveModOp.post_div,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_module_id = client.mk_eve_item()
+    eve_charge_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 83}, srqs={eve_skill_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affector_attr_id: 0.75}, eff_ids=[eve_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    assert api_module.update().charge.attrs[eve_affectee_attr_id].dogma == approx(110.666667)
+
+
 def test_unaffected_other_location(client, consts):
     # Check that entities from other locations are not affected
     eve_skill_id = client.mk_eve_item()
