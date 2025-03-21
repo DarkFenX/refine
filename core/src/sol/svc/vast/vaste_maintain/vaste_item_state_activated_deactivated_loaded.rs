@@ -114,6 +114,7 @@ impl SolVast {
                     if extras.sec_zone_limitable {
                         fit_data.sec_zone_active.insert(module.get_id());
                     }
+                    fit_data.mods_active.insert(module.get_id());
                 }
                 _ => (),
             },
@@ -227,6 +228,7 @@ impl SolVast {
                     if extras.sec_zone_limitable {
                         fit_data.sec_zone_active.remove(&module.get_id());
                     }
+                    fit_data.mods_active.remove(&module.get_id());
                 }
                 _ => (),
             },

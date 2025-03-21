@@ -59,6 +59,7 @@ pub struct SolValOptions {
     pub sec_zone_active: SolValOption,
     pub sec_zone_unonlineable: SolValOption,
     pub sec_zone_unactivable: SolValOption,
+    pub activation_blocked: SolValOption,
 }
 impl SolValOptions {
     pub fn all_enabled() -> Self {
@@ -120,6 +121,7 @@ impl SolValOptions {
             sec_zone_active: SolValOption::enabled(),
             sec_zone_unonlineable: SolValOption::enabled(),
             sec_zone_unactivable: SolValOption::enabled(),
+            activation_blocked: SolValOption::enabled(),
         }
     }
     pub fn all_disabled() -> Self {
@@ -181,6 +183,7 @@ impl SolValOptions {
             sec_zone_active: SolValOption::disabled(),
             sec_zone_unonlineable: SolValOption::disabled(),
             sec_zone_unactivable: SolValOption::disabled(),
+            activation_blocked: SolValOption::disabled(),
         }
     }
 }

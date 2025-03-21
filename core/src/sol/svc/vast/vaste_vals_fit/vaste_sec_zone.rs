@@ -1,9 +1,8 @@
 use itertools::Itertools;
 use smallvec::SmallVec;
-use std::mem;
 
 use crate::{
-    defs::{AttrVal, EAttrId, OF, SolItemId},
+    defs::{AttrVal, OF, SolItemId},
     ec,
     sol::{
         SolSecZone, SolSecZoneCorruption,
@@ -13,7 +12,9 @@ use crate::{
     util::{StMap, StSet},
 };
 
-const SEC_ZONE_COUNT: usize = mem::variant_count::<SolSecZone>();
+use super::shared::is_flag_set;
+
+const SEC_ZONE_COUNT: usize = std::mem::variant_count::<SolSecZone>();
 
 pub struct SolValSecZoneFail {
     pub zone: SolSecZone,
@@ -199,15 +200,6 @@ fn flags_check_verbose(
         zone: uad.sec_zone,
         items: failed_items,
     })
-}
-fn is_flag_set(uad: &SolUad, calc: &mut SolCalc, item_id: &SolItemId, attr_id: &EAttrId) -> bool {
-    match calc.get_item_attr_val_simple(uad, item_id, attr_id) {
-        Some(val) => val != OF(0.0),
-        None => match uad.items.get_item(item_id).unwrap().get_attrs().unwrap().get(attr_id) {
-            Some(val) => *val != OF(0.0),
-            None => false,
-        },
-    }
 }
 fn get_allowed_sec_zones(
     uad: &SolUad,

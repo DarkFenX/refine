@@ -1,3 +1,4 @@
+pub use vaste_activation_blocked::SolValActivationBlockedFail;
 pub use vaste_capital_module::{SolValCapitalModFail, SolValCapitalModItemInfo};
 pub use vaste_charge_group::SolValChargeGroupFail;
 pub use vaste_charge_size::SolValChargeSizeFail;
@@ -22,6 +23,7 @@ pub use vaste_unusable_resource::{SolValUnusableResFail, SolValUnusableResItemIn
 pub use vaste_unusable_slot::SolValUnusableSlotFail;
 
 mod shared;
+mod vaste_activation_blocked;
 mod vaste_capital_module;
 mod vaste_charge_group;
 mod vaste_charge_size;

@@ -1,9 +1,9 @@
 use crate::sol::svc::vast::{
-    SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
-    SolValFighterSquadSizeFail, SolValItemKindFail, SolValMaxGroupFail, SolValMaxTypeFail, SolValModuleStateFail,
-    SolValNotLoadedItemFail, SolValOverloadSkillFail, SolValResFail, SolValRigSizeFail, SolValSecZoneFail,
-    SolValShipLimitFail, SolValShipStanceFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
-    SolValUnusableResFail, SolValUnusableSlotFail,
+    SolValActivationBlockedFail, SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail,
+    SolValChargeVolumeFail, SolValDroneGroupFail, SolValFighterSquadSizeFail, SolValItemKindFail, SolValMaxGroupFail,
+    SolValMaxTypeFail, SolValModuleStateFail, SolValNotLoadedItemFail, SolValOverloadSkillFail, SolValResFail,
+    SolValRigSizeFail, SolValSecZoneFail, SolValShipLimitFail, SolValShipStanceFail, SolValSlotCountFail,
+    SolValSlotIndexFail, SolValSrqFail, SolValUnusableResFail, SolValUnusableSlotFail,
 };
 
 pub struct SolValResult {
@@ -64,6 +64,7 @@ pub struct SolValResult {
     pub sec_zone_active: Option<SolValSecZoneFail>,
     pub sec_zone_unonlineable: Option<SolValSecZoneFail>,
     pub sec_zone_unactivable: Option<SolValSecZoneFail>,
+    pub activation_blocked: Vec<SolValActivationBlockedFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -125,6 +126,7 @@ impl SolValResult {
             sec_zone_active: None,
             sec_zone_unonlineable: None,
             sec_zone_unactivable: None,
+            activation_blocked: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -185,5 +187,6 @@ impl SolValResult {
             && self.sec_zone_active.is_none()
             && self.sec_zone_unonlineable.is_none()
             && self.sec_zone_unactivable.is_none()
+            && self.activation_blocked.is_empty()
     }
 }
