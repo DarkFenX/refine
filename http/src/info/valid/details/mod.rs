@@ -20,6 +20,7 @@ pub(in crate::info::valid) use slot_index::HValSlotIndexFail;
 pub(in crate::info::valid) use unusable_resource::HValUnusableResFail;
 pub(in crate::info::valid) use unusable_slot::HValUnusableSlotFail;
 
+mod activation_blocked;
 mod capital_module;
 mod charge_group;
 mod charge_size;
