@@ -1,7 +1,4 @@
-use crate::{
-    ad::{ABuffAggrMode, ABuffModifier, AOp},
-    defs::EBuffId,
-};
+use crate::ad::{ABuffAggrMode, ABuffId, ABuffModifier, AOp};
 
 /// Represents an adapted dogma buff.
 ///
@@ -9,22 +6,11 @@ use crate::{
 /// For instance, fleet effects are implemented as dogma buffs.
 pub struct ABuff {
     /// Buff ID.
-    pub id: EBuffId,
+    pub id: ABuffId,
     /// Defines how multiple modifications of the same attribute value are aggregated.
     pub aggr_mode: ABuffAggrMode,
     /// Operation to use when applying the buff's modifiers.
     pub op: AOp,
     /// Attribute modifiers carried by the buff
     pub mods: Vec<ABuffModifier>,
-}
-impl ABuff {
-    /// Make a new dogma buff out of passed data.
-    pub(crate) fn new(id: EBuffId, aggr_mode: ABuffAggrMode, op: AOp, mods: Vec<ABuffModifier>) -> Self {
-        Self {
-            id,
-            aggr_mode,
-            op,
-            mods,
-        }
-    }
 }

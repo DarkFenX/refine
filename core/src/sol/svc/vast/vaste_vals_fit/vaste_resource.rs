@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::{AttrVal, EAttrId, OF, SolItemId},
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
@@ -36,8 +36,8 @@ impl SolVastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ec::attrs::CPU,
-            &ec::attrs::CPU_OUTPUT,
+            &consts::attrs::CPU,
+            &consts::attrs::CPU_OUTPUT,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_fast(
@@ -53,8 +53,8 @@ impl SolVastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ec::attrs::POWER,
-            &ec::attrs::POWER_OUTPUT,
+            &consts::attrs::POWER,
+            &consts::attrs::POWER_OUTPUT,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_fast(
@@ -70,7 +70,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.rigs_rigslot_calibration.iter(),
-            &ec::attrs::UPGRADE_CAPACITY,
+            &consts::attrs::UPGRADE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_fast(
@@ -86,7 +86,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.drones_volume.iter(),
-            &ec::attrs::DRONE_CAPACITY,
+            &consts::attrs::DRONE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
@@ -102,7 +102,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.drones_online_bandwidth.iter(),
-            &ec::attrs::DRONE_BANDWIDTH,
+            &consts::attrs::DRONE_BANDWIDTH,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_fast(
@@ -118,7 +118,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.fighters_volume.iter(),
-            &ec::attrs::FTR_CAPACITY,
+            &consts::attrs::FTR_CAPACITY,
         )
     }
     // Verbose validations
@@ -135,8 +135,8 @@ impl SolVastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ec::attrs::CPU,
-            &ec::attrs::CPU_OUTPUT,
+            &consts::attrs::CPU,
+            &consts::attrs::CPU_OUTPUT,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
@@ -152,8 +152,8 @@ impl SolVastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ec::attrs::POWER,
-            &ec::attrs::POWER_OUTPUT,
+            &consts::attrs::POWER,
+            &consts::attrs::POWER_OUTPUT,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
@@ -169,7 +169,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.rigs_rigslot_calibration.iter(),
-            &ec::attrs::UPGRADE_CAPACITY,
+            &consts::attrs::UPGRADE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_verbose(
@@ -185,7 +185,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.drones_volume.iter(),
-            &ec::attrs::DRONE_CAPACITY,
+            &consts::attrs::DRONE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
@@ -201,7 +201,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.drones_online_bandwidth.iter(),
-            &ec::attrs::DRONE_BANDWIDTH,
+            &consts::attrs::DRONE_BANDWIDTH,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_verbose(
@@ -217,7 +217,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.fighters_volume.iter(),
-            &ec::attrs::FTR_CAPACITY,
+            &consts::attrs::FTR_CAPACITY,
         )
     }
 }

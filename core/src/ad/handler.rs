@@ -1,9 +1,6 @@
 use std::fmt;
 
-use crate::{
-    ad::{AData, AResult, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta},
-    defs::{EAttrId, EBuffId, EEffectId, EItemId},
-};
+use crate::ad::{AAttrId, ABuffId, AData, AEffectId, AItemId, AResult, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta};
 
 /// Adapted data handler interface definition.
 ///
@@ -12,15 +9,15 @@ use crate::{
 /// adapted data on every run.
 pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted item.
-    fn get_item(&self, id: &EItemId) -> Option<&ArcItem>;
+    fn get_item(&self, id: &AItemId) -> Option<&ArcItem>;
     /// Get adapted attribute.
-    fn get_attr(&self, id: &EAttrId) -> Option<&ArcAttr>;
+    fn get_attr(&self, id: &AAttrId) -> Option<&ArcAttr>;
     /// Get adapted effect.
-    fn get_effect(&self, id: &EEffectId) -> Option<&ArcEffect>;
+    fn get_effect(&self, id: &AEffectId) -> Option<&ArcEffect>;
     /// Get adapted mutator.
-    fn get_muta(&self, id: &EItemId) -> Option<&ArcMuta>;
+    fn get_muta(&self, id: &AItemId) -> Option<&ArcMuta>;
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &EBuffId) -> Option<&ArcBuff>;
+    fn get_buff(&self, id: &ABuffId) -> Option<&ArcBuff>;
     /// Get adapted data fingerprint.
     fn get_data_fingerprint(&self) -> Option<String>;
     /// Load cache from persistent storage.

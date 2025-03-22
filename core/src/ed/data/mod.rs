@@ -10,7 +10,10 @@ pub use item_group::EItemGroup;
 pub use item_srq::EItemSkillReq;
 pub use muta_attr_mod::EMutaAttrMod;
 pub use muta_item_conv::EMutaItemConv;
-pub use shared::EPrimitive;
+pub use primitives::{
+    EAbilId, EAttrId, EAttrUnitId, EAttrVal, EBuffId, ECount, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
+    EPrimitive, ESkillLevel,
+};
 
 mod abil;
 mod attr;
@@ -24,4 +27,4 @@ mod item_group;
 mod item_srq;
 mod muta_attr_mod;
 mod muta_item_conv;
-mod shared;
+mod primitives;

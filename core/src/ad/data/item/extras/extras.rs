@@ -1,9 +1,8 @@
 use crate::{
     ad::{
-        AEffect, AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind,
-        AState,
+        AAttrId, AAttrVal, ACount, AEffect, AEffectId, AItem, AItemCatId, AItemChargeLimit, AItemEffectData,
+        AItemGrpId, AItemId, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
     },
-    defs::{AttrVal, Count, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
     util::{StMap, StSet},
 };
 
@@ -34,23 +33,23 @@ pub struct AItemExtras {
     /// Item type.
     pub kind: Option<AItemKind>,
     /// Unmodified and unmutated item volume.
-    pub volume: Option<AttrVal>,
+    pub volume: Option<AAttrVal>,
     /// If set, item can be fit to a ship which fits into the limit.
     pub ship_limit: Option<AItemShipLimit>,
     /// If set, item can load only charges which fit into limit.
     pub charge_limit: Option<AItemChargeLimit>,
     /// Item effectively has this group ID for purposes of "max group fitted" validation.
-    pub val_fitted_group_id: Option<EItemGrpId>,
+    pub val_fitted_group_id: Option<AItemGrpId>,
     /// Item effectively has this group ID for purposes of "max group online" validation.
-    pub val_online_group_id: Option<EItemGrpId>,
+    pub val_online_group_id: Option<AItemGrpId>,
     /// Item effectively has this group ID for purposes of "max group active" validation.
-    pub val_active_group_id: Option<EItemGrpId>,
+    pub val_active_group_id: Option<AItemGrpId>,
     /// Slot index an implant takes.
-    pub implant_slot: Option<SlotIndex>,
+    pub implant_slot: Option<ASlotIndex>,
     /// Slot index a booster takes.
-    pub booster_slot: Option<SlotIndex>,
+    pub booster_slot: Option<ASlotIndex>,
     /// Slot index a subsystem takes.
-    pub subsystem_slot: Option<SlotIndex>,
+    pub subsystem_slot: Option<ASlotIndex>,
     /// Defines if a fighter take a light fighter slot or not.
     pub is_light_fighter: bool,
     /// Defines if a fighter take a heavy fighter slot or not.
@@ -72,15 +71,15 @@ pub struct AItemExtras {
     /// If set, ship can use drones which fit into the limit.
     pub drone_limit: Option<AShipDroneLimit>,
     /// By default, a fighter squad will have this count of fighters.
-    pub max_fighter_count: Count,
+    pub max_fighter_count: ACount,
     /// Drone bandwidth consumption.
-    pub bandwidth_use: Option<AttrVal>,
+    pub bandwidth_use: Option<AAttrVal>,
     /// Required thermodynamics skill level.
-    pub overload_td_lvl: Option<SkillLevel>,
+    pub overload_td_lvl: Option<ASkillLevel>,
     /// Max amount of items with this type ID a fit can have.
-    pub max_type_fitted: Option<Count>,
+    pub max_type_fitted: Option<ACount>,
     /// Max security class this module can be online in (2 hisec, 1 lowsec, 0 the rest).
-    pub online_max_sec_class: Option<AttrVal>,
+    pub online_max_sec_class: Option<AAttrVal>,
     /// Can be limited to specific security zones if some of the limit attributes are defined.
     pub sec_zone_limitable: bool,
 }
@@ -117,7 +116,7 @@ impl AItemExtras {
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
     // not rely on them
-    pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &StMap<EAttrId, AttrVal>) -> Self {
+    pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &StMap<AAttrId, AAttrVal>) -> Self {
         Self {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
             volume: get_volume(attrs),
@@ -149,16 +148,16 @@ impl AItemExtras {
     }
     pub(crate) fn fill(
         &mut self,
-        item_id: EItemId,
-        item_grp_id: EItemGrpId,
-        item_cat_id: EItemCatId,
-        item_attrs: &StMap<EAttrId, AttrVal>,
-        item_effects: &StMap<EEffectId, AItemEffectData>,
-        item_srqs: &StMap<EItemId, SkillLevel>,
-        effects: &StMap<EEffectId, &AEffect>,
-        fitted_limited_groups: &StSet<EItemGrpId>,
-        online_limited_groups: &StSet<EItemGrpId>,
-        active_limited_groups: &StSet<EItemGrpId>,
+        item_id: AItemId,
+        item_grp_id: AItemGrpId,
+        item_cat_id: AItemCatId,
+        item_attrs: &StMap<AAttrId, AAttrVal>,
+        item_effects: &StMap<AEffectId, AItemEffectData>,
+        item_srqs: &StMap<AItemId, ASkillLevel>,
+        effects: &StMap<AEffectId, &AEffect>,
+        fitted_limited_groups: &StSet<AItemGrpId>,
+        online_limited_groups: &StSet<AItemGrpId>,
+        active_limited_groups: &StSet<AItemGrpId>,
     ) {
         self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
         self.volume = get_volume(item_attrs);

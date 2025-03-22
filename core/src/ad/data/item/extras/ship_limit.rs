@@ -1,82 +1,82 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{AttrVal, EAttrId, EItemGrpId, EItemId},
-    ec,
+    ac,
+    ad::{AAttrId, AAttrVal, AItemGrpId, AItemId},
     util::StMap,
 };
 
-static TYPE_ATTRS: [EAttrId; 12] = [
-    ec::attrs::CAN_FIT_SHIP_TYPE1,
-    ec::attrs::CAN_FIT_SHIP_TYPE2,
-    ec::attrs::CAN_FIT_SHIP_TYPE3,
-    ec::attrs::CAN_FIT_SHIP_TYPE4,
-    ec::attrs::CAN_FIT_SHIP_TYPE5,
-    ec::attrs::CAN_FIT_SHIP_TYPE6,
-    ec::attrs::CAN_FIT_SHIP_TYPE7,
-    ec::attrs::CAN_FIT_SHIP_TYPE8,
-    ec::attrs::CAN_FIT_SHIP_TYPE9,
-    ec::attrs::CAN_FIT_SHIP_TYPE10,
-    ec::attrs::CAN_FIT_SHIP_TYPE11,
-    ec::attrs::FITS_TO_SHIP_TYPE,
+static TYPE_ATTRS: [AAttrId; 12] = [
+    ac::attrs::CAN_FIT_SHIP_TYPE1,
+    ac::attrs::CAN_FIT_SHIP_TYPE2,
+    ac::attrs::CAN_FIT_SHIP_TYPE3,
+    ac::attrs::CAN_FIT_SHIP_TYPE4,
+    ac::attrs::CAN_FIT_SHIP_TYPE5,
+    ac::attrs::CAN_FIT_SHIP_TYPE6,
+    ac::attrs::CAN_FIT_SHIP_TYPE7,
+    ac::attrs::CAN_FIT_SHIP_TYPE8,
+    ac::attrs::CAN_FIT_SHIP_TYPE9,
+    ac::attrs::CAN_FIT_SHIP_TYPE10,
+    ac::attrs::CAN_FIT_SHIP_TYPE11,
+    ac::attrs::FITS_TO_SHIP_TYPE,
 ];
 
-static GROUP_ATTRS: [EAttrId; 20] = [
-    ec::attrs::CAN_FIT_SHIP_GROUP1,
-    ec::attrs::CAN_FIT_SHIP_GROUP2,
-    ec::attrs::CAN_FIT_SHIP_GROUP3,
-    ec::attrs::CAN_FIT_SHIP_GROUP4,
-    ec::attrs::CAN_FIT_SHIP_GROUP5,
-    ec::attrs::CAN_FIT_SHIP_GROUP6,
-    ec::attrs::CAN_FIT_SHIP_GROUP7,
-    ec::attrs::CAN_FIT_SHIP_GROUP8,
-    ec::attrs::CAN_FIT_SHIP_GROUP9,
-    ec::attrs::CAN_FIT_SHIP_GROUP10,
-    ec::attrs::CAN_FIT_SHIP_GROUP11,
-    ec::attrs::CAN_FIT_SHIP_GROUP12,
-    ec::attrs::CAN_FIT_SHIP_GROUP13,
-    ec::attrs::CAN_FIT_SHIP_GROUP14,
-    ec::attrs::CAN_FIT_SHIP_GROUP15,
-    ec::attrs::CAN_FIT_SHIP_GROUP16,
-    ec::attrs::CAN_FIT_SHIP_GROUP17,
-    ec::attrs::CAN_FIT_SHIP_GROUP18,
-    ec::attrs::CAN_FIT_SHIP_GROUP19,
-    ec::attrs::CAN_FIT_SHIP_GROUP20,
+static GROUP_ATTRS: [AAttrId; 20] = [
+    ac::attrs::CAN_FIT_SHIP_GROUP1,
+    ac::attrs::CAN_FIT_SHIP_GROUP2,
+    ac::attrs::CAN_FIT_SHIP_GROUP3,
+    ac::attrs::CAN_FIT_SHIP_GROUP4,
+    ac::attrs::CAN_FIT_SHIP_GROUP5,
+    ac::attrs::CAN_FIT_SHIP_GROUP6,
+    ac::attrs::CAN_FIT_SHIP_GROUP7,
+    ac::attrs::CAN_FIT_SHIP_GROUP8,
+    ac::attrs::CAN_FIT_SHIP_GROUP9,
+    ac::attrs::CAN_FIT_SHIP_GROUP10,
+    ac::attrs::CAN_FIT_SHIP_GROUP11,
+    ac::attrs::CAN_FIT_SHIP_GROUP12,
+    ac::attrs::CAN_FIT_SHIP_GROUP13,
+    ac::attrs::CAN_FIT_SHIP_GROUP14,
+    ac::attrs::CAN_FIT_SHIP_GROUP15,
+    ac::attrs::CAN_FIT_SHIP_GROUP16,
+    ac::attrs::CAN_FIT_SHIP_GROUP17,
+    ac::attrs::CAN_FIT_SHIP_GROUP18,
+    ac::attrs::CAN_FIT_SHIP_GROUP19,
+    ac::attrs::CAN_FIT_SHIP_GROUP20,
 ];
 
 /// If a module is limited, it can only be fit to a ship of specific type or group.
 #[derive(Clone)]
 pub struct AItemShipLimit {
-    pub type_ids: Vec<EItemId>,
-    pub group_ids: Vec<EItemGrpId>,
+    pub type_ids: Vec<AItemId>,
+    pub group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_item_ship_limit(a_item_id: EItemId, item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
+pub(super) fn get_item_ship_limit(a_item_id: AItemId, item_attrs: &StMap<AAttrId, AAttrVal>) -> Option<AItemShipLimit> {
     let mut limit_type_ids = TYPE_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
-        .map(|v| v.round() as EItemId)
+        .map(|v| v.round() as AItemId)
         .unique()
         .collect_vec();
     let limit_group_ids = GROUP_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
-        .map(|v| v.round() as EItemGrpId)
+        .map(|v| v.round() as AItemGrpId)
         .unique()
         .collect_vec();
     match a_item_id {
-        ec::items::CONFESSOR_DEFENSE_MODE => limit_type_ids.push(ec::items::CONFESSOR),
-        ec::items::CONFESSOR_PROPULSION_MODE => limit_type_ids.push(ec::items::CONFESSOR),
-        ec::items::CONFESSOR_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::CONFESSOR),
-        ec::items::HECATE_DEFENSE_MODE => limit_type_ids.push(ec::items::HECATE),
-        ec::items::HECATE_PROPULSION_MODE => limit_type_ids.push(ec::items::HECATE),
-        ec::items::HECATE_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::HECATE),
-        ec::items::JACKDAW_DEFENSE_MODE => limit_type_ids.push(ec::items::JACKDAW),
-        ec::items::JACKDAW_PROPULSION_MODE => limit_type_ids.push(ec::items::JACKDAW),
-        ec::items::JACKDAW_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::JACKDAW),
-        ec::items::SVIPUL_DEFENSE_MODE => limit_type_ids.push(ec::items::SVIPUL),
-        ec::items::SVIPUL_PROPULSION_MODE => limit_type_ids.push(ec::items::SVIPUL),
-        ec::items::SVIPUL_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::SVIPUL),
+        ac::items::CONFESSOR_DEFENSE_MODE => limit_type_ids.push(ac::items::CONFESSOR),
+        ac::items::CONFESSOR_PROPULSION_MODE => limit_type_ids.push(ac::items::CONFESSOR),
+        ac::items::CONFESSOR_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::CONFESSOR),
+        ac::items::HECATE_DEFENSE_MODE => limit_type_ids.push(ac::items::HECATE),
+        ac::items::HECATE_PROPULSION_MODE => limit_type_ids.push(ac::items::HECATE),
+        ac::items::HECATE_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::HECATE),
+        ac::items::JACKDAW_DEFENSE_MODE => limit_type_ids.push(ac::items::JACKDAW),
+        ac::items::JACKDAW_PROPULSION_MODE => limit_type_ids.push(ac::items::JACKDAW),
+        ac::items::JACKDAW_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::JACKDAW),
+        ac::items::SVIPUL_DEFENSE_MODE => limit_type_ids.push(ac::items::SVIPUL),
+        ac::items::SVIPUL_PROPULSION_MODE => limit_type_ids.push(ac::items::SVIPUL),
+        ac::items::SVIPUL_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::SVIPUL),
         _ => (),
     }
     if limit_type_ids.is_empty() && limit_group_ids.is_empty() {

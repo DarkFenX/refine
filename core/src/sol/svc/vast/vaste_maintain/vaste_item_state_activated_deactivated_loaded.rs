@@ -1,5 +1,5 @@
 use crate::{
-    ad, ec,
+    ad, consts,
     sol::{
         svc::vast::{SolValModuleStateFail, SolVast},
         uad::item::{SolItem, SolItemState, SolModuleState},
@@ -39,7 +39,11 @@ impl SolVast {
                         fit_data
                             .mods_svcs_max_group_online_all
                             .add_entry(grp_id, module.get_id());
-                        if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ONLINE) {
+                        if module
+                            .get_attrs()
+                            .unwrap()
+                            .contains_key(&consts::attrs::MAX_GROUP_ONLINE)
+                        {
                             fit_data
                                 .mods_svcs_max_group_online_limited
                                 .insert(module.get_id(), grp_id);
@@ -66,7 +70,11 @@ impl SolVast {
                         fit_data
                             .mods_svcs_max_group_online_all
                             .add_entry(grp_id, service.get_id());
-                        if service.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ONLINE) {
+                        if service
+                            .get_attrs()
+                            .unwrap()
+                            .contains_key(&consts::attrs::MAX_GROUP_ONLINE)
+                        {
                             fit_data
                                 .mods_svcs_max_group_online_limited
                                 .insert(service.get_id(), grp_id);
@@ -91,7 +99,11 @@ impl SolVast {
                     let extras = module.get_a_extras().unwrap();
                     if let Some(grp_id) = extras.val_active_group_id {
                         fit_data.mods_max_group_active_all.add_entry(grp_id, module.get_id());
-                        if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ACTIVE) {
+                        if module
+                            .get_attrs()
+                            .unwrap()
+                            .contains_key(&consts::attrs::MAX_GROUP_ACTIVE)
+                        {
                             fit_data.mods_max_group_active_limited.insert(module.get_id(), grp_id);
                         }
                     }

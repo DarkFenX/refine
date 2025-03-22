@@ -1,7 +1,6 @@
 use crate::{
-    EEffectId,
+    EEffectId, consts,
     defs::SolItemId,
-    ec,
     sol::svc::calc::{
         SolAggrMode, SolOp,
         modifier::{SolAffecteeFilter, SolLocation, SolModifierKind, SolRawModifier, affector_val::SolAffectorValue},
@@ -17,7 +16,7 @@ pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: SolItemId, effect_id
         SolOp::ExtraMul,
         SolAggrMode::Stack,
         SolAffecteeFilter::Direct(SolLocation::Item),
-        ec::attrs::ARMOR_DMG_AMOUNT,
+        consts::attrs::ARMOR_DMG_AMOUNT,
         None,
         None,
         None,

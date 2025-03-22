@@ -1,9 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    EAttrId,
+    EAttrId, consts,
     defs::{Count, SolItemId},
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
@@ -32,7 +31,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.character,
-            &ec::attrs::MAX_ACTIVE_DRONES,
+            &consts::attrs::MAX_ACTIVE_DRONES,
             &fit.drones,
         )
     }
@@ -43,7 +42,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast(kfs, uad, calc, &fit.ship, &ec::attrs::FTR_TUBES, &fit.fighters)
+        validate_fast(kfs, uad, calc, &fit.ship, &consts::attrs::FTR_TUBES, &fit.fighters)
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_fast(
         &self,
@@ -57,7 +56,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_SUPPORT_SLOTS,
+            &consts::attrs::FTR_SUPPORT_SLOTS,
             &self.support_fighters,
         )
     }
@@ -73,7 +72,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_LIGHT_SLOTS,
+            &consts::attrs::FTR_LIGHT_SLOTS,
             &self.light_fighters,
         )
     }
@@ -89,7 +88,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_HEAVY_SLOTS,
+            &consts::attrs::FTR_HEAVY_SLOTS,
             &self.heavy_fighters,
         )
     }
@@ -105,7 +104,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &consts::attrs::FTR_STANDUP_SUPPORT_SLOTS,
             &self.standup_support_fighters,
         )
     }
@@ -121,7 +120,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &consts::attrs::FTR_STANDUP_LIGHT_SLOTS,
             &self.standup_light_fighters,
         )
     }
@@ -137,7 +136,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &consts::attrs::FTR_STANDUP_HEAVY_SLOTS,
             &self.standup_heavy_fighters,
         )
     }
@@ -154,7 +153,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.character,
-            &ec::attrs::MAX_ACTIVE_DRONES,
+            &consts::attrs::MAX_ACTIVE_DRONES,
             &fit.drones,
         )
     }
@@ -165,7 +164,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValUnusableSlotFail> {
-        validate_verbose(kfs, uad, calc, &fit.ship, &ec::attrs::FTR_TUBES, &fit.fighters)
+        validate_verbose(kfs, uad, calc, &fit.ship, &consts::attrs::FTR_TUBES, &fit.fighters)
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_verbose(
         &self,
@@ -179,7 +178,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_SUPPORT_SLOTS,
+            &consts::attrs::FTR_SUPPORT_SLOTS,
             &self.support_fighters,
         )
     }
@@ -195,7 +194,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_LIGHT_SLOTS,
+            &consts::attrs::FTR_LIGHT_SLOTS,
             &self.light_fighters,
         )
     }
@@ -211,7 +210,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_HEAVY_SLOTS,
+            &consts::attrs::FTR_HEAVY_SLOTS,
             &self.heavy_fighters,
         )
     }
@@ -227,7 +226,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &consts::attrs::FTR_STANDUP_SUPPORT_SLOTS,
             &self.standup_support_fighters,
         )
     }
@@ -243,7 +242,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &consts::attrs::FTR_STANDUP_LIGHT_SLOTS,
             &self.standup_light_fighters,
         )
     }
@@ -259,7 +258,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &consts::attrs::FTR_STANDUP_HEAVY_SLOTS,
             &self.standup_heavy_fighters,
         )
     }

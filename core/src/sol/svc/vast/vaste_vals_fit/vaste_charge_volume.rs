@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::{AttrVal, OF, SolItemId},
-    ec,
     sol::{
         svc::vast::{SolValCache, SolVastFitData},
         uad::SolUad,
@@ -84,7 +84,7 @@ fn calculate_item_result(
 ) -> SolValCache<AttrVal, SolValChargeVolumeFail> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
     let module_capacity = match module.get_attrs() {
-        Some(attrs) => match attrs.get(&ec::attrs::CAPACITY) {
+        Some(attrs) => match attrs.get(&consts::attrs::CAPACITY) {
             Some(module_capacity) => *module_capacity,
             None => OF(0.0),
         },

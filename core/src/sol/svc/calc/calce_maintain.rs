@@ -1,9 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    ad,
+    ad, consts,
     defs::{AttrVal, EAttrId, SolFitId, SolItemId},
-    ec,
     sol::{
         svc::calc::{
             FTR_COUNT_ATTR, SKILL_LVL_ATTR, SolAttrSpec, SolCalc, SolCtxModifier, SolModifierKind, SolRawModifier,
@@ -196,7 +195,7 @@ impl SolCalc {
             }
         }
         // Process buffs which rely on attribute being modified
-        if ec::extras::BUFF_STDATTR_IDS.contains(attr_id) {
+        if consts::extras::BUFF_STDATTR_IDS.contains(attr_id) {
             let item = uad.items.get_item(item_id).unwrap();
             // Remove modifiers of buffs which rely on the attribute
             if let Some(raw_modifiers) = self.buffs.extract_dependent_mods(item_id, attr_id) {

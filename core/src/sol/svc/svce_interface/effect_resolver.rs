@@ -1,5 +1,5 @@
 use crate::{
-    ad, ec,
+    ad, consts,
     sol::{
         SolEffectMode,
         uad::{
@@ -40,7 +40,7 @@ fn resolve_effect_status_full(
         // Online effects depend on 'online' effect, ignoring everything else
         ad::AState::Online => {
             // Online effect itself runs unconditionally if item is online+
-            if effect.id == ec::effects::ONLINE {
+            if effect.id == consts::effects::ONLINE {
                 item_state >= effect.state
             // Other effects from online category rely only on "online" effect run status
             } else {
@@ -67,10 +67,10 @@ pub(in crate::sol::svc) fn resolve_online_effect_status(
     item: &SolItem,
     item_state: SolItemState,
 ) -> bool {
-    if !item.get_effect_datas().unwrap().contains_key(&ec::effects::ONLINE) {
+    if !item.get_effect_datas().unwrap().contains_key(&consts::effects::ONLINE) {
         return false;
     }
-    let effect = match uad.src.get_a_effect(&ec::effects::ONLINE) {
+    let effect = match uad.src.get_a_effect(&consts::effects::ONLINE) {
         Some(effect) => effect,
         None => return false,
     };

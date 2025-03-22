@@ -1,9 +1,8 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ad,
+    ad, consts,
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
-    ec,
     sol::{
         svc::calc::{SolAffecteeFilter, SolAffectorInfo, SolAggrMode, SolCalc, SolLocation, SolModifierKind, SolOp},
         uad::{SolUad, item::SolItem},
@@ -196,18 +195,19 @@ fn get_mod_kind(effect: &ad::AEffect, affectee_filter: &SolAffecteeFilter) -> Op
     }
     match (effect.category, &effect.buff) {
         // Local modifications
-        (ec::effcats::PASSIVE | ec::effcats::ACTIVE | ec::effcats::ONLINE | ec::effcats::OVERLOAD, None) => {
-            Some(SolModifierKind::Local)
-        }
+        (
+            consts::effcats::PASSIVE | consts::effcats::ACTIVE | consts::effcats::ONLINE | consts::effcats::OVERLOAD,
+            None,
+        ) => Some(SolModifierKind::Local),
         // Buffs
-        (ec::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope {
+        (consts::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope {
             ad::AEffectBuffScope::FleetShips => Some(SolModifierKind::FleetBuff),
             _ => Some(SolModifierKind::Buff),
         },
         // Lib system-wide effects are EVE system effects and buffs
-        (ec::effcats::SYSTEM, None) => Some(SolModifierKind::System),
+        (consts::effcats::SYSTEM, None) => Some(SolModifierKind::System),
         // Targeted effects
-        (ec::effcats::TARGET, None) => Some(SolModifierKind::Targeted),
+        (consts::effcats::TARGET, None) => Some(SolModifierKind::Targeted),
         _ => None,
     }
 }
@@ -217,7 +217,7 @@ pub(in crate::sol::svc::calc) fn get_resist_attr_id(item: &SolItem, effect: &ad:
         Some(resist_attr_id) => Some(resist_attr_id),
         None => match item.get_attrs() {
             Some(attrs) => match attrs
-                .get(&ec::attrs::REMOTE_RESISTANCE_ID)
+                .get(&consts::attrs::REMOTE_RESISTANCE_ID)
                 .map(|v| v.into_inner() as EAttrId)
             {
                 Some(attr_id) if attr_id != 0 => Some(attr_id),

@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::{AttrVal, EAttrId, SolItemId},
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
@@ -31,8 +31,8 @@ impl SolVastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ec::attrs::CPU,
-            &ec::attrs::CPU_OUTPUT,
+            &consts::attrs::CPU,
+            &consts::attrs::CPU_OUTPUT,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_powergrid(
@@ -46,8 +46,8 @@ impl SolVastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ec::attrs::POWER,
-            &ec::attrs::POWER_OUTPUT,
+            &consts::attrs::POWER,
+            &consts::attrs::POWER_OUTPUT,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_calibration(
@@ -61,7 +61,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.rigs_rigslot_calibration.values(),
-            &ec::attrs::UPGRADE_CAPACITY,
+            &consts::attrs::UPGRADE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_drone_bay_volume(
@@ -70,7 +70,13 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatRes {
-        get_resource_stats_other(uad, calc, fit, self.drones_volume.values(), &ec::attrs::DRONE_CAPACITY)
+        get_resource_stats_other(
+            uad,
+            calc,
+            fit,
+            self.drones_volume.values(),
+            &consts::attrs::DRONE_CAPACITY,
+        )
     }
     pub(in crate::sol::svc::vast) fn get_stats_drone_bandwidth(
         &self,
@@ -83,7 +89,7 @@ impl SolVastFitData {
             calc,
             fit,
             self.drones_online_bandwidth.values(),
-            &ec::attrs::DRONE_BANDWIDTH,
+            &consts::attrs::DRONE_BANDWIDTH,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_fighter_bay_volume(
@@ -92,7 +98,13 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatRes {
-        get_resource_stats_other(uad, calc, fit, self.fighters_volume.values(), &ec::attrs::FTR_CAPACITY)
+        get_resource_stats_other(
+            uad,
+            calc,
+            fit,
+            self.fighters_volume.values(),
+            &consts::attrs::FTR_CAPACITY,
+        )
     }
 }
 

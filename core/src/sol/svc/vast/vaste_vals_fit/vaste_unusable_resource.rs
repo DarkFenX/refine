@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
+    consts,
     defs::{AttrVal, OF, SolItemId},
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
@@ -34,7 +34,7 @@ impl SolVastFitData {
         if self.drones_bandwidth.is_empty() {
             return true;
         }
-        let max = get_max_resource(uad, calc, &fit.ship, &ec::attrs::DRONE_BANDWIDTH).unwrap_or(OF(0.0));
+        let max = get_max_resource(uad, calc, &fit.ship, &consts::attrs::DRONE_BANDWIDTH).unwrap_or(OF(0.0));
         for (item_id, &item_use) in self.drones_bandwidth.iter() {
             if item_use > max && !kfs.contains(item_id) {
                 return false;
@@ -53,7 +53,7 @@ impl SolVastFitData {
         if self.drones_bandwidth.is_empty() {
             return None;
         }
-        let max = get_max_resource(uad, calc, &fit.ship, &ec::attrs::DRONE_BANDWIDTH);
+        let max = get_max_resource(uad, calc, &fit.ship, &consts::attrs::DRONE_BANDWIDTH);
         let effective_max = max.unwrap_or(OF(0.0));
         let users = self
             .drones_bandwidth

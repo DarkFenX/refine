@@ -1,6 +1,6 @@
 use crate::{
-    defs::{AttrVal, EAttrId, EItemCatId, EItemId, SkillLevel},
-    ec,
+    ac,
+    ad::{AAttrId, AAttrVal, AItemCatId, AItemId, ASkillLevel},
     util::StMap,
 };
 
@@ -12,27 +12,27 @@ pub enum AShipKind {
     Structure,
 }
 
-pub(super) fn get_ship_kind(item_cat_id: EItemCatId, item_srqs: &StMap<EItemId, SkillLevel>) -> Option<AShipKind> {
+pub(super) fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &StMap<AItemId, ASkillLevel>) -> Option<AShipKind> {
     match item_cat_id {
-        ec::itemcats::SHIP => match item_srqs.contains_key(&ec::items::CAPITAL_SHIPS) {
+        ac::itemcats::SHIP => match item_srqs.contains_key(&ac::items::CAPITAL_SHIPS) {
             true => Some(AShipKind::CapitalShip),
             false => Some(AShipKind::Ship),
         },
-        ec::itemcats::STRUCTURE => Some(AShipKind::Structure),
+        ac::itemcats::STRUCTURE => Some(AShipKind::Structure),
         _ => None,
     }
 }
 
-pub(super) fn get_item_ship_kind(item_cat_id: EItemCatId, item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AShipKind> {
+pub(super) fn get_item_ship_kind(item_cat_id: AItemCatId, item_attrs: &StMap<AAttrId, AAttrVal>) -> Option<AShipKind> {
     match item_cat_id {
-        ec::itemcats::MODULE => match item_attrs.get(&ec::attrs::VOLUME) {
-            Some(&volume) => match volume <= ec::extras::MAX_SUBCAP_MODULE_VOLUME {
+        ac::itemcats::MODULE => match item_attrs.get(&ac::attrs::VOLUME) {
+            Some(&volume) => match volume <= ac::extras::MAX_SUBCAP_MODULE_VOLUME {
                 true => Some(AShipKind::Ship),
                 false => Some(AShipKind::CapitalShip),
             },
             None => Some(AShipKind::Ship),
         },
-        ec::itemcats::STRUCTURE_MODULE => Some(AShipKind::Structure),
+        ac::itemcats::STRUCTURE_MODULE => Some(AShipKind::Structure),
         _ => None,
     }
 }

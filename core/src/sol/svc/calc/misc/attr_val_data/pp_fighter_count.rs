@@ -1,13 +1,13 @@
 use crate::{
+    consts,
     defs::{EAttrId, OF, SolItemId},
-    ec,
     sol::{
         svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc},
         uad::SolUad,
     },
 };
 
-pub(in crate::sol::svc::calc) const FTR_COUNT_ATTR: EAttrId = ec::attrs::FTR_SQ_SIZE;
+pub(in crate::sol::svc::calc) const FTR_COUNT_ATTR: EAttrId = consts::attrs::FTR_SQ_SIZE;
 
 pub(super) fn fighter_count_postproc_fast(
     _calc: &mut SolCalc,

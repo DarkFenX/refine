@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::SolItemId,
-    ec,
     sol::{
         svc::vast::SolVastFitData,
         uad::{fit::SolFit, item::SolShip},
@@ -30,7 +30,7 @@ impl SolVastFitData {
         };
         matches!(
             ship.get_type_id(),
-            ec::items::CONFESSOR | ec::items::HECATE | ec::items::JACKDAW | ec::items::SVIPUL
+            consts::items::CONFESSOR | consts::items::HECATE | consts::items::JACKDAW | consts::items::SVIPUL
         ) || kfs.contains(&stance_id)
     }
     // Verbose validations
@@ -50,7 +50,7 @@ impl SolVastFitData {
         };
         if matches!(
             ship.get_type_id(),
-            ec::items::CONFESSOR | ec::items::HECATE | ec::items::JACKDAW | ec::items::SVIPUL
+            consts::items::CONFESSOR | consts::items::HECATE | consts::items::JACKDAW | consts::items::SVIPUL
         ) {
             return None;
         }

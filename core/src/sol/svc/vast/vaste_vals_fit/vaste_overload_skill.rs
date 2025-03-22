@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
+    consts,
     defs::{SkillLevel, SolItemId},
-    ec,
     sol::{svc::vast::SolVastFitData, uad::fit::SolFit},
     util::StSet,
 };
@@ -23,7 +23,7 @@ impl SolVastFitData {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
-        let td_lvl = match fit.skills.get(&ec::items::THERMODYNAMICS) {
+        let td_lvl = match fit.skills.get(&consts::items::THERMODYNAMICS) {
             Some(skill) => skill.level,
             None => return self.overload_td_lvl.is_subset(kfs),
         };
@@ -40,7 +40,7 @@ impl SolVastFitData {
         if self.overload_td_lvl.is_empty() {
             return None;
         }
-        let td_lvl = fit.skills.get(&ec::items::THERMODYNAMICS).map(|v| v.level);
+        let td_lvl = fit.skills.get(&consts::items::THERMODYNAMICS).map(|v| v.level);
         let items = self
             .overload_td_lvl
             .iter()

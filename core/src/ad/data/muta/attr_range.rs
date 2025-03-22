@@ -1,15 +1,9 @@
-use crate::defs::AttrVal;
+use crate::ad::AAttrVal;
 
 /// Stores mutation range of specific attribute of specific mutator.
 pub struct AMutaAttrRange {
     /// Lower boundary of the modification range.
-    pub min_mult: AttrVal,
+    pub min_mult: AAttrVal,
     /// Upper boundary of the modification range.
-    pub max_mult: AttrVal,
-}
-impl AMutaAttrRange {
-    /// Make a new attribute mutation range.
-    pub(crate) fn new(min_mult: AttrVal, max_mult: AttrVal) -> Self {
-        Self { min_mult, max_mult }
-    }
+    pub max_mult: AAttrVal,
 }

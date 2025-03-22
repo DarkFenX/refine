@@ -1,11 +1,7 @@
-use std::fmt;
-
 use crate::ed::{
-    EAttr, EBuff, EEffect, EFighterAbil, EItem, EItemAttr, EItemEffect, EItemFighterAbil, EItemGroup, EItemSkillReq,
-    EMutaAttrMod, EMutaItemConv,
+    EAttr, EBuff, EDataCont, EEffect, EFighterAbil, EItem, EItemAttr, EItemEffect, EItemFighterAbil, EItemGroup,
+    EItemSkillReq, EMutaAttrMod, EMutaItemConv, EResult,
 };
-
-use super::{EResult, cont::EDataCont};
 
 /// EVE data handler interface definition.
 ///
@@ -13,7 +9,7 @@ use super::{EResult, cont::EDataCont};
 /// fetch the data altogether. In case of a less impactful error (such as inability to deserialize
 /// one specific item within a big array of data), the error should be recorded as a meaningful
 /// warning message and stored in [`EDataCont::warns`](self::EDataCont::warns).
-pub trait EveDataHandler: fmt::Debug {
+pub trait EveDataHandler: std::fmt::Debug {
     /// Get item types.
     fn get_items(&self) -> EResult<EDataCont<EItem>>;
     /// Get item groups.

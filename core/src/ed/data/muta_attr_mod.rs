@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, EAttrId, EItemId},
+    ed::{EAttrId, EAttrVal, EItemId},
     util::Named,
 };
 
@@ -10,20 +10,9 @@ pub struct EMutaAttrMod {
     /// Refers an attribute being modified by the mutator.
     pub attr_id: EAttrId,
     /// Lower boundary of the modification range.
-    pub min_attr_mult: AttrVal,
+    pub min_attr_mult: EAttrVal,
     /// Upper boundary of the modification range.
-    pub max_attr_mult: AttrVal,
-}
-impl EMutaAttrMod {
-    /// Make a new EVE mutator attribute conversion.
-    pub fn new(muta_id: EItemId, attr_id: EAttrId, min_attr_mult: AttrVal, max_attr_mult: AttrVal) -> Self {
-        Self {
-            muta_id,
-            attr_id,
-            min_attr_mult,
-            max_attr_mult,
-        }
-    }
+    pub max_attr_mult: EAttrVal,
 }
 impl Named for EMutaAttrMod {
     fn get_name() -> &'static str {

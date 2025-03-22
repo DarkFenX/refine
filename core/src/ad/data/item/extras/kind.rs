@@ -1,9 +1,8 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ad::AItemEffectData,
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId},
-    ec,
+    ac,
+    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId},
     util::StMap,
 };
 
@@ -28,53 +27,53 @@ pub enum AItemKind {
 }
 
 pub(super) fn get_item_kind(
-    item_grp_id: EItemGrpId,
-    item_cat_id: EItemCatId,
-    item_attrs: &StMap<EAttrId, AttrVal>,
-    item_effects: &StMap<EEffectId, AItemEffectData>,
+    item_grp_id: AItemGrpId,
+    item_cat_id: AItemCatId,
+    item_attrs: &StMap<AAttrId, AAttrVal>,
+    item_effects: &StMap<AEffectId, AItemEffectData>,
 ) -> Option<AItemKind> {
     let mut kinds: SmallVec<AItemKind, 1> = SmallVec::new();
     match item_cat_id {
         // Ship & structure modules
-        ec::itemcats::MODULE | ec::itemcats::STRUCTURE_MODULE => {
-            if item_effects.contains_key(&ec::effects::HI_POWER) {
+        ac::itemcats::MODULE | ac::itemcats::STRUCTURE_MODULE => {
+            if item_effects.contains_key(&ac::effects::HI_POWER) {
                 kinds.push(AItemKind::ModuleHigh);
             }
-            if item_effects.contains_key(&ec::effects::MED_POWER) {
+            if item_effects.contains_key(&ac::effects::MED_POWER) {
                 kinds.push(AItemKind::ModuleMid);
             }
-            if item_effects.contains_key(&ec::effects::LO_POWER) {
+            if item_effects.contains_key(&ac::effects::LO_POWER) {
                 kinds.push(AItemKind::ModuleLow);
             }
-            if item_effects.contains_key(&ec::effects::RIG_SLOT) {
+            if item_effects.contains_key(&ac::effects::RIG_SLOT) {
                 kinds.push(AItemKind::Rig);
             }
-            if item_effects.contains_key(&ec::effects::SERVICE_SLOT) {
+            if item_effects.contains_key(&ac::effects::SERVICE_SLOT) {
                 kinds.push(AItemKind::Service);
             }
         }
         // Ships and structures
-        ec::itemcats::SHIP | ec::itemcats::STRUCTURE => kinds.push(AItemKind::Ship),
+        ac::itemcats::SHIP | ac::itemcats::STRUCTURE => kinds.push(AItemKind::Ship),
         // Implants and boosters
-        ec::itemcats::IMPLANT => {
-            if item_attrs.contains_key(&ec::attrs::BOOSTERNESS) {
+        ac::itemcats::IMPLANT => {
+            if item_attrs.contains_key(&ac::attrs::BOOSTERNESS) {
                 kinds.push(AItemKind::Booster);
             }
-            if item_attrs.contains_key(&ec::attrs::IMPLANTNESS) {
+            if item_attrs.contains_key(&ac::attrs::IMPLANTNESS) {
                 kinds.push(AItemKind::Implant);
             }
         }
         // Other items
-        ec::itemcats::CHARGE => kinds.push(AItemKind::Charge),
-        ec::itemcats::DRONE => kinds.push(AItemKind::Drone),
-        ec::itemcats::FIGHTER => kinds.push(AItemKind::Fighter),
-        ec::itemcats::SKILL => kinds.push(AItemKind::Skill),
-        ec::itemcats::SUBSYSTEM => kinds.push(AItemKind::Subsystem),
+        ac::itemcats::CHARGE => kinds.push(AItemKind::Charge),
+        ac::itemcats::DRONE => kinds.push(AItemKind::Drone),
+        ac::itemcats::FIGHTER => kinds.push(AItemKind::Fighter),
+        ac::itemcats::SKILL => kinds.push(AItemKind::Skill),
+        ac::itemcats::SUBSYSTEM => kinds.push(AItemKind::Subsystem),
         _ => (),
     }
     match item_grp_id {
-        ec::itemgrps::CHARACTER => kinds.push(AItemKind::Character),
-        ec::itemgrps::SHIP_MODIFIER => kinds.push(AItemKind::Stance),
+        ac::itemgrps::CHARACTER => kinds.push(AItemKind::Character),
+        ac::itemgrps::SHIP_MODIFIER => kinds.push(AItemKind::Stance),
         _ => (),
     }
     match kinds.len() {

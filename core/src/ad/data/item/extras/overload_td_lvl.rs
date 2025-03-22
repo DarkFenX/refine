@@ -1,11 +1,11 @@
 use crate::{
-    defs::{AttrVal, EAttrId, SkillLevel},
-    ec,
+    ac,
+    ad::{AAttrId, AAttrVal, ASkillLevel},
     util::StMap,
 };
 
-pub(super) fn get_overload_td_lvl(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<SkillLevel> {
+pub(super) fn get_overload_td_lvl(item_attrs: &StMap<AAttrId, AAttrVal>) -> Option<ASkillLevel> {
     item_attrs
-        .get(&ec::attrs::REQUIRED_THERMODYNAMICS_SKILL)
-        .map(|v| v.round() as SkillLevel)
+        .get(&ac::attrs::REQUIRED_THERMODYNAMICS_SKILL)
+        .map(|v| v.round() as ASkillLevel)
 }

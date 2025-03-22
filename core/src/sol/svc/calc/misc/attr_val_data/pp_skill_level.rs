@@ -1,13 +1,13 @@
 use crate::{
+    consts,
     defs::{EAttrId, OF, SolItemId},
-    ec,
     sol::{
         svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc},
         uad::SolUad,
     },
 };
 
-pub(in crate::sol::svc::calc) const SKILL_LVL_ATTR: EAttrId = ec::attrs::SKILL_LEVEL;
+pub(in crate::sol::svc::calc) const SKILL_LVL_ATTR: EAttrId = consts::attrs::SKILL_LEVEL;
 
 pub(super) fn skill_level_postproc_fast(
     _calc: &mut SolCalc,

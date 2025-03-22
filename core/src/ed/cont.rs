@@ -13,10 +13,6 @@ impl<T> EDataCont<T> {
             warns: Vec::new(),
         }
     }
-    /// Make a new container out of passed data.
-    pub fn new_with_data(data: Vec<T>, warns: Vec<String>) -> EDataCont<T> {
-        EDataCont { data, warns }
-    }
 }
 impl<T> Default for EDataCont<T> {
     fn default() -> Self {

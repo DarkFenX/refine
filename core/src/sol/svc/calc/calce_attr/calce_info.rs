@@ -5,8 +5,8 @@
 use smallvec::SmallVec;
 
 use crate::{
+    consts,
     defs::{EAttrId, SolItemId},
-    ec,
     err::basic::AttrMetaFoundError,
     sol::{
         svc::calc::{
@@ -19,10 +19,10 @@ use crate::{
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
-    ec::attrs::CPU,
-    ec::attrs::POWER,
-    ec::attrs::CPU_OUTPUT,
-    ec::attrs::POWER_OUTPUT,
+    consts::attrs::CPU,
+    consts::attrs::POWER,
+    consts::attrs::CPU_OUTPUT,
+    consts::attrs::POWER_OUTPUT,
 ];
 
 struct SolAffection {

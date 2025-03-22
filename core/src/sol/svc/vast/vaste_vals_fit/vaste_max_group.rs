@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::{Count, EAttrId, EItemGrpId, SolItemId},
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::SolUad,
@@ -33,7 +33,7 @@ impl SolVastFitData {
             calc,
             &self.mods_svcs_rigs_max_group_fitted_all,
             &self.mods_svcs_rigs_max_group_fitted_limited,
-            &ec::attrs::MAX_GROUP_FITTED,
+            &consts::attrs::MAX_GROUP_FITTED,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_online_fast(
@@ -48,7 +48,7 @@ impl SolVastFitData {
             calc,
             &self.mods_svcs_max_group_online_all,
             &self.mods_svcs_max_group_online_limited,
-            &ec::attrs::MAX_GROUP_ONLINE,
+            &consts::attrs::MAX_GROUP_ONLINE,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_active_fast(
@@ -63,7 +63,7 @@ impl SolVastFitData {
             calc,
             &self.mods_max_group_active_all,
             &self.mods_max_group_active_limited,
-            &ec::attrs::MAX_GROUP_ACTIVE,
+            &consts::attrs::MAX_GROUP_ACTIVE,
         )
     }
     // Verbose validations
@@ -79,7 +79,7 @@ impl SolVastFitData {
             calc,
             &self.mods_svcs_rigs_max_group_fitted_all,
             &self.mods_svcs_rigs_max_group_fitted_limited,
-            &ec::attrs::MAX_GROUP_FITTED,
+            &consts::attrs::MAX_GROUP_FITTED,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_online_verbose(
@@ -94,7 +94,7 @@ impl SolVastFitData {
             calc,
             &self.mods_svcs_max_group_online_all,
             &self.mods_svcs_max_group_online_limited,
-            &ec::attrs::MAX_GROUP_ONLINE,
+            &consts::attrs::MAX_GROUP_ONLINE,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_active_verbose(
@@ -109,7 +109,7 @@ impl SolVastFitData {
             calc,
             &self.mods_max_group_active_all,
             &self.mods_max_group_active_limited,
-            &ec::attrs::MAX_GROUP_ACTIVE,
+            &consts::attrs::MAX_GROUP_ACTIVE,
         )
     }
 }

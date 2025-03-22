@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, EAttrId, EAttrUnitId},
+    ed::{EAttrId, EAttrUnitId, EAttrVal},
     util::Named,
 };
 
@@ -13,7 +13,7 @@ pub struct EAttr {
     /// Defines if higher value of the attribute is considered good or not.
     pub high_is_good: bool,
     /// Default value of the attribute, used if not provided by an item type.
-    pub default_value: Option<AttrVal>,
+    pub default_value: EAttrVal,
     /// Refers another attribute, whose value limits minimum value of this attribute.
     pub min_attr_id: Option<EAttrId>,
     /// Refers another attribute, whose value limits maximum value of this attribute.
@@ -22,28 +22,6 @@ pub struct EAttr {
     /// process during cleanup, since this field defines if value of the attribute refers another
     /// attribute, group or something else.
     pub unit_id: Option<EAttrUnitId>,
-}
-impl EAttr {
-    /// Make a new EVE dogma attribute out of passed data.
-    pub fn new(
-        id: EAttrId,
-        stackable: bool,
-        high_is_good: bool,
-        default_value: Option<AttrVal>,
-        min_attr_id: Option<EAttrId>,
-        max_attr_id: Option<EAttrId>,
-        unit_id: Option<EAttrUnitId>,
-    ) -> Self {
-        Self {
-            id,
-            stackable,
-            high_is_good,
-            default_value,
-            min_attr_id,
-            max_attr_id,
-            unit_id,
-        }
-    }
 }
 impl Named for EAttr {
     fn get_name() -> &'static str {

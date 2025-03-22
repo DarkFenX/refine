@@ -1,12 +1,11 @@
 use crate::{
-    ad::{AEffect, AState},
-    defs::EEffectId,
+    ad::{AEffect, AEffectId, AState},
     util::StMap,
 };
 
 pub(super) fn get_max_state<'a>(
-    item_effects: impl Iterator<Item = &'a EEffectId>,
-    effects: &StMap<EEffectId, &AEffect>,
+    item_effects: impl Iterator<Item = &'a AEffectId>,
+    effects: &StMap<AEffectId, &AEffect>,
 ) -> AState {
     let mut max_state = AState::Offline;
     for effect_id in item_effects {

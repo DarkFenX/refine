@@ -1,6 +1,8 @@
 use crate::{
-    ad::{AEffectBuffInfo, AEffectChargeInfo, AEffectModBuildStatus, AEffectModifier, AState},
-    defs::{EAttrId, EEffectCatId, EEffectId},
+    ad::{
+        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectModBuildStatus, AEffectModifier,
+        AState,
+    },
     util::Named,
 };
 
@@ -11,9 +13,9 @@ use crate::{
 /// extra effect-wide properties.
 pub struct AEffect {
     /// Effect ID.
-    pub id: EEffectId,
+    pub id: AEffectId,
     /// Effect category ID, part of definition how effect is applied.
-    pub category: EEffectCatId,
+    pub category: AEffectCatId,
     /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: AState,
     /// Defines if the effect is considered as an assistance.
@@ -25,76 +27,30 @@ pub struct AEffect {
     /// Defines if the effect can be used in lowsec.
     pub lowsec: Option<bool>,
     /// Refers an attribute value which defines capacitor cost to run the effect.
-    pub discharge_attr_id: Option<EAttrId>,
+    pub discharge_attr_id: Option<AAttrId>,
     /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
-    pub duration_attr_id: Option<EAttrId>,
+    pub duration_attr_id: Option<AAttrId>,
     /// Refers an attribute value which defines optimal range of the effect in meters.
-    pub range_attr_id: Option<EAttrId>,
+    pub range_attr_id: Option<AAttrId>,
     /// Refers an attribute value which defines falloff range of the effect in meters.
-    pub falloff_attr_id: Option<EAttrId>,
+    pub falloff_attr_id: Option<AAttrId>,
     /// Refers an attribute value which defines tracking speed of the effect.
-    pub track_attr_id: Option<EAttrId>,
+    pub track_attr_id: Option<AAttrId>,
     /// Refers an attribute value which defines chance of the effect to run when its parent item is
     /// fitted.
-    pub chance_attr_id: Option<EAttrId>,
+    pub chance_attr_id: Option<AAttrId>,
     /// Refers an attribute value which defines resistance strength to the effect.
-    pub resist_attr_id: Option<EAttrId>,
+    pub resist_attr_id: Option<AAttrId>,
     /// Modifier build status.
     pub mod_build_status: AEffectModBuildStatus,
     /// Attribute modifiers carried by the effect
     pub mods: Vec<AEffectModifier>,
     /// Refers effects this effect stops on target.
-    pub stop_ids: Vec<EEffectId>,
+    pub stop_ids: Vec<AEffectId>,
     /// Buff carried by the effect.
     pub buff: Option<AEffectBuffInfo>,
     /// Charge used by the effect.
     pub charge: Option<AEffectChargeInfo>,
-}
-impl AEffect {
-    /// Make a new adapted dogma effect out of passed data.
-    pub(crate) fn new(
-        id: EEffectId,
-        category: EEffectCatId,
-        state: AState,
-        is_assist: bool,
-        is_offense: bool,
-        hisec: Option<bool>,
-        lowsec: Option<bool>,
-        discharge_attr_id: Option<EAttrId>,
-        duration_attr_id: Option<EAttrId>,
-        range_attr_id: Option<EAttrId>,
-        falloff_attr_id: Option<EAttrId>,
-        track_attr_id: Option<EAttrId>,
-        chance_attr_id: Option<EAttrId>,
-        resist_attr_id: Option<EAttrId>,
-        mod_build_status: AEffectModBuildStatus,
-        mods: Vec<AEffectModifier>,
-        stop_ids: Vec<EEffectId>,
-        buff: Option<AEffectBuffInfo>,
-        charge: Option<AEffectChargeInfo>,
-    ) -> Self {
-        Self {
-            id,
-            category,
-            state,
-            is_assist,
-            is_offense,
-            hisec,
-            lowsec,
-            discharge_attr_id,
-            duration_attr_id,
-            range_attr_id,
-            falloff_attr_id,
-            track_attr_id,
-            chance_attr_id,
-            resist_attr_id,
-            mod_build_status,
-            mods,
-            stop_ids,
-            buff,
-            charge,
-        }
-    }
 }
 impl Named for AEffect {
     fn get_name() -> &'static str {

@@ -1,7 +1,6 @@
 use crate::{
-    ad,
+    ad, consts,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    ec,
     sol::uad::item::{SolEffectModes, SolItemBase, SolItemState, SolShipKind, bool_to_state_offline, state_to_bool},
     src::Src,
     util::{Named, StMap},
@@ -82,8 +81,8 @@ impl SolShip {
     }
     fn update_ship_kind(&mut self) {
         self.kind = match self.get_category_id() {
-            Some(ec::itemcats::SHIP) => SolShipKind::Ship,
-            Some(ec::itemcats::STRUCTURE) => SolShipKind::Structure,
+            Some(consts::itemcats::SHIP) => SolShipKind::Ship,
+            Some(consts::itemcats::STRUCTURE) => SolShipKind::Structure,
             _ => SolShipKind::Unknown,
         };
     }

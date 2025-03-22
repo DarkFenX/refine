@@ -1,6 +1,5 @@
 use crate::{
-    ad::{AItemEffectData, AItemExtras},
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
+    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemExtras, AItemGrpId, AItemId, ASkillLevel},
     util::{Named, StMap},
 };
 
@@ -10,44 +9,21 @@ use crate::{
 /// values.
 pub struct AItem {
     /// Item ID.
-    pub id: EItemId,
+    pub id: AItemId,
     /// Item group ID.
-    pub grp_id: EItemGrpId,
+    pub grp_id: AItemGrpId,
     /// Item category ID.
-    pub cat_id: EItemCatId,
+    pub cat_id: AItemCatId,
     /// Attribute values of the item.
-    pub attrs: StMap<EAttrId, AttrVal>,
+    pub attrs: StMap<AAttrId, AAttrVal>,
     /// Refers effects of the item.
-    pub effect_datas: StMap<EEffectId, AItemEffectData>,
+    pub effect_datas: StMap<AEffectId, AItemEffectData>,
     /// Refers an effect which is default for the item.
-    pub defeff_id: Option<EEffectId>,
+    pub defeff_id: Option<AEffectId>,
     /// Skill requirement map.
-    pub srqs: StMap<EItemId, SkillLevel>,
+    pub srqs: StMap<AItemId, ASkillLevel>,
     /// Struct with extra data which is calculated during cache generation.
     pub extras: AItemExtras,
-}
-impl AItem {
-    /// Make a new adapted item type out of passed data.
-    pub(crate) fn new(
-        id: EItemId,
-        grp_id: EItemGrpId,
-        cat_id: EItemCatId,
-        attr_vals: StMap<EAttrId, AttrVal>,
-        effect_datas: StMap<EEffectId, AItemEffectData>,
-        defeff_id: Option<EEffectId>,
-        srqs: StMap<EItemId, SkillLevel>,
-    ) -> Self {
-        Self {
-            id,
-            grp_id,
-            cat_id,
-            attrs: attr_vals,
-            effect_datas,
-            defeff_id,
-            srqs,
-            extras: AItemExtras::new(),
-        }
-    }
 }
 impl Named for AItem {
     fn get_name() -> &'static str {

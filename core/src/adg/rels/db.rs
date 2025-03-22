@@ -3,17 +3,17 @@ use crate::{
         GData, GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    defs::{EAbilId, EAttrId, EBuffId, EEffectId, EItemGrpId, EItemId},
+    ed,
     util::StSet,
 };
 
 pub(in crate::adg) struct KeyDb {
-    pub(in crate::adg) items: StSet<EItemId>,
-    pub(in crate::adg) groups: StSet<EItemGrpId>,
-    pub(in crate::adg) attrs: StSet<EAttrId>,
-    pub(in crate::adg) effects: StSet<EEffectId>,
-    pub(in crate::adg) abils: StSet<EAbilId>,
-    pub(in crate::adg) buffs: StSet<EBuffId>,
+    pub(in crate::adg) items: StSet<ed::EItemId>,
+    pub(in crate::adg) groups: StSet<ed::EItemGrpId>,
+    pub(in crate::adg) attrs: StSet<ed::EAttrId>,
+    pub(in crate::adg) effects: StSet<ed::EEffectId>,
+    pub(in crate::adg) abils: StSet<ed::EAbilId>,
+    pub(in crate::adg) buffs: StSet<ed::EBuffId>,
 }
 impl KeyDb {
     pub(in crate::adg) fn new() -> Self {

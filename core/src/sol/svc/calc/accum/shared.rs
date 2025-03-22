@@ -1,14 +1,14 @@
 use crate::{
+    consts,
     defs::{AttrVal, EItemCatId, OF},
-    ec,
 };
 
 const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
-    ec::itemcats::SHIP,
-    ec::itemcats::CHARGE,
-    ec::itemcats::SKILL,
-    ec::itemcats::IMPLANT,
-    ec::itemcats::SUBSYSTEM,
+    consts::itemcats::SHIP,
+    consts::itemcats::CHARGE,
+    consts::itemcats::SKILL,
+    consts::itemcats::IMPLANT,
+    consts::itemcats::SUBSYSTEM,
 ];
 // Source expression: 1 / e^((1 / 2.67)^2)
 pub(super) const PENALTY_BASE: AttrVal = OF(0.86911998080039742919922218788997270166873931884765625);

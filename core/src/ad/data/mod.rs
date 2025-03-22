@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use effect::{
@@ -10,6 +8,10 @@ pub use item::{
     AItem, AItemChargeLimit, AItemEffectData, AItemExtras, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind,
 };
 pub use muta::{AMuta, AMutaAttrRange};
+pub use primitives::{
+    AAttrId, AAttrVal, ABuffId, ACount, ACustomEffectId, ADogmaEffectId, AEffectCatId, AItemCatId, AItemGrpId, AItemId,
+    ASkillLevel, ASlotIndex, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta,
+};
 pub use shared::{AModifierSrq, AOp, AState};
 
 mod attr;
@@ -17,13 +19,8 @@ mod buff;
 mod effect;
 mod item;
 mod muta;
+mod primitives;
 mod shared;
-
-pub type ArcAttr = Arc<AAttr>;
-pub type ArcBuff = Arc<ABuff>;
-pub type ArcEffect = Arc<AEffect>;
-pub type ArcItem = Arc<AItem>;
-pub type ArcMuta = Arc<AMuta>;
 
 /// Adapted data storage.
 pub struct AData {

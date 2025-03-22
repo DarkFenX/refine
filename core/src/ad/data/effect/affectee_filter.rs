@@ -1,7 +1,4 @@
-use crate::{
-    ad::{AEffectLocation, AModifierSrq},
-    defs::EItemGrpId,
-};
+use crate::ad::{AEffectLocation, AItemGrpId, AModifierSrq};
 
 /// Defines which items will be affected by a modifier.
 pub enum AEffectAffecteeFilter {
@@ -10,7 +7,7 @@ pub enum AEffectAffecteeFilter {
     /// All items belonging to the location are affected.
     Loc(AEffectLocation),
     /// All items located in the location and belonging to the group are affected.
-    LocGrp(AEffectLocation, EItemGrpId),
+    LocGrp(AEffectLocation, AItemGrpId),
     /// All items located in the location and having specified skill requirement are affected.
     LocSrq(AEffectLocation, AModifierSrq),
     /// All items belonging to the location and having specified skill requirement are affected.

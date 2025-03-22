@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::{Count, EAttrId, SolItemId},
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
@@ -21,7 +21,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = fit.rigs.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::UPGRADE_SLOTS_LEFT);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_service_slots(
@@ -31,7 +31,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = fit.services.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::SERVICE_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::SERVICE_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_subsystem_slots(
@@ -41,7 +41,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = fit.subsystems.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::MAX_SUBSYSTEMS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::MAX_SUBSYSTEMS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_drones(
@@ -51,7 +51,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.drones_online_bandwidth.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.character, &ec::attrs::MAX_ACTIVE_DRONES);
+        let total = get_attr_as_count(uad, calc, &fit.character, &consts::attrs::MAX_ACTIVE_DRONES);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_fighters(
@@ -61,7 +61,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::FTR_TUBES);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::FTR_TUBES);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_support_fighters(
@@ -71,7 +71,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.support_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::FTR_SUPPORT_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::FTR_SUPPORT_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_light_fighters(
@@ -81,7 +81,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.light_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::FTR_LIGHT_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::FTR_LIGHT_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_heavy_fighters(
@@ -91,7 +91,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.heavy_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::FTR_HEAVY_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::FTR_HEAVY_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_standup_support_fighters(
@@ -101,7 +101,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.standup_support_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::FTR_STANDUP_SUPPORT_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_standup_light_fighters(
@@ -111,7 +111,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.standup_light_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::FTR_STANDUP_LIGHT_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::FTR_STANDUP_LIGHT_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_standup_heavy_fighters(
@@ -121,7 +121,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.standup_heavy_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::FTR_STANDUP_HEAVY_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::FTR_STANDUP_HEAVY_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_turret_slots(
@@ -131,7 +131,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.mods_turret.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::TURRET_SLOTS_LEFT);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::TURRET_SLOTS_LEFT);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_launcher_slots(
@@ -141,7 +141,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = self.mods_launcher.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::LAUNCHER_SLOTS_LEFT);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::LAUNCHER_SLOTS_LEFT);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_high_slots(
@@ -151,7 +151,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = fit.mods_high.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::HI_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::HI_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_mid_slots(
@@ -161,7 +161,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = fit.mods_mid.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::MED_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::MED_SLOTS);
         SolStatSlot { used, total }
     }
     pub(in crate::sol::svc::vast) fn get_stats_low_slots(
@@ -171,7 +171,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> SolStatSlot {
         let used = fit.mods_low.len() as Count;
-        let total = get_attr_as_count(uad, calc, &fit.ship, &ec::attrs::LOW_SLOTS);
+        let total = get_attr_as_count(uad, calc, &fit.ship, &consts::attrs::LOW_SLOTS);
         SolStatSlot { used, total }
     }
 }

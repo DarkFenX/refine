@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::SolItemId,
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::SolUad,
@@ -24,7 +24,7 @@ impl SolVastFitData {
     ) -> bool {
         self.mods_active
             .difference(kfs)
-            .all(|v| !is_flag_set(uad, calc, v, &ec::attrs::ACTIVATION_BLOCKED))
+            .all(|v| !is_flag_set(uad, calc, v, &consts::attrs::ACTIVATION_BLOCKED))
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_activation_blocked_verbose(
@@ -35,7 +35,7 @@ impl SolVastFitData {
     ) -> Vec<SolValActivationBlockedFail> {
         self.mods_active
             .difference(kfs)
-            .filter(|v| is_flag_set(uad, calc, v, &ec::attrs::ACTIVATION_BLOCKED))
+            .filter(|v| is_flag_set(uad, calc, v, &consts::attrs::ACTIVATION_BLOCKED))
             .map(|v| SolValActivationBlockedFail { item_id: *v })
             .collect()
     }

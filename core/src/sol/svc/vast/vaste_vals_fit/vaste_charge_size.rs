@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::{AttrVal, SolItemId},
-    ec,
     sol::{
         svc::vast::{SolValCache, SolVastFitData},
         uad::SolUad,
@@ -91,7 +91,7 @@ fn calculate_item_result(
         Some(charge_attrs) => charge_attrs,
         None => return SolValCache::Pass(allowed_size),
     };
-    let charge_size = match charge_attrs.get(&ec::attrs::CHARGE_SIZE) {
+    let charge_size = match charge_attrs.get(&consts::attrs::CHARGE_SIZE) {
         Some(charge_size) => *charge_size,
         None => {
             return SolValCache::Fail(SolValChargeSizeFail {

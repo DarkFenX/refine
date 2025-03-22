@@ -5,15 +5,17 @@
 //! the components, anything mutable is built on top of them.
 
 pub use data::{
-    AAttr, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier, AData, AEffect, AEffectAffecteeFilter,
-    AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectChargeInfo, AEffectId,
-    AEffectLocation, AEffectModBuildStatus, AEffectModifier, AItem, AItemChargeLimit, AItemEffectData, AItemExtras,
-    AItemKind, AItemShipLimit, AModifierSrq, AMuta, AMutaAttrRange, AOp, AShipDroneLimit, AShipKind, AState, ArcAttr,
-    ArcBuff, ArcEffect, ArcItem, ArcMuta,
+    AAttr, AAttrId, AAttrVal, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ACount,
+    ACustomEffectId, AData, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope,
+    AEffectBuffSrc, AEffectBuffSrcCustom, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectLocation,
+    AEffectModBuildStatus, AEffectModifier, AItem, AItemCatId, AItemChargeLimit, AItemEffectData, AItemExtras,
+    AItemGrpId, AItemId, AItemKind, AItemShipLimit, AModifierSrq, AMuta, AMutaAttrRange, AOp, AShipDroneLimit,
+    AShipKind, ASkillLevel, ASlotIndex, AState, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta,
 };
 pub use handler::AdaptedDataHandler;
 pub use result::AResult;
 
+pub(crate) mod consts;
 mod data;
 mod handler;
 mod result;

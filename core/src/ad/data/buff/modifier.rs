@@ -1,4 +1,4 @@
-use crate::{ad::ABuffAffecteeFilter, defs::EAttrId};
+use crate::ad::{AAttrId, ABuffAffecteeFilter};
 
 /// An attribute modifier.
 ///
@@ -9,14 +9,5 @@ pub struct ABuffModifier {
     /// modification.
     pub affectee_filter: ABuffAffecteeFilter,
     /// Refers an attribute which will be affected by modification.
-    pub affectee_attr_id: EAttrId,
-}
-impl ABuffModifier {
-    /// Make a new buff-specific attribute modifier out of passed data.
-    pub(crate) fn new(affectee_filter: ABuffAffecteeFilter, affectee_attr_id: EAttrId) -> Self {
-        Self {
-            affectee_filter,
-            affectee_attr_id,
-        }
-    }
+    pub affectee_attr_id: AAttrId,
 }

@@ -1,9 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    ad,
+    ad, consts,
     defs::{AttrVal, SolItemId},
-    ec,
     sol::{svc::vast::SolVastFitData, uad::item::SolShip},
     util::StSet,
 };
@@ -55,7 +54,7 @@ impl SolVastFitData {
             return None;
         }
         Some(SolValCapitalModFail {
-            max_subcap_volume: ec::extras::MAX_SUBCAP_MODULE_VOLUME,
+            max_subcap_volume: consts::extras::MAX_SUBCAP_MODULE_VOLUME,
             items,
         })
     }

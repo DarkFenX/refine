@@ -1,9 +1,8 @@
 use crate::{
     adg::{
         GSupport,
-        rels::{Fk, KeyPart, Pk, attrval_to_fk},
+        rels::{Fk, KeyPart, Pk, attr_val_to_fk},
     },
-    defs::EAttrUnitId,
     ec, ed,
 };
 
@@ -41,7 +40,7 @@ impl Fk for ed::EItemAttr {
         let mut vec = Vec::new();
         if let (true, Some(v_fk)) = (
             ec::extras::BUFF_STDATTR_IDS.contains(&self.attr_id),
-            attrval_to_fk(Some(self.value)),
+            attr_val_to_fk(self.value),
         ) {
             vec.push(v_fk);
         }
@@ -50,8 +49,8 @@ impl Fk for ed::EItemAttr {
 }
 impl ed::EItemAttr {
     /// Receive unit ID, and if the attribute has such unit ID - return attribute value.
-    fn get_fk_from_val(&self, unit: EAttrUnitId, g_supp: &GSupport) -> Option<KeyPart> {
-        match (g_supp.attr_unit_map.get(&self.attr_id), attrval_to_fk(Some(self.value))) {
+    fn get_fk_from_val(&self, unit: ed::EAttrUnitId, g_supp: &GSupport) -> Option<KeyPart> {
+        match (g_supp.attr_unit_map.get(&self.attr_id), attr_val_to_fk(self.value)) {
             (Some(&u), Some(v_fk)) if u == unit => Some(v_fk),
             _ => None,
         }

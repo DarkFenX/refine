@@ -2,8 +2,8 @@ use itertools::Itertools;
 use smallvec::SmallVec;
 
 use crate::{
+    consts,
     defs::{AttrVal, OF, SolItemId},
-    ec,
     sol::{
         SolSecZone, SolSecZoneCorruption,
         svc::{calc::SolCalc, vast::SolVastFitData},
@@ -115,8 +115,8 @@ fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, it
     match uad.sec_zone {
         SolSecZone::HiSec(corruption) => {
             for item_id in items.iter() {
-                if is_flag_set(uad, calc, item_id, &ec::attrs::DISALLOW_IN_EMPIRE_SPACE)
-                    || is_flag_set(uad, calc, item_id, &ec::attrs::DISALLOW_IN_HISEC)
+                if is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_EMPIRE_SPACE)
+                    || is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HISEC)
                 {
                     match corruption {
                         // No corruption in actual security zone - fail
@@ -127,7 +127,7 @@ fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, it
                         }
                         // If corrupted, check if module is allowed in corrupted hisec
                         SolSecZoneCorruption::C5 => {
-                            if !is_flag_set(uad, calc, item_id, &ec::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
+                            if !is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
                                 && !kfs.contains(item_id)
                             {
                                 return false;
@@ -139,7 +139,7 @@ fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, it
         }
         SolSecZone::LowSec(corruption) => {
             for item_id in items.iter() {
-                if is_flag_set(uad, calc, item_id, &ec::attrs::DISALLOW_IN_EMPIRE_SPACE) {
+                if is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_EMPIRE_SPACE) {
                     match corruption {
                         // No corruption in actual security zone - fail
                         SolSecZoneCorruption::None => {
@@ -149,7 +149,7 @@ fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, it
                         }
                         // If corrupted, check if module is allowed in corrupted lowsec
                         SolSecZoneCorruption::C5 => {
-                            if !is_flag_set(uad, calc, item_id, &ec::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
+                            if !is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
                                 && !kfs.contains(item_id)
                             {
                                 return false;
@@ -161,7 +161,7 @@ fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, it
         }
         SolSecZone::Hazard => {
             for item_id in items.iter() {
-                if is_flag_set(uad, calc, item_id, &ec::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(item_id) {
+                if is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(item_id) {
                     return false;
                 }
             }
@@ -207,11 +207,11 @@ fn get_allowed_sec_zones(
     item_id: &SolItemId,
 ) -> SmallVec<SolSecZone, SEC_ZONE_COUNT> {
     let mut allowed_zones = SmallVec::new();
-    let disallow_empire = is_flag_set(uad, calc, item_id, &ec::attrs::DISALLOW_IN_EMPIRE_SPACE);
+    let disallow_empire = is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_EMPIRE_SPACE);
     // Hisec
-    match disallow_empire || is_flag_set(uad, calc, item_id, &ec::attrs::DISALLOW_IN_HISEC) {
+    match disallow_empire || is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HISEC) {
         true => {
-            if is_flag_set(uad, calc, item_id, &ec::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC) {
+            if is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC) {
                 allowed_zones.push(SolSecZone::HiSec(SolSecZoneCorruption::C5))
             }
         }
@@ -220,7 +220,7 @@ fn get_allowed_sec_zones(
     // Lowsec
     match disallow_empire {
         true => {
-            if is_flag_set(uad, calc, item_id, &ec::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC) {
+            if is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC) {
                 allowed_zones.push(SolSecZone::LowSec(SolSecZoneCorruption::C5))
             }
         }
@@ -229,7 +229,7 @@ fn get_allowed_sec_zones(
     // Null/w-space
     allowed_zones.extend([SolSecZone::NullSec, SolSecZone::WSpace]);
     // Zarzakh
-    if !is_flag_set(uad, calc, item_id, &ec::attrs::DISALLOW_IN_HAZARD) {
+    if !is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HAZARD) {
         allowed_zones.push(SolSecZone::Hazard);
     }
     allowed_zones

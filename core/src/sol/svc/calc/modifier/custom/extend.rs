@@ -1,5 +1,5 @@
 use crate::{
-    EEffectId, ec,
+    EEffectId, consts,
     sol::{svc::calc::modifier::SolRawModifier, uad::item::SolItem},
 };
 
@@ -11,9 +11,9 @@ pub(in crate::sol::svc::calc) fn extend_with_custom_mods(
     mods: &mut Vec<SolRawModifier>,
 ) {
     match effect_id {
-        ec::effects::REE_AAR_PASTE_BOOST => mods.push(aar::make_mod(item.get_id(), effect_id)),
-        ec::effects::MOD_BONUS_AFTERBURNER => mods.push(prop::make_mod(item.get_id(), effect_id)),
-        ec::effects::MOD_BONUS_MICROWARPDRIVE => mods.push(prop::make_mod(item.get_id(), effect_id)),
+        consts::effects::REE_AAR_PASTE_BOOST => mods.push(aar::make_mod(item.get_id(), effect_id)),
+        consts::effects::MOD_BONUS_AFTERBURNER => mods.push(prop::make_mod(item.get_id(), effect_id)),
+        consts::effects::MOD_BONUS_MICROWARPDRIVE => mods.push(prop::make_mod(item.get_id(), effect_id)),
         _ => (),
     }
 }

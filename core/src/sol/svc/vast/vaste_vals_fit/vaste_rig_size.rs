@@ -1,6 +1,6 @@
 use crate::{
+    consts,
     defs::{AttrVal, SolItemId},
-    ec,
     sol::{svc::vast::SolVastFitData, uad::item::SolShip},
     util::StSet,
 };
@@ -60,5 +60,5 @@ impl SolVastFitData {
 }
 
 fn get_allowed_size(ship: Option<&SolShip>) -> Option<AttrVal> {
-    ship?.get_attrs()?.get(&ec::attrs::RIG_SIZE).copied()
+    ship?.get_attrs()?.get(&consts::attrs::RIG_SIZE).copied()
 }

@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
+    consts,
     defs::{Count, EAttrId, Idx, SolItemId},
-    ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{
@@ -30,7 +30,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
+        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &consts::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
     }
     pub(in crate::sol::svc::vast) fn validate_service_slot_count_fast(
         &self,
@@ -39,7 +39,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::SERVICE_SLOTS, &fit.services)
+        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &consts::attrs::SERVICE_SLOTS, &fit.services)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_fast(
         &self,
@@ -48,7 +48,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::MAX_SUBSYSTEMS, &fit.subsystems)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &consts::attrs::MAX_SUBSYSTEMS,
+            &fit.subsystems,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drone_count_fast(
         &self,
@@ -62,7 +69,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.character,
-            &ec::attrs::MAX_ACTIVE_DRONES,
+            &consts::attrs::MAX_ACTIVE_DRONES,
             &self.drones_online_bandwidth,
         )
     }
@@ -73,7 +80,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::FTR_TUBES, &self.fighters_online)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &consts::attrs::FTR_TUBES,
+            &self.fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_fast(
         &self,
@@ -87,7 +101,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_SUPPORT_SLOTS,
+            &consts::attrs::FTR_SUPPORT_SLOTS,
             &self.support_fighters_online,
         )
     }
@@ -103,7 +117,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_LIGHT_SLOTS,
+            &consts::attrs::FTR_LIGHT_SLOTS,
             &self.light_fighters_online,
         )
     }
@@ -119,7 +133,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_HEAVY_SLOTS,
+            &consts::attrs::FTR_HEAVY_SLOTS,
             &self.heavy_fighters_online,
         )
     }
@@ -135,7 +149,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &consts::attrs::FTR_STANDUP_SUPPORT_SLOTS,
             &self.standup_support_fighters_online,
         )
     }
@@ -151,7 +165,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &consts::attrs::FTR_STANDUP_LIGHT_SLOTS,
             &self.standup_light_fighters_online,
         )
     }
@@ -167,7 +181,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &consts::attrs::FTR_STANDUP_HEAVY_SLOTS,
             &self.standup_heavy_fighters_online,
         )
     }
@@ -183,7 +197,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::TURRET_SLOTS_LEFT,
+            &consts::attrs::TURRET_SLOTS_LEFT,
             &self.mods_turret,
         )
     }
@@ -199,7 +213,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::LAUNCHER_SLOTS_LEFT,
+            &consts::attrs::LAUNCHER_SLOTS_LEFT,
             &self.mods_launcher,
         )
     }
@@ -210,7 +224,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::HI_SLOTS, &fit.mods_high)
+        validate_fast_ordered(kfs, uad, calc, &fit.ship, &consts::attrs::HI_SLOTS, &fit.mods_high)
     }
     pub(in crate::sol::svc::vast) fn validate_mid_slot_count_fast(
         &self,
@@ -219,7 +233,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::MED_SLOTS, &fit.mods_mid)
+        validate_fast_ordered(kfs, uad, calc, &fit.ship, &consts::attrs::MED_SLOTS, &fit.mods_mid)
     }
     pub(in crate::sol::svc::vast) fn validate_low_slot_count_fast(
         &self,
@@ -228,7 +242,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        validate_fast_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::LOW_SLOTS, &fit.mods_low)
+        validate_fast_ordered(kfs, uad, calc, &fit.ship, &consts::attrs::LOW_SLOTS, &fit.mods_low)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_slot_count_verbose(
@@ -238,7 +252,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
+        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &consts::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
     }
     pub(in crate::sol::svc::vast) fn validate_service_slot_count_verbose(
         &self,
@@ -247,7 +261,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::SERVICE_SLOTS, &fit.services)
+        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &consts::attrs::SERVICE_SLOTS, &fit.services)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_verbose(
         &self,
@@ -256,7 +270,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::MAX_SUBSYSTEMS, &fit.subsystems)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &consts::attrs::MAX_SUBSYSTEMS,
+            &fit.subsystems,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drone_count_verbose(
         &self,
@@ -270,7 +291,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.character,
-            &ec::attrs::MAX_ACTIVE_DRONES,
+            &consts::attrs::MAX_ACTIVE_DRONES,
             &self.drones_online_bandwidth,
         )
     }
@@ -281,7 +302,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::FTR_TUBES, &self.fighters_online)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &consts::attrs::FTR_TUBES,
+            &self.fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_verbose(
         &self,
@@ -295,7 +323,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_SUPPORT_SLOTS,
+            &consts::attrs::FTR_SUPPORT_SLOTS,
             &self.support_fighters_online,
         )
     }
@@ -311,7 +339,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_LIGHT_SLOTS,
+            &consts::attrs::FTR_LIGHT_SLOTS,
             &self.light_fighters_online,
         )
     }
@@ -327,7 +355,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_HEAVY_SLOTS,
+            &consts::attrs::FTR_HEAVY_SLOTS,
             &self.heavy_fighters_online,
         )
     }
@@ -343,7 +371,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &consts::attrs::FTR_STANDUP_SUPPORT_SLOTS,
             &self.standup_support_fighters_online,
         )
     }
@@ -359,7 +387,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &consts::attrs::FTR_STANDUP_LIGHT_SLOTS,
             &self.standup_light_fighters_online,
         )
     }
@@ -375,7 +403,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &consts::attrs::FTR_STANDUP_HEAVY_SLOTS,
             &self.standup_heavy_fighters_online,
         )
     }
@@ -391,7 +419,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::TURRET_SLOTS_LEFT,
+            &consts::attrs::TURRET_SLOTS_LEFT,
             &self.mods_turret,
         )
     }
@@ -407,7 +435,7 @@ impl SolVastFitData {
             uad,
             calc,
             &fit.ship,
-            &ec::attrs::LAUNCHER_SLOTS_LEFT,
+            &consts::attrs::LAUNCHER_SLOTS_LEFT,
             &self.mods_launcher,
         )
     }
@@ -418,7 +446,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::HI_SLOTS, &fit.mods_high)
+        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &consts::attrs::HI_SLOTS, &fit.mods_high)
     }
     pub(in crate::sol::svc::vast) fn validate_mid_slot_count_verbose(
         &self,
@@ -427,7 +455,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::MED_SLOTS, &fit.mods_mid)
+        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &consts::attrs::MED_SLOTS, &fit.mods_mid)
     }
     pub(in crate::sol::svc::vast) fn validate_low_slot_count_verbose(
         &self,
@@ -436,7 +464,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::LOW_SLOTS, &fit.mods_low)
+        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &consts::attrs::LOW_SLOTS, &fit.mods_low)
     }
 }
 

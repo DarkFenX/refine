@@ -1,4 +1,4 @@
-use crate::defs::{AttrVal, EAttrId, EBuffId};
+use crate::ad::{AAttrId, AAttrVal, ABuffId};
 
 /// Effect-specific buff information.
 #[derive(Clone)]
@@ -7,11 +7,6 @@ pub struct AEffectBuffInfo {
     pub source: AEffectBuffSrc,
     /// Defines what items the buff is applied to.
     pub scope: AEffectBuffScope,
-}
-impl AEffectBuffInfo {
-    pub(crate) fn new(source: AEffectBuffSrc, scope: AEffectBuffScope) -> Self {
-        Self { source, scope }
-    }
 }
 
 /// Defines what items the buff is applied to.
@@ -37,7 +32,7 @@ pub enum AEffectBuffSrc {
 #[derive(Copy, Clone)]
 pub enum AEffectBuffSrcCustom {
     /// Hardcoded buff ID, but buff value is stored on affecting item.
-    AffectorVal(EBuffId, EAttrId),
+    AffectorVal(ABuffId, AAttrId),
     /// Hardcoded buff ID and buff value for the effect.
-    HardcodedVal(EBuffId, AttrVal),
+    HardcodedVal(ABuffId, AAttrVal),
 }

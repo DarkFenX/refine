@@ -20,10 +20,7 @@
 //! - you create [`SolarSystem`](crate::SolarSystem), and manipulate it to create fits with ships
 //!   and items, and fetch data and stats
 
-pub use defs::{
-    AttrVal, Count, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    Idx, MutaRoll, OF, SkillLevel, SlotIndex, SolFitId, SolFleetId, SolItemId, VERSION,
-};
+pub use defs::VERSION;
 pub use sol::{
     SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolSecZone, SolSecZoneCorruption,
     SolarSystem,
@@ -54,11 +51,12 @@ pub use sol::{
 };
 pub use src::Src;
 
+mod ac;
 pub mod ad;
 mod adg;
 mod config;
 mod defs;
-pub mod ec;
+mod ec;
 pub mod ed;
 pub mod err;
 mod sol;

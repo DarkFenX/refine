@@ -1,9 +1,8 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    AttrVal, ad,
+    AttrVal, ad, consts,
     defs::{OF, SolItemId},
-    ec,
     sol::{
         SolModRack,
         svc::vast::{
@@ -152,7 +151,11 @@ impl SolVast {
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_svcs_rigs_max_group_fitted_all.add_entry(grp_id, item_id);
-                    if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_FITTED) {
+                    if module
+                        .get_attrs()
+                        .unwrap()
+                        .contains_key(&consts::attrs::MAX_GROUP_FITTED)
+                    {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.insert(item_id, grp_id);
                     }
                 }
@@ -163,7 +166,7 @@ impl SolVast {
                         None => fit_data.mods_charge_group.insert(item_id, SolValCache::Pass(())),
                     };
                 }
-                if let Some(allowed_charge_size) = module.get_attrs().unwrap().get(&ec::attrs::CHARGE_SIZE) {
+                if let Some(allowed_charge_size) = module.get_attrs().unwrap().get(&consts::attrs::CHARGE_SIZE) {
                     // If there is a charge, calculate later, otherwise mark as no issue
                     match module.get_charge_id() {
                         Some(_) => fit_data
@@ -196,14 +199,14 @@ impl SolVast {
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Rig);
-                let rig_size = rig.get_attrs().unwrap().get(&ec::attrs::RIG_SIZE).copied();
+                let rig_size = rig.get_attrs().unwrap().get(&consts::attrs::RIG_SIZE).copied();
                 fit_data.rigs_rig_size.insert(item_id, rig_size);
                 if let Some(ship_limit) = &extras.ship_limit {
                     fit_data.ship_limited_items.insert(item_id, ship_limit.clone());
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_svcs_rigs_max_group_fitted_all.add_entry(grp_id, item_id);
-                    if rig.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_FITTED) {
+                    if rig.get_attrs().unwrap().contains_key(&consts::attrs::MAX_GROUP_FITTED) {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.insert(item_id, grp_id);
                     }
                 }
@@ -219,7 +222,11 @@ impl SolVast {
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_svcs_rigs_max_group_fitted_all.add_entry(grp_id, item_id);
-                    if service.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_FITTED) {
+                    if service
+                        .get_attrs()
+                        .unwrap()
+                        .contains_key(&consts::attrs::MAX_GROUP_FITTED)
+                    {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.insert(item_id, grp_id);
                     }
                 }

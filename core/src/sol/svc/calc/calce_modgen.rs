@@ -1,7 +1,6 @@
 use crate::{
-    ad,
+    ad, consts,
     defs::{AttrVal, EAttrId, EBuffId, EEffectId},
-    ec,
     sol::{
         svc::calc::{SolCalc, SolRawModifier, extend_with_custom_mods},
         uad::{SolUad, item::SolItem},
@@ -29,7 +28,7 @@ impl SolCalc {
         if let Some(buff_info) = effect.buff.as_ref() {
             match &buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
-                    for (buff_type_attr_id, buff_val_attr_id) in ec::extras::BUFF_STDATTRS {
+                    for (buff_type_attr_id, buff_val_attr_id) in consts::extras::BUFF_STDATTRS {
                         if let Ok(buff_id) = self.get_item_attr_val_full(uad, &item_id, &buff_type_attr_id) {
                             add_buff_mods(
                                 modifiers,
@@ -83,10 +82,10 @@ impl SolCalc {
     ) -> Vec<SolRawModifier> {
         let mut modifiers = Vec::new();
         let buff_value_attr_id = match *buff_type_attr_id {
-            ec::attrs::WARFARE_BUFF1_ID => ec::attrs::WARFARE_BUFF1_VAL,
-            ec::attrs::WARFARE_BUFF2_ID => ec::attrs::WARFARE_BUFF2_VAL,
-            ec::attrs::WARFARE_BUFF3_ID => ec::attrs::WARFARE_BUFF3_VAL,
-            ec::attrs::WARFARE_BUFF4_ID => ec::attrs::WARFARE_BUFF4_VAL,
+            consts::attrs::WARFARE_BUFF1_ID => consts::attrs::WARFARE_BUFF1_VAL,
+            consts::attrs::WARFARE_BUFF2_ID => consts::attrs::WARFARE_BUFF2_VAL,
+            consts::attrs::WARFARE_BUFF3_ID => consts::attrs::WARFARE_BUFF3_VAL,
+            consts::attrs::WARFARE_BUFF4_ID => consts::attrs::WARFARE_BUFF4_VAL,
             _ => return modifiers,
         };
         let item_id = item.get_id();

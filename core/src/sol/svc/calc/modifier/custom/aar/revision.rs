@@ -1,4 +1,4 @@
-use crate::{ec, sol::uad::item::SolItem};
+use crate::{consts, sol::uad::item::SolItem};
 
 pub(in crate::sol::svc::calc::modifier) fn revise_on_item_add_removal(
     affector_item: &SolItem,
@@ -7,7 +7,7 @@ pub(in crate::sol::svc::calc::modifier) fn revise_on_item_add_removal(
     match affector_item {
         SolItem::Module(module) => match module.get_charge_id() {
             Some(charge_id) => {
-                changed_item.get_id() == charge_id && changed_item.get_type_id() == ec::items::NANITE_REPAIR_PASTE
+                changed_item.get_id() == charge_id && changed_item.get_type_id() == consts::items::NANITE_REPAIR_PASTE
             }
             // No charge on AAR -> not changing anything
             None => false,
