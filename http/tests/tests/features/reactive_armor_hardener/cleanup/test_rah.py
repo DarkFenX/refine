@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, effect_dogma_to_api
 from tests.tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
 
 
@@ -179,7 +179,7 @@ def test_effect_mode_on_off(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4484)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4794)
     # Action
-    api_rah2.change_module(effect_modes={eve_basic_info.rah_effect_id: consts.ApiEffMode.force_run})
+    api_rah2.change_module(effect_modes={eve_basic_info.api_rah_effect_id: consts.ApiEffMode.force_run})
     # Verification - results for existing RAH should be reset too
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.93)
@@ -197,7 +197,7 @@ def test_effect_mode_on_off(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3366673)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3382661)
     # Action
-    api_rah1.change_module(effect_modes={eve_basic_info.rah_effect_id: consts.ApiEffMode.force_stop})
+    api_rah1.change_module(effect_modes={eve_basic_info.api_rah_effect_id: consts.ApiEffMode.force_stop})
     # Verification - results for remaining RAH should be reset too
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85000000001, accuracy=11)

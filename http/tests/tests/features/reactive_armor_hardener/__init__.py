@@ -3,6 +3,7 @@ from __future__ import annotations
 import typing
 from dataclasses import dataclass
 
+from tests import effect_dogma_to_api
 from tests.fw.util import Default
 
 if typing.TYPE_CHECKING:
@@ -22,6 +23,10 @@ class RahBasicInfo:
     cycle_time_bonus_attr_id: int
     rah_effect_id: int
     heat_effect_id: int
+
+    @property
+    def api_rah_effect_id(self) -> str:
+        return effect_dogma_to_api(dogma_effect_id=self.rah_effect_id)
 
 
 def setup_rah_basics(

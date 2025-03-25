@@ -39,3 +39,7 @@ def approx(expected: float, accuracy: int = 7):  # noqa: ANN201
 def check_no_field() -> Iterator[None]:
     with pytest.raises(AttributeError):
         yield
+
+# Converts dogma effect ID to API effect ID
+def effect_dogma_to_api(*, dogma_effect_id: int) -> str:
+    return f'd{dogma_effect_id}'

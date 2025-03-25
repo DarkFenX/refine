@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from tests import approx, check_no_field, effect_dogma_to_api
 from tests.fw.api import ValOptions
 
 
@@ -308,6 +308,7 @@ def test_criterion_effect(client, consts):
     eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
     client.create_sources()
+    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
@@ -319,7 +320,7 @@ def test_criterion_effect(client, consts):
     assert api_val.details.turret_slot_count.max == 0
     assert api_val.details.turret_slot_count.users == [api_module.id]
     # Action
-    api_module.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_module.change_module(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
     assert api_val.passed is True
@@ -328,7 +329,7 @@ def test_criterion_effect(client, consts):
     # Action
     api_module.change_module(
         state=consts.ApiModuleState.offline,
-        effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
+        effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
     api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
     assert api_val.passed is False
@@ -336,7 +337,7 @@ def test_criterion_effect(client, consts):
     assert api_val.details.turret_slot_count.max == 0
     assert api_val.details.turret_slot_count.users == [api_module.id]
     # Action
-    api_module.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_module.change_module(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
     assert api_val.passed is True

@@ -4,7 +4,7 @@ with the lib, so we check it nevertheless (just hope it doesn't crash or doesn't
 inconsistent).
 """
 
-from tests import approx
+from tests import approx, effect_dogma_to_api
 
 
 def test_remove(client, consts):
@@ -65,11 +65,12 @@ def test_states(client, consts):
         eff_ids=[eve_autocharge_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
+    api_autocharge_effect_id = effect_dogma_to_api(dogma_effect_id=eve_autocharge_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
-    api_autocharge = api_fighter.autocharges[eve_autocharge_effect_id]
+    api_autocharge = api_fighter.autocharges[api_autocharge_effect_id]
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action

@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from tests import approx, check_no_field, effect_dogma_to_api
 from tests.fw.api import ValOptions
 
 
@@ -459,6 +459,7 @@ def test_criterion_effect(client, consts):
     eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
+    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
@@ -470,14 +471,14 @@ def test_criterion_effect(client, consts):
     assert api_val.details.calibration.max == approx(125)
     assert api_val.details.calibration.users == {api_rig.id: approx(150)}
     # Action
-    api_rig.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_rig.change_rig(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_rig.change_rig(state=True, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
+    api_rig.change_rig(state=True, effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
@@ -485,7 +486,7 @@ def test_criterion_effect(client, consts):
     assert api_val.details.calibration.max == approx(125)
     assert api_val.details.calibration.users == {api_rig.id: approx(150)}
     # Action
-    api_rig.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_rig.change_rig(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True

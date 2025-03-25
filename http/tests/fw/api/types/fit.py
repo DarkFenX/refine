@@ -151,7 +151,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
-            side_effects: dict[int, bool] | type[Absent] = Absent,
+            side_effects: dict[str, bool] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:

@@ -54,10 +54,10 @@ class Item(AttrDict):
                 attrs={int(k): AttrMutation(roll=v[0], absolute=v[1]) for k, v in m[2].items()})),
             'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
             'autocharges': AttrHookDef(func=lambda acs: {
-                int(k): Item(client=client, data=v, sol_id=sol_id)
+                k: Item(client=client, data=v, sol_id=sol_id)
                 for k, v in acs.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
-                int(k): SideEffectInfo(
+                k: SideEffectInfo(
                     chance=v[0],
                     status=v[1],
                     str=None if v[2] is None else SideEffectStrInfo(op=v[2][0], val=v[2][1]))
@@ -66,7 +66,7 @@ class Item(AttrDict):
                 int(k): AttrVals(base=v[0], dogma=v[1], extra=v[2])
                 for k, v in attrs.items()}),
             'effects': AttrHookDef(func=lambda effects: {
-                int(k): EffectInfo(running=v[0], mode=v[1])
+                k: EffectInfo(running=v[0], mode=v[1])
                 for k, v in effects.items()}),
             'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
         self._client = client
@@ -98,7 +98,7 @@ class Item(AttrDict):
     def change_autocharge(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -118,7 +118,7 @@ class Item(AttrDict):
     def change_booster(
             self, *,
             state: bool | type[Absent] = Absent,
-            side_effects: dict[int, bool] | type[Absent] = Absent,
+            side_effects: dict[str, bool] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: dict | None = None,
@@ -139,7 +139,7 @@ class Item(AttrDict):
     def change_character(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -159,7 +159,7 @@ class Item(AttrDict):
     def change_charge(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -183,7 +183,7 @@ class Item(AttrDict):
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -211,7 +211,7 @@ class Item(AttrDict):
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -235,7 +235,7 @@ class Item(AttrDict):
     def change_fw_effect(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -255,7 +255,7 @@ class Item(AttrDict):
     def change_implant(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -280,7 +280,7 @@ class Item(AttrDict):
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: dict | None = None,
@@ -328,7 +328,7 @@ class Item(AttrDict):
     def change_rig(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -348,7 +348,7 @@ class Item(AttrDict):
     def change_service(
             self, *,
             state: ApiServiceState | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -368,7 +368,7 @@ class Item(AttrDict):
     def change_ship(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -389,7 +389,7 @@ class Item(AttrDict):
             self, *,
             level: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -410,7 +410,7 @@ class Item(AttrDict):
     def change_subsystem(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -430,7 +430,7 @@ class Item(AttrDict):
     def change_sw_effect(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:

@@ -54,7 +54,7 @@ impl<'de> serde::Deserialize<'de> for CEffectId {
             type Value = CEffectId;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                formatter.write_str("struct Duration")
+                formatter.write_str("effect type-prefixed int CEffectId")
             }
 
             fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
@@ -79,6 +79,6 @@ impl<'de> serde::Deserialize<'de> for CEffectId {
                 Err(serde::de::Error::custom(msg))
             }
         }
-        deserializer.deserialize_enum("CEffectId", &["Dogma", "SpaceComponent", "Custom"], CEffectIdVisitor)
+        deserializer.deserialize_str(CEffectIdVisitor)
     }
 }

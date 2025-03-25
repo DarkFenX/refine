@@ -58,7 +58,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -76,7 +76,7 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: bool | type[Absent],
-            side_effects: dict[int, bool] | type[Absent],
+            side_effects: dict[str, bool] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
@@ -99,7 +99,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            side_effects: dict[int, bool] | type[Absent],
+            side_effects: dict[str, bool] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'booster'}
@@ -120,7 +120,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -153,7 +153,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -198,7 +198,7 @@ class ApiClientItem(ApiClientBase):
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
             rm_projs: list[str] | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'drone', 'item_id': item_id}
@@ -251,7 +251,7 @@ class ApiClientItem(ApiClientBase):
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
             rm_projs: list[str] | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'fighter', 'item_id': item_id}
@@ -292,7 +292,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -325,7 +325,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -377,7 +377,7 @@ class ApiClientItem(ApiClientBase):
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
             rm_projs: list[str] | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'module'}
@@ -460,7 +460,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -493,7 +493,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: ApiServiceState | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -526,7 +526,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -568,7 +568,7 @@ class ApiClientItem(ApiClientBase):
             item_id: str,
             level: int | type[Absent],
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'skill'}
@@ -623,7 +623,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -658,7 +658,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -699,7 +699,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | str | type[Absent],
-            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': cmd_name}
