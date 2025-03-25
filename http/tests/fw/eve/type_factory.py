@@ -33,6 +33,16 @@ class EveTypeFactory(EveDataManager):
             data.alloc_group_id(id_=id_)
         return id_
 
+    def alloc_item_list_id(self, *, datas: list[EveObjects] | type[Default] = Default) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        id_ = max(d.prealloc_item_list_id() for d in datas)
+        while any(id_ in d.item_lists for d in datas):
+            id_ += 1
+        for data in datas:
+            data.alloc_item_list_id(id_=id_)
+        return id_
+
     def alloc_attr_id(self, *, datas: list[EveObjects] | type[Default] = Default) -> int:
         if datas is Default:
             datas = [self._get_default_eve_data()]
