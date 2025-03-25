@@ -264,9 +264,9 @@ class EveObjects:
 
     @staticmethod
     def __handle_container(*, primitive_data: EvePrimitives, container: dict[int, list], entity_class: object) -> None:
-        for entity_list in container.values():
+        for entity_id, entity_list in container.items():
             if len(entity_list) > 1:
-                msg = f'expected 1 {entity_class.__name__}, got {len(entity_list)}'
+                msg = f'expected 1 {entity_class.__name__}(id={entity_id}), got {len(entity_list)}'
                 raise TestDataConsistencyError(msg)
             for entity in entity_list:
                 entity.to_primitives(primitive_data=primitive_data)
