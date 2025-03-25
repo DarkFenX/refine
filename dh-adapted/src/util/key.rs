@@ -1,37 +1,45 @@
-use std::sync::Arc;
-
-type KeyVal = i32;
+use std::{hash::Hash, sync::Arc};
 
 pub trait Key {
-    fn get_key(&self) -> KeyVal;
+    type Item;
+    fn get_key(&self) -> Self::Item;
 }
 impl Key for rc::ad::AItem {
-    fn get_key(&self) -> KeyVal {
+    type Item = rc::ad::AItemId;
+    fn get_key(&self) -> Self::Item {
         self.id
     }
 }
 impl Key for rc::ad::AAttr {
-    fn get_key(&self) -> KeyVal {
+    type Item = rc::ad::AAttrId;
+    fn get_key(&self) -> Self::Item {
         self.id
     }
 }
 impl Key for rc::ad::AEffect {
-    fn get_key(&self) -> KeyVal {
+    type Item = rc::ad::AEffectId;
+    fn get_key(&self) -> Self::Item {
         self.id
     }
 }
 impl Key for rc::ad::AMuta {
-    fn get_key(&self) -> KeyVal {
+    type Item = rc::ad::AItemId;
+    fn get_key(&self) -> Self::Item {
         self.id
     }
 }
 impl Key for rc::ad::ABuff {
-    fn get_key(&self) -> KeyVal {
+    type Item = rc::ad::ABuffId;
+    fn get_key(&self) -> Self::Item {
         self.id
     }
 }
 
-pub(crate) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut rc::util::StMap<KeyVal, Arc<T>>) {
+pub(crate) fn move_vec_to_map<T, U>(vec: Vec<T>, map: &mut rc::util::StMap<U, Arc<T>>)
+where
+    T: Key<Item = U>,
+    U: Eq + PartialEq + Hash,
+{
     map.clear();
     map.shrink_to_fit();
     map.reserve(vec.len());

@@ -1,8 +1,10 @@
+use crate::handler_json::data::CItemId;
+
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CModifierSrq {
     SelfRef,
-    ItemId(rc::EItemId),
+    ItemId(CItemId),
 }
 impl From<&rc::ad::AModifierSrq> for CModifierSrq {
     fn from(a_modidier_srq: &rc::ad::AModifierSrq) -> Self {

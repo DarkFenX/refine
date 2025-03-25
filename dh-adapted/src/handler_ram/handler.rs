@@ -10,11 +10,11 @@ use crate::{
 /// This handler stores everything only in RAM. Access to data is fast, but has noticeable RAM
 /// consumption and adapted data has to be rebuilt every time.
 pub struct RamOnlyAdh {
-    storage_items: rc::util::StMap<rc::EItemId, rc::ad::ArcItem>,
-    storage_attrs: rc::util::StMap<rc::EAttrId, rc::ad::ArcAttr>,
-    storage_effects: rc::util::StMap<rc::EEffectId, rc::ad::ArcEffect>,
-    storage_mutas: rc::util::StMap<rc::EItemId, rc::ad::ArcMuta>,
-    storage_buffs: rc::util::StMap<rc::EBuffId, rc::ad::ArcBuff>,
+    storage_items: rc::util::StMap<rc::ad::AItemId, rc::ad::ArcItem>,
+    storage_attrs: rc::util::StMap<rc::ad::AAttrId, rc::ad::ArcAttr>,
+    storage_effects: rc::util::StMap<rc::ad::AEffectId, rc::ad::ArcEffect>,
+    storage_mutas: rc::util::StMap<rc::ad::AItemId, rc::ad::ArcMuta>,
+    storage_buffs: rc::util::StMap<rc::ad::ABuffId, rc::ad::ArcBuff>,
 }
 impl RamOnlyAdh {
     pub fn new() -> Self {
@@ -34,23 +34,23 @@ impl fmt::Debug for RamOnlyAdh {
 }
 impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     /// Get adapted item.
-    fn get_item(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcItem> {
+    fn get_item(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcItem> {
         self.storage_items.get(id)
     }
     /// Get adapted attribute.
-    fn get_attr(&self, id: &rc::EAttrId) -> Option<&rc::ad::ArcAttr> {
+    fn get_attr(&self, id: &rc::ad::AAttrId) -> Option<&rc::ad::ArcAttr> {
         self.storage_attrs.get(id)
     }
     /// Get adapted effect.
-    fn get_effect(&self, id: &rc::EEffectId) -> Option<&rc::ad::ArcEffect> {
+    fn get_effect(&self, id: &rc::ad::AEffectId) -> Option<&rc::ad::ArcEffect> {
         self.storage_effects.get(id)
     }
     /// Get adapted mutator.
-    fn get_mutator(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcMuta> {
+    fn get_mutator(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcMuta> {
         self.storage_mutas.get(id)
     }
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &rc::EBuffId) -> Option<&rc::ad::ArcBuff> {
+    fn get_buff(&self, id: &rc::ad::ABuffId) -> Option<&rc::ad::ArcBuff> {
         self.storage_buffs.get(id)
     }
     /// Get adapted data fingerprint.

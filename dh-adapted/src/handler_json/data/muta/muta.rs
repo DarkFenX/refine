@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-use crate::handler_json::data::CMutaAttrRange;
+use crate::handler_json::data::{CAttrId, CItemId, CMutaAttrRange};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CMuta {
-    id: rc::EItemId,
-    item_map: HashMap<rc::EItemId, rc::EItemId>,
-    attr_mods: HashMap<rc::EAttrId, CMutaAttrRange>,
+    id: CItemId,
+    item_map: HashMap<CItemId, CItemId>,
+    attr_mods: HashMap<CAttrId, CMutaAttrRange>,
 }
 impl From<&rc::ad::AMuta> for CMuta {
     fn from(a_muta: &rc::ad::AMuta) -> Self {

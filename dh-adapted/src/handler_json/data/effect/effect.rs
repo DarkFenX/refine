@@ -1,31 +1,33 @@
-use crate::handler_json::data::{CEffectBuffInfo, CEffectChargeInfo, CEffectModifier, CModBuildStatus, CState};
+use crate::handler_json::data::{
+    CAttrId, CEffectBuffInfo, CEffectCatId, CEffectChargeInfo, CEffectId, CEffectModifier, CModBuildStatus, CState,
+};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
-    id: rc::EEffectId,
-    category: rc::EEffectCatId,
+    id: CEffectId,
+    category: CEffectCatId,
     state: CState,
     is_assist: bool,
     is_offense: bool,
     hisec: Option<bool>,
     lowsec: Option<bool>,
-    discharge_attr_id: Option<rc::EAttrId>,
-    duration_attr_id: Option<rc::EAttrId>,
-    range_attr_id: Option<rc::EAttrId>,
-    falloff_attr_id: Option<rc::EAttrId>,
-    track_attr_id: Option<rc::EAttrId>,
-    chance_attr_id: Option<rc::EAttrId>,
-    resist_attr_id: Option<rc::EAttrId>,
+    discharge_attr_id: Option<CAttrId>,
+    duration_attr_id: Option<CAttrId>,
+    range_attr_id: Option<CAttrId>,
+    falloff_attr_id: Option<CAttrId>,
+    track_attr_id: Option<CAttrId>,
+    chance_attr_id: Option<CAttrId>,
+    resist_attr_id: Option<CAttrId>,
     mod_build_status: CModBuildStatus,
     mods: Vec<CEffectModifier>,
-    stop_ids: Vec<rc::EEffectId>,
+    stop_ids: Vec<CEffectId>,
     buff: Option<CEffectBuffInfo>,
     charge: Option<CEffectChargeInfo>,
 }
 impl From<&rc::ad::AEffect> for CEffect {
     fn from(a_effect: &rc::ad::AEffect) -> Self {
         Self {
-            id: a_effect.id,
+            id: (&a_effect.id).into(),
             category: a_effect.category,
             state: (&a_effect.state).into(),
             is_assist: a_effect.is_assist,
@@ -41,7 +43,7 @@ impl From<&rc::ad::AEffect> for CEffect {
             resist_attr_id: a_effect.resist_attr_id,
             mod_build_status: (&a_effect.mod_build_status).into(),
             mods: a_effect.mods.iter().map(|v| v.into()).collect(),
-            stop_ids: a_effect.stop_ids.clone(),
+            stop_ids: a_effect.stop_ids.iter().map(|v| v.into()).collect(),
             buff: a_effect.buff.as_ref().map(|v| v.into()),
             charge: a_effect.charge.as_ref().map(|v| v.into()),
         }
@@ -50,7 +52,7 @@ impl From<&rc::ad::AEffect> for CEffect {
 impl From<&CEffect> for rc::ad::AEffect {
     fn from(c_effect: &CEffect) -> Self {
         Self {
-            id: c_effect.id,
+            id: (&c_effect.id).into(),
             category: c_effect.category,
             state: (&c_effect.state).into(),
             is_assist: c_effect.is_assist,
@@ -66,7 +68,7 @@ impl From<&CEffect> for rc::ad::AEffect {
             resist_attr_id: c_effect.resist_attr_id,
             mod_build_status: (&c_effect.mod_build_status).into(),
             mods: c_effect.mods.iter().map(|v| v.into()).collect(),
-            stop_ids: c_effect.stop_ids.clone(),
+            stop_ids: c_effect.stop_ids.iter().map(|v| v.into()).collect(),
             buff: c_effect.buff.as_ref().map(|v| v.into()),
             charge: c_effect.charge.as_ref().map(|v| v.into()),
         }

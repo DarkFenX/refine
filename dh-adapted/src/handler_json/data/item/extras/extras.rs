@@ -1,17 +1,20 @@
-use crate::handler_json::data::{CItemChargeLimit, CItemKind, CItemShipLimit, CShipDroneLimit, CShipKind, CState};
+use crate::handler_json::data::{
+    CAttrVal, CCount, CItemChargeLimit, CItemGrpId, CItemKind, CItemShipLimit, CShipDroneLimit, CShipKind, CSkillLevel,
+    CSlotIndex, CState,
+};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) kind: Option<CItemKind>,
-    pub(in crate::handler_json) volume: Option<rc::AttrVal>,
+    pub(in crate::handler_json) volume: Option<CAttrVal>,
     pub(in crate::handler_json) ship_limit: Option<CItemShipLimit>,
     pub(in crate::handler_json) charge_limit: Option<CItemChargeLimit>,
-    pub(in crate::handler_json) val_fitted_group_id: Option<rc::EItemGrpId>,
-    pub(in crate::handler_json) val_online_group_id: Option<rc::EItemGrpId>,
-    pub(in crate::handler_json) val_active_group_id: Option<rc::EItemGrpId>,
-    pub(in crate::handler_json) implant_slot: Option<rc::SlotIndex>,
-    pub(in crate::handler_json) booster_slot: Option<rc::SlotIndex>,
-    pub(in crate::handler_json) subsystem_slot: Option<rc::SlotIndex>,
+    pub(in crate::handler_json) val_fitted_group_id: Option<CItemGrpId>,
+    pub(in crate::handler_json) val_online_group_id: Option<CItemGrpId>,
+    pub(in crate::handler_json) val_active_group_id: Option<CItemGrpId>,
+    pub(in crate::handler_json) implant_slot: Option<CSlotIndex>,
+    pub(in crate::handler_json) booster_slot: Option<CSlotIndex>,
+    pub(in crate::handler_json) subsystem_slot: Option<CSlotIndex>,
     pub(in crate::handler_json) is_light_fighter: bool,
     pub(in crate::handler_json) is_heavy_fighter: bool,
     pub(in crate::handler_json) is_support_fighter: bool,
@@ -22,11 +25,11 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) item_ship_kind: Option<CShipKind>,
     pub(in crate::handler_json) max_state: CState,
     pub(in crate::handler_json) drone_limit: Option<CShipDroneLimit>,
-    pub(in crate::handler_json) max_fighter_count: rc::Count,
-    pub(in crate::handler_json) bandwidth_use: Option<rc::AttrVal>,
-    pub(in crate::handler_json) overload_td_lvl: Option<rc::SkillLevel>,
-    pub(in crate::handler_json) max_type_fitted: Option<rc::Count>,
-    pub(in crate::handler_json) online_max_sec_class: Option<rc::AttrVal>,
+    pub(in crate::handler_json) max_fighter_count: CCount,
+    pub(in crate::handler_json) bandwidth_use: Option<CAttrVal>,
+    pub(in crate::handler_json) overload_td_lvl: Option<CSkillLevel>,
+    pub(in crate::handler_json) max_type_fitted: Option<CCount>,
+    pub(in crate::handler_json) online_max_sec_class: Option<CAttrVal>,
     pub(in crate::handler_json) sec_zone_limitable: bool,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {

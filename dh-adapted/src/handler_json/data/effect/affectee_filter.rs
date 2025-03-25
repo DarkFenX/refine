@@ -1,11 +1,11 @@
-use crate::handler_json::data::{CEffectLocation, CModifierSrq};
+use crate::handler_json::data::{CEffectLocation, CItemGrpId, CModifierSrq};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CEffectAffecteeFilter {
     Direct(CEffectLocation),
     Loc(CEffectLocation),
-    LocGrp(CEffectLocation, rc::EItemGrpId),
+    LocGrp(CEffectLocation, CItemGrpId),
     LocSrq(CEffectLocation, CModifierSrq),
     OwnSrq(CModifierSrq),
 }

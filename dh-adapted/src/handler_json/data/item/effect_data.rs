@@ -1,8 +1,10 @@
+use crate::handler_json::data::{CAttrVal, CCount};
+
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItemEffectData {
-    cd: Option<rc::AttrVal>,
-    charge_count: Option<rc::Count>,
-    charge_reload_time: Option<rc::AttrVal>,
+    cd: Option<CAttrVal>,
+    charge_count: Option<CCount>,
+    charge_reload_time: Option<CAttrVal>,
 }
 impl From<&rc::ad::AItemEffectData> for CItemEffectData {
     fn from(a_item_effect_data: &rc::ad::AItemEffectData) -> Self {

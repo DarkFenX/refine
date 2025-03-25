@@ -1,9 +1,9 @@
-use crate::handler_json::data::CBuffAffecteeFilter;
+use crate::handler_json::data::{CAttrId, CBuffAffecteeFilter};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CBuffModifier {
     affectee_filter: CBuffAffecteeFilter,
-    affectee_attr_id: rc::EAttrId,
+    affectee_attr_id: CAttrId,
 }
 impl From<&rc::ad::ABuffModifier> for CBuffModifier {
     fn from(a_modifier: &rc::ad::ABuffModifier) -> Self {

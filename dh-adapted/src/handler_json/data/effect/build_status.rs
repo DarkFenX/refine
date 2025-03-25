@@ -1,9 +1,11 @@
+use crate::handler_json::data::CCount;
+
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CModBuildStatus {
     Unbuilt,
-    Error(rc::Count),
-    SuccessPartial(rc::Count),
+    Error(CCount),
+    SuccessPartial(CCount),
     Success,
     Custom,
 }

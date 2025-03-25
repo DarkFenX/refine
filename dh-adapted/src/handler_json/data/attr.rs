@@ -1,11 +1,13 @@
+use crate::handler_json::data::{CAttrId, CAttrVal};
+
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CAttr {
-    id: rc::EAttrId,
+    id: CAttrId,
     penalizable: bool,
     hig: bool,
-    def_val: rc::AttrVal,
-    min_attr_id: Option<rc::EAttrId>,
-    max_attr_id: Option<rc::EAttrId>,
+    def_val: CAttrVal,
+    min_attr_id: Option<CAttrId>,
+    max_attr_id: Option<CAttrId>,
 }
 impl From<&rc::ad::AAttr> for CAttr {
     fn from(a_attr: &rc::ad::AAttr) -> Self {

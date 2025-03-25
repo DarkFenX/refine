@@ -1,6 +1,8 @@
+use crate::handler_json::data::CItemGrpId;
+
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItemChargeLimit {
-    pub(in crate::handler_json) group_ids: Vec<rc::EItemGrpId>,
+    pub(in crate::handler_json) group_ids: Vec<CItemGrpId>,
 }
 impl From<&rc::ad::AItemChargeLimit> for CItemChargeLimit {
     fn from(a_item_charge_limit: &rc::ad::AItemChargeLimit) -> Self {

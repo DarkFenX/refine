@@ -1,11 +1,11 @@
-use crate::handler_json::data::{CEffectAffecteeFilter, COp};
+use crate::handler_json::data::{CAttrId, CEffectAffecteeFilter, COp};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffectModifier {
-    affector_attr_id: rc::EAttrId,
+    affector_attr_id: CAttrId,
     op: COp,
     affectee_filter: CEffectAffecteeFilter,
-    affectee_attr_id: rc::EAttrId,
+    affectee_attr_id: CAttrId,
 }
 impl From<&rc::ad::AEffectModifier> for CEffectModifier {
     fn from(a_modifier: &rc::ad::AEffectModifier) -> Self {

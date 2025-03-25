@@ -1,11 +1,11 @@
-use crate::handler_json::data::CModifierSrq;
+use crate::handler_json::data::{CItemGrpId, CModifierSrq};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CBuffAffecteeFilter {
     Direct,
     Loc,
-    LocGrp(rc::EItemGrpId),
+    LocGrp(CItemGrpId),
     LocSrq(CModifierSrq),
 }
 impl From<&rc::ad::ABuffAffecteeFilter> for CBuffAffecteeFilter {

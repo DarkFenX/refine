@@ -1,7 +1,9 @@
+use crate::handler_json::data::CAttrVal;
+
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CMutaAttrRange {
-    min_mult: rc::AttrVal,
-    max_mult: rc::AttrVal,
+    min_mult: CAttrVal,
+    max_mult: CAttrVal,
 }
 impl From<&rc::ad::AMutaAttrRange> for CMutaAttrRange {
     fn from(a_muta_range: &rc::ad::AMutaAttrRange) -> Self {

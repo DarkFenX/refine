@@ -1,6 +1,7 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
 pub(in crate::handler_json) enum CState {
+    Ghost,
     Offline,
     Online,
     Active,
@@ -9,6 +10,7 @@ pub(in crate::handler_json) enum CState {
 impl From<&rc::ad::AState> for CState {
     fn from(a_state: &rc::ad::AState) -> Self {
         match a_state {
+            rc::ad::AState::Ghost => Self::Ghost,
             rc::ad::AState::Offline => Self::Offline,
             rc::ad::AState::Online => Self::Online,
             rc::ad::AState::Active => Self::Active,
@@ -19,6 +21,7 @@ impl From<&rc::ad::AState> for CState {
 impl From<&CState> for rc::ad::AState {
     fn from(c_state: &CState) -> Self {
         match c_state {
+            CState::Ghost => Self::Ghost,
             CState::Offline => Self::Offline,
             CState::Online => Self::Online,
             CState::Active => Self::Active,

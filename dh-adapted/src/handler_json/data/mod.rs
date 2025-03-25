@@ -3,7 +3,7 @@
 use attr::CAttr;
 use buff::{CBuff, CBuffAffecteeFilter, CBuffAggrMode, CBuffModifier};
 use effect::{
-    CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectChargeInfo, CEffectLocation, CEffectModifier,
+    CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectChargeInfo, CEffectId, CEffectLocation, CEffectModifier,
     CModBuildStatus, CState,
 };
 use item::{
@@ -11,6 +11,10 @@ use item::{
 };
 use mod_shared::{CModifierSrq, COp};
 use muta::{CMuta, CMutaAttrRange};
+use primitives::{
+    CAttrId, CAttrVal, CBuffId, CCount, CCustomEffectId, CDogmaEffectId, CEffectCatId, CItemCatId, CItemGrpId, CItemId,
+    CSkillLevel, CSlotIndex,
+};
 
 mod attr;
 mod buff;
@@ -18,6 +22,7 @@ mod effect;
 mod item;
 mod mod_shared;
 mod muta;
+mod primitives;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub(in crate::handler_json) struct CData {

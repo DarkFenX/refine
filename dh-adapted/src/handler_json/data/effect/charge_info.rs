@@ -1,8 +1,10 @@
+use crate::handler_json::data::CAttrId;
+
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CEffectChargeInfo {
     Loaded,
-    Attr(rc::EAttrId),
+    Attr(CAttrId),
 }
 impl From<&rc::ad::AEffectChargeInfo> for CEffectChargeInfo {
     fn from(a_charge_info: &rc::ad::AEffectChargeInfo) -> Self {

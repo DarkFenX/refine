@@ -1,3 +1,5 @@
+use crate::handler_json::data::{CAttrId, CAttrVal, CBuffId};
+
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffectBuffInfo {
     source: CEffectBuffSrc,
@@ -75,8 +77,8 @@ impl From<&CEffectBuffSrc> for rc::ad::AEffectBuffSrc {
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub(in crate::handler_json) enum CEffectBuffSrcCustom {
-    AffectorVal(rc::EBuffId, rc::EAttrId),
-    HardcodedVal(rc::EBuffId, rc::AttrVal),
+    AffectorVal(CBuffId, CAttrId),
+    HardcodedVal(CBuffId, CAttrVal),
 }
 impl From<&rc::ad::AEffectBuffSrcCustom> for CEffectBuffSrcCustom {
     fn from(a_buff_data_src_custom: &rc::ad::AEffectBuffSrcCustom) -> Self {
