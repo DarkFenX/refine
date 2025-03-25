@@ -58,11 +58,7 @@ pub(crate) enum HChangeItemCommand {
     SwEffect(HChangeSwEffectCmd),
 }
 impl HChangeItemCommand {
-    pub(crate) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        item_id: &rc::SolItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, item_id: &rc::ItemId) -> Result<HCmdResp, HExecError> {
         match self {
             Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
             Self::Booster(cmd) => cmd.execute(core_sol, item_id),

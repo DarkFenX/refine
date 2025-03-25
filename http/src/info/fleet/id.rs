@@ -4,12 +4,12 @@ use crate::util::HExecError;
 #[derive(serde::Serialize)]
 pub(crate) struct HFleetInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolFleetId,
+    pub(crate) id: rc::FleetId,
 }
 impl HFleetInfoId {
     pub(in crate::info::fleet) fn mk_info(
         core_sol: &rc::SolarSystem,
-        fleet_id: &rc::SolFleetId,
+        fleet_id: &rc::FleetId,
     ) -> Result<Self, HExecError> {
         let core_fleet = match core_sol.get_fleet(fleet_id) {
             Ok(core_fleet) => core_fleet,

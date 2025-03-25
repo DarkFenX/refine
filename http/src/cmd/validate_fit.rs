@@ -127,12 +127,12 @@ impl HValidateFitCmd {
     pub(crate) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
         valid_mode: HValidInfoMode,
     ) -> Result<HValidInfo, HExecError> {
         let mut core_options = match self.default {
-            true => rc::SolValOptions::all_enabled(),
-            false => rc::SolValOptions::all_disabled(),
+            true => rc::val::ValOptions::all_enabled(),
+            false => rc::val::ValOptions::all_disabled(),
         };
         process_option(&self.cpu, &mut core_options.cpu);
         process_option(&self.powergrid, &mut core_options.powergrid);
@@ -316,7 +316,7 @@ enum HValidationOption {
     Simple(bool),
     Extended(
         bool,
-        #[serde_as(as = "Vec<serde_with::DisplayFromStr>")] Vec<rc::SolItemId>,
+        #[serde_as(as = "Vec<serde_with::DisplayFromStr>")] Vec<rc::ItemId>,
     ),
 }
 impl HValidationOption {
@@ -326,7 +326,7 @@ impl HValidationOption {
             Self::Extended(enabled, _) => *enabled,
         }
     }
-    fn get_known_failures(&self) -> Vec<rc::SolItemId> {
+    fn get_known_failures(&self) -> Vec<rc::ItemId> {
         match self {
             Self::Simple(_) => Vec::new(),
             Self::Extended(_, known_failures) => known_failures.clone(),
@@ -334,7 +334,7 @@ impl HValidationOption {
     }
 }
 
-fn process_option(option: &Option<HValidationOption>, core_option: &mut rc::SolValOption) {
+fn process_option(option: &Option<HValidationOption>, core_option: &mut rc::val::ValOption) {
     if let Some(option) = option {
         core_option.enabled = option.is_enabled();
         core_option.kfs = option.get_known_failures().into_iter().collect();

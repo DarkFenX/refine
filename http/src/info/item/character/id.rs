@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HCharacterInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
 }
 impl From<&rc::CharacterInfo> for HCharacterInfoId {
     fn from(core_character_info: &rc::CharacterInfo) -> Self {

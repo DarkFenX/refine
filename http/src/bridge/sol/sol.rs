@@ -442,7 +442,7 @@ impl HSolarSystem {
         self.core_sol = Some(core_sol);
         self.touch();
     }
-    fn str_to_fit_id(&mut self, id: &str) -> Result<rc::SolFitId, HBrError> {
+    fn str_to_fit_id(&mut self, id: &str) -> Result<rc::FitId, HBrError> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
@@ -451,7 +451,7 @@ impl HSolarSystem {
             }
         }
     }
-    fn str_to_fleet_id(&mut self, id: &str) -> Result<rc::SolFleetId, HBrError> {
+    fn str_to_fleet_id(&mut self, id: &str) -> Result<rc::FleetId, HBrError> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
@@ -460,7 +460,7 @@ impl HSolarSystem {
             }
         }
     }
-    fn str_to_item_id(&mut self, id: &str) -> Result<rc::SolItemId, HBrError> {
+    fn str_to_item_id(&mut self, id: &str) -> Result<rc::ItemId, HBrError> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {

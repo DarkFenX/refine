@@ -2,13 +2,13 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HAutochargeInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
     pub(crate) kind: &'static str,
-    pub(crate) type_id: rc::EItemId,
+    pub(crate) type_id: rc::ItemTypeId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) fit_id: rc::SolFitId,
+    pub(crate) fit_id: rc::FitId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) cont_id: rc::SolItemId,
+    pub(crate) cont_id: rc::ItemId,
     pub(crate) enabled: bool,
 }
 impl From<&rc::AutochargeInfo> for HAutochargeInfoPartial {

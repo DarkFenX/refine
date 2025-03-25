@@ -5,14 +5,14 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetShipCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: Option<bool>,
 }
 impl HSetShipCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::ShipInfo, HExecError> {
         let core_ship = match core_sol.set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_ship) => core_ship,
@@ -36,7 +36,7 @@ impl HChangeShipCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<HCmdResp, HExecError> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
@@ -49,7 +49,7 @@ impl HChangeShipCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeShipViaItemIdCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeShipCmd,
 }
@@ -68,7 +68,7 @@ impl HChangeShipViaFitIdCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<HCmdResp, HExecError> {
         let item_id = match core_sol.get_fit_ship(fit_id) {
             Ok(core_ship) => match core_ship {

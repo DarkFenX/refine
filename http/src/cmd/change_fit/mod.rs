@@ -76,11 +76,7 @@ pub(crate) enum HChangeFitCommand {
     ChangeSubsystem(HChangeSubsystemCmd),
 }
 impl HChangeFitCommand {
-    pub(crate) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
-    ) -> Result<HCmdResp, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
             Self::SetFleet(cmd) => cmd.execute(core_sol, fit_id),
             Self::SetRahIncomingDmg(cmd) => cmd.execute(core_sol, fit_id),

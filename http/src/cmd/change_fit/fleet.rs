@@ -4,13 +4,13 @@ use crate::{cmd::HCmdResp, util::HExecError};
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetFleetCmd {
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
-    fleet_id: Option<rc::SolFleetId>,
+    fleet_id: Option<rc::FleetId>,
 }
 impl HSetFleetCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<HCmdResp, HExecError> {
         match self.fleet_id {
             Some(fleet_id) => {

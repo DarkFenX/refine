@@ -5,10 +5,10 @@ use std::collections::HashMap;
 pub(in crate::info::valid) struct HValUnusableResFail {
     max: Option<rc::AttrVal>,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    users: HashMap<rc::SolItemId, rc::AttrVal>,
+    users: HashMap<rc::ItemId, rc::AttrVal>,
 }
-impl From<&rc::SolValUnusableResFail> for HValUnusableResFail {
-    fn from(core_val_fail: &rc::SolValUnusableResFail) -> Self {
+impl From<&rc::val::ValUnusableResFail> for HValUnusableResFail {
+    fn from(core_val_fail: &rc::val::ValUnusableResFail) -> Self {
         Self {
             max: core_val_fail.max,
             users: core_val_fail.users.iter().map(|v| (v.item_id, v.used)).collect(),

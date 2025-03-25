@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HSubsystemInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
 }
 impl From<&rc::SubsystemInfo> for HSubsystemInfoId {
     fn from(core_subsystem_info: &rc::SubsystemInfo) -> Self {

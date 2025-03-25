@@ -7,7 +7,7 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeChargeCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeChargeCmd,
 }

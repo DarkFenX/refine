@@ -11,20 +11,18 @@ use crate::{
 pub(crate) struct HChangeProjEffectCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    add_projs: Vec<rc::SolItemId>,
+    add_projs: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    rm_projs: Vec<rc::SolItemId>,
+    rm_projs: Vec<rc::ItemId>,
     state: Option<bool>,
-    // Workaround for https://github.com/serde-rs/serde/issues/1183
-    #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeProjEffectCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        item_id: &rc::SolItemId,
+        item_id: &rc::ItemId,
     ) -> Result<HCmdResp, HExecError> {
         for projectee_item_id in self.add_projs.iter() {
             if let Err(error) = core_sol.add_proj_effect_proj(item_id, *projectee_item_id) {

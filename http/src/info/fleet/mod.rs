@@ -15,7 +15,7 @@ pub(crate) enum HFleetInfo {
 impl HFleetInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::SolFleetId,
+        fleet_id: &rc::FleetId,
         fleet_mode: HFleetInfoMode,
     ) -> Result<Self, HExecError> {
         let info = match fleet_mode {

@@ -3,11 +3,11 @@ pub(crate) enum HExecError {
     // Fits
     FitNotFoundPrimary(rc::err::basic::FitFoundError),
     FitNotFoundSecondary(rc::err::basic::FitFoundError),
-    FitCharacterNotFound(rc::SolFitId),
-    FitShipNotFound(rc::SolFitId),
-    FitStanceNotFound(rc::SolFitId),
+    FitCharacterNotFound(rc::FitId),
+    FitShipNotFound(rc::FitId),
+    FitStanceNotFound(rc::FitId),
     FitIsNotInFleet(rc::err::basic::FitFleetAssignedError),
-    FitIsNotInThisFleet(rc::SolFleetId, rc::SolFitId),
+    FitIsNotInThisFleet(rc::FleetId, rc::FitId),
     // Fleets
     FleetNotFoundPrimary(rc::err::basic::FleetFoundError),
     FleetNotFoundSecondary(rc::err::basic::FleetFoundError),

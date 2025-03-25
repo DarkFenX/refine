@@ -7,7 +7,7 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetShipCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    fit_id: rc::SolFitId,
+    fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HSetShipCmd,
 }
@@ -47,7 +47,7 @@ impl HChangeShipViaItemIdCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeShipViaFitIdCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    fit_id: rc::SolFitId,
+    fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeShipViaFitIdCmd,
 }

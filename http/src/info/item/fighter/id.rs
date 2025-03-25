@@ -1,14 +1,17 @@
 use std::collections::HashMap;
 
-use crate::info::{HItemInfoMode, item::autocharge::HAutochargeInfo};
+use crate::{
+    info::{HItemInfoMode, item::autocharge::HAutochargeInfo},
+    shared::HEffectId,
+};
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HFighterInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    pub(crate) autocharges: HashMap<rc::EEffectId, HAutochargeInfo>,
+    pub(crate) autocharges: HashMap<HEffectId, HAutochargeInfo>,
 }
 impl HFighterInfoId {
     pub(super) fn mk_info(
@@ -21,7 +24,7 @@ impl HFighterInfoId {
             autocharges: core_fighter_info
                 .autocharges
                 .iter()
-                .map(|(k, v)| (*k, HAutochargeInfo::mk_info(core_sol, v, item_mode)))
+                .map(|(k, v)| (k.into(), HAutochargeInfo::mk_info(core_sol, v, item_mode)))
                 .collect(),
         }
     }

@@ -13,7 +13,7 @@ impl HAddFleetCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HDeleteFleetCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    fleet_id: rc::SolFleetId,
+    fleet_id: rc::FleetId,
 }
 impl HDeleteFleetCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {

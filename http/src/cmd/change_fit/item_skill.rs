@@ -5,7 +5,7 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddSkillCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     level: rc::SkillLevel,
     state: Option<bool>,
 }
@@ -13,7 +13,7 @@ impl HAddSkillCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::SkillInfo, HExecError> {
         let core_skill = match core_sol.add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true)) {
             Ok(core_skill) => core_skill,
@@ -33,7 +33,7 @@ impl HAddSkillCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSkillCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeSkillCmd,
 }

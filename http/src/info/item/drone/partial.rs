@@ -4,17 +4,17 @@ use crate::{info::item::mutation::HItemMutationInfo, shared::HMinionState};
 #[derive(serde::Serialize)]
 pub(crate) struct HDroneInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
     pub(crate) kind: &'static str,
-    pub(crate) type_id: rc::EItemId,
+    pub(crate) type_id: rc::ItemTypeId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) fit_id: rc::SolFitId,
+    pub(crate) fit_id: rc::FitId,
     pub(crate) state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) mutation: Option<HItemMutationInfo>,
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) projs: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
+    pub(crate) projs: Vec<(rc::ItemId, Option<rc::AttrVal>)>,
 }
 impl From<&rc::DroneInfo> for HDroneInfoPartial {
     fn from(core_drone_info: &rc::DroneInfo) -> Self {

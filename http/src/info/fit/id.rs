@@ -4,10 +4,10 @@ use crate::util::HExecError;
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolFitId,
+    pub(crate) id: rc::FitId,
 }
 impl HFitInfoId {
-    pub(in crate::info::fit) fn mk_info(core_sol: &rc::SolarSystem, fit_id: &rc::SolFitId) -> Result<Self, HExecError> {
+    pub(in crate::info::fit) fn mk_info(core_sol: &rc::SolarSystem, fit_id: &rc::FitId) -> Result<Self, HExecError> {
         let core_fit = match core_sol.get_fit(fit_id) {
             Ok(core_fit) => core_fit,
             Err(error) => match error {

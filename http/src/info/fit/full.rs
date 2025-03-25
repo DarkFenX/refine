@@ -10,10 +10,10 @@ use crate::{
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoFull {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolFitId,
+    pub(crate) id: rc::FitId,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) fleet: Option<rc::SolFleetId>,
+    pub(crate) fleet: Option<rc::FleetId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) character: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -44,7 +44,7 @@ pub(crate) struct HFitInfoFull {
 impl HFitInfoFull {
     pub(in crate::info::fit) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
         item_mode: HItemInfoMode,
     ) -> Result<Self, HExecError> {
         let core_fit = match core_sol.get_fit(fit_id) {

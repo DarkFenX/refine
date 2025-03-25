@@ -2,11 +2,11 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HImplantInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
     pub(crate) kind: &'static str,
-    pub(crate) type_id: rc::EItemId,
+    pub(crate) type_id: rc::ItemTypeId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) fit_id: rc::SolFitId,
+    pub(crate) fit_id: rc::FitId,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) slot: Option<rc::SlotIndex>,
     pub(crate) enabled: bool,

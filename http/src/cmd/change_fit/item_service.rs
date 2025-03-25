@@ -6,14 +6,14 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddServiceCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: Option<HServiceState>,
 }
 impl HAddServiceCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::ServiceInfo, HExecError> {
         let core_service = match core_sol.add_service(
             *fit_id,
@@ -35,7 +35,7 @@ impl HAddServiceCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeServiceCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeServiceCmd,
 }

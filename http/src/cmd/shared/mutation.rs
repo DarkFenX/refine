@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnAdd {
-    Short(rc::EItemId),
+    Short(rc::ItemTypeId),
     Full(HItemMutationFull),
 }
 impl From<&HMutationOnAdd> for rc::ItemAddMutation {
@@ -19,21 +19,21 @@ impl From<&HMutationOnAdd> for rc::ItemAddMutation {
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnChange {
-    AddShort(rc::EItemId),
+    AddShort(rc::ItemTypeId),
     AddFull(HItemMutationFull),
     ChangeAttrs(
         #[serde_as(as = "std::collections::HashMap<serde_with::DisplayFromStr, _>")]
-        HashMap<rc::EAttrId, Option<HItemAttrMutationValue>>,
+        HashMap<rc::AttrId, Option<HItemAttrMutationValue>>,
     ),
 }
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Deserialize_tuple)]
 pub(in crate::cmd) struct HItemMutationFull {
-    pub(in crate::cmd) mutator_id: rc::EItemId,
+    pub(in crate::cmd) mutator_id: rc::ItemTypeId,
     // Workaround for https://github.com/serde-rs/serde/issues/1183
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
-    pub(in crate::cmd) attrs: Option<HashMap<rc::EAttrId, HItemAttrMutationValue>>,
+    pub(in crate::cmd) attrs: Option<HashMap<rc::AttrId, HItemAttrMutationValue>>,
 }
 impl From<&HItemMutationFull> for rc::ItemAddMutation {
     fn from(h_item_mutation: &HItemMutationFull) -> Self {

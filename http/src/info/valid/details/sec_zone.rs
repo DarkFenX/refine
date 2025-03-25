@@ -7,10 +7,10 @@ use crate::shared::HSecZone;
 pub(in crate::info::valid) struct HValSecZoneFail {
     zone: HSecZone,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    items: HashMap<rc::SolItemId, Vec<HSecZone>>,
+    items: HashMap<rc::ItemId, Vec<HSecZone>>,
 }
-impl From<&rc::SolValSecZoneFail> for HValSecZoneFail {
-    fn from(core_val_fail: &rc::SolValSecZoneFail) -> Self {
+impl From<&rc::val::ValSecZoneFail> for HValSecZoneFail {
+    fn from(core_val_fail: &rc::val::ValSecZoneFail) -> Self {
         Self {
             zone: (&core_val_fail.zone).into(),
             items: core_val_fail

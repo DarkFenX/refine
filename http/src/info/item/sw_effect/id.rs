@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HSwEffectInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
 }
 impl From<&rc::SwEffectInfo> for HSwEffectInfoId {
     fn from(core_sw_effect_info: &rc::SwEffectInfo) -> Self {

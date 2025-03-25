@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HAutochargeInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
 }
 impl From<&rc::AutochargeInfo> for HAutochargeInfoId {
     fn from(core_autocharge_info: &rc::AutochargeInfo) -> Self {

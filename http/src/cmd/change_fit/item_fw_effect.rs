@@ -5,14 +5,14 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddFwEffectCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: Option<bool>,
 }
 impl HAddFwEffectCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::FwEffectInfo, HExecError> {
         let core_fw_effect = match core_sol.add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_fw_effect) => core_fw_effect,
@@ -30,7 +30,7 @@ impl HAddFwEffectCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeFwEffectCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeFwEffectCmd,
 }

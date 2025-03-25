@@ -4,7 +4,7 @@ use crate::info::{HItemInfoMode, item::charge::HChargeInfo};
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) charge: Option<HChargeInfo>,
 }

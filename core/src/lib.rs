@@ -22,9 +22,9 @@
 
 pub use defs::VERSION;
 pub use sol::{
-    AddMode, AttrId, AttrVal, Count, DmgProfile, EffectId, EffectInfo, EffectMode, FitId, FleetId, Idx, ItemGrpId,
-    ItemId, ItemTypeId, ModRack, MutaRoll, OpInfo, RmMode, SecZone, SecZoneCorruption, SkillLevel, SlotIndex,
-    SolarSystem,
+    AddMode, AttrId, AttrVal, Count, CustomEffectId, DmgProfile, DogmaEffectId, EffectId, EffectInfo, EffectMode,
+    FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId, ModRack, MutaRoll, OpInfo, RmMode, SecZone, SecZoneCorruption,
+    SkillLevel, SlotIndex, SolarSystem,
     info::{
         AttrMutationInfo, AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FitInfo,
         FleetInfo, FwEffectInfo, ImplantInfo, ItemInfo, ItemMutationInfo, ModuleInfo, ProjEffectInfo, ProjInfo,

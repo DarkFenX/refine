@@ -2,11 +2,11 @@
 #[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HAffectorInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) item_id: rc::SolItemId,
-    pub(crate) attr_id: Option<rc::EAttrId>,
+    pub(crate) item_id: rc::ItemId,
+    pub(crate) attr_id: Option<rc::AttrId>,
 }
 impl HAffectorInfo {
-    fn new(item_id: rc::SolItemId, attr_id: Option<rc::EAttrId>) -> Self {
+    fn new(item_id: rc::ItemId, attr_id: Option<rc::AttrId>) -> Self {
         Self { item_id, attr_id }
     }
 }

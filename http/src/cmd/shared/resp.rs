@@ -101,10 +101,10 @@ impl From<rc::SwEffectInfo> for HCmdResp {
 #[derive(serde::Serialize)]
 pub(crate) struct HFleetIdResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::SolFleetId,
+    id: rc::FleetId,
 }
 impl HFleetIdResp {
-    fn new(fleet_id: rc::SolFleetId) -> Self {
+    fn new(fleet_id: rc::FleetId) -> Self {
         Self { id: fleet_id }
     }
 }
@@ -118,10 +118,10 @@ impl From<rc::FleetInfo> for HFleetIdResp {
 #[derive(serde::Serialize)]
 pub(crate) struct HFitIdResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::SolFitId,
+    id: rc::FitId,
 }
 impl HFitIdResp {
-    fn new(fit_id: rc::SolFitId) -> Self {
+    fn new(fit_id: rc::FitId) -> Self {
         Self { id: fit_id }
     }
 }
@@ -135,13 +135,13 @@ impl From<rc::FitInfo> for HFitIdResp {
 #[derive(serde::Serialize)]
 pub(crate) struct HItemIdsResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::SolItemId,
+    id: rc::ItemId,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    charge_id: Option<rc::SolItemId>,
+    charge_id: Option<rc::ItemId>,
 }
 impl HItemIdsResp {
-    fn new(item_id: rc::SolItemId, charge_info: Option<rc::ChargeInfo>) -> Self {
+    fn new(item_id: rc::ItemId, charge_info: Option<rc::ChargeInfo>) -> Self {
         Self {
             id: item_id,
             charge_id: charge_info.map(|v| v.id),

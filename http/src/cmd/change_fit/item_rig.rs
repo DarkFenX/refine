@@ -5,14 +5,14 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddRigCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: Option<bool>,
 }
 impl HAddRigCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::RigInfo, HExecError> {
         let core_rig = match core_sol.add_rig(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_rig) => core_rig,
@@ -30,7 +30,7 @@ impl HAddRigCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeRigCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeRigCmd,
 }

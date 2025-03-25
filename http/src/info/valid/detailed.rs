@@ -11,8 +11,8 @@ pub(crate) struct HValidInfoDetailed {
     #[serde(skip_serializing_if = "HValidInfoDetails::is_empty")]
     details: HValidInfoDetails,
 }
-impl From<&rc::SolValResult> for HValidInfoDetailed {
-    fn from(core_val_result: &rc::SolValResult) -> Self {
+impl From<&rc::val::ValResult> for HValidInfoDetailed {
+    fn from(core_val_result: &rc::val::ValResult) -> Self {
         Self {
             passed: core_val_result.all_passed(),
             details: core_val_result.into(),
@@ -95,7 +95,7 @@ struct HValidInfoDetails {
     capital_module: Option<HValCapitalModFail>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    not_loaded_item: Vec<rc::SolItemId>,
+    not_loaded_item: Vec<rc::ItemId>,
     #[serde(skip_serializing_if = "HValModuleStateFail::is_empty")]
     module_state: HValModuleStateFail,
     #[serde(skip_serializing_if = "HValItemKindFail::is_empty")]
@@ -140,7 +140,7 @@ struct HValidInfoDetails {
     sec_zone_unactivable: Option<HValSecZoneFail>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    activation_blocked: Vec<rc::SolItemId>,
+    activation_blocked: Vec<rc::ItemId>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -204,8 +204,8 @@ impl HValidInfoDetails {
             && self.activation_blocked.is_empty()
     }
 }
-impl From<&rc::SolValResult> for HValidInfoDetails {
-    fn from(core_val_result: &rc::SolValResult) -> Self {
+impl From<&rc::val::ValResult> for HValidInfoDetails {
+    fn from(core_val_result: &rc::val::ValResult) -> Self {
         Self {
             cpu: core_val_result.cpu.as_ref().map(|v| v.into()),
             powergrid: core_val_result.powergrid.as_ref().map(|v| v.into()),

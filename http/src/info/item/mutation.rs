@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 #[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HItemMutationInfo {
-    pub(crate) base_type_id: rc::EItemId,
-    pub(crate) mutator_id: rc::EItemId,
-    pub(crate) attrs: HashMap<rc::EAttrId, HAttrMutationInfo>,
+    pub(crate) base_type_id: rc::ItemTypeId,
+    pub(crate) mutator_id: rc::ItemTypeId,
+    pub(crate) attrs: HashMap<rc::AttrId, HAttrMutationInfo>,
 }
 impl From<&rc::ItemMutationInfo> for HItemMutationInfo {
     fn from(core_item_mutation_info: &rc::ItemMutationInfo) -> Self {

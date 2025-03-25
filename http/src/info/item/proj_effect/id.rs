@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HProjEffectInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
 }
 impl From<&rc::ProjEffectInfo> for HProjEffectInfoId {
     fn from(core_proj_effect_info: &rc::ProjEffectInfo) -> Self {

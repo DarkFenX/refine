@@ -4,7 +4,7 @@ use crate::{cmd::HCmdResp, util::HExecError};
 #[derive(serde::Deserialize)]
 pub(crate) struct HDeleteFitCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    fit_id: rc::SolFitId,
+    fit_id: rc::FitId,
 }
 impl HDeleteFitCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {

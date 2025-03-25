@@ -5,7 +5,7 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddProjEffectCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: Option<bool>,
 }
 impl HAddProjEffectCmd {
@@ -18,7 +18,7 @@ impl HAddProjEffectCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeProjEffectCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeProjEffectCmd,
 }

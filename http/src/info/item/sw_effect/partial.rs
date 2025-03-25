@@ -2,9 +2,9 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HSwEffectInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
     pub(crate) kind: &'static str,
-    pub(crate) type_id: rc::EItemId,
+    pub(crate) type_id: rc::ItemTypeId,
     pub(crate) enabled: bool,
 }
 impl From<&rc::SwEffectInfo> for HSwEffectInfoPartial {

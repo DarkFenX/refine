@@ -2,10 +2,10 @@
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HValShipStanceFail {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
 }
-impl From<&rc::SolValShipStanceFail> for HValShipStanceFail {
-    fn from(core_val_fail: &rc::SolValShipStanceFail) -> Self {
+impl From<&rc::val::ValShipStanceFail> for HValShipStanceFail {
+    fn from(core_val_fail: &rc::val::ValShipStanceFail) -> Self {
         Self {
             item_id: core_val_fail.item_id,
         }

@@ -5,15 +5,15 @@ use std::collections::HashMap;
 pub(in crate::info::valid) struct HValItemKindFail {
     #[serde(flatten)]
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
-    data: HashMap<rc::SolItemId, HValItemKindItemInfo>,
+    data: HashMap<rc::ItemId, HValItemKindItemInfo>,
 }
 impl HValItemKindFail {
     pub(in crate::info::valid) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
 }
-impl From<&Vec<rc::SolValItemKindFail>> for HValItemKindFail {
-    fn from(core_val_fails: &Vec<rc::SolValItemKindFail>) -> Self {
+impl From<&Vec<rc::val::ValItemKindFail>> for HValItemKindFail {
+    fn from(core_val_fails: &Vec<rc::val::ValItemKindFail>) -> Self {
         Self {
             data: core_val_fails.iter().map(|v| (v.item_id, v.into())).collect(),
         }
@@ -26,8 +26,8 @@ pub(in crate::info::valid) struct HValItemKindItemInfo {
     kind: Option<HItemKind>,
     expected_kind: HItemKind,
 }
-impl From<&rc::SolValItemKindFail> for HValItemKindItemInfo {
-    fn from(core_val_fail: &rc::SolValItemKindFail) -> Self {
+impl From<&rc::val::ValItemKindFail> for HValItemKindItemInfo {
+    fn from(core_val_fail: &rc::val::ValItemKindFail) -> Self {
         Self {
             kind: core_val_fail.kind.map(|v| (&v).into()),
             expected_kind: (&core_val_fail.expected_kind).into(),

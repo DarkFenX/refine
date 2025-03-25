@@ -18,7 +18,7 @@ pub(crate) enum HFitInfo {
 impl HFitInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> Result<Self, HExecError> {

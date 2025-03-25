@@ -11,16 +11,16 @@ use crate::{
 pub(crate) struct HAddModuleCmd {
     rack: HModRack,
     add_mode: HAddMode,
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: HModuleState,
     mutation: Option<HMutationOnAdd>,
-    charge_type_id: Option<rc::EItemId>,
+    charge_type_id: Option<rc::ItemTypeId>,
 }
 impl HAddModuleCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::ModuleInfo, HExecError> {
         let core_module = match core_sol.add_module(
             *fit_id,
@@ -46,7 +46,7 @@ impl HAddModuleCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeModuleCmd,
 }

@@ -4,15 +4,15 @@ use crate::util::HExecError;
 #[derive(serde::Serialize)]
 pub(crate) struct HFleetInfoFull {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolFleetId,
+    pub(crate) id: rc::FleetId,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) fits: Vec<rc::SolFitId>,
+    pub(crate) fits: Vec<rc::FitId>,
 }
 impl HFleetInfoFull {
     pub(in crate::info::fleet) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::SolFleetId,
+        fleet_id: &rc::FleetId,
     ) -> Result<Self, HExecError> {
         let core_fleet = match core_sol.get_fleet(fleet_id) {
             Ok(core_fleet) => core_fleet,

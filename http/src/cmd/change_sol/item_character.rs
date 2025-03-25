@@ -7,7 +7,7 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetCharacterCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    fit_id: rc::SolFitId,
+    fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HSetCharacterCmd,
 }
@@ -47,7 +47,7 @@ impl HChangeCharacterViaItemIdCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeCharacterViaFitIdCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    fit_id: rc::SolFitId,
+    fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeCharacterViaFitIdCmd,
 }

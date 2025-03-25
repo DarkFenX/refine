@@ -4,10 +4,10 @@ pub(in crate::info::valid) struct HValSlotCountFail {
     used: rc::Count,
     max: Option<rc::Count>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
-    users: Vec<rc::SolItemId>,
+    users: Vec<rc::ItemId>,
 }
-impl From<&rc::SolValSlotCountFail> for HValSlotCountFail {
-    fn from(core_val_fail: &rc::SolValSlotCountFail) -> Self {
+impl From<&rc::val::ValSlotCountFail> for HValSlotCountFail {
+    fn from(core_val_fail: &rc::val::ValSlotCountFail) -> Self {
         Self {
             used: core_val_fail.used,
             max: core_val_fail.max,

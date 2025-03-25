@@ -6,7 +6,7 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddDroneCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: HMinionState,
     mutation: Option<HMutationOnAdd>,
 }
@@ -14,7 +14,7 @@ impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::DroneInfo, HExecError> {
         let core_drone = match core_sol.add_drone(
             *fit_id,
@@ -37,7 +37,7 @@ impl HAddDroneCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeDroneCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeDroneCmd,
 }

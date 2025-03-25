@@ -9,17 +9,15 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddBoosterCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: Option<bool>,
-    // Workaround for https://github.com/serde-rs/serde/issues/1183
-    #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     side_effects: Option<HSideEffectMap>,
 }
 impl HAddBoosterCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::BoosterInfo, HExecError> {
         let core_booster = match core_sol.add_booster(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_booster) => core_booster,
@@ -42,7 +40,7 @@ impl HAddBoosterCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeBoosterCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeBoosterCmd,
 }

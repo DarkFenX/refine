@@ -5,16 +5,16 @@ use crate::util::HExecError;
 pub(crate) struct HChangeFleetCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    add_fits: Vec<rc::SolFitId>,
+    add_fits: Vec<rc::FitId>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    remove_fits: Vec<rc::SolFitId>,
+    remove_fits: Vec<rc::FitId>,
 }
 impl HChangeFleetCmd {
     pub(crate) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::SolFleetId,
+        fleet_id: &rc::FleetId,
     ) -> Result<rc::FleetInfo, HExecError> {
         let core_fleet = match core_sol.get_fleet(fleet_id) {
             Ok(core_fleet) => core_fleet,

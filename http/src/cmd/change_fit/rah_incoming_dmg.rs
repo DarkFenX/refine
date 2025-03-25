@@ -8,7 +8,7 @@ impl HSetRahIncomingDmgCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<HCmdResp, HExecError> {
         match &self.dmg_profile {
             Some(dmg_profile) => {

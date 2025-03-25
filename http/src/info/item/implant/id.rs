@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HImplantInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
 }
 impl From<&rc::ImplantInfo> for HImplantInfoId {
     fn from(core_implant_info: &rc::ImplantInfo) -> Self {

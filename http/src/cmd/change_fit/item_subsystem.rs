@@ -5,14 +5,14 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddSubsystemCmd {
-    type_id: rc::EItemId,
+    type_id: rc::ItemTypeId,
     state: Option<bool>,
 }
 impl HAddSubsystemCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::SolFitId,
+        fit_id: &rc::FitId,
     ) -> Result<rc::SubsystemInfo, HExecError> {
         let core_subsystem = match core_sol.add_subsystem(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_subsystem) => core_subsystem,
@@ -30,7 +30,7 @@ impl HAddSubsystemCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSubsystemCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
+    item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeSubsystemCmd,
 }

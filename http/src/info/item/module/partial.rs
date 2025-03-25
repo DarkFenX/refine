@@ -10,11 +10,11 @@ use crate::{
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SolItemId,
+    pub(crate) id: rc::ItemId,
     pub(crate) kind: &'static str,
-    pub(crate) type_id: rc::EItemId,
+    pub(crate) type_id: rc::ItemTypeId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) fit_id: rc::SolFitId,
+    pub(crate) fit_id: rc::FitId,
     pub(crate) state: HModuleState,
     pub(crate) rack: HModRack,
     pub(crate) pos: rc::Idx,
@@ -24,7 +24,7 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) charge: Option<HChargeInfo>,
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) projs: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
+    pub(crate) projs: Vec<(rc::ItemId, Option<rc::AttrVal>)>,
 }
 impl HModuleInfoPartial {
     pub(super) fn mk_info(
