@@ -6,7 +6,7 @@ use crate::{
     phb::{
         data::{
             PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemAttrs, PItemEffects, PItemFighterAbils, PItemGroup,
-            PItemSkillMap, PMutaAttrMods, PMutaItemConvs,
+            PItemList, PItemSkillMap, PMutaAttrMods, PMutaItemConvs,
         },
         fsd,
     },
@@ -74,6 +74,10 @@ impl rc::ed::EveDataHandler for PhbHttpEdh {
     /// Get item groups.
     fn get_item_groups(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemGroup>> {
         self.process_fsd::<PItemGroup, rc::ed::EItemGroup>("fsd_binary", "groups")
+    }
+    /// Get item type lists.
+    fn get_item_lists(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemList>> {
+        self.process_fsd::<PItemList, rc::ed::EItemList>("fsd_binary", "typelist")
     }
     /// Get dogma attributes.
     fn get_attrs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EAttr>> {
