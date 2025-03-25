@@ -9,7 +9,11 @@ impl FsdMerge<rc::ed::EItemAttr> for PItemAttrs {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemAttr> {
         self.attrs
             .into_iter()
-            .map(|v| rc::ed::EItemAttr::new(id, v.attr_id, v.value))
+            .map(|v| rc::ed::EItemAttr {
+                item_id: id,
+                attr_id: v.attr_id,
+                value: v.value,
+            })
             .collect()
     }
 }
@@ -17,6 +21,6 @@ impl FsdMerge<rc::ed::EItemAttr> for PItemAttrs {
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemAttrData {
     #[serde(rename = "attributeID")]
-    pub(in crate::phb) attr_id: rc::EAttrId,
-    pub(in crate::phb) value: rc::AttrVal,
+    pub(in crate::phb) attr_id: rc::ed::EAttrId,
+    pub(in crate::phb) value: rc::ed::EAttrVal,
 }

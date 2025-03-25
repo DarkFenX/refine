@@ -13,44 +13,44 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
-    pub(in crate::phb) category_id: rc::EEffectCatId,
+    pub(in crate::phb) category_id: rc::ed::EEffectCatId,
     #[serde(rename = "isAssistance", deserialize_with = "bool_from_int")]
     pub(in crate::phb) is_assistance: bool,
     #[serde(rename = "isOffensive", deserialize_with = "bool_from_int")]
     pub(in crate::phb) is_offensive: bool,
     #[serde(rename = "dischargeAttributeID")]
-    pub(in crate::phb) discharge_attr_id: Option<rc::EAttrId>,
+    pub(in crate::phb) discharge_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "durationAttributeID")]
-    pub(in crate::phb) duration_attr_id: Option<rc::EAttrId>,
+    pub(in crate::phb) duration_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "rangeAttributeID")]
-    pub(in crate::phb) range_attr_id: Option<rc::EAttrId>,
+    pub(in crate::phb) range_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "falloffAttributeID")]
-    pub(in crate::phb) falloff_attr_id: Option<rc::EAttrId>,
+    pub(in crate::phb) falloff_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "trackingSpeedAttributeID")]
-    pub(in crate::phb) tracking_attr_id: Option<rc::EAttrId>,
+    pub(in crate::phb) tracking_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "fittingUsageChanceAttributeID")]
-    pub(in crate::phb) usage_chance_attr_id: Option<rc::EAttrId>,
+    pub(in crate::phb) usage_chance_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "resistanceAttributeID")]
-    pub(in crate::phb) resist_attr_id: Option<rc::EAttrId>,
+    pub(in crate::phb) resist_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
     pub(in crate::phb) mods: Vec<PEffectMod>,
 }
 impl FsdMerge<rc::ed::EEffect> for PEffect {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EEffect> {
-        vec![rc::ed::EEffect::new(
+        vec![rc::ed::EEffect {
             id,
-            self.category_id,
-            self.is_assistance,
-            self.is_offensive,
-            into_opt(self.discharge_attr_id),
-            into_opt(self.duration_attr_id),
-            into_opt(self.range_attr_id),
-            into_opt(self.falloff_attr_id),
-            into_opt(self.tracking_attr_id),
-            into_opt(self.usage_chance_attr_id),
-            into_opt(self.resist_attr_id),
-            self.mods.into_iter().map_into().collect(),
-        )]
+            category_id: self.category_id,
+            is_assistance: self.is_assistance,
+            is_offensive: self.is_offensive,
+            discharge_attr_id: into_opt(self.discharge_attr_id),
+            duration_attr_id: into_opt(self.duration_attr_id),
+            range_attr_id: into_opt(self.range_attr_id),
+            falloff_attr_id: into_opt(self.falloff_attr_id),
+            tracking_attr_id: into_opt(self.tracking_attr_id),
+            usage_chance_attr_id: into_opt(self.usage_chance_attr_id),
+            resist_attr_id: into_opt(self.resist_attr_id),
+            mods: self.mods.into_iter().map_into().collect(),
+        }]
     }
 }
 
@@ -60,7 +60,10 @@ pub(in crate::phb) struct PEffectMod {
 }
 impl From<PEffectMod> for rc::ed::EEffectMod {
     fn from(p_effect_mod: PEffectMod) -> Self {
-        Self::new(p_effect_mod.func, (&p_effect_mod.args).into())
+        Self {
+            func: p_effect_mod.func,
+            args: (&p_effect_mod.args).into(),
+        }
     }
 }
 

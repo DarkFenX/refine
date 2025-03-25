@@ -10,7 +10,11 @@ impl FsdMerge<rc::ed::EMutaItemConv> for PMutaItemConvs {
         let mut vec = Vec::new();
         for item_map in self.item_maps {
             for applicable_type in item_map.applicable_item_ids {
-                vec.push(rc::ed::EMutaItemConv::new(id, applicable_type, item_map.result_item_id))
+                vec.push(rc::ed::EMutaItemConv {
+                    muta_id: id,
+                    in_item_id: applicable_type,
+                    out_item_id: item_map.result_item_id,
+                })
             }
         }
         vec
@@ -19,7 +23,7 @@ impl FsdMerge<rc::ed::EMutaItemConv> for PMutaItemConvs {
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PMutaItemMap {
     #[serde(rename = "applicableTypes")]
-    pub(in crate::phb) applicable_item_ids: Vec<rc::EItemId>,
+    pub(in crate::phb) applicable_item_ids: Vec<rc::ed::EItemId>,
     #[serde(rename = "resultingType")]
-    pub(in crate::phb) result_item_id: rc::EItemId,
+    pub(in crate::phb) result_item_id: rc::ed::EItemId,
 }

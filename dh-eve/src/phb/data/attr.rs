@@ -10,7 +10,7 @@ pub(in crate::phb) struct PAttr {
     #[serde(rename = "highIsGood", deserialize_with = "bool_from_int")]
     pub(in crate::phb) high_is_good: bool,
     #[serde(rename = "defaultValue")]
-    pub(in crate::phb) default_value: Option<rc::ed::EAttrVal>,
+    pub(in crate::phb) default_value: rc::ed::EAttrVal,
     #[serde(rename = "minAttributeID")]
     pub(in crate::phb) min_attr_id: Option<rc::ed::EAttrId>,
     #[serde(rename = "maxAttributeID")]
@@ -20,14 +20,14 @@ pub(in crate::phb) struct PAttr {
 }
 impl FsdMerge<rc::ed::EAttr> for PAttr {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EAttr> {
-        vec![rc::ed::EAttr::new(
+        vec![rc::ed::EAttr {
             id,
-            self.stackable,
-            self.high_is_good,
-            self.default_value,
-            self.min_attr_id,
-            self.max_attr_id,
-            self.unit_id,
-        )]
+            stackable: self.stackable,
+            high_is_good: self.high_is_good,
+            default_value: self.default_value,
+            min_attr_id: self.min_attr_id,
+            max_attr_id: self.max_attr_id,
+            unit_id: self.unit_id,
+        }]
     }
 }
