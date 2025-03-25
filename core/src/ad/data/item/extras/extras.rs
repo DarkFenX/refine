@@ -3,6 +3,7 @@ use crate::{
         AAttrId, AAttrVal, ACount, AEffect, AEffectId, AItem, AItemCatId, AItemChargeLimit, AItemEffectData,
         AItemGrpId, AItemId, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
     },
+    ed,
     util::{StMap, StSet},
 };
 
@@ -18,7 +19,7 @@ use super::{
     kind::get_item_kind,
     max_state::get_max_state,
     overload_td_lvl::get_overload_td_lvl,
-    sec_zone::is_sec_zone_limitable,
+    sec_zone::{is_disallowed_in_wspace, is_sec_zone_limitable},
     ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
@@ -82,6 +83,8 @@ pub struct AItemExtras {
     pub online_max_sec_class: Option<AAttrVal>,
     /// Can be limited to specific security zones if some of the limit attributes are defined.
     pub sec_zone_limitable: bool,
+    /// Can ship be in wormhole space or not.
+    pub disallowed_in_wspace: bool,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -112,6 +115,7 @@ impl AItemExtras {
             max_type_fitted: Option::default(),
             online_max_sec_class: Option::default(),
             sec_zone_limitable: bool::default(),
+            disallowed_in_wspace: bool::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -144,6 +148,7 @@ impl AItemExtras {
             max_type_fitted: get_max_type_fitted_count(attrs),
             online_max_sec_class: get_online_max_sec_class(attrs),
             sec_zone_limitable: is_sec_zone_limitable(attrs),
+            disallowed_in_wspace: a_item.extras.disallowed_in_wspace,
         }
     }
     pub(crate) fn fill(
@@ -155,6 +160,7 @@ impl AItemExtras {
         item_effects: &StMap<AEffectId, AItemEffectData>,
         item_srqs: &StMap<AItemId, ASkillLevel>,
         effects: &StMap<AEffectId, &AEffect>,
+        type_lists: &StMap<ed::EItemListId, StSet<AItemId>>,
         fitted_limited_groups: &StSet<AItemGrpId>,
         online_limited_groups: &StSet<AItemGrpId>,
         active_limited_groups: &StSet<AItemGrpId>,
@@ -194,5 +200,6 @@ impl AItemExtras {
         self.max_type_fitted = get_max_type_fitted_count(item_attrs);
         self.online_max_sec_class = get_online_max_sec_class(item_attrs);
         self.sec_zone_limitable = is_sec_zone_limitable(item_attrs);
+        self.disallowed_in_wspace = is_disallowed_in_wspace(&item_id, type_lists);
     }
 }

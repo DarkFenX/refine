@@ -27,6 +27,6 @@ pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> Resul
     flow::validate(&mut e_data, &g_supp);
     flow::convert(&e_data, &g_supp, &mut a_data);
     flow::customize(&mut a_data);
-    flow::fill_extra_data(&mut a_data);
+    flow::fill_extra_data(&mut a_data, &g_supp);
     Ok(a_data)
 }

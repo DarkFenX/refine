@@ -1,9 +1,10 @@
 use crate::{
     ac, ad,
+    adg::GSupport,
     util::{StMap, StMapSetL1, StSet},
 };
 
-pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
+pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData, g_supp: &GSupport) {
     // Data for item count in a group limit - need to do it here for efficiency, and to take into
     // account that mutated item can have the limit even if raw mutated type has no such limit
     let grp_mutations = get_grp_mutations(a_data);
@@ -21,6 +22,7 @@ pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
             &a_item.effect_datas,
             &a_item.srqs,
             &effects,
+            &g_supp.rendered_type_lists,
             &limited_fitted_grp_ids,
             &limited_online_grp_ids,
             &limited_active_grp_ids,

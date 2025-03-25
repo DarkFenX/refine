@@ -31,6 +31,7 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) max_type_fitted: Option<CCount>,
     pub(in crate::handler_json) online_max_sec_class: Option<CAttrVal>,
     pub(in crate::handler_json) sec_zone_limitable: bool,
+    pub(in crate::handler_json) disallowed_in_wspace: bool,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -61,6 +62,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             max_type_fitted: a_item_extras.max_type_fitted,
             online_max_sec_class: a_item_extras.online_max_sec_class,
             sec_zone_limitable: a_item_extras.sec_zone_limitable,
+            disallowed_in_wspace: a_item_extras.disallowed_in_wspace,
         }
     }
 }
@@ -93,6 +95,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             max_type_fitted: c_item_extras.max_type_fitted,
             online_max_sec_class: c_item_extras.online_max_sec_class,
             sec_zone_limitable: c_item_extras.sec_zone_limitable,
+            disallowed_in_wspace: c_item_extras.disallowed_in_wspace,
         }
     }
 }
