@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     adg::{
-        GData, GSupport,
+        EData, GSupport,
         rels::{KeyDb, Pk},
     },
     ec,
@@ -11,8 +11,8 @@ use crate::{
 
 const MAX_CYCLES: u32 = 100;
 
-pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> Result<(), StrMsgError> {
-    let mut trash = GData::new();
+pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &GSupport) -> Result<(), StrMsgError> {
+    let mut trash = EData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, g_supp);
     restore_hardcoded_attrs(alive, &mut trash);
@@ -46,7 +46,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initial preparation functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn trash_all(alive: &mut GData, trash: &mut GData) {
+fn trash_all(alive: &mut EData, trash: &mut EData) {
     move_data(&mut alive.items, &mut trash.items, |_| true);
     move_data(&mut alive.groups, &mut trash.groups, |_| true);
     move_data(&mut alive.attrs, &mut trash.attrs, |_| true);
@@ -61,7 +61,7 @@ fn trash_all(alive: &mut GData, trash: &mut GData) {
     move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
 }
 
-fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
+fn restore_core_items(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) {
     let cats = [
         ec::itemcats::CHARGE,
         ec::itemcats::DRONE,
@@ -83,7 +83,7 @@ fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
     move_data(&mut trash.items, &mut alive.items, |v| grps.contains(&v.group_id));
 }
 
-fn restore_hardcoded_attrs(alive: &mut GData, trash: &mut GData) {
+fn restore_hardcoded_attrs(alive: &mut EData, trash: &mut EData) {
     // Gate scramble strength: isn't defined anywhere, default value is used by HIC WDFG script
     // effects. It is referenced from script WDFG effect modifier infos, but there is no
     // functionality to process modifier infos during cleanup. On top of that, those modifiers are
@@ -93,7 +93,7 @@ fn restore_hardcoded_attrs(alive: &mut GData, trash: &mut GData) {
     });
 }
 
-fn restore_hardcoded_buffs(alive: &mut GData, trash: &mut GData) {
+fn restore_hardcoded_buffs(alive: &mut EData, trash: &mut EData) {
     // Used in custom wubble effect
     move_data(&mut trash.buffs, &mut alive.buffs, |v| {
         v.id == ec::buffs::STASIS_WEBIFICATION_BURST
@@ -103,7 +103,7 @@ fn restore_hardcoded_buffs(alive: &mut GData, trash: &mut GData) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
+fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
     let mut item_ids = StSet::new();
     for item in alive.items.iter() {
         item_ids.extend(item.get_pk());
@@ -130,7 +130,7 @@ fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
     })
 }
 
-fn restore_fk_tgts(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) -> bool {
+fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> bool {
     let fkdb = KeyDb::new_fkdb(alive, g_supp);
     move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
         || move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
@@ -143,7 +143,7 @@ fn restore_fk_tgts(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) -> b
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn cleanup_report(alive: &GData, trash: &GData) {
+fn cleanup_report(alive: &EData, trash: &EData) {
     if vec_report(&alive.items, &trash.items)
         && vec_report(&alive.groups, &trash.groups)
         && vec_report(&alive.attrs, &trash.attrs)

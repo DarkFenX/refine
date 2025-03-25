@@ -1,7 +1,7 @@
 use crate::ed;
 
 /// Container for primary data, used internally by the generator.
-pub(in crate::adg) struct GData {
+pub(in crate::adg) struct EData {
     pub(in crate::adg) items: Vec<ed::EItem>,
     pub(in crate::adg) groups: Vec<ed::EItemGroup>,
     pub(in crate::adg) item_lists: Vec<ed::EItemList>,
@@ -16,7 +16,7 @@ pub(in crate::adg) struct GData {
     pub(in crate::adg) muta_items: Vec<ed::EMutaItemConv>,
     pub(in crate::adg) muta_attrs: Vec<ed::EMutaAttrMod>,
 }
-impl GData {
+impl EData {
     pub(in crate::adg) fn new() -> Self {
         Self {
             items: Vec::new(),

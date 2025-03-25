@@ -1,10 +1,10 @@
 use itertools::Itertools;
 
-use crate::{ad, adg::GData, util::StrMsgError};
+use crate::{ad, adg::EData, util::StrMsgError};
 
-pub(in crate::adg::flow::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
+pub(in crate::adg::flow::conv) fn conv_buffs(e_data: &EData) -> Vec<ad::ABuff> {
     let mut a_buffs = Vec::new();
-    for e_buff in g_data.buffs.iter().sorted_by_key(|v| v.id) {
+    for e_buff in e_data.buffs.iter().sorted_by_key(|v| v.id) {
         let op = match conv_buff_op(&e_buff.operation) {
             Ok(op) => op,
             Err(e) => {

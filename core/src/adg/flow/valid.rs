@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     adg::{
-        GData, GSupport, get_abil_effect,
+        EData, GSupport, get_abil_effect,
         rels::{Fk, KeyDb, KeyPart, Pk},
     },
     ed,
@@ -10,29 +10,29 @@ use crate::{
 };
 
 /// Ensure that assumptions reefast makes about the data are true.
-pub(in crate::adg) fn validate(g_data: &mut GData, g_supp: &GSupport) {
-    fk_check(g_data, g_supp);
-    default_effects(g_data);
-    known_fighter_abilities(g_data);
-    fighter_ability_effect(g_data);
+pub(in crate::adg) fn validate(e_data: &mut EData, g_supp: &GSupport) {
+    fk_check(e_data, g_supp);
+    default_effects(e_data);
+    known_fighter_abilities(e_data);
+    fighter_ability_effect(e_data);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
 /// a good idea, since it can help trace down the case when some adapted type fails to load.
-fn fk_check(g_data: &GData, g_supp: &GSupport) {
-    let pkdb = KeyDb::new_pkdb(g_data);
-    fk_check_referer(&g_data.items, &pkdb, g_supp);
-    fk_check_referer(&g_data.groups, &pkdb, g_supp);
-    fk_check_referer(&g_data.attrs, &pkdb, g_supp);
-    fk_check_referer(&g_data.item_attrs, &pkdb, g_supp);
-    fk_check_referer(&g_data.effects, &pkdb, g_supp);
-    fk_check_referer(&g_data.item_effects, &pkdb, g_supp);
-    fk_check_referer(&g_data.abils, &pkdb, g_supp);
-    fk_check_referer(&g_data.item_abils, &pkdb, g_supp);
-    fk_check_referer(&g_data.buffs, &pkdb, g_supp);
-    fk_check_referer(&g_data.item_srqs, &pkdb, g_supp);
-    fk_check_referer(&g_data.muta_items, &pkdb, g_supp);
-    fk_check_referer(&g_data.muta_attrs, &pkdb, g_supp);
+fn fk_check(e_data: &EData, g_supp: &GSupport) {
+    let pkdb = KeyDb::new_pkdb(e_data);
+    fk_check_referer(&e_data.items, &pkdb, g_supp);
+    fk_check_referer(&e_data.groups, &pkdb, g_supp);
+    fk_check_referer(&e_data.attrs, &pkdb, g_supp);
+    fk_check_referer(&e_data.item_attrs, &pkdb, g_supp);
+    fk_check_referer(&e_data.effects, &pkdb, g_supp);
+    fk_check_referer(&e_data.item_effects, &pkdb, g_supp);
+    fk_check_referer(&e_data.abils, &pkdb, g_supp);
+    fk_check_referer(&e_data.item_abils, &pkdb, g_supp);
+    fk_check_referer(&e_data.buffs, &pkdb, g_supp);
+    fk_check_referer(&e_data.item_srqs, &pkdb, g_supp);
+    fk_check_referer(&e_data.muta_items, &pkdb, g_supp);
+    fk_check_referer(&e_data.muta_attrs, &pkdb, g_supp);
 }
 fn fk_check_referer<T: Fk + Named>(rer_vec: &[T], pkdb: &KeyDb, g_supp: &GSupport) {
     fk_check_referee(rer_vec, &pkdb.items, g_supp, T::get_item_fks, ed::EItem::get_name());
@@ -81,10 +81,10 @@ where
 }
 
 /// One default effect per item max. Needed for adapted item generation.
-fn default_effects(g_data: &mut GData) {
+fn default_effects(e_data: &mut EData) {
     let mut unsets = 0;
     let mut seen_defeffs = StSet::new();
-    for e_item_effect in g_data.item_effects.iter_mut() {
+    for e_item_effect in e_data.item_effects.iter_mut() {
         if e_item_effect.is_default && !seen_defeffs.insert(e_item_effect.get_pk()) {
             unsets += 1;
             e_item_effect.is_default = false
@@ -97,16 +97,16 @@ fn default_effects(g_data: &mut GData) {
 }
 
 /// Remove unknown fighter abilities.
-fn known_fighter_abilities(g_data: &mut GData) {
+fn known_fighter_abilities(e_data: &mut EData) {
     let mut unknown_ids = StSet::new();
-    let abils = g_data
+    let abils = e_data
         .abils
         .extract_if(.., |v| get_abil_effect(v.id).is_none())
         .update(|v| {
             unknown_ids.insert(v.id);
         })
         .count();
-    let item_abils = g_data
+    let item_abils = e_data
         .item_abils
         .extract_if(.., |v| get_abil_effect(v.abil_id).is_none())
         .update(|v| {
@@ -127,16 +127,16 @@ fn known_fighter_abilities(g_data: &mut GData) {
 }
 
 /// Remove item abilities which have no effects to handle them.
-fn fighter_ability_effect(g_data: &mut GData) {
+fn fighter_ability_effect(e_data: &mut EData) {
     let mut item_eff_map = StMap::new();
-    for item_eff in g_data.item_effects.iter() {
+    for item_eff in e_data.item_effects.iter() {
         item_eff_map
             .entry(item_eff.item_id)
             .or_insert_with(StSet::new)
             .insert(item_eff.effect_id);
     }
     let mut invalids = StSet::new();
-    g_data
+    e_data
         .item_abils
         .extract_if(.., |v| match get_abil_effect(v.abil_id) {
             Some(eid) => match item_eff_map.get(&v.item_id) {

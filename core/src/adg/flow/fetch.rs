@@ -1,5 +1,5 @@
 use crate::{
-    adg::GData,
+    adg::EData,
     ed,
     ed::EveDataHandler,
     util::{Named, StrMsgError},
@@ -32,23 +32,23 @@ where
     Ok(())
 }
 
-pub(in crate::adg) fn fetch_data(e_handler: &dyn EveDataHandler, g_data: &mut GData) -> Result<(), StrMsgError> {
-    fetch_data_vec(e_handler, EveDataHandler::get_items, &mut g_data.items)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_groups, &mut g_data.groups)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_lists, &mut g_data.item_lists)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_attrs, &mut g_data.attrs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_attrs, &mut g_data.item_attrs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_effects, &mut g_data.effects)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_effects, &mut g_data.item_effects)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_fighter_abils, &mut g_data.abils)?;
+pub(in crate::adg) fn fetch_data(e_handler: &dyn EveDataHandler, e_data: &mut EData) -> Result<(), StrMsgError> {
+    fetch_data_vec(e_handler, EveDataHandler::get_items, &mut e_data.items)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_item_groups, &mut e_data.groups)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_item_lists, &mut e_data.item_lists)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_attrs, &mut e_data.attrs)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_item_attrs, &mut e_data.item_attrs)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_effects, &mut e_data.effects)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_item_effects, &mut e_data.item_effects)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_fighter_abils, &mut e_data.abils)?;
     fetch_data_vec(
         e_handler,
         EveDataHandler::get_item_fighter_abils,
-        &mut g_data.item_abils,
+        &mut e_data.item_abils,
     )?;
-    fetch_data_vec(e_handler, EveDataHandler::get_buffs, &mut g_data.buffs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_skill_reqs, &mut g_data.item_srqs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_muta_item_convs, &mut g_data.muta_items)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_muta_attr_mods, &mut g_data.muta_attrs)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_buffs, &mut e_data.buffs)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_item_skill_reqs, &mut e_data.item_srqs)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_muta_item_convs, &mut e_data.muta_items)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_muta_attr_mods, &mut e_data.muta_attrs)?;
     Ok(())
 }

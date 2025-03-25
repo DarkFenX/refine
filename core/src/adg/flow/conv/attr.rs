@@ -1,9 +1,9 @@
 use ordered_float::OrderedFloat as OF;
 
-use crate::{ad, adg::GData};
+use crate::{ad, adg::EData};
 
-pub(in crate::adg::flow::conv) fn conv_attrs(g_data: &GData) -> Vec<ad::AAttr> {
-    g_data
+pub(in crate::adg::flow::conv) fn conv_attrs(e_data: &EData) -> Vec<ad::AAttr> {
+    e_data
         .attrs
         .iter()
         .map(|v| ad::AAttr {

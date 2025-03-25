@@ -1,7 +1,7 @@
 //! Contains facilities which clean up data to ensure no duplicate primary keys exist.
 
 use crate::{
-    adg::{GData, rels::Pk},
+    adg::{EData, rels::Pk},
     util::{Named, StSet},
 };
 
@@ -24,17 +24,17 @@ fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
     }
 }
 
-pub(in crate::adg) fn dedup_pks(g_data: &mut GData) {
-    dedup_pks_vec(&mut g_data.items);
-    dedup_pks_vec(&mut g_data.groups);
-    dedup_pks_vec(&mut g_data.attrs);
-    dedup_pks_vec(&mut g_data.item_attrs);
-    dedup_pks_vec(&mut g_data.effects);
-    dedup_pks_vec(&mut g_data.item_effects);
-    dedup_pks_vec(&mut g_data.abils);
-    dedup_pks_vec(&mut g_data.item_abils);
-    dedup_pks_vec(&mut g_data.buffs);
-    dedup_pks_vec(&mut g_data.item_srqs);
-    dedup_pks_vec(&mut g_data.muta_items);
-    dedup_pks_vec(&mut g_data.muta_attrs);
+pub(in crate::adg) fn dedup_pks(e_data: &mut EData) {
+    dedup_pks_vec(&mut e_data.items);
+    dedup_pks_vec(&mut e_data.groups);
+    dedup_pks_vec(&mut e_data.attrs);
+    dedup_pks_vec(&mut e_data.item_attrs);
+    dedup_pks_vec(&mut e_data.effects);
+    dedup_pks_vec(&mut e_data.item_effects);
+    dedup_pks_vec(&mut e_data.abils);
+    dedup_pks_vec(&mut e_data.item_abils);
+    dedup_pks_vec(&mut e_data.buffs);
+    dedup_pks_vec(&mut e_data.item_srqs);
+    dedup_pks_vec(&mut e_data.muta_items);
+    dedup_pks_vec(&mut e_data.muta_attrs);
 }

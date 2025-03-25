@@ -1,39 +1,70 @@
 use ordered_float::OrderedFloat as OF;
 
-use crate::{ac, ad, adg::data::GData, ec, ed, util::StMap};
+use crate::{
+    ac, ad,
+    adg::data::EData,
+    ec, ed,
+    util::{StMap, StMapSetL1, StSet},
+};
 
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
-    pub(in crate::adg) attr_unit_map: StMap<ed::EAttrId, ed::EAttrUnitId>,
     pub(in crate::adg) grp_cat_map: StMap<ed::EItemGrpId, ed::EItemCatId>,
+    pub(in crate::adg) rendered_type_lists: StMap<ed::EItemListId, StSet<ad::AItemId>>,
+    pub(in crate::adg) attr_unit_map: StMap<ed::EAttrId, ed::EAttrUnitId>,
     pub(in crate::adg) eff_buff_map: StMap<ed::EEffectId, ad::AEffectBuffInfo>,
     pub(in crate::adg) eff_charge_map: StMap<ed::EEffectId, ad::AEffectChargeInfo>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
         Self {
-            attr_unit_map: StMap::new(),
             grp_cat_map: StMap::new(),
+            rendered_type_lists: StMap::new(),
+            attr_unit_map: StMap::new(),
             eff_buff_map: StMap::new(),
             eff_charge_map: StMap::new(),
         }
     }
-    pub(in crate::adg) fn fill(&mut self, g_data: &GData) {
-        self.fill_attr_unit_map(g_data);
-        self.fill_grp_cat_map(g_data);
+    pub(in crate::adg) fn fill(&mut self, e_data: &EData) {
+        self.fill_grp_cat_map(e_data);
+        self.fill_rendered_type_lists(e_data);
+        self.fill_attr_unit_map(e_data);
         self.fill_eff_buff_map();
         self.fill_eff_charge_map();
     }
-    fn fill_attr_unit_map(&mut self, g_data: &GData) {
-        for attr in g_data.attrs.iter() {
-            if let Some(unit) = attr.unit_id {
-                self.attr_unit_map.insert(attr.id, unit);
-            }
+    fn fill_grp_cat_map(&mut self, e_data: &EData) {
+        for grp in e_data.groups.iter() {
+            self.grp_cat_map.insert(grp.id, grp.category_id);
         }
     }
-    fn fill_grp_cat_map(&mut self, g_data: &GData) {
-        for grp in g_data.groups.iter() {
-            self.grp_cat_map.insert(grp.id, grp.category_id);
+    fn fill_rendered_type_lists(&mut self, e_data: &EData) {
+        let mut types_by_grp = StMapSetL1::new();
+        for item in e_data.items.iter() {
+            types_by_grp.add_entry(item.group_id, item.id);
+        }
+        let mut types_by_cat = StMapSetL1::new();
+        for group in e_data.groups.iter() {
+            types_by_cat.extend_entries(group.category_id, types_by_grp.get(&group.id).copied());
+        }
+        for item_list in &e_data.item_lists {
+            let mut includes = StSet::new();
+            includes.extend(item_list.included_item_ids.iter().copied());
+            for included_grp_id in item_list.included_grp_ids.iter() {
+                includes.extend(types_by_grp.get(included_grp_id).copied());
+            }
+            for included_cat_id in item_list.included_cat_ids.iter() {
+                includes.extend(types_by_cat.get(included_cat_id).copied());
+            }
+            let mut excludes = StSet::new();
+            excludes.extend(item_list.excluded_item_ids.iter().copied());
+            for excluded_grp_id in item_list.excluded_grp_ids.iter() {
+                excludes.extend(types_by_grp.get(excluded_grp_id).copied());
+            }
+            for excluded_cat_id in item_list.included_cat_ids.iter() {
+                excludes.extend(types_by_cat.get(excluded_cat_id).copied());
+            }
+            self.rendered_type_lists
+                .insert(item_list.id, includes.difference(&excludes).copied().collect());
         }
     }
     fn fill_eff_buff_map(&mut self) {
@@ -104,6 +135,13 @@ impl GSupport {
                 scope: ad::AEffectBuffScope::Everything,
             },
         );
+    }
+    fn fill_attr_unit_map(&mut self, e_data: &EData) {
+        for attr in e_data.attrs.iter() {
+            if let Some(unit) = attr.unit_id {
+                self.attr_unit_map.insert(attr.id, unit);
+            }
+        }
     }
     fn fill_eff_charge_map(&mut self) {
         // Attempt to run effects on default launcher effect just for stasis webification probes

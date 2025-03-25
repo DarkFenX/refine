@@ -3,21 +3,21 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     ad,
-    adg::{GData, GSupport, get_abil_effect},
+    adg::{EData, GSupport, get_abil_effect},
     ed,
     util::StMap,
 };
 
-pub(in crate::adg::flow::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AItem> {
+pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) -> Vec<ad::AItem> {
     // Auxiliary maps
-    let defeff_map = g_data
+    let defeff_map = e_data
         .item_effects
         .iter()
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
         .collect::<StMap<ed::EItemId, ed::EEffectId>>();
     let mut a_item_map = StMap::new();
-    for e_item in g_data.items.iter() {
+    for e_item in e_data.items.iter() {
         // Item category ID
         let cat_id = match g_supp.grp_cat_map.get(&e_item.group_id) {
             Some(&cid) => cid,
@@ -43,13 +43,13 @@ pub(in crate::adg::flow::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) 
         a_item_map.insert(a_item.id, a_item);
     }
     // Item attributes
-    for e_item_attr in g_data.item_attrs.iter() {
+    for e_item_attr in e_data.item_attrs.iter() {
         a_item_map
             .get_mut(&e_item_attr.item_id)
             .and_then(|v| v.attrs.insert(e_item_attr.attr_id, OF(e_item_attr.value)));
     }
     // Item effects & extended effect data from abilities
-    for e_item_effect in g_data.item_effects.iter() {
+    for e_item_effect in e_data.item_effects.iter() {
         a_item_map.get_mut(&e_item_effect.item_id).and_then(|v| {
             v.effect_datas.insert(
                 ad::AEffectId::Dogma(e_item_effect.effect_id),
@@ -61,7 +61,7 @@ pub(in crate::adg::flow::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) 
             )
         });
     }
-    for e_item_abil in g_data.item_abils.iter() {
+    for e_item_abil in e_data.item_abils.iter() {
         match a_item_map.get_mut(&e_item_abil.item_id) {
             None => continue,
             Some(a_item) => match get_abil_effect(e_item_abil.abil_id) {
@@ -78,7 +78,7 @@ pub(in crate::adg::flow::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) 
         }
     }
     // Item skill requirements
-    for e_item_srq in g_data.item_srqs.iter() {
+    for e_item_srq in e_data.item_srqs.iter() {
         a_item_map
             .get_mut(&e_item_srq.item_id)
             .and_then(|v| v.srqs.insert(e_item_srq.skill_id, e_item_srq.level));

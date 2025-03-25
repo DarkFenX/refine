@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use crate::{
     ac, ad,
-    adg::{GData, GSupport, get_abil_effect},
+    adg::{EData, GSupport, get_abil_effect},
     ec, ed,
     util::{StMap, StSet, StrMsgError},
 };
@@ -16,9 +16,9 @@ impl ed::EFighterAbil {
     }
 }
 
-pub(in crate::adg::flow::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AEffect> {
+pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
-    for e_effect in g_data.effects.iter() {
+    for e_effect in e_data.effects.iter() {
         let state = match e_effect.category_id {
             ec::effcats::PASSIVE => ad::AState::Offline,
             ec::effcats::ACTIVE => ad::AState::Active,
@@ -100,8 +100,8 @@ pub(in crate::adg::flow::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport
         a_effects.push(a_effect);
     }
     // Transfer some data from abilities onto effects
-    let hisec_ban_map = extract_ability_map(g_data, ed::EFighterAbil::get_disallow_hisec);
-    let lowsec_ban_map = extract_ability_map(g_data, ed::EFighterAbil::get_disallow_lowsec);
+    let hisec_ban_map = extract_ability_map(e_data, ed::EFighterAbil::get_disallow_hisec);
+    let lowsec_ban_map = extract_ability_map(e_data, ed::EFighterAbil::get_disallow_lowsec);
     for a_effect in a_effects.iter_mut() {
         // Hisec flag
         match hisec_ban_map.get(&a_effect.id) {
@@ -285,13 +285,13 @@ fn get_arg_str(args: &StMap<String, ed::EPrimitive>, name: &str) -> Result<Strin
     }
 }
 
-fn extract_ability_map<F, T>(g_data: &GData, getter: F) -> StMap<ad::AEffectId, StSet<T>>
+fn extract_ability_map<F, T>(e_data: &EData, getter: F) -> StMap<ad::AEffectId, StSet<T>>
 where
     F: Fn(&ed::EFighterAbil) -> T,
     T: Eq + Hash,
 {
     let mut map = StMap::new();
-    for e_abil in g_data.abils.iter() {
+    for e_abil in e_data.abils.iter() {
         match get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map
