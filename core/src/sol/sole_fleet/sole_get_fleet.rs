@@ -1,13 +1,12 @@
 use crate::{
-    defs::SolFleetId,
     err::basic::FleetFoundError,
-    sol::{SolarSystem, info::SolFleetInfo},
+    sol::{FleetId, SolarSystem, info::FleetInfo},
 };
 
 impl SolarSystem {
-    pub fn get_fleet(&self, fleet_id: &SolFleetId) -> Result<SolFleetInfo, GetFleetError> {
+    pub fn get_fleet(&self, fleet_id: &FleetId) -> Result<FleetInfo, GetFleetError> {
         let fleet = self.uad.fleets.get_fleet(fleet_id)?;
-        Ok(SolFleetInfo::from(fleet))
+        Ok(FleetInfo::from(fleet))
     }
 }
 

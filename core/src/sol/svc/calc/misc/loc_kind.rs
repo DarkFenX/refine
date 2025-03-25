@@ -1,19 +1,19 @@
-use crate::sol::svc::calc::SolLocation;
+use crate::sol::svc::calc::Location;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum SolLocationKind {
+pub(in crate::sol::svc::calc) enum LocationKind {
     Ship,
     Structure,
     Character,
 }
-impl TryFrom<SolLocation> for SolLocationKind {
+impl TryFrom<Location> for LocationKind {
     type Error = &'static str;
 
-    fn try_from(value: SolLocation) -> Result<Self, Self::Error> {
+    fn try_from(value: Location) -> Result<Self, Self::Error> {
         match value {
-            SolLocation::Ship => Ok(Self::Ship),
-            SolLocation::Structure => Ok(Self::Structure),
-            SolLocation::Char => Ok(Self::Character),
+            Location::Ship => Ok(Self::Ship),
+            Location::Structure => Ok(Self::Structure),
+            Location::Char => Ok(Self::Character),
             _ => Err("unable to convert modifier location to location kind"),
         }
     }

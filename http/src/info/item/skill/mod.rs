@@ -18,7 +18,7 @@ pub(crate) enum HSkillInfo {
 impl HSkillInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_skill_info: &rc::SolSkillInfo,
+        core_skill_info: &rc::SkillInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

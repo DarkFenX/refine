@@ -17,7 +17,7 @@ impl HSideEffectInfo {
     pub(in crate::info::item::booster) fn from_core_info(
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-        core_se_info: &rc::SolSideEffectInfo,
+        core_se_info: &rc::SideEffectInfo,
     ) -> Self {
         let chance = match core_sol.get_item_attr(item_id, &core_se_info.chance_attr_id) {
             Ok(val) => val.extra,

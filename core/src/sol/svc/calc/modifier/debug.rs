@@ -1,20 +1,20 @@
 use crate::sol::{
-    debug::{SolDebugResult, check_effect, check_fit, check_item},
-    svc::calc::{SolContext, SolCtxModifier, SolRawModifier},
-    uad::SolUad,
+    debug::{DebugResult, check_a_effect_id, check_fit_id, check_item_id},
+    svc::calc::{Context, CtxModifier, RawModifier},
+    uad::Uad,
 };
 
-pub(in crate::sol::svc) fn check_raw_modifier(uad: &SolUad, modifier: &SolRawModifier) -> SolDebugResult {
-    check_item(uad, &modifier.affector_item_id, true)?;
-    check_effect(uad, &modifier.effect_id)?;
+pub(in crate::sol::svc) fn check_raw_modifier(uad: &Uad, modifier: &RawModifier) -> DebugResult {
+    check_item_id(uad, &modifier.affector_item_id, true)?;
+    check_a_effect_id(uad, &modifier.a_effect_id)?;
     Ok(())
 }
 
-pub(in crate::sol::svc) fn check_ctx_modifier(uad: &SolUad, modifier: &SolCtxModifier) -> SolDebugResult {
+pub(in crate::sol::svc) fn check_ctx_modifier(uad: &Uad, modifier: &CtxModifier) -> DebugResult {
     match modifier.ctx {
-        SolContext::Item(item_id) => check_item(uad, &item_id, true)?,
-        SolContext::Fit(fit_id) => check_fit(uad, &fit_id)?,
-        SolContext::None => (),
+        Context::Item(item_id) => check_item_id(uad, &item_id, true)?,
+        Context::Fit(fit_id) => check_fit_id(uad, &fit_id)?,
+        Context::None => (),
     }
     check_raw_modifier(uad, &modifier.raw)?;
     Ok(())

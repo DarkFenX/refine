@@ -11,8 +11,8 @@ pub(crate) struct HImplantInfoPartial {
     pub(crate) slot: Option<rc::SlotIndex>,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolImplantInfo> for HImplantInfoPartial {
-    fn from(core_implant_info: &rc::SolImplantInfo) -> Self {
+impl From<&rc::ImplantInfo> for HImplantInfoPartial {
+    fn from(core_implant_info: &rc::ImplantInfo) -> Self {
         Self {
             id: core_implant_info.id,
             kind: "implant",

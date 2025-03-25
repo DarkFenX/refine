@@ -12,7 +12,7 @@ pub(crate) struct HAddBoosterCmd {
     fit_cmd: change_fit::HAddBoosterCmd,
 }
 impl HAddBoosterCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolBoosterInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::BoosterInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

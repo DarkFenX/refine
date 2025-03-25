@@ -1,15 +1,14 @@
 use crate::{
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolarSystem, info::SolStanceInfo},
+    sol::{FitId, SolarSystem, info::StanceInfo},
 };
 
 impl SolarSystem {
-    pub fn get_fit_stance(&self, fit_id: &SolFitId) -> Result<Option<SolStanceInfo>, GetFitStanceError> {
+    pub fn get_fit_stance(&self, fit_id: &FitId) -> Result<Option<StanceInfo>, GetFitStanceError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(fit
             .stance
-            .map(|v| SolStanceInfo::from(self.uad.items.get_item(&v).unwrap().get_stance().unwrap())))
+            .map(|v| StanceInfo::from(self.uad.items.get_item(&v).unwrap().get_stance().unwrap())))
     }
 }
 

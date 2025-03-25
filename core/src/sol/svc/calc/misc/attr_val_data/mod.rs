@@ -1,8 +1,8 @@
-pub(in crate::sol::svc::calc) use item::SolItemAttrValData;
-pub(in crate::sol::svc::calc) use postproc::SolItemAttrPostprocs;
+pub(in crate::sol::svc::calc) use item::ItemAttrValData;
+pub(in crate::sol::svc::calc) use postproc::ItemAttrPostprocs;
 pub(in crate::sol::svc::calc) use pp_fighter_count::FTR_COUNT_ATTR;
 pub(in crate::sol::svc::calc) use pp_skill_level::SKILL_LVL_ATTR;
-pub(in crate::sol::svc::calc) use sol::SolAttrValData;
+pub(in crate::sol::svc::calc) use sol::AttrValData;
 
 mod debug;
 mod item;

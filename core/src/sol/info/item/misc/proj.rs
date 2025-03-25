@@ -1,11 +1,6 @@
-use crate::defs::{AttrVal, SolItemId};
+use crate::sol::{AttrVal, ItemId};
 
-pub struct SolProjInfo {
-    pub item_id: SolItemId,
+pub struct ProjInfo {
+    pub item_id: ItemId,
     pub range: Option<AttrVal>,
-}
-impl SolProjInfo {
-    pub(in crate::sol::info::item) fn new(item_id: SolItemId, range: Option<AttrVal>) -> Self {
-        Self { item_id, range }
-    }
 }

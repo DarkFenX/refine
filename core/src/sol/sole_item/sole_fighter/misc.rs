@@ -1,16 +1,16 @@
 use crate::{
-    sol::{SolarSystem, info::SolFighterInfo, uad::item::SolFighter},
+    sol::{SolarSystem, info::FighterInfo, uad::item::Fighter},
     util::StMap,
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn make_fighter_info(&self, fighter: &SolFighter) -> SolFighterInfo {
+    pub(in crate::sol) fn make_fighter_info(&self, fighter: &Fighter) -> FighterInfo {
         let mut autocharges = StMap::new();
-        for (effect_id, autocharge_id) in fighter.get_autocharges().iter() {
+        for (a_effect_id, autocharge_id) in fighter.get_autocharges().iter() {
             if let Ok(autocharge_info) = self.get_autocharge(autocharge_id) {
-                autocharges.insert(*effect_id, autocharge_info);
+                autocharges.insert(a_effect_id.into(), autocharge_info);
             }
         }
-        SolFighterInfo::from_fighter_and_autocharges(fighter, autocharges)
+        FighterInfo::from_fighter_and_autocharges(fighter, autocharges)
     }
 }

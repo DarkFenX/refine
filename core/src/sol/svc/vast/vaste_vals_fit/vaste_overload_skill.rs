@@ -1,29 +1,28 @@
 use itertools::Itertools;
 
 use crate::{
-    consts,
-    defs::{SkillLevel, SolItemId},
-    sol::{svc::vast::SolVastFitData, uad::fit::SolFit},
+    ac,
+    sol::{ItemId, SkillLevel, svc::vast::VastFitData, uad::fit::Fit},
     util::StSet,
 };
 
-pub struct SolValOverloadSkillFail {
+pub struct ValOverloadSkillFail {
     pub td_lvl: Option<SkillLevel>,
-    pub items: Vec<SolValOverloadSkillItemInfo>,
+    pub items: Vec<ValOverloadSkillItemInfo>,
 }
 
-pub struct SolValOverloadSkillItemInfo {
-    pub item_id: SolItemId,
+pub struct ValOverloadSkillItemInfo {
+    pub item_id: ItemId,
     pub req_lvl: SkillLevel,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &StSet<SolItemId>, fit: &SolFit) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &StSet<ItemId>, fit: &Fit) -> bool {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
-        let td_lvl = match fit.skills.get(&consts::items::THERMODYNAMICS) {
+        let td_lvl = match fit.skills.get(&ac::items::THERMODYNAMICS) {
             Some(skill) => skill.level,
             None => return self.overload_td_lvl.is_subset(kfs),
         };
@@ -34,13 +33,13 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_overload_skill_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        fit: &SolFit,
-    ) -> Option<SolValOverloadSkillFail> {
+        kfs: &StSet<ItemId>,
+        fit: &Fit,
+    ) -> Option<ValOverloadSkillFail> {
         if self.overload_td_lvl.is_empty() {
             return None;
         }
-        let td_lvl = fit.skills.get(&consts::items::THERMODYNAMICS).map(|v| v.level);
+        let td_lvl = fit.skills.get(&ac::items::THERMODYNAMICS).map(|v| v.level);
         let items = self
             .overload_td_lvl
             .iter()
@@ -48,11 +47,11 @@ impl SolVastFitData {
                 Some(td_lvl) => **req_lvl > td_lvl,
                 None => true,
             } && !kfs.contains(item_id))
-            .map(|(&item_id, &req_lvl)| SolValOverloadSkillItemInfo { item_id, req_lvl })
+            .map(|(&item_id, &req_lvl)| ValOverloadSkillItemInfo { item_id, req_lvl })
             .collect_vec();
         if items.is_empty() {
             return None;
         }
-        Some(SolValOverloadSkillFail { td_lvl, items })
+        Some(ValOverloadSkillFail { td_lvl, items })
     }
 }

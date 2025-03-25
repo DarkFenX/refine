@@ -1,21 +1,20 @@
 use crate::{
-    defs::{EEffectId, SolItemId},
     err::basic::ItemFoundError,
-    sol::{SolEffectMode, SolarSystem},
+    sol::{EffectId, EffectMode, ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_item_effect_modes(
         &mut self,
-        item_id: &SolItemId,
-        modes: impl Iterator<Item = (EEffectId, SolEffectMode)>,
+        item_id: &ItemId,
+        modes: impl Iterator<Item = (EffectId, EffectMode)>,
     ) -> Result<(), SetItemEffectModesError> {
         let effect_modes = self.uad.items.get_item_mut(item_id)?.get_effect_modes_mut();
         for (effect_id, effect_mode) in modes {
-            effect_modes.set(effect_id, effect_mode)
+            effect_modes.set(effect_id.into(), effect_mode)
         }
         let item = self.uad.items.get_item(item_id).unwrap();
-        self.svc.process_effects(&self.uad, item, item.get_state());
+        self.svc.process_effects(&self.uad, item, item.get_a_state());
         Ok(())
     }
 }

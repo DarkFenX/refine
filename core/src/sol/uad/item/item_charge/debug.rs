@@ -1,14 +1,14 @@
 use crate::sol::{
-    debug::{SolDebugResult, check_fit, check_item},
-    uad::SolUad,
+    debug::{DebugResult, check_fit_id, check_item_id},
+    uad::Uad,
 };
 
-use super::SolCharge;
+use super::Charge;
 
-impl SolCharge {
-    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
-        check_fit(uad, &self.get_fit_id())?;
-        check_item(uad, &self.get_cont_id(), false)?;
+impl Charge {
+    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+        check_fit_id(uad, &self.get_fit_id())?;
+        check_item_id(uad, &self.get_cont_item_id(), false)?;
         self.get_projs().debug_consistency_check(uad)?;
         Ok(())
     }

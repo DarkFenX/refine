@@ -1,22 +1,21 @@
 use crate::{
-    defs::{SkillLevel, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, SkillLevelError},
-    sol::SolarSystem,
+    sol::{ItemId, SkillLevel, SolarSystem},
 };
 
 use super::check_skill_level;
 
 impl SolarSystem {
-    pub fn set_skill_level(&mut self, item_id: &SolItemId, level: SkillLevel) -> Result<(), SetSkillLevelError> {
+    pub fn set_skill_level(&mut self, item_id: &ItemId, level: SkillLevel) -> Result<(), SetSkillLevelError> {
         check_skill_level(level)?;
         let skill = self.uad.items.get_item_mut(item_id)?.get_skill_mut()?;
-        skill.set_level(level);
+        skill.set_a_level(level);
         self.uad
             .fits
             .get_fit_mut(&skill.get_fit_id())
             .unwrap()
             .skills
-            .get_mut(&skill.get_type_id())
+            .get_mut(&skill.get_a_item_id())
             .unwrap()
             .level = level;
         let skill = self.uad.items.get_item(item_id).unwrap().get_skill().unwrap();

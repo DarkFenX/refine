@@ -1,22 +1,21 @@
 use crate::{
-    defs::SolFitId,
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{SolarSystem, uad::item::SolShip},
+    sol::{FitId, SolarSystem, uad::item::Ship},
     util::Named,
 };
 
 impl SolarSystem {
-    pub fn set_fit_ship_state(&mut self, fit_id: &SolFitId, state: bool) -> Result<(), SetFitShipStateError> {
+    pub fn set_fit_ship_state(&mut self, fit_id: &FitId, state: bool) -> Result<(), SetFitShipStateError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.ship {
             Some(item_id) => item_id,
-            None => return Err(FitHasItemKindError::new(*fit_id, SolShip::get_name()).into()),
+            None => return Err(FitHasItemKindError::new(*fit_id, Ship::get_name()).into()),
         };
         let ship = self.uad.items.get_item_mut(&item_id).unwrap().get_ship_mut().unwrap();
-        let old_state = ship.get_state();
+        let old_a_state = ship.get_a_state();
         ship.set_ship_state(state);
-        let new_state = ship.get_state();
-        self.change_item_id_state_in_svc(&item_id, old_state, new_state);
+        let new_a_state = ship.get_a_state();
+        self.change_item_id_state_in_svc(&item_id, old_a_state, new_a_state);
         Ok(())
     }
 }

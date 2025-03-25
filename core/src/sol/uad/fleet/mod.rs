@@ -1,5 +1,5 @@
-pub(in crate::sol) use container::SolFleets;
-pub(in crate::sol) use fleet::SolFleet;
+pub(in crate::sol) use container::Fleets;
+pub(in crate::sol) use fleet::Fleet;
 
 mod container;
 mod fleet;

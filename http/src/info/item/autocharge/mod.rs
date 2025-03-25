@@ -18,7 +18,7 @@ pub(crate) enum HAutochargeInfo {
 impl HAutochargeInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_autocharge_info: &rc::SolAutochargeInfo,
+        core_autocharge_info: &rc::AutochargeInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

@@ -10,8 +10,8 @@ pub(crate) struct HSkillInfoPartial {
     pub(crate) level: rc::SkillLevel,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolSkillInfo> for HSkillInfoPartial {
-    fn from(core_skill_info: &rc::SolSkillInfo) -> Self {
+impl From<&rc::SkillInfo> for HSkillInfoPartial {
+    fn from(core_skill_info: &rc::SkillInfo) -> Self {
         Self {
             id: core_skill_info.id,
             kind: "skill",

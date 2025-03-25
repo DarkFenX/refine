@@ -1,20 +1,19 @@
 use crate::{
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolarSystem,
-        info::SolStanceInfo,
-        uad::item::{SolItem, SolStance},
+        FitId, ItemTypeId, SolarSystem,
+        info::StanceInfo,
+        uad::item::{Item, Stance},
     },
 };
 
 impl SolarSystem {
     pub fn set_fit_stance(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
+        fit_id: FitId,
+        type_id: ItemTypeId,
         state: bool,
-    ) -> Result<SolStanceInfo, SetFitStanceError> {
+    ) -> Result<StanceInfo, SetFitStanceError> {
         let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old stance, if it was set
         if let Some(old_item_id) = fit.stance {
@@ -25,9 +24,9 @@ impl SolarSystem {
         }
         // Add new stance
         let item_id = self.uad.items.alloc_item_id();
-        let stance = SolStance::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = SolStanceInfo::from(&stance);
-        let item = SolItem::Stance(stance);
+        let stance = Stance::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let info = StanceInfo::from(&stance);
+        let item = Item::Stance(stance);
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.stance = Some(item_id);
         self.uad.items.add_item(item);

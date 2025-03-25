@@ -1,136 +1,109 @@
 use crate::{
-    consts,
-    defs::{AttrVal, EAttrId, SolItemId},
+    ac, ad,
     sol::{
-        svc::{calc::SolCalc, vast::SolVastFitData},
-        uad::{SolUad, fit::SolFit},
+        AttrVal, ItemId,
+        svc::{calc::Calc, vast::VastFitData},
+        uad::{Uad, fit::Fit},
     },
     util::round,
 };
 
-pub struct SolStatRes {
+pub struct StatRes {
     pub used: AttrVal,
     pub output: Option<AttrVal>,
 }
-impl SolStatRes {
+impl StatRes {
     pub(in crate::sol::svc::vast) fn new(used: AttrVal, output: Option<AttrVal>) -> Self {
-        SolStatRes { used, output }
+        StatRes { used, output }
     }
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Public methods
-    pub(in crate::sol::svc::vast) fn get_stats_cpu(
-        &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> SolStatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_cpu(&self, uad: &Uad, calc: &mut Calc, fit: &Fit) -> StatRes {
         get_resource_stats_fitting(
             uad,
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &consts::attrs::CPU,
-            &consts::attrs::CPU_OUTPUT,
+            &ac::attrs::CPU,
+            &ac::attrs::CPU_OUTPUT,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_powergrid(
-        &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> SolStatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_powergrid(&self, uad: &Uad, calc: &mut Calc, fit: &Fit) -> StatRes {
         get_resource_stats_fitting(
             uad,
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &consts::attrs::POWER,
-            &consts::attrs::POWER_OUTPUT,
+            &ac::attrs::POWER,
+            &ac::attrs::POWER_OUTPUT,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_calibration(
-        &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> SolStatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_calibration(&self, uad: &Uad, calc: &mut Calc, fit: &Fit) -> StatRes {
         get_resource_stats_other(
             uad,
             calc,
             fit,
             self.rigs_rigslot_calibration.values(),
-            &consts::attrs::UPGRADE_CAPACITY,
+            &ac::attrs::UPGRADE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_drone_bay_volume(
         &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> SolStatRes {
-        get_resource_stats_other(
-            uad,
-            calc,
-            fit,
-            self.drones_volume.values(),
-            &consts::attrs::DRONE_CAPACITY,
-        )
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> StatRes {
+        get_resource_stats_other(uad, calc, fit, self.drones_volume.values(), &ac::attrs::DRONE_CAPACITY)
     }
     pub(in crate::sol::svc::vast) fn get_stats_drone_bandwidth(
         &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> SolStatRes {
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> StatRes {
         get_resource_stats_other(
             uad,
             calc,
             fit,
             self.drones_online_bandwidth.values(),
-            &consts::attrs::DRONE_BANDWIDTH,
+            &ac::attrs::DRONE_BANDWIDTH,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_fighter_bay_volume(
         &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> SolStatRes {
-        get_resource_stats_other(
-            uad,
-            calc,
-            fit,
-            self.fighters_volume.values(),
-            &consts::attrs::FTR_CAPACITY,
-        )
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> StatRes {
+        get_resource_stats_other(uad, calc, fit, self.fighters_volume.values(), &ac::attrs::FTR_CAPACITY)
     }
 }
 
 fn get_resource_stats_fitting<'a>(
-    uad: &SolUad,
-    calc: &mut SolCalc,
-    fit: &SolFit,
-    items: impl Iterator<Item = &'a SolItemId>,
-    use_attr_id: &EAttrId,
-    output_attr_id: &EAttrId,
-) -> SolStatRes {
-    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
+    uad: &Uad,
+    calc: &mut Calc,
+    fit: &Fit,
+    items: impl Iterator<Item = &'a ItemId>,
+    use_a_attr_id: &ad::AAttrId,
+    output_a_attr_id: &ad::AAttrId,
+) -> StatRes {
+    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_a_attr_id);
     let used = items
-        .filter_map(|i| calc.get_item_attr_val_simple(uad, i, use_attr_id))
+        .filter_map(|i| calc.get_item_attr_val_simple(uad, i, use_a_attr_id))
         .sum();
     // Round possible float errors despite individual use values being rounded
-    SolStatRes::new(round(used, 2), output)
+    StatRes::new(round(used, 2), output)
 }
 fn get_resource_stats_other<'a>(
-    uad: &SolUad,
-    calc: &mut SolCalc,
-    fit: &SolFit,
+    uad: &Uad,
+    calc: &mut Calc,
+    fit: &Fit,
     items_use: impl Iterator<Item = &'a AttrVal>,
-    output_attr_id: &EAttrId,
-) -> SolStatRes {
-    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
+    output_a_attr_id: &ad::AAttrId,
+) -> StatRes {
+    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_a_attr_id);
     let used = items_use.sum();
-    SolStatRes::new(used, output)
+    StatRes::new(used, output)
 }

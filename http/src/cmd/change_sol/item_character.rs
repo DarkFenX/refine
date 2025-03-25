@@ -12,7 +12,7 @@ pub(crate) struct HSetCharacterCmd {
     fit_cmd: change_fit::HSetCharacterCmd,
 }
 impl HSetCharacterCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolCharacterInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::CharacterInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolarSystem, info::SolSubsystemInfo},
+    sol::{FitId, SolarSystem, info::SubsystemInfo},
 };
 
 impl SolarSystem {
-    pub fn get_fit_subsystems(&self, fit_id: &SolFitId) -> Result<Vec<SolSubsystemInfo>, GetFitSubsystemsError> {
+    pub fn get_fit_subsystems(&self, fit_id: &FitId) -> Result<Vec<SubsystemInfo>, GetFitSubsystemsError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let subsystem_infos = fit
             .subsystems
             .iter()
-            .map(|v| SolSubsystemInfo::from(self.uad.items.get_item(v).unwrap().get_subsystem().unwrap()))
+            .map(|v| SubsystemInfo::from(self.uad.items.get_item(v).unwrap().get_subsystem().unwrap()))
             .collect();
         Ok(subsystem_infos)
     }

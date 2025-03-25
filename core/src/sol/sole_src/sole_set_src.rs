@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     sol::{
         SolarSystem,
-        uad::item::{SolItem, SolShipKind},
+        uad::item::{Item, ShipKind},
     },
     src::Src,
     util::StMapVecL1,
@@ -33,7 +33,7 @@ impl SolarSystem {
                     .get_ship()
                     .unwrap()
                     .get_kind(),
-                None => SolShipKind::Unknown,
+                None => ShipKind::Unknown,
             }
         }
         // Update autocharges
@@ -42,7 +42,7 @@ impl SolarSystem {
             .items
             .iter()
             .filter(|v| v.get_autocharges().is_some())
-            .map(|v| v.get_id())
+            .map(|v| v.get_item_id())
             .collect_vec()
         {
             self.add_item_autocharges(&autocharge_carrier_id);
@@ -50,12 +50,13 @@ impl SolarSystem {
         // Register things in services again
         for item in self.uad.items.iter() {
             match item {
-                SolItem::Autocharge(autocharge) => {
+                Item::Autocharge(autocharge) => {
                     // Autocharges are new, so we're adding them, not loading
                     self.svc.add_item(&self.uad, item);
                     // For autocharges also enable outgoing projections
                     for (projectee_item_id, range) in autocharge.get_projs().iter() {
-                        self.proj_tracker.reg_projectee(autocharge.get_id(), *projectee_item_id);
+                        self.proj_tracker
+                            .reg_projectee(autocharge.get_item_id(), *projectee_item_id);
                         let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
                         self.svc.add_item_projection(&self.uad, item, projectee_item, *range);
                     }
@@ -83,7 +84,7 @@ impl SolarSystem {
                     }
                     // Remove from services
                     self.svc.remove_item(&self.uad, autocharge_item);
-                    autocharge_map.add_entry(item.get_id(), *autocharge_id);
+                    autocharge_map.add_entry(item.get_item_id(), *autocharge_id);
                 }
             }
         }

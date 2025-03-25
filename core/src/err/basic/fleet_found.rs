@@ -1,11 +1,11 @@
-use crate::defs::SolFleetId;
+use crate::sol::FleetId;
 
 #[derive(Debug)]
 pub struct FleetFoundError {
-    pub fleet_id: SolFleetId,
+    pub fleet_id: FleetId,
 }
 impl FleetFoundError {
-    pub(crate) fn new(fleet_id: SolFleetId) -> Self {
+    pub(crate) fn new(fleet_id: FleetId) -> Self {
         Self { fleet_id }
     }
 }

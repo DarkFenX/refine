@@ -1,298 +1,298 @@
 use itertools::Itertools;
 
 use crate::{
-    EAttrId, consts,
-    defs::{Count, SolItemId},
+    ac, ad,
     sol::{
-        svc::{calc::SolCalc, vast::SolVastFitData},
-        uad::{SolUad, fit::SolFit},
+        Count, ItemId,
+        svc::{calc::Calc, vast::VastFitData},
+        uad::{Uad, fit::Fit},
     },
     util::StSet,
 };
 
 use super::shared::get_max_slots;
 
-pub struct SolValUnusableSlotFail {
+pub struct ValUnusableSlotFail {
     pub max: Option<Count>,
-    pub users: Vec<SolItemId>,
+    pub users: Vec<ItemId>,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_slot_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
             calc,
             &fit.character,
-            &consts::attrs::MAX_ACTIVE_DRONES,
+            &ac::attrs::MAX_ACTIVE_DRONES,
             &fit.drones,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_fighter_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
-        validate_fast(kfs, uad, calc, &fit.ship, &consts::attrs::FTR_TUBES, &fit.fighters)
+        validate_fast(kfs, uad, calc, &fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_SUPPORT_SLOTS,
+            &ac::attrs::FTR_SUPPORT_SLOTS,
             &self.support_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_LIGHT_SLOTS,
+            &ac::attrs::FTR_LIGHT_SLOTS,
             &self.light_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_heavy_fighter_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_HEAVY_SLOTS,
+            &ac::attrs::FTR_HEAVY_SLOTS,
             &self.heavy_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_support_fighter_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &ac::attrs::FTR_STANDUP_SUPPORT_SLOTS,
             &self.standup_support_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_light_fighter_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &ac::attrs::FTR_STANDUP_LIGHT_SLOTS,
             &self.standup_light_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_heavy_fighter_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &ac::attrs::FTR_STANDUP_HEAVY_SLOTS,
             &self.standup_heavy_fighters,
         )
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_slot_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
             calc,
             &fit.character,
-            &consts::attrs::MAX_ACTIVE_DRONES,
+            &ac::attrs::MAX_ACTIVE_DRONES,
             &fit.drones,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_fighter_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
-        validate_verbose(kfs, uad, calc, &fit.ship, &consts::attrs::FTR_TUBES, &fit.fighters)
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
+        validate_verbose(kfs, uad, calc, &fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_SUPPORT_SLOTS,
+            &ac::attrs::FTR_SUPPORT_SLOTS,
             &self.support_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_LIGHT_SLOTS,
+            &ac::attrs::FTR_LIGHT_SLOTS,
             &self.light_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_heavy_fighter_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_HEAVY_SLOTS,
+            &ac::attrs::FTR_HEAVY_SLOTS,
             &self.heavy_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_support_fighter_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &ac::attrs::FTR_STANDUP_SUPPORT_SLOTS,
             &self.standup_support_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_light_fighter_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &ac::attrs::FTR_STANDUP_LIGHT_SLOTS,
             &self.standup_light_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_heavy_fighter_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> Option<SolValUnusableSlotFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+    ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
             calc,
             &fit.ship,
-            &consts::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &ac::attrs::FTR_STANDUP_HEAVY_SLOTS,
             &self.standup_heavy_fighters,
         )
     }
 }
 
 fn validate_fast(
-    kfs: &StSet<SolItemId>,
-    uad: &SolUad,
-    calc: &mut SolCalc,
-    max_item_id: &Option<SolItemId>,
-    max_attr_id: &EAttrId,
-    users: &StSet<SolItemId>,
+    kfs: &StSet<ItemId>,
+    uad: &Uad,
+    calc: &mut Calc,
+    max_item_id: &Option<ItemId>,
+    max_a_attr_id: &ad::AAttrId,
+    users: &StSet<ItemId>,
 ) -> bool {
     if users.is_empty() {
         return true;
     }
-    let max = get_max_slots(uad, calc, max_item_id, max_attr_id).unwrap_or(0);
+    let max = get_max_slots(uad, calc, max_item_id, max_a_attr_id).unwrap_or(0);
     if max > 0 {
         return true;
     }
     users.is_subset(kfs)
 }
 fn validate_verbose(
-    kfs: &StSet<SolItemId>,
-    uad: &SolUad,
-    calc: &mut SolCalc,
-    max_item_id: &Option<SolItemId>,
-    max_attr_id: &EAttrId,
-    users: &StSet<SolItemId>,
-) -> Option<SolValUnusableSlotFail> {
+    kfs: &StSet<ItemId>,
+    uad: &Uad,
+    calc: &mut Calc,
+    max_item_id: &Option<ItemId>,
+    max_a_attr_id: &ad::AAttrId,
+    users: &StSet<ItemId>,
+) -> Option<ValUnusableSlotFail> {
     if users.is_empty() {
         return None;
     }
-    let max = get_max_slots(uad, calc, max_item_id, max_attr_id);
+    let max = get_max_slots(uad, calc, max_item_id, max_a_attr_id);
     if max.unwrap_or(0) > 0 {
         return None;
     }
@@ -300,5 +300,5 @@ fn validate_verbose(
     if users.is_empty() {
         return None;
     }
-    Some(SolValUnusableSlotFail { max, users })
+    Some(ValUnusableSlotFail { max, users })
 }

@@ -1,11 +1,11 @@
-use crate::defs::SolItemId;
+use crate::sol::ItemId;
 
 #[derive(Debug)]
 pub struct ItemNotMutatedError {
-    pub item_id: SolItemId,
+    pub item_id: ItemId,
 }
 impl ItemNotMutatedError {
-    pub(crate) fn new(item_id: SolItemId) -> Self {
+    pub(crate) fn new(item_id: ItemId) -> Self {
         Self { item_id }
     }
 }

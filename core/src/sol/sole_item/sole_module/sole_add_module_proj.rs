@@ -1,14 +1,13 @@
 use crate::{
-    defs::{AttrVal, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, ItemReceiveProjError, ProjNotFoundError},
-    sol::SolarSystem,
+    sol::{AttrVal, ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn add_module_proj(
         &mut self,
-        item_id: &SolItemId,
-        projectee_item_id: SolItemId,
+        item_id: &ItemId,
+        projectee_item_id: ItemId,
         range: Option<AttrVal>,
     ) -> Result<(), AddModuleProjError> {
         // Check projector
@@ -40,7 +39,7 @@ impl SolarSystem {
         }
         // Update user data for module
         let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
-        let charge_id = module.get_charge_id();
+        let charge_id = module.get_charge_item_id();
         module.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services for module

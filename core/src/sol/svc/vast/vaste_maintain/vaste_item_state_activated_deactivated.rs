@@ -1,41 +1,40 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    defs::OF,
-    sol::{
-        svc::vast::SolVast,
-        uad::item::{SolItem, SolItemState},
-    },
+    ad,
+    sol::{svc::vast::Vast, uad::item::Item},
 };
 
-impl SolVast {
-    pub(in crate::sol::svc) fn item_state_activated(&mut self, item: &SolItem, state: &SolItemState) {
-        if let SolItemState::Online = state {
+impl Vast {
+    pub(in crate::sol::svc) fn item_state_activated(&mut self, item: &Item, a_state: &ad::AState) {
+        if let ad::AState::Online = a_state {
             match item {
-                SolItem::Drone(drone) => {
+                Item::Drone(drone) => {
                     let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
                     let val = match drone.get_a_extras() {
                         Some(extras) => extras.bandwidth_use.unwrap_or(OF(0.0)),
                         None => OF(0.0),
                     };
-                    fit_data.drones_online_bandwidth.insert(drone.get_id(), val);
+                    fit_data.drones_online_bandwidth.insert(drone.get_item_id(), val);
                 }
-                SolItem::Fighter(fighter) => {
+                Item::Fighter(fighter) => {
                     let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
-                    fit_data.fighters_online.insert(fighter.get_id());
+                    fit_data.fighters_online.insert(fighter.get_item_id());
                 }
                 _ => (),
             }
         }
     }
-    pub(in crate::sol::svc) fn item_state_deactivated(&mut self, item: &SolItem, state: &SolItemState) {
-        if let SolItemState::Online = state {
+    pub(in crate::sol::svc) fn item_state_deactivated(&mut self, item: &Item, a_state: &ad::AState) {
+        if let ad::AState::Online = a_state {
             match item {
-                SolItem::Drone(drone) => {
+                Item::Drone(drone) => {
                     let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
-                    fit_data.drones_online_bandwidth.remove(&drone.get_id());
+                    fit_data.drones_online_bandwidth.remove(&drone.get_item_id());
                 }
-                SolItem::Fighter(fighter) => {
+                Item::Fighter(fighter) => {
                     let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
-                    fit_data.fighters_online.remove(&fighter.get_id());
+                    fit_data.fighters_online.remove(&fighter.get_item_id());
                 }
                 _ => (),
             }

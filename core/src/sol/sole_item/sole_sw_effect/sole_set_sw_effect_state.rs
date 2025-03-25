@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_sw_effect_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetSwEffectStateError> {
+    pub fn set_sw_effect_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetSwEffectStateError> {
         let sw_effect = self.uad.items.get_item_mut(item_id)?.get_sw_effect_mut()?;
-        let old_state = sw_effect.get_state();
+        let old_a_state = sw_effect.get_a_state();
         sw_effect.set_sw_effect_state(state);
-        let new_state = sw_effect.get_state();
-        self.change_item_id_state_in_svc(item_id, old_state, new_state);
+        let new_a_state = sw_effect.get_a_state();
+        self.change_item_id_state_in_svc(item_id, old_a_state, new_a_state);
         Ok(())
     }
 }

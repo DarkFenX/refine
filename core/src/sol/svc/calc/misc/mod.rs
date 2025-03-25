@@ -1,11 +1,11 @@
-pub(in crate::sol::svc::calc) use attr_spec::SolAttrSpec;
-pub use attr_val::SolAttrVal;
+pub(in crate::sol::svc::calc) use attr_spec::AttrSpec;
+pub use attr_val::CalcAttrVal;
 pub(in crate::sol::svc::calc) use attr_val_data::{
-    FTR_COUNT_ATTR, SKILL_LVL_ATTR, SolAttrValData, SolItemAttrPostprocs, SolItemAttrValData,
+    AttrValData, FTR_COUNT_ATTR, ItemAttrPostprocs, ItemAttrValData, SKILL_LVL_ATTR,
 };
-pub(in crate::sol::svc::calc) use loc_kind::SolLocationKind;
-pub(in crate::sol::svc::calc) use modification::SolModification;
-pub(in crate::sol::svc::calc) use modification_key::SolModificationKey;
+pub(in crate::sol::svc::calc) use loc_kind::LocationKind;
+pub(in crate::sol::svc::calc) use modification::Modification;
+pub(in crate::sol::svc::calc) use modification_key::ModificationKey;
 
 mod attr_spec;
 mod attr_val;

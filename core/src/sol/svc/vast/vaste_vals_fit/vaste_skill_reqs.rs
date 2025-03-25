@@ -1,37 +1,36 @@
 use crate::{
-    defs::{EItemId, SkillLevel, SolItemId},
-    sol::svc::vast::SolVastFitData,
+    sol::{ItemId, ItemTypeId, SkillLevel, svc::vast::VastFitData},
     util::StSet,
 };
 
-pub struct SolValSrqFail {
-    pub item_id: SolItemId,
-    pub skills: Vec<SolValSrqSkillInfo>,
+pub struct ValSrqFail {
+    pub item_id: ItemId,
+    pub skills: Vec<ValSrqSkillInfo>,
 }
 
-pub struct SolValSrqSkillInfo {
-    pub skill_type_id: EItemId,
+pub struct ValSrqSkillInfo {
+    pub skill_type_id: ItemTypeId,
     pub skill_lvl: Option<SkillLevel>,
     pub req_lvl: SkillLevel,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &StSet<SolItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &StSet<ItemId>) -> bool {
         self.srqs_missing
             .iter()
             .all(|(item_id, missing_skills)| missing_skills.is_empty() || kfs.contains(item_id))
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self, kfs: &StSet<SolItemId>) -> Vec<SolValSrqFail> {
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self, kfs: &StSet<ItemId>) -> Vec<ValSrqFail> {
         self.srqs_missing
             .iter()
             .filter(|(item_id, missing_skills)| !missing_skills.is_empty() && !kfs.contains(item_id))
-            .map(|(item_id, missing_skills)| SolValSrqFail {
+            .map(|(item_id, missing_skills)| ValSrqFail {
                 item_id: *item_id,
                 skills: missing_skills
                     .iter()
-                    .map(|(sid, srq)| SolValSrqSkillInfo {
+                    .map(|(sid, srq)| ValSrqSkillInfo {
                         skill_type_id: *sid,
                         skill_lvl: srq.current_lvl,
                         req_lvl: srq.required_lvl,

@@ -1,13 +1,12 @@
 use crate::{
-    defs::{Count, SolItemId},
     err::basic::{FighterCountError, ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{Count, ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_fighter_count_override(
         &mut self,
-        item_id: &SolItemId,
+        item_id: &ItemId,
         count_override: Count,
     ) -> Result<(), SetFighterCountOverrideError> {
         if count_override < 1 {

@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_stance(&mut self, item_id: &SolItemId) -> Result<(), RemoveStanceError> {
+    pub fn remove_stance(&mut self, item_id: &ItemId) -> Result<(), RemoveStanceError> {
         let item = self.uad.items.get_item(item_id)?;
         let stance = item.get_stance()?;
         self.svc.remove_item(&self.uad, item);

@@ -3,50 +3,44 @@ use std::collections::hash_map::Entry;
 use itertools::Itertools;
 
 use crate::{
-    consts,
-    defs::{AttrVal, EAttrId, SolItemId},
+    ad,
     err::basic::{AttrMetaFoundError, ItemLoadedError},
     sol::{
+        AttrVal, ItemId,
         svc::calc::{
-            AttrCalcError, LoadedItemFoundError, SolAttrVal, SolCalc, SolModAccumFast, SolModification,
-            SolModificationKey,
+            AttrCalcError, Calc, CalcAttrVal, LoadedItemFoundError, ModAccumFast, Modification, ModificationKey,
         },
-        uad::{SolUad, item::SolItem},
+        uad::{Uad, item::Item},
     },
     util::{StMap, round},
 };
 
-const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
-    consts::attrs::CPU,
-    consts::attrs::POWER,
-    consts::attrs::CPU_OUTPUT,
-    consts::attrs::POWER_OUTPUT,
-];
+use super::calce_shared::LIMITED_PRECISION_A_ATTR_IDS;
 
-impl SolCalc {
+impl Calc {
     // Query methods
     pub(in crate::sol) fn get_item_attr_val_simple_opt(
         &mut self,
-        uad: &SolUad,
-        item_id: &Option<SolItemId>,
-        attr_id: &EAttrId,
+        uad: &Uad,
+        item_id: &Option<ItemId>,
+        a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
-        item_id.and_then(|item_id| self.get_item_attr_val_simple(uad, &item_id, attr_id))
+        item_id.and_then(|item_id| self.get_item_attr_val_simple(uad, &item_id, a_attr_id))
     }
     pub(in crate::sol) fn get_item_attr_val_simple(
         &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        attr_id: &EAttrId,
+        uad: &Uad,
+        item_id: &ItemId,
+        a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
-        Some(self.get_item_attr_val_full(uad, item_id, attr_id).ok()?.extra)
+        Some(self.get_item_attr_val_full(uad, item_id, a_attr_id).ok()?.extra)
     }
     pub(in crate::sol) fn get_item_attr_val_full(
         &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        attr_id: &EAttrId,
-    ) -> Result<SolAttrVal, AttrCalcError> {
+        uad: &Uad,
+        item_id: &ItemId,
+        a_attr_id: &ad::AAttrId,
+    ) -> Result<CalcAttrVal, AttrCalcError> {
         // Try accessing cached value
         let item_attr_data = match self.attrs.get_item_attr_data(item_id) {
             Some(item_attr_data) => item_attr_data,
@@ -59,31 +53,31 @@ impl SolCalc {
                 });
             }
         };
-        if let Some(val) = item_attr_data.values.get(attr_id) {
-            return Ok(match item_attr_data.postprocs.get(attr_id) {
+        if let Some(cval) = item_attr_data.values.get(a_attr_id) {
+            return Ok(match item_attr_data.postprocs.get(a_attr_id) {
                 Some(postprocs) => {
                     let pp_fn = postprocs.fast;
-                    pp_fn(self, uad, item_id, *val)
+                    pp_fn(self, uad, item_id, *cval)
                 }
-                None => *val,
+                None => *cval,
             });
         }
         // If it is not cached, calculate and cache it
-        let mut val = self.calc_item_attr_val(uad, item_id, attr_id)?;
+        let mut cval = self.calc_item_attr_val(uad, item_id, a_attr_id)?;
         let item_attr_data = self.attrs.get_item_attr_data_mut(item_id).unwrap();
-        item_attr_data.values.insert(*attr_id, val);
-        if let Some(postprocs) = item_attr_data.postprocs.get(attr_id) {
+        item_attr_data.values.insert(*a_attr_id, cval);
+        if let Some(postprocs) = item_attr_data.postprocs.get(a_attr_id) {
             let pp_fn = postprocs.fast;
-            val = pp_fn(self, uad, item_id, val);
+            cval = pp_fn(self, uad, item_id, cval);
         }
-        Ok(val)
+        Ok(cval)
     }
     pub(in crate::sol::svc::calc) fn get_item_attr_val_no_pp(
         &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        attr_id: &EAttrId,
-    ) -> Result<SolAttrVal, AttrCalcError> {
+        uad: &Uad,
+        item_id: &ItemId,
+        a_attr_id: &ad::AAttrId,
+    ) -> Result<CalcAttrVal, AttrCalcError> {
         let item_attr_data = match self.attrs.get_item_attr_data(item_id) {
             Some(item_attr_data) => item_attr_data,
             // There can be no data due to one of two reasons: no item, or item is not loaded.
@@ -95,22 +89,22 @@ impl SolCalc {
                 });
             }
         };
-        if let Some(val) = item_attr_data.values.get(attr_id) {
-            return Ok(*val);
+        if let Some(cval) = item_attr_data.values.get(a_attr_id) {
+            return Ok(*cval);
         };
-        let val = self.calc_item_attr_val(uad, item_id, attr_id)?;
+        let cval = self.calc_item_attr_val(uad, item_id, a_attr_id)?;
         self.attrs
             .get_item_attr_data_mut(item_id)
             .unwrap()
             .values
-            .insert(*attr_id, val);
-        Ok(val)
+            .insert(*a_attr_id, cval);
+        Ok(cval)
     }
     pub(in crate::sol) fn iter_item_attr_vals(
         &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>, LoadedItemFoundError> {
+        uad: &Uad,
+        item_id: &ItemId,
+    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, CalcAttrVal)>, LoadedItemFoundError> {
         let item = uad.items.get_item(item_id)?;
         // SolItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
@@ -121,19 +115,19 @@ impl SolCalc {
             None => return Err(ItemLoadedError::new(*item_id).into()),
         };
         let pp_attr_ids = item_attr_data.postprocs.keys().copied().collect_vec();
-        let mut vals = item_attr_data.values.clone();
+        let mut cvals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
-        for attr_id in item.get_attrs().unwrap().keys() {
-            if let Entry::Vacant(entry) = vals.entry(*attr_id) {
-                match self.get_item_attr_val_full(uad, &item.get_id(), attr_id) {
+        for attr_id in item.get_a_attrs().unwrap().keys() {
+            if let Entry::Vacant(entry) = cvals.entry(*attr_id) {
+                match self.get_item_attr_val_full(uad, &item.get_item_id(), attr_id) {
                     Ok(v) => entry.insert(v),
                     _ => continue,
                 };
             }
         }
         for pp_attr_id in pp_attr_ids {
-            if let Some(val) = vals.get(&pp_attr_id) {
+            if let Some(cval) = cvals.get(&pp_attr_id) {
                 let pp_fn = self
                     .attrs
                     .get_item_attr_data(item_id)
@@ -142,89 +136,89 @@ impl SolCalc {
                     .get(&pp_attr_id)
                     .unwrap()
                     .fast;
-                let val = pp_fn(self, uad, item_id, *val);
-                vals.insert(pp_attr_id, val);
+                let cval = pp_fn(self, uad, item_id, *cval);
+                cvals.insert(pp_attr_id, cval);
             }
         }
-        Ok(vals.into_iter())
+        Ok(cvals.into_iter())
     }
     // Private methods
     fn iter_modifications(
         &mut self,
-        uad: &SolUad,
-        item: &SolItem,
-        attr_id: &EAttrId,
-    ) -> impl Iterator<Item = SolModification> {
+        uad: &Uad,
+        item: &Item,
+        a_attr_id: &ad::AAttrId,
+    ) -> impl Iterator<Item = Modification> {
         let mut mods = StMap::new();
-        for modifier in self.std.get_mods_for_affectee(item, attr_id, &uad.fits).iter() {
+        for modifier in self.std.get_mods_for_affectee(item, a_attr_id, &uad.fits).iter() {
             let val = match modifier.raw.get_mod_val(self, uad) {
-                Some(v) => v,
+                Some(val) => val,
                 None => continue,
             };
             let affector_item = uad.items.get_item(&modifier.raw.affector_item_id).unwrap();
-            let affector_item_cat_id = affector_item.get_category_id().unwrap();
-            let mod_key = SolModificationKey::from(modifier);
-            let modification = SolModification::new(
-                modifier.raw.op,
+            let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
+            let mod_key = ModificationKey::from(modifier);
+            let modification = Modification {
+                op: modifier.raw.op,
                 val,
-                self.calc_resist_mult(uad, modifier),
-                self.calc_proj_mult(uad, modifier),
-                modifier.raw.aggr_mode,
-                affector_item_cat_id,
-            );
+                res_mult: self.calc_resist_mult(uad, modifier),
+                proj_mult: self.calc_proj_mult(uad, modifier),
+                aggr_mode: modifier.raw.aggr_mode,
+                affector_a_item_cat_id,
+            };
             mods.insert(mod_key, modification);
         }
         mods.into_values()
     }
     fn calc_item_attr_val(
         &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        attr_id: &EAttrId,
-    ) -> Result<SolAttrVal, AttrMetaFoundError> {
+        uad: &Uad,
+        item_id: &ItemId,
+        a_attr_id: &ad::AAttrId,
+    ) -> Result<CalcAttrVal, AttrMetaFoundError> {
         let item = uad.items.get_item(item_id).unwrap();
-        let attr = match uad.src.get_a_attr(attr_id) {
-            Some(attr) => attr,
-            None => return Err(AttrMetaFoundError::new(*attr_id)),
+        let a_attr = match uad.src.get_a_attr(a_attr_id) {
+            Some(a_attr) => a_attr,
+            None => return Err(AttrMetaFoundError::new(*a_attr_id)),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
-        let base_val = match item.get_attrs_err().unwrap().get(attr_id) {
-            Some(orig_val) => *orig_val,
-            None => attr.def_val,
+        let base_val = match item.get_a_attrs().unwrap().get(a_attr_id) {
+            Some(orig_val) => *orig_val as AttrVal,
+            None => a_attr.def_val as AttrVal,
         };
-        let mut accumulator = SolModAccumFast::new();
-        for modification in self.iter_modifications(uad, item, attr_id) {
+        let mut accumulator = ModAccumFast::new();
+        for modification in self.iter_modifications(uad, item, a_attr_id) {
             accumulator.add_val(
                 modification.val,
                 modification.res_mult,
                 modification.proj_mult,
                 &modification.op,
-                attr.penalizable,
-                &modification.affector_item_cat_id,
+                a_attr.penalizable,
+                &modification.affector_a_item_cat_id,
                 &modification.aggr_mode,
             );
         }
-        let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
+        let mut dogma_val = accumulator.apply_dogma_mods(base_val, a_attr.hig);
         // Lower value limit
-        if let Some(limiter_attr_id) = attr.min_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
-                self.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
-                dogma_val = AttrVal::max(dogma_val, limiter_val.dogma);
+        if let Some(limiter_attr_id) = a_attr.min_attr_id {
+            if let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
+                self.deps.add_direct_local(*item_id, limiter_attr_id, *a_attr_id);
+                dogma_val = AttrVal::max(dogma_val, limiter_cval.dogma);
             }
         }
         // Upper value limit
-        if let Some(limiter_attr_id) = attr.max_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
-                self.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
-                dogma_val = AttrVal::min(dogma_val, limiter_val.dogma);
+        if let Some(limiter_attr_id) = a_attr.max_attr_id {
+            if let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
+                self.deps.add_direct_local(*item_id, limiter_attr_id, *a_attr_id);
+                dogma_val = AttrVal::min(dogma_val, limiter_cval.dogma);
             }
         }
-        if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
+        if LIMITED_PRECISION_A_ATTR_IDS.contains(a_attr_id) {
             dogma_val = round(dogma_val, 2);
         }
         // Post-dogma calculations
-        let extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
-        Ok(SolAttrVal::new(base_val, dogma_val, extra_val))
+        let extra_val = accumulator.apply_extra_mods(dogma_val, a_attr.hig);
+        Ok(CalcAttrVal::new(base_val, dogma_val, extra_val))
     }
 }

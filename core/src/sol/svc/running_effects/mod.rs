@@ -1,4 +1,4 @@
-pub(in crate::sol::svc) use main::SolRunningEffects;
+pub(in crate::sol::svc) use main::RunningEffects;
 
 mod debug;
 mod main;

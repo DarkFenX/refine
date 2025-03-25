@@ -1,13 +1,12 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolarSystem, info::SolProjEffectInfo},
+    sol::{ItemId, SolarSystem, info::ProjEffectInfo},
 };
 
 impl SolarSystem {
-    pub fn get_proj_effect(&self, item_id: &SolItemId) -> Result<SolProjEffectInfo, GetProjEffectError> {
+    pub fn get_proj_effect(&self, item_id: &ItemId) -> Result<ProjEffectInfo, GetProjEffectError> {
         let proj_effect = self.uad.items.get_item(item_id)?.get_proj_effect().unwrap();
-        Ok(SolProjEffectInfo::from(proj_effect))
+        Ok(ProjEffectInfo::from(proj_effect))
     }
 }
 

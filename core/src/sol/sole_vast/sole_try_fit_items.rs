@@ -1,21 +1,20 @@
 use crate::{
     ad,
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolAddMode, SolModRack, SolRmMode, SolarSystem,
-        svc::vast::SolValOptions,
-        uad::{SolMinionState, SolModuleState, SolServiceState},
+        AddMode, FitId, ItemTypeId, ModRack, RmMode, SolarSystem,
+        svc::vast::ValOptions,
+        uad::{MinionState, ModuleState, ServiceState},
     },
 };
 
 impl SolarSystem {
     pub fn try_fit_items(
         &mut self,
-        fit_id: &SolFitId,
-        type_ids: &[EItemId],
-        val_options: &SolValOptions,
-    ) -> Result<Vec<EItemId>, TryFitItemsError> {
+        fit_id: &FitId,
+        type_ids: &[ItemTypeId],
+        val_options: &ValOptions,
+    ) -> Result<Vec<ItemTypeId>, TryFitItemsError> {
         self.uad.fits.get_fit(fit_id)?;
         let mut valid = Vec::new();
         for type_id in type_ids {
@@ -36,14 +35,14 @@ impl SolarSystem {
                     self.remove_booster(&booster_info.id).unwrap();
                 }
                 ad::AItemKind::Drone => {
-                    let drone_info = self.add_drone(*fit_id, *type_id, SolMinionState::InBay, None).unwrap();
+                    let drone_info = self.add_drone(*fit_id, *type_id, MinionState::InBay, None).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
                     self.remove_drone(&drone_info.id).unwrap();
                 }
                 ad::AItemKind::Fighter => {
-                    let drone_info = self.add_fighter(*fit_id, *type_id, SolMinionState::InBay).unwrap();
+                    let drone_info = self.add_fighter(*fit_id, *type_id, MinionState::InBay).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
@@ -60,8 +59,8 @@ impl SolarSystem {
                     let module_info = self
                         .add_module(
                             *fit_id,
-                            SolModRack::High,
-                            SolAddMode::Equip,
+                            ModRack::High,
+                            AddMode::Equip,
                             *type_id,
                             conv_state(a_item.extras.max_state),
                             None,
@@ -71,14 +70,14 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_info.id, SolRmMode::Free).unwrap();
+                    self.remove_module(&module_info.id, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::ModuleMid => {
                     let module_info = self
                         .add_module(
                             *fit_id,
-                            SolModRack::Mid,
-                            SolAddMode::Equip,
+                            ModRack::Mid,
+                            AddMode::Equip,
                             *type_id,
                             conv_state(a_item.extras.max_state),
                             None,
@@ -88,14 +87,14 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_info.id, SolRmMode::Free).unwrap();
+                    self.remove_module(&module_info.id, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::ModuleLow => {
                     let module_info = self
                         .add_module(
                             *fit_id,
-                            SolModRack::Low,
-                            SolAddMode::Equip,
+                            ModRack::Low,
+                            AddMode::Equip,
                             *type_id,
                             conv_state(a_item.extras.max_state),
                             None,
@@ -105,7 +104,7 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_info.id, SolRmMode::Free).unwrap();
+                    self.remove_module(&module_info.id, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::Rig => {
                     let rig_info = self.add_rig(*fit_id, *type_id, true).unwrap();
@@ -115,7 +114,7 @@ impl SolarSystem {
                     self.remove_rig(&rig_info.id).unwrap();
                 }
                 ad::AItemKind::Service => {
-                    let service_info = self.add_service(*fit_id, *type_id, SolServiceState::Online).unwrap();
+                    let service_info = self.add_service(*fit_id, *type_id, ServiceState::Online).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
@@ -159,11 +158,12 @@ impl From<FitFoundError> for TryFitItemsError {
     }
 }
 
-fn conv_state(a_state: ad::AState) -> SolModuleState {
+fn conv_state(a_state: ad::AState) -> ModuleState {
     match a_state {
-        ad::AState::Offline => SolModuleState::Offline,
-        ad::AState::Online => SolModuleState::Online,
-        ad::AState::Active => SolModuleState::Online,
-        ad::AState::Overload => SolModuleState::Online,
+        ad::AState::Ghost => ModuleState::Ghost,
+        ad::AState::Offline => ModuleState::Offline,
+        ad::AState::Online => ModuleState::Online,
+        ad::AState::Active => ModuleState::Online,
+        ad::AState::Overload => ModuleState::Online,
     }
 }

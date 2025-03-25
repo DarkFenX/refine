@@ -1,19 +1,17 @@
-use cache::SolValCache;
-pub use options::{SolValOption, SolValOptions};
-pub use result::SolValResult;
-use skill_req::SolVastSkillReq;
-pub(in crate::sol::svc) use vast::SolVast;
-use vast::SolVastFitData;
-use vaste_stats_fit::{SolStatRes, SolStatSlot};
+use cache::ValCache;
+pub use options::{ValOption, ValOptions};
+pub use result::ValResult;
+use skill_req::VastSkillReq;
+pub(in crate::sol::svc) use vast::Vast;
+use vast::VastFitData;
+use vaste_stats_fit::{StatRes, StatSlot};
 pub use vaste_vals_fit::{
-    SolValActivationBlockedFail, SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail,
-    SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo,
-    SolValFighterSquadSizeFail, SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValMaxTypeFail,
-    SolValMaxTypeItemInfo, SolValModuleStateFail, SolValNotLoadedItemFail, SolValOverloadSkillFail,
-    SolValOverloadSkillItemInfo, SolValResFail, SolValResItemInfo, SolValRigSizeFail, SolValRigSizeItemInfo,
-    SolValSecZoneFail, SolValSecZoneItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValShipStanceFail,
-    SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail,
-    SolValUnusableResItemInfo, SolValUnusableSlotFail,
+    ValActivationBlockedFail, ValCapitalModFail, ValCapitalModItemInfo, ValChargeGroupFail, ValChargeSizeFail,
+    ValChargeVolumeFail, ValDroneGroupFail, ValDroneGroupItemInfo, ValFighterSquadSizeFail, ValItemKindFail,
+    ValMaxGroupFail, ValMaxGroupItemInfo, ValMaxTypeFail, ValMaxTypeItemInfo, ValModuleStateFail, ValNotLoadedItemFail,
+    ValOverloadSkillFail, ValOverloadSkillItemInfo, ValResFail, ValResItemInfo, ValRigSizeFail, ValRigSizeItemInfo,
+    ValSecZoneFail, ValSecZoneItemInfo, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail,
+    ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableResItemInfo, ValUnusableSlotFail,
 };
 
 mod cache;

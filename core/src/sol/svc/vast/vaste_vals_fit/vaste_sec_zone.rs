@@ -1,133 +1,129 @@
 use itertools::Itertools;
+use ordered_float::OrderedFloat as OF;
 use smallvec::SmallVec;
 
 use crate::{
-    consts,
-    defs::{AttrVal, OF, SolItemId},
+    ac, ad,
     sol::{
-        SolSecZone, SolSecZoneCorruption,
-        svc::{calc::SolCalc, vast::SolVastFitData},
-        uad::SolUad,
+        ItemId, SecZone, SecZoneCorruption,
+        svc::{calc::Calc, vast::VastFitData},
+        uad::Uad,
     },
     util::{StMap, StSet},
 };
 
 use super::shared::is_flag_set;
 
-const SEC_ZONE_COUNT: usize = std::mem::variant_count::<SolSecZone>();
+const SEC_ZONE_COUNT: usize = std::mem::variant_count::<SecZone>();
 
-pub struct SolValSecZoneFail {
-    pub zone: SolSecZone,
-    pub items: Vec<SolValSecZoneItemInfo>,
+pub struct ValSecZoneFail {
+    pub zone: SecZone,
+    pub items: Vec<ValSecZoneItemInfo>,
 }
 
-pub struct SolValSecZoneItemInfo {
-    pub item_id: SolItemId,
-    pub allowed_zones: Vec<SolSecZone>,
+pub struct ValSecZoneItemInfo {
+    pub item_id: ItemId,
+    pub allowed_zones: Vec<SecZone>,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_sec_zone_fitted_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
     ) -> bool {
         flags_check_fast(kfs, uad, calc, &self.sec_zone_fitted)
     }
-    pub(in crate::sol::svc::vast) fn validate_sec_zone_online_fast(
-        &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-    ) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_sec_zone_online_fast(&self, kfs: &StSet<ItemId>, uad: &Uad) -> bool {
         class_check_fast(kfs, uad, &self.sec_zone_online_class)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_active_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
     ) -> bool {
         flags_check_fast(kfs, uad, calc, &self.sec_zone_active)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_unonlineable_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
     ) -> bool {
         class_check_fast(kfs, uad, &self.sec_zone_unonlineable_class)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_unactivable_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
     ) -> bool {
         flags_check_fast(kfs, uad, calc, &self.sec_zone_unactivable)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_sec_zone_fitted_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-    ) -> Option<SolValSecZoneFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+    ) -> Option<ValSecZoneFail> {
         flags_check_verbose(kfs, uad, calc, &self.sec_zone_fitted)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_online_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-    ) -> Option<SolValSecZoneFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+    ) -> Option<ValSecZoneFail> {
         class_check_verbose(kfs, uad, &self.sec_zone_online_class)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_active_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-    ) -> Option<SolValSecZoneFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+    ) -> Option<ValSecZoneFail> {
         flags_check_verbose(kfs, uad, calc, &self.sec_zone_active)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_unonlineable_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-    ) -> Option<SolValSecZoneFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+    ) -> Option<ValSecZoneFail> {
         class_check_verbose(kfs, uad, &self.sec_zone_unonlineable_class)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_unactivable_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-    ) -> Option<SolValSecZoneFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+        calc: &mut Calc,
+    ) -> Option<ValSecZoneFail> {
         flags_check_verbose(kfs, uad, calc, &self.sec_zone_unactivable)
     }
 }
 
 // Disallowed/allowed flag validators
-fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, items: &StSet<SolItemId>) -> bool {
+fn flags_check_fast(kfs: &StSet<ItemId>, uad: &Uad, calc: &mut Calc, items: &StSet<ItemId>) -> bool {
     if items.is_empty() {
         return true;
     }
     match uad.sec_zone {
-        SolSecZone::HiSec(corruption) => {
+        SecZone::HiSec(corruption) => {
             for item_id in items.iter() {
-                if is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_EMPIRE_SPACE)
-                    || is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HISEC)
+                if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE)
+                    || is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HISEC)
                 {
                     match corruption {
                         // No corruption in actual security zone - fail
-                        SolSecZoneCorruption::None => {
+                        SecZoneCorruption::None => {
                             if !kfs.contains(item_id) {
                                 return false;
                             }
                         }
                         // If corrupted, check if module is allowed in corrupted hisec
-                        SolSecZoneCorruption::C5 => {
-                            if !is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
+                        SecZoneCorruption::C5 => {
+                            if !is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
                                 && !kfs.contains(item_id)
                             {
                                 return false;
@@ -137,19 +133,19 @@ fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, it
                 }
             }
         }
-        SolSecZone::LowSec(corruption) => {
+        SecZone::LowSec(corruption) => {
             for item_id in items.iter() {
-                if is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_EMPIRE_SPACE) {
+                if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE) {
                     match corruption {
                         // No corruption in actual security zone - fail
-                        SolSecZoneCorruption::None => {
+                        SecZoneCorruption::None => {
                             if !kfs.contains(item_id) {
                                 return false;
                             }
                         }
                         // If corrupted, check if module is allowed in corrupted lowsec
-                        SolSecZoneCorruption::C5 => {
-                            if !is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
+                        SecZoneCorruption::C5 => {
+                            if !is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
                                 && !kfs.contains(item_id)
                             {
                                 return false;
@@ -159,35 +155,35 @@ fn flags_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, calc: &mut SolCalc, it
                 }
             }
         }
-        SolSecZone::Hazard => {
+        SecZone::Hazard => {
             for item_id in items.iter() {
-                if is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(item_id) {
+                if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(item_id) {
                     return false;
                 }
             }
         }
         // No limits for nullsec/w-space
-        SolSecZone::NullSec | SolSecZone::WSpace => (),
+        SecZone::NullSec | SecZone::WSpace => (),
     }
     true
 }
 fn flags_check_verbose(
-    kfs: &StSet<SolItemId>,
-    uad: &SolUad,
-    calc: &mut SolCalc,
-    limitable_items: &StSet<SolItemId>,
-) -> Option<SolValSecZoneFail> {
+    kfs: &StSet<ItemId>,
+    uad: &Uad,
+    calc: &mut Calc,
+    limitable_items: &StSet<ItemId>,
+) -> Option<ValSecZoneFail> {
     if limitable_items.is_empty() {
         return None;
     }
-    if matches!(uad.sec_zone, SolSecZone::NullSec | SolSecZone::WSpace) {
+    if matches!(uad.sec_zone, SecZone::NullSec | SecZone::WSpace) {
         return None;
     }
     let mut failed_items = Vec::new();
     for item_id in limitable_items.difference(kfs) {
         let allowed_zones = get_allowed_sec_zones(uad, calc, item_id);
         if !allowed_zones.iter().any(|v| compare_zones(&uad.sec_zone, v)) {
-            failed_items.push(SolValSecZoneItemInfo {
+            failed_items.push(ValSecZoneItemInfo {
                 item_id: *item_id,
                 allowed_zones: allowed_zones.to_vec(),
             });
@@ -196,66 +192,62 @@ fn flags_check_verbose(
     if failed_items.is_empty() {
         return None;
     }
-    Some(SolValSecZoneFail {
+    Some(ValSecZoneFail {
         zone: uad.sec_zone,
         items: failed_items,
     })
 }
-fn get_allowed_sec_zones(
-    uad: &SolUad,
-    calc: &mut SolCalc,
-    item_id: &SolItemId,
-) -> SmallVec<SolSecZone, SEC_ZONE_COUNT> {
+fn get_allowed_sec_zones(uad: &Uad, calc: &mut Calc, item_id: &ItemId) -> SmallVec<SecZone, SEC_ZONE_COUNT> {
     let mut allowed_zones = SmallVec::new();
-    let disallow_empire = is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_EMPIRE_SPACE);
+    let disallow_empire = is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE);
     // Hisec
-    match disallow_empire || is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HISEC) {
+    match disallow_empire || is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HISEC) {
         true => {
-            if is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC) {
-                allowed_zones.push(SolSecZone::HiSec(SolSecZoneCorruption::C5))
+            if is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC) {
+                allowed_zones.push(SecZone::HiSec(SecZoneCorruption::C5))
             }
         }
-        false => allowed_zones.push(SolSecZone::HiSec(SolSecZoneCorruption::None)),
+        false => allowed_zones.push(SecZone::HiSec(SecZoneCorruption::None)),
     }
     // Lowsec
     match disallow_empire {
         true => {
-            if is_flag_set(uad, calc, item_id, &consts::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC) {
-                allowed_zones.push(SolSecZone::LowSec(SolSecZoneCorruption::C5))
+            if is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC) {
+                allowed_zones.push(SecZone::LowSec(SecZoneCorruption::C5))
             }
         }
-        false => allowed_zones.push(SolSecZone::LowSec(SolSecZoneCorruption::None)),
+        false => allowed_zones.push(SecZone::LowSec(SecZoneCorruption::None)),
     }
     // Null/w-space
-    allowed_zones.extend([SolSecZone::NullSec, SolSecZone::WSpace]);
+    allowed_zones.extend([SecZone::NullSec, SecZone::WSpace]);
     // Zarzakh
-    if !is_flag_set(uad, calc, item_id, &consts::attrs::DISALLOW_IN_HAZARD) {
-        allowed_zones.push(SolSecZone::Hazard);
+    if !is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HAZARD) {
+        allowed_zones.push(SecZone::Hazard);
     }
     allowed_zones
 }
-fn compare_zones(actual: &SolSecZone, supported: &SolSecZone) -> bool {
+fn compare_zones(actual: &SecZone, supported: &SecZone) -> bool {
     match actual {
         // No corruption in actual hisec zone - accept only uncorrupted hisec
-        SolSecZone::HiSec(SolSecZoneCorruption::None) => {
-            matches!(supported, SolSecZone::HiSec(SolSecZoneCorruption::None))
+        SecZone::HiSec(SecZoneCorruption::None) => {
+            matches!(supported, SecZone::HiSec(SecZoneCorruption::None))
         }
         // For corrupted hisec zone accept any hisec, since items which work in uncorrupted hisec
         // work in corrupted hisec
-        SolSecZone::HiSec(SolSecZoneCorruption::C5) => matches!(supported, SolSecZone::HiSec(_)),
+        SecZone::HiSec(SecZoneCorruption::C5) => matches!(supported, SecZone::HiSec(_)),
         // Same logic as hisecs
-        SolSecZone::LowSec(SolSecZoneCorruption::None) => {
-            matches!(supported, SolSecZone::LowSec(SolSecZoneCorruption::None))
+        SecZone::LowSec(SecZoneCorruption::None) => {
+            matches!(supported, SecZone::LowSec(SecZoneCorruption::None))
         }
-        SolSecZone::LowSec(SolSecZoneCorruption::C5) => matches!(supported, SolSecZone::LowSec(_)),
-        SolSecZone::NullSec => matches!(supported, SolSecZone::NullSec),
-        SolSecZone::WSpace => matches!(supported, SolSecZone::WSpace),
-        SolSecZone::Hazard => matches!(supported, SolSecZone::Hazard),
+        SecZone::LowSec(SecZoneCorruption::C5) => matches!(supported, SecZone::LowSec(_)),
+        SecZone::NullSec => matches!(supported, SecZone::NullSec),
+        SecZone::WSpace => matches!(supported, SecZone::WSpace),
+        SecZone::Hazard => matches!(supported, SecZone::Hazard),
     }
 }
 
 // Security class validators
-fn class_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, limitable_items: &StMap<SolItemId, AttrVal>) -> bool {
+fn class_check_fast(kfs: &StSet<ItemId>, uad: &Uad, limitable_items: &StMap<ItemId, ad::AAttrVal>) -> bool {
     if limitable_items.is_empty() {
         return true;
     }
@@ -268,10 +260,10 @@ fn class_check_fast(kfs: &StSet<SolItemId>, uad: &SolUad, limitable_items: &StMa
     true
 }
 fn class_check_verbose(
-    kfs: &StSet<SolItemId>,
-    uad: &SolUad,
-    limitable_items: &StMap<SolItemId, AttrVal>,
-) -> Option<SolValSecZoneFail> {
+    kfs: &StSet<ItemId>,
+    uad: &Uad,
+    limitable_items: &StMap<ItemId, ad::AAttrVal>,
+) -> Option<ValSecZoneFail> {
     if limitable_items.is_empty() {
         return None;
     }
@@ -279,7 +271,7 @@ fn class_check_verbose(
     let items = limitable_items
         .iter()
         .filter(|(item_id, item_sec_class)| **item_sec_class < current_class && !kfs.contains(item_id))
-        .map(|(&item_id, &item_sec_class)| SolValSecZoneItemInfo {
+        .map(|(&item_id, &item_sec_class)| ValSecZoneItemInfo {
             item_id,
             allowed_zones: class_to_allowed_zones(item_sec_class),
         })
@@ -287,38 +279,38 @@ fn class_check_verbose(
     if items.is_empty() {
         return None;
     }
-    Some(SolValSecZoneFail {
+    Some(ValSecZoneFail {
         zone: uad.sec_zone,
         items,
     })
 }
-fn zone_to_class(zone: SolSecZone) -> AttrVal {
+fn zone_to_class(zone: SecZone) -> ad::AAttrVal {
     match zone {
-        SolSecZone::HiSec(_) => OF(2.0),
-        SolSecZone::LowSec(_) => OF(1.0),
+        SecZone::HiSec(_) => OF(2.0),
+        SecZone::LowSec(_) => OF(1.0),
         _ => OF(0.0),
     }
 }
-fn class_to_allowed_zones(class: AttrVal) -> Vec<SolSecZone> {
+fn class_to_allowed_zones(class: ad::AAttrVal) -> Vec<SecZone> {
     if class >= OF(2.0) {
         return vec![
-            SolSecZone::HiSec(SolSecZoneCorruption::None),
-            SolSecZone::LowSec(SolSecZoneCorruption::None),
-            SolSecZone::NullSec,
-            SolSecZone::WSpace,
-            SolSecZone::Hazard,
+            SecZone::HiSec(SecZoneCorruption::None),
+            SecZone::LowSec(SecZoneCorruption::None),
+            SecZone::NullSec,
+            SecZone::WSpace,
+            SecZone::Hazard,
         ];
     }
     if class >= OF(1.0) {
         return vec![
-            SolSecZone::LowSec(SolSecZoneCorruption::None),
-            SolSecZone::NullSec,
-            SolSecZone::WSpace,
-            SolSecZone::Hazard,
+            SecZone::LowSec(SecZoneCorruption::None),
+            SecZone::NullSec,
+            SecZone::WSpace,
+            SecZone::Hazard,
         ];
     }
     if class >= OF(0.0) {
-        return vec![SolSecZone::NullSec, SolSecZone::WSpace, SolSecZone::Hazard];
+        return vec![SecZone::NullSec, SecZone::WSpace, SecZone::Hazard];
     }
     Vec::new()
 }

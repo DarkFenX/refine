@@ -5,7 +5,7 @@ pub(crate) struct HAddFitCmd {
     rah_incoming_dmg: Option<HDmgProfile>,
 }
 impl HAddFitCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolFitInfo, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::FitInfo, HExecError> {
         let fit_info = core_sol.add_fit();
         match &self.rah_incoming_dmg {
             Some(rah_incoming_dmg) => {

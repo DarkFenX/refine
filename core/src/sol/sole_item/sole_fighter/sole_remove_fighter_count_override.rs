@@ -1,14 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_fighter_count_override(
-        &mut self,
-        item_id: &SolItemId,
-    ) -> Result<(), RemoveFighterCountOverrideError> {
+    pub fn remove_fighter_count_override(&mut self, item_id: &ItemId) -> Result<(), RemoveFighterCountOverrideError> {
         // Update user data
         let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
         let old_count = fighter.get_count().map(|v| v.current);

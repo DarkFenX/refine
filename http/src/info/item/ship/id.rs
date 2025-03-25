@@ -4,8 +4,8 @@ pub(crate) struct HShipInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SolItemId,
 }
-impl From<&rc::SolShipInfo> for HShipInfoId {
-    fn from(core_ship_info: &rc::SolShipInfo) -> Self {
+impl From<&rc::ShipInfo> for HShipInfoId {
+    fn from(core_ship_info: &rc::ShipInfo) -> Self {
         Self { id: core_ship_info.id }
     }
 }

@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolarSystem, info::SolSkillInfo},
+    sol::{FitId, SolarSystem, info::SkillInfo},
 };
 
 impl SolarSystem {
-    pub fn get_fit_skills(&self, fit_id: &SolFitId) -> Result<Vec<SolSkillInfo>, GetFitSkillsError> {
+    pub fn get_fit_skills(&self, fit_id: &FitId) -> Result<Vec<SkillInfo>, GetFitSkillsError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let skill_infos = fit
             .skills
             .values()
-            .map(|v| SolSkillInfo::from(self.uad.items.get_item(&v.item_id).unwrap().get_skill().unwrap()))
+            .map(|v| SkillInfo::from(self.uad.items.get_item(&v.item_id).unwrap().get_skill().unwrap()))
             .collect();
         Ok(skill_infos)
     }

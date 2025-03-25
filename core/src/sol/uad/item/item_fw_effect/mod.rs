@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::SolFwEffect;
+pub(in crate::sol) use main::FwEffect;
 
 mod debug;
 mod main;

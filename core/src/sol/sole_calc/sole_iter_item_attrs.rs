@@ -1,17 +1,16 @@
 use crate::{
-    defs::{EAttrId, SolItemId},
     err::basic::{ItemFoundError, ItemLoadedError},
     sol::{
-        SolarSystem,
-        svc::calc::{LoadedItemFoundError, SolAttrVal},
+        AttrId, ItemId, SolarSystem,
+        svc::calc::{CalcAttrVal, LoadedItemFoundError},
     },
 };
 
 impl SolarSystem {
     pub fn iter_item_attrs(
         &mut self,
-        item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>, IterItemAttrsError> {
+        item_id: &ItemId,
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, CalcAttrVal)>, IterItemAttrsError> {
         let attrs = self.svc.calc.iter_item_attr_vals(&self.uad, item_id)?;
         Ok(attrs)
     }

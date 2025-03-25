@@ -1,26 +1,29 @@
 use crate::{
-    defs::{EEffectId, SolItemId},
-    sol::svc::calc::{
-        SolAggrMode, SolOp,
-        modifier::{SolAffecteeFilter, SolLocation, SolModifierKind, SolRawModifier, affector_val::SolAffectorValue},
+    ad,
+    sol::{
+        ItemId,
+        svc::calc::{
+            AggrMode, Op,
+            modifier::{AffecteeFilter, Location, ModifierKind, RawModifier, affector_val::AffectorValue},
+        },
     },
 };
 
 use super::attr::SHIP_SPEED;
 
-pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: SolItemId, effect_id: EEffectId) -> SolRawModifier {
-    SolRawModifier::new(
-        SolModifierKind::Local,
+pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: ItemId, a_effect_id: ad::AEffectId) -> RawModifier {
+    RawModifier {
+        kind: ModifierKind::Local,
         affector_item_id,
-        effect_id,
-        SolAffectorValue::PropulsionModule,
-        SolOp::PostMul,
-        SolAggrMode::Stack,
-        SolAffecteeFilter::Direct(SolLocation::Ship),
-        SHIP_SPEED,
-        None,
-        None,
-        None,
-        None,
-    )
+        a_effect_id,
+        affector_value: AffectorValue::PropulsionModule,
+        op: Op::PostMul,
+        aggr_mode: AggrMode::Stack,
+        affectee_filter: AffecteeFilter::Direct(Location::Ship),
+        affectee_a_attr_id: SHIP_SPEED,
+        buff_type_a_attr_id: None,
+        resist_a_attr_id: None,
+        optimal_a_attr_id: None,
+        falloff_a_attr_id: None,
+    }
 }

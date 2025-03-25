@@ -1,7 +1,5 @@
-pub use affector::SolAffectorInfo;
-pub use modification::SolModificationInfo;
-pub use op::SolOpInfo;
+pub use affector::AffectorInfo;
+pub use modification::ModificationInfo;
 
 mod affector;
 mod modification;
-mod op;

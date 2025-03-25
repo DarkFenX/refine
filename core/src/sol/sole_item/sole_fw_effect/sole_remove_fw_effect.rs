@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_fw_effect(&mut self, item_id: &SolItemId) -> Result<(), RemoveFwEffectError> {
+    pub fn remove_fw_effect(&mut self, item_id: &ItemId) -> Result<(), RemoveFwEffectError> {
         let item = self.uad.items.get_item(item_id)?;
         let fw_effect = item.get_fw_effect()?;
         self.svc.remove_item(&self.uad, item);

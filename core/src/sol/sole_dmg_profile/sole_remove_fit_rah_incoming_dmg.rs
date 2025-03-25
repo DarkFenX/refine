@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolFitId,
     err::basic::{FitDmgProfileFoundError, FitFoundError},
-    sol::SolarSystem,
+    sol::{FitId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_fit_rah_incoming_dmg(&mut self, fit_id: &SolFitId) -> Result<(), RemoveFitRahIncomingDmgError> {
+    pub fn remove_fit_rah_incoming_dmg(&mut self, fit_id: &FitId) -> Result<(), RemoveFitRahIncomingDmgError> {
         let fit = self.uad.fits.get_fit_mut(fit_id)?;
         let old_dmg_profile = fit.rah_incoming_dmg.take();
         match old_dmg_profile {

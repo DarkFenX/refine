@@ -9,8 +9,8 @@ pub(crate) struct HFwEffectInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolFwEffectInfo> for HFwEffectInfoPartial {
-    fn from(core_fw_effect_info: &rc::SolFwEffectInfo) -> Self {
+impl From<&rc::FwEffectInfo> for HFwEffectInfoPartial {
+    fn from(core_fw_effect_info: &rc::FwEffectInfo) -> Self {
         Self {
             id: core_fw_effect_info.id,
             kind: "fw_effect",

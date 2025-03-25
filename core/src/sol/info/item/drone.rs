@@ -1,50 +1,33 @@
 use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
     sol::{
-        info::{SolItemMutationInfo, SolProjInfo},
-        uad::item::{SolDrone, SolMinionState},
+        FitId, ItemId, ItemTypeId,
+        info::{ItemMutationInfo, ProjInfo},
+        uad::item::{Drone, MinionState},
     },
     src::Src,
 };
 
-pub struct SolDroneInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
-    pub state: SolMinionState,
-    pub mutation: Option<SolItemMutationInfo>,
-    pub projs: Vec<SolProjInfo>,
+pub struct DroneInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub state: MinionState,
+    pub mutation: Option<ItemMutationInfo>,
+    pub projs: Vec<ProjInfo>,
 }
-impl SolDroneInfo {
-    fn new(
-        id: SolItemId,
-        type_id: EItemId,
-        fit_id: SolFitId,
-        state: SolMinionState,
-        mutation: Option<SolItemMutationInfo>,
-        projs: Vec<SolProjInfo>,
-    ) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            state,
-            mutation,
-            projs,
-        }
-    }
-    pub(in crate::sol) fn from_drone_with_source(src: &Src, sol_drone: &SolDrone) -> Self {
-        SolDroneInfo::new(
-            sol_drone.get_id(),
-            sol_drone.get_type_id(),
-            sol_drone.get_fit_id(),
-            sol_drone.get_drone_state(),
-            sol_drone.get_mutation_info(src),
-            sol_drone
+impl DroneInfo {
+    pub(in crate::sol) fn from_drone_with_source(src: &Src, sol_drone: &Drone) -> Self {
+        DroneInfo {
+            id: sol_drone.get_item_id(),
+            type_id: sol_drone.get_a_item_id(),
+            fit_id: sol_drone.get_fit_id(),
+            state: sol_drone.get_drone_state(),
+            mutation: sol_drone.get_mutation_info(src),
+            projs: sol_drone
                 .get_projs()
                 .iter()
-                .map(|(item_id, range)| SolProjInfo::new(*item_id, *range))
+                .map(|(&item_id, &range)| ProjInfo { item_id, range })
                 .collect(),
-        )
+        }
     }
 }

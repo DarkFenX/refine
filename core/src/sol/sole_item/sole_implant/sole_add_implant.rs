@@ -1,24 +1,23 @@
 use crate::{
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolarSystem,
-        info::SolImplantInfo,
-        uad::item::{SolImplant, SolItem},
+        FitId, ItemTypeId, SolarSystem,
+        info::ImplantInfo,
+        uad::item::{Implant, Item},
     },
 };
 
 impl SolarSystem {
     pub fn add_implant(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
+        fit_id: FitId,
+        type_id: ItemTypeId,
         state: bool,
-    ) -> Result<SolImplantInfo, AddImplantError> {
+    ) -> Result<ImplantInfo, AddImplantError> {
         let item_id = self.uad.items.alloc_item_id();
-        let implant = SolImplant::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = SolImplantInfo::from(&implant);
-        let item = SolItem::Implant(implant);
+        let implant = Implant::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let info = ImplantInfo::from(&implant);
+        let item = Item::Implant(implant);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.implants.insert(item_id);
         self.uad.items.add_item(item);

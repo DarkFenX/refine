@@ -1,10 +1,9 @@
-pub use fit::SolFitInfo;
-pub use fleet::SolFleetInfo;
+pub use fit::FitInfo;
+pub use fleet::FleetInfo;
 pub use item::{
-    SolAttrMutationInfo, SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo,
-    SolFighterInfo, SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolItemMutationInfo, SolModuleInfo,
-    SolProjEffectInfo, SolProjInfo, SolRigInfo, SolServiceInfo, SolShipInfo, SolSideEffectInfo, SolSideEffectStr,
-    SolSkillInfo, SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
+    AttrMutationInfo, AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FwEffectInfo,
+    ImplantInfo, ItemInfo, ItemMutationInfo, ModuleInfo, ProjEffectInfo, ProjInfo, RigInfo, ServiceInfo, ShipInfo,
+    SideEffectInfo, SideEffectStr, SkillInfo, StanceInfo, SubsystemInfo, SwEffectInfo,
 };
 
 mod fit;

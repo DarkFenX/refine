@@ -1,9 +1,12 @@
 use itertools::Itertools;
 
-use crate::{defs::SolFleetId, err::basic::FleetFoundError, sol::SolarSystem};
+use crate::{
+    err::basic::FleetFoundError,
+    sol::{FleetId, SolarSystem},
+};
 
 impl SolarSystem {
-    pub fn remove_fleet(&mut self, fleet_id: &SolFleetId) -> Result<(), RemoveFleetError> {
+    pub fn remove_fleet(&mut self, fleet_id: &FleetId) -> Result<(), RemoveFleetError> {
         let fleet = self.uad.fleets.get_fleet(fleet_id)?;
         let fit_ids = fleet.iter_fits().copied().collect_vec();
         for fit_id in fit_ids.iter() {

@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemMutatedError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_module_mutation(&mut self, item_id: &SolItemId) -> Result<(), RemoveModuleMutationError> {
+    pub fn remove_module_mutation(&mut self, item_id: &ItemId) -> Result<(), RemoveModuleMutationError> {
         let item = self.uad.items.get_item(item_id)?;
         let module = item.get_module()?;
         if !module.has_mutation_data() {

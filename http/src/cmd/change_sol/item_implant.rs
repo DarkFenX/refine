@@ -12,7 +12,7 @@ pub(crate) struct HAddImplantCmd {
     fit_cmd: change_fit::HAddImplantCmd,
 }
 impl HAddImplantCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolImplantInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::ImplantInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

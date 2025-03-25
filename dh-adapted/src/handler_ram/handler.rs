@@ -46,7 +46,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         self.storage_effects.get(id)
     }
     /// Get adapted mutator.
-    fn get_muta(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcMuta> {
+    fn get_mutator(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcMuta> {
         self.storage_mutas.get(id)
     }
     /// Get adapted warfare buff.

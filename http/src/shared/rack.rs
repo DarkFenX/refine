@@ -5,16 +5,16 @@ pub(crate) enum HModRack {
     Mid,
     Low,
 }
-impl From<&rc::SolModRack> for HModRack {
-    fn from(core_rack: &rc::SolModRack) -> Self {
+impl From<&rc::ModRack> for HModRack {
+    fn from(core_rack: &rc::ModRack) -> Self {
         match core_rack {
-            rc::SolModRack::High => Self::High,
-            rc::SolModRack::Mid => Self::Mid,
-            rc::SolModRack::Low => Self::Low,
+            rc::ModRack::High => Self::High,
+            rc::ModRack::Mid => Self::Mid,
+            rc::ModRack::Low => Self::Low,
         }
     }
 }
-impl From<&HModRack> for rc::SolModRack {
+impl From<&HModRack> for rc::ModRack {
     fn from(h_rack: &HModRack) -> Self {
         match h_rack {
             HModRack::High => Self::High,

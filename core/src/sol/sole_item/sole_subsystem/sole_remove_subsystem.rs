@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_subsystem(&mut self, item_id: &SolItemId) -> Result<(), RemoveSubsystemError> {
+    pub fn remove_subsystem(&mut self, item_id: &ItemId) -> Result<(), RemoveSubsystemError> {
         let item = self.uad.items.get_item(item_id)?;
         let subsystem = item.get_subsystem()?;
         self.svc.remove_item(&self.uad, item);

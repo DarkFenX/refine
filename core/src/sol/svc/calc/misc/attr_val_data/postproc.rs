@@ -1,20 +1,18 @@
-use crate::{
-    defs::SolItemId,
-    sol::{
-        svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc},
-        uad::SolUad,
-    },
+use crate::sol::{
+    ItemId,
+    svc::calc::{AttrValInfo, Calc, CalcAttrVal},
+    uad::Uad,
 };
 
 #[derive(Clone)]
-pub(in crate::sol::svc::calc) struct SolItemAttrPostprocs {
-    pub(in crate::sol::svc::calc) fast: fn(&mut SolCalc, &SolUad, &SolItemId, SolAttrVal) -> SolAttrVal,
-    pub(in crate::sol::svc::calc) info: fn(&mut SolCalc, &SolUad, &SolItemId, SolAttrValInfo) -> SolAttrValInfo,
+pub(in crate::sol::svc::calc) struct ItemAttrPostprocs {
+    pub(in crate::sol::svc::calc) fast: fn(&mut Calc, &Uad, &ItemId, CalcAttrVal) -> CalcAttrVal,
+    pub(in crate::sol::svc::calc) info: fn(&mut Calc, &Uad, &ItemId, AttrValInfo) -> AttrValInfo,
 }
-impl SolItemAttrPostprocs {
+impl ItemAttrPostprocs {
     pub(in crate::sol::svc::calc) fn new(
-        fast: fn(&mut SolCalc, &SolUad, &SolItemId, SolAttrVal) -> SolAttrVal,
-        info: fn(&mut SolCalc, &SolUad, &SolItemId, SolAttrValInfo) -> SolAttrValInfo,
+        fast: fn(&mut Calc, &Uad, &ItemId, CalcAttrVal) -> CalcAttrVal,
+        info: fn(&mut Calc, &Uad, &ItemId, AttrValInfo) -> AttrValInfo,
     ) -> Self {
         Self { fast, info }
     }

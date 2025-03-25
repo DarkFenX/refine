@@ -7,18 +7,18 @@ pub(crate) enum HModuleState {
     Active,
     Overload,
 }
-impl From<&rc::SolModuleState> for HModuleState {
-    fn from(core_module_state: &rc::SolModuleState) -> Self {
+impl From<&rc::ModuleState> for HModuleState {
+    fn from(core_module_state: &rc::ModuleState) -> Self {
         match core_module_state {
-            rc::SolModuleState::Ghost => Self::Ghost,
-            rc::SolModuleState::Offline => Self::Offline,
-            rc::SolModuleState::Online => Self::Online,
-            rc::SolModuleState::Active => Self::Active,
-            rc::SolModuleState::Overload => Self::Overload,
+            rc::ModuleState::Ghost => Self::Ghost,
+            rc::ModuleState::Offline => Self::Offline,
+            rc::ModuleState::Online => Self::Online,
+            rc::ModuleState::Active => Self::Active,
+            rc::ModuleState::Overload => Self::Overload,
         }
     }
 }
-impl From<&HModuleState> for rc::SolModuleState {
+impl From<&HModuleState> for rc::ModuleState {
     fn from(h_module_state: &HModuleState) -> Self {
         match h_module_state {
             HModuleState::Ghost => Self::Ghost,

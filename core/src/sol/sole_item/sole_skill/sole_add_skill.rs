@@ -1,14 +1,13 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    defs::{EItemId, SkillLevel, SolFitId},
     err::basic::{FitFoundError, SkillEveTypeError, SkillLevelError},
     sol::{
-        SolarSystem,
-        info::SolSkillInfo,
+        FitId, ItemTypeId, SkillLevel, SolarSystem,
+        info::SkillInfo,
         uad::{
-            fit::SolFitSkill,
-            item::{SolItem, SolSkill},
+            fit::FitSkill,
+            item::{Item, Skill},
         },
     },
 };
@@ -18,20 +17,20 @@ use super::check_skill_level;
 impl SolarSystem {
     pub fn add_skill(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
+        fit_id: FitId,
+        type_id: ItemTypeId,
         level: SkillLevel,
         state: bool,
-    ) -> Result<SolSkillInfo, AddSkillError> {
+    ) -> Result<SkillInfo, AddSkillError> {
         check_skill_level(level)?;
         let item_id = self.uad.items.alloc_item_id();
-        let skill = SolSkill::new(&self.uad.src, item_id, type_id, fit_id, level, state);
-        let info = SolSkillInfo::from(&skill);
-        let item = SolItem::Skill(skill);
+        let skill = Skill::new(&self.uad.src, item_id, type_id, fit_id, level, state);
+        let info = SkillInfo::from(&skill);
+        let item = Item::Skill(skill);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         match fit.skills.entry(type_id) {
             Entry::Vacant(entry) => {
-                entry.insert(SolFitSkill::new(item_id, level));
+                entry.insert(FitSkill::new(item_id, level));
             }
             Entry::Occupied(entry) => {
                 return Err(SkillEveTypeError::new(type_id, fit_id, entry.get().item_id).into());

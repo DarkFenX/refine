@@ -1,42 +1,42 @@
 use crate::{
-    defs::{EItemId, SolFitId, SolFleetId, SolItemId},
     sol::{
-        misc::SolDmgProfile,
+        FitId, FleetId, ItemId, ItemTypeId,
+        misc::DmgProfile,
         uad::{
-            fit::{SolFitSkill, SolItemVec},
-            item::SolShipKind,
+            fit::{FitSkill, ItemVec},
+            item::ShipKind,
         },
     },
     util::{StMap, StSet},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolFit {
-    pub(in crate::sol) id: SolFitId,
-    pub(in crate::sol) kind: SolShipKind,
-    pub(in crate::sol) fleet: Option<SolFleetId>,
-    pub(in crate::sol) character: Option<SolItemId>,
-    pub(in crate::sol) skills: StMap<EItemId, SolFitSkill>,
-    pub(in crate::sol) implants: StSet<SolItemId>,
-    pub(in crate::sol) boosters: StSet<SolItemId>,
-    pub(in crate::sol) ship: Option<SolItemId>,
-    pub(in crate::sol) stance: Option<SolItemId>,
-    pub(in crate::sol) subsystems: StSet<SolItemId>,
-    pub(in crate::sol) mods_high: SolItemVec,
-    pub(in crate::sol) mods_mid: SolItemVec,
-    pub(in crate::sol) mods_low: SolItemVec,
-    pub(in crate::sol) rigs: StSet<SolItemId>,
-    pub(in crate::sol) services: StSet<SolItemId>,
-    pub(in crate::sol) drones: StSet<SolItemId>,
-    pub(in crate::sol) fighters: StSet<SolItemId>,
-    pub(in crate::sol) fw_effects: StSet<SolItemId>,
-    pub(in crate::sol) rah_incoming_dmg: Option<SolDmgProfile>,
+pub(in crate::sol) struct Fit {
+    pub(in crate::sol) id: FitId,
+    pub(in crate::sol) kind: ShipKind,
+    pub(in crate::sol) fleet: Option<FleetId>,
+    pub(in crate::sol) character: Option<ItemId>,
+    pub(in crate::sol) skills: StMap<ItemTypeId, FitSkill>,
+    pub(in crate::sol) implants: StSet<ItemId>,
+    pub(in crate::sol) boosters: StSet<ItemId>,
+    pub(in crate::sol) ship: Option<ItemId>,
+    pub(in crate::sol) stance: Option<ItemId>,
+    pub(in crate::sol) subsystems: StSet<ItemId>,
+    pub(in crate::sol) mods_high: ItemVec,
+    pub(in crate::sol) mods_mid: ItemVec,
+    pub(in crate::sol) mods_low: ItemVec,
+    pub(in crate::sol) rigs: StSet<ItemId>,
+    pub(in crate::sol) services: StSet<ItemId>,
+    pub(in crate::sol) drones: StSet<ItemId>,
+    pub(in crate::sol) fighters: StSet<ItemId>,
+    pub(in crate::sol) fw_effects: StSet<ItemId>,
+    pub(in crate::sol) rah_incoming_dmg: Option<DmgProfile>,
 }
-impl SolFit {
-    pub(in crate::sol) fn new(id: SolFitId) -> Self {
+impl Fit {
+    pub(in crate::sol) fn new(id: FitId) -> Self {
         Self {
             id,
-            kind: SolShipKind::Unknown,
+            kind: ShipKind::Unknown,
             fleet: None,
             character: None,
             skills: StMap::new(),
@@ -45,9 +45,9 @@ impl SolFit {
             ship: None,
             stance: None,
             subsystems: StSet::new(),
-            mods_high: SolItemVec::new(),
-            mods_mid: SolItemVec::new(),
-            mods_low: SolItemVec::new(),
+            mods_high: ItemVec::new(),
+            mods_mid: ItemVec::new(),
+            mods_low: ItemVec::new(),
             rigs: StSet::new(),
             services: StSet::new(),
             drones: StSet::new(),
@@ -56,7 +56,7 @@ impl SolFit {
             rah_incoming_dmg: None,
         }
     }
-    pub(in crate::sol) fn all_direct_items(&self) -> Vec<SolItemId> {
+    pub(in crate::sol) fn all_direct_items(&self) -> Vec<ItemId> {
         // Calculate capacity
         let mut capacity = 0;
         if self.character.is_some() {
@@ -101,7 +101,7 @@ impl SolFit {
     }
 }
 
-fn conditional_push(items: &mut Vec<SolItemId>, opt_value: Option<SolItemId>) {
+fn conditional_push(items: &mut Vec<ItemId>, opt_value: Option<ItemId>) {
     if let Some(value) = opt_value {
         items.push(value)
     }

@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_proj_effect(&mut self, item_id: &SolItemId) -> Result<(), RemoveProjEffectError> {
+    pub fn remove_proj_effect(&mut self, item_id: &ItemId) -> Result<(), RemoveProjEffectError> {
         // Check if everything is correct
         let item = self.uad.items.get_item(item_id)?;
         let proj_effect = item.get_proj_effect()?;

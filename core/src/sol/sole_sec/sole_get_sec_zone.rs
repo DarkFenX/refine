@@ -1,7 +1,7 @@
-use crate::sol::{SolSecZone, SolarSystem};
+use crate::sol::{SecZone, SolarSystem};
 
 impl SolarSystem {
-    pub fn get_sec_zone(&self) -> &SolSecZone {
+    pub fn get_sec_zone(&self) -> &SecZone {
         &self.uad.sec_zone
     }
 }

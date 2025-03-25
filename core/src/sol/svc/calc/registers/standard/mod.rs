@@ -1,5 +1,5 @@
-pub(in crate::sol::svc::calc) use data::SolStandardRegister;
-use iter_locs_pot::SolPotentialLocations;
+pub(in crate::sol::svc::calc) use data::StandardRegister;
+use iter_locs_pot::PotentialLocations;
 
 mod affectee;
 mod data;

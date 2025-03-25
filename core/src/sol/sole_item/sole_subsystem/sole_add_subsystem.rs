@@ -1,24 +1,23 @@
 use crate::{
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolarSystem,
-        info::SolSubsystemInfo,
-        uad::item::{SolItem, SolSubsystem},
+        FitId, ItemTypeId, SolarSystem,
+        info::SubsystemInfo,
+        uad::item::{Item, Subsystem},
     },
 };
 
 impl SolarSystem {
     pub fn add_subsystem(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
+        fit_id: FitId,
+        type_id: ItemTypeId,
         state: bool,
-    ) -> Result<SolSubsystemInfo, AddSubsystemError> {
+    ) -> Result<SubsystemInfo, AddSubsystemError> {
         let item_id = self.uad.items.alloc_item_id();
-        let subsystem = SolSubsystem::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = SolSubsystemInfo::from(&subsystem);
-        let item = SolItem::Subsystem(subsystem);
+        let subsystem = Subsystem::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let info = SubsystemInfo::from(&subsystem);
+        let item = Item::Subsystem(subsystem);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.subsystems.insert(item_id);
         self.uad.items.add_item(item);

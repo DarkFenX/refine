@@ -13,7 +13,7 @@ impl HSetStanceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> Result<rc::SolStanceInfo, HExecError> {
+    ) -> Result<rc::StanceInfo, HExecError> {
         let core_stance = match core_sol.set_fit_stance(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_stance) => core_stance,
             Err(error) => {

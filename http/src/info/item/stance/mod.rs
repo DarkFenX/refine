@@ -18,7 +18,7 @@ pub(crate) enum HStanceInfo {
 impl HStanceInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_stance_info: &rc::SolStanceInfo,
+        core_stance_info: &rc::StanceInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

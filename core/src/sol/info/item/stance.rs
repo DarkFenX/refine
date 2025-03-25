@@ -1,31 +1,18 @@
-use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
-    sol::uad::item::SolStance,
-};
+use crate::sol::{FitId, ItemId, ItemTypeId, uad::item::Stance};
 
-pub struct SolStanceInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
+pub struct StanceInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub enabled: bool,
 }
-impl SolStanceInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, enabled: bool) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            enabled,
+impl From<&Stance> for StanceInfo {
+    fn from(sol_stance: &Stance) -> Self {
+        StanceInfo {
+            id: sol_stance.get_item_id(),
+            type_id: sol_stance.get_a_item_id(),
+            fit_id: sol_stance.get_fit_id(),
+            enabled: sol_stance.get_stance_state(),
         }
-    }
-}
-impl From<&SolStance> for SolStanceInfo {
-    fn from(sol_stance: &SolStance) -> Self {
-        SolStanceInfo::new(
-            sol_stance.get_id(),
-            sol_stance.get_type_id(),
-            sol_stance.get_fit_id(),
-            sol_stance.get_stance_state(),
-        )
     }
 }

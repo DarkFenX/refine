@@ -18,7 +18,7 @@ pub(crate) enum HProjEffectInfo {
 impl HProjEffectInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_proj_effect_info: &rc::SolProjEffectInfo,
+        core_proj_effect_info: &rc::ProjEffectInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

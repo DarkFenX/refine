@@ -1,11 +1,11 @@
-use crate::defs::EAttrId;
+use crate::sol::AttrId;
 
 #[derive(Debug)]
 pub struct AttrMetaFoundError {
-    pub attr_id: EAttrId,
+    pub attr_id: AttrId,
 }
 impl AttrMetaFoundError {
-    pub(crate) fn new(attr_id: EAttrId) -> Self {
+    pub(crate) fn new(attr_id: AttrId) -> Self {
         Self { attr_id }
     }
 }

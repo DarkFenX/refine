@@ -1,14 +1,14 @@
 use crate::sol::{
-    debug::{SolDebugResult, check_item},
-    uad::SolUad,
+    debug::{DebugResult, check_item_id},
+    uad::Uad,
 };
 
-use super::SolAutocharges;
+use super::Autocharges;
 
-impl SolAutocharges {
-    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
+impl Autocharges {
+    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
         for autocharge_id in self.values() {
-            check_item(uad, autocharge_id, false)?;
+            check_item_id(uad, autocharge_id, false)?;
         }
         Ok(())
     }

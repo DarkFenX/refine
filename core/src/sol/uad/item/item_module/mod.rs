@@ -1,5 +1,5 @@
-pub(in crate::sol) use main::SolModule;
-pub use state::SolModuleState;
+pub(in crate::sol) use main::Module;
+pub use state::ModuleState;
 
 mod debug;
 mod main;

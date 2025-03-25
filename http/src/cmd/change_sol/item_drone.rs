@@ -12,7 +12,7 @@ pub(crate) struct HAddDroneCmd {
     fit_cmd: change_fit::HAddDroneCmd,
 }
 impl HAddDroneCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolDroneInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::DroneInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

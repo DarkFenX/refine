@@ -1,14 +1,13 @@
 use crate::{
-    defs::{AttrVal, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::SolarSystem,
+    sol::{AttrVal, ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn change_module_proj(
         &mut self,
-        item_id: &SolItemId,
-        projectee_item_id: &SolItemId,
+        item_id: &ItemId,
+        projectee_item_id: &ItemId,
         range: Option<AttrVal>,
     ) -> Result<(), ChangeModuleProjError> {
         // Check if projection is defined before changing it
@@ -22,7 +21,7 @@ impl SolarSystem {
             return Ok(());
         }
         // Update user data for module
-        let charge_id = module.get_charge_id();
+        let charge_id = module.get_charge_item_id();
         module.get_projs_mut().add(*projectee_item_id, range);
         // Update services for module
         self.change_item_id_projection_range_in_svc(item_id, projectee_item_id, range);

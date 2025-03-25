@@ -14,21 +14,21 @@ pub(crate) enum HModOp {
     MaxLimit,
     ExtraMul,
 }
-impl From<&rc::SolOpInfo> for HModOp {
-    fn from(core_op: &rc::SolOpInfo) -> Self {
+impl From<&rc::OpInfo> for HModOp {
+    fn from(core_op: &rc::OpInfo) -> Self {
         match core_op {
-            rc::SolOpInfo::PreAssign => Self::PreAssign,
-            rc::SolOpInfo::PreMul => Self::PreMul,
-            rc::SolOpInfo::PreDiv => Self::PreDiv,
-            rc::SolOpInfo::Add => Self::Add,
-            rc::SolOpInfo::Sub => Self::Sub,
-            rc::SolOpInfo::PostMul => Self::PostMul,
-            rc::SolOpInfo::PostDiv => Self::PostDiv,
-            rc::SolOpInfo::PostPerc => Self::PostPerc,
-            rc::SolOpInfo::PostAssign => Self::PostAssign,
-            rc::SolOpInfo::MinLimit => Self::MinLimit,
-            rc::SolOpInfo::MaxLimit => Self::MaxLimit,
-            rc::SolOpInfo::ExtraMul => Self::ExtraMul,
+            rc::OpInfo::PreAssign => Self::PreAssign,
+            rc::OpInfo::PreMul => Self::PreMul,
+            rc::OpInfo::PreDiv => Self::PreDiv,
+            rc::OpInfo::Add => Self::Add,
+            rc::OpInfo::Sub => Self::Sub,
+            rc::OpInfo::PostMul => Self::PostMul,
+            rc::OpInfo::PostDiv => Self::PostDiv,
+            rc::OpInfo::PostPerc => Self::PostPerc,
+            rc::OpInfo::PostAssign => Self::PostAssign,
+            rc::OpInfo::MinLimit => Self::MinLimit,
+            rc::OpInfo::MaxLimit => Self::MaxLimit,
+            rc::OpInfo::ExtraMul => Self::ExtraMul,
         }
     }
 }

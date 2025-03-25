@@ -1,13 +1,13 @@
-use crate::defs::SolItemId;
+use crate::sol::ItemId;
 
 #[derive(Debug)]
 pub struct ItemKindMatchError {
-    pub item_id: SolItemId,
+    pub item_id: ItemId,
     pub expected_kind: &'static str,
     pub actual_kind: &'static str,
 }
 impl ItemKindMatchError {
-    pub(crate) fn new(item_id: SolItemId, expected_kind: &'static str, actual_kind: &'static str) -> Self {
+    pub(crate) fn new(item_id: ItemId, expected_kind: &'static str, actual_kind: &'static str) -> Self {
         Self {
             item_id,
             expected_kind,

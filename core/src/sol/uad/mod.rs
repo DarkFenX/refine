@@ -1,10 +1,10 @@
 //! Solar system user & adapted data.
 
 pub use item::{
-    SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolMinionState,
-    SolModuleState, SolServiceState,
+    ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, MinionState, ModuleState,
+    ServiceState,
 };
-pub(in crate::sol) use uad::SolUad;
+pub(in crate::sol) use uad::Uad;
 
 pub(in crate::sol) mod fit;
 pub(in crate::sol) mod fleet;

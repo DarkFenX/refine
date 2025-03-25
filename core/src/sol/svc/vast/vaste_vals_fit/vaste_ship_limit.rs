@@ -1,23 +1,22 @@
 use crate::{
     ad,
-    defs::{EItemGrpId, EItemId, SolItemId},
-    sol::{svc::vast::SolVastFitData, uad::item::SolShip},
+    sol::{ItemGrpId, ItemId, ItemTypeId, svc::vast::VastFitData, uad::item::Ship},
     util::StSet,
 };
 
-pub struct SolValShipLimitFail {
-    pub ship_type_id: Option<EItemId>,
-    pub ship_group_id: Option<EItemGrpId>,
-    pub items: Vec<SolValShipLimitItemInfo>,
+pub struct ValShipLimitFail {
+    pub ship_type_id: Option<ItemTypeId>,
+    pub ship_group_id: Option<ItemGrpId>,
+    pub items: Vec<ValShipLimitItemInfo>,
 }
 
-pub struct SolValShipLimitItemInfo {
-    pub item_id: SolItemId,
-    pub allowed_type_ids: Vec<EItemId>,
-    pub allowed_group_ids: Vec<EItemGrpId>,
+pub struct ValShipLimitItemInfo {
+    pub item_id: ItemId,
+    pub allowed_type_ids: Vec<ItemTypeId>,
+    pub allowed_group_ids: Vec<ItemGrpId>,
 }
-impl SolValShipLimitItemInfo {
-    fn from_ship_limit(item_id: SolItemId, item_ship_limit: &ad::AItemShipLimit) -> Self {
+impl ValShipLimitItemInfo {
+    fn from_ship_limit(item_id: ItemId, item_ship_limit: &ad::AItemShipLimit) -> Self {
         Self {
             item_id,
             allowed_type_ids: item_ship_limit.type_ids.clone(),
@@ -26,13 +25,9 @@ impl SolValShipLimitItemInfo {
     }
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(
-        &self,
-        kfs: &StSet<SolItemId>,
-        ship: Option<&SolShip>,
-    ) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, kfs: &StSet<ItemId>, ship: Option<&Ship>) -> bool {
         let ship = match ship {
             Some(ship) => ship,
             None => {
@@ -42,8 +37,8 @@ impl SolVastFitData {
                 };
             }
         };
-        let ship_type_id = ship.get_type_id();
-        let ship_group_id = ship.get_group_id();
+        let ship_type_id = ship.get_a_item_id();
+        let ship_group_id = ship.get_a_group_id();
         for (limited_item_id, ship_limit) in self.ship_limited_items.iter() {
             if ship_limit.type_ids.contains(&ship_type_id) {
                 continue;
@@ -63,14 +58,14 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_ship_limit_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        ship: Option<&SolShip>,
-    ) -> Option<SolValShipLimitFail> {
+        kfs: &StSet<ItemId>,
+        ship: Option<&Ship>,
+    ) -> Option<ValShipLimitFail> {
         if self.ship_limited_items.is_empty() {
             return None;
         }
         let (ship_type_id, ship_group_id) = match ship {
-            Some(ship) => (Some(ship.get_type_id()), ship.get_group_id()),
+            Some(ship) => (Some(ship.get_a_item_id()), ship.get_a_group_id()),
             None => (None, None),
         };
         let mut mismatches = Vec::new();
@@ -88,12 +83,12 @@ impl SolVastFitData {
             if kfs.contains(limited_item_id) {
                 continue;
             }
-            let mismatch = SolValShipLimitItemInfo::from_ship_limit(*limited_item_id, ship_limit);
+            let mismatch = ValShipLimitItemInfo::from_ship_limit(*limited_item_id, ship_limit);
             mismatches.push(mismatch);
         }
         match mismatches.is_empty() {
             true => None,
-            false => Some(SolValShipLimitFail {
+            false => Some(ValShipLimitFail {
                 ship_type_id,
                 ship_group_id,
                 items: mismatches,

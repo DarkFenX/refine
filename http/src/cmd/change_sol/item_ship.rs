@@ -12,7 +12,7 @@ pub(crate) struct HSetShipCmd {
     fit_cmd: change_fit::HSetShipCmd,
 }
 impl HSetShipCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolShipInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::ShipInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

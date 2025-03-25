@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolFitId,
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{SolarSystem, uad::item::SolCharacter},
+    sol::{FitId, SolarSystem, uad::item::Character},
     util::Named,
 };
 
 impl SolarSystem {
-    pub fn remove_fit_character(&mut self, fit_id: &SolFitId) -> Result<(), RemoveFitCharacterError> {
+    pub fn remove_fit_character(&mut self, fit_id: &FitId) -> Result<(), RemoveFitCharacterError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.character {
             Some(item_id) => item_id,
-            None => return Err(FitHasItemKindError::new(*fit_id, SolCharacter::get_name()).into()),
+            None => return Err(FitHasItemKindError::new(*fit_id, Character::get_name()).into()),
         };
         self.remove_character(&item_id).unwrap();
         Ok(())

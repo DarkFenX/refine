@@ -1,5 +1,5 @@
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum SolModifierKind {
+pub(in crate::sol::svc::calc) enum ModifierKind {
     Local,
     Buff,
     FleetBuff,

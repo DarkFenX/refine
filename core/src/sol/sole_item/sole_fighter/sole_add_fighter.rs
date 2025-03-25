@@ -1,26 +1,25 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolarSystem,
-        info::SolFighterInfo,
-        uad::item::{SolFighter, SolItem, SolMinionState},
+        FitId, ItemTypeId, SolarSystem,
+        info::FighterInfo,
+        uad::item::{Fighter, Item, MinionState},
     },
 };
 
 impl SolarSystem {
     pub fn add_fighter(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
-        state: SolMinionState,
-    ) -> Result<SolFighterInfo, AddFighterError> {
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: MinionState,
+    ) -> Result<FighterInfo, AddFighterError> {
         // Do everything needed to reserve ID for fighter itself
         let item_id = self.uad.items.alloc_item_id();
-        let fighter = SolFighter::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let item = SolItem::Fighter(fighter);
+        let fighter = Fighter::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let item = Item::Fighter(fighter);
         self.uad.items.add_item(item);
         // Reserve IDs for autocharges
         self.add_item_autocharges(&item_id);

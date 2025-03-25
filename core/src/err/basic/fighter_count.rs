@@ -1,4 +1,4 @@
-use crate::defs::Count;
+use crate::sol::Count;
 
 #[derive(Debug)]
 pub struct FighterCountError {

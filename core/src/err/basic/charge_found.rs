@@ -1,11 +1,11 @@
-use crate::defs::SolItemId;
+use crate::sol::ItemId;
 
 #[derive(Debug)]
 pub struct ChargeFoundError {
-    pub cont_item_id: SolItemId,
+    pub cont_item_id: ItemId,
 }
 impl ChargeFoundError {
-    pub(crate) fn new(cont_item_id: SolItemId) -> Self {
+    pub(crate) fn new(cont_item_id: ItemId) -> Self {
         Self { cont_item_id }
     }
 }

@@ -1,5 +1,5 @@
 use func::{add_ctx_modifier, remove_ctx_modifier};
-use iter_loc_act::SolActiveLocations;
+use iter_loc_act::ActiveLocations;
 
 mod func;
 mod iter_loc_act;

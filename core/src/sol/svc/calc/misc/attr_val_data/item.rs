@@ -1,15 +1,15 @@
 use crate::{
-    defs::EAttrId,
-    sol::svc::calc::{SolAttrVal, SolItemAttrPostprocs},
+    ad,
+    sol::svc::calc::{CalcAttrVal, ItemAttrPostprocs},
     util::StMap,
 };
 
 #[derive(Clone)]
-pub(in crate::sol::svc::calc) struct SolItemAttrValData {
-    pub(in crate::sol::svc::calc) values: StMap<EAttrId, SolAttrVal>,
-    pub(in crate::sol::svc::calc) postprocs: StMap<EAttrId, SolItemAttrPostprocs>,
+pub(in crate::sol::svc::calc) struct ItemAttrValData {
+    pub(in crate::sol::svc::calc) values: StMap<ad::AAttrId, CalcAttrVal>,
+    pub(in crate::sol::svc::calc) postprocs: StMap<ad::AAttrId, ItemAttrPostprocs>,
 }
-impl SolItemAttrValData {
+impl ItemAttrValData {
     pub(super) fn new() -> Self {
         Self {
             values: StMap::new(),

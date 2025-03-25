@@ -1,12 +1,12 @@
-use crate::{sol::svc::calc::SolCtxModifier, util::StSet};
+use crate::{sol::svc::calc::CtxModifier, util::StSet};
 
 // Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
 #[derive(Clone)]
-pub(in crate::sol::svc::calc) struct SolRevisionRegister {
-    pub(super) item_add: StSet<SolCtxModifier>,
-    pub(super) item_remove: StSet<SolCtxModifier>,
+pub(in crate::sol::svc::calc) struct RevisionRegister {
+    pub(super) item_add: StSet<CtxModifier>,
+    pub(super) item_remove: StSet<CtxModifier>,
 }
-impl SolRevisionRegister {
+impl RevisionRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
         Self {
             item_add: StSet::new(),
@@ -14,14 +14,14 @@ impl SolRevisionRegister {
         }
     }
     // Query methods
-    pub(in crate::sol::svc::calc) fn get_mods_on_item_add(&self) -> Vec<SolCtxModifier> {
+    pub(in crate::sol::svc::calc) fn get_mods_on_item_add(&self) -> Vec<CtxModifier> {
         self.item_add.iter().copied().collect()
     }
-    pub(in crate::sol::svc::calc) fn get_mods_on_item_remove(&self) -> Vec<SolCtxModifier> {
+    pub(in crate::sol::svc::calc) fn get_mods_on_item_remove(&self) -> Vec<CtxModifier> {
         self.item_remove.iter().copied().collect()
     }
     // Modification methods
-    pub(in crate::sol::svc::calc) fn reg_mod(&mut self, modifier: &SolCtxModifier) {
+    pub(in crate::sol::svc::calc) fn reg_mod(&mut self, modifier: &CtxModifier) {
         if modifier.raw.needs_revision_on_item_add() {
             self.item_add.insert(*modifier);
         }
@@ -29,7 +29,7 @@ impl SolRevisionRegister {
             self.item_remove.insert(*modifier);
         }
     }
-    pub(in crate::sol::svc::calc) fn unreg_mod(&mut self, modifier: &SolCtxModifier) {
+    pub(in crate::sol::svc::calc) fn unreg_mod(&mut self, modifier: &CtxModifier) {
         if modifier.raw.needs_revision_on_item_add() {
             self.item_add.remove(modifier);
         }

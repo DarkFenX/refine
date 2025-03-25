@@ -12,7 +12,7 @@ pub(crate) struct HAddSkillCmd {
     fit_cmd: change_fit::HAddSkillCmd,
 }
 impl HAddSkillCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolSkillInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SkillInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

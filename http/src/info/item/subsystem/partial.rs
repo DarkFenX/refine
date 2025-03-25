@@ -11,8 +11,8 @@ pub(crate) struct HSubsystemInfoPartial {
     pub(crate) slot: Option<rc::SlotIndex>,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolSubsystemInfo> for HSubsystemInfoPartial {
-    fn from(core_subsystem_info: &rc::SolSubsystemInfo) -> Self {
+impl From<&rc::SubsystemInfo> for HSubsystemInfoPartial {
+    fn from(core_subsystem_info: &rc::SubsystemInfo) -> Self {
         Self {
             id: core_subsystem_info.id,
             kind: "subsystem",

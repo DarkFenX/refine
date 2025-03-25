@@ -1,12 +1,18 @@
 pub use misc::{
-    SolDmgKinds, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolSecZone, SolSecZoneCorruption,
+    AdjustableCount, DmgKinds, DmgProfile, EffectId, EffectInfo, EffectMode, ModRack, OpInfo, SecZone,
+    SecZoneCorruption,
+};
+pub use primitives::{
+    AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
+    MutaRoll, SkillLevel, SlotIndex,
 };
 pub use sol::SolarSystem;
-pub use sole_item::{SolAddMode, SolRmMode};
+pub use sole_item::{AddMode, RmMode};
 
 mod debug;
 pub(crate) mod info;
 mod misc;
+mod primitives;
 mod proj_tracker;
 mod sol;
 pub(crate) mod sole_calc;

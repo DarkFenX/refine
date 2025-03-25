@@ -6,7 +6,7 @@ pub(in crate::cmd) enum HMutationOnAdd {
     Short(rc::EItemId),
     Full(HItemMutationFull),
 }
-impl From<&HMutationOnAdd> for rc::SolItemAddMutation {
+impl From<&HMutationOnAdd> for rc::ItemAddMutation {
     fn from(h_mutation: &HMutationOnAdd) -> Self {
         match h_mutation {
             HMutationOnAdd::Short(mutator_id) => Self::new(*mutator_id),
@@ -35,7 +35,7 @@ pub(in crate::cmd) struct HItemMutationFull {
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     pub(in crate::cmd) attrs: Option<HashMap<rc::EAttrId, HItemAttrMutationValue>>,
 }
-impl From<&HItemMutationFull> for rc::SolItemAddMutation {
+impl From<&HItemMutationFull> for rc::ItemAddMutation {
     fn from(h_item_mutation: &HItemMutationFull) -> Self {
         Self::new_with_attrs(
             h_item_mutation.mutator_id,
@@ -44,7 +44,7 @@ impl From<&HItemMutationFull> for rc::SolItemAddMutation {
                 .as_ref()
                 .map(|v| {
                     v.iter()
-                        .map(|(k, v)| rc::SolItemAddAttrMutation::new(*k, v.into()))
+                        .map(|(k, v)| rc::ItemAddAttrMutation::new(*k, v.into()))
                         .collect()
                 })
                 .unwrap_or_default(),
@@ -58,7 +58,7 @@ pub(in crate::cmd) enum HItemAttrMutationValue {
     Roll(rc::MutaRoll),
     Absolute(rc::AttrVal),
 }
-impl From<&HItemAttrMutationValue> for rc::SolItemAttrMutationValue {
+impl From<&HItemAttrMutationValue> for rc::ItemAttrMutationValue {
     fn from(h_mutation_value: &HItemAttrMutationValue) -> Self {
         match h_mutation_value {
             HItemAttrMutationValue::Roll(roll) => Self::Roll(*roll),

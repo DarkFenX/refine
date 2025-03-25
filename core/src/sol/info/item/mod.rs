@@ -1,24 +1,24 @@
 //! Exposed information about solar system items.
 
-pub use autocharge::SolAutochargeInfo;
-pub use booster::SolBoosterInfo;
-pub use character::SolCharacterInfo;
-pub use charge::SolChargeInfo;
-pub use drone::SolDroneInfo;
-pub use fighter::SolFighterInfo;
-pub use fw_effect::SolFwEffectInfo;
-pub use implant::SolImplantInfo;
-pub use item::SolItemInfo;
-pub use misc::{SolAttrMutationInfo, SolItemMutationInfo, SolProjInfo, SolSideEffectInfo, SolSideEffectStr};
-pub use module::SolModuleInfo;
-pub use proj_effect::SolProjEffectInfo;
-pub use rig::SolRigInfo;
-pub use service::SolServiceInfo;
-pub use ship::SolShipInfo;
-pub use skill::SolSkillInfo;
-pub use stance::SolStanceInfo;
-pub use subsystem::SolSubsystemInfo;
-pub use sw_effect::SolSwEffectInfo;
+pub use autocharge::AutochargeInfo;
+pub use booster::BoosterInfo;
+pub use character::CharacterInfo;
+pub use charge::ChargeInfo;
+pub use drone::DroneInfo;
+pub use fighter::FighterInfo;
+pub use fw_effect::FwEffectInfo;
+pub use implant::ImplantInfo;
+pub use item::ItemInfo;
+pub use misc::{AttrMutationInfo, ItemMutationInfo, ProjInfo, SideEffectInfo, SideEffectStr};
+pub use module::ModuleInfo;
+pub use proj_effect::ProjEffectInfo;
+pub use rig::RigInfo;
+pub use service::ServiceInfo;
+pub use ship::ShipInfo;
+pub use skill::SkillInfo;
+pub use stance::StanceInfo;
+pub use subsystem::SubsystemInfo;
+pub use sw_effect::SwEffectInfo;
 
 mod autocharge;
 mod booster;

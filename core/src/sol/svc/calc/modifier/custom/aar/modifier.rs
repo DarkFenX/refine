@@ -1,25 +1,27 @@
 use crate::{
-    EEffectId, consts,
-    defs::SolItemId,
-    sol::svc::calc::{
-        SolAggrMode, SolOp,
-        modifier::{SolAffecteeFilter, SolLocation, SolModifierKind, SolRawModifier, affector_val::SolAffectorValue},
+    ac, ad,
+    sol::{
+        ItemId,
+        svc::calc::{
+            AggrMode, Op,
+            modifier::{AffecteeFilter, Location, ModifierKind, RawModifier, affector_val::AffectorValue},
+        },
     },
 };
 
-pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: SolItemId, effect_id: EEffectId) -> SolRawModifier {
-    SolRawModifier::new(
-        SolModifierKind::Local,
+pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: ItemId, a_effect_id: ad::AEffectId) -> RawModifier {
+    RawModifier {
+        kind: ModifierKind::Local,
         affector_item_id,
-        effect_id,
-        SolAffectorValue::AncillaryArmorRep,
-        SolOp::ExtraMul,
-        SolAggrMode::Stack,
-        SolAffecteeFilter::Direct(SolLocation::Item),
-        consts::attrs::ARMOR_DMG_AMOUNT,
-        None,
-        None,
-        None,
-        None,
-    )
+        a_effect_id,
+        affector_value: AffectorValue::AncillaryArmorRep,
+        op: Op::ExtraMul,
+        aggr_mode: AggrMode::Stack,
+        affectee_filter: AffecteeFilter::Direct(Location::Item),
+        affectee_a_attr_id: ac::attrs::ARMOR_DMG_AMOUNT,
+        buff_type_a_attr_id: None,
+        resist_a_attr_id: None,
+        optimal_a_attr_id: None,
+        falloff_a_attr_id: None,
+    }
 }

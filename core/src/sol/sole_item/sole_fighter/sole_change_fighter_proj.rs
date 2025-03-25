@@ -1,16 +1,15 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{AttrVal, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::SolarSystem,
+    sol::{AttrVal, ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn change_fighter_proj(
         &mut self,
-        item_id: &SolItemId,
-        projectee_item_id: &SolItemId,
+        item_id: &ItemId,
+        projectee_item_id: &ItemId,
         range: Option<AttrVal>,
     ) -> Result<(), ChangeFighterProjError> {
         // Check if projection is defined before changing it

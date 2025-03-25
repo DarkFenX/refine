@@ -1,19 +1,18 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemMutatedError},
-    sol::{SolarSystem, uad::item::SolItemChangeAttrMutation},
+    sol::{ItemId, SolarSystem, uad::item::ItemChangeAttrMutation},
 };
 
 impl SolarSystem {
     pub fn change_module_mutation(
         &mut self,
-        item_id: &SolItemId,
-        attr_mutations: Vec<SolItemChangeAttrMutation>,
+        item_id: &ItemId,
+        attr_mutations: Vec<ItemChangeAttrMutation>,
     ) -> Result<(), ChangeModuleMutationError> {
         let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
-        let changed_attr_ids = module.change_mutation_attrs(&self.uad.src, attr_mutations)?;
-        for attr_id in changed_attr_ids {
-            self.svc.item_base_attr_value_changed(&self.uad, item_id, &attr_id);
+        let changed_a_attr_ids = module.change_mutation_attrs(&self.uad.src, attr_mutations)?;
+        for a_attr_id in changed_a_attr_ids {
+            self.svc.item_base_attr_value_changed(&self.uad, item_id, &a_attr_id);
         }
         Ok(())
     }

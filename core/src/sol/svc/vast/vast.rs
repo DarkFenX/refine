@@ -1,32 +1,34 @@
 use crate::{
     ad,
-    defs::{AttrVal, Count, EItemGrpId, EItemId, SkillLevel, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
-    sol::svc::vast::{
-        SolValCache, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValFighterSquadSizeFail,
-        SolValItemKindFail, SolValModuleStateFail, SolVastSkillReq,
+    sol::{
+        AttrVal, Count, FitId, ItemId, SkillLevel,
+        svc::vast::{
+            ValCache, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail, ValFighterSquadSizeFail,
+            ValItemKindFail, ValModuleStateFail, VastSkillReq,
+        },
     },
     util::{StMap, StMapMap, StMapSetL1, StSet},
 };
 
 // Vast stands for VAlidation and STats.
 #[derive(Clone)]
-pub(in crate::sol) struct SolVast {
-    pub(in crate::sol::svc::vast) fit_datas: StMap<SolFitId, SolVastFitData>,
+pub(in crate::sol) struct Vast {
+    pub(in crate::sol::svc::vast) fit_datas: StMap<FitId, VastFitData>,
 }
-impl SolVast {
+impl Vast {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
             fit_datas: StMap::new(),
         }
     }
-    pub(in crate::sol::svc::vast) fn get_fit_data(&self, fit_id: &SolFitId) -> Result<&SolVastFitData, FitFoundError> {
+    pub(in crate::sol::svc::vast) fn get_fit_data(&self, fit_id: &FitId) -> Result<&VastFitData, FitFoundError> {
         self.fit_datas.get(fit_id).ok_or_else(|| FitFoundError::new(*fit_id))
     }
     pub(in crate::sol::svc::vast) fn get_fit_data_mut(
         &mut self,
-        fit_id: &SolFitId,
-    ) -> Result<&mut SolVastFitData, FitFoundError> {
+        fit_id: &FitId,
+    ) -> Result<&mut VastFitData, FitFoundError> {
         self.fit_datas
             .get_mut(fit_id)
             .ok_or_else(|| FitFoundError::new(*fit_id))
@@ -36,65 +38,65 @@ impl SolVast {
 // TODO: check if some of data containers can be merged to save time and memory (e.g. drone
 // bandwidth, active drone count)
 #[derive(Clone)]
-pub(in crate::sol::svc::vast) struct SolVastFitData {
+pub(in crate::sol::svc::vast) struct VastFitData {
     // Modules with "online" effect active
-    pub(in crate::sol::svc::vast) mods_svcs_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) mods_svcs_online: StSet<ItemId>,
     // Rigs with "rigSlot" effect active, with calibration cost values
-    pub(in crate::sol::svc::vast) rigs_rigslot_calibration: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) drones_volume: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) drones_bandwidth: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) drones_online_bandwidth: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) fighters_volume: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) fighters_online: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) support_fighters: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) support_fighters_online: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) light_fighters: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) light_fighters_online: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) heavy_fighters: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) heavy_fighters_online: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) standup_support_fighters: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) standup_support_fighters_online: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) standup_light_fighters: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) standup_light_fighters_online: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) standup_heavy_fighters: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) standup_heavy_fighters_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) rigs_rigslot_calibration: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) drones_volume: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) drones_bandwidth: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) drones_online_bandwidth: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) fighters_volume: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) fighters_online: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) support_fighters: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) support_fighters_online: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) light_fighters: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) light_fighters_online: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) heavy_fighters: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) heavy_fighters_online: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) standup_support_fighters: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) standup_support_fighters_online: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) standup_light_fighters: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) standup_light_fighters_online: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) standup_heavy_fighters: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) standup_heavy_fighters_online: StSet<ItemId>,
     // Modules with "turretFitted" effect active
-    pub(in crate::sol::svc::vast) mods_turret: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) mods_turret: StSet<ItemId>,
     // Modules with "launcherFitted" effect active
-    pub(in crate::sol::svc::vast) mods_launcher: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) slotted_implants: StMapSetL1<SlotIndex, SolItemId>,
-    pub(in crate::sol::svc::vast) slotted_boosters: StMapSetL1<SlotIndex, SolItemId>,
-    pub(in crate::sol::svc::vast) slotted_subsystems: StMapSetL1<SlotIndex, SolItemId>,
-    pub(in crate::sol::svc::vast) ship_limited_items: StMap<SolItemId, ad::AItemShipLimit>,
-    pub(in crate::sol::svc::vast) mods_svcs_rigs_max_group_fitted_all: StMapSetL1<EItemGrpId, SolItemId>,
-    pub(in crate::sol::svc::vast) mods_svcs_rigs_max_group_fitted_limited: StMap<SolItemId, EItemGrpId>,
-    pub(in crate::sol::svc::vast) mods_svcs_max_group_online_all: StMapSetL1<EItemGrpId, SolItemId>,
-    pub(in crate::sol::svc::vast) mods_svcs_max_group_online_limited: StMap<SolItemId, EItemGrpId>,
-    pub(in crate::sol::svc::vast) mods_max_group_active_all: StMapSetL1<EItemGrpId, SolItemId>,
-    pub(in crate::sol::svc::vast) mods_max_group_active_limited: StMap<SolItemId, EItemGrpId>,
-    pub(in crate::sol::svc::vast) rigs_rig_size: StMap<SolItemId, Option<AttrVal>>,
-    pub(in crate::sol::svc::vast) srqs_skill_item_map: StMapSetL1<EItemId, SolItemId>,
-    pub(in crate::sol::svc::vast) srqs_missing: StMap<SolItemId, StMap<EItemId, SolVastSkillReq>>,
-    pub(in crate::sol::svc::vast) mods_charge_group: StMap<SolItemId, SolValCache<(), SolValChargeGroupFail>>,
-    pub(in crate::sol::svc::vast) mods_charge_size: StMap<SolItemId, SolValCache<AttrVal, SolValChargeSizeFail>>,
-    pub(in crate::sol::svc::vast) mods_charge_volume: StMap<SolItemId, SolValCache<AttrVal, SolValChargeVolumeFail>>,
-    pub(in crate::sol::svc::vast) mods_capital: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) not_loaded: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) mods_state: StMap<SolItemId, SolValModuleStateFail>,
-    pub(in crate::sol::svc::vast) item_kind: StMap<SolItemId, SolValItemKindFail>,
-    pub(in crate::sol::svc::vast) drone_group_limit: Vec<EItemGrpId>,
-    pub(in crate::sol::svc::vast) drone_groups: StMap<SolItemId, EItemGrpId>,
-    pub(in crate::sol::svc::vast) fighter_squad_size: StMap<SolItemId, SolValFighterSquadSizeFail>,
-    pub(in crate::sol::svc::vast) overload_td_lvl: StMap<SolItemId, SkillLevel>,
-    pub(in crate::sol::svc::vast) mods_svcs_max_type_fitted: StMapMap<EItemId, SolItemId, Count>,
-    pub(in crate::sol::svc::vast) sec_zone_fitted: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) sec_zone_online_class: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) sec_zone_active: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) sec_zone_unonlineable_class: StMap<SolItemId, AttrVal>,
-    pub(in crate::sol::svc::vast) sec_zone_unactivable: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) mods_active: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) mods_launcher: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) slotted_implants: StMapSetL1<ad::ASlotIndex, ItemId>,
+    pub(in crate::sol::svc::vast) slotted_boosters: StMapSetL1<ad::ASlotIndex, ItemId>,
+    pub(in crate::sol::svc::vast) slotted_subsystems: StMapSetL1<ad::ASlotIndex, ItemId>,
+    pub(in crate::sol::svc::vast) ship_limited_items: StMap<ItemId, ad::AItemShipLimit>,
+    pub(in crate::sol::svc::vast) mods_svcs_rigs_max_group_fitted_all: StMapSetL1<ad::AItemGrpId, ItemId>,
+    pub(in crate::sol::svc::vast) mods_svcs_rigs_max_group_fitted_limited: StMap<ItemId, ad::AItemGrpId>,
+    pub(in crate::sol::svc::vast) mods_svcs_max_group_online_all: StMapSetL1<ad::AItemGrpId, ItemId>,
+    pub(in crate::sol::svc::vast) mods_svcs_max_group_online_limited: StMap<ItemId, ad::AItemGrpId>,
+    pub(in crate::sol::svc::vast) mods_max_group_active_all: StMapSetL1<ad::AItemGrpId, ItemId>,
+    pub(in crate::sol::svc::vast) mods_max_group_active_limited: StMap<ItemId, ad::AItemGrpId>,
+    pub(in crate::sol::svc::vast) rigs_rig_size: StMap<ItemId, Option<ad::AAttrVal>>,
+    pub(in crate::sol::svc::vast) srqs_skill_item_map: StMapSetL1<ad::AItemId, ItemId>,
+    pub(in crate::sol::svc::vast) srqs_missing: StMap<ItemId, StMap<ad::AItemId, VastSkillReq>>,
+    pub(in crate::sol::svc::vast) mods_charge_group: StMap<ItemId, ValCache<(), ValChargeGroupFail>>,
+    pub(in crate::sol::svc::vast) mods_charge_size: StMap<ItemId, ValCache<AttrVal, ValChargeSizeFail>>,
+    pub(in crate::sol::svc::vast) mods_charge_volume: StMap<ItemId, ValCache<AttrVal, ValChargeVolumeFail>>,
+    pub(in crate::sol::svc::vast) mods_capital: StMap<ItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) not_loaded: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) mods_state: StMap<ItemId, ValModuleStateFail>,
+    pub(in crate::sol::svc::vast) item_kind: StMap<ItemId, ValItemKindFail>,
+    pub(in crate::sol::svc::vast) drone_group_limit: Vec<ad::AItemGrpId>,
+    pub(in crate::sol::svc::vast) drone_groups: StMap<ItemId, ad::AItemGrpId>,
+    pub(in crate::sol::svc::vast) fighter_squad_size: StMap<ItemId, ValFighterSquadSizeFail>,
+    pub(in crate::sol::svc::vast) overload_td_lvl: StMap<ItemId, SkillLevel>,
+    pub(in crate::sol::svc::vast) mods_svcs_max_type_fitted: StMapMap<ad::AItemId, ItemId, Count>,
+    pub(in crate::sol::svc::vast) sec_zone_fitted: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) sec_zone_online_class: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) sec_zone_active: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) sec_zone_unonlineable_class: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) sec_zone_unactivable: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) mods_active: StSet<ItemId>,
 }
-impl SolVastFitData {
+impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
             mods_svcs_online: StSet::new(),

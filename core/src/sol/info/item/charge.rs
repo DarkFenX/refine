@@ -1,35 +1,21 @@
-use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
-    sol::uad::item::SolCharge,
-};
+use crate::sol::{FitId, ItemId, ItemTypeId, uad::item::Charge};
 
-pub struct SolChargeInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
-    pub cont_id: SolItemId,
+pub struct ChargeInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub cont_id: ItemId,
     pub enabled: bool,
     // No projections because they fully match to projections of parent item
 }
-impl SolChargeInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, cont_id: SolItemId, enabled: bool) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            cont_id,
-            enabled,
+impl From<&Charge> for ChargeInfo {
+    fn from(sol_charge: &Charge) -> Self {
+        ChargeInfo {
+            id: sol_charge.get_item_id(),
+            type_id: sol_charge.get_a_item_id(),
+            fit_id: sol_charge.get_fit_id(),
+            cont_id: sol_charge.get_cont_item_id(),
+            enabled: !sol_charge.get_force_disable(),
         }
-    }
-}
-impl From<&SolCharge> for SolChargeInfo {
-    fn from(sol_charge: &SolCharge) -> Self {
-        SolChargeInfo::new(
-            sol_charge.get_id(),
-            sol_charge.get_type_id(),
-            sol_charge.get_fit_id(),
-            sol_charge.get_cont_id(),
-            !sol_charge.get_force_disable(),
-        )
     }
 }

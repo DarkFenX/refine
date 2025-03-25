@@ -1,52 +1,52 @@
-use crate::defs::{AttrVal, EAttrId, EItemId, MutaRoll};
+use crate::sol::{AttrId, AttrVal, ItemTypeId, MutaRoll};
 
 /// Specifies how item should be mutated.
-pub struct SolItemAddMutation {
+pub struct ItemAddMutation {
     /// Mutator type ID.
-    pub mutator_id: EItemId,
+    pub mutator_id: ItemTypeId,
     /// Attribute mutation list.
-    pub attrs: Vec<SolItemAddAttrMutation>,
+    pub attrs: Vec<ItemAddAttrMutation>,
 }
-impl SolItemAddMutation {
-    pub fn new(mutator_id: EItemId) -> Self {
+impl ItemAddMutation {
+    pub fn new(mutator_id: ItemTypeId) -> Self {
         Self {
             mutator_id,
             attrs: Vec::new(),
         }
     }
-    pub fn new_with_attrs(mutator_id: EItemId, attrs: Vec<SolItemAddAttrMutation>) -> Self {
+    pub fn new_with_attrs(mutator_id: ItemTypeId, attrs: Vec<ItemAddAttrMutation>) -> Self {
         Self { mutator_id, attrs }
     }
 }
 
 /// Specifies single attribute mutation.
-pub struct SolItemAddAttrMutation {
+pub struct ItemAddAttrMutation {
     /// ID of attribute to mutate.
-    pub attr_id: EAttrId,
+    pub attr_id: AttrId,
     /// Mutation value.
-    pub value: SolItemAttrMutationValue,
+    pub value: ItemAttrMutationValue,
 }
-impl SolItemAddAttrMutation {
-    pub fn new(attr_id: EAttrId, value: SolItemAttrMutationValue) -> Self {
+impl ItemAddAttrMutation {
+    pub fn new(attr_id: AttrId, value: ItemAttrMutationValue) -> Self {
         Self { attr_id, value }
     }
 }
 
 /// Specifies single attribute mutation.
-pub struct SolItemChangeAttrMutation {
+pub struct ItemChangeAttrMutation {
     /// ID of attribute to mutate.
-    pub attr_id: EAttrId,
+    pub attr_id: AttrId,
     /// Mutation value, None to remove.
-    pub value: Option<SolItemAttrMutationValue>,
+    pub value: Option<ItemAttrMutationValue>,
 }
-impl SolItemChangeAttrMutation {
-    pub fn new(attr_id: EAttrId, value: Option<SolItemAttrMutationValue>) -> Self {
+impl ItemChangeAttrMutation {
+    pub fn new(attr_id: AttrId, value: Option<ItemAttrMutationValue>) -> Self {
         Self { attr_id, value }
     }
 }
 
 /// Specifies value of a single attribute mutation.
-pub enum SolItemAttrMutationValue {
+pub enum ItemAttrMutationValue {
     /// Roll quality as a value on range \[0, 1\].
     Roll(MutaRoll),
     /// Absolute value of the attribute.

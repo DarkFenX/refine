@@ -12,7 +12,7 @@ pub(crate) struct HAddFwEffectCmd {
     fit_cmd: change_fit::HAddFwEffectCmd,
 }
 impl HAddFwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolFwEffectInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::FwEffectInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

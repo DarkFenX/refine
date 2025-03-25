@@ -1,20 +1,19 @@
-use crate::{
-    consts,
-    defs::{AttrVal, EItemCatId, OF},
-};
+use ordered_float::OrderedFloat as OF;
 
-const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
-    consts::itemcats::SHIP,
-    consts::itemcats::CHARGE,
-    consts::itemcats::SKILL,
-    consts::itemcats::IMPLANT,
-    consts::itemcats::SUBSYSTEM,
+use crate::{ac, ad, sol::AttrVal};
+
+const PENALTY_IMMUNE_A_ITEM_CATS: [ad::AItemCatId; 5] = [
+    ac::itemcats::SHIP,
+    ac::itemcats::CHARGE,
+    ac::itemcats::SKILL,
+    ac::itemcats::IMPLANT,
+    ac::itemcats::SUBSYSTEM,
 ];
 // Source expression: 1 / e^((1 / 2.67)^2)
 pub(super) const PENALTY_BASE: AttrVal = OF(0.86911998080039742919922218788997270166873931884765625);
 
-pub(in crate::sol::svc::calc) fn is_penal(attr_penalizable: bool, affector_item_cat_id: &EItemCatId) -> bool {
-    attr_penalizable && !PENALTY_IMMUNE_CATS.contains(affector_item_cat_id)
+pub(in crate::sol::svc::calc) fn is_penal(attr_penalizable: bool, affector_a_item_cat_id: &ad::AItemCatId) -> bool {
+    attr_penalizable && !PENALTY_IMMUNE_A_ITEM_CATS.contains(affector_a_item_cat_id)
 }
 
 // Normalization functions

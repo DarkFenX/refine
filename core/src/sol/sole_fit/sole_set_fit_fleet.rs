@@ -1,11 +1,10 @@
 use crate::{
-    defs::{SolFitId, SolFleetId},
     err::basic::{FitFoundError, FleetFoundError},
-    sol::SolarSystem,
+    sol::{FitId, FleetId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_fit_fleet(&mut self, fit_id: &SolFitId, fleet_id: SolFleetId) -> Result<(), SetFitFleetError> {
+    pub fn set_fit_fleet(&mut self, fit_id: &FitId, fleet_id: FleetId) -> Result<(), SetFitFleetError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         self.uad.fleets.get_fleet(&fleet_id)?;
         // Unassign from old fleet

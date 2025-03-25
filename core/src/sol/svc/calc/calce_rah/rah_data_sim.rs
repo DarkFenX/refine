@@ -1,19 +1,18 @@
-use crate::{
-    defs::{AttrVal, OF},
-    sol::SolDmgKinds,
-};
+use ordered_float::OrderedFloat as OF;
 
-use super::rah_info::SolRahInfo;
+use crate::sol::{AttrVal, DmgKinds};
 
-pub(super) struct SolRahDataSim {
-    pub(super) info: SolRahInfo,
-    pub(super) taken_dmg: SolDmgKinds<AttrVal>,
+use super::rah_info::RahInfo;
+
+pub(super) struct RahDataSim {
+    pub(super) info: RahInfo,
+    pub(super) taken_dmg: DmgKinds<AttrVal>,
 }
-impl SolRahDataSim {
-    pub(super) fn new(info: SolRahInfo) -> Self {
+impl RahDataSim {
+    pub(super) fn new(info: RahInfo) -> Self {
         Self {
             info,
-            taken_dmg: SolDmgKinds::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0)),
+            taken_dmg: DmgKinds::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0)),
         }
     }
 }

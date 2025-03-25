@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_skill(&mut self, item_id: &SolItemId) -> Result<(), RemoveSkillError> {
+    pub fn remove_skill(&mut self, item_id: &ItemId) -> Result<(), RemoveSkillError> {
         let item = self.uad.items.get_item(item_id)?;
         let skill = item.get_skill()?;
         self.svc.remove_item(&self.uad, item);
         let fit = self.uad.fits.get_fit_mut(&skill.get_fit_id()).unwrap();
-        fit.skills.remove(&skill.get_type_id());
+        fit.skills.remove(&skill.get_a_item_id());
         self.uad.items.remove_item(item_id);
         Ok(())
     }

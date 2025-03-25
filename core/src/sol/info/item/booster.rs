@@ -1,46 +1,28 @@
 use crate::{
-    defs::{EEffectId, EItemId, SlotIndex, SolFitId, SolItemId},
-    sol::{info::SolSideEffectInfo, uad::item::SolBooster},
+    sol::{EffectId, FitId, ItemId, ItemTypeId, SlotIndex, info::SideEffectInfo, uad::item::Booster},
     util::StMap,
 };
 
-pub struct SolBoosterInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
+pub struct BoosterInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub slot: Option<SlotIndex>,
     pub enabled: bool,
-    pub side_effects: StMap<EEffectId, SolSideEffectInfo>,
+    pub side_effects: StMap<EffectId, SideEffectInfo>,
 }
-impl SolBoosterInfo {
-    fn new(
-        id: SolItemId,
-        type_id: EItemId,
-        fit_id: SolFitId,
-        slot: Option<SlotIndex>,
-        enabled: bool,
-        side_effects: StMap<EEffectId, SolSideEffectInfo>,
+impl BoosterInfo {
+    pub(in crate::sol) fn from_booster_and_side_effects(
+        sol_booster: &Booster,
+        side_effects: StMap<EffectId, SideEffectInfo>,
     ) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            slot,
-            enabled,
+        BoosterInfo {
+            id: sol_booster.get_item_id(),
+            type_id: sol_booster.get_a_item_id(),
+            fit_id: sol_booster.get_fit_id(),
+            slot: sol_booster.get_a_slot(),
+            enabled: sol_booster.get_booster_state(),
             side_effects,
         }
-    }
-    pub(in crate::sol) fn from_booster_and_side_effects(
-        sol_booster: &SolBooster,
-        side_effects: StMap<EEffectId, SolSideEffectInfo>,
-    ) -> Self {
-        SolBoosterInfo::new(
-            sol_booster.get_id(),
-            sol_booster.get_type_id(),
-            sol_booster.get_fit_id(),
-            sol_booster.get_slot(),
-            sol_booster.get_booster_state(),
-            side_effects,
-        )
     }
 }

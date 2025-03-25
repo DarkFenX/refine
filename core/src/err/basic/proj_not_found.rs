@@ -1,12 +1,12 @@
-use crate::defs::SolItemId;
+use crate::sol::ItemId;
 
 #[derive(Debug)]
 pub struct ProjNotFoundError {
-    pub projector_item_id: SolItemId,
-    pub projectee_item_id: SolItemId,
+    pub projector_item_id: ItemId,
+    pub projectee_item_id: ItemId,
 }
 impl ProjNotFoundError {
-    pub(crate) fn new(projector_item_id: SolItemId, projectee_item_id: SolItemId) -> Self {
+    pub(crate) fn new(projector_item_id: ItemId, projectee_item_id: ItemId) -> Self {
         Self {
             projector_item_id,
             projectee_item_id,

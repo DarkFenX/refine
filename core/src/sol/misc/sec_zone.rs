@@ -1,14 +1,14 @@
 #[derive(Copy, Clone)]
-pub enum SolSecZone {
-    HiSec(SolSecZoneCorruption),
-    LowSec(SolSecZoneCorruption),
+pub enum SecZone {
+    HiSec(SecZoneCorruption),
+    LowSec(SecZoneCorruption),
     NullSec,
     WSpace,
     Hazard,
 }
 
 #[derive(Copy, Clone)]
-pub enum SolSecZoneCorruption {
+pub enum SecZoneCorruption {
     None,
     C5,
 }

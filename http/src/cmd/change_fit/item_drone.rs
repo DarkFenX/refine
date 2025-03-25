@@ -15,7 +15,7 @@ impl HAddDroneCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> Result<rc::SolDroneInfo, HExecError> {
+    ) -> Result<rc::DroneInfo, HExecError> {
         let core_drone = match core_sol.add_drone(
             *fit_id,
             self.type_id,

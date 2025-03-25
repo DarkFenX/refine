@@ -1,21 +1,19 @@
 use crate::{
-    SolModRack,
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolarSystem, info::SolModuleInfo},
+    sol::{FitId, ModRack, SolarSystem, info::ModuleInfo},
 };
 
 impl SolarSystem {
     pub fn get_fit_modules(
         &self,
-        fit_id: &SolFitId,
-        rack: SolModRack,
-    ) -> Result<Vec<Option<SolModuleInfo>>, GetFitModulesError> {
+        fit_id: &FitId,
+        rack: ModRack,
+    ) -> Result<Vec<Option<ModuleInfo>>, GetFitModulesError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let module_ids = match rack {
-            SolModRack::High => &fit.mods_high,
-            SolModRack::Mid => &fit.mods_mid,
-            SolModRack::Low => &fit.mods_low,
+            ModRack::High => &fit.mods_high,
+            ModRack::Mid => &fit.mods_mid,
+            ModRack::Low => &fit.mods_low,
         };
         let module_infos = module_ids
             .iter_all()

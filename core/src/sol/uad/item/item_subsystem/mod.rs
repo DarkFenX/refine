@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::SolSubsystem;
+pub(in crate::sol) use main::Subsystem;
 
 mod debug;
 mod main;

@@ -1,34 +1,20 @@
-use crate::{
-    defs::{EItemId, SkillLevel, SolFitId, SolItemId},
-    sol::uad::item::SolSkill,
-};
+use crate::sol::{FitId, ItemId, ItemTypeId, SkillLevel, uad::item::Skill};
 
-pub struct SolSkillInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
+pub struct SkillInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub level: SkillLevel,
     pub enabled: bool,
 }
-impl SolSkillInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, level: SkillLevel, enabled: bool) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            level,
-            enabled,
+impl From<&Skill> for SkillInfo {
+    fn from(sol_skill: &Skill) -> Self {
+        SkillInfo {
+            id: sol_skill.get_item_id(),
+            type_id: sol_skill.get_a_item_id(),
+            fit_id: sol_skill.get_fit_id(),
+            level: sol_skill.get_a_level(),
+            enabled: sol_skill.get_skill_state(),
         }
-    }
-}
-impl From<&SolSkill> for SolSkillInfo {
-    fn from(sol_skill: &SolSkill) -> Self {
-        SolSkillInfo::new(
-            sol_skill.get_id(),
-            sol_skill.get_type_id(),
-            sol_skill.get_fit_id(),
-            sol_skill.get_level(),
-            sol_skill.get_skill_state(),
-        )
     }
 }

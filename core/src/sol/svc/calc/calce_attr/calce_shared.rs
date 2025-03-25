@@ -1,55 +1,60 @@
-use ordered_float::Float;
+use ordered_float::{Float, OrderedFloat as OF};
 
 use crate::{
-    defs::{AttrVal, OF},
+    ac, ad,
     sol::{
-        svc::calc::{SolCalc, SolContext, SolCtxModifier, SolModifierKind},
-        uad::SolUad,
+        AttrVal,
+        svc::calc::{Calc, Context, CtxModifier, ModifierKind},
+        uad::Uad,
     },
 };
 
-impl SolCalc {
-    pub(super) fn calc_resist_mult(&mut self, uad: &SolUad, modifier: &SolCtxModifier) -> Option<AttrVal> {
+pub(super) const LIMITED_PRECISION_A_ATTR_IDS: [ad::AAttrId; 4] = [
+    ac::attrs::CPU,
+    ac::attrs::POWER,
+    ac::attrs::CPU_OUTPUT,
+    ac::attrs::POWER_OUTPUT,
+];
+
+impl Calc {
+    pub(super) fn calc_resist_mult(&mut self, uad: &Uad, modifier: &CtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
-        if !matches!(modifier.raw.kind, SolModifierKind::Buff | SolModifierKind::Targeted) {
+        if !matches!(modifier.raw.kind, ModifierKind::Buff | ModifierKind::Targeted) {
             return None;
         }
-        let resist_attr_id = modifier.raw.resist_attr_id?;
+        let resist_a_attr_id = modifier.raw.resist_a_attr_id?;
         let projectee_item_id = match modifier.ctx {
-            SolContext::Item(projectee_item_id) => projectee_item_id,
+            Context::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
         };
         let resist = self
-            .get_item_attr_val_full(uad, &projectee_item_id, &resist_attr_id)
+            .get_item_attr_val_full(uad, &projectee_item_id, &resist_a_attr_id)
             .ok()?
             .dogma;
         Some(resist)
     }
-    pub(super) fn calc_proj_mult(&mut self, uad: &SolUad, modifier: &SolCtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_proj_mult(&mut self, uad: &Uad, modifier: &CtxModifier) -> Option<AttrVal> {
         let projectee_item_id = match modifier.ctx {
-            SolContext::Item(projectee_item_id) => projectee_item_id,
+            Context::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
         };
-        let proj_range =
-            self.projs
-                .get_range(modifier.raw.affector_item_id, modifier.raw.effect_id, projectee_item_id)?;
+        let proj_range = self.projs.get_range(
+            modifier.raw.affector_item_id,
+            modifier.raw.a_effect_id,
+            projectee_item_id,
+        )?;
         match modifier.raw.kind {
-            SolModifierKind::Targeted => self.calc_proj_mult_targeted(uad, modifier, proj_range),
-            SolModifierKind::Buff => self.calc_proj_mult_buff(uad, modifier, proj_range),
+            ModifierKind::Targeted => self.calc_proj_mult_targeted(uad, modifier, proj_range),
+            ModifierKind::Buff => self.calc_proj_mult_buff(uad, modifier, proj_range),
             _ => None,
         }
     }
     // Private methods
-    fn calc_proj_mult_targeted(
-        &mut self,
-        uad: &SolUad,
-        modifier: &SolCtxModifier,
-        proj_range: AttrVal,
-    ) -> Option<AttrVal> {
+    fn calc_proj_mult_targeted(&mut self, uad: &Uad, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
         // Assume optimal range is 0 if it's not available
-        let affector_optimal = match modifier.raw.optimal_attr_id {
-            Some(optimal_attr_id) => {
-                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
+        let affector_optimal = match modifier.raw.optimal_a_attr_id {
+            Some(optimal_a_attr_id) => {
+                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &optimal_a_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -57,9 +62,9 @@ impl SolCalc {
             None => OF(0.0),
         };
         // Assume falloff range is 0 if it's not available
-        let affector_falloff = match modifier.raw.falloff_attr_id {
-            Some(falloff_attr_id) => {
-                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &falloff_attr_id) {
+        let affector_falloff = match modifier.raw.falloff_a_attr_id {
+            Some(falloff_a_attr_id) => {
+                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &falloff_a_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -85,10 +90,10 @@ impl SolCalc {
             Some(OF(0.0))
         }
     }
-    fn calc_proj_mult_buff(&mut self, uad: &SolUad, modifier: &SolCtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
-        let affector_optimal = match modifier.raw.optimal_attr_id {
-            Some(optimal_attr_id) => {
-                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
+    fn calc_proj_mult_buff(&mut self, uad: &Uad, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
+        let affector_optimal = match modifier.raw.optimal_a_attr_id {
+            Some(optimal_a_attr_id) => {
+                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &optimal_a_attr_id) {
                     Ok(val) => val.dogma,
                     // If optimal range attribute ID is defined but value is not available, assume
                     // optimal range of 0

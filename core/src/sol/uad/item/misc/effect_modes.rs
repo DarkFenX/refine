@@ -1,19 +1,19 @@
-use crate::{config::DEFAULT_EFFECT_MODE, defs::EEffectId, sol::SolEffectMode, util::StMap};
+use crate::{ad, config::DEFAULT_EFFECT_MODE, sol::EffectMode, util::StMap};
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolEffectModes {
-    data: StMap<EEffectId, SolEffectMode>,
+pub(in crate::sol) struct EffectModes {
+    data: StMap<ad::AEffectId, EffectMode>,
 }
-impl SolEffectModes {
+impl EffectModes {
     pub(in crate::sol::uad::item) fn new() -> Self {
         Self { data: StMap::new() }
     }
     // Query methods
-    pub(in crate::sol) fn get(&self, effect_id: &EEffectId) -> &SolEffectMode {
+    pub(in crate::sol) fn get(&self, effect_id: &ad::AEffectId) -> &EffectMode {
         self.data.get(effect_id).unwrap_or(&DEFAULT_EFFECT_MODE)
     }
     // Modification methods
-    pub(in crate::sol) fn set(&mut self, effect_id: EEffectId, mode: SolEffectMode) {
+    pub(in crate::sol) fn set(&mut self, effect_id: ad::AEffectId, mode: EffectMode) {
         if mode == DEFAULT_EFFECT_MODE {
             self.data.remove(&effect_id);
         } else {

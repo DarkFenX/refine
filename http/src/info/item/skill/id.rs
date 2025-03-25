@@ -4,8 +4,8 @@ pub(crate) struct HSkillInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SolItemId,
 }
-impl From<&rc::SolSkillInfo> for HSkillInfoId {
-    fn from(core_skill_info: &rc::SolSkillInfo) -> Self {
+impl From<&rc::SkillInfo> for HSkillInfoId {
+    fn from(core_skill_info: &rc::SkillInfo) -> Self {
         Self { id: core_skill_info.id }
     }
 }

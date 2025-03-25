@@ -1,37 +1,37 @@
-use crate::sol::{
-    svc::SolSvc,
-    uad::{
-        SolUad,
-        item::{SolItem, SolItemState},
+use crate::{
+    ad,
+    sol::{
+        svc::Svc,
+        uad::{Uad, item::Item},
     },
 };
 
-impl SolSvc {
+impl Svc {
     pub(in crate::sol) fn switch_item_state(
         &mut self,
-        uad: &SolUad,
-        item: &SolItem,
-        old_item_state: SolItemState,
-        new_item_state: SolItemState,
+        uad: &Uad,
+        item: &Item,
+        old_item_a_state: ad::AState,
+        new_item_a_state: ad::AState,
     ) {
-        if new_item_state > old_item_state {
-            for state in SolItemState::iter().filter(|v| **v > old_item_state && **v <= new_item_state) {
-                self.notify_state_activated(item, state);
+        if new_item_a_state > old_item_a_state {
+            for a_state in ad::AState::iter().filter(|v| **v > old_item_a_state && **v <= new_item_a_state) {
+                self.notify_state_activated(item, a_state);
                 if item.is_loaded() {
-                    self.notify_item_state_activated_loaded(item, state);
+                    self.notify_item_state_activated_loaded(item, a_state);
                 }
             }
-        } else if new_item_state < old_item_state {
-            for state in SolItemState::iter()
+        } else if new_item_a_state < old_item_a_state {
+            for a_state in ad::AState::iter()
                 .rev()
-                .filter(|v| **v > new_item_state && **v <= old_item_state)
+                .filter(|v| **v > new_item_a_state && **v <= old_item_a_state)
             {
                 if item.is_loaded() {
-                    self.notify_item_state_deactivated_loaded(item, state);
+                    self.notify_item_state_deactivated_loaded(item, a_state);
                 }
-                self.notify_state_deactivated(item, state);
+                self.notify_state_deactivated(item, a_state);
             }
         }
-        self.process_effects(uad, item, new_item_state);
+        self.process_effects(uad, item, new_item_a_state);
     }
 }

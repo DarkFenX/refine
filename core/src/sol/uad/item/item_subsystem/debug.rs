@@ -1,13 +1,13 @@
 use crate::sol::{
-    debug::{SolDebugResult, check_fit},
-    uad::SolUad,
+    debug::{DebugResult, check_fit_id},
+    uad::Uad,
 };
 
-use super::SolSubsystem;
+use super::Subsystem;
 
-impl SolSubsystem {
-    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
-        check_fit(uad, &self.get_fit_id())?;
+impl Subsystem {
+    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+        check_fit_id(uad, &self.get_fit_id())?;
         Ok(())
     }
 }

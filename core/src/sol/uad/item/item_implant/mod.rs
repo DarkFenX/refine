@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::SolImplant;
+pub(in crate::sol) use main::Implant;
 
 mod debug;
 mod main;

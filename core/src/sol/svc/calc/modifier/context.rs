@@ -1,8 +1,8 @@
-use crate::defs::{SolFitId, SolItemId};
+use crate::sol::{FitId, ItemId};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum SolContext {
+pub(in crate::sol::svc::calc) enum Context {
     None,
-    Item(SolItemId),
-    Fit(SolFitId),
+    Item(ItemId),
+    Fit(FitId),
 }

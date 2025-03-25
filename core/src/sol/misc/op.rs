@@ -1,10 +1,10 @@
-use crate::sol::svc::calc::SolOp;
+use crate::ad;
 
 /// Defines what kind of operation will be applied to an attribute being modified.
 ///
 /// All the operations are applied in the order they are defined in this enum.
-#[derive(PartialEq)]
-pub enum SolOpInfo {
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum OpInfo {
     /// Assigns modification value to the attribute before all other operations are applied.
     PreAssign,
     /// Early multiplication.
@@ -31,22 +31,19 @@ pub enum SolOpInfo {
     /// Non-dogma multiplication operator.
     ExtraMul,
 }
-impl From<SolOp> for SolOpInfo {
-    fn from(mod_op: SolOp) -> Self {
-        match mod_op {
-            SolOp::PreAssign => Self::PreAssign,
-            SolOp::PreMul => Self::PreMul,
-            SolOp::PreDiv => Self::PreDiv,
-            SolOp::Add => Self::Add,
-            SolOp::Sub => Self::Sub,
-            SolOp::PostMul => Self::PostMul,
-            // Since info already exposes if modification is penalized or not, we don't need to have
-            // this operator to be part of the info
-            SolOp::PostMulImmune => Self::PostMul,
-            SolOp::PostDiv => Self::PostDiv,
-            SolOp::PostPerc => Self::PostPerc,
-            SolOp::PostAssign => Self::PostAssign,
-            SolOp::ExtraMul => Self::ExtraMul,
+impl From<ad::AOp> for OpInfo {
+    fn from(a_op: ad::AOp) -> Self {
+        match a_op {
+            ad::AOp::PreAssign => Self::PreAssign,
+            ad::AOp::PreMul => Self::PreMul,
+            ad::AOp::PreDiv => Self::PreDiv,
+            ad::AOp::Add => Self::Add,
+            ad::AOp::Sub => Self::Sub,
+            ad::AOp::PostMul => Self::PostMul,
+            ad::AOp::PostMulImmune => Self::PostMul,
+            ad::AOp::PostDiv => Self::PostDiv,
+            ad::AOp::PostPerc => Self::PostPerc,
+            ad::AOp::PostAssign => Self::PostAssign,
         }
     }
 }

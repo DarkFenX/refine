@@ -1,23 +1,18 @@
-use crate::{
-    defs::SolFitId,
-    sol::{
-        svc::calc::{
-            SolAffecteeFilter, SolCtxModifier, SolLocation, SolLocationKind, SolRawModifier,
-            registers::SolStandardRegister,
-        },
-        uad::{SolUad, fleet::SolFleet, item::SolItem},
-    },
+use crate::sol::{
+    FitId,
+    svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
+    uad::{Uad, fleet::Fleet, item::Item},
 };
 
 use super::{add_ctx_modifier, remove_ctx_modifier};
 
-impl SolStandardRegister {
+impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_fleet_buff_mod(
         &mut self,
-        ctx_modifiers: &mut Vec<SolCtxModifier>,
-        uad: &SolUad,
-        item: &SolItem,
-        raw_modifier: SolRawModifier,
+        ctx_modifiers: &mut Vec<CtxModifier>,
+        uad: &Uad,
+        item: &Item,
+        raw_modifier: RawModifier,
     ) -> bool {
         ctx_modifiers.clear();
         let fit_id = match item.get_fit_id() {
@@ -45,16 +40,16 @@ impl SolStandardRegister {
         if !ctx_modifiers.is_empty() {
             self.rmods_fleet.add_entry(fit_id, raw_modifier);
             self.rmods_nonproj
-                .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier);
+                .add_entry((raw_modifier.affector_item_id, raw_modifier.a_effect_id), raw_modifier);
         }
         !ctx_modifiers.is_empty()
     }
     pub(in crate::sol::svc::calc) fn unreg_fleet_buff_mod(
         &mut self,
-        ctx_modifiers: &mut Vec<SolCtxModifier>,
-        uad: &SolUad,
-        item: &SolItem,
-        raw_modifier: SolRawModifier,
+        ctx_modifiers: &mut Vec<CtxModifier>,
+        uad: &Uad,
+        item: &Item,
+        raw_modifier: RawModifier,
     ) {
         ctx_modifiers.clear();
         let fit_id = match item.get_fit_id() {
@@ -79,11 +74,7 @@ impl SolStandardRegister {
         }
         self.rmods_fleet.remove_entry(&fit_id, &raw_modifier);
     }
-    pub(in crate::sol::svc::calc) fn reg_fleet_for_fit(
-        &mut self,
-        fleet: &SolFleet,
-        fit_id: &SolFitId,
-    ) -> Vec<SolCtxModifier> {
+    pub(in crate::sol::svc::calc) fn reg_fleet_for_fit(&mut self, fleet: &Fleet, fit_id: &FitId) -> Vec<CtxModifier> {
         let mut raw_modifiers = Vec::new();
         let mut ctx_modifiers = Vec::new();
         // Outgoing fleet boosts
@@ -113,11 +104,7 @@ impl SolStandardRegister {
         }
         ctx_modifiers
     }
-    pub(in crate::sol::svc::calc) fn unreg_fleet_for_fit(
-        &mut self,
-        fleet: &SolFleet,
-        fit_id: &SolFitId,
-    ) -> Vec<SolCtxModifier> {
+    pub(in crate::sol::svc::calc) fn unreg_fleet_for_fit(&mut self, fleet: &Fleet, fit_id: &FitId) -> Vec<CtxModifier> {
         let mut raw_modifiers = Vec::new();
         let mut ctx_modifiers = Vec::new();
         // Outgoing fleet boosts
@@ -148,43 +135,43 @@ impl SolStandardRegister {
         ctx_modifiers
     }
     // Private methods
-    fn apply_fleet_mod(&mut self, raw_modifier: SolRawModifier, fit_id: SolFitId) -> Option<SolCtxModifier> {
+    fn apply_fleet_mod(&mut self, raw_modifier: RawModifier, fit_id: FitId) -> Option<CtxModifier> {
         match raw_modifier.affectee_filter {
-            SolAffecteeFilter::Direct(SolLocation::Ship) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::Direct(Location::Ship) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 add_ctx_modifier(
                     &mut self.cmods_root,
-                    (fit_id, SolLocationKind::Ship),
+                    (fit_id, LocationKind::Ship),
                     ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
                 Some(ctx_modifier)
             }
-            SolAffecteeFilter::Loc(SolLocation::Ship) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::Loc(Location::Ship) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 add_ctx_modifier(
                     &mut self.cmods_loc,
-                    (fit_id, SolLocationKind::Ship),
+                    (fit_id, LocationKind::Ship),
                     ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
                 Some(ctx_modifier)
             }
-            SolAffecteeFilter::LocGrp(SolLocation::Ship, grp_id) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::LocGrp(Location::Ship, a_item_grp_id) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 add_ctx_modifier(
                     &mut self.cmods_loc_grp,
-                    (fit_id, SolLocationKind::Ship, grp_id),
+                    (fit_id, LocationKind::Ship, a_item_grp_id),
                     ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
                 Some(ctx_modifier)
             }
-            SolAffecteeFilter::LocSrq(SolLocation::Ship, srq_id) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::LocSrq(Location::Ship, srq_a_item_id) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 add_ctx_modifier(
                     &mut self.cmods_loc_srq,
-                    (fit_id, SolLocationKind::Ship, srq_id),
+                    (fit_id, LocationKind::Ship, srq_a_item_id),
                     ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
@@ -193,45 +180,45 @@ impl SolStandardRegister {
             _ => None,
         }
     }
-    fn unapply_fleet_mod(&mut self, raw_modifier: SolRawModifier, fit_id: SolFitId) -> Option<SolCtxModifier> {
+    fn unapply_fleet_mod(&mut self, raw_modifier: RawModifier, fit_id: FitId) -> Option<CtxModifier> {
         // We don't check location here, since logic on layers above ensures we receive only
         // modifiers which passed checks when they were added, and location check is part of those
         match raw_modifier.affectee_filter {
-            SolAffecteeFilter::Direct(_) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::Direct(_) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 remove_ctx_modifier(
                     &mut self.cmods_root,
-                    &(fit_id, SolLocationKind::Ship),
+                    &(fit_id, LocationKind::Ship),
                     &ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
                 Some(ctx_modifier)
             }
-            SolAffecteeFilter::Loc(_) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::Loc(_) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 remove_ctx_modifier(
                     &mut self.cmods_loc,
-                    &(fit_id, SolLocationKind::Ship),
+                    &(fit_id, LocationKind::Ship),
                     &ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
                 Some(ctx_modifier)
             }
-            SolAffecteeFilter::LocGrp(_, grp_id) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::LocGrp(_, a_item_grp_id) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 remove_ctx_modifier(
                     &mut self.cmods_loc_grp,
-                    &(fit_id, SolLocationKind::Ship, grp_id),
+                    &(fit_id, LocationKind::Ship, a_item_grp_id),
                     &ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
                 Some(ctx_modifier)
             }
-            SolAffecteeFilter::LocSrq(_, srq_id) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+            AffecteeFilter::LocSrq(_, srq_a_item_id) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                 remove_ctx_modifier(
                     &mut self.cmods_loc_srq,
-                    &(fit_id, SolLocationKind::Ship, srq_id),
+                    &(fit_id, LocationKind::Ship, srq_a_item_id),
                     &ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );

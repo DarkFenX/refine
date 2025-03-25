@@ -1,31 +1,32 @@
 use crate::{
-    defs::{EAttrId, SolItemId},
+    ad,
     sol::{
-        svc::SolSvc,
+        ItemId,
+        svc::Svc,
         uad::{
-            SolUad,
-            item::{SolFighter, SolSkill},
+            Uad,
+            item::{Fighter, Skill},
         },
     },
     src::Src,
 };
 
-impl SolSvc {
+impl Svc {
     pub(in crate::sol) fn src_changed(&mut self, src: &Src) {
         self.notify_src_changed(src);
     }
     pub(in crate::sol) fn item_base_attr_value_changed(
         &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        attr_id: &EAttrId,
+        uad: &Uad,
+        item_id: &ItemId,
+        a_attr_id: &ad::AAttrId,
     ) {
-        self.notify_base_attr_value_changed(uad, item_id, attr_id);
+        self.notify_base_attr_value_changed(uad, item_id, a_attr_id);
     }
-    pub(in crate::sol) fn fighter_count_changed(&mut self, uad: &SolUad, fighter: &SolFighter) {
+    pub(in crate::sol) fn fighter_count_changed(&mut self, uad: &Uad, fighter: &Fighter) {
         self.notify_fighter_count_changed(uad, fighter);
     }
-    pub(in crate::sol) fn skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
+    pub(in crate::sol) fn skill_level_changed(&mut self, uad: &Uad, skill: &Skill) {
         self.notify_skill_level_changed(uad, skill);
     }
 }

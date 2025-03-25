@@ -1,14 +1,14 @@
 use crate::sol::{
-    debug::{SolDebugResult, check_item},
-    uad::SolUad,
+    debug::{DebugResult, check_item_id},
+    uad::Uad,
 };
 
-use super::SolProjs;
+use super::Projs;
 
-impl SolProjs {
-    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
+impl Projs {
+    pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
         for projectee_item_id in self.iter_items() {
-            check_item(uad, projectee_item_id, false)?;
+            check_item_id(uad, projectee_item_id, false)?;
         }
         Ok(())
     }

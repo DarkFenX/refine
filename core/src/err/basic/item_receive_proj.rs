@@ -1,12 +1,12 @@
-use crate::defs::SolItemId;
+use crate::sol::ItemId;
 
 #[derive(Debug)]
 pub struct ItemReceiveProjError {
-    pub item_id: SolItemId,
+    pub item_id: ItemId,
     pub item_kind: &'static str,
 }
 impl ItemReceiveProjError {
-    pub(crate) fn new(item_id: SolItemId, item_kind: &'static str) -> Self {
+    pub(crate) fn new(item_id: ItemId, item_kind: &'static str) -> Self {
         Self { item_id, item_kind }
     }
 }

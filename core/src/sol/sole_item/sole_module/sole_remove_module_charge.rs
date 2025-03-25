@@ -1,13 +1,12 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ChargeFoundError, ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_module_charge(&mut self, item_id: &SolItemId) -> Result<(), RemoveModuleChargeError> {
+    pub fn remove_module_charge(&mut self, item_id: &ItemId) -> Result<(), RemoveModuleChargeError> {
         let module = self.uad.items.get_item(item_id)?.get_module()?;
-        let charge_id = match module.get_charge_id() {
+        let charge_id = match module.get_charge_item_id() {
             Some(charge_id) => charge_id,
             None => return Err(ChargeFoundError::new(*item_id).into()),
         };

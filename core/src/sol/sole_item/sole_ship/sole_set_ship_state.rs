@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_ship_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetShipStateError> {
+    pub fn set_ship_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetShipStateError> {
         let ship = self.uad.items.get_item_mut(item_id)?.get_ship_mut()?;
-        let old_state = ship.get_state();
+        let old_a_state = ship.get_a_state();
         ship.set_ship_state(state);
-        let new_state = ship.get_state();
-        self.change_item_id_state_in_svc(item_id, old_state, new_state);
+        let new_a_state = ship.get_a_state();
+        self.change_item_id_state_in_svc(item_id, old_a_state, new_a_state);
         Ok(())
     }
 }

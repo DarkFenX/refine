@@ -1,5 +1,5 @@
-pub use vaste_resource::SolStatRes;
-pub use vaste_slot::SolStatSlot;
+pub use vaste_resource::StatRes;
+pub use vaste_slot::StatSlot;
 
 mod vaste_resource;
 mod vaste_slot;

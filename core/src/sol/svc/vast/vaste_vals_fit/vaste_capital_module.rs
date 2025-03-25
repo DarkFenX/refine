@@ -1,28 +1,27 @@
 use itertools::Itertools;
 
 use crate::{
-    ad, consts,
-    defs::{AttrVal, SolItemId},
-    sol::{svc::vast::SolVastFitData, uad::item::SolShip},
+    ac, ad,
+    sol::{AttrVal, ItemId, svc::vast::VastFitData, uad::item::Ship},
     util::StSet,
 };
 
-pub struct SolValCapitalModFail {
+pub struct ValCapitalModFail {
     pub max_subcap_volume: AttrVal,
-    pub items: Vec<SolValCapitalModItemInfo>,
+    pub items: Vec<ValCapitalModItemInfo>,
 }
 
-pub struct SolValCapitalModItemInfo {
-    pub item_id: SolItemId,
+pub struct ValCapitalModItemInfo {
+    pub item_id: ItemId,
     pub volume: AttrVal,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_fast(
         &self,
-        kfs: &StSet<SolItemId>,
-        ship: Option<&SolShip>,
+        kfs: &StSet<ItemId>,
+        ship: Option<&Ship>,
     ) -> bool {
         if !is_ship_subcap(ship) {
             return true;
@@ -35,9 +34,9 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        ship: Option<&SolShip>,
-    ) -> Option<SolValCapitalModFail> {
+        kfs: &StSet<ItemId>,
+        ship: Option<&Ship>,
+    ) -> Option<ValCapitalModFail> {
         if !is_ship_subcap(ship) {
             return None;
         }
@@ -45,7 +44,7 @@ impl SolVastFitData {
             .mods_capital
             .iter()
             .filter(|(k, _)| !kfs.contains(k))
-            .map(|(k, v)| SolValCapitalModItemInfo {
+            .map(|(k, v)| ValCapitalModItemInfo {
                 item_id: *k,
                 volume: *v,
             })
@@ -53,14 +52,14 @@ impl SolVastFitData {
         if items.is_empty() {
             return None;
         }
-        Some(SolValCapitalModFail {
-            max_subcap_volume: consts::extras::MAX_SUBCAP_MODULE_VOLUME,
+        Some(ValCapitalModFail {
+            max_subcap_volume: ac::extras::MAX_SUBCAP_MODULE_VOLUME,
             items,
         })
     }
 }
 
-fn is_ship_subcap(ship: Option<&SolShip>) -> bool {
+fn is_ship_subcap(ship: Option<&Ship>) -> bool {
     let ship = match ship {
         Some(ship) => ship,
         None => return false,

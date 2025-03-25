@@ -4,9 +4,14 @@
 //! what went into it. Since they duplicate each other, when doing any changes, MAKE SURE TO APPLY
 //! THEM TO BOTH.
 
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    defs::{AggrKey, AttrVal, EItemCatId, OF},
-    sol::svc::calc::{SolAggrMode, SolOp},
+    ad,
+    sol::{
+        AttrVal,
+        svc::calc::{AggrKey, AggrMode, Op},
+    },
     util::StMap,
 };
 
@@ -15,31 +20,31 @@ use super::shared::{
     normalize_sub,
 };
 
-pub(in crate::sol::svc::calc) struct SolModAccumFast {
-    pre_assign: SolAttrAggr,
-    pre_mul: SolAttrStack,
-    pre_div: SolAttrStack,
-    add: SolAttrAggr,
-    sub: SolAttrAggr,
-    post_mul: SolAttrStack,
-    post_div: SolAttrStack,
-    post_perc: SolAttrStack,
-    post_assign: SolAttrAggr,
-    extra_mul: SolAttrAggr,
+pub(in crate::sol::svc::calc) struct ModAccumFast {
+    pre_assign: AttrAggr,
+    pre_mul: AttrStack,
+    pre_div: AttrStack,
+    add: AttrAggr,
+    sub: AttrAggr,
+    post_mul: AttrStack,
+    post_div: AttrStack,
+    post_perc: AttrStack,
+    post_assign: AttrAggr,
+    extra_mul: AttrAggr,
 }
-impl SolModAccumFast {
+impl ModAccumFast {
     pub(in crate::sol::svc::calc) fn new() -> Self {
         Self {
-            pre_assign: SolAttrAggr::new(),
-            pre_mul: SolAttrStack::new(),
-            pre_div: SolAttrStack::new(),
-            add: SolAttrAggr::new(),
-            sub: SolAttrAggr::new(),
-            post_mul: SolAttrStack::new(),
-            post_div: SolAttrStack::new(),
-            post_perc: SolAttrStack::new(),
-            post_assign: SolAttrAggr::new(),
-            extra_mul: SolAttrAggr::new(),
+            pre_assign: AttrAggr::new(),
+            pre_mul: AttrStack::new(),
+            pre_div: AttrStack::new(),
+            add: AttrAggr::new(),
+            sub: AttrAggr::new(),
+            post_mul: AttrStack::new(),
+            post_div: AttrStack::new(),
+            post_perc: AttrStack::new(),
+            post_assign: AttrAggr::new(),
+            extra_mul: AttrAggr::new(),
         }
     }
     pub(in crate::sol::svc::calc) fn add_val(
@@ -47,77 +52,76 @@ impl SolModAccumFast {
         val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
-        op: &SolOp,
+        op: &Op,
         attr_pen: bool,
-        item_cat: &EItemCatId,
-        aggr_mode: &SolAggrMode,
+        a_item_cat: &ad::AItemCatId,
+        aggr_mode: &AggrMode,
     ) {
         match op {
-            SolOp::PreAssign => self
+            Op::PreAssign => self
                 .pre_assign
                 .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
-            SolOp::PreMul => self.pre_mul.add_val(
+            Op::PreMul => self.pre_mul.add_val(
                 val,
                 proj_mult,
                 res_mult,
                 normalize_noop,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
+                is_penal(attr_pen, a_item_cat),
                 aggr_mode,
             ),
-            SolOp::PreDiv => self.pre_div.add_val(
+            Op::PreDiv => self.pre_div.add_val(
                 val,
                 proj_mult,
                 res_mult,
                 normalize_div,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
+                is_penal(attr_pen, a_item_cat),
                 aggr_mode,
             ),
-            SolOp::Add => self
+            Op::Add => self
                 .add
                 .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),
-            SolOp::Sub => self
+            Op::Sub => self
                 .sub
                 .add_val(val, proj_mult, res_mult, normalize_sub, diminish_basic, aggr_mode),
-            SolOp::PostMul => self.post_mul.add_val(
+            Op::PostMul => self.post_mul.add_val(
                 val,
                 proj_mult,
                 res_mult,
                 normalize_noop,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
+                is_penal(attr_pen, a_item_cat),
                 aggr_mode,
             ),
-            SolOp::PostMulImmune => {
+            Op::PostMulImmune => {
                 self.post_mul
                     .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, false, aggr_mode)
             }
-            SolOp::PostDiv => self.post_div.add_val(
+            Op::PostDiv => self.post_div.add_val(
                 val,
                 proj_mult,
                 res_mult,
                 normalize_div,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
+                is_penal(attr_pen, a_item_cat),
                 aggr_mode,
             ),
-            SolOp::PostPerc => self.post_perc.add_val(
+            Op::PostPerc => self.post_perc.add_val(
                 val,
                 proj_mult,
                 res_mult,
                 normalize_perc,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
+                is_penal(attr_pen, a_item_cat),
                 aggr_mode,
             ),
-            SolOp::PostAssign => self
+            Op::PostAssign => self
                 .post_assign
                 .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
-            SolOp::ExtraMul => {
-                self.extra_mul
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode)
-            }
+            Op::ExtraMul => self
+                .extra_mul
+                .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode),
         };
     }
     pub(in crate::sol::svc::calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
@@ -136,15 +140,15 @@ impl SolModAccumFast {
     }
 }
 
-struct SolAttrStack {
-    stacked: SolAttrAggr,
-    penalized: SolAttrAggr,
+struct AttrStack {
+    stacked: AttrAggr,
+    penalized: AttrAggr,
 }
-impl SolAttrStack {
+impl AttrStack {
     fn new() -> Self {
         Self {
-            stacked: SolAttrAggr::new(),
-            penalized: SolAttrAggr::new(),
+            stacked: AttrAggr::new(),
+            penalized: AttrAggr::new(),
         }
     }
     fn add_val<N, D>(
@@ -155,7 +159,7 @@ impl SolAttrStack {
         normalize_func: N,
         diminish_func: D,
         penalizable: bool,
-        aggr_mode: &SolAggrMode,
+        aggr_mode: &AggrMode,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -172,18 +176,18 @@ impl SolAttrStack {
         F2: Fn(&[AttrVal], bool) -> Option<AttrVal>,
     {
         if let Some(val) = self.penalized.get_comb_val(pen_func, hig) {
-            self.stacked.add_processed_val(val, &SolAggrMode::Stack);
+            self.stacked.add_processed_val(val, &AggrMode::Stack);
         }
         self.stacked.get_comb_val(comb_func, hig)
     }
 }
 
-struct SolAttrAggr {
+struct AttrAggr {
     stack: Vec<AttrVal>,
     aggr_min: StMap<AggrKey, Vec<AttrVal>>,
     aggr_max: StMap<AggrKey, Vec<AttrVal>>,
 }
-impl SolAttrAggr {
+impl AttrAggr {
     fn new() -> Self {
         Self {
             stack: Vec::new(),
@@ -198,7 +202,7 @@ impl SolAttrAggr {
         res_mult: Option<AttrVal>,
         normalize_func: N,
         diminish_func: D,
-        aggr_mode: &SolAggrMode,
+        aggr_mode: &AggrMode,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -210,11 +214,11 @@ impl SolAttrAggr {
         val = diminish_func(val, proj_mult, res_mult);
         self.add_processed_val(val, aggr_mode);
     }
-    fn add_processed_val(&mut self, val: AttrVal, aggr_mode: &SolAggrMode) {
+    fn add_processed_val(&mut self, val: AttrVal, aggr_mode: &AggrMode) {
         match aggr_mode {
-            SolAggrMode::Stack => self.stack.push(val),
-            SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_default().push(val),
-            SolAggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(val),
+            AggrMode::Stack => self.stack.push(val),
+            AggrMode::Min(key) => self.aggr_min.entry(*key).or_default().push(val),
+            AggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(val),
         }
     }
     fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool) -> Option<AttrVal>

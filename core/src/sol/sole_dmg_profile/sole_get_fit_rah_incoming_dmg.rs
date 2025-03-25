@@ -1,14 +1,10 @@
 use crate::{
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolDmgProfile, SolarSystem},
+    sol::{DmgProfile, FitId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn get_fit_rah_incoming_dmg(
-        &self,
-        fit_id: &SolFitId,
-    ) -> Result<&Option<SolDmgProfile>, GetFitRahIncomingDmgError> {
+    pub fn get_fit_rah_incoming_dmg(&self, fit_id: &FitId) -> Result<&Option<DmgProfile>, GetFitRahIncomingDmgError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(&fit.rah_incoming_dmg)
     }

@@ -1,20 +1,19 @@
 use crate::{
-    defs::{EEffectId, SolItemId},
     err::basic::{ItemFoundError, ItemLoadedError},
-    sol::{SolEffectInfo, SolarSystem},
+    sol::{EffectId, EffectInfo, ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn iter_item_effects(
         &self,
-        item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EEffectId, SolEffectInfo)>, IterItemEffectsError> {
+        item_id: &ItemId,
+    ) -> Result<impl ExactSizeIterator<Item = (EffectId, EffectInfo)>, IterItemEffectsError> {
         let item = self.uad.items.get_item(item_id)?;
-        let a_effect_ids = item.get_effect_datas_err()?.keys();
-        let effect_infos = a_effect_ids.map(move |v| {
-            let running = self.svc.is_effect_running(item_id, v);
-            let mode = item.get_effect_modes().get(v);
-            (*v, SolEffectInfo::new(running, *mode))
+        let a_effect_ids = item.get_a_effect_datas_err()?.keys();
+        let effect_infos = a_effect_ids.map(|a_effect_id| {
+            let running = self.svc.is_effect_running(item_id, a_effect_id);
+            let mode = item.get_effect_modes().get(a_effect_id);
+            (a_effect_id.into(), EffectInfo { running, mode: *mode })
         });
         Ok(effect_infos)
     }

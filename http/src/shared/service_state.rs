@@ -5,16 +5,16 @@ pub(crate) enum HServiceState {
     Offline,
     Online,
 }
-impl From<&rc::SolServiceState> for HServiceState {
-    fn from(core_service_state: &rc::SolServiceState) -> Self {
+impl From<&rc::ServiceState> for HServiceState {
+    fn from(core_service_state: &rc::ServiceState) -> Self {
         match core_service_state {
-            rc::SolServiceState::Ghost => Self::Ghost,
-            rc::SolServiceState::Offline => Self::Offline,
-            rc::SolServiceState::Online => Self::Online,
+            rc::ServiceState::Ghost => Self::Ghost,
+            rc::ServiceState::Offline => Self::Offline,
+            rc::ServiceState::Online => Self::Online,
         }
     }
 }
-impl From<&HServiceState> for rc::SolServiceState {
+impl From<&HServiceState> for rc::ServiceState {
     fn from(h_service_state: &HServiceState) -> Self {
         match h_service_state {
             HServiceState::Ghost => Self::Ghost,

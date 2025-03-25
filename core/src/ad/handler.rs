@@ -15,7 +15,7 @@ pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted effect.
     fn get_effect(&self, id: &AEffectId) -> Option<&ArcEffect>;
     /// Get adapted mutator.
-    fn get_muta(&self, id: &AItemId) -> Option<&ArcMuta>;
+    fn get_mutator(&self, id: &AItemId) -> Option<&ArcMuta>;
     /// Get adapted warfare buff.
     fn get_buff(&self, id: &ABuffId) -> Option<&ArcBuff>;
     /// Get adapted data fingerprint.

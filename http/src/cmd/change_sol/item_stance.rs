@@ -12,7 +12,7 @@ pub(crate) struct HSetStanceCmd {
     fit_cmd: change_fit::HSetStanceCmd,
 }
 impl HSetStanceCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolStanceInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::StanceInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

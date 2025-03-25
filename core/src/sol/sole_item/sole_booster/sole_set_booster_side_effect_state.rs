@@ -1,24 +1,23 @@
 use crate::{
-    defs::{EEffectId, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolEffectMode, SolarSystem},
+    sol::{EffectId, EffectMode, ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_booster_side_effect_state(
         &mut self,
-        item_id: &SolItemId,
-        effect_id: &EEffectId,
+        item_id: &ItemId,
+        effect_id: &EffectId,
         state: bool,
     ) -> Result<(), SetBoosterSideEffectStateError> {
         let booster = self.uad.items.get_item_mut(item_id)?.get_booster_mut()?;
         let effect_state = match state {
-            true => SolEffectMode::StateCompliance,
-            false => SolEffectMode::FullCompliance,
+            true => EffectMode::StateCompliance,
+            false => EffectMode::FullCompliance,
         };
-        booster.get_effect_modes_mut().set(*effect_id, effect_state);
+        booster.get_effect_modes_mut().set(effect_id.into(), effect_state);
         let item = self.uad.items.get_item(item_id).unwrap();
-        self.svc.process_effects(&self.uad, item, item.get_state());
+        self.svc.process_effects(&self.uad, item, item.get_a_state());
         Ok(())
     }
 }

@@ -9,8 +9,8 @@ pub(crate) struct HStanceInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolStanceInfo> for HStanceInfoPartial {
-    fn from(core_stance_info: &rc::SolStanceInfo) -> Self {
+impl From<&rc::StanceInfo> for HStanceInfoPartial {
+    fn from(core_stance_info: &rc::StanceInfo) -> Self {
         Self {
             id: core_stance_info.id,
             kind: "stance",

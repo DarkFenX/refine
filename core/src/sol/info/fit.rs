@@ -1,46 +1,43 @@
-use crate::{
-    defs::{SolFitId, SolFleetId, SolItemId},
-    sol::{SolDmgProfile, uad::fit::SolFit},
-};
+use crate::sol::{DmgProfile, FitId, FleetId, ItemId, uad::fit::Fit};
 
-pub struct SolFitInfo {
-    pub id: SolFitId,
-    pub fleet: Option<SolFleetId>,
-    pub character: Option<SolItemId>,
-    pub skills: Vec<SolItemId>,
-    pub implants: Vec<SolItemId>,
-    pub boosters: Vec<SolItemId>,
-    pub ship: Option<SolItemId>,
-    pub stance: Option<SolItemId>,
-    pub subsystems: Vec<SolItemId>,
-    pub mods_high: Vec<Option<SolItemId>>,
-    pub mods_mid: Vec<Option<SolItemId>>,
-    pub mods_low: Vec<Option<SolItemId>>,
-    pub rigs: Vec<SolItemId>,
-    pub drones: Vec<SolItemId>,
-    pub fighters: Vec<SolItemId>,
-    pub fw_effects: Vec<SolItemId>,
-    pub rah_incoming_dmg: Option<SolDmgProfile>,
+pub struct FitInfo {
+    pub id: FitId,
+    pub fleet: Option<FleetId>,
+    pub character: Option<ItemId>,
+    pub skills: Vec<ItemId>,
+    pub implants: Vec<ItemId>,
+    pub boosters: Vec<ItemId>,
+    pub ship: Option<ItemId>,
+    pub stance: Option<ItemId>,
+    pub subsystems: Vec<ItemId>,
+    pub mods_high: Vec<Option<ItemId>>,
+    pub mods_mid: Vec<Option<ItemId>>,
+    pub mods_low: Vec<Option<ItemId>>,
+    pub rigs: Vec<ItemId>,
+    pub drones: Vec<ItemId>,
+    pub fighters: Vec<ItemId>,
+    pub fw_effects: Vec<ItemId>,
+    pub rah_incoming_dmg: Option<DmgProfile>,
 }
-impl SolFitInfo {
+impl FitInfo {
     pub(in crate::sol) fn new(
-        id: SolFitId,
-        fleet: Option<SolFleetId>,
-        character: Option<SolItemId>,
-        skills: Vec<SolItemId>,
-        implants: Vec<SolItemId>,
-        boosters: Vec<SolItemId>,
-        ship: Option<SolItemId>,
-        stance: Option<SolItemId>,
-        subsystems: Vec<SolItemId>,
-        mods_high: Vec<Option<SolItemId>>,
-        mods_mid: Vec<Option<SolItemId>>,
-        mods_low: Vec<Option<SolItemId>>,
-        rigs: Vec<SolItemId>,
-        drones: Vec<SolItemId>,
-        fighters: Vec<SolItemId>,
-        fw_effects: Vec<SolItemId>,
-        rah_incoming_dmg: Option<SolDmgProfile>,
+        id: FitId,
+        fleet: Option<FleetId>,
+        character: Option<ItemId>,
+        skills: Vec<ItemId>,
+        implants: Vec<ItemId>,
+        boosters: Vec<ItemId>,
+        ship: Option<ItemId>,
+        stance: Option<ItemId>,
+        subsystems: Vec<ItemId>,
+        mods_high: Vec<Option<ItemId>>,
+        mods_mid: Vec<Option<ItemId>>,
+        mods_low: Vec<Option<ItemId>>,
+        rigs: Vec<ItemId>,
+        drones: Vec<ItemId>,
+        fighters: Vec<ItemId>,
+        fw_effects: Vec<ItemId>,
+        rah_incoming_dmg: Option<DmgProfile>,
     ) -> Self {
         Self {
             id,
@@ -63,8 +60,8 @@ impl SolFitInfo {
         }
     }
 }
-impl From<&SolFit> for SolFitInfo {
-    fn from(fit: &SolFit) -> Self {
+impl From<&Fit> for FitInfo {
+    fn from(fit: &Fit) -> Self {
         Self::new(
             fit.id,
             fit.fleet,

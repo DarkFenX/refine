@@ -1,13 +1,12 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolarSystem, info::SolSubsystemInfo},
+    sol::{ItemId, SolarSystem, info::SubsystemInfo},
 };
 
 impl SolarSystem {
-    pub fn get_subsystem(&self, item_id: &SolItemId) -> Result<SolSubsystemInfo, GetSubsystemError> {
+    pub fn get_subsystem(&self, item_id: &ItemId) -> Result<SubsystemInfo, GetSubsystemError> {
         let subsystem = self.uad.items.get_item(item_id)?.get_subsystem()?;
-        Ok(SolSubsystemInfo::from(subsystem))
+        Ok(SubsystemInfo::from(subsystem))
     }
 }
 

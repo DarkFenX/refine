@@ -13,7 +13,7 @@ impl HAddImplantCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> Result<rc::SolImplantInfo, HExecError> {
+    ) -> Result<rc::ImplantInfo, HExecError> {
         let core_implant = match core_sol.add_implant(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_implant) => core_implant,
             Err(error) => {

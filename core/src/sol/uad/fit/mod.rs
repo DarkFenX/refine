@@ -1,7 +1,7 @@
-pub(in crate::sol) use container::SolFits;
-pub(in crate::sol) use fit::SolFit;
-pub(in crate::sol) use item_vec::SolItemVec;
-pub(in crate::sol) use skill::SolFitSkill;
+pub(in crate::sol) use container::Fits;
+pub(in crate::sol) use fit::Fit;
+pub(in crate::sol) use item_vec::ItemVec;
+pub(in crate::sol) use skill::FitSkill;
 
 mod container;
 mod fit;

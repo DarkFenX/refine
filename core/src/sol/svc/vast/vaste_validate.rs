@@ -1,18 +1,18 @@
 use crate::sol::{
     svc::{
-        calc::SolCalc,
-        vast::{SolValOptions, SolValResult, SolVast},
+        calc::Calc,
+        vast::{ValOptions, ValResult, Vast},
     },
-    uad::{SolUad, fit::SolFit},
+    uad::{Uad, fit::Fit},
 };
 
-impl SolVast {
+impl Vast {
     pub(in crate::sol) fn validate_fit_fast(
         &mut self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-        options: &SolValOptions,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+        options: &ValOptions,
     ) -> bool {
         let ship = fit.ship.map(|v| uad.items.get_item(&v).unwrap().get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
@@ -344,15 +344,15 @@ impl SolVast {
     }
     pub(in crate::sol) fn validate_fit_verbose(
         &mut self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-        options: &SolValOptions,
-    ) -> SolValResult {
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &Fit,
+        options: &ValOptions,
+    ) -> ValResult {
         let ship = fit.ship.map(|v| uad.items.get_item(&v).unwrap().get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
-        let mut result = SolValResult::new();
+        let mut result = ValResult::new();
         if options.cpu.enabled {
             result.cpu = fit_data.validate_cpu_verbose(&options.cpu.kfs, uad, calc, fit);
         }

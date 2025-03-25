@@ -1,9 +1,9 @@
-use crate::sol::{debug::SolDebugResult, uad::SolUad};
+use crate::sol::{debug::DebugResult, uad::Uad};
 
-use super::SolCalc;
+use super::Calc;
 
-impl SolCalc {
-    pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
+impl Calc {
+    pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
         self.attrs.debug_consistency_check(uad)?;
         self.std.debug_consistency_check(uad)?;
         self.buffs.debug_consistency_check(uad)?;

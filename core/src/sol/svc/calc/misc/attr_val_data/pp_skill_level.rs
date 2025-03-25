@@ -1,34 +1,36 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    consts,
-    defs::{EAttrId, OF, SolItemId},
+    ac, ad,
     sol::{
-        svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc},
-        uad::SolUad,
+        ItemId,
+        svc::calc::{AttrValInfo, Calc, CalcAttrVal},
+        uad::Uad,
     },
 };
 
-pub(in crate::sol::svc::calc) const SKILL_LVL_ATTR: EAttrId = consts::attrs::SKILL_LEVEL;
+pub(in crate::sol::svc::calc) const SKILL_LVL_ATTR: ad::AAttrId = ac::attrs::SKILL_LEVEL;
 
 pub(super) fn skill_level_postproc_fast(
-    _calc: &mut SolCalc,
-    uad: &SolUad,
-    item_id: &SolItemId,
-    mut val: SolAttrVal,
-) -> SolAttrVal {
-    let level = uad.items.get_item(item_id).unwrap().get_skill().unwrap().get_level();
+    _calc: &mut Calc,
+    uad: &Uad,
+    item_id: &ItemId,
+    mut cval: CalcAttrVal,
+) -> CalcAttrVal {
+    let level = uad.items.get_item(item_id).unwrap().get_skill().unwrap().get_a_level();
     let level = OF::from(level);
-    val.dogma = level;
-    val.extra = level;
-    val
+    cval.dogma = level;
+    cval.extra = level;
+    cval
 }
 
 pub(super) fn skill_level_postproc_info(
-    _calc: &mut SolCalc,
-    uad: &SolUad,
-    item_id: &SolItemId,
-    _info: SolAttrValInfo,
-) -> SolAttrValInfo {
-    let level = uad.items.get_item(item_id).unwrap().get_skill().unwrap().get_level();
+    _calc: &mut Calc,
+    uad: &Uad,
+    item_id: &ItemId,
+    _info: AttrValInfo,
+) -> AttrValInfo {
+    let level = uad.items.get_item(item_id).unwrap().get_skill().unwrap().get_a_level();
     let level = OF::from(level);
-    SolAttrValInfo::new(level)
+    AttrValInfo::new(level)
 }

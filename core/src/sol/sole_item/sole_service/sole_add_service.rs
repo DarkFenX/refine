@@ -1,24 +1,23 @@
 use crate::{
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolarSystem,
-        info::SolServiceInfo,
-        uad::item::{SolItem, SolService, SolServiceState},
+        FitId, ItemTypeId, SolarSystem,
+        info::ServiceInfo,
+        uad::item::{Item, Service, ServiceState},
     },
 };
 
 impl SolarSystem {
     pub fn add_service(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
-        state: SolServiceState,
-    ) -> Result<SolServiceInfo, AddServiceError> {
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: ServiceState,
+    ) -> Result<ServiceInfo, AddServiceError> {
         let item_id = self.uad.items.alloc_item_id();
-        let service = SolService::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = SolServiceInfo::from(&service);
-        let item = SolItem::Service(service);
+        let service = Service::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let info = ServiceInfo::from(&service);
+        let item = Item::Service(service);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.services.insert(item_id);
         self.uad.items.add_item(item);

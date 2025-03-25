@@ -9,6 +9,10 @@ pub(in crate::phb) struct PFighterAbil {
 }
 impl FsdMerge<rc::ed::EFighterAbil> for PFighterAbil {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EFighterAbil> {
-        vec![rc::ed::EFighterAbil::new(id, self.disallow_hisec, self.disallow_lowsec)]
+        vec![rc::ed::EFighterAbil {
+            id,
+            disallow_hisec: self.disallow_hisec,
+            disallow_lowsec: self.disallow_lowsec,
+        }]
     }
 }

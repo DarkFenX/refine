@@ -18,7 +18,7 @@ pub(crate) enum HImplantInfo {
 impl HImplantInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_implant_info: &rc::SolImplantInfo,
+        core_implant_info: &rc::ImplantInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

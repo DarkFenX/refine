@@ -1,11 +1,12 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    defs::OF,
     err::basic::{EmDmgNonNegError, ExplDmgNonNegError, KinDmgNonNegError, ThermDmgNonNegError, TotalDmgPositiveError},
-    sol::{SolDmgProfile, SolarSystem},
+    sol::{DmgProfile, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_default_incoming_dmg(&mut self, dmg_profile: SolDmgProfile) -> Result<(), SetDefaultIncomingDmgError> {
+    pub fn set_default_incoming_dmg(&mut self, dmg_profile: DmgProfile) -> Result<(), SetDefaultIncomingDmgError> {
         if dmg_profile.em < OF(0.0) {
             return Err(EmDmgNonNegError::new(dmg_profile.em).into());
         }

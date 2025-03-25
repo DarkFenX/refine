@@ -4,8 +4,8 @@ pub(crate) struct HDroneInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SolItemId,
 }
-impl From<&rc::SolDroneInfo> for HDroneInfoId {
-    fn from(core_drone_info: &rc::SolDroneInfo) -> Self {
+impl From<&rc::DroneInfo> for HDroneInfoId {
+    fn from(core_drone_info: &rc::DroneInfo) -> Self {
         Self { id: core_drone_info.id }
     }
 }

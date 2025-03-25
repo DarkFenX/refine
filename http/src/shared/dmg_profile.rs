@@ -5,8 +5,8 @@ pub(crate) struct HDmgProfile {
     kinetic: rc::AttrVal,
     explosive: rc::AttrVal,
 }
-impl From<&rc::SolDmgProfile> for HDmgProfile {
-    fn from(core_dmg_profile: &rc::SolDmgProfile) -> Self {
+impl From<&rc::DmgProfile> for HDmgProfile {
+    fn from(core_dmg_profile: &rc::DmgProfile) -> Self {
         Self {
             em: core_dmg_profile.em,
             thermal: core_dmg_profile.thermal,
@@ -15,7 +15,7 @@ impl From<&rc::SolDmgProfile> for HDmgProfile {
         }
     }
 }
-impl From<&HDmgProfile> for rc::SolDmgProfile {
+impl From<&HDmgProfile> for rc::DmgProfile {
     fn from(h_dmg_profile: &HDmgProfile) -> Self {
         Self {
             em: h_dmg_profile.em,

@@ -10,8 +10,8 @@ pub(crate) struct HProjEffectInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) projs: Vec<rc::SolItemId>,
 }
-impl From<&rc::SolProjEffectInfo> for HProjEffectInfoPartial {
-    fn from(core_proj_effect_info: &rc::SolProjEffectInfo) -> Self {
+impl From<&rc::ProjEffectInfo> for HProjEffectInfoPartial {
+    fn from(core_proj_effect_info: &rc::ProjEffectInfo) -> Self {
         Self {
             id: core_proj_effect_info.id,
             kind: "proj_effect",

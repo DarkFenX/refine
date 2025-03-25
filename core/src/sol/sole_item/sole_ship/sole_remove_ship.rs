@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolarSystem, uad::item::SolShipKind},
+    sol::{ItemId, SolarSystem, uad::item::ShipKind},
 };
 
 impl SolarSystem {
-    pub fn remove_ship(&mut self, item_id: &SolItemId) -> Result<(), RemoveShipError> {
+    pub fn remove_ship(&mut self, item_id: &ItemId) -> Result<(), RemoveShipError> {
         // Just check if everything is correct
         let item = self.uad.items.get_item(item_id)?;
         let ship = item.get_ship()?;
@@ -17,7 +16,7 @@ impl SolarSystem {
         // Remove ship from user data
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.ship = None;
-        fit.kind = SolShipKind::Unknown;
+        fit.kind = ShipKind::Unknown;
         self.uad.items.remove_item(item_id);
         Ok(())
     }

@@ -1,6 +1,6 @@
-pub use mutation::{SolAttrMutationInfo, SolItemMutationInfo};
-pub use proj::SolProjInfo;
-pub use side_effect::{SolSideEffectInfo, SolSideEffectStr};
+pub use mutation::{AttrMutationInfo, ItemMutationInfo};
+pub use proj::ProjInfo;
+pub use side_effect::{SideEffectInfo, SideEffectStr};
 
 mod mutation;
 mod proj;

@@ -22,31 +22,19 @@
 
 pub use defs::VERSION;
 pub use sol::{
-    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolSecZone, SolSecZoneCorruption,
+    AddMode, AttrId, AttrVal, Count, DmgProfile, EffectId, EffectInfo, EffectMode, FitId, FleetId, Idx, ItemGrpId,
+    ItemId, ItemTypeId, ModRack, MutaRoll, OpInfo, RmMode, SecZone, SecZoneCorruption, SkillLevel, SlotIndex,
     SolarSystem,
     info::{
-        SolAttrMutationInfo, SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo,
-        SolFighterInfo, SolFitInfo, SolFleetInfo, SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolItemMutationInfo,
-        SolModuleInfo, SolProjEffectInfo, SolProjInfo, SolRigInfo, SolServiceInfo, SolShipInfo, SolSideEffectInfo,
-        SolSideEffectStr, SolSkillInfo, SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
+        AttrMutationInfo, AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FitInfo,
+        FleetInfo, FwEffectInfo, ImplantInfo, ItemInfo, ItemMutationInfo, ModuleInfo, ProjEffectInfo, ProjInfo,
+        RigInfo, ServiceInfo, ShipInfo, SideEffectInfo, SideEffectStr, SkillInfo, StanceInfo, SubsystemInfo,
+        SwEffectInfo,
     },
-    svc::{
-        calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
-        vast::{
-            SolValActivationBlockedFail, SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail,
-            SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo,
-            SolValFighterSquadSizeFail, SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo,
-            SolValMaxTypeFail, SolValMaxTypeItemInfo, SolValModuleStateFail, SolValNotLoadedItemFail, SolValOption,
-            SolValOptions, SolValOverloadSkillFail, SolValOverloadSkillItemInfo, SolValResFail, SolValResItemInfo,
-            SolValResult, SolValRigSizeFail, SolValRigSizeItemInfo, SolValSecZoneFail, SolValSecZoneItemInfo,
-            SolValShipLimitFail, SolValShipLimitItemInfo, SolValShipStanceFail, SolValSlotCountFail,
-            SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail, SolValUnusableResItemInfo,
-            SolValUnusableSlotFail,
-        },
-    },
+    svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo},
     uad::{
-        SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation,
-        SolMinionState, SolModuleState, SolServiceState,
+        ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, MinionState, ModuleState,
+        ServiceState,
     },
 };
 pub use src::Src;
@@ -62,3 +50,4 @@ pub mod err;
 mod sol;
 mod src;
 pub mod util;
+pub mod val;

@@ -1,20 +1,19 @@
 use crate::{
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolarSystem,
-        info::SolShipInfo,
-        uad::item::{SolItem, SolShip},
+        FitId, ItemTypeId, SolarSystem,
+        info::ShipInfo,
+        uad::item::{Item, Ship},
     },
 };
 
 impl SolarSystem {
     pub fn set_fit_ship(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
+        fit_id: FitId,
+        type_id: ItemTypeId,
         state: bool,
-    ) -> Result<SolShipInfo, SetFitShipError> {
+    ) -> Result<ShipInfo, SetFitShipError> {
         let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old ship, if it was set
         if let Some(old_item_id) = fit.ship {
@@ -22,10 +21,10 @@ impl SolarSystem {
         }
         // Add new ship
         let item_id = self.uad.items.alloc_item_id();
-        let ship = SolShip::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let ship = Ship::new(&self.uad.src, item_id, type_id, fit_id, state);
         let ship_kind = ship.get_kind();
-        let info = SolShipInfo::from(&ship);
-        let item = SolItem::Ship(ship);
+        let info = ShipInfo::from(&ship);
+        let item = Item::Ship(ship);
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.ship = Some(item_id);
         fit.kind = ship_kind;

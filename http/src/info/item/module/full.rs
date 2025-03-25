@@ -12,7 +12,7 @@ pub(crate) struct HModuleInfoFull {
 impl HModuleInfoFull {
     pub(super) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_module_info: &rc::SolModuleInfo,
+        core_module_info: &rc::ModuleInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         let partial_info = HModuleInfoPartial::mk_info(core_sol, core_module_info, item_mode);

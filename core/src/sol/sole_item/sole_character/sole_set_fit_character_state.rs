@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolFitId,
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{SolarSystem, uad::item::SolCharacter},
+    sol::{FitId, SolarSystem, uad::item::Character},
     util::Named,
 };
 
 impl SolarSystem {
-    pub fn set_fit_character_state(&mut self, fit_id: &SolFitId, state: bool) -> Result<(), SetFitCharacterStateError> {
+    pub fn set_fit_character_state(&mut self, fit_id: &FitId, state: bool) -> Result<(), SetFitCharacterStateError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.character {
             Some(item_id) => item_id,
-            None => return Err(FitHasItemKindError::new(*fit_id, SolCharacter::get_name()).into()),
+            None => return Err(FitHasItemKindError::new(*fit_id, Character::get_name()).into()),
         };
         let character = self
             .uad
@@ -19,10 +18,10 @@ impl SolarSystem {
             .unwrap()
             .get_character_mut()
             .unwrap();
-        let old_state = character.get_state();
+        let old_a_state = character.get_a_state();
         character.set_character_state(state);
-        let new_state = character.get_state();
-        self.change_item_id_state_in_svc(&item_id, old_state, new_state);
+        let new_a_state = character.get_a_state();
+        self.change_item_id_state_in_svc(&item_id, old_a_state, new_a_state);
         Ok(())
     }
 }

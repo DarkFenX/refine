@@ -1,13 +1,13 @@
-use crate::{EItemId, SolFitId, SolItemId};
+use crate::sol::{FitId, ItemId, ItemTypeId};
 
 #[derive(Debug)]
 pub struct SkillEveTypeError {
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
-    pub item_id: SolItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub item_id: ItemId,
 }
 impl SkillEveTypeError {
-    pub(crate) fn new(type_id: EItemId, fit_id: SolFitId, item_id: SolItemId) -> Self {
+    pub(crate) fn new(type_id: ItemTypeId, fit_id: FitId, item_id: ItemId) -> Self {
         Self {
             type_id,
             fit_id,

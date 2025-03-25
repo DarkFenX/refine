@@ -1,17 +1,17 @@
 use crate::sol::{
-    debug::{SolDebugResult, check_attr, check_item},
-    uad::SolUad,
+    debug::{DebugResult, check_a_attr_id, check_item_id},
+    uad::Uad,
 };
 
-use super::SolAttrValData;
+use super::AttrValData;
 
-impl SolAttrValData {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
+impl AttrValData {
+    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
         for (item_id, item_data) in self.data.iter() {
-            check_item(uad, item_id, true)?;
+            check_item_id(uad, item_id, true)?;
             // All calculated attributes are supposed to be available
-            for attr_id in item_data.values.keys() {
-                check_attr(uad, attr_id)?;
+            for a_attr_id in item_data.values.keys() {
+                check_a_attr_id(uad, a_attr_id)?;
             }
         }
         Ok(())

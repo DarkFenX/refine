@@ -1,33 +1,31 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    consts,
-    defs::{AttrVal, OF, SolItemId},
+    ac,
     sol::{
-        svc::vast::{SolValCache, SolVastFitData},
-        uad::SolUad,
+        AttrVal, ItemId,
+        svc::vast::{ValCache, VastFitData},
+        uad::Uad,
     },
     util::StSet,
 };
 
 #[derive(Copy, Clone)]
-pub struct SolValChargeVolumeFail {
-    pub parent_item_id: SolItemId,
-    pub charge_item_id: SolItemId,
+pub struct ValChargeVolumeFail {
+    pub parent_item_id: ItemId,
+    pub charge_item_id: ItemId,
     pub charge_volume: AttrVal,
     pub max_volume: AttrVal,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_charge_volume_fast(
-        &mut self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-    ) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &StSet<ItemId>, uad: &Uad) -> bool {
         for (module_item_id, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
-                SolValCache::Todo(charge_volume) => match calculate_item_result(uad, module_item_id, *charge_volume) {
-                    SolValCache::Pass(pass) => cache.pass(pass),
-                    SolValCache::Fail(fail) => {
+                ValCache::Todo(charge_volume) => match calculate_item_result(uad, module_item_id, *charge_volume) {
+                    ValCache::Pass(pass) => cache.pass(pass),
+                    ValCache::Fail(fail) => {
                         let ret_fail = !kfs.contains(&fail.charge_item_id);
                         cache.fail(fail);
                         if ret_fail {
@@ -36,8 +34,8 @@ impl SolVastFitData {
                     }
                     _ => (),
                 },
-                SolValCache::Pass(_) => (),
-                SolValCache::Fail(fail) => {
+                ValCache::Pass(_) => (),
+                ValCache::Fail(fail) => {
                     if !kfs.contains(&fail.charge_item_id) {
                         return false;
                     }
@@ -49,15 +47,15 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_charge_volume_verbose(
         &mut self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-    ) -> Vec<SolValChargeVolumeFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+    ) -> Vec<ValChargeVolumeFail> {
         let mut fails = Vec::new();
         for (module_item_id, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
-                SolValCache::Todo(charge_volume) => match calculate_item_result(uad, module_item_id, *charge_volume) {
-                    SolValCache::Pass(pass) => cache.pass(pass),
-                    SolValCache::Fail(fail) => {
+                ValCache::Todo(charge_volume) => match calculate_item_result(uad, module_item_id, *charge_volume) {
+                    ValCache::Pass(pass) => cache.pass(pass),
+                    ValCache::Fail(fail) => {
                         if !kfs.contains(&fail.charge_item_id) {
                             fails.push(fail);
                         }
@@ -65,8 +63,8 @@ impl SolVastFitData {
                     }
                     _ => (),
                 },
-                SolValCache::Pass(_) => (),
-                SolValCache::Fail(fail) => {
+                ValCache::Pass(_) => (),
+                ValCache::Fail(fail) => {
                     if !kfs.contains(&fail.charge_item_id) {
                         fails.push(*fail)
                     }
@@ -78,23 +76,23 @@ impl SolVastFitData {
 }
 
 fn calculate_item_result(
-    uad: &SolUad,
-    module_item_id: &SolItemId,
+    uad: &Uad,
+    module_item_id: &ItemId,
     charge_volume: AttrVal,
-) -> SolValCache<AttrVal, SolValChargeVolumeFail> {
+) -> ValCache<AttrVal, ValChargeVolumeFail> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
-    let module_capacity = match module.get_attrs() {
-        Some(attrs) => match attrs.get(&consts::attrs::CAPACITY) {
+    let module_capacity = match module.get_a_attrs() {
+        Some(attrs) => match attrs.get(&ac::attrs::CAPACITY) {
             Some(module_capacity) => *module_capacity,
             None => OF(0.0),
         },
-        None => return SolValCache::Pass(charge_volume),
+        None => return ValCache::Pass(charge_volume),
     };
     match charge_volume <= module_capacity {
-        true => SolValCache::Pass(charge_volume),
-        false => SolValCache::Fail(SolValChargeVolumeFail {
+        true => ValCache::Pass(charge_volume),
+        false => ValCache::Fail(ValChargeVolumeFail {
             parent_item_id: *module_item_id,
-            charge_item_id: module.get_charge_id().unwrap(),
+            charge_item_id: module.get_charge_item_id().unwrap(),
             charge_volume,
             max_volume: module_capacity,
         }),

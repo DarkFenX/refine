@@ -7,8 +7,8 @@ pub(crate) struct HSwEffectInfoPartial {
     pub(crate) type_id: rc::EItemId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolSwEffectInfo> for HSwEffectInfoPartial {
-    fn from(core_sw_effect_info: &rc::SolSwEffectInfo) -> Self {
+impl From<&rc::SwEffectInfo> for HSwEffectInfoPartial {
+    fn from(core_sw_effect_info: &rc::SwEffectInfo) -> Self {
         Self {
             id: core_sw_effect_info.id,
             kind: "sw_effect",

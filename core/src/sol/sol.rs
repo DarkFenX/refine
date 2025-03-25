@@ -1,5 +1,5 @@
 use crate::{
-    sol::{proj_tracker::SolProjTracker, svc::SolSvc, uad::SolUad},
+    sol::{proj_tracker::ProjTracker, svc::Svc, uad::Uad},
     src::Src,
 };
 
@@ -7,17 +7,17 @@ use crate::{
 // data and exposes interface to manipulate, process and fetch it.
 #[derive(Clone)]
 pub struct SolarSystem {
-    pub(in crate::sol) uad: SolUad,
-    pub(in crate::sol) svc: SolSvc,
-    pub(in crate::sol) proj_tracker: SolProjTracker,
+    pub(in crate::sol) uad: Uad,
+    pub(in crate::sol) svc: Svc,
+    pub(in crate::sol) proj_tracker: ProjTracker,
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
-        let svcs = SolSvc::new(&src);
+        let svcs = Svc::new(&src);
         Self {
-            uad: SolUad::new(src),
+            uad: Uad::new(src),
             svc: svcs,
-            proj_tracker: SolProjTracker::new(),
+            proj_tracker: ProjTracker::new(),
         }
     }
 }

@@ -1,4 +1,4 @@
-use crate::defs::SkillLevel;
+use crate::sol::SkillLevel;
 
 #[derive(Debug)]
 pub struct SkillLevelError {

@@ -1,70 +1,72 @@
 use crate::{
     ad,
-    defs::{AttrVal, Count, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    sol::uad::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolMinionState, SolProjs},
+    sol::{
+        AdjustableCount, Count, FitId, ItemId,
+        uad::item::{Autocharges, EffectModes, ItemBase, MinionState, Projs},
+    },
     src::Src,
-    util::{AdjustableCount, Named, StMap},
+    util::{Named, StMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolFighter {
-    base: SolItemBase,
-    fit_id: SolFitId,
+pub(in crate::sol) struct Fighter {
+    base: ItemBase,
+    fit_id: FitId,
     count_override: Option<Count>,
-    autocharges: SolAutocharges,
-    projs: SolProjs,
+    autocharges: Autocharges,
+    projs: Projs,
 }
-impl SolFighter {
+impl Fighter {
     pub(in crate::sol) fn new(
         src: &Src,
-        id: SolItemId,
-        type_id: EItemId,
-        fit_id: SolFitId,
-        state: SolMinionState,
+        item_id: ItemId,
+        a_item_id: ad::AItemId,
+        fit_id: FitId,
+        state: MinionState,
     ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, type_id, state.into()),
+            base: ItemBase::new(src, item_id, a_item_id, state.into()),
             fit_id,
             count_override: None,
-            autocharges: SolAutocharges::new(),
-            projs: SolProjs::new(),
+            autocharges: Autocharges::new(),
+            projs: Projs::new(),
         }
     }
     // Item base methods
-    pub(in crate::sol) fn get_id(&self) -> SolItemId {
-        self.base.get_id()
+    pub(in crate::sol) fn get_item_id(&self) -> ItemId {
+        self.base.get_item_id()
     }
-    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.get_type_id()
+    pub(in crate::sol) fn get_a_item_id(&self) -> ad::AItemId {
+        self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
-        self.base.get_group_id()
+    pub(in crate::sol) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base.get_a_group_id()
     }
-    pub(in crate::sol) fn get_category_id(&self) -> Option<EItemGrpId> {
-        self.base.get_category_id()
+    pub(in crate::sol) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
+        self.base.get_a_category_id()
     }
-    pub(in crate::sol) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
-        self.base.get_attrs()
+    pub(in crate::sol) fn get_a_attrs(&self) -> Option<&StMap<ad::AAttrId, ad::AAttrVal>> {
+        self.base.get_a_attrs()
     }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
-        self.base.get_effect_datas()
+    pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
+        self.base.get_a_effect_datas()
     }
-    pub(in crate::sol) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
-        self.base.get_defeff_id()
+    pub(in crate::sol) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
+        self.base.get_a_defeff_id()
     }
-    pub(in crate::sol) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
-        self.base.get_skill_reqs()
+    pub(in crate::sol) fn get_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
+        self.base.get_a_skill_reqs()
     }
     pub(in crate::sol) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
         self.base.get_a_extras()
     }
-    pub(in crate::sol) fn get_state(&self) -> SolItemState {
-        self.base.get_state()
+    pub(in crate::sol) fn get_a_state(&self) -> ad::AState {
+        self.base.get_a_state()
     }
-    pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
+    pub(in crate::sol) fn get_effect_modes(&self) -> &EffectModes {
         self.base.get_effect_modes()
     }
-    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
         self.base.get_effect_modes_mut()
     }
     pub(in crate::sol) fn is_loaded(&self) -> bool {
@@ -75,13 +77,13 @@ impl SolFighter {
         self.autocharges.clear()
     }
     // Item-specific methods
-    pub(in crate::sol) fn get_fighter_state(&self) -> SolMinionState {
-        self.base.get_state().into()
+    pub(in crate::sol) fn get_fighter_state(&self) -> MinionState {
+        self.base.get_a_state().into()
     }
-    pub(in crate::sol) fn set_fighter_state(&mut self, state: SolMinionState) {
-        self.base.set_state(state.into())
+    pub(in crate::sol) fn set_fighter_state(&mut self, state: MinionState) {
+        self.base.set_a_state(state.into())
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
         self.fit_id
     }
     pub(in crate::sol) fn get_count(&self) -> Option<AdjustableCount> {
@@ -102,32 +104,32 @@ impl SolFighter {
     pub(in crate::sol) fn set_count_override(&mut self, count_override: Option<Count>) {
         self.count_override = count_override
     }
-    pub(in crate::sol) fn get_autocharges(&self) -> &SolAutocharges {
+    pub(in crate::sol) fn get_autocharges(&self) -> &Autocharges {
         &self.autocharges
     }
-    pub(in crate::sol) fn get_autocharges_mut(&mut self) -> &mut SolAutocharges {
+    pub(in crate::sol) fn get_autocharges_mut(&mut self) -> &mut Autocharges {
         &mut self.autocharges
     }
-    pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
+    pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs
     }
-    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut SolProjs {
+    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut Projs {
         &mut self.projs
     }
 }
-impl Named for SolFighter {
+impl Named for Fighter {
     fn get_name() -> &'static str {
-        "SolFighter"
+        "Fighter"
     }
 }
-impl std::fmt::Display for SolFighter {
+impl std::fmt::Display for Fighter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}(id={}, type_id={})",
+            "{}(item_id={}, a_item_id={})",
             Self::get_name(),
-            self.get_id(),
-            self.get_type_id(),
+            self.get_item_id(),
+            self.get_a_item_id(),
         )
     }
 }

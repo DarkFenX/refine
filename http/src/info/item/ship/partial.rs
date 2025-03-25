@@ -9,8 +9,8 @@ pub(crate) struct HShipInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolShipInfo> for HShipInfoPartial {
-    fn from(core_ship_info: &rc::SolShipInfo) -> Self {
+impl From<&rc::ShipInfo> for HShipInfoPartial {
+    fn from(core_ship_info: &rc::ShipInfo) -> Self {
         Self {
             id: core_ship_info.id,
             kind: "ship",

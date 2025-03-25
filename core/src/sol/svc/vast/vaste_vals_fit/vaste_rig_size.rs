@@ -1,27 +1,22 @@
 use crate::{
-    consts,
-    defs::{AttrVal, SolItemId},
-    sol::{svc::vast::SolVastFitData, uad::item::SolShip},
+    ac, ad,
+    sol::{AttrVal, ItemId, svc::vast::VastFitData, uad::item::Ship},
     util::StSet,
 };
 
-pub struct SolValRigSizeFail {
+pub struct ValRigSizeFail {
     pub allowed_size: AttrVal,
-    pub items: Vec<SolValRigSizeItemInfo>,
+    pub items: Vec<ValRigSizeItemInfo>,
 }
 
-pub struct SolValRigSizeItemInfo {
-    pub item_id: SolItemId,
+pub struct ValRigSizeItemInfo {
+    pub item_id: ItemId,
     pub rig_size: Option<AttrVal>,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(
-        &self,
-        kfs: &StSet<SolItemId>,
-        ship: Option<&SolShip>,
-    ) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(&self, kfs: &StSet<ItemId>, ship: Option<&Ship>) -> bool {
         let allowed_size = match get_allowed_size(ship) {
             Some(allowed_size) => allowed_size,
             None => return true,
@@ -36,14 +31,14 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_size_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-        ship: Option<&SolShip>,
-    ) -> Option<SolValRigSizeFail> {
+        kfs: &StSet<ItemId>,
+        ship: Option<&Ship>,
+    ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
         let mut mismatches = Vec::new();
         for (item_id, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) && !kfs.contains(item_id) {
-                mismatches.push(SolValRigSizeItemInfo {
+                mismatches.push(ValRigSizeItemInfo {
                     item_id: *item_id,
                     rig_size,
                 })
@@ -51,7 +46,7 @@ impl SolVastFitData {
         }
         match mismatches.is_empty() {
             true => None,
-            false => Some(SolValRigSizeFail {
+            false => Some(ValRigSizeFail {
                 allowed_size,
                 items: mismatches,
             }),
@@ -59,6 +54,6 @@ impl SolVastFitData {
     }
 }
 
-fn get_allowed_size(ship: Option<&SolShip>) -> Option<AttrVal> {
-    ship?.get_attrs()?.get(&consts::attrs::RIG_SIZE).copied()
+fn get_allowed_size(ship: Option<&Ship>) -> Option<ad::AAttrVal> {
+    ship?.get_a_attrs()?.get(&ac::attrs::RIG_SIZE).copied()
 }

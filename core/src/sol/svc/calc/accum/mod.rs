@@ -1,5 +1,5 @@
-pub(in crate::sol::svc::calc) use fast::SolModAccumFast;
-pub(in crate::sol::svc::calc) use info::{SolAttrValInfo, SolModAccumInfo};
+pub(in crate::sol::svc::calc) use fast::ModAccumFast;
+pub(in crate::sol::svc::calc) use info::{AttrValInfo, ModAccumInfo};
 
 mod fast;
 mod info;

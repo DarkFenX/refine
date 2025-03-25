@@ -1,7 +1,7 @@
-use crate::ad;
+use crate::{ad, sol::OpInfo};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum SolOp {
+pub(in crate::sol::svc::calc) enum Op {
     PreAssign,
     PreMul,
     PreDiv,
@@ -14,7 +14,7 @@ pub(in crate::sol::svc::calc) enum SolOp {
     PostAssign,
     ExtraMul,
 }
-impl From<&ad::AOp> for SolOp {
+impl From<&ad::AOp> for Op {
     fn from(a_mod_op: &ad::AOp) -> Self {
         match a_mod_op {
             ad::AOp::PreAssign => Self::PreAssign,
@@ -27,6 +27,25 @@ impl From<&ad::AOp> for SolOp {
             ad::AOp::PostDiv => Self::PostDiv,
             ad::AOp::PostPerc => Self::PostPerc,
             ad::AOp::PostAssign => Self::PostAssign,
+        }
+    }
+}
+impl From<Op> for OpInfo {
+    fn from(mod_op: Op) -> Self {
+        match mod_op {
+            Op::PreAssign => Self::PreAssign,
+            Op::PreMul => Self::PreMul,
+            Op::PreDiv => Self::PreDiv,
+            Op::Add => Self::Add,
+            Op::Sub => Self::Sub,
+            Op::PostMul => Self::PostMul,
+            // Since info already exposes if modification is penalized or not, we don't need to have
+            // this operator to be part of the info
+            Op::PostMulImmune => Self::PostMul,
+            Op::PostDiv => Self::PostDiv,
+            Op::PostPerc => Self::PostPerc,
+            Op::PostAssign => Self::PostAssign,
+            Op::ExtraMul => Self::ExtraMul,
         }
     }
 }

@@ -1,19 +1,18 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolarSystem, uad::item::SolModuleState},
+    sol::{ItemId, SolarSystem, uad::item::ModuleState},
 };
 
 impl SolarSystem {
-    pub fn set_module_state(&mut self, item_id: &SolItemId, state: SolModuleState) -> Result<(), SetModuleStateError> {
+    pub fn set_module_state(&mut self, item_id: &ItemId, state: ModuleState) -> Result<(), SetModuleStateError> {
         // Update user data for module
         let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
-        let charge_id = module.get_charge_id();
-        let old_state = module.get_state();
+        let charge_id = module.get_charge_item_id();
+        let old_a_state = module.get_a_state();
         module.set_module_state(state);
         // Update services for module
-        let new_state = module.get_state();
-        self.change_item_id_state_in_svc(item_id, old_state, new_state);
+        let new_a_state = module.get_a_state();
+        self.change_item_id_state_in_svc(item_id, old_a_state, new_a_state);
         if let Some(charge_id) = charge_id {
             // Update user data for charge
             let charge = self
@@ -23,11 +22,11 @@ impl SolarSystem {
                 .unwrap()
                 .get_charge_mut()
                 .unwrap();
-            let old_state = charge.get_state();
-            charge.set_state(state.into());
+            let old_a_state = charge.get_a_state();
+            charge.set_a_state(state.into());
             // Update services for charge
-            let new_state = charge.get_state();
-            self.change_item_id_state_in_svc(&charge_id, old_state, new_state);
+            let new_a_state = charge.get_a_state();
+            self.change_item_id_state_in_svc(&charge_id, old_a_state, new_a_state);
         }
         Ok(())
     }

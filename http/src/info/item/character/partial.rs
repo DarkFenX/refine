@@ -9,8 +9,8 @@ pub(crate) struct HCharacterInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolCharacterInfo> for HCharacterInfoPartial {
-    fn from(core_character_info: &rc::SolCharacterInfo) -> Self {
+impl From<&rc::CharacterInfo> for HCharacterInfoPartial {
+    fn from(core_character_info: &rc::CharacterInfo) -> Self {
         Self {
             id: core_character_info.id,
             kind: "character",

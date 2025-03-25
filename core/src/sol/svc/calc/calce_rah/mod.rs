@@ -1,4 +1,4 @@
-pub(in crate::sol::svc::calc) use data::SolRahSim;
+pub(in crate::sol::svc::calc) use data::RahSim;
 
 mod calce_maintain;
 mod calce_sim;

@@ -1,11 +1,11 @@
-use crate::sol::{SolarSystem, info::SolProjEffectInfo};
+use crate::sol::{SolarSystem, info::ProjEffectInfo};
 
 impl SolarSystem {
-    pub fn get_proj_effects(&self) -> Vec<SolProjEffectInfo> {
+    pub fn get_proj_effects(&self) -> Vec<ProjEffectInfo> {
         self.uad
             .proj_effects
             .iter()
-            .map(|v| SolProjEffectInfo::from(self.uad.items.get_item(v).unwrap().get_proj_effect().unwrap()))
+            .map(|v| ProjEffectInfo::from(self.uad.items.get_item(v).unwrap().get_proj_effect().unwrap()))
             .collect()
     }
 }

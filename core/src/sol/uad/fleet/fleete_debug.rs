@@ -1,18 +1,18 @@
 use crate::sol::{
-    debug::{SolDebugError, SolDebugResult},
-    uad::{SolUad, fleet::SolFleet},
+    debug::{DebugError, DebugResult},
+    uad::{Uad, fleet::Fleet},
 };
 
-impl SolFleet {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
+impl Fleet {
+    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
         // Every fit referenced by the fleet should exist, and refer back to the fleet
         for fit_id in self.iter_fits() {
             let fit = match uad.fits.get_fit(fit_id) {
                 Ok(fit) => fit,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if fit.fleet != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
         }
         Ok(())

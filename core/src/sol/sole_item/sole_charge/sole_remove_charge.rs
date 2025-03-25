@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_charge(&mut self, item_id: &SolItemId) -> Result<(), RemoveChargeError> {
+    pub fn remove_charge(&mut self, item_id: &ItemId) -> Result<(), RemoveChargeError> {
         let item = self.uad.items.get_item(item_id)?;
         let charge = item.get_charge()?;
         // Remove outgoing projections
@@ -20,7 +19,7 @@ impl SolarSystem {
         // Update services
         self.svc.remove_item(&self.uad, item);
         // Update user data
-        let module_item_id = charge.get_cont_id();
+        let module_item_id = charge.get_cont_item_id();
         let module = self
             .uad
             .items
@@ -28,7 +27,7 @@ impl SolarSystem {
             .unwrap()
             .get_module_mut()
             .unwrap();
-        module.set_charge_id(None);
+        module.set_charge_item_id(None);
         self.uad.items.remove_item(item_id);
         Ok(())
     }

@@ -46,7 +46,7 @@ impl HChangeDroneCmd {
                     HMutationOnChange::AddShort(mutator_id) => {
                         // Remove old mutation if we had any, ignore any errors on the way
                         let _ = core_sol.remove_drone_mutation(item_id);
-                        let mutation = rc::SolItemAddMutation::new(*mutator_id);
+                        let mutation = rc::ItemAddMutation::new(*mutator_id);
                         if let Err(error) = core_sol.add_drone_mutation(item_id, mutation) {
                             match error {
                                 rc::err::AddDroneMutationError::ItemNotFound(e) => {
@@ -81,7 +81,7 @@ impl HChangeDroneCmd {
                     HMutationOnChange::ChangeAttrs(attr_mutations) => {
                         let attr_mutations = attr_mutations
                             .iter()
-                            .map(|(k, v)| rc::SolItemChangeAttrMutation::new(*k, v.as_ref().map(|v| v.into())))
+                            .map(|(k, v)| rc::ItemChangeAttrMutation::new(*k, v.as_ref().map(|v| v.into())))
                             .collect();
                         if let Err(error) = core_sol.change_drone_mutation(item_id, attr_mutations) {
                             return Err(match error {

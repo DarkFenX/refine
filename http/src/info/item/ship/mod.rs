@@ -18,7 +18,7 @@ pub(crate) enum HShipInfo {
 impl HShipInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_ship_info: &rc::SolShipInfo,
+        core_ship_info: &rc::ShipInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

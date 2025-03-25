@@ -1,31 +1,28 @@
-use crate::{
-    defs::{AttrVal, SolItemId},
-    sol::{SolDmgKinds, svc::calc::SolAttrVal},
-};
+use crate::sol::{AttrVal, DmgKinds, ItemId, svc::calc::CalcAttrVal};
 
 use super::shared::rah_round;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct SolRahSimHistoryEntry {
-    pub(super) item_id: SolItemId,
-    pub(super) resonances: SolDmgKinds<AttrVal>,
+pub(super) struct RahSimHistoryEntry {
+    pub(super) item_id: ItemId,
+    pub(super) resonances: DmgKinds<AttrVal>,
     pub(super) cycling_time_rounded: AttrVal,
 }
-impl SolRahSimHistoryEntry {
+impl RahSimHistoryEntry {
     pub(super) fn new(
-        item_id: SolItemId,
+        item_id: ItemId,
         cycling_time: AttrVal,
-        resonances: &SolDmgKinds<SolAttrVal>,
+        resonances: &DmgKinds<CalcAttrVal>,
         round_resos: bool,
     ) -> Self {
         let resonances = match round_resos {
-            true => SolDmgKinds::new(
+            true => DmgKinds::new(
                 rah_round(resonances.em.dogma),
                 rah_round(resonances.thermal.dogma),
                 rah_round(resonances.kinetic.dogma),
                 rah_round(resonances.explosive.dogma),
             ),
-            false => SolDmgKinds::new(
+            false => DmgKinds::new(
                 resonances.em.dogma,
                 resonances.thermal.dogma,
                 resonances.kinetic.dogma,

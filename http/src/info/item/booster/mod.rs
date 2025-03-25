@@ -19,7 +19,7 @@ pub(crate) enum HBoosterInfo {
 impl HBoosterInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_booster_info: &rc::SolBoosterInfo,
+        core_booster_info: &rc::BoosterInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

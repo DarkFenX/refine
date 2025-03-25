@@ -1,4 +1,4 @@
-pub(in crate::sol::svc::calc) use main::SolDependencyRegister;
+pub(in crate::sol::svc::calc) use main::DependencyRegister;
 
 mod debug;
 mod main;

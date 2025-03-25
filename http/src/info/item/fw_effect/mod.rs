@@ -18,7 +18,7 @@ pub(crate) enum HFwEffectInfo {
 impl HFwEffectInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_fw_effect_info: &rc::SolFwEffectInfo,
+        core_fw_effect_info: &rc::FwEffectInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

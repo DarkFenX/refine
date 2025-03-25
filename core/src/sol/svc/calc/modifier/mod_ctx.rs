@@ -1,30 +1,30 @@
-use crate::{
-    defs::{SolFitId, SolItemId},
-    sol::svc::calc::{SolContext, SolRawModifier},
+use crate::sol::{
+    FitId, ItemId,
+    svc::calc::{Context, RawModifier},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) struct SolCtxModifier {
-    pub(in crate::sol::svc::calc) raw: SolRawModifier,
-    pub(in crate::sol::svc::calc) ctx: SolContext,
+pub(in crate::sol::svc::calc) struct CtxModifier {
+    pub(in crate::sol::svc::calc) raw: RawModifier,
+    pub(in crate::sol::svc::calc) ctx: Context,
 }
-impl SolCtxModifier {
-    pub(in crate::sol::svc::calc) fn from_raw(raw: SolRawModifier) -> Self {
+impl CtxModifier {
+    pub(in crate::sol::svc::calc) fn from_raw(raw: RawModifier) -> Self {
         Self {
             raw,
-            ctx: SolContext::None,
+            ctx: Context::None,
         }
     }
-    pub(in crate::sol::svc::calc) fn from_raw_with_item(raw: SolRawModifier, ctx_item_id: SolItemId) -> Self {
+    pub(in crate::sol::svc::calc) fn from_raw_with_item(raw: RawModifier, ctx_item_id: ItemId) -> Self {
         Self {
             raw,
-            ctx: SolContext::Item(ctx_item_id),
+            ctx: Context::Item(ctx_item_id),
         }
     }
-    pub(in crate::sol::svc::calc) fn from_raw_with_fit(raw: SolRawModifier, ctx_fit_id: SolFitId) -> Self {
+    pub(in crate::sol::svc::calc) fn from_raw_with_fit(raw: RawModifier, ctx_fit_id: FitId) -> Self {
         Self {
             raw,
-            ctx: SolContext::Fit(ctx_fit_id),
+            ctx: Context::Fit(ctx_fit_id),
         }
     }
 }

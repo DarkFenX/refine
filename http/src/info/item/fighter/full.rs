@@ -12,7 +12,7 @@ pub(crate) struct HFighterInfoFull {
 impl HFighterInfoFull {
     pub(super) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_fighter_info: &rc::SolFighterInfo,
+        core_fighter_info: &rc::FighterInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         let partial_info = HFighterInfoPartial::mk_info(core_sol, core_fighter_info, item_mode);

@@ -1,11 +1,11 @@
-use crate::sol::debug::{SolDebugError, SolDebugResult};
+use crate::sol::debug::{DebugError, DebugResult};
 
-use super::SolItemVec;
+use super::ItemVec;
 
-impl SolItemVec {
-    pub(in crate::sol) fn debug_consistency_check(&self) -> SolDebugResult {
+impl ItemVec {
+    pub(in crate::sol) fn debug_consistency_check(&self) -> DebugResult {
         if self.data.iter().filter(|v| v.is_some()).count() != self.item_count {
-            return Err(SolDebugError::new());
+            return Err(DebugError::new());
         }
         Ok(())
     }

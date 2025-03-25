@@ -12,7 +12,7 @@ pub(crate) struct HAddRigCmd {
     fit_cmd: change_fit::HAddRigCmd,
 }
 impl HAddRigCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolRigInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::RigInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

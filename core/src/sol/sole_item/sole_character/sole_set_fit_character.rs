@@ -1,20 +1,19 @@
 use crate::{
-    defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        SolarSystem,
-        info::SolCharacterInfo,
-        uad::item::{SolCharacter, SolItem},
+        FitId, ItemTypeId, SolarSystem,
+        info::CharacterInfo,
+        uad::item::{Character, Item},
     },
 };
 
 impl SolarSystem {
     pub fn set_fit_character(
         &mut self,
-        fit_id: SolFitId,
-        type_id: EItemId,
+        fit_id: FitId,
+        type_id: ItemTypeId,
         state: bool,
-    ) -> Result<SolCharacterInfo, SetFitCharacterError> {
+    ) -> Result<CharacterInfo, SetFitCharacterError> {
         let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old character, if it was set
         if let Some(old_item_id) = fit.character {
@@ -23,9 +22,9 @@ impl SolarSystem {
         }
         // Add new character
         let item_id = self.uad.items.alloc_item_id();
-        let character = SolCharacter::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = SolCharacterInfo::from(&character);
-        let item = SolItem::Character(character);
+        let character = Character::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let info = CharacterInfo::from(&character);
+        let item = Item::Character(character);
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.character = Some(item_id);
         self.uad.items.add_item(item);

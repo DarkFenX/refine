@@ -1,14 +1,13 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn remove_drone_proj(
         &mut self,
-        item_id: &SolItemId,
-        projectee_item_id: &SolItemId,
+        item_id: &ItemId,
+        projectee_item_id: &ItemId,
     ) -> Result<(), RemoveDroneProjError> {
         // Check if projection is defined
         let drone_item = self.uad.items.get_item(item_id)?;

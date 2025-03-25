@@ -10,7 +10,7 @@ pub(crate) struct HStanceInfoFull {
     pub(crate) extended_info: HItemExtendedInfo,
 }
 impl HStanceInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_stance_info: &rc::SolStanceInfo) -> Self {
+    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_stance_info: &rc::StanceInfo) -> Self {
         let partial_info = HStanceInfoPartial::from(core_stance_info);
         let extended_info = HItemExtendedInfo::mk_info(core_sol, &partial_info.id);
         Self {

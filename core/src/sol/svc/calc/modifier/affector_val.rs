@@ -1,52 +1,62 @@
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
-    defs::{AttrVal, EAttrId, EEffectId, SolItemId},
+    ad,
     sol::{
-        svc::calc::{SolAffectorInfo, SolCalc},
-        uad::{SolUad, item::SolItem},
+        AttrVal, ItemId,
+        svc::calc::{AffectorInfo, Calc},
+        uad::{Uad, item::Item},
     },
 };
 
 use super::custom::{aar, prop};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) enum SolAffectorValue {
-    AttrId(EAttrId),
-    Hardcoded(AttrVal),
+pub(super) enum AffectorValue {
+    AttrId(ad::AAttrId),
+    Hardcoded(ad::AAttrVal),
     PropulsionModule,
     AncillaryArmorRep,
 }
-impl SolAffectorValue {
+impl AffectorValue {
     // Simple and fast way to get affector attribute
-    pub(super) fn get_affector_attr_id(&self) -> Option<EAttrId> {
+    pub(super) fn get_affector_a_attr_id(&self) -> Option<ad::AAttrId> {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
             Self::Hardcoded(_) => None,
             Self::PropulsionModule => None,
-            Self::AncillaryArmorRep => Some(aar::AAR_AFFECTOR_ATTR_ID),
+            Self::AncillaryArmorRep => Some(aar::AAR_MULTIPLIER),
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, uad: &SolUad, item_id: &SolItemId) -> SmallVec<SolAffectorInfo, 1> {
+    pub(super) fn get_affector_info(&self, uad: &Uad, item_id: &ItemId) -> SmallVec<AffectorInfo, 1> {
         match self {
-            Self::AttrId(attr_id) => smallvec![SolAffectorInfo::new(*item_id, Some(*attr_id))],
-            Self::Hardcoded(_) => smallvec![SolAffectorInfo::new(*item_id, None)],
+            Self::AttrId(attr_id) => smallvec![AffectorInfo {
+                item_id: *item_id,
+                attr_id: Some(*attr_id)
+            }],
+            Self::Hardcoded(_) => smallvec![AffectorInfo {
+                item_id: *item_id,
+                attr_id: None
+            }],
             Self::PropulsionModule => prop::get_affector_info(uad, item_id),
-            Self::AncillaryArmorRep => smallvec![SolAffectorInfo::new(*item_id, Some(aar::AAR_AFFECTOR_ATTR_ID))],
+            Self::AncillaryArmorRep => smallvec![AffectorInfo {
+                item_id: *item_id,
+                attr_id: Some(aar::AAR_MULTIPLIER)
+            }],
         }
     }
     pub(super) fn get_mod_val(
         &self,
-        calc: &mut SolCalc,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        effect_id: &EEffectId,
+        calc: &mut Calc,
+        uad: &Uad,
+        item_id: &ItemId,
+        a_effect_id: &ad::AEffectId,
     ) -> Option<AttrVal> {
         match self {
-            Self::AttrId(attr_id) => Some(calc.get_item_attr_val_full(uad, item_id, attr_id).ok()?.dogma),
-            Self::Hardcoded(val) => Some(*val),
-            Self::PropulsionModule => prop::get_mod_val(calc, uad, item_id, effect_id),
+            Self::AttrId(a_attr_id) => Some(calc.get_item_attr_val_full(uad, item_id, a_attr_id).ok()?.dogma),
+            Self::Hardcoded(a_val) => Some(*a_val),
+            Self::PropulsionModule => prop::get_mod_val(calc, uad, item_id, a_effect_id),
             Self::AncillaryArmorRep => aar::get_mod_val(calc, uad, item_id),
         }
     }
@@ -67,7 +77,7 @@ impl SolAffectorValue {
             Self::AncillaryArmorRep => true,
         }
     }
-    pub(super) fn revise_on_item_add(&self, affector_item: &SolItem, changed_item: &SolItem) -> bool {
+    pub(super) fn revise_on_item_add(&self, affector_item: &Item, changed_item: &Item) -> bool {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,
@@ -75,7 +85,7 @@ impl SolAffectorValue {
             Self::AncillaryArmorRep => aar::revise_on_item_add_removal(affector_item, changed_item),
         }
     }
-    pub(super) fn revise_on_item_remove(&self, affector_item: &SolItem, changed_item: &SolItem) -> bool {
+    pub(super) fn revise_on_item_remove(&self, affector_item: &Item, changed_item: &Item) -> bool {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,

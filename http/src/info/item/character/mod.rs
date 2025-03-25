@@ -18,7 +18,7 @@ pub(crate) enum HCharacterInfo {
 impl HCharacterInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_character_info: &rc::SolCharacterInfo,
+        core_character_info: &rc::CharacterInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

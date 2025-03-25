@@ -10,8 +10,8 @@ impl HAffectorInfo {
         Self { item_id, attr_id }
     }
 }
-impl From<&rc::SolAffectorInfo> for HAffectorInfo {
-    fn from(core_affector_info: &rc::SolAffectorInfo) -> Self {
+impl From<&rc::AffectorInfo> for HAffectorInfo {
+    fn from(core_affector_info: &rc::AffectorInfo) -> Self {
         Self::new(core_affector_info.item_id, core_affector_info.attr_id)
     }
 }

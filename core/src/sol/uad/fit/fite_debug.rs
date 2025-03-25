@@ -1,30 +1,23 @@
-use crate::{
-    defs::{SolFitId, SolItemId},
-    sol::{
-        SolModRack,
-        debug::{SolDebugError, SolDebugResult},
-        uad::{
-            SolUad,
-            fit::SolFit,
-            item::{SolFighter, SolItem, SolModule},
-        },
+use crate::sol::{
+    FitId, ItemId, ModRack,
+    debug::{DebugError, DebugResult},
+    uad::{
+        Uad,
+        fit::Fit,
+        item::{Fighter, Item, Module},
     },
 };
 
-impl SolFit {
-    pub(in crate::sol) fn debug_consistency_check(
-        &self,
-        uad: &SolUad,
-        seen_items: &mut Vec<SolItemId>,
-    ) -> SolDebugResult {
+impl Fit {
+    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad, seen_items: &mut Vec<ItemId>) -> DebugResult {
         // If fleet is defined, it should exist and refer fit back
         if let Some(fleet_id) = self.fleet {
             let fleet = match uad.fleets.get_fleet(&fleet_id) {
                 Ok(fleet) => fleet,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if !fleet.contains_fit(&self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
         }
         // Character
@@ -32,13 +25,13 @@ impl SolFit {
             seen_items.push(item_id);
             let item = match uad.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Character(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Character(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -47,18 +40,18 @@ impl SolFit {
             seen_items.push(fit_skill.item_id);
             let item = match uad.items.get_item(&fit_skill.item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
             match item {
-                SolItem::Skill(skill) => {
-                    if skill.get_level() != fit_skill.level {
-                        return Err(SolDebugError::new());
+                Item::Skill(skill) => {
+                    if skill.get_a_level() != fit_skill.level {
+                        return Err(DebugError::new());
                     }
                 }
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             }
             item.debug_consistency_check(uad)?;
         }
@@ -67,13 +60,13 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Implant(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Implant(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -82,13 +75,13 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Booster(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Booster(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -97,13 +90,13 @@ impl SolFit {
             seen_items.push(item_id);
             let item = match uad.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Ship(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Ship(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -112,13 +105,13 @@ impl SolFit {
             seen_items.push(item_id);
             let item = match uad.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Stance(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Stance(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -127,13 +120,13 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Subsystem(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Subsystem(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -143,17 +136,17 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
             let module = match item {
-                SolItem::Module(module) => module,
-                _ => return Err(SolDebugError::new()),
+                Item::Module(module) => module,
+                _ => return Err(DebugError::new()),
             };
-            if !matches!(module.get_rack(), SolModRack::High) {
-                return Err(SolDebugError::new());
+            if !matches!(module.get_rack(), ModRack::High) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
             check_module_charge(uad, &self.id, module, seen_items)?;
@@ -164,17 +157,17 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
             let module = match item {
-                SolItem::Module(module) => module,
-                _ => return Err(SolDebugError::new()),
+                Item::Module(module) => module,
+                _ => return Err(DebugError::new()),
             };
-            if !matches!(module.get_rack(), SolModRack::Mid) {
-                return Err(SolDebugError::new());
+            if !matches!(module.get_rack(), ModRack::Mid) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
             check_module_charge(uad, &self.id, module, seen_items)?;
@@ -185,17 +178,17 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
             let module = match item {
-                SolItem::Module(module) => module,
-                _ => return Err(SolDebugError::new()),
+                Item::Module(module) => module,
+                _ => return Err(DebugError::new()),
             };
-            if !matches!(module.get_rack(), SolModRack::Low) {
-                return Err(SolDebugError::new());
+            if !matches!(module.get_rack(), ModRack::Low) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
             check_module_charge(uad, &self.id, module, seen_items)?;
@@ -205,13 +198,13 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Rig(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Rig(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -220,13 +213,13 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Service(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Service(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -235,13 +228,13 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Drone(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::Drone(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -250,14 +243,14 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
             let fighter = match item {
-                SolItem::Fighter(fighter) => fighter,
-                _ => return Err(SolDebugError::new()),
+                Item::Fighter(fighter) => fighter,
+                _ => return Err(DebugError::new()),
             };
             item.debug_consistency_check(uad)?;
             check_fighter_autocharges(uad, &self.id, fighter, seen_items)?;
@@ -267,13 +260,13 @@ impl SolFit {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return Err(SolDebugError::new());
+                return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::FwEffect(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::FwEffect(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(uad)?;
         }
@@ -281,27 +274,22 @@ impl SolFit {
     }
 }
 
-fn check_module_charge(
-    uad: &SolUad,
-    fit_id: &SolFitId,
-    module: &SolModule,
-    seen_items: &mut Vec<SolItemId>,
-) -> SolDebugResult {
-    if let Some(item_id) = module.get_charge_id() {
+fn check_module_charge(uad: &Uad, fit_id: &FitId, module: &Module, seen_items: &mut Vec<ItemId>) -> DebugResult {
+    if let Some(item_id) = module.get_charge_item_id() {
         seen_items.push(item_id);
         let item = match uad.items.get_item(&item_id) {
             Ok(item) => item,
-            _ => return Err(SolDebugError::new()),
+            _ => return Err(DebugError::new()),
         };
         if item.get_fit_id() != Some(*fit_id) {
-            return Err(SolDebugError::new());
+            return Err(DebugError::new());
         }
         let charge = match item {
-            SolItem::Charge(charge) => charge,
-            _ => return Err(SolDebugError::new()),
+            Item::Charge(charge) => charge,
+            _ => return Err(DebugError::new()),
         };
-        if charge.get_cont_id() != module.get_id() {
-            return Err(SolDebugError::new());
+        if charge.get_cont_item_id() != module.get_item_id() {
+            return Err(DebugError::new());
         }
         item.debug_consistency_check(uad)?;
     }
@@ -309,26 +297,26 @@ fn check_module_charge(
 }
 
 fn check_fighter_autocharges(
-    uad: &SolUad,
-    fit_id: &SolFitId,
-    fighter: &SolFighter,
-    seen_items: &mut Vec<SolItemId>,
-) -> SolDebugResult {
+    uad: &Uad,
+    fit_id: &FitId,
+    fighter: &Fighter,
+    seen_items: &mut Vec<ItemId>,
+) -> DebugResult {
     for item_id in fighter.get_autocharges().values() {
         seen_items.push(*item_id);
         let item = match uad.items.get_item(item_id) {
             Ok(item) => item,
-            _ => return Err(SolDebugError::new()),
+            _ => return Err(DebugError::new()),
         };
         if item.get_fit_id() != Some(*fit_id) {
-            return Err(SolDebugError::new());
+            return Err(DebugError::new());
         }
         let autocharge = match item {
-            SolItem::Autocharge(autocharge) => autocharge,
-            _ => return Err(SolDebugError::new()),
+            Item::Autocharge(autocharge) => autocharge,
+            _ => return Err(DebugError::new()),
         };
-        if autocharge.get_cont_id() != fighter.get_id() {
-            return Err(SolDebugError::new());
+        if autocharge.get_cont_item_id() != fighter.get_item_id() {
+            return Err(DebugError::new());
         }
         item.debug_consistency_check(uad)?;
     }

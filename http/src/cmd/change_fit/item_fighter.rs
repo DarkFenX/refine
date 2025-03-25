@@ -15,7 +15,7 @@ impl HAddFighterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> Result<rc::SolFighterInfo, HExecError> {
+    ) -> Result<rc::FighterInfo, HExecError> {
         let core_fighter = match core_sol.add_fighter(*fit_id, self.type_id, (&self.state).into()) {
             Ok(core_fighter) => core_fighter,
             Err(error) => {

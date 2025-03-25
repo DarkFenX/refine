@@ -1,31 +1,18 @@
-use crate::{
-    defs::{EItemId, SolItemId},
-    sol::uad::item::SolProjEffect,
-};
+use crate::sol::{ItemId, ItemTypeId, uad::item::ProjEffect};
 
-pub struct SolProjEffectInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
+pub struct ProjEffectInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
     pub enabled: bool,
-    pub projs: Vec<SolItemId>,
+    pub projs: Vec<ItemId>,
 }
-impl SolProjEffectInfo {
-    fn new(id: SolItemId, type_id: EItemId, enabled: bool, projs: Vec<SolItemId>) -> Self {
-        Self {
-            id,
-            type_id,
-            enabled,
-            projs,
+impl From<&ProjEffect> for ProjEffectInfo {
+    fn from(sol_proj_effect: &ProjEffect) -> Self {
+        ProjEffectInfo {
+            id: sol_proj_effect.get_item_id(),
+            type_id: sol_proj_effect.get_a_item_id(),
+            enabled: sol_proj_effect.get_proj_effect_state(),
+            projs: sol_proj_effect.get_projs().iter_items().copied().collect(),
         }
-    }
-}
-impl From<&SolProjEffect> for SolProjEffectInfo {
-    fn from(sol_proj_effect: &SolProjEffect) -> Self {
-        SolProjEffectInfo::new(
-            sol_proj_effect.get_id(),
-            sol_proj_effect.get_type_id(),
-            sol_proj_effect.get_proj_effect_state(),
-            sol_proj_effect.get_projs().iter_items().copied().collect(),
-        )
     }
 }

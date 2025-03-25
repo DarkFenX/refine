@@ -1,13 +1,12 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_fighter(&mut self, item_id: &SolItemId) -> Result<(), RemoveFighterError> {
+    pub fn remove_fighter(&mut self, item_id: &ItemId) -> Result<(), RemoveFighterError> {
         // Check if everything is correct and collect autocharge IDs to be used later
         let item = self.uad.items.get_item(item_id)?;
         let fighter = item.get_fighter()?;

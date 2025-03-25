@@ -1,41 +1,38 @@
-use crate::{
-    defs::{EEffectId, SolItemId},
-    util::StMapSetL1,
-};
+use crate::{ad, sol::ItemId, util::StMapSetL1};
 
 #[derive(Clone)]
-pub(in crate::sol::svc) struct SolRunningEffects {
-    pub(super) data: StMapSetL1<SolItemId, EEffectId>,
+pub(in crate::sol::svc) struct RunningEffects {
+    pub(super) data: StMapSetL1<ItemId, ad::AEffectId>,
 }
-impl SolRunningEffects {
+impl RunningEffects {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
             data: StMapSetL1::new(),
         }
     }
     // Query methods
-    pub(in crate::sol::svc) fn is_running(&self, item_id: &SolItemId, effect_id: &EEffectId) -> bool {
-        self.data.get(item_id).any(|v| v == effect_id)
+    pub(in crate::sol::svc) fn is_running(&self, item_id: &ItemId, a_effect_id: &ad::AEffectId) -> bool {
+        self.data.contains_entry(item_id, a_effect_id)
     }
     pub(in crate::sol::svc) fn iter_running(
         &self,
-        item_id: &SolItemId,
-    ) -> impl ExactSizeIterator<Item = &EEffectId> + use<'_> {
+        item_id: &ItemId,
+    ) -> impl ExactSizeIterator<Item = &ad::AEffectId> + use<'_> {
         self.data.get(item_id)
     }
     // Modification methods
     pub(in crate::sol::svc) fn effects_started(
         &mut self,
-        item_id: SolItemId,
-        effects: impl ExactSizeIterator<Item = EEffectId>,
+        item_id: ItemId,
+        a_effect_ids: impl ExactSizeIterator<Item = ad::AEffectId>,
     ) {
-        self.data.extend_entries(item_id, effects);
+        self.data.extend_entries(item_id, a_effect_ids);
     }
     pub(in crate::sol::svc) fn effects_stopped<'a>(
         &mut self,
-        item_id: &SolItemId,
-        effects: impl Iterator<Item = &'a EEffectId>,
+        item_id: &ItemId,
+        a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
     ) {
-        self.data.drain_entries(item_id, effects);
+        self.data.drain_entries(item_id, a_effect_ids);
     }
 }

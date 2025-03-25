@@ -12,7 +12,7 @@ pub(crate) struct HAddSubsystemCmd {
     fit_cmd: change_fit::HAddSubsystemCmd,
 }
 impl HAddSubsystemCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolSubsystemInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SubsystemInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

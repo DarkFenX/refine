@@ -1,20 +1,20 @@
 use crate::sol::{
-    svc::calc::{SolAffecteeFilter, SolCtxModifier, SolRawModifier, registers::SolStandardRegister},
-    uad::item::SolFwEffect,
+    svc::calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
+    uad::item::FwEffect,
 };
 
 use super::{add_ctx_modifier, remove_ctx_modifier};
 
-impl SolStandardRegister {
+impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_fw_system_mod(
         &mut self,
-        fw_effect: &SolFwEffect,
-        raw_modifier: SolRawModifier,
-    ) -> Option<SolCtxModifier> {
+        fw_effect: &FwEffect,
+        raw_modifier: RawModifier,
+    ) -> Option<CtxModifier> {
         let ctx_modifier = match raw_modifier.affectee_filter {
-            SolAffecteeFilter::Direct(loc) => match loc.try_into() {
+            AffecteeFilter::Direct(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     add_ctx_modifier(
                         &mut self.cmods_root,
                         (fw_effect.get_fit_id(), loc_kind),
@@ -25,9 +25,9 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::Loc(loc) => match loc.try_into() {
+            AffecteeFilter::Loc(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     add_ctx_modifier(
                         &mut self.cmods_loc,
                         (fw_effect.get_fit_id(), loc_kind),
@@ -38,12 +38,12 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::LocGrp(loc, grp_id) => match loc.try_into() {
+            AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     add_ctx_modifier(
                         &mut self.cmods_loc_grp,
-                        (fw_effect.get_fit_id(), loc_kind, grp_id),
+                        (fw_effect.get_fit_id(), loc_kind, a_item_grp_id),
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -51,12 +51,12 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::LocSrq(loc, srq_id) => match loc.try_into() {
+            AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     add_ctx_modifier(
                         &mut self.cmods_loc_srq,
-                        (fw_effect.get_fit_id(), loc_kind, srq_id),
+                        (fw_effect.get_fit_id(), loc_kind, srq_a_item_id),
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -64,11 +64,11 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::OwnSrq(srq_id) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+            AffecteeFilter::OwnSrq(srq_a_item_id) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                 add_ctx_modifier(
                     &mut self.cmods_own_srq,
-                    (fw_effect.get_fit_id(), srq_id),
+                    (fw_effect.get_fit_id(), srq_a_item_id),
                     ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
@@ -78,19 +78,19 @@ impl SolStandardRegister {
         // If context modifier was returned = raw was valid
         if ctx_modifier.is_some() {
             self.rmods_nonproj
-                .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier);
+                .add_entry((raw_modifier.affector_item_id, raw_modifier.a_effect_id), raw_modifier);
         }
         ctx_modifier
     }
     pub(in crate::sol::svc::calc) fn unreg_fw_system_mod(
         &mut self,
-        fw_effect: &SolFwEffect,
-        raw_modifier: SolRawModifier,
-    ) -> Option<SolCtxModifier> {
+        fw_effect: &FwEffect,
+        raw_modifier: RawModifier,
+    ) -> Option<CtxModifier> {
         match raw_modifier.affectee_filter {
-            SolAffecteeFilter::Direct(loc) => match loc.try_into() {
+            AffecteeFilter::Direct(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     remove_ctx_modifier(
                         &mut self.cmods_root,
                         &(fw_effect.get_fit_id(), loc_kind),
@@ -101,9 +101,9 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::Loc(loc) => match loc.try_into() {
+            AffecteeFilter::Loc(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     remove_ctx_modifier(
                         &mut self.cmods_loc,
                         &(fw_effect.get_fit_id(), loc_kind),
@@ -114,12 +114,12 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::LocGrp(loc, grp_id) => match loc.try_into() {
+            AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     remove_ctx_modifier(
                         &mut self.cmods_loc_grp,
-                        &(fw_effect.get_fit_id(), loc_kind, grp_id),
+                        &(fw_effect.get_fit_id(), loc_kind, a_item_grp_id),
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -127,12 +127,12 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::LocSrq(loc, srq_id) => match loc.try_into() {
+            AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                     remove_ctx_modifier(
                         &mut self.cmods_loc_srq,
-                        &(fw_effect.get_fit_id(), loc_kind, srq_id),
+                        &(fw_effect.get_fit_id(), loc_kind, srq_a_item_id),
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -140,11 +140,11 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::OwnSrq(srq_id) => {
-                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+            AffecteeFilter::OwnSrq(srq_a_item_id) => {
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
                 remove_ctx_modifier(
                     &mut self.cmods_own_srq,
-                    &(fw_effect.get_fit_id(), srq_id),
+                    &(fw_effect.get_fit_id(), srq_a_item_id),
                     &ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );

@@ -1,13 +1,12 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolarSystem, info::SolAutochargeInfo},
+    sol::{ItemId, SolarSystem, info::AutochargeInfo},
 };
 
 impl SolarSystem {
-    pub fn get_autocharge(&self, item_id: &SolItemId) -> Result<SolAutochargeInfo, GetAutochargeError> {
+    pub fn get_autocharge(&self, item_id: &ItemId) -> Result<AutochargeInfo, GetAutochargeError> {
         let autocharge = self.uad.items.get_item(item_id)?.get_autocharge()?;
-        Ok(SolAutochargeInfo::from(autocharge))
+        Ok(AutochargeInfo::from(autocharge))
     }
 }
 

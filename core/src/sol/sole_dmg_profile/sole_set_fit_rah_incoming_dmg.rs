@@ -1,15 +1,15 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    OF,
-    defs::SolFitId,
     err::basic::{EmDmgNonNegError, ExplDmgNonNegError, FitFoundError, KinDmgNonNegError, ThermDmgNonNegError},
-    sol::{SolDmgProfile, SolarSystem},
+    sol::{DmgProfile, FitId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_fit_rah_incoming_dmg(
         &mut self,
-        fit_id: &SolFitId,
-        dmg_profile: SolDmgProfile,
+        fit_id: &FitId,
+        dmg_profile: DmgProfile,
     ) -> Result<(), SetFitRahIncomingDmgError> {
         // Only check for negative damage values; total value of 0 is acceptable in this case
         if dmg_profile.em < OF(0.0) {

@@ -12,7 +12,7 @@ impl HSideEffectStr {
     pub(in crate::info::item::booster::side_effect) fn from_core_str(
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-        core_se_str: &rc::SolSideEffectStr,
+        core_se_str: &rc::SideEffectStr,
     ) -> Option<Self> {
         let val = match core_sol.get_item_attr(item_id, &core_se_str.attr_id) {
             Ok(val) => val.extra,

@@ -10,7 +10,7 @@ pub(crate) struct HSubsystemInfoFull {
     pub(crate) extended_info: HItemExtendedInfo,
 }
 impl HSubsystemInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_subsystem_info: &rc::SolSubsystemInfo) -> Self {
+    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_subsystem_info: &rc::SubsystemInfo) -> Self {
         let partial_info = HSubsystemInfoPartial::from(core_subsystem_info);
         let extended_info = HItemExtendedInfo::mk_info(core_sol, &partial_info.id);
         Self {

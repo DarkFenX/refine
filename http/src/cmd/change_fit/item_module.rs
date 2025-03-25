@@ -21,7 +21,7 @@ impl HAddModuleCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> Result<rc::SolModuleInfo, HExecError> {
+    ) -> Result<rc::ModuleInfo, HExecError> {
         let core_module = match core_sol.add_module(
             *fit_id,
             (&self.rack).into(),

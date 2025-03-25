@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_character(&mut self, item_id: &SolItemId) -> Result<(), RemoveCharacterError> {
+    pub fn remove_character(&mut self, item_id: &ItemId) -> Result<(), RemoveCharacterError> {
         let item = self.uad.items.get_item(item_id)?;
         let character = item.get_character()?;
         self.svc.remove_item(&self.uad, item);

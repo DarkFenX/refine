@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_autocharge_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetAutochargeStateError> {
+    pub fn set_autocharge_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetAutochargeStateError> {
         let autocharge = self.uad.items.get_item_mut(item_id)?.get_autocharge_mut()?;
-        let old_state = autocharge.get_state();
+        let old_a_state = autocharge.get_a_state();
         autocharge.set_force_disable(!state);
-        let new_state = autocharge.get_state();
-        self.change_item_id_state_in_svc(item_id, old_state, new_state);
+        let new_a_state = autocharge.get_a_state();
+        self.change_item_id_state_in_svc(item_id, old_a_state, new_a_state);
         Ok(())
     }
 }

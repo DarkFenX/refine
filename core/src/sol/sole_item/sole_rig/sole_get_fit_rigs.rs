@@ -1,16 +1,15 @@
 use crate::{
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolarSystem, info::SolRigInfo},
+    sol::{FitId, SolarSystem, info::RigInfo},
 };
 
 impl SolarSystem {
-    pub fn get_fit_rigs(&self, fit_id: &SolFitId) -> Result<Vec<SolRigInfo>, GetFitRigsError> {
+    pub fn get_fit_rigs(&self, fit_id: &FitId) -> Result<Vec<RigInfo>, GetFitRigsError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let rig_infos = fit
             .rigs
             .iter()
-            .map(|v| SolRigInfo::from(self.uad.items.get_item(v).unwrap().get_rig().unwrap()))
+            .map(|v| RigInfo::from(self.uad.items.get_item(v).unwrap().get_rig().unwrap()))
             .collect();
         Ok(rig_infos)
     }

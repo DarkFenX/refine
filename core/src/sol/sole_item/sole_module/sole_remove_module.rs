@@ -1,20 +1,19 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
-use super::{misc::get_fit_rack, pos_modes::SolRmMode};
+use super::{misc::get_fit_rack, pos_modes::RmMode};
 
 impl SolarSystem {
-    pub fn remove_module(&mut self, item_id: &SolItemId, pos_mode: SolRmMode) -> Result<(), RemoveModuleError> {
+    pub fn remove_module(&mut self, item_id: &ItemId, pos_mode: RmMode) -> Result<(), RemoveModuleError> {
         let item = self.uad.items.get_item(item_id)?;
         let module = item.get_module()?;
         let fit_id = module.get_fit_id();
         let rack = module.get_rack();
-        let charge_id = module.get_charge_id();
+        let charge_id = module.get_charge_item_id();
         // Remove outgoing projections for both module and charge
         let module_projs = module.get_projs().iter_items().copied().collect_vec();
         if !module_projs.is_empty() {
@@ -54,8 +53,8 @@ impl SolarSystem {
         // Update user data for module
         let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
         match pos_mode {
-            SolRmMode::Free => fit_rack.free(item_id),
-            SolRmMode::Remove => {
+            RmMode::Free => fit_rack.free(item_id),
+            RmMode::Remove => {
                 if let Some(pos) = fit_rack.remove(item_id) {
                     for (i, rack_module_id) in fit_rack.inner()[pos..].iter().enumerate() {
                         if let Some(rack_module_id) = rack_module_id {

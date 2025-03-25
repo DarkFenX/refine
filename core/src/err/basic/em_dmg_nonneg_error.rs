@@ -1,4 +1,4 @@
-use crate::defs::AttrVal;
+use crate::sol::AttrVal;
 
 #[derive(Debug)]
 pub struct EmDmgNonNegError {

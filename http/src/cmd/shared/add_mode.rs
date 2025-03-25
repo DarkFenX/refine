@@ -6,7 +6,7 @@ pub(in crate::cmd) enum HAddMode {
     Insert(rc::Idx),
     Replace(rc::Idx),
 }
-impl From<&HAddMode> for rc::SolAddMode {
+impl From<&HAddMode> for rc::AddMode {
     fn from(h_add_mode: &HAddMode) -> Self {
         match h_add_mode {
             HAddMode::Append => Self::Append,

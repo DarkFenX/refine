@@ -12,7 +12,7 @@ pub(crate) struct HAddModuleCmd {
     fit_cmd: change_fit::HAddModuleCmd,
 }
 impl HAddModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolModuleInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::ModuleInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

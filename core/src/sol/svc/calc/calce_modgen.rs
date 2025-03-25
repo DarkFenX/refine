@@ -1,69 +1,68 @@
 use crate::{
-    ad, consts,
-    defs::{AttrVal, EAttrId, EBuffId, EEffectId},
+    ac, ad,
     sol::{
-        svc::calc::{SolCalc, SolRawModifier, extend_with_custom_mods},
-        uad::{SolUad, item::SolItem},
+        svc::calc::{Calc, RawModifier, extend_with_custom_mods},
+        uad::{Uad, item::Item},
     },
 };
 
-impl SolCalc {
+impl Calc {
     pub(super) fn generate_mods_for_effect(
         &mut self,
-        modifiers: &mut Vec<SolRawModifier>,
-        uad: &SolUad,
-        item: &SolItem,
-        effect: &ad::AEffect,
+        modifiers: &mut Vec<RawModifier>,
+        uad: &Uad,
+        item: &Item,
+        a_effect: &ad::AEffect,
     ) {
         modifiers.clear();
-        let item_id = item.get_id();
+        let item_id = item.get_item_id();
         // Regular modifiers
-        for a_mod in effect.mods.iter() {
-            match SolRawModifier::from_a_modifier(item, effect, a_mod) {
+        for a_mod in a_effect.mods.iter() {
+            match RawModifier::from_a_modifier(item, a_effect, a_mod) {
                 Some(sol_mod) => modifiers.push(sol_mod),
                 None => continue,
             };
         }
         // Buffs
-        if let Some(buff_info) = effect.buff.as_ref() {
-            match &buff_info.source {
+        if let Some(a_buff_info) = a_effect.buff.as_ref() {
+            match &a_buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
-                    for (buff_type_attr_id, buff_val_attr_id) in consts::extras::BUFF_STDATTRS {
-                        if let Ok(buff_id) = self.get_item_attr_val_full(uad, &item_id, &buff_type_attr_id) {
+                    for (buff_type_a_attr_id, buff_val_a_attr_id) in ac::extras::BUFF_STDATTRS {
+                        if let Ok(buff_id) = self.get_item_attr_val_full(uad, &item_id, &buff_type_a_attr_id) {
                             add_buff_mods(
                                 modifiers,
                                 uad,
                                 item,
-                                effect,
-                                &(buff_id.extra.into_inner() as EBuffId),
-                                &buff_info.scope,
-                                Some(buff_type_attr_id),
-                                buff_val_attr_id,
+                                a_effect,
+                                &(buff_id.extra.round() as ad::ABuffId),
+                                &a_buff_info.scope,
+                                Some(buff_type_a_attr_id),
+                                buff_val_a_attr_id,
                             );
                         }
                     }
                 }
-                ad::AEffectBuffSrc::Customized(buff_custom_srcs) => {
-                    for buff_custom_src in buff_custom_srcs {
-                        match buff_custom_src {
-                            ad::AEffectBuffSrcCustom::AffectorVal(buff_id, buff_val_attr_id) => add_buff_mods(
+                ad::AEffectBuffSrc::Customized(a_buff_custom_srcs) => {
+                    for a_buff_custom_src in a_buff_custom_srcs {
+                        match a_buff_custom_src {
+                            ad::AEffectBuffSrcCustom::AffectorVal(a_buff_id, buff_val_a_attr_id) => add_buff_mods(
                                 modifiers,
                                 uad,
                                 item,
-                                effect,
-                                buff_id,
-                                &buff_info.scope,
+                                a_effect,
+                                a_buff_id,
+                                &a_buff_info.scope,
                                 None,
-                                *buff_val_attr_id,
+                                *buff_val_a_attr_id,
                             ),
-                            ad::AEffectBuffSrcCustom::HardcodedVal(buff_id, buff_val) => add_buff_mods_hardcoded(
+                            ad::AEffectBuffSrcCustom::HardcodedVal(a_buff_id, buff_a_val) => add_buff_mods_hardcoded(
                                 modifiers,
                                 uad,
                                 item,
-                                effect,
-                                buff_id,
-                                &buff_info.scope,
-                                *buff_val,
+                                a_effect,
+                                a_buff_id,
+                                &a_buff_info.scope,
+                                *buff_a_val,
                             ),
                         }
                     }
@@ -71,38 +70,38 @@ impl SolCalc {
             }
         }
         // Custom modifiers
-        extend_with_custom_mods(item, effect.id, modifiers);
+        extend_with_custom_mods(item, a_effect.id, modifiers);
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
-        uad: &SolUad,
-        item: &SolItem,
-        effect_ids: impl Iterator<Item = &'a EEffectId>,
-        buff_type_attr_id: &EAttrId,
-    ) -> Vec<SolRawModifier> {
+        uad: &Uad,
+        item: &Item,
+        a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
+        buff_type_a_attr_id: &ad::AAttrId,
+    ) -> Vec<RawModifier> {
         let mut modifiers = Vec::new();
-        let buff_value_attr_id = match *buff_type_attr_id {
-            consts::attrs::WARFARE_BUFF1_ID => consts::attrs::WARFARE_BUFF1_VAL,
-            consts::attrs::WARFARE_BUFF2_ID => consts::attrs::WARFARE_BUFF2_VAL,
-            consts::attrs::WARFARE_BUFF3_ID => consts::attrs::WARFARE_BUFF3_VAL,
-            consts::attrs::WARFARE_BUFF4_ID => consts::attrs::WARFARE_BUFF4_VAL,
+        let buff_value_a_attr_id = match *buff_type_a_attr_id {
+            ac::attrs::WARFARE_BUFF1_ID => ac::attrs::WARFARE_BUFF1_VAL,
+            ac::attrs::WARFARE_BUFF2_ID => ac::attrs::WARFARE_BUFF2_VAL,
+            ac::attrs::WARFARE_BUFF3_ID => ac::attrs::WARFARE_BUFF3_VAL,
+            ac::attrs::WARFARE_BUFF4_ID => ac::attrs::WARFARE_BUFF4_VAL,
             _ => return modifiers,
         };
-        let item_id = item.get_id();
-        for effect_id in effect_ids {
-            let effect = uad.src.get_a_effect(effect_id).unwrap();
-            if let Some(buff_info) = effect.buff.as_ref() {
-                if matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs) {
-                    if let Ok(buff_id) = self.get_item_attr_val_full(uad, &item_id, buff_type_attr_id) {
+        let item_id = item.get_item_id();
+        for a_effect_id in a_effect_ids {
+            let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
+            if let Some(a_buff_info) = a_effect.buff.as_ref() {
+                if matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs) {
+                    if let Ok(buff_id_cval) = self.get_item_attr_val_full(uad, &item_id, buff_type_a_attr_id) {
                         add_buff_mods(
                             &mut modifiers,
                             uad,
                             item,
-                            effect,
-                            &(buff_id.extra.into_inner() as EBuffId),
-                            &buff_info.scope,
-                            Some(*buff_type_attr_id),
-                            buff_value_attr_id,
+                            a_effect,
+                            &(buff_id_cval.extra.round() as ad::ABuffId),
+                            &a_buff_info.scope,
+                            Some(*buff_type_a_attr_id),
+                            buff_value_a_attr_id,
                         );
                     }
                 }
@@ -113,25 +112,25 @@ impl SolCalc {
 }
 
 fn add_buff_mods(
-    modifiers: &mut Vec<SolRawModifier>,
-    uad: &SolUad,
-    item: &SolItem,
-    effect: &ad::AEffect,
-    buff_id: &EBuffId,
-    buff_scope: &ad::AEffectBuffScope,
-    buff_type_attr_id: Option<EAttrId>,
-    buff_val_attr_id: EAttrId,
+    modifiers: &mut Vec<RawModifier>,
+    uad: &Uad,
+    item: &Item,
+    a_effect: &ad::AEffect,
+    a_buff_id: &ad::ABuffId,
+    a_buff_scope: &ad::AEffectBuffScope,
+    buff_type_a_attr_id: Option<ad::AAttrId>,
+    buff_val_a_attr_id: ad::AAttrId,
 ) {
-    if let Some(buff) = uad.src.get_a_buff(buff_id) {
+    if let Some(buff) = uad.src.get_a_buff(a_buff_id) {
         for buff_mod in buff.mods.iter() {
-            let modifier = match SolRawModifier::from_a_buff_regular(
+            let modifier = match RawModifier::from_a_buff_regular(
                 item,
-                effect,
+                a_effect,
                 buff,
                 buff_mod,
-                buff_val_attr_id,
-                buff_scope.into(),
-                buff_type_attr_id,
+                buff_val_a_attr_id,
+                a_buff_scope.into(),
+                buff_type_a_attr_id,
             ) {
                 Some(modifier) => modifier,
                 None => continue,
@@ -142,23 +141,23 @@ fn add_buff_mods(
 }
 
 fn add_buff_mods_hardcoded(
-    modifiers: &mut Vec<SolRawModifier>,
-    uad: &SolUad,
-    item: &SolItem,
-    effect: &ad::AEffect,
-    buff_id: &EBuffId,
-    buff_scope: &ad::AEffectBuffScope,
-    buff_val: AttrVal,
+    modifiers: &mut Vec<RawModifier>,
+    uad: &Uad,
+    item: &Item,
+    a_effect: &ad::AEffect,
+    a_buff_id: &ad::ABuffId,
+    a_buff_scope: &ad::AEffectBuffScope,
+    buff_a_val: ad::AAttrVal,
 ) {
-    if let Some(buff) = uad.src.get_a_buff(buff_id) {
+    if let Some(buff) = uad.src.get_a_buff(a_buff_id) {
         for buff_mod in buff.mods.iter() {
-            let modifier = match SolRawModifier::from_a_buff_hardcoded(
+            let modifier = match RawModifier::from_a_buff_hardcoded(
                 item,
-                effect,
+                a_effect,
                 buff,
                 buff_mod,
-                buff_val,
-                buff_scope.into(),
+                buff_a_val,
+                a_buff_scope.into(),
             ) {
                 Some(modifier) => modifier,
                 None => continue,

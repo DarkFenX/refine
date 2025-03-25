@@ -1,13 +1,12 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolarSystem, info::SolServiceInfo},
+    sol::{ItemId, SolarSystem, info::ServiceInfo},
 };
 
 impl SolarSystem {
-    pub fn get_service(&self, item_id: &SolItemId) -> Result<SolServiceInfo, GetServiceError> {
+    pub fn get_service(&self, item_id: &ItemId) -> Result<ServiceInfo, GetServiceError> {
         let service = self.uad.items.get_item(item_id)?.get_service()?;
-        Ok(SolServiceInfo::from(service))
+        Ok(ServiceInfo::from(service))
     }
 }
 

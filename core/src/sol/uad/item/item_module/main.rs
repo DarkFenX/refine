@@ -1,84 +1,80 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, Idx, SkillLevel, SolFitId, SolItemId},
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
-        SolModRack,
-        info::SolItemMutationInfo,
-        uad::item::{
-            SolEffectModes, SolItemAddMutation, SolItemBaseMutable, SolItemChangeAttrMutation, SolItemState,
-            SolModuleState, SolProjs,
-        },
+        FitId, Idx, ItemId, ModRack,
+        info::ItemMutationInfo,
+        uad::item::{EffectModes, ItemAddMutation, ItemBaseMutable, ItemChangeAttrMutation, ModuleState, Projs},
     },
     src::Src,
     util::{Named, StMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolModule {
-    base: SolItemBaseMutable,
-    fit_id: SolFitId,
-    rack: SolModRack,
+pub(in crate::sol) struct Module {
+    base: ItemBaseMutable,
+    fit_id: FitId,
+    rack: ModRack,
     pos: Idx,
-    charge_id: Option<SolItemId>,
-    projs: SolProjs,
+    charge_item_id: Option<ItemId>,
+    projs: Projs,
 }
-impl SolModule {
+impl Module {
     pub(in crate::sol) fn new(
         src: &Src,
-        id: SolItemId,
-        type_id: EItemId,
-        fit_id: SolFitId,
-        state: SolModuleState,
-        rack: SolModRack,
+        item_id: ItemId,
+        a_item_id: ad::AItemId,
+        fit_id: FitId,
+        state: ModuleState,
+        rack: ModRack,
         pos: Idx,
-        mutation: Option<SolItemAddMutation>,
-        charge_id: Option<SolItemId>,
+        mutation: Option<ItemAddMutation>,
+        charge_item_id: Option<ItemId>,
     ) -> Self {
         Self {
-            base: SolItemBaseMutable::new(src, id, type_id, state.into(), mutation),
+            base: ItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
             fit_id,
             rack,
             pos,
-            charge_id,
-            projs: SolProjs::new(),
+            charge_item_id,
+            projs: Projs::new(),
         }
     }
     // Item base methods
-    pub(in crate::sol) fn get_id(&self) -> SolItemId {
-        self.base.get_id()
+    pub(in crate::sol) fn get_item_id(&self) -> ItemId {
+        self.base.get_item_id()
     }
-    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.get_type_id()
+    pub(in crate::sol) fn get_a_item_id(&self) -> ad::AItemId {
+        self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
-        self.base.get_group_id()
+    pub(in crate::sol) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base.get_a_group_id()
     }
-    pub(in crate::sol) fn get_category_id(&self) -> Option<EItemGrpId> {
-        self.base.get_category_id()
+    pub(in crate::sol) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
+        self.base.get_a_category_id()
     }
-    pub(in crate::sol) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
-        self.base.get_attrs()
+    pub(in crate::sol) fn get_a_attrs(&self) -> Option<&StMap<ad::AAttrId, ad::AAttrVal>> {
+        self.base.get_a_attrs()
     }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
-        self.base.get_effect_datas()
+    pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
+        self.base.get_a_effect_datas()
     }
-    pub(in crate::sol) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
-        self.base.get_defeff_id()
+    pub(in crate::sol) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
+        self.base.get_a_defeff_id()
     }
-    pub(in crate::sol) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
-        self.base.get_skill_reqs()
+    pub(in crate::sol) fn get_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
+        self.base.get_a_skill_reqs()
     }
     pub(in crate::sol) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
         self.base.get_a_extras()
     }
-    pub(in crate::sol) fn get_state(&self) -> SolItemState {
-        self.base.get_state()
+    pub(in crate::sol) fn get_a_state(&self) -> ad::AState {
+        self.base.get_a_state()
     }
-    pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
+    pub(in crate::sol) fn get_effect_modes(&self) -> &EffectModes {
         self.base.get_effect_modes()
     }
-    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
         self.base.get_effect_modes_mut()
     }
     pub(in crate::sol) fn is_loaded(&self) -> bool {
@@ -91,37 +87,33 @@ impl SolModule {
     pub(in crate::sol) fn has_mutation_data(&self) -> bool {
         self.base.has_mutation_data()
     }
-    pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
+    pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<ItemMutationInfo> {
         self.base.get_mutation_info(src)
     }
-    pub(in crate::sol) fn mutate(
-        &mut self,
-        src: &Src,
-        mutation: SolItemAddMutation,
-    ) -> Result<(), ItemNotMutatedError> {
+    pub(in crate::sol) fn mutate(&mut self, src: &Src, mutation: ItemAddMutation) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(src, mutation)
     }
     pub(in crate::sol) fn change_mutation_attrs(
         &mut self,
         src: &Src,
-        attr_mutations: Vec<SolItemChangeAttrMutation>,
-    ) -> Result<Vec<EAttrId>, ItemMutatedError> {
+        attr_mutations: Vec<ItemChangeAttrMutation>,
+    ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
     pub(in crate::sol) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
         self.base.unmutate(src)
     }
     // Item-specific methods
-    pub(in crate::sol) fn get_module_state(&self) -> SolModuleState {
-        self.base.get_state().into()
+    pub(in crate::sol) fn get_module_state(&self) -> ModuleState {
+        self.base.get_a_state().into()
     }
-    pub(in crate::sol) fn set_module_state(&mut self, state: SolModuleState) {
-        self.base.set_state(state.into())
+    pub(in crate::sol) fn set_module_state(&mut self, state: ModuleState) {
+        self.base.set_a_state(state.into())
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
         self.fit_id
     }
-    pub(in crate::sol) fn get_rack(&self) -> SolModRack {
+    pub(in crate::sol) fn get_rack(&self) -> ModRack {
         self.rack
     }
     pub(in crate::sol) fn get_pos(&self) -> Idx {
@@ -130,32 +122,32 @@ impl SolModule {
     pub(in crate::sol) fn set_pos(&mut self, pos: Idx) {
         self.pos = pos
     }
-    pub(in crate::sol) fn get_charge_id(&self) -> Option<SolItemId> {
-        self.charge_id
+    pub(in crate::sol) fn get_charge_item_id(&self) -> Option<ItemId> {
+        self.charge_item_id
     }
-    pub(in crate::sol) fn set_charge_id(&mut self, charge_item_id: Option<SolItemId>) {
-        self.charge_id = charge_item_id
+    pub(in crate::sol) fn set_charge_item_id(&mut self, charge_item_id: Option<ItemId>) {
+        self.charge_item_id = charge_item_id
     }
-    pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
+    pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs
     }
-    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut SolProjs {
+    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut Projs {
         &mut self.projs
     }
 }
-impl Named for SolModule {
+impl Named for Module {
     fn get_name() -> &'static str {
-        "SolModule"
+        "Module"
     }
 }
-impl std::fmt::Display for SolModule {
+impl std::fmt::Display for Module {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}(id={}, type_id={})",
+            "{}(item_id={}, a_item_id={})",
             Self::get_name(),
-            self.get_id(),
-            self.get_type_id(),
+            self.get_item_id(),
+            self.get_a_item_id(),
         )
     }
 }

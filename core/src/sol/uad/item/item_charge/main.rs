@@ -1,78 +1,80 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    sol::uad::item::{SolEffectModes, SolItemBase, SolItemState, SolProjs},
+    sol::{
+        FitId, ItemId,
+        uad::item::{EffectModes, ItemBase, Projs},
+    },
     src::Src,
     util::{Named, StMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolCharge {
-    base: SolItemBase,
-    fit_id: SolFitId,
-    cont_id: SolItemId,
-    projs: SolProjs,
+pub(in crate::sol) struct Charge {
+    base: ItemBase,
+    fit_id: FitId,
+    cont_item_id: ItemId,
+    projs: Projs,
     force_disable: bool,
 }
-impl SolCharge {
+impl Charge {
     pub(in crate::sol) fn new(
         src: &Src,
-        id: SolItemId,
-        type_id: EItemId,
-        fit_id: SolFitId,
-        cont_id: SolItemId,
-        cont_state: SolItemState,
+        item_id: ItemId,
+        a_item_id: ad::AItemId,
+        fit_id: FitId,
+        cont_item_id: ItemId,
+        cont_a_state: ad::AState,
         force_disable: bool,
     ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, type_id, cont_state),
+            base: ItemBase::new(src, item_id, a_item_id, cont_a_state),
             fit_id,
-            cont_id,
-            projs: SolProjs::new(),
+            cont_item_id,
+            projs: Projs::new(),
             force_disable,
         }
     }
     // Item base methods
-    pub(in crate::sol) fn get_id(&self) -> SolItemId {
-        self.base.get_id()
+    pub(in crate::sol) fn get_item_id(&self) -> ItemId {
+        self.base.get_item_id()
     }
-    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.get_type_id()
+    pub(in crate::sol) fn get_a_item_id(&self) -> ad::AItemId {
+        self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
-        self.base.get_group_id()
+    pub(in crate::sol) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base.get_a_group_id()
     }
-    pub(in crate::sol) fn get_category_id(&self) -> Option<EItemGrpId> {
-        self.base.get_category_id()
+    pub(in crate::sol) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
+        self.base.get_a_category_id()
     }
-    pub(in crate::sol) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
-        self.base.get_attrs()
+    pub(in crate::sol) fn get_a_attrs(&self) -> Option<&StMap<ad::AAttrId, ad::AAttrVal>> {
+        self.base.get_a_attrs()
     }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
-        self.base.get_effect_datas()
+    pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
+        self.base.get_a_effect_datas()
     }
-    pub(in crate::sol) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
-        self.base.get_defeff_id()
+    pub(in crate::sol) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
+        self.base.get_a_defeff_id()
     }
-    pub(in crate::sol) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
-        self.base.get_skill_reqs()
+    pub(in crate::sol) fn get_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
+        self.base.get_a_skill_reqs()
     }
     pub(in crate::sol) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
         self.base.get_a_extras()
     }
-    pub(in crate::sol) fn get_state(&self) -> SolItemState {
+    pub(in crate::sol) fn get_a_state(&self) -> ad::AState {
         match self.force_disable {
-            true => SolItemState::Ghost,
-            false => self.base.get_state(),
+            true => ad::AState::Ghost,
+            false => self.base.get_a_state(),
         }
     }
-    pub(in crate::sol) fn set_state(&mut self, state: SolItemState) {
-        self.base.set_state(state)
+    pub(in crate::sol) fn set_a_state(&mut self, state: ad::AState) {
+        self.base.set_a_state(state)
     }
-    pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
+    pub(in crate::sol) fn get_effect_modes(&self) -> &EffectModes {
         self.base.get_effect_modes()
     }
-    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
         self.base.get_effect_modes_mut()
     }
     pub(in crate::sol) fn is_loaded(&self) -> bool {
@@ -88,32 +90,32 @@ impl SolCharge {
     pub(in crate::sol) fn set_force_disable(&mut self, force_disable: bool) {
         self.force_disable = force_disable
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
         self.fit_id
     }
-    pub(in crate::sol) fn get_cont_id(&self) -> SolItemId {
-        self.cont_id
+    pub(in crate::sol) fn get_cont_item_id(&self) -> ItemId {
+        self.cont_item_id
     }
-    pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
+    pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs
     }
-    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut SolProjs {
+    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut Projs {
         &mut self.projs
     }
 }
-impl Named for SolCharge {
+impl Named for Charge {
     fn get_name() -> &'static str {
-        "SolCharge"
+        "Charge"
     }
 }
-impl std::fmt::Display for SolCharge {
+impl std::fmt::Display for Charge {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}(id={}, type_id={})",
+            "{}(item_id={}, a_item_id={})",
             Self::get_name(),
-            self.get_id(),
-            self.get_type_id(),
+            self.get_item_id(),
+            self.get_a_item_id(),
         )
     }
 }

@@ -9,8 +9,8 @@ impl HAttrVal {
         Self { base, dogma, extra }
     }
 }
-impl From<&rc::SolAttrVal> for HAttrVal {
-    fn from(core_attr_val: &rc::SolAttrVal) -> Self {
+impl From<&rc::CalcAttrVal> for HAttrVal {
+    fn from(core_attr_val: &rc::CalcAttrVal) -> Self {
         Self::new(core_attr_val.base, core_attr_val.dogma, core_attr_val.extra)
     }
 }

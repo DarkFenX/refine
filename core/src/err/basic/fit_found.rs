@@ -1,11 +1,11 @@
-use crate::defs::SolFitId;
+use crate::sol::FitId;
 
 #[derive(Debug)]
 pub struct FitFoundError {
-    pub fit_id: SolFitId,
+    pub fit_id: FitId,
 }
 impl FitFoundError {
-    pub(crate) fn new(fit_id: SolFitId) -> Self {
+    pub(crate) fn new(fit_id: FitId) -> Self {
         Self { fit_id }
     }
 }

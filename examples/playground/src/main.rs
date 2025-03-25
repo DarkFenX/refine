@@ -8,8 +8,7 @@ use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
 use rc::{
-    SolAddMode, SolMinionState, SolModRack, SolModuleState, SolSecZone, SolSecZoneCorruption, SolValOptions,
-    SolarSystem, Src, VERSION,
+    AddMode, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption, SolValOptions, SolarSystem, Src, VERSION,
     ad::{AItemKind, AState, AdaptedDataHandler},
     ed::EveDataHandler,
 };
@@ -80,16 +79,16 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         let anp = sol_sys
             .add_module(
                 fit.id,
-                SolModRack::Low,
-                SolAddMode::Equip,
+                ModRack::Low,
+                AddMode::Equip,
                 1306,
-                SolModuleState::Online,
+                ModuleState::Online,
                 None,
                 None,
             )
             .unwrap();
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
-        sol_sys.remove_item(&anp.id, rc::SolRmMode::Free);
+        sol_sys.remove_item(&anp.id, rc::RmMode::Free);
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
     }
     let after = Utc::now();
@@ -104,7 +103,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     let src = Src::new(dh, ch).unwrap();
 
     let mut sol_sys = SolarSystem::new(src);
-    sol_sys.set_sec_zone(SolSecZone::HiSec(SolSecZoneCorruption::None));
+    sol_sys.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
     let fit = sol_sys.add_fit();
 
     // Character
@@ -135,10 +134,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys
             .add_module(
                 fit.id,
-                SolModRack::High,
-                SolAddMode::Equip,
+                ModRack::High,
+                AddMode::Equip,
                 2929,
-                SolModuleState::Overload,
+                ModuleState::Overload,
                 None,
                 Some(12779),
             )
@@ -148,10 +147,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys
             .add_module(
                 fit.id,
-                SolModRack::High,
-                SolAddMode::Equip,
+                ModRack::High,
+                AddMode::Equip,
                 2420,
-                SolModuleState::Overload,
+                ModuleState::Overload,
                 None,
                 Some(2811),
             )
@@ -162,10 +161,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     sol_sys
         .add_module(
             fit.id,
-            SolModRack::Mid,
-            SolAddMode::Equip,
+            ModRack::Mid,
+            AddMode::Equip,
             5945,
-            SolModuleState::Active,
+            ModuleState::Active,
             None,
             None,
         )
@@ -173,10 +172,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     sol_sys
         .add_module(
             fit.id,
-            SolModRack::Mid,
-            SolAddMode::Equip,
+            ModRack::Mid,
+            AddMode::Equip,
             2024,
-            SolModuleState::Active,
+            ModuleState::Active,
             None,
             Some(32014),
         )
@@ -184,10 +183,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     sol_sys
         .add_module(
             fit.id,
-            SolModRack::Mid,
-            SolAddMode::Equip,
+            ModRack::Mid,
+            AddMode::Equip,
             2301,
-            SolModuleState::Active,
+            ModuleState::Active,
             None,
             None,
         )
@@ -195,10 +194,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     sol_sys
         .add_module(
             fit.id,
-            SolModRack::Mid,
-            SolAddMode::Equip,
+            ModRack::Mid,
+            AddMode::Equip,
             448,
-            SolModuleState::Active,
+            ModuleState::Active,
             None,
             None,
         )
@@ -219,10 +218,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     sol_sys
         .add_module(
             fit.id,
-            SolModRack::Low,
-            SolAddMode::Equip,
+            ModRack::Low,
+            AddMode::Equip,
             2048,
-            SolModuleState::Online,
+            ModuleState::Online,
             None,
             None,
         )
@@ -231,10 +230,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys
             .add_module(
                 fit.id,
-                SolModRack::Low,
-                SolAddMode::Equip,
+                ModRack::Low,
+                AddMode::Equip,
                 519,
-                SolModuleState::Online,
+                ModuleState::Online,
                 None,
                 None,
             )
@@ -244,10 +243,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys
             .add_module(
                 fit.id,
-                SolModRack::Low,
-                SolAddMode::Equip,
+                ModRack::Low,
+                AddMode::Equip,
                 22291,
-                SolModuleState::Online,
+                ModuleState::Online,
                 None,
                 None,
             )
@@ -257,10 +256,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys
             .add_module(
                 fit.id,
-                SolModRack::Low,
-                SolAddMode::Equip,
+                ModRack::Low,
+                AddMode::Equip,
                 4405,
-                SolModuleState::Online,
+                ModuleState::Online,
                 None,
                 None,
             )
@@ -275,10 +274,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 
     // Drones
     for _ in 0..5 {
-        sol_sys.add_drone(fit.id, 2446, SolMinionState::Engaging, None).unwrap(); // T2 ogre
+        sol_sys.add_drone(fit.id, 2446, MinionState::Engaging, None).unwrap(); // T2 ogre
     }
     for _ in 0..2 {
-        sol_sys.add_drone(fit.id, 2446, SolMinionState::InBay, None).unwrap(); // T2 ogre
+        sol_sys.add_drone(fit.id, 2446, MinionState::InBay, None).unwrap(); // T2 ogre
     }
 
     let val_options = SolValOptions::all_enabled();

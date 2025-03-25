@@ -1,34 +1,20 @@
-use crate::{
-    defs::{EItemId, SlotIndex, SolFitId, SolItemId},
-    sol::uad::item::SolImplant,
-};
+use crate::sol::{FitId, ItemId, ItemTypeId, SlotIndex, uad::item::Implant};
 
-pub struct SolImplantInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
+pub struct ImplantInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub slot: Option<SlotIndex>,
     pub enabled: bool,
 }
-impl SolImplantInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, slot: Option<SlotIndex>, enabled: bool) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            slot,
-            enabled,
+impl From<&Implant> for ImplantInfo {
+    fn from(sol_implant: &Implant) -> Self {
+        ImplantInfo {
+            id: sol_implant.get_item_id(),
+            type_id: sol_implant.get_a_item_id(),
+            fit_id: sol_implant.get_fit_id(),
+            slot: sol_implant.get_a_slot(),
+            enabled: sol_implant.get_implant_state(),
         }
-    }
-}
-impl From<&SolImplant> for SolImplantInfo {
-    fn from(sol_implant: &SolImplant) -> Self {
-        SolImplantInfo::new(
-            sol_implant.get_id(),
-            sol_implant.get_type_id(),
-            sol_implant.get_fit_id(),
-            sol_implant.get_slot(),
-            sol_implant.get_implant_state(),
-        )
     }
 }

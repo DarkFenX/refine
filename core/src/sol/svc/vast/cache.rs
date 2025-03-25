@@ -1,10 +1,10 @@
 #[derive(Clone)]
-pub(in crate::sol::svc::vast) enum SolValCache<T, U> {
+pub(in crate::sol::svc::vast) enum ValCache<T, U> {
     Todo(T),
     Pass(T),
     Fail(U),
 }
-impl<T, U> SolValCache<T, U> {
+impl<T, U> ValCache<T, U> {
     pub(in crate::sol::svc::vast) fn clear(&mut self, pass: T) {
         *self = Self::Todo(pass)
     }

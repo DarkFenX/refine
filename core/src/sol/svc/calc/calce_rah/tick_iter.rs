@@ -1,19 +1,21 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    defs::{AttrVal, OF, SolItemId},
+    sol::{AttrVal, ItemId},
     util::StMap,
 };
 
 use super::{
-    rah_data_sim::SolRahDataSim,
-    shared::{TICK_LIMIT, rah_round},
+    rah_data_sim::RahDataSim,
+    shared::{TICK_LIMIT, TickCount, rah_round},
 };
 
-struct SolRahDataIter {
+struct RahDataIter {
     cycle_time: AttrVal,
     cycle_time_rounded: AttrVal,
     cycling_time: AttrVal,
 }
-impl SolRahDataIter {
+impl RahDataIter {
     fn new(cycle_time: AttrVal) -> Self {
         Self {
             cycle_time,
@@ -23,30 +25,21 @@ impl SolRahDataIter {
     }
 }
 
-pub(super) struct SolRahSimTickData {
+pub(super) struct RahSimTickData {
     pub(super) time_passed: AttrVal,
-    pub(super) cycled: Vec<SolItemId>,
-    pub(super) cycling_times: StMap<SolItemId, AttrVal>,
-}
-impl SolRahSimTickData {
-    fn new(time_passed: AttrVal, cycled: Vec<SolItemId>, cycling_times: StMap<SolItemId, AttrVal>) -> Self {
-        Self {
-            time_passed,
-            cycled,
-            cycling_times,
-        }
-    }
+    pub(super) cycled: Vec<ItemId>,
+    pub(super) cycling_times: StMap<ItemId, AttrVal>,
 }
 
-pub(super) struct SolRahSimTickIter {
-    tick: usize,
-    rah_iter_data: StMap<SolItemId, SolRahDataIter>,
+pub(super) struct RahSimTickIter {
+    tick: TickCount,
+    rah_iter_data: StMap<ItemId, RahDataIter>,
 }
-impl SolRahSimTickIter {
-    pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a SolItemId, &'a SolRahDataSim)>) -> Self {
+impl RahSimTickIter {
+    pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a ItemId, &'a RahDataSim)>) -> Self {
         let mut iter_datas = StMap::with_capacity(sim_datas.len());
         for (item_id, sim_data) in sim_datas {
-            iter_datas.insert(*item_id, SolRahDataIter::new(sim_data.info.cycle_time));
+            iter_datas.insert(*item_id, RahDataIter::new(sim_data.info.cycle_time));
         }
         Self {
             tick: 0,
@@ -54,8 +47,8 @@ impl SolRahSimTickIter {
         }
     }
 }
-impl Iterator for SolRahSimTickIter {
-    type Item = SolRahSimTickData;
+impl Iterator for RahSimTickIter {
+    type Item = RahSimTickData;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.tick >= TICK_LIMIT {
@@ -87,6 +80,10 @@ impl Iterator for SolRahSimTickIter {
             }
         }
         let cycling_times = self.rah_iter_data.iter().map(|(k, v)| (*k, v.cycling_time)).collect();
-        Some(SolRahSimTickData::new(time_passed, cycled, cycling_times))
+        Some(RahSimTickData {
+            time_passed,
+            cycled,
+            cycling_times,
+        })
     }
 }

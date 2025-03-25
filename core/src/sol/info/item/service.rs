@@ -1,31 +1,21 @@
-use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
-    sol::uad::item::{SolService, SolServiceState},
+use crate::sol::{
+    FitId, ItemId, ItemTypeId,
+    uad::item::{Service, ServiceState},
 };
 
-pub struct SolServiceInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
-    pub state: SolServiceState,
+pub struct ServiceInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub state: ServiceState,
 }
-impl SolServiceInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, state: SolServiceState) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            state,
+impl From<&Service> for ServiceInfo {
+    fn from(sol_service: &Service) -> Self {
+        ServiceInfo {
+            id: sol_service.get_item_id(),
+            type_id: sol_service.get_a_item_id(),
+            fit_id: sol_service.get_fit_id(),
+            state: sol_service.get_service_state(),
         }
-    }
-}
-impl From<&SolService> for SolServiceInfo {
-    fn from(sol_service: &SolService) -> Self {
-        SolServiceInfo::new(
-            sol_service.get_id(),
-            sol_service.get_type_id(),
-            sol_service.get_fit_id(),
-            sol_service.get_service_state(),
-        )
     }
 }

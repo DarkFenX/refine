@@ -14,7 +14,7 @@ impl HAddServiceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> Result<rc::SolServiceInfo, HExecError> {
+    ) -> Result<rc::ServiceInfo, HExecError> {
         let core_service = match core_sol.add_service(
             *fit_id,
             self.type_id,

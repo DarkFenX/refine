@@ -1,14 +1,13 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemReceiveProjError, ProjNotFoundError},
-    sol::SolarSystem,
+    sol::{ItemId, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn add_proj_effect_proj(
         &mut self,
-        item_id: &SolItemId,
-        projectee_item_id: SolItemId,
+        item_id: &ItemId,
+        projectee_item_id: ItemId,
     ) -> Result<(), AddProjEffectProjError> {
         // Check projector
         let proj_effect = self

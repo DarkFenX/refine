@@ -1,23 +1,22 @@
 use crate::{
-    defs::{Count, EItemGrpId, SolItemId},
-    sol::svc::vast::SolVastFitData,
+    sol::{Count, ItemId, ItemTypeId, svc::vast::VastFitData},
     util::{StMap, StSet},
 };
 
-pub struct SolValMaxTypeFail {
-    pub type_id: EItemGrpId,
+pub struct ValMaxTypeFail {
+    pub type_id: ItemTypeId,
     pub count: Count,
-    pub items: Vec<SolValMaxTypeItemInfo>,
+    pub items: Vec<ValMaxTypeItemInfo>,
 }
 
-pub struct SolValMaxTypeItemInfo {
-    pub item_id: SolItemId,
+pub struct ValMaxTypeItemInfo {
+    pub item_id: ItemId,
     pub max_allowed_count: Count,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &StSet<SolItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &StSet<ItemId>) -> bool {
         for item_type_data in self.mods_svcs_max_type_fitted.values() {
             let fitted = item_type_data.len() as Count;
             for (item_id, &allowed) in item_type_data.iter() {
@@ -31,17 +30,17 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_max_type_fitted_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-    ) -> Vec<SolValMaxTypeFail> {
+        kfs: &StSet<ItemId>,
+    ) -> Vec<ValMaxTypeFail> {
         let mut items_by_type = StMap::new();
-        for (type_id, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
+        for (a_item_id, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
             let fitted = item_type_data.len() as Count;
             for (item_id, &allowed) in item_type_data.iter() {
                 if fitted > allowed && !kfs.contains(item_id) {
                     items_by_type
-                        .entry(*type_id)
+                        .entry(*a_item_id)
                         .or_insert_with(Vec::new)
-                        .push(SolValMaxTypeItemInfo {
+                        .push(ValMaxTypeItemInfo {
                             item_id: *item_id,
                             max_allowed_count: allowed,
                         });
@@ -50,7 +49,7 @@ impl SolVastFitData {
         }
         items_by_type
             .into_iter()
-            .map(|(k, v)| SolValMaxTypeFail {
+            .map(|(k, v)| ValMaxTypeFail {
                 type_id: k,
                 count: self.mods_svcs_max_type_fitted.get_l1(&k).unwrap().len() as Count,
                 items: v,

@@ -1,6 +1,6 @@
 //! Solar system services - attribute & stats calculations, validation, and so on.
 
-pub(in crate::sol) use svc::SolSvc;
+pub(in crate::sol) use svc::Svc;
 
 pub(crate) mod calc;
 mod running_effects;

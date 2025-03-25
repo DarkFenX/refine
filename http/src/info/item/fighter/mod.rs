@@ -18,7 +18,7 @@ pub(crate) enum HFighterInfo {
 impl HFighterInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_fighter_info: &rc::SolFighterInfo,
+        core_fighter_info: &rc::FighterInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

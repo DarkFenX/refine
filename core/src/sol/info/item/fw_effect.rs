@@ -1,31 +1,18 @@
-use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
-    sol::uad::item::SolFwEffect,
-};
+use crate::sol::{FitId, ItemId, ItemTypeId, uad::item::FwEffect};
 
-pub struct SolFwEffectInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
+pub struct FwEffectInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub enabled: bool,
 }
-impl SolFwEffectInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, enabled: bool) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            enabled,
+impl From<&FwEffect> for FwEffectInfo {
+    fn from(sol_fw_effect: &FwEffect) -> Self {
+        FwEffectInfo {
+            id: sol_fw_effect.get_item_id(),
+            type_id: sol_fw_effect.get_a_item_id(),
+            fit_id: sol_fw_effect.get_fit_id(),
+            enabled: sol_fw_effect.get_fw_effect_state(),
         }
-    }
-}
-impl From<&SolFwEffect> for SolFwEffectInfo {
-    fn from(sol_fw_effect: &SolFwEffect) -> Self {
-        SolFwEffectInfo::new(
-            sol_fw_effect.get_id(),
-            sol_fw_effect.get_type_id(),
-            sol_fw_effect.get_fit_id(),
-            sol_fw_effect.get_fw_effect_state(),
-        )
     }
 }

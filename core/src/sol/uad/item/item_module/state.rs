@@ -1,8 +1,8 @@
-use crate::sol::uad::item::SolItemState;
+use crate::ad;
 
 /// Module states.
 #[derive(Copy, Clone)]
-pub enum SolModuleState {
+pub enum ModuleState {
     /// Module will receive modifications, but will not apply its modifications to anything else.
     Ghost,
     Offline,
@@ -10,25 +10,25 @@ pub enum SolModuleState {
     Active,
     Overload,
 }
-impl From<SolItemState> for SolModuleState {
-    fn from(state: SolItemState) -> Self {
-        match state {
-            SolItemState::Ghost => Self::Ghost,
-            SolItemState::Offline => Self::Offline,
-            SolItemState::Online => Self::Online,
-            SolItemState::Active => Self::Active,
-            SolItemState::Overload => Self::Overload,
+impl From<ad::AState> for ModuleState {
+    fn from(a_state: ad::AState) -> Self {
+        match a_state {
+            ad::AState::Ghost => Self::Ghost,
+            ad::AState::Offline => Self::Offline,
+            ad::AState::Online => Self::Online,
+            ad::AState::Active => Self::Active,
+            ad::AState::Overload => Self::Overload,
         }
     }
 }
-impl From<SolModuleState> for SolItemState {
-    fn from(state: SolModuleState) -> Self {
-        match state {
-            SolModuleState::Ghost => Self::Ghost,
-            SolModuleState::Offline => Self::Offline,
-            SolModuleState::Online => Self::Online,
-            SolModuleState::Active => Self::Active,
-            SolModuleState::Overload => Self::Overload,
+impl From<ModuleState> for ad::AState {
+    fn from(module_state: ModuleState) -> Self {
+        match module_state {
+            ModuleState::Ghost => Self::Ghost,
+            ModuleState::Offline => Self::Offline,
+            ModuleState::Online => Self::Online,
+            ModuleState::Active => Self::Active,
+            ModuleState::Overload => Self::Overload,
         }
     }
 }

@@ -1,5 +1,5 @@
-use crate::{ad, consts};
+use crate::{ac, ad};
 
-pub(super) fn is_effect_projectable(effect: &ad::AEffect) -> bool {
-    effect.category == consts::effcats::TARGET || effect.category == consts::effcats::SYSTEM || effect.buff.is_some()
+pub(super) fn is_a_effect_projectable(a_effect: &ad::AEffect) -> bool {
+    a_effect.category == ac::effcats::TARGET || a_effect.category == ac::effcats::SYSTEM || a_effect.buff.is_some()
 }

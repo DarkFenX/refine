@@ -9,8 +9,8 @@ pub(crate) struct HRigInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolRigInfo> for HRigInfoPartial {
-    fn from(core_rig_info: &rc::SolRigInfo) -> Self {
+impl From<&rc::RigInfo> for HRigInfoPartial {
+    fn from(core_rig_info: &rc::RigInfo) -> Self {
         Self {
             id: core_rig_info.id,
             kind: "rig",

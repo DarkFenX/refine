@@ -18,7 +18,7 @@ pub(crate) enum HDroneInfo {
 impl HDroneInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_drone_info: &rc::SolDroneInfo,
+        core_drone_info: &rc::DroneInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

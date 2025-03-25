@@ -1,9 +1,9 @@
-use crate::sol::{debug::SolDebugResult, svc::calc::debug::check_ctx_modifier, uad::SolUad};
+use crate::sol::{debug::DebugResult, svc::calc::debug::check_ctx_modifier, uad::Uad};
 
-use super::SolRevisionRegister;
+use super::RevisionRegister;
 
-impl SolRevisionRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
+impl RevisionRegister {
+    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
         for ctx_modifier in self.item_add.iter() {
             check_ctx_modifier(uad, ctx_modifier)?;
         }

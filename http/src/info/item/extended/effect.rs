@@ -10,8 +10,8 @@ impl HEffect {
         Self { running, mode }
     }
 }
-impl From<&rc::SolEffectInfo> for HEffect {
-    fn from(core_effect_info: &rc::SolEffectInfo) -> Self {
+impl From<&rc::EffectInfo> for HEffect {
+    fn from(core_effect_info: &rc::EffectInfo) -> Self {
         Self::new(core_effect_info.running, (&core_effect_info.mode).into())
     }
 }

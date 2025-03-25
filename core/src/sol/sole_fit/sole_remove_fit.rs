@@ -1,14 +1,13 @@
 use crate::{
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolRmMode, SolarSystem},
+    sol::{FitId, RmMode, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn remove_fit(&mut self, fit_id: &SolFitId) -> Result<(), RemoveFitError> {
+    pub fn remove_fit(&mut self, fit_id: &FitId) -> Result<(), RemoveFitError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         for item_id in fit.all_direct_items().iter() {
-            self.remove_item(item_id, SolRmMode::Free).unwrap();
+            self.remove_item(item_id, RmMode::Free).unwrap();
         }
         self.svc.remove_fit(fit_id);
         let fit = self.uad.fits.remove_fit(fit_id).unwrap();

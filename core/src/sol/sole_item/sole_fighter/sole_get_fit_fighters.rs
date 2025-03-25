@@ -1,11 +1,10 @@
 use crate::{
-    defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{SolarSystem, info::SolFighterInfo},
+    sol::{FitId, SolarSystem, info::FighterInfo},
 };
 
 impl SolarSystem {
-    pub fn get_fit_fighters(&self, fit_id: &SolFitId) -> Result<Vec<SolFighterInfo>, GetFitFightersError> {
+    pub fn get_fit_fighters(&self, fit_id: &FitId) -> Result<Vec<FighterInfo>, GetFitFightersError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let fighter_infos = fit
             .fighters

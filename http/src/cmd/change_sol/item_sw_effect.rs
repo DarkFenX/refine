@@ -9,7 +9,7 @@ pub(crate) struct HAddSwEffectCmd {
     state: Option<bool>,
 }
 impl HAddSwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::SolSwEffectInfo {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::SwEffectInfo {
         core_sol.add_sw_effect(self.type_id, self.state.unwrap_or(true))
     }
 }

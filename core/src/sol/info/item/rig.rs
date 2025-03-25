@@ -1,31 +1,18 @@
-use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
-    sol::uad::item::SolRig,
-};
+use crate::sol::{FitId, ItemId, ItemTypeId, uad::item::Rig};
 
-pub struct SolRigInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
+pub struct RigInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub enabled: bool,
 }
-impl SolRigInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, enabled: bool) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            enabled,
+impl From<&Rig> for RigInfo {
+    fn from(sol_rig: &Rig) -> Self {
+        RigInfo {
+            id: sol_rig.get_item_id(),
+            type_id: sol_rig.get_a_item_id(),
+            fit_id: sol_rig.get_fit_id(),
+            enabled: sol_rig.get_rig_state(),
         }
-    }
-}
-impl From<&SolRig> for SolRigInfo {
-    fn from(sol_rig: &SolRig) -> Self {
-        SolRigInfo::new(
-            sol_rig.get_id(),
-            sol_rig.get_type_id(),
-            sol_rig.get_fit_id(),
-            sol_rig.get_rig_state(),
-        )
     }
 }

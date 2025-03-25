@@ -1,25 +1,24 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{EItemId, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::{
-        SolarSystem,
-        info::SolChargeInfo,
-        uad::item::{SolCharge, SolItem},
+        ItemId, ItemTypeId, SolarSystem,
+        info::ChargeInfo,
+        uad::item::{Charge, Item},
     },
 };
 
 impl SolarSystem {
     pub fn set_module_charge(
         &mut self,
-        item_id: &SolItemId,
-        charge_type_id: EItemId,
-    ) -> Result<SolChargeInfo, SetModuleChargeError> {
+        item_id: &ItemId,
+        charge_type_id: ItemTypeId,
+    ) -> Result<ChargeInfo, SetModuleChargeError> {
         let module = self.uad.items.get_item(item_id)?.get_module()?;
         let module_projs = module.get_projs().iter().map(|(i, r)| (*i, *r)).collect_vec();
         // Remove old charge, if it was set
-        if let Some(charge_id) = module.get_charge_id() {
+        if let Some(charge_id) = module.get_charge_item_id() {
             // Remove outgoing projections
             let charge_item = self.uad.items.get_item(&charge_id).unwrap();
             // Use module projections because they should be identical
@@ -43,19 +42,19 @@ impl SolarSystem {
         let charge_id = self.uad.items.alloc_item_id();
         // Update user data
         let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
-        module.set_charge_id(Some(charge_id));
+        module.set_charge_item_id(Some(charge_id));
         let fit_id = module.get_fit_id();
-        let charge = SolCharge::new(
+        let charge = Charge::new(
             &self.uad.src,
             charge_id,
             charge_type_id,
             fit_id,
             *item_id,
-            module.get_state(),
+            module.get_a_state(),
             false,
         );
-        let charge_info = SolChargeInfo::from(&charge);
-        let charge_item = SolItem::Charge(charge);
+        let charge_info = ChargeInfo::from(&charge);
+        let charge_item = Item::Charge(charge);
         self.uad.items.add_item(charge_item);
         // Update services
         self.add_item_id_to_svc(&charge_id);

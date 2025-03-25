@@ -1,115 +1,119 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolItemId},
-    sol::uad::item::{SolEffectModes, SolItemState},
+    sol::{ItemId, uad::item::EffectModes},
     src::Src,
     util::StMap,
 };
 
 // Item base stores all the data every item should have
 #[derive(Clone)]
-pub(in crate::sol::uad::item) struct SolItemBase {
+pub(in crate::sol::uad::item) struct ItemBase {
     // User-defined data
-    id: SolItemId,
-    type_id: EItemId,
-    state: SolItemState,
-    effect_modes: SolEffectModes,
+    item_id: ItemId,
+    a_item_id: ad::AItemId,
+    a_state: ad::AState,
+    effect_modes: EffectModes,
     // Source-dependent data
-    cache: Option<SolItemBaseCache>,
+    cache: Option<ItemBaseCache>,
 }
-impl SolItemBase {
-    pub(in crate::sol::uad::item) fn new(src: &Src, id: SolItemId, type_id: EItemId, state: SolItemState) -> Self {
+impl ItemBase {
+    pub(in crate::sol::uad::item) fn new(
+        src: &Src,
+        item_id: ItemId,
+        a_item_id: ad::AItemId,
+        state: ad::AState,
+    ) -> Self {
         Self {
-            id,
-            type_id,
-            state,
-            effect_modes: SolEffectModes::new(),
-            cache: src.get_a_item(&type_id).map(|v| SolItemBaseCache::new(v.clone())),
+            item_id,
+            a_item_id,
+            a_state: state,
+            effect_modes: EffectModes::new(),
+            cache: src.get_a_item(&a_item_id).map(|v| ItemBaseCache::new(v.clone())),
         }
     }
-    pub(in crate::sol::uad::item) fn get_id(&self) -> SolItemId {
-        self.id
+    pub(in crate::sol::uad::item) fn get_item_id(&self) -> ItemId {
+        self.item_id
     }
-    pub(in crate::sol::uad::item) fn get_type_id(&self) -> EItemId {
-        self.type_id
+    pub(in crate::sol::uad::item) fn get_a_item_id(&self) -> ad::AItemId {
+        self.a_item_id
     }
-    pub(in crate::sol::uad::item) fn get_group_id(&self) -> Option<EItemGrpId> {
+    pub(in crate::sol::uad::item) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.get_a_item().map(|v| v.grp_id)
     }
-    pub(in crate::sol::uad::item) fn get_category_id(&self) -> Option<EItemGrpId> {
+    pub(in crate::sol::uad::item) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
         self.get_a_item().map(|v| v.cat_id)
     }
-    pub(in crate::sol::uad::item) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
+    pub(in crate::sol::uad::item) fn get_a_attrs(&self) -> Option<&StMap<ad::AAttrId, ad::AAttrVal>> {
         self.get_a_item().map(|v| &v.attrs)
     }
-    pub(in crate::sol::uad::item) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
+    pub(in crate::sol::uad::item) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
         self.get_a_item().map(|v| &v.effect_datas)
     }
-    pub(in crate::sol::uad::item) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
+    pub(in crate::sol::uad::item) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
         self.get_a_item().map(|v| v.defeff_id)
     }
-    pub(in crate::sol::uad::item) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
+    pub(in crate::sol::uad::item) fn get_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
         self.get_a_item().map(|v| &v.srqs)
     }
     pub(in crate::sol::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
         self.get_a_item().map(|v| &v.extras)
     }
-    pub(in crate::sol::uad::item) fn get_state(&self) -> SolItemState {
-        self.state
+    pub(in crate::sol::uad::item) fn get_a_state(&self) -> ad::AState {
+        self.a_state
     }
-    pub(in crate::sol::uad::item) fn set_state(&mut self, state: SolItemState) {
-        self.state = state
+    pub(in crate::sol::uad::item) fn set_a_state(&mut self, state: ad::AState) {
+        self.a_state = state
     }
-    pub(in crate::sol::uad::item) fn get_effect_modes(&self) -> &SolEffectModes {
+    pub(in crate::sol::uad::item) fn get_effect_modes(&self) -> &EffectModes {
         &self.effect_modes
     }
-    pub(in crate::sol::uad::item) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+    pub(in crate::sol::uad::item) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
         &mut self.effect_modes
     }
     pub(in crate::sol::uad::item) fn is_loaded(&self) -> bool {
         self.cache.is_some()
     }
     pub(in crate::sol::uad::item) fn update_a_data(&mut self, src: &Src) {
-        self.cache = src.get_a_item(&self.type_id).map(|v| SolItemBaseCache::new(v.clone()));
+        self.cache = src.get_a_item(&self.a_item_id).map(|v| ItemBaseCache::new(v.clone()));
     }
     // Non-public methods
     pub(in crate::sol::uad::item::base) fn new_with_id_not_loaded(
-        id: SolItemId,
-        type_id: EItemId,
-        state: SolItemState,
+        item_id: ItemId,
+        a_item_id: ad::AItemId,
+        a_state: ad::AState,
     ) -> Self {
         Self {
-            id,
-            type_id,
-            state,
-            effect_modes: SolEffectModes::new(),
+            item_id,
+            a_item_id,
+            a_state,
+            effect_modes: EffectModes::new(),
             cache: None,
         }
     }
     pub(in crate::sol::uad::item::base) fn new_with_item(
-        id: SolItemId,
+        item_id: ItemId,
         a_item: ad::ArcItem,
-        state: SolItemState,
+        a_state: ad::AState,
     ) -> Self {
         Self {
-            id,
-            type_id: a_item.id,
-            state,
-            effect_modes: SolEffectModes::new(),
-            cache: Some(SolItemBaseCache::new(a_item)),
+            item_id,
+            a_item_id: a_item.id,
+            a_state,
+            effect_modes: EffectModes::new(),
+            cache: Some(ItemBaseCache::new(a_item)),
         }
     }
-    pub(in crate::sol::uad::item::base) fn set_type_id(&mut self, type_id: EItemId) {
-        self.type_id = type_id;
+    pub(in crate::sol::uad::item::base) fn set_a_item_id(&mut self, a_item_id: ad::AItemId) {
+        self.a_item_id = a_item_id;
     }
-    pub(in crate::sol::uad::item::base) fn set_type_id_and_reload(&mut self, src: &Src, type_id: EItemId) {
-        self.set_type_id(type_id);
+    pub(in crate::sol::uad::item::base) fn set_a_item_id_and_reload(&mut self, src: &Src, a_item_id: ad::AItemId) {
+        self.set_a_item_id(a_item_id);
         self.update_a_data(src);
     }
     pub(in crate::sol::uad::item::base) fn set_a_item(&mut self, a_item: ad::ArcItem) {
         match &mut self.cache {
             Some(cache) => cache.a_item = a_item,
-            None => self.cache = Some(SolItemBaseCache::new(a_item)),
+            None => self.cache = Some(ItemBaseCache::new(a_item)),
         }
     }
     pub(in crate::sol::uad::item::base) fn remove_a_item(&mut self) {
@@ -121,10 +125,10 @@ impl SolItemBase {
 }
 
 #[derive(Clone)]
-struct SolItemBaseCache {
+struct ItemBaseCache {
     a_item: ad::ArcItem,
 }
-impl SolItemBaseCache {
+impl ItemBaseCache {
     fn new(a_item: ad::ArcItem) -> Self {
         Self { a_item }
     }

@@ -5,7 +5,7 @@ use crate::{
         GData, GSupport,
         rels::{KeyDb, Pk},
     },
-    ec, ed,
+    ec,
     util::{Named, StSet, StrMsgError},
 };
 

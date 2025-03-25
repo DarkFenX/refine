@@ -9,17 +9,17 @@ pub(crate) enum HEffectMode {
     #[serde(rename = "stop")]
     ForceStop,
 }
-impl From<&rc::SolEffectMode> for HEffectMode {
-    fn from(core_effect_mode: &rc::SolEffectMode) -> Self {
+impl From<&rc::EffectMode> for HEffectMode {
+    fn from(core_effect_mode: &rc::EffectMode) -> Self {
         match core_effect_mode {
-            rc::SolEffectMode::FullCompliance => Self::FullCompliance,
-            rc::SolEffectMode::StateCompliance => Self::StateCompliance,
-            rc::SolEffectMode::ForceRun => Self::ForceRun,
-            rc::SolEffectMode::ForceStop => Self::ForceStop,
+            rc::EffectMode::FullCompliance => Self::FullCompliance,
+            rc::EffectMode::StateCompliance => Self::StateCompliance,
+            rc::EffectMode::ForceRun => Self::ForceRun,
+            rc::EffectMode::ForceStop => Self::ForceStop,
         }
     }
 }
-impl From<&HEffectMode> for rc::SolEffectMode {
+impl From<&HEffectMode> for rc::EffectMode {
     fn from(h_effect_mode: &HEffectMode) -> Self {
         match h_effect_mode {
             HEffectMode::FullCompliance => Self::FullCompliance,

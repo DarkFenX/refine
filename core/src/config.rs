@@ -1,3 +1,3 @@
-use crate::sol::SolEffectMode;
+use crate::sol::EffectMode;
 
-pub(crate) const DEFAULT_EFFECT_MODE: SolEffectMode = SolEffectMode::FullCompliance;
+pub(crate) const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;

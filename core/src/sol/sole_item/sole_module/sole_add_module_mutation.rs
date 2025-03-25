@@ -1,14 +1,13 @@
 use crate::{
-    defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemNotMutatedError},
-    sol::{SolarSystem, uad::item::SolItemAddMutation},
+    sol::{ItemId, SolarSystem, uad::item::ItemAddMutation},
 };
 
 impl SolarSystem {
     pub fn add_module_mutation(
         &mut self,
-        item_id: &SolItemId,
-        mutation: SolItemAddMutation,
+        item_id: &ItemId,
+        mutation: ItemAddMutation,
     ) -> Result<(), AddModuleMutationError> {
         let item = self.uad.items.get_item(item_id)?;
         self.svc.unload_item(&self.uad, item);

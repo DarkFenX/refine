@@ -13,7 +13,7 @@ impl HAddRigCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> Result<rc::SolRigInfo, HExecError> {
+    ) -> Result<rc::RigInfo, HExecError> {
         let core_rig = match core_sol.add_rig(*fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_rig) => core_rig,
             Err(error) => {

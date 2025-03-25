@@ -1,12 +1,15 @@
-use crate::{defs::SolItemId, sol::svc::vast::SolVastFitData, util::StSet};
+use crate::{
+    sol::{ItemId, svc::vast::VastFitData},
+    util::StSet,
+};
 
-pub struct SolValNotLoadedItemFail {
-    pub item_id: SolItemId,
+pub struct ValNotLoadedItemFail {
+    pub item_id: ItemId,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_not_loaded_item_fast(&self, kfs: &StSet<SolItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_not_loaded_item_fast(&self, kfs: &StSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.not_loaded.is_empty(),
             false => self.not_loaded.difference(kfs).nth(0).is_none(),
@@ -15,12 +18,12 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_verbose(
         &self,
-        kfs: &StSet<SolItemId>,
-    ) -> Vec<SolValNotLoadedItemFail> {
+        kfs: &StSet<ItemId>,
+    ) -> Vec<ValNotLoadedItemFail> {
         self.not_loaded
             .iter()
             .filter(|v| !kfs.contains(v))
-            .map(|v| SolValNotLoadedItemFail { item_id: *v })
+            .map(|v| ValNotLoadedItemFail { item_id: *v })
             .collect()
     }
 }

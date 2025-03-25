@@ -18,7 +18,7 @@ pub(crate) enum HSubsystemInfo {
 impl HSubsystemInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_subsystem_info: &rc::SolSubsystemInfo,
+        core_subsystem_info: &rc::SubsystemInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

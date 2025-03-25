@@ -1,12 +1,12 @@
-use crate::defs::SolFitId;
+use crate::sol::FitId;
 
 #[derive(Debug)]
 pub struct FitHasItemKindError {
-    pub fit_id: SolFitId,
+    pub fit_id: FitId,
     pub item_kind: &'static str,
 }
 impl FitHasItemKindError {
-    pub(crate) fn new(fit_id: SolFitId, item_kind: &'static str) -> Self {
+    pub(crate) fn new(fit_id: FitId, item_kind: &'static str) -> Self {
         Self { fit_id, item_kind }
     }
 }

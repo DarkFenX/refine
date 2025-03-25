@@ -1,14 +1,14 @@
 use crate::{
-    defs::SolItemId,
     sol::{
-        debug::{SolDebugError, SolDebugResult},
-        uad::{SolUad, item::SolItem},
+        ItemId,
+        debug::{DebugError, DebugResult},
+        uad::{Uad, item::Item},
     },
     util::StSet,
 };
 
-impl SolUad {
-    pub fn debug_consistency_check(&self) -> SolDebugResult {
+impl Uad {
+    pub fn debug_consistency_check(&self) -> DebugResult {
         let mut seen_items = Vec::new();
         // Fleets
         for fleet in self.fleets.iter_fleets() {
@@ -23,10 +23,10 @@ impl SolUad {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
-            if !matches!(item, SolItem::SwEffect(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::SwEffect(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(self)?;
         }
@@ -35,26 +35,26 @@ impl SolUad {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(SolDebugError::new()),
+                _ => return Err(DebugError::new()),
             };
-            if !matches!(item, SolItem::ProjEffect(_)) {
-                return Err(SolDebugError::new());
+            if !matches!(item, Item::ProjEffect(_)) {
+                return Err(DebugError::new());
             }
             item.debug_consistency_check(self)?;
         }
         // Check if we have any duplicate references to items
         if check_item_duplicates(&seen_items) {
-            return Err(SolDebugError::new());
+            return Err(DebugError::new());
         }
         // Check if we have any unreferenced items
-        if !self.items.iter().all(|item| seen_items.contains(&item.get_id())) {
-            return Err(SolDebugError::new());
+        if !self.items.iter().all(|item| seen_items.contains(&item.get_item_id())) {
+            return Err(DebugError::new());
         }
         Ok(())
     }
 }
 
-fn check_item_duplicates(item_ids: &[SolItemId]) -> bool {
+fn check_item_duplicates(item_ids: &[ItemId]) -> bool {
     let mut uniq = StSet::new();
     !item_ids.iter().all(|x| uniq.insert(x))
 }

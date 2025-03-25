@@ -16,8 +16,8 @@ pub(crate) struct HDroneInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) projs: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
 }
-impl From<&rc::SolDroneInfo> for HDroneInfoPartial {
-    fn from(core_drone_info: &rc::SolDroneInfo) -> Self {
+impl From<&rc::DroneInfo> for HDroneInfoPartial {
+    fn from(core_drone_info: &rc::DroneInfo) -> Self {
         Self {
             id: core_drone_info.id,
             kind: "drone",

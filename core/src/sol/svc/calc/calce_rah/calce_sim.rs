@@ -1,28 +1,30 @@
 use std::collections::BTreeMap;
 
 use itertools::Itertools;
-use ordered_float::Float;
+use ordered_float::{Float, OrderedFloat as OF};
 
 use crate::{
-    defs::{AttrVal, Count, OF, SolFitId, SolItemId},
     sol::{
-        SolDmgKinds,
-        svc::calc::{SolAttrVal, SolCalc},
-        uad::SolUad,
+        AttrVal, DmgKinds, FitId, ItemId,
+        svc::calc::{Calc, CalcAttrVal},
+        uad::Uad,
     },
     util::{StMap, StSet},
 };
 
 use super::{
-    rah_data_sim::SolRahDataSim,
-    rah_history_entry::SolRahSimHistoryEntry,
-    rah_info::SolRahInfo,
-    shared::{EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID, rah_round},
-    tick_iter::SolRahSimTickIter,
+    rah_data_sim::RahDataSim,
+    rah_history_entry::RahSimHistoryEntry,
+    rah_info::RahInfo,
+    shared::{
+        EM_A_ATTR_ID, EXPL_A_ATTR_ID, KIN_A_ATTR_ID, RAH_A_EFFECT_ID, SHIFT_A_ATTR_ID, THERM_A_ATTR_ID, TickCount,
+        rah_round,
+    },
+    tick_iter::RahSimTickIter,
 };
 
-impl SolCalc {
-    pub(super) fn rah_run_simulation(&mut self, uad: &SolUad, fit_id: &SolFitId) {
+impl Calc {
+    pub(super) fn rah_run_simulation(&mut self, uad: &Uad, fit_id: &FitId) {
         let ship_id = match uad.fits.get_fit(fit_id).unwrap().ship {
             Some(ship_id) => ship_id,
             None => {
@@ -53,13 +55,13 @@ impl SolCalc {
             self.set_rah_result(uad, item_id, item_sim_data.info.resos, false);
             // Round resonances for the zero history tick. Later they will be rounded by function
             // which adapts resonances to damage
-            let item_history_entry = SolRahSimHistoryEntry::new(*item_id, OF(0.0), &item_sim_data.info.resos, true);
+            let item_history_entry = RahSimHistoryEntry::new(*item_id, OF(0.0), &item_sim_data.info.resos, true);
             sim_history_entry.push(item_history_entry);
         }
         history_entries_seen.insert(sim_history_entry.clone());
         sim_history.push(sim_history_entry);
         // Run simulation
-        for tick_data in SolRahSimTickIter::new(sim_datas.iter()) {
+        for tick_data in RahSimTickIter::new(sim_datas.iter()) {
             // For each RAH, calculate damage received during this tick
             let ship_resos = match self.get_ship_resonances(uad, &ship_id) {
                 Some(ship_resos) => ship_resos,
@@ -82,7 +84,7 @@ impl SolCalc {
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
                 let item_sim_data = sim_datas.get_mut(&cycled_item_id).unwrap();
-                let mut taken_dmg = SolDmgKinds::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0));
+                let mut taken_dmg = DmgKinds::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0));
                 // Extract damage ship taken during RAH cycle, replacing it with 0's
                 std::mem::swap(&mut taken_dmg, &mut item_sim_data.taken_dmg);
                 let next_resos = get_next_resonances(
@@ -99,7 +101,7 @@ impl SolCalc {
             for item_id in sim_datas.keys() {
                 let item_cycling_time = *tick_data.cycling_times.get(item_id).unwrap();
                 let item_resos = self.rah.resonances.get(item_id).unwrap().unwrap();
-                let item_history_entry = SolRahSimHistoryEntry::new(*item_id, item_cycling_time, &item_resos, false);
+                let item_history_entry = RahSimHistoryEntry::new(*item_id, item_cycling_time, &item_resos, false);
                 sim_history_entry.push(item_history_entry);
             }
             // See if we're in a loop, if we are - calculate average resists across tick states
@@ -131,14 +133,14 @@ impl SolCalc {
         let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
         self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);
     }
-    fn get_ship_resonances(&mut self, uad: &SolUad, ship_id: &SolItemId) -> Option<SolDmgKinds<AttrVal>> {
-        let em = self.get_item_attr_val_full(uad, ship_id, &EM_ATTR_ID).ok()?.dogma;
-        let therm = self.get_item_attr_val_full(uad, ship_id, &THERM_ATTR_ID).ok()?.dogma;
-        let kin = self.get_item_attr_val_full(uad, ship_id, &KIN_ATTR_ID).ok()?.dogma;
-        let expl = self.get_item_attr_val_full(uad, ship_id, &EXPL_ATTR_ID).ok()?.dogma;
-        Some(SolDmgKinds::new(em, therm, kin, expl))
+    fn get_ship_resonances(&mut self, uad: &Uad, ship_id: &ItemId) -> Option<DmgKinds<AttrVal>> {
+        let em = self.get_item_attr_val_full(uad, ship_id, &EM_A_ATTR_ID).ok()?.dogma;
+        let therm = self.get_item_attr_val_full(uad, ship_id, &THERM_A_ATTR_ID).ok()?.dogma;
+        let kin = self.get_item_attr_val_full(uad, ship_id, &KIN_A_ATTR_ID).ok()?.dogma;
+        let expl = self.get_item_attr_val_full(uad, ship_id, &EXPL_A_ATTR_ID).ok()?.dogma;
+        Some(DmgKinds::new(em, therm, kin, expl))
     }
-    fn get_fit_rah_sim_datas(&mut self, uad: &SolUad, fit_id: &SolFitId) -> BTreeMap<SolItemId, SolRahDataSim> {
+    fn get_fit_rah_sim_datas(&mut self, uad: &Uad, fit_id: &FitId) -> BTreeMap<ItemId, RahDataSim> {
         let mut rah_datas = BTreeMap::new();
         for item_id in self.rah.by_fit.get(fit_id).copied().collect_vec() {
             let rah_attrs = match self.get_rah_sim_data(uad, &item_id) {
@@ -155,12 +157,12 @@ impl SolCalc {
         }
         rah_datas
     }
-    fn get_rah_sim_data(&mut self, uad: &SolUad, item_id: &SolItemId) -> Option<SolRahDataSim> {
+    fn get_rah_sim_data(&mut self, uad: &Uad, item_id: &ItemId) -> Option<RahDataSim> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
-        let res_em = self.get_item_attr_val_no_pp(uad, item_id, &EM_ATTR_ID).ok()?;
-        let res_therm = self.get_item_attr_val_no_pp(uad, item_id, &THERM_ATTR_ID).ok()?;
-        let res_kin = self.get_item_attr_val_no_pp(uad, item_id, &KIN_ATTR_ID).ok()?;
-        let res_expl = self.get_item_attr_val_no_pp(uad, item_id, &EXPL_ATTR_ID).ok()?;
+        let res_em = self.get_item_attr_val_no_pp(uad, item_id, &EM_A_ATTR_ID).ok()?;
+        let res_therm = self.get_item_attr_val_no_pp(uad, item_id, &THERM_A_ATTR_ID).ok()?;
+        let res_kin = self.get_item_attr_val_no_pp(uad, item_id, &KIN_A_ATTR_ID).ok()?;
+        let res_expl = self.get_item_attr_val_no_pp(uad, item_id, &EXPL_A_ATTR_ID).ok()?;
         if res_em.dogma == OF(1.0)
             && res_therm.dogma == OF(1.0)
             && res_kin.dogma == OF(1.0)
@@ -171,75 +173,75 @@ impl SolCalc {
         // Other attributes using regular getters
         // Divide by 100 for convenience - raw form of shift amount is defined in percentages, while
         // resonances are in absolute form
-        let shift_amount = self.get_item_attr_val_full(uad, item_id, &SHIFT_ATTR_ID).ok()?.dogma / OF(100.0);
+        let shift_amount = self.get_item_attr_val_full(uad, item_id, &SHIFT_A_ATTR_ID).ok()?.dogma / OF(100.0);
         if shift_amount <= OF(0.0) {
             return None;
         }
         // Raw form of cycle time is defined in milliseconds (we don't really care in RAH sim, just
         // to be more intuitive during debugging)
-        let cycle_ms = self.get_item_effect_id_duration(uad, item_id, &RAH_EFFECT_ID)? / OF(1000.0);
+        let cycle_ms = self.get_item_effect_id_duration(uad, item_id, &RAH_A_EFFECT_ID)? / OF(1000.0);
         if cycle_ms <= OF(0.0) {
             return None;
         }
-        let rah_info = SolRahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_ms, shift_amount);
-        Some(SolRahDataSim::new(rah_info))
+        let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_ms, shift_amount);
+        Some(RahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, uad: &SolUad, fit_id: &SolFitId, notify: bool) {
+    fn set_fit_rahs_unadapted(&mut self, uad: &Uad, fit_id: &FitId, notify: bool) {
         for item_id in self.rah.by_fit.get(fit_id).copied().collect_vec() {
             self.set_rah_unadapted(uad, &item_id, notify);
         }
     }
-    fn set_rah_unadapted(&mut self, uad: &SolUad, item_id: &SolItemId, notify: bool) {
+    fn set_rah_unadapted(&mut self, uad: &Uad, item_id: &ItemId, notify: bool) {
         let em = self
-            .get_item_attr_val_no_pp(uad, item_id, &EM_ATTR_ID)
-            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
+            .get_item_attr_val_no_pp(uad, item_id, &EM_A_ATTR_ID)
+            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let therm = self
-            .get_item_attr_val_no_pp(uad, item_id, &THERM_ATTR_ID)
-            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
+            .get_item_attr_val_no_pp(uad, item_id, &THERM_A_ATTR_ID)
+            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let kin = self
-            .get_item_attr_val_no_pp(uad, item_id, &KIN_ATTR_ID)
-            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
+            .get_item_attr_val_no_pp(uad, item_id, &KIN_A_ATTR_ID)
+            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let expl = self
-            .get_item_attr_val_no_pp(uad, item_id, &EXPL_ATTR_ID)
-            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
-        let rah_resos = SolDmgKinds::new(em, therm, kin, expl);
+            .get_item_attr_val_no_pp(uad, item_id, &EXPL_A_ATTR_ID)
+            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
+        let rah_resos = DmgKinds::new(em, therm, kin, expl);
         self.set_rah_result(uad, item_id, rah_resos, notify);
     }
     // Result application methods
-    fn set_rah_result(&mut self, uad: &SolUad, item_id: &SolItemId, resos: SolDmgKinds<SolAttrVal>, notify: bool) {
+    fn set_rah_result(&mut self, uad: &Uad, item_id: &ItemId, resos: DmgKinds<CalcAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
-            self.force_attr_postproc_recalc(uad, item_id, &EM_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &THERM_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &KIN_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &EXPL_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &EM_A_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &THERM_A_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &KIN_A_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &EXPL_A_ATTR_ID);
         }
     }
     fn set_partial_fit_rahs_result(
         &mut self,
-        uad: &SolUad,
-        resos: StMap<SolItemId, SolDmgKinds<AttrVal>>,
-        sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
+        uad: &Uad,
+        resos: StMap<ItemId, DmgKinds<AttrVal>>,
+        sim_datas: &BTreeMap<ItemId, RahDataSim>,
     ) {
         for (item_id, item_sim_data) in sim_datas.iter() {
             // Average resonance is what passed as resonances for this method; average resonance
             // getter might not return resonances for all RAHs, and it's hard to trace when/why this
             // might happen. For safety, just use unadapted values if that happens
             let item_resos = match resos.get(item_id) {
-                Some(item_avg_resos) => SolDmgKinds::new(
-                    SolAttrVal::new(item_sim_data.info.resos.em.base, item_avg_resos.em, item_avg_resos.em),
-                    SolAttrVal::new(
+                Some(item_avg_resos) => DmgKinds::new(
+                    CalcAttrVal::new(item_sim_data.info.resos.em.base, item_avg_resos.em, item_avg_resos.em),
+                    CalcAttrVal::new(
                         item_sim_data.info.resos.thermal.base,
                         item_avg_resos.thermal,
                         item_avg_resos.thermal,
                     ),
-                    SolAttrVal::new(
+                    CalcAttrVal::new(
                         item_sim_data.info.resos.kinetic.base,
                         item_avg_resos.kinetic,
                         item_avg_resos.kinetic,
                     ),
-                    SolAttrVal::new(
+                    CalcAttrVal::new(
                         item_sim_data.info.resos.explosive.base,
                         item_avg_resos.explosive,
                         item_avg_resos.explosive,
@@ -253,10 +255,10 @@ impl SolCalc {
 }
 
 fn get_next_resonances(
-    mut resonances: SolDmgKinds<SolAttrVal>,
-    taken_dmg: SolDmgKinds<AttrVal>,
+    mut resonances: DmgKinds<CalcAttrVal>,
+    taken_dmg: DmgKinds<AttrVal>,
     shift_amount: AttrVal,
-) -> SolDmgKinds<SolAttrVal> {
+) -> DmgKinds<CalcAttrVal> {
     // Rounding in this function to avoid float errors serves two purposes:
     // 1) it helps in history loop detection;
     // 2) it helps to avoid weird results in unrealistic edge cases, e.g. RAH which starts 0/0/100/0
@@ -285,7 +287,7 @@ fn get_next_resonances(
         let to_donate = rah_round(Float::min(shift_amount, OF(1.0) - current_value.dogma));
         total_transferred += to_donate;
         let new_value = rah_round(current_value.dogma + to_donate);
-        resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
+        resonances[*index] = CalcAttrVal::new(current_value.base, new_value, new_value);
     }
     // Distribute
     let mut to_distribute = total_transferred;
@@ -302,7 +304,7 @@ fn get_next_resonances(
         .unwrap();
         to_distribute -= to_take;
         let new_value = rah_round(current_value.dogma - to_take);
-        resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
+        resonances[*index] = CalcAttrVal::new(current_value.base, new_value, new_value);
         if to_distribute <= OF(0.0) {
             break;
         }
@@ -310,7 +312,7 @@ fn get_next_resonances(
     resonances
 }
 
-fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<SolItemId, SolDmgKinds<AttrVal>> {
+fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> StMap<ItemId, DmgKinds<AttrVal>> {
     let mut resos_used = StMap::new();
     for sim_history_entry in sim_history {
         for item_history_entry in sim_history_entry {
@@ -327,14 +329,14 @@ fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<S
     for (item_id, resos) in resos_used.into_iter() {
         let reso_len = resos.len() as f64;
         let item_avg_resos = match resos.into_iter().reduce(|a, v| {
-            SolDmgKinds::new(
+            DmgKinds::new(
                 a.em + v.em,
                 a.thermal + v.thermal,
                 a.kinetic + v.kinetic,
                 a.explosive + v.explosive,
             )
         }) {
-            Some(sum) => SolDmgKinds::new(
+            Some(sum) => DmgKinds::new(
                 sum.em / reso_len,
                 sum.thermal / reso_len,
                 sum.kinetic / reso_len,
@@ -349,9 +351,9 @@ fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<S
 }
 
 fn estimate_initial_adaptation_ticks(
-    sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
-    sim_history: &[Vec<SolRahSimHistoryEntry>],
-) -> usize {
+    sim_datas: &BTreeMap<ItemId, RahDataSim>,
+    sim_history: &[Vec<RahSimHistoryEntry>],
+) -> TickCount {
     // Get count of cycles it takes for each RAH to exhaust its highest resistance
     let mut exhaustion_cycles = StMap::new();
     for (item_id, item_sim_data) in sim_datas.iter() {
@@ -378,7 +380,7 @@ fn estimate_initial_adaptation_ticks(
     // adjustments
     let slowest_cycles = (exhaustion_cycles.get(&slowest_item_id).unwrap() * OF(1.5))
         .ceil()
-        .into_inner() as Count;
+        .into_inner() as TickCount;
     if slowest_cycles == 0 {
         return 0;
     }

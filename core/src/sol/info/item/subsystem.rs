@@ -1,34 +1,20 @@
-use crate::{
-    defs::{EItemId, SlotIndex, SolFitId, SolItemId},
-    sol::uad::item::SolSubsystem,
-};
+use crate::sol::{FitId, ItemId, ItemTypeId, SlotIndex, uad::item::Subsystem};
 
-pub struct SolSubsystemInfo {
-    pub id: SolItemId,
-    pub type_id: EItemId,
-    pub fit_id: SolFitId,
+pub struct SubsystemInfo {
+    pub id: ItemId,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub slot: Option<SlotIndex>,
     pub enabled: bool,
 }
-impl SolSubsystemInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, slot: Option<SlotIndex>, enabled: bool) -> Self {
-        Self {
-            id,
-            type_id,
-            fit_id,
-            slot,
-            enabled,
+impl From<&Subsystem> for SubsystemInfo {
+    fn from(sol_subsystem: &Subsystem) -> Self {
+        SubsystemInfo {
+            id: sol_subsystem.get_item_id(),
+            type_id: sol_subsystem.get_a_item_id(),
+            fit_id: sol_subsystem.get_fit_id(),
+            slot: sol_subsystem.get_a_slot(),
+            enabled: sol_subsystem.get_subsystem_state(),
         }
-    }
-}
-impl From<&SolSubsystem> for SolSubsystemInfo {
-    fn from(sol_subsystem: &SolSubsystem) -> Self {
-        SolSubsystemInfo::new(
-            sol_subsystem.get_id(),
-            sol_subsystem.get_type_id(),
-            sol_subsystem.get_fit_id(),
-            sol_subsystem.get_slot(),
-            sol_subsystem.get_subsystem_state(),
-        )
     }
 }

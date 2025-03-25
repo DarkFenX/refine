@@ -1,34 +1,32 @@
 use crate::{
     sol::svc::calc::{
-        calce_rah::SolRahSim,
-        misc::SolAttrValData,
-        registers::{
-            SolBuffRegister, SolDependencyRegister, SolProjectionRegister, SolRevisionRegister, SolStandardRegister,
-        },
+        calce_rah::RahSim,
+        misc::AttrValData,
+        registers::{BuffRegister, DependencyRegister, ProjectionRegister, RevisionRegister, StandardRegister},
     },
     src::Src,
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolCalc {
-    pub(in crate::sol::svc::calc) attrs: SolAttrValData,
-    pub(in crate::sol::svc::calc) std: SolStandardRegister,
-    pub(in crate::sol::svc::calc) buffs: SolBuffRegister,
-    pub(in crate::sol::svc::calc) deps: SolDependencyRegister,
-    pub(in crate::sol::svc::calc) revs: SolRevisionRegister,
-    pub(in crate::sol::svc::calc) projs: SolProjectionRegister,
-    pub(in crate::sol::svc::calc) rah: SolRahSim,
+pub(in crate::sol) struct Calc {
+    pub(in crate::sol::svc::calc) attrs: AttrValData,
+    pub(in crate::sol::svc::calc) std: StandardRegister,
+    pub(in crate::sol::svc::calc) buffs: BuffRegister,
+    pub(in crate::sol::svc::calc) deps: DependencyRegister,
+    pub(in crate::sol::svc::calc) revs: RevisionRegister,
+    pub(in crate::sol::svc::calc) projs: ProjectionRegister,
+    pub(in crate::sol::svc::calc) rah: RahSim,
 }
-impl SolCalc {
+impl Calc {
     pub(in crate::sol::svc) fn new(src: &Src) -> Self {
         Self {
-            attrs: SolAttrValData::new(),
-            std: SolStandardRegister::new(),
-            buffs: SolBuffRegister::new(),
-            deps: SolDependencyRegister::new(),
-            revs: SolRevisionRegister::new(),
-            projs: SolProjectionRegister::new(),
-            rah: SolRahSim::new(src),
+            attrs: AttrValData::new(),
+            std: StandardRegister::new(),
+            buffs: BuffRegister::new(),
+            deps: DependencyRegister::new(),
+            revs: RevisionRegister::new(),
+            projs: ProjectionRegister::new(),
+            rah: RahSim::new(src),
         }
     }
 }

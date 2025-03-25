@@ -1,33 +1,29 @@
 use crate::{
-    consts,
-    defs::{AttrVal, SolItemId},
+    ac,
     sol::{
-        svc::vast::{SolValCache, SolVastFitData},
-        uad::SolUad,
+        AttrVal, ItemId,
+        svc::vast::{ValCache, VastFitData},
+        uad::Uad,
     },
     util::StSet,
 };
 
 #[derive(Copy, Clone)]
-pub struct SolValChargeSizeFail {
-    pub parent_item_id: SolItemId,
-    pub charge_item_id: SolItemId,
+pub struct ValChargeSizeFail {
+    pub parent_item_id: ItemId,
+    pub charge_item_id: ItemId,
     pub charge_size: Option<AttrVal>,
     pub allowed_size: AttrVal,
 }
 
-impl SolVastFitData {
+impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_charge_size_fast(
-        &mut self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-    ) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_charge_size_fast(&mut self, kfs: &StSet<ItemId>, uad: &Uad) -> bool {
         for (module_item_id, cache) in self.mods_charge_size.iter_mut() {
             match cache {
-                SolValCache::Todo(allowed_size) => match calculate_item_result(uad, module_item_id, *allowed_size) {
-                    SolValCache::Pass(pass) => cache.pass(pass),
-                    SolValCache::Fail(fail) => {
+                ValCache::Todo(allowed_size) => match calculate_item_result(uad, module_item_id, *allowed_size) {
+                    ValCache::Pass(pass) => cache.pass(pass),
+                    ValCache::Fail(fail) => {
                         let ret_fail = !kfs.contains(&fail.charge_item_id);
                         cache.fail(fail);
                         if ret_fail {
@@ -36,8 +32,8 @@ impl SolVastFitData {
                     }
                     _ => (),
                 },
-                SolValCache::Pass(_) => (),
-                SolValCache::Fail(fail) => {
+                ValCache::Pass(_) => (),
+                ValCache::Fail(fail) => {
                     if !kfs.contains(&fail.charge_item_id) {
                         return false;
                     }
@@ -49,15 +45,15 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_charge_size_verbose(
         &mut self,
-        kfs: &StSet<SolItemId>,
-        uad: &SolUad,
-    ) -> Vec<SolValChargeSizeFail> {
+        kfs: &StSet<ItemId>,
+        uad: &Uad,
+    ) -> Vec<ValChargeSizeFail> {
         let mut fails = Vec::new();
         for (module_item_id, cache) in self.mods_charge_size.iter_mut() {
             match cache {
-                SolValCache::Todo(allowed_size) => match calculate_item_result(uad, module_item_id, *allowed_size) {
-                    SolValCache::Pass(pass) => cache.pass(pass),
-                    SolValCache::Fail(fail) => {
+                ValCache::Todo(allowed_size) => match calculate_item_result(uad, module_item_id, *allowed_size) {
+                    ValCache::Pass(pass) => cache.pass(pass),
+                    ValCache::Fail(fail) => {
                         if !kfs.contains(&fail.charge_item_id) {
                             fails.push(fail);
                         }
@@ -65,8 +61,8 @@ impl SolVastFitData {
                     }
                     _ => (),
                 },
-                SolValCache::Pass(_) => (),
-                SolValCache::Fail(fail) => {
+                ValCache::Pass(_) => (),
+                ValCache::Fail(fail) => {
                     if !kfs.contains(&fail.charge_item_id) {
                         fails.push(*fail)
                     }
@@ -78,23 +74,23 @@ impl SolVastFitData {
 }
 
 fn calculate_item_result(
-    uad: &SolUad,
-    module_item_id: &SolItemId,
+    uad: &Uad,
+    module_item_id: &ItemId,
     allowed_size: AttrVal,
-) -> SolValCache<AttrVal, SolValChargeSizeFail> {
+) -> ValCache<AttrVal, ValChargeSizeFail> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
-    let charge_item_id = match module.get_charge_id() {
+    let charge_item_id = match module.get_charge_item_id() {
         Some(charge_item_id) => charge_item_id,
-        None => return SolValCache::Pass(allowed_size),
+        None => return ValCache::Pass(allowed_size),
     };
-    let charge_attrs = match uad.items.get_item(&charge_item_id).unwrap().get_attrs() {
+    let charge_attrs = match uad.items.get_item(&charge_item_id).unwrap().get_a_attrs() {
         Some(charge_attrs) => charge_attrs,
-        None => return SolValCache::Pass(allowed_size),
+        None => return ValCache::Pass(allowed_size),
     };
-    let charge_size = match charge_attrs.get(&consts::attrs::CHARGE_SIZE) {
+    let charge_size = match charge_attrs.get(&ac::attrs::CHARGE_SIZE) {
         Some(charge_size) => *charge_size,
         None => {
-            return SolValCache::Fail(SolValChargeSizeFail {
+            return ValCache::Fail(ValChargeSizeFail {
                 parent_item_id: *module_item_id,
                 charge_item_id,
                 charge_size: None,
@@ -103,8 +99,8 @@ fn calculate_item_result(
         }
     };
     match charge_size == allowed_size {
-        true => SolValCache::Pass(allowed_size),
-        false => SolValCache::Fail(SolValChargeSizeFail {
+        true => ValCache::Pass(allowed_size),
+        false => ValCache::Fail(ValChargeSizeFail {
             parent_item_id: *module_item_id,
             charge_item_id,
             charge_size: Some(charge_size),

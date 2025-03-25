@@ -29,7 +29,7 @@ pub(crate) struct HModuleInfoPartial {
 impl HModuleInfoPartial {
     pub(super) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_module_info: &rc::SolModuleInfo,
+        core_module_info: &rc::ModuleInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         Self {

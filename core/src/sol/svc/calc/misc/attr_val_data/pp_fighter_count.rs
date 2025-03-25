@@ -1,20 +1,22 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    consts,
-    defs::{EAttrId, OF, SolItemId},
+    ac, ad,
     sol::{
-        svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc},
-        uad::SolUad,
+        ItemId,
+        svc::calc::{AttrValInfo, Calc, CalcAttrVal},
+        uad::Uad,
     },
 };
 
-pub(in crate::sol::svc::calc) const FTR_COUNT_ATTR: EAttrId = consts::attrs::FTR_SQ_SIZE;
+pub(in crate::sol::svc::calc) const FTR_COUNT_ATTR: ad::AAttrId = ac::attrs::FTR_SQ_SIZE;
 
 pub(super) fn fighter_count_postproc_fast(
-    _calc: &mut SolCalc,
-    uad: &SolUad,
-    item_id: &SolItemId,
-    mut val: SolAttrVal,
-) -> SolAttrVal {
+    _calc: &mut Calc,
+    uad: &Uad,
+    item_id: &ItemId,
+    mut val: CalcAttrVal,
+) -> CalcAttrVal {
     let count = uad
         .items
         .get_item(item_id)
@@ -30,11 +32,11 @@ pub(super) fn fighter_count_postproc_fast(
 }
 
 pub(super) fn fighter_count_postproc_info(
-    _calc: &mut SolCalc,
-    uad: &SolUad,
-    item_id: &SolItemId,
-    _info: SolAttrValInfo,
-) -> SolAttrValInfo {
+    _calc: &mut Calc,
+    uad: &Uad,
+    item_id: &ItemId,
+    _info: AttrValInfo,
+) -> AttrValInfo {
     let count = uad
         .items
         .get_item(item_id)
@@ -44,5 +46,5 @@ pub(super) fn fighter_count_postproc_info(
         .get_count()
         .unwrap();
     let current_count = OF::from(count.current);
-    SolAttrValInfo::new(current_count)
+    AttrValInfo::new(current_count)
 }

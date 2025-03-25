@@ -1,29 +1,29 @@
-use crate::sol::uad::item::SolItemState;
+use crate::ad;
 
 /// Drone/fighter states.
 #[derive(Copy, Clone)]
-pub enum SolMinionState {
+pub enum MinionState {
     InBay,
     InSpace,
     Engaging,
 }
-impl From<SolItemState> for SolMinionState {
-    fn from(state: SolItemState) -> Self {
-        match state {
-            SolItemState::Ghost => Self::InBay,
-            SolItemState::Offline => Self::InBay,
-            SolItemState::Online => Self::InSpace,
-            SolItemState::Active => Self::Engaging,
-            SolItemState::Overload => Self::Engaging,
+impl From<ad::AState> for MinionState {
+    fn from(a_state: ad::AState) -> Self {
+        match a_state {
+            ad::AState::Ghost => Self::InBay,
+            ad::AState::Offline => Self::InBay,
+            ad::AState::Online => Self::InSpace,
+            ad::AState::Active => Self::Engaging,
+            ad::AState::Overload => Self::Engaging,
         }
     }
 }
-impl From<SolMinionState> for SolItemState {
-    fn from(state: SolMinionState) -> Self {
-        match state {
-            SolMinionState::InBay => Self::Ghost,
-            SolMinionState::InSpace => Self::Online,
-            SolMinionState::Engaging => Self::Active,
+impl From<MinionState> for ad::AState {
+    fn from(minion_state: MinionState) -> Self {
+        match minion_state {
+            MinionState::InBay => Self::Ghost,
+            MinionState::InSpace => Self::Online,
+            MinionState::Engaging => Self::Active,
         }
     }
 }

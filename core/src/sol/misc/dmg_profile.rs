@@ -1,13 +1,13 @@
-use crate::defs::AttrVal;
+use crate::sol::AttrVal;
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub struct SolDmgProfile {
+pub struct DmgProfile {
     pub em: AttrVal,
     pub thermal: AttrVal,
     pub kinetic: AttrVal,
     pub explosive: AttrVal,
 }
-impl SolDmgProfile {
+impl DmgProfile {
     pub fn new(em: AttrVal, thermal: AttrVal, kinetic: AttrVal, explosive: AttrVal) -> Self {
         Self {
             em,

@@ -1,3 +1,3 @@
-use crate::{consts, defs::EAttrId};
+use crate::{ac, ad};
 
-pub(in crate::sol::svc::calc::modifier) const AAR_AFFECTOR_ATTR_ID: EAttrId = consts::attrs::CHARGED_ARMOR_DMG_MULT;
+pub(in crate::sol::svc::calc::modifier) const AAR_MULTIPLIER: ad::AAttrId = ac::attrs::CHARGED_ARMOR_DMG_MULT;

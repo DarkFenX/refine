@@ -1,5 +1,5 @@
 #[derive(Copy, Clone)]
-pub(in crate::sol) enum SolShipKind {
+pub(in crate::sol) enum ShipKind {
     Ship,
     Structure,
     Unknown,

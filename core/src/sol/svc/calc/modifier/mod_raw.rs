@@ -1,174 +1,143 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ad, consts,
-    defs::{AttrVal, EAttrId, EEffectId, SolItemId},
+    AttrVal, ac, ad,
     sol::{
-        svc::calc::{SolAffecteeFilter, SolAffectorInfo, SolAggrMode, SolCalc, SolLocation, SolModifierKind, SolOp},
-        uad::{SolUad, item::SolItem},
+        ItemId,
+        svc::calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
+        uad::{Uad, item::Item},
     },
 };
 
-use super::SolAffectorValue;
+use super::AffectorValue;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) struct SolRawModifier {
-    pub(in crate::sol::svc::calc) kind: SolModifierKind,
-    pub(in crate::sol::svc::calc) affector_item_id: SolItemId,
-    pub(in crate::sol::svc::calc) effect_id: EEffectId,
-    affector_value: SolAffectorValue,
-    pub(in crate::sol::svc::calc) op: SolOp,
-    pub(in crate::sol::svc::calc) aggr_mode: SolAggrMode,
-    pub(in crate::sol::svc::calc) affectee_filter: SolAffecteeFilter,
-    pub(in crate::sol::svc::calc) affectee_attr_id: EAttrId,
+pub(in crate::sol::svc::calc) struct RawModifier {
+    pub(in crate::sol::svc::calc) kind: ModifierKind,
+    pub(in crate::sol::svc::calc) affector_item_id: ItemId,
+    pub(in crate::sol::svc::calc) a_effect_id: ad::AEffectId,
+    pub(in crate::sol::svc::calc::modifier) affector_value: AffectorValue,
+    pub(in crate::sol::svc::calc) op: Op,
+    pub(in crate::sol::svc::calc) aggr_mode: AggrMode,
+    pub(in crate::sol::svc::calc) affectee_filter: AffecteeFilter,
+    pub(in crate::sol::svc::calc) affectee_a_attr_id: ad::AAttrId,
     // Buff-related
-    pub(in crate::sol::svc::calc) buff_type_attr_id: Option<EAttrId>,
+    pub(in crate::sol::svc::calc) buff_type_a_attr_id: Option<ad::AAttrId>,
     // Projection-related
-    pub(in crate::sol::svc::calc) resist_attr_id: Option<EAttrId>,
-    pub(in crate::sol::svc::calc) optimal_attr_id: Option<EAttrId>,
-    pub(in crate::sol::svc::calc) falloff_attr_id: Option<EAttrId>,
+    pub(in crate::sol::svc::calc) resist_a_attr_id: Option<ad::AAttrId>,
+    pub(in crate::sol::svc::calc) optimal_a_attr_id: Option<ad::AAttrId>,
+    pub(in crate::sol::svc::calc) falloff_a_attr_id: Option<ad::AAttrId>,
 }
-impl SolRawModifier {
-    pub(super) fn new(
-        kind: SolModifierKind,
-        affector_item_id: SolItemId,
-        effect_id: EEffectId,
-        affector_value: SolAffectorValue,
-        op: SolOp,
-        aggr_mode: SolAggrMode,
-        affectee_filter: SolAffecteeFilter,
-        affectee_attr_id: EAttrId,
-        buff_type_attr_id: Option<EAttrId>,
-        resist_attr_id: Option<EAttrId>,
-        optimal_attr_id: Option<EAttrId>,
-        falloff_attr_id: Option<EAttrId>,
-    ) -> Self {
-        Self {
-            kind,
-            affector_item_id,
-            effect_id,
-            affector_value,
-            op,
-            aggr_mode,
-            affectee_filter,
-            affectee_attr_id,
-            buff_type_attr_id,
-            resist_attr_id,
-            optimal_attr_id,
-            falloff_attr_id,
-        }
-    }
+impl RawModifier {
     pub(in crate::sol::svc::calc) fn from_a_modifier(
-        affector_item: &SolItem,
+        affector_item: &Item,
         a_effect: &ad::AEffect,
         a_modifier: &ad::AEffectModifier,
     ) -> Option<Self> {
-        let affectee_filter =
-            SolAffecteeFilter::from_a_effect_affectee_filter(&a_modifier.affectee_filter, affector_item);
+        let affectee_filter = AffecteeFilter::from_a_effect_affectee_filter(&a_modifier.affectee_filter, affector_item);
         let kind = get_mod_kind(a_effect, &affectee_filter)?;
         // Targeted effects are affected by both range and resists
-        let (resist_attr_id, optimal_attr_id, falloff_attr_id) = match kind {
-            SolModifierKind::Targeted => (
-                get_resist_attr_id(affector_item, a_effect),
+        let (resist_a_attr_id, optimal_a_attr_id, falloff_a_attr_id) = match kind {
+            ModifierKind::Targeted => (
+                get_resist_a_attr_id(affector_item, a_effect),
                 a_effect.range_attr_id,
                 a_effect.falloff_attr_id,
             ),
             _ => (None, None, None),
         };
-        Some(Self::new(
+        Some(Self {
             kind,
-            affector_item.get_id(),
-            a_effect.id,
-            SolAffectorValue::AttrId(a_modifier.affector_attr_id),
-            (&a_modifier.op).into(),
-            SolAggrMode::Stack,
+            affector_item_id: affector_item.get_item_id(),
+            a_effect_id: a_effect.id,
+            affector_value: AffectorValue::AttrId(a_modifier.affector_attr_id),
+            op: (&a_modifier.op).into(),
+            aggr_mode: AggrMode::Stack,
             affectee_filter,
-            a_modifier.affectee_attr_id,
-            None,
-            resist_attr_id,
-            optimal_attr_id,
-            falloff_attr_id,
-        ))
+            affectee_a_attr_id: a_modifier.affectee_attr_id,
+            buff_type_a_attr_id: None,
+            resist_a_attr_id,
+            optimal_a_attr_id,
+            falloff_a_attr_id,
+        })
     }
     pub(in crate::sol::svc::calc) fn from_a_buff_regular(
-        affector_item: &SolItem,
+        affector_item: &Item,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
-        affector_attr_id: EAttrId,
-        loc: SolLocation,
-        buff_type_attr_id: Option<EAttrId>,
+        affector_a_attr_id: ad::AAttrId,
+        loc: Location,
+        buff_type_a_attr_id: Option<ad::AAttrId>,
     ) -> Option<Self> {
-        SolRawModifier::from_a_buff(
+        RawModifier::from_a_buff(
             affector_item,
             a_effect,
             a_buff,
             a_mod,
-            SolAffectorValue::AttrId(affector_attr_id),
+            AffectorValue::AttrId(affector_a_attr_id),
             loc,
-            buff_type_attr_id,
+            buff_type_a_attr_id,
         )
     }
     pub(in crate::sol::svc::calc) fn from_a_buff_hardcoded(
-        affector_item: &SolItem,
+        affector_item: &Item,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
-        affector_val: AttrVal,
-        loc: SolLocation,
+        affector_mod_val: AttrVal,
+        loc: Location,
     ) -> Option<Self> {
-        SolRawModifier::from_a_buff(
+        RawModifier::from_a_buff(
             affector_item,
             a_effect,
             a_buff,
             a_mod,
-            SolAffectorValue::Hardcoded(affector_val),
+            AffectorValue::Hardcoded(affector_mod_val),
             loc,
             None,
         )
     }
     fn from_a_buff(
-        affector_item: &SolItem,
+        affector_item: &Item,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
-        affector_val: SolAffectorValue,
-        loc: SolLocation,
-        buff_type_attr_id: Option<EAttrId>,
+        affector_value: AffectorValue,
+        loc: Location,
+        buff_type_a_attr_id: Option<ad::AAttrId>,
     ) -> Option<Self> {
-        let affectee_filter =
-            SolAffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
+        let affectee_filter = AffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
         let kind = get_mod_kind(a_effect, &affectee_filter)?;
-        let (resist_attr_id, optimal_attr_id) = match kind {
-            SolModifierKind::Buff => (get_resist_attr_id(affector_item, a_effect), a_effect.range_attr_id),
+        let (resist_a_attr_id, optimal_a_attr_id) = match kind {
+            ModifierKind::Buff => (get_resist_a_attr_id(affector_item, a_effect), a_effect.range_attr_id),
             _ => (None, None),
         };
-        Some(Self::new(
+        Some(Self {
             kind,
-            affector_item.get_id(),
-            a_effect.id,
-            affector_val,
-            (&a_buff.op).into(),
-            SolAggrMode::from_a_buff(a_buff),
+            affector_item_id: affector_item.get_item_id(),
+            a_effect_id: a_effect.id,
+            affector_value,
+            op: (&a_buff.op).into(),
+            aggr_mode: AggrMode::from_a_buff(a_buff),
             affectee_filter,
-            a_mod.affectee_attr_id,
-            buff_type_attr_id,
-            resist_attr_id,
-            optimal_attr_id,
+            affectee_a_attr_id: a_mod.affectee_attr_id,
+            buff_type_a_attr_id,
+            resist_a_attr_id,
+            optimal_a_attr_id,
             // Modifiers created from buffs never define falloff - buffs either apply fully, or they
             // don't
-            None,
-        ))
+            falloff_a_attr_id: None,
+        })
     }
-    pub(in crate::sol::svc::calc) fn get_affector_attr_id(&self) -> Option<EAttrId> {
-        self.affector_value.get_affector_attr_id()
+    pub(in crate::sol::svc::calc) fn get_affector_a_attr_id(&self) -> Option<ad::AAttrId> {
+        self.affector_value.get_affector_a_attr_id()
     }
-    pub(in crate::sol::svc::calc) fn get_affector_info(&self, uad: &SolUad) -> SmallVec<SolAffectorInfo, 1> {
+    pub(in crate::sol::svc::calc) fn get_affector_info(&self, uad: &Uad) -> SmallVec<AffectorInfo, 1> {
         self.affector_value.get_affector_info(uad, &self.affector_item_id)
     }
-    pub(in crate::sol::svc::calc) fn get_mod_val(&self, calc: &mut SolCalc, uad: &SolUad) -> Option<AttrVal> {
+    pub(in crate::sol::svc::calc) fn get_mod_val(&self, calc: &mut Calc, uad: &Uad) -> Option<AttrVal> {
         self.affector_value
-            .get_mod_val(calc, uad, &self.affector_item_id, &self.effect_id)
+            .get_mod_val(calc, uad, &self.affector_item_id, &self.a_effect_id)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::sol::svc::calc) fn needs_revision_on_item_add(&self) -> bool {
@@ -177,50 +146,49 @@ impl SolRawModifier {
     pub(in crate::sol::svc::calc) fn needs_revision_on_item_remove(&self) -> bool {
         self.affector_value.revisable_on_item_remove()
     }
-    pub(in crate::sol::svc::calc) fn revise_on_item_add(&self, added_item: &SolItem, uad: &SolUad) -> bool {
+    pub(in crate::sol::svc::calc) fn revise_on_item_add(&self, added_item: &Item, uad: &Uad) -> bool {
         let affector_item = uad.items.get_item(&self.affector_item_id).unwrap();
         self.affector_value.revise_on_item_add(affector_item, added_item)
     }
-    pub(in crate::sol::svc::calc) fn revise_on_item_remove(&self, added_item: &SolItem, uad: &SolUad) -> bool {
+    pub(in crate::sol::svc::calc) fn revise_on_item_remove(&self, added_item: &Item, uad: &Uad) -> bool {
         let affector_item = uad.items.get_item(&self.affector_item_id).unwrap();
         self.affector_value.revise_on_item_remove(affector_item, added_item)
     }
 }
 
-fn get_mod_kind(effect: &ad::AEffect, affectee_filter: &SolAffecteeFilter) -> Option<SolModifierKind> {
-    if let SolAffecteeFilter::Direct(loc) = affectee_filter {
-        if matches!(loc, SolLocation::Item | SolLocation::Other) {
-            return Some(SolModifierKind::Local);
+fn get_mod_kind(a_effect: &ad::AEffect, a_affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
+    if let AffecteeFilter::Direct(loc) = a_affectee_filter {
+        if matches!(loc, Location::Item | Location::Other) {
+            return Some(ModifierKind::Local);
         }
     }
-    match (effect.category, &effect.buff) {
+    match (a_effect.category, &a_effect.buff) {
         // Local modifications
-        (
-            consts::effcats::PASSIVE | consts::effcats::ACTIVE | consts::effcats::ONLINE | consts::effcats::OVERLOAD,
-            None,
-        ) => Some(SolModifierKind::Local),
+        (ac::effcats::PASSIVE | ac::effcats::ACTIVE | ac::effcats::ONLINE | ac::effcats::OVERLOAD, None) => {
+            Some(ModifierKind::Local)
+        }
         // Buffs
-        (consts::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope {
-            ad::AEffectBuffScope::FleetShips => Some(SolModifierKind::FleetBuff),
-            _ => Some(SolModifierKind::Buff),
+        (ac::effcats::ACTIVE, Some(a_buff_info)) => match a_buff_info.scope {
+            ad::AEffectBuffScope::FleetShips => Some(ModifierKind::FleetBuff),
+            _ => Some(ModifierKind::Buff),
         },
         // Lib system-wide effects are EVE system effects and buffs
-        (consts::effcats::SYSTEM, None) => Some(SolModifierKind::System),
+        (ac::effcats::SYSTEM, None) => Some(ModifierKind::System),
         // Targeted effects
-        (consts::effcats::TARGET, None) => Some(SolModifierKind::Targeted),
+        (ac::effcats::TARGET, None) => Some(ModifierKind::Targeted),
         _ => None,
     }
 }
 
-pub(in crate::sol::svc::calc) fn get_resist_attr_id(item: &SolItem, effect: &ad::AEffect) -> Option<EAttrId> {
-    match effect.resist_attr_id {
-        Some(resist_attr_id) => Some(resist_attr_id),
-        None => match item.get_attrs() {
-            Some(attrs) => match attrs
-                .get(&consts::attrs::REMOTE_RESISTANCE_ID)
-                .map(|v| v.into_inner() as EAttrId)
+pub(in crate::sol::svc::calc) fn get_resist_a_attr_id(item: &Item, a_effect: &ad::AEffect) -> Option<ad::AAttrId> {
+    match a_effect.resist_attr_id {
+        Some(resist_a_attr_id) => Some(resist_a_attr_id),
+        None => match item.get_a_attrs() {
+            Some(a_attrs) => match a_attrs
+                .get(&ac::attrs::REMOTE_RESISTANCE_ID)
+                .map(|v| v.into_inner() as ad::AAttrId)
             {
-                Some(attr_id) if attr_id != 0 => Some(attr_id),
+                Some(a_attr_id) if a_attr_id != 0 => Some(a_attr_id),
                 _ => None,
             },
             None => None,

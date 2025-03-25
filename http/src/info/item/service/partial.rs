@@ -11,8 +11,8 @@ pub(crate) struct HServiceInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) enabled: HServiceState,
 }
-impl From<&rc::SolServiceInfo> for HServiceInfoPartial {
-    fn from(core_service_info: &rc::SolServiceInfo) -> Self {
+impl From<&rc::ServiceInfo> for HServiceInfoPartial {
+    fn from(core_service_info: &rc::ServiceInfo) -> Self {
         Self {
             id: core_service_info.id,
             kind: "service",

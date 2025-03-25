@@ -18,7 +18,7 @@ pub(crate) enum HRigInfo {
 impl HRigInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_rig_info: &rc::SolRigInfo,
+        core_rig_info: &rc::RigInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {

@@ -1,5 +1,5 @@
-pub(in crate::sol) use main::SolService;
-pub use state::SolServiceState;
+pub(in crate::sol) use main::Service;
+pub use state::ServiceState;
 
 mod debug;
 mod main;
