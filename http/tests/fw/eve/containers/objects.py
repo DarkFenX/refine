@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typing
 
-from tests.fw.eve.types import Attribute, Buff, Effect, Group, Item, Mutator
+from tests.fw.eve.types import Attribute, Buff, Effect, Group, Item, ItemList, Mutator
 from .primitives import EvePrimitives
 
 if typing.TYPE_CHECKING:
@@ -19,6 +19,7 @@ class EveObjects:
         # presently used).
         self.items: dict[int, list[Item]] = {}
         self.item_groups: dict[int, list[Group]] = {}
+        self.item_lists: dict[int, list[ItemList]] = {}
         self.attributes: dict[int, list[Attribute]] = {}
         self.effects: dict[int, list[Effect]] = {}
         self.buffs: dict[int, list[Buff]] = {}
@@ -223,6 +224,9 @@ class EveObjects:
         for item_group_list in self.item_groups.values():
             for item_group in item_group_list:
                 item_group.to_primitives(primitive_data=primitive_data)
+        for item_list_list in self.item_lists.values():
+            for item_list in item_list_list:
+                item_list.to_primitives(primitive_data=primitive_data)
         for attr_list in self.attributes.values():
             for attr in attr_list:
                 attr.to_primitives(primitive_data=primitive_data)

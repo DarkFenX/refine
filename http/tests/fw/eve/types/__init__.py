@@ -5,4 +5,5 @@ from .effect import Effect
 from .effect_modifier import EffectModifier
 from .group import Group
 from .item import Item
+from .item_list import ItemList
 from .mutator import Mutator
