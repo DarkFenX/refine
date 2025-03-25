@@ -8,9 +8,10 @@ use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
 use rc::{
-    AddMode, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption, SolValOptions, SolarSystem, Src, VERSION,
+    AddMode, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption, SolarSystem, Src, VERSION,
     ad::{AItemKind, AState, AdaptedDataHandler},
     ed::EveDataHandler,
+    val::ValOptions,
 };
 
 fn setup_logger() -> () {
@@ -280,7 +281,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys.add_drone(fit.id, 2446, MinionState::InBay, None).unwrap(); // T2 ogre
     }
 
-    let val_options = SolValOptions::all_enabled();
+    let val_options = ValOptions::all_enabled();
     // Generated from pyfa
     let items = vec![
         178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199,
@@ -684,7 +685,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn get_skill_ids(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::EItemId> {
+fn get_skill_ids(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::ed::EItemId> {
     let grp_ids = dh
         .get_item_groups()
         .unwrap()
