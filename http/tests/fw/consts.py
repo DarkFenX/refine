@@ -55,6 +55,11 @@ class EveItemCat(IntEnum):
 
 
 @unique
+class EveItemList(IntEnum):
+    wormhole_jump_blacklist = 245
+
+
+@unique
 class EveEffect(IntEnum):
     lo_power = 11
     hi_power = 12
