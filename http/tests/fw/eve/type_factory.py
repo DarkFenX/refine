@@ -199,6 +199,32 @@ class EveTypeFactory(EveDataManager):
     ) -> int:
         return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.structure)
 
+    def mk_eve_item_list(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            inc_type_ids: list[int] | type[Absent] = Default,
+            inc_grp_ids: list[int] | type[Absent] = Default,
+            inc_cat_ids: list[int] | type[Absent] = Default,
+            exc_type_ids: list[int] | type[Absent] = Default,
+            exc_grp_ids: list[int] | type[Absent] = Default,
+            exc_cat_ids: list[int] | type[Absent] = Default,
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if id_ is Default:
+            id_ = self.alloc_attr_id(datas=datas)
+        for data in datas:
+            data.mk_item_list(
+                id_=id_,
+                inc_type_ids=[] if inc_type_ids is Default else inc_type_ids,
+                inc_grp_ids=[] if inc_grp_ids is Default else inc_grp_ids,
+                inc_cat_ids=[] if inc_cat_ids is Default else inc_cat_ids,
+                exc_type_ids=[] if exc_type_ids is Default else exc_type_ids,
+                exc_grp_ids=[] if exc_grp_ids is Default else exc_grp_ids,
+                exc_cat_ids=[] if exc_cat_ids is Default else exc_cat_ids)
+        return id_
+
     def mk_eve_attr(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,

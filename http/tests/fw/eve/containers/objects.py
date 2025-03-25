@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing
 
+from tests.fw.eve.exception import TestDataConsistencyError
 from tests.fw.eve.types import Attribute, Buff, Effect, Group, Item, ItemList, Mutator
 from .primitives import EvePrimitives
 
@@ -27,9 +28,10 @@ class EveObjects:
         # Variables point at next ID to allocate
         self.item_id: int = 1000000
         self.item_group_id: int = 2000000
-        self.attr_id: int = 3000000
-        self.effect_id: int = 4000000
-        self.buff_id: int = 5000000
+        self.item_list_id: int = 3000000
+        self.attr_id: int = 4000000
+        self.effect_id: int = 5000000
+        self.buff_id: int = 6000000
 
     def prealloc_item_id(self) -> int:
         id_ = self.item_id
@@ -54,6 +56,18 @@ class EveObjects:
             self.item_groups[id_] = []
         if id_ >= self.item_group_id:
             self.item_group_id = id_ + 1
+
+    def prealloc_item_list_id(self) -> int:
+        id_ = self.item_list_id
+        while id_ in self.item_lists:
+            id_ += 1
+        return id_
+
+    def alloc_item_list_id(self, *, id_: int) -> None:
+        if id_ not in self.item_lists:
+            self.item_lists[id_] = []
+        if id_ >= self.item_list_id:
+            self.item_list_id = id_ + 1
 
     def prealloc_attr_id(self) -> int:
         id_ = self.attr_id
@@ -126,6 +140,27 @@ class EveObjects:
         group = Group(id_=id_, category_id=cat_id)
         self.item_groups.setdefault(id_, []).append(group)
         return group
+
+    def mk_item_list(
+            self, *,
+            id_: int,
+            inc_type_ids: list[int] | type[Absent],
+            inc_grp_ids: list[int] | type[Absent],
+            inc_cat_ids: list[int] | type[Absent],
+            exc_type_ids: list[int] | type[Absent],
+            exc_grp_ids: list[int] | type[Absent],
+            exc_cat_ids: list[int] | type[Absent],
+    ) -> ItemList:
+        item_list = ItemList(
+            id_=id_,
+            included_type_ids=inc_type_ids,
+            included_group_ids=inc_grp_ids,
+            included_category_ids=inc_cat_ids,
+            excluded_type_ids=exc_type_ids,
+            excluded_group_ids=exc_grp_ids,
+            excluded_category_ids=exc_cat_ids)
+        self.item_lists.setdefault(id_, []).append(item_list)
+        return item_list
 
     def mk_attr(
             self, *,
@@ -218,25 +253,20 @@ class EveObjects:
 
     def to_primitives(self) -> EvePrimitives:
         primitive_data = EvePrimitives(alias=self.alias)
-        for item_list in self.items.values():
-            for item in item_list:
-                item.to_primitives(primitive_data=primitive_data)
-        for item_group_list in self.item_groups.values():
-            for item_group in item_group_list:
-                item_group.to_primitives(primitive_data=primitive_data)
-        for item_list_list in self.item_lists.values():
-            for item_list in item_list_list:
-                item_list.to_primitives(primitive_data=primitive_data)
-        for attr_list in self.attributes.values():
-            for attr in attr_list:
-                attr.to_primitives(primitive_data=primitive_data)
-        for effect_list in self.effects.values():
-            for effect in effect_list:
-                effect.to_primitives(primitive_data=primitive_data)
-        for buff_list in self.buffs.values():
-            for buff in buff_list:
-                buff.to_primitives(primitive_data=primitive_data)
-        for mutator_list in self.mutators.values():
-            for mutator in mutator_list:
-                mutator.to_primitives(primitive_data=primitive_data)
+        self.__handle_container(primitive_data=primitive_data, container=self.items, entity_class=Item)
+        self.__handle_container(primitive_data=primitive_data, container=self.item_groups, entity_class=Group)
+        self.__handle_container(primitive_data=primitive_data, container=self.item_lists, entity_class=ItemList)
+        self.__handle_container(primitive_data=primitive_data, container=self.attributes, entity_class=Attribute)
+        self.__handle_container(primitive_data=primitive_data, container=self.effects, entity_class=Effect)
+        self.__handle_container(primitive_data=primitive_data, container=self.buffs, entity_class=Buff)
+        self.__handle_container(primitive_data=primitive_data, container=self.mutators, entity_class=Mutator)
         return primitive_data
+
+    @staticmethod
+    def __handle_container(*, primitive_data: EvePrimitives, container: dict[int, list], entity_class: object) -> None:
+        for entity_list in container.values():
+            if len(entity_list) > 1:
+                msg = f'expected 1 {entity_class.__name__}, got {len(entity_list)}'
+                raise TestDataConsistencyError(msg)
+            for entity in entity_list:
+                entity.to_primitives(primitive_data=primitive_data)

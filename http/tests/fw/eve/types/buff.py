@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import typing
 
+from tests.fw.eve.exception import TestDataConsistencyError
 from tests.fw.util import conditional_insert, make_repr_str
-from .exception import TestDataConsistencyError
 
 if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
