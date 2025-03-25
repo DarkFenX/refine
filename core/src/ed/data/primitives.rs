@@ -8,6 +8,7 @@ pub type EEffectCatId = i32;
 pub type EItemId = i32;
 pub type EItemGrpId = i32;
 pub type EItemCatId = i32;
+pub type EItemListId = i32;
 // Misc
 pub type EAttrVal = f64;
 pub type ECount = u32;

@@ -7,12 +7,13 @@ pub use item_abil::EItemFighterAbil;
 pub use item_attr::EItemAttr;
 pub use item_effect::EItemEffect;
 pub use item_group::EItemGroup;
+pub use item_list::EItemList;
 pub use item_srq::EItemSkillReq;
 pub use muta_attr_mod::EMutaAttrMod;
 pub use muta_item_conv::EMutaItemConv;
 pub use primitives::{
     EAbilId, EAttrId, EAttrUnitId, EAttrVal, EBuffId, ECount, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    EPrimitive, ESkillLevel,
+    EItemListId, EPrimitive, ESkillLevel,
 };
 
 mod abil;
@@ -24,6 +25,7 @@ mod item_abil;
 mod item_attr;
 mod item_effect;
 mod item_group;
+mod item_list;
 mod item_srq;
 mod muta_attr_mod;
 mod muta_item_conv;

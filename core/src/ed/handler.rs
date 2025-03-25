@@ -1,6 +1,6 @@
 use crate::ed::{
     EAttr, EBuff, EDataCont, EEffect, EFighterAbil, EItem, EItemAttr, EItemEffect, EItemFighterAbil, EItemGroup,
-    EItemSkillReq, EMutaAttrMod, EMutaItemConv, EResult,
+    EItemList, EItemSkillReq, EMutaAttrMod, EMutaItemConv, EResult,
 };
 
 /// EVE data handler interface definition.
@@ -14,6 +14,8 @@ pub trait EveDataHandler: std::fmt::Debug {
     fn get_items(&self) -> EResult<EDataCont<EItem>>;
     /// Get item groups.
     fn get_item_groups(&self) -> EResult<EDataCont<EItemGroup>>;
+    /// Get item type lists.
+    fn get_item_lists(&self) -> EResult<EDataCont<EItemList>>;
     /// Get dogma attributes.
     fn get_attrs(&self) -> EResult<EDataCont<EAttr>>;
     /// Get an m:n mapping between item types and dogma attributes.
