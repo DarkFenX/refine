@@ -5,6 +5,7 @@ class EveStrings:
         self.alias = alias
         self.types = ''
         self.groups = ''
+        self.typelist = ''
         self.typedogma = ''
         self.dogmaattributes = ''
         self.dogmaeffects = ''

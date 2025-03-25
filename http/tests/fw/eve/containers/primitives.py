@@ -9,6 +9,7 @@ class EvePrimitives:
         self.alias = alias
         self.types = {}
         self.groups = {}
+        self.typelist = {}
         self.typedogma = {}
         self.dogmaattributes = {}
         self.dogmaeffects = {}
@@ -22,6 +23,7 @@ class EvePrimitives:
         string_data = EveStrings(alias=self.alias)
         string_data.types = json.dumps(self.types)
         string_data.groups = json.dumps(self.groups)
+        string_data.typelist = json.dumps(self.typelist)
         string_data.typedogma = json.dumps(self.typedogma)
         string_data.dogmaattributes = json.dumps(self.dogmaattributes)
         string_data.dogmaeffects = json.dumps(self.dogmaeffects)

@@ -19,6 +19,7 @@ class EveDataServer:
         suffix_cont_map = {
             'fsd_binary/types.json': str_data.types,
             'fsd_binary/groups.json': str_data.groups,
+            'fsd_binary/typelist.json': str_data.typelist,
             'fsd_binary/dogmaattributes.json': str_data.dogmaattributes,
             'fsd_binary/typedogma.json': str_data.typedogma,
             'fsd_binary/dogmaeffects.json': str_data.dogmaeffects,
