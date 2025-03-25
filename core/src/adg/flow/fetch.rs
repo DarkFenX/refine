@@ -35,6 +35,7 @@ where
 pub(in crate::adg) fn fetch_data(e_handler: &dyn EveDataHandler, g_data: &mut GData) -> Result<(), StrMsgError> {
     fetch_data_vec(e_handler, EveDataHandler::get_items, &mut g_data.items)?;
     fetch_data_vec(e_handler, EveDataHandler::get_item_groups, &mut g_data.groups)?;
+    fetch_data_vec(e_handler, EveDataHandler::get_item_lists, &mut g_data.item_lists)?;
     fetch_data_vec(e_handler, EveDataHandler::get_attrs, &mut g_data.attrs)?;
     fetch_data_vec(e_handler, EveDataHandler::get_item_attrs, &mut g_data.item_attrs)?;
     fetch_data_vec(e_handler, EveDataHandler::get_effects, &mut g_data.effects)?;

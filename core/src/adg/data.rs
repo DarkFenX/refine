@@ -4,6 +4,7 @@ use crate::ed;
 pub(in crate::adg) struct GData {
     pub(in crate::adg) items: Vec<ed::EItem>,
     pub(in crate::adg) groups: Vec<ed::EItemGroup>,
+    pub(in crate::adg) item_lists: Vec<ed::EItemList>,
     pub(in crate::adg) attrs: Vec<ed::EAttr>,
     pub(in crate::adg) item_attrs: Vec<ed::EItemAttr>,
     pub(in crate::adg) effects: Vec<ed::EEffect>,
@@ -20,6 +21,7 @@ impl GData {
         Self {
             items: Vec::new(),
             groups: Vec::new(),
+            item_lists: Vec::new(),
             attrs: Vec::new(),
             item_attrs: Vec::new(),
             effects: Vec::new(),
