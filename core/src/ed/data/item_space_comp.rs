@@ -16,6 +16,14 @@ pub struct EItemSpaceComp {
     /// Buffs applicable to linked ship.
     pub ship_link_buffs: Vec<EItemSpaceCompBuff>,
 }
+impl EItemSpaceComp {
+    pub(crate) fn has_buffs(&self) -> bool {
+        !self.system_emitter_buffs.is_empty()
+            || !self.proxy_effect_buffs.is_empty()
+            || !self.proxy_trigger_buffs.is_empty()
+            || !self.ship_link_buffs.is_empty()
+    }
+}
 impl Named for EItemSpaceComp {
     fn get_name() -> &'static str {
         "EItemSpaceComp"

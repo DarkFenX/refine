@@ -114,6 +114,7 @@ fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
     // some item which is already "alive" is undesired.
     //
     // Extra notes on specific entities:
+    // - Space components are restored if they contain any buff data
     // - Mutator item conversions are restored for input/output items which are alive
     // - Mutator attribute modifications are restored for alive mutators
     move_data(&mut trash.item_attrs, &mut alive.item_attrs, |v| {
@@ -123,7 +124,7 @@ fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
     }) || move_data(&mut trash.item_abils, &mut alive.item_abils, |v| {
         item_ids.contains(&v.item_id)
     }) || move_data(&mut trash.space_comps, &mut alive.space_comps, |v| {
-        item_ids.contains(&v.item_id)
+        item_ids.contains(&v.item_id) || v.has_buffs()
     }) || move_data(&mut trash.item_srqs, &mut alive.item_srqs, |v| {
         item_ids.contains(&v.item_id)
     }) || move_data(&mut trash.muta_items, &mut alive.muta_items, |v| {
