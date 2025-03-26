@@ -192,7 +192,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             None,
         )
         .unwrap(); // T2 EM hardener
-    sol_sys
+    let scram = sol_sys
         .add_module(
             fit.id,
             ModRack::Mid,
@@ -670,6 +670,16 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         85027, 85028, 85031, 85032, 85033, 85034, 85035, 85084, 85085, 85088, 85089, 85230, 85279, 85747, 85748, 85750,
         85980, 87323, 87324, 87325, 87562,
     ];
+
+    println!(
+        "Scram range before: {}",
+        sol_sys.get_item_attr(&scram.id, &54).unwrap().dogma
+    );
+    sol_sys.add_sw_effect(79839, true);
+    println!(
+        "Scram range after: {}",
+        sol_sys.get_item_attr(&scram.id, &54).unwrap().dogma
+    );
 
     let iterations = 1000;
     tracing::error!("starting nphoon test, trying {} items per iteration", items.len());
