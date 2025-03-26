@@ -1,6 +1,5 @@
 use itertools::Itertools;
 use ordered_float::OrderedFloat as OF;
-use smallvec::SmallVec;
 
 use crate::{
     ac, ad,
@@ -13,8 +12,6 @@ use crate::{
 };
 
 use super::shared::is_flag_set;
-
-const SEC_ZONE_COUNT: usize = std::mem::variant_count::<SecZone>();
 
 pub struct ValSecZoneFail {
     pub zone: SecZone,
@@ -123,14 +120,6 @@ fn flags_check_fast(
     items_main: &StSet<ItemId>,
     items_wspace_banned: Option<&StSet<ItemId>>,
 ) -> bool {
-    if items_main.is_empty()
-        && match items_wspace_banned {
-            Some(items_wspace_banned) => !items_wspace_banned.is_empty(),
-            None => true,
-        }
-    {
-        return true;
-    }
     match uad.sec_zone {
         SecZone::HiSec(corruption) => {
             for item_id in items_main.iter() {
@@ -190,6 +179,7 @@ fn flags_check_fast(
         }
         // No limits for nullsec
         SecZone::NullSec => true,
+        // Supercap ban for w-space
         SecZone::WSpace => match items_wspace_banned {
             Some(items_wspace_banned) => items_wspace_banned.is_subset(kfs),
             None => true,
@@ -203,28 +193,82 @@ fn flags_check_verbose(
     items_main: &StSet<ItemId>,
     items_wspace_banned: Option<&StSet<ItemId>>,
 ) -> Option<ValSecZoneFail> {
-    if items_main.is_empty() {
-        return None;
-    }
-    if matches!(uad.sec_zone, SecZone::NullSec | SecZone::WSpace) {
-        return None;
-    }
-    let mut failed_items = Vec::new();
-    for item_id in items_main.difference(kfs) {
-        let allowed_zones = get_allowed_sec_zones(uad, calc, item_id, items_wspace_banned);
-        if !allowed_zones.iter().any(|v| compare_zones(&uad.sec_zone, v)) {
-            failed_items.push(ValSecZoneItemInfo {
-                item_id: *item_id,
-                allowed_zones: allowed_zones.to_vec(),
-            });
+    let mut fails = Vec::new();
+    match uad.sec_zone {
+        SecZone::HiSec(corruption) => {
+            for item_id in items_main.iter() {
+                if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE)
+                    || is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HISEC)
+                {
+                    match corruption {
+                        // No corruption in actual security zone - fail
+                        SecZoneCorruption::None => {
+                            if !kfs.contains(item_id) {
+                                fails.push(*item_id);
+                            }
+                        }
+                        // If corrupted, check if module is allowed in corrupted hisec
+                        SecZoneCorruption::C5 => {
+                            if !is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
+                                && !kfs.contains(item_id)
+                            {
+                                fails.push(*item_id);
+                            }
+                        }
+                    }
+                }
+            }
         }
-    }
-    if failed_items.is_empty() {
+        SecZone::LowSec(corruption) => {
+            for item_id in items_main.iter() {
+                if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE) {
+                    match corruption {
+                        // No corruption in actual security zone - fail
+                        SecZoneCorruption::None => {
+                            if !kfs.contains(item_id) {
+                                fails.push(*item_id);
+                            }
+                        }
+                        // If corrupted, check if module is allowed in corrupted lowsec
+                        SecZoneCorruption::C5 => {
+                            if !is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
+                                && !kfs.contains(item_id)
+                            {
+                                fails.push(*item_id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        SecZone::Hazard => {
+            for item_id in items_main.iter() {
+                if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(item_id) {
+                    fails.push(*item_id);
+                }
+            }
+        }
+        // No limits for nullsec
+        SecZone::NullSec => (),
+        // Supercap ban for w-space
+        SecZone::WSpace => {
+            if let Some(items_wspace_banned) = items_wspace_banned {
+                fails.extend(items_wspace_banned.difference(kfs).copied());
+            }
+        }
+    };
+    if fails.is_empty() {
         return None;
     }
     Some(ValSecZoneFail {
         zone: uad.sec_zone,
-        items: failed_items,
+        items: fails
+            .iter()
+            .map(|v| ValSecZoneItemInfo {
+                item_id: *v,
+                allowed_zones: get_allowed_sec_zones(uad, calc, v, items_wspace_banned),
+            })
+            .collect(),
     })
 }
 fn get_allowed_sec_zones(
@@ -232,8 +276,8 @@ fn get_allowed_sec_zones(
     calc: &mut Calc,
     item_id: &ItemId,
     items_wspace_banned: Option<&StSet<ItemId>>,
-) -> SmallVec<SecZone, SEC_ZONE_COUNT> {
-    let mut allowed_zones = SmallVec::new();
+) -> Vec<SecZone> {
+    let mut allowed_zones = Vec::new();
     let disallow_empire = is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE);
     // Hisec
     match disallow_empire || is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HISEC) {
@@ -267,25 +311,6 @@ fn get_allowed_sec_zones(
         allowed_zones.push(SecZone::Hazard);
     }
     allowed_zones
-}
-fn compare_zones(actual: &SecZone, supported: &SecZone) -> bool {
-    match actual {
-        // No corruption in actual hisec zone - accept only uncorrupted hisec
-        SecZone::HiSec(SecZoneCorruption::None) => {
-            matches!(supported, SecZone::HiSec(SecZoneCorruption::None))
-        }
-        // For corrupted hisec zone accept any hisec, since items which work in uncorrupted hisec
-        // work in corrupted hisec
-        SecZone::HiSec(SecZoneCorruption::C5) => matches!(supported, SecZone::HiSec(_)),
-        // Same logic as hisecs
-        SecZone::LowSec(SecZoneCorruption::None) => {
-            matches!(supported, SecZone::LowSec(SecZoneCorruption::None))
-        }
-        SecZone::LowSec(SecZoneCorruption::C5) => matches!(supported, SecZone::LowSec(_)),
-        SecZone::NullSec => matches!(supported, SecZone::NullSec),
-        SecZone::WSpace => matches!(supported, SecZone::WSpace),
-        SecZone::Hazard => matches!(supported, SecZone::Hazard),
-    }
 }
 
 // Security class validators

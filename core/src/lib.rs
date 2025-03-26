@@ -1,5 +1,4 @@
 #![feature(exact_size_is_empty)]
-#![feature(variant_count)]
 
 //! # Reefast
 //! Reefast is a library built to simulate EVE Online ship and structure fits.
