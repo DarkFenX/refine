@@ -193,6 +193,9 @@ impl VastFitData {
         for item_id in self.sec_zone_fitted.iter() {
             check_item_id(uad, item_id, true)?;
         }
+        for item_id in self.sec_zone_fitted_wspace_banned.iter() {
+            check_item_id(uad, item_id, true)?;
+        }
         for item_id in self.sec_zone_online_class.keys() {
             check_item_id(uad, item_id, true)?;
         }

@@ -268,6 +268,9 @@ impl Vast {
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_fitted.insert(item_id);
                 }
+                if extras.disallowed_in_wspace {
+                    fit_data.sec_zone_fitted_wspace_banned.insert(item_id);
+                }
             }
             Item::Skill(skill) => {
                 let extras = skill.get_a_extras().unwrap();
@@ -475,6 +478,9 @@ impl Vast {
                 }
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_fitted.remove(&item_id);
+                }
+                if extras.disallowed_in_wspace {
+                    fit_data.sec_zone_fitted_wspace_banned.remove(&item_id);
                 }
             }
             Item::Skill(skill) => {

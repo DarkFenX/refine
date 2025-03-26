@@ -34,7 +34,13 @@ impl VastFitData {
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
-        flags_check_fast(kfs, uad, calc, &self.sec_zone_fitted)
+        flags_check_fast(
+            kfs,
+            uad,
+            calc,
+            &self.sec_zone_fitted,
+            Some(&self.sec_zone_fitted_wspace_banned),
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_online_fast(&self, kfs: &StSet<ItemId>, uad: &Uad) -> bool {
         class_check_fast(kfs, uad, &self.sec_zone_online_class)
@@ -45,7 +51,7 @@ impl VastFitData {
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
-        flags_check_fast(kfs, uad, calc, &self.sec_zone_active)
+        flags_check_fast(kfs, uad, calc, &self.sec_zone_active, None)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_unonlineable_fast(
         &self,
@@ -60,7 +66,7 @@ impl VastFitData {
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
-        flags_check_fast(kfs, uad, calc, &self.sec_zone_unactivable)
+        flags_check_fast(kfs, uad, calc, &self.sec_zone_unactivable, None)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_sec_zone_fitted_verbose(
@@ -69,7 +75,13 @@ impl VastFitData {
         uad: &Uad,
         calc: &mut Calc,
     ) -> Option<ValSecZoneFail> {
-        flags_check_verbose(kfs, uad, calc, &self.sec_zone_fitted)
+        flags_check_verbose(
+            kfs,
+            uad,
+            calc,
+            &self.sec_zone_fitted,
+            Some(&self.sec_zone_fitted_wspace_banned),
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_online_verbose(
         &self,
@@ -84,7 +96,7 @@ impl VastFitData {
         uad: &Uad,
         calc: &mut Calc,
     ) -> Option<ValSecZoneFail> {
-        flags_check_verbose(kfs, uad, calc, &self.sec_zone_active)
+        flags_check_verbose(kfs, uad, calc, &self.sec_zone_active, None)
     }
     pub(in crate::sol::svc::vast) fn validate_sec_zone_unonlineable_verbose(
         &self,
@@ -99,18 +111,29 @@ impl VastFitData {
         uad: &Uad,
         calc: &mut Calc,
     ) -> Option<ValSecZoneFail> {
-        flags_check_verbose(kfs, uad, calc, &self.sec_zone_unactivable)
+        flags_check_verbose(kfs, uad, calc, &self.sec_zone_unactivable, None)
     }
 }
 
 // Disallowed/allowed flag validators
-fn flags_check_fast(kfs: &StSet<ItemId>, uad: &Uad, calc: &mut Calc, items: &StSet<ItemId>) -> bool {
-    if items.is_empty() {
+fn flags_check_fast(
+    kfs: &StSet<ItemId>,
+    uad: &Uad,
+    calc: &mut Calc,
+    items_main: &StSet<ItemId>,
+    items_wspace_banned: Option<&StSet<ItemId>>,
+) -> bool {
+    if items_main.is_empty()
+        && match items_wspace_banned {
+            Some(items_wspace_banned) => !items_wspace_banned.is_empty(),
+            None => true,
+        }
+    {
         return true;
     }
     match uad.sec_zone {
         SecZone::HiSec(corruption) => {
-            for item_id in items.iter() {
+            for item_id in items_main.iter() {
                 if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE)
                     || is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HISEC)
                 {
@@ -132,9 +155,10 @@ fn flags_check_fast(kfs: &StSet<ItemId>, uad: &Uad, calc: &mut Calc, items: &StS
                     }
                 }
             }
+            true
         }
         SecZone::LowSec(corruption) => {
-            for item_id in items.iter() {
+            for item_id in items_main.iter() {
                 if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE) {
                     match corruption {
                         // No corruption in actual security zone - fail
@@ -154,34 +178,40 @@ fn flags_check_fast(kfs: &StSet<ItemId>, uad: &Uad, calc: &mut Calc, items: &StS
                     }
                 }
             }
+            true
         }
         SecZone::Hazard => {
-            for item_id in items.iter() {
+            for item_id in items_main.iter() {
                 if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(item_id) {
                     return false;
                 }
             }
+            true
         }
-        // No limits for nullsec/w-space
-        SecZone::NullSec | SecZone::WSpace => (),
+        // No limits for nullsec
+        SecZone::NullSec => true,
+        SecZone::WSpace => match items_wspace_banned {
+            Some(items_wspace_banned) => items_wspace_banned.is_subset(kfs),
+            None => true,
+        },
     }
-    true
 }
 fn flags_check_verbose(
     kfs: &StSet<ItemId>,
     uad: &Uad,
     calc: &mut Calc,
-    limitable_items: &StSet<ItemId>,
+    items_main: &StSet<ItemId>,
+    items_wspace_banned: Option<&StSet<ItemId>>,
 ) -> Option<ValSecZoneFail> {
-    if limitable_items.is_empty() {
+    if items_main.is_empty() {
         return None;
     }
     if matches!(uad.sec_zone, SecZone::NullSec | SecZone::WSpace) {
         return None;
     }
     let mut failed_items = Vec::new();
-    for item_id in limitable_items.difference(kfs) {
-        let allowed_zones = get_allowed_sec_zones(uad, calc, item_id);
+    for item_id in items_main.difference(kfs) {
+        let allowed_zones = get_allowed_sec_zones(uad, calc, item_id, items_wspace_banned);
         if !allowed_zones.iter().any(|v| compare_zones(&uad.sec_zone, v)) {
             failed_items.push(ValSecZoneItemInfo {
                 item_id: *item_id,
@@ -197,7 +227,12 @@ fn flags_check_verbose(
         items: failed_items,
     })
 }
-fn get_allowed_sec_zones(uad: &Uad, calc: &mut Calc, item_id: &ItemId) -> SmallVec<SecZone, SEC_ZONE_COUNT> {
+fn get_allowed_sec_zones(
+    uad: &Uad,
+    calc: &mut Calc,
+    item_id: &ItemId,
+    items_wspace_banned: Option<&StSet<ItemId>>,
+) -> SmallVec<SecZone, SEC_ZONE_COUNT> {
     let mut allowed_zones = SmallVec::new();
     let disallow_empire = is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE);
     // Hisec
@@ -218,8 +253,15 @@ fn get_allowed_sec_zones(uad: &Uad, calc: &mut Calc, item_id: &ItemId) -> SmallV
         }
         false => allowed_zones.push(SecZone::LowSec(SecZoneCorruption::None)),
     }
-    // Null/w-space
-    allowed_zones.extend([SecZone::NullSec, SecZone::WSpace]);
+    // Nullsec
+    allowed_zones.push(SecZone::NullSec);
+    // W-space
+    if match items_wspace_banned {
+        Some(items_wspace_banned) => !items_wspace_banned.contains(item_id),
+        None => true,
+    } {
+        allowed_zones.push(SecZone::WSpace);
+    }
     // Zarzakh
     if !is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HAZARD) {
         allowed_zones.push(SecZone::Hazard);
