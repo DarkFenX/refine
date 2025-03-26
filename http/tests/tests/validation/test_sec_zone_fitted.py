@@ -2,7 +2,7 @@ from tests import approx, check_no_field
 from tests.fw.api import ValOptions
 
 
-def test_main_service(client, consts):
+def test_flags_service(client, consts):
     eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_ban_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hisec)
     eve_ban_hazard_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hazard)
@@ -406,7 +406,7 @@ def test_main_service(client, consts):
             consts.ApiSecZone.wspace])}
 
 
-def test_rig(client, consts):
+def test_flags_rig(client, consts):
     eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_rig_id = client.mk_eve_item(attrs={eve_ban_empire_attr_id: 1})
     client.create_sources()
@@ -428,7 +428,7 @@ def test_rig(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_ship_flags_only(client, consts):
+def test_flags_ship(client, consts):
     eve_ban_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hisec)
     eve_ship_id = client.mk_eve_ship(attrs={eve_ban_hisec_attr_id: 1})
     client.create_sources()
@@ -453,7 +453,7 @@ def test_ship_flags_only(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_ship_wspace_ban_only(client, consts):
+def test_wspace_ban_ship(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
@@ -490,7 +490,7 @@ def test_ship_wspace_ban_only(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_ship_both(client, consts):
+def test_flags_and_wspace_ban_ship(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_ban_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hisec)
     eve_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id, attrs={eve_ban_hisec_attr_id: 1})
@@ -548,10 +548,13 @@ def test_known_failures(client, consts):
     eve_ban_hazard_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hazard)
     eve_service1_id = client.mk_eve_item(attrs={eve_ban_empire_attr_id: 1})
     eve_service2_id = client.mk_eve_item(attrs={eve_ban_hazard_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship()
     eve_other_id = client.mk_eve_item()
+    client.mk_eve_item_list(id_=consts.EveItemList.wormhole_jump_blacklist, inc_type_ids=[eve_ship_id])
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_other = api_fit.add_rig(type_id=eve_other_id)
     api_service1 = api_fit.add_service(type_id=eve_service1_id)
     api_service2 = api_fit.add_service(type_id=eve_service1_id)
@@ -668,6 +671,17 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
         sec_zone_fitted=(True, [api_service3.id, api_other.id, api_service4.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.wspace)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_ship.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_other.id, api_ship.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
