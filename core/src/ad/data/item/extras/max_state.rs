@@ -5,7 +5,7 @@ use crate::{
 
 pub(super) fn get_max_state<'a>(
     item_effects: impl Iterator<Item = &'a AEffectId>,
-    effects: &StMap<AEffectId, &AEffect>,
+    effects: &StMap<AEffectId, AEffect>,
 ) -> AState {
     let mut max_state = AState::Offline;
     for effect_id in item_effects {

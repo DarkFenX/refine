@@ -26,8 +26,12 @@ pub(in crate::adg::flow::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::A
     effect.mods.push(mk_modifier(ac::attrs::THERM_DMG));
     effect.mods.push(mk_modifier(ac::attrs::KIN_DMG));
     effect.mods.push(mk_modifier(ac::attrs::EXPL_DMG));
-    a_data.effects.push(effect);
-    for item in a_data.items.iter_mut().filter(|v| v.grp_id == ac::itemgrps::CHARACTER) {
+    a_data.effects.insert(effect.id, effect);
+    for item in a_data
+        .items
+        .values_mut()
+        .filter(|v| v.grp_id == ac::itemgrps::CHARACTER)
+    {
         item.effect_datas.insert(
             ac::effects::REE_CHAR_MISSILE_DMG,
             ad::AItemEffectData {

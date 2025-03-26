@@ -1,5 +1,7 @@
 use crate::{ac, ad};
 
+const WEB_BUBBLE: ad::AItemId = ac::items::STASIS_WEBIFICATION_PROBE;
+
 pub(in crate::adg::flow::custom) fn add_wubble_effect(a_data: &mut ad::AData) {
     let effect = ad::AEffect {
         id: ac::effects::REE_STASIS_WEB_PROBE,
@@ -29,20 +31,19 @@ pub(in crate::adg::flow::custom) fn add_wubble_effect(a_data: &mut ad::AData) {
         charge: None,
     };
     let effect_id = effect.id;
-    a_data.effects.push(effect);
-    for item in a_data
-        .items
-        .iter_mut()
-        .filter(|v| v.id == ac::items::STASIS_WEBIFICATION_PROBE)
-    {
-        item.effect_datas.insert(
-            effect_id,
-            ad::AItemEffectData {
-                cd: None,
-                charge_count: None,
-                charge_reload_time: None,
-            },
-        );
-        item.defeff_id = Some(effect_id);
+    a_data.effects.insert(effect.id, effect);
+    match a_data.items.get_mut(&WEB_BUBBLE) {
+        Some(a_item) => {
+            a_item.effect_datas.insert(
+                effect_id,
+                ad::AItemEffectData {
+                    cd: None,
+                    charge_count: None,
+                    charge_reload_time: None,
+                },
+            );
+            a_item.defeff_id = Some(effect_id);
+        }
+        None => tracing::info!("web bubble {WEB_BUBBLE} is not found for customization"),
     }
 }

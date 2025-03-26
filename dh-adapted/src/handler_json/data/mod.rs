@@ -36,21 +36,56 @@ pub(in crate::handler_json) struct CData {
 impl CData {
     pub(in crate::handler_json) fn from_adapted(a_data: &rc::ad::AData, fingerprint: &str) -> Self {
         Self {
-            items: a_data.items.iter().map(|v| v.into()).collect(),
-            attrs: a_data.attrs.iter().map(|v| v.into()).collect(),
-            mutas: a_data.mutas.iter().map(|v| v.into()).collect(),
-            effects: a_data.effects.iter().map(|v| v.into()).collect(),
-            buffs: a_data.buffs.iter().map(|v| v.into()).collect(),
+            items: a_data.items.values().map(|v| v.into()).collect(),
+            attrs: a_data.attrs.values().map(|v| v.into()).collect(),
+            mutas: a_data.mutas.values().map(|v| v.into()).collect(),
+            effects: a_data.effects.values().map(|v| v.into()).collect(),
+            buffs: a_data.buffs.values().map(|v| v.into()).collect(),
             fingerprint: fingerprint.to_string(),
         }
     }
     pub(in crate::handler_json) fn to_adapted(&self) -> (rc::ad::AData, String) {
         let a_data = rc::ad::AData {
-            items: self.items.iter().map(|v| v.into()).collect(),
-            attrs: self.attrs.iter().map(|v| v.into()).collect(),
-            mutas: self.mutas.iter().map(|v| v.into()).collect(),
-            effects: self.effects.iter().map(|v| v.into()).collect(),
-            buffs: self.buffs.iter().map(|v| v.into()).collect(),
+            items: self
+                .items
+                .iter()
+                .map(|v| {
+                    let item = rc::ad::AItem::from(v);
+                    (item.id, item)
+                })
+                .collect(),
+            attrs: self
+                .attrs
+                .iter()
+                .map(|v| {
+                    let item = rc::ad::AAttr::from(v);
+                    (item.id, item)
+                })
+                .collect(),
+            mutas: self
+                .mutas
+                .iter()
+                .map(|v| {
+                    let item = rc::ad::AMuta::from(v);
+                    (item.id, item)
+                })
+                .collect(),
+            effects: self
+                .effects
+                .iter()
+                .map(|v| {
+                    let item = rc::ad::AEffect::from(v);
+                    (item.id, item)
+                })
+                .collect(),
+            buffs: self
+                .buffs
+                .iter()
+                .map(|v| {
+                    let item = rc::ad::ABuff::from(v);
+                    (item.id, item)
+                })
+                .collect(),
         };
         (a_data, self.fingerprint.clone())
     }

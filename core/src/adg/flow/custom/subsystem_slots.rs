@@ -10,7 +10,7 @@ const SHIP_GROUP: ad::AItemGrpId = ac::itemgrps::STRATEGIC_CRUISER;
 
 pub(in crate::adg::flow::custom) fn fix_subsysem_slot_count(a_data: &mut ad::AData) {
     let mut applied = false;
-    for item in a_data.items.iter_mut() {
+    for item in a_data.items.values_mut() {
         if item.grp_id != SHIP_GROUP {
             continue;
         }

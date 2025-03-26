@@ -159,7 +159,7 @@ impl AItemExtras {
         item_attrs: &StMap<AAttrId, AAttrVal>,
         item_effects: &StMap<AEffectId, AItemEffectData>,
         item_srqs: &StMap<AItemId, ASkillLevel>,
-        effects: &StMap<AEffectId, &AEffect>,
+        effects: &StMap<AEffectId, AEffect>,
         type_lists: &StMap<ed::EItemListId, StSet<AItemId>>,
         fitted_limited_groups: &StSet<AItemGrpId>,
         online_limited_groups: &StSet<AItemGrpId>,

@@ -7,7 +7,7 @@ use std::{
 
 use crate::{
     VERSION,
-    util::{Error, move_vec_to_map},
+    util::{Error, move_map_to_arcmap},
 };
 
 use super::data;
@@ -57,11 +57,11 @@ impl RamJsonAdh {
         }
     }
     fn update_memory_cache(&mut self, a_data: rc::ad::AData, fingerprint: String) {
-        move_vec_to_map(a_data.items, &mut self.storage_items);
-        move_vec_to_map(a_data.attrs, &mut self.storage_attrs);
-        move_vec_to_map(a_data.effects, &mut self.storage_effects);
-        move_vec_to_map(a_data.mutas, &mut self.storage_mutas);
-        move_vec_to_map(a_data.buffs, &mut self.storage_buffs);
+        move_map_to_arcmap(a_data.items, &mut self.storage_items);
+        move_map_to_arcmap(a_data.attrs, &mut self.storage_attrs);
+        move_map_to_arcmap(a_data.effects, &mut self.storage_effects);
+        move_map_to_arcmap(a_data.mutas, &mut self.storage_mutas);
+        move_map_to_arcmap(a_data.buffs, &mut self.storage_buffs);
         self.fingerprint = Some(fingerprint);
     }
     fn update_persistent_cache(&self, c_data: &data::CData) {

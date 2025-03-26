@@ -16,8 +16,8 @@ impl ed::EFighterAbil {
     }
 }
 
-pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> Vec<ad::AEffect> {
-    let mut a_effects = Vec::new();
+pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> StMap<ad::AEffectId, ad::AEffect> {
+    let mut a_effects = StMap::new();
     for e_effect in e_data.effects.iter() {
         let state = match e_effect.category_id {
             ec::effcats::PASSIVE => ad::AState::Offline,
@@ -97,12 +97,12 @@ pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport
             }
             _ => a_effect.mod_build_status = ad::AEffectModBuildStatus::Error(mod_errs),
         }
-        a_effects.push(a_effect);
+        a_effects.insert(a_effect.id, a_effect);
     }
     // Transfer some data from abilities onto effects
     let hisec_ban_map = extract_ability_map(e_data, ed::EFighterAbil::get_disallow_hisec);
     let lowsec_ban_map = extract_ability_map(e_data, ed::EFighterAbil::get_disallow_lowsec);
-    for a_effect in a_effects.iter_mut() {
+    for a_effect in a_effects.values_mut() {
         // Hisec flag
         match hisec_ban_map.get(&a_effect.id) {
             None => (),

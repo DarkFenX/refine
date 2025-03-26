@@ -24,8 +24,8 @@ pub(in crate::adg::flow::custom) fn add_aar_paste_boost_effect(a_data: &mut ad::
         charge: None,
     };
     let effect_id = effect.id;
-    a_data.effects.push(effect);
-    for item in a_data.items.iter_mut().filter(|v| {
+    a_data.effects.insert(effect.id, effect);
+    for item in a_data.items.values_mut().filter(|v| {
         v.effect_datas.contains_key(&ac::effects::FUELED_ARMOR_REPAIR)
             || v.effect_datas.contains_key(&ac::effects::SHIP_MODULE_ARAR)
     }) {

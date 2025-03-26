@@ -1,3 +1,4 @@
+use crate::util::StMap;
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use effect::{
@@ -24,20 +25,20 @@ mod shared;
 
 /// Adapted data storage.
 pub struct AData {
-    pub items: Vec<AItem>,
-    pub attrs: Vec<AAttr>,
-    pub mutas: Vec<AMuta>,
-    pub effects: Vec<AEffect>,
-    pub buffs: Vec<ABuff>,
+    pub items: StMap<AItemId, AItem>,
+    pub attrs: StMap<AAttrId, AAttr>,
+    pub mutas: StMap<AItemId, AMuta>,
+    pub effects: StMap<AEffectId, AEffect>,
+    pub buffs: StMap<ABuffId, ABuff>,
 }
 impl AData {
     pub(crate) fn new() -> Self {
         Self {
-            items: Vec::new(),
-            attrs: Vec::new(),
-            mutas: Vec::new(),
-            effects: Vec::new(),
-            buffs: Vec::new(),
+            items: StMap::new(),
+            attrs: StMap::new(),
+            mutas: StMap::new(),
+            effects: StMap::new(),
+            buffs: StMap::new(),
         }
     }
 }

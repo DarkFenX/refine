@@ -35,15 +35,15 @@ impl Key for rc::ad::ABuff {
     }
 }
 
-pub(crate) fn move_vec_to_map<T, U>(vec: Vec<T>, map: &mut rc::util::StMap<U, Arc<T>>)
+pub(crate) fn move_map_to_arcmap<T, U>(map: rc::util::StMap<U, T>, arcmap: &mut rc::util::StMap<U, Arc<T>>)
 where
     T: Key<Item = U>,
     U: Eq + PartialEq + Hash,
 {
-    map.clear();
-    map.shrink_to_fit();
-    map.reserve(vec.len());
-    vec.into_iter().for_each(|v| {
-        map.insert(v.get_key(), Arc::new(v));
+    arcmap.clear();
+    arcmap.shrink_to_fit();
+    arcmap.reserve(map.len());
+    map.into_values().for_each(|v| {
+        arcmap.insert(v.get_key(), Arc::new(v));
     });
 }
