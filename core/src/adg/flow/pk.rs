@@ -27,6 +27,7 @@ fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
 pub(in crate::adg) fn dedup_pks(e_data: &mut EData) {
     dedup_pks_vec(&mut e_data.items);
     dedup_pks_vec(&mut e_data.groups);
+    dedup_pks_vec(&mut e_data.item_lists);
     dedup_pks_vec(&mut e_data.attrs);
     dedup_pks_vec(&mut e_data.item_attrs);
     dedup_pks_vec(&mut e_data.effects);
@@ -34,6 +35,7 @@ pub(in crate::adg) fn dedup_pks(e_data: &mut EData) {
     dedup_pks_vec(&mut e_data.abils);
     dedup_pks_vec(&mut e_data.item_abils);
     dedup_pks_vec(&mut e_data.buffs);
+    dedup_pks_vec(&mut e_data.space_comps);
     dedup_pks_vec(&mut e_data.item_srqs);
     dedup_pks_vec(&mut e_data.muta_items);
     dedup_pks_vec(&mut e_data.muta_attrs);

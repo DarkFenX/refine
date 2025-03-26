@@ -56,6 +56,7 @@ fn trash_all(alive: &mut EData, trash: &mut EData) {
     move_data(&mut alive.abils, &mut trash.abils, |_| true);
     move_data(&mut alive.item_abils, &mut trash.item_abils, |_| true);
     move_data(&mut alive.buffs, &mut trash.buffs, |_| true);
+    move_data(&mut alive.space_comps, &mut trash.space_comps, |_| true);
     move_data(&mut alive.item_srqs, &mut trash.item_srqs, |_| true);
     move_data(&mut alive.muta_items, &mut trash.muta_items, |_| true);
     move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
@@ -108,9 +109,9 @@ fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
     for item in alive.items.iter() {
         item_ids.extend(item.get_pk());
     }
-    // We need the data which describes our items directly, so FKs are avoided deliberately. For
-    // instance, having an item-attribute mapping entry restored just because its value refers some
-    // item which is already "alive" is undesired.
+    // We need the data which describes our items directly, so some FKs are avoided deliberately.
+    // For instance, having an item-attribute mapping entry restored just because its value refers
+    // some item which is already "alive" is undesired.
     //
     // Extra notes on specific entities:
     // - Mutator item conversions are restored for input/output items which are alive
@@ -120,6 +121,8 @@ fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
     }) || move_data(&mut trash.item_effects, &mut alive.item_effects, |v| {
         item_ids.contains(&v.item_id)
     }) || move_data(&mut trash.item_abils, &mut alive.item_abils, |v| {
+        item_ids.contains(&v.item_id)
+    }) || move_data(&mut trash.space_comps, &mut alive.space_comps, |v| {
         item_ids.contains(&v.item_id)
     }) || move_data(&mut trash.item_srqs, &mut alive.item_srqs, |v| {
         item_ids.contains(&v.item_id)
@@ -144,19 +147,21 @@ fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> b
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn cleanup_report(alive: &EData, trash: &EData) {
-    if vec_report(&alive.items, &trash.items)
-        && vec_report(&alive.groups, &trash.groups)
-        && vec_report(&alive.attrs, &trash.attrs)
-        && vec_report(&alive.item_attrs, &trash.item_attrs)
-        && vec_report(&alive.effects, &trash.effects)
-        && vec_report(&alive.item_effects, &trash.item_effects)
-        && vec_report(&alive.abils, &trash.abils)
-        && vec_report(&alive.item_abils, &trash.item_abils)
-        && vec_report(&alive.buffs, &trash.buffs)
-        && vec_report(&alive.item_srqs, &trash.item_srqs)
-        && vec_report(&alive.muta_items, &trash.muta_items)
-        && vec_report(&alive.muta_attrs, &trash.muta_attrs)
-    {
+    let cleaned = false;
+    let cleaned = vec_report(&alive.items, &trash.items) || cleaned;
+    let cleaned = vec_report(&alive.groups, &trash.groups) || cleaned;
+    let cleaned = vec_report(&alive.attrs, &trash.attrs) || cleaned;
+    let cleaned = vec_report(&alive.item_attrs, &trash.item_attrs) || cleaned;
+    let cleaned = vec_report(&alive.effects, &trash.effects) || cleaned;
+    let cleaned = vec_report(&alive.item_effects, &trash.item_effects) || cleaned;
+    let cleaned = vec_report(&alive.abils, &trash.abils) || cleaned;
+    let cleaned = vec_report(&alive.item_abils, &trash.item_abils) || cleaned;
+    let cleaned = vec_report(&alive.buffs, &trash.buffs) || cleaned;
+    let cleaned = vec_report(&alive.space_comps, &trash.space_comps) || cleaned;
+    let cleaned = vec_report(&alive.item_srqs, &trash.item_srqs) || cleaned;
+    let cleaned = vec_report(&alive.muta_items, &trash.muta_items) || cleaned;
+    let cleaned = vec_report(&alive.muta_attrs, &trash.muta_attrs) || cleaned;
+    if !cleaned {
         tracing::info!("no unused data found during cleanup");
     }
 }
@@ -164,12 +169,12 @@ fn cleanup_report(alive: &EData, trash: &EData) {
 fn vec_report<T: Named>(alive: &[T], trash: &[T]) -> bool {
     let total = alive.len() + trash.len();
     if total == 0 {
-        return true;
+        return false;
     }
     let ratio = trash.len() as f64 / total as f64;
     if ratio > 0.0 {
         tracing::info!("cleaned {:.1}% of {}", ratio * 100.0, T::get_name());
-        return false;
+        return true;
     }
-    true
+    false
 }

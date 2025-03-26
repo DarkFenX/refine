@@ -7,6 +7,8 @@ mod item_abil;
 mod item_attr;
 mod item_effect;
 mod item_group;
+mod item_list;
+mod item_space_comp;
 mod item_srq;
 mod muta_attr_mod;
 mod muta_item_conv;

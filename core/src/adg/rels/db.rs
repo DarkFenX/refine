@@ -54,6 +54,7 @@ impl KeyDb {
         fkdb.extend_fk_vec(&e_data.abils, g_supp);
         fkdb.extend_fk_vec(&e_data.item_abils, g_supp);
         fkdb.extend_fk_vec(&e_data.buffs, g_supp);
+        fkdb.extend_fk_vec(&e_data.space_comps, g_supp);
         fkdb.extend_fk_vec(&e_data.item_srqs, g_supp);
         fkdb.extend_fk_vec(&e_data.muta_items, g_supp);
         fkdb.extend_fk_vec(&e_data.muta_attrs, g_supp);

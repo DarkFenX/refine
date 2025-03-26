@@ -30,6 +30,7 @@ fn fk_check(e_data: &EData, g_supp: &GSupport) {
     fk_check_referer(&e_data.abils, &pkdb, g_supp);
     fk_check_referer(&e_data.item_abils, &pkdb, g_supp);
     fk_check_referer(&e_data.buffs, &pkdb, g_supp);
+    fk_check_referer(&e_data.space_comps, &pkdb, g_supp);
     fk_check_referer(&e_data.item_srqs, &pkdb, g_supp);
     fk_check_referer(&e_data.muta_items, &pkdb, g_supp);
     fk_check_referer(&e_data.muta_attrs, &pkdb, g_supp);
