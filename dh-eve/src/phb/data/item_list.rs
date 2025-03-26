@@ -2,17 +2,17 @@ use crate::phb::fsd::{FsdId, FsdMerge};
 
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemList {
-    #[serde(rename = "includedTypeIDs")]
+    #[serde(rename = "includedTypeIDs", default)]
     pub(in crate::phb) included_item_ids: Vec<rc::ed::EItemId>,
-    #[serde(rename = "includedGroupIDs")]
+    #[serde(rename = "includedGroupIDs", default)]
     pub(in crate::phb) included_grp_ids: Vec<rc::ed::EItemGrpId>,
-    #[serde(rename = "includedCategoryIDs")]
+    #[serde(rename = "includedCategoryIDs", default)]
     pub(in crate::phb) included_cat_ids: Vec<rc::ed::EItemCatId>,
-    #[serde(rename = "excludedTypeIDs")]
+    #[serde(rename = "excludedTypeIDs", default)]
     pub(in crate::phb) excluded_item_ids: Vec<rc::ed::EItemId>,
-    #[serde(rename = "excludedGroupIDs")]
+    #[serde(rename = "excludedGroupIDs", default)]
     pub(in crate::phb) excluded_grp_ids: Vec<rc::ed::EItemGrpId>,
-    #[serde(rename = "excludedCategoryIDs")]
+    #[serde(rename = "excludedCategoryIDs", default)]
     pub(in crate::phb) excluded_cat_ids: Vec<rc::ed::EItemCatId>,
 }
 impl FsdMerge<rc::ed::EItemList> for PItemList {

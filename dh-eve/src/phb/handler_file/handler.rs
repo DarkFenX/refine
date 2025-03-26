@@ -4,7 +4,7 @@ use crate::{
     phb::{
         data::{
             PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemAttrs, PItemEffects, PItemFighterAbils, PItemGroup,
-            PItemList, PItemSkillMap, PMetadata, PMutaAttrMods, PMutaItemConvs,
+            PItemList, PItemSkillMap, PItemSpaceComp, PMetadata, PMutaAttrMods, PMutaItemConvs,
         },
         fsd,
     },
@@ -86,6 +86,10 @@ impl rc::ed::EveDataHandler for PhbFileEdh {
     /// Get dogma buffs.
     fn get_buffs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EBuff>> {
         self.process_fsd::<PBuff, rc::ed::EBuff>("fsd_lite", "dbuffcollections")
+    }
+    /// Get space components.
+    fn get_space_comps(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemSpaceComp>> {
+        self.process_fsd::<PItemSpaceComp, rc::ed::EItemSpaceComp>("fsd_binary", "spacecomponentsbytype")
     }
     /// Get item skill requirements.
     fn get_item_skill_reqs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemSkillReq>> {

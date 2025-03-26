@@ -38,8 +38,8 @@ pub use cont::EDataCont;
 pub use data::{
     EAbilId, EAttr, EAttrId, EAttrUnitId, EAttrVal, EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM, ECount,
     EEffect, EEffectCatId, EEffectId, EEffectMod, EFighterAbil, EItem, EItemAttr, EItemCatId, EItemEffect,
-    EItemFighterAbil, EItemGroup, EItemGrpId, EItemId, EItemList, EItemListId, EItemSkillReq, EMutaAttrMod,
-    EMutaItemConv, EPrimitive, ESkillLevel,
+    EItemFighterAbil, EItemGroup, EItemGrpId, EItemId, EItemList, EItemListId, EItemSkillReq, EItemSpaceComp,
+    EItemSpaceCompBuff, EMutaAttrMod, EMutaItemConv, EPrimitive, ESkillLevel,
 };
 pub use handler::EveDataHandler;
 pub use result::EResult;

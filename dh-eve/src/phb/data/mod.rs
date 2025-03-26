@@ -8,6 +8,7 @@ pub(in crate::phb) use item_attrs::PItemAttrs;
 pub(in crate::phb) use item_effects::PItemEffects;
 pub(in crate::phb) use item_group::PItemGroup;
 pub(in crate::phb) use item_list::PItemList;
+pub(in crate::phb) use item_space_comp::PItemSpaceComp;
 pub(in crate::phb) use item_srq_map::PItemSkillMap;
 #[cfg(feature = "phb-file")]
 pub(in crate::phb) use metadata::PMetadata;
@@ -24,6 +25,7 @@ mod item_attrs;
 mod item_effects;
 mod item_group;
 mod item_list;
+mod item_space_comp;
 mod item_srq_map;
 #[cfg(feature = "phb-file")]
 mod metadata;

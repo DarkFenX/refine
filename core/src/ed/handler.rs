@@ -1,6 +1,6 @@
 use crate::ed::{
     EAttr, EBuff, EDataCont, EEffect, EFighterAbil, EItem, EItemAttr, EItemEffect, EItemFighterAbil, EItemGroup,
-    EItemList, EItemSkillReq, EMutaAttrMod, EMutaItemConv, EResult,
+    EItemList, EItemSkillReq, EItemSpaceComp, EMutaAttrMod, EMutaItemConv, EResult,
 };
 
 /// EVE data handler interface definition.
@@ -30,6 +30,8 @@ pub trait EveDataHandler: std::fmt::Debug {
     fn get_item_fighter_abils(&self) -> EResult<EDataCont<EItemFighterAbil>>;
     /// Get dogma buffs.
     fn get_buffs(&self) -> EResult<EDataCont<EBuff>>;
+    /// Get space components.
+    fn get_space_comps(&self) -> EResult<EDataCont<EItemSpaceComp>>;
     /// Get item skill requirements.
     fn get_item_skill_reqs(&self) -> EResult<EDataCont<EItemSkillReq>>;
     /// Get mutator item conversions.
