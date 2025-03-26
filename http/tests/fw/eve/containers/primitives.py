@@ -16,6 +16,7 @@ class EvePrimitives:
         self.fighterabilities = {}
         self.fighterabilitiesbytype = {}
         self.dbuffcollections = {}
+        self.spacecomponentsbytype = {}
         self.requiredskillsfortypes = {}
         self.dynamicitemattributes = {}
 
@@ -30,6 +31,7 @@ class EvePrimitives:
         string_data.fighterabilities = json.dumps(self.fighterabilities)
         string_data.fighterabilitiesbytype = json.dumps(self.fighterabilitiesbytype)
         string_data.dbuffcollections = json.dumps(self.dbuffcollections)
+        string_data.spacecomponentsbytype = json.dumps(self.spacecomponentsbytype)
         string_data.requiredskillsfortypes = json.dumps(self.requiredskillsfortypes)
         string_data.dynamicitemattributes = json.dumps(self.dynamicitemattributes)
         return string_data

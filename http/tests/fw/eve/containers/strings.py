@@ -12,5 +12,6 @@ class EveStrings:
         self.fighterabilities = ''
         self.fighterabilitiesbytype = ''
         self.dbuffcollections = ''
+        self.spacecomponentsbytype = ''
         self.requiredskillsfortypes = ''
         self.dynamicitemattributes = ''
