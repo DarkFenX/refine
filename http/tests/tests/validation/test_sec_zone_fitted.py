@@ -428,7 +428,7 @@ def test_rig(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_ship(client, consts):
+def test_ship_flags_only(client, consts):
     eve_ban_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hisec)
     eve_ship_id = client.mk_eve_ship(attrs={eve_ban_hisec_attr_id: 1})
     client.create_sources()
@@ -443,6 +443,94 @@ def test_ship(client, consts):
         consts.ApiSecZone.lowsec,
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
+    # Action
+    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.nullsec)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_ship_wspace_ban_only(client, consts):
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    eve_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    client.mk_eve_item_list(
+        id_=consts.EveItemList.wormhole_jump_blacklist,
+        inc_grp_ids=[eve_ship_grp_id],
+        exc_type_ids=[eve_ship1_id])
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.wspace)
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship2 = api_fit.set_ship(type_id=eve_ship2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.wspace
+    assert api_val.details.sec_zone_fitted.items == {api_ship2.id: sorted([
+        consts.ApiSecZone.hisec,
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.hazard])}
+    # Action
+    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec_c5)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_ship_both(client, consts):
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_ban_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hisec)
+    eve_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id, attrs={eve_ban_hisec_attr_id: 1})
+    eve_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id, attrs={eve_ban_hisec_attr_id: 1})
+    client.mk_eve_item_list(
+        id_=consts.EveItemList.wormhole_jump_blacklist,
+        inc_grp_ids=[eve_ship_grp_id],
+        exc_type_ids=[eve_ship1_id])
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_ship1 = api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.items == {api_ship1.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
+    # Action
+    api_ship2 = api_fit.set_ship(type_id=eve_ship2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.items == {api_ship2.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.hazard])}
+    # Action
+    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.wspace)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.wspace
+    assert api_val.details.sec_zone_fitted.items == {api_ship2.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
         consts.ApiSecZone.hazard])}
     # Action
     api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.nullsec)
