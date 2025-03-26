@@ -53,7 +53,7 @@ fn need_to_adapt(ed_version: Option<String>, a_handler: &mut Box<dyn ad::Adapted
     match a_handler.get_data_fingerprint() {
         Some(a_fingerprint) => {
             if e_fingeprint != a_fingerprint {
-                tracing::info!("fingerprint mismatch: {e_fingeprint} EVE data vs {a_fingerprint} adapted data");
+                tracing::info!("fingerprint mismatch: {e_fingeprint} current vs {a_fingerprint} adapted/cached");
                 return true;
             };
         }
