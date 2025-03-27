@@ -20,7 +20,7 @@ tokio-rayon = ">=2.1.0"
 tower = ">=0.5.2"
 tower-http = { version = ">=0.6.2", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
-time = { version = ">=0.3.40", features = ["macros"] }
+time = { version = ">=0.3.41", features = ["macros"] }
 tracing = ">=0.1.41"
 tracing-subscriber = { version = ">=0.3.19", features = ["time"] }
 tracing-appender = ">=0.2.3"

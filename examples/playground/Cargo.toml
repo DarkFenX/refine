@@ -10,6 +10,6 @@ rdhe = { package = "reefast-dh-eve", path = "../../dh-eve", features = ["phb-fil
 rdha = { package = "reefast-dh-adapted", path = "../../dh-adapted", features = ["json"] }
 chrono = ">=0.4.40"
 itertools = ">=0.14.0"
-time = { version = ">=0.3.40", features = ["macros"] }
+time = { version = ">=0.3.41", features = ["macros"] }
 tracing = ">=0.1.41"
 tracing-subscriber = { version = ">=0.3.19", features = ["time"] }
