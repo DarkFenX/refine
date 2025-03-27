@@ -40,6 +40,10 @@ def check_no_field() -> Iterator[None]:
     with pytest.raises(AttributeError):
         yield
 
-# Converts dogma effect ID to API effect ID
+# Converts various data to effect IDs
 def effect_dogma_to_api(*, dogma_effect_id: int) -> str:
     return f'd{dogma_effect_id}'
+
+
+def effect_scse_to_api(*, type_id: int) -> str:
+    return f'scse{type_id}'
