@@ -47,3 +47,7 @@ def effect_dogma_to_api(*, dogma_effect_id: int) -> str:
 
 def effect_scse_to_api(*, type_id: int) -> str:
     return f'scse{type_id}'
+
+
+def effect_scsl_to_api(*, type_id: int) -> str:
+    return f'scsl{type_id}'

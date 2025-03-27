@@ -32,9 +32,9 @@ class SpaceComponent:
         conditional_insert(
             container=space_comp_entry,
             path=['proximityTrap', 'dbuffs'],
-            value=self.proxy_effect_buffs)
+            value=self.proxy_trigger_buffs)
         conditional_insert(
             container=space_comp_entry,
             path=['linkWithShip', 'dbuffs'],
-            value=self.proxy_effect_buffs)
+            value=self.ship_link_buffs)
         primitive_data.spacecomponentsbytype[self.type_id] = space_comp_entry
