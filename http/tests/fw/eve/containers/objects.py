@@ -120,7 +120,7 @@ class EveObjects:
             volume: float | type[Absent],
     ) -> Item:
         item = Item(
-            id_=id_,
+            id=id_,
             group_id=grp_id,
             attributes=attrs,
             effect_ids=eff_ids,
@@ -138,7 +138,7 @@ class EveObjects:
             id_: int,
             cat_id: int | type[Absent],
     ) -> Group:
-        group = Group(id_=id_, category_id=cat_id)
+        group = Group(id=id_, category_id=cat_id)
         self.item_groups.setdefault(id_, []).append(group)
         return group
 
@@ -153,7 +153,7 @@ class EveObjects:
             exc_cat_ids: list[int] | type[Absent],
     ) -> ItemList:
         item_list = ItemList(
-            id_=id_,
+            id=id_,
             included_type_ids=inc_type_ids,
             included_group_ids=inc_grp_ids,
             included_category_ids=inc_cat_ids,
@@ -174,7 +174,7 @@ class EveObjects:
             unit_id: int | type[Absent],
     ) -> Attribute:
         attr = Attribute(
-            id_=id_,
+            id=id_,
             stackable=stackable,
             high_is_good=high_is_good,
             default_value=def_val,
@@ -200,7 +200,7 @@ class EveObjects:
             mod_info: list[EffectModifier] | type[Absent],
     ) -> Effect:
         effect = Effect(
-            id_=id_,
+            id=id_,
             category_id=cat_id,
             is_assistance=is_assistance,
             is_offensive=is_offensive,
@@ -226,7 +226,7 @@ class EveObjects:
             loc_srq_mods: list[BuffModifier] | type[Absent],
     ) -> Buff:
         buff = Buff(
-            id_=id_,
+            id=id_,
             aggregate_mode=aggr_mode,
             operation_name=op,
             item_modifiers=item_mods,
@@ -260,7 +260,7 @@ class EveObjects:
             attrs: dict[int, tuple[float, float]] | type[Absent],
     ) -> Mutator:
         mutator = Mutator(
-            id_=id_,
+            id=id_,
             items=items,
             attributes=attrs)
         self.mutators.setdefault(id_, []).append(mutator)

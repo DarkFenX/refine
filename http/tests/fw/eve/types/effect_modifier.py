@@ -1,32 +1,24 @@
 from __future__ import annotations
 
 import typing
+from dataclasses import dataclass
 
-from tests.fw.util import conditional_insert, make_repr_str
+from tests.fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
     from tests.fw.util import Absent
 
 
+@dataclass(kw_only=True)
 class EffectModifier:
 
-    def __init__(
-            self, *,
-            func: str | type[Absent],
-            location: str | type[Absent],
-            group: int | type[Absent],
-            skill_req: int | type[Absent],
-            affector_attr_id: int | type[Absent],
-            affectee_attr_id: int | type[Absent],
-            operation: int | type[Absent],
-    ) -> None:
-        self.func = func
-        self.location = location
-        self.group = group
-        self.skill_req = skill_req
-        self.affector_attr_id = affector_attr_id
-        self.affectee_attr_id = affectee_attr_id
-        self.operation = operation
+    func: str | type[Absent]
+    location: str | type[Absent]
+    group: int | type[Absent]
+    skill_req: int | type[Absent]
+    affector_attr_id: int | type[Absent]
+    affectee_attr_id: int | type[Absent]
+    operation: int | type[Absent]
 
     def to_primitives(self) -> dict:
         mod_entry = {}
@@ -38,6 +30,3 @@ class EffectModifier:
         conditional_insert(container=mod_entry, path=['modifiedAttributeID'], value=self.affectee_attr_id)
         conditional_insert(container=mod_entry, path=['operation'], value=self.operation)
         return mod_entry
-
-    def __repr__(self) -> str:
-        return make_repr_str(instance=self)

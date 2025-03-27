@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import typing
+from dataclasses import dataclass
 
 from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.util import conditional_insert, make_repr_str
+from tests.fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
@@ -11,25 +12,16 @@ if typing.TYPE_CHECKING:
     from .buff_modifier import BuffModifier
 
 
+@dataclass(kw_only=True)
 class Buff:
 
-    def __init__(
-            self, *,
-            id_: int,
-            aggregate_mode: str | type[Absent],
-            operation_name: str | type[Absent],
-            item_modifiers: list[BuffModifier] | type[Absent],
-            location_modifiers: list[BuffModifier] | type[Absent],
-            location_group_modifiers: list[BuffModifier] | type[Absent],
-            location_skillreq_modifiers: list[BuffModifier] | type[Absent],
-    ) -> None:
-        self.id = id_
-        self.aggregate_mode = aggregate_mode
-        self.operation_name = operation_name
-        self.item_modifiers = item_modifiers
-        self.location_modifiers = location_modifiers
-        self.location_group_modifiers = location_group_modifiers
-        self.location_skillreq_modifiers = location_skillreq_modifiers
+    id: int
+    aggregate_mode: str | type[Absent]
+    operation_name: str | type[Absent]
+    item_modifiers: list[BuffModifier] | type[Absent]
+    location_modifiers: list[BuffModifier] | type[Absent]
+    location_group_modifiers: list[BuffModifier] | type[Absent]
+    location_skillreq_modifiers: list[BuffModifier] | type[Absent]
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         effect_entry = {}
@@ -55,6 +47,3 @@ class Buff:
             msg = f'attempt to add buff with duplicate ID {self.id}'
             raise TestDataConsistencyError(msg)
         primitive_data.dbuffcollections[self.id] = effect_entry
-
-    def __repr__(self) -> str:
-        return make_repr_str(instance=self)

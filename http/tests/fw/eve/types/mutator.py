@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import typing
+from dataclasses import dataclass
 
-from tests.fw.util import Absent, conditional_insert, make_repr_str
+from tests.fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
@@ -32,17 +33,12 @@ def convert_attributes(
     return converted
 
 
+@dataclass(kw_only=True)
 class Mutator:
 
-    def __init__(
-            self, *,
-            id_: int,
-            items: list[tuple[list[int], int]] | type[Absent],
-            attributes: dict[int, tuple[float, float]] | type[Absent],
-    ) -> None:
-        self.id = id_
-        self.items = items
-        self.attributes = attributes
+    id: int
+    items: list[tuple[list[int], int]] | type[Absent]
+    attributes: dict[int, tuple[float, float]] | type[Absent]
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         mutator_entry = {}
@@ -57,6 +53,3 @@ class Mutator:
             value=self.attributes,
             cast_to=convert_attributes)
         primitive_data.dynamicitemattributes[self.id] = mutator_entry
-
-    def __repr__(self) -> str:
-        return make_repr_str(instance=self)

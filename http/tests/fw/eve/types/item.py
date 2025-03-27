@@ -1,39 +1,28 @@
 from __future__ import annotations
 
 import typing
+from dataclasses import dataclass
 
 from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.util import Absent, conditional_insert, make_repr_str
+from tests.fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
 
 
+@dataclass(kw_only=True)
 class Item:
 
-    def __init__(
-            self, *,
-            id_: int,
-            group_id: int | type[Absent],
-            attributes: dict[int, float] | type[Absent],
-            effect_ids: list[int] | type[Absent],
-            default_effect_id: int | None,
-            skill_reqs: dict[int, int] | type[Absent],
-            capacity: float | type[Absent],
-            mass: float | type[Absent],
-            radius: float | type[Absent],
-            volume: float | type[Absent],
-    ) -> None:
-        self.id = id_
-        self.group_id = group_id
-        self.attributes = attributes
-        self.effect_ids = effect_ids
-        self.default_effect_id = default_effect_id
-        self.skill_reqs = skill_reqs
-        self.capacity = capacity
-        self.mass = mass
-        self.radius = radius
-        self.volume = volume
+    id: int
+    group_id: int | type[Absent]
+    attributes: dict[int, float] | type[Absent]
+    effect_ids: list[int] | type[Absent]
+    default_effect_id: int | None
+    skill_reqs: dict[int, int] | type[Absent]
+    capacity: float | type[Absent]
+    mass: float | type[Absent]
+    radius: float | type[Absent]
+    volume: float | type[Absent]
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         item_entry = {'typeID': self.id}
@@ -71,6 +60,3 @@ class Item:
                 for e in self.effect_ids]
         else:
             item_entry['dogmaEffects'] = self.effect_ids
-
-    def __repr__(self) -> str:
-        return make_repr_str(instance=self)

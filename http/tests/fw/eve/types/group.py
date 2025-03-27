@@ -1,23 +1,20 @@
 from __future__ import annotations
 
 import typing
+from dataclasses import dataclass
 
 from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.util import Absent, conditional_insert, make_repr_str
+from tests.fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
 
 
+@dataclass(kw_only=True)
 class Group:
 
-    def __init__(
-            self, *,
-            id_: int,
-            category_id: int | type[Absent],
-    ) -> None:
-        self.id = id_
-        self.category_id = category_id
+    id: int
+    category_id: int | type[Absent]
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         # Groups are duplicated in test object data container. Here, we "deduplicate" them
@@ -30,6 +27,3 @@ class Group:
         group_entry = {'groupID': self.id}
         conditional_insert(container=group_entry, path=['categoryID'], value=self.category_id, cast_to=int)
         primitive_data.groups[self.id] = group_entry
-
-    def __repr__(self) -> str:
-        return make_repr_str(instance=self)
