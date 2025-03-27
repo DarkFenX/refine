@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.eve.types import Attribute, Buff, Effect, Group, Item, ItemList, Mutator
+from tests.fw.eve.types import Attribute, Buff, Effect, Group, Item, ItemList, Mutator, SpaceComponent
 from .primitives import EvePrimitives
 
 if typing.TYPE_CHECKING:
@@ -24,6 +24,7 @@ class EveObjects:
         self.attributes: dict[int, list[Attribute]] = {}
         self.effects: dict[int, list[Effect]] = {}
         self.buffs: dict[int, list[Buff]] = {}
+        self.space_comps: dict[int, list[SpaceComponent]] = {}
         self.mutators: dict[int, list[Mutator]] = {}
         # Variables point at next ID to allocate
         self.item_id: int = 1000000
@@ -235,6 +236,23 @@ class EveObjects:
         self.buffs.setdefault(id_, []).append(buff)
         return buff
 
+    def mk_space_comp(
+            self, *,
+            type_id: int,
+            se_buffs: dict[int, float] | type[Absent],
+            pe_buffs: dict[int, float] | type[Absent],
+            pt_buffs: dict[int, float] | type[Absent],
+            sl_buffs: dict[int, float] | type[Absent],
+    ) -> SpaceComponent:
+        space_comp = SpaceComponent(
+            type_id=type_id,
+            system_emitter_buffs=se_buffs,
+            proxy_effect_buffs=pe_buffs,
+            proxy_trigger_buffs=pt_buffs,
+            ship_link_buffs=sl_buffs)
+        self.space_comps.setdefault(type_id, []).append(space_comp)
+        return space_comp
+
     def mk_mutator(
             self, *,
             id_: int,
@@ -259,6 +277,7 @@ class EveObjects:
         self.__handle_container(primitive_data=primitive_data, container=self.attributes, entity_class=Attribute)
         self.__handle_container(primitive_data=primitive_data, container=self.effects, entity_class=Effect)
         self.__handle_container(primitive_data=primitive_data, container=self.buffs, entity_class=Buff)
+        self.__handle_container(primitive_data=primitive_data, container=self.space_comps, entity_class=SpaceComponent)
         self.__handle_container(primitive_data=primitive_data, container=self.mutators, entity_class=Mutator)
         return primitive_data
 

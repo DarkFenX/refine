@@ -7,3 +7,4 @@ from .group import Group
 from .item import Item
 from .item_list import ItemList
 from .mutator import Mutator
+from .space_comp import SpaceComponent
