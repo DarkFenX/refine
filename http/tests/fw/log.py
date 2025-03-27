@@ -6,10 +6,11 @@ import queue
 import re
 import time
 import typing
+from dataclasses import dataclass
 from enum import StrEnum, unique
 from threading import Thread
 
-from tests.fw.util import Timer, make_repr_str
+from tests.fw.util import Timer
 
 if typing.TYPE_CHECKING:
     from collections.abc import Iterator
@@ -33,13 +34,13 @@ class Level(StrEnum):
     trace = 'TRACE'
 
 
+@dataclass(kw_only=True)
 class LogEntry:
 
-    def __init__(self, *, timestamp: str, level: Level, span: str, msg: str) -> None:
-        self.timestamp = timestamp
-        self.level = level
-        self.span = span
-        self.msg = msg
+    timestamp: str
+    level: Level
+    span: str
+    msg: str
 
     def check(
             self, *,
@@ -61,9 +62,6 @@ class LogEntry:
         elif msg != self.msg:
             return False
         return True
-
-    def __repr__(self) -> str:
-        return make_repr_str(instance=self, spec=['timestamp', 'level', 'span', 'msg'])
 
 
 class LogReader:
