@@ -33,8 +33,8 @@ def is_path_in_test_folder(*, path: Path) -> bool:
     # Test folder itself
     if len(split_path) == 0:
         return True
-    # Support folder
-    return split_path[0] != 'support'
+    # Framework folder
+    return split_path[0] != 'fw'
 
 
 def is_test_run_func(*, path: Path, func: str) -> bool:

@@ -37,4 +37,4 @@ class SpaceComponent:
             container=space_comp_entry,
             path=['linkWithShip', 'dbuffs'],
             value=self.proxy_effect_buffs)
-        primitive_data.typelist[self.type_id] = space_comp_entry
+        primitive_data.spacecomponentsbytype[self.type_id] = space_comp_entry
