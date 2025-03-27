@@ -30,13 +30,13 @@ class EffectModifier:
 
     def to_primitives(self) -> dict:
         mod_entry = {}
-        conditional_insert(container=mod_entry, key='func', value=self.func)
-        conditional_insert(container=mod_entry, key='domain', value=self.location)
-        conditional_insert(container=mod_entry, key='groupID', value=self.group)
-        conditional_insert(container=mod_entry, key='skillTypeID', value=self.skill_req)
-        conditional_insert(container=mod_entry, key='modifyingAttributeID', value=self.affector_attr_id)
-        conditional_insert(container=mod_entry, key='modifiedAttributeID', value=self.affectee_attr_id)
-        conditional_insert(container=mod_entry, key='operation', value=self.operation)
+        conditional_insert(container=mod_entry, path=['func'], value=self.func)
+        conditional_insert(container=mod_entry, path=['domain'], value=self.location)
+        conditional_insert(container=mod_entry, path=['groupID'], value=self.group)
+        conditional_insert(container=mod_entry, path=['skillTypeID'], value=self.skill_req)
+        conditional_insert(container=mod_entry, path=['modifyingAttributeID'], value=self.affector_attr_id)
+        conditional_insert(container=mod_entry, path=['modifiedAttributeID'], value=self.affectee_attr_id)
+        conditional_insert(container=mod_entry, path=['operation'], value=self.operation)
         return mod_entry
 
     def __repr__(self) -> str:

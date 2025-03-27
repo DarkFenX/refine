@@ -14,8 +14,8 @@ def convert_items(
     converted = []
     for in_items, out_item in items:
         entry_data = {}
-        conditional_insert(container=entry_data, key='applicableTypes', value=in_items)
-        conditional_insert(container=entry_data, key='resultingType', value=out_item)
+        conditional_insert(container=entry_data, path=['applicableTypes'], value=in_items)
+        conditional_insert(container=entry_data, path=['resultingType'], value=out_item)
         converted.append(entry_data)
     return converted
 
@@ -26,8 +26,8 @@ def convert_attributes(
     converted = {}
     for attr_id, (min_mult, max_mult) in attributes.items():
         attr_data = {}
-        conditional_insert(container=attr_data, key='min', value=min_mult)
-        conditional_insert(container=attr_data, key='max', value=max_mult)
+        conditional_insert(container=attr_data, path=['min'], value=min_mult)
+        conditional_insert(container=attr_data, path=['max'], value=max_mult)
         converted[attr_id] = attr_data
     return converted
 
@@ -48,12 +48,12 @@ class Mutator:
         mutator_entry = {}
         conditional_insert(
             container=mutator_entry,
-            key='inputOutputMapping',
+            path=['inputOutputMapping'],
             value=self.items,
             cast_to=convert_items)
         conditional_insert(
             container=mutator_entry,
-            key='attributeIDs',
+            path=['attributeIDs'],
             value=self.attributes,
             cast_to=convert_attributes)
         primitive_data.dynamicitemattributes[self.id] = mutator_entry

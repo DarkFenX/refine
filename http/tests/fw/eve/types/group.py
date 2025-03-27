@@ -28,7 +28,7 @@ class Group:
                 msg = 'attempt to add group which already exists and has different category'
                 raise TestDataConsistencyError(msg)
         group_entry = {'groupID': self.id}
-        conditional_insert(container=group_entry, key='categoryID', value=self.category_id, cast_to=int)
+        conditional_insert(container=group_entry, path=['categoryID'], value=self.category_id, cast_to=int)
         primitive_data.groups[self.id] = group_entry
 
     def __repr__(self) -> str:

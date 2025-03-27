@@ -34,17 +34,17 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         body = {}
         if data is not Absent:
             if data is Default:
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
-        conditional_insert(container=body, key='sec_zone', value=sec_zone)
-        conditional_insert(container=body, key='default_incoming_dmg', value=default_incoming_dmg)
+        conditional_insert(container=body, path=['sec_zone'], value=sec_zone)
+        conditional_insert(container=body, path=['default_incoming_dmg'], value=default_incoming_dmg)
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol',
@@ -114,10 +114,10 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='GET',
@@ -139,10 +139,10 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -181,12 +181,12 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = {'type': 'set_sec_zone'}
-        conditional_insert(container=command, key='sec_zone', value=sec_zone)
+        conditional_insert(container=command, path=['sec_zone'], value=sec_zone)
         params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -204,12 +204,12 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = {'type': 'set_default_incoming_dmg'}
-        conditional_insert(container=command, key='dmg_profile', value=dmg_profile)
+        conditional_insert(container=command, path=['dmg_profile'], value=dmg_profile)
         params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',

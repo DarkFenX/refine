@@ -33,21 +33,21 @@ class Buff:
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         effect_entry = {}
-        conditional_insert(container=effect_entry, key='aggregateMode', value=self.aggregate_mode, cast_to=str)
-        conditional_insert(container=effect_entry, key='operationName', value=self.operation_name, cast_to=str)
-        conditional_insert(container=effect_entry, key='itemModifiers', value=(
+        conditional_insert(container=effect_entry, path=['aggregateMode'], value=self.aggregate_mode, cast_to=str)
+        conditional_insert(container=effect_entry, path=['operationName'], value=self.operation_name, cast_to=str)
+        conditional_insert(container=effect_entry, path=['itemModifiers'], value=(
             [m.to_primitives() for m in self.item_modifiers]
             if isinstance(self.item_modifiers, list)
             else self.item_modifiers))
-        conditional_insert(container=effect_entry, key='locationModifiers', value=(
+        conditional_insert(container=effect_entry, path=['locationModifiers'], value=(
             [m.to_primitives() for m in self.location_modifiers]
             if isinstance(self.location_modifiers, list)
             else self.location_modifiers))
-        conditional_insert(container=effect_entry, key='locationGroupModifiers', value=(
+        conditional_insert(container=effect_entry, path=['locationGroupModifiers'], value=(
             [m.to_primitives() for m in self.location_group_modifiers]
             if isinstance(self.location_group_modifiers, list)
             else self.location_group_modifiers))
-        conditional_insert(container=effect_entry, key='locationRequiredSkillModifiers', value=(
+        conditional_insert(container=effect_entry, path=['locationRequiredSkillModifiers'], value=(
             [m.to_primitives() for m in self.location_skillreq_modifiers]
             if isinstance(self.location_skillreq_modifiers, list)
             else self.location_skillreq_modifiers))

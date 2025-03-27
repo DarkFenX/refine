@@ -22,9 +22,9 @@ class BuffModifier:
 
     def to_primitives(self) -> dict:
         mod_entry = {}
-        conditional_insert(container=mod_entry, key='dogmaAttributeID', value=self.attr_id)
-        conditional_insert(container=mod_entry, key='groupID', value=self.group_id)
-        conditional_insert(container=mod_entry, key='skillID', value=self.skill_id)
+        conditional_insert(container=mod_entry, path=['dogmaAttributeID'], value=self.attr_id)
+        conditional_insert(container=mod_entry, path=['groupID'], value=self.group_id)
+        conditional_insert(container=mod_entry, path=['skillID'], value=self.skill_id)
         return mod_entry
 
     def __repr__(self) -> str:

@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
 def conditional_insert(
         *,
         container: dict,
-        key: str,
+        path: list[str | int],
         value: typing.Any,
         cast_to: Callable | None = None,
 ) -> None:
@@ -22,4 +22,8 @@ def conditional_insert(
         return
     if value is not None and cast_to is not None:
         value = cast_to(value)
+    key = path[-1]
+    path = path[:-1]
+    for element in path:
+        container = container.setdefault(element, {})
     container[key] = value

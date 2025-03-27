@@ -45,57 +45,57 @@ class Effect:
         effect_entry = {'effectID': self.id}
         conditional_insert(
             container=effect_entry,
-            key='effectCategory',
+            path=['effectCategory'],
             value=self.category_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='isAssistance',
+            path=['isAssistance'],
             value=self.is_assistance,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='isOffensive',
+            path=['isOffensive'],
             value=self.is_offensive,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='dischargeAttributeID',
+            path=['dischargeAttributeID'],
             value=self.discharge_attribute_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='durationAttributeID',
+            path=['durationAttributeID'],
             value=self.duration_attribute_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='rangeAttributeID',
+            path=['rangeAttributeID'],
             value=self.range_attribute_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='falloffAttributeID',
+            path=['falloffAttributeID'],
             value=self.falloff_attribute_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='trackingSpeedAttributeID',
+            path=['trackingSpeedAttributeID'],
             value=self.tracking_attribute_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='fittingUsageChanceAttributeID',
+            path=['fittingUsageChanceAttributeID'],
             value=self.usage_chance_attribute_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='resistanceAttributeID',
+            path=['resistanceAttributeID'],
             value=self.resist_attribute_id,
             cast_to=int)
         conditional_insert(
             container=effect_entry,
-            key='modifierInfo',
+            path=['modifierInfo'],
             value=(
                 [m.to_primitives() for m in self.modifier_info]
                 if isinstance(self.modifier_info, list)

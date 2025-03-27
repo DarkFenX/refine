@@ -31,12 +31,12 @@ class ItemList:
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         item_list_entry = {}
-        conditional_insert(container=item_list_entry, key='includedTypeIDs', value=self.included_type_ids)
-        conditional_insert(container=item_list_entry, key='includedGroupIDs', value=self.included_group_ids)
-        conditional_insert(container=item_list_entry, key='includedCategoryIDs', value=self.included_category_ids)
-        conditional_insert(container=item_list_entry, key='excludedTypeIDs', value=self.excluded_type_ids)
-        conditional_insert(container=item_list_entry, key='excludedGroupIDs', value=self.excluded_group_ids)
-        conditional_insert(container=item_list_entry, key='excludedCategoryIDs', value=self.excluded_category_ids)
+        conditional_insert(container=item_list_entry, path=['includedTypeIDs'], value=self.included_type_ids)
+        conditional_insert(container=item_list_entry, path=['includedGroupIDs'], value=self.included_group_ids)
+        conditional_insert(container=item_list_entry, path=['includedCategoryIDs'], value=self.included_category_ids)
+        conditional_insert(container=item_list_entry, path=['excludedTypeIDs'], value=self.excluded_type_ids)
+        conditional_insert(container=item_list_entry, path=['excludedGroupIDs'], value=self.excluded_group_ids)
+        conditional_insert(container=item_list_entry, path=['excludedCategoryIDs'], value=self.excluded_category_ids)
         primitive_data.typelist[self.id] = item_list_entry
 
     def __repr__(self) -> str:

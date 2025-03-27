@@ -32,12 +32,12 @@ class Attribute:
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         attr_entry = {'attributeID': self.id}
-        conditional_insert(container=attr_entry, key='stackable', value=self.stackable, cast_to=int)
-        conditional_insert(container=attr_entry, key='highIsGood', value=self.high_is_good, cast_to=int)
-        conditional_insert(container=attr_entry, key='defaultValue', value=self.default_value, cast_to=float)
-        conditional_insert(container=attr_entry, key='minAttributeID', value=self.min_attribute_id, cast_to=int)
-        conditional_insert(container=attr_entry, key='maxAttributeID', value=self.max_attribute_id, cast_to=int)
-        conditional_insert(container=attr_entry, key='unitID', value=self.unit_id, cast_to=int)
+        conditional_insert(container=attr_entry, path=['stackable'], value=self.stackable, cast_to=int)
+        conditional_insert(container=attr_entry, path=['highIsGood'], value=self.high_is_good, cast_to=int)
+        conditional_insert(container=attr_entry, path=['defaultValue'], value=self.default_value, cast_to=float)
+        conditional_insert(container=attr_entry, path=['minAttributeID'], value=self.min_attribute_id, cast_to=int)
+        conditional_insert(container=attr_entry, path=['maxAttributeID'], value=self.max_attribute_id, cast_to=int)
+        conditional_insert(container=attr_entry, path=['unitID'], value=self.unit_id, cast_to=int)
         if self.id in primitive_data.dogmaattributes:
             msg = f'attempt to add attribute with duplicate ID {self.id}'
             raise TestDataConsistencyError(msg)

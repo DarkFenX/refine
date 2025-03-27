@@ -37,14 +37,14 @@ class Item:
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         item_entry = {'typeID': self.id}
-        conditional_insert(container=item_entry, key='groupID', value=self.group_id)
+        conditional_insert(container=item_entry, path=['groupID'], value=self.group_id)
         self.__add_primitive_item_attributes(primitive_data=primitive_data)
         self.__add_primitive_item_effects(primitive_data=primitive_data)
-        conditional_insert(container=primitive_data.requiredskillsfortypes, key=self.id, value=self.skill_reqs)
-        conditional_insert(container=item_entry, key='capacity', value=self.capacity)
-        conditional_insert(container=item_entry, key='mass', value=self.mass)
-        conditional_insert(container=item_entry, key='radius', value=self.radius)
-        conditional_insert(container=item_entry, key='volume', value=self.volume)
+        conditional_insert(container=primitive_data.requiredskillsfortypes, path=[self.id], value=self.skill_reqs)
+        conditional_insert(container=item_entry, path=['capacity'], value=self.capacity)
+        conditional_insert(container=item_entry, path=['mass'], value=self.mass)
+        conditional_insert(container=item_entry, path=['radius'], value=self.radius)
+        conditional_insert(container=item_entry, path=['volume'], value=self.volume)
         if self.id in primitive_data.types:
             msg = f'attempt to add item with duplicate ID {self.id}'
             raise TestDataConsistencyError(msg)

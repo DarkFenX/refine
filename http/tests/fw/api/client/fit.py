@@ -22,8 +22,8 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='GET',
@@ -38,7 +38,7 @@ class ApiClientFit(ApiClientBase):
             val_info_mode: ApiValInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='validation', value=val_info_mode)
+        conditional_insert(container=params, path=['validation'], value=val_info_mode)
         body = options.to_dict()
         kwargs = {
             'method': 'POST',
@@ -58,10 +58,10 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         body = {}
-        conditional_insert(container=body, key='rah_incoming_dmg', value=rah_incoming_dmg)
+        conditional_insert(container=body, path=['rah_incoming_dmg'], value=rah_incoming_dmg)
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/fit',
@@ -82,8 +82,8 @@ class ApiClientFit(ApiClientBase):
     ) -> Request:
         command = {'type': 'set_fleet', 'fleet_id': fleet_id}
         params = {}
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -100,10 +100,10 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = {'type': 'set_rah_incoming_dmg'}
-        conditional_insert(container=command, key='dmg_profile', value=dmg_profile)
+        conditional_insert(container=command, path=['dmg_profile'], value=dmg_profile)
         params = {}
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',

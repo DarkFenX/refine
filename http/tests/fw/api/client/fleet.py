@@ -20,7 +20,7 @@ class ApiClientFleet(ApiClientBase):
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
         return Request(
             client=self,
             method='GET',
@@ -33,7 +33,7 @@ class ApiClientFleet(ApiClientBase):
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -49,10 +49,10 @@ class ApiClientFleet(ApiClientBase):
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
         body = {}
-        conditional_insert(container=body, key='add_fits', value=add_fits)
-        conditional_insert(container=body, key='remove_fits', value=remove_fits)
+        conditional_insert(container=body, path=['add_fits'], value=add_fits)
+        conditional_insert(container=body, path=['remove_fits'], value=remove_fits)
         params = {}
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
         return Request(
             client=self,
             method='PATCH',

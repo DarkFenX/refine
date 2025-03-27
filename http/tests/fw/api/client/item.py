@@ -30,7 +30,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='GET',
@@ -44,7 +44,7 @@ class ApiClientItem(ApiClientBase):
             mode: ApiModRmMode | type[Absent],
     ) -> Request:
         body = {}
-        conditional_insert(container=body, key='rm_mode', value=mode)
+        conditional_insert(container=body, path=['rm_mode'], value=mode)
         kwargs = {'method': 'DELETE', 'url': f'{self._base_url}/sol/{sol_id}/item/{item_id}'}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
@@ -83,10 +83,10 @@ class ApiClientItem(ApiClientBase):
             'type': 'booster',
             'fit_id': fit_id,
             'type_id': type_id}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='side_effects', value=side_effects)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['side_effects'], value=side_effects)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -103,10 +103,10 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'booster'}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='side_effects', value=side_effects)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['side_effects'], value=side_effects)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -179,9 +179,9 @@ class ApiClientItem(ApiClientBase):
             'fit_id': fit_id,
             'type_id': type_id,
             'state': state}
-        conditional_insert(container=body, key='mutation', value=mutation)
+        conditional_insert(container=body, path=['mutation'], value=mutation)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -202,14 +202,14 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'drone', 'item_id': item_id}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='mutation', value=mutation)
-        conditional_insert(container=body, key='add_projs', value=add_projs)
-        conditional_insert(container=body, key='change_projs', value=change_projs)
-        conditional_insert(container=body, key='rm_projs', value=rm_projs)
-        conditional_insert(container=body, key='effect_modes', value=effect_modes)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['mutation'], value=mutation)
+        conditional_insert(container=body, path=['add_projs'], value=add_projs)
+        conditional_insert(container=body, path=['change_projs'], value=change_projs)
+        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
+        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -232,9 +232,9 @@ class ApiClientItem(ApiClientBase):
             'fit_id': fit_id,
             'type_id': type_id,
             'state': state}
-        conditional_insert(container=body, key='count', value=count)
+        conditional_insert(container=body, path=['count'], value=count)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -255,14 +255,14 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'fighter', 'item_id': item_id}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='count', value=count)
-        conditional_insert(container=body, key='add_projs', value=add_projs)
-        conditional_insert(container=body, key='change_projs', value=change_projs)
-        conditional_insert(container=body, key='rm_projs', value=rm_projs)
-        conditional_insert(container=body, key='effect_modes', value=effect_modes)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['count'], value=count)
+        conditional_insert(container=body, path=['add_projs'], value=add_projs)
+        conditional_insert(container=body, path=['change_projs'], value=change_projs)
+        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
+        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -355,11 +355,11 @@ class ApiClientItem(ApiClientBase):
             'rack': rack,
             'type_id': type_id,
             'state': state}
-        conditional_insert(container=body, key='mutation', value=mutation)
-        conditional_insert(container=body, key='charge_type_id', value=charge_type_id)
-        conditional_insert(container=body, key='add_mode', value=mode)
+        conditional_insert(container=body, path=['mutation'], value=mutation)
+        conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
+        conditional_insert(container=body, path=['add_mode'], value=mode)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -381,15 +381,15 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'module'}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='mutation', value=mutation)
-        conditional_insert(container=body, key='charge', value=charge)
-        conditional_insert(container=body, key='add_projs', value=add_projs)
-        conditional_insert(container=body, key='change_projs', value=change_projs)
-        conditional_insert(container=body, key='rm_projs', value=rm_projs)
-        conditional_insert(container=body, key='effect_modes', value=effect_modes)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['mutation'], value=mutation)
+        conditional_insert(container=body, path=['charge'], value=charge)
+        conditional_insert(container=body, path=['add_projs'], value=add_projs)
+        conditional_insert(container=body, path=['change_projs'], value=change_projs)
+        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
+        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -406,9 +406,9 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'proj_effect', 'type_id': type_id}
-        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, path=['state'], value=state)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -426,11 +426,11 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'proj_effect', 'item_id': item_id}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='add_projs', value=add_projs)
-        conditional_insert(container=body, key='rm_projs', value=rm_projs)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['add_projs'], value=add_projs)
+        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -552,9 +552,9 @@ class ApiClientItem(ApiClientBase):
             'fit_id': fit_id,
             'type_id': type_id,
             'level': level}
-        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, path=['state'], value=state)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -572,11 +572,11 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'skill'}
-        conditional_insert(container=body, key='level', value=level)
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='effect_modes', value=effect_modes)
+        conditional_insert(container=body, path=['level'], value=level)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
@@ -643,9 +643,9 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'sw_effect', 'type_id': type_id}
-        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, path=['state'], value=state)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -683,9 +683,9 @@ class ApiClientItem(ApiClientBase):
             'type': cmd_name,
             'fit_id': fit_id,
             'type_id': type_id}
-        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, path=['state'], value=state)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='POST',
@@ -703,10 +703,10 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': cmd_name}
-        conditional_insert(container=body, key='state', value=state)
-        conditional_insert(container=body, key='effect_modes', value=effect_modes)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
-        conditional_insert(container=params, key='item', value=item_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='PATCH',
