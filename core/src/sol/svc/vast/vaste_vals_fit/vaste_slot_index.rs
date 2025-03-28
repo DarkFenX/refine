@@ -14,13 +14,13 @@ pub struct ValSlotIndexFail {
 impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_implant_slot_index_fast(&self, kfs: &StSet<ItemId>) -> bool {
-        validate_slot_index_fast(&kfs, &self.slotted_implants)
+        validate_slot_index_fast(kfs, &self.slotted_implants)
     }
     pub(in crate::sol::svc::vast) fn validate_booster_slot_index_fast(&self, kfs: &StSet<ItemId>) -> bool {
-        validate_slot_index_fast(&kfs, &self.slotted_boosters)
+        validate_slot_index_fast(kfs, &self.slotted_boosters)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_index_fast(&self, kfs: &StSet<ItemId>) -> bool {
-        validate_slot_index_fast(&kfs, &self.slotted_subsystems)
+        validate_slot_index_fast(kfs, &self.slotted_subsystems)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_implant_slot_index_verbose(

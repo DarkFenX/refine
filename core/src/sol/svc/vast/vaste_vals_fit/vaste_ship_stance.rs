@@ -40,10 +40,7 @@ impl VastFitData {
         fit: &Fit,
         ship: Option<&Ship>,
     ) -> Option<ValShipStanceFail> {
-        let stance_id = match fit.stance {
-            Some(stance_id) => stance_id,
-            None => return None,
-        };
+        let stance_id = fit.stance?;
         let ship = match ship {
             Some(ship) => ship,
             None => return Some(ValShipStanceFail { item_id: stance_id }),

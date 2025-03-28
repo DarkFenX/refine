@@ -47,7 +47,7 @@ impl ItemVec {
     pub(in crate::sol) fn equip(&mut self, val: ItemId) -> Idx {
         for (i, item) in self.data.iter().enumerate() {
             if item.is_none() {
-                let _ = std::mem::replace(&mut self.data[i], Some(val));
+                let _ = self.data[i].replace(val);
                 self.item_count += 1;
                 return i;
             }
@@ -59,7 +59,7 @@ impl ItemVec {
         if index > self.data.len() {
             // Resize with extra element & replace it, to avoid extra allocations
             self.data.resize(index + 1, None);
-            let _ = std::mem::replace(&mut self.data[index], Some(val));
+            let _ = self.data[index].replace(val);
             self.item_count += 1;
             false
         } else {
@@ -73,7 +73,7 @@ impl ItemVec {
             // Resize with extra element to be able to replace it
             self.data.resize(index + 1, None);
         }
-        if std::mem::replace(&mut self.data[index], Some(val)).is_none() {
+        if self.data[index].replace(val).is_none() {
             self.item_count += 1;
         }
     }

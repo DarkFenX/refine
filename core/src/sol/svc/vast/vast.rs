@@ -23,17 +23,13 @@ impl Vast {
         }
     }
     pub(in crate::sol::svc::vast) fn get_fit_data(&self, fit_id: &FitId) -> Result<&VastFitData, FitFoundError> {
-        self.fit_datas
-            .get(fit_id)
-            .ok_or_else(|| FitFoundError { fit_id: *fit_id })
+        self.fit_datas.get(fit_id).ok_or(FitFoundError { fit_id: *fit_id })
     }
     pub(in crate::sol::svc::vast) fn get_fit_data_mut(
         &mut self,
         fit_id: &FitId,
     ) -> Result<&mut VastFitData, FitFoundError> {
-        self.fit_datas
-            .get_mut(fit_id)
-            .ok_or_else(|| FitFoundError { fit_id: *fit_id })
+        self.fit_datas.get_mut(fit_id).ok_or(FitFoundError { fit_id: *fit_id })
     }
 }
 

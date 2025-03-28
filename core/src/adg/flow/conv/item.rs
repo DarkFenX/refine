@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
@@ -36,7 +35,7 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) 
             cat_id,
             attrs: StMap::new(),
             effect_datas: StMap::new(),
-            defeff_id: defeff_id.map(|e_defeff_id| ad::AEffectId::Dogma(e_defeff_id)),
+            defeff_id: defeff_id.map(ad::AEffectId::Dogma),
             srqs: StMap::new(),
             extras: ad::AItemExtras::new(),
         };
@@ -69,9 +68,9 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) 
                 Some(e_effect_id) => match a_item.effect_datas.get_mut(&ad::AEffectId::Dogma(e_effect_id)) {
                     None => continue,
                     Some(a_item_eff_data) => {
-                        a_item_eff_data.cd = e_item_abil.cooldown.map(|v| OF(v));
+                        a_item_eff_data.cd = e_item_abil.cooldown.map(OF);
                         a_item_eff_data.charge_count = e_item_abil.charge_count;
-                        a_item_eff_data.charge_reload_time = e_item_abil.charge_rearm_time.map(|v| OF(v));
+                        a_item_eff_data.charge_reload_time = e_item_abil.charge_rearm_time.map(OF);
                     }
                 },
             },

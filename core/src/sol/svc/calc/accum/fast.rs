@@ -49,19 +49,6 @@ impl ModAccumFast {
             pen_chains: PenChains::new(),
         }
     }
-    pub(in crate::sol::svc::calc) fn clear(&mut self) {
-        self.pre_assign.clear();
-        self.pre_mul.clear();
-        self.pre_div.clear();
-        self.add.clear();
-        self.sub.clear();
-        self.post_mul.clear();
-        self.post_div.clear();
-        self.post_perc.clear();
-        self.post_assign.clear();
-        self.extra_mul.clear();
-        // Penalty chains are cleaned up just before they are needed
-    }
     pub(in crate::sol::svc::calc) fn add_val(
         &mut self,
         val: AttrVal,
@@ -196,10 +183,6 @@ impl AttrStack {
             penalized: AttrAggr::new(),
         }
     }
-    fn clear(&mut self) {
-        self.stacked.clear();
-        self.penalized.clear();
-    }
     fn add_val<N, D>(
         &mut self,
         val: AttrVal,
@@ -249,11 +232,6 @@ impl AttrAggr {
             aggr_min: StMap::new(),
             aggr_max: StMap::new(),
         }
-    }
-    fn clear(&mut self) {
-        self.stack.clear();
-        self.aggr_min.clear();
-        self.aggr_max.clear();
     }
     fn add_val<N, D>(
         &mut self,

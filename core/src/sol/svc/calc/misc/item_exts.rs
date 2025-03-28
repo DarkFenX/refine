@@ -17,38 +17,22 @@ impl Item {
         }
     }
     pub(in crate::sol::svc::calc) fn is_on_char_root(&self) -> bool {
-        match self {
-            Self::Booster(_) | Self::Implant(_) | Self::Skill(_) => true,
-            _ => false,
-        }
+        matches!(self, Self::Booster(_) | Self::Implant(_) | Self::Skill(_))
     }
     pub(in crate::sol::svc::calc) fn is_on_ship_root(&self) -> bool {
-        match self {
-            Self::Charge(_)
-            | Self::Module(_)
-            | Self::Rig(_)
-            | Self::Service(_)
-            | Self::Stance(_)
-            | Self::Subsystem(_) => true,
-            _ => false,
-        }
+        matches!(
+            self,
+            Self::Charge(_) | Self::Module(_) | Self::Rig(_) | Self::Service(_) | Self::Stance(_) | Self::Subsystem(_)
+        )
     }
     pub(in crate::sol::svc::calc) fn is_on_struct_root(&self) -> bool {
-        match self {
-            Self::Charge(_)
-            | Self::Module(_)
-            | Self::Rig(_)
-            | Self::Service(_)
-            | Self::Stance(_)
-            | Self::Subsystem(_) => true,
-            _ => false,
-        }
+        matches!(
+            self,
+            Self::Charge(_) | Self::Module(_) | Self::Rig(_) | Self::Service(_) | Self::Stance(_) | Self::Subsystem(_)
+        )
     }
     pub(in crate::sol::svc::calc) fn is_owner_modifiable(&self) -> bool {
-        match self {
-            Self::Charge(_) | Self::Drone(_) | Self::Fighter(_) => true,
-            _ => false,
-        }
+        matches!(self, Self::Charge(_) | Self::Drone(_) | Self::Fighter(_))
     }
     pub(in crate::sol::svc::calc) fn is_buffable(&self) -> bool {
         match self {

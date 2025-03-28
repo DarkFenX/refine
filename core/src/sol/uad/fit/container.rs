@@ -24,12 +24,10 @@ impl Fits {
         fit_id
     }
     pub(in crate::sol) fn get_fit(&self, fit_id: &FitId) -> Result<&Fit, FitFoundError> {
-        self.data.get(fit_id).ok_or_else(|| FitFoundError { fit_id: *fit_id })
+        self.data.get(fit_id).ok_or(FitFoundError { fit_id: *fit_id })
     }
     pub(in crate::sol) fn get_fit_mut(&mut self, fit_id: &FitId) -> Result<&mut Fit, FitFoundError> {
-        self.data
-            .get_mut(fit_id)
-            .ok_or_else(|| FitFoundError { fit_id: *fit_id })
+        self.data.get_mut(fit_id).ok_or(FitFoundError { fit_id: *fit_id })
     }
     pub(in crate::sol) fn remove_fit(&mut self, fit_id: &FitId) -> Result<Fit, FitFoundError> {
         match self.data.remove(fit_id) {

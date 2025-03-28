@@ -235,10 +235,7 @@ impl Item {
         }
     }
     pub(in crate::sol) fn can_receive_projs(&self) -> bool {
-        match self {
-            Self::Drone(_) | Self::Fighter(_) | Self::Ship(_) => true,
-            _ => false,
-        }
+        matches!(self, Self::Drone(_) | Self::Fighter(_) | Self::Ship(_))
     }
     pub(in crate::sol) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemId, &Option<AttrVal>)>> {
         match self {
