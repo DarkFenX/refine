@@ -11,7 +11,7 @@ impl AccumMgr {
         if self.accums.is_empty() {
             return ModAccumFast::new();
         }
-        let mut accum = self.accums.swap_remove(0);
+        let mut accum = self.accums.remove(self.accums.len() - 1);
         accum.clear();
         accum
     }
