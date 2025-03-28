@@ -187,7 +187,7 @@ impl Calc {
             Some(orig_val) => *orig_val as AttrVal,
             None => a_attr.def_val as AttrVal,
         };
-        let mut accumulator = self.accums.allocate_accum();
+        let mut accumulator = ModAccumFast::new();
         for modification in self.iter_modifications(uad, item, a_attr_id) {
             accumulator.add_val(
                 modification.val,
@@ -219,7 +219,6 @@ impl Calc {
         }
         // Post-dogma calculations
         let extra_val = accumulator.apply_extra_mods(dogma_val, a_attr.hig);
-        self.accums.return_accum(accumulator);
         Ok(CalcAttrVal {
             base: base_val,
             dogma: dogma_val,
