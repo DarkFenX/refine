@@ -13,7 +13,7 @@ pub enum EffectId {
     /// Space component effect attached to an item, proximity effect part.
     ScProxyEffect(ItemTypeId),
     /// Space component effect attached to an item, proximity trigger/trap part.
-    ScProxyTrigger(ItemTypeId),
+    ScProxyTrap(ItemTypeId),
     /// Space component effect attached to an item, ship link part.
     ScShipLink(ItemTypeId),
     /// ID of an effect created by the library.
@@ -25,7 +25,7 @@ impl std::fmt::Display for EffectId {
             Self::Dogma(id) => write!(f, "d{}", id),
             Self::ScSystemEmitter(id) => write!(f, "scse{}", id),
             Self::ScProxyEffect(id) => write!(f, "scpe{}", id),
-            Self::ScProxyTrigger(id) => write!(f, "scpt{}", id),
+            Self::ScProxyTrap(id) => write!(f, "scpt{}", id),
             Self::ScShipLink(id) => write!(f, "scsl{}", id),
             Self::Custom(id) => write!(f, "c{}", id),
         }
@@ -37,7 +37,7 @@ impl From<ad::AEffectId> for EffectId {
             ad::AEffectId::Dogma(id) => Self::Dogma(id),
             ad::AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id),
             ad::AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(id),
-            ad::AEffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(id),
+            ad::AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(id),
             ad::AEffectId::ScShipLink(id) => Self::ScShipLink(id),
             ad::AEffectId::Custom(id) => Self::Custom(id),
         }
@@ -49,7 +49,7 @@ impl From<&ad::AEffectId> for EffectId {
             ad::AEffectId::Dogma(id) => Self::Dogma(*id),
             ad::AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             ad::AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
-            ad::AEffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(*id),
+            ad::AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
             ad::AEffectId::ScShipLink(id) => Self::ScShipLink(*id),
             ad::AEffectId::Custom(id) => Self::Custom(*id),
         }
@@ -61,7 +61,7 @@ impl From<EffectId> for ad::AEffectId {
             EffectId::Dogma(id) => Self::Dogma(id),
             EffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id),
             EffectId::ScProxyEffect(id) => Self::ScProxyEffect(id),
-            EffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(id),
+            EffectId::ScProxyTrap(id) => Self::ScProxyTrap(id),
             EffectId::ScShipLink(id) => Self::ScShipLink(id),
             EffectId::Custom(id) => Self::Custom(id),
         }
@@ -73,7 +73,7 @@ impl From<&EffectId> for ad::AEffectId {
             EffectId::Dogma(id) => Self::Dogma(*id),
             EffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             EffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
-            EffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(*id),
+            EffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
             EffectId::ScShipLink(id) => Self::ScShipLink(*id),
             EffectId::Custom(id) => Self::Custom(*id),
         }

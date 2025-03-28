@@ -14,7 +14,7 @@ pub(in crate::handler_json) enum CEffectId {
     Dogma(CDogmaEffectId),
     ScSystemEmitter(CItemId),
     ScProxyEffect(CItemId),
-    ScProxyTrigger(CItemId),
+    ScProxyTrap(CItemId),
     ScShipLink(CItemId),
     Custom(CCustomEffectId),
 }
@@ -24,7 +24,7 @@ impl From<&rc::ad::AEffectId> for CEffectId {
             rc::ad::AEffectId::Dogma(id) => Self::Dogma(*id),
             rc::ad::AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             rc::ad::AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
-            rc::ad::AEffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(*id),
+            rc::ad::AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
             rc::ad::AEffectId::ScShipLink(id) => Self::ScShipLink(*id),
             rc::ad::AEffectId::Custom(id) => Self::Custom(*id),
         }
@@ -36,7 +36,7 @@ impl From<&CEffectId> for rc::ad::AEffectId {
             CEffectId::Dogma(id) => Self::Dogma(*id),
             CEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             CEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
-            CEffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(*id),
+            CEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
             CEffectId::ScShipLink(id) => Self::ScShipLink(*id),
             CEffectId::Custom(id) => Self::Custom(*id),
         }
@@ -51,7 +51,7 @@ impl serde::Serialize for CEffectId {
             Self::Dogma(id) => format!("{D_PREFIX}{id}"),
             Self::ScSystemEmitter(id) => format!("{SCSE_PREFIX}{id}"),
             Self::ScProxyEffect(id) => format!("{SCPE_PREFIX}{id}"),
-            Self::ScProxyTrigger(id) => format!("{SCPT_PREFIX}{id}"),
+            Self::ScProxyTrap(id) => format!("{SCPT_PREFIX}{id}"),
             Self::ScShipLink(id) => format!("{SCSL_PREFIX}{id}"),
             Self::Custom(id) => format!("{C_PREFIX}{id}"),
         };
@@ -90,7 +90,7 @@ impl<'de> serde::Deserialize<'de> for CEffectId {
                 }
                 if v.starts_with(SCPT_PREFIX) {
                     let id = CItemId::from_str(&v[SCPT_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
-                    return Ok(Self::Value::ScProxyTrigger(id));
+                    return Ok(Self::Value::ScProxyTrap(id));
                 }
                 if v.starts_with(SCSL_PREFIX) {
                     let id = CItemId::from_str(&v[SCSL_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;

@@ -16,7 +16,7 @@ class SpaceComponent:
     type_id: int
     system_emitter_buffs: dict[int, float] | type[Absent]
     proxy_effect_buffs: dict[int, float] | type[Absent]
-    proxy_trigger_buffs: dict[int, float] | type[Absent]
+    proxy_trap_buffs: dict[int, float] | type[Absent]
     ship_link_buffs: dict[int, float] | type[Absent]
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
@@ -32,7 +32,7 @@ class SpaceComponent:
         conditional_insert(
             container=space_comp_entry,
             path=['proximityTrap', 'dbuffs'],
-            value=self.proxy_trigger_buffs)
+            value=self.proxy_trap_buffs)
         conditional_insert(
             container=space_comp_entry,
             path=['linkWithShip', 'dbuffs'],

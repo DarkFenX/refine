@@ -9,8 +9,8 @@ pub enum AEffectId {
     ScSystemEmitter(AItemId),
     /// Space component effect attached to an item, proximity effect part.
     ScProxyEffect(AItemId),
-    /// Space component effect attached to an item, proximity trigger/trap part.
-    ScProxyTrigger(AItemId),
+    /// Space component effect attached to an item, proximity trap/trigger part.
+    ScProxyTrap(AItemId),
     /// Space component effect attached to an item, ship link part.
     ScShipLink(AItemId),
     /// ID of an effect created by the library.
@@ -22,7 +22,7 @@ impl std::fmt::Display for AEffectId {
             Self::Dogma(id) => write!(f, "d{}", id),
             Self::ScSystemEmitter(id) => write!(f, "scse{}", id),
             Self::ScProxyEffect(id) => write!(f, "scpe{}", id),
-            Self::ScProxyTrigger(id) => write!(f, "scpt{}", id),
+            Self::ScProxyTrap(id) => write!(f, "scpt{}", id),
             Self::ScShipLink(id) => write!(f, "scsl{}", id),
             Self::Custom(id) => write!(f, "c{}", id),
         }

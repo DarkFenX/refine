@@ -248,7 +248,7 @@ class EveObjects:
             type_id=type_id,
             system_emitter_buffs=se_buffs,
             proxy_effect_buffs=pe_buffs,
-            proxy_trigger_buffs=pt_buffs,
+            proxy_trap_buffs=pt_buffs,
             ship_link_buffs=sl_buffs)
         self.space_comps.setdefault(type_id, []).append(space_comp)
         return space_comp

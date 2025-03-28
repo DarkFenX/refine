@@ -12,7 +12,7 @@ pub(crate) enum HEffectId {
     Dogma(rc::DogmaEffectId),
     ScSystemEmitter(rc::ItemTypeId),
     ScProxyEffect(rc::ItemTypeId),
-    ScProxyTrigger(rc::ItemTypeId),
+    ScProxyTrap(rc::ItemTypeId),
     ScShipLink(rc::ItemTypeId),
     Custom(rc::CustomEffectId),
 }
@@ -22,7 +22,7 @@ impl From<&rc::EffectId> for HEffectId {
             rc::EffectId::Dogma(id) => Self::Dogma(*id),
             rc::EffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             rc::EffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
-            rc::EffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(*id),
+            rc::EffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
             rc::EffectId::ScShipLink(id) => Self::ScShipLink(*id),
             rc::EffectId::Custom(id) => Self::Custom(*id),
         }
@@ -34,7 +34,7 @@ impl From<rc::EffectId> for HEffectId {
             rc::EffectId::Dogma(id) => Self::Dogma(id),
             rc::EffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id),
             rc::EffectId::ScProxyEffect(id) => Self::ScProxyEffect(id),
-            rc::EffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(id),
+            rc::EffectId::ScProxyTrap(id) => Self::ScProxyTrap(id),
             rc::EffectId::ScShipLink(id) => Self::ScShipLink(id),
             rc::EffectId::Custom(id) => Self::Custom(id),
         }
@@ -46,7 +46,7 @@ impl From<&HEffectId> for rc::EffectId {
             HEffectId::Dogma(id) => Self::Dogma(*id),
             HEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             HEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
-            HEffectId::ScProxyTrigger(id) => Self::ScProxyTrigger(*id),
+            HEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
             HEffectId::ScShipLink(id) => Self::ScShipLink(*id),
             HEffectId::Custom(id) => Self::Custom(*id),
         }
@@ -61,7 +61,7 @@ impl serde::Serialize for HEffectId {
             Self::Dogma(id) => format!("{D_PREFIX}{id}"),
             Self::ScSystemEmitter(id) => format!("{SCSE_PREFIX}{id}"),
             Self::ScProxyEffect(id) => format!("{SCPE_PREFIX}{id}"),
-            Self::ScProxyTrigger(id) => format!("{SCPT_PREFIX}{id}"),
+            Self::ScProxyTrap(id) => format!("{SCPT_PREFIX}{id}"),
             Self::ScShipLink(id) => format!("{SCSL_PREFIX}{id}"),
             Self::Custom(id) => format!("{C_PREFIX}{id}"),
         };
@@ -104,7 +104,7 @@ impl<'de> serde::Deserialize<'de> for HEffectId {
                 if v.starts_with(SCPT_PREFIX) {
                     let id =
                         rc::ItemTypeId::from_str(&v[SCPT_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
-                    return Ok(Self::Value::ScProxyTrigger(id));
+                    return Ok(Self::Value::ScProxyTrap(id));
                 }
                 if v.starts_with(SCSL_PREFIX) {
                     let id =
