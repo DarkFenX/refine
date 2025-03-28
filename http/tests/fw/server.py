@@ -18,7 +18,7 @@ class ConfigInfo:
 
 @dataclass(kw_only=True)
 class ServerInfo:
-    pid: int
+    popen: subprocess.Popen
 
 
 def build_server(*, proj_root: Path) -> None:
@@ -48,11 +48,12 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
 
 def run_server(*, proj_root: Path, config_path: Path) -> ServerInfo:
     binary_path = proj_root / 'target' / 'release' / 'reefast-http'
-    return ServerInfo(pid=subprocess.Popen(
+    return ServerInfo(popen=subprocess.Popen(
         [binary_path, config_path],
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL).pid)
+        stderr=subprocess.DEVNULL))
 
 
-def kill_server(*, pid: int) -> None:
-    os.kill(pid, SIGKILL)
+def kill_server(*, server_info: ServerInfo) -> None:
+    server_info.popen.kill()
+    server_info.popen.wait()

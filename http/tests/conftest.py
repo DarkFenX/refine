@@ -51,9 +51,9 @@ def reefast_server(reefast_config: ConfigInfo, log_reader: LogReader) -> Iterato
     try:
         yield server_info
     except Exception:
-        kill_server(pid=server_info.pid)
+        kill_server(server_info=server_info)
         raise
-    kill_server(pid=server_info.pid)
+    kill_server(server_info=server_info)
 
 
 @pytest.fixture

@@ -77,3 +77,4 @@ inline-quotes = "single"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+filterwarnings = ["error"]
