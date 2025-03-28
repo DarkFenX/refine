@@ -380,7 +380,7 @@ fn get_chain_val(vals: &mut Vec<AttrVal>) -> AttrVal {
     let mut val = OF(1.0);
     // Ignore 12th modification and further as non-significant
     for (i, mod_val) in vals.iter().enumerate() {
-        if i > PENALTY_SIGNIFICANT_MODIFICATIONS {
+        if i >= PENALTY_SIGNIFICANT_MODIFICATIONS {
             break;
         }
         val *= OF(1.0) + (mod_val - OF(1.0)) * PENALTY_BASE.powi((i as i32).pow(2));
