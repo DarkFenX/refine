@@ -31,6 +31,7 @@ pub(in crate::sol::svc::calc) struct ModAccumFast {
     post_perc: AttrStack,
     post_assign: AttrAggr,
     extra_mul: AttrAggr,
+    pen_chains: PenChains,
 }
 impl ModAccumFast {
     pub(in crate::sol::svc::calc) fn new() -> Self {
@@ -45,7 +46,21 @@ impl ModAccumFast {
             post_perc: AttrStack::new(),
             post_assign: AttrAggr::new(),
             extra_mul: AttrAggr::new(),
+            pen_chains: PenChains::new(),
         }
+    }
+    pub(in crate::sol::svc::calc) fn clear(&mut self) {
+        self.pre_assign.clear();
+        self.pre_mul.clear();
+        self.pre_div.clear();
+        self.add.clear();
+        self.sub.clear();
+        self.post_mul.clear();
+        self.post_div.clear();
+        self.post_perc.clear();
+        self.post_assign.clear();
+        self.extra_mul.clear();
+        // Penalty chains are cleaned up just before they are needed
     }
     pub(in crate::sol::svc::calc) fn add_val(
         &mut self,
@@ -125,18 +140,48 @@ impl ModAccumFast {
         };
     }
     pub(in crate::sol::svc::calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
-        let val = apply_assign(base_val, self.pre_assign.get_comb_val(combine_assigns, hig));
-        let val = apply_mul(val, self.pre_mul.get_comb_val(combine_muls, combine_muls_pen, hig));
-        let val = apply_mul(val, self.pre_div.get_comb_val(combine_muls, combine_muls_pen, hig));
-        let val = apply_add(val, self.add.get_comb_val(combine_adds, hig));
-        let val = apply_add(val, self.sub.get_comb_val(combine_adds, hig));
-        let val = apply_mul(val, self.post_mul.get_comb_val(combine_muls, combine_muls_pen, hig));
-        let val = apply_mul(val, self.post_div.get_comb_val(combine_muls, combine_muls_pen, hig));
-        let val = apply_mul(val, self.post_perc.get_comb_val(combine_muls, combine_muls_pen, hig));
-        apply_assign(val, self.post_assign.get_comb_val(combine_assigns, hig))
+        let val = apply_assign(
+            base_val,
+            self.pre_assign.get_comb_val(combine_assigns, hig, &mut self.pen_chains),
+        );
+        let val = apply_mul(
+            val,
+            self.pre_mul
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+        );
+        let val = apply_mul(
+            val,
+            self.pre_div
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+        );
+        let val = apply_add(val, self.add.get_comb_val(combine_adds, hig, &mut self.pen_chains));
+        let val = apply_add(val, self.sub.get_comb_val(combine_adds, hig, &mut self.pen_chains));
+        let val = apply_mul(
+            val,
+            self.post_mul
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+        );
+        let val = apply_mul(
+            val,
+            self.post_div
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+        );
+        let val = apply_mul(
+            val,
+            self.post_perc
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+        );
+        apply_assign(
+            val,
+            self.post_assign
+                .get_comb_val(combine_assigns, hig, &mut self.pen_chains),
+        )
     }
     pub(in crate::sol::svc::calc) fn apply_extra_mods(&mut self, val: AttrVal, hig: bool) -> AttrVal {
-        apply_mul(val, self.extra_mul.get_comb_val(combine_muls, hig))
+        apply_mul(
+            val,
+            self.extra_mul.get_comb_val(combine_muls, hig, &mut self.pen_chains),
+        )
     }
 }
 
@@ -150,6 +195,10 @@ impl AttrStack {
             stacked: AttrAggr::new(),
             penalized: AttrAggr::new(),
         }
+    }
+    fn clear(&mut self) {
+        self.stacked.clear();
+        self.penalized.clear();
     }
     fn add_val<N, D>(
         &mut self,
@@ -170,15 +219,21 @@ impl AttrStack {
         };
         attr_aggr.add_val(val, proj_mult, res_mult, normalize_func, diminish_func, aggr_mode)
     }
-    fn get_comb_val<F1, F2>(&mut self, comb_func: F1, pen_func: F2, hig: bool) -> Option<AttrVal>
+    fn get_comb_val<F1, F2>(
+        &mut self,
+        comb_func: F1,
+        pen_func: F2,
+        hig: bool,
+        pen_chains: &mut PenChains,
+    ) -> Option<AttrVal>
     where
-        F1: Fn(&[AttrVal], bool) -> Option<AttrVal>,
-        F2: Fn(&[AttrVal], bool) -> Option<AttrVal>,
+        F1: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
+        F2: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
     {
-        if let Some(val) = self.penalized.get_comb_val(pen_func, hig) {
+        if let Some(val) = self.penalized.get_comb_val(pen_func, hig, pen_chains) {
             self.stacked.add_processed_val(val, &AggrMode::Stack);
         }
-        self.stacked.get_comb_val(comb_func, hig)
+        self.stacked.get_comb_val(comb_func, hig, pen_chains)
     }
 }
 
@@ -194,6 +249,11 @@ impl AttrAggr {
             aggr_min: StMap::new(),
             aggr_max: StMap::new(),
         }
+    }
+    fn clear(&mut self) {
+        self.stack.clear();
+        self.aggr_min.clear();
+        self.aggr_max.clear();
     }
     fn add_val<N, D>(
         &mut self,
@@ -221,9 +281,9 @@ impl AttrAggr {
             AggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(val),
         }
     }
-    fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool) -> Option<AttrVal>
+    fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool, pen_chains: &mut PenChains) -> Option<AttrVal>
     where
-        F: Fn(&[AttrVal], bool) -> Option<AttrVal>,
+        F: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
     {
         // Resolve aggregations
         for vals in self.aggr_min.values() {
@@ -236,7 +296,27 @@ impl AttrAggr {
                 self.stack.push(val);
             }
         }
-        comb_func(&self.stack, high_is_good)
+        comb_func(&self.stack, high_is_good, pen_chains)
+    }
+}
+
+struct PenChains {
+    positive: Vec<AttrVal>,
+    negative: Vec<AttrVal>,
+}
+impl PenChains {
+    fn new() -> Self {
+        Self {
+            positive: Vec::new(),
+            negative: Vec::new(),
+        }
+    }
+    fn clear(&mut self) {
+        self.positive.clear();
+        self.negative.clear();
+    }
+    fn is_empty(&self) -> bool {
+        self.positive.is_empty() && self.negative.is_empty()
     }
 }
 
@@ -258,19 +338,19 @@ fn apply_mul(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
 }
 
 // Regular combination functions
-fn combine_assigns(vals: &[AttrVal], high_is_good: bool) -> Option<AttrVal> {
+fn combine_assigns(vals: &[AttrVal], high_is_good: bool, _pen_chains: &mut PenChains) -> Option<AttrVal> {
     match high_is_good {
         true => get_max(vals),
         false => get_min(vals),
     }
 }
-fn combine_adds(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
+fn combine_adds(vals: &[AttrVal], _high_is_good: bool, _pen_chains: &mut PenChains) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
     Some(vals.iter().sum())
 }
-fn combine_muls(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
+fn combine_muls(vals: &[AttrVal], _high_is_good: bool, _pen_chains: &mut PenChains) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
@@ -278,24 +358,34 @@ fn combine_muls(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
 }
 
 // Penalized combination functions
-fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
+fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool, pen_chains: &mut PenChains) -> Option<AttrVal> {
     // Gather positive multipliers into one chain, negative into another, with stronger
     // modifications being first
-    let mut positive = Vec::new();
-    let mut negative = Vec::new();
+    pen_chains.clear();
     for val in vals.iter() {
         if *val > OF(1.0) {
-            positive.push(*val);
+            pen_chains.positive.push(*val);
         } else if *val < OF(1.0) {
-            negative.push(*val);
+            pen_chains.negative.push(*val);
         }
     }
-    if positive.is_empty() && negative.is_empty() {
+    if pen_chains.is_empty() {
         return None;
     }
-    positive.sort_unstable_by_key(|v| -v);
-    negative.sort_unstable();
-    Some(get_chain_val(positive) * get_chain_val(negative))
+    pen_chains.positive.sort_unstable_by_key(|v| -v);
+    pen_chains.negative.sort_unstable();
+    Some(get_chain_val(&mut pen_chains.positive) * get_chain_val(&mut pen_chains.negative))
+}
+fn get_chain_val(vals: &mut Vec<AttrVal>) -> AttrVal {
+    let mut val = OF(1.0);
+    // Ignore 12th modification and further as non-significant
+    for (i, mod_val) in vals
+        .drain(..usize::min(PENALTY_SIGNIFICANT_MODIFICATIONS, vals.len()))
+        .enumerate()
+    {
+        val *= OF(1.0) + (mod_val - OF(1.0)) * PENALTY_BASE.powi((i as i32).pow(2));
+    }
+    val
 }
 
 // Misc functions
@@ -304,15 +394,4 @@ fn get_min(vals: &[AttrVal]) -> Option<AttrVal> {
 }
 fn get_max(vals: &[AttrVal]) -> Option<AttrVal> {
     vals.iter().max().copied()
-}
-fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {
-    let mut val = OF(1.0);
-    for (i, mod_val) in vals.iter().enumerate() {
-        // Ignore 12th modification and further as non-significant
-        if i >= PENALTY_SIGNIFICANT_MODIFICATIONS {
-            break;
-        }
-        val *= OF(1.0) + (mod_val - OF(1.0)) * PENALTY_BASE.powi((i as i32).pow(2));
-    }
-    val
 }
