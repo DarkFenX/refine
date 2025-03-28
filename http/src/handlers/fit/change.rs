@@ -24,11 +24,6 @@ pub(crate) struct HFitChangeResp {
     fit: HFitInfo,
     cmd_results: Vec<HCmdResp>,
 }
-impl HFitChangeResp {
-    pub(crate) fn new(fit: HFitInfo, cmd_results: Vec<HCmdResp>) -> Self {
-        Self { fit, cmd_results }
-    }
-}
 
 #[allow(clippy::let_and_return)]
 pub(crate) async fn change_fit(
@@ -53,7 +48,10 @@ pub(crate) async fn change_fit(
         .await
     {
         Ok((fit_info, cmd_results)) => {
-            let resp = HFitChangeResp::new(fit_info, cmd_results);
+            let resp = HFitChangeResp {
+                fit: fit_info,
+                cmd_results,
+            };
             (StatusCode::OK, Json(resp)).into_response()
         }
         Err(br_err) => {

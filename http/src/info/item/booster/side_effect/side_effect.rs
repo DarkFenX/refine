@@ -7,13 +7,6 @@ pub(crate) struct HSideEffectInfo {
     pub(crate) strength: Option<HSideEffectStr>,
 }
 impl HSideEffectInfo {
-    fn new(chance: rc::AttrVal, status: bool, strength: Option<HSideEffectStr>) -> Self {
-        Self {
-            chance,
-            status,
-            strength,
-        }
-    }
     pub(in crate::info::item::booster) fn from_core_info(
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
@@ -30,6 +23,10 @@ impl HSideEffectInfo {
             Some(core_se_str) => HSideEffectStr::from_core_str(core_sol, item_id, &core_se_str),
             None => None,
         };
-        Self::new(chance, core_se_info.status, strength)
+        Self {
+            chance,
+            status: core_se_info.status,
+            strength,
+        }
     }
 }

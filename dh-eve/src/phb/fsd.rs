@@ -10,11 +10,6 @@ pub(in crate::phb) struct FsdItem {
     pub(in crate::phb) id: String,
     pub(in crate::phb) item: serde_json::Value,
 }
-impl FsdItem {
-    pub(in crate::phb) fn new(id: String, item: serde_json::Value) -> Self {
-        Self { id, item }
-    }
-}
 
 pub(in crate::phb) fn handle<T, U>(
     unprocessed: serde_json::Value,
@@ -29,7 +24,7 @@ where
 
 fn decompose(json: serde_json::Value, suffix: &str) -> Result<Vec<FsdItem>, Error> {
     match json {
-        serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
+        serde_json::Value::Object(map) => Ok(map.into_iter().map(|(id, item)| FsdItem { id, item }).collect()),
         _ => Err(Error::PhbUnexpectedFsdTopEntity(suffix.to_string())),
     }
 }

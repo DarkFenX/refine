@@ -103,14 +103,9 @@ pub(crate) struct HFleetIdResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     id: rc::FleetId,
 }
-impl HFleetIdResp {
-    fn new(fleet_id: rc::FleetId) -> Self {
-        Self { id: fleet_id }
-    }
-}
 impl From<rc::FleetInfo> for HFleetIdResp {
     fn from(core_fleet: rc::FleetInfo) -> Self {
-        Self::new(core_fleet.id)
+        Self { id: core_fleet.id }
     }
 }
 
@@ -120,14 +115,9 @@ pub(crate) struct HFitIdResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     id: rc::FitId,
 }
-impl HFitIdResp {
-    fn new(fit_id: rc::FitId) -> Self {
-        Self { id: fit_id }
-    }
-}
 impl From<rc::FitInfo> for HFitIdResp {
     fn from(core_fit: rc::FitInfo) -> Self {
-        Self::new(core_fit.id)
+        Self { id: core_fit.id }
     }
 }
 
