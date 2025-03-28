@@ -293,7 +293,7 @@ fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
     if positive.is_empty() && negative.is_empty() {
         return None;
     }
-    positive.sort_by_key(|v| -v);
+    positive.sort_unstable_by_key(|v| -v);
     negative.sort_unstable();
     Some(get_chain_val(positive) * get_chain_val(negative))
 }

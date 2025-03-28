@@ -555,8 +555,8 @@ where
     if positive.is_empty() && negative.is_empty() {
         return None;
     }
-    positive.sort_by_key(|v| -v.value);
-    negative.sort_by_key(|v| v.value);
+    positive.sort_unstable_by_key(|v| -v.value);
+    negative.sort_unstable_by_key(|v| v.value);
     let mut attr_info = AttrValInfo::new(OF(1.0));
     // Do negative chain first, since it can result in final multiplier of 0
     let negative_attr_info = get_chain_attr_info(negative, revert_func);
