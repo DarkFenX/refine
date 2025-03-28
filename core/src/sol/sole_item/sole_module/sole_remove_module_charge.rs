@@ -8,7 +8,7 @@ impl SolarSystem {
         let module = self.uad.items.get_item(item_id)?.get_module()?;
         let charge_id = match module.get_charge_item_id() {
             Some(charge_id) => charge_id,
-            None => return Err(ChargeFoundError::new(*item_id).into()),
+            None => return Err(ChargeFoundError { cont_item_id: *item_id }.into()),
         };
         self.remove_charge(&charge_id).unwrap();
         Ok(())

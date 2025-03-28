@@ -12,11 +12,6 @@ pub struct StatRes {
     pub used: AttrVal,
     pub output: Option<AttrVal>,
 }
-impl StatRes {
-    pub(in crate::sol::svc::vast) fn new(used: AttrVal, output: Option<AttrVal>) -> Self {
-        StatRes { used, output }
-    }
-}
 
 impl VastFitData {
     // Public methods
@@ -94,7 +89,10 @@ fn get_resource_stats_fitting<'a>(
         .filter_map(|i| calc.get_item_attr_val_simple(uad, i, use_a_attr_id))
         .sum();
     // Round possible float errors despite individual use values being rounded
-    StatRes::new(round(used, 2), output)
+    StatRes {
+        used: round(used, 2),
+        output,
+    }
 }
 fn get_resource_stats_other<'a>(
     uad: &Uad,
@@ -105,5 +103,5 @@ fn get_resource_stats_other<'a>(
 ) -> StatRes {
     let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_a_attr_id);
     let used = items_use.sum();
-    StatRes::new(used, output)
+    StatRes { used, output }
 }

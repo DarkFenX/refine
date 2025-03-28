@@ -13,9 +13,9 @@ impl SolarSystem {
         match item {
             // Auto charge can't be removed no matter what
             Item::Autocharge(_) => {
-                return Err(RemoveItemError::UnremovableAutocharge(ItemKindRemoveError::new(
-                    Autocharge::get_name(),
-                )));
+                return Err(RemoveItemError::UnremovableAutocharge(ItemKindRemoveError {
+                    item_kind: Autocharge::get_name(),
+                }));
             }
             // We unwrap when the only reasons of failure are when item is not found and when item
             // kind mismatches, both of which we already checked

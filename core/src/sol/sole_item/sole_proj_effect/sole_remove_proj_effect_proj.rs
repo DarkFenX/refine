@@ -13,7 +13,11 @@ impl SolarSystem {
         let proj_effect_item = self.uad.items.get_item(item_id)?;
         let proj_effect = proj_effect_item.get_proj_effect()?;
         if !proj_effect.get_projs().contains(projectee_item_id) {
-            return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
+            return Err(ProjFoundError {
+                projector_item_id: *item_id,
+                projectee_item_id: *projectee_item_id,
+            }
+            .into());
         };
         // Update services
         let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();

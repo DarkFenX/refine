@@ -30,10 +30,15 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         match fit.skills.entry(type_id) {
             Entry::Vacant(entry) => {
-                entry.insert(FitSkill::new(item_id, level));
+                entry.insert(FitSkill { item_id, level });
             }
             Entry::Occupied(entry) => {
-                return Err(SkillEveTypeError::new(type_id, fit_id, entry.get().item_id).into());
+                return Err(SkillEveTypeError {
+                    type_id,
+                    fit_id,
+                    item_id: entry.get().item_id,
+                }
+                .into());
             }
         }
         self.uad.items.add_item(item);

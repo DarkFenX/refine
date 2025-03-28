@@ -6,15 +6,6 @@ pub struct ItemKindMatchError {
     pub expected_kind: &'static str,
     pub actual_kind: &'static str,
 }
-impl ItemKindMatchError {
-    pub(crate) fn new(item_id: ItemId, expected_kind: &'static str, actual_kind: &'static str) -> Self {
-        Self {
-            item_id,
-            expected_kind,
-            actual_kind,
-        }
-    }
-}
 impl std::error::Error for ItemKindMatchError {}
 impl std::fmt::Display for ItemKindMatchError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

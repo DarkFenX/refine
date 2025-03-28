@@ -65,7 +65,9 @@ fn conv_buff_aggr_mode(aggr_mode: &str) -> Result<ad::ABuffAggrMode, StrMsgError
     match aggr_mode {
         "Minimum" => Ok(ad::ABuffAggrMode::Min),
         "Maximum" => Ok(ad::ABuffAggrMode::Max),
-        _ => Err(StrMsgError::new(format!("unexpected aggregate mode \"{aggr_mode}\""))),
+        _ => Err(StrMsgError {
+            msg: format!("unexpected aggregate mode \"{aggr_mode}\""),
+        }),
     }
 }
 
@@ -80,6 +82,8 @@ fn conv_buff_op(operation: &str) -> Result<ad::AOp, StrMsgError> {
         "PostDiv" => Ok(ad::AOp::PostDiv),
         "PostPercent" => Ok(ad::AOp::PostPerc),
         "PostAssignment" => Ok(ad::AOp::PostAssign),
-        _ => Err(StrMsgError::new(format!("unexpected operation \"{operation}\""))),
+        _ => Err(StrMsgError {
+            msg: format!("unexpected operation \"{operation}\""),
+        }),
     }
 }

@@ -84,7 +84,12 @@ impl Calc {
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
                 let item_sim_data = sim_datas.get_mut(&cycled_item_id).unwrap();
-                let mut taken_dmg = DmgKinds::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0));
+                let mut taken_dmg = DmgKinds {
+                    em: OF(0.0),
+                    thermal: OF(0.0),
+                    kinetic: OF(0.0),
+                    explosive: OF(0.0),
+                };
                 // Extract damage ship taken during RAH cycle, replacing it with 0's
                 std::mem::swap(&mut taken_dmg, &mut item_sim_data.taken_dmg);
                 let next_resos = get_next_resonances(
@@ -135,10 +140,15 @@ impl Calc {
     }
     fn get_ship_resonances(&mut self, uad: &Uad, ship_id: &ItemId) -> Option<DmgKinds<AttrVal>> {
         let em = self.get_item_attr_val_full(uad, ship_id, &EM_A_ATTR_ID).ok()?.dogma;
-        let therm = self.get_item_attr_val_full(uad, ship_id, &THERM_A_ATTR_ID).ok()?.dogma;
-        let kin = self.get_item_attr_val_full(uad, ship_id, &KIN_A_ATTR_ID).ok()?.dogma;
-        let expl = self.get_item_attr_val_full(uad, ship_id, &EXPL_A_ATTR_ID).ok()?.dogma;
-        Some(DmgKinds::new(em, therm, kin, expl))
+        let thermal = self.get_item_attr_val_full(uad, ship_id, &THERM_A_ATTR_ID).ok()?.dogma;
+        let kinetic = self.get_item_attr_val_full(uad, ship_id, &KIN_A_ATTR_ID).ok()?.dogma;
+        let explosive = self.get_item_attr_val_full(uad, ship_id, &EXPL_A_ATTR_ID).ok()?.dogma;
+        Some(DmgKinds {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+        })
     }
     fn get_fit_rah_sim_datas(&mut self, uad: &Uad, fit_id: &FitId) -> BTreeMap<ItemId, RahDataSim> {
         let mut rah_datas = BTreeMap::new();
@@ -195,17 +205,38 @@ impl Calc {
     fn set_rah_unadapted(&mut self, uad: &Uad, item_id: &ItemId, notify: bool) {
         let em = self
             .get_item_attr_val_no_pp(uad, item_id, &EM_A_ATTR_ID)
-            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
-        let therm = self
+            .unwrap_or(CalcAttrVal {
+                base: OF(1.0),
+                dogma: OF(1.0),
+                extra: OF(1.0),
+            });
+        let thermal = self
             .get_item_attr_val_no_pp(uad, item_id, &THERM_A_ATTR_ID)
-            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
-        let kin = self
+            .unwrap_or(CalcAttrVal {
+                base: OF(1.0),
+                dogma: OF(1.0),
+                extra: OF(1.0),
+            });
+        let kinetic = self
             .get_item_attr_val_no_pp(uad, item_id, &KIN_A_ATTR_ID)
-            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
-        let expl = self
+            .unwrap_or(CalcAttrVal {
+                base: OF(1.0),
+                dogma: OF(1.0),
+                extra: OF(1.0),
+            });
+        let explosive = self
             .get_item_attr_val_no_pp(uad, item_id, &EXPL_A_ATTR_ID)
-            .unwrap_or(CalcAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
-        let rah_resos = DmgKinds::new(em, therm, kin, expl);
+            .unwrap_or(CalcAttrVal {
+                base: OF(1.0),
+                dogma: OF(1.0),
+                extra: OF(1.0),
+            });
+        let rah_resos = DmgKinds {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+        };
         self.set_rah_result(uad, item_id, rah_resos, notify);
     }
     // Result application methods
@@ -229,24 +260,28 @@ impl Calc {
             // getter might not return resonances for all RAHs, and it's hard to trace when/why this
             // might happen. For safety, just use unadapted values if that happens
             let item_resos = match resos.get(item_id) {
-                Some(item_avg_resos) => DmgKinds::new(
-                    CalcAttrVal::new(item_sim_data.info.resos.em.base, item_avg_resos.em, item_avg_resos.em),
-                    CalcAttrVal::new(
-                        item_sim_data.info.resos.thermal.base,
-                        item_avg_resos.thermal,
-                        item_avg_resos.thermal,
-                    ),
-                    CalcAttrVal::new(
-                        item_sim_data.info.resos.kinetic.base,
-                        item_avg_resos.kinetic,
-                        item_avg_resos.kinetic,
-                    ),
-                    CalcAttrVal::new(
-                        item_sim_data.info.resos.explosive.base,
-                        item_avg_resos.explosive,
-                        item_avg_resos.explosive,
-                    ),
-                ),
+                Some(item_avg_resos) => DmgKinds {
+                    em: CalcAttrVal {
+                        base: item_sim_data.info.resos.em.base,
+                        dogma: item_avg_resos.em,
+                        extra: item_avg_resos.em,
+                    },
+                    thermal: CalcAttrVal {
+                        base: item_sim_data.info.resos.thermal.base,
+                        dogma: item_avg_resos.thermal,
+                        extra: item_avg_resos.thermal,
+                    },
+                    kinetic: CalcAttrVal {
+                        base: item_sim_data.info.resos.kinetic.base,
+                        dogma: item_avg_resos.kinetic,
+                        extra: item_avg_resos.kinetic,
+                    },
+                    explosive: CalcAttrVal {
+                        base: item_sim_data.info.resos.explosive.base,
+                        dogma: item_avg_resos.explosive,
+                        extra: item_avg_resos.explosive,
+                    },
+                },
                 None => item_sim_data.info.resos,
             };
             self.set_rah_result(uad, item_id, item_resos, true)
@@ -287,7 +322,11 @@ fn get_next_resonances(
         let to_donate = rah_round(Float::min(shift_amount, OF(1.0) - current_value.dogma));
         total_transferred += to_donate;
         let new_value = rah_round(current_value.dogma + to_donate);
-        resonances[*index] = CalcAttrVal::new(current_value.base, new_value, new_value);
+        resonances[*index] = CalcAttrVal {
+            base: current_value.base,
+            dogma: new_value,
+            extra: new_value,
+        };
     }
     // Distribute
     let mut to_distribute = total_transferred;
@@ -304,7 +343,11 @@ fn get_next_resonances(
         .unwrap();
         to_distribute -= to_take;
         let new_value = rah_round(current_value.dogma - to_take);
-        resonances[*index] = CalcAttrVal::new(current_value.base, new_value, new_value);
+        resonances[*index] = CalcAttrVal {
+            base: current_value.base,
+            dogma: new_value,
+            extra: new_value,
+        };
         if to_distribute <= OF(0.0) {
             break;
         }
@@ -328,20 +371,18 @@ fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> StMap<Item
     let mut avg_resos = StMap::with_capacity(resos_used.len());
     for (item_id, resos) in resos_used.into_iter() {
         let reso_len = resos.len() as f64;
-        let item_avg_resos = match resos.into_iter().reduce(|a, v| {
-            DmgKinds::new(
-                a.em + v.em,
-                a.thermal + v.thermal,
-                a.kinetic + v.kinetic,
-                a.explosive + v.explosive,
-            )
+        let item_avg_resos = match resos.into_iter().reduce(|a, v| DmgKinds {
+            em: a.em + v.em,
+            thermal: a.thermal + v.thermal,
+            kinetic: a.kinetic + v.kinetic,
+            explosive: a.explosive + v.explosive,
         }) {
-            Some(sum) => DmgKinds::new(
-                sum.em / reso_len,
-                sum.thermal / reso_len,
-                sum.kinetic / reso_len,
-                sum.explosive / reso_len,
-            ),
+            Some(sum) => DmgKinds {
+                em: sum.em / reso_len,
+                thermal: sum.thermal / reso_len,
+                kinetic: sum.kinetic / reso_len,
+                explosive: sum.explosive / reso_len,
+            },
             // Should happen when resonance container is empty
             None => continue,
         };

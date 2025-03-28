@@ -12,7 +12,12 @@ impl RahDataSim {
     pub(super) fn new(info: RahInfo) -> Self {
         Self {
             info,
-            taken_dmg: DmgKinds::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0)),
+            taken_dmg: DmgKinds {
+                em: OF(0.0),
+                thermal: OF(0.0),
+                kinetic: OF(0.0),
+                explosive: OF(0.0),
+            },
         }
     }
 }

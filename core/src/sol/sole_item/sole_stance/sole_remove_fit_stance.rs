@@ -9,7 +9,13 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.stance {
             Some(item_id) => item_id,
-            None => return Err(FitHasItemKindError::new(*fit_id, Stance::get_name()).into()),
+            None => {
+                return Err(FitHasItemKindError {
+                    fit_id: *fit_id,
+                    item_kind: Stance::get_name(),
+                }
+                .into());
+            }
         };
         self.remove_stance(&item_id).unwrap();
         Ok(())

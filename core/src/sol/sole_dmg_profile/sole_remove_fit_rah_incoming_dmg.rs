@@ -15,7 +15,7 @@ impl SolarSystem {
                     self.svc.default_incoming_dmg_profile_changed(&self.uad);
                 }
             }
-            None => return Err(FitDmgProfileFoundError::new(*fit_id).into()),
+            None => return Err(FitDmgProfileFoundError { fit_id: *fit_id }.into()),
         }
         Ok(())
     }

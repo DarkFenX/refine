@@ -11,7 +11,7 @@ impl RahSim {
             check_item_id(uad, item_id, true)?;
             // RAH sim should never be running during debug requests
             if self.sim_running {
-                return Err(DebugError::new());
+                return Err(DebugError {});
             }
         }
         Ok(())

@@ -23,10 +23,10 @@ impl Uad {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(DebugError::new()),
+                _ => return Err(DebugError {}),
             };
             if !matches!(item, Item::SwEffect(_)) {
-                return Err(DebugError::new());
+                return Err(DebugError {});
             }
             item.debug_consistency_check(self)?;
         }
@@ -35,20 +35,20 @@ impl Uad {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(DebugError::new()),
+                _ => return Err(DebugError {}),
             };
             if !matches!(item, Item::ProjEffect(_)) {
-                return Err(DebugError::new());
+                return Err(DebugError {});
             }
             item.debug_consistency_check(self)?;
         }
         // Check if we have any duplicate references to items
         if check_item_duplicates(&seen_items) {
-            return Err(DebugError::new());
+            return Err(DebugError {});
         }
         // Check if we have any unreferenced items
         if !self.items.iter().all(|item| seen_items.contains(&item.get_item_id())) {
-            return Err(DebugError::new());
+            return Err(DebugError {});
         }
         Ok(())
     }

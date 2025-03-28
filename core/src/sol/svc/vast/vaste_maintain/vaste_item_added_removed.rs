@@ -54,7 +54,10 @@ impl Vast {
                                 .unwrap()
                                 .get(&skill.get_a_item_id())
                                 .unwrap();
-                            entry.insert(VastSkillReq::new(None, required_lvl));
+                            entry.insert(VastSkillReq {
+                                current_lvl: None,
+                                required_lvl,
+                            });
                         }
                     }
                 }

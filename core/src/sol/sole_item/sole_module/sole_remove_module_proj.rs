@@ -12,7 +12,11 @@ impl SolarSystem {
         // Check if projection is defined
         let module = self.uad.items.get_item(item_id)?.get_module()?;
         if !module.get_projs().contains(projectee_item_id) {
-            return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
+            return Err(ProjFoundError {
+                projector_item_id: *item_id,
+                projectee_item_id: *projectee_item_id,
+            }
+            .into());
         };
         let charge_id = module.get_charge_item_id();
         if let Some(charge_id) = charge_id {

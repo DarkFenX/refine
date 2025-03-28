@@ -24,15 +24,17 @@ impl Fits {
         fit_id
     }
     pub(in crate::sol) fn get_fit(&self, fit_id: &FitId) -> Result<&Fit, FitFoundError> {
-        self.data.get(fit_id).ok_or_else(|| FitFoundError::new(*fit_id))
+        self.data.get(fit_id).ok_or_else(|| FitFoundError { fit_id: *fit_id })
     }
     pub(in crate::sol) fn get_fit_mut(&mut self, fit_id: &FitId) -> Result<&mut Fit, FitFoundError> {
-        self.data.get_mut(fit_id).ok_or_else(|| FitFoundError::new(*fit_id))
+        self.data
+            .get_mut(fit_id)
+            .ok_or_else(|| FitFoundError { fit_id: *fit_id })
     }
     pub(in crate::sol) fn remove_fit(&mut self, fit_id: &FitId) -> Result<Fit, FitFoundError> {
         match self.data.remove(fit_id) {
             Some(fit) => Ok(fit),
-            None => Err(FitFoundError::new(*fit_id)),
+            None => Err(FitFoundError { fit_id: *fit_id }),
         }
     }
     pub(in crate::sol) fn iter_fit_ids(&self) -> impl ExactSizeIterator<Item = &FitId> {
@@ -47,7 +49,7 @@ impl Fits {
     pub(in crate::sol) fn contains_err(&self, fit_id: &FitId) -> Result<(), FitFoundError> {
         match self.data.contains_key(fit_id) {
             true => Ok(()),
-            false => Err(FitFoundError::new(*fit_id)),
+            false => Err(FitFoundError { fit_id: *fit_id }),
         }
     }
     pub(in crate::sol) fn len(&self) -> usize {

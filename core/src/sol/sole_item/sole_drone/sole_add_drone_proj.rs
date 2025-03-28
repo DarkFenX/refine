@@ -20,10 +20,10 @@ impl SolarSystem {
             .map_err(AddDroneProjError::ProjectorIsNotDrone)?;
         // Check if projection has already been defined
         if drone.get_projs().contains(&projectee_item_id) {
-            return Err(AddDroneProjError::ProjectionAlreadyExists(ProjNotFoundError::new(
-                *item_id,
+            return Err(AddDroneProjError::ProjectionAlreadyExists(ProjNotFoundError {
+                projector_item_id: *item_id,
                 projectee_item_id,
-            )));
+            }));
         }
         // Check if projectee can receive projections
         let projectee_item = self
@@ -32,10 +32,10 @@ impl SolarSystem {
             .get_item(&projectee_item_id)
             .map_err(AddDroneProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
-            return Err(AddDroneProjError::ProjecteeCantTakeProjs(ItemReceiveProjError::new(
-                projectee_item_id,
-                projectee_item.get_name(),
-            )));
+            return Err(AddDroneProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
+                item_id: projectee_item_id,
+                item_kind: projectee_item.get_name(),
+            }));
         }
         // Update user data
         let drone = self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();

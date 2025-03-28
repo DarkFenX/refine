@@ -4,11 +4,6 @@ use crate::sol::Count;
 pub struct FighterCountError {
     pub count: Count,
 }
-impl FighterCountError {
-    pub(crate) fn new(count: Count) -> Self {
-        Self { count }
-    }
-}
 impl std::error::Error for FighterCountError {}
 impl std::fmt::Display for FighterCountError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

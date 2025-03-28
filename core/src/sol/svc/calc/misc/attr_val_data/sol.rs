@@ -37,13 +37,19 @@ impl AttrValData {
             Item::Fighter(_) => {
                 item_data.postprocs.insert(
                     FTR_COUNT_ATTR,
-                    ItemAttrPostprocs::new(fighter_count_postproc_fast, fighter_count_postproc_info),
+                    ItemAttrPostprocs {
+                        fast: fighter_count_postproc_fast,
+                        info: fighter_count_postproc_info,
+                    },
                 );
             }
             Item::Skill(_) => {
                 item_data.postprocs.insert(
                     SKILL_LVL_ATTR,
-                    ItemAttrPostprocs::new(skill_level_postproc_fast, skill_level_postproc_info),
+                    ItemAttrPostprocs {
+                        fast: skill_level_postproc_fast,
+                        info: skill_level_postproc_info,
+                    },
                 );
             }
             _ => (),

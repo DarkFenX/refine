@@ -15,7 +15,7 @@ where
     T: Named,
 {
     tracing::debug!("fetching {}", T::get_name());
-    let e_cont = func(e_handler).map_err(|e| StrMsgError::new(e.to_string()))?;
+    let e_cont = func(e_handler).map_err(|e| StrMsgError { msg: e.to_string() })?;
     vec.extend(e_cont.data);
     let warn_count = e_cont.warns.len();
     if warn_count > 0 {

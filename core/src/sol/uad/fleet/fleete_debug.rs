@@ -9,10 +9,10 @@ impl Fleet {
         for fit_id in self.iter_fits() {
             let fit = match uad.fits.get_fit(fit_id) {
                 Ok(fit) => fit,
-                _ => return Err(DebugError::new()),
+                _ => return Err(DebugError {}),
             };
             if fit.fleet != Some(self.id) {
-                return Err(DebugError::new());
+                return Err(DebugError {});
             }
         }
         Ok(())

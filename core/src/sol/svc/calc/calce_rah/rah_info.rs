@@ -17,7 +17,12 @@ impl RahInfo {
         shift_amount: AttrVal,
     ) -> Self {
         Self {
-            resos: DmgKinds::new(res_em, res_therm, res_kin, res_expl),
+            resos: DmgKinds {
+                em: res_em,
+                thermal: res_therm,
+                kinetic: res_kin,
+                explosive: res_expl,
+            },
             cycle_time,
             shift_amount,
         }

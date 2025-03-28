@@ -4,11 +4,6 @@ use crate::sol::FleetId;
 pub struct FleetFoundError {
     pub fleet_id: FleetId,
 }
-impl FleetFoundError {
-    pub(crate) fn new(fleet_id: FleetId) -> Self {
-        Self { fleet_id }
-    }
-}
 impl std::error::Error for FleetFoundError {}
 impl std::fmt::Display for FleetFoundError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

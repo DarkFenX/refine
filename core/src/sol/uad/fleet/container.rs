@@ -24,17 +24,19 @@ impl Fleets {
         fleet_id
     }
     pub(in crate::sol) fn get_fleet(&self, fleet_id: &FleetId) -> Result<&Fleet, FleetFoundError> {
-        self.data.get(fleet_id).ok_or_else(|| FleetFoundError::new(*fleet_id))
+        self.data
+            .get(fleet_id)
+            .ok_or_else(|| FleetFoundError { fleet_id: *fleet_id })
     }
     pub(in crate::sol) fn get_fleet_mut(&mut self, fleet_id: &FleetId) -> Result<&mut Fleet, FleetFoundError> {
         self.data
             .get_mut(fleet_id)
-            .ok_or_else(|| FleetFoundError::new(*fleet_id))
+            .ok_or_else(|| FleetFoundError { fleet_id: *fleet_id })
     }
     pub(in crate::sol) fn remove_fleet(&mut self, fleet_id: &FleetId) -> Result<(), FleetFoundError> {
         match self.data.remove(fleet_id) {
             Some(_) => Ok(()),
-            None => Err(FleetFoundError::new(*fleet_id)),
+            None => Err(FleetFoundError { fleet_id: *fleet_id }),
         }
     }
     pub(in crate::sol) fn iter_fleets(&self) -> impl ExactSizeIterator<Item = &Fleet> {

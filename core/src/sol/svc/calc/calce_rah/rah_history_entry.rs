@@ -16,18 +16,18 @@ impl RahSimHistoryEntry {
         round_resos: bool,
     ) -> Self {
         let resonances = match round_resos {
-            true => DmgKinds::new(
-                rah_round(resonances.em.dogma),
-                rah_round(resonances.thermal.dogma),
-                rah_round(resonances.kinetic.dogma),
-                rah_round(resonances.explosive.dogma),
-            ),
-            false => DmgKinds::new(
-                resonances.em.dogma,
-                resonances.thermal.dogma,
-                resonances.kinetic.dogma,
-                resonances.explosive.dogma,
-            ),
+            true => DmgKinds {
+                em: rah_round(resonances.em.dogma),
+                thermal: rah_round(resonances.thermal.dogma),
+                kinetic: rah_round(resonances.kinetic.dogma),
+                explosive: rah_round(resonances.explosive.dogma),
+            },
+            false => DmgKinds {
+                em: resonances.em.dogma,
+                thermal: resonances.thermal.dogma,
+                kinetic: resonances.kinetic.dogma,
+                explosive: resonances.explosive.dogma,
+            },
         };
         Self {
             item_id,

@@ -274,341 +274,341 @@ impl Item {
     pub(in crate::sol) fn get_autocharge(&self) -> Result<&Autocharge, ItemKindMatchError> {
         match self {
             Self::Autocharge(autocharge) => Ok(autocharge),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Autocharge::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Autocharge::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_autocharge_mut(&mut self) -> Result<&mut Autocharge, ItemKindMatchError> {
         match self {
             Self::Autocharge(autocharge) => Ok(autocharge),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Autocharge::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Autocharge::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_booster(&self) -> Result<&Booster, ItemKindMatchError> {
         match self {
             Self::Booster(booster) => Ok(booster),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Booster::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Booster::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_booster_mut(&mut self) -> Result<&mut Booster, ItemKindMatchError> {
         match self {
             Self::Booster(booster) => Ok(booster),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Booster::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Booster::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_character(&self) -> Result<&Character, ItemKindMatchError> {
         match self {
             Self::Character(character) => Ok(character),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Character::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Character::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_character_mut(&mut self) -> Result<&mut Character, ItemKindMatchError> {
         match self {
             Self::Character(character) => Ok(character),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Character::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Character::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_charge(&self) -> Result<&Charge, ItemKindMatchError> {
         match self {
             Self::Charge(charge) => Ok(charge),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Charge::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Charge::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_charge_mut(&mut self) -> Result<&mut Charge, ItemKindMatchError> {
         match self {
             Self::Charge(charge) => Ok(charge),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Charge::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Charge::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_drone(&self) -> Result<&Drone, ItemKindMatchError> {
         match self {
             Self::Drone(drone) => Ok(drone),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Drone::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Drone::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_drone_mut(&mut self) -> Result<&mut Drone, ItemKindMatchError> {
         match self {
             Self::Drone(drone) => Ok(drone),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Drone::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Drone::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_fighter(&self) -> Result<&Fighter, ItemKindMatchError> {
         match self {
             Self::Fighter(fighter) => Ok(fighter),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Fighter::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Fighter::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_fighter_mut(&mut self) -> Result<&mut Fighter, ItemKindMatchError> {
         match self {
             Self::Fighter(fighter) => Ok(fighter),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Fighter::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Fighter::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_fw_effect(&self) -> Result<&FwEffect, ItemKindMatchError> {
         match self {
             Self::FwEffect(fw_effect) => Ok(fw_effect),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                FwEffect::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: FwEffect::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_fw_effect_mut(&mut self) -> Result<&mut FwEffect, ItemKindMatchError> {
         match self {
             Self::FwEffect(fw_effect) => Ok(fw_effect),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                FwEffect::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: FwEffect::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_implant(&self) -> Result<&Implant, ItemKindMatchError> {
         match self {
             Self::Implant(implant) => Ok(implant),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Implant::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Implant::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_implant_mut(&mut self) -> Result<&mut Implant, ItemKindMatchError> {
         match self {
             Self::Implant(implant) => Ok(implant),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Implant::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Implant::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_module(&self) -> Result<&Module, ItemKindMatchError> {
         match self {
             Self::Module(module) => Ok(module),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Module::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Module::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_module_mut(&mut self) -> Result<&mut Module, ItemKindMatchError> {
         match self {
             Self::Module(module) => Ok(module),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Module::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Module::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_proj_effect(&self) -> Result<&ProjEffect, ItemKindMatchError> {
         match self {
             Self::ProjEffect(proj_effect) => Ok(proj_effect),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                ProjEffect::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: ProjEffect::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_proj_effect_mut(&mut self) -> Result<&mut ProjEffect, ItemKindMatchError> {
         match self {
             Self::ProjEffect(proj_effect) => Ok(proj_effect),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                ProjEffect::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: ProjEffect::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_rig(&self) -> Result<&Rig, ItemKindMatchError> {
         match self {
             Self::Rig(rig) => Ok(rig),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Rig::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Rig::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_rig_mut(&mut self) -> Result<&mut Rig, ItemKindMatchError> {
         match self {
             Self::Rig(rig) => Ok(rig),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Rig::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Rig::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_service(&self) -> Result<&Service, ItemKindMatchError> {
         match self {
             Self::Service(service) => Ok(service),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Service::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Service::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_service_mut(&mut self) -> Result<&mut Service, ItemKindMatchError> {
         match self {
             Self::Service(service) => Ok(service),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Service::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Service::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_ship(&self) -> Result<&Ship, ItemKindMatchError> {
         match self {
             Self::Ship(ship) => Ok(ship),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Ship::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Ship::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_ship_mut(&mut self) -> Result<&mut Ship, ItemKindMatchError> {
         match self {
             Self::Ship(ship) => Ok(ship),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Ship::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Ship::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_skill(&self) -> Result<&Skill, ItemKindMatchError> {
         match self {
             Self::Skill(skill) => Ok(skill),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Skill::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Skill::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_skill_mut(&mut self) -> Result<&mut Skill, ItemKindMatchError> {
         match self {
             Self::Skill(skill) => Ok(skill),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Skill::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Skill::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_stance(&self) -> Result<&Stance, ItemKindMatchError> {
         match self {
             Self::Stance(stance) => Ok(stance),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Stance::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Stance::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_stance_mut(&mut self) -> Result<&mut Stance, ItemKindMatchError> {
         match self {
             Self::Stance(stance) => Ok(stance),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Stance::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Stance::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_subsystem(&self) -> Result<&Subsystem, ItemKindMatchError> {
         match self {
             Self::Subsystem(subsystem) => Ok(subsystem),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Subsystem::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Subsystem::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_subsystem_mut(&mut self) -> Result<&mut Subsystem, ItemKindMatchError> {
         match self {
             Self::Subsystem(subsystem) => Ok(subsystem),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                Subsystem::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: Subsystem::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_sw_effect(&self) -> Result<&SwEffect, ItemKindMatchError> {
         match self {
             Self::SwEffect(sw_effect) => Ok(sw_effect),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                SwEffect::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: SwEffect::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     pub(in crate::sol) fn get_sw_effect_mut(&mut self) -> Result<&mut SwEffect, ItemKindMatchError> {
         match self {
             Self::SwEffect(sw_effect) => Ok(sw_effect),
-            _ => Err(ItemKindMatchError::new(
-                self.get_item_id(),
-                SwEffect::get_name(),
-                self.get_name(),
-            )),
+            _ => Err(ItemKindMatchError {
+                item_id: self.get_item_id(),
+                expected_kind: SwEffect::get_name(),
+                actual_kind: self.get_name(),
+            }),
         }
     }
     // Calculator-specific getters
@@ -684,8 +684,9 @@ impl Item {
         }
     }
     pub(in crate::sol) fn get_a_attrs_err(&self) -> Result<&StMap<ad::AAttrId, ad::AAttrVal>, ItemLoadedError> {
-        self.get_a_attrs()
-            .ok_or_else(|| ItemLoadedError::new(self.get_item_id()))
+        self.get_a_attrs().ok_or_else(|| ItemLoadedError {
+            item_id: self.get_item_id(),
+        })
     }
     pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
         match self {
@@ -711,8 +712,9 @@ impl Item {
     pub(in crate::sol) fn get_a_effect_datas_err(
         &self,
     ) -> Result<&StMap<ad::AEffectId, ad::AItemEffectData>, ItemLoadedError> {
-        self.get_a_effect_datas()
-            .ok_or_else(|| ItemLoadedError::new(self.get_item_id()))
+        self.get_a_effect_datas().ok_or_else(|| ItemLoadedError {
+            item_id: self.get_item_id(),
+        })
     }
     pub(in crate::sol) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
         match self {

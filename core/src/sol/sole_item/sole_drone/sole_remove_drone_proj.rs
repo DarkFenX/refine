@@ -13,7 +13,11 @@ impl SolarSystem {
         let drone_item = self.uad.items.get_item(item_id)?;
         let drone = drone_item.get_drone()?;
         if !drone.get_projs().contains(projectee_item_id) {
-            return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
+            return Err(ProjFoundError {
+                projector_item_id: *item_id,
+                projectee_item_id: *projectee_item_id,
+            }
+            .into());
         };
         // Update services
         let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();

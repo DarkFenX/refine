@@ -10,7 +10,7 @@ impl SolarSystem {
         count_override: Count,
     ) -> Result<(), SetFighterCountOverrideError> {
         if count_override < 1 {
-            return Err(FighterCountError::new(count_override).into());
+            return Err(FighterCountError { count: count_override }.into());
         }
         // Update user data
         let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;

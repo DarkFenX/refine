@@ -4,11 +4,6 @@ use crate::sol::ItemId;
 pub struct ChargeFoundError {
     pub cont_item_id: ItemId,
 }
-impl ChargeFoundError {
-    pub(crate) fn new(cont_item_id: ItemId) -> Self {
-        Self { cont_item_id }
-    }
-}
 impl std::error::Error for ChargeFoundError {}
 impl std::fmt::Display for ChargeFoundError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

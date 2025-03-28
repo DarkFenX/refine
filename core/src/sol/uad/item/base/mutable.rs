@@ -282,7 +282,9 @@ impl ItemBaseMutable {
         mutation_request: ItemAddMutation,
     ) -> Result<(), ItemNotMutatedError> {
         if self.has_mutation_data() {
-            return Err(ItemNotMutatedError::new(self.get_item_id()));
+            return Err(ItemNotMutatedError {
+                item_id: self.get_item_id(),
+            });
         };
         // Since item is not mutated, base aitem ID is always on non-mutated item base
         let base_a_item_id = self.base.get_a_item_id();
@@ -338,7 +340,11 @@ impl ItemBaseMutable {
     ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
-            None => return Err(ItemMutatedError::new(self.get_item_id())),
+            None => {
+                return Err(ItemMutatedError {
+                    item_id: self.get_item_id(),
+                });
+            }
         };
         let mutation_cache = match &mut item_mutation.cache {
             Some(cache) => cache,
@@ -440,7 +446,11 @@ impl ItemBaseMutable {
     pub(in crate::sol::uad::item) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
-            None => return Err(ItemMutatedError::new(self.get_item_id())),
+            None => {
+                return Err(ItemMutatedError {
+                    item_id: self.get_item_id(),
+                });
+            }
         };
         match &item_mutation.cache {
             // If cache is there, mutation is effective - item base has mutated item, and base type

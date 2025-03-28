@@ -28,11 +28,17 @@ impl Vast {
             if !a_srqs.is_empty() {
                 let mut missing_skills = StMap::new();
                 let fit = uad.fits.get_fit(&fit_id).unwrap();
-                for (&skill_a_item_id, &required_level) in a_srqs.iter() {
+                for (&skill_a_item_id, &required_lvl) in a_srqs.iter() {
                     fit_data.srqs_skill_item_map.add_entry(skill_a_item_id, item_id);
-                    let current_level = fit.skills.get(&skill_a_item_id).map(|v| v.level);
-                    if current_level.unwrap_or(0) < required_level {
-                        missing_skills.insert(skill_a_item_id, VastSkillReq::new(current_level, required_level));
+                    let current_lvl = fit.skills.get(&skill_a_item_id).map(|v| v.level);
+                    if current_lvl.unwrap_or(0) < required_lvl {
+                        missing_skills.insert(
+                            skill_a_item_id,
+                            VastSkillReq {
+                                current_lvl,
+                                required_lvl,
+                            },
+                        );
                     }
                 }
                 fit_data.srqs_missing.insert(item_id, missing_skills);

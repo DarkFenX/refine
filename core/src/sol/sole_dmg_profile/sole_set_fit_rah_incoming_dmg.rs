@@ -13,16 +13,25 @@ impl SolarSystem {
     ) -> Result<(), SetFitRahIncomingDmgError> {
         // Only check for negative damage values; total value of 0 is acceptable in this case
         if dmg_profile.em < OF(0.0) {
-            return Err(EmDmgNonNegError::new(dmg_profile.em).into());
+            return Err(EmDmgNonNegError { value: dmg_profile.em }.into());
         }
         if dmg_profile.thermal < OF(0.0) {
-            return Err(ThermDmgNonNegError::new(dmg_profile.thermal).into());
+            return Err(ThermDmgNonNegError {
+                value: dmg_profile.thermal,
+            }
+            .into());
         }
         if dmg_profile.kinetic < OF(0.0) {
-            return Err(KinDmgNonNegError::new(dmg_profile.kinetic).into());
+            return Err(KinDmgNonNegError {
+                value: dmg_profile.kinetic,
+            }
+            .into());
         }
         if dmg_profile.explosive < OF(0.0) {
-            return Err(ExplDmgNonNegError::new(dmg_profile.explosive).into());
+            return Err(ExplDmgNonNegError {
+                value: dmg_profile.explosive,
+            }
+            .into());
         }
         let fit = self.uad.fits.get_fit_mut(fit_id)?;
         if fit.rah_incoming_dmg == Some(dmg_profile) {

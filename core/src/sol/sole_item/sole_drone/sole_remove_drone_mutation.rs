@@ -8,7 +8,7 @@ impl SolarSystem {
         let item = self.uad.items.get_item(item_id)?;
         let drone = item.get_drone()?;
         if !drone.has_mutation_data() {
-            return Err(ItemMutatedError::new(*item_id).into());
+            return Err(ItemMutatedError { item_id: *item_id }.into());
         }
         self.svc.unload_item(&self.uad, item);
         self.uad

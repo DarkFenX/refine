@@ -14,7 +14,13 @@ impl SolarSystem {
         let drone = self.uad.items.get_item_mut(item_id)?.get_drone_mut()?;
         let old_range = match drone.get_projs().get(projectee_item_id) {
             Some(old_range) => *old_range,
-            None => return Err(ProjFoundError::new(*item_id, *projectee_item_id).into()),
+            None => {
+                return Err(ProjFoundError {
+                    projector_item_id: *item_id,
+                    projectee_item_id: *projectee_item_id,
+                }
+                .into());
+            }
         };
         // Do nothing if ranges are equal
         if range == old_range {

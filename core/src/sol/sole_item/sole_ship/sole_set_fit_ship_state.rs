@@ -9,7 +9,13 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.ship {
             Some(item_id) => item_id,
-            None => return Err(FitHasItemKindError::new(*fit_id, Ship::get_name()).into()),
+            None => {
+                return Err(FitHasItemKindError {
+                    fit_id: *fit_id,
+                    item_kind: Ship::get_name(),
+                }
+                .into());
+            }
         };
         let ship = self.uad.items.get_item_mut(&item_id).unwrap().get_ship_mut().unwrap();
         let old_a_state = ship.get_a_state();

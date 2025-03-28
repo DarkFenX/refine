@@ -6,14 +6,6 @@ pub struct DmgKinds<T> {
     pub explosive: T,
 }
 impl<T> DmgKinds<T> {
-    pub(crate) fn new(em: T, thermal: T, kinetic: T, explosive: T) -> Self {
-        Self {
-            em,
-            thermal,
-            kinetic,
-            explosive,
-        }
-    }
     pub fn iter(&self) -> impl Iterator<Item = &T> {
         DmgKindsIter::new(self)
     }

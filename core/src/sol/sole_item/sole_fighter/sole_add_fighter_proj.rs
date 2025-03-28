@@ -22,10 +22,10 @@ impl SolarSystem {
             .map_err(AddFighterProjError::ProjectorIsNotFighter)?;
         // Check if projection has already been defined
         if fighter.get_projs().contains(&projectee_item_id) {
-            return Err(AddFighterProjError::ProjectionAlreadyExists(ProjNotFoundError::new(
-                *item_id,
+            return Err(AddFighterProjError::ProjectionAlreadyExists(ProjNotFoundError {
+                projector_item_id: *item_id,
                 projectee_item_id,
-            )));
+            }));
         }
         // Check if projectee can receive projections
         let projectee_item = self
@@ -34,10 +34,10 @@ impl SolarSystem {
             .get_item(&projectee_item_id)
             .map_err(AddFighterProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
-            return Err(AddFighterProjError::ProjecteeCantTakeProjs(ItemReceiveProjError::new(
-                projectee_item_id,
-                projectee_item.get_name(),
-            )));
+            return Err(AddFighterProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
+                item_id: projectee_item_id,
+                item_kind: projectee_item.get_name(),
+            }));
         }
         // Update user data for fighter
         let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();

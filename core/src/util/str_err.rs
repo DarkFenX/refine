@@ -1,11 +1,6 @@
 #[derive(Debug)]
 pub(crate) struct StrMsgError {
-    msg: String,
-}
-impl StrMsgError {
-    pub(crate) fn new(msg: String) -> Self {
-        Self { msg }
-    }
+    pub(crate) msg: String,
 }
 impl std::error::Error for StrMsgError {}
 impl std::fmt::Display for StrMsgError {

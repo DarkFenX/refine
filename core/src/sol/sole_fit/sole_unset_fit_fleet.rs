@@ -8,7 +8,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let fleet_id = match fit.fleet {
             Some(fleet_id) => fleet_id,
-            None => return Err(FitFleetAssignedError::new(*fit_id).into()),
+            None => return Err(FitFleetAssignedError { fit_id: *fit_id }.into()),
         };
         let fleet = self.uad.fleets.get_fleet(&fleet_id).unwrap();
         self.svc.remove_fit_from_fleet(&self.uad, fleet, fit_id);

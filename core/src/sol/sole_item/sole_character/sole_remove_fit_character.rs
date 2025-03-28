@@ -9,7 +9,13 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.character {
             Some(item_id) => item_id,
-            None => return Err(FitHasItemKindError::new(*fit_id, Character::get_name()).into()),
+            None => {
+                return Err(FitHasItemKindError {
+                    fit_id: *fit_id,
+                    item_kind: Character::get_name(),
+                }
+                .into());
+            }
         };
         self.remove_character(&item_id).unwrap();
         Ok(())

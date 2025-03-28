@@ -4,11 +4,6 @@ use crate::sol::AttrId;
 pub struct AttrMetaFoundError {
     pub attr_id: AttrId,
 }
-impl AttrMetaFoundError {
-    pub(crate) fn new(attr_id: AttrId) -> Self {
-        Self { attr_id }
-    }
-}
 impl std::error::Error for AttrMetaFoundError {}
 impl std::fmt::Display for AttrMetaFoundError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

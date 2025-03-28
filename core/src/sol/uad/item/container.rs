@@ -36,10 +36,14 @@ impl Items {
         self.data.insert(item_id, item);
     }
     pub(in crate::sol) fn get_item(&self, item_id: &ItemId) -> Result<&Item, ItemFoundError> {
-        self.data.get(item_id).ok_or_else(|| ItemFoundError::new(*item_id))
+        self.data
+            .get(item_id)
+            .ok_or_else(|| ItemFoundError { item_id: *item_id })
     }
     pub(in crate::sol) fn get_item_mut(&mut self, item_id: &ItemId) -> Result<&mut Item, ItemFoundError> {
-        self.data.get_mut(item_id).ok_or_else(|| ItemFoundError::new(*item_id))
+        self.data
+            .get_mut(item_id)
+            .ok_or_else(|| ItemFoundError { item_id: *item_id })
     }
     pub(in crate::sol) fn remove_item(&mut self, item_id: &ItemId) -> Option<Item> {
         self.data.remove(item_id)

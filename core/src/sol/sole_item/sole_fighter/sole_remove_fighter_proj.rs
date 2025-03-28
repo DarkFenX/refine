@@ -14,7 +14,11 @@ impl SolarSystem {
         // Check if projection is defined
         let fighter = self.uad.items.get_item(item_id)?.get_fighter()?;
         if !fighter.get_projs().contains(projectee_item_id) {
-            return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
+            return Err(ProjFoundError {
+                projector_item_id: *item_id,
+                projectee_item_id: *projectee_item_id,
+            }
+            .into());
         };
         let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         for autocharge_id in autocharge_ids {

@@ -48,7 +48,7 @@ impl Calc {
             // Figure which one is it
             None => {
                 return Err(match uad.items.get_item(item_id) {
-                    Ok(_) => ItemLoadedError::new(*item_id).into(),
+                    Ok(_) => ItemLoadedError { item_id: *item_id }.into(),
                     Err(error) => error.into(),
                 });
             }
@@ -84,7 +84,7 @@ impl Calc {
             // Figure which one is it
             None => {
                 return Err(match uad.items.get_item(item_id) {
-                    Ok(_) => ItemLoadedError::new(*item_id).into(),
+                    Ok(_) => ItemLoadedError { item_id: *item_id }.into(),
                     Err(error) => error.into(),
                 });
             }
@@ -112,7 +112,7 @@ impl Calc {
         // item
         let item_attr_data = match self.attrs.get_item_attr_data(item_id) {
             Some(item_attr_data) => item_attr_data,
-            None => return Err(ItemLoadedError::new(*item_id).into()),
+            None => return Err(ItemLoadedError { item_id: *item_id }.into()),
         };
         let pp_attr_ids = item_attr_data.postprocs.keys().copied().collect_vec();
         let mut cvals = item_attr_data.values.clone();
@@ -179,7 +179,7 @@ impl Calc {
         let item = uad.items.get_item(item_id).unwrap();
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
-            None => return Err(AttrMetaFoundError::new(*a_attr_id)),
+            None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
@@ -219,6 +219,10 @@ impl Calc {
         }
         // Post-dogma calculations
         let extra_val = accumulator.apply_extra_mods(dogma_val, a_attr.hig);
-        Ok(CalcAttrVal::new(base_val, dogma_val, extra_val))
+        Ok(CalcAttrVal {
+            base: base_val,
+            dogma: dogma_val,
+            extra: extra_val,
+        })
     }
 }

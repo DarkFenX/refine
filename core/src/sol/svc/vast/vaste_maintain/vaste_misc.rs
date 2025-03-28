@@ -30,7 +30,10 @@ impl Vast {
                         .get(&skill.get_a_item_id())
                         .unwrap();
                     if skill.get_a_level() < required_lvl {
-                        entry.insert(VastSkillReq::new(Some(skill.get_a_level()), required_lvl));
+                        entry.insert(VastSkillReq {
+                            current_lvl: Some(skill.get_a_level()),
+                            required_lvl,
+                        });
                     }
                 }
             }

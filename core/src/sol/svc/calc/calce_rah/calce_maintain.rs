@@ -51,19 +51,31 @@ impl Calc {
                 let item_attr_data = self.attrs.get_item_attr_data_mut(&item_id).unwrap();
                 item_attr_data.postprocs.insert(
                     EM_A_ATTR_ID,
-                    ItemAttrPostprocs::new(rah_em_resonance_postproc_fast, rah_em_resonance_postproc_info),
+                    ItemAttrPostprocs {
+                        fast: rah_em_resonance_postproc_fast,
+                        info: rah_em_resonance_postproc_info,
+                    },
                 );
                 item_attr_data.postprocs.insert(
                     THERM_A_ATTR_ID,
-                    ItemAttrPostprocs::new(rah_therm_resonance_postproc_fast, rah_therm_resonance_postproc_info),
+                    ItemAttrPostprocs {
+                        fast: rah_therm_resonance_postproc_fast,
+                        info: rah_therm_resonance_postproc_info,
+                    },
                 );
                 item_attr_data.postprocs.insert(
                     KIN_A_ATTR_ID,
-                    ItemAttrPostprocs::new(rah_kin_resonance_postproc_fast, rah_kin_resonance_postproc_info),
+                    ItemAttrPostprocs {
+                        fast: rah_kin_resonance_postproc_fast,
+                        info: rah_kin_resonance_postproc_info,
+                    },
                 );
                 item_attr_data.postprocs.insert(
                     EXPL_A_ATTR_ID,
-                    ItemAttrPostprocs::new(rah_expl_resonance_postproc_fast, rah_expl_resonance_postproc_info),
+                    ItemAttrPostprocs {
+                        fast: rah_expl_resonance_postproc_fast,
+                        info: rah_expl_resonance_postproc_info,
+                    },
                 );
             }
         }

@@ -28,7 +28,7 @@ impl ItemBase {
             a_item_id,
             a_state: state,
             effect_modes: EffectModes::new(),
-            cache: src.get_a_item(&a_item_id).map(|v| ItemBaseCache::new(v.clone())),
+            cache: src.get_a_item(&a_item_id).map(|v| ItemBaseCache { a_item: v.clone() }),
         }
     }
     pub(in crate::sol::uad::item) fn get_item_id(&self) -> ItemId {
@@ -74,7 +74,9 @@ impl ItemBase {
         self.cache.is_some()
     }
     pub(in crate::sol::uad::item) fn update_a_data(&mut self, src: &Src) {
-        self.cache = src.get_a_item(&self.a_item_id).map(|v| ItemBaseCache::new(v.clone()));
+        self.cache = src
+            .get_a_item(&self.a_item_id)
+            .map(|v| ItemBaseCache { a_item: v.clone() });
     }
     // Non-public methods
     pub(in crate::sol::uad::item::base) fn new_with_id_not_loaded(
@@ -100,7 +102,7 @@ impl ItemBase {
             a_item_id: a_item.id,
             a_state,
             effect_modes: EffectModes::new(),
-            cache: Some(ItemBaseCache::new(a_item)),
+            cache: Some(ItemBaseCache { a_item }),
         }
     }
     pub(in crate::sol::uad::item::base) fn set_a_item_id(&mut self, a_item_id: ad::AItemId) {
@@ -113,7 +115,7 @@ impl ItemBase {
     pub(in crate::sol::uad::item::base) fn set_a_item(&mut self, a_item: ad::ArcItem) {
         match &mut self.cache {
             Some(cache) => cache.a_item = a_item,
-            None => self.cache = Some(ItemBaseCache::new(a_item)),
+            None => self.cache = Some(ItemBaseCache { a_item }),
         }
     }
     pub(in crate::sol::uad::item::base) fn remove_a_item(&mut self) {
@@ -127,9 +129,4 @@ impl ItemBase {
 #[derive(Clone)]
 struct ItemBaseCache {
     a_item: ad::ArcItem,
-}
-impl ItemBaseCache {
-    fn new(a_item: ad::ArcItem) -> Self {
-        Self { a_item }
-    }
 }
