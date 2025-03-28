@@ -6,7 +6,7 @@ from tests import TEST_FOLDER_SPLIT
 
 class TestKey(tuple):
     __slots__ = ()
-    __test__ = False
+    __test__ = False  # Prevent pytest from thinking it's a test class
 
 
 def frame_to_primitive(*, frame: inspect.FrameInfo, ignore_local_context: bool = False) -> tuple:
