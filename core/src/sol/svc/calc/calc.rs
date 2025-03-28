@@ -1,14 +1,14 @@
 use crate::{
     sol::svc::calc::{
         calce_rah::RahSim,
-        misc::AttrValData,
+        misc::{AccumMgr, AttrValData},
         registers::{BuffRegister, DependencyRegister, ProjectionRegister, RevisionRegister, StandardRegister},
     },
     src::Src,
 };
 
-#[derive(Clone)]
 pub(in crate::sol) struct Calc {
+    pub(in crate::sol::svc::calc) accums: AccumMgr,
     pub(in crate::sol::svc::calc) attrs: AttrValData,
     pub(in crate::sol::svc::calc) std: StandardRegister,
     pub(in crate::sol::svc::calc) buffs: BuffRegister,
@@ -20,6 +20,7 @@ pub(in crate::sol) struct Calc {
 impl Calc {
     pub(in crate::sol::svc) fn new(src: &Src) -> Self {
         Self {
+            accums: AccumMgr::new(),
             attrs: AttrValData::new(),
             std: StandardRegister::new(),
             buffs: BuffRegister::new(),
@@ -27,6 +28,20 @@ impl Calc {
             revs: RevisionRegister::new(),
             projs: ProjectionRegister::new(),
             rah: RahSim::new(src),
+        }
+    }
+}
+impl Clone for Calc {
+    fn clone(&self) -> Self {
+        Self {
+            accums: AccumMgr::new(),
+            attrs: self.attrs.clone(),
+            std: self.std.clone(),
+            buffs: self.buffs.clone(),
+            deps: self.deps.clone(),
+            revs: self.revs.clone(),
+            projs: self.projs.clone(),
+            rah: self.rah.clone(),
         }
     }
 }
