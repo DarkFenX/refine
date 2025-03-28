@@ -8,7 +8,7 @@ edition = "2024"
 rc = { package = "reefast-core", path = "../core" }
 rdhe = { package = "reefast-dh-eve", path = "../dh-eve", features = ["phb-http"] }
 rdha = { package = "reefast-dh-adapted", path = "../dh-adapted", features = ["json", "ram"] }
-axum = { version = ">=0.8.2", features = ["query"] }
+axum = { version = ">=0.8.3", features = ["query"] }
 chrono = ">=0.4.40"
 config = { version = ">=0.15.11", features = ["toml"] }
 itertools = ">=0.14.0"
