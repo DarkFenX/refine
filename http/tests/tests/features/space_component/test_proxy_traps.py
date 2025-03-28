@@ -1,8 +1,8 @@
 """
-Space component proximity traps were initially used by the Dr. Who event, and in a few following
+Space component proximity traps were initially used by the Dr Who event, and in a few following
 events. As of 2025-03-28, there seems to be no items which actively use it, so there is no way to
-test assumptions about it. Seems like those buffs can be triggered only by a ship, but the lib
-assumes they can affect other buffable entities lik drones too.
+test assumptions about it. Seems like those buffs can be triggered only by a ship, but it is not
+known if buffs apply to other entities like drones. The lib assumes they do not.
 """
 
 from tests import approx, effect_scpt_to_api
@@ -27,12 +27,12 @@ def test_affectee_filter_item(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_item_id)
     # Verification
     assert api_ship.update().attrs[eve_attr_id].dogma == approx(220)
-    assert api_drone.update().attrs[eve_attr_id].dogma == approx(220)
+    assert api_drone.update().attrs[eve_attr_id].dogma == approx(200)
     # Action
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     assert api_struct.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_drone.update().attrs[eve_attr_id].dogma == approx(220)
+    assert api_drone.update().attrs[eve_attr_id].dogma == approx(200)
 
 
 def test_affectee_filter_location(client, consts):

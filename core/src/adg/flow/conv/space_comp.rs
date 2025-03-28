@@ -12,28 +12,24 @@ pub(in crate::adg::flow::conv) fn apply_space_comps(e_data: &EData, a_data: &mut
             a_data,
             e_space_comp.item_id,
             ad::AEffectId::ScSystemEmitter(e_space_comp.item_id),
-            ad::AEffectBuffScope::Ships,
         );
         process_buffs(
             &e_space_comp.proxy_effect_buffs,
             a_data,
             e_space_comp.item_id,
             ad::AEffectId::ScProxyEffect(e_space_comp.item_id),
-            ad::AEffectBuffScope::Ships,
         );
         process_buffs(
             &e_space_comp.proxy_trigger_buffs,
             a_data,
             e_space_comp.item_id,
             ad::AEffectId::ScProxyTrap(e_space_comp.item_id),
-            ad::AEffectBuffScope::Everything,
         );
         process_buffs(
             &e_space_comp.ship_link_buffs,
             a_data,
             e_space_comp.item_id,
             ad::AEffectId::ScShipLink(e_space_comp.item_id),
-            ad::AEffectBuffScope::Ships,
         );
     }
 }
@@ -43,7 +39,6 @@ fn process_buffs(
     a_data: &mut ad::AData,
     item_id: ad::AItemId,
     effect_id: ad::AEffectId,
-    scope: ad::AEffectBuffScope,
 ) {
     let valid_buffs = e_sc_buffs
         .iter()
@@ -59,7 +54,7 @@ fn process_buffs(
                 .map(|v| ad::AEffectBuffSrcCustom::HardcodedVal(v.id, ad::AAttrVal::from(v.value)))
                 .collect(),
         ),
-        scope,
+        scope: ad::AEffectBuffScope::Ships,
     };
     let effect = ad::AEffect {
         id: effect_id,
