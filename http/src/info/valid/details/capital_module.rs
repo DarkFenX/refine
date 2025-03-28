@@ -10,7 +10,7 @@ pub(in crate::info::valid) struct HValCapitalModFail {
 impl From<&rc::val::ValCapitalModFail> for HValCapitalModFail {
     fn from(core_val_fail: &rc::val::ValCapitalModFail) -> Self {
         Self {
-            max_subcap_volume: core_val_fail.max_subcap_volume.clone(),
+            max_subcap_volume: core_val_fail.max_subcap_volume,
             module_volumes: core_val_fail.items.iter().map(|v| (v.item_id, v.volume)).collect(),
         }
     }

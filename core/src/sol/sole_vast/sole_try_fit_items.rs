@@ -18,7 +18,7 @@ impl SolarSystem {
         self.uad.fits.get_fit(fit_id)?;
         let mut valid = Vec::new();
         for type_id in type_ids {
-            let a_item = match self.uad.src.get_a_item(&type_id) {
+            let a_item = match self.uad.src.get_a_item(type_id) {
                 Some(a_item) => a_item,
                 None => continue,
             };

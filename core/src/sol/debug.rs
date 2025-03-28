@@ -30,7 +30,7 @@ pub(in crate::sol) fn check_item_id(uad: &Uad, item_id: &ItemId, check_load: boo
 }
 
 pub(in crate::sol) fn check_a_effect_id(uad: &Uad, a_effect_id: &ad::AEffectId) -> DebugResult {
-    if uad.src.get_a_effect(a_effect_id.into()).is_none() {
+    if uad.src.get_a_effect(a_effect_id).is_none() {
         return Err(DebugError {});
     }
     Ok(())

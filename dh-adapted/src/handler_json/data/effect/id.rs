@@ -76,29 +76,28 @@ impl<'de> serde::Deserialize<'de> for CEffectId {
             where
                 E: serde::de::Error,
             {
-                if v.starts_with(D_PREFIX) {
-                    let id = CDogmaEffectId::from_str(&v[D_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
+                if let Some(id_str) = v.strip_prefix(D_PREFIX) {
+                    let id = CDogmaEffectId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::Dogma(id));
                 }
-                if v.starts_with(SCSE_PREFIX) {
-                    let id = CItemId::from_str(&v[SCSE_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
+                if let Some(id_str) = v.strip_prefix(SCSE_PREFIX) {
+                    let id = CItemId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::ScSystemEmitter(id));
                 }
-                if v.starts_with(SCPE_PREFIX) {
-                    let id = CItemId::from_str(&v[SCPE_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
+                if let Some(id_str) = v.strip_prefix(SCPE_PREFIX) {
+                    let id = CItemId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::ScProxyEffect(id));
                 }
-                if v.starts_with(SCPT_PREFIX) {
-                    let id = CItemId::from_str(&v[SCPT_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
+                if let Some(id_str) = v.strip_prefix(SCPT_PREFIX) {
+                    let id = CItemId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::ScProxyTrap(id));
                 }
-                if v.starts_with(SCSL_PREFIX) {
-                    let id = CItemId::from_str(&v[SCSL_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
+                if let Some(id_str) = v.strip_prefix(SCSL_PREFIX) {
+                    let id = CItemId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::ScShipLink(id));
                 }
-                if v.starts_with(C_PREFIX) {
-                    let id =
-                        CCustomEffectId::from_str(&v[C_PREFIX.len()..]).map_err(|v| serde::de::Error::custom(v))?;
+                if let Some(id_str) = v.strip_prefix(SCSL_PREFIX) {
+                    let id = CCustomEffectId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::Custom(id));
                 }
                 let msg = format!(

@@ -354,7 +354,7 @@ fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool, pen_chains: &mut PenC
     pen_chains.negative.sort_unstable();
     Some(get_chain_val(&mut pen_chains.positive) * get_chain_val(&mut pen_chains.negative))
 }
-fn get_chain_val(vals: &mut Vec<AttrVal>) -> AttrVal {
+fn get_chain_val(vals: &mut [AttrVal]) -> AttrVal {
     let mut val = OF(1.0);
     // Ignore 12th modification and further as non-significant
     for (i, mod_val) in vals.iter().enumerate() {
