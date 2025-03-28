@@ -1,8 +1,8 @@
 """
 Space component proximity traps were initially used by the Dr Who event, and in a few following
-events. As of 2025-03-28, there seems to be no items which actively use it, so there is no way to
-test assumptions about it. Seems like those buffs can be triggered only by a ship, but it is not
-known if buffs apply to other entities like drones. The lib assumes they do not.
+events. As of 2025-03-28, there seems to be no items which actively use it, so there seems to be no
+normal way of testing it. However, thanks to CCP Kestrel, we know that as of 2025-03-28 traps do not
+apply to drones.
 """
 
 from tests import approx, effect_scpt_to_api

@@ -1,8 +1,7 @@
 """
 Lots of items seem to use proxy effects (pochven subpylons and dread wrecks, proving ground weather
-effects, ESS), some should be in use in the game. As of 2025-03-28, the only way to check if those
-buffs affect drones is web subpylon in world arks. This is yet to be tested, but from my memory with
-proving ground effects I assume proxy effects affect only ships.
+effects, ESS), some are in use in the game. As of 2025-03-28, proxy effects do not affect non-ship
+targets like drones (tested using Stasis Field Effect Subpylon).
 """
 
 from tests import approx, effect_scpe_to_api

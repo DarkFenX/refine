@@ -1,6 +1,6 @@
 """
-As of 2025-03-27, used only by ships linked to a CRAB or a skyhook. Presumably does not affect child
-entities like drones, but this is yet to be tested.
+As of 2025-03-27, used only by ships linked to a CRAB or a skyhook. Does not affect child entities
+like drones, otherwise linking to a CRAB would make carriers/supercarriers' fighters inoperable.
 """
 
 from tests import approx, effect_scsl_to_api
