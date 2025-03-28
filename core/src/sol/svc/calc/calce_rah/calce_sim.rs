@@ -313,7 +313,7 @@ fn get_next_resonances(
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
     // since the list is in attribute ID ascending order.
     let mut sorted_indices: [usize; 4] = [0, 3, 2, 1];
-    sorted_indices.sort_by_key(|v| taken_dmg[*v]);  // This sort has to be stable
+    sorted_indices.sort_by_key(|v| taken_dmg[*v]); // This sort has to be stable
     let mut total_transferred = OF(0.0);
     // Donate
     for index in sorted_indices[..donors].iter() {

@@ -16,8 +16,8 @@ use crate::{
 };
 
 use super::shared::{
-    PENALTY_BASE, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop, normalize_perc,
-    normalize_sub,
+    PENALTY_BASE, PENALTY_SIGNIFICANT_MODIFICATIONS, diminish_basic, diminish_mul, diminish_noop, is_penal,
+    normalize_div, normalize_noop, normalize_perc, normalize_sub,
 };
 
 pub(in crate::sol::svc::calc) struct AttrValInfo {
@@ -609,7 +609,7 @@ where
     };
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
         // Ignore 12th modification and further as insignificant
-        if i > 10 {
+        if i >= PENALTY_SIGNIFICANT_MODIFICATIONS {
             for info in other_attr_info.effective_infos.iter_mut() {
                 info.stacking_mult = Some(OF(0.0));
                 info.applied_val = revert_func(OF(1.0));

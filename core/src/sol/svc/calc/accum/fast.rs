@@ -16,8 +16,8 @@ use crate::{
 };
 
 use super::shared::{
-    PENALTY_BASE, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop, normalize_perc,
-    normalize_sub,
+    PENALTY_BASE, PENALTY_SIGNIFICANT_MODIFICATIONS, diminish_basic, diminish_mul, diminish_noop, is_penal,
+    normalize_div, normalize_noop, normalize_perc, normalize_sub,
 };
 
 pub(in crate::sol::svc::calc) struct ModAccumFast {
@@ -309,7 +309,7 @@ fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {
     let mut val = OF(1.0);
     for (i, mod_val) in vals.iter().enumerate() {
         // Ignore 12th modification and further as non-significant
-        if i > 10 {
+        if i >= PENALTY_SIGNIFICANT_MODIFICATIONS {
             break;
         }
         val *= OF(1.0) + (mod_val - OF(1.0)) * PENALTY_BASE.powi((i as i32).pow(2));

@@ -2,6 +2,8 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{ac, ad, sol::AttrVal};
 
+pub(super) const PENALTY_SIGNIFICANT_MODIFICATIONS: usize = 11;
+
 const PENALTY_IMMUNE_A_ITEM_CATS: [ad::AItemCatId; 5] = [
     ac::itemcats::SHIP,
     ac::itemcats::CHARGE,
