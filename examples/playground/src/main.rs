@@ -45,8 +45,8 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    //test_crusader(dh, ch);
-    test_nphoon(dh, ch);
+    test_crusader(dh, ch);
+    //test_nphoon(dh, ch);
 }
 
 fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {

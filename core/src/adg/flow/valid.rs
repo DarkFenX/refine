@@ -75,7 +75,7 @@ where
             T::get_name(),
             missing.len(),
             ree_name,
-            missing.iter().sorted().join(", ")
+            missing.iter().sorted_unstable().join(", ")
         );
         tracing::warn!("{msg}");
     }
@@ -121,7 +121,7 @@ fn known_fighter_abilities(e_data: &mut EData) {
             ed::EFighterAbil::get_name(),
             item_abils,
             ed::EItemFighterAbil::get_name(),
-            unknown_ids.iter().sorted().join(", ")
+            unknown_ids.iter().sorted_unstable().join(", ")
         );
         tracing::warn!("{msg}");
     }
@@ -158,7 +158,7 @@ fn fighter_ability_effect(e_data: &mut EData) {
             max_logged,
             invalids
                 .iter()
-                .sorted()
+                .sorted_unstable()
                 .take(max_logged)
                 .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
         );
