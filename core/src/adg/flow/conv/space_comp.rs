@@ -19,7 +19,7 @@ pub(in crate::adg::flow::conv) fn apply_space_comps(e_data: &EData, a_data: &mut
             a_data,
             e_space_comp.item_id,
             ad::AEffectId::ScProxyEffect(e_space_comp.item_id),
-            ad::AEffectBuffScope::Everything,
+            ad::AEffectBuffScope::Ships,
         );
         process_buffs(
             &e_space_comp.proxy_trigger_buffs,

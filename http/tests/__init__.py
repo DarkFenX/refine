@@ -51,3 +51,7 @@ def effect_scse_to_api(*, type_id: int) -> str:
 
 def effect_scsl_to_api(*, type_id: int) -> str:
     return f'scsl{type_id}'
+
+
+def effect_scpe_to_api(*, type_id: int) -> str:
+    return f'scpe{type_id}'

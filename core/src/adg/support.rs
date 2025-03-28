@@ -94,6 +94,7 @@ impl GSupport {
             ec::effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD,
             ec::effects::AOE_BEACON_CAUSTIC_CLOUD,
             ec::effects::AOE_BEACON_FILAMENT_CLOUD,
+            ec::effects::AOE_BEACON_PULSE_01,  // Tracking towers in the abyss
         ] {
             self.eff_buff_map.insert(
                 effect_id,
