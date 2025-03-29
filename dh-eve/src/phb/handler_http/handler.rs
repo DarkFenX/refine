@@ -1,6 +1,6 @@
 use std::fmt;
 
-use reqwest::{IntoUrl, Url, blocking::get};
+use reqwest::{IntoUrl, Url, blocking::Client};
 
 use crate::{
     phb::{
@@ -19,6 +19,7 @@ use super::error::FromSuffix;
 pub struct PhbHttpEdh {
     base_url: Url,
     data_version: String,
+    client: Client,
 }
 impl PhbHttpEdh {
     /// Constructs HTTP EVE data handler using provided base URL and data version.
@@ -39,12 +40,16 @@ impl PhbHttpEdh {
             false => Ok(Self {
                 base_url: base_url_conv,
                 data_version,
+                client: Client::new(),
             }),
         }
     }
     fn fetch_data(&self, suffix: &str) -> Result<serde_json::Value, Error> {
         let full_url = self.base_url.join(suffix).map_err(|e| Error::from_suffix(e, suffix))?;
-        let data = get(full_url)
+        let data = self
+            .client
+            .get(full_url)
+            .send()
             .map_err(|e| Error::from_suffix(e, suffix))?
             .error_for_status()
             .map_err(|e| Error::from_suffix(e, suffix))?
