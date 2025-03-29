@@ -94,6 +94,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) sec_zone_unonlineable_class: StMap<ItemId, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) sec_zone_unactivable: StSet<ItemId>,
     pub(in crate::sol::svc::vast) mods_active: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) items_vs_ship_kind: StSet<ItemId>,
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -151,6 +152,7 @@ impl VastFitData {
             sec_zone_unonlineable_class: StMap::new(),
             sec_zone_unactivable: StSet::new(),
             mods_active: StSet::new(),
+            items_vs_ship_kind: StSet::new(),
         }
     }
 }
