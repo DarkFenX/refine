@@ -97,31 +97,24 @@ impl fmt::Debug for RamJsonAdh {
     }
 }
 impl rc::ad::AdaptedDataHandler for RamJsonAdh {
-    /// Get cached item.
     fn get_item(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcItem> {
         self.storage_items.get(id)
     }
-    /// Get cached attribute.
     fn get_attr(&self, id: &rc::ad::AAttrId) -> Option<&rc::ad::ArcAttr> {
         self.storage_attrs.get(id)
     }
-    /// Get cached effect.
     fn get_effect(&self, id: &rc::ad::AEffectId) -> Option<&rc::ad::ArcEffect> {
         self.storage_effects.get(id)
     }
-    /// Get cached mutator.
     fn get_mutator(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcMuta> {
         self.storage_mutas.get(id)
     }
-    /// Get cached warfare buff.
     fn get_buff(&self, id: &rc::ad::ABuffId) -> Option<&rc::ad::ArcBuff> {
         self.storage_buffs.get(id)
     }
-    /// Get cached data fingerprint.
     fn get_data_fingerprint(&self) -> Option<String> {
         self.fingerprint.clone()
     }
-    /// Load cache from persistent storage.
     fn load_cache(&mut self) -> rc::ad::AResult<()> {
         let full_path = self.get_full_path();
         let file = OpenOptions::new()
@@ -136,7 +129,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         self.update_memory_cache(a_data, fingerprint);
         Ok(())
     }
-    /// Update data in handler with passed data.
+    // Update data in handler with passed data.
     #[tracing::instrument(name = "adh-ramjson-update", level = "trace", skip_all)]
     fn update_data(&mut self, a_data: rc::ad::AData, fingerprint: String) {
         // Update persistent cache
@@ -148,10 +141,6 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         // Update memory cache
         self.update_memory_cache(a_data, fingerprint);
     }
-    /// Get adapted handler version.
-    ///
-    /// Change in adapted handler version triggers adapted data cache rebuild, even if source data
-    /// and core library version stayed the same.
     fn get_handler_version(&self) -> String {
         VERSION.to_string()
     }
