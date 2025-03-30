@@ -37,6 +37,9 @@ class AttrDict:
         self._data: dict = data
         self.__hooks: dict[str, AttrHookDef] = hooks or {}
 
+    def get_raw(self) -> dict:
+        return self._data
+
     def __getitem__(self, index: int) -> typing.Any:
         return convert(data=self._data[index])
 

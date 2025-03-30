@@ -12,7 +12,7 @@ from tests.fw.consts import (
     ApiRack,
     ApiValInfoMode,
 )
-from tests.fw.util import Absent, AttrDict, AttrHookDef
+from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item
 from .validation import ValResult
@@ -86,6 +86,7 @@ class Fit(AttrDict):
             result_simple = ValResult(data=resp_simple.json())
             result_detailed = ValResult(data=resp_detailed.json())
             assert result_simple.passed is result_detailed.passed
+            assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
             return result_detailed
         return None
 
