@@ -6,7 +6,7 @@ use crate::{
         uad::{
             Uad,
             fleet::Fleet,
-            item::{Fighter, Item, Skill},
+            item::{Fighter, Item, Ship, Skill},
         },
     },
     src::Src,
@@ -137,6 +137,9 @@ impl Svc {
     pub(in crate::sol::svc) fn notify_fighter_count_changed(&mut self, uad: &Uad, fighter: &Fighter) {
         self.calc.fighter_count_changed(uad, &fighter.get_item_id());
         self.vast.fighter_count_changed(fighter);
+    }
+    pub(in crate::sol::svc) fn notify_ship_sec_status_changed(&mut self, uad: &Uad, ship: &Ship) {
+        self.calc.ship_sec_status_changed(uad, &ship.get_item_id());
     }
     pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &Uad, skill: &Skill) {
         self.calc.skill_level_changed(uad, &skill.get_item_id());

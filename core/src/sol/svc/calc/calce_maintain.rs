@@ -4,7 +4,10 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, FitId, ItemId,
-        svc::calc::{AttrSpec, Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SKILL_LVL_ATTR},
+        svc::calc::{
+            AttrSpec, Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SKILL_LVL_ATTR,
+            misc::SEC_STATUS_ATTR,
+        },
         uad::{Uad, fleet::Fleet, item::Item},
     },
     src::Src,
@@ -273,6 +276,9 @@ impl Calc {
     }
     pub(in crate::sol::svc) fn fighter_count_changed(&mut self, uad: &Uad, item_id: &ItemId) {
         self.force_attr_postproc_recalc(uad, item_id, &FTR_COUNT_ATTR)
+    }
+    pub(in crate::sol::svc) fn ship_sec_status_changed(&mut self, uad: &Uad, item_id: &ItemId) {
+        self.force_attr_postproc_recalc(uad, item_id, &SEC_STATUS_ATTR)
     }
     pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &Uad, item_id: &ItemId) {
         self.force_attr_postproc_recalc(uad, item_id, &SKILL_LVL_ATTR)

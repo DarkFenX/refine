@@ -35,6 +35,7 @@ pub use crate::{
             SetModuleStateError, SetProjEffectStateError, SetRigStateError, SetServiceStateError, SetShipStateError,
             SetSkillLevelError, SetSkillStateError, SetStanceStateError, SetSubsystemStateError, SetSwEffectStateError,
         },
+        sole_sec::{GetFitSecStatusError, SetFitSecStatusError},
         sole_vast::{TryFitItemsError, ValidateFitError},
     },
     src::SrcInitError,
