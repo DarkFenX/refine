@@ -15,7 +15,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_module_state_fast(&self, kfs: &StSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.mods_state.is_empty(),
-            false => self.mods_state.difference(kfs).nth(0).is_none(),
+            false => self.mods_state.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations

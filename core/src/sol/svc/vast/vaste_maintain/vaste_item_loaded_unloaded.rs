@@ -7,7 +7,7 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, FitId, ItemId, ModRack,
-        svc::vast::{ValCache, ValFighterSquadSizeFail, ValItemKindFail, Vast, VastFitData, VastSkillReq},
+        svc::vast::{ValCache, ValFighterSquadSizeFail, ValItemKindFail, ValShipKind, Vast, VastFitData, VastSkillReq},
         uad::{
             Uad,
             item::{Item, Module, ShipKind},
@@ -315,12 +315,14 @@ impl Vast {
                         match item_cat_id {
                             ac::itemcats::MODULE => {
                                 if !matches!(fit.kind, ShipKind::Ship) {
-                                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(*item_id);
+                                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(*item_id, ValShipKind::Ship);
                                 }
                             }
                             ac::itemcats::STRUCTURE_MODULE => {
                                 if !matches!(fit.kind, ShipKind::Structure) {
-                                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(*item_id);
+                                    fit_data
+                                        .mods_rigs_svcs_vs_ship_kind
+                                        .insert(*item_id, ValShipKind::Structure);
                                 }
                             }
                             _ => (),
@@ -624,13 +626,23 @@ fn item_vs_ship_kind_add(
     item_cat: ad::AItemCatId,
     fit_id: &FitId,
 ) {
-    let expected_ship_kind = match item_cat {
-        ac::itemcats::MODULE => ShipKind::Ship,
-        ac::itemcats::STRUCTURE_MODULE => ShipKind::Structure,
-        _ => return,
-    };
     let fit = uad.fits.get_fit(fit_id).unwrap();
-    if fit.kind != expected_ship_kind {
-        fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_id);
+    if fit.ship.is_none() {
+        return;
+    }
+    match item_cat {
+        ac::itemcats::MODULE => {
+            if !matches!(fit.kind, ShipKind::Ship) {
+                fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_id, ValShipKind::Ship);
+            }
+        }
+        ac::itemcats::STRUCTURE_MODULE => {
+            if !matches!(fit.kind, ShipKind::Structure) {
+                fit_data
+                    .mods_rigs_svcs_vs_ship_kind
+                    .insert(item_id, ValShipKind::Structure);
+            }
+        }
+        _ => (),
     }
 }

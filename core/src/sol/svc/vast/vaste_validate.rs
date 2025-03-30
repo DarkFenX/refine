@@ -624,7 +624,7 @@ impl Vast {
                 fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, uad, calc);
         }
         if options.item_vs_ship_kind.enabled {
-            result.item_vs_ship_kind = fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs);
+            result.item_vs_ship_kind = fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, fit);
         }
         result
     }

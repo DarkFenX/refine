@@ -521,7 +521,7 @@ fn validate_verbose_unordered_map<T>(
     if used <= max.unwrap_or(0) {
         return None;
     }
-    let users = users.difference(kfs).copied().collect_vec();
+    let users = users.difference(kfs).map(|(k, _)| *k).collect_vec();
     if users.is_empty() {
         return None;
     }

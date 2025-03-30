@@ -20,7 +20,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_drone_group_fast(&mut self, kfs: &StSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.drone_groups.is_empty(),
-            false => self.drone_groups.difference(kfs).nth(0).is_none(),
+            false => self.drone_groups.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations

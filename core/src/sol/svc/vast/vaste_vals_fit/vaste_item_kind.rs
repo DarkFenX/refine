@@ -16,7 +16,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_item_kind_fast(&self, kfs: &StSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.item_kind.is_empty(),
-            false => self.item_kind.difference(kfs).nth(0).is_none(),
+            false => self.item_kind.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations

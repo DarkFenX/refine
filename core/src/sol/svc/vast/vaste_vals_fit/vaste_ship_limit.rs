@@ -33,7 +33,7 @@ impl VastFitData {
             None => {
                 return match kfs.is_empty() {
                     true => self.ship_limited_items.is_empty(),
-                    false => self.ship_limited_items.difference(kfs).nth(0).is_none(),
+                    false => self.ship_limited_items.difference(kfs).next().is_none(),
                 };
             }
         };

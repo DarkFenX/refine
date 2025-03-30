@@ -28,7 +28,7 @@ impl VastFitData {
         }
         match kfs.is_empty() {
             true => self.mods_capital.is_empty(),
-            false => self.mods_capital.difference(kfs).nth(0).is_none(),
+            false => self.mods_capital.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations

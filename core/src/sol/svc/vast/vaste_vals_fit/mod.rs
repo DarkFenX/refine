@@ -6,7 +6,7 @@ pub use vaste_charge_volume::ValChargeVolumeFail;
 pub use vaste_drone_group::{ValDroneGroupFail, ValDroneGroupItemInfo};
 pub use vaste_fighter_squad_size::ValFighterSquadSizeFail;
 pub use vaste_item_kind::ValItemKindFail;
-pub use vaste_item_vs_ship_kind::ValItemVsShipKindFail;
+pub use vaste_item_vs_ship_kind::{ValItemVsShipKindFail, ValItemVsShipKindItemInfo, ValShipKind};
 pub use vaste_max_group::{ValMaxGroupFail, ValMaxGroupItemInfo};
 pub use vaste_max_type::{ValMaxTypeFail, ValMaxTypeItemInfo};
 pub use vaste_module_state::ValModuleStateFail;

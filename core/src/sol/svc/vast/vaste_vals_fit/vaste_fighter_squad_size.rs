@@ -15,7 +15,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_fighter_squad_size_fast(&mut self, kfs: &StSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.fighter_squad_size.is_empty(),
-            false => self.fighter_squad_size.difference(kfs).nth(0).is_none(),
+            false => self.fighter_squad_size.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations

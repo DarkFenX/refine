@@ -93,8 +93,8 @@ impl<K: Eq + Hash, V> StMap<K, V> {
             false => false,
         }
     }
-    pub(crate) fn difference(&self, other: &StSet<K>) -> impl Iterator<Item = &K> {
-        self.keys().filter(|v| !other.contains(v))
+    pub(crate) fn difference(&self, other: &StSet<K>) -> impl Iterator<Item = (&K, &V)> {
+        self.iter().filter(|(k, _)| !other.contains(k))
     }
 }
 impl<K: Eq + Hash, V> Default for StMap<K, V> {

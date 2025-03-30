@@ -5,9 +5,8 @@ use crate::{
         AttrVal, Count, FitId, ItemId, SkillLevel,
         svc::vast::{
             ValCache, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail, ValFighterSquadSizeFail,
-            ValItemKindFail, ValModuleStateFail, VastSkillReq,
+            ValItemKindFail, ValModuleStateFail, ValShipKind, VastSkillReq,
         },
-        uad::item::ShipKind,
     },
     util::{StMap, StMapMap, StMapSetL1, StSet},
 };
@@ -95,7 +94,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) sec_zone_unonlineable_class: StMap<ItemId, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) sec_zone_unactivable: StSet<ItemId>,
     pub(in crate::sol::svc::vast) mods_active: StSet<ItemId>,
-    pub(in crate::sol::svc::vast) mods_rigs_svcs_vs_ship_kind: StSet<ItemId>,
+    pub(in crate::sol::svc::vast) mods_rigs_svcs_vs_ship_kind: StMap<ItemId, ValShipKind>,
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -153,7 +152,7 @@ impl VastFitData {
             sec_zone_unonlineable_class: StMap::new(),
             sec_zone_unactivable: StSet::new(),
             mods_active: StSet::new(),
-            mods_rigs_svcs_vs_ship_kind: StSet::new(),
+            mods_rigs_svcs_vs_ship_kind: StMap::new(),
         }
     }
 }

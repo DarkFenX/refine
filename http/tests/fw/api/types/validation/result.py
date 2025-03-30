@@ -7,6 +7,7 @@ from .charge_volume import ValChargeVolumeFail
 from .drone_group import ValDroneGroupFail
 from .fighter_squad_size import ValFighterSquadSizeFail
 from .item_kind import ValItemKindFail
+from .item_vs_ship_kind import ValItemVsShipKindFail
 from .max_group import ValMaxGroupFail
 from .max_type import ValMaxTypeFail
 from .module_state import ValModuleStateFail
@@ -91,4 +92,5 @@ class ValResultDetails(AttrDict):
             'sec_zone_active': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
             'sec_zone_unonlineable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
             'sec_zone_unactivable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
-            'activation_blocked': AttrHookDef(func=lambda d: ValActivationBlockedFail(data=d))})
+            'activation_blocked': AttrHookDef(func=lambda d: ValActivationBlockedFail(data=d)),
+            'item_vs_ship_kind': AttrHookDef(func=lambda d: ValItemVsShipKindFail(data=d))})

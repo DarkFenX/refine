@@ -65,7 +65,7 @@ pub struct ValResult {
     pub sec_zone_unonlineable: Option<ValSecZoneFail>,
     pub sec_zone_unactivable: Option<ValSecZoneFail>,
     pub activation_blocked: Vec<ValActivationBlockedFail>,
-    pub item_vs_ship_kind: Vec<ValItemVsShipKindFail>,
+    pub item_vs_ship_kind: Option<ValItemVsShipKindFail>,
 }
 impl ValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -128,7 +128,7 @@ impl ValResult {
             sec_zone_unonlineable: None,
             sec_zone_unactivable: None,
             activation_blocked: Vec::new(),
-            item_vs_ship_kind: Vec::new(),
+            item_vs_ship_kind: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -190,6 +190,6 @@ impl ValResult {
             && self.sec_zone_unonlineable.is_none()
             && self.sec_zone_unactivable.is_none()
             && self.activation_blocked.is_empty()
-            && self.item_vs_ship_kind.is_empty()
+            && self.item_vs_ship_kind.is_none()
     }
 }

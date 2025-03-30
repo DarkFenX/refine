@@ -458,6 +458,13 @@ class ApiValItemType(StrEnum):
 
 
 @unique
+class ApiValShipType(StrEnum):
+    ship = 'ship'
+    structure = 'structure'
+    unknown = 'unknown'
+
+
+@unique
 class ApiSolInfoMode(StrEnum):
     id = 'id'
     full = 'full'
