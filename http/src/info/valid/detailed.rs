@@ -141,6 +141,9 @@ struct HValidInfoDetails {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     activation_blocked: Vec<rc::ItemId>,
+    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    item_vs_ship_kind: Vec<rc::ItemId>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -202,6 +205,7 @@ impl HValidInfoDetails {
             && self.sec_zone_unonlineable.is_none()
             && self.sec_zone_unactivable.is_none()
             && self.activation_blocked.is_empty()
+            && self.item_vs_ship_kind.is_empty()
     }
 }
 impl From<&rc::val::ValResult> for HValidInfoDetails {
@@ -286,6 +290,7 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             sec_zone_unonlineable: core_val_result.sec_zone_unonlineable.as_ref().map(|v| v.into()),
             sec_zone_unactivable: core_val_result.sec_zone_unactivable.as_ref().map(|v| v.into()),
             activation_blocked: core_val_result.activation_blocked.iter().map(|v| v.item_id).collect(),
+            item_vs_ship_kind: core_val_result.item_vs_ship_kind.iter().map(|v| v.item_id).collect(),
         }
     }
 }
