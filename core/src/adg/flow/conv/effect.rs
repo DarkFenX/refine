@@ -260,6 +260,7 @@ fn get_mod_operation(e_modifier: &ed::EEffectMod) -> Result<ad::AOp, StrMsgError
         5 => Ok(ad::AOp::PostDiv),
         6 => Ok(ad::AOp::PostPerc),
         7 => Ok(ad::AOp::PostAssign),
+        8 => Ok(ad::AOp::PostPercImmune),
         _ => Err(StrMsgError {
             msg: format!("unknown operation {op}"),
         }),

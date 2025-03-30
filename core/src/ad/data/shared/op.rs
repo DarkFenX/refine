@@ -10,5 +10,6 @@ pub enum AOp {
     PostMulImmune,
     PostDiv,
     PostPerc,
+    PostPercImmune,
     PostAssign,
 }

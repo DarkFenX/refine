@@ -43,6 +43,7 @@ impl From<ad::AOp> for OpInfo {
             ad::AOp::PostMulImmune => Self::PostMul,
             ad::AOp::PostDiv => Self::PostDiv,
             ad::AOp::PostPerc => Self::PostPerc,
+            ad::AOp::PostPercImmune => Self::PostPerc,
             ad::AOp::PostAssign => Self::PostAssign,
         }
     }

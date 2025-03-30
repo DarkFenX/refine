@@ -10,6 +10,7 @@ pub(in crate::handler_json) enum COp {
     PostMulImmune,
     PostDiv,
     PostPerc,
+    PostPercImmune,
     PostAssign,
 }
 impl From<&rc::ad::AOp> for COp {
@@ -24,6 +25,7 @@ impl From<&rc::ad::AOp> for COp {
             rc::ad::AOp::PostMulImmune => Self::PostMulImmune,
             rc::ad::AOp::PostDiv => Self::PostDiv,
             rc::ad::AOp::PostPerc => Self::PostPerc,
+            rc::ad::AOp::PostPercImmune => Self::PostPercImmune,
             rc::ad::AOp::PostAssign => Self::PostAssign,
         }
     }
@@ -40,6 +42,7 @@ impl From<&COp> for rc::ad::AOp {
             COp::PostMulImmune => Self::PostMulImmune,
             COp::PostDiv => Self::PostDiv,
             COp::PostPerc => Self::PostPerc,
+            COp::PostPercImmune => Self::PostPercImmune,
             COp::PostAssign => Self::PostAssign,
         }
     }

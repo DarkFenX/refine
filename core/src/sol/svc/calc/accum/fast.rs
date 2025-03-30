@@ -118,6 +118,10 @@ impl ModAccumFast {
                 is_penal(attr_pen, a_item_cat),
                 aggr_mode,
             ),
+            Op::PostPercImmune => {
+                self.post_perc
+                    .add_val(val, proj_mult, res_mult, normalize_perc, diminish_mul, false, aggr_mode)
+            }
             Op::PostAssign => self
                 .post_assign
                 .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
