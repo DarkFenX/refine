@@ -8,10 +8,11 @@ use vaste_stats_fit::{StatRes, StatSlot};
 pub use vaste_vals_fit::{
     ValActivationBlockedFail, ValCapitalModFail, ValCapitalModItemInfo, ValChargeGroupFail, ValChargeSizeFail,
     ValChargeVolumeFail, ValDroneGroupFail, ValDroneGroupItemInfo, ValFighterSquadSizeFail, ValItemKindFail,
-    ValMaxGroupFail, ValMaxGroupItemInfo, ValMaxTypeFail, ValMaxTypeItemInfo, ValModuleStateFail, ValNotLoadedItemFail,
-    ValOverloadSkillFail, ValOverloadSkillItemInfo, ValResFail, ValResItemInfo, ValRigSizeFail, ValRigSizeItemInfo,
-    ValSecZoneFail, ValSecZoneItemInfo, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail,
-    ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableResItemInfo, ValUnusableSlotFail,
+    ValItemVsShipKindFail, ValMaxGroupFail, ValMaxGroupItemInfo, ValMaxTypeFail, ValMaxTypeItemInfo,
+    ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValOverloadSkillItemInfo, ValResFail,
+    ValResItemInfo, ValRigSizeFail, ValRigSizeItemInfo, ValSecZoneFail, ValSecZoneItemInfo, ValShipLimitFail,
+    ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo,
+    ValUnusableResFail, ValUnusableResItemInfo, ValUnusableSlotFail,
 };
 
 mod cache;

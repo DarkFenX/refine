@@ -60,6 +60,7 @@ pub struct ValOptions {
     pub sec_zone_unonlineable: ValOption,
     pub sec_zone_unactivable: ValOption,
     pub activation_blocked: ValOption,
+    pub item_vs_ship_kind: ValOption,
 }
 impl ValOptions {
     pub fn all_enabled() -> Self {
@@ -122,6 +123,7 @@ impl ValOptions {
             sec_zone_unonlineable: ValOption::enabled(),
             sec_zone_unactivable: ValOption::enabled(),
             activation_blocked: ValOption::enabled(),
+            item_vs_ship_kind: ValOption::enabled(),
         }
     }
     pub fn all_disabled() -> Self {
@@ -184,6 +186,7 @@ impl ValOptions {
             sec_zone_unonlineable: ValOption::disabled(),
             sec_zone_unactivable: ValOption::disabled(),
             activation_blocked: ValOption::disabled(),
+            item_vs_ship_kind: ValOption::disabled(),
         }
     }
 }

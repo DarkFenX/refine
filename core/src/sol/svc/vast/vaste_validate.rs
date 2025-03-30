@@ -340,6 +340,11 @@ impl Vast {
         {
             return false;
         }
+        if options.item_vs_ship_kind.enabled
+            && !fit_data.validate_item_vs_ship_kind_fast(&options.item_vs_ship_kind.kfs)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -617,6 +622,9 @@ impl Vast {
         if options.activation_blocked.enabled {
             result.activation_blocked =
                 fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, uad, calc);
+        }
+        if options.item_vs_ship_kind.enabled {
+            result.item_vs_ship_kind = fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs);
         }
         result
     }
