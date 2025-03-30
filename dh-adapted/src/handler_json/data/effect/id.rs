@@ -96,7 +96,7 @@ impl<'de> serde::Deserialize<'de> for CEffectId {
                     let id = CItemId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::ScShipLink(id));
                 }
-                if let Some(id_str) = v.strip_prefix(SCSL_PREFIX) {
+                if let Some(id_str) = v.strip_prefix(C_PREFIX) {
                     let id = CCustomEffectId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::Custom(id));
                 }
