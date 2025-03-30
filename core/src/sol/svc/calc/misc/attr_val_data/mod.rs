@@ -8,5 +8,6 @@ mod debug;
 mod item;
 mod postproc;
 mod pp_fighter_count;
+mod pp_sec_status;
 mod pp_skill_level;
 mod sol;

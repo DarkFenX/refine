@@ -4,7 +4,7 @@ pub use misc::{
 };
 pub use primitives::{
     AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
-    MutaRoll, SkillLevel, SlotIndex,
+    MutaRoll, SecStatus, SkillLevel, SlotIndex,
 };
 pub use sol::SolarSystem;
 pub use sole_item::{AddMode, RmMode};

@@ -1,6 +1,8 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     sol::{
-        FitId, FleetId, ItemId, ItemTypeId,
+        FitId, FleetId, ItemId, ItemTypeId, SecStatus,
         misc::DmgProfile,
         uad::{
             fit::{FitSkill, ItemVec},
@@ -30,6 +32,7 @@ pub(in crate::sol) struct Fit {
     pub(in crate::sol) drones: StSet<ItemId>,
     pub(in crate::sol) fighters: StSet<ItemId>,
     pub(in crate::sol) fw_effects: StSet<ItemId>,
+    pub(in crate::sol) sec_status: SecStatus,
     pub(in crate::sol) rah_incoming_dmg: Option<DmgProfile>,
 }
 impl Fit {
@@ -53,6 +56,7 @@ impl Fit {
             drones: StSet::new(),
             fighters: StSet::new(),
             fw_effects: StSet::new(),
+            sec_status: OF(0.0),
             rah_incoming_dmg: None,
         }
     }

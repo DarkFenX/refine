@@ -132,6 +132,7 @@ pub(crate) const CAN_FIT_SHIP_TYPE10: EAttrId = 2488;
 pub(crate) const WARFARE_BUFF4_ID: EAttrId = 2536;
 pub(crate) const WARFARE_BUFF4_VAL: EAttrId = 2537;
 pub(crate) const ONLINE_MAX_SECURITY_CLASS: EAttrId = 2581;
+pub(crate) const PILOT_SECURITY_STATUS: EAttrId = 2610;
 pub(crate) const FTR_STANDUP_LIGHT_SLOTS: EAttrId = 2737;
 pub(crate) const FTR_STANDUP_SUPPORT_SLOTS: EAttrId = 2738;
 pub(crate) const FTR_STANDUP_HEAVY_SLOTS: EAttrId = 2739;

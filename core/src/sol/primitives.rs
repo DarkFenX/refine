@@ -14,5 +14,6 @@ pub type AttrVal = OF<f64>;
 pub type Count = u32;
 pub type Idx = usize;
 pub type MutaRoll = OF<f64>;
+pub type SecStatus = OF<f64>;
 pub type SkillLevel = u8;
 pub type SlotIndex = i32;
