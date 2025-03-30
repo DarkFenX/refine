@@ -100,6 +100,18 @@ def test_almost_all_in(client, consts):
     eve_post_perc_affector_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: post_perc_val},
         eff_ids=[eve_post_perc_effect_id])
+    # Post-percent-immune
+    post_perc_immune_val = -20
+    eve_post_perc_immune_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent_immune,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_post_perc_immune_effect_id = client.mk_eve_effect(mod_info=[eve_post_perc_immune_mod])
+    eve_post_perc_immune_affector_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: post_perc_immune_val},
+        eff_ids=[eve_post_perc_immune_effect_id])
     eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
@@ -111,13 +123,14 @@ def test_almost_all_in(client, consts):
     api_fit.add_rig(type_id=eve_mod_sub_affector_id)
     api_fit.add_rig(type_id=eve_post_mul_affector_id)
     api_fit.add_rig(type_id=eve_post_div_affector_id)
-    api_fit.add_rig(type_id=eve_post_perc_affector_id)
+    api_post_perc_affector = api_fit.add_rig(type_id=eve_post_perc_affector_id)
+    api_post_perc_immune_affector = api_fit.add_rig(type_id=eve_post_perc_immune_affector_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
     expected_value = (
-            (pre_ass_val * pre_mul_val / pre_div_val + mod_add_val - mod_sub_val)
-            * post_mul_val / post_div_val * (1 + post_perc_val / 100))
+            (pre_ass_val * pre_mul_val / pre_div_val + mod_add_val - mod_sub_val) * post_mul_val
+            / post_div_val * (1 + post_perc_val / 100) * (1 + post_perc_immune_val / 100))
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(expected_value)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
     api_pre_assign_mod = api_mods.find_by_op(op=consts.ApiModOp.pre_assign).one()
@@ -148,7 +161,13 @@ def test_almost_all_in(client, consts):
     assert api_post_div_mod.initial_val == approx(post_div_val)
     assert api_post_div_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_post_div_mod.applied_val == approx(post_div_val)
-    api_post_perc_mod = api_mods.find_by_op(op=consts.ApiModOp.post_percent).one()
+    api_post_perc_mod = api_mods.find_by_affector_item(affector_item_id=api_post_perc_affector.id).one()
+    assert api_post_perc_mod.op == consts.ApiModOp.post_percent
     assert api_post_perc_mod.initial_val == approx(post_perc_val)
     assert api_post_perc_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_post_perc_mod.applied_val == approx(post_perc_val)
+    api_post_perc_immune_mod = api_mods.find_by_affector_item(affector_item_id=api_post_perc_immune_affector.id).one()
+    assert api_post_perc_immune_mod.op == consts.ApiModOp.post_percent
+    assert api_post_perc_immune_mod.initial_val == approx(post_perc_immune_val)
+    assert api_post_perc_immune_mod.stacking_mult is None
+    assert api_post_perc_immune_mod.applied_val == approx(post_perc_immune_val)

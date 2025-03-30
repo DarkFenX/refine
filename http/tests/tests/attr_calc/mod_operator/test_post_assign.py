@@ -154,6 +154,18 @@ def test_insignificant_earlier_ops(client, consts):
     eve_post_perc_affector_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: post_perc_val},
         eff_ids=[eve_post_perc_effect_id])
+    # Post-percent-immune
+    post_perc_immune_val = -20
+    eve_post_perc_immune_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent_immune,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_post_perc_immune_effect_id = client.mk_eve_effect(mod_info=[eve_post_perc_immune_mod])
+    eve_post_perc_immune_affector_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: post_perc_immune_val},
+        eff_ids=[eve_post_perc_immune_effect_id])
     # Post-assignment
     post_ass_val = 68
     eve_post_ass_mod = client.mk_eve_effect_mod(
@@ -178,6 +190,7 @@ def test_insignificant_earlier_ops(client, consts):
     api_fit.add_rig(type_id=eve_post_mul_affector_id)
     api_fit.add_rig(type_id=eve_post_div_affector_id)
     api_fit.add_rig(type_id=eve_post_perc_affector_id)
+    api_fit.add_rig(type_id=eve_post_perc_immune_affector_id)
     api_fit.add_rig(type_id=eve_post_ass_affector_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification

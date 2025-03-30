@@ -499,7 +499,7 @@ def test_insignificant_op_collision(client, consts):
     api_fit.add_rig(type_id=eve_pre_ass_affector_id)
     api_fit.add_rig(type_id=eve_pre_mul_affector_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
-    # Verification - wen both sides of multiplication are 0, right side is preferred for fewer mods
+    # Verification - when both sides of multiplication are 0, right side is preferred for fewer mods
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
     api_pre_mul_mod = api_affectee.mods[eve_affectee_attr_id].one()

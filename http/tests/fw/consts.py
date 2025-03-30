@@ -142,6 +142,7 @@ class EveModOp(IntEnum):
     post_div = 5
     post_percent = 6
     post_assign = 7
+    post_percent_immune = 8
 
 
 @unique
