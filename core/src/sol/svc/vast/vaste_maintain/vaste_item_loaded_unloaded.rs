@@ -627,22 +627,39 @@ fn item_vs_ship_kind_add(
     fit_id: &FitId,
 ) {
     let fit = uad.fits.get_fit(fit_id).unwrap();
-    if fit.ship.is_none() {
-        return;
-    }
+    let ship_id = match fit.ship {
+        Some(ship_id) => ship_id,
+        None => return,
+    };
     match item_cat {
-        ac::itemcats::MODULE => {
-            if !matches!(fit.kind, ShipKind::Ship) {
+        ac::itemcats::MODULE => match fit.kind {
+            ShipKind::Ship => (),
+            ShipKind::Structure => {
                 fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_id, ValShipKind::Ship);
             }
-        }
-        ac::itemcats::STRUCTURE_MODULE => {
-            if !matches!(fit.kind, ShipKind::Structure) {
+            ShipKind::Unknown => {
+                let ship = uad.items.get_item(&ship_id).unwrap();
+                if ship.is_loaded() {
+                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_id, ValShipKind::Ship);
+                }
+            }
+        },
+        ac::itemcats::STRUCTURE_MODULE => match fit.kind {
+            ShipKind::Ship => {
                 fit_data
                     .mods_rigs_svcs_vs_ship_kind
                     .insert(item_id, ValShipKind::Structure);
             }
-        }
+            ShipKind::Structure => (),
+            ShipKind::Unknown => {
+                let ship = uad.items.get_item(&ship_id).unwrap();
+                if ship.is_loaded() {
+                    fit_data
+                        .mods_rigs_svcs_vs_ship_kind
+                        .insert(item_id, ValShipKind::Structure);
+                }
+            }
+        },
         _ => (),
     }
 }

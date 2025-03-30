@@ -8,6 +8,7 @@ def test_ship_kind_switching(client, consts):
     eve_other_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem)
     eve_ship_id = client.mk_eve_ship()
     eve_struct_id = client.mk_eve_struct()
+    eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -63,6 +64,13 @@ def test_ship_kind_switching(client, consts):
         api_ship_rig.id: consts.ApiValShipType.ship,
         api_ship_service.id: consts.ApiValShipType.ship}
     # Action
+    api_fit.set_ship(type_id=eve_not_loaded_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
     api_fit.set_ship(type_id=eve_other_item_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
@@ -81,7 +89,7 @@ def test_ship_kind_switching(client, consts):
         api_struct_service.id: consts.ApiValShipType.structure}
 
 
-def test_item_add_remove_ship(client, consts):
+def test_item_add_remove_ship_ship(client, consts):
     eve_ship_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
     eve_struct_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module)
     eve_other_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem)
@@ -138,7 +146,7 @@ def test_item_add_remove_ship(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_item_add_remove_struct(client, consts):
+def test_item_add_remove_ship_struct(client, consts):
     eve_ship_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
     eve_struct_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module)
     eve_other_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem)
@@ -195,7 +203,7 @@ def test_item_add_remove_struct(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_item_add_remove_unknown(client, consts):
+def test_item_add_remove_ship_unknown(client, consts):
     eve_ship_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
     eve_struct_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module)
     eve_other_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem)
@@ -255,3 +263,163 @@ def test_item_add_remove_unknown(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
+
+
+def test_item_add_remove_ship_none(client, consts):
+    eve_ship_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
+    eve_struct_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module)
+    eve_other_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship_module_high = api_fit.add_module(type_id=eve_ship_item_id, rack=consts.ApiRack.high)
+    api_ship_module_mid = api_fit.add_module(type_id=eve_ship_item_id, rack=consts.ApiRack.mid)
+    api_ship_module_low = api_fit.add_module(type_id=eve_ship_item_id, rack=consts.ApiRack.low)
+    api_ship_rig = api_fit.add_rig(type_id=eve_ship_item_id)
+    api_ship_service = api_fit.add_service(type_id=eve_ship_item_id)
+    api_struct_module_high = api_fit.add_module(type_id=eve_struct_item_id, rack=consts.ApiRack.high)
+    api_struct_module_mid = api_fit.add_module(type_id=eve_struct_item_id, rack=consts.ApiRack.mid)
+    api_struct_module_low = api_fit.add_module(type_id=eve_struct_item_id, rack=consts.ApiRack.low)
+    api_struct_rig = api_fit.add_rig(type_id=eve_struct_item_id)
+    api_struct_service = api_fit.add_service(type_id=eve_struct_item_id)
+    api_other_module_high = api_fit.add_module(type_id=eve_other_item_id, rack=consts.ApiRack.high)
+    api_other_module_mid = api_fit.add_module(type_id=eve_other_item_id, rack=consts.ApiRack.mid)
+    api_other_module_low = api_fit.add_module(type_id=eve_other_item_id, rack=consts.ApiRack.low)
+    api_other_rig = api_fit.add_rig(type_id=eve_other_item_id)
+    api_other_service = api_fit.add_service(type_id=eve_other_item_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship_module_high.remove()
+    api_ship_module_mid.remove()
+    api_ship_module_low.remove()
+    api_ship_rig.remove()
+    api_ship_service.remove()
+    api_struct_module_high.remove()
+    api_struct_module_mid.remove()
+    api_struct_module_low.remove()
+    api_struct_rig.remove()
+    api_struct_service.remove()
+    api_other_module_high.remove()
+    api_other_module_mid.remove()
+    api_other_module_low.remove()
+    api_other_rig.remove()
+    api_other_service.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_item_add_remove_ship_not_loaded(client, consts):
+    eve_ship_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
+    eve_struct_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module)
+    eve_other_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem)
+    eve_ship_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_ship_module_high = api_fit.add_module(type_id=eve_ship_item_id, rack=consts.ApiRack.high)
+    api_ship_module_mid = api_fit.add_module(type_id=eve_ship_item_id, rack=consts.ApiRack.mid)
+    api_ship_module_low = api_fit.add_module(type_id=eve_ship_item_id, rack=consts.ApiRack.low)
+    api_ship_rig = api_fit.add_rig(type_id=eve_ship_item_id)
+    api_ship_service = api_fit.add_service(type_id=eve_ship_item_id)
+    api_struct_module_high = api_fit.add_module(type_id=eve_struct_item_id, rack=consts.ApiRack.high)
+    api_struct_module_mid = api_fit.add_module(type_id=eve_struct_item_id, rack=consts.ApiRack.mid)
+    api_struct_module_low = api_fit.add_module(type_id=eve_struct_item_id, rack=consts.ApiRack.low)
+    api_struct_rig = api_fit.add_rig(type_id=eve_struct_item_id)
+    api_struct_service = api_fit.add_service(type_id=eve_struct_item_id)
+    api_other_module_high = api_fit.add_module(type_id=eve_other_item_id, rack=consts.ApiRack.high)
+    api_other_module_mid = api_fit.add_module(type_id=eve_other_item_id, rack=consts.ApiRack.mid)
+    api_other_module_low = api_fit.add_module(type_id=eve_other_item_id, rack=consts.ApiRack.low)
+    api_other_rig = api_fit.add_rig(type_id=eve_other_item_id)
+    api_other_service = api_fit.add_service(type_id=eve_other_item_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship_module_high.remove()
+    api_ship_module_mid.remove()
+    api_ship_module_low.remove()
+    api_ship_rig.remove()
+    api_ship_service.remove()
+    api_struct_module_high.remove()
+    api_struct_module_mid.remove()
+    api_struct_module_low.remove()
+    api_struct_rig.remove()
+    api_struct_service.remove()
+    api_other_module_high.remove()
+    api_other_module_mid.remove()
+    api_other_module_low.remove()
+    api_other_rig.remove()
+    api_other_service.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_known_failures(client, consts):
+    pass
+
+
+def test_mutation(client, consts):
+    pass
+
+
+def test_not_loaded_item(client, consts):
+    eve_item_id = client.alloc_item_id()
+    eve_ship_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_item_id)
+    api_rig = api_fit.add_rig(type_id=eve_item_id)
+    api_service = api_fit.add_service(type_id=eve_item_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.remove()
+    api_rig.remove()
+    api_service.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_criterion_state(client, consts):
+    eve_ship_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
+    eve_struct_id = client.mk_eve_struct()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct_id)
+    api_ship_module = api_fit.add_module(type_id=eve_ship_item_id, state=consts.ApiModuleState.ghost)
+    api_ship_rig = api_fit.add_rig(type_id=eve_ship_item_id, state=False)
+    api_ship_service = api_fit.add_service(type_id=eve_ship_item_id, state=consts.ApiServiceState.ghost)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is False
+    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.items == {
+        api_ship_module.id: consts.ApiValShipType.ship,
+        api_ship_rig.id: consts.ApiValShipType.ship,
+        api_ship_service.id: consts.ApiValShipType.ship}
+
+
+def test_criterion_item_kind(client, consts):
+    pass
