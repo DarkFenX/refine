@@ -239,7 +239,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_drone_state(client, consts):
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
     eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})

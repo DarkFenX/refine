@@ -258,7 +258,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_subsystem_state(client, consts):
     # Slot is taken even when subsystem is disabled
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_subsystems)
     eve_subsystem_id = client.mk_eve_item()

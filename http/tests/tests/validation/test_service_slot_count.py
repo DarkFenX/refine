@@ -258,7 +258,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.service_slot_count.users == [api_service.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_service_state(client, consts):
     # Slot is taken even when service is disabled
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.service_slots)
     eve_service_id = client.mk_eve_item()

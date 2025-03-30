@@ -257,7 +257,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.rig_slot_count.users == [api_rig.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_rig_state(client, consts):
     # Slot is taken even when rig is disabled
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_slots_left)
     eve_rig_id = client.mk_eve_item()

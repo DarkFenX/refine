@@ -908,7 +908,7 @@ def test_not_loaded_ship(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_state(client, consts):
+def test_criterion_item_state(client, consts):
     # Restriction applies even to ghosted mods and disabled rigs
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)

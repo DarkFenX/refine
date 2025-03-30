@@ -258,7 +258,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.launched_fighter_count.users == [api_fighter.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_fighter_state(client, consts):
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_tubes)
     eve_fighter_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})

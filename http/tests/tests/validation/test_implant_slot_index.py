@@ -187,7 +187,7 @@ def test_not_loaded(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_state(client, consts):
+def test_criterion_implant_state(client, consts):
     # Disabled implants still compete for slots
     eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
     eve_implant_id = client.mk_eve_item(attrs={eve_slot_attr_id: 1})

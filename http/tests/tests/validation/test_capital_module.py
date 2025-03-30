@@ -250,7 +250,7 @@ def test_not_loaded_module(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_state(client, consts):
+def test_criterion_module_state(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 4000})
     eve_ship_id = client.mk_eve_ship()

@@ -295,7 +295,7 @@ def test_no_attr(client, consts):
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
 
-def test_criterion_state(client, consts):
+def test_criterion_module_state(client, consts):
     # Ghost modules and offline rigs are affected
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_fitted)

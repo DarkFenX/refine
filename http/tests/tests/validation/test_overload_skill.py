@@ -336,7 +336,7 @@ def test_not_loaded_skill(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_state(client, consts):
+def test_criterion_module_state(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
     eve_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.thermodynamics)

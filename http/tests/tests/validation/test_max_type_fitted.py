@@ -252,7 +252,7 @@ def test_no_attr(client, consts):
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
 
 
-def test_criterion_state(client, consts):
+def test_criterion_item_state(client, consts):
     # Ghost modules and services are affected
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_item_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})

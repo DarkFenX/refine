@@ -279,7 +279,7 @@ def test_no_attr(client, consts):
     assert api_val.details.max_group_online == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
 
-def test_criterion_state_module(client, consts):
+def test_criterion_module_state(client, consts):
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_online)
     eve_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})
@@ -307,7 +307,7 @@ def test_criterion_state_module(client, consts):
     assert api_val.details.max_group_online == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
 
-def test_criterion_state_service(client, consts):
+def test_criterion_service_state(client, consts):
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_online)
     eve_service_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})

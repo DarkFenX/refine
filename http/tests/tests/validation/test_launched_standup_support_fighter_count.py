@@ -353,7 +353,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.launched_standup_support_fighter_count.users == [api_fighter.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_fighter_state(client, consts):
     eve_ftr_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_is_standup_support)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_standup_support_slots)
     eve_fighter_id = client.mk_eve_item(attrs={eve_ftr_type_attr_id: 1})

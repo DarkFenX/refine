@@ -269,7 +269,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.launcher_slot_count.users == [api_module.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_module_state(client, consts):
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.launcher_slots_left)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.launcher_fitted)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])

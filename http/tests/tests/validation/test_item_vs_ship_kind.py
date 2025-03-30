@@ -485,7 +485,38 @@ def test_not_loaded_item(client):
         api_val.details  # noqa: B018
 
 
-def test_criterion_state(client, consts):
+def test_criterion_item_category(client, consts):
+    eve_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem)
+    eve_ship_id = client.mk_eve_ship()
+    eve_struct_id = client.mk_eve_struct()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_item_id)
+    api_fit.add_rig(type_id=eve_item_id)
+    api_fit.add_service(type_id=eve_item_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fit.set_ship(type_id=eve_struct_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_criterion_item_state(client, consts):
     eve_ship_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
     eve_struct_id = client.mk_eve_struct()
     client.create_sources()

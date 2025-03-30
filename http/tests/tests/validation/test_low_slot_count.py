@@ -378,7 +378,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.low_slot_count.users == [api_module.id]
 
 
-def test_criterion_state(client, consts):
+def test_criterion_module_state(client, consts):
     # Slot is taken even when module is in ghost state
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()

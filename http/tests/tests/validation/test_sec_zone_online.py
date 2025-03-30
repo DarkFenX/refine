@@ -322,7 +322,7 @@ def test_no_attr(client, consts):
         consts.ApiSecZone.hazard])}
 
 
-def test_criterion_state(client, consts):
+def test_criterion_service_state(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class)
     eve_service_id = client.mk_eve_item(attrs={eve_attr_id: 1})
     client.mk_eve_item()

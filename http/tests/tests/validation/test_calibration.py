@@ -419,7 +419,7 @@ def test_no_attr_max(client, consts):
     assert api_val.details.calibration.users == {api_rig.id: approx(150)}
 
 
-def test_criterion_state(client, consts):
+def test_criterion_rig_state(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
