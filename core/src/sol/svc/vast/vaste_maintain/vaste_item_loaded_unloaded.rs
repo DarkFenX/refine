@@ -1,15 +1,16 @@
 use std::collections::hash_map::Entry;
 
+use itertools::chain;
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
-    AttrVal, ac, ad,
+    ac, ad,
     sol::{
-        ItemId, ModRack,
+        AttrVal, FitId, ItemId, ModRack,
         svc::vast::{ValCache, ValFighterSquadSizeFail, ValItemKindFail, Vast, VastFitData, VastSkillReq},
         uad::{
             Uad,
-            item::{Item, Module},
+            item::{Item, Module, ShipKind},
         },
     },
     util::StMap,
@@ -200,6 +201,13 @@ impl Vast {
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_id);
                 }
+                item_vs_ship_kind_add(
+                    uad,
+                    fit_data,
+                    item_id,
+                    module.get_a_category_id().unwrap(),
+                    &module.get_fit_id(),
+                );
             }
             Item::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -222,6 +230,13 @@ impl Vast {
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_fitted.insert(item_id);
                 }
+                item_vs_ship_kind_add(
+                    uad,
+                    fit_data,
+                    item_id,
+                    rig.get_a_category_id().unwrap(),
+                    &rig.get_fit_id(),
+                );
             }
             Item::Service(service) => {
                 let extras = service.get_a_extras().unwrap();
@@ -254,16 +269,24 @@ impl Vast {
                 if let Some(sec_class) = extras.online_max_sec_class {
                     fit_data.sec_zone_unonlineable_class.insert(item_id, sec_class);
                 }
+                item_vs_ship_kind_add(
+                    uad,
+                    fit_data,
+                    item_id,
+                    service.get_a_category_id().unwrap(),
+                    &service.get_fit_id(),
+                );
             }
             Item::Ship(ship) => {
+                let fit = uad.fits.get_fit(&fit_id).unwrap();
                 let extras = ship.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Ship);
                 // If new ship limits drones which can be used, fill the mismatch data up
                 if let Some(drone_limit) = &extras.drone_limit {
                     fit_data.drone_group_limit.extend(drone_limit.group_ids.iter());
-                    let fit = uad.fits.get_fit(&fit_id).unwrap();
                     for drone_item_id in fit.drones.iter() {
                         let drone_item = uad.items.get_item(drone_item_id).unwrap();
+                        // Not every drone is guaranteed to be loaded
                         if let Some(drone_a_group_id) = drone_item.get_a_group_id() {
                             if !drone_limit.group_ids.contains(&drone_a_group_id) {
                                 fit_data.drone_groups.insert(*drone_item_id, drone_a_group_id);
@@ -276,6 +299,33 @@ impl Vast {
                 }
                 if extras.disallowed_in_wspace {
                     fit_data.sec_zone_fitted_wspace_banned.insert(item_id);
+                }
+                // Ship/structure modules are not enforced when ship is not set. When we get one,
+                // fill the data container up
+                for item_id in chain!(
+                    fit.mods_high.iter_ids(),
+                    fit.mods_mid.iter_ids(),
+                    fit.mods_low.iter_ids(),
+                    fit.rigs.iter(),
+                    fit.services.iter()
+                ) {
+                    let item = uad.items.get_item(item_id).unwrap();
+                    // Not every item is guaranteed to be loaded
+                    if let Some(item_cat_id) = item.get_a_category_id() {
+                        match item_cat_id {
+                            ac::itemcats::MODULE => {
+                                if !matches!(fit.kind, ShipKind::Ship) {
+                                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(*item_id);
+                                }
+                            }
+                            ac::itemcats::STRUCTURE_MODULE => {
+                                if !matches!(fit.kind, ShipKind::Structure) {
+                                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(*item_id);
+                                }
+                            }
+                            _ => (),
+                        }
+                    }
                 }
             }
             Item::Skill(skill) => {
@@ -432,6 +482,7 @@ impl Vast {
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.remove(&item_id);
                 }
+                fit_data.mods_rigs_svcs_vs_ship_kind.remove(&item_id);
             }
             Item::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -449,6 +500,7 @@ impl Vast {
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_fitted.remove(&item_id);
                 }
+                fit_data.mods_rigs_svcs_vs_ship_kind.remove(&item_id);
             }
             Item::Service(service) => {
                 let extras = service.get_a_extras().unwrap();
@@ -473,6 +525,7 @@ impl Vast {
                 if extras.online_max_sec_class.is_some() {
                     fit_data.sec_zone_unonlineable_class.remove(&item_id);
                 }
+                fit_data.mods_rigs_svcs_vs_ship_kind.remove(&item_id);
             }
             Item::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
@@ -488,6 +541,7 @@ impl Vast {
                 if extras.disallowed_in_wspace {
                     fit_data.sec_zone_fitted_wspace_banned.remove(&item_id);
                 }
+                fit_data.mods_rigs_svcs_vs_ship_kind.clear();
             }
             Item::Skill(skill) => {
                 let extras = skill.get_a_extras().unwrap();
@@ -561,5 +615,22 @@ fn item_kind_remove(
 ) {
     if item_kind != Some(expected_kind) {
         fit_data.item_kind.remove(item_id);
+    }
+}
+fn item_vs_ship_kind_add(
+    uad: &Uad,
+    fit_data: &mut VastFitData,
+    item_id: ItemId,
+    item_cat: ad::AItemCatId,
+    fit_id: &FitId,
+) {
+    let expected_ship_kind = match item_cat {
+        ac::itemcats::MODULE => ShipKind::Ship,
+        ac::itemcats::STRUCTURE_MODULE => ShipKind::Structure,
+        _ => return,
+    };
+    let fit = uad.fits.get_fit(fit_id).unwrap();
+    if fit.kind != expected_ship_kind {
+        fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_id);
     }
 }

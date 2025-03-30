@@ -1,4 +1,4 @@
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::sol) enum ShipKind {
     Ship,
     Structure,

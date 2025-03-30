@@ -211,7 +211,7 @@ impl VastFitData {
         for item_id in self.mods_active.iter() {
             check_item_id(uad, item_id, true)?;
         }
-        for item_id in self.items_vs_ship_kind.iter() {
+        for item_id in self.mods_rigs_svcs_vs_ship_kind.iter() {
             check_item_id(uad, item_id, true)?;
         }
         Ok(())

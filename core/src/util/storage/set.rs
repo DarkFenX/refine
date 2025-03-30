@@ -45,6 +45,9 @@ impl<V: Eq + Hash> StSet<V> {
     pub fn remove(&mut self, val: &V) -> bool {
         self.data.remove(val)
     }
+    pub fn clear(&mut self) {
+        self.data.clear()
+    }
 }
 impl<V: Eq + Hash> Default for StSet<V> {
     fn default() -> Self {
