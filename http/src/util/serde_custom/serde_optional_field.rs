@@ -37,9 +37,10 @@ where
     type Value = TriStateField<T>;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("OptionalField<T>")
+        formatter.write_str("TriStateField<T>")
     }
 
+    #[inline]
     fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
     where
         D: Deserializer<'de>,
@@ -47,6 +48,15 @@ where
         T::deserialize(deserializer).map(TriStateField::Value)
     }
 
+    #[inline]
+    fn visit_none<E>(self) -> Result<TriStateField<T>, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(TriStateField::None)
+    }
+
+    #[inline]
     fn visit_unit<E>(self) -> Result<TriStateField<T>, E>
     where
         E: serde::de::Error,
@@ -63,8 +73,12 @@ where
     where
         D: Deserializer<'de>,
     {
-        Ok(TriStateField::Value(
-            DeserializeAsWrap::<T, U>::deserialize(deserializer)?.into_inner(),
-        ))
+        Ok(
+            match TriStateField::<DeserializeAsWrap<T, U>>::deserialize(deserializer)? {
+                TriStateField::Value(v) => TriStateField::Value(v.into_inner()),
+                TriStateField::None => TriStateField::None,
+                TriStateField::Absent => TriStateField::Absent,
+            },
+        )
     }
 }
