@@ -44,6 +44,7 @@ mod item_subsystem;
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeFitCommand {
+    // Fit
     ChangeFit(HChangeFitCmd),
     // Item - autocharge
     ChangeAutocharge(HChangeAutochargeCmd),
@@ -95,6 +96,7 @@ pub(crate) enum HChangeFitCommand {
 impl HChangeFitCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
+            // Fit
             Self::ChangeFit(cmd) => cmd.execute(core_sol, fit_id),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),

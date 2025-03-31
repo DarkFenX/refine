@@ -48,92 +48,124 @@ mod sol;
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeSolCommand {
-    // Sol commands
+    // Solar system
     ChangeSol(HChangeSolCmd),
-    // Fleet commands
+    // Fleet
     AddFleet(HAddFleetCmd),
     DeleteFleet(HDeleteFleetCmd),
-    // Fit commands
+    // Fit
     AddFit(HAddFitCmd),
     ChangeFit(HChangeFitCmd),
     DeleteFit(HDeleteFitCmd),
-    // Item commands
+    // Item - autocharge
     ChangeAutocharge(HChangeAutochargeCmd),
+    // Item - booster
     AddBooster(HAddBoosterCmd),
     ChangeBooster(HChangeBoosterCmd),
+    // Item - character
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
+    // Item - charge
     ChangeCharge(HChangeChargeCmd),
+    // Item - drone
     AddDrone(HAddDroneCmd),
     ChangeDrone(HChangeDroneCmd),
+    // Item - fighter
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
+    // Item - fit-wide effect
     AddFwEffect(HAddFwEffectCmd),
     ChangeFwEffect(HChangeFwEffectCmd),
+    // Item - implant
     AddImplant(HAddImplantCmd),
     ChangeImplant(HChangeImplantCmd),
+    // Item - module
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
+    // Item - projected effect
     AddProjEffect(HAddProjEffectCmd),
     ChangeProjEffect(HChangeProjEffectCmd),
+    // Item - rig
     AddRig(HAddRigCmd),
     ChangeRig(HChangeRigCmd),
+    // Item - service
     AddService(HAddServiceCmd),
     ChangeService(HChangeServiceCmd),
+    // Item - ship
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
+    // Item - skill
     AddSkill(HAddSkillCmd),
     ChangeSkill(HChangeSkillCmd),
+    // Item - stance
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
+    // Item - subsystem
     AddSubsystem(HAddSubsystemCmd),
     ChangeSubsystem(HChangeSubsystemCmd),
+    // Item - system-wide effect
     AddSwEffect(HAddSwEffectCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
-            // Sol commands
+            // Solar system
             Self::ChangeSol(cmd) => cmd.execute(core_sol),
-            // Fleet commands
+            // Fleet
             Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)),
             Self::DeleteFleet(cmd) => cmd.execute(core_sol),
-            // Fit commands
+            // Fit
             Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFit(cmd) => cmd.execute(core_sol),
-            // Item commands
+            // Item - autocharge
             Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
+            // Item - booster
             Self::AddBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeBooster(cmd) => cmd.execute(core_sol),
+            // Item - character
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeCharacter(cmd) => cmd.execute(core_sol),
+            // Item - charge
             Self::ChangeCharge(cmd) => cmd.execute(core_sol),
+            // Item - drone
             Self::AddDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeDrone(cmd) => cmd.execute(core_sol),
+            // Item - fighter
             Self::AddFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFighter(cmd) => cmd.execute(core_sol),
+            // Item - fit-wide effect
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFwEffect(cmd) => cmd.execute(core_sol),
+            // Item - implant
             Self::AddImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeImplant(cmd) => cmd.execute(core_sol),
+            // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeModule(cmd) => cmd.execute(core_sol),
+            // Item - projected effect
             Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeProjEffect(cmd) => cmd.execute(core_sol),
+            // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeRig(cmd) => cmd.execute(core_sol),
+            // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeService(cmd) => cmd.execute(core_sol),
+            // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeShip(cmd) => cmd.execute(core_sol),
+            // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSkill(cmd) => cmd.execute(core_sol),
+            // Item - stance
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeStance(cmd) => cmd.execute(core_sol),
+            // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSubsystem(cmd) => cmd.execute(core_sol),
+            // Item - system-wide effect
             Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
         }
