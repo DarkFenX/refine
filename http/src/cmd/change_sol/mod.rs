@@ -2,7 +2,7 @@ pub(in crate::cmd) use fit::{HChangeFitCmd, HDeleteFitCmd};
 pub(in crate::cmd) use fleet::{HAddFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
-pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HSetCharacterCmd};
+pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HRemoveCharacterCmd, HSetCharacterCmd};
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
 pub(in crate::cmd) use item_drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(in crate::cmd) use item_fighter::{HAddFighterCmd, HChangeFighterCmd};
@@ -12,9 +12,9 @@ pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
 pub(in crate::cmd) use item_proj_effect::{HAddProjEffectCmd, HChangeProjEffectCmd};
 pub(in crate::cmd) use item_rig::{HAddRigCmd, HChangeRigCmd};
 pub(in crate::cmd) use item_service::{HAddServiceCmd, HChangeServiceCmd};
-pub(in crate::cmd) use item_ship::{HChangeShipCmd, HSetShipCmd};
+pub(in crate::cmd) use item_ship::{HChangeShipCmd, HRemoveShipCmd, HSetShipCmd};
 pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
-pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd};
+pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HRemoveStanceCmd, HSetStanceCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 pub(in crate::cmd) use sol::HChangeSolCmd;
@@ -65,6 +65,7 @@ pub(crate) enum HChangeSolCommand {
     // Item - character
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
+    RemoveCharacter(HRemoveCharacterCmd),
     // Item - charge
     ChangeCharge(HChangeChargeCmd),
     // Item - drone
@@ -94,12 +95,14 @@ pub(crate) enum HChangeSolCommand {
     // Item - ship
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
+    RemoveShip(HRemoveShipCmd),
     // Item - skill
     AddSkill(HAddSkillCmd),
     ChangeSkill(HChangeSkillCmd),
     // Item - stance
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
+    RemoveStance(HRemoveStanceCmd),
     // Item - subsystem
     AddSubsystem(HAddSubsystemCmd),
     ChangeSubsystem(HChangeSubsystemCmd),
@@ -127,6 +130,7 @@ impl HChangeSolCommand {
             // Item - character
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeCharacter(cmd) => cmd.execute(core_sol),
+            Self::RemoveCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - charge
             Self::ChangeCharge(cmd) => cmd.execute(core_sol),
             // Item - drone
@@ -156,12 +160,14 @@ impl HChangeSolCommand {
             // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeShip(cmd) => cmd.execute(core_sol),
+            Self::RemoveShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSkill(cmd) => cmd.execute(core_sol),
             // Item - stance
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeStance(cmd) => cmd.execute(core_sol),
+            Self::RemoveStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSubsystem(cmd) => cmd.execute(core_sol),
