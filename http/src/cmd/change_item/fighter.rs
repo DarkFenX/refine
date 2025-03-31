@@ -4,7 +4,7 @@ use crate::{
         shared::{HEffectModeMap, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HMinionState,
-    util::{HExecError, OptionalField},
+    util::{HExecError, TriStateField},
 };
 
 #[serde_with::serde_as]
@@ -13,7 +13,7 @@ pub(crate) struct HChangeFighterCmd {
     #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
-    count: OptionalField<rc::Count>,
+    count: TriStateField<rc::Count>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -38,7 +38,7 @@ impl HChangeFighterCmd {
             }
         }
         match self.count {
-            OptionalField::Value(count) => {
+            TriStateField::Value(count) => {
                 if let Err(error) = core_sol.set_fighter_count_override(item_id, count) {
                     return Err(match error {
                         rc::err::SetFighterCountOverrideError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
@@ -49,7 +49,7 @@ impl HChangeFighterCmd {
                     });
                 }
             }
-            OptionalField::None => {
+            TriStateField::None => {
                 if let Err(error) = core_sol.remove_fighter_count_override(item_id) {
                     return Err(match error {
                         rc::err::RemoveFighterCountOverrideError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
@@ -59,7 +59,7 @@ impl HChangeFighterCmd {
                     });
                 }
             }
-            OptionalField::Absent => (),
+            TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
             if let Err(error) = core_sol.add_fighter_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {

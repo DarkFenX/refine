@@ -74,55 +74,20 @@ class ApiClientFit(ApiClientBase):
             kwargs['json'] = body
         return Request(client=self, **kwargs)
 
-    def set_fit_fleet_request(
+    def change_fit_request(
             self, *,
             sol_id: str,
             fit_id: str,
-            fleet_id: str | None,
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = {'type': 'set_fleet', 'fleet_id': fleet_id}
-        params = {}
-        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
-            params=params,
-            json={'commands': [command]})
-
-    def set_fit_sec_status_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
+            fleet_id: str | None | type[Absent],
             sec_status: float | type[Absent],
+            rah_incoming_dmg: tuple[float, float, float, float] | None | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        command = {'type': 'set_sec_status'}
+        command = {'type': 'change_fit'}
+        conditional_insert(container=command, path=['fleet_id'], value=fleet_id)
         conditional_insert(container=command, path=['sec_status'], value=sec_status)
-        params = {}
-        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
-            params=params,
-            json={'commands': [command]})
-
-    def set_fit_rah_incoming_dmg_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            dmg_profile: tuple[float, float, float, float] | None | type[Absent],
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = {'type': 'set_rah_incoming_dmg'}
-        conditional_insert(container=command, path=['dmg_profile'], value=dmg_profile)
+        conditional_insert(container=command, path=['rah_incoming_dmg'], value=rah_incoming_dmg)
         params = {}
         conditional_insert(container=params, path=['fit'], value=fit_info_mode)
         conditional_insert(container=params, path=['item'], value=item_info_mode)

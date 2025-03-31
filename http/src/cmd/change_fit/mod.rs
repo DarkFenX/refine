@@ -1,4 +1,4 @@
-pub(in crate::cmd) use fleet::HSetFleetCmd;
+pub(in crate::cmd) use fit::HChangeFitCmd;
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use item_character::{
@@ -18,12 +18,10 @@ pub(in crate::cmd) use item_stance::{
     HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd,
 };
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
-pub(in crate::cmd) use rah_incoming_dmg::HSetRahIncomingDmgCmd;
-pub(in crate::cmd) use sec_status::HSetSecStatusCmd;
 
 use crate::{cmd::HCmdResp, util::HExecError};
 
-mod fleet;
+mod fit;
 mod item_autocharge;
 mod item_booster;
 mod item_character;
@@ -39,15 +37,11 @@ mod item_ship;
 mod item_skill;
 mod item_stance;
 mod item_subsystem;
-mod rah_incoming_dmg;
-mod sec_status;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeFitCommand {
-    SetFleet(HSetFleetCmd),
-    SetSecStatus(HSetSecStatusCmd),
-    SetRahIncomingDmg(HSetRahIncomingDmgCmd),
+    ChangeFit(HChangeFitCmd),
     // Item commands
     ChangeAutocharge(HChangeAutochargeCmd),
     AddBooster(HAddBoosterCmd),
@@ -81,9 +75,7 @@ pub(crate) enum HChangeFitCommand {
 impl HChangeFitCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
-            Self::SetFleet(cmd) => cmd.execute(core_sol, fit_id),
-            Self::SetSecStatus(cmd) => cmd.execute(core_sol, fit_id),
-            Self::SetRahIncomingDmg(cmd) => cmd.execute(core_sol, fit_id),
+            Self::ChangeFit(cmd) => cmd.execute(core_sol, fit_id),
             // Item commands
             Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
             Self::AddBooster(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),

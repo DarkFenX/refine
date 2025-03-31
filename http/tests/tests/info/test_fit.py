@@ -11,11 +11,11 @@ def test_fleet(client):
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
     api_fit = api_sol.create_fit()
-    api_fit.set_fleet(fleet_id=api_fleet.id)
+    api_fit.change(fleet_id=api_fleet.id)
     # Verification
     assert api_fit.update().fleet == api_fleet.id
     # Action
-    api_fit.set_fleet(fleet_id=None)
+    api_fit.change(fleet_id=None)
     # Verification
     api_fit.update()
     with check_no_field():

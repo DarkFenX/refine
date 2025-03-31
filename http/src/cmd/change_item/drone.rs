@@ -4,7 +4,7 @@ use crate::{
         shared::{HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HMinionState,
-    util::{HExecError, OptionalField},
+    util::{HExecError, TriStateField},
 };
 
 #[serde_with::serde_as]
@@ -13,7 +13,7 @@ pub(crate) struct HChangeDroneCmd {
     #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
-    mutation: OptionalField<HMutationOnChange>,
+    mutation: TriStateField<HMutationOnChange>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -38,7 +38,7 @@ impl HChangeDroneCmd {
             }
         }
         match &self.mutation {
-            OptionalField::Value(mutation) => match mutation {
+            TriStateField::Value(mutation) => match mutation {
                 HMutationOnChange::AddShort(mutator_id) => {
                     // Remove old mutation if we had any, ignore any errors on the way
                     let _ = core_sol.remove_drone_mutation(item_id);
@@ -88,7 +88,7 @@ impl HChangeDroneCmd {
                     }
                 }
             },
-            OptionalField::None => {
+            TriStateField::None => {
                 if let Err(error) = core_sol.remove_drone_mutation(item_id) {
                     match error {
                         rc::err::RemoveDroneMutationError::ItemNotFound(e) => {
@@ -102,7 +102,7 @@ impl HChangeDroneCmd {
                     };
                 };
             }
-            OptionalField::Absent => (),
+            TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
             if let Err(error) = core_sol.add_drone_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {

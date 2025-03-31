@@ -105,49 +105,21 @@ class Fit(AttrDict):
         resp_simple.check(status_code=status_code)
         return resp_simple
 
-    def set_fleet(
+    def change(
             self, *,
-            fleet_id: str | None,
+            fleet_id: str | None | type[Absent] = Absent,
+            sec_status: float | type[Absent] = Absent,
+            rah_incoming_dmg: tuple[float, float, float, float] | None | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> None:
-        resp = self._client.set_fit_fleet_request(
+        resp = self._client.change_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             fleet_id=fleet_id,
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-
-    def set_sec_status(
-            self, *,
-            sec_status: float | type[Absent],
-            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-    ) -> None:
-        resp = self._client.set_fit_sec_status_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
             sec_status=sec_status,
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-
-    def set_rah_incoming_dmg(
-            self, *,
-            dmg_profile: tuple[float, float, float, float] | None | type[Absent],
-            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
-            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
-            status_code: int = 200,
-    ) -> None:
-        resp = self._client.set_fit_rah_incoming_dmg_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            dmg_profile=dmg_profile,
+            rah_incoming_dmg=rah_incoming_dmg,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)

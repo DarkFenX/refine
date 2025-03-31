@@ -4,7 +4,7 @@ use crate::{
         shared::{HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HModuleState,
-    util::{HExecError, OptionalField},
+    util::{HExecError, TriStateField},
 };
 
 #[serde_with::serde_as]
@@ -12,9 +12,9 @@ use crate::{
 pub(crate) struct HChangeModuleCmd {
     state: Option<HModuleState>,
     #[serde(default)]
-    mutation: OptionalField<HMutationOnChange>,
+    mutation: TriStateField<HMutationOnChange>,
     #[serde(default)]
-    charge: OptionalField<rc::ItemTypeId>,
+    charge: TriStateField<rc::ItemTypeId>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -39,7 +39,7 @@ impl HChangeModuleCmd {
             };
         }
         match &self.mutation {
-            OptionalField::Value(mutation) => match mutation {
+            TriStateField::Value(mutation) => match mutation {
                 HMutationOnChange::AddShort(mutator_id) => {
                     // Remove old mutation if we had any, ignore any errors on the way
                     let _ = core_sol.remove_module_mutation(item_id);
@@ -89,7 +89,7 @@ impl HChangeModuleCmd {
                     }
                 }
             },
-            OptionalField::None => {
+            TriStateField::None => {
                 if let Err(error) = core_sol.remove_module_mutation(item_id) {
                     match error {
                         rc::err::RemoveModuleMutationError::ItemNotFound(e) => {
@@ -103,10 +103,10 @@ impl HChangeModuleCmd {
                     };
                 };
             }
-            OptionalField::Absent => (),
+            TriStateField::Absent => (),
         }
         match &self.charge {
-            OptionalField::Value(charge) => {
+            TriStateField::Value(charge) => {
                 if let Err(error) = core_sol.set_module_charge(item_id, *charge) {
                     return Err(match error {
                         rc::err::SetModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
@@ -114,7 +114,7 @@ impl HChangeModuleCmd {
                     });
                 }
             }
-            OptionalField::None => {
+            TriStateField::None => {
                 if let Err(error) = core_sol.remove_module_charge(item_id) {
                     return Err(match error {
                         rc::err::RemoveModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
@@ -123,7 +123,7 @@ impl HChangeModuleCmd {
                     });
                 };
             }
-            OptionalField::Absent => (),
+            TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
             if let Err(error) = core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {

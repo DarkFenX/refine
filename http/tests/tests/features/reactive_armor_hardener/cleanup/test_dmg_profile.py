@@ -39,7 +39,7 @@ def test_rah_to_rah(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.75)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.9)
     # Action
-    api_fit.set_rah_incoming_dmg(dmg_profile=(0, 0, 1, 1))
+    api_fit.change(rah_incoming_dmg=(0, 0, 1, 1))
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
@@ -94,7 +94,7 @@ def test_rah_to_rah_no_dmg(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.75)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.9)
     # Action
-    api_fit.set_rah_incoming_dmg(dmg_profile=(0, 0, 0, 0))
+    api_fit.change(rah_incoming_dmg=(0, 0, 0, 0))
     # Verification - 0 total damage is a special case, it means "do not adapt" in case of RAH.
     # Modified unadapted attributes should be returned in this case.
     api_rah.update()
@@ -186,7 +186,7 @@ def test_rah_to_default(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.75)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.9)
     # Action
-    api_fit.set_rah_incoming_dmg(dmg_profile=None)
+    api_fit.change(rah_incoming_dmg=None)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
@@ -221,7 +221,7 @@ def test_default_to_rah(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.75)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.9)
     # Action
-    api_fit.set_rah_incoming_dmg(dmg_profile=(0, 0, 1, 1))
+    api_fit.change(rah_incoming_dmg=(0, 0, 1, 1))
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)

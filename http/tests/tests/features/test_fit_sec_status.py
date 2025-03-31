@@ -32,7 +32,7 @@ def test_sec_status_switch(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(4)
     # Action
-    api_fit.set_sec_status(sec_status=-9.9)
+    api_fit.change(sec_status=-9.9)
     # Verification - have to update item 2nd time, since on 1st pass affector attribute is just
     # getting calculated and is not exposed
     assert api_fit.update().sec_status == -9.9
@@ -76,7 +76,7 @@ def test_sec_status_modification(client, consts):
     with check_no_field():
         api_item.mods  # noqa: B018
     # Action
-    api_fit.set_sec_status(sec_status=3)
+    api_fit.change(sec_status=3)
     # Verification
     assert api_fit.update().sec_status == 3
     api_item.update()

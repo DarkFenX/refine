@@ -1,6 +1,4 @@
-pub(in crate::cmd) use fit::HDeleteFitCmd;
-pub(in crate::cmd) use fit_rah_incoming_dmg::HSetFitRahIncomingDmgCmd;
-pub(in crate::cmd) use fit_sec_status::HSetFitSecStatusCmd;
+pub(in crate::cmd) use fit::{HChangeFitCmd, HDeleteFitCmd};
 pub(in crate::cmd) use fleet::{HAddFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
@@ -27,8 +25,6 @@ use crate::{
 };
 
 mod fit;
-mod fit_rah_incoming_dmg;
-mod fit_sec_status;
 mod fleet;
 mod item_autocharge;
 mod item_booster;
@@ -59,6 +55,7 @@ pub(crate) enum HChangeSolCommand {
     DeleteFleet(HDeleteFleetCmd),
     // Fit commands
     AddFit(HAddFitCmd),
+    ChangeFit(HChangeFitCmd),
     DeleteFit(HDeleteFitCmd),
     // Item commands
     ChangeAutocharge(HChangeAutochargeCmd),
@@ -93,9 +90,6 @@ pub(crate) enum HChangeSolCommand {
     ChangeSubsystem(HChangeSubsystemCmd),
     AddSwEffect(HAddSwEffectCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
-    // Misc
-    SetFitSecStatus(HSetFitSecStatusCmd),
-    SetFitRahIncomingDmgCmd(HSetFitRahIncomingDmgCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
@@ -107,6 +101,7 @@ impl HChangeSolCommand {
             Self::DeleteFleet(cmd) => cmd.execute(core_sol),
             // Fit commands
             Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFit(cmd) => cmd.execute(core_sol),
             // Item commands
             Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
@@ -141,9 +136,6 @@ impl HChangeSolCommand {
             Self::ChangeSubsystem(cmd) => cmd.execute(core_sol),
             Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
-            // Misc
-            Self::SetFitSecStatus(cmd) => cmd.execute(core_sol),
-            Self::SetFitRahIncomingDmgCmd(cmd) => cmd.execute(core_sol),
         }
     }
 }
