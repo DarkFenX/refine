@@ -1,5 +1,6 @@
 pub(in crate::cmd) use fit::{HChangeFitCmd, HDeleteFitCmd};
 pub(in crate::cmd) use fleet::{HAddFleetCmd, HDeleteFleetCmd};
+pub(in crate::cmd) use item::HRemoveItemCmd;
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HRemoveCharacterCmd, HSetCharacterCmd};
@@ -26,6 +27,7 @@ use crate::{
 
 mod fit;
 mod fleet;
+mod item;
 mod item_autocharge;
 mod item_booster;
 mod item_character;
@@ -57,6 +59,8 @@ pub(crate) enum HChangeSolCommand {
     AddFit(HAddFitCmd),
     ChangeFit(HChangeFitCmd),
     DeleteFit(HDeleteFitCmd),
+    // Item
+    RemoveItem(HRemoveItemCmd),
     // Item - autocharge
     ChangeAutocharge(HChangeAutochargeCmd),
     // Item - booster
@@ -122,6 +126,8 @@ impl HChangeSolCommand {
             Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFit(cmd) => cmd.execute(core_sol),
+            // Item
+            Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
             // Item - booster
