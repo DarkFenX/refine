@@ -1,4 +1,4 @@
-// Taken from https://github.com/serde-rs/serde/issues/1042
+// Base decoding part is inspired by https://github.com/serde-rs/serde/issues/1042
 
 use serde::{Deserialize, Deserializer};
 use serde_with::de::{DeserializeAs, DeserializeAsWrap};
@@ -41,19 +41,19 @@ where
     }
 
     #[inline]
-    fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        T::deserialize(deserializer).map(TriStateField::Value)
-    }
-
-    #[inline]
     fn visit_none<E>(self) -> Result<TriStateField<T>, E>
     where
         E: serde::de::Error,
     {
         Ok(TriStateField::None)
+    }
+
+    #[inline]
+    fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        T::deserialize(deserializer).map(TriStateField::Value)
     }
 
     #[inline]
