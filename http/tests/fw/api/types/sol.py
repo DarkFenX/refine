@@ -175,6 +175,7 @@ class SolarSystem(AttrDict):
 
     def create_fit(
             self, *,
+            sec_status: float | type[Absent] = Absent,
             rah_incoming_dmg: tuple[float, float, float, float] | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
@@ -182,6 +183,7 @@ class SolarSystem(AttrDict):
     ) -> Fit | None:
         resp = self._client.create_fit_request(
             sol_id=self.id,
+            sec_status=sec_status,
             rah_incoming_dmg=rah_incoming_dmg,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()

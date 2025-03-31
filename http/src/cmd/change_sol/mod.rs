@@ -1,5 +1,7 @@
 pub(in crate::cmd) use default_incoming_dmg::HSetDefaultIncomingDmg;
 pub(in crate::cmd) use fit::HDeleteFitCmd;
+pub(in crate::cmd) use fit_rah_incoming_dmg::HSetFitRahIncomingDmgCmd;
+pub(in crate::cmd) use fit_sec_status::HSetFitSecStatusCmd;
 pub(in crate::cmd) use fleet::{HAddFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
@@ -18,8 +20,6 @@ pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
-pub(in crate::cmd) use rah_incoming_dmg::HSetRahIncomingDmgCmd;
-pub(in crate::cmd) use sec_status::HSetSecStatusCmd;
 pub(in crate::cmd) use sec_zone::HSetSecZone;
 
 use crate::{
@@ -29,6 +29,8 @@ use crate::{
 
 mod default_incoming_dmg;
 mod fit;
+mod fit_rah_incoming_dmg;
+mod fit_sec_status;
 mod fleet;
 mod item_autocharge;
 mod item_booster;
@@ -47,8 +49,6 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
-mod rah_incoming_dmg;
-mod sec_status;
 mod sec_zone;
 
 #[derive(serde::Deserialize)]
@@ -95,9 +95,9 @@ pub(crate) enum HChangeSolCommand {
     ChangeSwEffect(HChangeSwEffectCmd),
     // Misc
     SetSecZone(HSetSecZone),
-    SetSecStatus(HSetSecStatusCmd),
     SetDefaultIncomingDmg(HSetDefaultIncomingDmg),
-    SetRahIncomingDmgCmd(HSetRahIncomingDmgCmd),
+    SetFitSecStatus(HSetFitSecStatusCmd),
+    SetFitRahIncomingDmgCmd(HSetFitRahIncomingDmgCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
@@ -143,9 +143,9 @@ impl HChangeSolCommand {
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
             // Misc
             Self::SetSecZone(cmd) => cmd.execute(core_sol),
-            Self::SetSecStatus(cmd) => cmd.execute(core_sol),
             Self::SetDefaultIncomingDmg(cmd) => cmd.execute(core_sol),
-            Self::SetRahIncomingDmgCmd(cmd) => cmd.execute(core_sol),
+            Self::SetFitSecStatus(cmd) => cmd.execute(core_sol),
+            Self::SetFitRahIncomingDmgCmd(cmd) => cmd.execute(core_sol),
         }
     }
 }

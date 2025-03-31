@@ -53,6 +53,7 @@ class ApiClientFit(ApiClientBase):
     def create_fit_request(
             self, *,
             sol_id: str,
+            sec_status: float | type[Absent],
             rah_incoming_dmg: tuple[float, float, float, float] | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -61,6 +62,7 @@ class ApiClientFit(ApiClientBase):
         conditional_insert(container=params, path=['fit'], value=fit_info_mode)
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         body = {}
+        conditional_insert(container=body, path=['sec_status'], value=sec_status)
         conditional_insert(container=body, path=['rah_incoming_dmg'], value=rah_incoming_dmg)
         kwargs = {
             'method': 'POST',
@@ -81,6 +83,26 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = {'type': 'set_fleet', 'fleet_id': fleet_id}
+        params = {}
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
+            params=params,
+            json={'commands': [command]})
+
+    def set_fit_sec_status_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            sec_status: float | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        command = {'type': 'set_sec_status'}
+        conditional_insert(container=command, path=['sec_status'], value=sec_status)
         params = {}
         conditional_insert(container=params, path=['fit'], value=fit_info_mode)
         conditional_insert(container=params, path=['item'], value=item_info_mode)

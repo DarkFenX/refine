@@ -5,13 +5,13 @@ use crate::{
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
-pub(crate) struct HSetSecStatusCmd {
+pub(crate) struct HSetFitRahIncomingDmgCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
-    fit_cmd: change_fit::HSetSecStatusCmd,
+    fit_cmd: change_fit::HSetRahIncomingDmgCmd,
 }
-impl HSetSecStatusCmd {
+impl HSetFitRahIncomingDmgCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }

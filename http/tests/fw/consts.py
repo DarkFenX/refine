@@ -306,6 +306,7 @@ class EveAttr(IntEnum):
     warfare_buff_4_id = 2536
     warfare_buff_4_value = 2537
     online_max_security_class = 2581
+    pilot_security_status= 2610
     ftr_standup_light_slots = 2737
     ftr_standup_support_slots = 2738
     ftr_standup_heavy_slots = 2739
