@@ -4,7 +4,7 @@ use crate::{
         shared::{HEffectModeMap, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HMinionState,
-    util::HExecError,
+    util::{HExecError, OptionalField},
 };
 
 #[serde_with::serde_as]
@@ -12,8 +12,8 @@ use crate::{
 pub(crate) struct HChangeFighterCmd {
     #[serde(default)]
     state: Option<HMinionState>,
-    #[serde(default, with = "::serde_with::rust::double_option")]
-    count: Option<Option<rc::Count>>,
+    #[serde(default)]
+    count: OptionalField<rc::Count>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -37,36 +37,29 @@ impl HChangeFighterCmd {
                 });
             }
         }
-        if let Some(count) = self.count {
-            match count {
-                Some(count) => {
-                    if let Err(error) = core_sol.set_fighter_count_override(item_id, count) {
-                        return Err(match error {
-                            rc::err::SetFighterCountOverrideError::ItemNotFound(e) => {
-                                HExecError::ItemNotFoundPrimary(e)
-                            }
-                            rc::err::SetFighterCountOverrideError::ItemIsNotFighter(e) => {
-                                HExecError::ItemKindMismatch(e)
-                            }
-                            rc::err::SetFighterCountOverrideError::FighterCountError(e) => {
-                                HExecError::InvalidFighterCount(e)
-                            }
-                        });
-                    }
-                }
-                None => {
-                    if let Err(error) = core_sol.remove_fighter_count_override(item_id) {
-                        return Err(match error {
-                            rc::err::RemoveFighterCountOverrideError::ItemNotFound(e) => {
-                                HExecError::ItemNotFoundPrimary(e)
-                            }
-                            rc::err::RemoveFighterCountOverrideError::ItemIsNotFighter(e) => {
-                                HExecError::ItemKindMismatch(e)
-                            }
-                        });
-                    }
+        match self.count {
+            OptionalField::Value(count) => {
+                if let Err(error) = core_sol.set_fighter_count_override(item_id, count) {
+                    return Err(match error {
+                        rc::err::SetFighterCountOverrideError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                        rc::err::SetFighterCountOverrideError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
+                        rc::err::SetFighterCountOverrideError::FighterCountError(e) => {
+                            HExecError::InvalidFighterCount(e)
+                        }
+                    });
                 }
             }
+            OptionalField::None => {
+                if let Err(error) = core_sol.remove_fighter_count_override(item_id) {
+                    return Err(match error {
+                        rc::err::RemoveFighterCountOverrideError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                        rc::err::RemoveFighterCountOverrideError::ItemIsNotFighter(e) => {
+                            HExecError::ItemKindMismatch(e)
+                        }
+                    });
+                }
+            }
+            OptionalField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
             if let Err(error) = core_sol.add_fighter_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {

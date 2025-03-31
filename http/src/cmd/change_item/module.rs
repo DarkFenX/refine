@@ -4,17 +4,17 @@ use crate::{
         shared::{HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HModuleState,
-    util::HExecError,
+    util::{HExecError, OptionalField},
 };
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
     state: Option<HModuleState>,
-    #[serde(default, with = "::serde_with::rust::double_option")]
-    mutation: Option<Option<HMutationOnChange>>,
-    #[serde(default, with = "::serde_with::rust::double_option")]
-    charge: Option<Option<rc::ItemTypeId>>,
+    #[serde(default)]
+    mutation: OptionalField<HMutationOnChange>,
+    #[serde(default)]
+    charge: OptionalField<rc::ItemTypeId>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -38,100 +38,92 @@ impl HChangeModuleCmd {
                 });
             };
         }
-        if let Some(mutation_opt) = &self.mutation {
-            match mutation_opt {
-                // Mutation add/change was requested
-                Some(mutation) => match mutation {
-                    HMutationOnChange::AddShort(mutator_id) => {
-                        // Remove old mutation if we had any, ignore any errors on the way
-                        let _ = core_sol.remove_module_mutation(item_id);
-                        let mutation = rc::ItemAddMutation::new(*mutator_id);
-                        if let Err(error) = core_sol.add_module_mutation(item_id, mutation) {
-                            match error {
-                                rc::err::AddModuleMutationError::ItemNotFound(e) => {
-                                    return Err(HExecError::ItemNotFoundPrimary(e));
-                                }
-                                rc::err::AddModuleMutationError::ItemIsNotModule(e) => {
-                                    return Err(HExecError::ItemKindMismatch(e));
-                                }
-                                rc::err::AddModuleMutationError::MutationAlreadySet(_) => {
-                                    panic!("no mutation should be set")
-                                }
-                            };
-                        }
-                    }
-                    HMutationOnChange::AddFull(mutation) => {
-                        // Remove old mutation if we had any, ignore any errors on the way
-                        let _ = core_sol.remove_module_mutation(item_id);
-                        if let Err(error) = core_sol.add_module_mutation(item_id, mutation.into()) {
-                            match error {
-                                rc::err::AddModuleMutationError::ItemNotFound(e) => {
-                                    return Err(HExecError::ItemNotFoundPrimary(e));
-                                }
-                                rc::err::AddModuleMutationError::ItemIsNotModule(e) => {
-                                    return Err(HExecError::ItemKindMismatch(e));
-                                }
-                                rc::err::AddModuleMutationError::MutationAlreadySet(_) => {
-                                    panic!("no mutation should be set")
-                                }
-                            };
-                        }
-                    }
-                    HMutationOnChange::ChangeAttrs(attr_mutations) => {
-                        let attr_mutations = attr_mutations
-                            .iter()
-                            .map(|(k, v)| rc::ItemChangeAttrMutation::new(*k, v.as_ref().map(|v| v.into())))
-                            .collect();
-                        if let Err(error) = core_sol.change_module_mutation(item_id, attr_mutations) {
-                            return Err(match error {
-                                rc::err::ChangeModuleMutationError::ItemNotFound(e) => {
-                                    HExecError::ItemNotFoundPrimary(e)
-                                }
-                                rc::err::ChangeModuleMutationError::ItemIsNotModule(e) => {
-                                    HExecError::ItemKindMismatch(e)
-                                }
-                                rc::err::ChangeModuleMutationError::MutationNotSet(e) => HExecError::MutationNotSet(e),
-                            });
-                        }
-                    }
-                },
-                // Mutation change was requested with None value
-                None => {
-                    if let Err(error) = core_sol.remove_module_mutation(item_id) {
+        match &self.mutation {
+            OptionalField::Value(mutation) => match mutation {
+                HMutationOnChange::AddShort(mutator_id) => {
+                    // Remove old mutation if we had any, ignore any errors on the way
+                    let _ = core_sol.remove_module_mutation(item_id);
+                    let mutation = rc::ItemAddMutation::new(*mutator_id);
+                    if let Err(error) = core_sol.add_module_mutation(item_id, mutation) {
                         match error {
-                            rc::err::RemoveModuleMutationError::ItemNotFound(e) => {
+                            rc::err::AddModuleMutationError::ItemNotFound(e) => {
                                 return Err(HExecError::ItemNotFoundPrimary(e));
                             }
-                            rc::err::RemoveModuleMutationError::ItemIsNotModule(e) => {
+                            rc::err::AddModuleMutationError::ItemIsNotModule(e) => {
                                 return Err(HExecError::ItemKindMismatch(e));
                             }
-                            // Do nothing if mutation was not there
-                            rc::err::RemoveModuleMutationError::MutationNotSet(_) => (),
+                            rc::err::AddModuleMutationError::MutationAlreadySet(_) => {
+                                panic!("no mutation should be set")
+                            }
                         };
-                    };
+                    }
                 }
-            }
-        }
-        if let Some(charge_opt) = &self.charge {
-            match charge_opt {
-                Some(charge) => {
-                    if let Err(error) = core_sol.set_module_charge(item_id, *charge) {
+                HMutationOnChange::AddFull(mutation) => {
+                    // Remove old mutation if we had any, ignore any errors on the way
+                    let _ = core_sol.remove_module_mutation(item_id);
+                    if let Err(error) = core_sol.add_module_mutation(item_id, mutation.into()) {
+                        match error {
+                            rc::err::AddModuleMutationError::ItemNotFound(e) => {
+                                return Err(HExecError::ItemNotFoundPrimary(e));
+                            }
+                            rc::err::AddModuleMutationError::ItemIsNotModule(e) => {
+                                return Err(HExecError::ItemKindMismatch(e));
+                            }
+                            rc::err::AddModuleMutationError::MutationAlreadySet(_) => {
+                                panic!("no mutation should be set")
+                            }
+                        };
+                    }
+                }
+                HMutationOnChange::ChangeAttrs(attr_mutations) => {
+                    let attr_mutations = attr_mutations
+                        .iter()
+                        .map(|(k, v)| rc::ItemChangeAttrMutation::new(*k, v.as_ref().map(|v| v.into())))
+                        .collect();
+                    if let Err(error) = core_sol.change_module_mutation(item_id, attr_mutations) {
                         return Err(match error {
-                            rc::err::SetModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                            rc::err::SetModuleChargeError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                            rc::err::ChangeModuleMutationError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                            rc::err::ChangeModuleMutationError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                            rc::err::ChangeModuleMutationError::MutationNotSet(e) => HExecError::MutationNotSet(e),
                         });
                     }
                 }
-                None => {
-                    if let Err(error) = core_sol.remove_module_charge(item_id) {
-                        return Err(match error {
-                            rc::err::RemoveModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                            rc::err::RemoveModuleChargeError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
-                            rc::err::RemoveModuleChargeError::ChargeNotSet(e) => HExecError::ChargeNotSet(e),
-                        });
+            },
+            OptionalField::None => {
+                if let Err(error) = core_sol.remove_module_mutation(item_id) {
+                    match error {
+                        rc::err::RemoveModuleMutationError::ItemNotFound(e) => {
+                            return Err(HExecError::ItemNotFoundPrimary(e));
+                        }
+                        rc::err::RemoveModuleMutationError::ItemIsNotModule(e) => {
+                            return Err(HExecError::ItemKindMismatch(e));
+                        }
+                        // Do nothing if mutation was not there
+                        rc::err::RemoveModuleMutationError::MutationNotSet(_) => (),
                     };
+                };
+            }
+            OptionalField::Absent => (),
+        }
+        match &self.charge {
+            OptionalField::Value(charge) => {
+                if let Err(error) = core_sol.set_module_charge(item_id, *charge) {
+                    return Err(match error {
+                        rc::err::SetModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                        rc::err::SetModuleChargeError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    });
                 }
             }
+            OptionalField::None => {
+                if let Err(error) = core_sol.remove_module_charge(item_id) {
+                    return Err(match error {
+                        rc::err::RemoveModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                        rc::err::RemoveModuleChargeError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                        rc::err::RemoveModuleChargeError::ChargeNotSet(e) => HExecError::ChargeNotSet(e),
+                    });
+                };
+            }
+            OptionalField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
             if let Err(error) = core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {
