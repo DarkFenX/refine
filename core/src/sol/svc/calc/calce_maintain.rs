@@ -5,8 +5,7 @@ use crate::{
     sol::{
         AttrVal, FitId, ItemId,
         svc::calc::{
-            AttrSpec, Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SKILL_LVL_ATTR,
-            misc::SEC_STATUS_ATTR,
+            AttrSpec, Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR,
         },
         uad::{Uad, fleet::Fleet, item::Item},
     },

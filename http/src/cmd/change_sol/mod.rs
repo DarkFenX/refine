@@ -18,6 +18,8 @@ pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
+pub(in crate::cmd) use rah_incoming_dmg::HSetRahIncomingDmgCmd;
+pub(in crate::cmd) use sec_status::HSetSecStatusCmd;
 pub(in crate::cmd) use sec_zone::HSetSecZone;
 
 use crate::{
@@ -45,6 +47,8 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
+mod rah_incoming_dmg;
+mod sec_status;
 mod sec_zone;
 
 #[derive(serde::Deserialize)]
@@ -91,7 +95,9 @@ pub(crate) enum HChangeSolCommand {
     ChangeSwEffect(HChangeSwEffectCmd),
     // Misc
     SetSecZone(HSetSecZone),
+    SetSecStatus(HSetSecStatusCmd),
     SetDefaultIncomingDmg(HSetDefaultIncomingDmg),
+    SetRahIncomingDmgCmd(HSetRahIncomingDmgCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
@@ -137,7 +143,9 @@ impl HChangeSolCommand {
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
             // Misc
             Self::SetSecZone(cmd) => cmd.execute(core_sol),
+            Self::SetSecStatus(cmd) => cmd.execute(core_sol),
             Self::SetDefaultIncomingDmg(cmd) => cmd.execute(core_sol),
+            Self::SetRahIncomingDmgCmd(cmd) => cmd.execute(core_sol),
         }
     }
 }

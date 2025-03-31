@@ -25,6 +25,7 @@ pub(crate) enum HExecError {
     ProjectionNotFound(rc::err::basic::ProjFoundError),
     ProjectionAlreadyExists(rc::err::basic::ProjNotFoundError),
     // Misc
+    InvalidSecStatus(rc::err::basic::SecStatusError),
     InvalidDmgProfileEm(rc::err::basic::EmDmgNonNegError),
     InvalidDmgProfileTherm(rc::err::basic::ThermDmgNonNegError),
     InvalidDmgProfileKin(rc::err::basic::KinDmgNonNegError),
@@ -60,6 +61,7 @@ impl std::fmt::Display for HExecError {
             HExecError::ProjectionNotFound(e) => write!(f, "{e}"),
             HExecError::ProjectionAlreadyExists(e) => write!(f, "{e}"),
             // Misc
+            HExecError::InvalidSecStatus(e) => write!(f, "{e}"),
             HExecError::InvalidDmgProfileEm(e) => write!(f, "{e}"),
             HExecError::InvalidDmgProfileTherm(e) => write!(f, "{e}"),
             HExecError::InvalidDmgProfileKin(e) => write!(f, "{e}"),
@@ -96,6 +98,7 @@ impl HExecError {
             HExecError::ProjectionNotFound(_) => "EXC-022",
             HExecError::ProjectionAlreadyExists(_) => "EXC-023",
             // Misc
+            HExecError::InvalidSecStatus(_) => "EXC-024-1",
             HExecError::InvalidDmgProfileEm(_) => "EXC-024",
             HExecError::InvalidDmgProfileTherm(_) => "EXC-025",
             HExecError::InvalidDmgProfileKin(_) => "EXC-026",

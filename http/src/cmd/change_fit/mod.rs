@@ -19,6 +19,7 @@ pub(in crate::cmd) use item_stance::{
 };
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use rah_incoming_dmg::HSetRahIncomingDmgCmd;
+pub(in crate::cmd) use sec_status::HSetSecStatusCmd;
 
 use crate::{cmd::HCmdResp, util::HExecError};
 
@@ -39,11 +40,13 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod rah_incoming_dmg;
+mod sec_status;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeFitCommand {
     SetFleet(HSetFleetCmd),
+    SetSecStatus(HSetSecStatusCmd),
     SetRahIncomingDmg(HSetRahIncomingDmgCmd),
     // Item commands
     ChangeAutocharge(HChangeAutochargeCmd),
@@ -79,6 +82,7 @@ impl HChangeFitCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
             Self::SetFleet(cmd) => cmd.execute(core_sol, fit_id),
+            Self::SetSecStatus(cmd) => cmd.execute(core_sol, fit_id),
             Self::SetRahIncomingDmg(cmd) => cmd.execute(core_sol, fit_id),
             // Item commands
             Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
