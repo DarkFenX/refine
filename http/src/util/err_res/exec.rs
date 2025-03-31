@@ -8,6 +8,7 @@ pub(crate) enum HExecError {
     FitStanceNotFound(rc::FitId),
     FitIsNotInFleet(rc::err::basic::FitFleetAssignedError),
     FitIsNotInThisFleet(rc::FleetId, rc::FitId),
+    FitItemKindNotFound(rc::err::basic::FitHasItemKindError),
     // Fleets
     FleetNotFoundPrimary(rc::err::basic::FleetFoundError),
     FleetNotFoundSecondary(rc::err::basic::FleetFoundError),
@@ -44,6 +45,7 @@ impl std::fmt::Display for HExecError {
             HExecError::FitStanceNotFound(fit_id) => write!(f, "fit {fit_id} has no stance set"),
             HExecError::FitIsNotInFleet(e) => write!(f, "{e}"),
             HExecError::FitIsNotInThisFleet(fleet_id, fit_id) => write!(f, "fit {fit_id} is not in fleet {fleet_id}"),
+            HExecError::FitItemKindNotFound(e) => write!(f, "{e}"),
             // Fleets
             HExecError::FleetNotFoundPrimary(e) => write!(f, "{e}"),
             HExecError::FleetNotFoundSecondary(e) => write!(f, "{e}"),
@@ -81,6 +83,7 @@ impl HExecError {
             HExecError::FitStanceNotFound(_) => "EXC-006",
             HExecError::FitIsNotInFleet(_) => "EXC-007",
             HExecError::FitIsNotInThisFleet(_, _) => "EXC-008",
+            HExecError::FitItemKindNotFound(_) => "EXC-009",
             // Fleets
             HExecError::FleetNotFoundPrimary(_) => "EXC-010",
             HExecError::FleetNotFoundSecondary(_) => "EXC-011",

@@ -84,3 +84,17 @@ impl HChangeStanceViaFitIdCmd {
         self.item_cmd.execute(core_sol, &item_id)
     }
 }
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HRemoveStanceCmd {}
+impl HRemoveStanceCmd {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
+        if let Err(error) = core_sol.remove_fit_stance(fit_id) {
+            return Err(match error {
+                rc::err::RemoveFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                rc::err::RemoveFitStanceError::FitHasNoStance(e) => HExecError::FitItemKindNotFound(e),
+            });
+        };
+        Ok(())
+    }
+}

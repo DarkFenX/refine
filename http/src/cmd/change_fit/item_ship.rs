@@ -84,3 +84,17 @@ impl HChangeShipViaFitIdCmd {
         self.item_cmd.execute(core_sol, &item_id)
     }
 }
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HRemoveShipCmd {}
+impl HRemoveShipCmd {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
+        if let Err(error) = core_sol.remove_fit_ship(fit_id) {
+            return Err(match error {
+                rc::err::RemoveFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                rc::err::RemoveFitShipError::FitHasNoShip(e) => HExecError::FitItemKindNotFound(e),
+            });
+        };
+        Ok(())
+    }
+}
