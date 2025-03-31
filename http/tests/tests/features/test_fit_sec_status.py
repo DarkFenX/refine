@@ -24,6 +24,7 @@ def test_sec_status_switch(client, consts):
     assert api_item.attrs[eve_affector_attr_id].base == approx(0)
     assert api_item.attrs[eve_affector_attr_id].dogma == approx(4)
     assert api_item.attrs[eve_affector_attr_id].extra == approx(4)
+    # Proper info about what security status modifies
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
@@ -31,6 +32,8 @@ def test_sec_status_switch(client, consts):
     assert api_mod.initial_val == approx(4)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(4)
+    # No info about what modifies security status attr
+    assert eve_affector_attr_id not in api_item.mods
     # Action
     api_fit.change(sec_status=-9.9)
     # Verification - have to update item 2nd time, since on 1st pass affector attribute is just
@@ -42,6 +45,7 @@ def test_sec_status_switch(client, consts):
     assert api_item.attrs[eve_affector_attr_id].base == approx(0)
     assert api_item.attrs[eve_affector_attr_id].dogma == approx(-9.9)
     assert api_item.attrs[eve_affector_attr_id].extra == approx(-9.9)
+    # Proper info about what security status modifies
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
@@ -49,6 +53,8 @@ def test_sec_status_switch(client, consts):
     assert api_mod.initial_val == approx(-9.9)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(-9.9)
+    # No info about what modifies security status attr
+    assert eve_affector_attr_id not in api_item.mods
 
 
 def test_sec_status_modification(client, consts):
