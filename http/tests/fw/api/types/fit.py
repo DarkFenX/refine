@@ -113,7 +113,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-    ) -> None:
+    ) -> Fit | None:
         resp = self._client.change_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
@@ -124,6 +124,10 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()['fit']
+            return self
+        return None
 
     # Item methods
     def remove_item(
@@ -174,6 +178,24 @@ class Fit(AttrDict):
         resp.check(status_code=status_code)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def remove_character(
+            self, *,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Fit | None:
+        resp = self._client.remove_fit_character_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()['fit']
+            return self
         return None
 
     def add_drone(
@@ -341,6 +363,24 @@ class Fit(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
+    def remove_ship(
+            self, *,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Fit | None:
+        resp = self._client.remove_fit_ship_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()['fit']
+            return self
+        return None
+
     def add_skill(
             self, *,
             type_id: int,
@@ -380,6 +420,24 @@ class Fit(AttrDict):
         resp.check(status_code=status_code)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
+    def remove_stance(
+            self, *,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Fit | None:
+        resp = self._client.remove_fit_stance_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()['fit']
+            return self
         return None
 
     def add_subsystem(

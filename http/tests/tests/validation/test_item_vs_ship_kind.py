@@ -33,7 +33,7 @@ def test_ship_kind_switching(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
@@ -45,7 +45,7 @@ def test_ship_kind_switching(client, consts):
         api_struct_rig.id: consts.ApiValShipType.structure,
         api_struct_service.id: consts.ApiValShipType.structure}
     # Action
-    api_ship.remove()
+    api_fit.remove_ship()
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True

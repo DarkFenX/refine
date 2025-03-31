@@ -84,13 +84,13 @@ def test_ship_add_set_remove(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_ship = api_fit.set_ship(type_id=eve_ship3_id)
+    api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group3_id})
     # Action
-    api_ship.remove()
+    api_fit.remove_ship()
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True

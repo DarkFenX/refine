@@ -107,3 +107,64 @@ class ApiClientFit(ApiClientBase):
             client=self,
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}')
+
+    def remove_fit_character_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__simple_remove_fit_item_request(
+            cmd_name='remove_character',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
+
+    def remove_fit_ship_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__simple_remove_fit_item_request(
+            cmd_name='remove_ship',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
+
+    def remove_fit_stance_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__simple_remove_fit_item_request(
+            cmd_name='remove_stance',
+            sol_id=sol_id,
+            fit_id=fit_id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
+
+    def __simple_remove_fit_item_request(
+            self, *,
+            cmd_name: str,
+            sol_id: str,
+            fit_id: str,
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        command = {'type': cmd_name}
+        params = {}
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
+            params=params,
+            json={'commands': [command]})
