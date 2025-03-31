@@ -220,7 +220,7 @@ def test_main_module(client, consts):
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.hisec_c5)
+    api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification - same as hisec, but all the items which could be in corrupted hisec are not
     # failing
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
@@ -256,7 +256,7 @@ def test_main_module(client, consts):
         api_module24.id: sorted([consts.ApiSecZone.lowsec, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
         api_module28.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec)
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
@@ -313,7 +313,7 @@ def test_main_module(client, consts):
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec_c5)
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
@@ -336,21 +336,21 @@ def test_main_module(client, consts):
         api_module20.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
         api_module27.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.nullsec)
+    api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.wspace)
+    api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.hazard)
+    api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
@@ -439,7 +439,7 @@ def test_charge(client, consts):
     assert api_val.details.sec_zone_active.items == {
         api_module.charge.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.nullsec)
+    api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
@@ -484,7 +484,7 @@ def test_known_failures(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.hisec_c5)
+    api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id])))
     assert api_val.passed is False
@@ -506,7 +506,7 @@ def test_known_failures(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec)
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id])))
     assert api_val.passed is False
@@ -528,7 +528,7 @@ def test_known_failures(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec_c5)
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id])))
     assert api_val.passed is False
@@ -550,7 +550,7 @@ def test_known_failures(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.hazard)
+    api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module3.id])))
     assert api_val.passed is False

@@ -1,4 +1,3 @@
-pub(in crate::cmd) use default_incoming_dmg::HSetDefaultIncomingDmg;
 pub(in crate::cmd) use fit::HDeleteFitCmd;
 pub(in crate::cmd) use fit_rah_incoming_dmg::HSetFitRahIncomingDmgCmd;
 pub(in crate::cmd) use fit_sec_status::HSetFitSecStatusCmd;
@@ -20,14 +19,13 @@ pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
-pub(in crate::cmd) use sec_zone::HSetSecZone;
+pub(in crate::cmd) use sol::HChangeSolCmd;
 
 use crate::{
     cmd::{HAddFitCmd, HCmdResp},
     util::HExecError,
 };
 
-mod default_incoming_dmg;
 mod fit;
 mod fit_rah_incoming_dmg;
 mod fit_sec_status;
@@ -49,11 +47,13 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
-mod sec_zone;
+mod sol;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeSolCommand {
+    // Sol commands
+    ChangeSol(HChangeSolCmd),
     // Fleet commands
     AddFleet(HAddFleetCmd),
     DeleteFleet(HDeleteFleetCmd),
@@ -94,14 +94,14 @@ pub(crate) enum HChangeSolCommand {
     AddSwEffect(HAddSwEffectCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
     // Misc
-    SetSecZone(HSetSecZone),
-    SetDefaultIncomingDmg(HSetDefaultIncomingDmg),
     SetFitSecStatus(HSetFitSecStatusCmd),
     SetFitRahIncomingDmgCmd(HSetFitRahIncomingDmgCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
+            // Sol commands
+            Self::ChangeSol(cmd) => cmd.execute(core_sol),
             // Fleet commands
             Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)),
             Self::DeleteFleet(cmd) => cmd.execute(core_sol),
@@ -142,8 +142,6 @@ impl HChangeSolCommand {
             Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
             // Misc
-            Self::SetSecZone(cmd) => cmd.execute(core_sol),
-            Self::SetDefaultIncomingDmg(cmd) => cmd.execute(core_sol),
             Self::SetFitSecStatus(cmd) => cmd.execute(core_sol),
             Self::SetFitRahIncomingDmgCmd(cmd) => cmd.execute(core_sol),
         }

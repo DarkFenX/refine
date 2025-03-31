@@ -171,40 +171,19 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         for sol in self.__created_sols.copy():
             sol.remove()
 
-    def set_sol_sec_zone_request(
+    def change_sol_request(
             self, *,
             sol_id: str,
             sec_zone: ApiSecZone | type[Absent],
+            default_incoming_dmg: tuple[float, float, float, float] | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        command = {'type': 'set_sec_zone'}
+        command = {'type': 'change_sol'}
         conditional_insert(container=command, path=['sec_zone'], value=sec_zone)
-        params = {}
-        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
-        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
-        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}',
-            params=params,
-            json={'commands': [command]})
-
-    def set_sol_default_incoming_dmg_request(
-            self, *,
-            sol_id: str,
-            dmg_profile: tuple[float, float, float, float] | type[Absent],
-            sol_info_mode: ApiSolInfoMode | type[Absent],
-            fleet_info_mode: ApiFleetInfoMode | type[Absent],
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = {'type': 'set_default_incoming_dmg'}
-        conditional_insert(container=command, path=['dmg_profile'], value=dmg_profile)
+        conditional_insert(container=command, path=['default_incoming_dmg'], value=default_incoming_dmg)
         params = {}
         conditional_insert(container=params, path=['sol'], value=sol_info_mode)
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)

@@ -34,7 +34,7 @@ def test_main(client, consts):
             consts.ApiSecZone.hazard]),
         api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.hisec_c5)
+    api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
@@ -53,7 +53,7 @@ def test_main(client, consts):
             consts.ApiSecZone.hazard]),
         api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec)
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
@@ -62,7 +62,7 @@ def test_main(client, consts):
         api_nullsec_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
         api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec_c5)
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
@@ -71,21 +71,21 @@ def test_main(client, consts):
         api_nullsec_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
         api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.nullsec)
+    api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.wspace)
+    api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.hazard)
+    api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
@@ -158,7 +158,7 @@ def test_rounding(client, consts):
             consts.ApiSecZone.hazard]),
         api_lower_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
-    api_sol.set_sec_zone(sec_zone=consts.ApiSecZone.lowsec)
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False

@@ -1,4 +1,4 @@
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
 pub(crate) enum HSecZone {
     #[serde(rename = "hisec")]
     HiSec,

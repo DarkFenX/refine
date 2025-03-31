@@ -151,7 +151,7 @@ def test_default_to_default(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.75)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.9)
     # Action
-    api_sol.set_default_incoming_dmg(dmg_profile=(0, 0, 1, 1))
+    api_sol.change(default_incoming_dmg=(0, 0, 1, 1))
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
