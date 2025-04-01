@@ -54,7 +54,7 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             sec_status: float | type[Absent],
-            rah_incoming_dmg: tuple[float, float, float, float] | type[Absent],
+            rah_incoming_dps: tuple[float, float, float, float] | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -63,7 +63,7 @@ class ApiClientFit(ApiClientBase):
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         body = {}
         conditional_insert(container=body, path=['sec_status'], value=sec_status)
-        conditional_insert(container=body, path=['rah_incoming_dmg'], value=rah_incoming_dmg)
+        conditional_insert(container=body, path=['rah_incoming_dps'], value=rah_incoming_dps)
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/fit',
@@ -80,14 +80,14 @@ class ApiClientFit(ApiClientBase):
             fit_id: str,
             fleet_id: str | None | type[Absent],
             sec_status: float | type[Absent],
-            rah_incoming_dmg: tuple[float, float, float, float] | None | type[Absent],
+            rah_incoming_dps: tuple[float, float, float, float] | None | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = {'type': 'change_fit'}
         conditional_insert(container=command, path=['fleet_id'], value=fleet_id)
         conditional_insert(container=command, path=['sec_status'], value=sec_status)
-        conditional_insert(container=command, path=['rah_incoming_dmg'], value=rah_incoming_dmg)
+        conditional_insert(container=command, path=['rah_incoming_dps'], value=rah_incoming_dps)
         params = {}
         conditional_insert(container=params, path=['fit'], value=fit_info_mode)
         conditional_insert(container=params, path=['item'], value=item_info_mode)

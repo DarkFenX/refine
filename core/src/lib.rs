@@ -21,7 +21,7 @@
 
 pub use defs::VERSION;
 pub use sol::{
-    AddMode, AttrId, AttrVal, Count, CustomEffectId, DmgProfile, DogmaEffectId, EffectId, EffectInfo, EffectMode,
+    AddMode, AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, DpsProfile, EffectId, EffectInfo, EffectMode,
     FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId, ModRack, MutaRoll, OpInfo, RmMode, SecStatus, SecZone,
     SecZoneCorruption, SkillLevel, SlotIndex, SolarSystem,
     info::{

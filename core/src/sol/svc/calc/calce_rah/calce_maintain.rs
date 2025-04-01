@@ -157,7 +157,7 @@ impl Calc {
     pub(in crate::sol::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
         self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_A_EFFECT_ID).and_then(|v| v.duration_attr_id);
     }
-    pub(in crate::sol::svc::calc) fn rah_fit_rah_dmg_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
+    pub(in crate::sol::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
         self.clear_fit_rah_results(uad, fit_id);
     }
     // Private methods

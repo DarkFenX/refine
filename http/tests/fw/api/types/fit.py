@@ -29,7 +29,7 @@ class Fit(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
         super().__init__(data=data, hooks={
-            'rah_incoming_dmg': AttrHookDef(
+            'rah_incoming_dps': AttrHookDef(
                 func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3]))})
         self._client = client
         self._sol_id = sol_id
@@ -109,7 +109,7 @@ class Fit(AttrDict):
             self, *,
             fleet_id: str | None | type[Absent] = Absent,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dmg: tuple[float, float, float, float] | None | type[Absent] = Absent,
+            rah_incoming_dps: tuple[float, float, float, float] | None | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -119,7 +119,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             fleet_id=fleet_id,
             sec_status=sec_status,
-            rah_incoming_dmg=rah_incoming_dmg,
+            rah_incoming_dps=rah_incoming_dps,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)

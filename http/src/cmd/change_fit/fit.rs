@@ -1,6 +1,6 @@
 use crate::{
     cmd::HCmdResp,
-    shared::HDmgProfile,
+    shared::HDpsProfile,
     util::{HExecError, TriStateField},
 };
 
@@ -12,7 +12,7 @@ pub(crate) struct HChangeFitCmd {
     fleet_id: TriStateField<rc::FleetId>,
     sec_status: Option<rc::SecStatus>,
     #[serde(default)]
-    rah_incoming_dmg: TriStateField<HDmgProfile>,
+    rah_incoming_dps: TriStateField<HDpsProfile>,
 }
 impl HChangeFitCmd {
     pub(in crate::cmd) fn execute(
@@ -47,28 +47,28 @@ impl HChangeFitCmd {
                 });
             }
         }
-        match &self.rah_incoming_dmg {
-            TriStateField::Value(rah_incoming_dmg) => {
-                if let Err(error) = core_sol.set_fit_rah_incoming_dmg(fit_id, rah_incoming_dmg.into()) {
+        match &self.rah_incoming_dps {
+            TriStateField::Value(rah_incoming_dps) => {
+                if let Err(error) = core_sol.set_fit_rah_incoming_dps(fit_id, rah_incoming_dps.into()) {
                     return Err(match error {
-                        rc::err::SetFitRahIncomingDmgError::EmDmgNegative(e) => HExecError::InvalidDmgProfileEm(e),
-                        rc::err::SetFitRahIncomingDmgError::ThermDmgNegative(e) => {
-                            HExecError::InvalidDmgProfileTherm(e)
+                        rc::err::SetFitRahIncomingDpsError::EmDpsNegative(e) => HExecError::InvalidDpsProfileEm(e),
+                        rc::err::SetFitRahIncomingDpsError::ThermDpsNegative(e) => {
+                            HExecError::InvalidDpsProfileTherm(e)
                         }
-                        rc::err::SetFitRahIncomingDmgError::KinDmgNegative(e) => HExecError::InvalidDmgProfileKin(e),
-                        rc::err::SetFitRahIncomingDmgError::ExplDmgNegative(e) => HExecError::InvalidDmgProfileExpl(e),
-                        rc::err::SetFitRahIncomingDmgError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                        rc::err::SetFitRahIncomingDpsError::KinDpsNegative(e) => HExecError::InvalidDpsProfileKin(e),
+                        rc::err::SetFitRahIncomingDpsError::ExplDpsNegative(e) => HExecError::InvalidDpsProfileExpl(e),
+                        rc::err::SetFitRahIncomingDpsError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
                     });
                 }
             }
             TriStateField::None => {
-                if let Err(error) = core_sol.remove_fit_rah_incoming_dmg(fit_id) {
+                if let Err(error) = core_sol.remove_fit_rah_incoming_dps(fit_id) {
                     match error {
-                        rc::err::RemoveFitRahIncomingDmgError::FitNotFound(e) => {
+                        rc::err::RemoveFitRahIncomingDpsError::FitNotFound(e) => {
                             return Err(HExecError::FitNotFoundPrimary(e));
                         }
                         // Do nothing if profile was not set
-                        rc::err::RemoveFitRahIncomingDmgError::DmgProfileNotSet(_) => (),
+                        rc::err::RemoveFitRahIncomingDpsError::DpsProfileNotSet(_) => (),
                     };
                 }
             }

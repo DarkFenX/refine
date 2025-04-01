@@ -1,12 +1,12 @@
 use crate::{
-    shared::{HDmgProfile, HSecZone},
+    shared::{HDpsProfile, HSecZone},
     util::HExecError,
 };
 
 #[derive(Default, serde::Deserialize)]
 pub(crate) struct HAddSolCmd {
     sec_zone: Option<HSecZone>,
-    default_incoming_dmg: Option<HDmgProfile>,
+    default_incoming_dps: Option<HDpsProfile>,
 }
 impl HAddSolCmd {
     pub(crate) fn execute(&self, src: rc::Src) -> Result<rc::SolarSystem, HExecError> {
@@ -14,15 +14,15 @@ impl HAddSolCmd {
         if let Some(sec_zone) = &self.sec_zone {
             core_sol.set_sec_zone(sec_zone.into());
         }
-        if let Some(default_incoming_dmg) = &self.default_incoming_dmg {
-            if let Err(error) = core_sol.set_default_incoming_dmg(default_incoming_dmg.into()) {
+        if let Some(default_incoming_dps) = &self.default_incoming_dps {
+            if let Err(error) = core_sol.set_default_incoming_dps(default_incoming_dps.into()) {
                 return Err(match error {
-                    rc::err::SetDefaultIncomingDmgError::EmDmgNegative(e) => HExecError::InvalidDmgProfileEm(e),
-                    rc::err::SetDefaultIncomingDmgError::ThermDmgNegative(e) => HExecError::InvalidDmgProfileTherm(e),
-                    rc::err::SetDefaultIncomingDmgError::KinDmgNegative(e) => HExecError::InvalidDmgProfileKin(e),
-                    rc::err::SetDefaultIncomingDmgError::ExplDmgNegative(e) => HExecError::InvalidDmgProfileExpl(e),
-                    rc::err::SetDefaultIncomingDmgError::TotalDmgNonPositive(e) => {
-                        HExecError::InvalidDmgProfileTotal(e)
+                    rc::err::SetDefaultIncomingDpsError::EmDpsNegative(e) => HExecError::InvalidDpsProfileEm(e),
+                    rc::err::SetDefaultIncomingDpsError::ThermDpsNegative(e) => HExecError::InvalidDpsProfileTherm(e),
+                    rc::err::SetDefaultIncomingDpsError::KinDpsNegative(e) => HExecError::InvalidDpsProfileKin(e),
+                    rc::err::SetDefaultIncomingDpsError::ExplDpsNegative(e) => HExecError::InvalidDpsProfileExpl(e),
+                    rc::err::SetDefaultIncomingDpsError::TotalDpsNonPositive(e) => {
+                        HExecError::InvalidDpsProfileTotal(e)
                     }
                 });
             }

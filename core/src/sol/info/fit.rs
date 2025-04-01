@@ -1,4 +1,4 @@
-use crate::sol::{DmgProfile, FitId, FleetId, ItemId, SecStatus, uad::fit::Fit};
+use crate::sol::{DpsProfile, FitId, FleetId, ItemId, SecStatus, uad::fit::Fit};
 
 pub struct FitInfo {
     pub id: FitId,
@@ -18,7 +18,7 @@ pub struct FitInfo {
     pub fighters: Vec<ItemId>,
     pub fw_effects: Vec<ItemId>,
     pub sec_status: SecStatus,
-    pub rah_incoming_dmg: Option<DmgProfile>,
+    pub rah_incoming_dps: Option<DpsProfile>,
 }
 impl From<&Fit> for FitInfo {
     fn from(fit: &Fit) -> Self {
@@ -40,7 +40,7 @@ impl From<&Fit> for FitInfo {
             fighters: fit.fighters.iter().copied().collect(),
             fw_effects: fit.fw_effects.iter().copied().collect(),
             sec_status: fit.sec_status,
-            rah_incoming_dmg: fit.rah_incoming_dmg,
+            rah_incoming_dps: fit.rah_incoming_dps,
         }
     }
 }

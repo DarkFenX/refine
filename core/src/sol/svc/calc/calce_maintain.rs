@@ -37,8 +37,8 @@ impl Calc {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
         }
     }
-    pub(in crate::sol::svc) fn fit_rah_dmg_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
-        self.rah_fit_rah_dmg_profile_changed(uad, fit_id);
+    pub(in crate::sol::svc) fn fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
+        self.rah_fit_rah_dps_profile_changed(uad, fit_id);
     }
     pub(in crate::sol::svc) fn item_added(&mut self, uad: &Uad, item: &Item) {
         // Custom modifiers

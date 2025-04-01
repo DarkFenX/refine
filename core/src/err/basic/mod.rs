@@ -3,7 +3,7 @@ pub use charge_found::ChargeFoundError;
 pub use em_dmg_nonneg_error::EmDmgNonNegError;
 pub use expl_dmg_nonneg_error::ExplDmgNonNegError;
 pub use fighter_count::FighterCountError;
-pub use fit_dmg_profile_found::FitDmgProfileFoundError;
+pub use fit_dmg_profile_found::FitDpsProfileFoundError;
 pub use fit_fleet_assigned::FitFleetAssignedError;
 pub use fit_found::FitFoundError;
 pub use fit_has_item_kind::FitHasItemKindError;

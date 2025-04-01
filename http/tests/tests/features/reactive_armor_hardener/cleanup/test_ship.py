@@ -17,7 +17,7 @@ def test_res_changed_em(client, consts):
     eve_rig_id = client.mk_eve_item(attrs={eve_res_boost_attr_id: -30}, eff_ids=[eve_rig_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -61,7 +61,7 @@ def test_res_changed_therm(client, consts):
     eve_rig_id = client.mk_eve_item(attrs={eve_res_boost_attr_id: -30}, eff_ids=[eve_rig_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -105,7 +105,7 @@ def test_res_changed_kin(client, consts):
     eve_rig_id = client.mk_eve_item(attrs={eve_res_boost_attr_id: -30}, eff_ids=[eve_rig_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -149,7 +149,7 @@ def test_res_changed_expl(client, consts):
     eve_rig_id = client.mk_eve_item(attrs={eve_res_boost_attr_id: -30}, eff_ids=[eve_rig_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -185,7 +185,7 @@ def test_switch(client, consts):
     eve_ship2_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -226,7 +226,7 @@ def test_not_loaded(client, consts):
     eve_ship3_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -277,7 +277,7 @@ def test_no_ship(client, consts):
     eve_ship2_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification

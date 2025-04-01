@@ -1,9 +1,9 @@
-use crate::{shared::HDmgProfile, util::HExecError};
+use crate::{shared::HDpsProfile, util::HExecError};
 
 #[derive(Default, serde::Deserialize)]
 pub(crate) struct HAddFitCmd {
     sec_status: Option<rc::SecStatus>,
-    rah_incoming_dmg: Option<HDmgProfile>,
+    rah_incoming_dps: Option<HDpsProfile>,
 }
 impl HAddFitCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::FitInfo, HExecError> {
@@ -19,26 +19,26 @@ impl HAddFitCmd {
                 }
             }
         }
-        if let Some(rah_incoming_dmg) = &self.rah_incoming_dmg {
-            if let Err(error) = core_sol.set_fit_rah_incoming_dmg(&fit_info.id, rah_incoming_dmg.into()) {
+        if let Some(rah_incoming_dps) = &self.rah_incoming_dps {
+            if let Err(error) = core_sol.set_fit_rah_incoming_dps(&fit_info.id, rah_incoming_dps.into()) {
                 match error {
-                    rc::err::SetFitRahIncomingDmgError::EmDmgNegative(e) => {
+                    rc::err::SetFitRahIncomingDpsError::EmDpsNegative(e) => {
                         core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDmgProfileEm(e));
+                        return Err(HExecError::InvalidDpsProfileEm(e));
                     }
-                    rc::err::SetFitRahIncomingDmgError::ThermDmgNegative(e) => {
+                    rc::err::SetFitRahIncomingDpsError::ThermDpsNegative(e) => {
                         core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDmgProfileTherm(e));
+                        return Err(HExecError::InvalidDpsProfileTherm(e));
                     }
-                    rc::err::SetFitRahIncomingDmgError::KinDmgNegative(e) => {
+                    rc::err::SetFitRahIncomingDpsError::KinDpsNegative(e) => {
                         core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDmgProfileKin(e));
+                        return Err(HExecError::InvalidDpsProfileKin(e));
                     }
-                    rc::err::SetFitRahIncomingDmgError::ExplDmgNegative(e) => {
+                    rc::err::SetFitRahIncomingDpsError::ExplDpsNegative(e) => {
                         core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDmgProfileExpl(e));
+                        return Err(HExecError::InvalidDpsProfileExpl(e));
                     }
-                    rc::err::SetFitRahIncomingDmgError::FitNotFound(_) => panic!(),
+                    rc::err::SetFitRahIncomingDpsError::FitNotFound(_) => panic!(),
                 }
             }
         }

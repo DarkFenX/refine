@@ -30,8 +30,8 @@ impl Svc {
     pub(in crate::sol::svc) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_id: &FitId) {
         self.calc.fit_removed_from_fleet(uad, fleet, fit_id);
     }
-    pub(in crate::sol::svc) fn notify_fit_rah_dmg_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
-        self.calc.fit_rah_dmg_profile_changed(uad, fit_id);
+    pub(in crate::sol::svc) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
+        self.calc.fit_rah_dps_profile_changed(uad, fit_id);
     }
     pub(in crate::sol::svc) fn notify_item_added(&mut self, uad: &Uad, item: &Item) {
         self.calc.item_added(uad, item);

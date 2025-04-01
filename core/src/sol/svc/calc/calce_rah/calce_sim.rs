@@ -42,9 +42,9 @@ impl Calc {
         if sim_datas.is_empty() {
             return;
         }
-        let dmg_profile = match uad.fits.get_fit(fit_id).unwrap().rah_incoming_dmg {
-            Some(dmg_profile) => dmg_profile,
-            None => uad.default_incoming_dmg,
+        let dps_profile = match uad.fits.get_fit(fit_id).unwrap().rah_incoming_dps {
+            Some(dps_profile) => dps_profile,
+            None => uad.default_incoming_dps,
         };
         let mut history_entries_seen = StSet::new();
         let mut sim_history = Vec::new();
@@ -75,11 +75,11 @@ impl Calc {
                 }
             };
             for item_sim_data in sim_datas.values_mut() {
-                item_sim_data.taken_dmg.em += dmg_profile.em * ship_resos.em * tick_data.time_passed;
-                item_sim_data.taken_dmg.thermal += dmg_profile.thermal * ship_resos.thermal * tick_data.time_passed;
-                item_sim_data.taken_dmg.kinetic += dmg_profile.kinetic * ship_resos.kinetic * tick_data.time_passed;
+                item_sim_data.taken_dmg.em += dps_profile.em * ship_resos.em * tick_data.time_passed;
+                item_sim_data.taken_dmg.thermal += dps_profile.thermal * ship_resos.thermal * tick_data.time_passed;
+                item_sim_data.taken_dmg.kinetic += dps_profile.kinetic * ship_resos.kinetic * tick_data.time_passed;
                 item_sim_data.taken_dmg.explosive +=
-                    dmg_profile.explosive * ship_resos.explosive * tick_data.time_passed;
+                    dps_profile.explosive * ship_resos.explosive * tick_data.time_passed;
             }
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {

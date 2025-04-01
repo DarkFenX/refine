@@ -19,7 +19,7 @@ class SolarSystem(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict) -> None:
         super().__init__(data=data, hooks={
-            'default_incoming_dmg': AttrHookDef(
+            'default_incoming_dps': AttrHookDef(
                 func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3])),
             'fits': AttrHookDef(
                 func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, sol_id=self.id) for f in fs]}),
@@ -82,7 +82,7 @@ class SolarSystem(AttrDict):
     def change(
             self, *,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_incoming_dmg: tuple[float, float, float, float] | type[Absent] = Absent,
+            default_incoming_dps: tuple[float, float, float, float] | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
@@ -92,7 +92,7 @@ class SolarSystem(AttrDict):
         resp = self._client.change_sol_request(
             sol_id=self.id,
             sec_zone=sec_zone,
-            default_incoming_dmg=default_incoming_dmg,
+            default_incoming_dps=default_incoming_dps,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
@@ -156,7 +156,7 @@ class SolarSystem(AttrDict):
     def create_fit(
             self, *,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dmg: tuple[float, float, float, float] | type[Absent] = Absent,
+            rah_incoming_dps: tuple[float, float, float, float] | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 201,
@@ -164,7 +164,7 @@ class SolarSystem(AttrDict):
         resp = self._client.create_fit_request(
             sol_id=self.id,
             sec_status=sec_status,
-            rah_incoming_dmg=rah_incoming_dmg,
+            rah_incoming_dps=rah_incoming_dps,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self.check()

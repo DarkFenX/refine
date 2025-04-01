@@ -12,7 +12,7 @@ def test_multi(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis
@@ -37,7 +37,7 @@ def test_therm_kin_expl(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 1, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 EM hardeners
@@ -66,7 +66,7 @@ def test_em_kin_expl(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 0, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 thermal hardeners
@@ -95,7 +95,7 @@ def test_em_therm_expl(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 0, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 0, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 kinetic hardeners
@@ -124,7 +124,7 @@ def test_em_therm_kin(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 0))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 1, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 explosive hardeners

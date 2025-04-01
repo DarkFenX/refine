@@ -27,11 +27,11 @@ pub(crate) enum HExecError {
     ProjectionAlreadyExists(rc::err::basic::ProjNotFoundError),
     // Misc
     InvalidSecStatus(rc::err::basic::SecStatusError),
-    InvalidDmgProfileEm(rc::err::basic::EmDmgNonNegError),
-    InvalidDmgProfileTherm(rc::err::basic::ThermDmgNonNegError),
-    InvalidDmgProfileKin(rc::err::basic::KinDmgNonNegError),
-    InvalidDmgProfileExpl(rc::err::basic::ExplDmgNonNegError),
-    InvalidDmgProfileTotal(rc::err::basic::TotalDmgPositiveError),
+    InvalidDpsProfileEm(rc::err::basic::EmDmgNonNegError),
+    InvalidDpsProfileTherm(rc::err::basic::ThermDmgNonNegError),
+    InvalidDpsProfileKin(rc::err::basic::KinDmgNonNegError),
+    InvalidDpsProfileExpl(rc::err::basic::ExplDmgNonNegError),
+    InvalidDpsProfileTotal(rc::err::basic::TotalDmgPositiveError),
 }
 impl std::error::Error for HExecError {}
 impl std::fmt::Display for HExecError {
@@ -64,11 +64,11 @@ impl std::fmt::Display for HExecError {
             HExecError::ProjectionAlreadyExists(e) => write!(f, "{e}"),
             // Misc
             HExecError::InvalidSecStatus(e) => write!(f, "{e}"),
-            HExecError::InvalidDmgProfileEm(e) => write!(f, "{e}"),
-            HExecError::InvalidDmgProfileTherm(e) => write!(f, "{e}"),
-            HExecError::InvalidDmgProfileKin(e) => write!(f, "{e}"),
-            HExecError::InvalidDmgProfileExpl(e) => write!(f, "{e}"),
-            HExecError::InvalidDmgProfileTotal(e) => write!(f, "{e}"),
+            HExecError::InvalidDpsProfileEm(e) => write!(f, "{e}"),
+            HExecError::InvalidDpsProfileTherm(e) => write!(f, "{e}"),
+            HExecError::InvalidDpsProfileKin(e) => write!(f, "{e}"),
+            HExecError::InvalidDpsProfileExpl(e) => write!(f, "{e}"),
+            HExecError::InvalidDpsProfileTotal(e) => write!(f, "{e}"),
         }
     }
 }
@@ -102,11 +102,11 @@ impl HExecError {
             HExecError::ProjectionAlreadyExists(_) => "EXC-023",
             // Misc
             HExecError::InvalidSecStatus(_) => "EXC-024-1",
-            HExecError::InvalidDmgProfileEm(_) => "EXC-024",
-            HExecError::InvalidDmgProfileTherm(_) => "EXC-025",
-            HExecError::InvalidDmgProfileKin(_) => "EXC-026",
-            HExecError::InvalidDmgProfileExpl(_) => "EXC-027",
-            HExecError::InvalidDmgProfileTotal(_) => "EXC-028",
+            HExecError::InvalidDpsProfileEm(_) => "EXC-024",
+            HExecError::InvalidDpsProfileTherm(_) => "EXC-025",
+            HExecError::InvalidDpsProfileKin(_) => "EXC-026",
+            HExecError::InvalidDpsProfileExpl(_) => "EXC-027",
+            HExecError::InvalidDpsProfileTotal(_) => "EXC-028",
         }
         .to_string()
     }

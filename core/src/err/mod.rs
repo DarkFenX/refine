@@ -5,9 +5,9 @@ pub use crate::{
             GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, SetItemEffectModeError,
             SetItemEffectModesError,
         },
-        sole_dmg_profile::{
-            GetFitRahIncomingDmgError, RemoveFitRahIncomingDmgError, SetDefaultIncomingDmgError,
-            SetFitRahIncomingDmgError,
+        sole_dps_profile::{
+            GetFitRahIncomingDpsError, RemoveFitRahIncomingDpsError, SetDefaultIncomingDpsError,
+            SetFitRahIncomingDpsError,
         },
         sole_fit::{GetFitError, RemoveFitError, SetFitFleetError, UnsetFitFleetError},
         sole_fleet::{GetFleetError, RemoveFleetError},

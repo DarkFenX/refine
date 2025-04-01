@@ -12,7 +12,7 @@ def test_full(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 0))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 0, 1, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -38,7 +38,7 @@ def test_excess_slow_stable(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 1, 1, 0))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 1, 1, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - purely theoretical, but possible with overrides / custom mods
@@ -74,7 +74,7 @@ def test_excess_slow_loop(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - purely theoretical, but possible with overrides / custom mods
@@ -114,7 +114,7 @@ def test_excess_max_takers_no_limit(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
@@ -146,7 +146,7 @@ def test_excess_max_takers_limited(client, consts):
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 1))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification

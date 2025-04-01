@@ -3,7 +3,7 @@ use ordered_float::OrderedFloat as OF;
 use crate::{
     sol::{
         FitId, FleetId, ItemId, ItemTypeId, SecStatus,
-        misc::DmgProfile,
+        misc::DpsProfile,
         uad::{
             fit::{FitSkill, ItemVec},
             item::ShipKind,
@@ -33,7 +33,7 @@ pub(in crate::sol) struct Fit {
     pub(in crate::sol) fighters: StSet<ItemId>,
     pub(in crate::sol) fw_effects: StSet<ItemId>,
     pub(in crate::sol) sec_status: SecStatus,
-    pub(in crate::sol) rah_incoming_dmg: Option<DmgProfile>,
+    pub(in crate::sol) rah_incoming_dps: Option<DpsProfile>,
 }
 impl Fit {
     pub(in crate::sol) fn new(id: FitId) -> Self {
@@ -57,7 +57,7 @@ impl Fit {
             fighters: StSet::new(),
             fw_effects: StSet::new(),
             sec_status: OF(0.0),
-            rah_incoming_dmg: None,
+            rah_incoming_dps: None,
         }
     }
     pub(in crate::sol) fn all_direct_items(&self) -> Vec<ItemId> {

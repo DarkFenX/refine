@@ -27,7 +27,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default],
             sec_zone: ApiSecZone | type[Absent],
-            default_incoming_dmg: tuple[float, float, float, float] | type[Absent],
+            default_incoming_dps: tuple[float, float, float, float] | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
@@ -44,7 +44,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         conditional_insert(container=body, path=['sec_zone'], value=sec_zone)
-        conditional_insert(container=body, path=['default_incoming_dmg'], value=default_incoming_dmg)
+        conditional_insert(container=body, path=['default_incoming_dps'], value=default_incoming_dps)
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol',
@@ -59,7 +59,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default] = Default,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_incoming_dmg: tuple[float, float, float, float] | type[Absent] = Absent,
+            default_incoming_dps: tuple[float, float, float, float] | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
@@ -70,7 +70,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         resp = self.create_sol_request(
             data=data,
             sec_zone=sec_zone,
-            default_incoming_dmg=default_incoming_dmg,
+            default_incoming_dps=default_incoming_dps,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
@@ -175,7 +175,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             sol_id: str,
             sec_zone: ApiSecZone | type[Absent],
-            default_incoming_dmg: tuple[float, float, float, float] | type[Absent],
+            default_incoming_dps: tuple[float, float, float, float] | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
@@ -183,7 +183,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     ) -> Request:
         command = {'type': 'change_sol'}
         conditional_insert(container=command, path=['sec_zone'], value=sec_zone)
-        conditional_insert(container=command, path=['default_incoming_dmg'], value=default_incoming_dmg)
+        conditional_insert(container=command, path=['default_incoming_dps'], value=default_incoming_dps)
         params = {}
         conditional_insert(container=params, path=['sol'], value=sol_info_mode)
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
