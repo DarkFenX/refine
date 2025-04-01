@@ -281,6 +281,10 @@ class EveAttr(IntEnum):
     ftr_sq_max_size = 2215
     doomsday_aoe_range = 2279
     ftr_abil_launch_bomb_type = 2324
+    hisec_modifier = 2355
+    lowsec_modifier = 2356
+    nullsec_modifier = 2357
+    security_modifier = 2358
     can_fit_ship_group10 = 2396
     max_type_fitted = 2431
     can_fit_ship_type7 = 2463
