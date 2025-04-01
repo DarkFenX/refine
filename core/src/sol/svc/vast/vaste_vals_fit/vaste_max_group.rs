@@ -165,7 +165,7 @@ fn validate_verbose(
 }
 
 fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_attr_id: &ad::AAttrId) -> Count {
-    match calc.get_item_attr_val_simple(uad, item_id, a_attr_id) {
+    match calc.get_item_attr_val_extra(uad, item_id, a_attr_id) {
         Some(value) => value.round() as Count,
         // Limited items are guaranteed to have some unmodified limit value
         None => uad

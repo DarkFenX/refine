@@ -134,6 +134,9 @@ impl Svc {
         self.calc
             .effect_proj_range_changed(uad, projector_item, effect, projectee_item, range);
     }
+    pub(in crate::sol::svc) fn notify_sol_sec_zone_changed(&mut self, uad: &Uad) {
+        self.calc.sol_sec_zone_changed(uad);
+    }
     pub(in crate::sol::svc) fn notify_fighter_count_changed(&mut self, uad: &Uad, fighter: &Fighter) {
         self.calc.fighter_count_changed(uad, &fighter.get_item_id());
         self.vast.fighter_count_changed(fighter);

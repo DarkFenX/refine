@@ -273,6 +273,11 @@ impl Calc {
             }
         }
     }
+    pub(in crate::sol::svc) fn sol_sec_zone_changed(&mut self, uad: &Uad) {
+        for item in uad.items.iter() {
+            self.force_attr_value_recalc(uad, &item.get_item_id(), &ac::attrs::SECURITY_MODIFIER)
+        }
+    }
     pub(in crate::sol::svc) fn fighter_count_changed(&mut self, uad: &Uad, item_id: &ItemId) {
         self.force_attr_postproc_recalc(uad, item_id, &FTR_COUNT_ATTR)
     }

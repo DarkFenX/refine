@@ -237,8 +237,7 @@ impl ModAccumInfo {
             ),
         };
     }
-    pub(in crate::sol::svc::calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrValInfo {
-        let attr_info = AttrValInfo::new(base_val);
+    pub(in crate::sol::svc::calc) fn apply_dogma_mods(&mut self, attr_info: AttrValInfo, hig: bool) -> AttrValInfo {
         let attr_info = apply_assign(
             attr_info,
             self.pre_assign.get_comb_attr_info(&combine_assigns, &revert_noop, hig),

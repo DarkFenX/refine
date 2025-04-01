@@ -11,7 +11,7 @@ pub(super) fn get_max_resource(
     max_item_id: &Option<ItemId>,
     max_a_attr_id: &ad::AAttrId,
 ) -> Option<AttrVal> {
-    calc.get_item_attr_val_simple_opt(uad, max_item_id, max_a_attr_id)
+    calc.get_item_attr_val_extra_opt(uad, max_item_id, max_a_attr_id)
 }
 
 pub(super) fn get_max_slots(
@@ -20,12 +20,12 @@ pub(super) fn get_max_slots(
     max_item_id: &Option<ItemId>,
     max_a_attr_id: &ad::AAttrId,
 ) -> Option<Count> {
-    calc.get_item_attr_val_simple_opt(uad, max_item_id, max_a_attr_id)
+    calc.get_item_attr_val_extra_opt(uad, max_item_id, max_a_attr_id)
         .map(|v| v.into_inner().round() as Count)
 }
 
 pub(super) fn is_flag_set(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_attr_id: &ad::AAttrId) -> bool {
-    match calc.get_item_attr_val_simple(uad, item_id, a_attr_id) {
+    match calc.get_item_attr_val_extra(uad, item_id, a_attr_id) {
         Some(val) => val != OF(0.0),
         None => match uad
             .items

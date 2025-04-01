@@ -3,10 +3,10 @@ use std::collections::hash_map::Entry;
 use itertools::Itertools;
 
 use crate::{
-    ad,
+    ac, ad,
     err::basic::{AttrMetaFoundError, ItemLoadedError},
     sol::{
-        AttrVal, ItemId,
+        AttrVal, ItemId, SecZone,
         svc::calc::{
             AttrCalcError, Calc, CalcAttrVal, LoadedItemFoundError, ModAccumFast, Modification, ModificationKey,
         },
@@ -15,19 +15,19 @@ use crate::{
     util::{StMap, round},
 };
 
-use super::calce_shared::LIMITED_PRECISION_A_ATTR_IDS;
+use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_base_attr_value};
 
 impl Calc {
     // Query methods
-    pub(in crate::sol) fn get_item_attr_val_simple_opt(
+    pub(in crate::sol) fn get_item_attr_val_extra_opt(
         &mut self,
         uad: &Uad,
         item_id: &Option<ItemId>,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
-        item_id.and_then(|item_id| self.get_item_attr_val_simple(uad, &item_id, a_attr_id))
+        item_id.and_then(|item_id| self.get_item_attr_val_extra(uad, &item_id, a_attr_id))
     }
-    pub(in crate::sol) fn get_item_attr_val_simple(
+    pub(in crate::sol) fn get_item_attr_val_extra(
         &mut self,
         uad: &Uad,
         item_id: &ItemId,
@@ -181,12 +181,30 @@ impl Calc {
             Some(a_attr) => a_attr,
             None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }),
         };
-        // Get base value; use on-item original attributes, or, if not specified, default attribute value.
-        // If both can't be fetched, consider it a failure
-        let base_val = match item.get_a_attrs().unwrap().get(a_attr_id) {
-            Some(orig_val) => *orig_val as AttrVal,
-            None => a_attr.def_val as AttrVal,
+        // Get base value
+        let base_val = match a_attr_id {
+            // Security modifier is a special case - it takes modified value of another attribute as
+            // its own base
+            &ac::attrs::SECURITY_MODIFIER => {
+                let security_a_attr_id = match uad.sec_zone {
+                    SecZone::HiSec(_) => ac::attrs::HISEC_MODIFIER,
+                    SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
+                    _ => ac::attrs::NULLSEC_MODIFIER,
+                };
+                // Ensure that change in any a security-specific attribute value triggers
+                // recalculation of generic security attribute value
+                self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
+                // Fetch base value for the generic attribute depending on solar system sec zone,
+                // using its base value as a fallback
+                match self.get_item_attr_val_full(uad, item_id, &security_a_attr_id) {
+                    Ok(security_full_val) => security_full_val.dogma,
+                    Err(_) => get_base_attr_value(item, a_attr),
+                }
+            }
+            // Normal attributes
+            _ => get_base_attr_value(item, a_attr),
         };
+        // Get base value;
         let mut accumulator = ModAccumFast::new();
         for modification in self.iter_modifications(uad, item, a_attr_id) {
             accumulator.add_val(

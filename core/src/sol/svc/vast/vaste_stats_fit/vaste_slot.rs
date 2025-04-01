@@ -152,6 +152,6 @@ fn get_attr_as_count(
     output_item_id: &Option<ItemId>,
     output_a_attr_id: &ad::AAttrId,
 ) -> Option<Count> {
-    calc.get_item_attr_val_simple_opt(uad, output_item_id, output_a_attr_id)
+    calc.get_item_attr_val_extra_opt(uad, output_item_id, output_a_attr_id)
         .map(|v| v.round() as Count)
 }

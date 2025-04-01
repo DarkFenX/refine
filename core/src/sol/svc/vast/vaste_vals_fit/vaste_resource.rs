@@ -236,7 +236,7 @@ fn validate_fast_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut force_pass = true;
     for item_id in item_ids {
-        let item_use = match calc.get_item_attr_val_simple(uad, item_id, use_a_attr_id) {
+        let item_use = match calc.get_item_attr_val_extra(uad, item_id, use_a_attr_id) {
             Some(item_use) => item_use,
             None => continue,
         };
@@ -286,7 +286,7 @@ fn validate_verbose_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut users = Vec::with_capacity(item_ids.len());
     for item_id in item_ids {
-        let item_use = match calc.get_item_attr_val_simple(uad, item_id, use_a_attr_id) {
+        let item_use = match calc.get_item_attr_val_extra(uad, item_id, use_a_attr_id) {
             Some(item_use) => item_use,
             None => continue,
         };

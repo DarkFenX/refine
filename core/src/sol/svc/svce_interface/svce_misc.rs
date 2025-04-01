@@ -23,6 +23,9 @@ impl Svc {
     ) {
         self.notify_base_attr_value_changed(uad, item_id, a_attr_id);
     }
+    pub(in crate::sol) fn sol_sec_zone_changed(&mut self, uad: &Uad) {
+        self.notify_sol_sec_zone_changed(uad);
+    }
     pub(in crate::sol) fn fighter_count_changed(&mut self, uad: &Uad, fighter: &Fighter) {
         self.notify_fighter_count_changed(uad, fighter);
     }

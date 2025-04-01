@@ -5,20 +5,20 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ad,
+    SecZone, ac, ad,
     err::basic::AttrMetaFoundError,
     sol::{
-        AttrVal, ItemId, OpInfo,
+        ItemId, OpInfo,
         svc::calc::{
-            AffectorInfo, AttrCalcError, AttrValInfo, Calc, LoadedItemFoundError, ModAccumInfo, Modification,
-            ModificationInfo, ModificationKey,
+            AffectorInfo, AttrValInfo, Calc, LoadedItemFoundError, ModAccumInfo, Modification, ModificationInfo,
+            ModificationKey,
         },
         uad::{Uad, item::Item},
     },
     util::{StMap, StMapVecL1, StSet, round},
 };
 
-use super::calce_shared::LIMITED_PRECISION_A_ATTR_IDS;
+use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_base_attr_value};
 
 struct Affection {
     modification: Modification,
@@ -93,17 +93,52 @@ impl Calc {
         uad: &Uad,
         item_id: &ItemId,
         a_attr_id: &ad::AAttrId,
-    ) -> Result<AttrValInfo, AttrCalcError> {
-        let item = uad.items.get_item(item_id)?;
+    ) -> Result<AttrValInfo, AttrMetaFoundError> {
+        let item = uad.items.get_item(item_id).unwrap();
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
             None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }.into()),
         };
-        // Get base value; use on-item original attributes, or, if not specified, default attribute value.
-        // If both can't be fetched, consider it a failure
-        let base_val = match item.get_a_attrs_err()?.get(a_attr_id) {
-            Some(orig_val) => *orig_val as AttrVal,
-            None => a_attr.def_val as AttrVal,
+        // Get base value; use on-item original attributes, or, if not specified, default attribute
+        // value.
+        let base_attr_info = match a_attr_id {
+            &ac::attrs::SECURITY_MODIFIER => {
+                // Fetch base value for the generic attribute depending on solar system sec zone,
+                // using its base value as a fallback
+                let security_a_attr_id = match uad.sec_zone {
+                    SecZone::HiSec(_) => ac::attrs::HISEC_MODIFIER,
+                    SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
+                    _ => ac::attrs::NULLSEC_MODIFIER,
+                };
+                // Ensure that change in any a security-specific attribute value triggers
+                // recalculation of generic security attribute value
+                self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
+                match self.get_item_attr_val_full(uad, item_id, &security_a_attr_id) {
+                    Ok(security_full_val) => {
+                        let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
+                        base_attr_info.effective_infos.push(ModificationInfo {
+                            // Technically this modification is not pre-assignment, it is base value
+                            // overwrite (which later will be overwritten by any other
+                            // pre-assignment regardless of its value), but pre-assignment is still
+                            // used in info for simplicity. In any EVE scenario there is no
+                            // pre-assignment for this attribute
+                            op: OpInfo::PreAssign,
+                            initial_val: security_full_val.dogma,
+                            range_mult: None,
+                            resist_mult: None,
+                            stacking_mult: None,
+                            applied_val: security_full_val.dogma,
+                            affectors: vec![AffectorInfo {
+                                item_id: *item_id,
+                                attr_id: Some(security_a_attr_id),
+                            }],
+                        });
+                        base_attr_info
+                    }
+                    Err(_) => AttrValInfo::new(get_base_attr_value(item, a_attr)),
+                }
+            }
+            _ => AttrValInfo::new(get_base_attr_value(item, a_attr)),
         };
         let mut accumulator = ModAccumInfo::new();
         for affection in self.iter_affections(uad, item, a_attr_id) {
@@ -118,7 +153,7 @@ impl Calc {
                 affection.affectors,
             );
         }
-        let mut dogma_attr_info = accumulator.apply_dogma_mods(base_val, a_attr.hig);
+        let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, a_attr.hig);
         // Lower value limit
         if let Some(limiter_a_attr_id) = a_attr.min_attr_id {
             if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_a_attr_id) {
