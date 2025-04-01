@@ -110,11 +110,11 @@ impl Calc {
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
                     _ => ac::attrs::NULLSEC_MODIFIER,
                 };
-                // Ensure that change in any a security-specific attribute value triggers
-                // recalculation of generic security attribute value
-                self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
                 match self.get_item_attr_val_full(uad, item_id, &security_a_attr_id) {
                     Ok(security_full_val) => {
+                        // Ensure that change in any a security-specific attribute value triggers
+                        // recalculation of generic security attribute value
+                        self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
                         let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                         base_attr_info.effective_infos.push(ModificationInfo {
                             // Technically this modification is not pre-assignment, it is base value
@@ -122,7 +122,7 @@ impl Calc {
                             // pre-assignment regardless of its value), but pre-assignment is still
                             // used in info for simplicity. In any EVE scenario there is no
                             // pre-assignment for this attribute
-                            op: OpInfo::PreAssign,
+                            op: OpInfo::BaseAssign,
                             initial_val: security_full_val.dogma,
                             range_mult: None,
                             resist_mult: None,

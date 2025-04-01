@@ -191,13 +191,15 @@ impl Calc {
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
                     _ => ac::attrs::NULLSEC_MODIFIER,
                 };
-                // Ensure that change in any a security-specific attribute value triggers
-                // recalculation of generic security attribute value
-                self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
                 // Fetch base value for the generic attribute depending on solar system sec zone,
                 // using its base value as a fallback
                 match self.get_item_attr_val_full(uad, item_id, &security_a_attr_id) {
-                    Ok(security_full_val) => security_full_val.dogma,
+                    Ok(security_full_val) => {
+                        // Ensure that change in any a security-specific attribute value triggers
+                        // recalculation of generic security attribute value
+                        self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
+                        security_full_val.dogma
+                    }
                     Err(_) => get_base_attr_value(item, a_attr),
                 }
             }

@@ -406,6 +406,7 @@ class ApiEffMode(StrEnum):
 
 @unique
 class ApiModOp(StrEnum):
+    base_assign = 'base_assign'
     pre_assign = 'pre_assign'
     pre_mul = 'pre_mul'
     pre_div = 'pre_div'

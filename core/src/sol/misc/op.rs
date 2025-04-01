@@ -5,6 +5,11 @@ use crate::ad;
 /// All the operations are applied in the order they are defined in this enum.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum OpInfo {
+    /// Uses value of other attribute as a base value. Works same way as PreAssign, but is
+    /// calculated earlier, thus gets overridden by any PreAssign. Used only in a few niche
+    /// scenarios, like transferring security-zone-specific attribute value to a generic one on
+    /// structure rigs.
+    BaseAssign,
     /// Assigns modification value to the attribute before all other operations are applied.
     PreAssign,
     /// Early multiplication.

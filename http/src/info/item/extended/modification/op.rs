@@ -1,6 +1,7 @@
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HModOp {
+    BaseAssign,
     PreAssign,
     PreMul,
     PreDiv,
@@ -17,6 +18,7 @@ pub(crate) enum HModOp {
 impl From<&rc::OpInfo> for HModOp {
     fn from(core_op: &rc::OpInfo) -> Self {
         match core_op {
+            rc::OpInfo::BaseAssign => Self::BaseAssign,
             rc::OpInfo::PreAssign => Self::PreAssign,
             rc::OpInfo::PreMul => Self::PreMul,
             rc::OpInfo::PreDiv => Self::PreDiv,
