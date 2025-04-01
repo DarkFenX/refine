@@ -17,9 +17,10 @@ use super::{
     rah_history_entry::RahSimHistoryEntry,
     rah_info::RahInfo,
     shared::{
-        EM_A_ATTR_ID, EXPL_A_ATTR_ID, KIN_A_ATTR_ID, RAH_A_EFFECT_ID, SHIFT_A_ATTR_ID, THERM_A_ATTR_ID, TickCount,
-        rah_round,
+        ARMOR_HP_A_ATTR_ID, EM_A_ATTR_ID, EXPL_A_ATTR_ID, HULL_HP_A_ATTR_ID, KIN_A_ATTR_ID, RAH_A_EFFECT_ID,
+        SHIELD_HP_A_ATTR_ID, SHIFT_A_ATTR_ID, THERM_A_ATTR_ID, TickCount, rah_round,
     },
+    ship_stats::RahShipStats,
     tick_iter::RahSimTickIter,
 };
 
@@ -63,8 +64,8 @@ impl Calc {
         // Run simulation
         for tick_data in RahSimTickIter::new(sim_datas.iter()) {
             // For each RAH, calculate damage received during this tick
-            let ship_resos = match self.get_ship_resonances(uad, &ship_id) {
-                Some(ship_resos) => ship_resos,
+            let ship_stats = match self.get_ship_stats(uad, &ship_id) {
+                Some(ship_stats) => ship_stats,
                 None => {
                     for item_id in sim_datas.keys() {
                         // Any issues with ship resonance fetch should happen on the very first sim
@@ -75,11 +76,18 @@ impl Calc {
                 }
             };
             for item_sim_data in sim_datas.values_mut() {
-                item_sim_data.taken_dmg.em += dps_profile.em * ship_resos.em * tick_data.time_passed;
-                item_sim_data.taken_dmg.thermal += dps_profile.thermal * ship_resos.thermal * tick_data.time_passed;
-                item_sim_data.taken_dmg.kinetic += dps_profile.kinetic * ship_resos.kinetic * tick_data.time_passed;
+                item_sim_data.taken_dmg.em += dps_profile.em * ship_stats.resos.em * tick_data.time_passed;
+                item_sim_data.taken_dmg.thermal +=
+                    dps_profile.thermal * ship_stats.resos.thermal * tick_data.time_passed;
+                item_sim_data.taken_dmg.kinetic +=
+                    dps_profile.kinetic * ship_stats.resos.kinetic * tick_data.time_passed;
                 item_sim_data.taken_dmg.explosive +=
-                    dps_profile.explosive * ship_resos.explosive * tick_data.time_passed;
+                    dps_profile.explosive * ship_stats.resos.explosive * tick_data.time_passed;
+                if let Some(breacher) = dps_profile.breacher {
+                    let breacher_dps = Float::min(breacher.absolute_max, breacher.percent_max * ship_stats.total_hp);
+                    // Breacher counts as EM damage for some reason
+                    item_sim_data.taken_dmg.em += breacher_dps * tick_data.time_passed;
+                }
             }
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
@@ -138,16 +146,31 @@ impl Calc {
         let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
         self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);
     }
-    fn get_ship_resonances(&mut self, uad: &Uad, ship_id: &ItemId) -> Option<DmgKinds<AttrVal>> {
+    fn get_ship_stats(&mut self, uad: &Uad, ship_id: &ItemId) -> Option<RahShipStats> {
         let em = self.get_item_attr_val_full(uad, ship_id, &EM_A_ATTR_ID).ok()?.dogma;
         let thermal = self.get_item_attr_val_full(uad, ship_id, &THERM_A_ATTR_ID).ok()?.dogma;
         let kinetic = self.get_item_attr_val_full(uad, ship_id, &KIN_A_ATTR_ID).ok()?.dogma;
         let explosive = self.get_item_attr_val_full(uad, ship_id, &EXPL_A_ATTR_ID).ok()?.dogma;
-        Some(DmgKinds {
-            em,
-            thermal,
-            kinetic,
-            explosive,
+        let shield_hp = match self.get_item_attr_val_full(uad, ship_id, &SHIELD_HP_A_ATTR_ID) {
+            Ok(shield_hp) => shield_hp.dogma,
+            Err(_) => OF(0.0),
+        };
+        let armor_hp = match self.get_item_attr_val_full(uad, ship_id, &ARMOR_HP_A_ATTR_ID) {
+            Ok(armor_hp) => armor_hp.dogma,
+            Err(_) => OF(0.0),
+        };
+        let hull_hp = match self.get_item_attr_val_full(uad, ship_id, &HULL_HP_A_ATTR_ID) {
+            Ok(hull_hp) => hull_hp.dogma,
+            Err(_) => OF(0.0),
+        };
+        Some(RahShipStats {
+            resos: DmgKinds {
+                em,
+                thermal,
+                kinetic,
+                explosive,
+            },
+            total_hp: shield_hp + armor_hp + hull_hp,
         })
     }
     fn get_fit_rah_sim_datas(&mut self, uad: &Uad, fit_id: &FitId) -> BTreeMap<ItemId, RahDataSim> {
@@ -187,13 +210,12 @@ impl Calc {
         if shift_amount <= OF(0.0) {
             return None;
         }
-        // Raw form of cycle time is defined in milliseconds (we don't really care in RAH sim, just
-        // to be more intuitive during debugging)
-        let cycle_ms = self.get_item_effect_id_duration(uad, item_id, &RAH_A_EFFECT_ID)? / OF(1000.0);
-        if cycle_ms <= OF(0.0) {
+        // Raw form of cycle time is defined in milliseconds, convert into seconds
+        let cycle_s = self.get_item_effect_id_duration(uad, item_id, &RAH_A_EFFECT_ID)? / OF(1000.0);
+        if cycle_s <= OF(0.0) {
             return None;
         }
-        let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_ms, shift_amount);
+        let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
         Some(RahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit

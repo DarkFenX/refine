@@ -3,6 +3,7 @@
 use crate::ed::EAttrId;
 
 pub(crate) const MASS: EAttrId = 4;
+pub(crate) const HP: EAttrId = 9;
 pub(crate) const POWER_OUTPUT: EAttrId = 11;
 pub(crate) const LOW_SLOTS: EAttrId = 12;
 pub(crate) const MED_SLOTS: EAttrId = 13;
@@ -27,6 +28,8 @@ pub(crate) const THERM_DMG: EAttrId = 118;
 pub(crate) const CHARGE_SIZE: EAttrId = 128;
 pub(crate) const VOLUME: EAttrId = 161;
 pub(crate) const MISSILE_DMG_MULT: EAttrId = 212;
+pub(crate) const SHIELD_CAPACITY: EAttrId = 263;
+pub(crate) const ARMOR_HP: EAttrId = 265;
 pub(crate) const ARMOR_EM_DMG_RESONANCE: EAttrId = 267;
 pub(crate) const ARMOR_EXPL_DMG_RESONANCE: EAttrId = 268;
 pub(crate) const ARMOR_KIN_DMG_RESONANCE: EAttrId = 269;
