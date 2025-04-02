@@ -5,7 +5,7 @@ use crate::{
     util::{StMap, StMapSetL1},
 };
 
-use super::shared::RAH_A_EFFECT_ID;
+use super::shared::RAH_EFFECT_ID;
 
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct RahSim {
@@ -19,7 +19,7 @@ impl RahSim {
         Self {
             resonances: StMap::new(),
             by_fit: StMapSetL1::new(),
-            cycle_time_a_attr_id: src.get_a_effect(&RAH_A_EFFECT_ID).and_then(|v| v.duration_attr_id),
+            cycle_time_a_attr_id: src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id),
             sim_running: false,
         }
     }

@@ -17,8 +17,8 @@ use super::{
     rah_history_entry::RahSimHistoryEntry,
     rah_info::RahInfo,
     shared::{
-        ARMOR_HP_A_ATTR_ID, EM_A_ATTR_ID, EXPL_A_ATTR_ID, HULL_HP_A_ATTR_ID, KIN_A_ATTR_ID, RAH_A_EFFECT_ID,
-        SHIELD_HP_A_ATTR_ID, SHIFT_A_ATTR_ID, THERM_A_ATTR_ID, TickCount, rah_round,
+        ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID,
+        HULL_HP_ATTR_ID, RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, TickCount, rah_round,
     },
     ship_stats::RahShipStats,
     tick_iter::RahSimTickIter,
@@ -151,19 +151,28 @@ impl Calc {
         self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);
     }
     fn get_ship_stats(&mut self, uad: &Uad, ship_id: &ItemId) -> Option<RahShipStats> {
-        let em = self.get_item_attr_val_full(uad, ship_id, &EM_A_ATTR_ID).ok()?.dogma;
-        let thermal = self.get_item_attr_val_full(uad, ship_id, &THERM_A_ATTR_ID).ok()?.dogma;
-        let kinetic = self.get_item_attr_val_full(uad, ship_id, &KIN_A_ATTR_ID).ok()?.dogma;
-        let explosive = self.get_item_attr_val_full(uad, ship_id, &EXPL_A_ATTR_ID).ok()?.dogma;
-        let shield_hp = match self.get_item_attr_val_full(uad, ship_id, &SHIELD_HP_A_ATTR_ID) {
+        let em = self.get_item_attr_val_full(uad, ship_id, &ARMOR_EM_ATTR_ID).ok()?.dogma;
+        let thermal = self
+            .get_item_attr_val_full(uad, ship_id, &ARMOR_THERM_ATTR_ID)
+            .ok()?
+            .dogma;
+        let kinetic = self
+            .get_item_attr_val_full(uad, ship_id, &ARMOR_KIN_ATTR_ID)
+            .ok()?
+            .dogma;
+        let explosive = self
+            .get_item_attr_val_full(uad, ship_id, &ARMOR_EXPL_ATTR_ID)
+            .ok()?
+            .dogma;
+        let shield_hp = match self.get_item_attr_val_full(uad, ship_id, &SHIELD_HP_ATTR_ID) {
             Ok(shield_hp) => shield_hp.dogma,
             Err(_) => OF(0.0),
         };
-        let armor_hp = match self.get_item_attr_val_full(uad, ship_id, &ARMOR_HP_A_ATTR_ID) {
+        let armor_hp = match self.get_item_attr_val_full(uad, ship_id, &ARMOR_HP_ATTR_ID) {
             Ok(armor_hp) => armor_hp.dogma,
             Err(_) => OF(0.0),
         };
-        let hull_hp = match self.get_item_attr_val_full(uad, ship_id, &HULL_HP_A_ATTR_ID) {
+        let hull_hp = match self.get_item_attr_val_full(uad, ship_id, &HULL_HP_ATTR_ID) {
             Ok(hull_hp) => hull_hp.dogma,
             Err(_) => OF(0.0),
         };
@@ -196,10 +205,10 @@ impl Calc {
     }
     fn get_rah_sim_data(&mut self, uad: &Uad, item_id: &ItemId) -> Option<RahDataSim> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
-        let res_em = self.get_item_attr_val_no_pp(uad, item_id, &EM_A_ATTR_ID).ok()?;
-        let res_therm = self.get_item_attr_val_no_pp(uad, item_id, &THERM_A_ATTR_ID).ok()?;
-        let res_kin = self.get_item_attr_val_no_pp(uad, item_id, &KIN_A_ATTR_ID).ok()?;
-        let res_expl = self.get_item_attr_val_no_pp(uad, item_id, &EXPL_A_ATTR_ID).ok()?;
+        let res_em = self.get_item_attr_val_no_pp(uad, item_id, &ARMOR_EM_ATTR_ID).ok()?;
+        let res_therm = self.get_item_attr_val_no_pp(uad, item_id, &ARMOR_THERM_ATTR_ID).ok()?;
+        let res_kin = self.get_item_attr_val_no_pp(uad, item_id, &ARMOR_KIN_ATTR_ID).ok()?;
+        let res_expl = self.get_item_attr_val_no_pp(uad, item_id, &ARMOR_EXPL_ATTR_ID).ok()?;
         if res_em.dogma == OF(1.0)
             && res_therm.dogma == OF(1.0)
             && res_kin.dogma == OF(1.0)
@@ -210,12 +219,16 @@ impl Calc {
         // Other attributes using regular getters
         // Divide by 100 for convenience - raw form of shift amount is defined in percentages, while
         // resonances are in absolute form
-        let shift_amount = self.get_item_attr_val_full(uad, item_id, &SHIFT_A_ATTR_ID).ok()?.dogma / OF(100.0);
+        let shift_amount = self
+            .get_item_attr_val_full(uad, item_id, &RAH_SHIFT_ATTR_ID)
+            .ok()?
+            .dogma
+            / OF(100.0);
         if shift_amount <= OF(0.0) {
             return None;
         }
         // Raw form of cycle time is defined in milliseconds, convert into seconds
-        let cycle_s = self.get_item_effect_id_duration(uad, item_id, &RAH_A_EFFECT_ID)? / OF(1000.0);
+        let cycle_s = self.get_item_effect_id_duration(uad, item_id, &RAH_EFFECT_ID)? / OF(1000.0);
         if cycle_s <= OF(0.0) {
             return None;
         }
@@ -230,28 +243,28 @@ impl Calc {
     }
     fn set_rah_unadapted(&mut self, uad: &Uad, item_id: &ItemId, notify: bool) {
         let em = self
-            .get_item_attr_val_no_pp(uad, item_id, &EM_A_ATTR_ID)
+            .get_item_attr_val_no_pp(uad, item_id, &ARMOR_EM_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
                 extra: OF(1.0),
             });
         let thermal = self
-            .get_item_attr_val_no_pp(uad, item_id, &THERM_A_ATTR_ID)
+            .get_item_attr_val_no_pp(uad, item_id, &ARMOR_THERM_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
                 extra: OF(1.0),
             });
         let kinetic = self
-            .get_item_attr_val_no_pp(uad, item_id, &KIN_A_ATTR_ID)
+            .get_item_attr_val_no_pp(uad, item_id, &ARMOR_KIN_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
                 extra: OF(1.0),
             });
         let explosive = self
-            .get_item_attr_val_no_pp(uad, item_id, &EXPL_A_ATTR_ID)
+            .get_item_attr_val_no_pp(uad, item_id, &ARMOR_EXPL_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
@@ -269,10 +282,10 @@ impl Calc {
     fn set_rah_result(&mut self, uad: &Uad, item_id: &ItemId, resos: DmgKinds<CalcAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
-            self.force_attr_postproc_recalc(uad, item_id, &EM_A_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &THERM_A_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &KIN_A_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &EXPL_A_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_EM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_THERM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_KIN_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_EXPL_ATTR_ID);
         }
     }
     fn set_partial_fit_rahs_result(

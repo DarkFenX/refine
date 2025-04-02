@@ -14,7 +14,7 @@ pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: ItemId, a_effect_id:
         kind: ModifierKind::Local,
         affector_item_id,
         a_effect_id,
-        affector_value: AffectorValue::AncillaryArmorRep,
+        affector_value: AffectorValue::AarRepAmount,
         op: Op::ExtraMul,
         aggr_mode: AggrMode::Stack,
         affectee_filter: AffecteeFilter::Direct(Location::Item),

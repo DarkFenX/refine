@@ -2,6 +2,7 @@
 
 use crate::{ad::AEffectId, ed::consts::effects as ece};
 
+pub(crate) const MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::MISSILE_LAUNCHING);
 pub(crate) const LO_POWER: AEffectId = AEffectId::Dogma(ece::LO_POWER);
 pub(crate) const HI_POWER: AEffectId = AEffectId::Dogma(ece::HI_POWER);
 pub(crate) const MED_POWER: AEffectId = AEffectId::Dogma(ece::MED_POWER);
@@ -9,6 +10,8 @@ pub(crate) const ONLINE: AEffectId = AEffectId::Dogma(ece::ONLINE);
 pub(crate) const LAUNCHER_FITTED: AEffectId = AEffectId::Dogma(ece::LAUNCHER_FITTED);
 pub(crate) const TURRET_FITTED: AEffectId = AEffectId::Dogma(ece::TURRET_FITTED);
 pub(crate) const USE_MISSILES: AEffectId = AEffectId::Dogma(ece::USE_MISSILES);
+pub(crate) const DEFENDER_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::DEFENDER_MISSILE_LAUNCHING);
+pub(crate) const FOF_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::FOF_MISSILE_LAUNCHING);
 pub(crate) const MISSILE_EM_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSILE_EM_DMG_BONUS);
 pub(crate) const MISSILE_EXPL_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSILE_EXPL_DMG_BONUS);
 pub(crate) const MISSILE_THERM_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSILE_THERM_DMG_BONUS);
@@ -65,8 +68,10 @@ pub(crate) const WEATHER_ELECTRIC_STORM: AEffectId = AEffectId::Dogma(ece::WEATH
 pub(crate) const WEATHER_INFERNAL: AEffectId = AEffectId::Dogma(ece::WEATHER_INFERNAL);
 pub(crate) const WEATHER_XENON_GAS: AEffectId = AEffectId::Dogma(ece::WEATHER_XENON_GAS);
 pub(crate) const DEBUFF_LANCE: AEffectId = AEffectId::Dogma(ece::DEBUFF_LANCE);
+pub(crate) const DOT_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::DOT_MISSILE_LAUNCHING);
 
 // Library-specific effects
 pub(crate) const REE_CHAR_MISSILE_DMG: AEffectId = AEffectId::Custom(1);
 pub(crate) const REE_AAR_PASTE_BOOST: AEffectId = AEffectId::Custom(2);
 pub(crate) const REE_STASIS_WEB_PROBE: AEffectId = AEffectId::Custom(3);
+pub(crate) const REE_MISSILE_FLIGHT_TIME: AEffectId = AEffectId::Custom(4);

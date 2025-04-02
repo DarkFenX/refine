@@ -1,11 +1,12 @@
 use smallvec::SmallVec;
 
-use crate::sol::{ItemId, svc::calc::AffectorInfo, uad::Uad};
-
-use super::{
-    attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS},
-    misc::get_ship_id,
+use crate::sol::{
+    ItemId,
+    svc::calc::{AffectorInfo, modifier::custom::shared::get_ship_id},
+    uad::Uad,
 };
+
+use super::attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS};
 
 pub(in crate::sol::svc::calc::modifier) fn get_affector_info(uad: &Uad, item_id: &ItemId) -> SmallVec<AffectorInfo, 1> {
     let mut affectors = SmallVec::new();

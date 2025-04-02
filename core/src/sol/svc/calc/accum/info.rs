@@ -67,6 +67,7 @@ pub(in crate::sol::svc::calc) struct ModAccumInfo {
     post_div: AttrStack,
     post_perc: AttrStack,
     post_assign: AttrAggr,
+    extra_add: AttrAggr,
     extra_mul: AttrAggr,
 }
 impl ModAccumInfo {
@@ -81,6 +82,7 @@ impl ModAccumInfo {
             post_div: AttrStack::new(),
             post_perc: AttrStack::new(),
             post_assign: AttrAggr::new(),
+            extra_add: AttrAggr::new(),
             extra_mul: AttrAggr::new(),
         }
     }
@@ -224,6 +226,17 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
+            Op::ExtraAdd => self.extra_add.add_val(
+                Op::ExtraAdd,
+                val,
+                proj_mult,
+                res_mult,
+                &normalize_noop,
+                &diminish_basic,
+                &revert_noop,
+                aggr_mode,
+                affectors,
+            ),
             Op::ExtraMul => self.extra_mul.add_val(
                 Op::ExtraMul,
                 val,
@@ -275,6 +288,10 @@ impl ModAccumInfo {
         )
     }
     pub(in crate::sol::svc::calc) fn apply_extra_mods(&mut self, attr_info: AttrValInfo, hig: bool) -> AttrValInfo {
+        let attr_info = apply_add(
+            attr_info,
+            self.extra_add.get_comb_attr_info(&combine_adds, &revert_noop, hig),
+        );
         apply_mul(
             attr_info,
             self.extra_mul.get_comb_attr_info(&combine_muls, &revert_noop, hig),

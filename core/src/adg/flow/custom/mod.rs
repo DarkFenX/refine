@@ -6,6 +6,7 @@ mod aar_paste_boost;
 mod char_missile_dmg;
 mod drone_dmg_self_srq;
 mod missile_dmg_self_srq;
+mod missile_flight_time;
 mod missile_rof_self_srq;
 mod online_eff_cat;
 mod prop_mods;
@@ -20,6 +21,7 @@ mod wubble;
 pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     aar_paste_boost::add_aar_paste_boost_effect(a_data);
     char_missile_dmg::add_char_missile_dmg_mods(a_data);
+    missile_flight_time::add_missile_flight_time(a_data);
     online_eff_cat::fix_online_effect_cat(a_data);
     prop_mods::add_ab_modifiers(a_data);
     prop_mods::add_mwd_modifiers(a_data);

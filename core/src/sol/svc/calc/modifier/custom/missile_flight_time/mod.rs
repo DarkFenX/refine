@@ -5,6 +5,5 @@ pub(in crate::sol::svc::calc) use modifier::make_mod;
 mod affector_info;
 mod attr;
 mod deps;
-mod misc;
 mod mod_val_getter;
 mod modifier;

@@ -2,13 +2,16 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     ad,
-    sol::{AttrVal, ItemId, svc::calc::Calc, uad::Uad},
+    sol::{
+        AttrVal, ItemId,
+        svc::calc::{Calc, modifier::custom::shared::get_ship_id},
+        uad::Uad,
+    },
 };
 
 use super::{
     attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS},
     deps::reg_dependencies,
-    misc::get_ship_id,
 };
 
 pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
@@ -17,9 +20,9 @@ pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
     item_id: &ItemId,
     a_effect_id: &ad::AEffectId,
 ) -> Option<AttrVal> {
+    let ship_id = get_ship_id(uad, item_id)?;
     let speed_boost = calc.get_item_attr_val_full(uad, item_id, &PROP_BOOST).ok()?;
     let thrust = calc.get_item_attr_val_full(uad, item_id, &PROP_THRUST).ok()?;
-    let ship_id = get_ship_id(uad, item_id)?;
     let mass = calc.get_item_attr_val_full(uad, &ship_id, &SHIP_MASS).ok()?;
     let perc = speed_boost.dogma * thrust.dogma / mass.dogma;
     if perc.is_infinite() {

@@ -11,8 +11,8 @@ use crate::{
 };
 
 use super::shared::{
-    ARMOR_HP_A_ATTR_ID, EM_A_ATTR_ID, EXPL_A_ATTR_ID, HULL_HP_A_ATTR_ID, KIN_A_ATTR_ID, RAH_A_EFFECT_ID,
-    SHIELD_HP_A_ATTR_ID, SHIFT_A_ATTR_ID, THERM_A_ATTR_ID,
+    ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID, HULL_HP_ATTR_ID,
+    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID,
 };
 
 impl Calc {
@@ -42,7 +42,7 @@ impl Calc {
             return;
         }
         if let Item::Module(module) = item {
-            if a_effects.iter().any(|v| v.id == RAH_A_EFFECT_ID) {
+            if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
                 let item_id = module.get_item_id();
                 let fit_id = module.get_fit_id();
                 // Clear sim data for other RAHs on the same fit
@@ -53,28 +53,28 @@ impl Calc {
                 // Add postprocessors
                 let item_attr_data = self.attrs.get_item_attr_data_mut(&item_id).unwrap();
                 item_attr_data.postprocs.insert(
-                    EM_A_ATTR_ID,
+                    ARMOR_EM_ATTR_ID,
                     ItemAttrPostprocs {
                         fast: rah_em_resonance_postproc_fast,
                         info: rah_em_resonance_postproc_info,
                     },
                 );
                 item_attr_data.postprocs.insert(
-                    THERM_A_ATTR_ID,
+                    ARMOR_THERM_ATTR_ID,
                     ItemAttrPostprocs {
                         fast: rah_therm_resonance_postproc_fast,
                         info: rah_therm_resonance_postproc_info,
                     },
                 );
                 item_attr_data.postprocs.insert(
-                    KIN_A_ATTR_ID,
+                    ARMOR_KIN_ATTR_ID,
                     ItemAttrPostprocs {
                         fast: rah_kin_resonance_postproc_fast,
                         info: rah_kin_resonance_postproc_info,
                     },
                 );
                 item_attr_data.postprocs.insert(
-                    EXPL_A_ATTR_ID,
+                    ARMOR_EXPL_ATTR_ID,
                     ItemAttrPostprocs {
                         fast: rah_expl_resonance_postproc_fast,
                         info: rah_expl_resonance_postproc_info,
@@ -93,15 +93,15 @@ impl Calc {
             return;
         }
         if let Item::Module(module) = item {
-            if a_effects.iter().any(|v| v.id == RAH_A_EFFECT_ID) {
+            if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
                 let item_id = module.get_item_id();
                 let fit_id = module.get_fit_id();
                 // Remove postprocessors
                 let item_attr_data = self.attrs.get_item_attr_data_mut(&item_id).unwrap();
-                item_attr_data.postprocs.remove(&EM_A_ATTR_ID);
-                item_attr_data.postprocs.remove(&THERM_A_ATTR_ID);
-                item_attr_data.postprocs.remove(&KIN_A_ATTR_ID);
-                item_attr_data.postprocs.remove(&EXPL_A_ATTR_ID);
+                item_attr_data.postprocs.remove(&ARMOR_EM_ATTR_ID);
+                item_attr_data.postprocs.remove(&ARMOR_THERM_ATTR_ID);
+                item_attr_data.postprocs.remove(&ARMOR_KIN_ATTR_ID);
+                item_attr_data.postprocs.remove(&ARMOR_EXPL_ATTR_ID);
                 // Remove sim data for RAH being stopped
                 self.rah.resonances.remove(&item_id);
                 self.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
@@ -126,7 +126,7 @@ impl Calc {
         }
         match *a_attr_id {
             // Ship armor resonances and RAH resonances
-            EM_A_ATTR_ID | THERM_A_ATTR_ID | KIN_A_ATTR_ID | EXPL_A_ATTR_ID => {
+            ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
                 match uad.items.get_item(item_id).unwrap() {
                     Item::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_id()),
                     Item::Module(module) => {
@@ -138,7 +138,7 @@ impl Calc {
                 }
             }
             // RAH shift amount
-            SHIFT_A_ATTR_ID => {
+            RAH_SHIFT_ATTR_ID => {
                 if self.rah.resonances.contains_key(item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
@@ -160,7 +160,7 @@ impl Calc {
                 }
             }
             // Ship HP - need to clear results since breacher DPS depends on those
-            SHIELD_HP_A_ATTR_ID | ARMOR_HP_A_ATTR_ID | HULL_HP_A_ATTR_ID => {
+            SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
                 if let Item::Ship(ship) = uad.items.get_item(item_id).unwrap() {
                     self.clear_fit_rah_results(uad, &ship.get_fit_id())
                 }
@@ -169,7 +169,7 @@ impl Calc {
         }
     }
     pub(in crate::sol::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
-        self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_A_EFFECT_ID).and_then(|v| v.duration_attr_id);
+        self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id);
     }
     pub(in crate::sol::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
         self.clear_fit_rah_results(uad, fit_id);
@@ -183,10 +183,10 @@ impl Calc {
     }
     fn clear_rah_result(&mut self, uad: &Uad, item_id: &ItemId) {
         if self.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
-            self.force_attr_postproc_recalc(uad, item_id, &EM_A_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &THERM_A_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &KIN_A_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_id, &EXPL_A_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_EM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_THERM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_KIN_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &ARMOR_EXPL_ATTR_ID);
         }
     }
     fn get_rah_resonances(&mut self, uad: &Uad, item_id: &ItemId) -> DmgKinds<CalcAttrVal> {

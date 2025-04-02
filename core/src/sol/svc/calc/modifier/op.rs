@@ -13,6 +13,7 @@ pub(in crate::sol::svc::calc) enum Op {
     PostPerc,
     PostPercImmune,
     PostAssign,
+    ExtraAdd,
     ExtraMul,
 }
 impl From<&ad::AOp> for Op {
@@ -50,6 +51,7 @@ impl From<Op> for OpInfo {
             // this operator to be part of the info
             Op::PostPercImmune => Self::PostPerc,
             Op::PostAssign => Self::PostAssign,
+            Op::ExtraAdd => Self::ExtraAdd,
             Op::ExtraMul => Self::ExtraMul,
         }
     }

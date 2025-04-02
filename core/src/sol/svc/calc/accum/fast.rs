@@ -30,6 +30,7 @@ pub(in crate::sol::svc::calc) struct ModAccumFast {
     post_div: AttrStack,
     post_perc: AttrStack,
     post_assign: AttrAggr,
+    extra_add: AttrAggr,
     extra_mul: AttrAggr,
     pen_chains: PenChains,
 }
@@ -45,6 +46,7 @@ impl ModAccumFast {
             post_div: AttrStack::new(),
             post_perc: AttrStack::new(),
             post_assign: AttrAggr::new(),
+            extra_add: AttrAggr::new(),
             extra_mul: AttrAggr::new(),
             pen_chains: PenChains::new(),
         }
@@ -125,6 +127,9 @@ impl ModAccumFast {
             Op::PostAssign => self
                 .post_assign
                 .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
+            Op::ExtraAdd => self
+                .extra_add
+                .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),
             Op::ExtraMul => self
                 .extra_mul
                 .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode),
@@ -169,6 +174,10 @@ impl ModAccumFast {
         )
     }
     pub(in crate::sol::svc::calc) fn apply_extra_mods(&mut self, val: AttrVal, hig: bool) -> AttrVal {
+        let val = apply_add(
+            val,
+            self.extra_add.get_comb_val(combine_adds, hig, &mut self.pen_chains),
+        );
         apply_mul(
             val,
             self.extra_mul.get_comb_val(combine_muls, hig, &mut self.pen_chains),

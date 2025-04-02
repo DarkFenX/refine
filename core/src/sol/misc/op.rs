@@ -33,6 +33,8 @@ pub enum OpInfo {
     MinLimit,
     /// Limits maximum attribute value.
     MaxLimit,
+    /// Non-dogma addition operator.
+    ExtraAdd,
     /// Non-dogma multiplication operator.
     ExtraMul,
 }

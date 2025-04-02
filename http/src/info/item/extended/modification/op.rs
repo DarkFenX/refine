@@ -13,6 +13,7 @@ pub(crate) enum HModOp {
     PostAssign,
     MinLimit,
     MaxLimit,
+    ExtraAdd,
     ExtraMul,
 }
 impl From<&rc::OpInfo> for HModOp {
@@ -30,6 +31,7 @@ impl From<&rc::OpInfo> for HModOp {
             rc::OpInfo::PostAssign => Self::PostAssign,
             rc::OpInfo::MinLimit => Self::MinLimit,
             rc::OpInfo::MaxLimit => Self::MaxLimit,
+            rc::OpInfo::ExtraAdd => Self::ExtraAdd,
             rc::OpInfo::ExtraMul => Self::ExtraMul,
         }
     }
