@@ -157,7 +157,7 @@ class SolarSystem(AttrDict):
     def create_fit(
             self, *,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dps: tuple[float, float, float, float] | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfile | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 201,

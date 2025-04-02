@@ -4,7 +4,6 @@ import os
 import subprocess
 import typing
 from dataclasses import dataclass
-from signal import SIGKILL
 
 if typing.TYPE_CHECKING:
     from pathlib import Path
