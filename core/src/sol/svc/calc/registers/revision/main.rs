@@ -14,11 +14,11 @@ impl RevisionRegister {
         }
     }
     // Query methods
-    pub(in crate::sol::svc::calc) fn get_mods_on_item_add(&self) -> Vec<CtxModifier> {
-        self.item_add.iter().copied().collect()
+    pub(in crate::sol::svc::calc) fn iter_mods_on_item_add(&self) -> impl ExactSizeIterator<Item = &CtxModifier> {
+        self.item_add.iter()
     }
-    pub(in crate::sol::svc::calc) fn get_mods_on_item_remove(&self) -> Vec<CtxModifier> {
-        self.item_remove.iter().copied().collect()
+    pub(in crate::sol::svc::calc) fn iter_mods_on_item_remove(&self) -> impl ExactSizeIterator<Item = &CtxModifier> {
+        self.item_remove.iter()
     }
     // Modification methods
     pub(in crate::sol::svc::calc) fn reg_mod(&mut self, modifier: &CtxModifier) {

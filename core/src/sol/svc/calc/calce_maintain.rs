@@ -43,21 +43,31 @@ impl Calc {
     }
     pub(in crate::sol::svc) fn item_added(&mut self, uad: &Uad, item: &Item) {
         // Custom modifiers
-        let ctx_modifiers = self.revs.get_mods_on_item_add();
-        for ctx_modifier in ctx_modifiers.iter() {
-            if ctx_modifier.raw.revise_on_item_add(item, uad) {
-                let mut util_items = Vec::new();
-                self.force_mod_affectee_attr_recalc(&mut util_items, uad, ctx_modifier);
+        let ctx_modifiers = self
+            .revs
+            .iter_mods_on_item_add()
+            .filter(|v| v.raw.revise_on_item_add(item, uad))
+            .copied()
+            .collect_vec();
+        if !ctx_modifiers.is_empty() {
+            let mut util_items = Vec::new();
+            for ctx_modifier in ctx_modifiers {
+                self.force_mod_affectee_attr_recalc(&mut util_items, uad, &ctx_modifier);
             }
         }
     }
     pub(in crate::sol::svc) fn item_removed(&mut self, uad: &Uad, item: &Item) {
         // Custom modifiers
-        let ctx_modifiers = self.revs.get_mods_on_item_remove();
-        for ctx_modifier in ctx_modifiers.iter() {
-            if ctx_modifier.raw.revise_on_item_remove(item, uad) {
-                let mut util_items = Vec::new();
-                self.force_mod_affectee_attr_recalc(&mut util_items, uad, ctx_modifier);
+        let ctx_modifiers = self
+            .revs
+            .iter_mods_on_item_add()
+            .filter(|v| v.raw.revise_on_item_remove(item, uad))
+            .copied()
+            .collect_vec();
+        if !ctx_modifiers.is_empty() {
+            let mut util_items = Vec::new();
+            for ctx_modifier in ctx_modifiers {
+                self.force_mod_affectee_attr_recalc(&mut util_items, uad, &ctx_modifier);
             }
         }
     }
