@@ -76,7 +76,9 @@ impl Calc {
         self.handle_location_owner_change(uad, item);
         self.std.unreg_affectee(uad, item);
         let item_id = item.get_item_id();
-        self.deps.remove_item(&item_id);
+        for affectee_attr_spec in self.deps.remove_item(&item_id) {
+            self.force_attr_value_recalc(uad, &affectee_attr_spec.item_id, &affectee_attr_spec.a_attr_id);
+        }
         self.attrs.item_unloaded(&item_id);
     }
     pub(in crate::sol::svc) fn effects_started(&mut self, uad: &Uad, item: &Item, a_effects: &[ad::ArcEffect]) {

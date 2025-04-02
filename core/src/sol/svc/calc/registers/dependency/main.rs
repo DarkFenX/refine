@@ -103,8 +103,9 @@ impl DependencyRegister {
             }
         }
     }
-    pub(in crate::sol::svc::calc) fn remove_item(&mut self, item_id: &ItemId) {
-        // Anonymous dependencies
+    pub(in crate::sol::svc::calc) fn remove_item(&mut self, item_id: &ItemId) -> Vec<AttrSpec> {
+        // Anonymous dependencies - those are limited to interactions between attributes of a single
+        // item, so we are not returning any of affectee attr specs
         if let Some(attrs_iter) = self.anonymous_by_item.remove_key(item_id) {
             for (affector_a_attr_id, affectee_a_attr_id) in attrs_iter {
                 let affector_spec = AttrSpec {
@@ -119,14 +120,21 @@ impl DependencyRegister {
             }
         }
         // Dependencies with source
+        let mut affectees_to_clear = Vec::new();
         if let Some(sources) = self.source_by_item.remove_key(item_id) {
             for source in sources {
                 if let Some(attr_spec_iter) = self.by_source.remove_key(&source) {
                     for (affector_spec, affectee_spec) in attr_spec_iter {
                         self.data.remove_entry(&affector_spec, &affectee_spec, &Some(source));
+                        // Clearing attributes on an item being removed doesn't make sense, but
+                        // request to clear attributes which were relying on the item
+                        if *item_id != affectee_spec.item_id {
+                            affectees_to_clear.push(affectee_spec);
+                        }
                     }
                 }
             }
         }
+        affectees_to_clear
     }
 }
