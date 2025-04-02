@@ -161,7 +161,7 @@ def test_state(client, consts):
         api_ship.mods  # noqa: B018
 
 
-def test_speed_mod_stacking(client, consts):
+def test_speed_modifier_stacking(client, consts):
     # Actual EVE scenario, AB speed boost + black hole speed boost
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity, stackable=False)
     eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
@@ -209,7 +209,7 @@ def test_speed_mod_stacking(client, consts):
     assert api_ship_mod_sw.applied_val == approx(1.747443)
 
 
-def test_sig_mod_stacking(client, consts):
+def test_sig_modifier_stacking(client, consts):
     # Actual EVE scenario, MWD sig bloom + shield rigs
     eve_sig_affector_attr_prop_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius_bonus)
     eve_sig_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius, stackable=False)
@@ -254,7 +254,7 @@ def test_sig_mod_stacking(client, consts):
     assert api_ship_mod_rig.applied_val == approx(8.6912)
 
 
-def test_speed_mod_mass_zero(client, consts):
+def test_speed_modifier_mass_zero(client, consts):
     # Part of speed boost calculation is division by mass, just check what happens if it's 0
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
@@ -281,7 +281,7 @@ def test_speed_mod_mass_zero(client, consts):
         api_ship.mods  # noqa: B018
 
 
-def test_speed_mod_mass_changed(client, consts):
+def test_speed_modifier_mass_changed(client, consts):
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
     eve_speed_boost_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
@@ -355,7 +355,7 @@ def test_speed_mod_mass_changed(client, consts):
     assert len(api_ship2_item.mods[eve_speed_attr_id].find_by_affector_item(affector_item_id=api_prop_item.id)) == 1
 
 
-def test_speed_mod_boost_changed(client, consts):
+def test_speed_modifier_boost_changed(client, consts):
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
     eve_speed_boost_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
@@ -429,7 +429,7 @@ def test_speed_mod_boost_changed(client, consts):
     assert api_prop_item.update().attrs[eve_speed_boost_attr_id].dogma == approx(135)
 
 
-def test_speed_mod_thrust_changed(client, consts):
+def test_speed_modifier_thrust_changed(client, consts):
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
     eve_speed_boost_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)

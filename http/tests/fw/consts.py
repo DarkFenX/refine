@@ -427,6 +427,7 @@ class ApiModOp(StrEnum):
     post_assign = 'post_assign'
     min_limit = 'min_limit'
     max_limit = 'max_limit'
+    extra_add = 'extra_add'
     extra_mul = 'extra_mul'
 
 
