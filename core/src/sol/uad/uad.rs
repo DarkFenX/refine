@@ -31,7 +31,7 @@ impl Uad {
             sw_effects: StSet::new(),
             proj_effects: StSet::new(),
             items: Items::new(),
-            default_incoming_dps: DpsProfile::new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None),
+            default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
             sec_zone: SecZone::NullSec,
         }
     }

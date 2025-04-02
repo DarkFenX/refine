@@ -1,5 +1,5 @@
 pub use misc::{
-    AdjustableCount, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, ModRack, OpInfo, SecZone,
+    AdjustableCount, BreacherInfo, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, ModRack, OpInfo, SecZone,
     SecZoneCorruption,
 };
 pub use primitives::{
@@ -11,7 +11,7 @@ pub use sole_item::{AddMode, RmMode};
 
 mod debug;
 pub(crate) mod info;
-mod misc;
+pub(crate) mod misc;
 mod primitives;
 mod proj_tracker;
 mod sol;

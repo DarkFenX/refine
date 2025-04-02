@@ -20,24 +20,8 @@ impl HAddFitCmd {
             }
         }
         if let Some(rah_incoming_dps) = &self.rah_incoming_dps {
-            if let Err(error) = core_sol.set_fit_rah_incoming_dps(&fit_info.id, rah_incoming_dps.into()) {
+            if let Err(error) = core_sol.set_fit_rah_incoming_dps(&fit_info.id, rah_incoming_dps.try_into()?) {
                 match error {
-                    rc::err::SetFitRahIncomingDpsError::EmDpsNegative(e) => {
-                        core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDpsProfileEm(e));
-                    }
-                    rc::err::SetFitRahIncomingDpsError::ThermDpsNegative(e) => {
-                        core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDpsProfileTherm(e));
-                    }
-                    rc::err::SetFitRahIncomingDpsError::KinDpsNegative(e) => {
-                        core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDpsProfileKin(e));
-                    }
-                    rc::err::SetFitRahIncomingDpsError::ExplDpsNegative(e) => {
-                        core_sol.remove_fit(&fit_info.id).unwrap();
-                        return Err(HExecError::InvalidDpsProfileExpl(e));
-                    }
                     rc::err::SetFitRahIncomingDpsError::FitNotFound(_) => panic!(),
                 }
             }

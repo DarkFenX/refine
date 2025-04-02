@@ -1,6 +1,5 @@
 pub use sole_get_fit_rah_incoming_dps::GetFitRahIncomingDpsError;
 pub use sole_remove_fit_rah_incoming_dps::RemoveFitRahIncomingDpsError;
-pub use sole_set_default_incoming_dps::SetDefaultIncomingDpsError;
 pub use sole_set_fit_rah_incoming_dps::SetFitRahIncomingDpsError;
 
 mod sole_get_default_incoming_dps;

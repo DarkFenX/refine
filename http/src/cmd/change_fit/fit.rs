@@ -49,14 +49,8 @@ impl HChangeFitCmd {
         }
         match &self.rah_incoming_dps {
             TriStateField::Value(rah_incoming_dps) => {
-                if let Err(error) = core_sol.set_fit_rah_incoming_dps(fit_id, rah_incoming_dps.into()) {
+                if let Err(error) = core_sol.set_fit_rah_incoming_dps(fit_id, rah_incoming_dps.try_into()?) {
                     return Err(match error {
-                        rc::err::SetFitRahIncomingDpsError::EmDpsNegative(e) => HExecError::InvalidDpsProfileEm(e),
-                        rc::err::SetFitRahIncomingDpsError::ThermDpsNegative(e) => {
-                            HExecError::InvalidDpsProfileTherm(e)
-                        }
-                        rc::err::SetFitRahIncomingDpsError::KinDpsNegative(e) => HExecError::InvalidDpsProfileKin(e),
-                        rc::err::SetFitRahIncomingDpsError::ExplDpsNegative(e) => HExecError::InvalidDpsProfileExpl(e),
                         rc::err::SetFitRahIncomingDpsError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
                     });
                 }

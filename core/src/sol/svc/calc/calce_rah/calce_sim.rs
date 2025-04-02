@@ -76,15 +76,18 @@ impl Calc {
                 }
             };
             for item_sim_data in sim_datas.values_mut() {
-                item_sim_data.taken_dmg.em += dps_profile.em * ship_stats.resos.em * tick_data.time_passed;
+                item_sim_data.taken_dmg.em += dps_profile.get_em() * ship_stats.resos.em * tick_data.time_passed;
                 item_sim_data.taken_dmg.thermal +=
-                    dps_profile.thermal * ship_stats.resos.thermal * tick_data.time_passed;
+                    dps_profile.get_thermal() * ship_stats.resos.thermal * tick_data.time_passed;
                 item_sim_data.taken_dmg.kinetic +=
-                    dps_profile.kinetic * ship_stats.resos.kinetic * tick_data.time_passed;
+                    dps_profile.get_kinetic() * ship_stats.resos.kinetic * tick_data.time_passed;
                 item_sim_data.taken_dmg.explosive +=
-                    dps_profile.explosive * ship_stats.resos.explosive * tick_data.time_passed;
-                if let Some(breacher) = dps_profile.breacher {
-                    let breacher_dps = Float::min(breacher.absolute_max, breacher.percent_max * ship_stats.total_hp);
+                    dps_profile.get_explosive() * ship_stats.resos.explosive * tick_data.time_passed;
+                if let Some(breacher) = dps_profile.get_breacher() {
+                    let breacher_dps = Float::min(
+                        breacher.get_absolute_max(),
+                        breacher.get_relative_max() * ship_stats.total_hp,
+                    );
                     // Breacher counts as EM damage for some reason
                     item_sim_data.taken_dmg.em += breacher_dps * tick_data.time_passed;
                 }

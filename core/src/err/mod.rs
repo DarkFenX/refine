@@ -1,14 +1,12 @@
 pub mod basic;
 pub use crate::{
     sol::{
+        misc::{NewBreacherInfoError, NewDpsProfileError},
         sole_calc::{
             GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, SetItemEffectModeError,
             SetItemEffectModesError,
         },
-        sole_dps_profile::{
-            GetFitRahIncomingDpsError, RemoveFitRahIncomingDpsError, SetDefaultIncomingDpsError,
-            SetFitRahIncomingDpsError,
-        },
+        sole_dps_profile::{GetFitRahIncomingDpsError, RemoveFitRahIncomingDpsError, SetFitRahIncomingDpsError},
         sole_fit::{GetFitError, RemoveFitError, SetFitFleetError, UnsetFitFleetError},
         sole_fleet::{GetFleetError, RemoveFleetError},
         sole_item::{

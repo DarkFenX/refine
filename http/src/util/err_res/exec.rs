@@ -27,11 +27,12 @@ pub(crate) enum HExecError {
     ProjectionAlreadyExists(rc::err::basic::ProjNotFoundError),
     // Misc
     InvalidSecStatus(rc::err::basic::SecStatusError),
-    InvalidDpsProfileEm(rc::err::basic::EmDmgNonNegError),
-    InvalidDpsProfileTherm(rc::err::basic::ThermDmgNonNegError),
-    InvalidDpsProfileKin(rc::err::basic::KinDmgNonNegError),
-    InvalidDpsProfileExpl(rc::err::basic::ExplDmgNonNegError),
-    InvalidDpsProfileTotal(rc::err::basic::TotalDmgPositiveError),
+    InvalidDpsProfileEm(rc::err::basic::EmDmgError),
+    InvalidDpsProfileTherm(rc::err::basic::ThermDmgError),
+    InvalidDpsProfileKin(rc::err::basic::KinDmgError),
+    InvalidDpsProfileExpl(rc::err::basic::ExplDmgError),
+    InvalidBreacherAbs(rc::err::basic::BreacherAbsDmgError),
+    InvalidBreacherRel(rc::err::basic::BreacherRelDmgError),
 }
 impl std::error::Error for HExecError {}
 impl std::fmt::Display for HExecError {
@@ -68,7 +69,8 @@ impl std::fmt::Display for HExecError {
             HExecError::InvalidDpsProfileTherm(e) => write!(f, "{e}"),
             HExecError::InvalidDpsProfileKin(e) => write!(f, "{e}"),
             HExecError::InvalidDpsProfileExpl(e) => write!(f, "{e}"),
-            HExecError::InvalidDpsProfileTotal(e) => write!(f, "{e}"),
+            HExecError::InvalidBreacherAbs(e) => write!(f, "{e}"),
+            HExecError::InvalidBreacherRel(e) => write!(f, "{e}"),
         }
     }
 }
@@ -106,7 +108,8 @@ impl HExecError {
             HExecError::InvalidDpsProfileTherm(_) => "EXC-025",
             HExecError::InvalidDpsProfileKin(_) => "EXC-026",
             HExecError::InvalidDpsProfileExpl(_) => "EXC-027",
-            HExecError::InvalidDpsProfileTotal(_) => "EXC-028",
+            HExecError::InvalidBreacherAbs(_) => "EXC-029",
+            HExecError::InvalidBreacherRel(_) => "EXC-030",
         }
         .to_string()
     }
