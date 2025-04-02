@@ -7,6 +7,7 @@ from tests.fw.util import conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
+    from tests.fw.api.aliases import MutaAdd, MutaChange
     from tests.fw.consts import (
         ApiEffMode,
         ApiItemInfoMode,
@@ -171,7 +172,7 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: ApiMinionState,
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
+            mutation: MutaAdd | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
@@ -194,7 +195,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: ApiMinionState | type[Absent],
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
+            mutation: MutaAdd | MutaChange | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
             rm_projs: list[str] | type[Absent],
@@ -344,7 +345,7 @@ class ApiClientItem(ApiClientBase):
             type_id: int,
             rack: ApiRack,
             state: ApiModuleState,
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
+            mutation: MutaAdd | type[Absent],
             charge_type_id: int | type[Absent],
             mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -372,7 +373,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: str,
             state: ApiModuleState | type[Absent],
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
+            mutation: MutaAdd | MutaChange | None | type[Absent],
             charge: int | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],

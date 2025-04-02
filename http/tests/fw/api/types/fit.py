@@ -19,9 +19,9 @@ from .validation import ValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
+    from tests.fw.api.aliases import DpsProfile, MutaAdd
     from tests.fw.consts import ApiServiceState
     from tests.fw.response import Response
-    from .aliases import MutaAdd
     from .validation import ValOptions
 
 
@@ -109,7 +109,7 @@ class Fit(AttrDict):
             self, *,
             fleet_id: str | None | type[Absent] = Absent,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dps: tuple[float, float, float, float] | None | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfile | None | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,

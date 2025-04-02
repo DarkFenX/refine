@@ -10,6 +10,7 @@ from tests.fw.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
+    from tests.fw.api.aliases import DpsProfile
     from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone
 
 
@@ -27,7 +28,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default],
             sec_zone: ApiSecZone | type[Absent],
-            default_incoming_dps: tuple[float, float, float, float] | type[Absent],
+            default_incoming_dps: DpsProfile | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
@@ -59,7 +60,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default] = Default,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_incoming_dps: tuple[float, float, float, float] | type[Absent] = Absent,
+            default_incoming_dps: DpsProfile | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
@@ -175,7 +176,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             sol_id: str,
             sec_zone: ApiSecZone | type[Absent],
-            default_incoming_dps: tuple[float, float, float, float] | type[Absent],
+            default_incoming_dps: DpsProfile | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],

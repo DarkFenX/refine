@@ -10,8 +10,8 @@ from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
+    from tests.fw.api.aliases import MutaAdd, MutaChange
     from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
-    from .aliases import MutaAdd, MutaChange
 
 
 @dataclass(kw_only=True)

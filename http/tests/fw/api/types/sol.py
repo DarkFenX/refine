@@ -12,6 +12,7 @@ from .item import Item
 if typing.TYPE_CHECKING:
     from tests.fw import eve
     from tests.fw.api import ApiClient
+    from tests.fw.api.aliases import DpsProfile
     from tests.fw.consts import ApiSecZone
 
 
@@ -82,7 +83,7 @@ class SolarSystem(AttrDict):
     def change(
             self, *,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_incoming_dps: tuple[float, float, float, float] | type[Absent] = Absent,
+            default_incoming_dps: DpsProfile | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,

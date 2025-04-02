@@ -7,6 +7,7 @@ from tests.fw.util import conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
+    from tests.fw.api.aliases import DpsProfile
     from tests.fw.api.types.validation import ValOptions
     from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
     from tests.fw.util import Absent
@@ -54,7 +55,7 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             sec_status: float | type[Absent],
-            rah_incoming_dps: tuple[float, float, float, float] | type[Absent],
+            rah_incoming_dps: DpsProfile | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -80,7 +81,7 @@ class ApiClientFit(ApiClientBase):
             fit_id: str,
             fleet_id: str | None | type[Absent],
             sec_status: float | type[Absent],
-            rah_incoming_dps: tuple[float, float, float, float] | None | type[Absent],
+            rah_incoming_dps: DpsProfile | None | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:

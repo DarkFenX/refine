@@ -78,10 +78,28 @@ def test_rah_to_rah_no_dmg(client, consts):
     eve_implant_id = client.mk_eve_item(attrs={eve_implant_attr_id: -10}, eff_ids=[eve_implant_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dps=(1, 1, 0, 0))
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 0, 0, 0))
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    # Verification - 0 total damage is a special case, it means "do not adapt" in case of RAH.
+    # Modified unadapted attributes should be returned in this case.
+    api_rah.update()
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3825)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.49725)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.57375)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.6885)
+    # Action
+    api_fit.change(rah_incoming_dps=(1, 1, 0, 0))
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.53)
@@ -94,9 +112,8 @@ def test_rah_to_rah_no_dmg(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.75)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.9)
     # Action
-    api_fit.change(rah_incoming_dps=(0, 0, 0, 0))
-    # Verification - 0 total damage is a special case, it means "do not adapt" in case of RAH.
-    # Modified unadapted attributes should be returned in this case.
+    api_fit.change(rah_incoming_dps=(0, 0, 0, 0, (0, 0)))
+    # Verification - same as 0 case before, but with breacher info
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85000000001, accuracy=11)
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)

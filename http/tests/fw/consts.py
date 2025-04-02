@@ -176,6 +176,7 @@ class EveBuffOp(StrEnum):
 @unique
 class EveAttr(IntEnum):
     mass = 4
+    hp = 9
     power_output = 11
     low_slots = 12
     med_slots = 13
@@ -204,6 +205,8 @@ class EveAttr(IntEnum):
     falloff = 158
     volume = 161
     missile_dmg_mult = 212
+    shield_capacity = 263
+    armor_hp = 265
     armor_em_dmg_resonance = 267
     armor_expl_dmg_resonance = 268
     armor_kin_dmg_resonance = 269

@@ -56,7 +56,7 @@ pub(crate) async fn create_sol(
                     HExecError::InvalidDpsProfileEm(_)
                     | HExecError::InvalidDpsProfileTherm(_)
                     | HExecError::InvalidDpsProfileKin(_)
-                    | HExecError::InvalidDpsProfileExpl(_)
+                    | HExecError::InvalidDpsProfileExpl(_),
                 ) => StatusCode::BAD_REQUEST,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
