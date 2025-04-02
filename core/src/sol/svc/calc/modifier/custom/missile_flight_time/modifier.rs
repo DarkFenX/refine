@@ -19,7 +19,7 @@ pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: ItemId, a_effect_id:
         affector_value: AffectorValue::MissileFlightTime,
         op: Op::ExtraAdd,
         aggr_mode: AggrMode::Stack,
-        affectee_filter: AffecteeFilter::Direct(Location::Ship),
+        affectee_filter: AffecteeFilter::Direct(Location::Item),
         affectee_a_attr_id: MISSILE_FLIGHT_TIME,
         buff_type_a_attr_id: None,
         resist_a_attr_id: None,

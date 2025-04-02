@@ -62,6 +62,7 @@ class EveItemList(IntEnum):
 
 @unique
 class EveEffect(IntEnum):
+    missile_launching = 9
     lo_power = 11
     hi_power = 12
     med_power = 13
@@ -69,6 +70,8 @@ class EveEffect(IntEnum):
     launcher_fitted = 40
     turret_fitted = 42
     use_missiles = 101
+    defender_missile_launching = 103
+    fof_missile_launching = 104
     missile_em_dmg_bonus = 660
     missile_expl_dmg_bonus = 661
     missile_therm_dmg_bonus = 662
@@ -98,6 +101,7 @@ class EveEffect(IntEnum):
     script_standup_warp_scram = 7026
     weather_darkness = 7060
     debuff_lance = 11691
+    dot_missile_launching = 12174
 
 
 @unique
@@ -204,6 +208,7 @@ class EveAttr(IntEnum):
     charge_size = 128
     falloff = 158
     volume = 161
+    radius = 162
     missile_dmg_mult = 212
     shield_capacity = 263
     armor_hp = 265
@@ -212,6 +217,7 @@ class EveAttr(IntEnum):
     armor_kin_dmg_resonance = 269
     armor_therm_dmg_resonance = 270
     skill_level = 280
+    explosion_delay = 281
     drone_capacity = 283
     dmg_mult_bonus = 292
     rof_bonus = 293
