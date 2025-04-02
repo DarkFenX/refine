@@ -71,7 +71,7 @@ impl AffectorValue {
             Self::Hardcoded(_) => false,
             Self::PropSpeedBoost => false,
             Self::AarRepAmount => true,
-            Self::MissileFlightTime => false,
+            Self::MissileFlightTime => true,
         }
     }
     pub(super) fn revisable_on_item_remove(&self) -> bool {
@@ -80,7 +80,7 @@ impl AffectorValue {
             Self::Hardcoded(_) => false,
             Self::PropSpeedBoost => false,
             Self::AarRepAmount => true,
-            Self::MissileFlightTime => false,
+            Self::MissileFlightTime => true,
         }
     }
     pub(super) fn revise_on_item_add(&self, affector_item: &Item, changed_item: &Item) -> bool {
@@ -89,7 +89,7 @@ impl AffectorValue {
             Self::Hardcoded(_) => false,
             Self::PropSpeedBoost => false,
             Self::AarRepAmount => aar_rep_amount::revise_on_item_add_removal(affector_item, changed_item),
-            Self::MissileFlightTime => false,
+            Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(affector_item, changed_item),
         }
     }
     pub(super) fn revise_on_item_remove(&self, affector_item: &Item, changed_item: &Item) -> bool {
@@ -98,7 +98,7 @@ impl AffectorValue {
             Self::Hardcoded(_) => false,
             Self::PropSpeedBoost => false,
             Self::AarRepAmount => aar_rep_amount::revise_on_item_add_removal(affector_item, changed_item),
-            Self::MissileFlightTime => false,
+            Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(affector_item, changed_item),
         }
     }
 }
