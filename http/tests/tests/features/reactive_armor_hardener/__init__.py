@@ -38,9 +38,9 @@ def setup_rah_basics(
         client: TestClient,
         consts,  # noqa: ANN001
         datas: list[EveObjects] | type[Default] = Default,
-        attr_shield_hp: int | type[Default] = Default,
-        attr_armor_hp: int | type[Default] = Default,
-        attr_hull_hp: int | type[Default] = Default,
+        attr_shield_hp: int | None | type[Default] = Default,
+        attr_armor_hp: int  | None| type[Default] = Default,
+        attr_hull_hp: int | None | type[Default] = Default,
         attr_res_em: int | None | type[Default] = Default,
         attr_res_therm: int | None | type[Default] = Default,
         attr_res_kin: int | None | type[Default] = Default,

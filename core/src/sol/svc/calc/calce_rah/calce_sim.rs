@@ -26,7 +26,8 @@ use super::{
 
 impl Calc {
     pub(super) fn rah_run_simulation(&mut self, uad: &Uad, fit_id: &FitId) {
-        let ship_id = match uad.fits.get_fit(fit_id).unwrap().ship {
+        let fit = uad.fits.get_fit(fit_id).unwrap();
+        let ship_id = match fit.ship {
             Some(ship_id) => ship_id,
             None => {
                 // Since there were no calculated values stored in sim prior to simulation, and we
@@ -43,7 +44,7 @@ impl Calc {
         if sim_datas.is_empty() {
             return;
         }
-        let dps_profile = match uad.fits.get_fit(fit_id).unwrap().rah_incoming_dps {
+        let dps_profile = match fit.rah_incoming_dps {
             Some(dps_profile) => dps_profile,
             None => uad.default_incoming_dps,
         };

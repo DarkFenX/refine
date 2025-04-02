@@ -10,7 +10,10 @@ use crate::{
     src::Src,
 };
 
-use super::shared::{EM_A_ATTR_ID, EXPL_A_ATTR_ID, KIN_A_ATTR_ID, RAH_A_EFFECT_ID, SHIFT_A_ATTR_ID, THERM_A_ATTR_ID};
+use super::shared::{
+    ARMOR_HP_A_ATTR_ID, EM_A_ATTR_ID, EXPL_A_ATTR_ID, HULL_HP_A_ATTR_ID, KIN_A_ATTR_ID, RAH_A_EFFECT_ID,
+    SHIELD_HP_A_ATTR_ID, SHIFT_A_ATTR_ID, THERM_A_ATTR_ID,
+};
 
 impl Calc {
     pub(in crate::sol::svc::calc) fn rah_item_loaded(&mut self, uad: &Uad, item: &Item) {
@@ -116,6 +119,11 @@ impl Calc {
         if self.rah.sim_running {
             return;
         }
+        // This is going to be called very often, no need to figure out if we need to clear results
+        // if we have no RAHs running
+        if self.rah.resonances.is_empty() {
+            return;
+        }
         match *a_attr_id {
             // Ship armor resonances and RAH resonances
             EM_A_ATTR_ID | THERM_A_ATTR_ID | KIN_A_ATTR_ID | EXPL_A_ATTR_ID => {
@@ -151,6 +159,12 @@ impl Calc {
                     }
                 }
             }
+            // Ship HP - need to clear results since breacher DPS depends on those
+            SHIELD_HP_A_ATTR_ID | ARMOR_HP_A_ATTR_ID | HULL_HP_A_ATTR_ID => {
+                if let Item::Ship(ship) = uad.items.get_item(item_id).unwrap() {
+                    self.clear_fit_rah_results(uad, &ship.get_fit_id())
+                }
+            }
             _ => (),
         }
     }
@@ -162,9 +176,9 @@ impl Calc {
     }
     // Private methods
     fn clear_fit_rah_results(&mut self, uad: &Uad, fit_id: &FitId) {
-        let other_item_ids = self.rah.by_fit.get(fit_id).copied().collect_vec();
-        for other_item_id in other_item_ids {
-            self.clear_rah_result(uad, &other_item_id);
+        let rah_item_ids = self.rah.by_fit.get(fit_id).copied().collect_vec();
+        for rah_item_id in rah_item_ids {
+            self.clear_rah_result(uad, &rah_item_id);
         }
     }
     fn clear_rah_result(&mut self, uad: &Uad, item_id: &ItemId) {
