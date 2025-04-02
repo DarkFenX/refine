@@ -20,7 +20,9 @@ pub(super) enum AffectorValue {
     MissileFlightTime,
 }
 impl AffectorValue {
-    // Simple and fast way to get affector attribute
+    // Simple and fast way to get affector attribute. Variants which have actual affector attributes
+    // but do not expose anything are designed to handle attribute cleanup in some other way (via
+    // dependency/revision registers)
     pub(super) fn get_affector_a_attr_id(&self) -> Option<ad::AAttrId> {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
