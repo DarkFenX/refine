@@ -2,7 +2,10 @@ use crate::{
     ad,
     sol::{
         FitId, ItemId,
-        svc::calc::{AttrSpec, CtxModifier, LocationKind, RawModifier},
+        svc::{
+            AttrSpec,
+            calc::{CtxModifier, LocationKind, RawModifier},
+        },
     },
     util::{StMapSetL1, StSet},
 };

@@ -114,7 +114,7 @@ impl Calc {
                     Ok(security_full_val) => {
                         // Ensure that change in any a security-specific attribute value triggers
                         // recalculation of generic security attribute value
-                        self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
+                        self.deps.add_anonymous(*item_id, security_a_attr_id, *a_attr_id);
                         let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                         base_attr_info.effective_infos.push(ModificationInfo {
                             // Technically this modification is not pre-assignment, it is base value
@@ -157,7 +157,7 @@ impl Calc {
         // Lower value limit
         if let Some(limiter_a_attr_id) = a_attr.min_attr_id {
             if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_a_attr_id) {
-                self.deps.add_direct_local(*item_id, limiter_a_attr_id, *a_attr_id);
+                self.deps.add_anonymous(*item_id, limiter_a_attr_id, *a_attr_id);
                 if limiter_val.dogma > dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;
                     dogma_attr_info.effective_infos.push(ModificationInfo {
@@ -178,7 +178,7 @@ impl Calc {
         // Upper value limit
         if let Some(limiter_a_attr_id) = a_attr.max_attr_id {
             if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_a_attr_id) {
-                self.deps.add_direct_local(*item_id, limiter_a_attr_id, *a_attr_id);
+                self.deps.add_anonymous(*item_id, limiter_a_attr_id, *a_attr_id);
                 if limiter_val.dogma < dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;
                     dogma_attr_info.effective_infos.push(ModificationInfo {

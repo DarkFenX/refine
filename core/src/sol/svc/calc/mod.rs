@@ -35,8 +35,7 @@ pub(in crate::sol::svc) use calc::Calc;
 pub(in crate::sol) use err::{AttrCalcError, LoadedItemFoundError};
 pub use misc::CalcAttrVal;
 use misc::{
-    AttrSpec, FTR_COUNT_ATTR, ItemAttrPostprocs, LocationKind, Modification, ModificationKey, SEC_STATUS_ATTR,
-    SKILL_LVL_ATTR,
+    FTR_COUNT_ATTR, ItemAttrPostprocs, LocationKind, Modification, ModificationKey, SEC_STATUS_ATTR, SKILL_LVL_ATTR,
 };
 pub use mod_info::{AffectorInfo, ModificationInfo};
 use modifier::{

@@ -1,7 +1,10 @@
 use std::hash::Hash;
 
 use crate::{
-    sol::svc::calc::{AttrSpec, Context, CtxModifier},
+    sol::svc::{
+        AttrSpec,
+        calc::{Context, CtxModifier},
+    },
     util::StMapSetL1,
 };
 

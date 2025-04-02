@@ -1,4 +1,3 @@
-pub(in crate::sol::svc::calc) use attr_spec::AttrSpec;
 pub use attr_val::CalcAttrVal;
 pub(in crate::sol::svc::calc) use attr_val_data::{
     AttrValData, FTR_COUNT_ATTR, ItemAttrPostprocs, ItemAttrValData, SEC_STATUS_ATTR, SKILL_LVL_ATTR,

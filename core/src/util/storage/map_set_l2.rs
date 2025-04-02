@@ -15,17 +15,23 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> StMapSetL2<A, B, V> {
         }
     }
     // Query methods
-    pub(crate) fn get_l1(&self, key1: &A) -> Option<&StMapSetL1<B, V>> {
+    pub(crate) fn get_l1_inner(&self, key1: &A) -> Option<&StMapSetL1<B, V>> {
         self.data.get(key1)
     }
     pub(crate) fn get_l2(&self, key1: &A, key2: &B) -> impl ExactSizeIterator<Item = &V> {
-        match self.get_l1(key1) {
+        match self.get_l1_inner(key1) {
             Some(ks1l) => ks1l.get(key2),
             None => self.empty.get(key2),
         }
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&A, &StMapSetL1<B, V>)> {
         self.data.iter()
+    }
+    pub(crate) fn keys_l2(&self, key1: &A) -> impl ExactSizeIterator<Item = &B> + use<'_, A, B, V> {
+        match self.get_l1_inner(key1) {
+            Some(ks1l) => ks1l.keys(),
+            None => self.empty.keys(),
+        }
     }
     // Modification methods
     pub(crate) fn add_entry(&mut self, key1: A, key2: B, entry: V) {

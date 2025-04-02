@@ -197,7 +197,7 @@ impl Calc {
                     Ok(security_full_val) => {
                         // Ensure that change in any a security-specific attribute value triggers
                         // recalculation of generic security attribute value
-                        self.deps.add_direct_local(*item_id, security_a_attr_id, *a_attr_id);
+                        self.deps.add_anonymous(*item_id, security_a_attr_id, *a_attr_id);
                         security_full_val.dogma
                     }
                     Err(_) => get_base_attr_value(item, a_attr),
@@ -223,14 +223,14 @@ impl Calc {
         // Lower value limit
         if let Some(limiter_attr_id) = a_attr.min_attr_id {
             if let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
-                self.deps.add_direct_local(*item_id, limiter_attr_id, *a_attr_id);
+                self.deps.add_anonymous(*item_id, limiter_attr_id, *a_attr_id);
                 dogma_val = AttrVal::max(dogma_val, limiter_cval.dogma);
             }
         }
         // Upper value limit
         if let Some(limiter_attr_id) = a_attr.max_attr_id {
             if let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
-                self.deps.add_direct_local(*item_id, limiter_attr_id, *a_attr_id);
+                self.deps.add_anonymous(*item_id, limiter_attr_id, *a_attr_id);
                 dogma_val = AttrVal::min(dogma_val, limiter_cval.dogma);
             }
         }

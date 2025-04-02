@@ -4,8 +4,9 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, FitId, ItemId,
-        svc::calc::{
-            AttrSpec, Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR,
+        svc::{
+            AttrSpec,
+            calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
         },
         uad::{Uad, fleet::Fleet, item::Item},
     },
@@ -113,7 +114,7 @@ impl Calc {
             self.buffs.unreg_effect(item.get_item_id(), a_effect);
             // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used
             // by custom propulsion module effect
-            self.deps.remove_by_source(&item_id, &a_effect.id);
+            self.deps.remove_by_source(item_id, a_effect.id);
         }
     }
     pub(in crate::sol::svc) fn effect_projected(

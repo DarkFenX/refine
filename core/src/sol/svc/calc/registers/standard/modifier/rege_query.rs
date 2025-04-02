@@ -4,7 +4,10 @@ use crate::{
     ad,
     sol::{
         ItemId,
-        svc::calc::{AttrSpec, CtxModifier, RawModifier, registers::StandardRegister},
+        svc::{
+            AttrSpec,
+            calc::{CtxModifier, RawModifier, registers::StandardRegister},
+        },
         uad::{fit::Fits, item::Item},
     },
     util::StMapSetL1,

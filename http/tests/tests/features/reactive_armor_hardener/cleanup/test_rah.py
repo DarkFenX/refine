@@ -1,4 +1,4 @@
-from tests import approx, effect_dogma_to_api
+from tests import approx
 from tests.tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
 
 
