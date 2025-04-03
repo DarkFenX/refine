@@ -17,7 +17,7 @@ pub struct DroneInfo {
 }
 impl DroneInfo {
     pub(in crate::sol) fn from_drone_with_source(src: &Src, sol_drone: &Drone) -> Self {
-        DroneInfo {
+        Self {
             id: sol_drone.get_item_id(),
             type_id: sol_drone.get_a_item_id(),
             fit_id: sol_drone.get_fit_id(),

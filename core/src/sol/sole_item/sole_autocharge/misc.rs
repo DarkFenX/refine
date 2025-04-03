@@ -29,6 +29,7 @@ impl SolarSystem {
                                 autocharge_a_item_id.into_inner() as ItemTypeId,
                                 fit_id,
                                 *item_id,
+                                a_effect.id,
                                 item_a_state,
                                 false,
                             );

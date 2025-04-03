@@ -9,7 +9,7 @@ pub struct SubsystemInfo {
 }
 impl From<&Subsystem> for SubsystemInfo {
     fn from(sol_subsystem: &Subsystem) -> Self {
-        SubsystemInfo {
+        Self {
             id: sol_subsystem.get_item_id(),
             type_id: sol_subsystem.get_a_item_id(),
             fit_id: sol_subsystem.get_fit_id(),

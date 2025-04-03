@@ -8,7 +8,7 @@ pub struct FwEffectInfo {
 }
 impl From<&FwEffect> for FwEffectInfo {
     fn from(sol_fw_effect: &FwEffect) -> Self {
-        FwEffectInfo {
+        Self {
             id: sol_fw_effect.get_item_id(),
             type_id: sol_fw_effect.get_a_item_id(),
             fit_id: sol_fw_effect.get_fit_id(),

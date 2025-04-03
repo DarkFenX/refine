@@ -9,7 +9,7 @@ pub struct SkillInfo {
 }
 impl From<&Skill> for SkillInfo {
     fn from(sol_skill: &Skill) -> Self {
-        SkillInfo {
+        Self {
             id: sol_skill.get_item_id(),
             type_id: sol_skill.get_a_item_id(),
             fit_id: sol_skill.get_fit_id(),

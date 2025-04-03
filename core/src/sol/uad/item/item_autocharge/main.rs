@@ -13,6 +13,7 @@ pub(in crate::sol) struct Autocharge {
     base: ItemBase,
     fit_id: FitId,
     cont_item_id: ItemId,
+    cont_a_effect_id: ad::AEffectId,
     projs: Projs,
     force_disable: bool,
 }
@@ -23,6 +24,7 @@ impl Autocharge {
         a_item_id: ad::AItemId,
         fit_id: FitId,
         cont_item_id: ItemId,
+        cont_a_effect_id: ad::AEffectId,
         cont_a_state: ad::AState,
         force_disable: bool,
     ) -> Self {
@@ -30,6 +32,7 @@ impl Autocharge {
             base: ItemBase::new(src, item_id, a_item_id, cont_a_state),
             fit_id,
             cont_item_id,
+            cont_a_effect_id,
             projs: Projs::new(),
             force_disable,
         }
@@ -97,6 +100,9 @@ impl Autocharge {
     }
     pub(in crate::sol) fn get_cont_item_id(&self) -> ItemId {
         self.cont_item_id
+    }
+    pub(in crate::sol) fn get_cont_effect_id(&self) -> ad::AEffectId {
+        self.cont_a_effect_id
     }
     pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs

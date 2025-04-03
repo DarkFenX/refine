@@ -8,7 +8,7 @@ pub struct StanceInfo {
 }
 impl From<&Stance> for StanceInfo {
     fn from(sol_stance: &Stance) -> Self {
-        StanceInfo {
+        Self {
             id: sol_stance.get_item_id(),
             type_id: sol_stance.get_a_item_id(),
             fit_id: sol_stance.get_fit_id(),

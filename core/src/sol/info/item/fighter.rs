@@ -21,7 +21,7 @@ impl FighterInfo {
         sol_fighter: &Fighter,
         autocharges: StMap<EffectId, AutochargeInfo>,
     ) -> Self {
-        FighterInfo {
+        Self {
             id: sol_fighter.get_item_id(),
             type_id: sol_fighter.get_a_item_id(),
             fit_id: sol_fighter.get_fit_id(),

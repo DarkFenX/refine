@@ -24,7 +24,7 @@ impl ModuleInfo {
         sol_module: &Module,
         charge_info: Option<ChargeInfo>,
     ) -> Self {
-        ModuleInfo {
+        Self {
             id: sol_module.get_item_id(),
             type_id: sol_module.get_a_item_id(),
             fit_id: sol_module.get_fit_id(),

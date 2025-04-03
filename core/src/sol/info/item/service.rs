@@ -11,7 +11,7 @@ pub struct ServiceInfo {
 }
 impl From<&Service> for ServiceInfo {
     fn from(sol_service: &Service) -> Self {
-        ServiceInfo {
+        Self {
             id: sol_service.get_item_id(),
             type_id: sol_service.get_a_item_id(),
             fit_id: sol_service.get_fit_id(),

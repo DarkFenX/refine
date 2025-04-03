@@ -8,7 +8,7 @@ pub struct RigInfo {
 }
 impl From<&Rig> for RigInfo {
     fn from(sol_rig: &Rig) -> Self {
-        RigInfo {
+        Self {
             id: sol_rig.get_item_id(),
             type_id: sol_rig.get_a_item_id(),
             fit_id: sol_rig.get_fit_id(),

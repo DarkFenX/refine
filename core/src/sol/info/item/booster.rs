@@ -16,7 +16,7 @@ impl BoosterInfo {
         sol_booster: &Booster,
         side_effects: StMap<EffectId, SideEffectInfo>,
     ) -> Self {
-        BoosterInfo {
+        Self {
             id: sol_booster.get_item_id(),
             type_id: sol_booster.get_a_item_id(),
             fit_id: sol_booster.get_fit_id(),

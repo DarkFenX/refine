@@ -9,7 +9,7 @@ pub struct ImplantInfo {
 }
 impl From<&Implant> for ImplantInfo {
     fn from(sol_implant: &Implant) -> Self {
-        ImplantInfo {
+        Self {
             id: sol_implant.get_item_id(),
             type_id: sol_implant.get_a_item_id(),
             fit_id: sol_implant.get_fit_id(),

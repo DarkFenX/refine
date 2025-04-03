@@ -7,7 +7,7 @@ pub struct SwEffectInfo {
 }
 impl From<&SwEffect> for SwEffectInfo {
     fn from(sol_sw_effect: &SwEffect) -> Self {
-        SwEffectInfo {
+        Self {
             id: sol_sw_effect.get_item_id(),
             type_id: sol_sw_effect.get_a_item_id(),
             enabled: sol_sw_effect.get_sw_effect_state(),

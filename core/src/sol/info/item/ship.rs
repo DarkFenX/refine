@@ -8,7 +8,7 @@ pub struct ShipInfo {
 }
 impl From<&Ship> for ShipInfo {
     fn from(sol_ship: &Ship) -> Self {
-        ShipInfo {
+        Self {
             id: sol_ship.get_item_id(),
             type_id: sol_ship.get_a_item_id(),
             fit_id: sol_ship.get_fit_id(),
