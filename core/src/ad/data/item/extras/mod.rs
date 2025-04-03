@@ -13,6 +13,7 @@ mod fighter_count;
 mod fighter_kind;
 mod kind;
 mod max_state;
+mod module_hardpoint;
 mod overload_td_lvl;
 mod sec_zone;
 mod ship_kind;

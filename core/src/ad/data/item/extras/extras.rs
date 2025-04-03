@@ -18,6 +18,7 @@ use super::{
     },
     kind::get_item_kind,
     max_state::get_max_state,
+    module_hardpoint::{is_launcher, is_turret},
     overload_td_lvl::get_overload_td_lvl,
     sec_zone::{is_disallowed_in_wspace, is_sec_zone_limitable},
     ship_kind::{get_item_ship_kind, get_ship_kind},
@@ -85,6 +86,10 @@ pub struct AItemExtras {
     pub sec_zone_limitable: bool,
     /// Can ship be in wormhole space or not.
     pub disallowed_in_wspace: bool,
+    /// True if item has turretFitted effect.
+    pub takes_turret_hardpoint: bool,
+    /// True if item has launcherFitted effect.
+    pub takes_launcher_hardpoint: bool,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -116,6 +121,8 @@ impl AItemExtras {
             online_max_sec_class: Option::default(),
             sec_zone_limitable: bool::default(),
             disallowed_in_wspace: bool::default(),
+            takes_turret_hardpoint: bool::default(),
+            takes_launcher_hardpoint: bool::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -149,6 +156,8 @@ impl AItemExtras {
             online_max_sec_class: get_online_max_sec_class(attrs),
             sec_zone_limitable: is_sec_zone_limitable(attrs),
             disallowed_in_wspace: a_item.extras.disallowed_in_wspace,
+            takes_turret_hardpoint: is_turret(&a_item.effect_datas),
+            takes_launcher_hardpoint: is_launcher(&a_item.effect_datas),
         }
     }
     pub(crate) fn fill(
@@ -201,5 +210,7 @@ impl AItemExtras {
         self.online_max_sec_class = get_online_max_sec_class(item_attrs);
         self.sec_zone_limitable = is_sec_zone_limitable(item_attrs);
         self.disallowed_in_wspace = is_disallowed_in_wspace(&item_id, type_lists);
+        self.takes_turret_hardpoint = is_turret(item_effects);
+        self.takes_launcher_hardpoint = is_launcher(item_effects);
     }
 }

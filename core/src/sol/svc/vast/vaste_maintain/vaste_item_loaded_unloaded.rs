@@ -152,6 +152,12 @@ impl Vast {
             Item::Module(module) => {
                 let extras = module.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, get_module_expected_kind(module));
+                if extras.takes_turret_hardpoint {
+                    fit_data.mods_turret.insert(item_id);
+                }
+                if extras.takes_launcher_hardpoint {
+                    fit_data.mods_launcher.insert(item_id);
+                }
                 if let Some(ship_limit) = &extras.ship_limit {
                     fit_data.ship_limited_items.insert(item_id, ship_limit.clone());
                 }
@@ -454,6 +460,12 @@ impl Vast {
             Item::Module(module) => {
                 let extras = module.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, get_module_expected_kind(module));
+                if extras.takes_turret_hardpoint {
+                    fit_data.mods_turret.remove(&item_id);
+                }
+                if extras.takes_launcher_hardpoint {
+                    fit_data.mods_launcher.remove(&item_id);
+                }
                 if extras.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(&item_id);
                 }

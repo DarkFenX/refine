@@ -32,6 +32,8 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) online_max_sec_class: Option<CAttrVal>,
     pub(in crate::handler_json) sec_zone_limitable: bool,
     pub(in crate::handler_json) disallowed_in_wspace: bool,
+    pub(in crate::handler_json) takes_turret_hardpoint: bool,
+    pub(in crate::handler_json) takes_launcher_hardpoint: bool,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -63,6 +65,8 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             online_max_sec_class: a_item_extras.online_max_sec_class,
             sec_zone_limitable: a_item_extras.sec_zone_limitable,
             disallowed_in_wspace: a_item_extras.disallowed_in_wspace,
+            takes_turret_hardpoint: a_item_extras.takes_turret_hardpoint,
+            takes_launcher_hardpoint: a_item_extras.takes_launcher_hardpoint,
         }
     }
 }
@@ -96,6 +100,8 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             online_max_sec_class: c_item_extras.online_max_sec_class,
             sec_zone_limitable: c_item_extras.sec_zone_limitable,
             disallowed_in_wspace: c_item_extras.disallowed_in_wspace,
+            takes_turret_hardpoint: c_item_extras.takes_turret_hardpoint,
+            takes_launcher_hardpoint: c_item_extras.takes_launcher_hardpoint,
         }
     }
 }

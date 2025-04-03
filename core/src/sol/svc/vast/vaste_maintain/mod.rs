@@ -1,4 +1,3 @@
-mod vaste_effects_started_stopped;
 mod vaste_fit_added_removed;
 mod vaste_item_added_removed;
 mod vaste_item_loaded_unloaded;

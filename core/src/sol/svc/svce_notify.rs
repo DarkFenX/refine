@@ -73,13 +73,11 @@ impl Svc {
         self.running_effects
             .effects_started(item.get_item_id(), a_effects.iter().map(|v| v.id));
         self.calc.effects_started(uad, item, a_effects);
-        self.vast.effects_started(item, a_effects);
     }
     pub(in crate::sol::svc) fn notify_effects_stopped(&mut self, uad: &Uad, item: &Item, a_effects: &[ad::ArcEffect]) {
         self.calc.effects_stopped(uad, item, a_effects);
         self.running_effects
             .effects_stopped(&item.get_item_id(), a_effects.iter().map(|v| &v.id));
-        self.vast.effects_stopped(item, a_effects);
     }
     pub(in crate::sol::svc) fn notify_item_projected(
         &mut self,

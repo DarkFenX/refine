@@ -270,6 +270,7 @@ def test_no_attr_max(client, consts):
 
 
 def test_criterion_module_state(client, consts):
+    # Any fitted module counts, regardless of its state
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.turret_slots_left)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.turret_fitted)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
@@ -289,9 +290,10 @@ def test_criterion_module_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.ghost)
     # Verification
     api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
+    assert api_val.passed is False
+    assert api_val.details.turret_slot_count.used == 1
+    assert api_val.details.turret_slot_count.max == 0
+    assert api_val.details.turret_slot_count.users == [api_module.id]
     # Action
     api_module.change_module(state=consts.ApiModuleState.offline)
     # Verification
@@ -305,44 +307,27 @@ def test_criterion_module_state(client, consts):
 def test_criterion_effect(client, consts):
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.turret_slots_left)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.turret_fitted)
-    eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_module1_id = client.mk_eve_item()
+    eve_module2_id = client.mk_eve_item(eff_ids=[eve_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.offline)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
-    assert api_val.passed is False
-    assert api_val.details.turret_slot_count.used == 1
-    assert api_val.details.turret_slot_count.max == 0
-    assert api_val.details.turret_slot_count.users == [api_module.id]
-    # Action
-    api_module.change_module(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
+    api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.offline)
     # Verification
     api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(
-        state=consts.ApiModuleState.offline,
-        effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.offline)
     # Verification
     api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.turret_slot_count.used == 1
     assert api_val.details.turret_slot_count.max == 0
-    assert api_val.details.turret_slot_count.users == [api_module.id]
-    # Action
-    api_module.change_module(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(turret_slot_count=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
+    assert api_val.details.turret_slot_count.users == [api_module2.id]
 
 
 def test_criterion_item_kind(client, consts):

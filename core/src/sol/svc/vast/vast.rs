@@ -57,9 +57,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) standup_light_fighters_online: StSet<ItemId>,
     pub(in crate::sol::svc::vast) standup_heavy_fighters: StSet<ItemId>,
     pub(in crate::sol::svc::vast) standup_heavy_fighters_online: StSet<ItemId>,
-    // Modules with "turretFitted" effect active
     pub(in crate::sol::svc::vast) mods_turret: StSet<ItemId>,
-    // Modules with "launcherFitted" effect active
     pub(in crate::sol::svc::vast) mods_launcher: StSet<ItemId>,
     pub(in crate::sol::svc::vast) slotted_implants: StMapSetL1<ad::ASlotIndex, ItemId>,
     pub(in crate::sol::svc::vast) slotted_boosters: StMapSetL1<ad::ASlotIndex, ItemId>,
