@@ -9,7 +9,7 @@ use crate::{
         },
     },
     src::Src,
-    util::{Named, StMap},
+    util::{HMap, Named},
 };
 
 #[derive(Clone)]
@@ -659,7 +659,7 @@ impl Item {
         }
     }
 
-    pub(in crate::sol) fn get_a_attrs(&self) -> Option<&StMap<ad::AAttrId, ad::AAttrVal>> {
+    pub(in crate::sol) fn get_a_attrs(&self) -> Option<&HMap<ad::AAttrId, ad::AAttrVal>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_attrs(),
             Self::Booster(booster) => booster.get_a_attrs(),
@@ -680,12 +680,12 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.get_a_attrs(),
         }
     }
-    pub(in crate::sol) fn get_a_attrs_err(&self) -> Result<&StMap<ad::AAttrId, ad::AAttrVal>, ItemLoadedError> {
+    pub(in crate::sol) fn get_a_attrs_err(&self) -> Result<&HMap<ad::AAttrId, ad::AAttrVal>, ItemLoadedError> {
         self.get_a_attrs().ok_or_else(|| ItemLoadedError {
             item_id: self.get_item_id(),
         })
     }
-    pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
+    pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&HMap<ad::AEffectId, ad::AItemEffectData>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_effect_datas(),
             Self::Booster(booster) => booster.get_a_effect_datas(),
@@ -708,7 +708,7 @@ impl Item {
     }
     pub(in crate::sol) fn get_a_effect_datas_err(
         &self,
-    ) -> Result<&StMap<ad::AEffectId, ad::AItemEffectData>, ItemLoadedError> {
+    ) -> Result<&HMap<ad::AEffectId, ad::AItemEffectData>, ItemLoadedError> {
         self.get_a_effect_datas().ok_or_else(|| ItemLoadedError {
             item_id: self.get_item_id(),
         })
@@ -734,7 +734,7 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.get_a_defeff_id(),
         }
     }
-    pub(in crate::sol) fn get_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
+    pub(in crate::sol) fn get_a_skill_reqs(&self) -> Option<&HMap<ad::AItemId, ad::ASkillLevel>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_skill_reqs(),
             Self::Booster(booster) => booster.get_a_skill_reqs(),
@@ -755,7 +755,7 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.get_a_skill_reqs(),
         }
     }
-    pub(in crate::sol) fn get_effective_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
+    pub(in crate::sol) fn get_effective_a_skill_reqs(&self) -> Option<&HMap<ad::AItemId, ad::ASkillLevel>> {
         match self {
             Self::Autocharge(_) => None,
             Self::Booster(booster) => booster.get_a_skill_reqs(),

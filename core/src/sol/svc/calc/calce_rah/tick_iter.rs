@@ -2,7 +2,7 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     sol::{AttrVal, ItemId},
-    util::StMap,
+    util::HMap,
 };
 
 use super::{
@@ -28,16 +28,16 @@ impl RahDataIter {
 pub(super) struct RahSimTickData {
     pub(super) time_passed: AttrVal,
     pub(super) cycled: Vec<ItemId>,
-    pub(super) cycling_times: StMap<ItemId, AttrVal>,
+    pub(super) cycling_times: HMap<ItemId, AttrVal>,
 }
 
 pub(super) struct RahSimTickIter {
     tick: TickCount,
-    rah_iter_data: StMap<ItemId, RahDataIter>,
+    rah_iter_data: HMap<ItemId, RahDataIter>,
 }
 impl RahSimTickIter {
     pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a ItemId, &'a RahDataSim)>) -> Self {
-        let mut iter_datas = StMap::with_capacity(sim_datas.len());
+        let mut iter_datas = HMap::with_capacity(sim_datas.len());
         for (item_id, sim_data) in sim_datas {
             iter_datas.insert(*item_id, RahDataIter::new(sim_data.info.cycle_time));
         }

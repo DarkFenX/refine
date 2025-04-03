@@ -12,7 +12,7 @@ use crate::{
         },
         uad::{Uad, item::Item},
     },
-    util::{StMap, round},
+    util::{HMap, round},
 };
 
 use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_base_attr_value};
@@ -149,7 +149,7 @@ impl Calc {
         item: &Item,
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Modification> {
-        let mut mods = StMap::new();
+        let mut mods = HMap::new();
         for modifier in self.std.get_mods_for_affectee(item, a_attr_id, &uad.fits).iter() {
             let val = match modifier.raw.get_mod_val(self, uad) {
                 Some(val) => val,

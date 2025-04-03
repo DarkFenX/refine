@@ -1,17 +1,17 @@
 use std::hash::Hash;
 
-use super::{StMap, StSet};
+use super::{HMap, HSet};
 
 #[derive(Clone)]
-pub(crate) struct StMapSetL1<K, V> {
-    data: StMap<K, StSet<V>>,
-    empty: StSet<V>,
+pub(crate) struct HMapHSet<K, V> {
+    data: HMap<K, HSet<V>>,
+    empty: HSet<V>,
 }
-impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
+impl<K: Eq + Hash, V: Eq + Hash> HMapHSet<K, V> {
     pub(crate) fn new() -> Self {
         Self {
-            data: StMap::new(),
-            empty: StSet::new(),
+            data: HMap::new(),
+            empty: HSet::new(),
         }
     }
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V> {
@@ -29,7 +29,7 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = impl ExactSizeIterator<Item = &V>> {
         self.data.values().map(|v| v.iter())
     }
-    pub(crate) fn values_inner(&self) -> impl ExactSizeIterator<Item = &StSet<V>> {
+    pub(crate) fn values_inner(&self) -> impl ExactSizeIterator<Item = &HSet<V>> {
         self.data.values()
     }
     pub(crate) fn contains_entry(&self, key: &K, entry: &V) -> bool {
@@ -45,13 +45,13 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn add_entry(&mut self, key: K, entry: V) {
         self.data
             .entry(key)
-            .or_insert_with(|| StSet::with_capacity(1))
+            .or_insert_with(|| HSet::with_capacity(1))
             .insert(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
         self.data
             .entry(key)
-            .or_insert_with(|| StSet::with_capacity(entries.len()))
+            .or_insert_with(|| HSet::with_capacity(entries.len()))
             .extend(entries);
     }
     pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) -> bool {
@@ -89,7 +89,7 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
         }
     }
 }
-impl<K: Eq + Hash, V: Eq + Hash> Default for StMapSetL1<K, V> {
+impl<K: Eq + Hash, V: Eq + Hash> Default for HMapHSet<K, V> {
     fn default() -> Self {
         Self::new()
     }
@@ -97,7 +97,7 @@ impl<K: Eq + Hash, V: Eq + Hash> Default for StMapSetL1<K, V> {
 
 pub(crate) fn extend_vec_from_map_set_l1<K: Eq + Hash, V: Eq + Hash + Copy>(
     vec: &mut Vec<V>,
-    storage: &StMapSetL1<K, V>,
+    storage: &HMapHSet<K, V>,
     key: &K,
 ) {
     vec.extend(storage.get(key).copied());

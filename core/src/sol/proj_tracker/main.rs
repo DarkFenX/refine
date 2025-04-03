@@ -1,14 +1,12 @@
-use crate::{sol::ItemId, util::StMapSetL1};
+use crate::{sol::ItemId, util::HMapHSet};
 
 #[derive(Clone)]
 pub(in crate::sol) struct ProjTracker {
-    pub(super) data: StMapSetL1<ItemId, ItemId>,
+    pub(super) data: HMapHSet<ItemId, ItemId>,
 }
 impl ProjTracker {
     pub(in crate::sol) fn new() -> Self {
-        Self {
-            data: StMapSetL1::new(),
-        }
+        Self { data: HMapHSet::new() }
     }
     pub(in crate::sol) fn reg_projectee(&mut self, projector_item_id: ItemId, projectee_item_id: ItemId) {
         self.data.add_entry(projectee_item_id, projector_item_id)

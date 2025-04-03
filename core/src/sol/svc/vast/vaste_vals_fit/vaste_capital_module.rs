@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac, ad,
     sol::{AttrVal, ItemId, svc::vast::VastFitData, uad::item::Ship},
-    util::StSet,
+    util::HSet,
 };
 
 pub struct ValCapitalModFail {
@@ -20,7 +20,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_fast(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         ship: Option<&Ship>,
     ) -> bool {
         if !is_ship_subcap(ship) {
@@ -34,7 +34,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         ship: Option<&Ship>,
     ) -> Option<ValCapitalModFail> {
         if !is_ship_subcap(ship) {

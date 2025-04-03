@@ -12,7 +12,7 @@ use crate::{
         AttrVal,
         svc::calc::{AffectorInfo, AggrKey, AggrMode, ModificationInfo, Op},
     },
-    util::StMap,
+    util::HMap,
 };
 
 use super::shared::{
@@ -364,15 +364,15 @@ impl AttrStack {
 
 struct AttrAggr {
     stack: Vec<AttrValInfo>,
-    aggr_min: StMap<AggrKey, Vec<AttrValInfo>>,
-    aggr_max: StMap<AggrKey, Vec<AttrValInfo>>,
+    aggr_min: HMap<AggrKey, Vec<AttrValInfo>>,
+    aggr_max: HMap<AggrKey, Vec<AttrValInfo>>,
 }
 impl AttrAggr {
     fn new() -> Self {
         Self {
             stack: Vec::new(),
-            aggr_min: StMap::new(),
-            aggr_max: StMap::new(),
+            aggr_min: HMap::new(),
+            aggr_max: HMap::new(),
         }
     }
     fn add_val<N, D, R>(

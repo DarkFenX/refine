@@ -8,7 +8,7 @@ use crate::{
         svc::{calc::Calc, vast::VastFitData},
         uad::{Uad, fit::Fit},
     },
-    util::StSet,
+    util::HSet,
 };
 
 use super::shared::get_max_resource;
@@ -27,7 +27,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_bandwidth_fast(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -46,7 +46,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_bandwidth_verbose(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,

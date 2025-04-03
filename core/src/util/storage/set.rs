@@ -3,10 +3,10 @@ use std::hash::Hash;
 use rustc_hash::{FxBuildHasher, FxHashSet};
 
 #[derive(Clone)]
-pub struct StSet<V> {
+pub struct HSet<V> {
     data: FxHashSet<V>,
 }
-impl<V: Eq + Hash> StSet<V> {
+impl<V: Eq + Hash> HSet<V> {
     pub fn new() -> Self {
         Self {
             data: FxHashSet::default(),
@@ -29,10 +29,10 @@ impl<V: Eq + Hash> StSet<V> {
     pub fn len(&self) -> usize {
         self.data.len()
     }
-    pub fn difference<'a>(&'a self, other: &'a StSet<V>) -> impl Iterator<Item = &'a V> {
+    pub fn difference<'a>(&'a self, other: &'a HSet<V>) -> impl Iterator<Item = &'a V> {
         self.data.difference(&other.data)
     }
-    pub fn is_subset(&self, other: &StSet<V>) -> bool {
+    pub fn is_subset(&self, other: &HSet<V>) -> bool {
         self.data.is_subset(&other.data)
     }
     // Modification methods
@@ -49,19 +49,19 @@ impl<V: Eq + Hash> StSet<V> {
         self.data.clear()
     }
 }
-impl<V: Eq + Hash> Default for StSet<V> {
+impl<V: Eq + Hash> Default for HSet<V> {
     fn default() -> Self {
         Self::new()
     }
 }
-impl<V: Eq + Hash> FromIterator<V> for StSet<V> {
+impl<V: Eq + Hash> FromIterator<V> for HSet<V> {
     fn from_iter<I: IntoIterator<Item = V>>(iter: I) -> Self {
         Self {
             data: FxHashSet::from_iter(iter),
         }
     }
 }
-impl<V> IntoIterator for StSet<V> {
+impl<V> IntoIterator for HSet<V> {
     type Item = V;
     type IntoIter = std::collections::hash_set::IntoIter<V>;
 

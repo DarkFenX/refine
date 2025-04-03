@@ -10,21 +10,21 @@ use crate::{
 /// This handler stores everything only in RAM. Access to data is fast, but has noticeable RAM
 /// consumption and adapted data has to be rebuilt every time.
 pub struct RamOnlyAdh {
-    storage_items: rc::util::StMap<rc::ad::AItemId, rc::ad::ArcItem>,
-    storage_attrs: rc::util::StMap<rc::ad::AAttrId, rc::ad::ArcAttr>,
-    storage_effects: rc::util::StMap<rc::ad::AEffectId, rc::ad::ArcEffect>,
-    storage_mutas: rc::util::StMap<rc::ad::AItemId, rc::ad::ArcMuta>,
-    storage_buffs: rc::util::StMap<rc::ad::ABuffId, rc::ad::ArcBuff>,
+    storage_items: rc::util::HMap<rc::ad::AItemId, rc::ad::ArcItem>,
+    storage_attrs: rc::util::HMap<rc::ad::AAttrId, rc::ad::ArcAttr>,
+    storage_effects: rc::util::HMap<rc::ad::AEffectId, rc::ad::ArcEffect>,
+    storage_mutas: rc::util::HMap<rc::ad::AItemId, rc::ad::ArcMuta>,
+    storage_buffs: rc::util::HMap<rc::ad::ABuffId, rc::ad::ArcBuff>,
 }
 impl RamOnlyAdh {
     /// Constructs new handler.
     pub fn new() -> Self {
         Self {
-            storage_items: rc::util::StMap::new(),
-            storage_attrs: rc::util::StMap::new(),
-            storage_effects: rc::util::StMap::new(),
-            storage_mutas: rc::util::StMap::new(),
-            storage_buffs: rc::util::StMap::new(),
+            storage_items: rc::util::HMap::new(),
+            storage_attrs: rc::util::HMap::new(),
+            storage_effects: rc::util::HMap::new(),
+            storage_mutas: rc::util::HMap::new(),
+            storage_buffs: rc::util::HMap::new(),
         }
     }
 }

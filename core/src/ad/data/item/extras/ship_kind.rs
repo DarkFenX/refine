@@ -1,7 +1,7 @@
 use crate::{
     ac,
     ad::{AAttrId, AAttrVal, AItemCatId, AItemId, ASkillLevel},
-    util::StMap,
+    util::HMap,
 };
 
 /// Adapted ship type.
@@ -12,7 +12,7 @@ pub enum AShipKind {
     Structure,
 }
 
-pub(super) fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &StMap<AItemId, ASkillLevel>) -> Option<AShipKind> {
+pub(super) fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &HMap<AItemId, ASkillLevel>) -> Option<AShipKind> {
     match item_cat_id {
         ac::itemcats::SHIP => match item_srqs.contains_key(&ac::items::CAPITAL_SHIPS) {
             true => Some(AShipKind::CapitalShip),
@@ -23,7 +23,7 @@ pub(super) fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &StMap<AItemId, 
     }
 }
 
-pub(super) fn get_item_ship_kind(item_cat_id: AItemCatId, item_attrs: &StMap<AAttrId, AAttrVal>) -> Option<AShipKind> {
+pub(super) fn get_item_ship_kind(item_cat_id: AItemCatId, item_attrs: &HMap<AAttrId, AAttrVal>) -> Option<AShipKind> {
     match item_cat_id {
         ac::itemcats::MODULE => match item_attrs.get(&ac::attrs::VOLUME) {
             Some(&volume) => match volume <= ac::extras::MAX_SUBCAP_MODULE_VOLUME {

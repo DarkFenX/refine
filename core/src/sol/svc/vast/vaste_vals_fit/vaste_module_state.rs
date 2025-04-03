@@ -1,6 +1,6 @@
 use crate::{
     sol::{ItemId, svc::vast::VastFitData, uad::item::ModuleState},
-    util::StSet,
+    util::HSet,
 };
 
 #[derive(Clone)]
@@ -12,7 +12,7 @@ pub struct ValModuleStateFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_module_state_fast(&self, kfs: &StSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_module_state_fast(&self, kfs: &HSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.mods_state.is_empty(),
             false => self.mods_state.difference(kfs).next().is_none(),
@@ -21,7 +21,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_module_state_verbose(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
     ) -> Vec<ValModuleStateFail> {
         self.mods_state
             .values()

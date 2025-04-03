@@ -4,7 +4,7 @@ use crate::{
         ItemId, ItemTypeId, SolarSystem,
         uad::item::{Autocharge, Item},
     },
-    util::StMap,
+    util::HMap,
 };
 
 impl SolarSystem {
@@ -15,7 +15,7 @@ impl SolarSystem {
             Some(projections) => projections.map(|(i, r)| (*i, *r)).collect(),
             None => Vec::new(),
         };
-        let mut new_ac_map = StMap::new();
+        let mut new_ac_map = HMap::new();
         if let (Some(fit_id), true, Some(_)) = (item.get_fit_id(), item.is_loaded(), item.get_autocharges()) {
             let cloned_item = item.clone();
             for a_effect_id in cloned_item.get_a_effect_datas().unwrap().keys() {

@@ -4,7 +4,7 @@ use crate::{
         svc::vast::{ValCache, VastFitData},
         uad::Uad,
     },
-    util::StSet,
+    util::HSet,
 };
 
 #[derive(Clone)]
@@ -17,7 +17,7 @@ pub struct ValChargeGroupFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &StSet<ItemId>, uad: &Uad) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &HSet<ItemId>, uad: &Uad) -> bool {
         for (module_item_id, cache) in self.mods_charge_group.iter_mut() {
             match cache {
                 ValCache::Todo(_) => match calculate_item_result(uad, module_item_id) {
@@ -44,7 +44,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_charge_group_verbose(
         &mut self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         uad: &Uad,
     ) -> Vec<ValChargeGroupFail> {
         let mut fails = Vec::new();

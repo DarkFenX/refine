@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     sol::{ItemId, SkillLevel, svc::vast::VastFitData, uad::fit::Fit},
-    util::StSet,
+    util::HSet,
 };
 
 pub struct ValOverloadSkillFail {
@@ -18,7 +18,7 @@ pub struct ValOverloadSkillItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &StSet<ItemId>, fit: &Fit) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &HSet<ItemId>, fit: &Fit) -> bool {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
@@ -33,7 +33,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_overload_skill_verbose(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         fit: &Fit,
     ) -> Option<ValOverloadSkillFail> {
         if self.overload_td_lvl.is_empty() {

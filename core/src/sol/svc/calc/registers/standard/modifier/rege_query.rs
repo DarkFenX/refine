@@ -10,7 +10,7 @@ use crate::{
         },
         uad::{fit::Fits, item::Item},
     },
-    util::StMapSetL1,
+    util::HMapHSet,
 };
 
 use super::ActiveLocations;
@@ -112,7 +112,7 @@ impl StandardRegister {
 
 fn filter_and_extend<K: Eq + Hash>(
     vec: &mut Vec<CtxModifier>,
-    storage: &StMapSetL1<K, CtxModifier>,
+    storage: &HMapHSet<K, CtxModifier>,
     key: &K,
     a_attr_id: &ad::AAttrId,
 ) {

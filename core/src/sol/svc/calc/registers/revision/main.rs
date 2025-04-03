@@ -1,16 +1,16 @@
-use crate::{sol::svc::calc::CtxModifier, util::StSet};
+use crate::{sol::svc::calc::CtxModifier, util::HSet};
 
 // Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct RevisionRegister {
-    pub(super) item_add: StSet<CtxModifier>,
-    pub(super) item_remove: StSet<CtxModifier>,
+    pub(super) item_add: HSet<CtxModifier>,
+    pub(super) item_remove: HSet<CtxModifier>,
 }
 impl RevisionRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
         Self {
-            item_add: StSet::new(),
-            item_remove: StSet::new(),
+            item_add: HSet::new(),
+            item_remove: HSet::new(),
         }
     }
     // Query methods

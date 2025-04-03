@@ -35,7 +35,7 @@ impl Key for rc::ad::ABuff {
     }
 }
 
-pub(crate) fn move_map_to_arcmap<T, U>(map: rc::util::StMap<U, T>, arcmap: &mut rc::util::StMap<U, Arc<T>>)
+pub(crate) fn move_map_to_arcmap<T, U>(map: rc::util::HMap<U, T>, arcmap: &mut rc::util::HMap<U, Arc<T>>)
 where
     T: Key<Item = U>,
     U: Eq + PartialEq + Hash,

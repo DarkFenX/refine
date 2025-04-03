@@ -4,7 +4,7 @@ use crate::{
         rels::{KeyPart, Pk},
     },
     ed,
-    util::StSet,
+    util::HSet,
 };
 
 pub(in crate::adg) fn normalize(e_data: &mut EData) {
@@ -12,7 +12,7 @@ pub(in crate::adg) fn normalize(e_data: &mut EData) {
 }
 
 fn move_basic_attrs(e_data: &mut EData) {
-    let mut seen_pks = StSet::new();
+    let mut seen_pks = HSet::new();
     for item_attr in e_data.item_attrs.iter() {
         let pk = item_attr.get_pk();
         seen_pks.insert(pk);
@@ -31,8 +31,8 @@ fn move_basic_attr(
     attr_id: ed::EAttrId,
     basic_value: ed::EAttrVal,
     e_data_item_attrs: &mut Vec<ed::EItemAttr>,
-    attr_ids: &StSet<ed::EAttrId>,
-    seen_pks: &StSet<Vec<KeyPart>>,
+    attr_ids: &HSet<ed::EAttrId>,
+    seen_pks: &HSet<Vec<KeyPart>>,
 ) {
     // Shouldn't be useful on actual data, but causes lots of broken relations when running tests
     if !attr_ids.contains(&attr_id) {

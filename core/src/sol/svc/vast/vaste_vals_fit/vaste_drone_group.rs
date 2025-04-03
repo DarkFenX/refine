@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     sol::{ItemGrpId, ItemId, svc::vast::VastFitData},
-    util::StSet,
+    util::HSet,
 };
 
 pub struct ValDroneGroupFail {
@@ -17,7 +17,7 @@ pub struct ValDroneGroupItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_drone_group_fast(&mut self, kfs: &StSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_drone_group_fast(&mut self, kfs: &HSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.drone_groups.is_empty(),
             false => self.drone_groups.difference(kfs).next().is_none(),
@@ -26,7 +26,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_drone_group_verbose(
         &mut self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
     ) -> Option<ValDroneGroupFail> {
         if self.drone_groups.is_empty() {
             return None;

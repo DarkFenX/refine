@@ -6,13 +6,13 @@ use std::{
 
 use rustc_hash::{FxBuildHasher, FxHashMap};
 
-use super::StSet;
+use super::HSet;
 
 #[derive(Clone)]
-pub struct StMap<K, V> {
+pub struct HMap<K, V> {
     data: FxHashMap<K, V>,
 }
-impl<K: Eq + Hash, V> StMap<K, V> {
+impl<K: Eq + Hash, V> HMap<K, V> {
     // Constructors
     pub fn new() -> Self {
         Self {
@@ -86,23 +86,23 @@ impl<K: Eq + Hash, V> StMap<K, V> {
         self.data.into_values()
     }
     // Set-alike view methods
-    pub(crate) fn is_subset(&self, other: &StSet<K>) -> bool {
+    pub(crate) fn is_subset(&self, other: &HSet<K>) -> bool {
         // (Almost) copy of std::collections::HashSet::is_subset()
         match self.len() <= other.len() {
             true => self.keys().all(|v| other.contains(v)),
             false => false,
         }
     }
-    pub(crate) fn difference(&self, other: &StSet<K>) -> impl Iterator<Item = (&K, &V)> {
+    pub(crate) fn difference(&self, other: &HSet<K>) -> impl Iterator<Item = (&K, &V)> {
         self.iter().filter(|(k, _)| !other.contains(k))
     }
 }
-impl<K: Eq + Hash, V> Default for StMap<K, V> {
+impl<K: Eq + Hash, V> Default for HMap<K, V> {
     fn default() -> Self {
         Self::new()
     }
 }
-impl<K, V> IntoIterator for StMap<K, V> {
+impl<K, V> IntoIterator for HMap<K, V> {
     type Item = (K, V);
     type IntoIter = std::collections::hash_map::IntoIter<K, V>;
 
@@ -110,22 +110,22 @@ impl<K, V> IntoIterator for StMap<K, V> {
         self.data.into_iter()
     }
 }
-impl<K: Eq + Hash, V> FromIterator<(K, V)> for StMap<K, V> {
+impl<K: Eq + Hash, V> FromIterator<(K, V)> for HMap<K, V> {
     fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
         Self {
             data: FxHashMap::from_iter(iter),
         }
     }
 }
-impl<K: Eq + Hash + Clone, V: Clone> From<&HashMap<K, V>> for StMap<K, V> {
+impl<K: Eq + Hash + Clone, V: Clone> From<&HashMap<K, V>> for HMap<K, V> {
     fn from(h_map: &HashMap<K, V>) -> Self {
         Self {
             data: FxHashMap::from_iter(h_map.iter().map(|(k, v)| (k.clone(), v.clone()))),
         }
     }
 }
-impl<K: Eq + Hash + Clone, V: Clone> From<&StMap<K, V>> for HashMap<K, V> {
-    fn from(st_map: &StMap<K, V>) -> HashMap<K, V> {
+impl<K: Eq + Hash + Clone, V: Clone> From<&HMap<K, V>> for HashMap<K, V> {
+    fn from(st_map: &HMap<K, V>) -> HashMap<K, V> {
         Self::from_iter(st_map.iter().map(|(k, v)| (k.clone(), v.clone())))
     }
 }

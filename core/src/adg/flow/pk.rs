@@ -2,11 +2,11 @@
 
 use crate::{
     adg::{EData, rels::Pk},
-    util::{Named, StSet},
+    util::{HSet, Named},
 };
 
 fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
-    let mut seen_pks = StSet::new();
+    let mut seen_pks = HSet::new();
     let removed = vec
         .extract_if(.., |v| {
             let pk = v.get_pk();

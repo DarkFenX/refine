@@ -4,7 +4,7 @@ use crate::{
         ItemId,
         svc::{AttrSpec, EffectSpec},
     },
-    util::StMapSetL1,
+    util::HMapHSet,
 };
 
 // Intended to hold ad-hoc dependencies between attributes, which are not covered by registers
@@ -20,21 +20,21 @@ pub(in crate::sol::svc::calc) struct DependencyRegister {
     // So, if effect source is removed (e.g. disabled via force stop mode), it clears up affectee
     // attribute, and when requested next time - it will re-add anonymous dependency, allowing the
     // affectee attribute to be cleared whenever linked attribute changes its value.
-    pub(super) data: StMapSetL1<AttrSpec, AttrSpec>,
+    pub(super) data: HMapHSet<AttrSpec, AttrSpec>,
     // Map<item ID, (affector attr ID, affectee attr ID)>
-    pub(super) anonymous_by_item: StMapSetL1<ItemId, (ad::AAttrId, ad::AAttrId)>,
+    pub(super) anonymous_by_item: HMapHSet<ItemId, (ad::AAttrId, ad::AAttrId)>,
     // Map<source, (affector spec, affectee spec)>
-    pub(super) by_source: StMapSetL1<EffectSpec, (AttrSpec, AttrSpec)>,
+    pub(super) by_source: HMapHSet<EffectSpec, (AttrSpec, AttrSpec)>,
     // Map<item ID, sources>
-    pub(super) source_by_item: StMapSetL1<ItemId, EffectSpec>,
+    pub(super) source_by_item: HMapHSet<ItemId, EffectSpec>,
 }
 impl DependencyRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
         Self {
-            data: StMapSetL1::new(),
-            anonymous_by_item: StMapSetL1::new(),
-            by_source: StMapSetL1::new(),
-            source_by_item: StMapSetL1::new(),
+            data: HMapHSet::new(),
+            anonymous_by_item: HMapHSet::new(),
+            by_source: HMapHSet::new(),
+            source_by_item: HMapHSet::new(),
         }
     }
     // Query methods

@@ -2,7 +2,7 @@ use crate::{
     ad,
     sol::{ItemId, uad::item::EffectModes},
     src::Src,
-    util::StMap,
+    util::HMap,
 };
 
 // Item base stores all the data every item should have
@@ -43,16 +43,16 @@ impl ItemBase {
     pub(in crate::sol::uad::item) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
         self.get_a_item().map(|v| v.cat_id)
     }
-    pub(in crate::sol::uad::item) fn get_a_attrs(&self) -> Option<&StMap<ad::AAttrId, ad::AAttrVal>> {
+    pub(in crate::sol::uad::item) fn get_a_attrs(&self) -> Option<&HMap<ad::AAttrId, ad::AAttrVal>> {
         self.get_a_item().map(|v| &v.attrs)
     }
-    pub(in crate::sol::uad::item) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
+    pub(in crate::sol::uad::item) fn get_a_effect_datas(&self) -> Option<&HMap<ad::AEffectId, ad::AItemEffectData>> {
         self.get_a_item().map(|v| &v.effect_datas)
     }
     pub(in crate::sol::uad::item) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
         self.get_a_item().map(|v| v.defeff_id)
     }
-    pub(in crate::sol::uad::item) fn get_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
+    pub(in crate::sol::uad::item) fn get_a_skill_reqs(&self) -> Option<&HMap<ad::AItemId, ad::ASkillLevel>> {
         self.get_a_item().map(|v| &v.srqs)
     }
     pub(in crate::sol::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {

@@ -1,17 +1,17 @@
 use crate::{
     ad,
     sol::{AttrVal, ItemId},
-    util::StMap,
+    util::HMap,
 };
 
 // Holds info about effect projections
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct ProjectionRegister {
-    pub(super) ranges: StMap<(ItemId, ad::AEffectId, ItemId), AttrVal>,
+    pub(super) ranges: HMap<(ItemId, ad::AEffectId, ItemId), AttrVal>,
 }
 impl ProjectionRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
-        Self { ranges: StMap::new() }
+        Self { ranges: HMap::new() }
     }
     // Query methods
     pub(in crate::sol::svc::calc) fn get_range(

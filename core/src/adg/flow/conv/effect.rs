@@ -4,7 +4,7 @@ use crate::{
     ac, ad,
     adg::{EData, GSupport, get_abil_effect},
     ec, ed,
-    util::{StMap, StSet, StrMsgError},
+    util::{HMap, HSet, StrMsgError},
 };
 
 impl ed::EFighterAbil {
@@ -16,8 +16,8 @@ impl ed::EFighterAbil {
     }
 }
 
-pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> StMap<ad::AEffectId, ad::AEffect> {
-    let mut a_effects = StMap::new();
+pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> HMap<ad::AEffectId, ad::AEffect> {
+    let mut a_effects = HMap::new();
     for e_effect in e_data.effects.iter() {
         let state = match e_effect.category_id {
             ec::effcats::PASSIVE => ad::AState::Offline,
@@ -275,7 +275,7 @@ fn get_mod_skill_id(e_modifier: &ed::EEffectMod) -> Result<ed::EItemId, StrMsgEr
     get_arg_int(&e_modifier.args, "skillTypeID")
 }
 
-fn get_arg_int(args: &StMap<String, ed::EPrimitive>, name: &str) -> Result<i32, StrMsgError> {
+fn get_arg_int(args: &HMap<String, ed::EPrimitive>, name: &str) -> Result<i32, StrMsgError> {
     let primitive = args.get(name).ok_or(StrMsgError {
         msg: format!("no \"{name}\" in args"),
     })?;
@@ -287,7 +287,7 @@ fn get_arg_int(args: &StMap<String, ed::EPrimitive>, name: &str) -> Result<i32, 
     }
 }
 
-fn get_arg_str(args: &StMap<String, ed::EPrimitive>, name: &str) -> Result<String, StrMsgError> {
+fn get_arg_str(args: &HMap<String, ed::EPrimitive>, name: &str) -> Result<String, StrMsgError> {
     let primitive = args.get(name).ok_or(StrMsgError {
         msg: format!("no \"{name}\" in args"),
     })?;
@@ -299,18 +299,18 @@ fn get_arg_str(args: &StMap<String, ed::EPrimitive>, name: &str) -> Result<Strin
     }
 }
 
-fn extract_ability_map<F, T>(e_data: &EData, getter: F) -> StMap<ad::AEffectId, StSet<T>>
+fn extract_ability_map<F, T>(e_data: &EData, getter: F) -> HMap<ad::AEffectId, HSet<T>>
 where
     F: Fn(&ed::EFighterAbil) -> T,
     T: Eq + Hash,
 {
-    let mut map = StMap::new();
+    let mut map = HMap::new();
     for e_abil in e_data.abils.iter() {
         match get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map
                 .entry(ad::AEffectId::Dogma(effect_id))
-                .or_insert_with(StSet::new)
+                .or_insert_with(HSet::new)
                 .insert(getter(e_abil)),
         };
     }

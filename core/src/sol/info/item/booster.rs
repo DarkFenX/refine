@@ -1,6 +1,6 @@
 use crate::{
     sol::{EffectId, FitId, ItemId, ItemTypeId, SlotIndex, info::SideEffectInfo, uad::item::Booster},
-    util::StMap,
+    util::HMap,
 };
 
 pub struct BoosterInfo {
@@ -9,12 +9,12 @@ pub struct BoosterInfo {
     pub fit_id: FitId,
     pub slot: Option<SlotIndex>,
     pub enabled: bool,
-    pub side_effects: StMap<EffectId, SideEffectInfo>,
+    pub side_effects: HMap<EffectId, SideEffectInfo>,
 }
 impl BoosterInfo {
     pub(in crate::sol) fn from_booster_and_side_effects(
         sol_booster: &Booster,
-        side_effects: StMap<EffectId, SideEffectInfo>,
+        side_effects: HMap<EffectId, SideEffectInfo>,
     ) -> Self {
         Self {
             id: sol_booster.get_item_id(),

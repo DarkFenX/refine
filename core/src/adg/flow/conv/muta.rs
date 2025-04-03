@@ -1,9 +1,9 @@
 use ordered_float::OrderedFloat as OF;
 
-use crate::{ad, adg::EData, util::StMap};
+use crate::{ad, adg::EData, util::HMap};
 
-pub(in crate::adg::flow::conv) fn conv_mutas(e_data: &EData) -> StMap<ad::AItemId, ad::AMuta> {
-    let mut a_mutas = StMap::new();
+pub(in crate::adg::flow::conv) fn conv_mutas(e_data: &EData) -> HMap<ad::AItemId, ad::AMuta> {
+    let mut a_mutas = HMap::new();
     for e_muta in e_data.muta_items.iter() {
         let a_muta = a_mutas
             .entry(e_muta.muta_id)

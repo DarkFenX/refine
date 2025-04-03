@@ -3,19 +3,19 @@ use std::num::Wrapping;
 use crate::{
     err::basic::FleetFoundError,
     sol::{FleetId, uad::fleet::Fleet},
-    util::StMap,
+    util::HMap,
 };
 
 #[derive(Clone)]
 pub(in crate::sol) struct Fleets {
     counter: Wrapping<FleetId>,
-    data: StMap<FleetId, Fleet>,
+    data: HMap<FleetId, Fleet>,
 }
 impl Fleets {
     pub(in crate::sol) fn new() -> Self {
         Self {
             counter: Wrapping(0),
-            data: StMap::new(),
+            data: HMap::new(),
         }
     }
     pub(in crate::sol) fn add_fleet(&mut self) -> FleetId {

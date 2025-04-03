@@ -5,14 +5,14 @@ use crate::{
         AttrSpec,
         calc::{Context, CtxModifier},
     },
-    util::StMapSetL1,
+    util::HMapHSet,
 };
 
 pub(super) fn add_ctx_modifier<K: Eq + Hash>(
-    main_storage: &mut StMapSetL1<K, CtxModifier>,
+    main_storage: &mut HMapHSet<K, CtxModifier>,
     key: K,
     ctx_modifier: CtxModifier,
-    attr_spec_storage: &mut StMapSetL1<AttrSpec, CtxModifier>,
+    attr_spec_storage: &mut HMapHSet<AttrSpec, CtxModifier>,
 ) {
     main_storage.add_entry(key, ctx_modifier);
     if let Some(affector_a_attr_id) = ctx_modifier.raw.get_affector_a_attr_id() {
@@ -47,10 +47,10 @@ pub(super) fn add_ctx_modifier<K: Eq + Hash>(
 }
 
 pub(super) fn remove_ctx_modifier<K: Eq + Hash>(
-    main_storage: &mut StMapSetL1<K, CtxModifier>,
+    main_storage: &mut HMapHSet<K, CtxModifier>,
     key: &K,
     ctx_modifier: &CtxModifier,
-    attr_spec_storage: &mut StMapSetL1<AttrSpec, CtxModifier>,
+    attr_spec_storage: &mut HMapHSet<AttrSpec, CtxModifier>,
 ) {
     main_storage.remove_entry(key, ctx_modifier);
     if let Some(affector_a_attr_id) = ctx_modifier.raw.get_affector_a_attr_id() {

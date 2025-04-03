@@ -1,4 +1,4 @@
-use crate::util::StMap;
+use crate::util::HMap;
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use effect::{
@@ -25,20 +25,20 @@ mod shared;
 
 /// Adapted data storage.
 pub struct AData {
-    pub items: StMap<AItemId, AItem>,
-    pub attrs: StMap<AAttrId, AAttr>,
-    pub mutas: StMap<AItemId, AMuta>,
-    pub effects: StMap<AEffectId, AEffect>,
-    pub buffs: StMap<ABuffId, ABuff>,
+    pub items: HMap<AItemId, AItem>,
+    pub attrs: HMap<AAttrId, AAttr>,
+    pub mutas: HMap<AItemId, AMuta>,
+    pub effects: HMap<AEffectId, AEffect>,
+    pub buffs: HMap<ABuffId, ABuff>,
 }
 impl AData {
     pub(crate) fn new() -> Self {
         Self {
-            items: StMap::new(),
-            attrs: StMap::new(),
-            mutas: StMap::new(),
-            effects: StMap::new(),
-            buffs: StMap::new(),
+            items: HMap::new(),
+            attrs: HMap::new(),
+            mutas: HMap::new(),
+            effects: HMap::new(),
+            buffs: HMap::new(),
         }
     }
 }

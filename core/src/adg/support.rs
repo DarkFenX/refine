@@ -4,25 +4,25 @@ use crate::{
     ac, ad,
     adg::data::EData,
     ec, ed,
-    util::{StMap, StMapSetL1, StSet},
+    util::{HMap, HMapHSet, HSet},
 };
 
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
-    pub(in crate::adg) grp_cat_map: StMap<ed::EItemGrpId, ed::EItemCatId>,
-    pub(in crate::adg) rendered_type_lists: StMap<ed::EItemListId, StSet<ad::AItemId>>,
-    pub(in crate::adg) attr_unit_map: StMap<ed::EAttrId, ed::EAttrUnitId>,
-    pub(in crate::adg) eff_buff_map: StMap<ed::EEffectId, ad::AEffectBuffInfo>,
-    pub(in crate::adg) eff_charge_map: StMap<ed::EEffectId, ad::AEffectChargeInfo>,
+    pub(in crate::adg) grp_cat_map: HMap<ed::EItemGrpId, ed::EItemCatId>,
+    pub(in crate::adg) rendered_type_lists: HMap<ed::EItemListId, HSet<ad::AItemId>>,
+    pub(in crate::adg) attr_unit_map: HMap<ed::EAttrId, ed::EAttrUnitId>,
+    pub(in crate::adg) eff_buff_map: HMap<ed::EEffectId, ad::AEffectBuffInfo>,
+    pub(in crate::adg) eff_charge_map: HMap<ed::EEffectId, ad::AEffectChargeInfo>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
         Self {
-            grp_cat_map: StMap::new(),
-            rendered_type_lists: StMap::new(),
-            attr_unit_map: StMap::new(),
-            eff_buff_map: StMap::new(),
-            eff_charge_map: StMap::new(),
+            grp_cat_map: HMap::new(),
+            rendered_type_lists: HMap::new(),
+            attr_unit_map: HMap::new(),
+            eff_buff_map: HMap::new(),
+            eff_charge_map: HMap::new(),
         }
     }
     pub(in crate::adg) fn fill(&mut self, e_data: &EData) {
@@ -38,16 +38,16 @@ impl GSupport {
         }
     }
     fn fill_rendered_type_lists(&mut self, e_data: &EData) {
-        let mut types_by_grp = StMapSetL1::new();
+        let mut types_by_grp = HMapHSet::new();
         for item in e_data.items.iter() {
             types_by_grp.add_entry(item.group_id, item.id);
         }
-        let mut types_by_cat = StMapSetL1::new();
+        let mut types_by_cat = HMapHSet::new();
         for group in e_data.groups.iter() {
             types_by_cat.extend_entries(group.category_id, types_by_grp.get(&group.id).copied());
         }
         for item_list in &e_data.item_lists {
-            let mut includes = StSet::new();
+            let mut includes = HSet::new();
             includes.extend(item_list.included_item_ids.iter().copied());
             for included_grp_id in item_list.included_grp_ids.iter() {
                 includes.extend(types_by_grp.get(included_grp_id).copied());
@@ -55,7 +55,7 @@ impl GSupport {
             for included_cat_id in item_list.included_cat_ids.iter() {
                 includes.extend(types_by_cat.get(included_cat_id).copied());
             }
-            let mut excludes = StSet::new();
+            let mut excludes = HSet::new();
             excludes.extend(item_list.excluded_item_ids.iter().copied());
             for excluded_grp_id in item_list.excluded_grp_ids.iter() {
                 excludes.extend(types_by_grp.get(excluded_grp_id).copied());

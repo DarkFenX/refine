@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{AAttrId, AAttrVal, AItemGrpId, AItemId},
-    util::StMap,
+    util::HMap,
 };
 
 static TYPE_ATTRS: [AAttrId; 12] = [
@@ -51,7 +51,7 @@ pub struct AItemShipLimit {
     pub group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_item_ship_limit(a_item_id: AItemId, item_attrs: &StMap<AAttrId, AAttrVal>) -> Option<AItemShipLimit> {
+pub(super) fn get_item_ship_limit(a_item_id: AItemId, item_attrs: &HMap<AAttrId, AAttrVal>) -> Option<AItemShipLimit> {
     let mut limit_type_ids = TYPE_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))

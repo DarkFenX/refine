@@ -9,7 +9,7 @@ use crate::{
         uad::item::{EffectModes, ItemAddMutation, ItemAttrMutationValue, ItemBase, ItemChangeAttrMutation},
     },
     src::Src,
-    util::StMap,
+    util::HMap,
 };
 
 // Item mutable base stores all the data every mutable item should have.
@@ -108,7 +108,7 @@ impl ItemBaseMutable {
     pub(in crate::sol::uad::item) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
         self.base.get_a_category_id()
     }
-    pub(in crate::sol::uad::item) fn get_a_attrs(&self) -> Option<&StMap<ad::AAttrId, ad::AAttrVal>> {
+    pub(in crate::sol::uad::item) fn get_a_attrs(&self) -> Option<&HMap<ad::AAttrId, ad::AAttrVal>> {
         let item_mutation = match &self.mutation {
             Some(item_mutation) => item_mutation,
             None => return self.base.get_a_attrs(),
@@ -118,13 +118,13 @@ impl ItemBaseMutable {
             None => self.base.get_a_attrs(),
         }
     }
-    pub(in crate::sol::uad::item) fn get_a_effect_datas(&self) -> Option<&StMap<ad::AEffectId, ad::AItemEffectData>> {
+    pub(in crate::sol::uad::item) fn get_a_effect_datas(&self) -> Option<&HMap<ad::AEffectId, ad::AItemEffectData>> {
         self.base.get_a_effect_datas()
     }
     pub(in crate::sol::uad::item) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
         self.base.get_a_defeff_id()
     }
-    pub(in crate::sol::uad::item) fn get_a_skill_reqs(&self) -> Option<&StMap<ad::AItemId, ad::ASkillLevel>> {
+    pub(in crate::sol::uad::item) fn get_a_skill_reqs(&self) -> Option<&HMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
     pub(in crate::sol::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
@@ -472,12 +472,12 @@ impl ItemBaseMutable {
 struct ItemMutationData {
     // User-defined data
     a_mutator_id: ad::AItemId,
-    attr_rolls: StMap<ad::AAttrId, MutaRoll>,
+    attr_rolls: HMap<ad::AAttrId, MutaRoll>,
     // Source-dependent data
     cache: Option<ItemMutationDataCache>,
 }
 impl ItemMutationData {
-    fn new_with_attrs(a_mutator_id: ad::AItemId, attr_rolls: StMap<ad::AAttrId, MutaRoll>) -> Self {
+    fn new_with_attrs(a_mutator_id: ad::AItemId, attr_rolls: HMap<ad::AAttrId, MutaRoll>) -> Self {
         Self {
             a_mutator_id,
             attr_rolls,
@@ -491,7 +491,7 @@ impl ItemMutationData {
 struct ItemMutationDataCache {
     base_a_item_id: ad::AItemId,
     a_mutator: ad::ArcMuta,
-    merged_a_attrs: StMap<ad::AAttrId, ad::AAttrVal>,
+    merged_a_attrs: HMap<ad::AAttrId, ad::AAttrVal>,
     a_extras: ad::AItemExtras,
 }
 
@@ -517,7 +517,7 @@ fn normalize_attr_mutation_simple(value: ItemAttrMutationValue) -> Option<MutaRo
 // Full conversion
 fn convert_item_mutation_full(
     mutation_request: ItemAddMutation,
-    unmutated_a_attrs: &StMap<ad::AAttrId, ad::AAttrVal>,
+    unmutated_a_attrs: &HMap<ad::AAttrId, ad::AAttrVal>,
     a_mutator: &ad::AMuta,
 ) -> ItemMutationData {
     ItemMutationData::new_with_attrs(
@@ -535,7 +535,7 @@ fn convert_item_mutation_full(
 
 fn normalize_attr_mutation_full_with_unmutated_values(
     attr_id: &ad::AAttrId,
-    unmutated_attrs: &StMap<ad::AAttrId, ad::AAttrVal>,
+    unmutated_attrs: &HMap<ad::AAttrId, ad::AAttrVal>,
     a_mutator: &ad::AMuta,
     attr_mutation_value: ItemAttrMutationValue,
 ) -> Option<MutaRoll> {
@@ -587,9 +587,9 @@ fn limit_roll(roll: MutaRoll) -> MutaRoll {
 
 // Attribute mutations
 fn apply_attr_mutations(
-    a_attrs: &mut StMap<ad::AAttrId, ad::AAttrVal>,
+    a_attrs: &mut HMap<ad::AAttrId, ad::AAttrVal>,
     a_mutator: &ad::AMuta,
-    attr_rolls: &StMap<ad::AAttrId, MutaRoll>,
+    attr_rolls: &HMap<ad::AAttrId, MutaRoll>,
 ) {
     for (attr_id, attr_mutation_range) in a_mutator.attr_mods.iter() {
         let unmutated_value = match a_attrs.get(attr_id) {
@@ -658,7 +658,7 @@ fn get_combined_a_attr_value<'a>(
 fn get_combined_a_attr_values(
     base_a_item: Option<&ad::ArcItem>,
     mutated_a_item: &ad::AItem,
-) -> StMap<ad::AAttrId, ad::AAttrVal> {
+) -> HMap<ad::AAttrId, ad::AAttrVal> {
     match base_a_item {
         Some(base_a_item) => {
             let mut attrs = base_a_item.attrs.clone();
@@ -674,7 +674,7 @@ fn get_combined_a_attr_values(
 
 fn change_mutation_attrs_ineffective(
     src: &Src,
-    base_a_attrs: Option<&StMap<ad::AAttrId, ad::AAttrVal>>,
+    base_a_attrs: Option<&HMap<ad::AAttrId, ad::AAttrVal>>,
     item_mutation: &mut ItemMutationData,
     attr_mutation_requests: Vec<ItemChangeAttrMutation>,
 ) {

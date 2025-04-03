@@ -4,7 +4,7 @@ use crate::{
         AItemGrpId, AItemId, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
     },
     ed,
-    util::{StMap, StSet},
+    util::{HMap, HSet},
 };
 
 use super::{
@@ -127,7 +127,7 @@ impl AItemExtras {
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
     // not rely on them
-    pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &StMap<AAttrId, AAttrVal>) -> Self {
+    pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &HMap<AAttrId, AAttrVal>) -> Self {
         Self {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
             volume: get_volume(attrs),
@@ -165,14 +165,14 @@ impl AItemExtras {
         item_id: AItemId,
         item_grp_id: AItemGrpId,
         item_cat_id: AItemCatId,
-        item_attrs: &StMap<AAttrId, AAttrVal>,
-        item_effects: &StMap<AEffectId, AItemEffectData>,
-        item_srqs: &StMap<AItemId, ASkillLevel>,
-        effects: &StMap<AEffectId, AEffect>,
-        type_lists: &StMap<ed::EItemListId, StSet<AItemId>>,
-        fitted_limited_groups: &StSet<AItemGrpId>,
-        online_limited_groups: &StSet<AItemGrpId>,
-        active_limited_groups: &StSet<AItemGrpId>,
+        item_attrs: &HMap<AAttrId, AAttrVal>,
+        item_effects: &HMap<AEffectId, AItemEffectData>,
+        item_srqs: &HMap<AItemId, ASkillLevel>,
+        effects: &HMap<AEffectId, AEffect>,
+        type_lists: &HMap<ed::EItemListId, HSet<AItemId>>,
+        fitted_limited_groups: &HSet<AItemGrpId>,
+        online_limited_groups: &HSet<AItemGrpId>,
+        active_limited_groups: &HSet<AItemGrpId>,
     ) {
         self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
         self.volume = get_volume(item_attrs);

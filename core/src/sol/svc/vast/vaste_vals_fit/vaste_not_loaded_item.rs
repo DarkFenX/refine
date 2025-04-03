@@ -1,6 +1,6 @@
 use crate::{
     sol::{ItemId, svc::vast::VastFitData},
-    util::StSet,
+    util::HSet,
 };
 
 pub struct ValNotLoadedItemFail {
@@ -9,7 +9,7 @@ pub struct ValNotLoadedItemFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_not_loaded_item_fast(&self, kfs: &StSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_not_loaded_item_fast(&self, kfs: &HSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.not_loaded.is_empty(),
             false => self.not_loaded.difference(kfs).nth(0).is_none(),
@@ -18,7 +18,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_verbose(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
     ) -> Vec<ValNotLoadedItemFail> {
         self.not_loaded
             .iter()

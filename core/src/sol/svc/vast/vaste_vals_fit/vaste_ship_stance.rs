@@ -5,7 +5,7 @@ use crate::{
         svc::vast::VastFitData,
         uad::{fit::Fit, item::Ship},
     },
-    util::StSet,
+    util::HSet,
 };
 
 pub struct ValShipStanceFail {
@@ -16,7 +16,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_ship_stance_fast(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         fit: &Fit,
         ship: Option<&Ship>,
     ) -> bool {
@@ -36,7 +36,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_ship_stance_verbose(
         &self,
-        kfs: &StSet<ItemId>,
+        kfs: &HSet<ItemId>,
         fit: &Fit,
         ship: Option<&Ship>,
     ) -> Option<ValShipStanceFail> {

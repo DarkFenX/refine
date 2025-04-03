@@ -1,15 +1,15 @@
 use std::hash::Hash;
 
-use super::StMap;
+use super::HMap;
 
-pub(crate) struct StMapVecL1<K, V> {
-    data: StMap<K, Vec<V>>,
+pub(crate) struct HMapVec<K, V> {
+    data: HMap<K, Vec<V>>,
     empty: Vec<V>,
 }
-impl<K: Eq + Hash, V> StMapVecL1<K, V> {
+impl<K: Eq + Hash, V> HMapVec<K, V> {
     pub(crate) fn new() -> Self {
         Self {
-            data: StMap::new(),
+            data: HMap::new(),
             empty: Vec::new(),
         }
     }
@@ -38,12 +38,12 @@ impl<K: Eq + Hash, V> StMapVecL1<K, V> {
         values.extend(entries);
     }
 }
-impl<K: Eq + Hash, V> Default for StMapVecL1<K, V> {
+impl<K: Eq + Hash, V> Default for HMapVec<K, V> {
     fn default() -> Self {
         Self::new()
     }
 }
-impl<K, V> IntoIterator for StMapVecL1<K, V> {
+impl<K, V> IntoIterator for HMapVec<K, V> {
     type Item = (K, Vec<V>);
     type IntoIter = std::collections::hash_map::IntoIter<K, Vec<V>>;
 

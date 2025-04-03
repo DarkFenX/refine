@@ -1,20 +1,20 @@
 use crate::{
     ad,
     sol::{ItemId, svc::calc::RawModifier},
-    util::StMapSetL1,
+    util::HMapHSet,
 };
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct BuffRegister {
-    pub(super) a_effect_ids: StMapSetL1<ItemId, ad::AEffectId>,
-    pub(super) modifiers: StMapSetL1<(ItemId, ad::AAttrId), RawModifier>,
+    pub(super) a_effect_ids: HMapHSet<ItemId, ad::AEffectId>,
+    pub(super) modifiers: HMapHSet<(ItemId, ad::AAttrId), RawModifier>,
 }
 impl BuffRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
         Self {
-            a_effect_ids: StMapSetL1::new(),
-            modifiers: StMapSetL1::new(),
+            a_effect_ids: HMapHSet::new(),
+            modifiers: HMapHSet::new(),
         }
     }
     // Effect methods

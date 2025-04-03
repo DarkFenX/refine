@@ -1,4 +1,4 @@
-use crate::{sol::ItemId, util::StSet};
+use crate::{sol::ItemId, util::HSet};
 
 #[derive(Clone)]
 pub struct ValOptions {
@@ -194,19 +194,19 @@ impl ValOptions {
 #[derive(Clone)]
 pub struct ValOption {
     pub enabled: bool,
-    pub kfs: StSet<ItemId>,
+    pub kfs: HSet<ItemId>,
 }
 impl ValOption {
     pub fn enabled() -> Self {
         Self {
             enabled: true,
-            kfs: StSet::new(),
+            kfs: HSet::new(),
         }
     }
     pub fn disabled() -> Self {
         Self {
             enabled: false,
-            kfs: StSet::new(),
+            kfs: HSet::new(),
         }
     }
 }

@@ -20,11 +20,11 @@ use super::data;
 pub struct RamJsonAdh {
     folder: PathBuf,
     name: String,
-    storage_items: rc::util::StMap<rc::ad::AItemId, rc::ad::ArcItem>,
-    storage_attrs: rc::util::StMap<rc::ad::AAttrId, rc::ad::ArcAttr>,
-    storage_effects: rc::util::StMap<rc::ad::AEffectId, rc::ad::ArcEffect>,
-    storage_mutas: rc::util::StMap<rc::ad::AItemId, rc::ad::ArcMuta>,
-    storage_buffs: rc::util::StMap<rc::ad::ABuffId, rc::ad::ArcBuff>,
+    storage_items: rc::util::HMap<rc::ad::AItemId, rc::ad::ArcItem>,
+    storage_attrs: rc::util::HMap<rc::ad::AAttrId, rc::ad::ArcAttr>,
+    storage_effects: rc::util::HMap<rc::ad::AEffectId, rc::ad::ArcEffect>,
+    storage_mutas: rc::util::HMap<rc::ad::AItemId, rc::ad::ArcMuta>,
+    storage_buffs: rc::util::HMap<rc::ad::ABuffId, rc::ad::ArcBuff>,
     fingerprint: Option<String>,
 }
 impl RamJsonAdh {
@@ -33,11 +33,11 @@ impl RamJsonAdh {
         Self {
             folder,
             name,
-            storage_items: rc::util::StMap::new(),
-            storage_attrs: rc::util::StMap::new(),
-            storage_effects: rc::util::StMap::new(),
-            storage_mutas: rc::util::StMap::new(),
-            storage_buffs: rc::util::StMap::new(),
+            storage_items: rc::util::HMap::new(),
+            storage_attrs: rc::util::HMap::new(),
+            storage_effects: rc::util::HMap::new(),
+            storage_mutas: rc::util::HMap::new(),
+            storage_buffs: rc::util::HMap::new(),
             fingerprint: None,
         }
     }
