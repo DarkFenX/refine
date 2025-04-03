@@ -126,7 +126,7 @@ impl HChangeSolCommand {
             Self::DeleteFleet(cmd) => cmd.execute(core_sol),
             // Fit
             Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeFit(cmd) => cmd.execute(core_sol),
             Self::DeleteFit(cmd) => cmd.execute(core_sol),
             // Item
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),

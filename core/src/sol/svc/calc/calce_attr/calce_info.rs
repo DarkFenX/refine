@@ -97,7 +97,7 @@ impl Calc {
         let item = uad.items.get_item(item_id).unwrap();
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
-            None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }.into()),
+            None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute
         // value.

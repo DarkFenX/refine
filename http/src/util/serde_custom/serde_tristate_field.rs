@@ -3,15 +3,12 @@
 use serde::{Deserialize, Deserializer};
 use serde_with::de::{DeserializeAs, DeserializeAsWrap};
 
+#[derive(Default)]
 pub(crate) enum TriStateField<T> {
     Value(T),
     None,
+    #[default]
     Absent,
-}
-impl<T> Default for TriStateField<T> {
-    fn default() -> Self {
-        TriStateField::Absent
-    }
 }
 
 pub(crate) struct TriStateFieldVisitor<T> {
