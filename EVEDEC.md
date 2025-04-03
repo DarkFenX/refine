@@ -1,4 +1,4 @@
-Some data used in the library came from EVE common knowledge and tests, but it is sometimes exposed in code of decompiled EVE client. This file lists those things, and where in decompiled source code one could find it:
+Some knowledge used to write the library came from EVE common sense, my work on pyfa, and tests. Later, more data was found in decompiled EVE client, or already known things were confirmed. This file lists those findings, and where in decompiled source code one could find it:
 
 - mapping between modifier operator IDs and operators:
   - library: adg::get_mod_operation()
