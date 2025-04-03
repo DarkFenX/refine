@@ -4,15 +4,23 @@ use crate::{
         ItemId,
         svc::{AttrSpec, EffectSpec},
     },
-    util::{StMapSetL1, StMapSetL2},
+    util::StMapSetL1,
 };
 
 // Intended to hold ad-hoc dependencies between attributes, which are not covered by registers
 // which hold data about regular modifiers.
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct DependencyRegister {
-    // Map<affector spec, Map<affectee spec, optional sources>>
-    pub(super) data: StMapSetL2<AttrSpec, AttrSpec, Option<EffectSpec>>,
+    // Map<affector spec, affectee specs> - this map could be StMapSetL2 with Option<EffectSpec> as
+    // source in 3rd generic parameter, just to process collisions - i.e. when the same affector
+    // attribute and affectee attribute are used for anonymous and source-based dependency. But in
+    // our case it's not needed with some external guarantees:
+    // - when a modification source is removed, it clears dependent attribute values
+    // - anonymous dependencies are re-established on every dependent recalculation
+    // So, if effect source is removed (e.g. disabled via force stop mode), it clears up affectee
+    // attribute, and when requested next time - it will re-add anonymous dependency, allowing the
+    // affectee attribute to be cleared whenever linked attribute changes its value.
+    pub(super) data: StMapSetL1<AttrSpec, AttrSpec>,
     // Map<item ID, (affector attr ID, affectee attr ID)>
     pub(super) anonymous_by_item: StMapSetL1<ItemId, (ad::AAttrId, ad::AAttrId)>,
     // Map<source, (affector spec, affectee spec)>
@@ -23,7 +31,7 @@ pub(in crate::sol::svc::calc) struct DependencyRegister {
 impl DependencyRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
         Self {
-            data: StMapSetL2::new(),
+            data: StMapSetL1::new(),
             anonymous_by_item: StMapSetL1::new(),
             by_source: StMapSetL1::new(),
             source_by_item: StMapSetL1::new(),
@@ -39,7 +47,7 @@ impl DependencyRegister {
             item_id: *affector_item_id,
             a_attr_id: *affector_a_attr_id,
         };
-        self.data.keys_l2(&affector_spec)
+        self.data.get(&affector_spec)
     }
     // Modification methods
     pub(in crate::sol::svc::calc) fn add_anonymous(
@@ -56,7 +64,7 @@ impl DependencyRegister {
             item_id,
             a_attr_id: affectee_a_attr_id,
         };
-        self.data.add_entry(affector_spec, affectee_spec, None);
+        self.data.add_entry(affector_spec, affectee_spec);
         self.anonymous_by_item
             .add_entry(item_id, (affector_a_attr_id, affectee_a_attr_id));
     }
@@ -81,7 +89,7 @@ impl DependencyRegister {
             item_id: affectee_item_id,
             a_attr_id: affectee_a_attr_id,
         };
-        self.data.add_entry(affector_spec, affectee_spec, Some(source));
+        self.data.add_entry(affector_spec, affectee_spec);
         self.by_source.add_entry(source, (affector_spec, affectee_spec));
         self.source_by_item.add_entry(affector_item_id, source);
         self.source_by_item.add_entry(affectee_item_id, source);
@@ -97,7 +105,7 @@ impl DependencyRegister {
         };
         if let Some(spec_iter) = self.by_source.remove_key(&source) {
             for (affector_spec, affectee_spec) in spec_iter {
-                self.data.remove_entry(&affector_spec, &affectee_spec, &Some(source));
+                self.data.remove_entry(&affector_spec, &affectee_spec);
                 self.source_by_item.remove_entry(&affector_spec.item_id, &source);
                 self.source_by_item.remove_entry(&affectee_spec.item_id, &source);
             }
@@ -115,7 +123,7 @@ impl DependencyRegister {
                     item_id: *item_id,
                     a_attr_id: affectee_a_attr_id,
                 };
-                self.data.remove_entry(&affector_spec, &affectee_spec, &None);
+                self.data.remove_entry(&affector_spec, &affectee_spec);
             }
         }
         // Dependencies with source
@@ -123,7 +131,7 @@ impl DependencyRegister {
             for source in sources {
                 if let Some(attr_spec_iter) = self.by_source.remove_key(&source) {
                     for (affector_spec, affectee_spec) in attr_spec_iter {
-                        self.data.remove_entry(&affector_spec, &affectee_spec, &Some(source));
+                        self.data.remove_entry(&affector_spec, &affectee_spec);
                     }
                 }
             }

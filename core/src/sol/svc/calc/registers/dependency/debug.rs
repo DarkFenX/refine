@@ -10,15 +10,9 @@ impl DependencyRegister {
         for (affector_spec, affector_data) in self.data.iter() {
             check_item_id(uad, &affector_spec.item_id, true)?;
             check_a_attr_id(uad, &affector_spec.a_attr_id)?;
-            for (affectee_spec, sources) in affector_data.iter() {
+            for affectee_spec in affector_data {
                 check_item_id(uad, &affectee_spec.item_id, true)?;
                 check_a_attr_id(uad, &affectee_spec.a_attr_id)?;
-                for source in sources {
-                    if let Some(source) = source {
-                        check_item_id(uad, &source.item_id, true)?;
-                        check_a_effect_id(uad, &source.a_effect_id)?;
-                    }
-                }
             }
         }
         for (item_id, attrs_iter) in self.anonymous_by_item.iter() {

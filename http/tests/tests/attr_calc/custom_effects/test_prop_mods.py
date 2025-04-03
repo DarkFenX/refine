@@ -120,6 +120,49 @@ def test_mwd(client, consts):
     assert api_mod_prop.affectors.find_by_attr(attr_id=eve_mass_attr_id).one().item_id == api_ship.id
 
 
+def test_ship_switch(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
+    eve_speed_boost_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_prop_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_microwarpdrive,
+        cat_id=consts.EveEffCat.active)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 455, eve_mass_attr_id: 1050000})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 300, eve_mass_attr_id: 2300000})
+    eve_unloaded_ship_id = client.alloc_item_id()
+    eve_prop_item_id = client.mk_eve_item(
+        attrs={eve_speed_boost_attr_id: 505, eve_thrust_attr_id: 1500000},
+        eff_ids=[eve_prop_effect_id],
+        defeff_id=eve_prop_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    api_fit.add_module(type_id=eve_prop_item_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_ship.update().attrs[eve_speed_attr_id].dogma == approx(3737.5)
+    # Action
+    api_ship = api_fit.set_ship(type_id=eve_ship2_id)
+    # Verification
+    assert api_ship.update().attrs[eve_speed_attr_id].dogma == approx(1288.043478)
+    # Action
+    api_ship = api_fit.set_ship(type_id=eve_unloaded_ship_id)
+    # Verification
+    api_ship.update()
+    with check_no_field():
+        api_ship.attrs  # noqa: B018
+    # Action
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    assert api_ship.update().attrs[eve_speed_attr_id].dogma == approx(3737.5)
+    # Action
+    api_ship.remove()
+    api_ship = api_fit.set_ship(type_id=eve_ship2_id)
+    # Verification
+    assert api_ship.update().attrs[eve_speed_attr_id].dogma == approx(1288.043478)
+
+
 def test_state(client, consts):
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
@@ -501,3 +544,69 @@ def test_speed_modifier_thrust_changed(client, consts):
     assert api_ship2_item.attrs[eve_speed_attr_id].dogma == approx(965.192308)
     assert len(api_ship2_item.mods[eve_speed_attr_id].find_by_affector_item(affector_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_thrust_attr_id].dogma == approx(1500000)
+
+
+def test_speed_modifier_no_attr_thrust(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_thrust_attr_id = consts.EveAttr.speed_boost_factor
+    eve_speed_boost_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_prop_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_microwarpdrive,
+        cat_id=consts.EveEffCat.active)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 455, eve_mass_attr_id: 1050000})
+    eve_prop_item_id = client.mk_eve_item(
+        attrs={eve_speed_boost_attr_id: 505, eve_thrust_attr_id: 1500000},
+        eff_ids=[eve_prop_effect_id],
+        defeff_id=eve_prop_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_prop_item_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+    # Verification - no changes if any of needed attributes cannot be calculated
+    assert api_ship.update().attrs[eve_speed_attr_id].dogma == approx(455)
+
+
+def test_speed_modifier_no_attr_speed_boost(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
+    eve_speed_boost_attr_id = consts.EveAttr.speed_factor
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_prop_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_microwarpdrive,
+        cat_id=consts.EveEffCat.active)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 455, eve_mass_attr_id: 1050000})
+    eve_prop_item_id = client.mk_eve_item(
+        attrs={eve_speed_boost_attr_id: 505, eve_thrust_attr_id: 1500000},
+        eff_ids=[eve_prop_effect_id],
+        defeff_id=eve_prop_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_prop_item_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+    # Verification - no changes if any of needed attributes cannot be calculated
+    assert api_ship.update().attrs[eve_speed_attr_id].dogma == approx(455)
+
+
+def test_speed_modifier_no_attr_mass(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_thrust_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_boost_factor)
+    eve_speed_boost_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_mass_attr_id = consts.EveAttr.mass
+    eve_prop_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_microwarpdrive,
+        cat_id=consts.EveEffCat.active)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 455, eve_mass_attr_id: 1050000})
+    eve_prop_item_id = client.mk_eve_item(
+        attrs={eve_speed_boost_attr_id: 505, eve_thrust_attr_id: 1500000},
+        eff_ids=[eve_prop_effect_id],
+        defeff_id=eve_prop_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_prop_item_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+    # Verification - no changes if any of needed attributes cannot be calculated
+    assert api_ship.update().attrs[eve_speed_attr_id].dogma == approx(455)
