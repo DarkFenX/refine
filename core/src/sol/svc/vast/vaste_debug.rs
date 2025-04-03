@@ -21,7 +21,7 @@ impl VastFitData {
         for item_id in self.mods_svcs_online.iter() {
             check_item_id(uad, item_id, true)?;
         }
-        for item_id in self.rigs_rigslot_calibration.keys() {
+        for item_id in self.rigs_offline_calibration.keys() {
             check_item_id(uad, item_id, true)?;
         }
         for item_id in self.drones_volume.keys() {

@@ -40,7 +40,7 @@ impl VastFitData {
             uad,
             calc,
             fit,
-            self.rigs_rigslot_calibration.values(),
+            self.rigs_offline_calibration.values(),
             &ac::attrs::UPGRADE_CAPACITY,
         )
     }

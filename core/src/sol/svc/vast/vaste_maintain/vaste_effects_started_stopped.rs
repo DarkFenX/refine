@@ -25,16 +25,6 @@ impl Vast {
                     }
                 }
             }
-            Item::Rig(rig) => {
-                for a_effect in a_effects {
-                    if a_effect.id == ac::effects::RIG_SLOT {
-                        if let Some(val) = rig.get_a_attrs().unwrap().get(&ac::attrs::UPGRADE_COST) {
-                            let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                            fit_data.rigs_rigslot_calibration.insert(rig.get_item_id(), *val);
-                        }
-                    }
-                }
-            }
             Item::Service(service) => {
                 for a_effect in a_effects {
                     if a_effect.id == ac::effects::ONLINE {
@@ -64,14 +54,6 @@ impl Vast {
                             fit_data.mods_launcher.remove(&module.get_item_id());
                         }
                         _ => (),
-                    }
-                }
-            }
-            Item::Rig(rig) => {
-                for a_effect in a_effects {
-                    if a_effect.id == ac::effects::RIG_SLOT {
-                        let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                        fit_data.rigs_rigslot_calibration.remove(&rig.get_item_id());
                     }
                 }
             }

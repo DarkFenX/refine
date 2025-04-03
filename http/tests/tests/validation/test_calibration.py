@@ -5,8 +5,7 @@ from tests.fw.api import ValOptions
 def test_fail_single(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -24,9 +23,8 @@ def test_fail_single(client, consts):
 def test_fail_multiple_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50}, eff_ids=[eve_effect_id])
-    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50})
+    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -45,9 +43,8 @@ def test_fail_multiple_ship(client, consts):
 def test_fail_multiple_struct(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50}, eff_ids=[eve_effect_id])
-    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50})
+    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100})
     eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -66,8 +63,7 @@ def test_fail_multiple_struct(client, consts):
 def test_equal(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()
@@ -84,12 +80,11 @@ def test_equal(client, consts):
 def test_known_failures(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
-    eve_rig3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10}, eff_ids=[eve_effect_id])
-    eve_rig4_id = client.mk_eve_item(attrs={eve_use_attr_id: 0}, eff_ids=[eve_effect_id])
-    eve_rig5_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.5}, eff_ids=[eve_effect_id])
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100})
+    eve_rig3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10})
+    eve_rig4_id = client.mk_eve_item(attrs={eve_use_attr_id: 0})
+    eve_rig5_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.5})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     eve_other_id = client.mk_eve_item()
     client.create_sources()
@@ -163,8 +158,7 @@ def test_modified_use(client, consts):
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_use_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_rig_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_rig_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_mod_effect_id])
     client.create_sources()
@@ -202,8 +196,7 @@ def test_modified_max(client, consts):
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_max_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_rig_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_rig_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 120})
     eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 50}, eff_ids=[eve_mod_effect_id])
     client.create_sources()
@@ -232,9 +225,8 @@ def test_rounding(client, consts):
     # Calibration shouldn't have its sum or individual values rounded
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.002}, eff_ids=[eve_effect_id])
-    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 5.227}, eff_ids=[eve_effect_id])
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.002})
+    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 5.227})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 5.223})
     client.create_sources()
     api_sol = client.create_sol()
@@ -253,8 +245,7 @@ def test_rounding(client, consts):
 def test_no_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 5})
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
     client.mk_eve_item(attrs={eve_max_attr_id: 5})
     client.create_sources()
@@ -272,8 +263,7 @@ def test_no_ship(client, consts):
 def test_not_loaded_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 5})
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
     client.mk_eve_item(attrs={eve_max_attr_id: 5})
     eve_ship_id = client.alloc_item_id()
@@ -295,10 +285,9 @@ def test_not_loaded_user(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
     # Create an item which has the attribute and the effect, just to prevent them from being cleaned
     # up
-    client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
+    client.mk_eve_item(attrs={eve_use_attr_id: 5})
     eve_rig_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -315,10 +304,9 @@ def test_not_loaded_user(client, consts):
 def test_non_positive(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0}, eff_ids=[eve_effect_id])
-    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_rig3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10}, eff_ids=[eve_effect_id])
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0})
+    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_rig3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -338,9 +326,8 @@ def test_non_positive(client, consts):
 def test_no_value_use(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_rig2_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_rig2_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -359,8 +346,7 @@ def test_no_value_use(client, consts):
 def test_no_value_max(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship()
     # Make an item to ensure that max attribute is not cleaned up
     client.mk_eve_item(attrs={eve_max_attr_id: 50})
@@ -382,8 +368,7 @@ def test_no_attr_use(client, consts):
     # irrelevant
     eve_use_attr_id = consts.EveAttr.upgrade_cost
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -403,8 +388,7 @@ def test_no_attr_max(client, consts):
     # irrelevant
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = consts.EveAttr.upgrade_capacity
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -422,8 +406,7 @@ def test_no_attr_max(client, consts):
 def test_criterion_rig_state(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -452,54 +435,11 @@ def test_criterion_rig_state(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_effect(client, consts):
-    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
-    client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(calibration=True))
-    assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
-    # Action
-    api_rig.change_rig(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(calibration=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
-    # Action
-    api_rig.change_rig(state=True, effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(calibration=True))
-    assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
-    # Action
-    api_rig.change_rig(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(calibration=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
-
-
 def test_criterion_item_kind(client, consts):
     # Validation applies only to rigs
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_item_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_item_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125, eve_use_attr_id: 150})
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_autocharge_effect_id = client.mk_eve_effect(
@@ -507,7 +447,7 @@ def test_criterion_item_kind(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_item(
         attrs={eve_autocharge_attr_id: eve_item_id, eve_use_attr_id: 150},
-        eff_ids=[eve_autocharge_effect_id, eve_effect_id])
+        eff_ids=[eve_autocharge_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

@@ -39,8 +39,7 @@ impl Vast {
 pub(in crate::sol::svc::vast) struct VastFitData {
     // Modules with "online" effect active
     pub(in crate::sol::svc::vast) mods_svcs_online: StSet<ItemId>,
-    // Rigs with "rigSlot" effect active, with calibration cost values
-    pub(in crate::sol::svc::vast) rigs_rigslot_calibration: StMap<ItemId, ad::AAttrVal>,
+    pub(in crate::sol::svc::vast) rigs_offline_calibration: StMap<ItemId, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) drones_volume: StMap<ItemId, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) drones_bandwidth: StMap<ItemId, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) drones_online_bandwidth: StMap<ItemId, ad::AAttrVal>,
@@ -100,7 +99,7 @@ impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
             mods_svcs_online: StSet::new(),
-            rigs_rigslot_calibration: StMap::new(),
+            rigs_offline_calibration: StMap::new(),
             drones_volume: StMap::new(),
             drones_bandwidth: StMap::new(),
             drones_online_bandwidth: StMap::new(),

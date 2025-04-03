@@ -9,6 +9,14 @@ use crate::{
 impl Vast {
     pub(in crate::sol::svc) fn item_state_activated_loaded(&mut self, item: &Item, a_state: &ad::AState) {
         match a_state {
+            ad::AState::Offline => {
+                if let Item::Rig(rig) = item {
+                    if let Some(val) = rig.get_a_attrs().unwrap().get(&ac::attrs::UPGRADE_COST) {
+                        let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
+                        fit_data.rigs_offline_calibration.insert(rig.get_item_id(), *val);
+                    }
+                }
+            }
             ad::AState::Online => match item {
                 Item::Fighter(fighter) => {
                     let extras = fighter.get_a_extras().unwrap();
@@ -156,6 +164,12 @@ impl Vast {
     }
     pub(in crate::sol::svc) fn item_state_deactivated_loaded(&mut self, item: &Item, a_state: &ad::AState) {
         match a_state {
+            ad::AState::Offline => {
+                if let Item::Rig(rig) = item {
+                    let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
+                    fit_data.rigs_offline_calibration.remove(&rig.get_item_id());
+                }
+            }
             ad::AState::Online => match item {
                 Item::Fighter(fighter) => {
                     let extras = fighter.get_a_extras().unwrap();
