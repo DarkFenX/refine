@@ -56,6 +56,12 @@ impl DpsProfile {
     pub fn get_breacher(&self) -> Option<BreacherInfo> {
         self.breacher
     }
+    pub(in crate::sol) fn deals_breacher_dps(&self) -> bool {
+        match self.breacher {
+            Some(breacher) => breacher.get_relative_max() > OF(0.0) && breacher.get_absolute_max() > OF(0.0),
+            None => false,
+        }
+    }
 }
 #[derive(Debug)]
 pub enum NewDpsProfileError {

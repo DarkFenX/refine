@@ -12,7 +12,7 @@ use crate::{
 
 use super::shared::{
     ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID, HULL_HP_ATTR_ID,
-    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID,
+    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, get_fit_rah_incoming_dps,
 };
 
 impl Calc {
@@ -162,7 +162,11 @@ impl Calc {
             // Ship HP - need to clear results since breacher DPS depends on those
             SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
                 if let Item::Ship(ship) = uad.items.get_item(item_id).unwrap() {
-                    self.clear_fit_rah_results(uad, &ship.get_fit_id())
+                    let fit_id = ship.get_fit_id();
+                    let fit = uad.fits.get_fit(&fit_id).unwrap();
+                    if get_fit_rah_incoming_dps(uad, fit).deals_breacher_dps() {
+                        self.clear_fit_rah_results(uad, &fit_id);
+                    }
                 }
             }
             _ => (),

@@ -18,7 +18,8 @@ use super::{
     rah_info::RahInfo,
     shared::{
         ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID,
-        HULL_HP_ATTR_ID, RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, TickCount, rah_round,
+        HULL_HP_ATTR_ID, RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, TickCount, get_fit_rah_incoming_dps,
+        rah_round,
     },
     ship_stats::RahShipStats,
     tick_iter::RahSimTickIter,
@@ -44,10 +45,7 @@ impl Calc {
         if sim_datas.is_empty() {
             return;
         }
-        let dps_profile = match fit.rah_incoming_dps {
-            Some(dps_profile) => dps_profile,
-            None => uad.default_incoming_dps,
-        };
+        let dps_profile = get_fit_rah_incoming_dps(uad, fit);
         let mut history_entries_seen = RSet::new();
         let mut sim_history = Vec::new();
         // Run "zero" simulation tick - write initial results and record initial state in history
