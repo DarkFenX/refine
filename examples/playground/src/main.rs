@@ -1,8 +1,8 @@
 #![allow(warnings, unused)]
 #![feature(core_intrinsics)]
 
-use std::{intrinsics::black_box, path::PathBuf, sync::Arc, thread::sleep, time::Duration};
-
+use std::{hash::BuildHasher, intrinsics::black_box, path::PathBuf, sync::Arc, thread::sleep, time::Duration};
+use std::hash::Hasher;
 use ahash::RandomState as ABuildHasher;
 use chrono::Utc;
 use itertools::Itertools;
@@ -49,25 +49,29 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    test_hashers();
-    // test_crusader(dh, ch);
+    // test_hashers();
+    test_crusader(dh, ch);
     // test_nphoon(dh, ch);
 }
 
 fn test_hashers() {
+    type Num = i32;
     const RUNS: usize = 5;
     const ITERATIONS: usize = 10_000_000;
     const READS: usize = 5;
-    const RNG_MIN: i32 = 0;
-    const RNG_MAX: i32 = 10_000_000;
-    println!("----- ahash -----");
+    const RNG_MIN: Num = 0;
+    const RNG_MAX: Num = 10_000_000;
     let mut rng = rand::rngs::SmallRng::from_rng(&mut rand::rng());
+    println!("----- ahash -----");
     for k in 0..RUNS {
-        let mut hm: rc::util::Map<i32, i32, ABuildHasher> = rc::util::Map::new();
+        let mut hm: rc::util::Map<Num, Num, ABuildHasher> = rc::util::Map::new();
         let before = Utc::now();
         let mut sum: i64 = 0;
+        let mut collisions: usize = 0;
         for i in 0..ITERATIONS {
-            hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1);
+            if hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1).is_some() {
+                collisions += 1;
+            }
             for _ in 0..READS {
                 if let Some(x) = hm.get(&rng.random_range(RNG_MIN..RNG_MAX)) {
                     sum += *x as i64;
@@ -76,17 +80,22 @@ fn test_hashers() {
         }
         let after = Utc::now();
         let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
-        println!("The sum is: {}. Time elapsed: {:.3} sec", sum, delta_seconds);
+        println!(
+            "The sum is: {}. Collisions: {}. Time elapsed: {:.3} sec",
+            sum, collisions, delta_seconds
+        );
     }
 
     println!("----- rustc-hash -----");
-    let mut rng = rand::rngs::SmallRng::from_rng(&mut rand::rng());
     for k in 0..RUNS {
-        let mut hm: rc::util::Map<i32, i32, FxBuildHasher> = rc::util::Map::new();
+        let mut hm: rc::util::Map<Num, Num, FxBuildHasher> = rc::util::Map::new();
         let before = Utc::now();
         let mut sum: i64 = 0;
+        let mut collisions: usize = 0;
         for i in 0..ITERATIONS {
-            hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1);
+            if hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1).is_some() {
+                collisions += 1;
+            }
             for _ in 0..READS {
                 if let Some(x) = hm.get(&rng.random_range(RNG_MIN..=RNG_MAX)) {
                     sum += *x as i64;
@@ -95,16 +104,22 @@ fn test_hashers() {
         }
         let after = Utc::now();
         let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
-        println!("The sum is: {}. Time elapsed: {:.3} sec", sum, delta_seconds);
+        println!(
+            "The sum is: {}. Collisions: {}. Time elapsed: {:.3} sec",
+            sum, collisions, delta_seconds
+        );
     }
-
+    //
     println!("----- nohash-hasher -----");
     for k in 0..RUNS {
-        let mut hm: rc::util::Map<i32, i32, BuildNoHashHasher<i32>> = rc::util::Map::new();
+        let mut hm: rc::util::Map<Num, Num, BuildNoHashHasher<Num>> = rc::util::Map::new();
         let before = Utc::now();
         let mut sum: i64 = 0;
+        let mut collisions: usize = 0;
         for i in 0..ITERATIONS {
-            hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1);
+            if hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1).is_some() {
+                collisions += 1;
+            }
             for _ in 0..READS {
                 if let Some(x) = hm.get(&rng.random_range(RNG_MIN..=RNG_MAX)) {
                     sum += *x as i64;
@@ -113,7 +128,10 @@ fn test_hashers() {
         }
         let after = Utc::now();
         let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
-        println!("The sum is: {}. Time elapsed: {:.3} sec", sum, delta_seconds);
+        println!(
+            "The sum is: {}. Collisions: {}. Time elapsed: {:.3} sec",
+            sum, collisions, delta_seconds
+        );
     }
 }
 
