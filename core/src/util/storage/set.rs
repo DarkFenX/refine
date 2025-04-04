@@ -1,20 +1,29 @@
-use std::hash::Hash;
+use std::{
+    collections::HashSet,
+    hash::{BuildHasher, Hash},
+};
 
-use rustc_hash::{FxBuildHasher, FxHashSet};
+use rustc_hash::FxBuildHasher;
+
+pub type HSet<V> = Set<V, FxBuildHasher>;
 
 #[derive(Clone)]
-pub struct HSet<V> {
-    data: FxHashSet<V>,
+pub struct Set<V, H> {
+    data: HashSet<V, H>,
 }
-impl<V: Eq + Hash> HSet<V> {
+impl<V, H> Set<V, H>
+where
+    V: Eq + Hash,
+    H: BuildHasher + Default,
+{
     pub fn new() -> Self {
         Self {
-            data: FxHashSet::default(),
+            data: HashSet::default(),
         }
     }
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
-            data: FxHashSet::with_capacity_and_hasher(capacity, FxBuildHasher),
+            data: HashSet::with_capacity_and_hasher(capacity, Default::default()),
         }
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &V> {
@@ -29,10 +38,10 @@ impl<V: Eq + Hash> HSet<V> {
     pub fn len(&self) -> usize {
         self.data.len()
     }
-    pub fn difference<'a>(&'a self, other: &'a HSet<V>) -> impl Iterator<Item = &'a V> {
+    pub fn difference<'a>(&'a self, other: &'a Set<V, H>) -> impl Iterator<Item = &'a V> {
         self.data.difference(&other.data)
     }
-    pub fn is_subset(&self, other: &HSet<V>) -> bool {
+    pub fn is_subset(&self, other: &Set<V, H>) -> bool {
         self.data.is_subset(&other.data)
     }
     // Modification methods
@@ -49,19 +58,27 @@ impl<V: Eq + Hash> HSet<V> {
         self.data.clear()
     }
 }
-impl<V: Eq + Hash> Default for HSet<V> {
+impl<V, H> Default for Set<V, H>
+where
+    V: Eq + Hash,
+    H: BuildHasher + Default,
+{
     fn default() -> Self {
         Self::new()
     }
 }
-impl<V: Eq + Hash> FromIterator<V> for HSet<V> {
+impl<V, H> FromIterator<V> for Set<V, H>
+where
+    V: Eq + Hash,
+    H: BuildHasher + Default,
+{
     fn from_iter<I: IntoIterator<Item = V>>(iter: I) -> Self {
         Self {
-            data: FxHashSet::from_iter(iter),
+            data: HashSet::from_iter(iter),
         }
     }
 }
-impl<V> IntoIterator for HSet<V> {
+impl<V, H> IntoIterator for Set<V, H> {
     type Item = V;
     type IntoIter = std::collections::hash_set::IntoIter<V>;
 

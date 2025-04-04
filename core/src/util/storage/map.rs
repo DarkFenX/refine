@@ -1,34 +1,40 @@
 use std::{
     borrow::Borrow,
     collections::{HashMap, hash_map::Entry},
-    hash::Hash,
+    hash::{BuildHasher, Hash},
 };
 
-use rustc_hash::{FxBuildHasher, FxHashMap};
+use rustc_hash::FxBuildHasher;
 
-use super::HSet;
+use super::set::Set;
+
+pub type HMap<K, V> = Map<K, V, FxBuildHasher>;
 
 #[derive(Clone)]
-pub struct HMap<K, V> {
-    data: FxHashMap<K, V>,
+pub struct Map<K, V, H> {
+    data: HashMap<K, V, H>,
 }
-impl<K: Eq + Hash, V> HMap<K, V> {
+impl<K, V, H> Map<K, V, H>
+where
+    K: Eq + Hash,
+    H: BuildHasher + Default,
+{
     // Constructors
     pub fn new() -> Self {
         Self {
-            data: FxHashMap::default(),
+            data: HashMap::default(),
         }
     }
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
-            data: FxHashMap::with_capacity_and_hasher(capacity, FxBuildHasher),
+            data: HashMap::with_capacity_and_hasher(capacity, Default::default()),
         }
     }
     // View methods
     pub fn get<Q>(&self, key: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
-        Q: Hash + Eq + ?Sized,
+        Q: Eq + Hash + ?Sized,
     {
         self.data.get(key)
     }
@@ -86,23 +92,33 @@ impl<K: Eq + Hash, V> HMap<K, V> {
         self.data.into_values()
     }
     // Set-alike view methods
-    pub(crate) fn is_subset(&self, other: &HSet<K>) -> bool {
+    pub(crate) fn is_subset<H2>(&self, other: &Set<K, H2>) -> bool
+    where
+        H2: BuildHasher + Default,
+    {
         // (Almost) copy of std::collections::HashSet::is_subset()
         match self.len() <= other.len() {
             true => self.keys().all(|v| other.contains(v)),
             false => false,
         }
     }
-    pub(crate) fn difference(&self, other: &HSet<K>) -> impl Iterator<Item = (&K, &V)> {
+    pub(crate) fn difference<H2>(&self, other: &Set<K, H2>) -> impl Iterator<Item = (&K, &V)>
+    where
+        H2: BuildHasher + Default,
+    {
         self.iter().filter(|(k, _)| !other.contains(k))
     }
 }
-impl<K: Eq + Hash, V> Default for HMap<K, V> {
+impl<K, V, H> Default for Map<K, V, H>
+where
+    K: Eq + Hash,
+    H: BuildHasher + Default,
+{
     fn default() -> Self {
         Self::new()
     }
 }
-impl<K, V> IntoIterator for HMap<K, V> {
+impl<K, V, H> IntoIterator for Map<K, V, H> {
     type Item = (K, V);
     type IntoIter = std::collections::hash_map::IntoIter<K, V>;
 
@@ -110,22 +126,36 @@ impl<K, V> IntoIterator for HMap<K, V> {
         self.data.into_iter()
     }
 }
-impl<K: Eq + Hash, V> FromIterator<(K, V)> for HMap<K, V> {
+impl<K, V, H> FromIterator<(K, V)> for Map<K, V, H>
+where
+    K: Eq + Hash,
+    H: BuildHasher + Default,
+{
     fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
         Self {
-            data: FxHashMap::from_iter(iter),
+            data: HashMap::from_iter(iter),
         }
     }
 }
-impl<K: Eq + Hash + Clone, V: Clone> From<&HashMap<K, V>> for HMap<K, V> {
+impl<K, V, H> From<&HashMap<K, V>> for Map<K, V, H>
+where
+    K: Eq + Hash + Clone,
+    V: Clone,
+    H: BuildHasher + Default,
+{
     fn from(h_map: &HashMap<K, V>) -> Self {
         Self {
-            data: FxHashMap::from_iter(h_map.iter().map(|(k, v)| (k.clone(), v.clone()))),
+            data: HashMap::from_iter(h_map.iter().map(|(k, v)| (k.clone(), v.clone()))),
         }
     }
 }
-impl<K: Eq + Hash + Clone, V: Clone> From<&HMap<K, V>> for HashMap<K, V> {
-    fn from(st_map: &HMap<K, V>) -> HashMap<K, V> {
+impl<K, V, H> From<&Map<K, V, H>> for HashMap<K, V>
+where
+    K: Eq + Hash + Clone,
+    V: Clone,
+    H: BuildHasher + Default,
+{
+    fn from(st_map: &Map<K, V, H>) -> HashMap<K, V> {
         Self::from_iter(st_map.iter().map(|(k, v)| (k.clone(), v.clone())))
     }
 }

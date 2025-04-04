@@ -1,20 +1,30 @@
-use std::hash::Hash;
+use std::hash::{BuildHasher, Hash};
 
-use super::{HMap, HSet};
+use rustc_hash::FxBuildHasher;
+
+use super::{map::Map, set::Set};
+
+pub(crate) type HMapHSet<K, V> = MapSet<K, V, FxBuildHasher, FxBuildHasher>;
 
 #[derive(Clone)]
-pub(crate) struct HMapHSet<K, V> {
-    data: HMap<K, HSet<V>>,
-    empty: HSet<V>,
+pub(crate) struct MapSet<K, V, H1, H2> {
+    data: Map<K, Set<V, H2>, H1>,
+    empty: Set<V, H2>,
 }
-impl<K: Eq + Hash, V: Eq + Hash> HMapHSet<K, V> {
+impl<K, V, H1, H2> MapSet<K, V, H1, H2>
+where
+    K: Eq + Hash,
+    V: Eq + Hash,
+    H1: BuildHasher + Default,
+    H2: BuildHasher + Default,
+{
     pub(crate) fn new() -> Self {
         Self {
-            data: HMap::new(),
-            empty: HSet::new(),
+            data: Map::new(),
+            empty: Set::new(),
         }
     }
-    pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V> {
+    pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V, H1, H2> {
         match self.data.get(key) {
             Some(v) => v.iter(),
             None => self.empty.iter(),
@@ -29,7 +39,7 @@ impl<K: Eq + Hash, V: Eq + Hash> HMapHSet<K, V> {
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = impl ExactSizeIterator<Item = &V>> {
         self.data.values().map(|v| v.iter())
     }
-    pub(crate) fn values_inner(&self) -> impl ExactSizeIterator<Item = &HSet<V>> {
+    pub(crate) fn values_inner(&self) -> impl ExactSizeIterator<Item = &Set<V, H2>> {
         self.data.values()
     }
     pub(crate) fn contains_entry(&self, key: &K, entry: &V) -> bool {
@@ -45,13 +55,13 @@ impl<K: Eq + Hash, V: Eq + Hash> HMapHSet<K, V> {
     pub(crate) fn add_entry(&mut self, key: K, entry: V) {
         self.data
             .entry(key)
-            .or_insert_with(|| HSet::with_capacity(1))
+            .or_insert_with(|| Set::with_capacity(1))
             .insert(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
         self.data
             .entry(key)
-            .or_insert_with(|| HSet::with_capacity(entries.len()))
+            .or_insert_with(|| Set::with_capacity(entries.len()))
             .extend(entries);
     }
     pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) -> bool {
@@ -68,7 +78,7 @@ impl<K: Eq + Hash, V: Eq + Hash> HMapHSet<K, V> {
             false => false,
         }
     }
-    pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V>> {
+    pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V, H1, H2>> {
         self.data.remove(key).map(|v| v.into_iter())
     }
     pub(crate) fn drain_entries<'a>(&mut self, key: &K, entries: impl Iterator<Item = &'a V>)
@@ -89,16 +99,24 @@ impl<K: Eq + Hash, V: Eq + Hash> HMapHSet<K, V> {
         }
     }
 }
-impl<K: Eq + Hash, V: Eq + Hash> Default for HMapHSet<K, V> {
+impl<K, V, H1, H2> Default for MapSet<K, V, H1, H2>
+where
+    K: Eq + Hash,
+    V: Eq + Hash,
+    H1: BuildHasher + Default,
+    H2: BuildHasher + Default,
+{
     fn default() -> Self {
         Self::new()
     }
 }
 
-pub(crate) fn extend_vec_from_map_set_l1<K: Eq + Hash, V: Eq + Hash + Copy>(
-    vec: &mut Vec<V>,
-    storage: &HMapHSet<K, V>,
-    key: &K,
-) {
+pub(crate) fn extend_vec_from_map_set_l1<K, V, H1, H2>(vec: &mut Vec<V>, storage: &MapSet<K, V, H1, H2>, key: &K)
+where
+    K: Eq + Hash,
+    V: Eq + Hash + Copy,
+    H1: BuildHasher + Default,
+    H2: BuildHasher + Default,
+{
     vec.extend(storage.get(key).copied());
 }

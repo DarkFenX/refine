@@ -1,15 +1,23 @@
-use std::hash::Hash;
+use std::hash::{BuildHasher, Hash};
 
-use super::HMap;
+use rustc_hash::FxBuildHasher;
 
-pub(crate) struct HMapVec<K, V> {
-    data: HMap<K, Vec<V>>,
+use super::map::Map;
+
+pub(crate) type HMapVec<K, V> = MapVec<K, V, FxBuildHasher>;
+
+pub(crate) struct MapVec<K, V, H> {
+    data: Map<K, Vec<V>, H>,
     empty: Vec<V>,
 }
-impl<K: Eq + Hash, V> HMapVec<K, V> {
+impl<K, V, H> MapVec<K, V, H>
+where
+    K: Eq + Hash,
+    H: BuildHasher + Default,
+{
     pub(crate) fn new() -> Self {
         Self {
-            data: HMap::new(),
+            data: Map::new(),
             empty: Vec::new(),
         }
     }
@@ -38,12 +46,16 @@ impl<K: Eq + Hash, V> HMapVec<K, V> {
         values.extend(entries);
     }
 }
-impl<K: Eq + Hash, V> Default for HMapVec<K, V> {
+impl<K, V, H> Default for MapVec<K, V, H>
+where
+    K: Eq + Hash,
+    H: BuildHasher + Default,
+{
     fn default() -> Self {
         Self::new()
     }
 }
-impl<K, V> IntoIterator for HMapVec<K, V> {
+impl<K, V, H> IntoIterator for MapVec<K, V, H> {
     type Item = (K, Vec<V>);
     type IntoIter = std::collections::hash_map::IntoIter<K, Vec<V>>;
 
