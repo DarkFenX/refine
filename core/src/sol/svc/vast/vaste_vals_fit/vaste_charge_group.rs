@@ -42,7 +42,7 @@ impl VastFitData {
                 },
                 ValCache::Pass(_) => (),
                 ValCache::Fail((charge_item_id, _)) => {
-                    if !kfs.contains(&charge_item_id) {
+                    if !kfs.contains(charge_item_id) {
                         return false;
                     }
                 }

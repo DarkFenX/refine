@@ -64,7 +64,7 @@ impl VastFitData {
                     ValCache::Pass(pass) => cache.pass(pass),
                     ValCache::Fail((charge_item_id, charge_info)) => {
                         if !kfs.contains(&charge_item_id) {
-                            charges.insert(charge_item_id, charge_info.clone());
+                            charges.insert(charge_item_id, charge_info);
                         }
                         cache.fail((charge_item_id, charge_info));
                     }
@@ -73,7 +73,7 @@ impl VastFitData {
                 ValCache::Pass(_) => (),
                 ValCache::Fail((charge_item_id, charge_info)) => {
                     if !kfs.contains(charge_item_id) {
-                        charges.insert(*charge_item_id, charge_info.clone());
+                        charges.insert(*charge_item_id, *charge_info);
                     }
                 }
             }

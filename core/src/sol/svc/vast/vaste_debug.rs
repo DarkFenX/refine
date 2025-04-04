@@ -139,14 +139,14 @@ impl VastFitData {
         for (module_item_id, module_data) in self.mods_charge_group.iter() {
             check_item_id(uad, module_item_id, true)?;
             if let ValCache::Fail((charge_item_id, charge_info)) = module_data {
-                check_item_id(uad, &charge_item_id, true)?;
+                check_item_id(uad, charge_item_id, true)?;
                 check_item_id(uad, &charge_info.parent_item_id, true)?;
             }
         }
         for (module_item_id, module_data) in self.mods_charge_size.iter() {
             check_item_id(uad, module_item_id, true)?;
             if let ValCache::Fail((charge_item_id, charge_info)) = module_data {
-                check_item_id(uad, &charge_item_id, true)?;
+                check_item_id(uad, charge_item_id, true)?;
                 check_item_id(uad, &charge_info.parent_item_id, true)?;
             }
         }
@@ -154,7 +154,7 @@ impl VastFitData {
             // This container can store info about non-loaded modules
             check_item_id(uad, module_item_id, false)?;
             if let ValCache::Fail((charge_item_id, charge_info)) = module_data {
-                check_item_id(uad, &charge_item_id, true)?;
+                check_item_id(uad, charge_item_id, true)?;
                 check_item_id(uad, &charge_info.parent_item_id, true)?;
             }
         }
