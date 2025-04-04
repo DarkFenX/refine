@@ -6,7 +6,7 @@ use crate::{
         svc::vast::VastFitData,
         uad::{fit::Fit, item::ShipKind},
     },
-    util::HSet,
+    util::RSet,
 };
 
 pub struct ValItemVsShipKindFail {
@@ -35,7 +35,7 @@ impl From<ShipKind> for ValShipKind {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &HSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<ItemId>) -> bool {
         if self.mods_rigs_svcs_vs_ship_kind.is_empty() {
             return true;
         }
@@ -44,7 +44,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_item_vs_ship_kind_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         fit: &Fit,
     ) -> Option<ValItemVsShipKindFail> {
         let items = self

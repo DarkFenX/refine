@@ -6,7 +6,7 @@ use crate::{
         rels::{Fk, KeyDb, KeyPart, Pk},
     },
     ed,
-    util::{HMap, HSet, Named},
+    util::{Named, RMap, RSet},
 };
 
 /// Ensure that assumptions reefast makes about the data are true.
@@ -61,12 +61,12 @@ fn fk_check_referer<T: Fk + Named>(rer_vec: &[T], pkdb: &KeyDb, g_supp: &GSuppor
     );
     fk_check_referee(rer_vec, &pkdb.buffs, g_supp, T::get_buff_fks, ed::EBuff::get_name());
 }
-fn fk_check_referee<T, F>(rer_vec: &[T], ree_pks: &HSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
+fn fk_check_referee<T, F>(rer_vec: &[T], ree_pks: &RSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
 where
     T: Fk + Named,
     F: Fn(&T, &GSupport) -> Vec<KeyPart>,
 {
-    let mut fks = HSet::new();
+    let mut fks = RSet::new();
     rer_vec.iter().for_each(|v| fks.extend(func(v, g_supp)));
     let missing = fks.difference(ree_pks).collect_vec();
     if !missing.is_empty() {
@@ -84,7 +84,7 @@ where
 /// One default effect per item max. Needed for adapted item generation.
 fn default_effects(e_data: &mut EData) {
     let mut unsets = 0;
-    let mut seen_defeffs = HSet::new();
+    let mut seen_defeffs = RSet::new();
     for e_item_effect in e_data.item_effects.iter_mut() {
         if e_item_effect.is_default && !seen_defeffs.insert(e_item_effect.get_pk()) {
             unsets += 1;
@@ -99,7 +99,7 @@ fn default_effects(e_data: &mut EData) {
 
 /// Remove unknown fighter abilities.
 fn known_fighter_abilities(e_data: &mut EData) {
-    let mut unknown_ids = HSet::new();
+    let mut unknown_ids = RSet::new();
     let abils = e_data
         .abils
         .extract_if(.., |v| get_abil_effect(v.id).is_none())
@@ -129,14 +129,14 @@ fn known_fighter_abilities(e_data: &mut EData) {
 
 /// Remove item abilities which have no effects to handle them.
 fn fighter_ability_effect(e_data: &mut EData) {
-    let mut item_eff_map = HMap::new();
+    let mut item_eff_map = RMap::new();
     for item_eff in e_data.item_effects.iter() {
         item_eff_map
             .entry(item_eff.item_id)
-            .or_insert_with(HSet::new)
+            .or_insert_with(RSet::new)
             .insert(item_eff.effect_id);
     }
-    let mut invalids = HSet::new();
+    let mut invalids = RSet::new();
     e_data
         .item_abils
         .extract_if(.., |v| match get_abil_effect(v.abil_id) {

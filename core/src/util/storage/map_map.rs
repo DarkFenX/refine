@@ -1,12 +1,10 @@
 use std::hash::{BuildHasher, Hash};
 
-use nohash_hasher::BuildNoHashHasher;
 use rustc_hash::FxBuildHasher;
 
 use super::map::Map;
 
-pub(crate) type NMapNMap<K1, K2, V> = MapMap<K1, K2, V, BuildNoHashHasher<K1>, BuildNoHashHasher<K2>>;
-pub(crate) type HMapHMap<K1, K2, V> = MapMap<K1, K2, V, FxBuildHasher, FxBuildHasher>;
+pub(crate) type RMapRMap<K1, K2, V> = MapMap<K1, K2, V, FxBuildHasher, FxBuildHasher>;
 
 #[derive(Clone)]
 pub(crate) struct MapMap<K1, K2, V, H1, H2> {

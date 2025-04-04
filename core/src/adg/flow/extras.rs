@@ -1,7 +1,7 @@
 use crate::{
     ac, ad,
     adg::GSupport,
-    util::{HMap, HMapHSet, HSet},
+    util::{RMap, RMapRSet, RSet},
 };
 
 pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData, g_supp: &GSupport) {
@@ -29,10 +29,10 @@ pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData, g_supp: &GSupport)
     }
 }
 
-fn get_grp_mutations(a_data: &ad::AData) -> HMapHSet<ad::AItemGrpId, ad::AItemGrpId> {
+fn get_grp_mutations(a_data: &ad::AData) -> RMapRSet<ad::AItemGrpId, ad::AItemGrpId> {
     // Mutated items can potentially change their group ID during mutation; here, we compose a map
     // between base item group IDs and mutated item group IDs
-    let mut mutations = HMapHSet::new();
+    let mut mutations = RMapRSet::new();
     for a_muta in a_data.mutas.values() {
         for (base_item_id, mutated_item_id) in a_muta.item_map.iter() {
             let base_grp_id = match a_data.items.get(base_item_id) {
@@ -50,11 +50,11 @@ fn get_grp_mutations(a_data: &ad::AData) -> HMapHSet<ad::AItemGrpId, ad::AItemGr
 }
 
 fn get_item_grps_with_attr(
-    a_items: &HMap<ad::AItemId, ad::AItem>,
-    grp_mutations: &HMapHSet<ad::AItemGrpId, ad::AItemGrpId>,
+    a_items: &RMap<ad::AItemId, ad::AItem>,
+    grp_mutations: &RMapRSet<ad::AItemGrpId, ad::AItemGrpId>,
     attr_id: ad::AAttrId,
-) -> HSet<ad::AItemGrpId> {
-    let mut grp_ids = HSet::new();
+) -> RSet<ad::AItemGrpId> {
+    let mut grp_ids = RSet::new();
     for a_item in a_items.values() {
         if a_item.attrs.contains_key(&attr_id) {
             grp_ids.insert(a_item.grp_id);

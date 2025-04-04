@@ -3,7 +3,7 @@ use smallvec::SmallVec;
 use crate::{
     ac,
     ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId},
-    util::HMap,
+    util::RMap,
 };
 
 /// Adapted item type.
@@ -29,8 +29,8 @@ pub enum AItemKind {
 pub(super) fn get_item_kind(
     item_grp_id: AItemGrpId,
     item_cat_id: AItemCatId,
-    item_attrs: &HMap<AAttrId, AAttrVal>,
-    item_effects: &HMap<AEffectId, AItemEffectData>,
+    item_attrs: &RMap<AAttrId, AAttrVal>,
+    item_effects: &RMap<AEffectId, AItemEffectData>,
 ) -> Option<AItemKind> {
     let mut kinds: SmallVec<AItemKind, 1> = SmallVec::new();
     match item_cat_id {

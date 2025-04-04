@@ -4,7 +4,7 @@ use rustc_hash::FxBuildHasher;
 
 use super::map::Map;
 
-pub(crate) type HMapVec<K, V> = MapVec<K, V, FxBuildHasher>;
+pub(crate) type RMapVec<K, V> = MapVec<K, V, FxBuildHasher>;
 
 pub(crate) struct MapVec<K, V, H> {
     data: Map<K, Vec<V>, H>,

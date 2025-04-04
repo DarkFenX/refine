@@ -3,19 +3,19 @@ use std::num::Wrapping;
 use crate::{
     err::basic::FitFoundError,
     sol::{FitId, uad::fit::Fit},
-    util::HMap,
+    util::RMap,
 };
 
 #[derive(Clone)]
 pub(in crate::sol) struct Fits {
     counter: Wrapping<FitId>,
-    data: HMap<FitId, Fit>,
+    data: RMap<FitId, Fit>,
 }
 impl Fits {
     pub(in crate::sol) fn new() -> Self {
         Self {
             counter: Wrapping(0),
-            data: HMap::new(),
+            data: RMap::new(),
         }
     }
     pub(in crate::sol) fn add_fit(&mut self) -> FitId {

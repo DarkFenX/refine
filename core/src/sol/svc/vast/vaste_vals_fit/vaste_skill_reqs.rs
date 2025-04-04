@@ -1,6 +1,6 @@
 use crate::{
     sol::{ItemId, ItemTypeId, SkillLevel, svc::vast::VastFitData},
-    util::HSet,
+    util::RSet,
 };
 
 pub struct ValSrqFail {
@@ -16,13 +16,13 @@ pub struct ValSrqSkillInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &HSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<ItemId>) -> bool {
         self.srqs_missing
             .iter()
             .all(|(item_id, missing_skills)| missing_skills.is_empty() || kfs.contains(item_id))
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self, kfs: &HSet<ItemId>) -> Vec<ValSrqFail> {
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self, kfs: &RSet<ItemId>) -> Vec<ValSrqFail> {
         self.srqs_missing
             .iter()
             .filter(|(item_id, missing_skills)| !missing_skills.is_empty() && !kfs.contains(item_id))

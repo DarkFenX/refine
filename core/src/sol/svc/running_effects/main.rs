@@ -1,12 +1,12 @@
-use crate::{ad, sol::ItemId, util::HMapHSet};
+use crate::{ad, sol::ItemId, util::RMapRSet};
 
 #[derive(Clone)]
 pub(in crate::sol::svc) struct RunningEffects {
-    pub(super) data: HMapHSet<ItemId, ad::AEffectId>,
+    pub(super) data: RMapRSet<ItemId, ad::AEffectId>,
 }
 impl RunningEffects {
     pub(in crate::sol::svc) fn new() -> Self {
-        Self { data: HMapHSet::new() }
+        Self { data: RMapRSet::new() }
     }
     // Query methods
     pub(in crate::sol::svc) fn is_running(&self, item_id: &ItemId, a_effect_id: &ad::AEffectId) -> bool {

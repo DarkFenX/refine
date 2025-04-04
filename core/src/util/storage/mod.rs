@@ -1,8 +1,8 @@
-pub use map::{HMap, Map};
-pub(crate) use map_map::{HMapHMap, MapMap};
-pub(crate) use map_set::{HMapHSet, MapSet, extend_vec_from_map_set_l1};
-pub(crate) use map_vec::{HMapVec, MapVec};
-pub use set::{HSet, Set};
+pub use map::{Map, RMap};
+pub(crate) use map_map::{MapMap, RMapRMap};
+pub(crate) use map_set::{MapSet, RMapRSet, extend_vec_from_map_set_l1};
+pub(crate) use map_vec::{MapVec, RMapVec};
+pub use set::{RSet, Set};
 
 mod map;
 mod map_map;

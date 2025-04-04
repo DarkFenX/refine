@@ -5,14 +5,14 @@ use crate::{
         AttrSpec,
         calc::{Context, CtxModifier},
     },
-    util::{HMapHSet, MapSet},
+    util::{MapSet, RMapRSet},
 };
 
 pub(super) fn add_ctx_modifier<K, H1, H2>(
     main_storage: &mut MapSet<K, CtxModifier, H1, H2>,
     key: K,
     ctx_modifier: CtxModifier,
-    attr_spec_storage: &mut HMapHSet<AttrSpec, CtxModifier>,
+    attr_spec_storage: &mut RMapRSet<AttrSpec, CtxModifier>,
 ) where
     K: Eq + Hash,
     H1: BuildHasher + Default,
@@ -54,7 +54,7 @@ pub(super) fn remove_ctx_modifier<K, H1, H2>(
     main_storage: &mut MapSet<K, CtxModifier, H1, H2>,
     key: &K,
     ctx_modifier: &CtxModifier,
-    attr_spec_storage: &mut HMapHSet<AttrSpec, CtxModifier>,
+    attr_spec_storage: &mut RMapRSet<AttrSpec, CtxModifier>,
 ) where
     K: Eq + Hash,
     H1: BuildHasher + Default,

@@ -6,7 +6,7 @@ use crate::{
         rels::{KeyDb, Pk},
     },
     ec,
-    util::{HSet, Named, StrMsgError},
+    util::{Named, RSet, StrMsgError},
 };
 
 const MAX_CYCLES: u32 = 100;
@@ -105,7 +105,7 @@ fn restore_hardcoded_buffs(alive: &mut EData, trash: &mut EData) {
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
-    let mut item_ids = HSet::new();
+    let mut item_ids = RSet::new();
     for item in alive.items.iter() {
         item_ids.extend(item.get_pk());
     }

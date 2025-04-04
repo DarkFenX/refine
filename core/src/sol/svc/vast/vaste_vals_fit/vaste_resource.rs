@@ -7,7 +7,7 @@ use crate::{
         svc::{calc::Calc, vast::VastFitData},
         uad::{Uad, fit::Fit},
     },
-    util::{HSet, round},
+    util::{RSet, round},
 };
 
 use super::shared::get_max_resource;
@@ -27,7 +27,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_cpu_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -44,7 +44,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -61,7 +61,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -77,7 +77,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -93,7 +93,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -109,7 +109,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -126,7 +126,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -143,7 +143,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -160,7 +160,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -176,7 +176,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -192,7 +192,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -208,7 +208,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -225,7 +225,7 @@ impl VastFitData {
 }
 
 fn validate_fast_fitting<'a>(
-    kfs: &HSet<ItemId>,
+    kfs: &RSet<ItemId>,
     uad: &Uad,
     calc: &mut Calc,
     fit: &Fit,
@@ -252,7 +252,7 @@ fn validate_fast_fitting<'a>(
     round(total_use, 2) <= max
 }
 fn validate_fast_other<'a>(
-    kfs: &HSet<ItemId>,
+    kfs: &RSet<ItemId>,
     uad: &Uad,
     calc: &mut Calc,
     fit: &Fit,
@@ -275,7 +275,7 @@ fn validate_fast_other<'a>(
 }
 
 fn validate_verbose_fitting<'a>(
-    kfs: &HSet<ItemId>,
+    kfs: &RSet<ItemId>,
     uad: &Uad,
     calc: &mut Calc,
     fit: &Fit,
@@ -313,7 +313,7 @@ fn validate_verbose_fitting<'a>(
     })
 }
 fn validate_verbose_other<'a>(
-    kfs: &HSet<ItemId>,
+    kfs: &RSet<ItemId>,
     uad: &Uad,
     calc: &mut Calc,
     fit: &Fit,

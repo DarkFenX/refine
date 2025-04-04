@@ -4,26 +4,26 @@ use crate::{
         rels::{Fk, KeyPart, Pk},
     },
     ed,
-    util::HSet,
+    util::RSet,
 };
 
 pub(in crate::adg) struct KeyDb {
-    pub(in crate::adg) items: HSet<ed::EItemId>,
-    pub(in crate::adg) groups: HSet<ed::EItemGrpId>,
-    pub(in crate::adg) attrs: HSet<ed::EAttrId>,
-    pub(in crate::adg) effects: HSet<ed::EEffectId>,
-    pub(in crate::adg) abils: HSet<ed::EAbilId>,
-    pub(in crate::adg) buffs: HSet<ed::EBuffId>,
+    pub(in crate::adg) items: RSet<ed::EItemId>,
+    pub(in crate::adg) groups: RSet<ed::EItemGrpId>,
+    pub(in crate::adg) attrs: RSet<ed::EAttrId>,
+    pub(in crate::adg) effects: RSet<ed::EEffectId>,
+    pub(in crate::adg) abils: RSet<ed::EAbilId>,
+    pub(in crate::adg) buffs: RSet<ed::EBuffId>,
 }
 impl KeyDb {
     pub(in crate::adg) fn new() -> Self {
         Self {
-            items: HSet::new(),
-            groups: HSet::new(),
-            attrs: HSet::new(),
-            effects: HSet::new(),
-            abils: HSet::new(),
-            buffs: HSet::new(),
+            items: RSet::new(),
+            groups: RSet::new(),
+            attrs: RSet::new(),
+            effects: RSet::new(),
+            abils: RSet::new(),
+            buffs: RSet::new(),
         }
     }
     // Primary keys
@@ -37,7 +37,7 @@ impl KeyDb {
         Self::extend_pk_vec(&mut pkdb.buffs, &e_data.buffs);
         pkdb
     }
-    fn extend_pk_vec<T: Pk>(set: &mut HSet<KeyPart>, vec: &[T]) {
+    fn extend_pk_vec<T: Pk>(set: &mut RSet<KeyPart>, vec: &[T]) {
         for i in vec.iter() {
             set.extend(i.get_pk())
         }

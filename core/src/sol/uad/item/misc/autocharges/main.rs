@@ -1,12 +1,12 @@
-use crate::{ad, sol::ItemId, util::HMap};
+use crate::{ad, sol::ItemId, util::RMap};
 
 #[derive(Clone)]
 pub(in crate::sol) struct Autocharges {
-    data: HMap<ad::AEffectId, ItemId>,
+    data: RMap<ad::AEffectId, ItemId>,
 }
 impl Autocharges {
     pub(in crate::sol::uad::item) fn new() -> Self {
-        Self { data: HMap::new() }
+        Self { data: RMap::new() }
     }
     // Query methods
     pub(in crate::sol) fn get(&self, a_effect_id: &ad::AEffectId) -> Option<&ItemId> {
@@ -30,6 +30,6 @@ impl Autocharges {
     }
     pub(in crate::sol) fn clear(&mut self) {
         // Autocharges are supposed to be rarely used, so deallocate whenever map is empty.
-        self.data = HMap::new();
+        self.data = RMap::new();
     }
 }

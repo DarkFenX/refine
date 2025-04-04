@@ -5,7 +5,7 @@ use crate::{
         svc::{calc::Calc, vast::VastFitData},
         uad::Uad,
     },
-    util::HSet,
+    util::RSet,
 };
 
 use super::shared::is_flag_set;
@@ -18,7 +18,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_activation_blocked_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
@@ -29,7 +29,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_activation_blocked_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> Vec<ValActivationBlockedFail> {

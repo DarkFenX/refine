@@ -1,6 +1,6 @@
 use crate::{
     sol::{Count, ItemId, ItemTypeId, svc::vast::VastFitData},
-    util::{HMap, HSet},
+    util::{RMap, RSet},
 };
 
 pub struct ValMaxTypeFail {
@@ -16,7 +16,7 @@ pub struct ValMaxTypeItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &HSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &RSet<ItemId>) -> bool {
         for item_type_data in self.mods_svcs_max_type_fitted.values() {
             let fitted = item_type_data.len() as Count;
             for (item_id, &allowed) in item_type_data.iter() {
@@ -30,9 +30,9 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_max_type_fitted_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
     ) -> Vec<ValMaxTypeFail> {
-        let mut items_by_type = HMap::new();
+        let mut items_by_type = RMap::new();
         for (a_item_id, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
             let fitted = item_type_data.len() as Count;
             for (item_id, &allowed) in item_type_data.iter() {

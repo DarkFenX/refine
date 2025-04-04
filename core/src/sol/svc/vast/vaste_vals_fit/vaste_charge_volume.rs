@@ -7,7 +7,7 @@ use crate::{
         svc::vast::{ValCache, VastFitData},
         uad::Uad,
     },
-    util::HSet,
+    util::RSet,
 };
 
 #[derive(Copy, Clone)]
@@ -20,7 +20,7 @@ pub struct ValChargeVolumeFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &HSet<ItemId>, uad: &Uad) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<ItemId>, uad: &Uad) -> bool {
         for (module_item_id, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
                 ValCache::Todo(charge_volume) => match calculate_item_result(uad, module_item_id, *charge_volume) {
@@ -47,7 +47,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_charge_volume_verbose(
         &mut self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
     ) -> Vec<ValChargeVolumeFail> {
         let mut fails = Vec::new();

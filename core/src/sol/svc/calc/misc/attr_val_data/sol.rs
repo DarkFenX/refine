@@ -4,7 +4,7 @@ use crate::{
         svc::calc::{ItemAttrPostprocs, misc::ItemAttrValData},
         uad::item::Item,
     },
-    util::HMap,
+    util::RMap,
 };
 
 use super::{
@@ -15,11 +15,11 @@ use super::{
 
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct AttrValData {
-    pub(super) data: HMap<ItemId, ItemAttrValData>,
+    pub(super) data: RMap<ItemId, ItemAttrValData>,
 }
 impl AttrValData {
     pub(in crate::sol::svc::calc) fn new() -> Self {
-        Self { data: HMap::new() }
+        Self { data: RMap::new() }
     }
     // Query methods
     pub(in crate::sol::svc::calc) fn get_item_attr_data(&self, item_id: &ItemId) -> Option<&ItemAttrValData> {

@@ -7,7 +7,7 @@ use crate::{
         svc::{calc::Calc, vast::VastFitData},
         uad::{Uad, fit::Fit},
     },
-    util::HSet,
+    util::RSet,
 };
 
 use super::shared::get_max_slots;
@@ -21,7 +21,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_slot_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -37,7 +37,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_fighter_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -46,7 +46,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -62,7 +62,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -78,7 +78,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_heavy_fighter_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -94,7 +94,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_support_fighter_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -110,7 +110,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_light_fighter_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -126,7 +126,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_heavy_fighter_fast(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -143,7 +143,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_slot_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -159,7 +159,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_fighter_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -168,7 +168,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -184,7 +184,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -200,7 +200,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_heavy_fighter_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -216,7 +216,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_support_fighter_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -232,7 +232,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_light_fighter_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -248,7 +248,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_heavy_fighter_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &Fit,
@@ -265,12 +265,12 @@ impl VastFitData {
 }
 
 fn validate_fast(
-    kfs: &HSet<ItemId>,
+    kfs: &RSet<ItemId>,
     uad: &Uad,
     calc: &mut Calc,
     max_item_id: &Option<ItemId>,
     max_a_attr_id: &ad::AAttrId,
-    users: &HSet<ItemId>,
+    users: &RSet<ItemId>,
 ) -> bool {
     if users.is_empty() {
         return true;
@@ -282,12 +282,12 @@ fn validate_fast(
     users.is_subset(kfs)
 }
 fn validate_verbose(
-    kfs: &HSet<ItemId>,
+    kfs: &RSet<ItemId>,
     uad: &Uad,
     calc: &mut Calc,
     max_item_id: &Option<ItemId>,
     max_a_attr_id: &ad::AAttrId,
-    users: &HSet<ItemId>,
+    users: &RSet<ItemId>,
 ) -> Option<ValUnusableSlotFail> {
     if users.is_empty() {
         return None;

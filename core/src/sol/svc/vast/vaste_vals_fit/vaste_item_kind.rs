@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{ItemId, svc::vast::VastFitData},
-    util::HSet,
+    util::RSet,
 };
 
 #[derive(Copy, Clone)]
@@ -13,14 +13,14 @@ pub struct ValItemKindFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_item_kind_fast(&self, kfs: &HSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<ItemId>) -> bool {
         match kfs.is_empty() {
             true => self.item_kind.is_empty(),
             false => self.item_kind.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_item_kind_verbose(&self, kfs: &HSet<ItemId>) -> Vec<ValItemKindFail> {
+    pub(in crate::sol::svc::vast) fn validate_item_kind_verbose(&self, kfs: &RSet<ItemId>) -> Vec<ValItemKindFail> {
         self.item_kind
             .values()
             .filter(|v| !kfs.contains(&v.item_id))

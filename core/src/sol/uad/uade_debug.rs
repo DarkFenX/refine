@@ -4,7 +4,7 @@ use crate::{
         debug::{DebugError, DebugResult},
         uad::{Uad, item::Item},
     },
-    util::HSet,
+    util::RSet,
 };
 
 impl Uad {
@@ -55,6 +55,6 @@ impl Uad {
 }
 
 fn check_item_duplicates(item_ids: &[ItemId]) -> bool {
-    let mut uniq = HSet::new();
+    let mut uniq = RSet::new();
     !item_ids.iter().all(|x| uniq.insert(x))
 }

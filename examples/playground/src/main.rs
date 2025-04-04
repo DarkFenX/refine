@@ -3,8 +3,12 @@
 
 use std::{intrinsics::black_box, path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 
+use ahash::RandomState as ABuildHasher;
 use chrono::Utc;
 use itertools::Itertools;
+use nohash_hasher::BuildNoHashHasher;
+use rand::{Rng, SeedableRng};
+use rustc_hash::FxBuildHasher;
 use tracing_subscriber::prelude::*;
 
 use rc::{
@@ -39,19 +43,78 @@ fn setup_logger() -> () {
 }
 
 fn main() {
-    // setup_logger();
-    // let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    // let ch = Box::new(rdha::RamJsonAdh::new(
-    //     PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
-    //     "tq".to_string(),
-    // ));
-    // test_crusader(dh, ch);
+    setup_logger();
     let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     let ch = Box::new(rdha::RamJsonAdh::new(
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    test_nphoon(dh, ch);
+    test_hashers();
+    // test_crusader(dh, ch);
+    // test_nphoon(dh, ch);
+}
+
+fn test_hashers() {
+    const RUNS: usize = 5;
+    const ITERATIONS: usize = 10_000_000;
+    const READS: usize = 5;
+    const RNG_MIN: i32 = 0;
+    const RNG_MAX: i32 = 10_000_000;
+    println!("----- ahash -----");
+    let mut rng = rand::rngs::SmallRng::from_rng(&mut rand::rng());
+    for k in 0..RUNS {
+        let mut hm: rc::util::Map<i32, i32, ABuildHasher> = rc::util::Map::new();
+        let before = Utc::now();
+        let mut sum: i64 = 0;
+        for i in 0..ITERATIONS {
+            hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1);
+            for _ in 0..READS {
+                if let Some(x) = hm.get(&rng.random_range(RNG_MIN..RNG_MAX)) {
+                    sum += *x as i64;
+                }
+            }
+        }
+        let after = Utc::now();
+        let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
+        println!("The sum is: {}. Time elapsed: {:.3} sec", sum, delta_seconds);
+    }
+
+    println!("----- rustc-hash -----");
+    let mut rng = rand::rngs::SmallRng::from_rng(&mut rand::rng());
+    for k in 0..RUNS {
+        let mut hm: rc::util::Map<i32, i32, FxBuildHasher> = rc::util::Map::new();
+        let before = Utc::now();
+        let mut sum: i64 = 0;
+        for i in 0..ITERATIONS {
+            hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1);
+            for _ in 0..READS {
+                if let Some(x) = hm.get(&rng.random_range(RNG_MIN..=RNG_MAX)) {
+                    sum += *x as i64;
+                }
+            }
+        }
+        let after = Utc::now();
+        let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
+        println!("The sum is: {}. Time elapsed: {:.3} sec", sum, delta_seconds);
+    }
+
+    println!("----- nohash-hasher -----");
+    for k in 0..RUNS {
+        let mut hm: rc::util::Map<i32, i32, BuildNoHashHasher<i32>> = rc::util::Map::new();
+        let before = Utc::now();
+        let mut sum: i64 = 0;
+        for i in 0..ITERATIONS {
+            hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1);
+            for _ in 0..READS {
+                if let Some(x) = hm.get(&rng.random_range(RNG_MIN..=RNG_MAX)) {
+                    sum += *x as i64;
+                }
+            }
+        }
+        let after = Utc::now();
+        let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
+        println!("The sum is: {}. Time elapsed: {:.3} sec", sum, delta_seconds);
+    }
 }
 
 fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {

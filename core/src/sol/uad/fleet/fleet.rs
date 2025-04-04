@@ -1,16 +1,16 @@
 use crate::{
     sol::{FitId, FleetId},
-    util::HSet,
+    util::RSet,
 };
 
 #[derive(Clone)]
 pub(in crate::sol) struct Fleet {
     pub(in crate::sol) id: FleetId,
-    fits: HSet<FitId>,
+    fits: RSet<FitId>,
 }
 impl Fleet {
     pub(in crate::sol) fn new(id: FleetId) -> Self {
-        Self { id, fits: HSet::new() }
+        Self { id, fits: RSet::new() }
     }
     pub(in crate::sol) fn iter_fits(&self) -> impl ExactSizeIterator<Item = &FitId> {
         self.fits.iter()

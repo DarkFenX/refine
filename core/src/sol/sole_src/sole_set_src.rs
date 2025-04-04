@@ -6,7 +6,7 @@ use crate::{
         uad::item::{Item, ShipKind},
     },
     src::Src,
-    util::HMapVec,
+    util::RMapVec,
 };
 
 impl SolarSystem {
@@ -66,7 +66,7 @@ impl SolarSystem {
         }
     }
     fn remove_autocharges(&mut self) {
-        let mut autocharge_map = HMapVec::new();
+        let mut autocharge_map = RMapVec::new();
         // Collect data and update what we can right away
         for item in self.uad.items.iter() {
             if let Some(autocharges) = item.get_autocharges() {

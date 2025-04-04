@@ -1,12 +1,12 @@
-use crate::{ad, config::DEFAULT_EFFECT_MODE, sol::EffectMode, util::HMap};
+use crate::{ad, config::DEFAULT_EFFECT_MODE, sol::EffectMode, util::RMap};
 
 #[derive(Clone)]
 pub(in crate::sol) struct EffectModes {
-    data: HMap<ad::AEffectId, EffectMode>,
+    data: RMap<ad::AEffectId, EffectMode>,
 }
 impl EffectModes {
     pub(in crate::sol::uad::item) fn new() -> Self {
-        Self { data: HMap::new() }
+        Self { data: RMap::new() }
     }
     // Query methods
     pub(in crate::sol) fn get(&self, effect_id: &ad::AEffectId) -> &EffectMode {

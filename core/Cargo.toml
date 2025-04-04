@@ -8,7 +8,6 @@ license = "LGPL-3.0-or-later"
 
 [dependencies]
 itertools = ">=0.14.0"
-nohash-hasher = ">=0.2.0"
 ordered-float = ">=5.0.0"
 rustc-hash = ">=2.1.1"
 smallvec = ">=2.0.0-alpha.11"

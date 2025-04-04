@@ -1,7 +1,7 @@
 use crate::{
     ac, ad,
     sol::{AttrVal, ItemId, svc::vast::VastFitData, uad::item::Ship},
-    util::HSet,
+    util::RSet,
 };
 
 pub struct ValRigSizeFail {
@@ -16,7 +16,7 @@ pub struct ValRigSizeItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(&self, kfs: &HSet<ItemId>, ship: Option<&Ship>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(&self, kfs: &RSet<ItemId>, ship: Option<&Ship>) -> bool {
         let allowed_size = match get_allowed_size(ship) {
             Some(allowed_size) => allowed_size,
             None => return true,
@@ -31,7 +31,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_size_verbose(
         &self,
-        kfs: &HSet<ItemId>,
+        kfs: &RSet<ItemId>,
         ship: Option<&Ship>,
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;

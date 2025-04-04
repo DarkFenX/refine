@@ -1,15 +1,15 @@
 use crate::{
     sol::{AttrVal, ItemId},
-    util::HMap,
+    util::RMap,
 };
 
 #[derive(Clone)]
 pub(in crate::sol) struct Projs {
-    data: HMap<ItemId, Option<AttrVal>>,
+    data: RMap<ItemId, Option<AttrVal>>,
 }
 impl Projs {
     pub(in crate::sol::uad::item) fn new() -> Self {
-        Self { data: HMap::new() }
+        Self { data: RMap::new() }
     }
     pub(in crate::sol) fn add(&mut self, item_id: ItemId, range: Option<AttrVal>) {
         self.data.insert(item_id, range);

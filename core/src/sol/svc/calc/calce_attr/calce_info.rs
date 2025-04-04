@@ -15,7 +15,7 @@ use crate::{
         },
         uad::{Uad, item::Item},
     },
-    util::{HMap, HMapVec, HSet, round},
+    util::{RMap, RMapVec, RSet, round},
 };
 
 use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_base_attr_value};
@@ -32,7 +32,7 @@ impl Calc {
         uad: &Uad,
         item_id: &ItemId,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)>, LoadedItemFoundError> {
-        let mut info_map = HMapVec::new();
+        let mut info_map = RMapVec::new();
         for a_attr_id in self.iter_item_a_attr_ids(uad, item_id)? {
             let mut attr_info = match self.calc_item_attr_info(uad, item_id, &a_attr_id) {
                 Ok(attr_info) => attr_info,
@@ -53,7 +53,7 @@ impl Calc {
         uad: &Uad,
         item_id: &ItemId,
     ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, LoadedItemFoundError> {
-        let mut a_attr_ids = HSet::new();
+        let mut a_attr_ids = RSet::new();
         for attr_id in uad.items.get_item(item_id)?.get_a_attrs_err()?.keys() {
             a_attr_ids.insert(*attr_id);
         }
@@ -63,7 +63,7 @@ impl Calc {
         Ok(a_attr_ids.into_iter())
     }
     fn iter_affections(&mut self, uad: &Uad, item: &Item, a_attr_id: &ad::AAttrId) -> impl Iterator<Item = Affection> {
-        let mut affections = HMap::new();
+        let mut affections = RMap::new();
         for modifier in self.std.get_mods_for_affectee(item, a_attr_id, &uad.fits).iter() {
             let val = match modifier.raw.get_mod_val(self, uad) {
                 Some(val) => val,

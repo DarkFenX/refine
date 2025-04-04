@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{AAttrId, AAttrVal, AItemGrpId},
-    util::HMap,
+    util::RMap,
 };
 
 static GROUP_ATTRS: [AAttrId; 2] = [ac::attrs::ALLOWED_DRONE_GROUP1, ac::attrs::ALLOWED_DRONE_GROUP2];
@@ -14,7 +14,7 @@ pub struct AShipDroneLimit {
     pub group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_ship_drone_limit(item_attrs: &HMap<AAttrId, AAttrVal>) -> Option<AShipDroneLimit> {
+pub(super) fn get_ship_drone_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AShipDroneLimit> {
     let group_ids = GROUP_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))

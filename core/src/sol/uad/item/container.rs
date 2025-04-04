@@ -3,19 +3,19 @@ use std::num::Wrapping;
 use crate::{
     err::basic::ItemFoundError,
     sol::{ItemId, uad::item::Item},
-    util::HMap,
+    util::RMap,
 };
 
 #[derive(Clone)]
 pub(in crate::sol) struct Items {
     counter: Wrapping<ItemId>,
-    data: HMap<ItemId, Item>,
+    data: RMap<ItemId, Item>,
 }
 impl Items {
     pub(in crate::sol) fn new() -> Self {
         Self {
             counter: Wrapping(0),
-            data: HMap::new(),
+            data: RMap::new(),
         }
     }
     pub(in crate::sol) fn alloc_item_id(&mut self) -> ItemId {

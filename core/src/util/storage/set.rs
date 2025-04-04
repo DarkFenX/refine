@@ -3,11 +3,9 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
-use nohash_hasher::BuildNoHashHasher;
 use rustc_hash::FxBuildHasher;
 
-pub type NSet<V> = Set<V, BuildNoHashHasher<V>>;
-pub type HSet<V> = Set<V, FxBuildHasher>;
+pub type RSet<V> = Set<V, FxBuildHasher>;
 
 #[derive(Clone)]
 pub struct Set<V, H> {

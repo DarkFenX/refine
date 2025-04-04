@@ -13,7 +13,7 @@ use crate::{
             item::{Item, Module, ShipKind},
         },
     },
-    util::HMap,
+    util::RMap,
 };
 
 impl Vast {
@@ -27,7 +27,7 @@ impl Vast {
         // Skill requirements
         if let Some(a_srqs) = item.get_effective_a_skill_reqs() {
             if !a_srqs.is_empty() {
-                let mut missing_skills = HMap::new();
+                let mut missing_skills = RMap::new();
                 let fit = uad.fits.get_fit(&fit_id).unwrap();
                 for (&skill_a_item_id, &required_lvl) in a_srqs.iter() {
                     fit_data.srqs_skill_item_map.add_entry(skill_a_item_id, item_id);

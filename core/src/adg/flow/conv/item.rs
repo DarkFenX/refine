@@ -4,18 +4,18 @@ use crate::{
     ad,
     adg::{EData, GSupport, get_abil_effect},
     ed,
-    util::HMap,
+    util::RMap,
 };
 
-pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) -> HMap<ad::AItemId, ad::AItem> {
+pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) -> RMap<ad::AItemId, ad::AItem> {
     // Auxiliary maps
     let defeff_map = e_data
         .item_effects
         .iter()
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
-        .collect::<HMap<ed::EItemId, ed::EEffectId>>();
-    let mut a_items = HMap::new();
+        .collect::<RMap<ed::EItemId, ed::EEffectId>>();
+    let mut a_items = RMap::new();
     for e_item in e_data.items.iter() {
         // Item category ID
         let cat_id = match g_supp.grp_cat_map.get(&e_item.group_id) {
@@ -33,10 +33,10 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) 
             id: e_item.id,
             grp_id: e_item.group_id,
             cat_id,
-            attrs: HMap::new(),
-            effect_datas: HMap::new(),
+            attrs: RMap::new(),
+            effect_datas: RMap::new(),
             defeff_id: defeff_id.map(ad::AEffectId::Dogma),
-            srqs: HMap::new(),
+            srqs: RMap::new(),
             extras: ad::AItemExtras::new(),
         };
         a_items.insert(a_item.id, a_item);

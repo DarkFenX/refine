@@ -9,7 +9,7 @@ use crate::{
         svc::calc::{Calc, CalcAttrVal},
         uad::Uad,
     },
-    util::{HMap, HSet},
+    util::{RMap, RSet},
 };
 
 use super::{
@@ -48,7 +48,7 @@ impl Calc {
             Some(dps_profile) => dps_profile,
             None => uad.default_incoming_dps,
         };
-        let mut history_entries_seen = HSet::new();
+        let mut history_entries_seen = RSet::new();
         let mut sim_history = Vec::new();
         // Run "zero" simulation tick - write initial results and record initial state in history
         let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
@@ -291,7 +291,7 @@ impl Calc {
     fn set_partial_fit_rahs_result(
         &mut self,
         uad: &Uad,
-        resos: HMap<ItemId, DmgKinds<AttrVal>>,
+        resos: RMap<ItemId, DmgKinds<AttrVal>>,
         sim_datas: &BTreeMap<ItemId, RahDataSim>,
     ) {
         for (item_id, item_sim_data) in sim_datas.iter() {
@@ -394,8 +394,8 @@ fn get_next_resonances(
     resonances
 }
 
-fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> HMap<ItemId, DmgKinds<AttrVal>> {
-    let mut resos_used = HMap::new();
+fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<ItemId, DmgKinds<AttrVal>> {
+    let mut resos_used = RMap::new();
     for sim_history_entry in sim_history {
         for item_history_entry in sim_history_entry {
             // Add resonances to container only when RAH cycle is just starting
@@ -407,7 +407,7 @@ fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> HMap<ItemI
             }
         }
     }
-    let mut avg_resos = HMap::with_capacity(resos_used.len());
+    let mut avg_resos = RMap::with_capacity(resos_used.len());
     for (item_id, resos) in resos_used.into_iter() {
         let reso_len = resos.len() as f64;
         let item_avg_resos = match resos.into_iter().reduce(|a, v| DmgKinds {
@@ -435,7 +435,7 @@ fn estimate_initial_adaptation_ticks(
     sim_history: &[Vec<RahSimHistoryEntry>],
 ) -> TickCount {
     // Get count of cycles it takes for each RAH to exhaust its highest resistance
-    let mut exhaustion_cycles = HMap::new();
+    let mut exhaustion_cycles = RMap::new();
     for (item_id, item_sim_data) in sim_datas.iter() {
         let min_reso = *[
             item_sim_data.info.resos.em.dogma,

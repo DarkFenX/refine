@@ -5,7 +5,7 @@ use crate::{
         uad::item::{Autocharges, EffectModes, ItemBase, MinionState, Projs},
     },
     src::Src,
-    util::{HMap, Named},
+    util::{Named, RMap},
 };
 
 #[derive(Clone)]
@@ -45,16 +45,16 @@ impl Fighter {
     pub(in crate::sol) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
         self.base.get_a_category_id()
     }
-    pub(in crate::sol) fn get_a_attrs(&self) -> Option<&HMap<ad::AAttrId, ad::AAttrVal>> {
+    pub(in crate::sol) fn get_a_attrs(&self) -> Option<&RMap<ad::AAttrId, ad::AAttrVal>> {
         self.base.get_a_attrs()
     }
-    pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&HMap<ad::AEffectId, ad::AItemEffectData>> {
+    pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&RMap<ad::AEffectId, ad::AItemEffectData>> {
         self.base.get_a_effect_datas()
     }
     pub(in crate::sol) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
         self.base.get_a_defeff_id()
     }
-    pub(in crate::sol) fn get_a_skill_reqs(&self) -> Option<&HMap<ad::AItemId, ad::ASkillLevel>> {
+    pub(in crate::sol) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
     pub(in crate::sol) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {

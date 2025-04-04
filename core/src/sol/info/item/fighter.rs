@@ -4,7 +4,7 @@ use crate::{
         info::{AutochargeInfo, ProjInfo},
         uad::item::{Fighter, MinionState},
     },
-    util::HMap,
+    util::RMap,
 };
 
 pub struct FighterInfo {
@@ -13,13 +13,13 @@ pub struct FighterInfo {
     pub fit_id: FitId,
     pub state: MinionState,
     pub count: Option<AdjustableCount>,
-    pub autocharges: HMap<EffectId, AutochargeInfo>,
+    pub autocharges: RMap<EffectId, AutochargeInfo>,
     pub projs: Vec<ProjInfo>,
 }
 impl FighterInfo {
     pub(in crate::sol) fn from_fighter_and_autocharges(
         sol_fighter: &Fighter,
-        autocharges: HMap<EffectId, AutochargeInfo>,
+        autocharges: RMap<EffectId, AutochargeInfo>,
     ) -> Self {
         Self {
             id: sol_fighter.get_item_id(),

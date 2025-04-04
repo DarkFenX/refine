@@ -1,6 +1,6 @@
 use crate::{
     ed::{EAttrId, EEffectCatId, EEffectId, EPrimitive},
-    util::{HMap, Named},
+    util::{Named, RMap},
 };
 
 /// EVE dogma effect data.
@@ -47,5 +47,5 @@ pub struct EEffectMod {
     /// Function which the effect modifier calls to apply its modification.
     pub func: String,
     /// Arguments to the function call.
-    pub args: HMap<String, EPrimitive>,
+    pub args: RMap<String, EPrimitive>,
 }
