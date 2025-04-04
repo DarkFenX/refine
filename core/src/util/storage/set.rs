@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashSet},
+    collections::HashSet,
     hash::{BuildHasher, Hash},
 };
 

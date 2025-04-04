@@ -39,19 +39,19 @@ fn setup_logger() -> () {
 }
 
 fn main() {
-    setup_logger();
-    let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    let ch = Box::new(rdha::RamJsonAdh::new(
-        PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
-        "tq".to_string(),
-    ));
-    test_crusader(dh, ch);
+    // setup_logger();
     // let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     // let ch = Box::new(rdha::RamJsonAdh::new(
     //     PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
     //     "tq".to_string(),
     // ));
-    // test_nphoon(dh, ch);
+    // test_crusader(dh, ch);
+    let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
+    let ch = Box::new(rdha::RamJsonAdh::new(
+        PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
+        "tq".to_string(),
+    ));
+    test_nphoon(dh, ch);
 }
 
 fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {

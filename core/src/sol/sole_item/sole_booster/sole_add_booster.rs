@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemTypeId, SolarSystem,
+        FitId, ItemId, ItemTypeId, SolarSystem,
         info::BoosterInfo,
         uad::item::{Booster, Item},
     },
@@ -14,15 +14,23 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: bool,
     ) -> Result<BoosterInfo, AddBoosterError> {
+        let item_id = self.add_booster_internal(fit_id, type_id, state)?;
+        Ok(self.get_booster(&item_id).unwrap())
+    }
+    pub(in crate::sol) fn add_booster_internal(
+        &mut self,
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: bool,
+    ) -> Result<ItemId, AddBoosterError> {
         let item_id = self.uad.items.alloc_item_id();
         let booster = Booster::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = self.make_booster_info(&booster);
         let item = Item::Booster(booster);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.boosters.insert(item_id);
         self.uad.items.add_item(item);
         self.add_item_id_to_svc(&item_id);
-        Ok(info)
+        Ok(item_id)
     }
 }
 

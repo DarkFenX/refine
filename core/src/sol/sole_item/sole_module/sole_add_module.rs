@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemTypeId, ModRack, SolarSystem,
+        FitId, ItemId, ItemTypeId, ModRack, SolarSystem,
         info::{ChargeInfo, ModuleInfo},
         uad::item::{Charge, Item, ItemAddMutation, Module, ModuleState},
     },
@@ -23,6 +23,19 @@ impl SolarSystem {
         mutation: Option<ItemAddMutation>,
         charge_type_id: Option<ItemTypeId>,
     ) -> Result<ModuleInfo, AddModuleError> {
+        let item_id = self.add_module_internal(fit_id, rack, pos_mode, type_id, state, mutation, charge_type_id)?;
+        Ok(self.get_module(&item_id).unwrap())
+    }
+    pub(in crate::sol) fn add_module_internal(
+        &mut self,
+        fit_id: FitId,
+        rack: ModRack,
+        pos_mode: AddMode,
+        type_id: ItemTypeId,
+        state: ModuleState,
+        mutation: Option<ItemAddMutation>,
+        charge_type_id: Option<ItemTypeId>,
+    ) -> Result<ItemId, AddModuleError> {
         let module_item_id = self.uad.items.alloc_item_id();
         let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack)?;
         // Calculate position for the module and update part of user data (fit rack and modules from
@@ -78,39 +91,38 @@ impl SolarSystem {
         );
         let module_item = Item::Module(module);
         self.uad.items.add_item(module_item);
-        let mut charge_info = None;
-        if let Some(charge_type_id) = charge_type_id {
-            let charge_id = self.uad.items.alloc_item_id();
-            // Update user data with new charge info
-            self.uad
-                .items
-                .get_item_mut(&module_item_id)
-                .unwrap()
-                .get_module_mut()
-                .unwrap()
-                .set_charge_item_id(Some(charge_id));
-            let charge = Charge::new(
-                &self.uad.src,
-                charge_id,
-                charge_type_id,
-                fit_id,
-                module_item_id,
-                state.into(),
-                false,
-            );
-            charge_info = Some(ChargeInfo::from(&charge));
-            let item = Item::Charge(charge);
-            self.uad.items.add_item(item);
-        }
+        let charge_item_id = match charge_type_id {
+            Some(charge_type_id) => {
+                let charge_item_id = self.uad.items.alloc_item_id();
+                // Update user data with new charge info
+                self.uad
+                    .items
+                    .get_item_mut(&module_item_id)
+                    .unwrap()
+                    .get_module_mut()
+                    .unwrap()
+                    .set_charge_item_id(Some(charge_item_id));
+                let charge = Charge::new(
+                    &self.uad.src,
+                    charge_item_id,
+                    charge_type_id,
+                    fit_id,
+                    module_item_id,
+                    state.into(),
+                    false,
+                );
+                let item = Item::Charge(charge);
+                self.uad.items.add_item(item);
+                Some(charge_item_id)
+            }
+            None => None,
+        };
         // Add module and charge to services
-        let module_item = self.uad.items.get_item(&module_item_id).unwrap();
-        let module = module_item.get_module().unwrap();
-        let module_info = ModuleInfo::from_mod_and_charge_with_source(&self.uad.src, module, charge_info);
-        self.svc.add_item(&self.uad, module_item);
-        if let Some(charge_info) = &module_info.charge {
-            self.add_item_id_to_svc(&charge_info.id);
+        self.add_item_id_to_svc(&module_item_id);
+        if let Some(charge_item_id) = charge_item_id {
+            self.add_item_id_to_svc(&charge_item_id);
         }
-        Ok(module_info)
+        Ok(module_item_id)
     }
 }
 

@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemTypeId, SolarSystem,
+        FitId, ItemId, ItemTypeId, SolarSystem,
         info::FighterInfo,
         uad::item::{Fighter, Item, MinionState},
     },
@@ -16,6 +16,16 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: MinionState,
     ) -> Result<FighterInfo, AddFighterError> {
+        let item_id = self.add_fighter_internal(fit_id, type_id, state)?;
+        let info = self.get_fighter(&item_id).unwrap();
+        Ok(info)
+    }
+    pub(in crate::sol) fn add_fighter_internal(
+        &mut self,
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: MinionState,
+    ) -> Result<ItemId, AddFighterError> {
         // Do everything needed to reserve ID for fighter itself
         let item_id = self.uad.items.alloc_item_id();
         let fighter = Fighter::new(&self.uad.src, item_id, type_id, fit_id, state);
@@ -32,9 +42,7 @@ impl SolarSystem {
         for autocharge_id in fighter.get_autocharges().values().copied().collect_vec() {
             self.add_item_id_to_svc(&autocharge_id);
         }
-        // Make info
-        let info = self.get_fighter(&item_id).unwrap();
-        Ok(info)
+        Ok(item_id)
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemTypeId, SolarSystem,
+        FitId, ItemId, ItemTypeId, SolarSystem,
         info::DroneInfo,
         uad::item::{Drone, Item, ItemAddMutation, MinionState},
     },
@@ -15,15 +15,24 @@ impl SolarSystem {
         state: MinionState,
         mutation: Option<ItemAddMutation>,
     ) -> Result<DroneInfo, AddDroneError> {
+        let item_id = self.add_drone_internal(fit_id, type_id, state, mutation)?;
+        Ok(self.get_drone(&item_id).unwrap())
+    }
+    pub(in crate::sol) fn add_drone_internal(
+        &mut self,
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: MinionState,
+        mutation: Option<ItemAddMutation>,
+    ) -> Result<ItemId, AddDroneError> {
         let item_id = self.uad.items.alloc_item_id();
         let drone = Drone::new(&self.uad.src, item_id, type_id, fit_id, state, mutation);
-        let info = self.make_drone_info(&drone);
         let item = Item::Drone(drone);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.drones.insert(item_id);
         self.uad.items.add_item(item);
         self.add_item_id_to_svc(&item_id);
-        Ok(info)
+        Ok(item_id)
     }
 }
 

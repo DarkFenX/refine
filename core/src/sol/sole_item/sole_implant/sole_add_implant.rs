@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemTypeId, SolarSystem,
+        FitId, ItemId, ItemTypeId, SolarSystem,
         info::ImplantInfo,
         uad::item::{Implant, Item},
     },
@@ -14,15 +14,23 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: bool,
     ) -> Result<ImplantInfo, AddImplantError> {
+        let item_id = self.add_implant_internal(fit_id, type_id, state)?;
+        Ok(self.get_implant(&item_id).unwrap())
+    }
+    pub(in crate::sol) fn add_implant_internal(
+        &mut self,
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: bool,
+    ) -> Result<ItemId, AddImplantError> {
         let item_id = self.uad.items.alloc_item_id();
         let implant = Implant::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = ImplantInfo::from(&implant);
         let item = Item::Implant(implant);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.implants.insert(item_id);
         self.uad.items.add_item(item);
         self.add_item_id_to_svc(&item_id);
-        Ok(info)
+        Ok(item_id)
     }
 }
 

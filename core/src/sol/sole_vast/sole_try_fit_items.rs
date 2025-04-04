@@ -28,36 +28,40 @@ impl SolarSystem {
             };
             match item_kind {
                 ad::AItemKind::Booster => {
-                    let booster_info = self.add_booster(*fit_id, *type_id, true).unwrap();
+                    let booster_id = self.add_booster_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_booster(&booster_info.id).unwrap();
+                    self.remove_booster(&booster_id).unwrap();
                 }
                 ad::AItemKind::Drone => {
-                    let drone_info = self.add_drone(*fit_id, *type_id, MinionState::InBay, None).unwrap();
+                    let drone_id = self
+                        .add_drone_internal(*fit_id, *type_id, MinionState::InBay, None)
+                        .unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_drone(&drone_info.id).unwrap();
+                    self.remove_drone(&drone_id).unwrap();
                 }
                 ad::AItemKind::Fighter => {
-                    let drone_info = self.add_fighter(*fit_id, *type_id, MinionState::InBay).unwrap();
+                    let fighter_id = self
+                        .add_fighter_internal(*fit_id, *type_id, MinionState::InBay)
+                        .unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_fighter(&drone_info.id).unwrap();
+                    self.remove_fighter(&fighter_id).unwrap();
                 }
                 ad::AItemKind::Implant => {
-                    let implant_info = self.add_implant(*fit_id, *type_id, true).unwrap();
+                    let implant_id = self.add_implant_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_implant(&implant_info.id).unwrap();
+                    self.remove_implant(&implant_id).unwrap();
                 }
                 ad::AItemKind::ModuleHigh => {
-                    let module_info = self
-                        .add_module(
+                    let module_id = self
+                        .add_module_internal(
                             *fit_id,
                             ModRack::High,
                             AddMode::Equip,
@@ -70,11 +74,11 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_info.id, RmMode::Free).unwrap();
+                    self.remove_module(&module_id, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::ModuleMid => {
-                    let module_info = self
-                        .add_module(
+                    let module_id = self
+                        .add_module_internal(
                             *fit_id,
                             ModRack::Mid,
                             AddMode::Equip,
@@ -87,11 +91,11 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_info.id, RmMode::Free).unwrap();
+                    self.remove_module(&module_id, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::ModuleLow => {
-                    let module_info = self
-                        .add_module(
+                    let module_id = self
+                        .add_module_internal(
                             *fit_id,
                             ModRack::Low,
                             AddMode::Equip,
@@ -104,28 +108,30 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_info.id, RmMode::Free).unwrap();
+                    self.remove_module(&module_id, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::Rig => {
-                    let rig_info = self.add_rig(*fit_id, *type_id, true).unwrap();
+                    let rig_id = self.add_rig_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_rig(&rig_info.id).unwrap();
+                    self.remove_rig(&rig_id).unwrap();
                 }
                 ad::AItemKind::Service => {
-                    let service_info = self.add_service(*fit_id, *type_id, ServiceState::Online).unwrap();
+                    let service_id = self
+                        .add_service_internal(*fit_id, *type_id, ServiceState::Online)
+                        .unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_service(&service_info.id).unwrap();
+                    self.remove_service(&service_id).unwrap();
                 }
                 ad::AItemKind::Subsystem => {
-                    let subsystem_info = self.add_subsystem(*fit_id, *type_id, true).unwrap();
+                    let subsystem_id = self.add_subsystem_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_subsystem(&subsystem_info.id).unwrap();
+                    self.remove_subsystem(&subsystem_id).unwrap();
                 }
                 _ => continue,
             }
