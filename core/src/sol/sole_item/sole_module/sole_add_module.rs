@@ -2,7 +2,7 @@ use crate::{
     err::basic::FitFoundError,
     sol::{
         FitId, ItemId, ItemTypeId, ModRack, SolarSystem,
-        info::{ChargeInfo, ModuleInfo},
+        info::ModuleInfo,
         uad::item::{Charge, Item, ItemAddMutation, Module, ModuleState},
     },
 };
