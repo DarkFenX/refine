@@ -151,15 +151,15 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);
     }
     // RAH
-    sol_sys.add_module(
-        fit.id,
-        ModRack::Low,
-        AddMode::Equip,
-        4403,
-        ModuleState::Active,
-        None,
-        None,
-    );
+    // sol_sys.add_module(
+    //     fit.id,
+    //     ModRack::Low,
+    //     AddMode::Equip,
+    //     4403,
+    //     ModuleState::Active,
+    //     None,
+    //     None,
+    // );
 
     // for (attr_id, val) in sol_sys.iter_item_attrs(&ship.id).unwrap().sorted_by_key(|v| v.0) {
     //     println!("{attr_id} {}", val.extra);
@@ -174,7 +174,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 fit.id,
                 ModRack::Low,
                 AddMode::Equip,
-                20347,
+                1306,
                 ModuleState::Online,
                 None,
                 None,
