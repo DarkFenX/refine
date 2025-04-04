@@ -2,20 +2,19 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
+#[serde(transparent)]
 pub(in crate::info::valid) struct HValChargeSizeFail {
-    #[serde(flatten)]
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
-    data: HashMap<rc::ItemId, HValChargeSizeItemInfo>,
+    charges: HashMap<rc::ItemId, HValChargeSizeItemInfo>,
 }
-impl HValChargeSizeFail {
-    pub(in crate::info::valid) fn is_empty(&self) -> bool {
-        self.data.is_empty()
-    }
-}
-impl From<&Vec<rc::val::ValChargeSizeFail>> for HValChargeSizeFail {
-    fn from(core_val_fails: &Vec<rc::val::ValChargeSizeFail>) -> Self {
+impl From<&rc::val::ValChargeSizeFail> for HValChargeSizeFail {
+    fn from(core_val_fail: &rc::val::ValChargeSizeFail) -> Self {
         Self {
-            data: core_val_fails.iter().map(|v| (v.charge_item_id, v.into())).collect(),
+            charges: core_val_fail
+                .charges
+                .iter()
+                .map(|(charge_item_id, charge_info)| (*charge_item_id, charge_info.into()))
+                .collect(),
         }
     }
 }
@@ -28,12 +27,12 @@ pub(in crate::info::valid) struct HValChargeSizeItemInfo {
     charge_size: Option<rc::AttrVal>,
     allowed_size: rc::AttrVal,
 }
-impl From<&rc::val::ValChargeSizeFail> for HValChargeSizeItemInfo {
-    fn from(core_val_fail: &rc::val::ValChargeSizeFail) -> Self {
+impl From<&rc::val::ValChargeSizeChargeInfo> for HValChargeSizeItemInfo {
+    fn from(core_val_charge_info: &rc::val::ValChargeSizeChargeInfo) -> Self {
         Self {
-            parent_item_id: core_val_fail.parent_item_id,
-            charge_size: core_val_fail.charge_size,
-            allowed_size: core_val_fail.allowed_size,
+            parent_item_id: core_val_charge_info.parent_item_id,
+            charge_size: core_val_charge_info.charge_size,
+            allowed_size: core_val_charge_info.allowed_size,
         }
     }
 }

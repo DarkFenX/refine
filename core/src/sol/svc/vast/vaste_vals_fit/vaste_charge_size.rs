@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     ac,
     sol::{
@@ -8,11 +10,18 @@ use crate::{
     util::RSet,
 };
 
-#[derive(Copy, Clone)]
 pub struct ValChargeSizeFail {
+    /// Map between charge IDs and info about failed validation.
+    pub charges: HashMap<ItemId, ValChargeSizeChargeInfo>,
+}
+
+#[derive(Copy, Clone)]
+pub struct ValChargeSizeChargeInfo {
+    /// Parent module item ID.
     pub parent_item_id: ItemId,
-    pub charge_item_id: ItemId,
+    /// Size attribute value of current charge.
     pub charge_size: Option<AttrVal>,
+    /// Size value allowed by module.
     pub allowed_size: AttrVal,
 }
 
@@ -23,9 +32,9 @@ impl VastFitData {
             match cache {
                 ValCache::Todo(allowed_size) => match calculate_item_result(uad, module_item_id, *allowed_size) {
                     ValCache::Pass(pass) => cache.pass(pass),
-                    ValCache::Fail(fail) => {
-                        let ret_fail = !kfs.contains(&fail.charge_item_id);
-                        cache.fail(fail);
+                    ValCache::Fail((charge_item_id, charge_info)) => {
+                        let ret_fail = !kfs.contains(&charge_item_id);
+                        cache.fail((charge_item_id, charge_info));
                         if ret_fail {
                             return false;
                         }
@@ -33,8 +42,8 @@ impl VastFitData {
                     _ => (),
                 },
                 ValCache::Pass(_) => (),
-                ValCache::Fail(fail) => {
-                    if !kfs.contains(&fail.charge_item_id) {
+                ValCache::Fail((charge_item_id, _)) => {
+                    if !kfs.contains(charge_item_id) {
                         return false;
                     }
                 }
@@ -47,29 +56,32 @@ impl VastFitData {
         &mut self,
         kfs: &RSet<ItemId>,
         uad: &Uad,
-    ) -> Vec<ValChargeSizeFail> {
-        let mut fails = Vec::new();
+    ) -> Option<ValChargeSizeFail> {
+        let mut charges = HashMap::new();
         for (module_item_id, cache) in self.mods_charge_size.iter_mut() {
             match cache {
                 ValCache::Todo(allowed_size) => match calculate_item_result(uad, module_item_id, *allowed_size) {
                     ValCache::Pass(pass) => cache.pass(pass),
-                    ValCache::Fail(fail) => {
-                        if !kfs.contains(&fail.charge_item_id) {
-                            fails.push(fail);
+                    ValCache::Fail((charge_item_id, charge_info)) => {
+                        if !kfs.contains(&charge_item_id) {
+                            charges.insert(charge_item_id, charge_info.clone());
                         }
-                        cache.fail(fail);
+                        cache.fail((charge_item_id, charge_info));
                     }
                     _ => (),
                 },
                 ValCache::Pass(_) => (),
-                ValCache::Fail(fail) => {
-                    if !kfs.contains(&fail.charge_item_id) {
-                        fails.push(*fail)
+                ValCache::Fail((charge_item_id, charge_info)) => {
+                    if !kfs.contains(charge_item_id) {
+                        charges.insert(*charge_item_id, charge_info.clone());
                     }
                 }
             }
         }
-        fails
+        if charges.is_empty() {
+            return None;
+        }
+        Some(ValChargeSizeFail { charges })
     }
 }
 
@@ -77,7 +89,7 @@ fn calculate_item_result(
     uad: &Uad,
     module_item_id: &ItemId,
     allowed_size: AttrVal,
-) -> ValCache<AttrVal, ValChargeSizeFail> {
+) -> ValCache<AttrVal, (ItemId, ValChargeSizeChargeInfo)> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
     let charge_item_id = match module.get_charge_item_id() {
         Some(charge_item_id) => charge_item_id,
@@ -90,21 +102,25 @@ fn calculate_item_result(
     let charge_size = match charge_attrs.get(&ac::attrs::CHARGE_SIZE) {
         Some(charge_size) => *charge_size,
         None => {
-            return ValCache::Fail(ValChargeSizeFail {
-                parent_item_id: *module_item_id,
+            return ValCache::Fail((
                 charge_item_id,
-                charge_size: None,
-                allowed_size,
-            });
+                ValChargeSizeChargeInfo {
+                    parent_item_id: *module_item_id,
+                    charge_size: None,
+                    allowed_size,
+                },
+            ));
         }
     };
     match charge_size == allowed_size {
         true => ValCache::Pass(allowed_size),
-        false => ValCache::Fail(ValChargeSizeFail {
-            parent_item_id: *module_item_id,
+        false => ValCache::Fail((
             charge_item_id,
-            charge_size: Some(charge_size),
-            allowed_size,
-        }),
+            ValChargeSizeChargeInfo {
+                parent_item_id: *module_item_id,
+                charge_size: Some(charge_size),
+                allowed_size,
+            },
+        )),
     }
 }

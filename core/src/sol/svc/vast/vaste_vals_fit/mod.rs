@@ -1,8 +1,8 @@
 pub use vaste_activation_blocked::ValActivationBlockedFail;
-pub use vaste_capital_module::{ValCapitalModFail, ValCapitalModItemInfo};
-pub use vaste_charge_group::ValChargeGroupFail;
-pub use vaste_charge_size::ValChargeSizeFail;
-pub use vaste_charge_volume::ValChargeVolumeFail;
+pub use vaste_capital_module::ValCapitalModFail;
+pub use vaste_charge_group::{ValChargeGroupChargeInfo, ValChargeGroupFail};
+pub use vaste_charge_size::{ValChargeSizeChargeInfo, ValChargeSizeFail};
+pub use vaste_charge_volume::{ValChargeVolumeChargeInfo, ValChargeVolumeFail};
 pub use vaste_drone_group::{ValDroneGroupFail, ValDroneGroupItemInfo};
 pub use vaste_fighter_squad_size::ValFighterSquadSizeFail;
 pub use vaste_item_kind::ValItemKindFail;

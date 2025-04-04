@@ -70,8 +70,8 @@ impl Vast {
                         ValCache::Pass(allowed_charge_size) => {
                             entry.insert(ValCache::Todo(*allowed_charge_size));
                         }
-                        ValCache::Fail(fail) => {
-                            entry.insert(ValCache::Todo(fail.allowed_size));
+                        ValCache::Fail((_, charge_info)) => {
+                            entry.insert(ValCache::Todo(charge_info.allowed_size));
                         }
                         _ => (),
                     }
@@ -401,8 +401,8 @@ impl Vast {
                         ValCache::Todo(allowed_charge_size) => {
                             entry.insert(ValCache::Pass(*allowed_charge_size));
                         }
-                        ValCache::Fail(fail) => {
-                            entry.insert(ValCache::Pass(fail.allowed_size));
+                        ValCache::Fail((_, charge_info)) => {
+                            entry.insert(ValCache::Pass(charge_info.allowed_size));
                         }
                         _ => (),
                     }
@@ -589,8 +589,8 @@ fn handle_charge_volume_for_module(fit_data: &mut VastFitData, module_item_id: I
             ValCache::Pass(charge_volume) => {
                 entry.insert(ValCache::Todo(*charge_volume));
             }
-            ValCache::Fail(fail) => {
-                entry.insert(ValCache::Todo(fail.charge_volume));
+            ValCache::Fail((_, charge_info)) => {
+                entry.insert(ValCache::Todo(charge_info.charge_volume));
             }
             _ => (),
         }

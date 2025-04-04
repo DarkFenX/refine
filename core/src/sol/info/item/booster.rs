@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::sol::{EffectId, FitId, ItemId, ItemTypeId, SlotIndex, info::SideEffectInfo, uad::item::Booster};
 
 pub struct BoosterInfo {
@@ -6,12 +8,12 @@ pub struct BoosterInfo {
     pub fit_id: FitId,
     pub slot: Option<SlotIndex>,
     pub enabled: bool,
-    pub side_effects: std::collections::HashMap<EffectId, SideEffectInfo>,
+    pub side_effects: HashMap<EffectId, SideEffectInfo>,
 }
 impl BoosterInfo {
     pub(in crate::sol) fn from_booster_and_side_effects(
         sol_booster: &Booster,
-        side_effects: std::collections::HashMap<EffectId, SideEffectInfo>,
+        side_effects: HashMap<EffectId, SideEffectInfo>,
     ) -> Self {
         Self {
             id: sol_booster.get_item_id(),

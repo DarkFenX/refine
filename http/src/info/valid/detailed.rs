@@ -86,12 +86,12 @@ struct HValidInfoDetails {
     rig_size: Option<HValRigSizeFail>,
     #[serde(skip_serializing_if = "HValSrqFail::is_empty")]
     skill_reqs: HValSrqFail,
-    #[serde(skip_serializing_if = "HValChargeGroupFail::is_empty")]
-    charge_group: HValChargeGroupFail,
-    #[serde(skip_serializing_if = "HValChargeSizeFail::is_empty")]
-    charge_size: HValChargeSizeFail,
-    #[serde(skip_serializing_if = "HValChargeVolumeFail::is_empty")]
-    charge_volume: HValChargeVolumeFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    charge_group: Option<HValChargeGroupFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    charge_size: Option<HValChargeSizeFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    charge_volume: Option<HValChargeVolumeFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     capital_module: Option<HValCapitalModFail>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
@@ -177,9 +177,9 @@ impl HValidInfoDetails {
             && self.max_group_active.is_empty()
             && self.rig_size.is_none()
             && self.skill_reqs.is_empty()
-            && self.charge_group.is_empty()
-            && self.charge_size.is_empty()
-            && self.charge_volume.is_empty()
+            && self.charge_group.is_none()
+            && self.charge_size.is_none()
+            && self.charge_volume.is_none()
             && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
@@ -253,9 +253,9 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             max_group_active: (&core_val_result.max_group_active).into(),
             rig_size: core_val_result.rig_size.as_ref().map(|v| v.into()),
             skill_reqs: (&core_val_result.skill_reqs).into(),
-            charge_group: (&core_val_result.charge_group).into(),
-            charge_size: (&core_val_result.charge_size).into(),
-            charge_volume: (&core_val_result.charge_volume).into(),
+            charge_group: core_val_result.charge_group.as_ref().map(|v| v.into()),
+            charge_size: core_val_result.charge_size.as_ref().map(|v| v.into()),
+            charge_volume: core_val_result.charge_volume.as_ref().map(|v| v.into()),
             capital_module: core_val_result.capital_module.as_ref().map(|v| v.into()),
             not_loaded_item: core_val_result.not_loaded_item.iter().map(|v| v.item_id).collect(),
             module_state: (&core_val_result.module_state).into(),

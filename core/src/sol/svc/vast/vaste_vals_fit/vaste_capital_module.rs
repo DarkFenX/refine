@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use std::collections::HashMap;
 
 use crate::{
     ac, ad,
@@ -7,13 +7,10 @@ use crate::{
 };
 
 pub struct ValCapitalModFail {
+    /// Modules up to and including this volume are not considered capital.
     pub max_subcap_volume: AttrVal,
-    pub items: Vec<ValCapitalModItemInfo>,
-}
-
-pub struct ValCapitalModItemInfo {
-    pub item_id: ItemId,
-    pub volume: AttrVal,
+    /// List of modules breaking validation, and their volumes.
+    pub module_volumes: HashMap<ItemId, AttrVal>,
 }
 
 impl VastFitData {
@@ -40,21 +37,18 @@ impl VastFitData {
         if !is_ship_subcap(ship) {
             return None;
         }
-        let items = self
+        let items: HashMap<_, _> = self
             .mods_capital
             .iter()
             .filter(|(k, _)| !kfs.contains(k))
-            .map(|(k, v)| ValCapitalModItemInfo {
-                item_id: *k,
-                volume: *v,
-            })
-            .collect_vec();
+            .map(|(k, v)| (*k, *v))
+            .collect();
         if items.is_empty() {
             return None;
         }
         Some(ValCapitalModFail {
             max_subcap_volume: ac::extras::MAX_SUBCAP_MODULE_VOLUME,
-            items,
+            module_volumes: items,
         })
     }
 }

@@ -38,9 +38,9 @@ pub struct ValResult {
     pub max_group_active: Vec<ValMaxGroupFail>,
     pub rig_size: Option<ValRigSizeFail>,
     pub skill_reqs: Vec<ValSrqFail>,
-    pub charge_group: Vec<ValChargeGroupFail>,
-    pub charge_size: Vec<ValChargeSizeFail>,
-    pub charge_volume: Vec<ValChargeVolumeFail>,
+    pub charge_group: Option<ValChargeGroupFail>,
+    pub charge_size: Option<ValChargeSizeFail>,
+    pub charge_volume: Option<ValChargeVolumeFail>,
     pub capital_module: Option<ValCapitalModFail>,
     pub not_loaded_item: Vec<ValNotLoadedItemFail>,
     pub module_state: Vec<ValModuleStateFail>,
@@ -101,9 +101,9 @@ impl ValResult {
             max_group_active: Vec::new(),
             rig_size: None,
             skill_reqs: Vec::new(),
-            charge_group: Vec::new(),
-            charge_size: Vec::new(),
-            charge_volume: Vec::new(),
+            charge_group: None,
+            charge_size: None,
+            charge_volume: None,
             capital_module: None,
             not_loaded_item: Vec::new(),
             module_state: Vec::new(),
@@ -163,9 +163,9 @@ impl ValResult {
             && self.max_group_active.is_empty()
             && self.rig_size.is_none()
             && self.skill_reqs.is_empty()
-            && self.charge_group.is_empty()
-            && self.charge_size.is_empty()
-            && self.charge_volume.is_empty()
+            && self.charge_group.is_none()
+            && self.charge_size.is_none()
+            && self.charge_volume.is_none()
             && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()

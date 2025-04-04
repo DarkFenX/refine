@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
@@ -10,11 +12,18 @@ use crate::{
     util::RSet,
 };
 
-#[derive(Copy, Clone)]
 pub struct ValChargeVolumeFail {
+    /// Map between charge IDs and info about failed validation.
+    pub charges: HashMap<ItemId, ValChargeVolumeChargeInfo>,
+}
+
+#[derive(Copy, Clone)]
+pub struct ValChargeVolumeChargeInfo {
+    /// Parent module item ID.
     pub parent_item_id: ItemId,
-    pub charge_item_id: ItemId,
+    /// Volume of current charge.
     pub charge_volume: AttrVal,
+    /// Maximum charge volume allowed by its parent module.
     pub max_volume: AttrVal,
 }
 
@@ -25,9 +34,9 @@ impl VastFitData {
             match cache {
                 ValCache::Todo(charge_volume) => match calculate_item_result(uad, module_item_id, *charge_volume) {
                     ValCache::Pass(pass) => cache.pass(pass),
-                    ValCache::Fail(fail) => {
-                        let ret_fail = !kfs.contains(&fail.charge_item_id);
-                        cache.fail(fail);
+                    ValCache::Fail((charge_item_id, charge_info)) => {
+                        let ret_fail = !kfs.contains(&charge_item_id);
+                        cache.fail((charge_item_id, charge_info));
                         if ret_fail {
                             return false;
                         }
@@ -35,8 +44,8 @@ impl VastFitData {
                     _ => (),
                 },
                 ValCache::Pass(_) => (),
-                ValCache::Fail(fail) => {
-                    if !kfs.contains(&fail.charge_item_id) {
+                ValCache::Fail((charge_item_id, _)) => {
+                    if !kfs.contains(charge_item_id) {
                         return false;
                     }
                 }
@@ -49,29 +58,32 @@ impl VastFitData {
         &mut self,
         kfs: &RSet<ItemId>,
         uad: &Uad,
-    ) -> Vec<ValChargeVolumeFail> {
-        let mut fails = Vec::new();
+    ) -> Option<ValChargeVolumeFail> {
+        let mut charges = HashMap::new();
         for (module_item_id, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
                 ValCache::Todo(charge_volume) => match calculate_item_result(uad, module_item_id, *charge_volume) {
                     ValCache::Pass(pass) => cache.pass(pass),
-                    ValCache::Fail(fail) => {
-                        if !kfs.contains(&fail.charge_item_id) {
-                            fails.push(fail);
+                    ValCache::Fail((charge_item_id, charge_info)) => {
+                        if !kfs.contains(&charge_item_id) {
+                            charges.insert(charge_item_id, charge_info);
                         }
-                        cache.fail(fail);
+                        cache.fail((charge_item_id, charge_info));
                     }
                     _ => (),
                 },
                 ValCache::Pass(_) => (),
-                ValCache::Fail(fail) => {
-                    if !kfs.contains(&fail.charge_item_id) {
-                        fails.push(*fail)
+                ValCache::Fail((charge_item_id, charge_info)) => {
+                    if !kfs.contains(charge_item_id) {
+                        charges.insert(*charge_item_id, *charge_info);
                     }
                 }
             }
         }
-        fails
+        if charges.is_empty() {
+            return None;
+        }
+        Some(ValChargeVolumeFail { charges })
     }
 }
 
@@ -79,7 +91,7 @@ fn calculate_item_result(
     uad: &Uad,
     module_item_id: &ItemId,
     charge_volume: AttrVal,
-) -> ValCache<AttrVal, ValChargeVolumeFail> {
+) -> ValCache<AttrVal, (ItemId, ValChargeVolumeChargeInfo)> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
     let module_capacity = match module.get_a_attrs() {
         Some(attrs) => match attrs.get(&ac::attrs::CAPACITY) {
@@ -90,11 +102,13 @@ fn calculate_item_result(
     };
     match charge_volume <= module_capacity {
         true => ValCache::Pass(charge_volume),
-        false => ValCache::Fail(ValChargeVolumeFail {
-            parent_item_id: *module_item_id,
-            charge_item_id: module.get_charge_item_id().unwrap(),
-            charge_volume,
-            max_volume: module_capacity,
-        }),
+        false => ValCache::Fail((
+            module.get_charge_item_id().unwrap(),
+            ValChargeVolumeChargeInfo {
+                parent_item_id: *module_item_id,
+                charge_volume,
+                max_volume: module_capacity,
+            },
+        )),
     }
 }

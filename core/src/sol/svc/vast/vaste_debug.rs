@@ -136,29 +136,26 @@ impl VastFitData {
         for item_id in self.srqs_missing.keys() {
             check_item_id(uad, item_id, true)?;
         }
-        for (item_id, item_data) in self.mods_charge_group.iter() {
-            check_item_id(uad, item_id, true)?;
-            if let ValCache::Fail(item_fail) = item_data {
-                check_item_id(uad, &item_fail.parent_item_id, true)?;
-                // This container can store info about non-loaded charges
-                check_item_id(uad, &item_fail.charge_item_id, false)?;
+        for (module_item_id, module_data) in self.mods_charge_group.iter() {
+            check_item_id(uad, module_item_id, true)?;
+            if let ValCache::Fail((charge_item_id, charge_info)) = module_data {
+                check_item_id(uad, &charge_item_id, true)?;
+                check_item_id(uad, &charge_info.parent_item_id, true)?;
             }
         }
-        for (item_id, item_data) in self.mods_charge_size.iter() {
-            check_item_id(uad, item_id, true)?;
-            if let ValCache::Fail(item_fail) = item_data {
-                check_item_id(uad, &item_fail.parent_item_id, true)?;
-                // This container can store info about non-loaded charges
-                check_item_id(uad, &item_fail.charge_item_id, false)?;
+        for (module_item_id, module_data) in self.mods_charge_size.iter() {
+            check_item_id(uad, module_item_id, true)?;
+            if let ValCache::Fail((charge_item_id, charge_info)) = module_data {
+                check_item_id(uad, &charge_item_id, true)?;
+                check_item_id(uad, &charge_info.parent_item_id, true)?;
             }
         }
-        for (item_id, item_data) in self.mods_charge_volume.iter() {
+        for (module_item_id, module_data) in self.mods_charge_volume.iter() {
             // This container can store info about non-loaded modules
-            check_item_id(uad, item_id, false)?;
-            if let ValCache::Fail(item_fail) = item_data {
-                // This container can store info about non-loaded modules
-                check_item_id(uad, &item_fail.parent_item_id, false)?;
-                check_item_id(uad, &item_fail.charge_item_id, true)?;
+            check_item_id(uad, module_item_id, false)?;
+            if let ValCache::Fail((charge_item_id, charge_info)) = module_data {
+                check_item_id(uad, &charge_item_id, true)?;
+                check_item_id(uad, &charge_info.parent_item_id, true)?;
             }
         }
         for item_id in self.mods_capital.keys() {
