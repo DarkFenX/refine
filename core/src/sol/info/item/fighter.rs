@@ -1,10 +1,7 @@
-use crate::{
-    sol::{
-        AdjustableCount, EffectId, FitId, ItemId, ItemTypeId,
-        info::{AutochargeInfo, ProjInfo},
-        uad::item::{Fighter, MinionState},
-    },
-    util::RMap,
+use crate::sol::{
+    AdjustableCount, EffectId, FitId, ItemId, ItemTypeId,
+    info::{AutochargeInfo, ProjInfo},
+    uad::item::{Fighter, MinionState},
 };
 
 pub struct FighterInfo {
@@ -13,13 +10,13 @@ pub struct FighterInfo {
     pub fit_id: FitId,
     pub state: MinionState,
     pub count: Option<AdjustableCount>,
-    pub autocharges: RMap<EffectId, AutochargeInfo>,
+    pub autocharges: std::collections::HashMap<EffectId, AutochargeInfo>,
     pub projs: Vec<ProjInfo>,
 }
 impl FighterInfo {
     pub(in crate::sol) fn from_fighter_and_autocharges(
         sol_fighter: &Fighter,
-        autocharges: RMap<EffectId, AutochargeInfo>,
+        autocharges: std::collections::HashMap<EffectId, AutochargeInfo>,
     ) -> Self {
         Self {
             id: sol_fighter.get_item_id(),

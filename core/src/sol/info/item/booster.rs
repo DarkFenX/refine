@@ -9,12 +9,12 @@ pub struct BoosterInfo {
     pub fit_id: FitId,
     pub slot: Option<SlotIndex>,
     pub enabled: bool,
-    pub side_effects: RMap<EffectId, SideEffectInfo>,
+    pub side_effects: std::collections::HashMap<EffectId, SideEffectInfo>,
 }
 impl BoosterInfo {
     pub(in crate::sol) fn from_booster_and_side_effects(
         sol_booster: &Booster,
-        side_effects: RMap<EffectId, SideEffectInfo>,
+        side_effects: std::collections::HashMap<EffectId, SideEffectInfo>,
     ) -> Self {
         Self {
             id: sol_booster.get_item_id(),

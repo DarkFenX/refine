@@ -11,7 +11,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol) fn make_booster_info(&self, booster: &Booster) -> BoosterInfo {
-        let mut side_effects = RMap::new();
+        let mut side_effects = std::collections::HashMap::new();
         if let Some(a_effect_datas) = booster.get_a_effect_datas() {
             for a_effect_id in a_effect_datas.keys() {
                 if let Some(a_effect) = self.uad.src.get_a_effect(a_effect_id) {

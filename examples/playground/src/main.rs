@@ -1,14 +1,20 @@
 #![allow(warnings, unused)]
 #![feature(core_intrinsics)]
 
-use std::{hash::BuildHasher, intrinsics::black_box, path::PathBuf, sync::Arc, thread::sleep, time::Duration};
-use std::hash::Hasher;
 use ahash::RandomState as ABuildHasher;
 use chrono::Utc;
 use itertools::Itertools;
 use nohash_hasher::BuildNoHashHasher;
 use rand::{Rng, SeedableRng};
 use rustc_hash::FxBuildHasher;
+use std::{
+    hash::{BuildHasher, Hasher},
+    intrinsics::black_box,
+    path::PathBuf,
+    sync::Arc,
+    thread::sleep,
+    time::Duration,
+};
 use tracing_subscriber::prelude::*;
 
 use rc::{
@@ -50,8 +56,8 @@ fn main() {
         "tq".to_string(),
     ));
     // test_hashers();
-    test_crusader(dh, ch);
-    // test_nphoon(dh, ch);
+    // test_crusader(dh, ch);
+    test_nphoon(dh, ch);
 }
 
 fn test_hashers() {
