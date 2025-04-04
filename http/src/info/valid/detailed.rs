@@ -1,8 +1,9 @@
 use crate::info::valid::details::{
-    HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
-    HValFighterSquadSizeFail, HValItemKindFail, HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail,
-    HValModuleStateFail, HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail,
-    HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
+    HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail,
+    HValDroneGroupFail, HValFighterSquadSizeFail, HValItemKindFail, HValItemVsShipKindFail, HValMaxGroupFail,
+    HValMaxTypeFail, HValModuleStateFail, HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValSecZoneFail,
+    HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail,
+    HValUnusableSlotFail,
 };
 
 #[derive(serde::Serialize)]
@@ -138,9 +139,8 @@ struct HValidInfoDetails {
     sec_zone_unonlineable: Option<HValSecZoneFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sec_zone_unactivable: Option<HValSecZoneFail>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    activation_blocked: Vec<rc::ItemId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    activation_blocked: Option<HValActivationBlockedFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     item_vs_ship_kind: Option<HValItemVsShipKindFail>,
 }
@@ -203,7 +203,7 @@ impl HValidInfoDetails {
             && self.sec_zone_active.is_none()
             && self.sec_zone_unonlineable.is_none()
             && self.sec_zone_unactivable.is_none()
-            && self.activation_blocked.is_empty()
+            && self.activation_blocked.is_none()
             && self.item_vs_ship_kind.is_none()
     }
 }
@@ -288,7 +288,7 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             sec_zone_active: core_val_result.sec_zone_active.as_ref().map(|v| v.into()),
             sec_zone_unonlineable: core_val_result.sec_zone_unonlineable.as_ref().map(|v| v.into()),
             sec_zone_unactivable: core_val_result.sec_zone_unactivable.as_ref().map(|v| v.into()),
-            activation_blocked: core_val_result.activation_blocked.iter().map(|v| v.item_id).collect(),
+            activation_blocked: core_val_result.activation_blocked.as_ref().map(|v| v.into()),
             item_vs_ship_kind: core_val_result.item_vs_ship_kind.as_ref().map(|v| v.into()),
         }
     }

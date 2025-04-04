@@ -64,7 +64,7 @@ pub struct ValResult {
     pub sec_zone_active: Option<ValSecZoneFail>,
     pub sec_zone_unonlineable: Option<ValSecZoneFail>,
     pub sec_zone_unactivable: Option<ValSecZoneFail>,
-    pub activation_blocked: Vec<ValActivationBlockedFail>,
+    pub activation_blocked: Option<ValActivationBlockedFail>,
     pub item_vs_ship_kind: Option<ValItemVsShipKindFail>,
 }
 impl ValResult {
@@ -127,7 +127,7 @@ impl ValResult {
             sec_zone_active: None,
             sec_zone_unonlineable: None,
             sec_zone_unactivable: None,
-            activation_blocked: Vec::new(),
+            activation_blocked: None,
             item_vs_ship_kind: None,
         }
     }
@@ -189,7 +189,7 @@ impl ValResult {
             && self.sec_zone_active.is_none()
             && self.sec_zone_unonlineable.is_none()
             && self.sec_zone_unactivable.is_none()
-            && self.activation_blocked.is_empty()
+            && self.activation_blocked.is_none()
             && self.item_vs_ship_kind.is_none()
     }
 }

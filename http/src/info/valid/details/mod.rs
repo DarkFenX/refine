@@ -1,3 +1,4 @@
+pub(in crate::info::valid) use activation_blocked::HValActivationBlockedFail;
 pub(in crate::info::valid) use capital_module::HValCapitalModFail;
 pub(in crate::info::valid) use charge_group::HValChargeGroupFail;
 pub(in crate::info::valid) use charge_size::HValChargeSizeFail;
@@ -21,6 +22,7 @@ pub(in crate::info::valid) use slot_index::HValSlotIndexFail;
 pub(in crate::info::valid) use unusable_resource::HValUnusableResFail;
 pub(in crate::info::valid) use unusable_slot::HValUnusableSlotFail;
 
+mod activation_blocked;
 mod capital_module;
 mod charge_group;
 mod charge_size;

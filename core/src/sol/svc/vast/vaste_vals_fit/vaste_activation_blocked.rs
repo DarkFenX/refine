@@ -11,7 +11,7 @@ use crate::{
 use super::shared::is_flag_set;
 
 pub struct ValActivationBlockedFail {
-    pub item_id: ItemId,
+    pub item_ids: std::collections::HashSet<ItemId>,
 }
 
 impl VastFitData {
@@ -32,11 +32,16 @@ impl VastFitData {
         kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
-    ) -> Vec<ValActivationBlockedFail> {
-        self.mods_active
+    ) -> Option<ValActivationBlockedFail> {
+        let item_ids = self
+            .mods_active
             .difference(kfs)
             .filter(|v| is_flag_set(uad, calc, v, &ac::attrs::ACTIVATION_BLOCKED))
-            .map(|v| ValActivationBlockedFail { item_id: *v })
-            .collect()
+            .copied()
+            .collect::<std::collections::HashSet<_>>();
+        if item_ids.is_empty() {
+            return None;
+        }
+        Some(ValActivationBlockedFail { item_ids })
     }
 }

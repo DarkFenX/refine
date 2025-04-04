@@ -35,7 +35,6 @@ impl Vast {
 // bandwidth, active drone count)
 #[derive(Clone)]
 pub(in crate::sol::svc::vast) struct VastFitData {
-    // Modules with "online" effect active
     pub(in crate::sol::svc::vast) mods_svcs_online: RSet<ItemId>,
     pub(in crate::sol::svc::vast) rigs_offline_calibration: RMap<ItemId, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) drones_volume: RMap<ItemId, ad::AAttrVal>,

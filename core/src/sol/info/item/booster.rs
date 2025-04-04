@@ -1,7 +1,4 @@
-use crate::{
-    sol::{EffectId, FitId, ItemId, ItemTypeId, SlotIndex, info::SideEffectInfo, uad::item::Booster},
-    util::RMap,
-};
+use crate::sol::{EffectId, FitId, ItemId, ItemTypeId, SlotIndex, info::SideEffectInfo, uad::item::Booster};
 
 pub struct BoosterInfo {
     pub id: ItemId,
