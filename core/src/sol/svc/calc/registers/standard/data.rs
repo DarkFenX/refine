@@ -7,29 +7,29 @@ use crate::{
             calc::{CtxModifier, LocationKind, RawModifier},
         },
     },
-    util::{HMapHSet, HSet},
+    util::{HMapHSet, HMapNSet, HSet, NMapHSet},
 };
 
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct StandardRegister {
     // Items which are holders of a location kind (like char, ship)
     // Map<(affectee fit ID, affectee location kind), affectee item IDs>
-    pub(super) affectee_root: HMapHSet<(FitId, LocationKind), ItemId>,
+    pub(super) affectee_root: HMapNSet<(FitId, LocationKind), ItemId>,
     // Items belonging to certain fit and location kind (e.g. char's implants, ship's modules)
     // Map<(affectee fit ID, affectee location kind), affectee item IDs>
-    pub(super) affectee_loc: HMapHSet<(FitId, LocationKind), ItemId>,
+    pub(super) affectee_loc: HMapNSet<(FitId, LocationKind), ItemId>,
     // Items belonging to certain fit, location kind and group
     // Map<(affectee fit ID, affectee location kind, affectee agroup ID), affectee item IDs>
-    pub(super) affectee_loc_grp: HMapHSet<(FitId, LocationKind, ad::AItemGrpId), ItemId>,
+    pub(super) affectee_loc_grp: HMapNSet<(FitId, LocationKind, ad::AItemGrpId), ItemId>,
     // Items belonging to certain fit and location kind, and having certain skill requirement
     // Map<(affectee fit ID, affectee location kind, affectee skillreq aitem ID), affectee item IDs>
-    pub(super) affectee_loc_srq: HMapHSet<(FitId, LocationKind, ad::AItemId), ItemId>,
+    pub(super) affectee_loc_srq: HMapNSet<(FitId, LocationKind, ad::AItemId), ItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Map<(affectee fit ID, affectee skillreq aitem ID), affectee item IDs>
-    pub(super) affectee_own_srq: HMapHSet<(FitId, ad::AItemId), ItemId>,
+    pub(super) affectee_own_srq: HMapNSet<(FitId, ad::AItemId), ItemId>,
     // Everything-buff-modifiable items which belong to certain fit
     // Map<affectee fit ID, affectee item IDs>
-    pub(super) affectee_buffable: HMapHSet<FitId, ItemId>,
+    pub(super) affectee_buffable: HMapNSet<FitId, ItemId>,
     // All non-projected raw modifiers tracked by register
     // Map<(affector item ID, affector aeffect ID), modifiers>
     pub(super) rmods_nonproj: HMapHSet<(ItemId, ad::AEffectId), RawModifier>,
@@ -38,13 +38,13 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
     pub(super) rmods_proj: HMapHSet<(ItemId, ad::AEffectId), RawModifier>,
     // Fleet modifiers on a per-fit basis
     // Map<affector fit ID, modifiers>
-    pub(super) rmods_fleet: HMapHSet<FitId, RawModifier>,
+    pub(super) rmods_fleet: NMapHSet<FitId, RawModifier>,
     // System-wide system effect modifiers
     pub(super) rmods_sw_system: HSet<RawModifier>,
     // System-wide buff modifiers
     pub(super) rmods_sw_buff: HSet<RawModifier>,
     // Fit-wide buff modifiers
-    pub(super) rmods_fw_buff: HMapHSet<FitId, RawModifier>,
+    pub(super) rmods_fw_buff: NMapHSet<FitId, RawModifier>,
     // Modifiers which rely on an item-attribute pair value
     // Map<attr spec, modifiers>
     pub(super) cmods_by_attr_spec: HMapHSet<AttrSpec, CtxModifier>,
@@ -76,18 +76,18 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
         Self {
-            affectee_root: HMapHSet::new(),
-            affectee_loc: HMapHSet::new(),
-            affectee_loc_grp: HMapHSet::new(),
-            affectee_loc_srq: HMapHSet::new(),
-            affectee_own_srq: HMapHSet::new(),
-            affectee_buffable: HMapHSet::new(),
+            affectee_root: HMapNSet::new(),
+            affectee_loc: HMapNSet::new(),
+            affectee_loc_grp: HMapNSet::new(),
+            affectee_loc_srq: HMapNSet::new(),
+            affectee_own_srq: HMapNSet::new(),
+            affectee_buffable: HMapNSet::new(),
             rmods_nonproj: HMapHSet::new(),
             rmods_proj: HMapHSet::new(),
-            rmods_fleet: HMapHSet::new(),
+            rmods_fleet: NMapHSet::new(),
             rmods_sw_system: HSet::new(),
             rmods_sw_buff: HSet::new(),
-            rmods_fw_buff: HMapHSet::new(),
+            rmods_fw_buff: NMapHSet::new(),
             cmods_by_attr_spec: HMapHSet::new(),
             cmods_direct: HMapHSet::new(),
             cmods_other: HMapHSet::new(),

@@ -1,6 +1,6 @@
 pub use map::HMap;
 pub(crate) use map_map::HMapHMap;
-pub(crate) use map_set::{HMapHSet, extend_vec_from_map_set_l1};
+pub(crate) use map_set::{HMapHSet, HMapNSet, NMapHSet, NMapNSet, extend_vec_from_map_set_l1};
 pub(crate) use map_vec::HMapVec;
 pub use set::HSet;
 

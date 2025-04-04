@@ -1,9 +1,13 @@
 use std::hash::{BuildHasher, Hash};
 
+use nohash_hasher::BuildNoHashHasher;
 use rustc_hash::FxBuildHasher;
 
 use super::{map::Map, set::Set};
 
+pub(crate) type NMapNSet<K, V> = MapSet<K, V, BuildNoHashHasher<K>, BuildNoHashHasher<V>>;
+pub(crate) type NMapHSet<K, V> = MapSet<K, V, BuildNoHashHasher<K>, FxBuildHasher>;
+pub(crate) type HMapNSet<K, V> = MapSet<K, V, FxBuildHasher, BuildNoHashHasher<V>>;
 pub(crate) type HMapHSet<K, V> = MapSet<K, V, FxBuildHasher, FxBuildHasher>;
 
 #[derive(Clone)]
