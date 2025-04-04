@@ -1,4 +1,4 @@
-use std::hash::Hash;
+use std::hash::{BuildHasher, Hash};
 
 use crate::{
     ad,
@@ -10,7 +10,7 @@ use crate::{
         },
         uad::{fit::Fits, item::Item},
     },
-    util::HMapHSet,
+    util::MapSet,
 };
 
 use super::ActiveLocations;
@@ -110,12 +110,16 @@ impl StandardRegister {
     }
 }
 
-fn filter_and_extend<K: Eq + Hash>(
+fn filter_and_extend<K, H1, H2>(
     vec: &mut Vec<CtxModifier>,
-    storage: &HMapHSet<K, CtxModifier>,
+    storage: &MapSet<K, CtxModifier, H1, H2>,
     key: &K,
     a_attr_id: &ad::AAttrId,
-) {
+) where
+    K: Eq + Hash,
+    H1: BuildHasher + Default,
+    H2: BuildHasher + Default,
+{
     vec.extend(
         storage
             .get(key)

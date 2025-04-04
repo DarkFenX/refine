@@ -1,4 +1,7 @@
-use std::{hash::Hash, sync::Arc};
+use std::{
+    hash::{BuildHasher, Hash},
+    sync::Arc,
+};
 
 pub trait Key {
     type Item;
@@ -35,10 +38,11 @@ impl Key for rc::ad::ABuff {
     }
 }
 
-pub(crate) fn move_map_to_arcmap<T, U>(map: rc::util::HMap<U, T>, arcmap: &mut rc::util::HMap<U, Arc<T>>)
+pub(crate) fn move_map_to_arcmap<K, V, H>(map: rc::util::Map<V, K, H>, arcmap: &mut rc::util::Map<V, Arc<K>, H>)
 where
-    T: Key<Item = U>,
-    U: Eq + PartialEq + Hash,
+    K: Key<Item = V>,
+    V: Eq + PartialEq + Hash,
+    H: BuildHasher + Default,
 {
     arcmap.clear();
     arcmap.shrink_to_fit();

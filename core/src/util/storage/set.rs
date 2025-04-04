@@ -1,10 +1,12 @@
 use std::{
-    collections::HashSet,
+    collections::{HashSet},
     hash::{BuildHasher, Hash},
 };
 
+use nohash_hasher::BuildNoHashHasher;
 use rustc_hash::FxBuildHasher;
 
+pub type NSet<V> = Set<V, BuildNoHashHasher<V>>;
 pub type HSet<V> = Set<V, FxBuildHasher>;
 
 #[derive(Clone)]
@@ -38,11 +40,21 @@ where
     pub fn len(&self) -> usize {
         self.data.len()
     }
-    pub fn difference<'a>(&'a self, other: &'a Set<V, H>) -> impl Iterator<Item = &'a V> {
-        self.data.difference(&other.data)
+    pub fn difference<'a, H2>(&'a self, other: &'a Set<V, H2>) -> impl Iterator<Item = &'a V>
+    where
+        H2: BuildHasher + Default,
+    {
+        self.iter().filter(|v| !other.contains(v))
     }
-    pub fn is_subset(&self, other: &Set<V, H>) -> bool {
-        self.data.is_subset(&other.data)
+    pub fn is_subset<H2>(&self, other: &Set<V, H2>) -> bool
+    where
+        H2: BuildHasher + Default,
+    {
+        if self.len() <= other.len() {
+            self.iter().all(|v| other.contains(v))
+        } else {
+            false
+        }
     }
     // Modification methods
     pub fn insert(&mut self, val: V) -> bool {

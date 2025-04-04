@@ -4,10 +4,12 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
+use nohash_hasher::BuildNoHashHasher;
 use rustc_hash::FxBuildHasher;
 
 use super::set::Set;
 
+pub type NMap<K, V> = Map<K, V, BuildNoHashHasher<K>>;
 pub type HMap<K, V> = Map<K, V, FxBuildHasher>;
 
 #[derive(Clone)]

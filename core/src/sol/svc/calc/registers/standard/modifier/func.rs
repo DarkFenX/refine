@@ -1,19 +1,23 @@
-use std::hash::Hash;
+use std::hash::{BuildHasher, Hash};
 
 use crate::{
     sol::svc::{
         AttrSpec,
         calc::{Context, CtxModifier},
     },
-    util::HMapHSet,
+    util::{HMapHSet, MapSet},
 };
 
-pub(super) fn add_ctx_modifier<K: Eq + Hash>(
-    main_storage: &mut HMapHSet<K, CtxModifier>,
+pub(super) fn add_ctx_modifier<K, H1, H2>(
+    main_storage: &mut MapSet<K, CtxModifier, H1, H2>,
     key: K,
     ctx_modifier: CtxModifier,
     attr_spec_storage: &mut HMapHSet<AttrSpec, CtxModifier>,
-) {
+) where
+    K: Eq + Hash,
+    H1: BuildHasher + Default,
+    H2: BuildHasher + Default,
+{
     main_storage.add_entry(key, ctx_modifier);
     if let Some(affector_a_attr_id) = ctx_modifier.raw.get_affector_a_attr_id() {
         let affector_spec = AttrSpec {
@@ -46,12 +50,16 @@ pub(super) fn add_ctx_modifier<K: Eq + Hash>(
     }
 }
 
-pub(super) fn remove_ctx_modifier<K: Eq + Hash>(
-    main_storage: &mut HMapHSet<K, CtxModifier>,
+pub(super) fn remove_ctx_modifier<K, H1, H2>(
+    main_storage: &mut MapSet<K, CtxModifier, H1, H2>,
     key: &K,
     ctx_modifier: &CtxModifier,
     attr_spec_storage: &mut HMapHSet<AttrSpec, CtxModifier>,
-) {
+) where
+    K: Eq + Hash,
+    H1: BuildHasher + Default,
+    H2: BuildHasher + Default,
+{
     main_storage.remove_entry(key, ctx_modifier);
     if let Some(affector_a_attr_id) = ctx_modifier.raw.get_affector_a_attr_id() {
         let affector_spec = AttrSpec {
