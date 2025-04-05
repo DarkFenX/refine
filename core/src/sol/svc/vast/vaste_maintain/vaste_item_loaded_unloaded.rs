@@ -7,7 +7,9 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, FitId, ItemId, ModRack,
-        svc::vast::{ValCache, ValFighterSquadSizeFail, ValItemKindFail, ValShipKind, Vast, VastFitData, VastSkillReq},
+        svc::vast::{
+            ValCache, ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, Vast, VastFitData, VastSkillReq,
+        },
         uad::{
             Uad,
             item::{Item, Module, ShipKind},
@@ -116,8 +118,7 @@ impl Vast {
                 if count.current > count.max {
                     fit_data.fighter_squad_size.insert(
                         item_id,
-                        ValFighterSquadSizeFail {
-                            item_id,
+                        ValFighterSquadSizeFighterInfo {
                             size: count.current,
                             max_size: count.max,
                         },
@@ -613,8 +614,7 @@ fn item_kind_add(
     if item_kind != Some(expected_kind) {
         fit_data.item_kind.insert(
             item_id,
-            ValItemKindFail {
-                item_id,
+            ValItemKindItemInfo {
                 kind: item_kind,
                 expected_kind,
             },

@@ -2,20 +2,19 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
+#[serde(transparent)]
 pub(in crate::info::valid) struct HValItemKindFail {
-    #[serde(flatten)]
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
-    data: HashMap<rc::ItemId, HValItemKindItemInfo>,
+    item_kinds: HashMap<rc::ItemId, HValItemKindItemInfo>,
 }
-impl HValItemKindFail {
-    pub(in crate::info::valid) fn is_empty(&self) -> bool {
-        self.data.is_empty()
-    }
-}
-impl From<&Vec<rc::val::ValItemKindFail>> for HValItemKindFail {
-    fn from(core_val_fails: &Vec<rc::val::ValItemKindFail>) -> Self {
+impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
+    fn from(core_val_fail: &rc::val::ValItemKindFail) -> Self {
         Self {
-            data: core_val_fails.iter().map(|v| (v.item_id, v.into())).collect(),
+            item_kinds: core_val_fail
+                .item_kinds
+                .iter()
+                .map(|(item_id, core_item_info)| (*item_id, core_item_info.into()))
+                .collect(),
         }
     }
 }
@@ -26,11 +25,11 @@ pub(in crate::info::valid) struct HValItemKindItemInfo {
     kind: Option<HItemKind>,
     expected_kind: HItemKind,
 }
-impl From<&rc::val::ValItemKindFail> for HValItemKindItemInfo {
-    fn from(core_val_fail: &rc::val::ValItemKindFail) -> Self {
+impl From<&rc::val::ValItemKindItemInfo> for HValItemKindItemInfo {
+    fn from(core_val_item_info: &rc::val::ValItemKindItemInfo) -> Self {
         Self {
-            kind: core_val_fail.kind.map(|v| (&v).into()),
-            expected_kind: (&core_val_fail.expected_kind).into(),
+            kind: core_val_item_info.kind.map(|v| (&v).into()),
+            expected_kind: (&core_val_item_info.expected_kind).into(),
         }
     }
 }

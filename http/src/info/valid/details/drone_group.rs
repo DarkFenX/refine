@@ -11,7 +11,7 @@ impl From<&rc::val::ValDroneGroupFail> for HValDroneGroupFail {
     fn from(core_val_fail: &rc::val::ValDroneGroupFail) -> Self {
         Self {
             allowed_group_ids: core_val_fail.allowed_group_ids.clone(),
-            drone_groups: core_val_fail.items.iter().map(|v| (v.item_id, v.group_id)).collect(),
+            drone_groups: core_val_fail.drone_groups.clone(),
         }
     }
 }

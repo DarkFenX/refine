@@ -1,7 +1,7 @@
 use crate::{
     AttrVal,
     sol::{
-        svc::vast::{ValFighterSquadSizeFail, Vast, VastSkillReq},
+        svc::vast::{ValFighterSquadSizeFighterInfo, Vast, VastSkillReq},
         uad::{
             Uad,
             item::{Fighter, Skill},
@@ -51,8 +51,7 @@ impl Vast {
         match count.current > count.max {
             true => fit_data.fighter_squad_size.insert(
                 fighter.get_item_id(),
-                ValFighterSquadSizeFail {
-                    item_id: fighter.get_item_id(),
+                ValFighterSquadSizeFighterInfo {
                     size: count.current,
                     max_size: count.max,
                 },

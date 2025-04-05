@@ -13,7 +13,7 @@ impl From<&rc::val::ValChargeGroupFail> for HValChargeGroupFail {
             charges: core_val_fail
                 .charges
                 .iter()
-                .map(|(charge_item_id, charge_info)| (*charge_item_id, charge_info.into()))
+                .map(|(charge_item_id, core_charge_info)| (*charge_item_id, core_charge_info.into()))
                 .collect(),
         }
     }

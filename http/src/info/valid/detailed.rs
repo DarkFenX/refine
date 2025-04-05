@@ -99,12 +99,12 @@ struct HValidInfoDetails {
     not_loaded_item: Vec<rc::ItemId>,
     #[serde(skip_serializing_if = "HValModuleStateFail::is_empty")]
     module_state: HValModuleStateFail,
-    #[serde(skip_serializing_if = "HValItemKindFail::is_empty")]
-    item_kind: HValItemKindFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    item_kind: Option<HValItemKindFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     drone_group: Option<HValDroneGroupFail>,
-    #[serde(skip_serializing_if = "HValFighterSquadSizeFail::is_empty")]
-    fighter_squad_size: HValFighterSquadSizeFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fighter_squad_size: Option<HValFighterSquadSizeFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_drone_slot: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -183,9 +183,9 @@ impl HValidInfoDetails {
             && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
-            && self.item_kind.is_empty()
+            && self.item_kind.is_none()
             && self.drone_group.is_none()
-            && self.fighter_squad_size.is_empty()
+            && self.fighter_squad_size.is_none()
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
             && self.unlaunchable_fighter.is_none()
@@ -259,9 +259,9 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             capital_module: core_val_result.capital_module.as_ref().map(|v| v.into()),
             not_loaded_item: core_val_result.not_loaded_item.iter().map(|v| v.item_id).collect(),
             module_state: (&core_val_result.module_state).into(),
-            item_kind: (&core_val_result.item_kind).into(),
+            item_kind: core_val_result.item_kind.as_ref().map(|v| v.into()),
             drone_group: core_val_result.drone_group.as_ref().map(|v| v.into()),
-            fighter_squad_size: (&core_val_result.fighter_squad_size).into(),
+            fighter_squad_size: core_val_result.fighter_squad_size.as_ref().map(|v| v.into()),
             unlaunchable_drone_slot: core_val_result.unlaunchable_drone_slot.as_ref().map(|v| v.into()),
             unlaunchable_drone_bandwidth: core_val_result.unlaunchable_drone_bandwidth.as_ref().map(|v| v.into()),
             unlaunchable_fighter: core_val_result.unlaunchable_fighter.as_ref().map(|v| v.into()),

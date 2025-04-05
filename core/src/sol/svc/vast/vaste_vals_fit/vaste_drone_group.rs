@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use std::collections::HashMap;
 
 use crate::{
     sol::{ItemGrpId, ItemId, svc::vast::VastFitData},
@@ -6,13 +6,10 @@ use crate::{
 };
 
 pub struct ValDroneGroupFail {
+    /// Drone item groups allowed by the ship.
     pub allowed_group_ids: Vec<ItemGrpId>,
-    pub items: Vec<ValDroneGroupItemInfo>,
-}
-
-pub struct ValDroneGroupItemInfo {
-    pub item_id: ItemId,
-    pub group_id: ItemGrpId,
+    /// Drones breaking the validation and their groups.
+    pub drone_groups: HashMap<ItemId, ItemGrpId>,
 }
 
 impl VastFitData {
@@ -31,21 +28,18 @@ impl VastFitData {
         if self.drone_groups.is_empty() {
             return None;
         }
-        let items = self
+        let drone_groups: HashMap<_, _> = self
             .drone_groups
             .iter()
             .filter(|(k, _)| !kfs.contains(k))
-            .map(|(k, v)| ValDroneGroupItemInfo {
-                item_id: *k,
-                group_id: *v,
-            })
-            .collect_vec();
-        if items.is_empty() {
+            .map(|(k, v)| (*k, *v))
+            .collect();
+        if drone_groups.is_empty() {
             return None;
         }
         Some(ValDroneGroupFail {
             allowed_group_ids: self.drone_group_limit.clone(),
-            items,
+            drone_groups,
         })
     }
 }

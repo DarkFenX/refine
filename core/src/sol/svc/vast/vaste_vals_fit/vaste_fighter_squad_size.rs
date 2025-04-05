@@ -1,12 +1,20 @@
+use std::collections::HashMap;
+
 use crate::{
     sol::{Count, ItemId, svc::vast::VastFitData},
     util::RSet,
 };
 
-#[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFail {
-    pub item_id: ItemId,
+    /// Map between fighter squad item IDs and info about failed validation.
+    pub fighters: HashMap<ItemId, ValFighterSquadSizeFighterInfo>,
+}
+
+#[derive(Copy, Clone)]
+pub struct ValFighterSquadSizeFighterInfo {
+    /// Current squad size.
     pub size: Count,
+    /// Max allowed squad size.
     pub max_size: Count,
 }
 
@@ -22,11 +30,16 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_fighter_squad_size_verbose(
         &mut self,
         kfs: &RSet<ItemId>,
-    ) -> Vec<ValFighterSquadSizeFail> {
-        self.fighter_squad_size
-            .values()
-            .filter(|v| !kfs.contains(&v.item_id))
-            .copied()
-            .collect()
+    ) -> Option<ValFighterSquadSizeFail> {
+        let fighters: HashMap<_, _> = self
+            .fighter_squad_size
+            .iter()
+            .filter(|(k, v)| !kfs.contains(k))
+            .map(|(k, v)| (*k, *v))
+            .collect();
+        if fighters.is_empty() {
+            return None;
+        }
+        Some(ValFighterSquadSizeFail { fighters })
     }
 }

@@ -44,9 +44,9 @@ pub struct ValResult {
     pub capital_module: Option<ValCapitalModFail>,
     pub not_loaded_item: Vec<ValNotLoadedItemFail>,
     pub module_state: Vec<ValModuleStateFail>,
-    pub item_kind: Vec<ValItemKindFail>,
+    pub item_kind: Option<ValItemKindFail>,
     pub drone_group: Option<ValDroneGroupFail>,
-    pub fighter_squad_size: Vec<ValFighterSquadSizeFail>,
+    pub fighter_squad_size: Option<ValFighterSquadSizeFail>,
     pub unlaunchable_drone_slot: Option<ValUnusableSlotFail>,
     pub unlaunchable_drone_bandwidth: Option<ValUnusableResFail>,
     pub unlaunchable_fighter: Option<ValUnusableSlotFail>,
@@ -107,9 +107,9 @@ impl ValResult {
             capital_module: None,
             not_loaded_item: Vec::new(),
             module_state: Vec::new(),
-            item_kind: Vec::new(),
+            item_kind: None,
             drone_group: None,
-            fighter_squad_size: Vec::new(),
+            fighter_squad_size: None,
             unlaunchable_drone_slot: None,
             unlaunchable_drone_bandwidth: None,
             unlaunchable_fighter: None,
@@ -169,9 +169,9 @@ impl ValResult {
             && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
-            && self.item_kind.is_empty()
+            && self.item_kind.is_none()
             && self.drone_group.is_none()
-            && self.fighter_squad_size.is_empty()
+            && self.fighter_squad_size.is_none()
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
             && self.unlaunchable_fighter.is_none()

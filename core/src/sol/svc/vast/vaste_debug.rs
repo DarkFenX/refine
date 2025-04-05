@@ -168,16 +168,14 @@ impl VastFitData {
             check_item_id(uad, item_id, true)?;
             check_item_id(uad, &item_data.item_id, true)?;
         }
-        for (item_id, item_data) in self.item_kind.iter() {
+        for item_id in self.item_kind.keys() {
             check_item_id(uad, item_id, true)?;
-            check_item_id(uad, &item_data.item_id, true)?;
         }
         for item_id in self.drone_groups.keys() {
             check_item_id(uad, item_id, true)?;
         }
-        for (item_id, item_data) in self.fighter_squad_size.iter() {
+        for item_id in self.fighter_squad_size.keys() {
             check_item_id(uad, item_id, true)?;
-            check_item_id(uad, &item_data.item_id, true)?;
         }
         for item_id in self.overload_td_lvl.keys() {
             check_item_id(uad, item_id, true)?;
