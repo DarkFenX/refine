@@ -209,86 +209,72 @@ impl HValidInfoDetails {
 impl From<&rc::val::ValResult> for HValidInfoDetails {
     fn from(core_val_result: &rc::val::ValResult) -> Self {
         Self {
-            cpu: core_val_result.cpu.as_ref().map(|v| v.into()),
-            powergrid: core_val_result.powergrid.as_ref().map(|v| v.into()),
-            calibration: core_val_result.calibration.as_ref().map(|v| v.into()),
-            drone_bay_volume: core_val_result.drone_bay_volume.as_ref().map(|v| v.into()),
-            drone_bandwidth: core_val_result.drone_bandwidth.as_ref().map(|v| v.into()),
-            fighter_bay_volume: core_val_result.fighter_bay_volume.as_ref().map(|v| v.into()),
-            rig_slot_count: core_val_result.rig_slot_count.as_ref().map(|v| v.into()),
-            service_slot_count: core_val_result.service_slot_count.as_ref().map(|v| v.into()),
-            subsystem_slot_count: core_val_result.subsystem_slot_count.as_ref().map(|v| v.into()),
-            launched_drone_count: core_val_result.launched_drone_count.as_ref().map(|v| v.into()),
-            launched_fighter_count: core_val_result.launched_fighter_count.as_ref().map(|v| v.into()),
-            launched_support_fighter_count: core_val_result
-                .launched_support_fighter_count
-                .as_ref()
-                .map(|v| v.into()),
-            launched_light_fighter_count: core_val_result.launched_light_fighter_count.as_ref().map(|v| v.into()),
-            launched_heavy_fighter_count: core_val_result.launched_heavy_fighter_count.as_ref().map(|v| v.into()),
-            launched_standup_support_fighter_count: core_val_result
-                .launched_standup_support_fighter_count
-                .as_ref()
-                .map(|v| v.into()),
-            launched_standup_light_fighter_count: core_val_result
-                .launched_standup_light_fighter_count
-                .as_ref()
-                .map(|v| v.into()),
-            launched_standup_heavy_fighter_count: core_val_result
-                .launched_standup_heavy_fighter_count
-                .as_ref()
-                .map(|v| v.into()),
-            turret_slot_count: core_val_result.turret_slot_count.as_ref().map(|v| v.into()),
-            launcher_slot_count: core_val_result.launcher_slot_count.as_ref().map(|v| v.into()),
-            high_slot_count: core_val_result.high_slot_count.as_ref().map(|v| v.into()),
-            mid_slot_count: core_val_result.mid_slot_count.as_ref().map(|v| v.into()),
-            low_slot_count: core_val_result.low_slot_count.as_ref().map(|v| v.into()),
-            implant_slot_index: core_val_result.implant_slot_index.as_ref().map(|v| v.into()),
-            booster_slot_index: core_val_result.booster_slot_index.as_ref().map(|v| v.into()),
-            subsystem_slot_index: core_val_result.subsystem_slot_index.as_ref().map(|v| v.into()),
-            ship_limit: core_val_result.ship_limit.as_ref().map(|v| v.into()),
-            max_group_fitted: core_val_result.max_group_fitted.as_ref().map(|v| v.into()),
-            max_group_online: core_val_result.max_group_online.as_ref().map(|v| v.into()),
-            max_group_active: core_val_result.max_group_active.as_ref().map(|v| v.into()),
-            rig_size: core_val_result.rig_size.as_ref().map(|v| v.into()),
-            skill_reqs: core_val_result.skill_reqs.as_ref().map(|v| v.into()),
-            charge_group: core_val_result.charge_group.as_ref().map(|v| v.into()),
-            charge_size: core_val_result.charge_size.as_ref().map(|v| v.into()),
-            charge_volume: core_val_result.charge_volume.as_ref().map(|v| v.into()),
-            capital_module: core_val_result.capital_module.as_ref().map(|v| v.into()),
-            not_loaded_item: core_val_result.not_loaded_item.as_ref().map(|v| v.into()),
-            module_state: core_val_result.module_state.as_ref().map(|v| v.into()),
-            item_kind: core_val_result.item_kind.as_ref().map(|v| v.into()),
-            drone_group: core_val_result.drone_group.as_ref().map(|v| v.into()),
-            fighter_squad_size: core_val_result.fighter_squad_size.as_ref().map(|v| v.into()),
-            unlaunchable_drone_slot: core_val_result.unlaunchable_drone_slot.as_ref().map(|v| v.into()),
-            unlaunchable_drone_bandwidth: core_val_result.unlaunchable_drone_bandwidth.as_ref().map(|v| v.into()),
-            unlaunchable_fighter: core_val_result.unlaunchable_fighter.as_ref().map(|v| v.into()),
-            unlaunchable_support_fighter: core_val_result.unlaunchable_support_fighter.as_ref().map(|v| v.into()),
-            unlaunchable_light_fighter: core_val_result.unlaunchable_light_fighter.as_ref().map(|v| v.into()),
-            unlaunchable_heavy_fighter: core_val_result.unlaunchable_heavy_fighter.as_ref().map(|v| v.into()),
-            unlaunchable_standup_support_fighter: core_val_result
-                .unlaunchable_standup_support_fighter
-                .as_ref()
-                .map(|v| v.into()),
-            unlaunchable_standup_light_fighter: core_val_result
-                .unlaunchable_standup_light_fighter
-                .as_ref()
-                .map(|v| v.into()),
-            unlaunchable_standup_heavy_fighter: core_val_result
-                .unlaunchable_standup_heavy_fighter
-                .as_ref()
-                .map(|v| v.into()),
-            ship_stance: core_val_result.ship_stance.as_ref().map(|v| v.into()),
-            overload_skill: core_val_result.overload_skill.as_ref().map(|v| v.into()),
-            max_type_fitted: core_val_result.max_type_fitted.as_ref().map(|v| v.into()),
-            sec_zone_fitted: core_val_result.sec_zone_fitted.as_ref().map(|v| v.into()),
-            sec_zone_online: core_val_result.sec_zone_online.as_ref().map(|v| v.into()),
-            sec_zone_active: core_val_result.sec_zone_active.as_ref().map(|v| v.into()),
-            sec_zone_unonlineable: core_val_result.sec_zone_unonlineable.as_ref().map(|v| v.into()),
-            sec_zone_unactivable: core_val_result.sec_zone_unactivable.as_ref().map(|v| v.into()),
-            activation_blocked: core_val_result.activation_blocked.as_ref().map(|v| v.into()),
-            item_vs_ship_kind: core_val_result.item_vs_ship_kind.as_ref().map(|v| v.into()),
+            cpu: conv(&core_val_result.cpu),
+            powergrid: conv(&core_val_result.powergrid),
+            calibration: conv(&core_val_result.calibration),
+            drone_bay_volume: conv(&core_val_result.drone_bay_volume),
+            drone_bandwidth: conv(&core_val_result.drone_bandwidth),
+            fighter_bay_volume: conv(&core_val_result.fighter_bay_volume),
+            rig_slot_count: conv(&core_val_result.rig_slot_count),
+            service_slot_count: conv(&core_val_result.service_slot_count),
+            subsystem_slot_count: conv(&core_val_result.subsystem_slot_count),
+            launched_drone_count: conv(&core_val_result.launched_drone_count),
+            launched_fighter_count: conv(&core_val_result.launched_fighter_count),
+            launched_support_fighter_count: conv(&core_val_result.launched_support_fighter_count),
+            launched_light_fighter_count: conv(&core_val_result.launched_light_fighter_count),
+            launched_heavy_fighter_count: conv(&core_val_result.launched_heavy_fighter_count),
+            launched_standup_support_fighter_count: conv(&core_val_result.launched_standup_support_fighter_count),
+            launched_standup_light_fighter_count: conv(&core_val_result.launched_standup_light_fighter_count),
+            launched_standup_heavy_fighter_count: conv(&core_val_result.launched_standup_heavy_fighter_count),
+            turret_slot_count: conv(&core_val_result.turret_slot_count),
+            launcher_slot_count: conv(&core_val_result.launcher_slot_count),
+            high_slot_count: conv(&core_val_result.high_slot_count),
+            mid_slot_count: conv(&core_val_result.mid_slot_count),
+            low_slot_count: conv(&core_val_result.low_slot_count),
+            implant_slot_index: conv(&core_val_result.implant_slot_index),
+            booster_slot_index: conv(&core_val_result.booster_slot_index),
+            subsystem_slot_index: conv(&core_val_result.subsystem_slot_index),
+            ship_limit: conv(&core_val_result.ship_limit),
+            max_group_fitted: conv(&core_val_result.max_group_fitted),
+            max_group_online: conv(&core_val_result.max_group_online),
+            max_group_active: conv(&core_val_result.max_group_active),
+            rig_size: conv(&core_val_result.rig_size),
+            skill_reqs: conv(&core_val_result.skill_reqs),
+            charge_group: conv(&core_val_result.charge_group),
+            charge_size: conv(&core_val_result.charge_size),
+            charge_volume: conv(&core_val_result.charge_volume),
+            capital_module: conv(&core_val_result.capital_module),
+            not_loaded_item: conv(&core_val_result.not_loaded_item),
+            module_state: conv(&core_val_result.module_state),
+            item_kind: conv(&core_val_result.item_kind),
+            drone_group: conv(&core_val_result.drone_group),
+            fighter_squad_size: conv(&core_val_result.fighter_squad_size),
+            unlaunchable_drone_slot: conv(&core_val_result.unlaunchable_drone_slot),
+            unlaunchable_drone_bandwidth: conv(&core_val_result.unlaunchable_drone_bandwidth),
+            unlaunchable_fighter: conv(&core_val_result.unlaunchable_fighter),
+            unlaunchable_support_fighter: conv(&core_val_result.unlaunchable_support_fighter),
+            unlaunchable_light_fighter: conv(&core_val_result.unlaunchable_light_fighter),
+            unlaunchable_heavy_fighter: conv(&core_val_result.unlaunchable_heavy_fighter),
+            unlaunchable_standup_support_fighter: conv(&core_val_result.unlaunchable_standup_support_fighter),
+            unlaunchable_standup_light_fighter: conv(&core_val_result.unlaunchable_standup_light_fighter),
+            unlaunchable_standup_heavy_fighter: conv(&core_val_result.unlaunchable_standup_heavy_fighter),
+            ship_stance: conv(&core_val_result.ship_stance),
+            overload_skill: conv(&core_val_result.overload_skill),
+            max_type_fitted: conv(&core_val_result.max_type_fitted),
+            sec_zone_fitted: conv(&core_val_result.sec_zone_fitted),
+            sec_zone_online: conv(&core_val_result.sec_zone_online),
+            sec_zone_active: conv(&core_val_result.sec_zone_active),
+            sec_zone_unonlineable: conv(&core_val_result.sec_zone_unonlineable),
+            sec_zone_unactivable: conv(&core_val_result.sec_zone_unactivable),
+            activation_blocked: conv(&core_val_result.activation_blocked),
+            item_vs_ship_kind: conv(&core_val_result.item_vs_ship_kind),
         }
     }
+}
+
+fn conv<T, U>(core_val: &Option<T>) -> Option<U>
+where
+    U: for<'a> From<&'a T>,
+{
+    core_val.as_ref().map(|v| v.into())
 }
