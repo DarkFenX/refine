@@ -3,8 +3,7 @@ pub use crate::sol::svc::vast::{
     ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValFighterSquadSizeFail,
     ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemVsShipKindFail, ValMaxGroupFail,
     ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo,
-    ValNotLoadedItemFail, ValOption, ValOptions, ValOverloadSkillFail, ValOverloadSkillItemInfo, ValResFail,
-    ValResItemInfo, ValResult, ValRigSizeFail, ValRigSizeItemInfo, ValSecZoneFail, ValSecZoneItemInfo, ValShipKind,
-    ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail,
-    ValSrqSkillInfo, ValUnusableResFail, ValUnusableResItemInfo, ValUnusableSlotFail,
+    ValNotLoadedItemFail, ValOption, ValOptions, ValOverloadSkillFail, ValResFail, ValResult, ValRigSizeFail,
+    ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail,
+    ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };

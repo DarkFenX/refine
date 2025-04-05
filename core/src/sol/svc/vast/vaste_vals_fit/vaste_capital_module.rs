@@ -43,13 +43,13 @@ impl VastFitData {
             .filter(|(k, _)| !kfs.contains(k))
             .map(|(k, v)| (*k, *v))
             .collect();
-        if items.is_empty() {
-            return None;
+        match items.is_empty() {
+            true => None,
+            false => Some(ValCapitalModFail {
+                max_subcap_volume: ac::extras::MAX_SUBCAP_MODULE_VOLUME,
+                module_volumes: items,
+            }),
         }
-        Some(ValCapitalModFail {
-            max_subcap_volume: ac::extras::MAX_SUBCAP_MODULE_VOLUME,
-            module_volumes: items,
-        })
     }
 }
 

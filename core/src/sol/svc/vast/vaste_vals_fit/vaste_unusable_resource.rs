@@ -1,4 +1,5 @@
-use itertools::Itertools;
+use std::collections::HashMap;
+
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
@@ -14,13 +15,10 @@ use crate::{
 use super::shared::get_max_resource;
 
 pub struct ValUnusableResFail {
+    /// Max available resource (e.g. amount of CPU produced by ship).
     pub max: Option<AttrVal>,
-    pub users: Vec<ValUnusableResItemInfo>,
-}
-
-pub struct ValUnusableResItemInfo {
-    pub item_id: ItemId,
-    pub used: AttrVal,
+    /// Map with consumer item IDs and amount they consume.
+    pub users: HashMap<ItemId, AttrVal>,
 }
 
 impl VastFitData {
@@ -56,18 +54,15 @@ impl VastFitData {
         }
         let max = get_max_resource(uad, calc, &fit.ship, &ac::attrs::DRONE_BANDWIDTH);
         let effective_max = max.unwrap_or(OF(0.0));
-        let users = self
+        let users: HashMap<_, _> = self
             .drones_bandwidth
             .iter()
             .filter(|(item_id, item_use)| **item_use > effective_max && !kfs.contains(item_id))
-            .map(|(&item_id, &item_use)| ValUnusableResItemInfo {
-                item_id,
-                used: item_use,
-            })
-            .collect_vec();
-        if users.is_empty() {
-            return None;
+            .map(|(item_id, item_use)| (*item_id, *item_use))
+            .collect();
+        match users.is_empty() {
+            true => None,
+            false => Some(ValUnusableResFail { max, users }),
         }
-        Some(ValUnusableResFail { max, users })
     }
 }

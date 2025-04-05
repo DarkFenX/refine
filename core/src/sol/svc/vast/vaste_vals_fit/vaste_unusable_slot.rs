@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     ac, ad,
     sol::{
@@ -13,7 +11,9 @@ use crate::{
 use super::shared::get_max_slots;
 
 pub struct ValUnusableSlotFail {
+    /// How many slots available (when this validation fails, it's either None or 0).
     pub max: Option<Count>,
+    /// IDs of items which would attempt to take those slots if you used them.
     pub users: Vec<ItemId>,
 }
 
@@ -296,9 +296,9 @@ fn validate_verbose(
     if max.unwrap_or(0) > 0 {
         return None;
     }
-    let users = users.difference(kfs).copied().collect_vec();
-    if users.is_empty() {
-        return None;
+    let users: Vec<_> = users.difference(kfs).copied().collect();
+    match users.is_empty() {
+        true => None,
+        false => Some(ValUnusableSlotFail { max, users }),
     }
-    Some(ValUnusableSlotFail { max, users })
 }

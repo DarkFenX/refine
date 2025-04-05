@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     ac, ad,
     sol::{AttrVal, ItemId, svc::vast::VastFitData, uad::item::Ship},
@@ -5,13 +7,10 @@ use crate::{
 };
 
 pub struct ValRigSizeFail {
+    /// Rig size compatible with the ship.
     pub allowed_size: AttrVal,
-    pub items: Vec<ValRigSizeItemInfo>,
-}
-
-pub struct ValRigSizeItemInfo {
-    pub item_id: ItemId,
-    pub rig_size: Option<AttrVal>,
+    /// Sizes of incompatible rigs.
+    pub rig_sizes: HashMap<ItemId, Option<AttrVal>>,
 }
 
 impl VastFitData {
@@ -35,20 +34,17 @@ impl VastFitData {
         ship: Option<&Ship>,
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
-        let mut mismatches = Vec::new();
+        let mut rig_sizes = HashMap::new();
         for (item_id, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) && !kfs.contains(item_id) {
-                mismatches.push(ValRigSizeItemInfo {
-                    item_id: *item_id,
-                    rig_size,
-                })
+                rig_sizes.insert(*item_id, rig_size);
             }
         }
-        match mismatches.is_empty() {
+        match rig_sizes.is_empty() {
             true => None,
             false => Some(ValRigSizeFail {
                 allowed_size,
-                items: mismatches,
+                rig_sizes,
             }),
         }
     }

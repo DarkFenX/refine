@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
@@ -13,14 +15,12 @@ use crate::{
 use super::shared::get_max_resource;
 
 pub struct ValResFail {
+    /// How much resource is used by all of its consumers.
     pub used: AttrVal,
+    /// Max available resource (e.g. amount of CPU produced by ship).
     pub max: Option<AttrVal>,
-    pub users: Vec<ValResItemInfo>,
-}
-
-pub struct ValResItemInfo {
-    pub item_id: ItemId,
-    pub used: AttrVal,
+    /// Map between consumer item IDs and amount consumed.
+    pub users: HashMap<ItemId, AttrVal>,
 }
 
 impl VastFitData {
@@ -284,7 +284,7 @@ fn validate_verbose_fitting<'a>(
     max_a_attr_id: &ad::AAttrId,
 ) -> Option<ValResFail> {
     let mut total_use = OF(0.0);
-    let mut users = Vec::with_capacity(item_ids.len());
+    let mut users = HashMap::with_capacity(item_ids.len());
     for item_id in item_ids {
         let item_use = match calc.get_item_attr_val_extra(uad, item_id, use_a_attr_id) {
             Some(item_use) => item_use,
@@ -292,10 +292,7 @@ fn validate_verbose_fitting<'a>(
         };
         total_use += item_use;
         if item_use > OF(0.0) && !kfs.contains(item_id) {
-            users.push(ValResItemInfo {
-                item_id: *item_id,
-                used: item_use,
-            });
+            users.insert(*item_id, item_use);
         }
     }
     if users.is_empty() {
@@ -321,14 +318,11 @@ fn validate_verbose_other<'a>(
     max_a_attr_id: &ad::AAttrId,
 ) -> Option<ValResFail> {
     let mut total_use = OF(0.0);
-    let mut users = Vec::with_capacity(items.len());
+    let mut users = HashMap::with_capacity(items.len());
     for (item_id, &item_use) in items {
         total_use += item_use;
         if item_use > OF(0.0) && !kfs.contains(item_id) {
-            users.push(ValResItemInfo {
-                item_id: *item_id,
-                used: item_use,
-            });
+            users.insert(*item_id, item_use);
         }
     }
     if users.is_empty() {

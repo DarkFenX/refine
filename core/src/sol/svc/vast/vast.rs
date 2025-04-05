@@ -5,7 +5,8 @@ use crate::{
         AttrVal, Count, FitId, ItemId, SkillLevel,
         svc::vast::{
             ValCache, ValChargeGroupChargeInfo, ValChargeSizeChargeInfo, ValChargeVolumeChargeInfo,
-            ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, VastSkillReq,
+            ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind,
+            ValSrqSkillInfo,
         },
     },
     util::{RMap, RMapRMap, RMapRSet, RSet},
@@ -68,7 +69,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) mods_max_group_active_limited: RMap<ItemId, ad::AItemGrpId>,
     pub(in crate::sol::svc::vast) rigs_rig_size: RMap<ItemId, Option<ad::AAttrVal>>,
     pub(in crate::sol::svc::vast) srqs_skill_item_map: RMapRSet<ad::AItemId, ItemId>,
-    pub(in crate::sol::svc::vast) srqs_missing: RMap<ItemId, RMap<ad::AItemId, VastSkillReq>>,
+    pub(in crate::sol::svc::vast) srqs_missing: RMap<ItemId, RMap<ad::AItemId, ValSrqSkillInfo>>,
     pub(in crate::sol::svc::vast) mods_charge_group: RMap<ItemId, ValCache<(), (ItemId, ValChargeGroupChargeInfo)>>,
     pub(in crate::sol::svc::vast) mods_charge_size: RMap<ItemId, ValCache<AttrVal, (ItemId, ValChargeSizeChargeInfo)>>,
     pub(in crate::sol::svc::vast) mods_charge_volume:

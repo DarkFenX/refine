@@ -36,9 +36,9 @@ impl VastFitData {
             .filter(|(module_item_id, _)| !kfs.contains(module_item_id))
             .map(|(module_item_id, module_info)| (*module_item_id, *module_info))
             .collect();
-        if modules.is_empty() {
-            return None;
+        match modules.is_empty() {
+            true => None,
+            false => Some(ValModuleStateFail { modules }),
         }
-        Some(ValModuleStateFail { modules })
     }
 }

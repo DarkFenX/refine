@@ -11,7 +11,7 @@ impl From<&rc::val::ValRigSizeFail> for HValRigSizeFail {
     fn from(core_val_fail: &rc::val::ValRigSizeFail) -> Self {
         Self {
             allowed_size: core_val_fail.allowed_size,
-            rig_sizes: core_val_fail.items.iter().map(|v| (v.item_id, v.rig_size)).collect(),
+            rig_sizes: core_val_fail.rig_sizes.clone(),
         }
     }
 }

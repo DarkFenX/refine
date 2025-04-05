@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use std::collections::HashMap;
 
 use crate::{
     ac,
@@ -7,13 +7,11 @@ use crate::{
 };
 
 pub struct ValOverloadSkillFail {
+    /// Current level of the Thermodynamics skill.
     pub td_lvl: Option<SkillLevel>,
-    pub items: Vec<ValOverloadSkillItemInfo>,
-}
-
-pub struct ValOverloadSkillItemInfo {
-    pub item_id: ItemId,
-    pub req_lvl: SkillLevel,
+    /// Map between item IDs of overloaded modules which do not pass the check, and required
+    /// Thermodynamics skill level.
+    pub module_reqs: HashMap<ItemId, SkillLevel>,
 }
 
 impl VastFitData {
@@ -40,18 +38,18 @@ impl VastFitData {
             return None;
         }
         let td_lvl = fit.skills.get(&ac::items::THERMODYNAMICS).map(|v| v.level);
-        let items = self
+        let module_reqs: HashMap<_, _> = self
             .overload_td_lvl
             .iter()
             .filter(|(item_id, req_lvl)| match td_lvl {
                 Some(td_lvl) => **req_lvl > td_lvl,
                 None => true,
             } && !kfs.contains(item_id))
-            .map(|(&item_id, &req_lvl)| ValOverloadSkillItemInfo { item_id, req_lvl })
-            .collect_vec();
-        if items.is_empty() {
-            return None;
+            .map(|(item_id, req_lvl)| (*item_id, *req_lvl))
+            .collect();
+        match module_reqs.is_empty() {
+            true => None,
+            false => Some(ValOverloadSkillFail { td_lvl, module_reqs }),
         }
-        Some(ValOverloadSkillFail { td_lvl, items })
     }
 }

@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     ac, ad,
     sol::{
@@ -16,8 +14,12 @@ use crate::{
 use super::shared::get_max_slots;
 
 pub struct ValSlotCountFail {
+    /// How many slots are taken by all the relevant items.
     pub used: Count,
+    /// How many slots available.
     pub max: Option<Count>,
+    /// IDs of items which break the validation limits. For unordered containers - all items, for
+    /// ordered containers - only those which go past limit.
     pub users: Vec<ItemId>,
 }
 
@@ -502,11 +504,11 @@ fn validate_verbose_unordered_set(
     if used <= max.unwrap_or(0) {
         return None;
     }
-    let users = users.difference(kfs).copied().collect_vec();
-    if users.is_empty() {
-        return None;
+    let users: Vec<_> = users.difference(kfs).copied().collect();
+    match users.is_empty() {
+        true => None,
+        false => Some(ValSlotCountFail { used, max, users }),
     }
-    Some(ValSlotCountFail { used, max, users })
 }
 fn validate_verbose_unordered_map<T>(
     kfs: &RSet<ItemId>,
@@ -521,11 +523,11 @@ fn validate_verbose_unordered_map<T>(
     if used <= max.unwrap_or(0) {
         return None;
     }
-    let users = users.difference(kfs).map(|(k, _)| *k).collect_vec();
-    if users.is_empty() {
-        return None;
+    let users: Vec<_> = users.difference(kfs).map(|(k, _)| *k).collect();
+    match users.is_empty() {
+        true => None,
+        false => Some(ValSlotCountFail { used, max, users }),
     }
-    Some(ValSlotCountFail { used, max, users })
 }
 fn validate_verbose_ordered(
     kfs: &RSet<ItemId>,
@@ -541,13 +543,13 @@ fn validate_verbose_ordered(
     if used <= effective_max {
         return None;
     }
-    let users = users
+    let users: Vec<_> = users
         .iter_ids_from(effective_max as Idx)
         .filter(|v| !kfs.contains(v))
         .copied()
-        .collect_vec();
-    if users.is_empty() {
-        return None;
+        .collect();
+    match users.is_empty() {
+        true => None,
+        false => Some(ValSlotCountFail { used, max, users }),
     }
-    Some(ValSlotCountFail { used, max, users })
 }

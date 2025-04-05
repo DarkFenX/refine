@@ -52,12 +52,12 @@ impl VastFitData {
             .difference(kfs)
             .map(|(item_id, needed_kind)| (*item_id, *needed_kind))
             .collect();
-        if items.is_empty() {
-            return None;
+        match items.is_empty() {
+            true => None,
+            false => Some(ValItemVsShipKindFail {
+                ship_kind: fit.kind.into(),
+                items,
+            }),
         }
-        Some(ValItemVsShipKindFail {
-            ship_kind: fit.kind.into(),
-            items,
-        })
     }
 }

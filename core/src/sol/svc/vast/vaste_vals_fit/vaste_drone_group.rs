@@ -34,12 +34,12 @@ impl VastFitData {
             .filter(|(k, _)| !kfs.contains(k))
             .map(|(k, v)| (*k, *v))
             .collect();
-        if drone_groups.is_empty() {
-            return None;
+        match drone_groups.is_empty() {
+            true => None,
+            false => Some(ValDroneGroupFail {
+                allowed_group_ids: self.drone_group_limit.clone(),
+                drone_groups,
+            }),
         }
-        Some(ValDroneGroupFail {
-            allowed_group_ids: self.drone_group_limit.clone(),
-            drone_groups,
-        })
     }
 }

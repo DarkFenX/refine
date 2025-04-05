@@ -158,10 +158,10 @@ fn validate_verbose(
                 .insert(*item_id, allowed);
         }
     }
-    if groups.is_empty() {
-        return None;
+    match groups.is_empty() {
+        true => None,
+        false => Some(ValMaxGroupFail { groups }),
     }
-    Some(ValMaxGroupFail { groups })
 }
 
 fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_attr_id: &ad::AAttrId) -> Count {

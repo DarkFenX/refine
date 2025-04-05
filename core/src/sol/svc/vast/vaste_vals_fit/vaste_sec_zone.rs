@@ -1,4 +1,5 @@
-use itertools::Itertools;
+use std::collections::HashMap;
+
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
@@ -14,13 +15,11 @@ use crate::{
 use super::shared::is_flag_set;
 
 pub struct ValSecZoneFail {
+    /// Solar system security zone.
     pub zone: SecZone,
-    pub items: Vec<ValSecZoneItemInfo>,
-}
-
-pub struct ValSecZoneItemInfo {
-    pub item_id: ItemId,
-    pub allowed_zones: Vec<SecZone>,
+    /// Map between IDs of items which cannot be used in current security zone, and a list of
+    /// security zones they can be used in.
+    pub items: HashMap<ItemId, Vec<SecZone>>,
 }
 
 impl VastFitData {
@@ -189,7 +188,7 @@ fn flags_check_verbose(
     items_main: &RSet<ItemId>,
     items_wspace_banned: Option<&RSet<ItemId>>,
 ) -> Option<ValSecZoneFail> {
-    let mut fails = Vec::new();
+    let mut failed_item_ids = Vec::new();
     match uad.sec_zone {
         SecZone::HiSec(corruption) => {
             for item_id in items_main.iter() {
@@ -200,7 +199,7 @@ fn flags_check_verbose(
                         // No corruption in actual security zone - fail
                         SecZoneCorruption::None => {
                             if !kfs.contains(item_id) {
-                                fails.push(*item_id);
+                                failed_item_ids.push(*item_id);
                             }
                         }
                         // If corrupted, check if module is allowed in corrupted hisec
@@ -208,7 +207,7 @@ fn flags_check_verbose(
                             if !is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
                                 && !kfs.contains(item_id)
                             {
-                                fails.push(*item_id);
+                                failed_item_ids.push(*item_id);
                             }
                         }
                     }
@@ -222,7 +221,7 @@ fn flags_check_verbose(
                         // No corruption in actual security zone - fail
                         SecZoneCorruption::None => {
                             if !kfs.contains(item_id) {
-                                fails.push(*item_id);
+                                failed_item_ids.push(*item_id);
                             }
                         }
                         // If corrupted, check if module is allowed in corrupted lowsec
@@ -230,7 +229,7 @@ fn flags_check_verbose(
                             if !is_flag_set(uad, calc, item_id, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
                                 && !kfs.contains(item_id)
                             {
-                                fails.push(*item_id);
+                                failed_item_ids.push(*item_id);
                             }
                         }
                     }
@@ -240,7 +239,7 @@ fn flags_check_verbose(
         SecZone::Hazard => {
             for item_id in items_main.iter() {
                 if is_flag_set(uad, calc, item_id, &ac::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(item_id) {
-                    fails.push(*item_id);
+                    failed_item_ids.push(*item_id);
                 }
             }
         }
@@ -249,23 +248,20 @@ fn flags_check_verbose(
         // Supercap ban for w-space
         SecZone::WSpace => {
             if let Some(items_wspace_banned) = items_wspace_banned {
-                fails.extend(items_wspace_banned.difference(kfs).copied());
+                failed_item_ids.extend(items_wspace_banned.difference(kfs).copied());
             }
         }
     };
-    if fails.is_empty() {
-        return None;
+    match failed_item_ids.is_empty() {
+        true => None,
+        false => Some(ValSecZoneFail {
+            zone: uad.sec_zone,
+            items: failed_item_ids
+                .iter()
+                .map(|item_id| (*item_id, get_allowed_sec_zones(uad, calc, item_id, items_wspace_banned)))
+                .collect(),
+        }),
     }
-    Some(ValSecZoneFail {
-        zone: uad.sec_zone,
-        items: fails
-            .iter()
-            .map(|v| ValSecZoneItemInfo {
-                item_id: *v,
-                allowed_zones: get_allowed_sec_zones(uad, calc, v, items_wspace_banned),
-            })
-            .collect(),
-    })
 }
 fn get_allowed_sec_zones(
     uad: &Uad,
@@ -331,21 +327,18 @@ fn class_check_verbose(
         return None;
     }
     let current_class = zone_to_class(uad.sec_zone);
-    let items = limitable_items
+    let items: HashMap<_, _> = limitable_items
         .iter()
         .filter(|(item_id, item_sec_class)| **item_sec_class < current_class && !kfs.contains(item_id))
-        .map(|(&item_id, &item_sec_class)| ValSecZoneItemInfo {
-            item_id,
-            allowed_zones: class_to_allowed_zones(item_sec_class),
-        })
-        .collect_vec();
-    if items.is_empty() {
-        return None;
+        .map(|(&item_id, &item_sec_class)| (item_id, class_to_allowed_zones(item_sec_class)))
+        .collect();
+    match items.is_empty() {
+        true => None,
+        false => Some(ValSecZoneFail {
+            zone: uad.sec_zone,
+            items,
+        }),
     }
-    Some(ValSecZoneFail {
-        zone: uad.sec_zone,
-        items,
-    })
 }
 fn zone_to_class(zone: SecZone) -> ad::AAttrVal {
     match zone {

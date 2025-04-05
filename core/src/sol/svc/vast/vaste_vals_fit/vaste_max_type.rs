@@ -50,9 +50,9 @@ impl VastFitData {
                 }
             }
         }
-        if item_types.is_empty() {
-            return None;
+        match item_types.is_empty() {
+            true => None,
+            false => Some(ValMaxTypeFail { item_types }),
         }
-        Some(ValMaxTypeFail { item_types })
     }
 }

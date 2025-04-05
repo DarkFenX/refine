@@ -1,17 +1,21 @@
+use std::collections::HashMap;
+
 use crate::{
     sol::{ItemId, ItemTypeId, SkillLevel, svc::vast::VastFitData},
     util::RSet,
 };
 
 pub struct ValSrqFail {
-    pub item_id: ItemId,
-    pub skills: Vec<ValSrqSkillInfo>,
+    /// Map between item IDs and their unsatisfied skill requirements, which are defined as another
+    /// map, with keys being skill type IDs, and values containing further info about levels..
+    pub items: HashMap<ItemId, HashMap<ItemTypeId, ValSrqSkillInfo>>,
 }
-
+#[derive(Copy, Clone)]
 pub struct ValSrqSkillInfo {
-    pub skill_type_id: ItemTypeId,
-    pub skill_lvl: Option<SkillLevel>,
-    pub req_lvl: SkillLevel,
+    /// Current skill level, None if skill is absent on fit.
+    pub current_lvl: Option<SkillLevel>,
+    /// Skill level required by the item.
+    pub required_lvl: SkillLevel,
 }
 
 impl VastFitData {
@@ -22,21 +26,24 @@ impl VastFitData {
             .all(|(item_id, missing_skills)| missing_skills.is_empty() || kfs.contains(item_id))
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self, kfs: &RSet<ItemId>) -> Vec<ValSrqFail> {
-        self.srqs_missing
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self, kfs: &RSet<ItemId>) -> Option<ValSrqFail> {
+        let items: HashMap<_, _> = self
+            .srqs_missing
             .iter()
             .filter(|(item_id, missing_skills)| !missing_skills.is_empty() && !kfs.contains(item_id))
-            .map(|(item_id, missing_skills)| ValSrqFail {
-                item_id: *item_id,
-                skills: missing_skills
-                    .iter()
-                    .map(|(sid, srq)| ValSrqSkillInfo {
-                        skill_type_id: *sid,
-                        skill_lvl: srq.current_lvl,
-                        req_lvl: srq.required_lvl,
-                    })
-                    .collect(),
+            .map(|(item_id, missing_skills)| {
+                (
+                    *item_id,
+                    missing_skills
+                        .iter()
+                        .map(|(skill_a_item_id, skill_info)| (*skill_a_item_id, *skill_info))
+                        .collect(),
+                )
             })
-            .collect()
+            .collect();
+        match items.is_empty() {
+            true => None,
+            false => Some(ValSrqFail { items }),
+        }
     }
 }

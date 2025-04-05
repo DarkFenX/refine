@@ -40,9 +40,9 @@ impl VastFitData {
             .filter(|v| is_flag_set(uad, calc, v, &ac::attrs::ACTIVATION_BLOCKED))
             .copied()
             .collect();
-        if item_ids.is_empty() {
-            return None;
+        match item_ids.is_empty() {
+            true => None,
+            false => Some(ValActivationBlockedFail { module_ids: item_ids }),
         }
-        Some(ValActivationBlockedFail { module_ids: item_ids })
     }
 }

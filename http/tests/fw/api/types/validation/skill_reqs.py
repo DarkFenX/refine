@@ -12,12 +12,12 @@ class ValSrqFail(dict):
 @dataclass
 class ValSrqSkill:
 
-    skill_lvl: int | None
-    req_lvl: int
+    current_lvl: int | None
+    required_lvl: int
 
     def __init__(self, *, data: tuple) -> None:
-        self.skill_lvl = data[0]
-        self.req_lvl = data[1]
+        self.current_lvl = data[0]
+        self.required_lvl = data[1]
 
     def __eq__(self, other: tuple) -> bool:
-        return (self.skill_lvl, self.req_lvl) == (other[0], other[1])
+        return (self.current_lvl, self.required_lvl) == (other[0], other[1])

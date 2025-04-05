@@ -8,7 +8,8 @@ use crate::{
     sol::{
         AttrVal, FitId, ItemId, ModRack,
         svc::vast::{
-            ValCache, ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, Vast, VastFitData, VastSkillReq,
+            ValCache, ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, ValSrqSkillInfo, Vast,
+            VastFitData,
         },
         uad::{
             Uad,
@@ -37,9 +38,9 @@ impl Vast {
                     if current_lvl.unwrap_or(0) < required_lvl {
                         missing_skills.insert(
                             skill_a_item_id,
-                            VastSkillReq {
-                                current_lvl,
-                                required_lvl,
+                            ValSrqSkillInfo {
+                                current_lvl: current_lvl,
+                                required_lvl: required_lvl,
                             },
                         );
                     }

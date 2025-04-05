@@ -8,8 +8,10 @@ use crate::{
     util::RSet,
 };
 
+/// Fails when a ship which can't have a stance has one.
 pub struct ValShipStanceFail {
-    pub item_id: ItemId,
+    /// Stance item ID.
+    pub stance_item_id: ItemId,
 }
 
 impl VastFitData {
@@ -43,7 +45,11 @@ impl VastFitData {
         let stance_id = fit.stance?;
         let ship = match ship {
             Some(ship) => ship,
-            None => return Some(ValShipStanceFail { item_id: stance_id }),
+            None => {
+                return Some(ValShipStanceFail {
+                    stance_item_id: stance_id,
+                });
+            }
         };
         if matches!(
             ship.get_a_item_id(),
@@ -54,6 +60,8 @@ impl VastFitData {
         if kfs.contains(&stance_id) {
             return None;
         }
-        Some(ValShipStanceFail { item_id: stance_id })
+        Some(ValShipStanceFail {
+            stance_item_id: stance_id,
+        })
     }
 }

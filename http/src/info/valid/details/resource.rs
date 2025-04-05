@@ -13,7 +13,7 @@ impl From<&rc::val::ValResFail> for HValResFail {
         Self {
             used: core_val_fail.used,
             max: core_val_fail.max,
-            users: core_val_fail.users.iter().map(|v| (v.item_id, v.used)).collect(),
+            users: core_val_fail.users.clone(),
         }
     }
 }

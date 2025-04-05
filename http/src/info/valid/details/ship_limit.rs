@@ -13,7 +13,11 @@ impl From<&rc::val::ValShipLimitFail> for HValShipLimitFail {
         Self {
             ship_type_id: core_val_fail.ship_type_id,
             ship_group_id: core_val_fail.ship_group_id,
-            mismatches: core_val_fail.items.iter().map(|v| (v.item_id, v.into())).collect(),
+            mismatches: core_val_fail
+                .items
+                .iter()
+                .map(|(item_id, item_info)| (*item_id, item_info.into()))
+                .collect(),
         }
     }
 }

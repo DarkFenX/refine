@@ -4,7 +4,8 @@ use crate::{
 };
 
 pub struct ValNotLoadedItemFail {
-    pub item_id: ItemId,
+    /// Item IDs of items which couldn't be loaded from current sol data source.
+    pub item_ids: Vec<ItemId>,
 }
 
 impl VastFitData {
@@ -19,11 +20,11 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_verbose(
         &self,
         kfs: &RSet<ItemId>,
-    ) -> Vec<ValNotLoadedItemFail> {
-        self.not_loaded
-            .iter()
-            .filter(|v| !kfs.contains(v))
-            .map(|v| ValNotLoadedItemFail { item_id: *v })
-            .collect()
+    ) -> Option<ValNotLoadedItemFail> {
+        let item_ids: Vec<_> = self.not_loaded.iter().filter(|v| !kfs.contains(v)).copied().collect();
+        match item_ids.is_empty() {
+            true => None,
+            false => Some(ValNotLoadedItemFail { item_ids }),
+        }
     }
 }

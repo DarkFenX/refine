@@ -11,7 +11,7 @@ impl From<&rc::val::ValUnusableResFail> for HValUnusableResFail {
     fn from(core_val_fail: &rc::val::ValUnusableResFail) -> Self {
         Self {
             max: core_val_fail.max,
-            users: core_val_fail.users.iter().map(|v| (v.item_id, v.used)).collect(),
+            users: core_val_fail.users.clone(),
         }
     }
 }

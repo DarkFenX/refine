@@ -29,20 +29,20 @@ pub struct ValResult {
     pub high_slot_count: Option<ValSlotCountFail>,
     pub mid_slot_count: Option<ValSlotCountFail>,
     pub low_slot_count: Option<ValSlotCountFail>,
-    pub implant_slot_index: Vec<ValSlotIndexFail>,
-    pub booster_slot_index: Vec<ValSlotIndexFail>,
-    pub subsystem_slot_index: Vec<ValSlotIndexFail>,
+    pub implant_slot_index: Option<ValSlotIndexFail>,
+    pub booster_slot_index: Option<ValSlotIndexFail>,
+    pub subsystem_slot_index: Option<ValSlotIndexFail>,
     pub ship_limit: Option<ValShipLimitFail>,
     pub max_group_fitted: Option<ValMaxGroupFail>,
     pub max_group_online: Option<ValMaxGroupFail>,
     pub max_group_active: Option<ValMaxGroupFail>,
     pub rig_size: Option<ValRigSizeFail>,
-    pub skill_reqs: Vec<ValSrqFail>,
+    pub skill_reqs: Option<ValSrqFail>,
     pub charge_group: Option<ValChargeGroupFail>,
     pub charge_size: Option<ValChargeSizeFail>,
     pub charge_volume: Option<ValChargeVolumeFail>,
     pub capital_module: Option<ValCapitalModFail>,
-    pub not_loaded_item: Vec<ValNotLoadedItemFail>,
+    pub not_loaded_item: Option<ValNotLoadedItemFail>,
     pub module_state: Option<ValModuleStateFail>,
     pub item_kind: Option<ValItemKindFail>,
     pub drone_group: Option<ValDroneGroupFail>,
@@ -92,20 +92,20 @@ impl ValResult {
             high_slot_count: None,
             mid_slot_count: None,
             low_slot_count: None,
-            implant_slot_index: Vec::new(),
-            booster_slot_index: Vec::new(),
-            subsystem_slot_index: Vec::new(),
+            implant_slot_index: None,
+            booster_slot_index: None,
+            subsystem_slot_index: None,
             ship_limit: None,
             max_group_fitted: None,
             max_group_online: None,
             max_group_active: None,
             rig_size: None,
-            skill_reqs: Vec::new(),
+            skill_reqs: None,
             charge_group: None,
             charge_size: None,
             charge_volume: None,
             capital_module: None,
-            not_loaded_item: Vec::new(),
+            not_loaded_item: None,
             module_state: None,
             item_kind: None,
             drone_group: None,
@@ -154,20 +154,20 @@ impl ValResult {
             && self.high_slot_count.is_none()
             && self.mid_slot_count.is_none()
             && self.low_slot_count.is_none()
-            && self.implant_slot_index.is_empty()
-            && self.booster_slot_index.is_empty()
-            && self.subsystem_slot_index.is_empty()
+            && self.implant_slot_index.is_none()
+            && self.booster_slot_index.is_none()
+            && self.subsystem_slot_index.is_none()
             && self.ship_limit.is_none()
             && self.max_group_fitted.is_none()
             && self.max_group_online.is_none()
             && self.max_group_active.is_none()
             && self.rig_size.is_none()
-            && self.skill_reqs.is_empty()
+            && self.skill_reqs.is_none()
             && self.charge_group.is_none()
             && self.charge_size.is_none()
             && self.charge_volume.is_none()
             && self.capital_module.is_none()
-            && self.not_loaded_item.is_empty()
+            && self.not_loaded_item.is_none()
             && self.module_state.is_none()
             && self.item_kind.is_none()
             && self.drone_group.is_none()

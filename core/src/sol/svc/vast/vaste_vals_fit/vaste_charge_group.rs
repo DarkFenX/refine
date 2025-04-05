@@ -77,10 +77,10 @@ impl VastFitData {
                 }
             }
         }
-        if charges.is_empty() {
-            return None;
+        match charges.is_empty() {
+            true => None,
+            false => Some(ValChargeGroupFail { charges }),
         }
-        Some(ValChargeGroupFail { charges })
     }
 }
 

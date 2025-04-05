@@ -1,7 +1,7 @@
 use crate::{
     AttrVal,
     sol::{
-        svc::vast::{ValFighterSquadSizeFighterInfo, Vast, VastSkillReq},
+        svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
         uad::{
             Uad,
             item::{Fighter, Skill},
@@ -30,9 +30,9 @@ impl Vast {
                         .get(&skill.get_a_item_id())
                         .unwrap();
                     if skill.get_a_level() < required_lvl {
-                        entry.insert(VastSkillReq {
+                        entry.insert(ValSrqSkillInfo {
                             current_lvl: Some(skill.get_a_level()),
-                            required_lvl,
+                            required_lvl: required_lvl,
                         });
                     }
                 }

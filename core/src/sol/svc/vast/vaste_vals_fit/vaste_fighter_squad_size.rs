@@ -37,9 +37,9 @@ impl VastFitData {
             .filter(|(k, _)| !kfs.contains(k))
             .map(|(k, v)| (*k, *v))
             .collect();
-        if fighters.is_empty() {
-            return None;
+        match fighters.is_empty() {
+            true => None,
+            false => Some(ValFighterSquadSizeFail { fighters }),
         }
-        Some(ValFighterSquadSizeFail { fighters })
     }
 }

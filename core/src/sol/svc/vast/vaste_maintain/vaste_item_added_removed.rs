@@ -1,7 +1,7 @@
 use std::collections::hash_map::Entry;
 
 use crate::sol::{
-    svc::vast::{Vast, VastSkillReq},
+    svc::vast::{ValSrqSkillInfo, Vast},
     uad::{Uad, item::Item},
 };
 
@@ -50,9 +50,9 @@ impl Vast {
                             .unwrap()
                             .get(&skill.get_a_item_id())
                             .unwrap();
-                        entry.insert(VastSkillReq {
+                        entry.insert(ValSrqSkillInfo {
                             current_lvl: None,
-                            required_lvl,
+                            required_lvl: required_lvl,
                         });
                     }
                 }

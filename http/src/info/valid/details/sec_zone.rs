@@ -16,7 +16,12 @@ impl From<&rc::val::ValSecZoneFail> for HValSecZoneFail {
             items: core_val_fail
                 .items
                 .iter()
-                .map(|i| (i.item_id, i.allowed_zones.iter().map(|z| z.into()).collect()))
+                .map(|(item_id, allowed_sec_zones)| {
+                    (
+                        *item_id,
+                        allowed_sec_zones.iter().map(|sec_zone| sec_zone.into()).collect(),
+                    )
+                })
                 .collect(),
         }
     }

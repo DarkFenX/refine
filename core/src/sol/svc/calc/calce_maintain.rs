@@ -60,7 +60,7 @@ impl Calc {
         // Custom modifiers
         let ctx_modifiers = self
             .revs
-            .iter_mods_on_item_add()
+            .iter_mods_on_item_remove()
             .filter(|v| v.raw.revise_on_item_remove(item, uad))
             .copied()
             .collect_vec();
