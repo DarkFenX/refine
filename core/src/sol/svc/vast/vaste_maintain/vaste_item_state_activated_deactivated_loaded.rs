@@ -1,7 +1,7 @@
 use crate::{
     ac, ad,
     sol::{
-        svc::vast::{ValModuleStateFail, Vast},
+        svc::vast::{ValModuleStateModuleInfo, Vast},
         uad::item::{Item, ModuleState},
     },
 };
@@ -60,8 +60,7 @@ impl Vast {
                     if let ad::AState::Offline = extras.max_state {
                         fit_data.mods_state.insert(
                             module.get_item_id(),
-                            ValModuleStateFail {
-                                item_id: module.get_item_id(),
+                            ValModuleStateModuleInfo {
                                 state: ModuleState::Online,
                                 max_state: ModuleState::Offline,
                             },
@@ -120,8 +119,7 @@ impl Vast {
                         ad::AState::Online => {
                             fit_data.mods_state.insert(
                                 module.get_item_id(),
-                                ValModuleStateFail {
-                                    item_id: module.get_item_id(),
+                                ValModuleStateModuleInfo {
                                     state: ModuleState::Active,
                                     max_state: ModuleState::Online,
                                 },
@@ -147,8 +145,7 @@ impl Vast {
                         ad::AState::Active => {
                             fit_data.mods_state.insert(
                                 module.get_item_id(),
-                                ValModuleStateFail {
-                                    item_id: module.get_item_id(),
+                                ValModuleStateModuleInfo {
                                     state: ModuleState::Overload,
                                     max_state: ModuleState::Active,
                                 },

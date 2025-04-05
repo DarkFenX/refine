@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     ac, ad,
     sol::{
@@ -9,14 +11,15 @@ use crate::{
 };
 
 pub struct ValMaxGroupFail {
-    pub group_id: ItemGrpId,
-    pub count: Count,
-    pub items: Vec<ValMaxGroupItemInfo>,
+    /// Map between group IDs which had failed items, and detailed group info.
+    pub groups: HashMap<ItemGrpId, ValMaxGroupGroupInfo>,
 }
 
-pub struct ValMaxGroupItemInfo {
-    pub item_id: ItemId,
-    pub max_allowed_count: Count,
+pub struct ValMaxGroupGroupInfo {
+    /// How many items from that group are in an appropriate state.
+    pub group_item_count: Count,
+    /// Map between offending item IDs and per-item group count limits.
+    pub items: HashMap<ItemId, Count>,
 }
 
 impl VastFitData {
@@ -72,7 +75,7 @@ impl VastFitData {
         kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
-    ) -> Vec<ValMaxGroupFail> {
+    ) -> Option<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             uad,
@@ -87,7 +90,7 @@ impl VastFitData {
         kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
-    ) -> Vec<ValMaxGroupFail> {
+    ) -> Option<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             uad,
@@ -102,7 +105,7 @@ impl VastFitData {
         kfs: &RSet<ItemId>,
         uad: &Uad,
         calc: &mut Calc,
-    ) -> Vec<ValMaxGroupFail> {
+    ) -> Option<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             uad,
@@ -139,29 +142,26 @@ fn validate_verbose(
     max_group_all: &RMapRSet<ad::AItemGrpId, ItemId>,
     max_group_limited: &RMap<ItemId, ad::AItemGrpId>,
     a_attr_id: &ad::AAttrId,
-) -> Vec<ValMaxGroupFail> {
-    let mut items_by_grp = RMap::new();
+) -> Option<ValMaxGroupFail> {
+    let mut groups = HashMap::new();
     for (item_id, a_item_grp_id) in max_group_limited.iter() {
         let allowed = get_max_allowed_item_count(uad, calc, item_id, a_attr_id);
         let actual = get_actual_item_count(max_group_all, a_item_grp_id);
         if actual > allowed && !kfs.contains(item_id) {
-            items_by_grp
+            groups
                 .entry(*a_item_grp_id)
-                .or_insert_with(Vec::new)
-                .push(ValMaxGroupItemInfo {
-                    item_id: *item_id,
-                    max_allowed_count: allowed,
-                });
+                .or_insert_with(|| ValMaxGroupGroupInfo {
+                    group_item_count: actual,
+                    items: HashMap::new(),
+                })
+                .items
+                .insert(*item_id, allowed);
         }
     }
-    items_by_grp
-        .into_iter()
-        .map(|(k, v)| ValMaxGroupFail {
-            group_id: k,
-            count: get_actual_item_count(max_group_all, &k),
-            items: v,
-        })
-        .collect()
+    if groups.is_empty() {
+        return None;
+    }
+    Some(ValMaxGroupFail { groups })
 }
 
 fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_attr_id: &ad::AAttrId) -> Count {

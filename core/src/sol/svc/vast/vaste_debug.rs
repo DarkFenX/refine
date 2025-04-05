@@ -164,9 +164,8 @@ impl VastFitData {
         for item_id in self.not_loaded.iter() {
             check_item_id(uad, item_id, false)?;
         }
-        for (item_id, item_data) in self.mods_state.iter() {
+        for item_id in self.mods_state.keys() {
             check_item_id(uad, item_id, true)?;
-            check_item_id(uad, &item_data.item_id, true)?;
         }
         for item_id in self.item_kind.keys() {
             check_item_id(uad, item_id, true)?;

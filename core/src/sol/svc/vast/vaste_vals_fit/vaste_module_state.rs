@@ -1,12 +1,19 @@
+use std::collections::HashMap;
+
 use crate::{
     sol::{ItemId, svc::vast::VastFitData, uad::item::ModuleState},
     util::RSet,
 };
 
-#[derive(Clone)]
 pub struct ValModuleStateFail {
-    pub item_id: ItemId,
+    /// Map between module item IDs and module state info.
+    pub modules: HashMap<ItemId, ValModuleStateModuleInfo>,
+}
+#[derive(Copy, Clone)]
+pub struct ValModuleStateModuleInfo {
+    /// Current module state.
     pub state: ModuleState,
+    /// Highest state this module can be in.
     pub max_state: ModuleState,
 }
 
@@ -22,11 +29,16 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_module_state_verbose(
         &self,
         kfs: &RSet<ItemId>,
-    ) -> Vec<ValModuleStateFail> {
-        self.mods_state
-            .values()
-            .filter(|v| !kfs.contains(&v.item_id))
-            .cloned()
-            .collect()
+    ) -> Option<ValModuleStateFail> {
+        let modules: HashMap<_, _> = self
+            .mods_state
+            .iter()
+            .filter(|(module_item_id, _)| !kfs.contains(module_item_id))
+            .map(|(module_item_id, module_info)| (*module_item_id, *module_info))
+            .collect();
+        if modules.is_empty() {
+            return None;
+        }
+        Some(ValModuleStateFail { modules })
     }
 }

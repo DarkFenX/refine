@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use std::collections::HashMap;
 
 use crate::{
     sol::{
@@ -9,13 +9,13 @@ use crate::{
     util::RSet,
 };
 
+/// Some items can only be fit to a ship or a structure. Currently, applies just to modules.
 pub struct ValItemVsShipKindFail {
+    /// Kind of current ship.
     pub ship_kind: ValShipKind,
-    pub items: Vec<ValItemVsShipKindItemInfo>,
-}
-pub struct ValItemVsShipKindItemInfo {
-    pub item_id: ItemId,
-    pub needed_kind: ValShipKind,
+    /// Map with items which need other ship kind, and what kind they need (either ship or
+    /// structure).
+    pub items: HashMap<ItemId, ValShipKind>,
 }
 #[derive(Copy, Clone)]
 pub enum ValShipKind {
@@ -47,14 +47,11 @@ impl VastFitData {
         kfs: &RSet<ItemId>,
         fit: &Fit,
     ) -> Option<ValItemVsShipKindFail> {
-        let items = self
+        let items: HashMap<_, _> = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(k, v)| ValItemVsShipKindItemInfo {
-                item_id: *k,
-                needed_kind: *v,
-            })
-            .collect_vec();
+            .map(|(item_id, needed_kind)| (*item_id, *needed_kind))
+            .collect();
         if items.is_empty() {
             return None;
         }

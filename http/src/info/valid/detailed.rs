@@ -76,12 +76,12 @@ struct HValidInfoDetails {
     subsystem_slot_index: HValSlotIndexFail,
     #[serde(skip_serializing_if = "Option::is_none")]
     ship_limit: Option<HValShipLimitFail>,
-    #[serde(skip_serializing_if = "HValMaxGroupFail::is_empty")]
-    max_group_fitted: HValMaxGroupFail,
-    #[serde(skip_serializing_if = "HValMaxGroupFail::is_empty")]
-    max_group_online: HValMaxGroupFail,
-    #[serde(skip_serializing_if = "HValMaxGroupFail::is_empty")]
-    max_group_active: HValMaxGroupFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_group_fitted: Option<HValMaxGroupFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_group_online: Option<HValMaxGroupFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_group_active: Option<HValMaxGroupFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     rig_size: Option<HValRigSizeFail>,
     #[serde(skip_serializing_if = "HValSrqFail::is_empty")]
@@ -97,8 +97,8 @@ struct HValidInfoDetails {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     not_loaded_item: Vec<rc::ItemId>,
-    #[serde(skip_serializing_if = "HValModuleStateFail::is_empty")]
-    module_state: HValModuleStateFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    module_state: Option<HValModuleStateFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     item_kind: Option<HValItemKindFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -127,8 +127,8 @@ struct HValidInfoDetails {
     ship_stance: Option<HValShipStanceFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     overload_skill: Option<HValOverloadSkillFail>,
-    #[serde(skip_serializing_if = "HValMaxTypeFail::is_empty")]
-    max_type_fitted: HValMaxTypeFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_type_fitted: Option<HValMaxTypeFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sec_zone_fitted: Option<HValSecZoneFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -172,9 +172,9 @@ impl HValidInfoDetails {
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()
             && self.ship_limit.is_none()
-            && self.max_group_fitted.is_empty()
-            && self.max_group_online.is_empty()
-            && self.max_group_active.is_empty()
+            && self.max_group_fitted.is_none()
+            && self.max_group_online.is_none()
+            && self.max_group_active.is_none()
             && self.rig_size.is_none()
             && self.skill_reqs.is_empty()
             && self.charge_group.is_none()
@@ -182,7 +182,7 @@ impl HValidInfoDetails {
             && self.charge_volume.is_none()
             && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
-            && self.module_state.is_empty()
+            && self.module_state.is_none()
             && self.item_kind.is_none()
             && self.drone_group.is_none()
             && self.fighter_squad_size.is_none()
@@ -197,7 +197,7 @@ impl HValidInfoDetails {
             && self.unlaunchable_standup_heavy_fighter.is_none()
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
-            && self.max_type_fitted.is_empty()
+            && self.max_type_fitted.is_none()
             && self.sec_zone_fitted.is_none()
             && self.sec_zone_online.is_none()
             && self.sec_zone_active.is_none()
@@ -248,9 +248,9 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             booster_slot_index: (&core_val_result.booster_slot_index).into(),
             subsystem_slot_index: (&core_val_result.subsystem_slot_index).into(),
             ship_limit: core_val_result.ship_limit.as_ref().map(|v| v.into()),
-            max_group_fitted: (&core_val_result.max_group_fitted).into(),
-            max_group_online: (&core_val_result.max_group_online).into(),
-            max_group_active: (&core_val_result.max_group_active).into(),
+            max_group_fitted: core_val_result.max_group_fitted.as_ref().map(|v| v.into()),
+            max_group_online: core_val_result.max_group_online.as_ref().map(|v| v.into()),
+            max_group_active: core_val_result.max_group_active.as_ref().map(|v| v.into()),
             rig_size: core_val_result.rig_size.as_ref().map(|v| v.into()),
             skill_reqs: (&core_val_result.skill_reqs).into(),
             charge_group: core_val_result.charge_group.as_ref().map(|v| v.into()),
@@ -258,7 +258,7 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             charge_volume: core_val_result.charge_volume.as_ref().map(|v| v.into()),
             capital_module: core_val_result.capital_module.as_ref().map(|v| v.into()),
             not_loaded_item: core_val_result.not_loaded_item.iter().map(|v| v.item_id).collect(),
-            module_state: (&core_val_result.module_state).into(),
+            module_state: core_val_result.module_state.as_ref().map(|v| v.into()),
             item_kind: core_val_result.item_kind.as_ref().map(|v| v.into()),
             drone_group: core_val_result.drone_group.as_ref().map(|v| v.into()),
             fighter_squad_size: core_val_result.fighter_squad_size.as_ref().map(|v| v.into()),
@@ -282,7 +282,7 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
                 .map(|v| v.into()),
             ship_stance: core_val_result.ship_stance.as_ref().map(|v| v.into()),
             overload_skill: core_val_result.overload_skill.as_ref().map(|v| v.into()),
-            max_type_fitted: (&core_val_result.max_type_fitted).into(),
+            max_type_fitted: core_val_result.max_type_fitted.as_ref().map(|v| v.into()),
             sec_zone_fitted: core_val_result.sec_zone_fitted.as_ref().map(|v| v.into()),
             sec_zone_online: core_val_result.sec_zone_online.as_ref().map(|v| v.into()),
             sec_zone_active: core_val_result.sec_zone_active.as_ref().map(|v| v.into()),

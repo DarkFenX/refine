@@ -33,9 +33,9 @@ pub struct ValResult {
     pub booster_slot_index: Vec<ValSlotIndexFail>,
     pub subsystem_slot_index: Vec<ValSlotIndexFail>,
     pub ship_limit: Option<ValShipLimitFail>,
-    pub max_group_fitted: Vec<ValMaxGroupFail>,
-    pub max_group_online: Vec<ValMaxGroupFail>,
-    pub max_group_active: Vec<ValMaxGroupFail>,
+    pub max_group_fitted: Option<ValMaxGroupFail>,
+    pub max_group_online: Option<ValMaxGroupFail>,
+    pub max_group_active: Option<ValMaxGroupFail>,
     pub rig_size: Option<ValRigSizeFail>,
     pub skill_reqs: Vec<ValSrqFail>,
     pub charge_group: Option<ValChargeGroupFail>,
@@ -43,7 +43,7 @@ pub struct ValResult {
     pub charge_volume: Option<ValChargeVolumeFail>,
     pub capital_module: Option<ValCapitalModFail>,
     pub not_loaded_item: Vec<ValNotLoadedItemFail>,
-    pub module_state: Vec<ValModuleStateFail>,
+    pub module_state: Option<ValModuleStateFail>,
     pub item_kind: Option<ValItemKindFail>,
     pub drone_group: Option<ValDroneGroupFail>,
     pub fighter_squad_size: Option<ValFighterSquadSizeFail>,
@@ -58,7 +58,7 @@ pub struct ValResult {
     pub unlaunchable_standup_heavy_fighter: Option<ValUnusableSlotFail>,
     pub ship_stance: Option<ValShipStanceFail>,
     pub overload_skill: Option<ValOverloadSkillFail>,
-    pub max_type_fitted: Vec<ValMaxTypeFail>,
+    pub max_type_fitted: Option<ValMaxTypeFail>,
     pub sec_zone_fitted: Option<ValSecZoneFail>,
     pub sec_zone_online: Option<ValSecZoneFail>,
     pub sec_zone_active: Option<ValSecZoneFail>,
@@ -96,9 +96,9 @@ impl ValResult {
             booster_slot_index: Vec::new(),
             subsystem_slot_index: Vec::new(),
             ship_limit: None,
-            max_group_fitted: Vec::new(),
-            max_group_online: Vec::new(),
-            max_group_active: Vec::new(),
+            max_group_fitted: None,
+            max_group_online: None,
+            max_group_active: None,
             rig_size: None,
             skill_reqs: Vec::new(),
             charge_group: None,
@@ -106,7 +106,7 @@ impl ValResult {
             charge_volume: None,
             capital_module: None,
             not_loaded_item: Vec::new(),
-            module_state: Vec::new(),
+            module_state: None,
             item_kind: None,
             drone_group: None,
             fighter_squad_size: None,
@@ -121,7 +121,7 @@ impl ValResult {
             unlaunchable_standup_heavy_fighter: None,
             ship_stance: None,
             overload_skill: None,
-            max_type_fitted: Vec::new(),
+            max_type_fitted: None,
             sec_zone_fitted: None,
             sec_zone_online: None,
             sec_zone_active: None,
@@ -158,9 +158,9 @@ impl ValResult {
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()
             && self.ship_limit.is_none()
-            && self.max_group_fitted.is_empty()
-            && self.max_group_online.is_empty()
-            && self.max_group_active.is_empty()
+            && self.max_group_fitted.is_none()
+            && self.max_group_online.is_none()
+            && self.max_group_active.is_none()
             && self.rig_size.is_none()
             && self.skill_reqs.is_empty()
             && self.charge_group.is_none()
@@ -168,7 +168,7 @@ impl ValResult {
             && self.charge_volume.is_none()
             && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
-            && self.module_state.is_empty()
+            && self.module_state.is_none()
             && self.item_kind.is_none()
             && self.drone_group.is_none()
             && self.fighter_squad_size.is_none()
@@ -183,7 +183,7 @@ impl ValResult {
             && self.unlaunchable_standup_heavy_fighter.is_none()
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
-            && self.max_type_fitted.is_empty()
+            && self.max_type_fitted.is_none()
             && self.sec_zone_fitted.is_none()
             && self.sec_zone_online.is_none()
             && self.sec_zone_active.is_none()

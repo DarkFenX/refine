@@ -34,7 +34,7 @@ impl VastFitData {
         let fighters: HashMap<_, _> = self
             .fighter_squad_size
             .iter()
-            .filter(|(k, v)| !kfs.contains(k))
+            .filter(|(k, _)| !kfs.contains(k))
             .map(|(k, v)| (*k, *v))
             .collect();
         if fighters.is_empty() {

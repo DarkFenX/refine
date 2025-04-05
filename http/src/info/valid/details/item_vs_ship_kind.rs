@@ -14,7 +14,7 @@ impl From<&rc::val::ValItemVsShipKindFail> for HValItemVsShipKindFail {
             items: core_val_fail
                 .items
                 .iter()
-                .map(|v| (v.item_id, (&v.needed_kind).into()))
+                .map(|(item_id, needed_kind)| (*item_id, needed_kind.into()))
                 .collect(),
         }
     }

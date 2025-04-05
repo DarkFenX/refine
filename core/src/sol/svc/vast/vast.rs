@@ -5,7 +5,7 @@ use crate::{
         AttrVal, Count, FitId, ItemId, SkillLevel,
         svc::vast::{
             ValCache, ValChargeGroupChargeInfo, ValChargeSizeChargeInfo, ValChargeVolumeChargeInfo,
-            ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateFail, ValShipKind, VastSkillReq,
+            ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, VastSkillReq,
         },
     },
     util::{RMap, RMapRMap, RMapRSet, RSet},
@@ -75,7 +75,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
         RMap<ItemId, ValCache<AttrVal, (ItemId, ValChargeVolumeChargeInfo)>>,
     pub(in crate::sol::svc::vast) mods_capital: RMap<ItemId, AttrVal>,
     pub(in crate::sol::svc::vast) not_loaded: RSet<ItemId>,
-    pub(in crate::sol::svc::vast) mods_state: RMap<ItemId, ValModuleStateFail>,
+    pub(in crate::sol::svc::vast) mods_state: RMap<ItemId, ValModuleStateModuleInfo>,
     pub(in crate::sol::svc::vast) item_kind: RMap<ItemId, ValItemKindItemInfo>,
     pub(in crate::sol::svc::vast) drone_group_limit: Vec<ad::AItemGrpId>,
     pub(in crate::sol::svc::vast) drone_groups: RMap<ItemId, ad::AItemGrpId>,

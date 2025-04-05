@@ -32,7 +32,7 @@ impl VastFitData {
         let item_kinds: HashMap<_, _> = self
             .item_kind
             .iter()
-            .filter(|(k, v)| !kfs.contains(k))
+            .filter(|(k, _)| !kfs.contains(k))
             .map(|(k, v)| (*k, *v))
             .collect();
         if item_kinds.is_empty() {
