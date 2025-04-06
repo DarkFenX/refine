@@ -5,12 +5,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_fw_effect(&mut self, item_id: &ItemId) -> Result<(), RemoveFwEffectError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let fw_effect = item.get_fw_effect()?;
         self.svc.remove_item(&self.uad, item);
         let fit = self.uad.fits.get_fit_mut(&fw_effect.get_fit_id()).unwrap();
         fit.fw_effects.remove(item_id);
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

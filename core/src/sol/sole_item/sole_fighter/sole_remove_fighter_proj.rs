@@ -12,7 +12,7 @@ impl SolarSystem {
         projectee_item_id: &ItemId,
     ) -> Result<(), RemoveFighterProjError> {
         // Check if projection is defined
-        let fighter = self.uad.items.get_item(item_id)?.get_fighter()?;
+        let fighter = self.uad.items.get_by_id(item_id)?.get_fighter()?;
         if !fighter.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError {
                 projector_item_id: *item_id,
@@ -29,7 +29,7 @@ impl SolarSystem {
             let autocharge = self
                 .uad
                 .items
-                .get_item_mut(&autocharge_id)
+                .get_mut_by_id(&autocharge_id)
                 .unwrap()
                 .get_autocharge_mut()
                 .unwrap();
@@ -39,7 +39,13 @@ impl SolarSystem {
         self.remove_item_id_projection_from_svc(item_id, projectee_item_id);
         // Update user data for fighter
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
-        let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
+        let fighter = self
+            .uad
+            .items
+            .get_mut_by_id(item_id)
+            .unwrap()
+            .get_fighter_mut()
+            .unwrap();
         fighter.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }

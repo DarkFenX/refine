@@ -9,22 +9,22 @@ impl SolarSystem {
         item_id: &ItemId,
         mutation: ItemAddMutation,
     ) -> Result<(), AddDroneMutationError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         self.svc.unload_item(&self.uad, item);
-        let drone = match self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut() {
+        let drone = match self.uad.items.get_mut_by_id(item_id).unwrap().get_drone_mut() {
             Ok(drone) => drone,
             Err(error) => {
-                let item = self.uad.items.get_item(item_id).unwrap();
+                let item = self.uad.items.get_by_id(item_id).unwrap();
                 self.svc.load_item(&self.uad, item);
                 return Err(error.into());
             }
         };
         if let Err(error) = drone.mutate(&self.uad.src, mutation) {
-            let item = self.uad.items.get_item(item_id).unwrap();
+            let item = self.uad.items.get_by_id(item_id).unwrap();
             self.svc.load_item(&self.uad, item);
             return Err(error.into());
         }
-        let item = self.uad.items.get_item(item_id).unwrap();
+        let item = self.uad.items.get_by_id(item_id).unwrap();
         self.svc.load_item(&self.uad, item);
         Ok(())
     }

@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_item(&self, item_id: &ItemId) -> Result<ItemInfo, GetItemError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         Ok(ItemInfo::from_sol_item(item, self))
     }
 }

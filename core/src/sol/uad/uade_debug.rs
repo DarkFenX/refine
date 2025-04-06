@@ -21,7 +21,7 @@ impl Uad {
         // System-wide effects
         for item_id in self.sw_effects.iter() {
             seen_items.push(*item_id);
-            let item = match self.items.get_item(item_id) {
+            let item = match self.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -33,7 +33,7 @@ impl Uad {
         // Projected effects
         for item_id in self.proj_effects.iter() {
             seen_items.push(*item_id);
-            let item = match self.items.get_item(item_id) {
+            let item = match self.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };

@@ -5,12 +5,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_service(&mut self, item_id: &ItemId) -> Result<(), RemoveServiceError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let service = item.get_service()?;
         self.svc.remove_item(&self.uad, item);
         let fit = self.uad.fits.get_fit_mut(&service.get_fit_id()).unwrap();
         fit.services.remove(item_id);
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

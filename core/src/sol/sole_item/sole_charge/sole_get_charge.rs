@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_charge(&self, item_id: &ItemId) -> Result<ChargeInfo, GetChargeError> {
-        let charge = self.uad.items.get_item(item_id)?.get_charge()?;
+        let charge = self.uad.items.get_by_id(item_id)?.get_charge()?;
         Ok(ChargeInfo::from(charge))
     }
 }

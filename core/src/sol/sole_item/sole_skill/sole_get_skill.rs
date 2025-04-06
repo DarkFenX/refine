@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_skill(&self, item_id: &ItemId) -> Result<SkillInfo, GetSkillError> {
-        let skill = self.uad.items.get_item(item_id)?.get_skill()?;
+        let skill = self.uad.items.get_by_id(item_id)?.get_skill()?;
         Ok(SkillInfo::from(skill))
     }
 }

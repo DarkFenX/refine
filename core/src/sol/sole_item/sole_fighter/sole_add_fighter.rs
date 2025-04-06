@@ -30,7 +30,7 @@ impl SolarSystem {
         let item_id = self.uad.items.alloc_item_id();
         let fighter = Fighter::new(&self.uad.src, item_id, type_id, fit_id, state);
         let item = Item::Fighter(fighter);
-        self.uad.items.add_item(item);
+        self.uad.items.add(item);
         // Reserve IDs for autocharges
         self.add_item_autocharges(&item_id);
         // Finalize updates of user data
@@ -38,7 +38,7 @@ impl SolarSystem {
         fit.fighters.insert(item_id);
         // Add fighter and autocharges to services
         self.add_item_id_to_svc(&item_id);
-        let fighter = self.uad.items.get_item(&item_id).unwrap().get_fighter().unwrap();
+        let fighter = self.uad.items.get_by_id(&item_id).unwrap().get_fighter().unwrap();
         for autocharge_id in fighter.get_autocharges().values().copied().collect_vec() {
             self.add_item_id_to_svc(&autocharge_id);
         }

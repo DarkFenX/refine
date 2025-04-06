@@ -28,7 +28,7 @@ impl SolarSystem {
                 Some(ship_id) => self
                     .uad
                     .items
-                    .get_item(&ship_id)
+                    .get_by_id(&ship_id)
                     .unwrap()
                     .get_ship()
                     .unwrap()
@@ -57,7 +57,7 @@ impl SolarSystem {
                     for (projectee_item_id, range) in autocharge.get_projs().iter() {
                         self.proj_tracker
                             .reg_projectee(autocharge.get_item_id(), *projectee_item_id);
-                        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+                        let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
                         self.svc.add_item_projection(&self.uad, item, projectee_item, *range);
                     }
                 }
@@ -71,10 +71,10 @@ impl SolarSystem {
         for item in self.uad.items.iter() {
             if let Some(autocharges) = item.get_autocharges() {
                 for autocharge_id in autocharges.values() {
-                    let autocharge_item = self.uad.items.get_item(autocharge_id).unwrap();
+                    let autocharge_item = self.uad.items.get_by_id(autocharge_id).unwrap();
                     let autocharge = autocharge_item.get_autocharge().unwrap();
                     for projectee_item_id in autocharge.get_projs().iter_items() {
-                        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+                        let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
                         // Update services
                         self.svc
                             .remove_item_projection(&self.uad, autocharge_item, projectee_item);
@@ -92,13 +92,13 @@ impl SolarSystem {
         for (item_id, autocharge_ids) in autocharge_map.into_iter() {
             self.uad
                 .items
-                .get_item_mut(&item_id)
+                .get_mut_by_id(&item_id)
                 .unwrap()
                 .get_autocharges_mut()
                 .unwrap()
                 .clear();
             for autocharge_id in autocharge_ids {
-                self.uad.items.remove_item(&autocharge_id);
+                self.uad.items.remove_by_id(&autocharge_id);
             }
         }
     }

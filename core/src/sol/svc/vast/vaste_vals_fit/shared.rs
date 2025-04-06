@@ -29,7 +29,7 @@ pub(super) fn is_flag_set(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_attr_i
         Some(val) => val != OF(0.0),
         None => match uad
             .items
-            .get_item(item_id)
+            .get_by_id(item_id)
             .unwrap()
             .get_a_attrs()
             .unwrap()

@@ -9,7 +9,7 @@ impl SolarSystem {
         let implant_infos = fit
             .implants
             .iter()
-            .map(|v| ImplantInfo::from(self.uad.items.get_item(v).unwrap().get_implant().unwrap()))
+            .map(|v| ImplantInfo::from(self.uad.items.get_by_id(v).unwrap().get_implant().unwrap()))
             .collect();
         Ok(implant_infos)
     }

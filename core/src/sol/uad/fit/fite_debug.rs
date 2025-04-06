@@ -23,7 +23,7 @@ impl Fit {
         // Character
         if let Some(item_id) = self.character {
             seen_items.push(item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_by_id(&item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -38,7 +38,7 @@ impl Fit {
         // Skills
         for fit_skill in self.skills.values() {
             seen_items.push(fit_skill.item_id);
-            let item = match uad.items.get_item(&fit_skill.item_id) {
+            let item = match uad.items.get_by_id(&fit_skill.item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -58,7 +58,7 @@ impl Fit {
         // Implants
         for item_id in self.implants.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -73,7 +73,7 @@ impl Fit {
         // Boosters
         for item_id in self.boosters.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -88,7 +88,7 @@ impl Fit {
         // Ship
         if let Some(item_id) = self.ship {
             seen_items.push(item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_by_id(&item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -103,7 +103,7 @@ impl Fit {
         // Stance
         if let Some(item_id) = self.stance {
             seen_items.push(item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_by_id(&item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -118,7 +118,7 @@ impl Fit {
         // Subsystems
         for item_id in self.subsystems.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -134,7 +134,7 @@ impl Fit {
         self.mods_high.debug_consistency_check()?;
         for item_id in self.mods_high.iter_ids() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -155,7 +155,7 @@ impl Fit {
         self.mods_mid.debug_consistency_check()?;
         for item_id in self.mods_mid.iter_ids() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -176,7 +176,7 @@ impl Fit {
         self.mods_low.debug_consistency_check()?;
         for item_id in self.mods_low.iter_ids() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -196,7 +196,7 @@ impl Fit {
         // Rigs
         for item_id in self.rigs.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -211,7 +211,7 @@ impl Fit {
         // Services
         for item_id in self.services.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -226,7 +226,7 @@ impl Fit {
         // Drones
         for item_id in self.drones.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -241,7 +241,7 @@ impl Fit {
         // Fighters
         for item_id in self.fighters.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -258,7 +258,7 @@ impl Fit {
         // Fit-wide effects
         for item_id in self.fw_effects.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(item_id) {
+            let item = match uad.items.get_by_id(item_id) {
                 Ok(item) => item,
                 _ => return Err(DebugError {}),
             };
@@ -277,7 +277,7 @@ impl Fit {
 fn check_module_charge(uad: &Uad, fit_id: &FitId, module: &Module, seen_items: &mut Vec<ItemId>) -> DebugResult {
     if let Some(item_id) = module.get_charge_item_id() {
         seen_items.push(item_id);
-        let item = match uad.items.get_item(&item_id) {
+        let item = match uad.items.get_by_id(&item_id) {
             Ok(item) => item,
             _ => return Err(DebugError {}),
         };
@@ -304,7 +304,7 @@ fn check_fighter_autocharges(
 ) -> DebugResult {
     for item_id in fighter.get_autocharges().values() {
         seen_items.push(*item_id);
-        let item = match uad.items.get_item(item_id) {
+        let item = match uad.items.get_by_id(item_id) {
             Ok(item) => item,
             _ => return Err(DebugError {}),
         };

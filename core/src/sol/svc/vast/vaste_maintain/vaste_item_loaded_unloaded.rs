@@ -293,7 +293,7 @@ impl Vast {
                 if let Some(drone_limit) = &extras.drone_limit {
                     fit_data.drone_group_limit.extend(drone_limit.group_ids.iter());
                     for drone_item_id in fit.drones.iter() {
-                        let drone_item = uad.items.get_item(drone_item_id).unwrap();
+                        let drone_item = uad.items.get_by_id(drone_item_id).unwrap();
                         // Not every drone is guaranteed to be loaded
                         if let Some(drone_a_group_id) = drone_item.get_a_group_id() {
                             if !drone_limit.group_ids.contains(&drone_a_group_id) {
@@ -317,7 +317,7 @@ impl Vast {
                     fit.rigs.iter(),
                     fit.services.iter()
                 ) {
-                    let item = uad.items.get_item(item_id).unwrap();
+                    let item = uad.items.get_by_id(item_id).unwrap();
                     // Not every item is guaranteed to be loaded
                     if let Some(item_cat_id) = item.get_a_category_id() {
                         match item_cat_id {
@@ -651,7 +651,7 @@ fn item_vs_ship_kind_add(
                 fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_id, ValShipKind::Ship);
             }
             ShipKind::Unknown => {
-                let ship = uad.items.get_item(&ship_id).unwrap();
+                let ship = uad.items.get_by_id(&ship_id).unwrap();
                 if ship.is_loaded() {
                     fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_id, ValShipKind::Ship);
                 }
@@ -665,7 +665,7 @@ fn item_vs_ship_kind_add(
             }
             ShipKind::Structure => (),
             ShipKind::Unknown => {
-                let ship = uad.items.get_item(&ship_id).unwrap();
+                let ship = uad.items.get_by_id(&ship_id).unwrap();
                 if ship.is_loaded() {
                     fit_data
                         .mods_rigs_svcs_vs_ship_kind

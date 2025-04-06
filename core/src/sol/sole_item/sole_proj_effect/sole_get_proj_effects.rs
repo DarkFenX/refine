@@ -5,7 +5,7 @@ impl SolarSystem {
         self.uad
             .proj_effects
             .iter()
-            .map(|v| ProjEffectInfo::from(self.uad.items.get_item(v).unwrap().get_proj_effect().unwrap()))
+            .map(|v| ProjEffectInfo::from(self.uad.items.get_by_id(v).unwrap().get_proj_effect().unwrap()))
             .collect()
     }
 }

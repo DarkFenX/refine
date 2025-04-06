@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_service(&self, item_id: &ItemId) -> Result<ServiceInfo, GetServiceError> {
-        let service = self.uad.items.get_item(item_id)?.get_service()?;
+        let service = self.uad.items.get_by_id(item_id)?.get_service()?;
         Ok(ServiceInfo::from(service))
     }
 }

@@ -8,16 +8,16 @@ use crate::{
 impl SolarSystem {
     pub fn remove_fighter(&mut self, item_id: &ItemId) -> Result<(), RemoveFighterError> {
         // Check if everything is correct and collect autocharge IDs to be used later
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let fighter = item.get_fighter()?;
         let fit_id = fighter.get_fit_id();
         let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         // Remove outgoing projections for fighter and its autocharges
         for projectee_item_id in fighter.get_projs().iter_items() {
-            let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+            let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
             for autocharge_id in autocharge_ids.iter() {
                 // Update services for autocharge
-                let autocharge_item = self.uad.items.get_item(autocharge_id).unwrap();
+                let autocharge_item = self.uad.items.get_by_id(autocharge_id).unwrap();
                 self.svc
                     .remove_item_projection(&self.uad, autocharge_item, projectee_item);
                 // Update user data for autocharge - don't touch data on charge itself, since charge
@@ -38,7 +38,7 @@ impl SolarSystem {
             self.remove_item_id_from_svc(&autocharge_id);
             // Update user data for autocharge - not updating fighter<->autocharge references
             // because both will be removed
-            self.uad.items.remove_item(&autocharge_id);
+            self.uad.items.remove_by_id(&autocharge_id);
         }
         // Remove fighter
         // Update services for fighter
@@ -46,7 +46,7 @@ impl SolarSystem {
         // Update user data for fighter
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.fighters.remove(item_id);
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

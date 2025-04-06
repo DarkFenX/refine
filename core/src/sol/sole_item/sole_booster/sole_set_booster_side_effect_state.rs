@@ -10,13 +10,13 @@ impl SolarSystem {
         effect_id: &EffectId,
         state: bool,
     ) -> Result<(), SetBoosterSideEffectStateError> {
-        let booster = self.uad.items.get_item_mut(item_id)?.get_booster_mut()?;
+        let booster = self.uad.items.get_mut_by_id(item_id)?.get_booster_mut()?;
         let effect_state = match state {
             true => EffectMode::StateCompliance,
             false => EffectMode::FullCompliance,
         };
         booster.get_effect_modes_mut().set(effect_id.into(), effect_state);
-        let item = self.uad.items.get_item(item_id).unwrap();
+        let item = self.uad.items.get_by_id(item_id).unwrap();
         self.svc.process_effects(&self.uad, item, item.get_a_state());
         Ok(())
     }

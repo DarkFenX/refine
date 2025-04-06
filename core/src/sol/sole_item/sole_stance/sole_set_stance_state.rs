@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_stance_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetStanceStateError> {
-        let stance = self.uad.items.get_item_mut(item_id)?.get_stance_mut()?;
+        let stance = self.uad.items.get_mut_by_id(item_id)?.get_stance_mut()?;
         let old_a_state = stance.get_a_state();
         stance.set_stance_state(state);
         let new_a_state = stance.get_a_state();

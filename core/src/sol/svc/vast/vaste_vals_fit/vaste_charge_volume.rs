@@ -92,7 +92,7 @@ fn calculate_item_result(
     module_item_id: &ItemId,
     charge_volume: AttrVal,
 ) -> ValCache<AttrVal, (ItemId, ValChargeVolumeChargeInfo)> {
-    let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
+    let module = uad.items.get_by_id(module_item_id).unwrap().get_module().unwrap();
     let module_capacity = match module.get_a_attrs() {
         Some(attrs) => match attrs.get(&ac::attrs::CAPACITY) {
             Some(module_capacity) => *module_capacity,

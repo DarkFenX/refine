@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_fw_effect(&self, item_id: &ItemId) -> Result<FwEffectInfo, GetFwEffectError> {
-        let fw_effect = self.uad.items.get_item(item_id)?.get_fw_effect()?;
+        let fw_effect = self.uad.items.get_by_id(item_id)?.get_fw_effect()?;
         Ok(FwEffectInfo::from(fw_effect))
     }
 }

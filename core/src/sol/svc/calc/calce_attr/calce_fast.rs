@@ -47,7 +47,7 @@ impl Calc {
             // There can be no data due to one of two reasons: no item, or item is not loaded.
             // Figure which one is it
             None => {
-                return Err(match uad.items.get_item(item_id) {
+                return Err(match uad.items.get_by_id(item_id) {
                     Ok(_) => ItemLoadedError { item_id: *item_id }.into(),
                     Err(error) => error.into(),
                 });
@@ -83,7 +83,7 @@ impl Calc {
             // There can be no data due to one of two reasons: no item, or item is not loaded.
             // Figure which one is it
             None => {
-                return Err(match uad.items.get_item(item_id) {
+                return Err(match uad.items.get_by_id(item_id) {
                     Ok(_) => ItemLoadedError { item_id: *item_id }.into(),
                     Err(error) => error.into(),
                 });
@@ -105,7 +105,7 @@ impl Calc {
         uad: &Uad,
         item_id: &ItemId,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, CalcAttrVal)>, LoadedItemFoundError> {
-        let item = uad.items.get_item(item_id)?;
+        let item = uad.items.get_by_id(item_id)?;
         // SolItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
@@ -155,7 +155,7 @@ impl Calc {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = uad.items.get_item(&modifier.raw.affector_item_id).unwrap();
+            let affector_item = uad.items.get_by_id(&modifier.raw.affector_item_id).unwrap();
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
             let mod_key = ModificationKey::from(modifier);
             let modification = Modification {
@@ -176,7 +176,7 @@ impl Calc {
         item_id: &ItemId,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, AttrMetaFoundError> {
-        let item = uad.items.get_item(item_id).unwrap();
+        let item = uad.items.get_by_id(item_id).unwrap();
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
             None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }),

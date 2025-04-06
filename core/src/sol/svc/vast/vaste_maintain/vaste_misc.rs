@@ -23,7 +23,7 @@ impl Vast {
                     false => entry.get_mut().current_lvl = Some(skill.get_a_level()),
                 },
                 Entry::Vacant(entry) => {
-                    let other_item = uad.items.get_item(other_item_id).unwrap();
+                    let other_item = uad.items.get_by_id(other_item_id).unwrap();
                     let required_lvl = *other_item
                         .get_effective_a_skill_reqs()
                         .unwrap()

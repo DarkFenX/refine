@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_implant_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetImplantStateError> {
-        let implant = self.uad.items.get_item_mut(item_id)?.get_implant_mut()?;
+        let implant = self.uad.items.get_mut_by_id(item_id)?.get_implant_mut()?;
         let old_a_state = implant.get_a_state();
         implant.set_implant_state(state);
         let new_a_state = implant.get_a_state();

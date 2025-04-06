@@ -15,7 +15,7 @@ impl SolarSystem {
         }
         fit.sec_status = sec_status;
         if let Some(ship_id) = fit.ship {
-            let ship = self.uad.items.get_item(&ship_id).unwrap().get_ship().unwrap();
+            let ship = self.uad.items.get_by_id(&ship_id).unwrap().get_ship().unwrap();
             self.svc.ship_sec_status_changed(&self.uad, ship);
         }
         Ok(())

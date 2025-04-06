@@ -8,7 +8,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(fit
             .ship
-            .map(|v| ShipInfo::from(self.uad.items.get_item(&v).unwrap().get_ship().unwrap())))
+            .map(|v| ShipInfo::from(self.uad.items.get_by_id(&v).unwrap().get_ship().unwrap())))
     }
 }
 

@@ -20,7 +20,7 @@ impl SolarSystem {
         let item = Item::FwEffect(fw_effect);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.fw_effects.insert(item_id);
-        self.uad.items.add_item(item);
+        self.uad.items.add(item);
         self.add_item_id_to_svc(&item_id);
         Ok(info)
     }

@@ -53,7 +53,7 @@ impl SolarSystem {
                         if let Some(rack_module_id) = rack_module_id {
                             self.uad
                                 .items
-                                .get_item_mut(rack_module_id)
+                                .get_mut_by_id(rack_module_id)
                                 .unwrap()
                                 .get_module_mut()
                                 .unwrap()
@@ -90,14 +90,14 @@ impl SolarSystem {
             None,
         );
         let module_item = Item::Module(module);
-        self.uad.items.add_item(module_item);
+        self.uad.items.add(module_item);
         let charge_item_id = match charge_type_id {
             Some(charge_type_id) => {
                 let charge_item_id = self.uad.items.alloc_item_id();
                 // Update user data with new charge info
                 self.uad
                     .items
-                    .get_item_mut(&module_item_id)
+                    .get_mut_by_id(&module_item_id)
                     .unwrap()
                     .get_module_mut()
                     .unwrap()
@@ -112,7 +112,7 @@ impl SolarSystem {
                     false,
                 );
                 let item = Item::Charge(charge);
-                self.uad.items.add_item(item);
+                self.uad.items.add(item);
                 Some(charge_item_id)
             }
             None => None,

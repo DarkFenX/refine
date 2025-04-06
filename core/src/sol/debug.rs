@@ -19,7 +19,7 @@ pub(in crate::sol) fn check_fit_id(uad: &Uad, fit_id: &FitId) -> DebugResult {
 }
 
 pub(in crate::sol) fn check_item_id(uad: &Uad, item_id: &ItemId, check_load: bool) -> DebugResult {
-    let item = match uad.items.get_item(item_id) {
+    let item = match uad.items.get_by_id(item_id) {
         Ok(item) => item,
         _ => return Err(DebugError {}),
     };

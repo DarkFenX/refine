@@ -9,7 +9,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol) fn add_item_autocharges(&mut self, item_id: &ItemId) {
-        let item = self.uad.items.get_item(item_id).unwrap();
+        let item = self.uad.items.get_by_id(item_id).unwrap();
         let item_a_state = item.get_a_state();
         let projections = match item.iter_projs() {
             Some(projections) => projections.map(|(i, r)| (*i, *r)).collect(),
@@ -44,7 +44,7 @@ impl SolarSystem {
                             // Add autocharge item to user data and fill info map
                             new_ac_map.insert(*a_effect_id, autocharge.get_item_id());
                             let ac_item = Item::Autocharge(autocharge);
-                            self.uad.items.add_item(ac_item);
+                            self.uad.items.add(ac_item);
                         }
                     }
                 }
@@ -54,7 +54,7 @@ impl SolarSystem {
             let item_acs = self
                 .uad
                 .items
-                .get_item_mut(item_id)
+                .get_mut_by_id(item_id)
                 .unwrap()
                 .get_autocharges_mut()
                 .unwrap();

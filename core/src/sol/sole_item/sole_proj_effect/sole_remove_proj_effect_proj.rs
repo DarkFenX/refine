@@ -10,7 +10,7 @@ impl SolarSystem {
         projectee_item_id: &ItemId,
     ) -> Result<(), RemoveProjEffectProjError> {
         // Check if projection is defined
-        let proj_effect_item = self.uad.items.get_item(item_id)?;
+        let proj_effect_item = self.uad.items.get_by_id(item_id)?;
         let proj_effect = proj_effect_item.get_proj_effect()?;
         if !proj_effect.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError {
@@ -20,7 +20,7 @@ impl SolarSystem {
             .into());
         };
         // Update services
-        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+        let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
         self.svc
             .remove_item_projection(&self.uad, proj_effect_item, projectee_item);
         // Update user data
@@ -28,7 +28,7 @@ impl SolarSystem {
         let proj_effect = self
             .uad
             .items
-            .get_item_mut(item_id)
+            .get_mut_by_id(item_id)
             .unwrap()
             .get_proj_effect_mut()
             .unwrap();

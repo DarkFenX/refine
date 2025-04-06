@@ -6,7 +6,7 @@ use crate::{
 impl SolarSystem {
     pub fn remove_ship(&mut self, item_id: &ItemId) -> Result<(), RemoveShipError> {
         // Just check if everything is correct
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let ship = item.get_ship()?;
         let fit_id = ship.get_fit_id();
         // Remove incoming projections
@@ -17,7 +17,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.ship = None;
         fit.kind = ShipKind::Unknown;
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

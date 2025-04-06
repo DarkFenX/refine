@@ -9,7 +9,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_item(&mut self, item_id: &ItemId, pos_mode: RmMode) -> Result<(), RemoveItemError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         match item {
             // Auto charge can't be removed no matter what
             Item::Autocharge(_) => {

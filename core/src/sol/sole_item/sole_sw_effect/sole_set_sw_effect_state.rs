@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_sw_effect_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetSwEffectStateError> {
-        let sw_effect = self.uad.items.get_item_mut(item_id)?.get_sw_effect_mut()?;
+        let sw_effect = self.uad.items.get_mut_by_id(item_id)?.get_sw_effect_mut()?;
         let old_a_state = sw_effect.get_a_state();
         sw_effect.set_sw_effect_state(state);
         let new_a_state = sw_effect.get_a_state();

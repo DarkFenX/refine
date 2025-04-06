@@ -10,7 +10,7 @@ impl SolarSystem {
         projectee_item_id: &ItemId,
     ) -> Result<(), RemoveModuleProjError> {
         // Check if projection is defined
-        let module = self.uad.items.get_item(item_id)?.get_module()?;
+        let module = self.uad.items.get_by_id(item_id)?.get_module()?;
         if !module.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError {
                 projector_item_id: *item_id,
@@ -27,7 +27,7 @@ impl SolarSystem {
             let charge = self
                 .uad
                 .items
-                .get_item_mut(&charge_id)
+                .get_mut_by_id(&charge_id)
                 .unwrap()
                 .get_charge_mut()
                 .unwrap();
@@ -37,7 +37,7 @@ impl SolarSystem {
         self.remove_item_id_projection_from_svc(item_id, projectee_item_id);
         // Update user data for module
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
-        let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
+        let module = self.uad.items.get_mut_by_id(item_id).unwrap().get_module_mut().unwrap();
         module.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }

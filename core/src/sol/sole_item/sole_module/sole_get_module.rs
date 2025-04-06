@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_module(&self, item_id: &ItemId) -> Result<ModuleInfo, GetModuleError> {
-        let module = self.uad.items.get_item(item_id)?.get_module()?;
+        let module = self.uad.items.get_by_id(item_id)?.get_module()?;
         Ok(self.make_module_info(module))
     }
 }

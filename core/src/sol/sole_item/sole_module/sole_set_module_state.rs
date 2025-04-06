@@ -6,7 +6,7 @@ use crate::{
 impl SolarSystem {
     pub fn set_module_state(&mut self, item_id: &ItemId, state: ModuleState) -> Result<(), SetModuleStateError> {
         // Update user data for module
-        let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
+        let module = self.uad.items.get_mut_by_id(item_id)?.get_module_mut()?;
         let charge_id = module.get_charge_item_id();
         let old_a_state = module.get_a_state();
         module.set_module_state(state);
@@ -18,7 +18,7 @@ impl SolarSystem {
             let charge = self
                 .uad
                 .items
-                .get_item_mut(&charge_id)
+                .get_mut_by_id(&charge_id)
                 .unwrap()
                 .get_charge_mut()
                 .unwrap();

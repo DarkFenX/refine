@@ -41,7 +41,7 @@ impl SolarSystem {
                 .into());
             }
         }
-        self.uad.items.add_item(item);
+        self.uad.items.add(item);
         self.add_item_id_to_svc(&item_id);
         Ok(info)
     }

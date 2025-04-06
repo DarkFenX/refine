@@ -11,7 +11,7 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) -> Result<(), ChangeModuleProjError> {
         // Check if projection is defined before changing it
-        let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
+        let module = self.uad.items.get_mut_by_id(item_id)?.get_module_mut()?;
         let old_range = match module.get_projs().get(projectee_item_id) {
             Some(old_range) => *old_range,
             None => {
@@ -36,7 +36,7 @@ impl SolarSystem {
             let charge = self
                 .uad
                 .items
-                .get_item_mut(&charge_id)
+                .get_mut_by_id(&charge_id)
                 .unwrap()
                 .get_charge_mut()
                 .unwrap();

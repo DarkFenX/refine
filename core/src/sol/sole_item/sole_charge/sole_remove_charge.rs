@@ -5,12 +5,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_charge(&mut self, item_id: &ItemId) -> Result<(), RemoveChargeError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let charge = item.get_charge()?;
         // Remove outgoing projections
         for projectee_item_id in charge.get_projs().iter_items() {
             // Update services for charge
-            let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+            let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
             self.svc.remove_item_projection(&self.uad, item, projectee_item);
             // Update user data for charge - do not touch projections container on charge itself,
             // because we're removing it anyway
@@ -23,12 +23,12 @@ impl SolarSystem {
         let module = self
             .uad
             .items
-            .get_item_mut(&module_item_id)
+            .get_mut_by_id(&module_item_id)
             .unwrap()
             .get_module_mut()
             .unwrap();
         module.set_charge_item_id(None);
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

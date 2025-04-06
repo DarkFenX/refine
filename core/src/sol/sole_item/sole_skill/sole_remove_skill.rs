@@ -5,12 +5,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_skill(&mut self, item_id: &ItemId) -> Result<(), RemoveSkillError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let skill = item.get_skill()?;
         self.svc.remove_item(&self.uad, item);
         let fit = self.uad.fits.get_fit_mut(&skill.get_fit_id()).unwrap();
         fit.skills.remove(&skill.get_a_item_id());
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

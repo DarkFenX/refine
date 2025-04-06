@@ -85,7 +85,7 @@ impl VastFitData {
 }
 
 fn calculate_item_result(uad: &Uad, module_item_id: &ItemId) -> ValCache<(), (ItemId, ValChargeGroupChargeInfo)> {
-    let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
+    let module = uad.items.get_by_id(module_item_id).unwrap().get_module().unwrap();
     let charge_item_id = match module.get_charge_item_id() {
         Some(charge_item_id) => charge_item_id,
         None => return ValCache::Pass(()),
@@ -98,7 +98,7 @@ fn calculate_item_result(uad: &Uad, module_item_id: &ItemId) -> ValCache<(), (It
         .unwrap()
         .group_ids
         .clone();
-    let charge_group_id = match uad.items.get_item(&charge_item_id).unwrap().get_a_group_id() {
+    let charge_group_id = match uad.items.get_by_id(&charge_item_id).unwrap().get_a_group_id() {
         Some(charge_group_id) => charge_group_id,
         None => return ValCache::Pass(()),
     };

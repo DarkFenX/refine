@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_drone(&self, item_id: &ItemId) -> Result<DroneInfo, GetDroneError> {
-        let drone = self.uad.items.get_item(item_id)?.get_drone()?;
+        let drone = self.uad.items.get_by_id(item_id)?.get_drone()?;
         Ok(self.make_drone_info(drone))
     }
 }

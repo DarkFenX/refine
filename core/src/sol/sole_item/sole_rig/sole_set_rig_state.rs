@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_rig_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetRigStateError> {
-        let rig = self.uad.items.get_item_mut(item_id)?.get_rig_mut()?;
+        let rig = self.uad.items.get_mut_by_id(item_id)?.get_rig_mut()?;
         let old_a_state = rig.get_a_state();
         rig.set_rig_state(state);
         let new_a_state = rig.get_a_state();

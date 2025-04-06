@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_subsystem(&self, item_id: &ItemId) -> Result<SubsystemInfo, GetSubsystemError> {
-        let subsystem = self.uad.items.get_item(item_id)?.get_subsystem()?;
+        let subsystem = self.uad.items.get_by_id(item_id)?.get_subsystem()?;
         Ok(SubsystemInfo::from(subsystem))
     }
 }

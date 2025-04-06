@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_drone_state(&mut self, item_id: &ItemId, state: MinionState) -> Result<(), SetDroneStateError> {
-        let drone = self.uad.items.get_item_mut(item_id)?.get_drone_mut()?;
+        let drone = self.uad.items.get_mut_by_id(item_id)?.get_drone_mut()?;
         let old_a_state = drone.get_a_state();
         drone.set_drone_state(state);
         let new_a_state = drone.get_a_state();

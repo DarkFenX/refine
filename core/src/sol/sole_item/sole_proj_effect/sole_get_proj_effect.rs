@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_proj_effect(&self, item_id: &ItemId) -> Result<ProjEffectInfo, GetProjEffectError> {
-        let proj_effect = self.uad.items.get_item(item_id)?.get_proj_effect().unwrap();
+        let proj_effect = self.uad.items.get_by_id(item_id)?.get_proj_effect().unwrap();
         Ok(ProjEffectInfo::from(proj_effect))
     }
 }

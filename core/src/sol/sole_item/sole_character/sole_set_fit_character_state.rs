@@ -20,7 +20,7 @@ impl SolarSystem {
         let character = self
             .uad
             .items
-            .get_item_mut(&item_id)
+            .get_mut_by_id(&item_id)
             .unwrap()
             .get_character_mut()
             .unwrap();

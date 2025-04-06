@@ -9,7 +9,7 @@ impl SolarSystem {
         let fw_effect_infos = fit
             .fw_effects
             .iter()
-            .map(|v| FwEffectInfo::from(self.uad.items.get_item(v).unwrap().get_fw_effect().unwrap()))
+            .map(|v| FwEffectInfo::from(self.uad.items.get_by_id(v).unwrap().get_fw_effect().unwrap()))
             .collect();
         Ok(fw_effect_infos)
     }

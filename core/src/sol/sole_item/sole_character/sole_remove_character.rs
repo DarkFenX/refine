@@ -5,12 +5,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_character(&mut self, item_id: &ItemId) -> Result<(), RemoveCharacterError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let character = item.get_character()?;
         self.svc.remove_item(&self.uad, item);
         let fit = self.uad.fits.get_fit_mut(&character.get_fit_id()).unwrap();
         fit.character = None;
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

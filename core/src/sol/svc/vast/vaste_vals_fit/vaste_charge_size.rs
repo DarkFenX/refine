@@ -90,12 +90,12 @@ fn calculate_item_result(
     module_item_id: &ItemId,
     allowed_size: AttrVal,
 ) -> ValCache<AttrVal, (ItemId, ValChargeSizeChargeInfo)> {
-    let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
+    let module = uad.items.get_by_id(module_item_id).unwrap().get_module().unwrap();
     let charge_item_id = match module.get_charge_item_id() {
         Some(charge_item_id) => charge_item_id,
         None => return ValCache::Pass(allowed_size),
     };
-    let charge_attrs = match uad.items.get_item(&charge_item_id).unwrap().get_a_attrs() {
+    let charge_attrs = match uad.items.get_by_id(&charge_item_id).unwrap().get_a_attrs() {
         Some(charge_attrs) => charge_attrs,
         None => return ValCache::Pass(allowed_size),
     };

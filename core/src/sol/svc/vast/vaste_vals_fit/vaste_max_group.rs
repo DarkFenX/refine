@@ -170,7 +170,7 @@ fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_at
         // Limited items are guaranteed to have some unmodified limit value
         None => uad
             .items
-            .get_item(item_id)
+            .get_by_id(item_id)
             .unwrap()
             .get_a_attrs()
             .unwrap()

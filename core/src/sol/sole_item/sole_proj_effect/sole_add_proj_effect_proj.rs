@@ -13,7 +13,7 @@ impl SolarSystem {
         let proj_effect = self
             .uad
             .items
-            .get_item(item_id)
+            .get_by_id(item_id)
             .map_err(AddProjEffectProjError::ProjectorNotFound)?
             .get_proj_effect()
             .map_err(AddProjEffectProjError::ProjectorIsNotProjEffect)?;
@@ -28,7 +28,7 @@ impl SolarSystem {
         let projectee_item = self
             .uad
             .items
-            .get_item(&projectee_item_id)
+            .get_by_id(&projectee_item_id)
             .map_err(AddProjEffectProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddProjEffectProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
@@ -40,7 +40,7 @@ impl SolarSystem {
         let proj_effect = self
             .uad
             .items
-            .get_item_mut(item_id)
+            .get_mut_by_id(item_id)
             .unwrap()
             .get_proj_effect_mut()
             .unwrap();

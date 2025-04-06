@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_rig(&self, item_id: &ItemId) -> Result<RigInfo, GetRigError> {
-        let rig = self.uad.items.get_item(item_id)?.get_rig()?;
+        let rig = self.uad.items.get_by_id(item_id)?.get_rig()?;
         Ok(RigInfo::from(rig))
     }
 }

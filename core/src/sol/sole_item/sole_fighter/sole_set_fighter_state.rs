@@ -8,7 +8,7 @@ use crate::{
 impl SolarSystem {
     pub fn set_fighter_state(&mut self, item_id: &ItemId, state: MinionState) -> Result<(), SetFighterStateError> {
         // Update user data for fighter
-        let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
+        let fighter = self.uad.items.get_mut_by_id(item_id)?.get_fighter_mut()?;
         let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         let old_a_state = fighter.get_a_state();
         fighter.set_fighter_state(state);
@@ -20,7 +20,7 @@ impl SolarSystem {
             let autocharge = self
                 .uad
                 .items
-                .get_item_mut(&autocharge_id)
+                .get_mut_by_id(&autocharge_id)
                 .unwrap()
                 .get_autocharge_mut()
                 .unwrap();

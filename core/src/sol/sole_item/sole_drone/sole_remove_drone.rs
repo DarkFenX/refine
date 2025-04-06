@@ -6,13 +6,13 @@ use crate::{
 impl SolarSystem {
     pub fn remove_drone(&mut self, item_id: &ItemId) -> Result<(), RemoveDroneError> {
         // Just check if everything is correct
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let drone = item.get_drone()?;
         let fit_id = drone.get_fit_id();
         // Remove outgoing projections
         for projectee_item_id in drone.get_projs().iter_items() {
             // Update services
-            let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+            let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
             self.svc.remove_item_projection(&self.uad, item, projectee_item);
             // Update user data - do not update info on drone, because drone will be discarded
             // anyway
@@ -25,7 +25,7 @@ impl SolarSystem {
         // Remove drone from user data
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.drones.remove(item_id);
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

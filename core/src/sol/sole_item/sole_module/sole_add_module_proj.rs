@@ -14,7 +14,7 @@ impl SolarSystem {
         let module = self
             .uad
             .items
-            .get_item(item_id)
+            .get_by_id(item_id)
             .map_err(AddModuleProjError::ProjectorNotFound)?
             .get_module()
             .map_err(AddModuleProjError::ProjectorIsNotModule)?;
@@ -29,7 +29,7 @@ impl SolarSystem {
         let projectee_item = self
             .uad
             .items
-            .get_item(&projectee_item_id)
+            .get_by_id(&projectee_item_id)
             .map_err(AddModuleProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddModuleProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
@@ -38,7 +38,7 @@ impl SolarSystem {
             }));
         }
         // Update user data for module
-        let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
+        let module = self.uad.items.get_mut_by_id(item_id).unwrap().get_module_mut().unwrap();
         let charge_id = module.get_charge_item_id();
         module.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
@@ -49,7 +49,7 @@ impl SolarSystem {
             let charge = self
                 .uad
                 .items
-                .get_item_mut(&charge_id)
+                .get_mut_by_id(&charge_id)
                 .unwrap()
                 .get_charge_mut()
                 .unwrap();

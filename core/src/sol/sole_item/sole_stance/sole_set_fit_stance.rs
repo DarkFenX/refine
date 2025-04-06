@@ -20,7 +20,7 @@ impl SolarSystem {
             // Update services
             self.remove_item_id_from_svc(&old_item_id);
             // Update user data - do not touch fit, since it will be changed later
-            self.uad.items.remove_item(&old_item_id);
+            self.uad.items.remove_by_id(&old_item_id);
         }
         // Add new stance
         let item_id = self.uad.items.alloc_item_id();
@@ -29,7 +29,7 @@ impl SolarSystem {
         let item = Item::Stance(stance);
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.stance = Some(item_id);
-        self.uad.items.add_item(item);
+        self.uad.items.add(item);
         self.add_item_id_to_svc(&item_id);
         Ok(info)
     }

@@ -17,3 +17,7 @@ pub type MutaRoll = OF<f64>;
 pub type SecStatus = OF<f64>;
 pub type SkillLevel = u8;
 pub type SlotIndex = i32;
+// Internal-only entity IDs
+pub(in crate::sol) type ItemKey = usize;
+pub(in crate::sol) type FitKey = usize;
+pub(in crate::sol) type FleetKey = usize;

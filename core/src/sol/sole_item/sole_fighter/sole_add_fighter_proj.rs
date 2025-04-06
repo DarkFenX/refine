@@ -16,7 +16,7 @@ impl SolarSystem {
         let fighter = self
             .uad
             .items
-            .get_item(item_id)
+            .get_by_id(item_id)
             .map_err(AddFighterProjError::ProjectorNotFound)?
             .get_fighter()
             .map_err(AddFighterProjError::ProjectorIsNotFighter)?;
@@ -31,7 +31,7 @@ impl SolarSystem {
         let projectee_item = self
             .uad
             .items
-            .get_item(&projectee_item_id)
+            .get_by_id(&projectee_item_id)
             .map_err(AddFighterProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddFighterProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
@@ -40,7 +40,13 @@ impl SolarSystem {
             }));
         }
         // Update user data for fighter
-        let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
+        let fighter = self
+            .uad
+            .items
+            .get_mut_by_id(item_id)
+            .unwrap()
+            .get_fighter_mut()
+            .unwrap();
         let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         fighter.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
@@ -51,7 +57,7 @@ impl SolarSystem {
             let autocharge = self
                 .uad
                 .items
-                .get_item_mut(&autocharge_id)
+                .get_mut_by_id(&autocharge_id)
                 .unwrap()
                 .get_autocharge_mut()
                 .unwrap();

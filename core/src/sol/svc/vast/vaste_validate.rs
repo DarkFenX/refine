@@ -14,7 +14,7 @@ impl Vast {
         fit: &Fit,
         options: &ValOptions,
     ) -> bool {
-        let ship = fit.ship.map(|v| uad.items.get_item(&v).unwrap().get_ship().unwrap());
+        let ship = fit.ship.map(|v| uad.items.get_by_id(&v).unwrap().get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         // Order of validations matters here; the faster validation and the more likely it is to
@@ -354,7 +354,7 @@ impl Vast {
         fit: &Fit,
         options: &ValOptions,
     ) -> ValResult {
-        let ship = fit.ship.map(|v| uad.items.get_item(&v).unwrap().get_ship().unwrap());
+        let ship = fit.ship.map(|v| uad.items.get_by_id(&v).unwrap().get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         let mut result = ValResult::new();

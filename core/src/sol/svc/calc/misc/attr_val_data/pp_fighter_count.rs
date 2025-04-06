@@ -19,7 +19,7 @@ pub(super) fn fighter_count_postproc_fast(
 ) -> CalcAttrVal {
     let count = uad
         .items
-        .get_item(item_id)
+        .get_by_id(item_id)
         .unwrap()
         .get_fighter()
         .unwrap()
@@ -39,7 +39,7 @@ pub(super) fn fighter_count_postproc_info(
 ) -> AttrValInfo {
     let count = uad
         .items
-        .get_item(item_id)
+        .get_by_id(item_id)
         .unwrap()
         .get_fighter()
         .unwrap()

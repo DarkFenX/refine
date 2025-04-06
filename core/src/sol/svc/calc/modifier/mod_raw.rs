@@ -147,11 +147,11 @@ impl RawModifier {
         self.affector_value.revisable_on_item_remove()
     }
     pub(in crate::sol::svc::calc) fn revise_on_item_add(&self, added_item: &Item, uad: &Uad) -> bool {
-        let affector_item = uad.items.get_item(&self.affector_item_id).unwrap();
+        let affector_item = uad.items.get_by_id(&self.affector_item_id).unwrap();
         self.affector_value.revise_on_item_add(affector_item, added_item)
     }
     pub(in crate::sol::svc::calc) fn revise_on_item_remove(&self, added_item: &Item, uad: &Uad) -> bool {
-        let affector_item = uad.items.get_item(&self.affector_item_id).unwrap();
+        let affector_item = uad.items.get_by_id(&self.affector_item_id).unwrap();
         self.affector_value.revise_on_item_remove(affector_item, added_item)
     }
 }

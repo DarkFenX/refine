@@ -10,7 +10,7 @@ impl SolarSystem {
         projectee_item_id: &ItemId,
     ) -> Result<(), RemoveDroneProjError> {
         // Check if projection is defined
-        let drone_item = self.uad.items.get_item(item_id)?;
+        let drone_item = self.uad.items.get_by_id(item_id)?;
         let drone = drone_item.get_drone()?;
         if !drone.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError {
@@ -20,11 +20,11 @@ impl SolarSystem {
             .into());
         };
         // Update services
-        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+        let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
         self.svc.remove_item_projection(&self.uad, drone_item, projectee_item);
         // Update user data
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
-        let drone = self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
+        let drone = self.uad.items.get_mut_by_id(item_id).unwrap().get_drone_mut().unwrap();
         drone.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }

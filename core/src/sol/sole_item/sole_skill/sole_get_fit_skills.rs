@@ -9,7 +9,7 @@ impl SolarSystem {
         let skill_infos = fit
             .skills
             .values()
-            .map(|v| SkillInfo::from(self.uad.items.get_item(&v.item_id).unwrap().get_skill().unwrap()))
+            .map(|v| SkillInfo::from(self.uad.items.get_by_id(&v.item_id).unwrap().get_skill().unwrap()))
             .collect();
         Ok(skill_infos)
     }

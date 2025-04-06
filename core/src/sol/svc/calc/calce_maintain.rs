@@ -218,7 +218,7 @@ impl Calc {
         }
         // Process buffs which rely on attribute being modified
         if ac::extras::BUFF_STDATTR_IDS.contains(a_attr_id) {
-            let item = uad.items.get_item(item_id).unwrap();
+            let item = uad.items.get_by_id(item_id).unwrap();
             // Remove modifiers of buffs which rely on the attribute
             if let Some(raw_modifiers) = self.buffs.extract_dependent_mods(item_id, a_attr_id) {
                 let mut util_items = Vec::new();

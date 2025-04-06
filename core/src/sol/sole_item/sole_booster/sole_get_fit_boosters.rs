@@ -9,7 +9,7 @@ impl SolarSystem {
         let booster_infos = fit
             .boosters
             .iter()
-            .map(|v| self.make_booster_info(self.uad.items.get_item(v).unwrap().get_booster().unwrap()))
+            .map(|v| self.make_booster_info(self.uad.items.get_by_id(v).unwrap().get_booster().unwrap()))
             .collect();
         Ok(booster_infos)
     }

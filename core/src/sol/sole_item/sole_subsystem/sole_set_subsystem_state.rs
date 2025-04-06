@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_subsystem_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetSubsystemStateError> {
-        let subsystem = self.uad.items.get_item_mut(item_id)?.get_subsystem_mut()?;
+        let subsystem = self.uad.items.get_mut_by_id(item_id)?.get_subsystem_mut()?;
         let old_a_state = subsystem.get_a_state();
         subsystem.set_subsystem_state(state);
         let new_a_state = subsystem.get_a_state();

@@ -44,7 +44,7 @@ impl Vast {
                 match missing_skills.entry(skill.get_a_item_id()) {
                     Entry::Occupied(mut entry) => entry.get_mut().current_lvl = None,
                     Entry::Vacant(entry) => {
-                        let other_item = uad.items.get_item(other_item_id).unwrap();
+                        let other_item = uad.items.get_by_id(other_item_id).unwrap();
                         let required_lvl = *other_item
                             .get_effective_a_skill_reqs()
                             .unwrap()

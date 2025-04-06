@@ -54,7 +54,7 @@ impl Calc {
         item_id: &ItemId,
     ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, LoadedItemFoundError> {
         let mut a_attr_ids = RSet::new();
-        for attr_id in uad.items.get_item(item_id)?.get_a_attrs_err()?.keys() {
+        for attr_id in uad.items.get_by_id(item_id)?.get_a_attrs_err()?.keys() {
             a_attr_ids.insert(*attr_id);
         }
         for attr_id in self.attrs.get_item_attr_data(item_id).unwrap().values.keys() {
@@ -69,7 +69,7 @@ impl Calc {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = uad.items.get_item(&modifier.raw.affector_item_id).unwrap();
+            let affector_item = uad.items.get_by_id(&modifier.raw.affector_item_id).unwrap();
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
             let mod_key = ModificationKey::from(modifier);
             let modification = Modification {
@@ -94,7 +94,7 @@ impl Calc {
         item_id: &ItemId,
         a_attr_id: &ad::AAttrId,
     ) -> Result<AttrValInfo, AttrMetaFoundError> {
-        let item = uad.items.get_item(item_id).unwrap();
+        let item = uad.items.get_by_id(item_id).unwrap();
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
             None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }),

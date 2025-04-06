@@ -5,12 +5,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_subsystem(&mut self, item_id: &ItemId) -> Result<(), RemoveSubsystemError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let subsystem = item.get_subsystem()?;
         self.svc.remove_item(&self.uad, item);
         let fit = self.uad.fits.get_fit_mut(&subsystem.get_fit_id()).unwrap();
         fit.subsystems.remove(item_id);
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

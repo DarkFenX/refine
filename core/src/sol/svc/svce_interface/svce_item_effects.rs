@@ -33,7 +33,7 @@ impl Svc {
             self.notify_effects_started(uad, item, &to_start);
             if let Some(projs) = item.iter_projs() {
                 for (proj_item_id, range) in projs {
-                    let proj_item = uad.items.get_item(proj_item_id).unwrap();
+                    let proj_item = uad.items.get_by_id(proj_item_id).unwrap();
                     for a_effect in to_start.iter() {
                         if is_a_effect_projectable(a_effect) {
                             self.notify_effect_projected(uad, item, a_effect, proj_item, *range);
@@ -45,7 +45,7 @@ impl Svc {
         if !to_stop.is_empty() {
             if let Some(proj_items) = item.iter_projectee_items() {
                 for proj_item_id in proj_items {
-                    let proj_item = uad.items.get_item(proj_item_id).unwrap();
+                    let proj_item = uad.items.get_by_id(proj_item_id).unwrap();
                     for a_effect in to_stop.iter() {
                         if is_a_effect_projectable(a_effect) {
                             self.notify_effect_unprojected(uad, item, a_effect, proj_item);

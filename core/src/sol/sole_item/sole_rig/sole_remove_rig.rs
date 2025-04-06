@@ -5,12 +5,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_rig(&mut self, item_id: &ItemId) -> Result<(), RemoveRigError> {
-        let item = self.uad.items.get_item(item_id)?;
+        let item = self.uad.items.get_by_id(item_id)?;
         let rig = item.get_rig()?;
         self.svc.remove_item(&self.uad, item);
         let fit = self.uad.fits.get_fit_mut(&rig.get_fit_id()).unwrap();
         fit.rigs.remove(item_id);
-        self.uad.items.remove_item(item_id);
+        self.uad.items.remove_by_id(item_id);
         Ok(())
     }
 }

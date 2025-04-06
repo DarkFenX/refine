@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_implant(&self, item_id: &ItemId) -> Result<ImplantInfo, GetImplantError> {
-        let implant = self.uad.items.get_item(item_id)?.get_implant()?;
+        let implant = self.uad.items.get_by_id(item_id)?.get_implant()?;
         Ok(ImplantInfo::from(implant))
     }
 }

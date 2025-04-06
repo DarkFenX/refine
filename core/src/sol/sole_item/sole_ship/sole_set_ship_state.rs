@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_ship_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetShipStateError> {
-        let ship = self.uad.items.get_item_mut(item_id)?.get_ship_mut()?;
+        let ship = self.uad.items.get_mut_by_id(item_id)?.get_ship_mut()?;
         let old_a_state = ship.get_a_state();
         ship.set_ship_state(state);
         let new_a_state = ship.get_a_state();

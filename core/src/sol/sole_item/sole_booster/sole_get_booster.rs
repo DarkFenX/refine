@@ -5,7 +5,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_booster(&self, item_id: &ItemId) -> Result<BoosterInfo, GetBoosterError> {
-        let booster = self.uad.items.get_item(item_id)?.get_booster()?;
+        let booster = self.uad.items.get_by_id(item_id)?.get_booster()?;
         Ok(self.make_booster_info(booster))
     }
 }

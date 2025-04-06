@@ -13,13 +13,13 @@ impl SolarSystem {
             return Err(FighterCountError { count: count_override }.into());
         }
         // Update user data
-        let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
+        let fighter = self.uad.items.get_mut_by_id(item_id)?.get_fighter_mut()?;
         let old_count = fighter.get_count().map(|v| v.current);
         fighter.set_count_override(Some(count_override));
         let new_count = fighter.get_count().map(|v| v.current);
         // Update services
         if old_count != new_count {
-            let fighter = self.uad.items.get_item(item_id).unwrap().get_fighter().unwrap();
+            let fighter = self.uad.items.get_by_id(item_id).unwrap().get_fighter().unwrap();
             self.svc.fighter_count_changed(&self.uad, fighter);
         }
         Ok(())

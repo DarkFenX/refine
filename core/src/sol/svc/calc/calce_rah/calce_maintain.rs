@@ -127,7 +127,7 @@ impl Calc {
         match *a_attr_id {
             // Ship armor resonances and RAH resonances
             ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
-                match uad.items.get_item(item_id).unwrap() {
+                match uad.items.get_by_id(item_id).unwrap() {
                     Item::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_id()),
                     Item::Module(module) => {
                         if self.rah.resonances.contains_key(item_id) {
@@ -142,7 +142,7 @@ impl Calc {
                 if self.rah.resonances.contains_key(item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_id = uad.items.get_item(item_id).unwrap().get_fit_id().unwrap();
+                    let fit_id = uad.items.get_by_id(item_id).unwrap().get_fit_id().unwrap();
                     self.clear_fit_rah_results(uad, &fit_id);
                 }
             }
@@ -151,7 +151,7 @@ impl Calc {
                 if self.rah.resonances.contains_key(item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_id = uad.items.get_item(item_id).unwrap().get_fit_id().unwrap();
+                    let fit_id = uad.items.get_by_id(item_id).unwrap().get_fit_id().unwrap();
                     // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
                     // change sim results
                     if self.rah.by_fit.get(&fit_id).len() >= 2 {
@@ -161,7 +161,7 @@ impl Calc {
             }
             // Ship HP - need to clear results since breacher DPS depends on those
             SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
-                if let Item::Ship(ship) = uad.items.get_item(item_id).unwrap() {
+                if let Item::Ship(ship) = uad.items.get_by_id(item_id).unwrap() {
                     let fit_id = ship.get_fit_id();
                     let fit = uad.fits.get_fit(&fit_id).unwrap();
                     if get_fit_rah_incoming_dps(uad, fit).deals_breacher_dps() {
@@ -200,7 +200,7 @@ impl Calc {
         }
         // Unwrap item and its fit ID, since registered RAHs are supposed to be modules, which have
         // fit ID
-        let fit_id = uad.items.get_item(item_id).unwrap().get_fit_id().unwrap();
+        let fit_id = uad.items.get_by_id(item_id).unwrap().get_fit_id().unwrap();
         self.rah.sim_running = true;
         self.rah_run_simulation(uad, &fit_id);
         self.rah.sim_running = false;

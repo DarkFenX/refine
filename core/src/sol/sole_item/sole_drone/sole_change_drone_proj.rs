@@ -11,7 +11,7 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) -> Result<(), ChangeDroneProjError> {
         // Check if projection is defined before changing it
-        let drone = self.uad.items.get_item_mut(item_id)?.get_drone_mut()?;
+        let drone = self.uad.items.get_mut_by_id(item_id)?.get_drone_mut()?;
         let old_range = match drone.get_projs().get(projectee_item_id) {
             Some(old_range) => *old_range,
             None => {

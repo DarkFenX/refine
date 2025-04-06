@@ -12,10 +12,10 @@ impl SolarSystem {
     ) -> Result<(), SetItemEffectModeError> {
         self.uad
             .items
-            .get_item_mut(item_id)?
+            .get_mut_by_id(item_id)?
             .get_effect_modes_mut()
             .set(effect_id.into(), mode);
-        let item = self.uad.items.get_item(item_id).unwrap();
+        let item = self.uad.items.get_by_id(item_id).unwrap();
         self.svc.process_effects(&self.uad, item, item.get_a_state());
         Ok(())
     }

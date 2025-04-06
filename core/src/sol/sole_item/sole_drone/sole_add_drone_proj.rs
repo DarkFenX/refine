@@ -14,7 +14,7 @@ impl SolarSystem {
         let drone = self
             .uad
             .items
-            .get_item(item_id)
+            .get_by_id(item_id)
             .map_err(AddDroneProjError::ProjectorNotFound)?
             .get_drone()
             .map_err(AddDroneProjError::ProjectorIsNotDrone)?;
@@ -29,7 +29,7 @@ impl SolarSystem {
         let projectee_item = self
             .uad
             .items
-            .get_item(&projectee_item_id)
+            .get_by_id(&projectee_item_id)
             .map_err(AddDroneProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddDroneProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
@@ -38,7 +38,7 @@ impl SolarSystem {
             }));
         }
         // Update user data
-        let drone = self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
+        let drone = self.uad.items.get_mut_by_id(item_id).unwrap().get_drone_mut().unwrap();
         drone.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services
