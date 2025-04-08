@@ -2,7 +2,7 @@ use crate::{
     err::basic::FitFoundError,
     sol::{
         FitId, ModRack,
-        uad::fit::{Fits, ItemVec},
+        uad::{Fits, fit::ItemVec},
     },
 };
 

@@ -3,7 +3,7 @@ use ordered_float::OrderedFloat as OF;
 use crate::{
     sol::{
         DpsProfile, ItemKey, SecZone,
-        uad::{fit::Fits, fleet::Fleets, Items},
+        uad::{Fits, Items, Fleets},
     },
     src::Src,
     util::RSet,

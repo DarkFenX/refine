@@ -8,7 +8,7 @@ use crate::{
             AttrSpec,
             calc::{CtxModifier, RawModifier, registers::StandardRegister},
         },
-        uad::{fit::Fits, item::Item},
+        uad::{Fits, item::Item},
     },
     util::MapSet,
 };
