@@ -32,7 +32,7 @@
 
 use accum::{AttrValInfo, ModAccumFast, ModAccumInfo};
 pub(in crate::sol::svc) use calc::Calc;
-pub(in crate::sol) use err::{AttrCalcError, LoadedItemFoundError};
+pub(in crate::sol) use err::AttrCalcError;
 pub use misc::CalcAttrVal;
 use misc::{
     FTR_COUNT_ATTR, ItemAttrPostprocs, LocationKind, Modification, ModificationKey, SEC_STATUS_ATTR, SKILL_LVL_ATTR,
