@@ -146,7 +146,7 @@ impl Calc {
         range: Option<AttrVal>,
     ) {
         self.projs
-            .add_range(projector_item_key, a_effect.id, projector_item_key, range);
+            .add_range(projector_item_key, a_effect.id, projectee_item_key, range);
         let ctx_modifiers =
             self.std
                 .project_effect(projector_item_key, a_effect.id, projectee_item_key, projectee_item);
