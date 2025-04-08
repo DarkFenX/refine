@@ -23,7 +23,7 @@ impl SolarSystem {
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, AttrCalcError> {
-        self.svc.calc.get_item_attr_val_full(&self.uad, item_key, &a_attr_id)
+        self.svc.calc.get_item_attr_val_full(&self.uad, item_key, a_attr_id)
     }
 }
 

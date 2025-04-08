@@ -53,7 +53,7 @@ impl Vast {
                             .unwrap();
                         entry.insert(ValSrqSkillInfo {
                             current_lvl: None,
-                            required_lvl: required_lvl,
+                            required_lvl,
                         });
                     }
                 }

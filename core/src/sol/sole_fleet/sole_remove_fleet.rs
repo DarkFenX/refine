@@ -8,7 +8,8 @@ use crate::{
 impl SolarSystem {
     pub fn remove_fleet(&mut self, fleet_id: &FleetId) -> Result<(), RemoveFleetError> {
         let fleet_key = self.uad.fleets.key_by_id_err(fleet_id)?;
-        Ok(self.remove_fleet_internal(fleet_key))
+        self.remove_fleet_internal(fleet_key);
+        Ok(())
     }
     pub(in crate::sol) fn remove_fleet_internal(&mut self, fleet_key: FleetKey) {
         let fleet = self.uad.fleets.get(fleet_key);

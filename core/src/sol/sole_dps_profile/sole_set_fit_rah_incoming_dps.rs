@@ -10,7 +10,8 @@ impl SolarSystem {
         dps_profile: DpsProfile,
     ) -> Result<(), SetFitRahIncomingDpsError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
-        Ok(self.set_fit_rah_incoming_dps_internal(fit_key, dps_profile))
+        self.set_fit_rah_incoming_dps_internal(fit_key, dps_profile);
+        Ok(())
     }
     pub(in crate::sol) fn set_fit_rah_incoming_dps_internal(&mut self, fit_key: FitKey, dps_profile: DpsProfile) {
         let fit = self.uad.fits.get_mut(fit_key);

@@ -33,7 +33,7 @@ impl Vast {
                     if skill.get_a_level() < required_lvl {
                         entry.insert(ValSrqSkillInfo {
                             current_lvl: Some(skill.get_a_level()),
-                            required_lvl: required_lvl,
+                            required_lvl,
                         });
                     }
                 }

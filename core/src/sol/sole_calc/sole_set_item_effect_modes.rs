@@ -10,7 +10,8 @@ impl SolarSystem {
         modes: impl Iterator<Item = (EffectId, EffectMode)>,
     ) -> Result<(), SetItemEffectModesError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
-        Ok(self.set_item_effect_modes_internal(item_key, modes))
+        self.set_item_effect_modes_internal(item_key, modes);
+        Ok(())
     }
     pub(in crate::sol) fn set_item_effect_modes_internal(
         &mut self,

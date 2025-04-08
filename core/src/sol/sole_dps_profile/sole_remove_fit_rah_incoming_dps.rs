@@ -22,7 +22,7 @@ impl SolarSystem {
                     self.svc.default_incoming_dps_profile_changed(&self.uad);
                 }
             }
-            None => return Err(FitDpsProfileFoundError { fit_id: fit.id }.into()),
+            None => return Err(FitDpsProfileFoundError { fit_id: fit.id }),
         }
         Ok(())
     }

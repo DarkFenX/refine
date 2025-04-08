@@ -94,7 +94,7 @@ impl VastFitData {
                     if !kfs.contains(&fail_cache.charge_item_key) {
                         charges.insert(
                             uad.items.id_by_key(fail_cache.charge_item_key),
-                            ValChargeSizeChargeInfo::from_fail_cache(uad, &fail_cache),
+                            ValChargeSizeChargeInfo::from_fail_cache(uad, fail_cache),
                         );
                     }
                 }

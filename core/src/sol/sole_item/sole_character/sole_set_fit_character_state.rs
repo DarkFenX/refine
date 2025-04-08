@@ -21,8 +21,7 @@ impl SolarSystem {
                 return Err(FitHasItemKindError {
                     fit_id: fit.id,
                     item_kind: Character::get_name(),
-                }
-                .into());
+                });
             }
         };
         let character = self.uad.items.get_mut(item_key).get_character_mut().unwrap();

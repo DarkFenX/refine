@@ -21,8 +21,7 @@ impl SolarSystem {
                 return Err(FitHasItemKindError {
                     fit_id: fit.id,
                     item_kind: Stance::get_name(),
-                }
-                .into());
+                });
             }
         };
         let stance = self.uad.items.get_mut(item_key).get_stance_mut().unwrap();

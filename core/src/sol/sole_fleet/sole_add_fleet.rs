@@ -8,7 +8,6 @@ impl SolarSystem {
     pub(in crate::sol) fn add_fleet_internal(&mut self) -> FleetKey {
         let fleet_id = self.uad.fleets.alloc_fleet_id();
         let fleet = Fleet::new(fleet_id);
-        let fleet_key = self.uad.fleets.add(fleet);
-        fleet_key
+        self.uad.fleets.add(fleet)
     }
 }

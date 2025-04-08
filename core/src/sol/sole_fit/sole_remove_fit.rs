@@ -6,7 +6,8 @@ use crate::{
 impl SolarSystem {
     pub fn remove_fit(&mut self, fit_id: &FitId) -> Result<(), RemoveFitError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
-        Ok(self.remove_fit_internal(fit_key))
+        self.remove_fit_internal(fit_key);
+        Ok(())
     }
     pub(in crate::sol) fn remove_fit_internal(&mut self, fit_key: FitKey) {
         let fit = self.uad.fits.get(fit_key);

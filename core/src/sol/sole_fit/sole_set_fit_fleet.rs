@@ -7,7 +7,8 @@ impl SolarSystem {
     pub fn set_fit_fleet(&mut self, fit_id: &FitId, fleet_id: &FleetId) -> Result<(), SetFitFleetError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let fleet_key = self.uad.fleets.key_by_id_err(fleet_id)?;
-        Ok(self.set_fit_fleet_internal(fit_key, fleet_key))
+        self.set_fit_fleet_internal(fit_key, fleet_key);
+        Ok(())
     }
     pub(in crate::sol) fn set_fit_fleet_internal(&mut self, fit_key: FitKey, fleet_key: FleetKey) {
         let fit = self.uad.fits.get(fit_key);

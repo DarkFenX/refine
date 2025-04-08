@@ -11,7 +11,8 @@ impl SolarSystem {
         mode: EffectMode,
     ) -> Result<(), SetItemEffectModeError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
-        Ok(self.set_item_effect_mode_internal(item_key, effect_id, mode))
+        self.set_item_effect_mode_internal(item_key, effect_id, mode);
+        Ok(())
     }
     pub(in crate::sol) fn set_item_effect_mode_internal(
         &mut self,

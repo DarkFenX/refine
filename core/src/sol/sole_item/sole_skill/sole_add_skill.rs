@@ -49,8 +49,7 @@ impl SolarSystem {
                 type_id,
                 fit_id: fit.id,
                 item_id: self.uad.items.id_by_key(entry.get().item_key),
-            }
-            .into()),
+            }),
         }
     }
 }

@@ -9,7 +9,8 @@ impl SolarSystem {
     pub fn set_fit_sec_status(&mut self, fit_id: &FitId, sec_status: SecStatus) -> Result<(), SetFitSecStatusError> {
         check_sec_status(sec_status)?;
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
-        Ok(self.set_fit_sec_status_internal(fit_key, sec_status))
+        self.set_fit_sec_status_internal(fit_key, sec_status);
+        Ok(())
     }
     pub(in crate::sol) fn set_fit_sec_status_internal(&mut self, fit_key: FitKey, sec_status: SecStatus) {
         let fit = self.uad.fits.get_mut(fit_key);

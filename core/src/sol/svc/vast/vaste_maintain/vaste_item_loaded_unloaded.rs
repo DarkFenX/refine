@@ -371,9 +371,9 @@ impl Vast {
         if let Some(a_srqs) = item.get_effective_a_skill_reqs() {
             if !a_srqs.is_empty() {
                 for skill_a_item_id in a_srqs.keys() {
-                    fit_data.srqs_skill_item_map.remove_entry(skill_a_item_id, &item_key);
+                    fit_data.srqs_skill_item_map.remove_entry(skill_a_item_id, item_key);
                 }
-                fit_data.srqs_missing.remove(&item_key);
+                fit_data.srqs_missing.remove(item_key);
             }
         }
         match item {

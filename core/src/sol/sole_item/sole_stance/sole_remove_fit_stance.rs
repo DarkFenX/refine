@@ -17,11 +17,11 @@ impl SolarSystem {
                 return Err(FitHasItemKindError {
                     fit_id: fit.id,
                     item_kind: Stance::get_name(),
-                }
-                .into());
+                });
             }
         };
-        Ok(self.remove_stance_internal(item_key).unwrap())
+        self.remove_stance_internal(item_key).unwrap();
+        Ok(())
     }
 }
 

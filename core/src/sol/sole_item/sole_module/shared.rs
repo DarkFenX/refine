@@ -3,7 +3,7 @@ use crate::sol::{
     uad::{Fits, fit::ItemVec},
 };
 
-pub(super) fn get_fit_rack<'a>(uad_fits: &'a mut Fits, fit_key: FitKey, rack: ModRack) -> &'a mut ItemVec {
+pub(super) fn get_fit_rack(uad_fits: &mut Fits, fit_key: FitKey, rack: ModRack) -> &mut ItemVec {
     let fit = uad_fits.get_mut(fit_key);
     match rack {
         ModRack::High => &mut fit.mods_high,
