@@ -2,7 +2,7 @@ use crate::{
     ad,
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
-        FitId, Idx, ItemId, ModRack,
+        FitId, Idx, ItemId, ItemKey, ModRack,
         info::ItemMutationInfo,
         uad::item::{EffectModes, ItemAddMutation, ItemBaseMutable, ItemChangeAttrMutation, ModuleState, Projs},
     },
@@ -16,7 +16,7 @@ pub(in crate::sol) struct Module {
     fit_id: FitId,
     rack: ModRack,
     pos: Idx,
-    charge_item_id: Option<ItemId>,
+    charge_item_key: Option<ItemKey>,
     projs: Projs,
 }
 impl Module {
@@ -29,14 +29,14 @@ impl Module {
         rack: ModRack,
         pos: Idx,
         mutation: Option<ItemAddMutation>,
-        charge_item_id: Option<ItemId>,
+        charge_item_key: Option<ItemKey>,
     ) -> Self {
         Self {
             base: ItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
             fit_id,
             rack,
             pos,
-            charge_item_id,
+            charge_item_key,
             projs: Projs::new(),
         }
     }
@@ -122,11 +122,11 @@ impl Module {
     pub(in crate::sol) fn set_pos(&mut self, pos: Idx) {
         self.pos = pos
     }
-    pub(in crate::sol) fn get_charge_item_id(&self) -> Option<ItemId> {
-        self.charge_item_id
+    pub(in crate::sol) fn get_charge_item_key(&self) -> Option<ItemKey> {
+        self.charge_item_key
     }
-    pub(in crate::sol) fn set_charge_item_id(&mut self, charge_item_id: Option<ItemId>) {
-        self.charge_item_id = charge_item_id
+    pub(in crate::sol) fn set_charge_item_key(&mut self, charge_item_key: Option<ItemKey>) {
+        self.charge_item_key = charge_item_key
     }
     pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs

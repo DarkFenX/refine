@@ -1,21 +1,22 @@
 use crate::{
     ad,
     sol::{
-        ItemId, ItemTypeId, SolarSystem,
+        ItemKey, ItemTypeId, SolarSystem,
         uad::item::{Autocharge, Item},
     },
-    util::RMap,
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn add_item_autocharges(&mut self, item_id: &ItemId) {
-        let item = self.uad.items.get_by_id(item_id).unwrap();
+    pub(in crate::sol) fn add_item_autocharges(&mut self, item_key: ItemKey) {
+        let item = self.uad.items.get(item_key);
         let item_a_state = item.get_a_state();
         let projections = match item.iter_projs() {
-            Some(projections) => projections.map(|(i, r)| (*i, *r)).collect(),
+            Some(projections) => projections
+                .map(|(&projectee_item_key, &range)| (projectee_item_key, range))
+                .collect(),
             None => Vec::new(),
         };
-        let mut new_ac_map = RMap::new();
+        let mut new_autocharges = Vec::new();
         if let (Some(fit_id), true, Some(_)) = (item.get_fit_id(), item.is_loaded(), item.get_autocharges()) {
             let cloned_item = item.clone();
             for a_effect_id in cloned_item.get_a_effect_datas().unwrap().keys() {
@@ -28,7 +29,7 @@ impl SolarSystem {
                                 autocharge_id,
                                 autocharge_a_item_id.into_inner() as ItemTypeId,
                                 fit_id,
-                                *item_id,
+                                item_key,
                                 a_effect.id,
                                 item_a_state,
                                 false,
@@ -42,24 +43,18 @@ impl SolarSystem {
                                 autocharge.get_projs_mut().add(*projectee_item_id, *range);
                             }
                             // Add autocharge item to user data and fill info map
-                            new_ac_map.insert(*a_effect_id, autocharge.get_item_id());
                             let ac_item = Item::Autocharge(autocharge);
-                            self.uad.items.add(ac_item);
+                            let ac_key = self.uad.items.add(ac_item);
+                            new_autocharges.push((*a_effect_id, ac_key));
                         }
                     }
                 }
             }
         }
-        if !new_ac_map.is_empty() {
-            let item_acs = self
-                .uad
-                .items
-                .get_mut_by_id(item_id)
-                .unwrap()
-                .get_autocharges_mut()
-                .unwrap();
-            for (a_effect_id, autocharge_id) in new_ac_map.into_iter() {
-                item_acs.set(a_effect_id, autocharge_id);
+        if !new_autocharges.is_empty() {
+            let item_acs = self.uad.items.get_mut(item_key).get_autocharges_mut().unwrap();
+            for (a_effect_id, autocharge_key) in new_autocharges.into_iter() {
+                item_acs.set(a_effect_id, autocharge_key);
             }
         };
     }

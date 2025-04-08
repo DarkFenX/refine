@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use crate::{
     err::basic::{FitFoundError, SkillEveTypeError, SkillLevelError},
     sol::{
-        FitId, ItemTypeId, SkillLevel, SolarSystem,
+        FitId, ItemKey, ItemTypeId, SkillLevel, SolarSystem,
         info::SkillInfo,
         uad::{
             fit::FitSkill,
@@ -23,27 +23,34 @@ impl SolarSystem {
         state: bool,
     ) -> Result<SkillInfo, AddSkillError> {
         check_skill_level(level)?;
-        let item_id = self.uad.items.alloc_item_id();
-        let skill = Skill::new(&self.uad.src, item_id, type_id, fit_id, level, state);
-        let info = SkillInfo::from(&skill);
-        let item = Item::Skill(skill);
+        let item_key = self.add_skill_internal(fit_id, type_id, level, state)?;
+        Ok(self.get_skill_internal(item_key).unwrap())
+    }
+    pub(in crate::sol) fn add_skill_internal(
+        &mut self,
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        level: SkillLevel,
+        state: bool,
+    ) -> Result<ItemKey, AddSkillError> {
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         match fit.skills.entry(type_id) {
             Entry::Vacant(entry) => {
-                entry.insert(FitSkill { item_id, level });
+                let item_id = self.uad.items.alloc_item_id();
+                let skill = Skill::new(&self.uad.src, item_id, type_id, fit_id, level, state);
+                let item = Item::Skill(skill);
+                let item_key = self.uad.items.add(item);
+                entry.insert(FitSkill { item_key, level });
+                self.add_item_key_to_svc(item_key);
+                Ok(item_key)
             }
-            Entry::Occupied(entry) => {
-                return Err(SkillEveTypeError {
-                    type_id,
-                    fit_id,
-                    item_id: entry.get().item_id,
-                }
-                .into());
+            Entry::Occupied(entry) => Err(SkillEveTypeError {
+                type_id,
+                fit_id,
+                item_id: self.uad.items.id_by_key(entry.get().item_key),
             }
+            .into()),
         }
-        self.uad.items.add(item);
-        self.add_item_id_to_svc(&item_id);
-        Ok(info)
     }
 }
 

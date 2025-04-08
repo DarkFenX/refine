@@ -1,10 +1,10 @@
 use crate::{
     ad,
-    sol::{ItemId, svc::Svc},
+    sol::{ItemKey, svc::Svc},
 };
 
 impl Svc {
-    pub(in crate::sol) fn is_effect_running(&self, item_id: &ItemId, a_effect_id: &ad::AEffectId) -> bool {
-        self.running_effects.is_running(item_id, a_effect_id)
+    pub(in crate::sol) fn is_effect_running(&self, item_key: &ItemKey, a_effect_id: &ad::AEffectId) -> bool {
+        self.running_effects.is_running(item_key, a_effect_id)
     }
 }

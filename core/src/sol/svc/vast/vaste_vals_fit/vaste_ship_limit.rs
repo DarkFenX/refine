@@ -2,7 +2,11 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    sol::{ItemGrpId, ItemId, ItemTypeId, svc::vast::VastFitData, uad::item::Ship},
+    sol::{
+        ItemGrpId, ItemId, ItemKey, ItemTypeId,
+        svc::vast::VastFitData,
+        uad::{Uad, item::Ship},
+    },
     util::RSet,
 };
 
@@ -32,7 +36,7 @@ impl From<&ad::AItemShipLimit> for ValShipLimitItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<ItemId>, ship: Option<&Ship>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<ItemKey>, ship: Option<&Ship>) -> bool {
         let ship = match ship {
             Some(ship) => ship,
             None => {
@@ -44,7 +48,7 @@ impl VastFitData {
         };
         let ship_type_id = ship.get_a_item_id();
         let ship_group_id = ship.get_a_group_id();
-        for (limited_item_id, ship_limit) in self.ship_limited_items.iter() {
+        for (limited_item_key, ship_limit) in self.ship_limited_items.iter() {
             if ship_limit.type_ids.contains(&ship_type_id) {
                 continue;
             }
@@ -53,7 +57,7 @@ impl VastFitData {
                     continue;
                 }
             }
-            if kfs.contains(limited_item_id) {
+            if kfs.contains(limited_item_key) {
                 continue;
             }
             return false;
@@ -63,7 +67,8 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_ship_limit_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
         ship: Option<&Ship>,
     ) -> Option<ValShipLimitFail> {
         if self.ship_limited_items.is_empty() {
@@ -74,7 +79,7 @@ impl VastFitData {
             None => (None, None),
         };
         let mut mismatches = HashMap::new();
-        for (limited_item_id, ship_limit) in self.ship_limited_items.iter() {
+        for (limited_item_key, ship_limit) in self.ship_limited_items.iter() {
             if let Some(ship_type_id) = ship_type_id {
                 if ship_limit.type_ids.contains(&ship_type_id) {
                     continue;
@@ -85,10 +90,10 @@ impl VastFitData {
                     continue;
                 }
             }
-            if kfs.contains(limited_item_id) {
+            if kfs.contains(limited_item_key) {
                 continue;
             }
-            mismatches.insert(*limited_item_id, ship_limit.into());
+            mismatches.insert(uad.items.id_by_key(*limited_item_key), ship_limit.into());
         }
         match mismatches.is_empty() {
             true => None,

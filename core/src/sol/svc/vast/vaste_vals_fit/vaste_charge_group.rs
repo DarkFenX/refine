@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     sol::{
-        ItemGrpId, ItemId,
+        ItemGrpId, ItemId, ItemKey,
         svc::vast::{ValCache, VastFitData},
         uad::Uad,
     },
@@ -14,7 +14,6 @@ pub struct ValChargeGroupFail {
     pub charges: HashMap<ItemId, ValChargeGroupChargeInfo>,
 }
 
-#[derive(Clone)]
 pub struct ValChargeGroupChargeInfo {
     /// Parent module item ID.
     pub parent_item_id: ItemId,
@@ -23,17 +22,34 @@ pub struct ValChargeGroupChargeInfo {
     /// Group IDs allowed by containing module.
     pub allowed_group_ids: Vec<ItemGrpId>,
 }
+impl ValChargeGroupChargeInfo {
+    fn from_fail_cache(uad: &Uad, fail_cache: &ValChargeGroupFailCache) -> Self {
+        Self {
+            parent_item_id: uad.items.id_by_key(fail_cache.parent_item_key),
+            charge_group_id: fail_cache.charge_group_id,
+            allowed_group_ids: fail_cache.allowed_group_ids.clone(),
+        }
+    }
+}
+
+#[derive(Clone)]
+pub(in crate::sol::svc::vast) struct ValChargeGroupFailCache {
+    pub parent_item_key: ItemKey,
+    pub charge_item_key: ItemKey,
+    pub charge_group_id: ItemGrpId,
+    pub allowed_group_ids: Vec<ItemGrpId>,
+}
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &RSet<ItemId>, uad: &Uad) -> bool {
-        for (module_item_id, cache) in self.mods_charge_group.iter_mut() {
+    pub(in crate::sol::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &RSet<ItemKey>, uad: &Uad) -> bool {
+        for (module_item_key, cache) in self.mods_charge_group.iter_mut() {
             match cache {
-                ValCache::Todo(_) => match calculate_item_result(uad, module_item_id) {
+                ValCache::Todo(_) => match calculate_item_result(uad, *module_item_key) {
                     ValCache::Pass(pass) => cache.pass(pass),
-                    ValCache::Fail((charge_item_id, charge_info)) => {
-                        let ret_fail = !kfs.contains(&charge_item_id);
-                        cache.fail((charge_item_id, charge_info));
+                    ValCache::Fail(fail_cache) => {
+                        let ret_fail = !kfs.contains(&fail_cache.charge_item_key);
+                        cache.fail(fail_cache);
                         if ret_fail {
                             return false;
                         }
@@ -41,8 +57,8 @@ impl VastFitData {
                     _ => (),
                 },
                 ValCache::Pass(_) => (),
-                ValCache::Fail((charge_item_id, _)) => {
-                    if !kfs.contains(charge_item_id) {
+                ValCache::Fail(fail_cache) => {
+                    if !kfs.contains(&fail_cache.charge_item_key) {
                         return false;
                     }
                 }
@@ -53,26 +69,32 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_charge_group_verbose(
         &mut self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
     ) -> Option<ValChargeGroupFail> {
         let mut charges = HashMap::new();
-        for (module_item_id, cache) in self.mods_charge_group.iter_mut() {
+        for (module_item_key, cache) in self.mods_charge_group.iter_mut() {
             match cache {
-                ValCache::Todo(_) => match calculate_item_result(uad, module_item_id) {
+                ValCache::Todo(_) => match calculate_item_result(uad, *module_item_key) {
                     ValCache::Pass(pass) => cache.pass(pass),
-                    ValCache::Fail((charge_item_id, charge_info)) => {
-                        if !kfs.contains(&charge_item_id) {
-                            charges.insert(charge_item_id, charge_info.clone());
+                    ValCache::Fail(fail_cache) => {
+                        if !kfs.contains(&fail_cache.charge_item_key) {
+                            charges.insert(
+                                uad.items.id_by_key(fail_cache.charge_item_key),
+                                ValChargeGroupChargeInfo::from_fail_cache(uad, &fail_cache),
+                            );
                         }
-                        cache.fail((charge_item_id, charge_info));
+                        cache.fail(fail_cache);
                     }
                     _ => (),
                 },
                 ValCache::Pass(_) => (),
-                ValCache::Fail((charge_item_id, charge_info)) => {
-                    if !kfs.contains(charge_item_id) {
-                        charges.insert(*charge_item_id, charge_info.clone());
+                ValCache::Fail(fail_cache) => {
+                    if !kfs.contains(&fail_cache.charge_item_key) {
+                        charges.insert(
+                            uad.items.id_by_key(fail_cache.charge_item_key),
+                            ValChargeGroupChargeInfo::from_fail_cache(uad, &fail_cache),
+                        );
                     }
                 }
             }
@@ -84,10 +106,10 @@ impl VastFitData {
     }
 }
 
-fn calculate_item_result(uad: &Uad, module_item_id: &ItemId) -> ValCache<(), (ItemId, ValChargeGroupChargeInfo)> {
-    let module = uad.items.get_by_id(module_item_id).unwrap().get_module().unwrap();
-    let charge_item_id = match module.get_charge_item_id() {
-        Some(charge_item_id) => charge_item_id,
+fn calculate_item_result(uad: &Uad, module_item_key: ItemKey) -> ValCache<(), ValChargeGroupFailCache> {
+    let module = uad.items.get(module_item_key).get_module().unwrap();
+    let charge_item_key = match module.get_charge_item_key() {
+        Some(charge_item_key) => charge_item_key,
         None => return ValCache::Pass(()),
     };
     let allowed_group_ids = module
@@ -98,19 +120,17 @@ fn calculate_item_result(uad: &Uad, module_item_id: &ItemId) -> ValCache<(), (It
         .unwrap()
         .group_ids
         .clone();
-    let charge_group_id = match uad.items.get_by_id(&charge_item_id).unwrap().get_a_group_id() {
+    let charge_group_id = match uad.items.get(charge_item_key).get_a_group_id() {
         Some(charge_group_id) => charge_group_id,
         None => return ValCache::Pass(()),
     };
     match allowed_group_ids.contains(&charge_group_id) {
         true => ValCache::Pass(()),
-        false => ValCache::Fail((
-            charge_item_id,
-            ValChargeGroupChargeInfo {
-                parent_item_id: *module_item_id,
-                charge_group_id,
-                allowed_group_ids,
-            },
-        )),
+        false => ValCache::Fail(ValChargeGroupFailCache {
+            parent_item_key: module_item_key,
+            charge_item_key,
+            charge_group_id,
+            allowed_group_ids,
+        }),
     }
 }

@@ -6,7 +6,7 @@ use crate::{
 impl SolarSystem {
     pub fn get_fit(&self, fit_id: &FitId) -> Result<FitInfo, GetFitError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
-        Ok(FitInfo::from(fit))
+        Ok(FitInfo::from_fit(&self.uad, fit))
     }
 }
 

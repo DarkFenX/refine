@@ -6,9 +6,7 @@ use crate::{
 impl SolarSystem {
     pub fn get_fit_stance(&self, fit_id: &FitId) -> Result<Option<StanceInfo>, GetFitStanceError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
-        Ok(fit
-            .stance
-            .map(|v| StanceInfo::from(self.uad.items.get_by_id(&v).unwrap().get_stance().unwrap())))
+        Ok(fit.stance.map(|item_key| self.get_stance_internal(item_key).unwrap()))
     }
 }
 

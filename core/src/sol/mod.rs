@@ -11,6 +11,7 @@ pub use sol::SolarSystem;
 pub use sole_item::{AddMode, RmMode};
 
 mod debug;
+mod err;
 pub(crate) mod info;
 pub(crate) mod misc;
 mod primitives;

@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        ItemId,
+        ItemKey,
         svc::{AttrSpec, EffectSpec},
     },
     util::RMapRSet,
@@ -22,11 +22,11 @@ pub(in crate::sol::svc::calc) struct DependencyRegister {
     // affectee attribute to be cleared whenever linked attribute changes its value.
     pub(super) data: RMapRSet<AttrSpec, AttrSpec>,
     // Map<item ID, (affector attr ID, affectee attr ID)>
-    pub(super) anonymous_by_item: RMapRSet<ItemId, (ad::AAttrId, ad::AAttrId)>,
+    pub(super) anonymous_by_item: RMapRSet<ItemKey, (ad::AAttrId, ad::AAttrId)>,
     // Map<source, (affector spec, affectee spec)>
     pub(super) by_source: RMapRSet<EffectSpec, (AttrSpec, AttrSpec)>,
     // Map<item ID, sources>
-    pub(super) source_by_item: RMapRSet<ItemId, EffectSpec>,
+    pub(super) source_by_item: RMapRSet<ItemKey, EffectSpec>,
 }
 impl DependencyRegister {
     pub(in crate::sol::svc::calc) fn new() -> Self {
@@ -40,94 +40,94 @@ impl DependencyRegister {
     // Query methods
     pub(in crate::sol::svc::calc) fn get_affectee_attr_specs(
         &self,
-        affector_item_id: &ItemId,
-        affector_a_attr_id: &ad::AAttrId,
+        affector_item_key: ItemKey,
+        affector_a_attr_id: ad::AAttrId,
     ) -> impl ExactSizeIterator<Item = &AttrSpec> {
         let affector_spec = AttrSpec {
-            item_id: *affector_item_id,
-            a_attr_id: *affector_a_attr_id,
+            item_key: affector_item_key,
+            a_attr_id: affector_a_attr_id,
         };
         self.data.get(&affector_spec)
     }
     // Modification methods
     pub(in crate::sol::svc::calc) fn add_anonymous(
         &mut self,
-        item_id: ItemId,
+        item_key: ItemKey,
         affector_a_attr_id: ad::AAttrId,
         affectee_a_attr_id: ad::AAttrId,
     ) {
         let affector_spec = AttrSpec {
-            item_id,
+            item_key,
             a_attr_id: affector_a_attr_id,
         };
         let affectee_spec = AttrSpec {
-            item_id,
+            item_key,
             a_attr_id: affectee_a_attr_id,
         };
         self.data.add_entry(affector_spec, affectee_spec);
         self.anonymous_by_item
-            .add_entry(item_id, (affector_a_attr_id, affectee_a_attr_id));
+            .add_entry(item_key, (affector_a_attr_id, affectee_a_attr_id));
     }
     pub(in crate::sol::svc::calc) fn add_with_source(
         &mut self,
-        source_item_id: ItemId,
+        source_item_key: ItemKey,
         source_a_effect_id: ad::AEffectId,
-        affector_item_id: ItemId,
+        affector_item_key: ItemKey,
         affector_a_attr_id: ad::AAttrId,
-        affectee_item_id: ItemId,
+        affectee_item_key: ItemKey,
         affectee_a_attr_id: ad::AAttrId,
     ) {
         let source = EffectSpec {
-            item_id: source_item_id,
+            item_key: source_item_key,
             a_effect_id: source_a_effect_id,
         };
         let affector_spec = AttrSpec {
-            item_id: affector_item_id,
+            item_key: affector_item_key,
             a_attr_id: affector_a_attr_id,
         };
         let affectee_spec = AttrSpec {
-            item_id: affectee_item_id,
+            item_key: affectee_item_key,
             a_attr_id: affectee_a_attr_id,
         };
         self.data.add_entry(affector_spec, affectee_spec);
         self.by_source.add_entry(source, (affector_spec, affectee_spec));
-        self.source_by_item.add_entry(affector_item_id, source);
-        self.source_by_item.add_entry(affectee_item_id, source);
+        self.source_by_item.add_entry(affector_item_key, source);
+        self.source_by_item.add_entry(affectee_item_key, source);
     }
     pub(in crate::sol::svc::calc) fn remove_by_source(
         &mut self,
-        source_item_id: ItemId,
+        source_item_key: ItemKey,
         source_a_effect_id: ad::AEffectId,
     ) {
         let source = EffectSpec {
-            item_id: source_item_id,
+            item_key: source_item_key,
             a_effect_id: source_a_effect_id,
         };
         if let Some(spec_iter) = self.by_source.remove_key(&source) {
             for (affector_spec, affectee_spec) in spec_iter {
                 self.data.remove_entry(&affector_spec, &affectee_spec);
-                self.source_by_item.remove_entry(&affector_spec.item_id, &source);
-                self.source_by_item.remove_entry(&affectee_spec.item_id, &source);
+                self.source_by_item.remove_entry(&affector_spec.item_key, &source);
+                self.source_by_item.remove_entry(&affectee_spec.item_key, &source);
             }
         }
     }
-    pub(in crate::sol::svc::calc) fn remove_item(&mut self, item_id: &ItemId) {
+    pub(in crate::sol::svc::calc) fn remove_item(&mut self, item_key: ItemKey) {
         // Anonymous dependencies
-        if let Some(attrs_iter) = self.anonymous_by_item.remove_key(item_id) {
+        if let Some(attrs_iter) = self.anonymous_by_item.remove_key(&item_key) {
             for (affector_a_attr_id, affectee_a_attr_id) in attrs_iter {
                 let affector_spec = AttrSpec {
-                    item_id: *item_id,
+                    item_key,
                     a_attr_id: affector_a_attr_id,
                 };
                 let affectee_spec = AttrSpec {
-                    item_id: *item_id,
+                    item_key,
                     a_attr_id: affectee_a_attr_id,
                 };
                 self.data.remove_entry(&affector_spec, &affectee_spec);
             }
         }
         // Dependencies with source
-        if let Some(sources) = self.source_by_item.remove_key(item_id) {
+        if let Some(sources) = self.source_by_item.remove_key(&item_key) {
             for source in sources {
                 if let Some(attr_spec_iter) = self.by_source.remove_key(&source) {
                     for (affector_spec, affectee_spec) in attr_spec_iter {

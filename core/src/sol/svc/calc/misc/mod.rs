@@ -6,7 +6,6 @@ pub(in crate::sol::svc::calc) use loc_kind::LocationKind;
 pub(in crate::sol::svc::calc) use modification::Modification;
 pub(in crate::sol::svc::calc) use modification_key::ModificationKey;
 
-mod attr_spec;
 mod attr_val;
 mod attr_val_data;
 mod item_exts;

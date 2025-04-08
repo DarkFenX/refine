@@ -7,8 +7,8 @@ use crate::{
 impl SolarSystem {
     pub fn remove_fit_stance(&mut self, fit_id: &FitId) -> Result<(), RemoveFitStanceError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
-        let item_id = match fit.stance {
-            Some(item_id) => item_id,
+        let item_key = match fit.stance {
+            Some(item_key) => item_key,
             None => {
                 return Err(FitHasItemKindError {
                     fit_id: *fit_id,
@@ -17,8 +17,7 @@ impl SolarSystem {
                 .into());
             }
         };
-        self.remove_stance(&item_id).unwrap();
-        Ok(())
+        Ok(self.remove_stance_internal(item_key).unwrap())
     }
 }
 

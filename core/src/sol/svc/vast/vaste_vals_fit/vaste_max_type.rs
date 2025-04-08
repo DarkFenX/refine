@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{Count, ItemId, ItemTypeId, svc::vast::VastFitData},
+    sol::{Count, ItemId, ItemKey, ItemTypeId, svc::vast::VastFitData, uad::Uad},
     util::RSet,
 };
 
@@ -18,11 +18,11 @@ pub struct ValMaxTypeTypeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &RSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         for item_type_data in self.mods_svcs_max_type_fitted.values() {
             let fitted = item_type_data.len() as Count;
-            for (item_id, &allowed) in item_type_data.iter() {
-                if fitted > allowed && !kfs.contains(item_id) {
+            for (item_key, &allowed) in item_type_data.iter() {
+                if fitted > allowed && !kfs.contains(item_key) {
                     return false;
                 }
             }
@@ -32,13 +32,14 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_max_type_fitted_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
     ) -> Option<ValMaxTypeFail> {
         let mut item_types = HashMap::new();
         for (a_item_id, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
             let fitted = item_type_data.len() as Count;
-            for (item_id, &allowed) in item_type_data.iter() {
-                if fitted > allowed && !kfs.contains(item_id) {
+            for (item_key, &allowed) in item_type_data.iter() {
+                if fitted > allowed && !kfs.contains(item_key) {
                     item_types
                         .entry(*a_item_id)
                         .or_insert_with(|| ValMaxTypeTypeInfo {
@@ -46,7 +47,7 @@ impl VastFitData {
                             items: HashMap::new(),
                         })
                         .items
-                        .insert(*item_id, allowed);
+                        .insert(uad.items.id_by_key(*item_key), allowed);
                 }
             }
         }

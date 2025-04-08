@@ -1,12 +1,16 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{ItemId, SolarSystem, info::RigInfo},
+    sol::{ItemId, ItemKey, SolarSystem, info::RigInfo},
 };
 
 impl SolarSystem {
     pub fn get_rig(&self, item_id: &ItemId) -> Result<RigInfo, GetRigError> {
-        let rig = self.uad.items.get_by_id(item_id)?.get_rig()?;
-        Ok(RigInfo::from(rig))
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.get_rig_internal(item_key)?)
+    }
+    pub(in crate::sol) fn get_rig_internal(&self, item_key: ItemKey) -> Result<RigInfo, ItemKindMatchError> {
+        let rig = self.uad.items.get(item_key).get_rig()?;
+        Ok(RigInfo::from_rig(rig))
     }
 }
 

@@ -78,7 +78,7 @@ impl StandardRegister {
         // If context modifier was returned = raw was valid
         if ctx_modifier.is_some() {
             self.rmods_nonproj
-                .add_entry((raw_modifier.affector_item_id, raw_modifier.a_effect_id), raw_modifier);
+                .add_entry((raw_modifier.affector_item_key, raw_modifier.a_effect_id), raw_modifier);
         }
         ctx_modifier
     }

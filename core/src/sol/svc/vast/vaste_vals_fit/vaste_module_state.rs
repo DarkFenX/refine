@@ -1,7 +1,11 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{ItemId, svc::vast::VastFitData, uad::item::ModuleState},
+    sol::{
+        ItemId, ItemKey,
+        svc::vast::VastFitData,
+        uad::{Uad, item::ModuleState},
+    },
     util::RSet,
 };
 
@@ -19,7 +23,7 @@ pub struct ValModuleStateModuleInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_module_state_fast(&self, kfs: &RSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_module_state_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.mods_state.is_empty(),
             false => self.mods_state.difference(kfs).next().is_none(),
@@ -28,13 +32,14 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_module_state_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
     ) -> Option<ValModuleStateFail> {
         let modules: HashMap<_, _> = self
             .mods_state
             .iter()
-            .filter(|(module_item_id, _)| !kfs.contains(module_item_id))
-            .map(|(module_item_id, module_info)| (*module_item_id, *module_info))
+            .filter(|(module_item_key, _)| !kfs.contains(module_item_key))
+            .map(|(module_item_key, module_info)| (uad.items.id_by_key(*module_item_key), *module_info))
             .collect();
         match modules.is_empty() {
             true => None,

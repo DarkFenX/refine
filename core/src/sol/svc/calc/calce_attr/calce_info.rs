@@ -8,11 +8,9 @@ use crate::{
     SecZone, ac, ad,
     err::basic::AttrMetaFoundError,
     sol::{
-        ItemId, OpInfo,
-        svc::calc::{
-            AffectorInfo, AttrValInfo, Calc, LoadedItemFoundError, ModAccumInfo, Modification, ModificationInfo,
-            ModificationKey,
-        },
+        ItemKey, OpInfo,
+        err::KeyedItemLoadedError,
+        svc::calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
         uad::{Uad, item::Item},
     },
     util::{RMap, RMapVec, RSet, round},
@@ -30,11 +28,11 @@ impl Calc {
     pub(in crate::sol) fn iter_item_mods(
         &mut self,
         uad: &Uad,
-        item_id: &ItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)>, LoadedItemFoundError> {
+        item_key: ItemKey,
+    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
-        for a_attr_id in self.iter_item_a_attr_ids(uad, item_id)? {
-            let mut attr_info = match self.calc_item_attr_info(uad, item_id, &a_attr_id) {
+        for a_attr_id in self.iter_item_a_attr_ids(uad, item_key)? {
+            let mut attr_info = match self.calc_item_attr_info(uad, item_key, &a_attr_id) {
                 Ok(attr_info) => attr_info,
                 _ => continue,
             };
@@ -51,25 +49,34 @@ impl Calc {
     fn iter_item_a_attr_ids(
         &self,
         uad: &Uad,
-        item_id: &ItemId,
-    ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, LoadedItemFoundError> {
-        let mut a_attr_ids = RSet::new();
-        for attr_id in uad.items.get_by_id(item_id)?.get_a_attrs_err()?.keys() {
-            a_attr_ids.insert(*attr_id);
-        }
-        for attr_id in self.attrs.get_item_attr_data(item_id).unwrap().values.keys() {
-            a_attr_ids.insert(*attr_id);
-        }
+        item_key: ItemKey,
+    ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, KeyedItemLoadedError> {
+        let item_a_attrs = match uad.items.get(item_key).get_a_attrs() {
+            Some(item_a_attrs) => item_a_attrs,
+            None => return Err(KeyedItemLoadedError { item_key }),
+        };
+        let mut a_attr_ids: RSet<_> = item_a_attrs.keys().copied().collect();
+        a_attr_ids.extend(self.attrs.get_item_attr_data(&item_key).unwrap().values.keys().copied());
         Ok(a_attr_ids.into_iter())
     }
-    fn iter_affections(&mut self, uad: &Uad, item: &Item, a_attr_id: &ad::AAttrId) -> impl Iterator<Item = Affection> {
+    fn iter_affections(
+        &mut self,
+        uad: &Uad,
+        item_key: &ItemKey,
+        item: &Item,
+        a_attr_id: &ad::AAttrId,
+    ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();
-        for modifier in self.std.get_mods_for_affectee(item, a_attr_id, &uad.fits).iter() {
+        for modifier in self
+            .std
+            .get_mods_for_affectee(item_key, item, a_attr_id, &uad.fits)
+            .iter()
+        {
             let val = match modifier.raw.get_mod_val(self, uad) {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = uad.items.get_by_id(&modifier.raw.affector_item_id).unwrap();
+            let affector_item = uad.items.get(modifier.raw.affector_item_key);
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
             let mod_key = ModificationKey::from(modifier);
             let modification = Modification {
@@ -91,10 +98,10 @@ impl Calc {
     fn calc_item_attr_info(
         &mut self,
         uad: &Uad,
-        item_id: &ItemId,
+        item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<AttrValInfo, AttrMetaFoundError> {
-        let item = uad.items.get_by_id(item_id).unwrap();
+        let item = uad.items.get(item_key);
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
             None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }),
@@ -110,11 +117,11 @@ impl Calc {
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
                     _ => ac::attrs::NULLSEC_MODIFIER,
                 };
-                match self.get_item_attr_val_full(uad, item_id, &security_a_attr_id) {
+                match self.get_item_attr_val_full(uad, item_key, &security_a_attr_id) {
                     Ok(security_full_val) => {
                         // Ensure that change in any a security-specific attribute value triggers
                         // recalculation of generic security attribute value
-                        self.deps.add_anonymous(*item_id, security_a_attr_id, *a_attr_id);
+                        self.deps.add_anonymous(item_key, security_a_attr_id, *a_attr_id);
                         let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                         base_attr_info.effective_infos.push(ModificationInfo {
                             // Technically this modification is not pre-assignment, it is base value
@@ -129,7 +136,7 @@ impl Calc {
                             stacking_mult: None,
                             applied_val: security_full_val.dogma,
                             affectors: vec![AffectorInfo {
-                                item_id: *item_id,
+                                item_id: uad.items.id_by_key(item_key),
                                 attr_id: Some(security_a_attr_id),
                             }],
                         });
@@ -141,7 +148,7 @@ impl Calc {
             _ => AttrValInfo::new(get_base_attr_value(item, a_attr)),
         };
         let mut accumulator = ModAccumInfo::new();
-        for affection in self.iter_affections(uad, item, a_attr_id) {
+        for affection in self.iter_affections(uad, &item_key, item, a_attr_id) {
             accumulator.add_val(
                 affection.modification.val,
                 affection.modification.proj_mult,
@@ -156,8 +163,8 @@ impl Calc {
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, a_attr.hig);
         // Lower value limit
         if let Some(limiter_a_attr_id) = a_attr.min_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_a_attr_id) {
-                self.deps.add_anonymous(*item_id, limiter_a_attr_id, *a_attr_id);
+            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id) {
+                self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
                 if limiter_val.dogma > dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;
                     dogma_attr_info.effective_infos.push(ModificationInfo {
@@ -168,7 +175,7 @@ impl Calc {
                         stacking_mult: None,
                         applied_val: limiter_val.dogma,
                         affectors: vec![AffectorInfo {
-                            item_id: *item_id,
+                            item_id: uad.items.id_by_key(item_key),
                             attr_id: Some(limiter_a_attr_id),
                         }],
                     })
@@ -177,8 +184,8 @@ impl Calc {
         }
         // Upper value limit
         if let Some(limiter_a_attr_id) = a_attr.max_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_a_attr_id) {
-                self.deps.add_anonymous(*item_id, limiter_a_attr_id, *a_attr_id);
+            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id) {
+                self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
                 if limiter_val.dogma < dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;
                     dogma_attr_info.effective_infos.push(ModificationInfo {
@@ -189,7 +196,7 @@ impl Calc {
                         stacking_mult: None,
                         applied_val: limiter_val.dogma,
                         affectors: vec![AffectorInfo {
-                            item_id: *item_id,
+                            item_id: uad.items.id_by_key(item_key),
                             attr_id: Some(limiter_a_attr_id),
                         }],
                     })
@@ -202,10 +209,16 @@ impl Calc {
         // Post-dogma calculations
         let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info, a_attr.hig);
         // Custom post-processing functions - since infos are not cached, it's fine to have it here
-        let attr_info = match self.attrs.get_item_attr_data(item_id).unwrap().postprocs.get(a_attr_id) {
+        let attr_info = match self
+            .attrs
+            .get_item_attr_data(&item_key)
+            .unwrap()
+            .postprocs
+            .get(a_attr_id)
+        {
             Some(postprocs) => {
                 let pp_fn = postprocs.info;
-                pp_fn(self, uad, item_id, extra_attr_info)
+                pp_fn(self, uad, item_key, extra_attr_info)
             }
             None => extra_attr_info,
         };

@@ -25,7 +25,7 @@ impl HChangeProjEffectCmd {
         item_id: &rc::ItemId,
     ) -> Result<HCmdResp, HExecError> {
         for projectee_item_id in self.add_projs.iter() {
-            if let Err(error) = core_sol.add_proj_effect_proj(item_id, *projectee_item_id) {
+            if let Err(error) = core_sol.add_proj_effect_proj(item_id, projectee_item_id) {
                 return Err(match error {
                     rc::err::AddProjEffectProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::AddProjEffectProjError::ProjectorIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
@@ -42,6 +42,7 @@ impl HChangeProjEffectCmd {
                 return Err(match error {
                     rc::err::RemoveProjEffectProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::RemoveProjEffectProjError::ProjectorIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::RemoveProjEffectProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::RemoveProjEffectProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 });
             }

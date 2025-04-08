@@ -62,7 +62,7 @@ impl HChangeFighterCmd {
             TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
-            if let Err(error) = core_sol.add_fighter_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {
+            if let Err(error) = core_sol.add_fighter_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
                 return Err(match error {
                     rc::err::AddFighterProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::AddFighterProjError::ProjectorIsNotFighter(e) => HExecError::ItemKindMismatch(e),
@@ -77,6 +77,7 @@ impl HChangeFighterCmd {
                 return Err(match error {
                     rc::err::ChangeFighterProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::ChangeFighterProjError::ProjectorIsNotFighter(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::ChangeFighterProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::ChangeFighterProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 });
             }
@@ -86,6 +87,7 @@ impl HChangeFighterCmd {
                 return Err(match error {
                     rc::err::RemoveFighterProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::RemoveFighterProjError::ProjectorIsNotFighter(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::RemoveFighterProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::RemoveFighterProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 });
             }

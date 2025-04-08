@@ -5,12 +5,12 @@ pub struct SwEffectInfo {
     pub type_id: ItemTypeId,
     pub enabled: bool,
 }
-impl From<&SwEffect> for SwEffectInfo {
-    fn from(sol_sw_effect: &SwEffect) -> Self {
+impl SwEffectInfo {
+    pub(in crate::sol) fn from_sw_effect(sw_effect: &SwEffect) -> Self {
         Self {
-            id: sol_sw_effect.get_item_id(),
-            type_id: sol_sw_effect.get_a_item_id(),
-            enabled: sol_sw_effect.get_sw_effect_state(),
+            id: sw_effect.get_item_id(),
+            type_id: sw_effect.get_a_item_id(),
+            enabled: sw_effect.get_sw_effect_state(),
         }
     }
 }

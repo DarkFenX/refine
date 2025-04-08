@@ -1,5 +1,5 @@
 use crate::sol::{
-    ItemId,
+    ItemKey,
     svc::calc::LocationKind,
     uad::item::{Item, ShipKind},
 };
@@ -45,10 +45,10 @@ impl Item {
             _ => false,
         }
     }
-    pub(in crate::sol::svc::calc) fn get_other(&self) -> Option<ItemId> {
+    pub(in crate::sol::svc::calc) fn get_other(&self) -> Option<ItemKey> {
         match self {
-            Self::Charge(charge) => Some(charge.get_cont_item_id()),
-            Self::Module(module) => module.get_charge_item_id(),
+            Self::Charge(charge) => Some(charge.get_cont_item_key()),
+            Self::Module(module) => module.get_charge_item_key(),
             _ => None,
         }
     }

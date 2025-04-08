@@ -1,16 +1,20 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{ItemId, SolarSystem},
+    sol::{ItemId, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn remove_implant(&mut self, item_id: &ItemId) -> Result<(), RemoveImplantError> {
-        let item = self.uad.items.get_by_id(item_id)?;
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.remove_implant_internal(item_key)?)
+    }
+    pub(in crate::sol) fn remove_implant_internal(&mut self, item_key: ItemKey) -> Result<(), ItemKindMatchError> {
+        let item = self.uad.items.get(item_key);
         let implant = item.get_implant()?;
-        self.svc.remove_item(&self.uad, item);
+        self.svc.remove_item(&self.uad, item_key, item);
         let fit = self.uad.fits.get_fit_mut(&implant.get_fit_id()).unwrap();
-        fit.implants.remove(item_id);
-        self.uad.items.remove_by_id(item_id);
+        fit.implants.remove(&item_key);
+        self.uad.items.remove(item_key);
         Ok(())
     }
 }

@@ -1,10 +1,10 @@
-use crate::{
-    sol::{
-        FitId, ItemId, ItemTypeId,
-        info::{ItemMutationInfo, ProjInfo},
-        uad::item::{Drone, MinionState},
+use crate::sol::{
+    FitId, ItemId, ItemTypeId,
+    info::{ItemMutationInfo, ProjInfo},
+    uad::{
+        Uad,
+        item::{Drone, MinionState},
     },
-    src::Src,
 };
 
 pub struct DroneInfo {
@@ -16,17 +16,20 @@ pub struct DroneInfo {
     pub projs: Vec<ProjInfo>,
 }
 impl DroneInfo {
-    pub(in crate::sol) fn from_drone_with_source(src: &Src, sol_drone: &Drone) -> Self {
+    pub(in crate::sol) fn from_drone(uad: &Uad, drone: &Drone) -> Self {
         Self {
-            id: sol_drone.get_item_id(),
-            type_id: sol_drone.get_a_item_id(),
-            fit_id: sol_drone.get_fit_id(),
-            state: sol_drone.get_drone_state(),
-            mutation: sol_drone.get_mutation_info(src),
-            projs: sol_drone
+            id: drone.get_item_id(),
+            type_id: drone.get_a_item_id(),
+            fit_id: drone.get_fit_id(),
+            state: drone.get_drone_state(),
+            mutation: drone.get_mutation_info(&uad.src),
+            projs: drone
                 .get_projs()
                 .iter()
-                .map(|(&item_id, &range)| ProjInfo { item_id, range })
+                .map(|(&projectee_item_key, &range)| ProjInfo {
+                    item_id: uad.items.id_by_key(projectee_item_key),
+                    range,
+                })
                 .collect(),
         }
     }

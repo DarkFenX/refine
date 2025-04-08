@@ -1,15 +1,23 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{ItemId, SolarSystem},
+    sol::{ItemId, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_charge_state(&mut self, item_id: &ItemId, state: bool) -> Result<(), SetChargeStateError> {
-        let charge = self.uad.items.get_mut_by_id(item_id)?.get_charge_mut()?;
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.set_charge_state_internal(item_key, state)?)
+    }
+    pub(in crate::sol) fn set_charge_state_internal(
+        &mut self,
+        item_key: ItemKey,
+        state: bool,
+    ) -> Result<(), ItemKindMatchError> {
+        let charge = self.uad.items.get_mut(item_key).get_charge_mut()?;
         let old_a_state = charge.get_a_state();
         charge.set_force_disable(!state);
         let new_a_state = charge.get_a_state();
-        self.change_item_id_state_in_svc(item_id, old_a_state, new_a_state);
+        self.change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
         Ok(())
     }
 }

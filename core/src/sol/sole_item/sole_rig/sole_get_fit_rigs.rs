@@ -9,7 +9,7 @@ impl SolarSystem {
         let rig_infos = fit
             .rigs
             .iter()
-            .map(|v| RigInfo::from(self.uad.items.get_by_id(v).unwrap().get_rig().unwrap()))
+            .map(|item_key| self.get_rig_internal(*item_key).unwrap())
             .collect();
         Ok(rig_infos)
     }

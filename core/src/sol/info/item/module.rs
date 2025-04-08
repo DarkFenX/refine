@@ -1,10 +1,10 @@
-use crate::{
-    sol::{
-        FitId, Idx, ItemId, ItemTypeId, ModRack,
-        info::{ChargeInfo, ItemMutationInfo, ProjInfo},
-        uad::item::{Module, ModuleState},
+use crate::sol::{
+    FitId, Idx, ItemId, ItemTypeId, ModRack,
+    info::{ChargeInfo, ItemMutationInfo, ProjInfo},
+    uad::{
+        Uad,
+        item::{Module, ModuleState},
     },
-    src::Src,
 };
 
 pub struct ModuleInfo {
@@ -19,24 +19,25 @@ pub struct ModuleInfo {
     pub projs: Vec<ProjInfo>,
 }
 impl ModuleInfo {
-    pub(in crate::sol) fn from_mod_and_charge_with_source(
-        src: &Src,
-        sol_module: &Module,
-        charge_info: Option<ChargeInfo>,
-    ) -> Self {
+    pub(in crate::sol) fn from_module(uad: &Uad, module: &Module) -> Self {
         Self {
-            id: sol_module.get_item_id(),
-            type_id: sol_module.get_a_item_id(),
-            fit_id: sol_module.get_fit_id(),
-            state: sol_module.get_module_state(),
-            rack: sol_module.get_rack(),
-            pos: sol_module.get_pos(),
-            mutation: sol_module.get_mutation_info(src),
-            charge: charge_info,
-            projs: sol_module
+            id: module.get_item_id(),
+            type_id: module.get_a_item_id(),
+            fit_id: module.get_fit_id(),
+            state: module.get_module_state(),
+            rack: module.get_rack(),
+            pos: module.get_pos(),
+            mutation: module.get_mutation_info(&uad.src),
+            charge: module
+                .get_charge_item_key()
+                .map(|charge_key| ChargeInfo::from_charge(uad, uad.items.get(charge_key).get_charge().unwrap())),
+            projs: module
                 .get_projs()
                 .iter()
-                .map(|(&item_id, &range)| ProjInfo { item_id, range })
+                .map(|(&projectee_item_key, &range)| ProjInfo {
+                    item_id: uad.items.id_by_key(projectee_item_key),
+                    range,
+                })
                 .collect(),
         }
     }

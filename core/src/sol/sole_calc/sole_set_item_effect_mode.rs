@@ -1,6 +1,6 @@
 use crate::{
     err::basic::ItemFoundError,
-    sol::{EffectId, EffectMode, ItemId, SolarSystem},
+    sol::{EffectId, EffectMode, ItemId, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
@@ -10,14 +10,22 @@ impl SolarSystem {
         effect_id: &EffectId,
         mode: EffectMode,
     ) -> Result<(), SetItemEffectModeError> {
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.set_item_effect_mode_internal(item_key, effect_id, mode))
+    }
+    pub(in crate::sol) fn set_item_effect_mode_internal(
+        &mut self,
+        item_key: ItemKey,
+        effect_id: &EffectId,
+        mode: EffectMode,
+    ) {
         self.uad
             .items
-            .get_mut_by_id(item_id)?
+            .get_mut(item_key)
             .get_effect_modes_mut()
             .set(effect_id.into(), mode);
-        let item = self.uad.items.get_by_id(item_id).unwrap();
-        self.svc.process_effects(&self.uad, item, item.get_a_state());
-        Ok(())
+        let item = self.uad.items.get(item_key);
+        self.svc.process_effects(&self.uad, item_key, item, item.get_a_state());
     }
 }
 

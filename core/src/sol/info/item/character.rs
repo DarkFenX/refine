@@ -6,13 +6,13 @@ pub struct CharacterInfo {
     pub fit_id: FitId,
     pub enabled: bool,
 }
-impl From<&Character> for CharacterInfo {
-    fn from(sol_character: &Character) -> Self {
+impl CharacterInfo {
+    pub(in crate::sol) fn from_character(character: &Character) -> Self {
         Self {
-            id: sol_character.get_item_id(),
-            type_id: sol_character.get_a_item_id(),
-            fit_id: sol_character.get_fit_id(),
-            enabled: sol_character.get_character_state(),
+            id: character.get_item_id(),
+            type_id: character.get_a_item_id(),
+            fit_id: character.get_fit_id(),
+            enabled: character.get_character_state(),
         }
     }
 }

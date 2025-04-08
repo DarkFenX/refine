@@ -28,39 +28,39 @@ impl SolarSystem {
             };
             match item_kind {
                 ad::AItemKind::Booster => {
-                    let booster_id = self.add_booster_internal(*fit_id, *type_id, true).unwrap();
+                    let booster_key = self.add_booster_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_booster(&booster_id).unwrap();
+                    self.remove_booster_internal(booster_key).unwrap();
                 }
                 ad::AItemKind::Drone => {
-                    let drone_id = self
+                    let drone_key = self
                         .add_drone_internal(*fit_id, *type_id, MinionState::InBay, None)
                         .unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_drone(&drone_id).unwrap();
+                    self.remove_drone_internal(drone_key).unwrap();
                 }
                 ad::AItemKind::Fighter => {
-                    let fighter_id = self
+                    let fighter_key = self
                         .add_fighter_internal(*fit_id, *type_id, MinionState::InBay)
                         .unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_fighter(&fighter_id).unwrap();
+                    self.remove_fighter_internal(fighter_key).unwrap();
                 }
                 ad::AItemKind::Implant => {
-                    let implant_id = self.add_implant_internal(*fit_id, *type_id, true).unwrap();
+                    let implant_key = self.add_implant_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_implant(&implant_id).unwrap();
+                    self.remove_implant_internal(implant_key).unwrap();
                 }
                 ad::AItemKind::ModuleHigh => {
-                    let module_id = self
+                    let module_key = self
                         .add_module_internal(
                             *fit_id,
                             ModRack::High,
@@ -74,10 +74,10 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_id, RmMode::Free).unwrap();
+                    self.remove_module_internal(module_key, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::ModuleMid => {
-                    let module_id = self
+                    let module_key = self
                         .add_module_internal(
                             *fit_id,
                             ModRack::Mid,
@@ -91,10 +91,10 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_id, RmMode::Free).unwrap();
+                    self.remove_module_internal(module_key, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::ModuleLow => {
-                    let module_id = self
+                    let module_key = self
                         .add_module_internal(
                             *fit_id,
                             ModRack::Low,
@@ -108,30 +108,30 @@ impl SolarSystem {
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_module(&module_id, RmMode::Free).unwrap();
+                    self.remove_module_internal(module_key, RmMode::Free).unwrap();
                 }
                 ad::AItemKind::Rig => {
-                    let rig_id = self.add_rig_internal(*fit_id, *type_id, true).unwrap();
+                    let rig_key = self.add_rig_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_rig(&rig_id).unwrap();
+                    self.remove_rig_internal(rig_key).unwrap();
                 }
                 ad::AItemKind::Service => {
-                    let service_id = self
+                    let service_key = self
                         .add_service_internal(*fit_id, *type_id, ServiceState::Online)
                         .unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_service(&service_id).unwrap();
+                    self.remove_service_internal(service_key).unwrap();
                 }
                 ad::AItemKind::Subsystem => {
-                    let subsystem_id = self.add_subsystem_internal(*fit_id, *type_id, true).unwrap();
+                    let subsystem_key = self.add_subsystem_internal(*fit_id, *type_id, true).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }
-                    self.remove_subsystem(&subsystem_id).unwrap();
+                    self.remove_subsystem_internal(subsystem_key).unwrap();
                 }
                 _ => continue,
             }

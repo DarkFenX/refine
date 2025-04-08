@@ -79,7 +79,7 @@ impl ItemBase {
             .map(|v| ItemBaseCache { a_item: v.clone() });
     }
     // Non-public methods
-    pub(in crate::sol::uad::item::base) fn new_with_id_not_loaded(
+    pub(in crate::sol::uad::item::base) fn new_with_a_item_id_not_loaded(
         item_id: ItemId,
         a_item_id: ad::AItemId,
         a_state: ad::AState,
@@ -92,7 +92,7 @@ impl ItemBase {
             cache: None,
         }
     }
-    pub(in crate::sol::uad::item::base) fn new_with_item(
+    pub(in crate::sol::uad::item::base) fn new_with_a_item(
         item_id: ItemId,
         a_item: ad::ArcItem,
         a_state: ad::AState,

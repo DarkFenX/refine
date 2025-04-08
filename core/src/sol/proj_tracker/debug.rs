@@ -7,12 +7,12 @@ use super::ProjTracker;
 
 impl ProjTracker {
     pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
-        for (projectee_item_id, projector_item_ids) in self.data.iter() {
-            if uad.items.get_by_id(projectee_item_id).is_err() {
+        for (projectee_item_key, projector_item_keys) in self.data.iter() {
+            if uad.items.try_get(*projectee_item_key).is_none() {
                 return Err(DebugError {});
             }
-            for projector_item_id in projector_item_ids {
-                if uad.items.get_by_id(projector_item_id).is_err() {
+            for projector_item_key in projector_item_keys {
+                if uad.items.try_get(*projector_item_key).is_none() {
                     return Err(DebugError {});
                 }
             }

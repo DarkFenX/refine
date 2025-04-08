@@ -7,8 +7,8 @@ use crate::{
 impl SolarSystem {
     pub fn set_fit_character_state(&mut self, fit_id: &FitId, state: bool) -> Result<(), SetFitCharacterStateError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
-        let item_id = match fit.character {
-            Some(item_id) => item_id,
+        let item_key = match fit.character {
+            Some(item_key) => item_key,
             None => {
                 return Err(FitHasItemKindError {
                     fit_id: *fit_id,
@@ -17,17 +17,11 @@ impl SolarSystem {
                 .into());
             }
         };
-        let character = self
-            .uad
-            .items
-            .get_mut_by_id(&item_id)
-            .unwrap()
-            .get_character_mut()
-            .unwrap();
+        let character = self.uad.items.get_mut(item_key).get_character_mut().unwrap();
         let old_a_state = character.get_a_state();
         character.set_character_state(state);
         let new_a_state = character.get_a_state();
-        self.change_item_id_state_in_svc(&item_id, old_a_state, new_a_state);
+        self.change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
         Ok(())
     }
 }

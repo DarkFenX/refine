@@ -1,12 +1,16 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{ItemId, SolarSystem, info::SwEffectInfo},
+    sol::{ItemId, ItemKey, SolarSystem, info::SwEffectInfo},
 };
 
 impl SolarSystem {
     pub fn get_sw_effect(&self, item_id: &ItemId) -> Result<SwEffectInfo, GetSwEffectError> {
-        let sw_effect = self.uad.items.get_by_id(item_id)?.get_sw_effect()?;
-        Ok(SwEffectInfo::from(sw_effect))
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.get_sw_effect_internal(item_key)?)
+    }
+    pub(in crate::sol) fn get_sw_effect_internal(&self, item_key: ItemKey) -> Result<SwEffectInfo, ItemKindMatchError> {
+        let sw_effect = self.uad.items.get(item_key).get_sw_effect()?;
+        Ok(SwEffectInfo::from_sw_effect(sw_effect))
     }
 }
 

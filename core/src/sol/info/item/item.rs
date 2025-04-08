@@ -1,4 +1,4 @@
-use crate::sol::{SolarSystem, uad::item::Item};
+use crate::sol::uad::{Uad, item::Item};
 
 use super::{
     AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FwEffectInfo, ImplantInfo,
@@ -25,25 +25,25 @@ pub enum ItemInfo {
     SwEffect(SwEffectInfo),
 }
 impl ItemInfo {
-    pub(in crate::sol) fn from_sol_item(sol_item: &Item, sol: &SolarSystem) -> Self {
-        match sol_item {
-            Item::Autocharge(sol_autocharge) => ItemInfo::Autocharge(sol_autocharge.into()),
-            Item::Booster(sol_booster) => ItemInfo::Booster(sol.make_booster_info(sol_booster)),
-            Item::Character(sol_charater) => ItemInfo::Character(sol_charater.into()),
-            Item::Charge(sol_charge) => ItemInfo::Charge(sol_charge.into()),
-            Item::Drone(sol_drone) => ItemInfo::Drone(sol.make_drone_info(sol_drone)),
-            Item::Fighter(sol_fighter) => ItemInfo::Fighter(sol.make_fighter_info(sol_fighter)),
-            Item::FwEffect(sol_fw_effect) => ItemInfo::FwEffect(sol_fw_effect.into()),
-            Item::Implant(sol_implant) => ItemInfo::Implant(sol_implant.into()),
-            Item::Module(sol_module) => ItemInfo::Module(sol.make_module_info(sol_module)),
-            Item::ProjEffect(sol_proj_effect) => ItemInfo::ProjEffect(sol_proj_effect.into()),
-            Item::Rig(sol_rig) => ItemInfo::Rig(sol_rig.into()),
-            Item::Service(sol_service) => ItemInfo::Service(sol_service.into()),
-            Item::Ship(sol_ship) => ItemInfo::Ship(sol_ship.into()),
-            Item::Skill(sol_skill) => ItemInfo::Skill(sol_skill.into()),
-            Item::Stance(sol_stance) => ItemInfo::Stance(sol_stance.into()),
-            Item::Subsystem(sol_subsystem) => ItemInfo::Subsystem(sol_subsystem.into()),
-            Item::SwEffect(sol_sw_effect) => ItemInfo::SwEffect(sol_sw_effect.into()),
+    pub(in crate::sol) fn from_item(uad: &Uad, item: &Item) -> Self {
+        match item {
+            Item::Autocharge(autocharge) => ItemInfo::Autocharge(AutochargeInfo::from_autocharge(uad, autocharge)),
+            Item::Booster(booster) => ItemInfo::Booster(BoosterInfo::from_booster(uad, booster)),
+            Item::Character(charater) => ItemInfo::Character(CharacterInfo::from_character(charater)),
+            Item::Charge(charge) => ItemInfo::Charge(ChargeInfo::from_charge(uad, charge)),
+            Item::Drone(drone) => ItemInfo::Drone(DroneInfo::from_drone(uad, drone)),
+            Item::Fighter(fighter) => ItemInfo::Fighter(FighterInfo::from_fighter(uad, fighter)),
+            Item::FwEffect(fw_effect) => ItemInfo::FwEffect(FwEffectInfo::from_fw_effect(fw_effect)),
+            Item::Implant(implant) => ItemInfo::Implant(ImplantInfo::from_implant(implant)),
+            Item::Module(module) => ItemInfo::Module(ModuleInfo::from_module(uad, module)),
+            Item::ProjEffect(proj_effect) => ItemInfo::ProjEffect(ProjEffectInfo::from_proj_effect(uad, proj_effect)),
+            Item::Rig(rig) => ItemInfo::Rig(RigInfo::from_rig(rig)),
+            Item::Service(service) => ItemInfo::Service(ServiceInfo::from_service(service)),
+            Item::Ship(ship) => ItemInfo::Ship(ShipInfo::from_ship(ship)),
+            Item::Skill(skill) => ItemInfo::Skill(SkillInfo::from_skill(skill)),
+            Item::Stance(stance) => ItemInfo::Stance(StanceInfo::from_stance(stance)),
+            Item::Subsystem(subsystem) => ItemInfo::Subsystem(SubsystemInfo::from_subsystem(subsystem)),
+            Item::SwEffect(sw_effect) => ItemInfo::SwEffect(SwEffectInfo::from_sw_effect(sw_effect)),
         }
     }
 }

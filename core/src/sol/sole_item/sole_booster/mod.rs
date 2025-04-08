@@ -5,7 +5,6 @@ pub use sole_remove_booster::RemoveBoosterError;
 pub use sole_set_booster_side_effect_state::SetBoosterSideEffectStateError;
 pub use sole_set_booster_state::SetBoosterStateError;
 
-mod misc;
 mod sole_add_booster;
 mod sole_get_booster;
 mod sole_get_fit_boosters;

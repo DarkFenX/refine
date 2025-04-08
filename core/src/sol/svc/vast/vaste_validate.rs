@@ -14,7 +14,7 @@ impl Vast {
         fit: &Fit,
         options: &ValOptions,
     ) -> bool {
-        let ship = fit.ship.map(|v| uad.items.get_by_id(&v).unwrap().get_ship().unwrap());
+        let ship = fit.ship.map(|v| uad.items.get(v).get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         // Order of validations matters here; the faster validation and the more likely it is to
@@ -354,7 +354,7 @@ impl Vast {
         fit: &Fit,
         options: &ValOptions,
     ) -> ValResult {
-        let ship = fit.ship.map(|v| uad.items.get_by_id(&v).unwrap().get_ship().unwrap());
+        let ship = fit.ship.map(|v| uad.items.get(v).get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         let mut result = ValResult::new();
@@ -471,17 +471,19 @@ impl Vast {
                 fit_data.validate_low_slot_count_verbose(&options.low_slot_count.kfs, uad, calc, fit);
         }
         if options.implant_slot_index.enabled {
-            result.implant_slot_index = fit_data.validate_implant_slot_index_verbose(&options.implant_slot_index.kfs);
+            result.implant_slot_index =
+                fit_data.validate_implant_slot_index_verbose(&options.implant_slot_index.kfs, uad);
         }
         if options.booster_slot_index.enabled {
-            result.booster_slot_index = fit_data.validate_booster_slot_index_verbose(&options.booster_slot_index.kfs);
+            result.booster_slot_index =
+                fit_data.validate_booster_slot_index_verbose(&options.booster_slot_index.kfs, uad);
         }
         if options.subsystem_slot_index.enabled {
             result.subsystem_slot_index =
-                fit_data.validate_subsystem_slot_index_verbose(&options.subsystem_slot_index.kfs);
+                fit_data.validate_subsystem_slot_index_verbose(&options.subsystem_slot_index.kfs, uad);
         }
         if options.ship_limit.enabled {
-            result.ship_limit = fit_data.validate_ship_limit_verbose(&options.ship_limit.kfs, ship);
+            result.ship_limit = fit_data.validate_ship_limit_verbose(&options.ship_limit.kfs, uad, ship);
         }
         if options.max_group_fitted.enabled {
             result.max_group_fitted =
@@ -496,10 +498,10 @@ impl Vast {
                 fit_data.validate_max_group_active_verbose(&options.max_group_active.kfs, uad, calc);
         }
         if options.rig_size.enabled {
-            result.rig_size = fit_data.validate_rig_size_verbose(&options.rig_size.kfs, ship);
+            result.rig_size = fit_data.validate_rig_size_verbose(&options.rig_size.kfs, uad, ship);
         }
         if options.skill_reqs.enabled {
-            result.skill_reqs = fit_data.validate_skill_reqs_verbose(&options.skill_reqs.kfs);
+            result.skill_reqs = fit_data.validate_skill_reqs_verbose(&options.skill_reqs.kfs, uad);
         }
         if options.charge_group.enabled {
             result.charge_group = fit_data.validate_charge_group_verbose(&options.charge_group.kfs, uad);
@@ -511,22 +513,23 @@ impl Vast {
             result.charge_volume = fit_data.validate_charge_volume_verbose(&options.charge_volume.kfs, uad);
         }
         if options.capital_module.enabled {
-            result.capital_module = fit_data.validate_capital_module_verbose(&options.capital_module.kfs, ship);
+            result.capital_module = fit_data.validate_capital_module_verbose(&options.capital_module.kfs, uad, ship);
         }
         if options.not_loaded_item.enabled {
-            result.not_loaded_item = fit_data.validate_not_loaded_item_verbose(&options.not_loaded_item.kfs);
+            result.not_loaded_item = fit_data.validate_not_loaded_item_verbose(&options.not_loaded_item.kfs, uad);
         }
         if options.module_state.enabled {
-            result.module_state = fit_data.validate_module_state_verbose(&options.module_state.kfs);
+            result.module_state = fit_data.validate_module_state_verbose(&options.module_state.kfs, uad);
         }
         if options.item_kind.enabled {
-            result.item_kind = fit_data.validate_item_kind_verbose(&options.item_kind.kfs);
+            result.item_kind = fit_data.validate_item_kind_verbose(&options.item_kind.kfs, uad);
         }
         if options.drone_group.enabled {
-            result.drone_group = fit_data.validate_drone_group_verbose(&options.drone_group.kfs);
+            result.drone_group = fit_data.validate_drone_group_verbose(&options.drone_group.kfs, uad);
         }
         if options.fighter_squad_size.enabled {
-            result.fighter_squad_size = fit_data.validate_fighter_squad_size_verbose(&options.fighter_squad_size.kfs);
+            result.fighter_squad_size =
+                fit_data.validate_fighter_squad_size_verbose(&options.fighter_squad_size.kfs, uad);
         }
         if options.unlaunchable_drone_slot.enabled {
             result.unlaunchable_drone_slot =
@@ -594,13 +597,13 @@ impl Vast {
             );
         }
         if options.ship_stance.enabled {
-            result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, fit, ship);
+            result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, uad, fit, ship);
         }
         if options.overload_skill.enabled {
-            result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, fit);
+            result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, uad, fit);
         }
         if options.max_type_fitted.enabled {
-            result.max_type_fitted = fit_data.validate_max_type_fitted_verbose(&options.max_type_fitted.kfs);
+            result.max_type_fitted = fit_data.validate_max_type_fitted_verbose(&options.max_type_fitted.kfs, uad);
         }
         if options.sec_zone_fitted.enabled {
             result.sec_zone_fitted = fit_data.validate_sec_zone_fitted_verbose(&options.sec_zone_fitted.kfs, uad, calc);
@@ -624,7 +627,8 @@ impl Vast {
                 fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, uad, calc);
         }
         if options.item_vs_ship_kind.enabled {
-            result.item_vs_ship_kind = fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, fit);
+            result.item_vs_ship_kind =
+                fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, uad, fit);
         }
         result
     }

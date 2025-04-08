@@ -2,7 +2,11 @@ use std::collections::HashMap;
 
 use crate::{
     ac,
-    sol::{ItemId, SkillLevel, svc::vast::VastFitData, uad::fit::Fit},
+    sol::{
+        ItemId, ItemKey, SkillLevel,
+        svc::vast::VastFitData,
+        uad::{Uad, fit::Fit},
+    },
     util::RSet,
 };
 
@@ -16,7 +20,7 @@ pub struct ValOverloadSkillFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<ItemId>, fit: &Fit) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<ItemKey>, fit: &Fit) -> bool {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
@@ -26,12 +30,13 @@ impl VastFitData {
         };
         self.overload_td_lvl
             .iter()
-            .all(|(item_id, &req_lvl)| td_lvl >= req_lvl || kfs.contains(item_id))
+            .all(|(item_key, &req_lvl)| td_lvl >= req_lvl || kfs.contains(item_key))
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_overload_skill_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
         fit: &Fit,
     ) -> Option<ValOverloadSkillFail> {
         if self.overload_td_lvl.is_empty() {
@@ -41,11 +46,11 @@ impl VastFitData {
         let module_reqs: HashMap<_, _> = self
             .overload_td_lvl
             .iter()
-            .filter(|(item_id, req_lvl)| match td_lvl {
+            .filter(|(item_key, req_lvl)| match td_lvl {
                 Some(td_lvl) => **req_lvl > td_lvl,
                 None => true,
-            } && !kfs.contains(item_id))
-            .map(|(item_id, req_lvl)| (*item_id, *req_lvl))
+            } && !kfs.contains(item_key))
+            .map(|(item_key, req_lvl)| (uad.items.id_by_key(*item_key), *req_lvl))
             .collect();
         match module_reqs.is_empty() {
             true => None,

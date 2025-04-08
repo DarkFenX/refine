@@ -13,6 +13,7 @@ pub use vaste_vals_fit::{
     ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail,
     ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };
+use vaste_vals_fit::{ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache};
 
 mod cache;
 mod options;

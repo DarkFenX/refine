@@ -7,8 +7,8 @@ use crate::{
 impl SolarSystem {
     pub fn remove_fit_ship(&mut self, fit_id: &FitId) -> Result<(), RemoveFitShipError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
-        let item_id = match fit.ship {
-            Some(item_id) => item_id,
+        let item_key = match fit.ship {
+            Some(item_key) => item_key,
             None => {
                 return Err(FitHasItemKindError {
                     fit_id: *fit_id,
@@ -17,8 +17,7 @@ impl SolarSystem {
                 .into());
             }
         };
-        self.remove_ship(&item_id).unwrap();
-        Ok(())
+        Ok(self.remove_ship_internal(item_key).unwrap())
     }
 }
 

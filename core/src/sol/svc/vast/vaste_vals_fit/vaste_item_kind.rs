@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    sol::{ItemId, svc::vast::VastFitData},
+    sol::{ItemId, ItemKey, svc::vast::VastFitData, uad::Uad},
     util::RSet,
 };
 
@@ -21,19 +21,23 @@ pub struct ValItemKindItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.item_kind.is_empty(),
             false => self.item_kind.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_item_kind_verbose(&self, kfs: &RSet<ItemId>) -> Option<ValItemKindFail> {
+    pub(in crate::sol::svc::vast) fn validate_item_kind_verbose(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+    ) -> Option<ValItemKindFail> {
         let item_kinds: HashMap<_, _> = self
             .item_kind
             .iter()
-            .filter(|(k, _)| !kfs.contains(k))
-            .map(|(k, v)| (*k, *v))
+            .filter(|(item_key, _)| !kfs.contains(item_key))
+            .map(|(item_key, item_info)| (uad.items.id_by_key(*item_key), *item_info))
             .collect();
         match item_kinds.is_empty() {
             true => None,

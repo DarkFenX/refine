@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        ItemId,
+        ItemKey,
         svc::calc::{CtxModifier, Op},
     },
 };
@@ -12,14 +12,14 @@ use crate::{
 // test_similar_modifiers.py
 #[derive(Eq, PartialEq, Hash)]
 pub(in crate::sol::svc::calc) struct ModificationKey {
-    pub(in crate::sol::svc::calc) affector_item_id: ItemId,
+    pub(in crate::sol::svc::calc) affector_item_key: ItemKey,
     pub(in crate::sol::svc::calc) affector_a_attr_id: Option<ad::AAttrId>,
     pub(in crate::sol::svc::calc) op: Op,
 }
 impl From<&CtxModifier> for ModificationKey {
     fn from(modifier: &CtxModifier) -> Self {
         ModificationKey {
-            affector_item_id: modifier.raw.affector_item_id,
+            affector_item_key: modifier.raw.affector_item_key,
             affector_a_attr_id: modifier.raw.get_affector_a_attr_id(),
             op: modifier.raw.op,
         }

@@ -62,7 +62,7 @@ impl ItemBaseMutable {
                 // into rolls against base item attributes.
                 Some(base_a_item) => {
                     return Self {
-                        base: ItemBase::new_with_item(item_id, base_a_item.clone(), a_state),
+                        base: ItemBase::new_with_a_item(item_id, base_a_item.clone(), a_state),
                         mutation: Some(convert_item_mutation_full(
                             mutation_request,
                             &base_a_item.attrs,
@@ -74,7 +74,7 @@ impl ItemBaseMutable {
                 // just roll values.
                 None => {
                     return Self {
-                        base: ItemBase::new_with_id_not_loaded(item_id, a_item_id, a_state),
+                        base: ItemBase::new_with_a_item_id_not_loaded(item_id, a_item_id, a_state),
                         mutation: Some(convert_item_mutation_basic(mutation_request)),
                     };
                 }
@@ -92,7 +92,7 @@ impl ItemBaseMutable {
             a_extras,
         });
         Self {
-            base: ItemBase::new_with_item(item_id, mutated_a_item.clone(), a_state),
+            base: ItemBase::new_with_a_item(item_id, mutated_a_item.clone(), a_state),
             mutation: Some(item_mutation),
         }
     }

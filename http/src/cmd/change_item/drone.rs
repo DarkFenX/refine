@@ -105,7 +105,7 @@ impl HChangeDroneCmd {
             TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
-            if let Err(error) = core_sol.add_drone_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {
+            if let Err(error) = core_sol.add_drone_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
                 return Err(match error {
                     rc::err::AddDroneProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::AddDroneProjError::ProjectorIsNotDrone(e) => HExecError::ItemKindMismatch(e),
@@ -120,6 +120,7 @@ impl HChangeDroneCmd {
                 return Err(match error {
                     rc::err::ChangeDroneProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::ChangeDroneProjError::ProjectorIsNotDrone(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::ChangeDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::ChangeDroneProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 });
             }
@@ -129,6 +130,7 @@ impl HChangeDroneCmd {
                 return Err(match error {
                     rc::err::RemoveDroneProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::RemoveDroneProjError::ProjectorIsNotDrone(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::RemoveDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::RemoveDroneProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 });
             }

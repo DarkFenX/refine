@@ -1,5 +1,6 @@
 use crate::err::basic::{ItemFoundError, ItemLoadedError};
 
+// TODO: check if whole error class is still needed after transfer to slab
 #[derive(Debug)]
 pub(in crate::sol) enum LoadedItemFoundError {
     ItemNotFound(ItemFoundError),

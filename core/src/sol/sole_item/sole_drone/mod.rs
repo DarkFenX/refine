@@ -10,7 +10,6 @@ pub use sole_remove_drone_mutation::RemoveDroneMutationError;
 pub use sole_remove_drone_proj::RemoveDroneProjError;
 pub use sole_set_drone_state::SetDroneStateError;
 
-mod misc;
 mod sole_add_drone;
 mod sole_add_drone_mutation;
 mod sole_add_drone_proj;

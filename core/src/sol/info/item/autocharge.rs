@@ -1,4 +1,7 @@
-use crate::sol::{EffectId, FitId, ItemId, ItemTypeId, uad::item::Autocharge};
+use crate::sol::{
+    EffectId, FitId, ItemId, ItemTypeId,
+    uad::{Uad, item::Autocharge},
+};
 
 pub struct AutochargeInfo {
     pub id: ItemId,
@@ -9,15 +12,15 @@ pub struct AutochargeInfo {
     pub enabled: bool,
     // No projections because they fully match to projections of parent item
 }
-impl From<&Autocharge> for AutochargeInfo {
-    fn from(sol_autocharge: &Autocharge) -> Self {
+impl AutochargeInfo {
+    pub(in crate::sol) fn from_autocharge(uad: &Uad, autocharge: &Autocharge) -> Self {
         Self {
-            id: sol_autocharge.get_item_id(),
-            type_id: sol_autocharge.get_a_item_id(),
-            fit_id: sol_autocharge.get_fit_id(),
-            cont_item_id: sol_autocharge.get_cont_item_id(),
-            cont_effect_id: sol_autocharge.get_cont_effect_id().into(),
-            enabled: !sol_autocharge.get_force_disable(),
+            id: autocharge.get_item_id(),
+            type_id: autocharge.get_a_item_id(),
+            fit_id: autocharge.get_fit_id(),
+            cont_item_id: uad.items.id_by_key(autocharge.get_cont_item_key()),
+            cont_effect_id: autocharge.get_cont_effect_id().into(),
+            enabled: !autocharge.get_force_disable(),
         }
     }
 }

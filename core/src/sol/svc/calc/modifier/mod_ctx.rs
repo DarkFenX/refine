@@ -1,5 +1,5 @@
 use crate::sol::{
-    FitId, ItemId,
+    FitId, ItemKey,
     svc::calc::{Context, RawModifier},
 };
 
@@ -15,10 +15,10 @@ impl CtxModifier {
             ctx: Context::None,
         }
     }
-    pub(in crate::sol::svc::calc) fn from_raw_with_item(raw: RawModifier, ctx_item_id: ItemId) -> Self {
+    pub(in crate::sol::svc::calc) fn from_raw_with_item(raw: RawModifier, ctx_item_key: ItemKey) -> Self {
         Self {
             raw,
-            ctx: Context::Item(ctx_item_id),
+            ctx: Context::Item(ctx_item_key),
         }
     }
     pub(in crate::sol::svc::calc) fn from_raw_with_fit(raw: RawModifier, ctx_fit_id: FitId) -> Self {

@@ -126,7 +126,7 @@ impl HChangeModuleCmd {
             TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
-            if let Err(error) = core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {
+            if let Err(error) = core_sol.add_module_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
                 return Err(match error {
                     rc::err::AddModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::AddModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
@@ -141,6 +141,7 @@ impl HChangeModuleCmd {
                 return Err(match error {
                     rc::err::ChangeModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::ChangeModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::ChangeModuleProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::ChangeModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 });
             }
@@ -150,6 +151,7 @@ impl HChangeModuleCmd {
                 return Err(match error {
                     rc::err::RemoveModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::RemoveModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::RemoveModuleProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::RemoveModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 });
             }

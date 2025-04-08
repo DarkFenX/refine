@@ -1,53 +1,59 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError, ItemReceiveProjError, ProjNotFoundError},
-    sol::{ItemId, SolarSystem},
+    sol::{ItemId, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn add_proj_effect_proj(
         &mut self,
         item_id: &ItemId,
-        projectee_item_id: ItemId,
+        projectee_item_id: &ItemId,
+    ) -> Result<(), AddProjEffectProjError> {
+        let item_key = self
+            .uad
+            .items
+            .key_by_id_err(item_id)
+            .map_err(AddProjEffectProjError::ProjectorNotFound)?;
+        let projectee_item_key = self
+            .uad
+            .items
+            .key_by_id_err(projectee_item_id)
+            .map_err(AddProjEffectProjError::ProjecteeNotFound)?;
+        self.add_proj_effect_proj_internal(item_key, projectee_item_key)
+    }
+    pub(in crate::sol) fn add_proj_effect_proj_internal(
+        &mut self,
+        item_key: ItemKey,
+        projectee_item_key: ItemKey,
     ) -> Result<(), AddProjEffectProjError> {
         // Check projector
         let proj_effect = self
             .uad
             .items
-            .get_by_id(item_id)
-            .map_err(AddProjEffectProjError::ProjectorNotFound)?
+            .get(item_key)
             .get_proj_effect()
             .map_err(AddProjEffectProjError::ProjectorIsNotProjEffect)?;
         // Check if projection has already been defined
-        if proj_effect.get_projs().contains(&projectee_item_id) {
+        let projectee_item = self.uad.items.get(projectee_item_key);
+        if proj_effect.get_projs().contains(&projectee_item_key) {
             return Err(AddProjEffectProjError::ProjectionAlreadyExists(ProjNotFoundError {
-                projector_item_id: *item_id,
-                projectee_item_id,
+                projector_item_id: proj_effect.get_item_id(),
+                projectee_item_id: projectee_item.get_item_id(),
             }));
         }
         // Check if projectee can receive projections
-        let projectee_item = self
-            .uad
-            .items
-            .get_by_id(&projectee_item_id)
-            .map_err(AddProjEffectProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddProjEffectProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
-                item_id: projectee_item_id,
+                item_id: projectee_item.get_item_id(),
                 item_kind: projectee_item.get_name(),
             }));
         }
         // Update user data
-        let proj_effect = self
-            .uad
-            .items
-            .get_mut_by_id(item_id)
-            .unwrap()
-            .get_proj_effect_mut()
-            .unwrap();
-        proj_effect.get_projs_mut().add(projectee_item_id, None);
-        self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
+        let proj_effect = self.uad.items.get_mut(item_key).get_proj_effect_mut().unwrap();
+        proj_effect.get_projs_mut().add(projectee_item_key, None);
+        self.proj_tracker.reg_projectee(item_key, projectee_item_key);
         // Update services
-        self.add_item_id_projection_to_svc(item_id, &projectee_item_id, None);
+        self.add_item_key_projection_to_svc(item_key, projectee_item_key, None);
         Ok(())
     }
 }

@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemTypeId, SolarSystem,
+        FitId, ItemKey, ItemTypeId, SolarSystem,
         info::StanceInfo,
         uad::item::{Item, Stance},
     },
@@ -14,24 +14,29 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: bool,
     ) -> Result<StanceInfo, SetFitStanceError> {
+        let item_key = self.set_fit_stance_internal(fit_id, type_id, state)?;
+        Ok(self.get_stance_internal(item_key).unwrap())
+    }
+    pub(in crate::sol) fn set_fit_stance_internal(
+        &mut self,
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: bool,
+    ) -> Result<ItemKey, FitFoundError> {
         let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old stance, if it was set
-        if let Some(old_item_id) = fit.stance {
-            // Update services
-            self.remove_item_id_from_svc(&old_item_id);
-            // Update user data - do not touch fit, since it will be changed later
-            self.uad.items.remove_by_id(&old_item_id);
+        if let Some(old_item_key) = fit.stance {
+            self.remove_stance_internal(old_item_key).unwrap();
         }
         // Add new stance
         let item_id = self.uad.items.alloc_item_id();
         let stance = Stance::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = StanceInfo::from(&stance);
         let item = Item::Stance(stance);
+        let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
-        fit.stance = Some(item_id);
-        self.uad.items.add(item);
-        self.add_item_id_to_svc(&item_id);
-        Ok(info)
+        fit.stance = Some(item_key);
+        self.add_item_key_to_svc(item_key);
+        Ok(item_key)
     }
 }
 

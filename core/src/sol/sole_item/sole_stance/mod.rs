@@ -6,6 +6,7 @@ pub use sole_set_fit_stance_state::SetFitStanceStateError;
 pub use sole_set_stance_state::SetStanceStateError;
 
 mod sole_get_fit_stance;
+mod sole_get_stance;
 mod sole_remove_fit_stance;
 mod sole_remove_stance;
 mod sole_set_fit_stance;

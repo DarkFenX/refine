@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{ItemId, ItemTypeId, SkillLevel, svc::vast::VastFitData},
+    sol::{ItemId, ItemKey, ItemTypeId, SkillLevel, svc::vast::VastFitData, uad::Uad},
     util::RSet,
 };
 
@@ -20,20 +20,24 @@ pub struct ValSrqSkillInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         self.srqs_missing
             .iter()
-            .all(|(item_id, missing_skills)| missing_skills.is_empty() || kfs.contains(item_id))
+            .all(|(item_key, missing_skills)| missing_skills.is_empty() || kfs.contains(item_key))
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self, kfs: &RSet<ItemId>) -> Option<ValSrqFail> {
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+    ) -> Option<ValSrqFail> {
         let items: HashMap<_, _> = self
             .srqs_missing
             .iter()
-            .filter(|(item_id, missing_skills)| !missing_skills.is_empty() && !kfs.contains(item_id))
-            .map(|(item_id, missing_skills)| {
+            .filter(|(item_key, missing_skills)| !missing_skills.is_empty() && !kfs.contains(item_key))
+            .map(|(item_key, missing_skills)| {
                 (
-                    *item_id,
+                    uad.items.id_by_key(*item_key),
                     missing_skills
                         .iter()
                         .map(|(skill_a_item_id, skill_info)| (*skill_a_item_id, *skill_info))

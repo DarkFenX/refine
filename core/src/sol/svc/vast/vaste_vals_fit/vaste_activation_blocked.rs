@@ -1,7 +1,7 @@
 use crate::{
     ac,
     sol::{
-        ItemId,
+        ItemId, ItemKey,
         svc::{calc::Calc, vast::VastFitData},
         uad::Uad,
     },
@@ -19,30 +19,30 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_activation_blocked_fast(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
         self.mods_active
             .difference(kfs)
-            .all(|v| !is_flag_set(uad, calc, v, &ac::attrs::ACTIVATION_BLOCKED))
+            .all(|item_key| !is_flag_set(uad, calc, *item_key, &ac::attrs::ACTIVATION_BLOCKED))
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_activation_blocked_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
-        let item_ids: Vec<_> = self
+        let module_ids: Vec<_> = self
             .mods_active
             .difference(kfs)
-            .filter(|v| is_flag_set(uad, calc, v, &ac::attrs::ACTIVATION_BLOCKED))
-            .copied()
+            .filter(|item_key| is_flag_set(uad, calc, **item_key, &ac::attrs::ACTIVATION_BLOCKED))
+            .map(|item_key| uad.items.id_by_key(*item_key))
             .collect();
-        match item_ids.is_empty() {
+        match module_ids.is_empty() {
             true => None,
-            false => Some(ValActivationBlockedFail { module_ids: item_ids }),
+            false => Some(ValActivationBlockedFail { module_ids }),
         }
     }
 }

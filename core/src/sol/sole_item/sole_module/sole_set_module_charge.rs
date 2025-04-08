@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::{
-        ItemId, ItemTypeId, SolarSystem,
+        ItemId, ItemKey, ItemTypeId, SolarSystem,
         info::ChargeInfo,
         uad::item::{Charge, Item},
     },
@@ -15,73 +15,85 @@ impl SolarSystem {
         item_id: &ItemId,
         charge_type_id: ItemTypeId,
     ) -> Result<ChargeInfo, SetModuleChargeError> {
-        let module = self.uad.items.get_by_id(item_id)?.get_module()?;
-        let module_projs = module.get_projs().iter().map(|(i, r)| (*i, *r)).collect_vec();
+        let module_key = self.uad.items.key_by_id_err(item_id)?;
+        let charge_key = self.set_module_charge_internal(module_key, charge_type_id)?;
+        Ok(self.get_charge_internal(charge_key).unwrap())
+    }
+    pub(in crate::sol) fn set_module_charge_internal(
+        &mut self,
+        item_key: ItemKey,
+        charge_type_id: ItemTypeId,
+    ) -> Result<ItemKey, ItemKindMatchError> {
+        let module = self.uad.items.get(item_key).get_module()?;
+        let fit_id = module.get_fit_id();
+        let module_a_state = module.get_a_state();
+        let module_projs = module
+            .get_projs()
+            .iter()
+            .map(|(projectee_item_key, range)| (*projectee_item_key, *range))
+            .collect_vec();
         // Remove old charge, if it was set
-        if let Some(charge_id) = module.get_charge_item_id() {
+        if let Some(old_charge_key) = module.get_charge_item_key() {
             // Remove outgoing projections
-            let charge_item = self.uad.items.get_by_id(&charge_id).unwrap();
+            let charge_item = self.uad.items.get(old_charge_key);
             // Use module projections because they should be identical
-            for (projectee_item_id, _) in module_projs.iter() {
+            for (projectee_item_key, _) in module_projs.iter() {
                 // Update services for charge being removed
-                let projectee_item = self.uad.items.get_by_id(projectee_item_id).unwrap();
-                self.svc.remove_item_projection(&self.uad, charge_item, projectee_item);
+                let projectee_item = self.uad.items.get(*projectee_item_key);
+                self.svc
+                    .remove_item_projection(&self.uad, old_charge_key, *projectee_item_key, projectee_item);
                 // Update user data for charge - do not touch projections container on charge
                 // itself, because we're removing it anyway
-                self.proj_tracker.unreg_projectee(&charge_id, projectee_item_id);
+                self.proj_tracker.unreg_projectee(&old_charge_key, projectee_item_key);
             }
             // Update services for charge being removed
-            self.svc.remove_item(&self.uad, charge_item);
+            self.svc.remove_item(&self.uad, old_charge_key, charge_item);
             // Update user data for charge - do not update module<->charge references because charge
             // will be removed, and module will be updated later
-            self.uad.items.remove_by_id(&charge_id);
+            self.uad.items.remove(old_charge_key);
         };
         // Set new charge
         // Allocation can fail only if we didn't remove charge first, so if it fails - we don't need
         // to restore anything
         let charge_id = self.uad.items.alloc_item_id();
         // Update user data
-        let module = self.uad.items.get_mut_by_id(item_id).unwrap().get_module_mut().unwrap();
-        module.set_charge_item_id(Some(charge_id));
-        let fit_id = module.get_fit_id();
         let charge = Charge::new(
             &self.uad.src,
             charge_id,
             charge_type_id,
             fit_id,
-            *item_id,
-            module.get_a_state(),
+            item_key,
+            module_a_state,
             false,
         );
-        let charge_info = ChargeInfo::from(&charge);
         let charge_item = Item::Charge(charge);
-        self.uad.items.add(charge_item);
+        let new_charge_key = self.uad.items.add(charge_item);
+        let module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
+        module.set_charge_item_key(Some(new_charge_key));
         // Update services
-        self.add_item_id_to_svc(&charge_id);
+        self.add_item_key_to_svc(new_charge_key);
         // Reapply module projections to charge
         if !module_projs.is_empty() {
             let charge_projs = self
                 .uad
                 .items
-                .get_mut_by_id(&charge_id)
-                .unwrap()
+                .get_mut(new_charge_key)
                 .get_charge_mut()
                 .unwrap()
                 .get_projs_mut();
             // Update user data for charge
             for (projectee_item_id, range) in module_projs.iter() {
-                self.proj_tracker.reg_projectee(charge_id, *projectee_item_id);
+                self.proj_tracker.reg_projectee(new_charge_key, *projectee_item_id);
                 charge_projs.add(*projectee_item_id, *range);
             }
             // Update services for charge
-            let charge_item = self.uad.items.get_by_id(&charge_id).unwrap();
-            for (projectee_item_id, range) in module_projs {
-                let projectee_item = self.uad.items.get_by_id(&projectee_item_id).unwrap();
+            for (projectee_item_key, range) in module_projs {
+                let projectee_item = self.uad.items.get(projectee_item_key);
                 self.svc
-                    .add_item_projection(&self.uad, charge_item, projectee_item, range);
+                    .add_item_projection(&self.uad, new_charge_key, projectee_item_key, projectee_item, range);
             }
         }
-        Ok(charge_info)
+        Ok(new_charge_key)
     }
 }
 

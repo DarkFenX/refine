@@ -1,4 +1,7 @@
-use crate::{FitId, ItemId, ad, sol::uad::Uad};
+use crate::{
+    ad,
+    sol::{FitId, ItemKey, uad::Uad},
+};
 
 #[derive(Debug)]
 pub(in crate::sol) struct DebugError {}
@@ -18,10 +21,10 @@ pub(in crate::sol) fn check_fit_id(uad: &Uad, fit_id: &FitId) -> DebugResult {
     Ok(())
 }
 
-pub(in crate::sol) fn check_item_id(uad: &Uad, item_id: &ItemId, check_load: bool) -> DebugResult {
-    let item = match uad.items.get_by_id(item_id) {
-        Ok(item) => item,
-        _ => return Err(DebugError {}),
+pub(in crate::sol) fn check_item_key(uad: &Uad, item_key: ItemKey, check_load: bool) -> DebugResult {
+    let item = match uad.items.try_get(item_key) {
+        Some(item) => item,
+        None => return Err(DebugError {}),
     };
     if check_load && !item.is_loaded() {
         return Err(DebugError {});

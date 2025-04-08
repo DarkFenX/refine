@@ -7,14 +7,14 @@ pub struct SkillInfo {
     pub level: SkillLevel,
     pub enabled: bool,
 }
-impl From<&Skill> for SkillInfo {
-    fn from(sol_skill: &Skill) -> Self {
+impl SkillInfo {
+    pub(in crate::sol) fn from_skill(skill: &Skill) -> Self {
         Self {
-            id: sol_skill.get_item_id(),
-            type_id: sol_skill.get_a_item_id(),
-            fit_id: sol_skill.get_fit_id(),
-            level: sol_skill.get_a_level(),
-            enabled: sol_skill.get_skill_state(),
+            id: skill.get_item_id(),
+            type_id: skill.get_a_item_id(),
+            fit_id: skill.get_fit_id(),
+            level: skill.get_a_level(),
+            enabled: skill.get_skill_state(),
         }
     }
 }

@@ -9,7 +9,7 @@ impl SolarSystem {
         let fighter_infos = fit
             .fighters
             .iter()
-            .map(|v| self.make_fighter_info(self.uad.items.get_by_id(v).unwrap().get_fighter().unwrap()))
+            .map(|item_key| self.get_fighter_internal(*item_key).unwrap())
             .collect();
         Ok(fighter_infos)
     }

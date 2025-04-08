@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::{AttrVal, ItemId, SolarSystem},
+    sol::{AttrVal, ItemId, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
@@ -12,14 +12,32 @@ impl SolarSystem {
         projectee_item_id: &ItemId,
         range: Option<AttrVal>,
     ) -> Result<(), ChangeFighterProjError> {
+        let item_key = self
+            .uad
+            .items
+            .key_by_id_err(item_id)
+            .map_err(ChangeFighterProjError::ProjectorNotFound)?;
+        let projectee_item_key = self
+            .uad
+            .items
+            .key_by_id_err(projectee_item_id)
+            .map_err(ChangeFighterProjError::ProjecteeNotFound)?;
+        self.change_fighter_proj_internal(item_key, projectee_item_key, range)
+    }
+    pub(in crate::sol) fn change_fighter_proj_internal(
+        &mut self,
+        item_key: ItemKey,
+        projectee_item_key: ItemKey,
+        range: Option<AttrVal>,
+    ) -> Result<(), ChangeFighterProjError> {
         // Check if projection is defined before changing it
-        let fighter = self.uad.items.get_by_id(item_id)?.get_fighter()?;
-        let old_range = match fighter.get_projs().get(projectee_item_id) {
+        let fighter = self.uad.items.get(item_key).get_fighter()?;
+        let old_range = match fighter.get_projs().get(&projectee_item_key) {
             Some(old_range) => *old_range,
             None => {
                 return Err(ProjFoundError {
-                    projector_item_id: *item_id,
-                    projectee_item_id: *projectee_item_id,
+                    projector_item_id: fighter.get_item_id(),
+                    projectee_item_id: self.uad.items.id_by_key(projectee_item_key),
                 }
                 .into());
             }
@@ -29,29 +47,17 @@ impl SolarSystem {
             return Ok(());
         }
         // Update user data for fighter
-        let fighter = self
-            .uad
-            .items
-            .get_mut_by_id(item_id)
-            .unwrap()
-            .get_fighter_mut()
-            .unwrap();
-        let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
-        fighter.get_projs_mut().add(*projectee_item_id, range);
+        let fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
+        fighter.get_projs_mut().add(projectee_item_key, range);
+        let autocharge_keys = fighter.get_autocharges().values().copied().collect_vec();
         // Update services for fighter
-        self.change_item_id_projection_range_in_svc(item_id, projectee_item_id, range);
-        for autocharge_id in autocharge_ids {
+        self.change_item_key_projection_range_in_svc(item_key, projectee_item_key, range);
+        for autocharge_key in autocharge_keys {
             // Update user data for autocharge
-            let autocharge = self
-                .uad
-                .items
-                .get_mut_by_id(&autocharge_id)
-                .unwrap()
-                .get_autocharge_mut()
-                .unwrap();
-            autocharge.get_projs_mut().add(*projectee_item_id, range);
+            let autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
+            autocharge.get_projs_mut().add(projectee_item_key, range);
             // Update services for autocharge
-            self.change_item_id_projection_range_in_svc(&autocharge_id, projectee_item_id, range);
+            self.change_item_key_projection_range_in_svc(autocharge_key, projectee_item_key, range);
         }
         Ok(())
     }
@@ -61,6 +67,7 @@ impl SolarSystem {
 pub enum ChangeFighterProjError {
     ProjectorNotFound(ItemFoundError),
     ProjectorIsNotFighter(ItemKindMatchError),
+    ProjecteeNotFound(ItemFoundError),
     ProjectionNotFound(ProjFoundError),
 }
 impl std::error::Error for ChangeFighterProjError {
@@ -68,6 +75,7 @@ impl std::error::Error for ChangeFighterProjError {
         match self {
             Self::ProjectorNotFound(e) => Some(e),
             Self::ProjectorIsNotFighter(e) => Some(e),
+            Self::ProjecteeNotFound(e) => Some(e),
             Self::ProjectionNotFound(e) => Some(e),
         }
     }
@@ -77,13 +85,9 @@ impl std::fmt::Display for ChangeFighterProjError {
         match self {
             Self::ProjectorNotFound(e) => e.fmt(f),
             Self::ProjectorIsNotFighter(e) => e.fmt(f),
+            Self::ProjecteeNotFound(e) => e.fmt(f),
             Self::ProjectionNotFound(e) => e.fmt(f),
         }
-    }
-}
-impl From<ItemFoundError> for ChangeFighterProjError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ProjectorNotFound(error)
     }
 }
 impl From<ItemKindMatchError> for ChangeFighterProjError {

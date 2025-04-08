@@ -13,8 +13,8 @@ pub use sole_remove_module_proj::RemoveModuleProjError;
 pub use sole_set_module_charge::SetModuleChargeError;
 pub use sole_set_module_state::SetModuleStateError;
 
-mod misc;
 mod pos_modes;
+mod shared;
 mod sole_add_module;
 mod sole_add_module_mutation;
 mod sole_add_module_proj;

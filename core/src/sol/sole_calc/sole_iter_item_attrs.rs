@@ -1,9 +1,6 @@
 use crate::{
     err::basic::{ItemFoundError, ItemLoadedError},
-    sol::{
-        AttrId, ItemId, SolarSystem,
-        svc::calc::{CalcAttrVal, LoadedItemFoundError},
-    },
+    sol::{AttrId, ItemId, ItemKey, SolarSystem, err::KeyedItemLoadedError, svc::calc::CalcAttrVal},
 };
 
 impl SolarSystem {
@@ -11,7 +8,17 @@ impl SolarSystem {
         &mut self,
         item_id: &ItemId,
     ) -> Result<impl ExactSizeIterator<Item = (AttrId, CalcAttrVal)>, IterItemAttrsError> {
-        let attrs = self.svc.calc.iter_item_attr_vals(&self.uad, item_id)?;
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        match self.iter_item_attrs_internal(item_key) {
+            Ok(iter) => Ok(iter),
+            Err(_) => Err(ItemLoadedError { item_id: *item_id }.into()),
+        }
+    }
+    pub(in crate::sol) fn iter_item_attrs_internal(
+        &mut self,
+        item_key: ItemKey,
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, CalcAttrVal)>, KeyedItemLoadedError> {
+        let attrs = self.svc.calc.iter_item_attr_vals(&self.uad, item_key)?;
         Ok(attrs)
     }
 }
@@ -37,11 +44,13 @@ impl std::fmt::Display for IterItemAttrsError {
         }
     }
 }
-impl From<LoadedItemFoundError> for IterItemAttrsError {
-    fn from(error: LoadedItemFoundError) -> Self {
-        match error {
-            LoadedItemFoundError::ItemNotFound(e) => Self::ItemNotFound(e),
-            LoadedItemFoundError::ItemNotLoaded(e) => Self::ItemNotLoaded(e),
-        }
+impl From<ItemFoundError> for IterItemAttrsError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemLoadedError> for IterItemAttrsError {
+    fn from(error: ItemLoadedError) -> Self {
+        Self::ItemNotLoaded(error)
     }
 }

@@ -40,7 +40,7 @@ impl StandardRegister {
         if !ctx_modifiers.is_empty() {
             self.rmods_fleet.add_entry(fit_id, raw_modifier);
             self.rmods_nonproj
-                .add_entry((raw_modifier.affector_item_id, raw_modifier.a_effect_id), raw_modifier);
+                .add_entry((raw_modifier.affector_item_key, raw_modifier.a_effect_id), raw_modifier);
         }
         !ctx_modifiers.is_empty()
     }

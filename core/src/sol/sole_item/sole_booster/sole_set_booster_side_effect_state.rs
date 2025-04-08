@@ -1,6 +1,7 @@
 use crate::{
+    ad,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{EffectId, EffectMode, ItemId, SolarSystem},
+    sol::{EffectId, EffectMode, ItemId, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
@@ -10,14 +11,23 @@ impl SolarSystem {
         effect_id: &EffectId,
         state: bool,
     ) -> Result<(), SetBoosterSideEffectStateError> {
-        let booster = self.uad.items.get_mut_by_id(item_id)?.get_booster_mut()?;
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.set_booster_side_effect_state_internal(item_key, effect_id.into(), state)?)
+    }
+    pub(in crate::sol) fn set_booster_side_effect_state_internal(
+        &mut self,
+        item_key: ItemKey,
+        a_effect_id: ad::AEffectId,
+        state: bool,
+    ) -> Result<(), ItemKindMatchError> {
+        let booster = self.uad.items.get_mut(item_key).get_booster_mut()?;
         let effect_state = match state {
             true => EffectMode::StateCompliance,
             false => EffectMode::FullCompliance,
         };
-        booster.get_effect_modes_mut().set(effect_id.into(), effect_state);
-        let item = self.uad.items.get_by_id(item_id).unwrap();
-        self.svc.process_effects(&self.uad, item, item.get_a_state());
+        booster.get_effect_modes_mut().set(a_effect_id, effect_state);
+        let item = self.uad.items.get(item_key);
+        self.svc.process_effects(&self.uad, item_key, item, item.get_a_state());
         Ok(())
     }
 }

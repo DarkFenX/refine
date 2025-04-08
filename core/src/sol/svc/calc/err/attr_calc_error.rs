@@ -1,16 +1,15 @@
-use crate::err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError};
+use crate::{err::basic::AttrMetaFoundError, sol::err::KeyedItemLoadedError};
 
+// TODO: check if itemnotfound is still needed after switch to slab
 #[derive(Debug)]
 pub(in crate::sol) enum AttrCalcError {
-    ItemNotFound(ItemFoundError),
-    ItemNotLoaded(ItemLoadedError),
+    KeyedItemNotLoaded(KeyedItemLoadedError),
     AttrMetaNotFound(AttrMetaFoundError),
 }
 impl std::error::Error for AttrCalcError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemNotLoaded(e) => Some(e),
+            Self::KeyedItemNotLoaded(e) => Some(e),
             Self::AttrMetaNotFound(e) => Some(e),
         }
     }
@@ -18,20 +17,14 @@ impl std::error::Error for AttrCalcError {
 impl std::fmt::Display for AttrCalcError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemNotLoaded(e) => e.fmt(f),
+            Self::KeyedItemNotLoaded(e) => e.fmt(f),
             Self::AttrMetaNotFound(e) => e.fmt(f),
         }
     }
 }
-impl From<ItemFoundError> for AttrCalcError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemLoadedError> for AttrCalcError {
-    fn from(error: ItemLoadedError) -> Self {
-        Self::ItemNotLoaded(error)
+impl From<KeyedItemLoadedError> for AttrCalcError {
+    fn from(error: KeyedItemLoadedError) -> Self {
+        Self::KeyedItemNotLoaded(error)
     }
 }
 impl From<AttrMetaFoundError> for AttrCalcError {

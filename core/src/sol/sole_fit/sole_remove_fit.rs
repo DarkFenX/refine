@@ -6,10 +6,10 @@ use crate::{
 impl SolarSystem {
     pub fn remove_fit(&mut self, fit_id: &FitId) -> Result<(), RemoveFitError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
-        for item_id in fit.all_direct_items().iter() {
-            self.remove_item(item_id, RmMode::Free).unwrap();
+        for item_key in fit.all_direct_items().into_iter() {
+            self.remove_item_internal(item_key, RmMode::Free).unwrap();
         }
-        self.svc.remove_fit(fit_id);
+        self.svc.remove_fit(*fit_id);
         let fit = self.uad.fits.remove_fit(fit_id).unwrap();
         if let Some(fleet_id) = fit.fleet {
             let fleet = self.uad.fleets.get_fleet_mut(&fleet_id).unwrap();

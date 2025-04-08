@@ -2,7 +2,7 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     sol::{
-        FitId, FleetId, ItemId, ItemTypeId, SecStatus,
+        FitId, FleetId, ItemKey, ItemTypeId, SecStatus,
         misc::DpsProfile,
         uad::{
             fit::{FitSkill, ItemVec},
@@ -17,21 +17,21 @@ pub(in crate::sol) struct Fit {
     pub(in crate::sol) id: FitId,
     pub(in crate::sol) kind: ShipKind,
     pub(in crate::sol) fleet: Option<FleetId>,
-    pub(in crate::sol) character: Option<ItemId>,
+    pub(in crate::sol) character: Option<ItemKey>,
     pub(in crate::sol) skills: RMap<ItemTypeId, FitSkill>,
-    pub(in crate::sol) implants: RSet<ItemId>,
-    pub(in crate::sol) boosters: RSet<ItemId>,
-    pub(in crate::sol) ship: Option<ItemId>,
-    pub(in crate::sol) stance: Option<ItemId>,
-    pub(in crate::sol) subsystems: RSet<ItemId>,
+    pub(in crate::sol) implants: RSet<ItemKey>,
+    pub(in crate::sol) boosters: RSet<ItemKey>,
+    pub(in crate::sol) ship: Option<ItemKey>,
+    pub(in crate::sol) stance: Option<ItemKey>,
+    pub(in crate::sol) subsystems: RSet<ItemKey>,
     pub(in crate::sol) mods_high: ItemVec,
     pub(in crate::sol) mods_mid: ItemVec,
     pub(in crate::sol) mods_low: ItemVec,
-    pub(in crate::sol) rigs: RSet<ItemId>,
-    pub(in crate::sol) services: RSet<ItemId>,
-    pub(in crate::sol) drones: RSet<ItemId>,
-    pub(in crate::sol) fighters: RSet<ItemId>,
-    pub(in crate::sol) fw_effects: RSet<ItemId>,
+    pub(in crate::sol) rigs: RSet<ItemKey>,
+    pub(in crate::sol) services: RSet<ItemKey>,
+    pub(in crate::sol) drones: RSet<ItemKey>,
+    pub(in crate::sol) fighters: RSet<ItemKey>,
+    pub(in crate::sol) fw_effects: RSet<ItemKey>,
     pub(in crate::sol) sec_status: SecStatus,
     pub(in crate::sol) rah_incoming_dps: Option<DpsProfile>,
 }
@@ -60,7 +60,7 @@ impl Fit {
             rah_incoming_dps: None,
         }
     }
-    pub(in crate::sol) fn all_direct_items(&self) -> Vec<ItemId> {
+    pub(in crate::sol) fn all_direct_items(&self) -> Vec<ItemKey> {
         // Calculate capacity
         let mut capacity = 0;
         if self.character.is_some() {
@@ -87,15 +87,15 @@ impl Fit {
         // Fill the data
         let mut items = Vec::with_capacity(capacity);
         conditional_push(&mut items, self.character);
-        items.extend(self.skills.values().map(|v| v.item_id));
+        items.extend(self.skills.values().map(|v| v.item_key));
         items.extend(self.implants.iter());
         items.extend(self.boosters.iter());
         conditional_push(&mut items, self.ship);
         conditional_push(&mut items, self.stance);
         items.extend(self.subsystems.iter());
-        items.extend(self.mods_high.iter_ids());
-        items.extend(self.mods_mid.iter_ids());
-        items.extend(self.mods_low.iter_ids());
+        items.extend(self.mods_high.iter_keys());
+        items.extend(self.mods_mid.iter_keys());
+        items.extend(self.mods_low.iter_keys());
         items.extend(self.rigs.iter());
         items.extend(self.services.iter());
         items.extend(self.drones.iter());
@@ -105,7 +105,7 @@ impl Fit {
     }
 }
 
-fn conditional_push(items: &mut Vec<ItemId>, opt_value: Option<ItemId>) {
+fn conditional_push(items: &mut Vec<ItemKey>, opt_value: Option<ItemKey>) {
     if let Some(value) = opt_value {
         items.push(value)
     }

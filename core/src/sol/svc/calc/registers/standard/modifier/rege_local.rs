@@ -17,7 +17,7 @@ impl StandardRegister {
                     let ctx_modifier = CtxModifier::from_raw(raw_modifier);
                     add_ctx_modifier(
                         &mut self.cmods_direct,
-                        ctx_modifier.raw.affector_item_id,
+                        ctx_modifier.raw.affector_item_key,
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -27,7 +27,7 @@ impl StandardRegister {
                     let ctx_modifier = CtxModifier::from_raw(raw_modifier);
                     add_ctx_modifier(
                         &mut self.cmods_other,
-                        ctx_modifier.raw.affector_item_id,
+                        ctx_modifier.raw.affector_item_key,
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -115,7 +115,7 @@ impl StandardRegister {
         // If we received a modifier with context, it means that raw modifier was valid
         if ctx_modifier.is_some() {
             self.rmods_nonproj
-                .add_entry((raw_modifier.affector_item_id, raw_modifier.a_effect_id), raw_modifier);
+                .add_entry((raw_modifier.affector_item_key, raw_modifier.a_effect_id), raw_modifier);
         }
         ctx_modifier
     }
@@ -130,7 +130,7 @@ impl StandardRegister {
                     let ctx_modifier = CtxModifier::from_raw(raw_modifier);
                     remove_ctx_modifier(
                         &mut self.cmods_direct,
-                        &ctx_modifier.raw.affector_item_id,
+                        &ctx_modifier.raw.affector_item_key,
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -140,7 +140,7 @@ impl StandardRegister {
                     let ctx_modifier = CtxModifier::from_raw(raw_modifier);
                     remove_ctx_modifier(
                         &mut self.cmods_other,
-                        &ctx_modifier.raw.affector_item_id,
+                        &ctx_modifier.raw.affector_item_key,
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );

@@ -1,9 +1,9 @@
 use crate::{
     ac,
     sol::{
-        ItemId,
+        ItemId, ItemKey,
         svc::vast::VastFitData,
-        uad::{fit::Fit, item::Ship},
+        uad::{Uad, fit::Fit, item::Ship},
     },
     util::RSet,
 };
@@ -18,12 +18,12 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_ship_stance_fast(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         fit: &Fit,
         ship: Option<&Ship>,
     ) -> bool {
-        let stance_id = match fit.stance {
-            Some(stance_id) => stance_id,
+        let stance_key = match fit.stance {
+            Some(stance_key) => stance_key,
             None => return true,
         };
         let ship = match ship {
@@ -33,21 +33,22 @@ impl VastFitData {
         matches!(
             ship.get_a_item_id(),
             ac::items::CONFESSOR | ac::items::HECATE | ac::items::JACKDAW | ac::items::SVIPUL
-        ) || kfs.contains(&stance_id)
+        ) || kfs.contains(&stance_key)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_ship_stance_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
         fit: &Fit,
         ship: Option<&Ship>,
     ) -> Option<ValShipStanceFail> {
-        let stance_id = fit.stance?;
+        let stance_key = fit.stance?;
         let ship = match ship {
             Some(ship) => ship,
             None => {
                 return Some(ValShipStanceFail {
-                    stance_item_id: stance_id,
+                    stance_item_id: uad.items.id_by_key(stance_key),
                 });
             }
         };
@@ -57,11 +58,11 @@ impl VastFitData {
         ) {
             return None;
         }
-        if kfs.contains(&stance_id) {
+        if kfs.contains(&stance_key) {
             return None;
         }
         Some(ValShipStanceFail {
-            stance_item_id: stance_id,
+            stance_item_id: uad.items.id_by_key(stance_key),
         })
     }
 }

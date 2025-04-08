@@ -9,7 +9,7 @@ impl SolarSystem {
         let drone_infos = fit
             .drones
             .iter()
-            .map(|v| self.make_drone_info(self.uad.items.get_by_id(v).unwrap().get_drone().unwrap()))
+            .map(|item_key| self.get_drone_internal(*item_key).unwrap())
             .collect();
         Ok(drone_infos)
     }

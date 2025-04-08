@@ -1,9 +1,6 @@
 use crate::{
     err::basic::{ItemFoundError, ItemLoadedError},
-    sol::{
-        AttrId, ItemId, SolarSystem,
-        svc::calc::{LoadedItemFoundError, ModificationInfo},
-    },
+    sol::{AttrId, ItemId, ItemKey, SolarSystem, err::KeyedItemLoadedError, svc::calc::ModificationInfo},
 };
 
 impl SolarSystem {
@@ -11,8 +8,17 @@ impl SolarSystem {
         &mut self,
         item_id: &ItemId,
     ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)>, IterItemModifiersError> {
-        let modifiers = self.svc.calc.iter_item_mods(&self.uad, item_id)?;
-        Ok(modifiers)
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        match self.iter_item_modifiers_internal(item_key) {
+            Ok(mods_iter) => Ok(mods_iter),
+            Err(_) => Err(ItemLoadedError { item_id: *item_id }.into()),
+        }
+    }
+    pub(in crate::sol) fn iter_item_modifiers_internal(
+        &mut self,
+        item_key: ItemKey,
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
+        self.svc.calc.iter_item_mods(&self.uad, item_key)
     }
 }
 
@@ -37,11 +43,13 @@ impl std::fmt::Display for IterItemModifiersError {
         }
     }
 }
-impl From<LoadedItemFoundError> for IterItemModifiersError {
-    fn from(error: LoadedItemFoundError) -> Self {
-        match error {
-            LoadedItemFoundError::ItemNotFound(e) => Self::ItemNotFound(e),
-            LoadedItemFoundError::ItemNotLoaded(e) => Self::ItemNotLoaded(e),
-        }
+impl From<ItemFoundError> for IterItemModifiersError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemLoadedError> for IterItemModifiersError {
+    fn from(error: ItemLoadedError) -> Self {
+        Self::ItemNotLoaded(error)
     }
 }

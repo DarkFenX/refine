@@ -1,12 +1,16 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{ItemId, SolarSystem, info::ImplantInfo},
+    sol::{ItemId, ItemKey, SolarSystem, info::ImplantInfo},
 };
 
 impl SolarSystem {
     pub fn get_implant(&self, item_id: &ItemId) -> Result<ImplantInfo, GetImplantError> {
-        let implant = self.uad.items.get_by_id(item_id)?.get_implant()?;
-        Ok(ImplantInfo::from(implant))
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.get_implant_internal(item_key)?)
+    }
+    pub(in crate::sol) fn get_implant_internal(&self, item_key: ItemKey) -> Result<ImplantInfo, ItemKindMatchError> {
+        let implant = self.uad.items.get(item_key).get_implant()?;
+        Ok(ImplantInfo::from_implant(implant))
     }
 }
 

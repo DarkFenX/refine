@@ -6,13 +6,13 @@ pub struct ShipInfo {
     pub fit_id: FitId,
     pub enabled: bool,
 }
-impl From<&Ship> for ShipInfo {
-    fn from(sol_ship: &Ship) -> Self {
+impl ShipInfo {
+    pub(in crate::sol) fn from_ship(ship: &Ship) -> Self {
         Self {
-            id: sol_ship.get_item_id(),
-            type_id: sol_ship.get_a_item_id(),
-            fit_id: sol_ship.get_fit_id(),
-            enabled: sol_ship.get_ship_state(),
+            id: ship.get_item_id(),
+            type_id: ship.get_a_item_id(),
+            fit_id: ship.get_fit_id(),
+            enabled: ship.get_ship_state(),
         }
     }
 }

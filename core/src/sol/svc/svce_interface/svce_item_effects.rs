@@ -1,6 +1,7 @@
 use crate::{
     ad,
     sol::{
+        ItemKey,
         svc::Svc,
         uad::{Uad, item::Item},
     },
@@ -9,7 +10,13 @@ use crate::{
 use super::{is_a_effect_projectable, resolve_effect_status, resolve_online_effect_status};
 
 impl Svc {
-    pub(in crate::sol) fn process_effects(&mut self, uad: &Uad, item: &Item, item_a_state: ad::AState) {
+    pub(in crate::sol) fn process_effects(
+        &mut self,
+        uad: &Uad,
+        item_key: ItemKey,
+        item: &Item,
+        item_a_state: ad::AState,
+    ) {
         if !item.is_loaded() {
             return;
         }
@@ -22,7 +29,7 @@ impl Svc {
                 None => continue,
             };
             let should_run = resolve_effect_status(item, item_a_state, a_effect, online_should_run);
-            let running = self.running_effects.is_running(&item.get_item_id(), a_effect_id);
+            let running = self.running_effects.is_running(&item_key, a_effect_id);
             if running && !should_run {
                 to_stop.push(a_effect.clone());
             } else if !running && should_run {
@@ -30,30 +37,37 @@ impl Svc {
             };
         }
         if !to_start.is_empty() {
-            self.notify_effects_started(uad, item, &to_start);
+            self.notify_effects_started(uad, item_key, item, &to_start);
             if let Some(projs) = item.iter_projs() {
-                for (proj_item_id, range) in projs {
-                    let proj_item = uad.items.get_by_id(proj_item_id).unwrap();
+                for (&projectee_item_key, range) in projs {
+                    let projectee_item = uad.items.get(projectee_item_key);
                     for a_effect in to_start.iter() {
                         if is_a_effect_projectable(a_effect) {
-                            self.notify_effect_projected(uad, item, a_effect, proj_item, *range);
+                            self.notify_effect_projected(
+                                uad,
+                                item_key,
+                                a_effect,
+                                projectee_item_key,
+                                projectee_item,
+                                *range,
+                            );
                         }
                     }
                 }
             }
         }
         if !to_stop.is_empty() {
-            if let Some(proj_items) = item.iter_projectee_items() {
-                for proj_item_id in proj_items {
-                    let proj_item = uad.items.get_by_id(proj_item_id).unwrap();
+            if let Some(projectee_item_keys) = item.iter_projectee_item_keys() {
+                for &projectee_item_key in projectee_item_keys {
+                    let projectee_item = uad.items.get(projectee_item_key);
                     for a_effect in to_stop.iter() {
                         if is_a_effect_projectable(a_effect) {
-                            self.notify_effect_unprojected(uad, item, a_effect, proj_item);
+                            self.notify_effect_unprojected(uad, item_key, a_effect, projectee_item_key, projectee_item);
                         }
                     }
                 }
             }
-            self.notify_effects_stopped(uad, item, &to_stop);
+            self.notify_effects_stopped(uad, item_key, item, &to_stop);
         }
     }
 }

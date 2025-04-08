@@ -9,7 +9,6 @@ pub use sole_remove_fighter_proj::RemoveFighterProjError;
 pub use sole_set_fighter_count_override::SetFighterCountOverrideError;
 pub use sole_set_fighter_state::SetFighterStateError;
 
-mod misc;
 mod sole_add_fighter;
 mod sole_add_fighter_proj;
 mod sole_change_fighter_proj;

@@ -17,7 +17,7 @@ impl SolarSystem {
         };
         let module_infos = module_ids
             .iter_all()
-            .map(|o| o.map(|v| self.make_module_info(self.uad.items.get_by_id(&v).unwrap().get_module().unwrap())))
+            .map(|item_key_opt| item_key_opt.map(|item_key| self.get_module_internal(item_key).unwrap()))
             .collect();
         Ok(module_infos)
     }

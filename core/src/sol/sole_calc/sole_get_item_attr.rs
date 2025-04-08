@@ -1,15 +1,29 @@
 use crate::{
+    ad,
     err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError},
     sol::{
-        AttrId, ItemId, SolarSystem,
+        AttrId, ItemId, ItemKey, SolarSystem,
         svc::calc::{AttrCalcError, CalcAttrVal},
     },
 };
 
 impl SolarSystem {
     pub fn get_item_attr(&mut self, item_id: &ItemId, attr_id: &AttrId) -> Result<CalcAttrVal, GetItemAttrError> {
-        let val = self.svc.calc.get_item_attr_val_full(&self.uad, item_id, attr_id)?;
-        Ok(val)
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        match self.get_item_attr_internal(item_key, attr_id) {
+            Ok(val) => Ok(val),
+            Err(error) => Err(match error {
+                AttrCalcError::KeyedItemNotLoaded(_) => ItemLoadedError { item_id: *item_id }.into(),
+                AttrCalcError::AttrMetaNotFound(e) => e.into(),
+            }),
+        }
+    }
+    pub(in crate::sol) fn get_item_attr_internal(
+        &mut self,
+        item_key: ItemKey,
+        a_attr_id: &ad::AAttrId,
+    ) -> Result<CalcAttrVal, AttrCalcError> {
+        self.svc.calc.get_item_attr_val_full(&self.uad, item_key, &a_attr_id)
     }
 }
 
@@ -37,12 +51,18 @@ impl std::fmt::Display for GetItemAttrError {
         }
     }
 }
-impl From<AttrCalcError> for GetItemAttrError {
-    fn from(error: AttrCalcError) -> Self {
-        match error {
-            AttrCalcError::ItemNotFound(e) => Self::ItemNotFound(e),
-            AttrCalcError::ItemNotLoaded(e) => Self::ItemNotLoaded(e),
-            AttrCalcError::AttrMetaNotFound(e) => Self::AttrMetaNotFound(e),
-        }
+impl From<ItemFoundError> for GetItemAttrError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemLoadedError> for GetItemAttrError {
+    fn from(error: ItemLoadedError) -> Self {
+        Self::ItemNotLoaded(error)
+    }
+}
+impl From<AttrMetaFoundError> for GetItemAttrError {
+    fn from(error: AttrMetaFoundError) -> Self {
+        Self::AttrMetaNotFound(error)
     }
 }

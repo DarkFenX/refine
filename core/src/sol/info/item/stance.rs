@@ -6,13 +6,13 @@ pub struct StanceInfo {
     pub fit_id: FitId,
     pub enabled: bool,
 }
-impl From<&Stance> for StanceInfo {
-    fn from(sol_stance: &Stance) -> Self {
+impl StanceInfo {
+    pub(in crate::sol) fn from_stance(stance: &Stance) -> Self {
         Self {
-            id: sol_stance.get_item_id(),
-            type_id: sol_stance.get_a_item_id(),
-            fit_id: sol_stance.get_fit_id(),
-            enabled: sol_stance.get_stance_state(),
+            id: stance.get_item_id(),
+            type_id: stance.get_a_item_id(),
+            fit_id: stance.get_fit_id(),
+            enabled: stance.get_stance_state(),
         }
     }
 }

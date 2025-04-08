@@ -1,12 +1,16 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{ItemId, SolarSystem, info::ModuleInfo},
+    sol::{ItemId, ItemKey, SolarSystem, info::ModuleInfo},
 };
 
 impl SolarSystem {
     pub fn get_module(&self, item_id: &ItemId) -> Result<ModuleInfo, GetModuleError> {
-        let module = self.uad.items.get_by_id(item_id)?.get_module()?;
-        Ok(self.make_module_info(module))
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.get_module_internal(item_key)?)
+    }
+    pub(in crate::sol) fn get_module_internal(&self, item_key: ItemKey) -> Result<ModuleInfo, ItemKindMatchError> {
+        let module = self.uad.items.get(item_key).get_module()?;
+        Ok(ModuleInfo::from_module(&self.uad, module))
     }
 }
 

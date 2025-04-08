@@ -2,7 +2,11 @@ use std::collections::HashMap;
 
 use crate::{
     ac, ad,
-    sol::{AttrVal, ItemId, svc::vast::VastFitData, uad::item::Ship},
+    sol::{
+        AttrVal, ItemId, ItemKey,
+        svc::vast::VastFitData,
+        uad::{Uad, item::Ship},
+    },
     util::RSet,
 };
 
@@ -17,7 +21,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_fast(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         ship: Option<&Ship>,
     ) -> bool {
         if !is_ship_subcap(ship) {
@@ -31,23 +35,24 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
         ship: Option<&Ship>,
     ) -> Option<ValCapitalModFail> {
         if !is_ship_subcap(ship) {
             return None;
         }
-        let items: HashMap<_, _> = self
+        let module_volumes: HashMap<_, _> = self
             .mods_capital
             .iter()
-            .filter(|(k, _)| !kfs.contains(k))
-            .map(|(k, v)| (*k, *v))
+            .filter(|(module_key, _)| !kfs.contains(module_key))
+            .map(|(module_key, module_volume)| (uad.items.id_by_key(*module_key), *module_volume))
             .collect();
-        match items.is_empty() {
+        match module_volumes.is_empty() {
             true => None,
             false => Some(ValCapitalModFail {
                 max_subcap_volume: ac::extras::MAX_SUBCAP_MODULE_VOLUME,
-                module_volumes: items,
+                module_volumes,
             }),
         }
     }

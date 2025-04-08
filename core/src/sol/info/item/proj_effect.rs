@@ -1,4 +1,7 @@
-use crate::sol::{ItemId, ItemTypeId, uad::item::ProjEffect};
+use crate::sol::{
+    ItemId, ItemTypeId,
+    uad::{Uad, item::ProjEffect},
+};
 
 pub struct ProjEffectInfo {
     pub id: ItemId,
@@ -6,13 +9,17 @@ pub struct ProjEffectInfo {
     pub enabled: bool,
     pub projs: Vec<ItemId>,
 }
-impl From<&ProjEffect> for ProjEffectInfo {
-    fn from(sol_proj_effect: &ProjEffect) -> Self {
+impl ProjEffectInfo {
+    pub(in crate::sol) fn from_proj_effect(uad: &Uad, proj_effect: &ProjEffect) -> Self {
         Self {
-            id: sol_proj_effect.get_item_id(),
-            type_id: sol_proj_effect.get_a_item_id(),
-            enabled: sol_proj_effect.get_proj_effect_state(),
-            projs: sol_proj_effect.get_projs().iter_items().copied().collect(),
+            id: proj_effect.get_item_id(),
+            type_id: proj_effect.get_a_item_id(),
+            enabled: proj_effect.get_proj_effect_state(),
+            projs: proj_effect
+                .get_projs()
+                .iter_projectee_item_keys()
+                .map(|&projectee_item_key| uad.items.id_by_key(projectee_item_key))
+                .collect(),
         }
     }
 }

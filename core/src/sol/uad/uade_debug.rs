@@ -1,6 +1,6 @@
 use crate::{
     sol::{
-        ItemId,
+        ItemKey,
         debug::{DebugError, DebugResult},
         uad::{Uad, item::Item},
     },
@@ -19,11 +19,11 @@ impl Uad {
             fit.debug_consistency_check(self, &mut seen_items)?;
         }
         // System-wide effects
-        for item_id in self.sw_effects.iter() {
-            seen_items.push(*item_id);
-            let item = match self.items.get_by_id(item_id) {
-                Ok(item) => item,
-                _ => return Err(DebugError {}),
+        for &sw_effect_key in self.sw_effects.iter() {
+            seen_items.push(sw_effect_key);
+            let item = match self.items.try_get(sw_effect_key) {
+                Some(item) => item,
+                None => return Err(DebugError {}),
             };
             if !matches!(item, Item::SwEffect(_)) {
                 return Err(DebugError {});
@@ -31,11 +31,11 @@ impl Uad {
             item.debug_consistency_check(self)?;
         }
         // Projected effects
-        for item_id in self.proj_effects.iter() {
-            seen_items.push(*item_id);
-            let item = match self.items.get_by_id(item_id) {
-                Ok(item) => item,
-                _ => return Err(DebugError {}),
+        for &proj_effect_key in self.proj_effects.iter() {
+            seen_items.push(proj_effect_key);
+            let item = match self.items.try_get(proj_effect_key) {
+                Some(item) => item,
+                None => return Err(DebugError {}),
             };
             if !matches!(item, Item::ProjEffect(_)) {
                 return Err(DebugError {});
@@ -47,14 +47,14 @@ impl Uad {
             return Err(DebugError {});
         }
         // Check if we have any unreferenced items
-        if !self.items.iter().all(|item| seen_items.contains(&item.get_item_id())) {
+        if !self.items.keys().all(|item_key| seen_items.contains(&item_key)) {
             return Err(DebugError {});
         }
         Ok(())
     }
 }
 
-fn check_item_duplicates(item_ids: &[ItemId]) -> bool {
+fn check_item_duplicates(item_ids: &[ItemKey]) -> bool {
     let mut uniq = RSet::new();
     !item_ids.iter().all(|x| uniq.insert(x))
 }

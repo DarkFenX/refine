@@ -67,7 +67,7 @@ impl Booster {
     pub(in crate::sol) fn get_booster_state(&self) -> bool {
         state_to_bool(self.base.get_a_state())
     }
-    pub(in crate::sol) fn set_boster_state(&mut self, state: bool) {
+    pub(in crate::sol) fn set_booster_state(&mut self, state: bool) {
         self.base.set_a_state(bool_to_state_offline(state))
     }
     pub(in crate::sol) fn get_fit_id(&self) -> FitId {

@@ -1,15 +1,15 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemId, ItemTypeId, ModRack, SolarSystem,
+        FitId, ItemKey, ItemTypeId, ModRack, SolarSystem,
         info::ModuleInfo,
         uad::item::{Charge, Item, ItemAddMutation, Module, ModuleState},
     },
 };
 
 use super::{
-    misc::get_fit_rack,
     pos_modes::{AddMode, RmMode},
+    shared::get_fit_rack,
 };
 
 impl SolarSystem {
@@ -23,8 +23,8 @@ impl SolarSystem {
         mutation: Option<ItemAddMutation>,
         charge_type_id: Option<ItemTypeId>,
     ) -> Result<ModuleInfo, AddModuleError> {
-        let item_id = self.add_module_internal(fit_id, rack, pos_mode, type_id, state, mutation, charge_type_id)?;
-        Ok(self.get_module(&item_id).unwrap())
+        let item_key = self.add_module_internal(fit_id, rack, pos_mode, type_id, state, mutation, charge_type_id)?;
+        Ok(self.get_module_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_module_internal(
         &mut self,
@@ -35,26 +35,39 @@ impl SolarSystem {
         state: ModuleState,
         mutation: Option<ItemAddMutation>,
         charge_type_id: Option<ItemTypeId>,
-    ) -> Result<ItemId, AddModuleError> {
+    ) -> Result<ItemKey, FitFoundError> {
         let module_item_id = self.uad.items.alloc_item_id();
         let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack)?;
+        // Assume some random position for now; it will be overwritten later
+        let module = Module::new(
+            &self.uad.src,
+            module_item_id,
+            type_id,
+            fit_id,
+            state,
+            rack,
+            0,
+            mutation,
+            None,
+        );
+        let module_item = Item::Module(module);
+        let module_key = self.uad.items.add(module_item);
         // Calculate position for the module and update part of user data (fit rack and modules from
         // it)
         let pos = match pos_mode {
             // Add to the end of module rack
-            AddMode::Append => fit_rack.append(module_item_id),
+            AddMode::Append => fit_rack.append(module_key),
             // Take first spare slot in the rack
-            AddMode::Equip => fit_rack.equip(module_item_id),
+            AddMode::Equip => fit_rack.equip(module_key),
             // Insert at specified position, shifting other modules to the right
             AddMode::Insert(pos) => {
                 // True means inserted module is not the last in the rack
-                if fit_rack.insert(pos, module_item_id) {
-                    for (i, rack_module_id) in fit_rack.inner()[pos + 1..].iter().enumerate() {
-                        if let Some(rack_module_id) = rack_module_id {
+                if fit_rack.insert(pos, module_key) {
+                    for (i, rack_module_key) in fit_rack.inner()[pos + 1..].iter().enumerate() {
+                        if let Some(rack_module_key) = rack_module_key {
                             self.uad
                                 .items
-                                .get_mut_by_id(rack_module_id)
-                                .unwrap()
+                                .get_mut(*rack_module_key)
                                 .get_module_mut()
                                 .unwrap()
                                 .set_pos(pos + 1 + i);
@@ -67,62 +80,46 @@ impl SolarSystem {
             // before adding new one
             AddMode::Replace(pos) => {
                 match fit_rack.get(pos) {
-                    Some(old_module_id) => {
-                        self.remove_module(&old_module_id, RmMode::Free).unwrap();
+                    Some(old_module_key) => {
+                        self.remove_module_internal(old_module_key, RmMode::Free).unwrap();
                         let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
-                        fit_rack.place(pos, module_item_id);
+                        fit_rack.place(pos, module_key);
                     }
-                    None => fit_rack.place(pos, module_item_id),
+                    None => fit_rack.place(pos, module_key),
                 }
                 pos
             }
         };
-        // Create module and add it to items
-        let module = Module::new(
-            &self.uad.src,
-            module_item_id,
-            type_id,
-            fit_id,
-            state,
-            rack,
-            pos,
-            mutation,
-            None,
-        );
-        let module_item = Item::Module(module);
-        self.uad.items.add(module_item);
-        let charge_item_id = match charge_type_id {
+        // Create and add charge
+        let charge_key = match charge_type_id {
             Some(charge_type_id) => {
                 let charge_item_id = self.uad.items.alloc_item_id();
                 // Update user data with new charge info
-                self.uad
-                    .items
-                    .get_mut_by_id(&module_item_id)
-                    .unwrap()
-                    .get_module_mut()
-                    .unwrap()
-                    .set_charge_item_id(Some(charge_item_id));
                 let charge = Charge::new(
                     &self.uad.src,
                     charge_item_id,
                     charge_type_id,
                     fit_id,
-                    module_item_id,
+                    module_key,
                     state.into(),
                     false,
                 );
                 let item = Item::Charge(charge);
-                self.uad.items.add(item);
-                Some(charge_item_id)
+                let charge_key = self.uad.items.add(item);
+                Some(charge_key)
             }
             None => None,
         };
+        // Update on-module data regarding position and charge
+        let module = self.uad.items.get_mut(module_key).get_module_mut().unwrap();
+        module.set_pos(pos);
+        module.set_charge_item_key(charge_key);
         // Add module and charge to services
-        self.add_item_id_to_svc(&module_item_id);
-        if let Some(charge_item_id) = charge_item_id {
-            self.add_item_id_to_svc(&charge_item_id);
+        self.add_item_key_to_svc(module_key);
+        if let Some(charge_key) = charge_key {
+            self.add_item_key_to_svc(charge_key);
         }
-        Ok(module_item_id)
+        Ok(module_key)
     }
 }
 

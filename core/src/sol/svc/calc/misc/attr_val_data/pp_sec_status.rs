@@ -1,7 +1,7 @@
 use crate::{
     ac, ad,
     sol::{
-        ItemId,
+        ItemKey,
         svc::calc::{AttrValInfo, Calc, CalcAttrVal},
         uad::Uad,
     },
@@ -12,10 +12,10 @@ pub(in crate::sol::svc::calc) const SEC_STATUS_ATTR: ad::AAttrId = ac::attrs::PI
 pub(super) fn sec_status_postproc_fast(
     _calc: &mut Calc,
     uad: &Uad,
-    item_id: &ItemId,
+    item_key: ItemKey,
     mut val: CalcAttrVal,
 ) -> CalcAttrVal {
-    let fit_id = uad.items.get_by_id(item_id).unwrap().get_ship().unwrap().get_fit_id();
+    let fit_id = uad.items.get(item_key).get_ship().unwrap().get_fit_id();
     let fit = uad.fits.get_fit(&fit_id).unwrap();
     val.dogma = fit.sec_status;
     val.extra = fit.sec_status;
@@ -25,10 +25,10 @@ pub(super) fn sec_status_postproc_fast(
 pub(super) fn sec_status_postproc_info(
     _calc: &mut Calc,
     uad: &Uad,
-    item_id: &ItemId,
+    item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {
-    let fit_id = uad.items.get_by_id(item_id).unwrap().get_ship().unwrap().get_fit_id();
+    let fit_id = uad.items.get(item_key).get_ship().unwrap().get_fit_id();
     let fit = uad.fits.get_fit(&fit_id).unwrap();
     AttrValInfo::new(fit.sec_status)
 }

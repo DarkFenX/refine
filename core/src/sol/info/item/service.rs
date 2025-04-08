@@ -9,13 +9,13 @@ pub struct ServiceInfo {
     pub fit_id: FitId,
     pub state: ServiceState,
 }
-impl From<&Service> for ServiceInfo {
-    fn from(sol_service: &Service) -> Self {
+impl ServiceInfo {
+    pub(in crate::sol) fn from_service(service: &Service) -> Self {
         Self {
-            id: sol_service.get_item_id(),
-            type_id: sol_service.get_a_item_id(),
-            fit_id: sol_service.get_fit_id(),
-            state: sol_service.get_service_state(),
+            id: service.get_item_id(),
+            type_id: service.get_a_item_id(),
+            fit_id: service.get_fit_id(),
+            state: service.get_service_state(),
         }
     }
 }

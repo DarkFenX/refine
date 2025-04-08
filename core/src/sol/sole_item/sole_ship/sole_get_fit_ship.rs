@@ -6,9 +6,7 @@ use crate::{
 impl SolarSystem {
     pub fn get_fit_ship(&self, fit_id: &FitId) -> Result<Option<ShipInfo>, GetFitShipError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
-        Ok(fit
-            .ship
-            .map(|v| ShipInfo::from(self.uad.items.get_by_id(&v).unwrap().get_ship().unwrap())))
+        Ok(fit.ship.map(|item_key| self.get_ship_internal(item_key).unwrap()))
     }
 }
 

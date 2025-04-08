@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        FitId, ItemId,
+        FitId, ItemKey,
         svc::{
             AttrSpec,
             calc::{CtxModifier, LocationKind, RawModifier},
@@ -13,29 +13,29 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct StandardRegister {
     // Items which are holders of a location kind (like char, ship)
-    // Map<(affectee fit ID, affectee location kind), affectee item IDs>
-    pub(super) affectee_root: RMapRSet<(FitId, LocationKind), ItemId>,
+    // Map<(affectee fit ID, affectee location kind), affectee item keys>
+    pub(super) affectee_root: RMapRSet<(FitId, LocationKind), ItemKey>,
     // Items belonging to certain fit and location kind (e.g. char's implants, ship's modules)
-    // Map<(affectee fit ID, affectee location kind), affectee item IDs>
-    pub(super) affectee_loc: RMapRSet<(FitId, LocationKind), ItemId>,
+    // Map<(affectee fit ID, affectee location kind), affectee item keys>
+    pub(super) affectee_loc: RMapRSet<(FitId, LocationKind), ItemKey>,
     // Items belonging to certain fit, location kind and group
-    // Map<(affectee fit ID, affectee location kind, affectee agroup ID), affectee item IDs>
-    pub(super) affectee_loc_grp: RMapRSet<(FitId, LocationKind, ad::AItemGrpId), ItemId>,
+    // Map<(affectee fit ID, affectee location kind, affectee agroup ID), affectee item keys>
+    pub(super) affectee_loc_grp: RMapRSet<(FitId, LocationKind, ad::AItemGrpId), ItemKey>,
     // Items belonging to certain fit and location kind, and having certain skill requirement
-    // Map<(affectee fit ID, affectee location kind, affectee skillreq aitem ID), affectee item IDs>
-    pub(super) affectee_loc_srq: RMapRSet<(FitId, LocationKind, ad::AItemId), ItemId>,
+    // Map<(affectee fit ID, affectee location kind, affectee srq aitem ID), affectee item keys>
+    pub(super) affectee_loc_srq: RMapRSet<(FitId, LocationKind, ad::AItemId), ItemKey>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
-    // Map<(affectee fit ID, affectee skillreq aitem ID), affectee item IDs>
-    pub(super) affectee_own_srq: RMapRSet<(FitId, ad::AItemId), ItemId>,
+    // Map<(affectee fit ID, affectee srq aitem ID), affectee item keys>
+    pub(super) affectee_own_srq: RMapRSet<(FitId, ad::AItemId), ItemKey>,
     // Everything-buff-modifiable items which belong to certain fit
-    // Map<affectee fit ID, affectee item IDs>
-    pub(super) affectee_buffable: RMapRSet<FitId, ItemId>,
+    // Map<affectee fit ID, affectee item keys>
+    pub(super) affectee_buffable: RMapRSet<FitId, ItemKey>,
     // All non-projected raw modifiers tracked by register
-    // Map<(affector item ID, affector aeffect ID), modifiers>
-    pub(super) rmods_nonproj: RMapRSet<(ItemId, ad::AEffectId), RawModifier>,
+    // Map<(affector item key, affector aeffect ID), modifiers>
+    pub(super) rmods_nonproj: RMapRSet<(ItemKey, ad::AEffectId), RawModifier>,
     // All projected raw modifiers tracked by register
-    // Map<(affector item ID, affector aeffect ID), modifiers>
-    pub(super) rmods_proj: RMapRSet<(ItemId, ad::AEffectId), RawModifier>,
+    // Map<(affector item key, affector aeffect ID), modifiers>
+    pub(super) rmods_proj: RMapRSet<(ItemKey, ad::AEffectId), RawModifier>,
     // Fleet modifiers on a per-fit basis
     // Map<affector fit ID, modifiers>
     pub(super) rmods_fleet: RMapRSet<FitId, RawModifier>,
@@ -49,12 +49,12 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
     // Map<attr spec, modifiers>
     pub(super) cmods_by_attr_spec: RMapRSet<AttrSpec, CtxModifier>,
     // Modifiers which modify item directly
-    // Map<affectee item ID, modifiers>
-    pub(super) cmods_direct: RMapRSet<ItemId, CtxModifier>,
+    // Map<affectee item key, modifiers>
+    pub(super) cmods_direct: RMapRSet<ItemKey, CtxModifier>,
     // Modifiers which modify 'other' location are always stored here, regardless if they actually
     // modify something or not
-    // Map<affector item ID, modifiers>
-    pub(super) cmods_other: RMapRSet<ItemId, CtxModifier>,
+    // Map<affector item key, modifiers>
+    pub(super) cmods_other: RMapRSet<ItemKey, CtxModifier>,
     // All modifiers which modify root entities (via ship or character reference) are kept here
     // Map<(affectee fit ID, affectee location kind), modifiers>
     pub(super) cmods_root: RMapRSet<(FitId, LocationKind), CtxModifier>,
@@ -66,11 +66,11 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
     pub(super) cmods_loc_grp: RMapRSet<(FitId, LocationKind, ad::AItemGrpId), CtxModifier>,
     // Modifiers influencing items belonging to certain fit and location, and having certain skill
     // requirement
-    // Map<(affectee fit ID, affectee location, affectee skillreq aitem ID), modifiers>
+    // Map<(affectee fit ID, affectee location, affectee srq aitem ID), modifiers>
     pub(super) cmods_loc_srq: RMapRSet<(FitId, LocationKind, ad::AItemId), CtxModifier>,
     // Modifiers influencing owner-modifiable items belonging to certain fit and having certain
     // skill requirement
-    // Map<(affectee fit ID, affectee skillreq aitem ID), modifiers>
+    // Map<(affectee fit ID, affectee srq aitem ID), modifiers>
     pub(super) cmods_own_srq: RMapRSet<(FitId, ad::AItemId), CtxModifier>,
 }
 impl StandardRegister {

@@ -1,16 +1,20 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{ItemId, SolarSystem},
+    sol::{ItemId, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn remove_fw_effect(&mut self, item_id: &ItemId) -> Result<(), RemoveFwEffectError> {
-        let item = self.uad.items.get_by_id(item_id)?;
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.remove_fw_effect_internal(item_key)?)
+    }
+    pub(in crate::sol) fn remove_fw_effect_internal(&mut self, item_key: ItemKey) -> Result<(), ItemKindMatchError> {
+        let item = self.uad.items.get(item_key);
         let fw_effect = item.get_fw_effect()?;
-        self.svc.remove_item(&self.uad, item);
+        self.svc.remove_item(&self.uad, item_key, item);
         let fit = self.uad.fits.get_fit_mut(&fw_effect.get_fit_id()).unwrap();
-        fit.fw_effects.remove(item_id);
-        self.uad.items.remove_by_id(item_id);
+        fit.fw_effects.remove(&item_key);
+        self.uad.items.remove(item_key);
         Ok(())
     }
 }

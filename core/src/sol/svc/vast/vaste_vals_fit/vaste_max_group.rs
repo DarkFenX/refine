@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     ac, ad,
     sol::{
-        Count, ItemGrpId, ItemId,
+        Count, ItemGrpId, ItemId, ItemKey,
         svc::{calc::Calc, vast::VastFitData},
         uad::Uad,
     },
@@ -26,7 +26,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_max_group_fitted_fast(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
@@ -41,7 +41,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_online_fast(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
@@ -56,7 +56,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_active_fast(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> bool {
@@ -72,7 +72,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_max_group_fitted_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
@@ -87,7 +87,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_online_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
@@ -102,7 +102,7 @@ impl VastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_active_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
@@ -118,17 +118,17 @@ impl VastFitData {
 }
 
 fn validate_fast(
-    kfs: &RSet<ItemId>,
+    kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    max_group_all: &RMapRSet<ad::AItemGrpId, ItemId>,
-    max_group_limited: &RMap<ItemId, ad::AItemGrpId>,
+    max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>,
+    max_group_limited: &RMap<ItemKey, ad::AItemGrpId>,
     a_attr_id: &ad::AAttrId,
 ) -> bool {
-    for (item_id, a_item_grp_id) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(uad, calc, item_id, a_attr_id);
+    for (&item_key, a_item_grp_id) in max_group_limited.iter() {
+        let allowed = get_max_allowed_item_count(uad, calc, item_key, a_attr_id);
         let actual = get_actual_item_count(max_group_all, a_item_grp_id);
-        if actual > allowed && !kfs.contains(item_id) {
+        if actual > allowed && !kfs.contains(&item_key) {
             return false;
         }
     }
@@ -136,18 +136,18 @@ fn validate_fast(
 }
 
 fn validate_verbose(
-    kfs: &RSet<ItemId>,
+    kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    max_group_all: &RMapRSet<ad::AItemGrpId, ItemId>,
-    max_group_limited: &RMap<ItemId, ad::AItemGrpId>,
+    max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>,
+    max_group_limited: &RMap<ItemKey, ad::AItemGrpId>,
     a_attr_id: &ad::AAttrId,
 ) -> Option<ValMaxGroupFail> {
     let mut groups = HashMap::new();
-    for (item_id, a_item_grp_id) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(uad, calc, item_id, a_attr_id);
+    for (&item_key, a_item_grp_id) in max_group_limited.iter() {
+        let allowed = get_max_allowed_item_count(uad, calc, item_key, a_attr_id);
         let actual = get_actual_item_count(max_group_all, a_item_grp_id);
-        if actual > allowed && !kfs.contains(item_id) {
+        if actual > allowed && !kfs.contains(&item_key) {
             groups
                 .entry(*a_item_grp_id)
                 .or_insert_with(|| ValMaxGroupGroupInfo {
@@ -155,7 +155,7 @@ fn validate_verbose(
                     items: HashMap::new(),
                 })
                 .items
-                .insert(*item_id, allowed);
+                .insert(uad.items.id_by_key(item_key), allowed);
         }
     }
     match groups.is_empty() {
@@ -164,14 +164,13 @@ fn validate_verbose(
     }
 }
 
-fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_attr_id: &ad::AAttrId) -> Count {
-    match calc.get_item_attr_val_extra(uad, item_id, a_attr_id) {
+fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Count {
+    match calc.get_item_attr_val_extra(uad, item_key, a_attr_id) {
         Some(value) => value.round() as Count,
         // Limited items are guaranteed to have some unmodified limit value
         None => uad
             .items
-            .get_by_id(item_id)
-            .unwrap()
+            .get(item_key)
             .get_a_attrs()
             .unwrap()
             .get(a_attr_id)
@@ -179,6 +178,6 @@ fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_id: &ItemId, a_at
             .round() as Count,
     }
 }
-fn get_actual_item_count(max_group_all: &RMapRSet<ad::AItemGrpId, ItemId>, a_item_grp_id: &ad::AItemGrpId) -> Count {
+fn get_actual_item_count(max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>, a_item_grp_id: &ad::AItemGrpId) -> Count {
     max_group_all.get(a_item_grp_id).len() as Count
 }

@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        ItemId,
+        ItemKey,
         svc::calc::{
             AggrMode, Op,
             modifier::{AffecteeFilter, Location, ModifierKind, RawModifier, affector_val::AffectorValue},
@@ -11,10 +11,10 @@ use crate::{
 
 use super::attr::MISSILE_FLIGHT_TIME;
 
-pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: ItemId, a_effect_id: ad::AEffectId) -> RawModifier {
+pub(in crate::sol::svc::calc) fn make_mod(affector_item_key: ItemKey, a_effect_id: ad::AEffectId) -> RawModifier {
     RawModifier {
         kind: ModifierKind::Local,
-        affector_item_id,
+        affector_item_key,
         a_effect_id,
         affector_value: AffectorValue::MissileFlightTime,
         op: Op::ExtraAdd,

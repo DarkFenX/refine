@@ -1,7 +1,7 @@
 use crate::{
     err::basic::{ItemFoundError, ItemKindRemoveError},
     sol::{
-        ItemId, RmMode, SolarSystem,
+        ItemId, ItemKey, RmMode, SolarSystem,
         uad::item::{Autocharge, Item},
     },
     util::Named,
@@ -9,32 +9,40 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_item(&mut self, item_id: &ItemId, pos_mode: RmMode) -> Result<(), RemoveItemError> {
-        let item = self.uad.items.get_by_id(item_id)?;
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.remove_item_internal(item_key, pos_mode)?)
+    }
+    pub(in crate::sol) fn remove_item_internal(
+        &mut self,
+        item_key: ItemKey,
+        pos_mode: RmMode,
+    ) -> Result<(), ItemKindRemoveError> {
+        let item = self.uad.items.get(item_key);
         match item {
-            // Auto charge can't be removed no matter what
+            // Autocharge can't be removed no matter what
             Item::Autocharge(_) => {
-                return Err(RemoveItemError::UnremovableAutocharge(ItemKindRemoveError {
+                return Err(ItemKindRemoveError {
                     item_kind: Autocharge::get_name(),
-                }));
+                });
             }
             // We unwrap when the only reasons of failure are when item is not found and when item
             // kind mismatches, both of which we already checked
-            Item::Booster(_) => self.remove_booster(item_id).unwrap(),
-            Item::Character(_) => self.remove_character(item_id).unwrap(),
-            Item::Charge(_) => self.remove_charge(item_id).unwrap(),
-            Item::Drone(_) => self.remove_drone(item_id).unwrap(),
-            Item::Fighter(_) => self.remove_fighter(item_id).unwrap(),
-            Item::FwEffect(_) => self.remove_fw_effect(item_id).unwrap(),
-            Item::Implant(_) => self.remove_implant(item_id).unwrap(),
-            Item::Module(_) => self.remove_module(item_id, pos_mode).unwrap(),
-            Item::ProjEffect(_) => self.remove_proj_effect(item_id).unwrap(),
-            Item::Rig(_) => self.remove_rig(item_id).unwrap(),
-            Item::Service(_) => self.remove_service(item_id).unwrap(),
-            Item::Ship(_) => self.remove_ship(item_id).unwrap(),
-            Item::Skill(_) => self.remove_skill(item_id).unwrap(),
-            Item::Stance(_) => self.remove_stance(item_id).unwrap(),
-            Item::Subsystem(_) => self.remove_subsystem(item_id).unwrap(),
-            Item::SwEffect(_) => self.remove_sw_effect(item_id).unwrap(),
+            Item::Booster(_) => self.remove_booster_internal(item_key).unwrap(),
+            Item::Character(_) => self.remove_character_internal(item_key).unwrap(),
+            Item::Charge(_) => self.remove_charge_internal(item_key).unwrap(),
+            Item::Drone(_) => self.remove_drone_internal(item_key).unwrap(),
+            Item::Fighter(_) => self.remove_fighter_internal(item_key).unwrap(),
+            Item::FwEffect(_) => self.remove_fw_effect_internal(item_key).unwrap(),
+            Item::Implant(_) => self.remove_implant_internal(item_key).unwrap(),
+            Item::Module(_) => self.remove_module_internal(item_key, pos_mode).unwrap(),
+            Item::ProjEffect(_) => self.remove_proj_effect_internal(item_key).unwrap(),
+            Item::Rig(_) => self.remove_rig_internal(item_key).unwrap(),
+            Item::Service(_) => self.remove_service_internal(item_key).unwrap(),
+            Item::Ship(_) => self.remove_ship_internal(item_key).unwrap(),
+            Item::Skill(_) => self.remove_skill_internal(item_key).unwrap(),
+            Item::Stance(_) => self.remove_stance_internal(item_key).unwrap(),
+            Item::Subsystem(_) => self.remove_subsystem_internal(item_key).unwrap(),
+            Item::SwEffect(_) => self.remove_sw_effect_internal(item_key).unwrap(),
         }
         Ok(())
     }
@@ -64,5 +72,10 @@ impl std::fmt::Display for RemoveItemError {
 impl From<ItemFoundError> for RemoveItemError {
     fn from(error: ItemFoundError) -> Self {
         Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindRemoveError> for RemoveItemError {
+    fn from(error: ItemKindRemoveError) -> Self {
+        Self::UnremovableAutocharge(error)
     }
 }

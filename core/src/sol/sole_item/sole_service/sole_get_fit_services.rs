@@ -9,7 +9,7 @@ impl SolarSystem {
         let service_infos = fit
             .services
             .iter()
-            .map(|v| ServiceInfo::from(self.uad.items.get_by_id(v).unwrap().get_service().unwrap()))
+            .map(|item_key| self.get_service_internal(*item_key).unwrap())
             .collect();
         Ok(service_infos)
     }

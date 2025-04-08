@@ -1,8 +1,8 @@
 use crate::{
     ad,
-    err::basic::{ItemKindMatchError, ItemLoadedError},
+    err::basic::ItemKindMatchError,
     sol::{
-        AttrVal, FitId, ItemId,
+        AttrVal, FitId, ItemId, ItemKey,
         uad::item::{
             Autocharge, Autocharges, Booster, Character, Charge, Drone, EffectModes, Fighter, FwEffect, Implant,
             Module, ProjEffect, Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect,
@@ -237,7 +237,7 @@ impl Item {
     pub(in crate::sol) fn can_receive_projs(&self) -> bool {
         matches!(self, Self::Drone(_) | Self::Fighter(_) | Self::Ship(_))
     }
-    pub(in crate::sol) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemId, &Option<AttrVal>)>> {
+    pub(in crate::sol) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<AttrVal>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Charge(charge) => Some(charge.get_projs().iter()),
@@ -248,14 +248,14 @@ impl Item {
             _ => None,
         }
     }
-    pub(in crate::sol) fn iter_projectee_items(&self) -> Option<impl ExactSizeIterator<Item = &ItemId>> {
+    pub(in crate::sol) fn iter_projectee_item_keys(&self) -> Option<impl ExactSizeIterator<Item = &ItemKey>> {
         match self {
-            Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter_items()),
-            Self::Charge(charge) => Some(charge.get_projs().iter_items()),
-            Self::Drone(drone) => Some(drone.get_projs().iter_items()),
-            Self::Fighter(fighter) => Some(fighter.get_projs().iter_items()),
-            Self::Module(module) => Some(module.get_projs().iter_items()),
-            Self::ProjEffect(proj_effect) => Some(proj_effect.get_projs().iter_items()),
+            Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter_projectee_item_keys()),
+            Self::Charge(charge) => Some(charge.get_projs().iter_projectee_item_keys()),
+            Self::Drone(drone) => Some(drone.get_projs().iter_projectee_item_keys()),
+            Self::Fighter(fighter) => Some(fighter.get_projs().iter_projectee_item_keys()),
+            Self::Module(module) => Some(module.get_projs().iter_projectee_item_keys()),
+            Self::ProjEffect(proj_effect) => Some(proj_effect.get_projs().iter_projectee_item_keys()),
             _ => None,
         }
     }
@@ -658,7 +658,6 @@ impl Item {
             None => None,
         }
     }
-
     pub(in crate::sol) fn get_a_attrs(&self) -> Option<&RMap<ad::AAttrId, ad::AAttrVal>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_attrs(),
@@ -680,11 +679,6 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.get_a_attrs(),
         }
     }
-    pub(in crate::sol) fn get_a_attrs_err(&self) -> Result<&RMap<ad::AAttrId, ad::AAttrVal>, ItemLoadedError> {
-        self.get_a_attrs().ok_or_else(|| ItemLoadedError {
-            item_id: self.get_item_id(),
-        })
-    }
     pub(in crate::sol) fn get_a_effect_datas(&self) -> Option<&RMap<ad::AEffectId, ad::AItemEffectData>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_effect_datas(),
@@ -705,13 +699,6 @@ impl Item {
             Self::Subsystem(subsystem) => subsystem.get_a_effect_datas(),
             Self::SwEffect(sw_effect) => sw_effect.get_a_effect_datas(),
         }
-    }
-    pub(in crate::sol) fn get_a_effect_datas_err(
-        &self,
-    ) -> Result<&RMap<ad::AEffectId, ad::AItemEffectData>, ItemLoadedError> {
-        self.get_a_effect_datas().ok_or_else(|| ItemLoadedError {
-            item_id: self.get_item_id(),
-        })
     }
     pub(in crate::sol) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
         match self {

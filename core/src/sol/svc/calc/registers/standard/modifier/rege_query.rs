@@ -3,7 +3,7 @@ use std::hash::{BuildHasher, Hash};
 use crate::{
     ad,
     sol::{
-        ItemId,
+        ItemKey,
         svc::{
             AttrSpec,
             calc::{CtxModifier, RawModifier, registers::StandardRegister},
@@ -18,17 +18,17 @@ use super::ActiveLocations;
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn get_mods_for_affectee(
         &self,
+        item_key: &ItemKey,
         item: &Item,
         a_attr_id: &ad::AAttrId,
         fits: &Fits,
     ) -> Vec<CtxModifier> {
-        let item_id = item.get_item_id();
         let fit = item.get_fit_id().and_then(|v| fits.get_fit(&v).ok());
         let root_loc = item.get_root_loc_kind();
         let a_item_grp_id = item.get_a_group_id();
         let a_srqs = item.get_a_skill_reqs();
         let mut mods = Vec::new();
-        filter_and_extend(&mut mods, &self.cmods_direct, &item_id, a_attr_id);
+        filter_and_extend(&mut mods, &self.cmods_direct, item_key, a_attr_id);
         if let Some(other_item_id) = item.get_other() {
             filter_and_extend(&mut mods, &self.cmods_other, &other_item_id, a_attr_id);
         }
@@ -97,14 +97,14 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn extract_raw_mods_for_effect(
         &mut self,
         raw_modifiers: &mut Vec<RawModifier>,
-        item_id: ItemId,
+        item_key: ItemKey,
         a_effect_id: ad::AEffectId,
     ) {
         raw_modifiers.clear();
-        if let Some(effect_mods) = self.rmods_nonproj.remove_key(&(item_id, a_effect_id)) {
+        if let Some(effect_mods) = self.rmods_nonproj.remove_key(&(item_key, a_effect_id)) {
             raw_modifiers.extend(effect_mods)
         }
-        if let Some(effect_mods) = self.rmods_proj.remove_key(&(item_id, a_effect_id)) {
+        if let Some(effect_mods) = self.rmods_proj.remove_key(&(item_key, a_effect_id)) {
             raw_modifiers.extend(effect_mods)
         }
     }

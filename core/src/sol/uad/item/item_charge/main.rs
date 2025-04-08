@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        FitId, ItemId,
+        FitId, ItemId, ItemKey,
         uad::item::{EffectModes, ItemBase, Projs},
     },
     src::Src,
@@ -12,7 +12,7 @@ use crate::{
 pub(in crate::sol) struct Charge {
     base: ItemBase,
     fit_id: FitId,
-    cont_item_id: ItemId,
+    cont_item_key: ItemKey,
     projs: Projs,
     force_disable: bool,
 }
@@ -22,14 +22,14 @@ impl Charge {
         item_id: ItemId,
         a_item_id: ad::AItemId,
         fit_id: FitId,
-        cont_item_id: ItemId,
+        cont_item_key: ItemKey,
         cont_a_state: ad::AState,
         force_disable: bool,
     ) -> Self {
         Self {
             base: ItemBase::new(src, item_id, a_item_id, cont_a_state),
             fit_id,
-            cont_item_id,
+            cont_item_key,
             projs: Projs::new(),
             force_disable,
         }
@@ -93,8 +93,8 @@ impl Charge {
     pub(in crate::sol) fn get_fit_id(&self) -> FitId {
         self.fit_id
     }
-    pub(in crate::sol) fn get_cont_item_id(&self) -> ItemId {
-        self.cont_item_id
+    pub(in crate::sol) fn get_cont_item_key(&self) -> ItemKey {
+        self.cont_item_key
     }
     pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs

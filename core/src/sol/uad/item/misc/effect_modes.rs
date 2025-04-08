@@ -13,11 +13,11 @@ impl EffectModes {
         self.data.get(effect_id).unwrap_or(&DEFAULT_EFFECT_MODE)
     }
     // Modification methods
-    pub(in crate::sol) fn set(&mut self, effect_id: ad::AEffectId, mode: EffectMode) {
+    pub(in crate::sol) fn set(&mut self, a_effect_id: ad::AEffectId, mode: EffectMode) {
         if mode == DEFAULT_EFFECT_MODE {
-            self.data.remove(&effect_id);
+            self.data.remove(&a_effect_id);
         } else {
-            self.data.insert(effect_id, mode);
+            self.data.insert(a_effect_id, mode);
         }
     }
 }

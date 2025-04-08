@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemId, ItemTypeId, SolarSystem,
+        FitId, ItemKey, ItemTypeId, SolarSystem,
         info::SubsystemInfo,
         uad::item::{Item, Subsystem},
     },
@@ -14,23 +14,23 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: bool,
     ) -> Result<SubsystemInfo, AddSubsystemError> {
-        let item_id = self.add_subsystem_internal(fit_id, type_id, state)?;
-        Ok(self.get_subsystem(&item_id).unwrap())
+        let item_key = self.add_subsystem_internal(fit_id, type_id, state)?;
+        Ok(self.get_subsystem_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_subsystem_internal(
         &mut self,
         fit_id: FitId,
         type_id: ItemTypeId,
         state: bool,
-    ) -> Result<ItemId, AddSubsystemError> {
+    ) -> Result<ItemKey, FitFoundError> {
         let item_id = self.uad.items.alloc_item_id();
         let subsystem = Subsystem::new(&self.uad.src, item_id, type_id, fit_id, state);
         let item = Item::Subsystem(subsystem);
+        let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
-        fit.subsystems.insert(item_id);
-        self.uad.items.add(item);
-        self.add_item_id_to_svc(&item_id);
-        Ok(item_id)
+        fit.subsystems.insert(item_key);
+        self.add_item_key_to_svc(item_key);
+        Ok(item_key)
     }
 }
 

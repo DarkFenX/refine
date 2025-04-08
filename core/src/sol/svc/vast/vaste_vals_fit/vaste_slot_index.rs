@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    sol::{ItemId, SlotIndex, svc::vast::VastFitData},
+    sol::{ItemId, ItemKey, SlotIndex, svc::vast::VastFitData, uad::Uad},
     util::{RMapRSet, RSet},
 };
 
@@ -13,48 +13,55 @@ pub struct ValSlotIndexFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_implant_slot_index_fast(&self, kfs: &RSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_implant_slot_index_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         validate_slot_index_fast(kfs, &self.slotted_implants)
     }
-    pub(in crate::sol::svc::vast) fn validate_booster_slot_index_fast(&self, kfs: &RSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_booster_slot_index_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         validate_slot_index_fast(kfs, &self.slotted_boosters)
     }
-    pub(in crate::sol::svc::vast) fn validate_subsystem_slot_index_fast(&self, kfs: &RSet<ItemId>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_subsystem_slot_index_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         validate_slot_index_fast(kfs, &self.slotted_subsystems)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_implant_slot_index_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
     ) -> Option<ValSlotIndexFail> {
-        validate_slot_index_verbose(kfs, &self.slotted_implants)
+        validate_slot_index_verbose(kfs, uad, &self.slotted_implants)
     }
     pub(in crate::sol::svc::vast) fn validate_booster_slot_index_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
     ) -> Option<ValSlotIndexFail> {
-        validate_slot_index_verbose(kfs, &self.slotted_boosters)
+        validate_slot_index_verbose(kfs, uad, &self.slotted_boosters)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_index_verbose(
         &self,
-        kfs: &RSet<ItemId>,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
     ) -> Option<ValSlotIndexFail> {
-        validate_slot_index_verbose(kfs, &self.slotted_subsystems)
+        validate_slot_index_verbose(kfs, uad, &self.slotted_subsystems)
     }
 }
 
-fn validate_slot_index_fast(kfs: &RSet<ItemId>, data: &RMapRSet<SlotIndex, ItemId>) -> bool {
+fn validate_slot_index_fast(kfs: &RSet<ItemKey>, data: &RMapRSet<SlotIndex, ItemKey>) -> bool {
     data.values_inner()
-        .all(|item_ids| item_ids.len() < 2 || item_ids.is_subset(kfs))
+        .all(|item_keys| item_keys.len() < 2 || item_keys.is_subset(kfs))
 }
 fn validate_slot_index_verbose(
-    kfs: &RSet<ItemId>,
-    data: &RMapRSet<ad::ASlotIndex, ItemId>,
+    kfs: &RSet<ItemKey>,
+    uad: &Uad,
+    data: &RMapRSet<ad::ASlotIndex, ItemKey>,
 ) -> Option<ValSlotIndexFail> {
     let mut slot_users = HashMap::new();
     for (a_slot, users) in data.iter() {
         if users.len() >= 2 {
-            let users: Vec<_> = users.filter(|v| !kfs.contains(v)).copied().collect();
+            let users: Vec<_> = users
+                .filter(|item_key| !kfs.contains(item_key))
+                .map(|item_key| uad.items.id_by_key(*item_key))
+                .collect();
             if !users.is_empty() {
                 slot_users.insert(*a_slot, users);
             }

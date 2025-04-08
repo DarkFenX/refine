@@ -6,13 +6,13 @@ pub struct RigInfo {
     pub fit_id: FitId,
     pub enabled: bool,
 }
-impl From<&Rig> for RigInfo {
-    fn from(sol_rig: &Rig) -> Self {
+impl RigInfo {
+    pub(in crate::sol) fn from_rig(rig: &Rig) -> Self {
         Self {
-            id: sol_rig.get_item_id(),
-            type_id: sol_rig.get_a_item_id(),
-            fit_id: sol_rig.get_fit_id(),
-            enabled: sol_rig.get_rig_state(),
+            id: rig.get_item_id(),
+            type_id: rig.get_a_item_id(),
+            fit_id: rig.get_fit_id(),
+            enabled: rig.get_rig_state(),
         }
     }
 }

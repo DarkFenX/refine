@@ -9,7 +9,7 @@ impl SolarSystem {
         let subsystem_infos = fit
             .subsystems
             .iter()
-            .map(|v| SubsystemInfo::from(self.uad.items.get_by_id(v).unwrap().get_subsystem().unwrap()))
+            .map(|item_key| self.get_subsystem_internal(*item_key).unwrap())
             .collect();
         Ok(subsystem_infos)
     }

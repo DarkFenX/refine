@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemTypeId, SolarSystem,
+        FitId, ItemKey, ItemTypeId, SolarSystem,
         info::CharacterInfo,
         uad::item::{Character, Item},
     },
@@ -14,22 +14,29 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: bool,
     ) -> Result<CharacterInfo, SetFitCharacterError> {
+        let item_key = self.set_fit_character_internal(fit_id, type_id, state)?;
+        Ok(self.get_character_internal(item_key).unwrap())
+    }
+    pub(in crate::sol) fn set_fit_character_internal(
+        &mut self,
+        fit_id: FitId,
+        type_id: ItemTypeId,
+        state: bool,
+    ) -> Result<ItemKey, FitFoundError> {
         let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old character, if it was set
-        if let Some(old_item_id) = fit.character {
-            self.remove_item_id_from_svc(&old_item_id);
-            self.uad.items.remove_by_id(&old_item_id);
+        if let Some(old_item_key) = fit.character {
+            self.remove_character_internal(old_item_key).unwrap();
         }
         // Add new character
         let item_id = self.uad.items.alloc_item_id();
         let character = Character::new(&self.uad.src, item_id, type_id, fit_id, state);
-        let info = CharacterInfo::from(&character);
         let item = Item::Character(character);
+        let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
-        fit.character = Some(item_id);
-        self.uad.items.add(item);
-        self.add_item_id_to_svc(&item_id);
-        Ok(info)
+        fit.character = Some(item_key);
+        self.add_item_key_to_svc(item_key);
+        Ok(item_key)
     }
 }
 

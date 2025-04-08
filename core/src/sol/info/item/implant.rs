@@ -7,14 +7,14 @@ pub struct ImplantInfo {
     pub slot: Option<SlotIndex>,
     pub enabled: bool,
 }
-impl From<&Implant> for ImplantInfo {
-    fn from(sol_implant: &Implant) -> Self {
+impl ImplantInfo {
+    pub(in crate::sol) fn from_implant(implant: &Implant) -> Self {
         Self {
-            id: sol_implant.get_item_id(),
-            type_id: sol_implant.get_a_item_id(),
-            fit_id: sol_implant.get_fit_id(),
-            slot: sol_implant.get_a_slot(),
-            enabled: sol_implant.get_implant_state(),
+            id: implant.get_item_id(),
+            type_id: implant.get_a_item_id(),
+            fit_id: implant.get_fit_id(),
+            slot: implant.get_a_slot(),
+            enabled: implant.get_implant_state(),
         }
     }
 }

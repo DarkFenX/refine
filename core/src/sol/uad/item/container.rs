@@ -41,40 +41,42 @@ impl Items {
         self.id_to_key.insert(item_id, item_key);
         item_key
     }
-    pub(in crate::sol) fn get_by_key(&self, item_key: ItemKey) -> Option<&Item> {
+    pub(in crate::sol) fn key_by_id(&self, item_id: &ItemId) -> Option<ItemKey> {
+        self.id_to_key.get(item_id).copied()
+    }
+    pub(in crate::sol) fn key_by_id_err(&self, item_id: &ItemId) -> Result<ItemKey, ItemFoundError> {
+        match self.id_to_key.get(item_id) {
+            Some(item_key) => Ok(*item_key),
+            None => Err(ItemFoundError { item_id: *item_id }),
+        }
+    }
+    pub(in crate::sol) fn id_by_key(&self, item_key: ItemKey) -> ItemId {
+        self.get(item_key).get_item_id()
+    }
+    pub(in crate::sol) fn try_get(&self, item_key: ItemKey) -> Option<&Item> {
         self.data.get(item_key)
     }
-    pub(in crate::sol) fn get_by_id(&self, item_id: &ItemId) -> Result<&Item, ItemFoundError> {
-        let item_key = self
-            .id_to_key
-            .get(item_id)
-            .ok_or(ItemFoundError { item_id: *item_id })?;
-        self.get_by_key(*item_key).ok_or(ItemFoundError { item_id: *item_id })
+    pub(in crate::sol) fn get(&self, item_key: ItemKey) -> &Item {
+        // Keys are supposed to be valid throughout whole lib, so just unwrap
+        self.data.get(item_key).unwrap()
     }
-    pub(in crate::sol) fn get_mut_by_key(&mut self, item_key: ItemKey) -> Option<&mut Item> {
-        self.data.get_mut(item_key)
+    pub(in crate::sol) fn get_mut(&mut self, item_key: ItemKey) -> &mut Item {
+        // Keys are supposed to be valid throughout whole lib, so just unwrap
+        self.data.get_mut(item_key).unwrap()
     }
-    pub(in crate::sol) fn get_mut_by_id(&mut self, item_id: &ItemId) -> Result<&mut Item, ItemFoundError> {
-        let item_key = self
-            .id_to_key
-            .get(item_id)
-            .ok_or(ItemFoundError { item_id: *item_id })?;
-        self.get_mut_by_key(*item_key)
-            .ok_or(ItemFoundError { item_id: *item_id })
-    }
-    pub(in crate::sol) fn remove_by_key(&mut self, item_key: ItemKey) -> Option<Item> {
-        let item = self.data.try_remove(item_key)?;
+    pub(in crate::sol) fn remove(&mut self, item_key: ItemKey) -> Item {
+        // Keys are supposed to be valid throughout whole lib, so use non-try removal
+        let item = self.data.remove(item_key);
         self.id_to_key.remove(&item.get_item_id());
-        Some(item)
+        item
     }
-    pub(in crate::sol) fn remove_by_id(&mut self, item_id: &ItemId) -> Option<Item> {
-        let item_key = self.id_to_key.remove(item_id)?;
-        self.data.try_remove(item_key)
+    pub(in crate::sol) fn iter(&self) -> impl ExactSizeIterator<Item = (ItemKey, &Item)> {
+        self.data.iter()
     }
-    pub(in crate::sol) fn iter(&self) -> impl ExactSizeIterator<Item = &Item> {
-        self.data.iter().map(|(key, item)| item)
+    pub(in crate::sol) fn keys(&self) -> impl ExactSizeIterator<Item = ItemKey> {
+        self.data.iter().map(|(key, _)| key)
     }
-    pub(in crate::sol) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = &mut Item> {
-        self.data.iter_mut().map(|(key, item)| item)
+    pub(in crate::sol) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut Item> {
+        self.data.iter_mut().map(|(_, item)| item)
     }
 }
