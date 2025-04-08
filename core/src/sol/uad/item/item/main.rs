@@ -2,7 +2,7 @@ use crate::{
     ad,
     err::basic::ItemKindMatchError,
     sol::{
-        AttrVal, FitId, ItemId, ItemKey,
+        AttrVal, FitKey, ItemId, ItemKey,
         uad::item::{
             Autocharge, Autocharges, Booster, Character, Charge, Drone, EffectModes, Fighter, FwEffect, Implant,
             Module, ProjEffect, Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect,
@@ -96,24 +96,24 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.get_a_item_id(),
         }
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> Option<FitId> {
+    pub(in crate::sol) fn get_fit_key(&self) -> Option<FitKey> {
         match self {
-            Self::Autocharge(autocharge) => Some(autocharge.get_fit_id()),
-            Self::Booster(booster) => Some(booster.get_fit_id()),
-            Self::Character(character) => Some(character.get_fit_id()),
-            Self::Charge(charge) => Some(charge.get_fit_id()),
-            Self::Drone(drone) => Some(drone.get_fit_id()),
-            Self::Fighter(fighter) => Some(fighter.get_fit_id()),
-            Self::FwEffect(fw_effect) => Some(fw_effect.get_fit_id()),
-            Self::Implant(implant) => Some(implant.get_fit_id()),
-            Self::Module(module) => Some(module.get_fit_id()),
+            Self::Autocharge(autocharge) => Some(autocharge.get_fit_key()),
+            Self::Booster(booster) => Some(booster.get_fit_key()),
+            Self::Character(character) => Some(character.get_fit_key()),
+            Self::Charge(charge) => Some(charge.get_fit_key()),
+            Self::Drone(drone) => Some(drone.get_fit_key()),
+            Self::Fighter(fighter) => Some(fighter.get_fit_key()),
+            Self::FwEffect(fw_effect) => Some(fw_effect.get_fit_key()),
+            Self::Implant(implant) => Some(implant.get_fit_key()),
+            Self::Module(module) => Some(module.get_fit_key()),
             Self::ProjEffect(_) => None,
-            Self::Rig(rig) => Some(rig.get_fit_id()),
-            Self::Service(service) => Some(service.get_fit_id()),
-            Self::Ship(ship) => Some(ship.get_fit_id()),
-            Self::Skill(skill) => Some(skill.get_fit_id()),
-            Self::Stance(stance) => Some(stance.get_fit_id()),
-            Self::Subsystem(subsystem) => Some(subsystem.get_fit_id()),
+            Self::Rig(rig) => Some(rig.get_fit_key()),
+            Self::Service(service) => Some(service.get_fit_key()),
+            Self::Ship(ship) => Some(ship.get_fit_key()),
+            Self::Skill(skill) => Some(skill.get_fit_key()),
+            Self::Stance(stance) => Some(stance.get_fit_key()),
+            Self::Subsystem(subsystem) => Some(subsystem.get_fit_key()),
             Self::SwEffect(_) => None,
         }
     }

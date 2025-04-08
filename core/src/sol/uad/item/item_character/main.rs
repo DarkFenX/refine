@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        FitId, ItemId,
+        FitKey, ItemId,
         uad::item::{EffectModes, ItemBase, bool_to_state_offline, state_to_bool},
     },
     src::Src,
@@ -11,13 +11,19 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Character {
     base: ItemBase,
-    fit_id: FitId,
+    fit_key: FitKey,
 }
 impl Character {
-    pub(in crate::sol) fn new(src: &Src, item_id: ItemId, a_item_id: ad::AItemId, fit_id: FitId, state: bool) -> Self {
+    pub(in crate::sol) fn new(
+        src: &Src,
+        item_id: ItemId,
+        a_item_id: ad::AItemId,
+        fit_key: FitKey,
+        state: bool,
+    ) -> Self {
         Self {
             base: ItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
-            fit_id,
+            fit_key,
         }
     }
     // Item base methods
@@ -70,8 +76,8 @@ impl Character {
     pub(in crate::sol) fn set_character_state(&mut self, state: bool) {
         self.base.set_a_state(bool_to_state_offline(state))
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
-        self.fit_id
+    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+        self.fit_key
     }
 }
 impl Named for Character {

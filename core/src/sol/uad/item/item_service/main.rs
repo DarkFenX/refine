@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        FitId, ItemId,
+        FitKey, ItemId,
         uad::item::{EffectModes, ItemBase, ServiceState},
     },
     src::Src,
@@ -11,19 +11,19 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Service {
     base: ItemBase,
-    fit_id: FitId,
+    fit_key: FitKey,
 }
 impl Service {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_id: FitId,
+        fit_key: FitKey,
         state: ServiceState,
     ) -> Self {
         Self {
             base: ItemBase::new(src, item_id, a_item_id, state.into()),
-            fit_id,
+            fit_key,
         }
     }
     // Item base methods
@@ -76,8 +76,8 @@ impl Service {
     pub(in crate::sol) fn set_service_state(&mut self, state: ServiceState) {
         self.base.set_a_state(state.into())
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
-        self.fit_id
+    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+        self.fit_key
     }
 }
 impl Named for Service {

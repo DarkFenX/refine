@@ -6,7 +6,7 @@ use ordered_float::OrderedFloat as OF;
 use crate::{
     ac, ad,
     sol::{
-        AttrVal, FitId, ItemKey, ModRack,
+        AttrVal, FitKey, ItemKey, ModRack,
         svc::vast::{
             ValCache, ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, ValSrqSkillInfo, Vast,
             VastFitData,
@@ -21,16 +21,16 @@ use crate::{
 
 impl Vast {
     pub(in crate::sol::svc) fn item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
-        let fit_id = match item.get_fit_id() {
-            Some(fit_id) => fit_id,
+        let fit_key = match item.get_fit_key() {
+            Some(fit_key) => fit_key,
             None => return,
         };
-        let fit_data = self.get_fit_data_mut(&fit_id).unwrap();
+        let fit_data = self.get_fit_data_mut(&fit_key);
         // Skill requirements
         if let Some(a_srqs) = item.get_effective_a_skill_reqs() {
             if !a_srqs.is_empty() {
                 let mut missing_skills = RMap::new();
-                let fit = uad.fits.get_fit(&fit_id).unwrap();
+                let fit = uad.fits.get(fit_key);
                 for (&skill_a_item_id, &required_lvl) in a_srqs.iter() {
                     fit_data.srqs_skill_item_map.add_entry(skill_a_item_id, item_key);
                     let current_lvl = fit.skills.get(&skill_a_item_id).map(|v| v.level);
@@ -213,7 +213,7 @@ impl Vast {
                     fit_data,
                     item_key,
                     module.get_a_category_id().unwrap(),
-                    &module.get_fit_id(),
+                    module.get_fit_key(),
                 );
             }
             Item::Rig(rig) => {
@@ -242,7 +242,7 @@ impl Vast {
                     fit_data,
                     item_key,
                     rig.get_a_category_id().unwrap(),
-                    &rig.get_fit_id(),
+                    rig.get_fit_key(),
                 );
             }
             Item::Service(service) => {
@@ -281,11 +281,11 @@ impl Vast {
                     fit_data,
                     item_key,
                     service.get_a_category_id().unwrap(),
-                    &service.get_fit_id(),
+                    service.get_fit_key(),
                 );
             }
             Item::Ship(ship) => {
-                let fit = uad.fits.get_fit(&fit_id).unwrap();
+                let fit = uad.fits.get(fit_key);
                 let extras = ship.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_key, extras.kind, ad::AItemKind::Ship);
                 // If new ship limits drones which can be used, fill the mismatch data up
@@ -362,11 +362,11 @@ impl Vast {
         }
     }
     pub(in crate::sol::svc) fn item_unloaded(&mut self, item_key: &ItemKey, item: &Item) {
-        let fit_id = match item.get_fit_id() {
-            Some(fit_id) => fit_id,
+        let fit_key = match item.get_fit_key() {
+            Some(fit_key) => fit_key,
             None => return,
         };
-        let fit_data = self.get_fit_data_mut(&fit_id).unwrap();
+        let fit_data = self.get_fit_data_mut(&fit_key);
         // Skill requirements
         if let Some(a_srqs) = item.get_effective_a_skill_reqs() {
             if !a_srqs.is_empty() {
@@ -635,9 +635,9 @@ fn item_vs_ship_kind_add(
     fit_data: &mut VastFitData,
     item_key: ItemKey,
     item_cat: ad::AItemCatId,
-    fit_id: &FitId,
+    fit_key: FitKey,
 ) {
-    let fit = uad.fits.get_fit(fit_id).unwrap();
+    let fit = uad.fits.get(fit_key);
     let ship_key = match fit.ship {
         Some(ship_id) => ship_id,
         None => return,

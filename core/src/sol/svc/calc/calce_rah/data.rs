@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    sol::{DmgKinds, FitId, ItemKey, svc::calc::CalcAttrVal},
+    sol::{DmgKinds, FitKey, ItemKey, svc::calc::CalcAttrVal},
     src::Src,
     util::{RMap, RMapRSet},
 };
@@ -10,7 +10,7 @@ use super::shared::RAH_EFFECT_ID;
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct RahSim {
     pub(super) resonances: RMap<ItemKey, Option<DmgKinds<CalcAttrVal>>>,
-    pub(super) by_fit: RMapRSet<FitId, ItemKey>,
+    pub(super) by_fit: RMapRSet<FitKey, ItemKey>,
     pub(super) cycle_time_a_attr_id: Option<ad::AAttrId>,
     pub(super) sim_running: bool,
 }

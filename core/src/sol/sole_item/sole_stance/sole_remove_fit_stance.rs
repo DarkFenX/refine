@@ -1,17 +1,21 @@
 use crate::{
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{FitId, SolarSystem, uad::item::Stance},
+    sol::{FitId, FitKey, SolarSystem, uad::item::Stance},
     util::Named,
 };
 
 impl SolarSystem {
     pub fn remove_fit_stance(&mut self, fit_id: &FitId) -> Result<(), RemoveFitStanceError> {
-        let fit = self.uad.fits.get_fit(fit_id)?;
+        let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
+        Ok(self.remove_fit_stance_internal(fit_key)?)
+    }
+    pub(in crate::sol) fn remove_fit_stance_internal(&mut self, fit_key: FitKey) -> Result<(), FitHasItemKindError> {
+        let fit = self.uad.fits.get(fit_key);
         let item_key = match fit.stance {
             Some(item_key) => item_key,
             None => {
                 return Err(FitHasItemKindError {
-                    fit_id: *fit_id,
+                    fit_id: fit.id,
                     item_kind: Stance::get_name(),
                 }
                 .into());

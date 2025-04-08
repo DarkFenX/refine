@@ -14,7 +14,7 @@ impl HSetShipCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<rc::ShipInfo, HExecError> {
-        let core_ship = match core_sol.set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+        let core_ship = match core_sol.set_fit_ship(fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_ship) => core_ship,
             Err(error) => {
                 return Err(match error {

@@ -23,8 +23,7 @@ impl SolarSystem {
         skill.set_a_level(level);
         self.uad
             .fits
-            .get_fit_mut(&skill.get_fit_id())
-            .unwrap()
+            .get_mut(skill.get_fit_key())
             .skills
             .get_mut(&skill.get_a_item_id())
             .unwrap()

@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac, ad,
     sol::{
-        AttrVal, FitId, ItemKey,
+        AttrVal, FitKey, ItemKey,
         svc::{
             AttrSpec,
             calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
@@ -18,28 +18,28 @@ impl Calc {
     pub(in crate::sol::svc) fn src_changed(&mut self, src: &Src) {
         self.rah_src_changed(src);
     }
-    pub(in crate::sol::svc) fn fit_added(&mut self, fit_id: FitId) {
-        self.std.reg_fit_for_sw(fit_id)
+    pub(in crate::sol::svc) fn fit_added(&mut self, fit_key: FitKey) {
+        self.std.reg_fit_for_sw(fit_key)
     }
-    pub(in crate::sol::svc) fn fit_removed(&mut self, fit_id: FitId) {
-        self.std.unreg_fit_for_sw(fit_id)
+    pub(in crate::sol::svc) fn fit_removed(&mut self, fit_key: FitKey) {
+        self.std.unreg_fit_for_sw(fit_key)
     }
-    pub(in crate::sol::svc) fn fit_added_to_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_id: &FitId) {
-        let ctx_modifiers = self.std.reg_fleet_for_fit(fleet, fit_id);
+    pub(in crate::sol::svc) fn fit_added_to_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+        let ctx_modifiers = self.std.reg_fleet_for_fit(fleet, fit_key);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
         }
     }
-    pub(in crate::sol::svc) fn fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_id: &FitId) {
-        let ctx_modifiers = self.std.unreg_fleet_for_fit(fleet, fit_id);
+    pub(in crate::sol::svc) fn fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+        let ctx_modifiers = self.std.unreg_fleet_for_fit(fleet, fit_key);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
         }
     }
-    pub(in crate::sol::svc) fn fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
-        self.rah_fit_rah_dps_profile_changed(uad, fit_id);
+    pub(in crate::sol::svc) fn fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
+        self.rah_fit_rah_dps_profile_changed(uad, fit_key);
     }
     pub(in crate::sol::svc) fn item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
         // Custom modifiers
@@ -74,7 +74,7 @@ impl Calc {
     pub(in crate::sol::svc) fn item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
         // Notify core calc services
         self.attrs.item_loaded(item_key, item);
-        self.std.reg_affectee(uad, item_key, item);
+        self.std.reg_affectee(item_key, item);
         self.handle_location_owner_change(uad, item);
         // Notify RAH sim
         self.rah_item_loaded(uad, item);
@@ -84,7 +84,7 @@ impl Calc {
         self.rah_item_unloaded(uad, item);
         // Notify core calc services
         self.handle_location_owner_change(uad, item);
-        self.std.unreg_affectee(uad, item_key, item);
+        self.std.unreg_affectee(item_key, item);
         self.deps.remove_item(item_key);
         self.attrs.item_unloaded(&item_key);
     }

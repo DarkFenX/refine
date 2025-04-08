@@ -17,7 +17,7 @@ impl AutochargeInfo {
         Self {
             id: autocharge.get_item_id(),
             type_id: autocharge.get_a_item_id(),
-            fit_id: autocharge.get_fit_id(),
+            fit_id: uad.fits.id_by_key(autocharge.get_fit_key()),
             cont_item_id: uad.items.id_by_key(autocharge.get_cont_item_key()),
             cont_effect_id: autocharge.get_cont_effect_id().into(),
             enabled: !autocharge.get_force_disable(),

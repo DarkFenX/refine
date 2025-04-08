@@ -36,7 +36,7 @@ impl HChangeFleetCmd {
             }
         }
         for fit_id in self.add_fits.iter() {
-            if let Err(error) = core_sol.set_fit_fleet(fit_id, *fleet_id) {
+            if let Err(error) = core_sol.set_fit_fleet(fit_id, fleet_id) {
                 return Err(match error {
                     rc::err::SetFitFleetError::FitNotFound(e) => HExecError::FitNotFoundSecondary(e),
                     // We already checked that fleet exists, this error should never happen

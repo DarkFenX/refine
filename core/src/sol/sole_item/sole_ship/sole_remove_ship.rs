@@ -12,13 +12,13 @@ impl SolarSystem {
         // Just check if everything is correct
         let item = self.uad.items.get(item_key);
         let ship = item.get_ship()?;
-        let fit_id = ship.get_fit_id();
+        let fit_key = ship.get_fit_key();
         // Remove incoming projections
         self.remove_incoming_projections(item_key);
         // Remove ship from services
         self.remove_item_key_from_svc(item_key);
         // Remove ship from user data
-        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_mut(fit_key);
         fit.ship = None;
         fit.kind = ShipKind::Unknown;
         self.uad.items.remove(item_key);

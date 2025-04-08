@@ -1,6 +1,9 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId,
-    uad::item::{Service, ServiceState},
+    uad::{
+        Uad,
+        item::{Service, ServiceState},
+    },
 };
 
 pub struct ServiceInfo {
@@ -10,11 +13,11 @@ pub struct ServiceInfo {
     pub state: ServiceState,
 }
 impl ServiceInfo {
-    pub(in crate::sol) fn from_service(service: &Service) -> Self {
+    pub(in crate::sol) fn from_service(uad: &Uad, service: &Service) -> Self {
         Self {
             id: service.get_item_id(),
             type_id: service.get_a_item_id(),
-            fit_id: service.get_fit_id(),
+            fit_id: uad.fits.id_by_key(service.get_fit_key()),
             state: service.get_service_state(),
         }
     }

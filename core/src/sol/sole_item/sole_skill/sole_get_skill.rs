@@ -10,7 +10,7 @@ impl SolarSystem {
     }
     pub(in crate::sol) fn get_skill_internal(&self, item_key: ItemKey) -> Result<SkillInfo, ItemKindMatchError> {
         let skill = self.uad.items.get(item_key).get_skill()?;
-        Ok(SkillInfo::from_skill(skill))
+        Ok(SkillInfo::from_skill(&self.uad, skill))
     }
 }
 

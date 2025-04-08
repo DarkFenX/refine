@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        FitId, ItemId,
+        FitKey, ItemId,
         uad::item::{EffectModes, ItemBase, bool_to_state_offline, state_to_bool},
     },
     src::Src,
@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Skill {
     base: ItemBase,
-    fit_id: FitId,
+    fit_key: FitKey,
     a_level: ad::ASkillLevel,
 }
 impl Skill {
@@ -19,13 +19,13 @@ impl Skill {
         src: &Src,
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_id: FitId,
+        fit_key: FitKey,
         a_level: ad::ASkillLevel,
         state: bool,
     ) -> Self {
         Self {
             base: ItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
-            fit_id,
+            fit_key,
             a_level,
         }
     }
@@ -79,8 +79,8 @@ impl Skill {
     pub(in crate::sol) fn set_skill_state(&mut self, state: bool) {
         self.base.set_a_state(bool_to_state_offline(state))
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
-        self.fit_id
+    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+        self.fit_key
     }
     pub(in crate::sol) fn get_a_level(&self) -> ad::ASkillLevel {
         self.a_level

@@ -28,7 +28,7 @@ impl FitInfo {
     pub(in crate::sol) fn from_fit(uad: &Uad, fit: &Fit) -> Self {
         Self {
             id: fit.id,
-            fleet: fit.fleet,
+            fleet: fit.fleet.map(|fleet_key| uad.fleets.id_by_key(fleet_key)),
             character: conv_item_opt(uad, fit.character),
             skills: conv_item_iter(uad, fit.skills.values().map(|fit_skill| &fit_skill.item_key)),
             implants: conv_item_iter(uad, fit.implants.iter()),

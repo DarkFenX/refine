@@ -14,7 +14,7 @@ impl HAddSubsystemCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<rc::SubsystemInfo, HExecError> {
-        let core_subsystem = match core_sol.add_subsystem(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+        let core_subsystem = match core_sol.add_subsystem(fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_subsystem) => core_subsystem,
             Err(error) => {
                 return Err(match error {

@@ -64,17 +64,17 @@ impl Iterator for RahSimTickIter {
             .unwrap();
         // Compose list of RAHs which finish their cycle this tick
         let mut cycled = Vec::new();
-        for (item_id, item_iter_data) in self.rah_iter_data.iter() {
+        for (item_key, item_iter_data) in self.rah_iter_data.iter() {
             // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH
             // configurations which the engine allows, e.g. when normal RAH does 17 cycles,
             // heated one does 20, but sum of 20x 0.85 f64's is less than 17.
             if rah_round(item_iter_data.cycling_time + time_passed) >= item_iter_data.cycle_time_rounded {
-                cycled.push(*item_id);
+                cycled.push(*item_key);
             }
         }
         // Update iterator state
-        for (item_id, item_iter_data) in self.rah_iter_data.iter_mut() {
-            match cycled.contains(item_id) {
+        for (item_key, item_iter_data) in self.rah_iter_data.iter_mut() {
+            match cycled.contains(item_key) {
                 true => item_iter_data.cycling_time = OF(0.0),
                 false => item_iter_data.cycling_time += time_passed,
             }

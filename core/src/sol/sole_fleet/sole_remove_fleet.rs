@@ -2,20 +2,23 @@ use itertools::Itertools;
 
 use crate::{
     err::basic::FleetFoundError,
-    sol::{FleetId, SolarSystem},
+    sol::{FleetId, FleetKey, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn remove_fleet(&mut self, fleet_id: &FleetId) -> Result<(), RemoveFleetError> {
-        let fleet = self.uad.fleets.get_fleet(fleet_id)?;
-        let fit_ids = fleet.iter_fits().copied().collect_vec();
-        for fit_id in fit_ids.iter() {
-            self.svc.remove_fit_from_fleet(&self.uad, fleet, fit_id);
-            let fit = self.uad.fits.get_fit_mut(fit_id).unwrap();
+        let fleet_key = self.uad.fleets.key_by_id_err(fleet_id)?;
+        Ok(self.remove_fleet_internal(fleet_key))
+    }
+    pub(in crate::sol) fn remove_fleet_internal(&mut self, fleet_key: FleetKey) {
+        let fleet = self.uad.fleets.get(fleet_key);
+        let fit_keys = fleet.iter_fits().copied().collect_vec();
+        for fit_key in fit_keys {
+            self.svc.remove_fit_from_fleet(&self.uad, fleet, &fit_key);
+            let fit = self.uad.fits.get_mut(fit_key);
             fit.fleet = None;
         }
-        self.uad.fleets.remove_fleet(fleet_id).unwrap();
-        Ok(())
+        self.uad.fleets.remove(fleet_key);
     }
 }
 

@@ -12,7 +12,7 @@ impl SolarSystem {
         let item = self.uad.items.get(item_key);
         let service = item.get_service()?;
         self.svc.remove_item(&self.uad, item_key, item);
-        let fit = self.uad.fits.get_fit_mut(&service.get_fit_id()).unwrap();
+        let fit = self.uad.fits.get_mut(service.get_fit_key());
         fit.services.remove(&item_key);
         self.uad.items.remove(item_key);
         Ok(())

@@ -2,7 +2,7 @@ use crate::{
     ad,
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
-        FitId, Idx, ItemId, ItemKey, ModRack,
+        FitKey, Idx, ItemId, ItemKey, ModRack,
         info::ItemMutationInfo,
         uad::item::{EffectModes, ItemAddMutation, ItemBaseMutable, ItemChangeAttrMutation, ModuleState, Projs},
     },
@@ -13,7 +13,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Module {
     base: ItemBaseMutable,
-    fit_id: FitId,
+    fit_key: FitKey,
     rack: ModRack,
     pos: Idx,
     charge_item_key: Option<ItemKey>,
@@ -24,7 +24,7 @@ impl Module {
         src: &Src,
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_id: FitId,
+        fit_key: FitKey,
         state: ModuleState,
         rack: ModRack,
         pos: Idx,
@@ -33,7 +33,7 @@ impl Module {
     ) -> Self {
         Self {
             base: ItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
-            fit_id,
+            fit_key,
             rack,
             pos,
             charge_item_key,
@@ -110,8 +110,8 @@ impl Module {
     pub(in crate::sol) fn set_module_state(&mut self, state: ModuleState) {
         self.base.set_a_state(state.into())
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
-        self.fit_id
+    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+        self.fit_key
     }
     pub(in crate::sol) fn get_rack(&self) -> ModRack {
         self.rack

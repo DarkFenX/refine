@@ -10,7 +10,7 @@ impl SolarSystem {
     }
     pub(in crate::sol) fn get_rig_internal(&self, item_key: ItemKey) -> Result<RigInfo, ItemKindMatchError> {
         let rig = self.uad.items.get(item_key).get_rig()?;
-        Ok(RigInfo::from_rig(rig))
+        Ok(RigInfo::from_rig(&self.uad, rig))
     }
 }
 

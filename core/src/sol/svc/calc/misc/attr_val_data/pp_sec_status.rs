@@ -15,8 +15,8 @@ pub(super) fn sec_status_postproc_fast(
     item_key: ItemKey,
     mut val: CalcAttrVal,
 ) -> CalcAttrVal {
-    let fit_id = uad.items.get(item_key).get_ship().unwrap().get_fit_id();
-    let fit = uad.fits.get_fit(&fit_id).unwrap();
+    let fit_key = uad.items.get(item_key).get_ship().unwrap().get_fit_key();
+    let fit = uad.fits.get(fit_key);
     val.dogma = fit.sec_status;
     val.extra = fit.sec_status;
     val
@@ -28,7 +28,7 @@ pub(super) fn sec_status_postproc_info(
     item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {
-    let fit_id = uad.items.get(item_key).get_ship().unwrap().get_fit_id();
-    let fit = uad.fits.get_fit(&fit_id).unwrap();
+    let fit_key = uad.items.get(item_key).get_ship().unwrap().get_fit_key();
+    let fit = uad.fits.get(fit_key);
     AttrValInfo::new(fit.sec_status)
 }

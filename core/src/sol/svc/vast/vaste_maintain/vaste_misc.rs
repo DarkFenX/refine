@@ -13,7 +13,7 @@ use std::collections::hash_map::Entry;
 
 impl Vast {
     pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &Uad, skill: &Skill) {
-        let fit_data = self.fit_datas.get_mut(&skill.get_fit_id()).unwrap();
+        let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
         for other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
             let missing_skills = fit_data.srqs_missing.get_mut(other_item_key).unwrap();
             match missing_skills.entry(skill.get_a_item_id()) {
@@ -41,7 +41,7 @@ impl Vast {
         }
     }
     pub(in crate::sol::svc) fn fighter_count_changed(&mut self, fighter_key: ItemKey, fighter: &Fighter) {
-        let fit_data = self.fit_datas.get_mut(&fighter.get_fit_id()).unwrap();
+        let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
         let extras = fighter.get_a_extras().unwrap();
         let count = fighter.get_count().unwrap();
         if let Some(volume) = extras.volume {

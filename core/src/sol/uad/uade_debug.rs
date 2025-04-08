@@ -11,11 +11,11 @@ impl Uad {
     pub fn debug_consistency_check(&self) -> DebugResult {
         let mut seen_items = Vec::new();
         // Fleets
-        for fleet in self.fleets.iter_fleets() {
+        for fleet in self.fleets.values() {
             fleet.debug_consistency_check(self)?;
         }
         // Fits
-        for fit in self.fits.iter_fits() {
+        for fit in self.fits.values() {
             fit.debug_consistency_check(self, &mut seen_items)?;
         }
         // System-wide effects
@@ -52,6 +52,8 @@ impl Uad {
         }
         // Checks for internal container consistency
         self.items.debug_consistency_check()?;
+        self.fits.debug_consistency_check()?;
+        self.fleets.debug_consistency_check()?;
         Ok(())
     }
 }

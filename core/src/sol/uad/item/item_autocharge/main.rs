@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        FitId, ItemId, ItemKey,
+        FitKey, ItemId, ItemKey,
         uad::item::{EffectModes, ItemBase, Projs},
     },
     src::Src,
@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Autocharge {
     base: ItemBase,
-    fit_id: FitId,
+    fit_key: FitKey,
     cont_item_key: ItemKey,
     cont_a_effect_id: ad::AEffectId,
     projs: Projs,
@@ -22,7 +22,7 @@ impl Autocharge {
         src: &Src,
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_id: FitId,
+        fit_key: FitKey,
         cont_item_key: ItemKey,
         cont_a_effect_id: ad::AEffectId,
         cont_a_state: ad::AState,
@@ -30,7 +30,7 @@ impl Autocharge {
     ) -> Self {
         Self {
             base: ItemBase::new(src, item_id, a_item_id, cont_a_state),
-            fit_id,
+            fit_key,
             cont_item_key,
             cont_a_effect_id,
             projs: Projs::new(),
@@ -95,8 +95,8 @@ impl Autocharge {
     pub(in crate::sol) fn set_force_disable(&mut self, force_disable: bool) {
         self.force_disable = force_disable
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
-        self.fit_id
+    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+        self.fit_key
     }
     pub(in crate::sol) fn get_cont_item_key(&self) -> ItemKey {
         self.cont_item_key

@@ -48,7 +48,7 @@ impl HSolInfoFull {
                 .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
                 .collect(),
             sec_zone: core_sol.get_sec_zone().into(),
-            default_incoming_dps: core_sol.get_default_incoming_dps().into(),
+            default_incoming_dps: (&core_sol.get_default_incoming_dps()).into(),
         }
     }
 }

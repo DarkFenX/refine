@@ -14,10 +14,10 @@ impl StandardRegister {
         let ctx_modifier = match raw_modifier.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     add_ctx_modifier(
                         &mut self.cmods_root,
-                        (fw_effect.get_fit_id(), loc_kind),
+                        (fw_effect.get_fit_key(), loc_kind),
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -27,10 +27,10 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     add_ctx_modifier(
                         &mut self.cmods_loc,
-                        (fw_effect.get_fit_id(), loc_kind),
+                        (fw_effect.get_fit_key(), loc_kind),
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -40,10 +40,10 @@ impl StandardRegister {
             },
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     add_ctx_modifier(
                         &mut self.cmods_loc_grp,
-                        (fw_effect.get_fit_id(), loc_kind, a_item_grp_id),
+                        (fw_effect.get_fit_key(), loc_kind, a_item_grp_id),
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -53,10 +53,10 @@ impl StandardRegister {
             },
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     add_ctx_modifier(
                         &mut self.cmods_loc_srq,
-                        (fw_effect.get_fit_id(), loc_kind, srq_a_item_id),
+                        (fw_effect.get_fit_key(), loc_kind, srq_a_item_id),
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -65,10 +65,10 @@ impl StandardRegister {
                 _ => None,
             },
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                 add_ctx_modifier(
                     &mut self.cmods_own_srq,
-                    (fw_effect.get_fit_id(), srq_a_item_id),
+                    (fw_effect.get_fit_key(), srq_a_item_id),
                     ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );
@@ -90,10 +90,10 @@ impl StandardRegister {
         match raw_modifier.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     remove_ctx_modifier(
                         &mut self.cmods_root,
-                        &(fw_effect.get_fit_id(), loc_kind),
+                        &(fw_effect.get_fit_key(), loc_kind),
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -103,10 +103,10 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     remove_ctx_modifier(
                         &mut self.cmods_loc,
-                        &(fw_effect.get_fit_id(), loc_kind),
+                        &(fw_effect.get_fit_key(), loc_kind),
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -116,10 +116,10 @@ impl StandardRegister {
             },
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     remove_ctx_modifier(
                         &mut self.cmods_loc_grp,
-                        &(fw_effect.get_fit_id(), loc_kind, a_item_grp_id),
+                        &(fw_effect.get_fit_key(), loc_kind, a_item_grp_id),
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -129,10 +129,10 @@ impl StandardRegister {
             },
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                    let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                     remove_ctx_modifier(
                         &mut self.cmods_loc_srq,
-                        &(fw_effect.get_fit_id(), loc_kind, srq_a_item_id),
+                        &(fw_effect.get_fit_key(), loc_kind, srq_a_item_id),
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -141,10 +141,10 @@ impl StandardRegister {
                 _ => None,
             },
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_id());
+                let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fw_effect.get_fit_key());
                 remove_ctx_modifier(
                     &mut self.cmods_own_srq,
-                    &(fw_effect.get_fit_id(), srq_a_item_id),
+                    &(fw_effect.get_fit_key(), srq_a_item_id),
                     &ctx_modifier,
                     &mut self.cmods_by_attr_spec,
                 );

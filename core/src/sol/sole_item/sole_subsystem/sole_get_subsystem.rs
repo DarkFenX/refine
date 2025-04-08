@@ -13,7 +13,7 @@ impl SolarSystem {
         item_key: ItemKey,
     ) -> Result<SubsystemInfo, ItemKindMatchError> {
         let subsystem = self.uad.items.get(item_key).get_subsystem()?;
-        Ok(SubsystemInfo::from_subsystem(subsystem))
+        Ok(SubsystemInfo::from_subsystem(&self.uad, subsystem))
     }
 }
 

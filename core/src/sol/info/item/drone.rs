@@ -20,7 +20,7 @@ impl DroneInfo {
         Self {
             id: drone.get_item_id(),
             type_id: drone.get_a_item_id(),
-            fit_id: drone.get_fit_id(),
+            fit_id: uad.fits.id_by_key(drone.get_fit_key()),
             state: drone.get_drone_state(),
             mutation: drone.get_mutation_info(&uad.src),
             projs: drone

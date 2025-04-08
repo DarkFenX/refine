@@ -23,7 +23,7 @@ impl HAddModuleCmd {
         fit_id: &rc::FitId,
     ) -> Result<rc::ModuleInfo, HExecError> {
         let core_module = match core_sol.add_module(
-            *fit_id,
+            fit_id,
             (&self.rack).into(),
             (&self.add_mode).into(),
             self.type_id,

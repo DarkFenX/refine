@@ -22,7 +22,7 @@ impl HChangeFitCmd {
     ) -> Result<HCmdResp, HExecError> {
         match self.fleet_id {
             TriStateField::Value(fleet_id) => {
-                if let Err(error) = core_sol.set_fit_fleet(fit_id, fleet_id) {
+                if let Err(error) = core_sol.set_fit_fleet(fit_id, &fleet_id) {
                     return Err(match error {
                         rc::err::SetFitFleetError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
                         rc::err::SetFitFleetError::FleetNotFound(e) => HExecError::FleetNotFoundSecondary(e),

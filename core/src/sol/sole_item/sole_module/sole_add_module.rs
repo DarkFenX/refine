@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemKey, ItemTypeId, ModRack, SolarSystem,
+        FitId, FitKey, ItemKey, ItemTypeId, ModRack, SolarSystem,
         info::ModuleInfo,
         uad::item::{Charge, Item, ItemAddMutation, Module, ModuleState},
     },
@@ -15,7 +15,7 @@ use super::{
 impl SolarSystem {
     pub fn add_module(
         &mut self,
-        fit_id: FitId,
+        fit_id: &FitId,
         rack: ModRack,
         pos_mode: AddMode,
         type_id: ItemTypeId,
@@ -23,27 +23,28 @@ impl SolarSystem {
         mutation: Option<ItemAddMutation>,
         charge_type_id: Option<ItemTypeId>,
     ) -> Result<ModuleInfo, AddModuleError> {
-        let item_key = self.add_module_internal(fit_id, rack, pos_mode, type_id, state, mutation, charge_type_id)?;
+        let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
+        let item_key = self.add_module_internal(fit_key, rack, pos_mode, type_id, state, mutation, charge_type_id);
         Ok(self.get_module_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_module_internal(
         &mut self,
-        fit_id: FitId,
+        fit_key: FitKey,
         rack: ModRack,
         pos_mode: AddMode,
         type_id: ItemTypeId,
         state: ModuleState,
         mutation: Option<ItemAddMutation>,
         charge_type_id: Option<ItemTypeId>,
-    ) -> Result<ItemKey, FitFoundError> {
+    ) -> ItemKey {
         let module_item_id = self.uad.items.alloc_item_id();
-        let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack)?;
+        let fit_rack = get_fit_rack(&mut self.uad.fits, fit_key, rack);
         // Assume some random position for now; it will be overwritten later
         let module = Module::new(
             &self.uad.src,
             module_item_id,
             type_id,
-            fit_id,
+            fit_key,
             state,
             rack,
             0,
@@ -82,7 +83,7 @@ impl SolarSystem {
                 match fit_rack.get(pos) {
                     Some(old_module_key) => {
                         self.remove_module_internal(old_module_key, RmMode::Free).unwrap();
-                        let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
+                        let fit_rack = get_fit_rack(&mut self.uad.fits, fit_key, rack);
                         fit_rack.place(pos, module_key);
                     }
                     None => fit_rack.place(pos, module_key),
@@ -99,7 +100,7 @@ impl SolarSystem {
                     &self.uad.src,
                     charge_item_id,
                     charge_type_id,
-                    fit_id,
+                    fit_key,
                     module_key,
                     state.into(),
                     false,
@@ -119,7 +120,7 @@ impl SolarSystem {
         if let Some(charge_key) = charge_key {
             self.add_item_key_to_svc(charge_key);
         }
-        Ok(module_key)
+        module_key
     }
 }
 

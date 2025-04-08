@@ -14,7 +14,7 @@ impl HAddFwEffectCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<rc::FwEffectInfo, HExecError> {
-        let core_fw_effect = match core_sol.add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+        let core_fw_effect = match core_sol.add_fw_effect(fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_fw_effect) => core_fw_effect,
             Err(error) => {
                 return Err(match error {

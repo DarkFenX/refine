@@ -17,7 +17,7 @@ impl SolarSystem {
             None => Vec::new(),
         };
         let mut new_autocharges = Vec::new();
-        if let (Some(fit_id), true, Some(_)) = (item.get_fit_id(), item.is_loaded(), item.get_autocharges()) {
+        if let (Some(fit_id), true, Some(_)) = (item.get_fit_key(), item.is_loaded(), item.get_autocharges()) {
             let cloned_item = item.clone();
             for a_effect_id in cloned_item.get_a_effect_datas().unwrap().keys() {
                 if let Some(a_effect) = self.uad.src.get_a_effect(a_effect_id) {

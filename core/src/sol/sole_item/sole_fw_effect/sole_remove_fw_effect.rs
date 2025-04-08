@@ -12,7 +12,7 @@ impl SolarSystem {
         let item = self.uad.items.get(item_key);
         let fw_effect = item.get_fw_effect()?;
         self.svc.remove_item(&self.uad, item_key, item);
-        let fit = self.uad.fits.get_fit_mut(&fw_effect.get_fit_id()).unwrap();
+        let fit = self.uad.fits.get_mut(fw_effect.get_fit_key());
         fit.fw_effects.remove(&item_key);
         self.uad.items.remove(item_key);
         Ok(())

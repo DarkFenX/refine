@@ -146,9 +146,9 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     let src = Src::new(dh, ch).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit();
-    let ship = sol_sys.set_fit_ship(fit.id, 11184, true).unwrap();
+    let ship = sol_sys.set_fit_ship(&fit.id, 11184, true).unwrap();
     for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);
+        sol_sys.add_skill(&fit.id, skill_id.to_owned(), 5, true);
     }
     // RAH
     // sol_sys.add_module(
@@ -171,7 +171,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     for _ in 0..iterations {
         let anp = sol_sys
             .add_module(
-                fit.id,
+                &fit.id,
                 ModRack::Low,
                 AddMode::Equip,
                 1306,
@@ -200,33 +200,33 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     let fit = sol_sys.add_fit();
 
     // Character
-    sol_sys.set_fit_character(fit.id, 1373, true).unwrap();
+    sol_sys.set_fit_character(&fit.id, 1373, true).unwrap();
 
     // Skills
     for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);
+        sol_sys.add_skill(&fit.id, skill_id.to_owned(), 5, true);
     }
 
     // Implants
-    sol_sys.add_implant(fit.id, 13231, true).unwrap(); // TD-603
-    sol_sys.add_implant(fit.id, 10228, true).unwrap(); // SM-703
-    sol_sys.add_implant(fit.id, 24663, true).unwrap(); // Zor hyperlink
-    sol_sys.add_implant(fit.id, 13244, true).unwrap(); // SS-903
-    sol_sys.add_implant(fit.id, 13219, true).unwrap(); // LP-1003
+    sol_sys.add_implant(&fit.id, 13231, true).unwrap(); // TD-603
+    sol_sys.add_implant(&fit.id, 10228, true).unwrap(); // SM-703
+    sol_sys.add_implant(&fit.id, 24663, true).unwrap(); // Zor hyperlink
+    sol_sys.add_implant(&fit.id, 13244, true).unwrap(); // SS-903
+    sol_sys.add_implant(&fit.id, 13219, true).unwrap(); // LP-1003
 
     // Boosters
-    sol_sys.add_booster(fit.id, 28674, true).unwrap(); // Synth drop
-    sol_sys.add_booster(fit.id, 28672, true).unwrap(); // Synth crash
-    sol_sys.add_booster(fit.id, 45999, true).unwrap(); // Pyro 2
+    sol_sys.add_booster(&fit.id, 28674, true).unwrap(); // Synth drop
+    sol_sys.add_booster(&fit.id, 28672, true).unwrap(); // Synth crash
+    sol_sys.add_booster(&fit.id, 45999, true).unwrap(); // Pyro 2
 
     // Ship
-    sol_sys.set_fit_ship(fit.id, 32311, true).unwrap(); // NTyphoon
+    sol_sys.set_fit_ship(&fit.id, 32311, true).unwrap(); // NTyphoon
 
     // High slots
     for _ in 0..2 {
         sol_sys
             .add_module(
-                fit.id,
+                &fit.id,
                 ModRack::High,
                 AddMode::Equip,
                 2929,
@@ -239,7 +239,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     for _ in 0..2 {
         sol_sys
             .add_module(
-                fit.id,
+                &fit.id,
                 ModRack::High,
                 AddMode::Equip,
                 2420,
@@ -253,7 +253,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     // Mid slots
     sol_sys
         .add_module(
-            fit.id,
+            &fit.id,
             ModRack::Mid,
             AddMode::Equip,
             5945,
@@ -264,7 +264,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .unwrap(); // Enduring 500MN
     sol_sys
         .add_module(
-            fit.id,
+            &fit.id,
             ModRack::Mid,
             AddMode::Equip,
             2024,
@@ -275,7 +275,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .unwrap(); // T2 med cap booster with navy 800
     sol_sys
         .add_module(
-            fit.id,
+            &fit.id,
             ModRack::Mid,
             AddMode::Equip,
             2301,
@@ -286,7 +286,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .unwrap(); // T2 EM hardener
     let scram = sol_sys
         .add_module(
-            fit.id,
+            &fit.id,
             ModRack::Mid,
             AddMode::Equip,
             448,
@@ -310,7 +310,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     // Low slots
     sol_sys
         .add_module(
-            fit.id,
+            &fit.id,
             ModRack::Low,
             AddMode::Equip,
             2048,
@@ -322,7 +322,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     for _ in 0..2 {
         sol_sys
             .add_module(
-                fit.id,
+                &fit.id,
                 ModRack::Low,
                 AddMode::Equip,
                 519,
@@ -335,7 +335,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     for _ in 0..2 {
         sol_sys
             .add_module(
-                fit.id,
+                &fit.id,
                 ModRack::Low,
                 AddMode::Equip,
                 22291,
@@ -348,7 +348,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     for _ in 0..1 {
         sol_sys
             .add_module(
-                fit.id,
+                &fit.id,
                 ModRack::Low,
                 AddMode::Equip,
                 4405,
@@ -360,17 +360,17 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     }
 
     // Rigs
-    sol_sys.add_rig(fit.id, 26436, true).unwrap(); // T2 therm rig
+    sol_sys.add_rig(&fit.id, 26436, true).unwrap(); // T2 therm rig
     for _ in 0..1 {
-        sol_sys.add_rig(fit.id, 26088, true).unwrap(); // T1 CDFE
+        sol_sys.add_rig(&fit.id, 26088, true).unwrap(); // T1 CDFE
     }
 
     // Drones
     for _ in 0..5 {
-        sol_sys.add_drone(fit.id, 2446, MinionState::Engaging, None).unwrap(); // T2 ogre
+        sol_sys.add_drone(&fit.id, 2446, MinionState::Engaging, None).unwrap(); // T2 ogre
     }
     for _ in 0..2 {
-        sol_sys.add_drone(fit.id, 2446, MinionState::InBay, None).unwrap(); // T2 ogre
+        sol_sys.add_drone(&fit.id, 2446, MinionState::InBay, None).unwrap(); // T2 ogre
     }
 
     let val_options = ValOptions::all_enabled();

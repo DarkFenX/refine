@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        AttrVal, FitId, ItemKey,
+        AttrVal, FitKey, ItemKey,
         svc::Svc,
         uad::{
             Uad,
@@ -16,22 +16,22 @@ impl Svc {
     pub(in crate::sol::svc) fn notify_src_changed(&mut self, src: &Src) {
         self.calc.src_changed(src);
     }
-    pub(in crate::sol::svc) fn notify_fit_added(&mut self, fit_id: FitId) {
-        self.calc.fit_added(fit_id);
-        self.vast.fit_added(fit_id);
+    pub(in crate::sol::svc) fn notify_fit_added(&mut self, fit_key: FitKey) {
+        self.calc.fit_added(fit_key);
+        self.vast.fit_added(fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_removed(&mut self, fit_id: FitId) {
-        self.calc.fit_removed(fit_id);
-        self.vast.fit_removed(&fit_id);
+    pub(in crate::sol::svc) fn notify_fit_removed(&mut self, fit_key: FitKey) {
+        self.calc.fit_removed(fit_key);
+        self.vast.fit_removed(&fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_id: &FitId) {
-        self.calc.fit_added_to_fleet(uad, fleet, fit_id);
+    pub(in crate::sol::svc) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+        self.calc.fit_added_to_fleet(uad, fleet, fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_id: &FitId) {
-        self.calc.fit_removed_from_fleet(uad, fleet, fit_id);
+    pub(in crate::sol::svc) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+        self.calc.fit_removed_from_fleet(uad, fleet, fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
-        self.calc.fit_rah_dps_profile_changed(uad, fit_id);
+    pub(in crate::sol::svc) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
+        self.calc.fit_rah_dps_profile_changed(uad, fit_key);
     }
     pub(in crate::sol::svc) fn notify_item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
         self.calc.item_added(uad, item_key, item);

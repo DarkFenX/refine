@@ -1,5 +1,5 @@
 use crate::sol::{
-    FitId, ItemKey, ModRack,
+    FitKey, ItemKey, ModRack,
     debug::{DebugError, DebugResult},
     uad::{
         Uad,
@@ -10,13 +10,17 @@ use crate::sol::{
 
 impl Fit {
     pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad, seen_item_keys: &mut Vec<ItemKey>) -> DebugResult {
+        let fit_key = match uad.fits.key_by_id(&self.id) {
+            Some(fit_key) => fit_key,
+            None => return Err(DebugError {}),
+        };
         // If fleet is defined, it should exist and refer fit back
-        if let Some(fleet_id) = self.fleet {
-            let fleet = match uad.fleets.get_fleet(&fleet_id) {
-                Ok(fleet) => fleet,
+        if let Some(fleet_key) = self.fleet {
+            let fleet = match uad.fleets.try_get(fleet_key) {
+                Some(fleet) => fleet,
                 _ => return Err(DebugError {}),
             };
-            if !fleet.contains_fit(&self.id) {
+            if !fleet.contains_fit(&fit_key) {
                 return Err(DebugError {});
             }
         }
@@ -27,10 +31,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Character(_)) {
+            let character = match item {
+                Item::Character(character) => character,
+                _ => return Err(DebugError {}),
+            };
+            if character.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -42,16 +47,15 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
+            let skill = match item {
+                Item::Skill(skill) => skill,
+                _ => return Err(DebugError {}),
+            };
+            if skill.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            match item {
-                Item::Skill(skill) => {
-                    if skill.get_a_level() != fit_skill.level {
-                        return Err(DebugError {});
-                    }
-                }
-                _ => return Err(DebugError {}),
+            if skill.get_a_level() != fit_skill.level {
+                return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
         }
@@ -62,10 +66,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Implant(_)) {
+            let implant = match item {
+                Item::Implant(implant) => implant,
+                _ => return Err(DebugError {}),
+            };
+            if implant.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -77,10 +82,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Booster(_)) {
+            let booster = match item {
+                Item::Booster(booster) => booster,
+                _ => return Err(DebugError {}),
+            };
+            if booster.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -92,10 +98,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Ship(_)) {
+            let ship = match item {
+                Item::Ship(ship) => ship,
+                _ => return Err(DebugError {}),
+            };
+            if ship.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -107,10 +114,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Stance(_)) {
+            let stance = match item {
+                Item::Stance(stance) => stance,
+                _ => return Err(DebugError {}),
+            };
+            if stance.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -122,10 +130,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Subsystem(_)) {
+            let subsystem = match item {
+                Item::Subsystem(subsystem) => subsystem,
+                _ => return Err(DebugError {}),
+            };
+            if subsystem.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -138,18 +147,18 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
             let module = match item {
                 Item::Module(module) => module,
                 _ => return Err(DebugError {}),
             };
+            if module.get_fit_key() != fit_key {
+                return Err(DebugError {});
+            }
             if !matches!(module.get_rack(), ModRack::High) {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
-            check_module_charge(uad, &self.id, module_key, module, seen_item_keys)?;
+            check_module_charge(uad, fit_key, module_key, module, seen_item_keys)?;
         }
         // Mid slot modules
         self.mods_mid.debug_consistency_check()?;
@@ -159,18 +168,18 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
             let module = match item {
                 Item::Module(module) => module,
                 _ => return Err(DebugError {}),
             };
+            if module.get_fit_key() != fit_key {
+                return Err(DebugError {});
+            }
             if !matches!(module.get_rack(), ModRack::Mid) {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
-            check_module_charge(uad, &self.id, module_key, module, seen_item_keys)?;
+            check_module_charge(uad, fit_key, module_key, module, seen_item_keys)?;
         }
         // Low slot modules
         self.mods_low.debug_consistency_check()?;
@@ -180,18 +189,18 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
             let module = match item {
                 Item::Module(module) => module,
                 _ => return Err(DebugError {}),
             };
+            if module.get_fit_key() != fit_key {
+                return Err(DebugError {});
+            }
             if !matches!(module.get_rack(), ModRack::Low) {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
-            check_module_charge(uad, &self.id, module_key, module, seen_item_keys)?;
+            check_module_charge(uad, fit_key, module_key, module, seen_item_keys)?;
         }
         // Rigs
         for &rig_key in self.rigs.iter() {
@@ -200,10 +209,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Rig(_)) {
+            let rig = match item {
+                Item::Rig(rig) => rig,
+                _ => return Err(DebugError {}),
+            };
+            if rig.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -215,10 +225,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Service(_)) {
+            let service = match item {
+                Item::Service(service) => service,
+                _ => return Err(DebugError {}),
+            };
+            if service.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -230,10 +241,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::Drone(_)) {
+            let drone = match item {
+                Item::Drone(drone) => drone,
+                _ => return Err(DebugError {}),
+            };
+            if drone.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -245,15 +257,15 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
             let fighter = match item {
                 Item::Fighter(fighter) => fighter,
                 _ => return Err(DebugError {}),
             };
+            if fighter.get_fit_key() != fit_key {
+                return Err(DebugError {});
+            }
             item.debug_consistency_check(uad)?;
-            check_fighter_autocharges(uad, &self.id, fighter_key, fighter, seen_item_keys)?;
+            check_fighter_autocharges(uad, fit_key, fighter_key, fighter, seen_item_keys)?;
         }
         // Fit-wide effects
         for &fw_effect_key in self.fw_effects.iter() {
@@ -262,10 +274,11 @@ impl Fit {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError {});
-            }
-            if !matches!(item, Item::FwEffect(_)) {
+            let fw_effect = match item {
+                Item::FwEffect(fw_effect) => fw_effect,
+                _ => return Err(DebugError {}),
+            };
+            if fw_effect.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
             item.debug_consistency_check(uad)?;
@@ -276,7 +289,7 @@ impl Fit {
 
 fn check_module_charge(
     uad: &Uad,
-    fit_id: &FitId,
+    fit_key: FitKey,
     module_key: ItemKey,
     module: &Module,
     seen_items: &mut Vec<ItemKey>,
@@ -287,7 +300,7 @@ fn check_module_charge(
             Some(item) => item,
             None => return Err(DebugError {}),
         };
-        if item.get_fit_id() != Some(*fit_id) {
+        if item.get_fit_key() != Some(fit_key) {
             return Err(DebugError {});
         }
         let charge = match item {
@@ -304,7 +317,7 @@ fn check_module_charge(
 
 fn check_fighter_autocharges(
     uad: &Uad,
-    fit_id: &FitId,
+    fit_key: FitKey,
     fighter_key: ItemKey,
     fighter: &Fighter,
     seen_items: &mut Vec<ItemKey>,
@@ -315,7 +328,7 @@ fn check_fighter_autocharges(
             Some(item) => item,
             None => return Err(DebugError {}),
         };
-        if item.get_fit_id() != Some(*fit_id) {
+        if item.get_fit_key() != Some(fit_key) {
             return Err(DebugError {});
         }
         let autocharge = match item {

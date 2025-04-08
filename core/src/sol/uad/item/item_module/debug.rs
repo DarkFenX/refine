@@ -1,5 +1,5 @@
 use crate::sol::{
-    debug::{DebugResult, check_fit_id, check_item_key},
+    debug::{DebugResult, check_fit_key, check_item_key},
     uad::Uad,
 };
 
@@ -7,7 +7,7 @@ use super::Module;
 
 impl Module {
     pub(in crate::sol::uad::item) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
-        check_fit_id(uad, &self.get_fit_id())?;
+        check_fit_key(uad, self.get_fit_key())?;
         if let Some(charge_key) = self.get_charge_item_key() {
             check_item_key(uad, charge_key, false)?;
         }

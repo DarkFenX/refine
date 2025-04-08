@@ -23,7 +23,7 @@ impl SolarSystem {
             item.update_a_data(&self.uad.src)
         }
         // Update fit kind
-        for fit in self.uad.fits.iter_fits_mut() {
+        for fit in self.uad.fits.values_mut() {
             fit.kind = match fit.ship {
                 Some(ship_key) => self.uad.items.get(ship_key).get_ship().unwrap().get_kind(),
                 None => ShipKind::Unknown,

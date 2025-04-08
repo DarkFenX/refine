@@ -1,21 +1,13 @@
-use crate::{
-    err::basic::FitFoundError,
-    sol::{
-        FitId, ModRack,
-        uad::{Fits, fit::ItemVec},
-    },
+use crate::sol::{
+    FitKey, ModRack,
+    uad::{Fits, fit::ItemVec},
 };
 
-pub(super) fn get_fit_rack<'a>(
-    uad_fits: &'a mut Fits,
-    fit_id: &FitId,
-    rack: ModRack,
-) -> Result<&'a mut ItemVec, FitFoundError> {
-    let fit = uad_fits.get_fit_mut(fit_id)?;
-    let fit_rack = match rack {
+pub(super) fn get_fit_rack<'a>(uad_fits: &'a mut Fits, fit_key: FitKey, rack: ModRack) -> &'a mut ItemVec {
+    let fit = uad_fits.get_mut(fit_key);
+    match rack {
         ModRack::High => &mut fit.mods_high,
         ModRack::Mid => &mut fit.mods_mid,
         ModRack::Low => &mut fit.mods_low,
-    };
-    Ok(fit_rack)
+    }
 }

@@ -28,7 +28,7 @@ impl FighterInfo {
         Self {
             id: fighter.get_item_id(),
             type_id: fighter.get_a_item_id(),
-            fit_id: fighter.get_fit_id(),
+            fit_id: uad.fits.id_by_key(fighter.get_fit_key()),
             state: fighter.get_fighter_state(),
             count: fighter.get_count(),
             autocharges,

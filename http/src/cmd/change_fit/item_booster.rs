@@ -19,7 +19,7 @@ impl HAddBoosterCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<rc::BoosterInfo, HExecError> {
-        let core_booster = match core_sol.add_booster(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+        let core_booster = match core_sol.add_booster(fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_booster) => core_booster,
             Err(error) => {
                 return Err(match error {

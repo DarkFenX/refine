@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    sol::{FitId, ItemKey, uad::Uad},
+    sol::{FitKey, ItemKey, uad::Uad},
 };
 
 #[derive(Debug)]
@@ -14,8 +14,8 @@ impl std::fmt::Display for DebugError {
 
 pub(in crate::sol) type DebugResult = Result<(), DebugError>;
 
-pub(in crate::sol) fn check_fit_id(uad: &Uad, fit_id: &FitId) -> DebugResult {
-    if uad.fits.get_fit(fit_id).is_err() {
+pub(in crate::sol) fn check_fit_key(uad: &Uad, fit_key: FitKey) -> DebugResult {
+    if uad.fits.try_get(fit_key).is_none() {
         return Err(DebugError {});
     }
     Ok(())

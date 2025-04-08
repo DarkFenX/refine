@@ -2,7 +2,7 @@ use crate::{
     ad,
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
-        FitId, ItemId,
+        FitKey, ItemId,
         info::ItemMutationInfo,
         uad::item::{EffectModes, ItemAddMutation, ItemBaseMutable, ItemChangeAttrMutation, MinionState, Projs},
     },
@@ -13,7 +13,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Drone {
     base: ItemBaseMutable,
-    fit_id: FitId,
+    fit_key: FitKey,
     projs: Projs,
 }
 impl Drone {
@@ -21,13 +21,13 @@ impl Drone {
         src: &Src,
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_id: FitId,
+        fit_key: FitKey,
         state: MinionState,
         mutation: Option<ItemAddMutation>,
     ) -> Self {
         Self {
             base: ItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
-            fit_id,
+            fit_key,
             projs: Projs::new(),
         }
     }
@@ -101,8 +101,8 @@ impl Drone {
     pub(in crate::sol) fn set_drone_state(&mut self, state: MinionState) {
         self.base.set_a_state(state.into())
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
-        self.fit_id
+    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+        self.fit_key
     }
     pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs

@@ -1,7 +1,7 @@
 use crate::{
     err::basic::FitFoundError,
     sol::{
-        FitId, ItemKey, ItemTypeId, SolarSystem,
+        FitId, FitKey, ItemKey, ItemTypeId, SolarSystem,
         info::FighterInfo,
         uad::item::{Fighter, Item, MinionState},
     },
@@ -10,22 +10,23 @@ use crate::{
 impl SolarSystem {
     pub fn add_fighter(
         &mut self,
-        fit_id: FitId,
+        fit_id: &FitId,
         type_id: ItemTypeId,
         state: MinionState,
     ) -> Result<FighterInfo, AddFighterError> {
-        let item_key = self.add_fighter_internal(fit_id, type_id, state)?;
+        let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
+        let item_key = self.add_fighter_internal(fit_key, type_id, state);
         Ok(self.get_fighter_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_fighter_internal(
         &mut self,
-        fit_id: FitId,
+        fit_key: FitKey,
         type_id: ItemTypeId,
         state: MinionState,
-    ) -> Result<ItemKey, FitFoundError> {
-        let fit = self.uad.fits.get_fit_mut(&fit_id)?;
+    ) -> ItemKey {
+        let fit = self.uad.fits.get_mut(fit_key);
         let item_id = self.uad.items.alloc_item_id();
-        let fighter = Fighter::new(&self.uad.src, item_id, type_id, fit_id, state);
+        let fighter = Fighter::new(&self.uad.src, item_id, type_id, fit_key, state);
         let item = Item::Fighter(fighter);
         let item_key = self.uad.items.add(item);
         fit.fighters.insert(item_key);
@@ -37,7 +38,7 @@ impl SolarSystem {
             let autocharge_item = self.uad.items.get(autocharge_key);
             self.svc.add_item(&self.uad, autocharge_key, autocharge_item);
         }
-        Ok(item_key)
+        item_key
     }
 }
 

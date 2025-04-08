@@ -16,7 +16,7 @@ impl ChargeInfo {
         Self {
             id: charge.get_item_id(),
             type_id: charge.get_a_item_id(),
-            fit_id: charge.get_fit_id(),
+            fit_id: uad.fits.id_by_key(charge.get_fit_key()),
             cont_item_id: uad.items.id_by_key(charge.get_cont_item_key()),
             enabled: !charge.get_force_disable(),
         }

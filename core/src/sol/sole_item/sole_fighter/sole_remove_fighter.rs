@@ -14,7 +14,7 @@ impl SolarSystem {
         // Check if everything is correct and collect autocharge IDs to be used later
         let item = self.uad.items.get(item_key);
         let fighter = item.get_fighter()?;
-        let fit_id = fighter.get_fit_id();
+        let fit_key = fighter.get_fit_key();
         let autocharge_keys = fighter.get_autocharges().values().copied().collect_vec();
         // Remove outgoing projections for fighter and its autocharges
         for &projectee_item_key in fighter.get_projs().iter_projectee_item_keys() {
@@ -48,7 +48,7 @@ impl SolarSystem {
         // Update services for fighter
         self.remove_item_key_from_svc(item_key);
         // Update user data for fighter
-        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_mut(fit_key);
         fit.fighters.remove(&item_key);
         self.uad.items.remove(item_key);
         Ok(())

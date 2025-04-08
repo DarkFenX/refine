@@ -1,20 +1,24 @@
 use crate::{
     err::basic::{FitFleetAssignedError, FitFoundError},
-    sol::{FitId, SolarSystem},
+    sol::{FitId, FitKey, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn unset_fit_fleet(&mut self, fit_id: &FitId) -> Result<(), UnsetFitFleetError> {
-        let fit = self.uad.fits.get_fit(fit_id)?;
-        let fleet_id = match fit.fleet {
-            Some(fleet_id) => fleet_id,
-            None => return Err(FitFleetAssignedError { fit_id: *fit_id }.into()),
+        let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
+        Ok(self.unset_fit_fleet_internal(fit_key)?)
+    }
+    pub(in crate::sol) fn unset_fit_fleet_internal(&mut self, fit_key: FitKey) -> Result<(), FitFleetAssignedError> {
+        let fit = self.uad.fits.get(fit_key);
+        let fleet_key = match fit.fleet {
+            Some(fleet_key) => fleet_key,
+            None => return Err(FitFleetAssignedError { fit_id: fit.id }),
         };
-        let fleet = self.uad.fleets.get_fleet(&fleet_id).unwrap();
-        self.svc.remove_fit_from_fleet(&self.uad, fleet, fit_id);
-        let fleet = self.uad.fleets.get_fleet_mut(&fleet_id).unwrap();
-        fleet.remove_fit(fit_id);
-        let fit = self.uad.fits.get_fit_mut(fit_id).unwrap();
+        let fleet = self.uad.fleets.get(fleet_key);
+        self.svc.remove_fit_from_fleet(&self.uad, fleet, &fit_key);
+        let fleet = self.uad.fleets.get_mut(fleet_key);
+        fleet.remove_fit(&fit_key);
+        let fit = self.uad.fits.get_mut(fit_key);
         fit.fleet = None;
         Ok(())
     }

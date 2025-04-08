@@ -1,17 +1,21 @@
 use crate::{
     err::basic::FitFoundError,
-    sol::{FitId, SolarSystem, info::FighterInfo},
+    sol::{FitId, FitKey, SolarSystem, info::FighterInfo},
 };
 
 impl SolarSystem {
     pub fn get_fit_fighters(&self, fit_id: &FitId) -> Result<Vec<FighterInfo>, GetFitFightersError> {
-        let fit = self.uad.fits.get_fit(fit_id)?;
-        let fighter_infos = fit
+        let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
+        Ok(self.get_fit_fighters_internal(fit_key))
+    }
+    pub(in crate::sol) fn get_fit_fighters_internal(&self, fit_key: FitKey) -> Vec<FighterInfo> {
+        self.uad
+            .fits
+            .get(fit_key)
             .fighters
             .iter()
             .map(|item_key| self.get_fighter_internal(*item_key).unwrap())
-            .collect();
-        Ok(fighter_infos)
+            .collect()
     }
 }
 

@@ -16,7 +16,7 @@ impl HAddServiceCmd {
         fit_id: &rc::FitId,
     ) -> Result<rc::ServiceInfo, HExecError> {
         let core_service = match core_sol.add_service(
-            *fit_id,
+            fit_id,
             self.type_id,
             self.state.as_ref().unwrap_or(&HServiceState::Online).into(),
         ) {

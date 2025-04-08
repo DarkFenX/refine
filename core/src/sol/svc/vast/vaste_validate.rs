@@ -1,9 +1,10 @@
 use crate::sol::{
+    FitKey,
     svc::{
         calc::Calc,
         vast::{ValOptions, ValResult, Vast},
     },
-    uad::{Uad, fit::Fit},
+    uad::Uad,
 };
 
 impl Vast {
@@ -11,12 +12,12 @@ impl Vast {
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit_key: FitKey,
         options: &ValOptions,
     ) -> bool {
+        let fit = uad.fits.get(fit_key);
+        let fit_data = self.get_fit_data_mut(&fit_key);
         let ship = fit.ship.map(|v| uad.items.get(v).get_ship().unwrap());
-        // All registered fits should have an entry, so just unwrap
-        let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be
         if options.cpu.enabled && !fit_data.validate_cpu_fast(&options.cpu.kfs, uad, calc, fit) {
@@ -351,12 +352,12 @@ impl Vast {
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit_key: FitKey,
         options: &ValOptions,
     ) -> ValResult {
+        let fit = uad.fits.get(fit_key);
+        let fit_data = self.get_fit_data_mut(&fit_key);
         let ship = fit.ship.map(|v| uad.items.get(v).get_ship().unwrap());
-        // All registered fits should have an entry, so just unwrap
-        let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         let mut result = ValResult::new();
         if options.cpu.enabled {
             result.cpu = fit_data.validate_cpu_verbose(&options.cpu.kfs, uad, calc, fit);

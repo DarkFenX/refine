@@ -1,8 +1,7 @@
 use crate::{
     ad,
-    err::basic::FitFoundError,
     sol::{
-        AttrVal, Count, FitId, ItemKey, SkillLevel,
+        AttrVal, Count, FitKey, ItemKey, SkillLevel,
         svc::vast::{
             ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
             ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind,
@@ -15,20 +14,14 @@ use crate::{
 // Vast stands for VAlidation and STats.
 #[derive(Clone)]
 pub(in crate::sol) struct Vast {
-    pub(in crate::sol::svc::vast) fit_datas: RMap<FitId, VastFitData>,
+    pub(in crate::sol::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
 }
 impl Vast {
     pub(in crate::sol::svc) fn new() -> Self {
         Self { fit_datas: RMap::new() }
     }
-    pub(in crate::sol::svc::vast) fn get_fit_data(&self, fit_id: &FitId) -> Result<&VastFitData, FitFoundError> {
-        self.fit_datas.get(fit_id).ok_or(FitFoundError { fit_id: *fit_id })
-    }
-    pub(in crate::sol::svc::vast) fn get_fit_data_mut(
-        &mut self,
-        fit_id: &FitId,
-    ) -> Result<&mut VastFitData, FitFoundError> {
-        self.fit_datas.get_mut(fit_id).ok_or(FitFoundError { fit_id: *fit_id })
+    pub(in crate::sol::svc::vast) fn get_fit_data_mut(&mut self, fit_key: &FitKey) -> &mut VastFitData {
+        self.fit_datas.get_mut(fit_key).unwrap()
     }
 }
 

@@ -14,7 +14,7 @@ impl HSetCharacterCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<rc::CharacterInfo, HExecError> {
-        let core_character = match core_sol.set_fit_character(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+        let core_character = match core_sol.set_fit_character(fit_id, self.type_id, self.state.unwrap_or(true)) {
             Ok(core_character) => core_character,
             Err(error) => {
                 return Err(match error {

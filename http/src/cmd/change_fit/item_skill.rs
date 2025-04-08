@@ -15,7 +15,7 @@ impl HAddSkillCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<rc::SkillInfo, HExecError> {
-        let core_skill = match core_sol.add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true)) {
+        let core_skill = match core_sol.add_skill(fit_id, self.type_id, self.level, self.state.unwrap_or(true)) {
             Ok(core_skill) => core_skill,
             Err(error) => {
                 return Err(match error {

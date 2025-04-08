@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        AdjustableCount, Count, FitId, ItemId,
+        AdjustableCount, Count, FitKey, ItemId,
         uad::item::{Autocharges, EffectModes, ItemBase, MinionState, Projs},
     },
     src::Src,
@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Fighter {
     base: ItemBase,
-    fit_id: FitId,
+    fit_key: FitKey,
     count_override: Option<Count>,
     autocharges: Autocharges,
     projs: Projs,
@@ -21,12 +21,12 @@ impl Fighter {
         src: &Src,
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_id: FitId,
+        fit_key: FitKey,
         state: MinionState,
     ) -> Self {
         Self {
             base: ItemBase::new(src, item_id, a_item_id, state.into()),
-            fit_id,
+            fit_key,
             count_override: None,
             autocharges: Autocharges::new(),
             projs: Projs::new(),
@@ -83,8 +83,8 @@ impl Fighter {
     pub(in crate::sol) fn set_fighter_state(&mut self, state: MinionState) {
         self.base.set_a_state(state.into())
     }
-    pub(in crate::sol) fn get_fit_id(&self) -> FitId {
-        self.fit_id
+    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+        self.fit_key
     }
     pub(in crate::sol) fn get_count(&self) -> Option<AdjustableCount> {
         match self.get_a_extras() {

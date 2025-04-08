@@ -10,7 +10,7 @@ impl SolarSystem {
     }
     pub(in crate::sol) fn get_fw_effect_internal(&self, item_key: ItemKey) -> Result<FwEffectInfo, ItemKindMatchError> {
         let fw_effect = self.uad.items.get(item_key).get_fw_effect()?;
-        Ok(FwEffectInfo::from_fw_effect(fw_effect))
+        Ok(FwEffectInfo::from_fw_effect(&self.uad, fw_effect))
     }
 }
 

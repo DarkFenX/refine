@@ -5,7 +5,7 @@ use ordered_float::{Float, OrderedFloat as OF};
 
 use crate::{
     sol::{
-        AttrVal, DmgKinds, FitId, ItemKey,
+        AttrVal, DmgKinds, FitKey, ItemKey,
         svc::calc::{Calc, CalcAttrVal},
         uad::Uad,
     },
@@ -26,21 +26,21 @@ use super::{
 };
 
 impl Calc {
-    pub(super) fn rah_run_simulation(&mut self, uad: &Uad, fit_id: &FitId) {
-        let fit = uad.fits.get_fit(fit_id).unwrap();
+    pub(super) fn rah_run_simulation(&mut self, uad: &Uad, fit_key: FitKey) {
+        let fit = uad.fits.get(fit_key);
         let ship_key = match fit.ship {
             Some(ship_key) => ship_key,
             None => {
                 // Since there were no calculated values stored in sim prior to simulation, and we
                 // are setting unadapted values - effectively values of resonances do not change,
                 // and no updates needed
-                self.set_fit_rahs_unadapted(uad, fit_id, false);
+                self.set_fit_rahs_unadapted(uad, &fit_key, false);
                 return;
             }
         };
         // Keys in this map have to be sorted, since it defines RAH order in simulation history,
         // which hashes vectors with history entries
-        let mut sim_datas = self.get_fit_rah_sim_datas(uad, fit_id);
+        let mut sim_datas = self.get_fit_rah_sim_datas(uad, &fit_key);
         // If the map is empty, no setting fallbacks needed, they were set in the data getter
         if sim_datas.is_empty() {
             return;
@@ -187,9 +187,9 @@ impl Calc {
             total_hp: shield_hp + armor_hp + hull_hp,
         })
     }
-    fn get_fit_rah_sim_datas(&mut self, uad: &Uad, fit_id: &FitId) -> BTreeMap<ItemKey, RahDataSim> {
+    fn get_fit_rah_sim_datas(&mut self, uad: &Uad, fit_key: &FitKey) -> BTreeMap<ItemKey, RahDataSim> {
         let mut rah_datas = BTreeMap::new();
-        for item_key in self.rah.by_fit.get(fit_id).copied().collect_vec() {
+        for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
             let rah_attrs = match self.get_rah_sim_data(uad, item_key) {
                 Some(rah_attrs) => rah_attrs,
                 // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
@@ -237,8 +237,8 @@ impl Calc {
         Some(RahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, uad: &Uad, fit_id: &FitId, notify: bool) {
-        for item_key in self.rah.by_fit.get(fit_id).copied().collect_vec() {
+    fn set_fit_rahs_unadapted(&mut self, uad: &Uad, fit_key: &FitKey, notify: bool) {
+        for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
             self.set_rah_unadapted(uad, item_key, notify);
         }
     }

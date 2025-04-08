@@ -10,7 +10,7 @@ impl SolarSystem {
     }
     pub(in crate::sol) fn get_implant_internal(&self, item_key: ItemKey) -> Result<ImplantInfo, ItemKindMatchError> {
         let implant = self.uad.items.get(item_key).get_implant()?;
-        Ok(ImplantInfo::from_implant(implant))
+        Ok(ImplantInfo::from_implant(&self.uad, implant))
     }
 }
 

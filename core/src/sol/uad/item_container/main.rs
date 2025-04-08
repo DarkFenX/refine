@@ -34,7 +34,6 @@ impl Items {
         self.counter += 1;
         item_id
     }
-    // Generic item methods
     pub(in crate::sol) fn add(&mut self, item: Item) -> ItemKey {
         let item_id = item.get_item_id();
         let item_key = self.data.insert(item);

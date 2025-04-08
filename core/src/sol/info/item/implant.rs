@@ -1,4 +1,7 @@
-use crate::sol::{FitId, ItemId, ItemTypeId, SlotIndex, uad::item::Implant};
+use crate::sol::{
+    FitId, ItemId, ItemTypeId, SlotIndex,
+    uad::{Uad, item::Implant},
+};
 
 pub struct ImplantInfo {
     pub id: ItemId,
@@ -8,11 +11,11 @@ pub struct ImplantInfo {
     pub enabled: bool,
 }
 impl ImplantInfo {
-    pub(in crate::sol) fn from_implant(implant: &Implant) -> Self {
+    pub(in crate::sol) fn from_implant(uad: &Uad, implant: &Implant) -> Self {
         Self {
             id: implant.get_item_id(),
             type_id: implant.get_a_item_id(),
-            fit_id: implant.get_fit_id(),
+            fit_id: uad.fits.id_by_key(implant.get_fit_key()),
             slot: implant.get_a_slot(),
             enabled: implant.get_implant_state(),
         }

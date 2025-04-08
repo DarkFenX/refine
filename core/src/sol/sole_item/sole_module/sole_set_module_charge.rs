@@ -25,7 +25,7 @@ impl SolarSystem {
         charge_type_id: ItemTypeId,
     ) -> Result<ItemKey, ItemKindMatchError> {
         let module = self.uad.items.get(item_key).get_module()?;
-        let fit_id = module.get_fit_id();
+        let fit_id = module.get_fit_key();
         let module_a_state = module.get_a_state();
         let module_projs = module
             .get_projs()

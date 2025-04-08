@@ -17,7 +17,7 @@ impl HAddDroneCmd {
         fit_id: &rc::FitId,
     ) -> Result<rc::DroneInfo, HExecError> {
         let core_drone = match core_sol.add_drone(
-            *fit_id,
+            fit_id,
             self.type_id,
             (&self.state).into(),
             self.mutation.as_ref().map(|v| v.into()),

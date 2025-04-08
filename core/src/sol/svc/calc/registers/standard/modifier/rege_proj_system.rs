@@ -20,7 +20,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_root,
-                            (projectee_ship.get_fit_id(), LocationKind::Ship),
+                            (projectee_ship.get_fit_key(), LocationKind::Ship),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -33,7 +33,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_root,
-                            (projectee_ship.get_fit_id(), LocationKind::Structure),
+                            (projectee_ship.get_fit_key(), LocationKind::Structure),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -46,7 +46,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_root,
-                            (projectee_ship.get_fit_id(), LocationKind::Character),
+                            (projectee_ship.get_fit_key(), LocationKind::Character),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -62,7 +62,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc,
-                            (projectee_ship.get_fit_id(), LocationKind::Ship),
+                            (projectee_ship.get_fit_key(), LocationKind::Ship),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -75,7 +75,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc,
-                            (projectee_ship.get_fit_id(), LocationKind::Structure),
+                            (projectee_ship.get_fit_key(), LocationKind::Structure),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -88,7 +88,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc,
-                            (projectee_ship.get_fit_id(), LocationKind::Character),
+                            (projectee_ship.get_fit_key(), LocationKind::Character),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -104,7 +104,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_grp,
-                            (projectee_ship.get_fit_id(), LocationKind::Ship, a_item_grp_id),
+                            (projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -117,7 +117,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_grp,
-                            (projectee_ship.get_fit_id(), LocationKind::Structure, a_item_grp_id),
+                            (projectee_ship.get_fit_key(), LocationKind::Structure, a_item_grp_id),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -130,7 +130,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_grp,
-                            (projectee_ship.get_fit_id(), LocationKind::Character, a_item_grp_id),
+                            (projectee_ship.get_fit_key(), LocationKind::Character, a_item_grp_id),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -146,7 +146,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_srq,
-                            (projectee_ship.get_fit_id(), LocationKind::Ship, srq_a_item_id),
+                            (projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -159,7 +159,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_srq,
-                            (projectee_ship.get_fit_id(), LocationKind::Structure, srq_a_item_id),
+                            (projectee_ship.get_fit_key(), LocationKind::Structure, srq_a_item_id),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -172,7 +172,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_srq,
-                            (projectee_ship.get_fit_id(), LocationKind::Character, srq_a_item_id),
+                            (projectee_ship.get_fit_key(), LocationKind::Character, srq_a_item_id),
                             ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -187,7 +187,7 @@ impl StandardRegister {
                     let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                     add_ctx_modifier(
                         &mut self.cmods_own_srq,
-                        (projectee_ship.get_fit_id(), srq_a_item_id),
+                        (projectee_ship.get_fit_key(), srq_a_item_id),
                         ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );
@@ -210,7 +210,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_root,
-                            &(projectee_ship.get_fit_id(), LocationKind::Ship),
+                            &(projectee_ship.get_fit_key(), LocationKind::Ship),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -223,7 +223,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_root,
-                            &(projectee_ship.get_fit_id(), LocationKind::Structure),
+                            &(projectee_ship.get_fit_key(), LocationKind::Structure),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -236,7 +236,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_root,
-                            &(projectee_ship.get_fit_id(), LocationKind::Character),
+                            &(projectee_ship.get_fit_key(), LocationKind::Character),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -252,7 +252,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc,
-                            &(projectee_ship.get_fit_id(), LocationKind::Ship),
+                            &(projectee_ship.get_fit_key(), LocationKind::Ship),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -265,7 +265,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc,
-                            &(projectee_ship.get_fit_id(), LocationKind::Structure),
+                            &(projectee_ship.get_fit_key(), LocationKind::Structure),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -278,7 +278,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc,
-                            &(projectee_ship.get_fit_id(), LocationKind::Character),
+                            &(projectee_ship.get_fit_key(), LocationKind::Character),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -294,7 +294,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_grp,
-                            &(projectee_ship.get_fit_id(), LocationKind::Ship, a_item_grp_id),
+                            &(projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -307,7 +307,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_grp,
-                            &(projectee_ship.get_fit_id(), LocationKind::Structure, a_item_grp_id),
+                            &(projectee_ship.get_fit_key(), LocationKind::Structure, a_item_grp_id),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -320,7 +320,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_grp,
-                            &(projectee_ship.get_fit_id(), LocationKind::Character, a_item_grp_id),
+                            &(projectee_ship.get_fit_key(), LocationKind::Character, a_item_grp_id),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -336,7 +336,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_srq,
-                            &(projectee_ship.get_fit_id(), LocationKind::Ship, srq_a_item_id),
+                            &(projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -349,7 +349,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_srq,
-                            &(projectee_ship.get_fit_id(), LocationKind::Structure, srq_a_item_id),
+                            &(projectee_ship.get_fit_key(), LocationKind::Structure, srq_a_item_id),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -362,7 +362,7 @@ impl StandardRegister {
                         let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_srq,
-                            &(projectee_ship.get_fit_id(), LocationKind::Character, srq_a_item_id),
+                            &(projectee_ship.get_fit_key(), LocationKind::Character, srq_a_item_id),
                             &ctx_modifier,
                             &mut self.cmods_by_attr_spec,
                         );
@@ -377,7 +377,7 @@ impl StandardRegister {
                     let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
                     remove_ctx_modifier(
                         &mut self.cmods_own_srq,
-                        &(projectee_ship.get_fit_id(), srq_a_item_id),
+                        &(projectee_ship.get_fit_key(), srq_a_item_id),
                         &ctx_modifier,
                         &mut self.cmods_by_attr_spec,
                     );

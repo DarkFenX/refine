@@ -2,7 +2,7 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     sol::{
-        FitId, FleetId, ItemKey, ItemTypeId, SecStatus,
+        FitId, FleetKey, ItemKey, ItemTypeId, SecStatus,
         misc::DpsProfile,
         uad::{
             fit::{FitSkill, ItemVec},
@@ -16,7 +16,7 @@ use crate::{
 pub(in crate::sol) struct Fit {
     pub(in crate::sol) id: FitId,
     pub(in crate::sol) kind: ShipKind,
-    pub(in crate::sol) fleet: Option<FleetId>,
+    pub(in crate::sol) fleet: Option<FleetKey>,
     pub(in crate::sol) character: Option<ItemKey>,
     pub(in crate::sol) skills: RMap<ItemTypeId, FitSkill>,
     pub(in crate::sol) implants: RSet<ItemKey>,

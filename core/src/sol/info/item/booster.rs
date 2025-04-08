@@ -63,7 +63,7 @@ impl BoosterInfo {
         Self {
             id: booster.get_item_id(),
             type_id: booster.get_a_item_id(),
-            fit_id: booster.get_fit_id(),
+            fit_id: uad.fits.id_by_key(booster.get_fit_key()),
             slot: booster.get_a_slot(),
             enabled: booster.get_booster_state(),
             side_effects,

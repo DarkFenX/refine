@@ -12,7 +12,7 @@ impl SolarSystem {
         // Just check if everything is correct
         let item = self.uad.items.get(item_key);
         let drone = item.get_drone()?;
-        let fit_id = drone.get_fit_id();
+        let fit_key = drone.get_fit_key();
         // Remove outgoing projections
         for &projectee_item_key in drone.get_projs().iter_projectee_item_keys() {
             // Update services
@@ -28,7 +28,7 @@ impl SolarSystem {
         // Remove drone from services
         self.remove_item_key_from_svc(item_key);
         // Remove drone from user data
-        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_mut(fit_key);
         fit.drones.remove(&item_key);
         self.uad.items.remove(item_key);
         Ok(())

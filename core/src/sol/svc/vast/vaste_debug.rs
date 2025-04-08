@@ -1,5 +1,5 @@
 use crate::sol::{
-    debug::{DebugResult, check_fit_id, check_item_key},
+    debug::{DebugResult, check_fit_key, check_item_key},
     svc::vast::ValCache,
     uad::Uad,
 };
@@ -8,8 +8,8 @@ use super::{Vast, VastFitData};
 
 impl Vast {
     pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
-        for (fit_id, fit_data) in self.fit_datas.iter() {
-            check_fit_id(uad, fit_id)?;
+        for (&fit_key, fit_data) in self.fit_datas.iter() {
+            check_fit_key(uad, fit_key)?;
             fit_data.debug_consistency_check(uad)?;
         }
         Ok(())

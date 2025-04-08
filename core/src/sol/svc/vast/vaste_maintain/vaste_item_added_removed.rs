@@ -9,14 +9,14 @@ use crate::sol::{
 impl Vast {
     pub(in crate::sol::svc) fn item_added(&mut self, item_key: ItemKey, item: &Item) {
         if !item.is_loaded() {
-            if let Some(fit_id) = item.get_fit_id() {
-                let fit_data = self.get_fit_data_mut(&fit_id).unwrap();
+            if let Some(fit_key) = item.get_fit_key() {
+                let fit_data = self.get_fit_data_mut(&fit_key);
                 fit_data.not_loaded.insert(item_key);
             }
         }
         if let Item::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
-            let fit_data = self.get_fit_data_mut(&skill.get_fit_id()).unwrap();
+            let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
             for other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
                 let missing_skills = fit_data.srqs_missing.get_mut(other_item_key).unwrap();
                 if let Entry::Occupied(mut entry) = missing_skills.entry(skill.get_a_item_id()) {
@@ -32,14 +32,14 @@ impl Vast {
     }
     pub(in crate::sol::svc) fn item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
         if !item.is_loaded() {
-            if let Some(fit_id) = item.get_fit_id() {
-                let fit_data = self.get_fit_data_mut(&fit_id).unwrap();
+            if let Some(fit_key) = item.get_fit_key() {
+                let fit_data = self.get_fit_data_mut(&fit_key);
                 fit_data.not_loaded.remove(&item_key);
             }
         }
         if let Item::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
-            let fit_data = self.get_fit_data_mut(&skill.get_fit_id()).unwrap();
+            let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
             for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
                 let missing_skills = fit_data.srqs_missing.get_mut(&other_item_key).unwrap();
                 match missing_skills.entry(skill.get_a_item_id()) {

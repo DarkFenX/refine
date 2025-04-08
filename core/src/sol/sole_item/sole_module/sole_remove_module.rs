@@ -19,7 +19,7 @@ impl SolarSystem {
     ) -> Result<(), ItemKindMatchError> {
         let item = self.uad.items.get(item_key);
         let module = item.get_module()?;
-        let fit_id = module.get_fit_id();
+        let fit_key = module.get_fit_key();
         let rack = module.get_rack();
         let charge_key = module.get_charge_item_key();
         // Remove outgoing projections for both module and charge
@@ -60,7 +60,7 @@ impl SolarSystem {
         // Update services for module
         self.remove_item_key_from_svc(item_key);
         // Update user data for module
-        let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
+        let fit_rack = get_fit_rack(&mut self.uad.fits, fit_key, rack);
         match pos_mode {
             RmMode::Free => fit_rack.free(&item_key),
             RmMode::Remove => {

@@ -1,6 +1,5 @@
 use crate::{err::basic::AttrMetaFoundError, sol::err::KeyedItemLoadedError};
 
-// TODO: check if itemnotfound is still needed after switch to slab
 #[derive(Debug)]
 pub(in crate::sol) enum AttrCalcError {
     KeyedItemNotLoaded(KeyedItemLoadedError),

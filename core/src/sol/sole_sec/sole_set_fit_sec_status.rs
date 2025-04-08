@@ -2,22 +2,25 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     err::basic::{FitFoundError, SecStatusError},
-    sol::{FitId, SecStatus, SolarSystem},
+    sol::{FitId, FitKey, SecStatus, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_fit_sec_status(&mut self, fit_id: &FitId, sec_status: SecStatus) -> Result<(), SetFitSecStatusError> {
         check_sec_status(sec_status)?;
-        let fit = self.uad.fits.get_fit_mut(fit_id)?;
+        let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
+        Ok(self.set_fit_sec_status_internal(fit_key, sec_status))
+    }
+    pub(in crate::sol) fn set_fit_sec_status_internal(&mut self, fit_key: FitKey, sec_status: SecStatus) {
+        let fit = self.uad.fits.get_mut(fit_key);
         let old_sec_status = fit.sec_status;
         if old_sec_status == sec_status {
-            return Ok(());
+            return;
         }
         fit.sec_status = sec_status;
         if let Some(ship_key) = fit.ship {
             self.svc.ship_sec_status_changed(&self.uad, ship_key);
         }
-        Ok(())
     }
 }
 

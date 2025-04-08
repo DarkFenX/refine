@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     sol::{
-        DmgKinds, FitId, ItemKey,
+        DmgKinds, FitKey, ItemKey,
         svc::calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
         uad::{Uad, item::Item},
     },
@@ -21,7 +21,7 @@ impl Calc {
             return;
         }
         if let Item::Ship(ship) = item {
-            self.clear_fit_rah_results(uad, &ship.get_fit_id());
+            self.clear_fit_rah_results(uad, &ship.get_fit_key());
         }
     }
     pub(in crate::sol::svc::calc) fn rah_item_unloaded(&mut self, uad: &Uad, item: &Item) {
@@ -29,7 +29,7 @@ impl Calc {
             return;
         }
         if let Item::Ship(ship) = item {
-            self.clear_fit_rah_results(uad, &ship.get_fit_id());
+            self.clear_fit_rah_results(uad, &ship.get_fit_key());
         }
     }
     pub(in crate::sol::svc::calc) fn rah_effects_started(
@@ -44,12 +44,12 @@ impl Calc {
         }
         if let Item::Module(module) = item {
             if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
-                let fit_id = module.get_fit_id();
+                let fit_key = module.get_fit_key();
                 // Clear sim data for other RAHs on the same fit
-                self.clear_fit_rah_results(uad, &fit_id);
+                self.clear_fit_rah_results(uad, &fit_key);
                 // Add sim data for RAH being started
                 self.rah.resonances.insert(item_key, None);
-                self.rah.by_fit.add_entry(fit_id, item_key);
+                self.rah.by_fit.add_entry(fit_key, item_key);
                 // Add postprocessors
                 let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
                 item_attr_data.postprocs.insert(
@@ -95,7 +95,7 @@ impl Calc {
         }
         if let Item::Module(module) = item {
             if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
-                let fit_id = module.get_fit_id();
+                let fit_key = module.get_fit_key();
                 // Remove postprocessors
                 let item_attr_data = self.attrs.get_item_attr_data_mut(item_key).unwrap();
                 item_attr_data.postprocs.remove(&ARMOR_EM_ATTR_ID);
@@ -104,9 +104,9 @@ impl Calc {
                 item_attr_data.postprocs.remove(&ARMOR_EXPL_ATTR_ID);
                 // Remove sim data for RAH being stopped
                 self.rah.resonances.remove(item_key);
-                self.rah.by_fit.remove_entry(&module.get_fit_id(), item_key);
+                self.rah.by_fit.remove_entry(&fit_key, item_key);
                 // Clear sim data for other RAHs on the same fit
-                self.clear_fit_rah_results(uad, &fit_id);
+                self.clear_fit_rah_results(uad, &fit_key);
             }
         }
     }
@@ -128,10 +128,10 @@ impl Calc {
             // Ship armor resonances and RAH resonances
             ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
                 match uad.items.get(item_key) {
-                    Item::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_id()),
+                    Item::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_key()),
                     Item::Module(module) => {
                         if self.rah.resonances.contains_key(&item_key) {
-                            self.clear_fit_rah_results(uad, &module.get_fit_id());
+                            self.clear_fit_rah_results(uad, &module.get_fit_key());
                         }
                     }
                     _ => (),
@@ -142,8 +142,8 @@ impl Calc {
                 if self.rah.resonances.contains_key(&item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_id = uad.items.get(item_key).get_fit_id().unwrap();
-                    self.clear_fit_rah_results(uad, &fit_id);
+                    let fit_key = uad.items.get(item_key).get_fit_key().unwrap();
+                    self.clear_fit_rah_results(uad, &fit_key);
                 }
             }
             // RAH cycle time
@@ -151,21 +151,21 @@ impl Calc {
                 if self.rah.resonances.contains_key(&item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_id = uad.items.get(item_key).get_fit_id().unwrap();
+                    let fit_key = uad.items.get(item_key).get_fit_key().unwrap();
                     // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
                     // change sim results
-                    if self.rah.by_fit.get(&fit_id).len() >= 2 {
-                        self.clear_fit_rah_results(uad, &fit_id);
+                    if self.rah.by_fit.get(&fit_key).len() >= 2 {
+                        self.clear_fit_rah_results(uad, &fit_key);
                     }
                 }
             }
             // Ship HP - need to clear results since breacher DPS depends on those
             SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
                 if let Item::Ship(ship) = uad.items.get(item_key) {
-                    let fit_id = ship.get_fit_id();
-                    let fit = uad.fits.get_fit(&fit_id).unwrap();
+                    let fit_key = ship.get_fit_key();
+                    let fit = uad.fits.get(fit_key);
                     if get_fit_rah_incoming_dps(uad, fit).deals_breacher_dps() {
-                        self.clear_fit_rah_results(uad, &fit_id);
+                        self.clear_fit_rah_results(uad, &fit_key);
                     }
                 }
             }
@@ -175,12 +175,12 @@ impl Calc {
     pub(in crate::sol::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
         self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id);
     }
-    pub(in crate::sol::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_id: &FitId) {
-        self.clear_fit_rah_results(uad, fit_id);
+    pub(in crate::sol::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
+        self.clear_fit_rah_results(uad, fit_key);
     }
     // Private methods
-    fn clear_fit_rah_results(&mut self, uad: &Uad, fit_id: &FitId) {
-        let rah_item_keys = self.rah.by_fit.get(fit_id).copied().collect_vec();
+    fn clear_fit_rah_results(&mut self, uad: &Uad, fit_key: &FitKey) {
+        let rah_item_keys = self.rah.by_fit.get(fit_key).copied().collect_vec();
         for rah_item_key in rah_item_keys {
             self.clear_rah_result(uad, rah_item_key);
         }
@@ -199,9 +199,9 @@ impl Calc {
             return *val;
         }
         // Unwrap fit ID, since registered RAHs are supposed to be modules, which have fit ID
-        let fit_id = uad.items.get(item_key).get_fit_id().unwrap();
+        let fit_key = uad.items.get(item_key).get_fit_key().unwrap();
         self.rah.sim_running = true;
-        self.rah_run_simulation(uad, &fit_id);
+        self.rah_run_simulation(uad, fit_key);
         self.rah.sim_running = false;
         // Unwrap value, since simulation is supposed to always set results for RAHs of requested
         // fit

@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use crate::{
     err::basic::{FitFoundError, SkillEveTypeError, SkillLevelError},
     sol::{
-        FitId, ItemKey, ItemTypeId, SkillLevel, SolarSystem,
+        FitId, FitKey, ItemKey, ItemTypeId, SkillLevel, SolarSystem,
         info::SkillInfo,
         uad::{
             fit::FitSkill,
@@ -17,27 +17,28 @@ use super::check_skill_level;
 impl SolarSystem {
     pub fn add_skill(
         &mut self,
-        fit_id: FitId,
+        fit_id: &FitId,
         type_id: ItemTypeId,
         level: SkillLevel,
         state: bool,
     ) -> Result<SkillInfo, AddSkillError> {
         check_skill_level(level)?;
-        let item_key = self.add_skill_internal(fit_id, type_id, level, state)?;
+        let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
+        let item_key = self.add_skill_internal(fit_key, type_id, level, state)?;
         Ok(self.get_skill_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_skill_internal(
         &mut self,
-        fit_id: FitId,
+        fit_key: FitKey,
         type_id: ItemTypeId,
         level: SkillLevel,
         state: bool,
-    ) -> Result<ItemKey, AddSkillError> {
-        let fit = self.uad.fits.get_fit_mut(&fit_id)?;
+    ) -> Result<ItemKey, SkillEveTypeError> {
+        let fit = self.uad.fits.get_mut(fit_key);
         match fit.skills.entry(type_id) {
             Entry::Vacant(entry) => {
                 let item_id = self.uad.items.alloc_item_id();
-                let skill = Skill::new(&self.uad.src, item_id, type_id, fit_id, level, state);
+                let skill = Skill::new(&self.uad.src, item_id, type_id, fit_key, level, state);
                 let item = Item::Skill(skill);
                 let item_key = self.uad.items.add(item);
                 entry.insert(FitSkill { item_key, level });
@@ -46,7 +47,7 @@ impl SolarSystem {
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {
                 type_id,
-                fit_id,
+                fit_id: fit.id,
                 item_id: self.uad.items.id_by_key(entry.get().item_key),
             }
             .into()),

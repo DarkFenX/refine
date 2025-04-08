@@ -12,7 +12,7 @@ impl SolarSystem {
         let item = self.uad.items.get(item_key);
         let skill = item.get_skill()?;
         self.svc.remove_item(&self.uad, item_key, item);
-        let fit = self.uad.fits.get_fit_mut(&skill.get_fit_id()).unwrap();
+        let fit = self.uad.fits.get_mut(skill.get_fit_key());
         fit.skills.remove(&skill.get_a_item_id());
         self.uad.items.remove(item_key);
         Ok(())

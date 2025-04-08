@@ -10,7 +10,7 @@ impl SolarSystem {
     }
     pub(in crate::sol) fn get_service_internal(&self, item_key: ItemKey) -> Result<ServiceInfo, ItemKindMatchError> {
         let service = self.uad.items.get(item_key).get_service()?;
-        Ok(ServiceInfo::from_service(service))
+        Ok(ServiceInfo::from_service(&self.uad, service))
     }
 }
 

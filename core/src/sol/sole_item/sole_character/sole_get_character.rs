@@ -9,6 +9,6 @@ impl SolarSystem {
         item_key: ItemKey,
     ) -> Result<CharacterInfo, ItemKindMatchError> {
         let character = self.uad.items.get(item_key).get_character()?;
-        Ok(CharacterInfo::from_character(character))
+        Ok(CharacterInfo::from_character(&self.uad, character))
     }
 }
