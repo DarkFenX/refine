@@ -11,8 +11,8 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Items {
     counter: Wrapping<ItemId>,
-    data: Slab<Item>,
-    id_to_key: RMap<ItemId, ItemKey>,
+    pub(super) data: Slab<Item>,
+    pub(super) id_to_key: RMap<ItemId, ItemKey>,
 }
 impl Items {
     pub(in crate::sol) fn new() -> Self {

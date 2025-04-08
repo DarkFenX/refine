@@ -50,6 +50,8 @@ impl Uad {
         if !self.items.keys().all(|item_key| seen_items.contains(&item_key)) {
             return Err(DebugError {});
         }
+        // Checks for internal container consistency
+        self.items.debug_consistency_check()?;
         Ok(())
     }
 }
