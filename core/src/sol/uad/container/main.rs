@@ -74,13 +74,13 @@ where
         entity
     }
     pub(in crate::sol) fn iter(&self) -> impl ExactSizeIterator<Item = (Key, &T)> {
-        self.data.iter()
+        self.id_to_key.values().map(|&key| (key, self.data.get(key).unwrap()))
     }
     pub(in crate::sol) fn keys(&self) -> impl ExactSizeIterator<Item = Key> {
-        self.data.iter().map(|(key, _)| key)
+        self.id_to_key.values().copied()
     }
     pub(in crate::sol) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
-        self.data.iter().map(|(_, entity)| entity)
+        self.id_to_key.values().map(|&key| self.data.get(key).unwrap())
     }
     pub(in crate::sol) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut().map(|(_, entity)| entity)
