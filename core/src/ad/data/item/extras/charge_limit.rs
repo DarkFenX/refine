@@ -6,7 +6,7 @@ use crate::{
     util::RMap,
 };
 
-static GROUP_ATTRS: [AAttrId; 5] = [
+const GROUP_ATTRS: [AAttrId; 5] = [
     ac::attrs::CHARGE_GROUP1,
     ac::attrs::CHARGE_GROUP2,
     ac::attrs::CHARGE_GROUP3,

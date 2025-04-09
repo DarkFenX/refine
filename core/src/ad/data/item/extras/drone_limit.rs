@@ -6,7 +6,7 @@ use crate::{
     util::RMap,
 };
 
-static GROUP_ATTRS: [AAttrId; 2] = [ac::attrs::ALLOWED_DRONE_GROUP1, ac::attrs::ALLOWED_DRONE_GROUP2];
+const GROUP_ATTRS: [AAttrId; 2] = [ac::attrs::ALLOWED_DRONE_GROUP1, ac::attrs::ALLOWED_DRONE_GROUP2];
 
 /// If a ship is limited, it can only use drones from specified groups.
 #[derive(Clone)]
