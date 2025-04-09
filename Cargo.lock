@@ -1445,6 +1445,7 @@ dependencies = [
  "serde_json",
  "serde_repr",
  "serde_tuple",
+ "thiserror 2.0.12",
  "tracing",
  "zstd",
 ]
