@@ -1,14 +1,9 @@
 use crate::sol::FleetId;
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
+#[error("fleet {fleet_id} not found")]
 pub struct FleetFoundError {
     pub fleet_id: FleetId,
-}
-impl std::error::Error for FleetFoundError {}
-impl std::fmt::Display for FleetFoundError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "fleet {} not found", self.fleet_id)
-    }
 }
 impl From<FleetId> for FleetFoundError {
     fn from(fleet_id: FleetId) -> Self {

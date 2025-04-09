@@ -1,12 +1,7 @@
 use crate::sol::AttrVal;
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
+#[error("total damage {value} is negative or zero")]
 pub struct TotalDmgError {
     pub value: AttrVal,
-}
-impl std::error::Error for TotalDmgError {}
-impl std::fmt::Display for TotalDmgError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "total damage {} is negative or zero", self.value)
-    }
 }

@@ -1,12 +1,7 @@
 use crate::sol::ItemId;
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
+#[error("item {item_id} is not mutated")]
 pub struct ItemMutatedError {
     pub item_id: ItemId,
-}
-impl std::error::Error for ItemMutatedError {}
-impl std::fmt::Display for ItemMutatedError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "item {} is not mutated", self.item_id)
-    }
 }
