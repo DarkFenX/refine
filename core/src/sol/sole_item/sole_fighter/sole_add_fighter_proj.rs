@@ -31,26 +31,23 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) -> Result<(), AddFighterProjError> {
         // Check projector
-        let fighter = self
-            .uad
-            .items
-            .get(item_key)
-            .get_fighter()
-            .map_err(AddFighterProjError::ProjectorIsNotFighter)?;
+        let fighter = self.uad.items.get(item_key).get_fighter()?;
         // Check if projection has already been defined
         let projectee_item = self.uad.items.get(projectee_item_key);
         if fighter.get_projs().contains(&projectee_item_key) {
-            return Err(AddFighterProjError::ProjectionAlreadyExists(ProjNotFoundError {
+            return Err(ProjNotFoundError {
                 projector_item_id: fighter.get_item_id(),
                 projectee_item_id: projectee_item.get_item_id(),
-            }));
+            }
+            .into());
         }
         // Check if projectee can receive projections
         if !projectee_item.can_receive_projs() {
-            return Err(AddFighterProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
+            return Err(ItemReceiveProjError {
                 item_id: projectee_item.get_item_id(),
                 item_kind: projectee_item.get_name(),
-            }));
+            }
+            .into());
         }
         // Update user data for fighter
         let fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
@@ -71,38 +68,16 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum AddFighterProjError {
-    ProjectorNotFound(ItemFoundError),
-    ProjectorIsNotFighter(ItemKindMatchError),
-    ProjecteeNotFound(ItemFoundError),
-    ProjecteeCantTakeProjs(ItemReceiveProjError),
-    ProjectionAlreadyExists(ProjNotFoundError),
-}
-impl std::error::Error for AddFighterProjError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ProjectorNotFound(e) => Some(e),
-            Self::ProjectorIsNotFighter(e) => Some(e),
-            Self::ProjecteeNotFound(e) => Some(e),
-            Self::ProjecteeCantTakeProjs(e) => Some(e),
-            Self::ProjectionAlreadyExists(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for AddFighterProjError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ProjectorNotFound(e) => e.fmt(f),
-            Self::ProjectorIsNotFighter(e) => e.fmt(f),
-            Self::ProjecteeNotFound(e) => e.fmt(f),
-            Self::ProjecteeCantTakeProjs(e) => e.fmt(f),
-            Self::ProjectionAlreadyExists(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ProjNotFoundError> for AddFighterProjError {
-    fn from(error: ProjNotFoundError) -> Self {
-        Self::ProjectionAlreadyExists(error)
-    }
+    #[error("{0}")]
+    ProjectorNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectorIsNotFighter(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    ProjecteeNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
+    #[error("{0}")]
+    ProjectionAlreadyExists(#[from] ProjNotFoundError),
 }

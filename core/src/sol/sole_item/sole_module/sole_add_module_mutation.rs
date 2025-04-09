@@ -38,42 +38,12 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum AddModuleMutationError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotModule(ItemKindMatchError),
-    MutationAlreadySet(ItemNotMutatedError),
-}
-impl std::error::Error for AddModuleMutationError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotModule(e) => Some(e),
-            Self::MutationAlreadySet(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for AddModuleMutationError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotModule(e) => e.fmt(f),
-            Self::MutationAlreadySet(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for AddModuleMutationError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for AddModuleMutationError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotModule(error)
-    }
-}
-impl From<ItemNotMutatedError> for AddModuleMutationError {
-    fn from(error: ItemNotMutatedError) -> Self {
-        Self::MutationAlreadySet(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotModule(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    MutationAlreadySet(#[from] ItemNotMutatedError),
 }

@@ -22,34 +22,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetStanceStateError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotStance(ItemKindMatchError),
-}
-impl std::error::Error for SetStanceStateError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotStance(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetStanceStateError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotStance(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for SetStanceStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetStanceStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotStance(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotStance(#[from] ItemKindMatchError),
 }

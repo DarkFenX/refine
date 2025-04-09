@@ -33,34 +33,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetFitFleetError {
-    FitNotFound(FitFoundError),
-    FleetNotFound(FleetFoundError),
-}
-impl std::error::Error for SetFitFleetError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-            Self::FleetNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetFitFleetError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-            Self::FleetNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for SetFitFleetError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FleetFoundError> for SetFitFleetError {
-    fn from(error: FleetFoundError) -> Self {
-        Self::FleetNotFound(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
+    #[error("{0}")]
+    FleetNotFound(#[from] FleetFoundError),
 }

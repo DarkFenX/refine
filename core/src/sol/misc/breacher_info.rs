@@ -30,34 +30,11 @@ impl BreacherInfo {
         self.relative_max
     }
 }
-#[derive(Debug)]
+
+#[derive(thiserror::Error, Debug)]
 pub enum NewBreacherInfoError {
-    InvalidAbs(BreacherAbsDmgError),
-    InvalidRel(BreacherRelDmgError),
-}
-impl std::error::Error for NewBreacherInfoError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::InvalidAbs(e) => Some(e),
-            Self::InvalidRel(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for NewBreacherInfoError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::InvalidAbs(e) => e.fmt(f),
-            Self::InvalidRel(e) => e.fmt(f),
-        }
-    }
-}
-impl From<BreacherAbsDmgError> for NewBreacherInfoError {
-    fn from(error: BreacherAbsDmgError) -> Self {
-        Self::InvalidAbs(error)
-    }
-}
-impl From<BreacherRelDmgError> for NewBreacherInfoError {
-    fn from(error: BreacherRelDmgError) -> Self {
-        Self::InvalidRel(error)
-    }
+    #[error("{0}")]
+    InvalidAbs(#[from] BreacherAbsDmgError),
+    #[error("{0}")]
+    InvalidRel(#[from] BreacherRelDmgError),
 }

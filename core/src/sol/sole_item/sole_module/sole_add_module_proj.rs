@@ -29,26 +29,23 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) -> Result<(), AddModuleProjError> {
         // Check projector
-        let module = self
-            .uad
-            .items
-            .get(item_key)
-            .get_module()
-            .map_err(AddModuleProjError::ProjectorIsNotModule)?;
+        let module = self.uad.items.get(item_key).get_module()?;
         // Check if projection has already been defined
         let projectee_item = self.uad.items.get(projectee_item_key);
         if module.get_projs().contains(&projectee_item_key) {
-            return Err(AddModuleProjError::ProjectionAlreadyExists(ProjNotFoundError {
+            return Err(ProjNotFoundError {
                 projector_item_id: module.get_item_id(),
                 projectee_item_id: projectee_item.get_item_id(),
-            }));
+            }
+            .into());
         }
         // Check if projectee can receive projections
         if !projectee_item.can_receive_projs() {
-            return Err(AddModuleProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
+            return Err(ItemReceiveProjError {
                 item_id: projectee_item.get_item_id(),
                 item_kind: projectee_item.get_name(),
-            }));
+            }
+            .into());
         }
         // Update user data for module
         let module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
@@ -69,38 +66,16 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum AddModuleProjError {
-    ProjectorNotFound(ItemFoundError),
-    ProjectorIsNotModule(ItemKindMatchError),
-    ProjecteeNotFound(ItemFoundError),
-    ProjecteeCantTakeProjs(ItemReceiveProjError),
-    ProjectionAlreadyExists(ProjNotFoundError),
-}
-impl std::error::Error for AddModuleProjError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ProjectorNotFound(e) => Some(e),
-            Self::ProjectorIsNotModule(e) => Some(e),
-            Self::ProjecteeNotFound(e) => Some(e),
-            Self::ProjecteeCantTakeProjs(e) => Some(e),
-            Self::ProjectionAlreadyExists(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for AddModuleProjError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ProjectorNotFound(e) => e.fmt(f),
-            Self::ProjectorIsNotModule(e) => e.fmt(f),
-            Self::ProjecteeNotFound(e) => e.fmt(f),
-            Self::ProjecteeCantTakeProjs(e) => e.fmt(f),
-            Self::ProjectionAlreadyExists(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ProjNotFoundError> for AddModuleProjError {
-    fn from(error: ProjNotFoundError) -> Self {
-        Self::ProjectionAlreadyExists(error)
-    }
+    #[error("{0}")]
+    ProjectorNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectorIsNotModule(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    ProjecteeNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
+    #[error("{0}")]
+    ProjectionAlreadyExists(#[from] ProjNotFoundError),
 }

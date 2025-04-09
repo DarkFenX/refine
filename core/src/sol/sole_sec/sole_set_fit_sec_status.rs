@@ -25,36 +25,12 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetFitSecStatusError {
-    FitNotFound(FitFoundError),
-    SecStatusError(SecStatusError),
-}
-impl std::error::Error for SetFitSecStatusError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-            Self::SecStatusError(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetFitSecStatusError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-            Self::SecStatusError(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for SetFitSecStatusError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<SecStatusError> for SetFitSecStatusError {
-    fn from(error: SecStatusError) -> Self {
-        Self::SecStatusError(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
+    #[error("{0}")]
+    SecStatusError(#[from] SecStatusError),
 }
 
 fn check_sec_status(sec_status: SecStatus) -> Result<(), SecStatusError> {

@@ -52,40 +52,14 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum ChangeDroneProjError {
-    ProjectorNotFound(ItemFoundError),
-    ProjectorIsNotDrone(ItemKindMatchError),
-    ProjecteeNotFound(ItemFoundError),
-    ProjectionNotFound(ProjFoundError),
-}
-impl std::error::Error for ChangeDroneProjError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ProjectorNotFound(e) => Some(e),
-            Self::ProjectorIsNotDrone(e) => Some(e),
-            Self::ProjecteeNotFound(e) => Some(e),
-            Self::ProjectionNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for ChangeDroneProjError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ProjectorNotFound(e) => e.fmt(f),
-            Self::ProjectorIsNotDrone(e) => e.fmt(f),
-            Self::ProjecteeNotFound(e) => e.fmt(f),
-            Self::ProjectionNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemKindMatchError> for ChangeDroneProjError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ProjectorIsNotDrone(error)
-    }
-}
-impl From<ProjFoundError> for ChangeDroneProjError {
-    fn from(error: ProjFoundError) -> Self {
-        Self::ProjectionNotFound(error)
-    }
+    #[error("{0}")]
+    ProjectorNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectorIsNotDrone(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    ProjecteeNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectionNotFound(#[from] ProjFoundError),
 }

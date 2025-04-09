@@ -19,26 +19,8 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum GetFitFwEffectsError {
-    FitNotFound(FitFoundError),
-}
-impl std::error::Error for GetFitFwEffectsError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for GetFitFwEffectsError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for GetFitFwEffectsError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
 }

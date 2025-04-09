@@ -32,34 +32,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetBoosterSideEffectStateError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotBooster(ItemKindMatchError),
-}
-impl From<ItemFoundError> for SetBoosterSideEffectStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetBoosterSideEffectStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotBooster(error)
-    }
-}
-impl std::error::Error for SetBoosterSideEffectStateError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotBooster(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetBoosterSideEffectStateError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotBooster(e) => e.fmt(f),
-        }
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotBooster(#[from] ItemKindMatchError),
 }

@@ -48,34 +48,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveItemError {
-    ItemNotFound(ItemFoundError),
-    UnremovableAutocharge(ItemKindRemoveError),
-}
-impl std::error::Error for RemoveItemError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::UnremovableAutocharge(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveItemError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::UnremovableAutocharge(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for RemoveItemError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindRemoveError> for RemoveItemError {
-    fn from(error: ItemKindRemoveError) -> Self {
-        Self::UnremovableAutocharge(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    UnremovableAutocharge(#[from] ItemKindRemoveError),
 }

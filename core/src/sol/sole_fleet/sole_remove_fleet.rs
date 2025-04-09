@@ -23,26 +23,8 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveFleetError {
-    FleetNotFound(FleetFoundError),
-}
-impl std::error::Error for RemoveFleetError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FleetNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveFleetError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FleetNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FleetFoundError> for RemoveFleetError {
-    fn from(error: FleetFoundError) -> Self {
-        Self::FleetNotFound(error)
-    }
+    #[error("{0}")]
+    FleetNotFound(#[from] FleetFoundError),
 }

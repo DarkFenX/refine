@@ -28,34 +28,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveFitRahIncomingDpsError {
-    FitNotFound(FitFoundError),
-    DpsProfileNotSet(FitDpsProfileFoundError),
-}
-impl std::error::Error for RemoveFitRahIncomingDpsError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-            Self::DpsProfileNotSet(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveFitRahIncomingDpsError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-            Self::DpsProfileNotSet(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for RemoveFitRahIncomingDpsError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FitDpsProfileFoundError> for RemoveFitRahIncomingDpsError {
-    fn from(error: FitDpsProfileFoundError) -> Self {
-        Self::DpsProfileNotSet(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
+    #[error("{0}")]
+    DpsProfileNotSet(#[from] FitDpsProfileFoundError),
 }

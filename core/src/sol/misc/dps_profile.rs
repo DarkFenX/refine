@@ -63,50 +63,15 @@ impl DpsProfile {
         }
     }
 }
-#[derive(Debug)]
+
+#[derive(thiserror::Error, Debug)]
 pub enum NewDpsProfileError {
-    InvalidEm(EmDmgError),
-    InvalidThermal(ThermDmgError),
-    InvalidKinetic(KinDmgError),
-    InvalidExplosive(ExplDmgError),
-}
-impl std::error::Error for NewDpsProfileError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::InvalidEm(e) => Some(e),
-            Self::InvalidThermal(e) => Some(e),
-            Self::InvalidKinetic(e) => Some(e),
-            Self::InvalidExplosive(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for NewDpsProfileError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::InvalidEm(e) => e.fmt(f),
-            Self::InvalidThermal(e) => e.fmt(f),
-            Self::InvalidKinetic(e) => e.fmt(f),
-            Self::InvalidExplosive(e) => e.fmt(f),
-        }
-    }
-}
-impl From<EmDmgError> for NewDpsProfileError {
-    fn from(error: EmDmgError) -> Self {
-        Self::InvalidEm(error)
-    }
-}
-impl From<ThermDmgError> for NewDpsProfileError {
-    fn from(error: ThermDmgError) -> Self {
-        Self::InvalidThermal(error)
-    }
-}
-impl From<KinDmgError> for NewDpsProfileError {
-    fn from(error: KinDmgError) -> Self {
-        Self::InvalidKinetic(error)
-    }
-}
-impl From<ExplDmgError> for NewDpsProfileError {
-    fn from(error: ExplDmgError) -> Self {
-        Self::InvalidExplosive(error)
-    }
+    #[error("{0}")]
+    InvalidEm(#[from] EmDmgError),
+    #[error("{0}")]
+    InvalidThermal(#[from] ThermDmgError),
+    #[error("{0}")]
+    InvalidKinetic(#[from] KinDmgError),
+    #[error("{0}")]
+    InvalidExplosive(#[from] ExplDmgError),
 }

@@ -34,42 +34,12 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetSkillLevelError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotSkill(ItemKindMatchError),
-    SkillLevelError(SkillLevelError),
-}
-impl std::error::Error for SetSkillLevelError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotSkill(e) => Some(e),
-            Self::SkillLevelError(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetSkillLevelError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotSkill(e) => e.fmt(f),
-            Self::SkillLevelError(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for SetSkillLevelError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetSkillLevelError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotSkill(error)
-    }
-}
-impl From<SkillLevelError> for SetSkillLevelError {
-    fn from(error: SkillLevelError) -> Self {
-        Self::SkillLevelError(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotSkill(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    SkillLevelError(#[from] SkillLevelError),
 }

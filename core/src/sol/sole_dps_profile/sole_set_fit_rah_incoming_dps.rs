@@ -28,26 +28,8 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetFitRahIncomingDpsError {
-    FitNotFound(FitFoundError),
-}
-impl std::error::Error for SetFitRahIncomingDpsError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetFitRahIncomingDpsError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for SetFitRahIncomingDpsError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
 }

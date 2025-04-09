@@ -17,34 +17,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum GetAutochargeError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotAutocharge(ItemKindMatchError),
-}
-impl std::error::Error for GetAutochargeError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotAutocharge(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for GetAutochargeError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotAutocharge(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for GetAutochargeError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetAutochargeError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotAutocharge(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotAutocharge(#[from] ItemKindMatchError),
 }

@@ -19,34 +19,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveFwEffectError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotFwEffect(ItemKindMatchError),
-}
-impl std::error::Error for RemoveFwEffectError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotFwEffect(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveFwEffectError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotFwEffect(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for RemoveFwEffectError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveFwEffectError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotFwEffect(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotFwEffect(#[from] ItemKindMatchError),
 }

@@ -33,34 +33,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetFitCharacterStateError {
-    FitNotFound(FitFoundError),
-    FitHasNoCharacter(FitHasItemKindError),
-}
-impl std::error::Error for SetFitCharacterStateError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-            Self::FitHasNoCharacter(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetFitCharacterStateError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-            Self::FitHasNoCharacter(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for SetFitCharacterStateError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FitHasItemKindError> for SetFitCharacterStateError {
-    fn from(error: FitHasItemKindError) -> Self {
-        Self::FitHasNoCharacter(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
+    #[error("{0}")]
+    FitHasNoCharacter(#[from] FitHasItemKindError),
 }

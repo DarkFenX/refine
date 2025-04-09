@@ -54,40 +54,14 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveModuleProjError {
-    ProjectorNotFound(ItemFoundError),
-    ProjectorIsNotModule(ItemKindMatchError),
-    ProjecteeNotFound(ItemFoundError),
-    ProjectionNotFound(ProjFoundError),
-}
-impl std::error::Error for RemoveModuleProjError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ProjectorNotFound(e) => Some(e),
-            Self::ProjectorIsNotModule(e) => Some(e),
-            Self::ProjecteeNotFound(e) => Some(e),
-            Self::ProjectionNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveModuleProjError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ProjectorNotFound(e) => e.fmt(f),
-            Self::ProjectorIsNotModule(e) => e.fmt(f),
-            Self::ProjecteeNotFound(e) => e.fmt(f),
-            Self::ProjectionNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemKindMatchError> for RemoveModuleProjError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ProjectorIsNotModule(error)
-    }
-}
-impl From<ProjFoundError> for RemoveModuleProjError {
-    fn from(error: ProjFoundError) -> Self {
-        Self::ProjectionNotFound(error)
-    }
+    #[error("{0}")]
+    ProjectorNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectorIsNotModule(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    ProjecteeNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectionNotFound(#[from] ProjFoundError),
 }

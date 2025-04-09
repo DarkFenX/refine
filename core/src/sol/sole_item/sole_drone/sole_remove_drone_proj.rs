@@ -27,8 +27,7 @@ impl SolarSystem {
         projectee_item_key: ItemKey,
     ) -> Result<(), RemoveDroneProjError> {
         // Check if projection is defined
-        let item = self.uad.items.get(item_key);
-        let drone = item.get_drone()?;
+        let drone = self.uad.items.get(item_key).get_drone()?;
         let projectee_item = self.uad.items.get(projectee_item_key);
         if !drone.get_projs().contains(&projectee_item_key) {
             return Err(ProjFoundError {
@@ -48,40 +47,14 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveDroneProjError {
-    ProjectorNotFound(ItemFoundError),
-    ProjectorIsNotDrone(ItemKindMatchError),
-    ProjecteeNotFound(ItemFoundError),
-    ProjectionNotFound(ProjFoundError),
-}
-impl std::error::Error for RemoveDroneProjError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ProjectorNotFound(e) => Some(e),
-            Self::ProjectorIsNotDrone(e) => Some(e),
-            Self::ProjecteeNotFound(e) => Some(e),
-            Self::ProjectionNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveDroneProjError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ProjectorNotFound(e) => e.fmt(f),
-            Self::ProjectorIsNotDrone(e) => e.fmt(f),
-            Self::ProjecteeNotFound(e) => e.fmt(f),
-            Self::ProjectionNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemKindMatchError> for RemoveDroneProjError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ProjectorIsNotDrone(error)
-    }
-}
-impl From<ProjFoundError> for RemoveDroneProjError {
-    fn from(error: ProjFoundError) -> Self {
-        Self::ProjectionNotFound(error)
-    }
+    #[error("{0}")]
+    ProjectorNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectorIsNotDrone(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    ProjecteeNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectionNotFound(#[from] ProjFoundError),
 }

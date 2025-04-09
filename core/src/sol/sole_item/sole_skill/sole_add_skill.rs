@@ -54,42 +54,12 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum AddSkillError {
-    InvalidSkillLevel(SkillLevelError),
-    FitNotFound(FitFoundError),
-    SkillIdCollision(SkillEveTypeError),
-}
-impl std::error::Error for AddSkillError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::InvalidSkillLevel(e) => Some(e),
-            Self::FitNotFound(e) => Some(e),
-            Self::SkillIdCollision(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for AddSkillError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::InvalidSkillLevel(e) => e.fmt(f),
-            Self::FitNotFound(e) => e.fmt(f),
-            Self::SkillIdCollision(e) => e.fmt(f),
-        }
-    }
-}
-impl From<SkillLevelError> for AddSkillError {
-    fn from(error: SkillLevelError) -> Self {
-        Self::InvalidSkillLevel(error)
-    }
-}
-impl From<FitFoundError> for AddSkillError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<SkillEveTypeError> for AddSkillError {
-    fn from(error: SkillEveTypeError) -> Self {
-        Self::SkillIdCollision(error)
-    }
+    #[error("{0}")]
+    InvalidSkillLevel(#[from] SkillLevelError),
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
+    #[error("{0}")]
+    SkillIdCollision(#[from] SkillEveTypeError),
 }

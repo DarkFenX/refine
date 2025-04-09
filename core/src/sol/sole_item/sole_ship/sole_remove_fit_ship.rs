@@ -25,34 +25,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveFitShipError {
-    FitNotFound(FitFoundError),
-    FitHasNoShip(FitHasItemKindError),
-}
-impl std::error::Error for RemoveFitShipError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-            Self::FitHasNoShip(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveFitShipError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-            Self::FitHasNoShip(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for RemoveFitShipError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FitHasItemKindError> for RemoveFitShipError {
-    fn from(error: FitHasItemKindError) -> Self {
-        Self::FitHasNoShip(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
+    #[error("{0}")]
+    FitHasNoShip(#[from] FitHasItemKindError),
 }

@@ -14,34 +14,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum GetServiceError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotService(ItemKindMatchError),
-}
-impl std::error::Error for GetServiceError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotService(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for GetServiceError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotService(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for GetServiceError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetServiceError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotService(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotService(#[from] ItemKindMatchError),
 }

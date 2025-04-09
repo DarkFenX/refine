@@ -27,26 +27,23 @@ impl SolarSystem {
         projectee_item_key: ItemKey,
     ) -> Result<(), AddProjEffectProjError> {
         // Check projector
-        let proj_effect = self
-            .uad
-            .items
-            .get(item_key)
-            .get_proj_effect()
-            .map_err(AddProjEffectProjError::ProjectorIsNotProjEffect)?;
+        let proj_effect = self.uad.items.get(item_key).get_proj_effect()?;
         // Check if projection has already been defined
         let projectee_item = self.uad.items.get(projectee_item_key);
         if proj_effect.get_projs().contains(&projectee_item_key) {
-            return Err(AddProjEffectProjError::ProjectionAlreadyExists(ProjNotFoundError {
+            return Err(ProjNotFoundError {
                 projector_item_id: proj_effect.get_item_id(),
                 projectee_item_id: projectee_item.get_item_id(),
-            }));
+            }
+            .into());
         }
         // Check if projectee can receive projections
         if !projectee_item.can_receive_projs() {
-            return Err(AddProjEffectProjError::ProjecteeCantTakeProjs(ItemReceiveProjError {
+            return Err(ItemReceiveProjError {
                 item_id: projectee_item.get_item_id(),
                 item_kind: projectee_item.get_name(),
-            }));
+            }
+            .into());
         }
         // Update user data
         let proj_effect = self.uad.items.get_mut(item_key).get_proj_effect_mut().unwrap();
@@ -58,38 +55,16 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum AddProjEffectProjError {
-    ProjectorNotFound(ItemFoundError),
-    ProjectorIsNotProjEffect(ItemKindMatchError),
-    ProjecteeNotFound(ItemFoundError),
-    ProjecteeCantTakeProjs(ItemReceiveProjError),
-    ProjectionAlreadyExists(ProjNotFoundError),
-}
-impl std::error::Error for AddProjEffectProjError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ProjectorNotFound(e) => Some(e),
-            Self::ProjectorIsNotProjEffect(e) => Some(e),
-            Self::ProjecteeNotFound(e) => Some(e),
-            Self::ProjecteeCantTakeProjs(e) => Some(e),
-            Self::ProjectionAlreadyExists(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for AddProjEffectProjError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ProjectorNotFound(e) => e.fmt(f),
-            Self::ProjectorIsNotProjEffect(e) => e.fmt(f),
-            Self::ProjecteeNotFound(e) => e.fmt(f),
-            Self::ProjecteeCantTakeProjs(e) => e.fmt(f),
-            Self::ProjectionAlreadyExists(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ProjNotFoundError> for AddProjEffectProjError {
-    fn from(error: ProjNotFoundError) -> Self {
-        Self::ProjectionAlreadyExists(error)
-    }
+    #[error("{0}")]
+    ProjectorNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjectorIsNotProjEffect(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    ProjecteeNotFound(#[source] ItemFoundError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
+    #[error("{0}")]
+    ProjectionAlreadyExists(#[from] ProjNotFoundError),
 }

@@ -34,42 +34,12 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetFighterCountOverrideError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotFighter(ItemKindMatchError),
-    FighterCountError(FighterCountError),
-}
-impl std::error::Error for SetFighterCountOverrideError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotFighter(e) => Some(e),
-            Self::FighterCountError(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetFighterCountOverrideError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotFighter(e) => e.fmt(f),
-            Self::FighterCountError(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for SetFighterCountOverrideError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetFighterCountOverrideError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotFighter(error)
-    }
-}
-impl From<FighterCountError> for SetFighterCountOverrideError {
-    fn from(error: FighterCountError) -> Self {
-        Self::FighterCountError(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotFighter(#[from] ItemKindMatchError),
+    #[error("{0}")]
+    FighterCountError(#[from] FighterCountError),
 }

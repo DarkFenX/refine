@@ -26,34 +26,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum RemoveShipError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotShip(ItemKindMatchError),
-}
-impl std::error::Error for RemoveShipError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotShip(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for RemoveShipError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotShip(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for RemoveShipError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveShipError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotShip(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotShip(#[from] ItemKindMatchError),
 }

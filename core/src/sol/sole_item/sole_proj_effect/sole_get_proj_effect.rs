@@ -17,34 +17,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum GetProjEffectError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotProjEffect(ItemKindMatchError),
-}
-impl std::error::Error for GetProjEffectError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotProjEffect(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for GetProjEffectError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotProjEffect(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for GetProjEffectError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetProjEffectError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotProjEffect(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotProjEffect(#[from] ItemKindMatchError),
 }

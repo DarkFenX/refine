@@ -124,26 +124,8 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum AddModuleError {
-    FitNotFound(FitFoundError),
-}
-impl std::error::Error for AddModuleError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::FitNotFound(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for AddModuleError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::FitNotFound(e) => e.fmt(f),
-        }
-    }
-}
-impl From<FitFoundError> for AddModuleError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
+    #[error("{0}")]
+    FitNotFound(#[from] FitFoundError),
 }

@@ -14,34 +14,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum GetRigError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotRig(ItemKindMatchError),
-}
-impl std::error::Error for GetRigError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotRig(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for GetRigError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotRig(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for GetRigError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetRigError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotRig(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotRig(#[from] ItemKindMatchError),
 }

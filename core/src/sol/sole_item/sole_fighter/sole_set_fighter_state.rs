@@ -36,34 +36,10 @@ impl SolarSystem {
     }
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SetFighterStateError {
-    ItemNotFound(ItemFoundError),
-    ItemIsNotFighter(ItemKindMatchError),
-}
-impl std::error::Error for SetFighterStateError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            Self::ItemNotFound(e) => Some(e),
-            Self::ItemIsNotFighter(e) => Some(e),
-        }
-    }
-}
-impl std::fmt::Display for SetFighterStateError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::ItemNotFound(e) => e.fmt(f),
-            Self::ItemIsNotFighter(e) => e.fmt(f),
-        }
-    }
-}
-impl From<ItemFoundError> for SetFighterStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetFighterStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotFighter(error)
-    }
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotFighter(#[from] ItemKindMatchError),
 }

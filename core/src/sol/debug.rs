@@ -3,14 +3,9 @@ use crate::{
     sol::{FitKey, ItemKey, uad::Uad},
 };
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
+#[error("debug error")]
 pub(in crate::sol) struct DebugError {}
-impl std::error::Error for DebugError {}
-impl std::fmt::Display for DebugError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "debug error")
-    }
-}
 
 pub(in crate::sol) type DebugResult = Result<(), DebugError>;
 
