@@ -37,7 +37,7 @@ impl SolarSystem {
         mutation: Option<ItemAddMutation>,
         charge_type_id: Option<ItemTypeId>,
     ) -> ItemKey {
-        let module_item_id = self.uad.items.alloc_item_id();
+        let module_item_id = self.uad.items.alloc_id();
         let fit_rack = get_fit_rack(&mut self.uad.fits, fit_key, rack);
         // Assume some random position for now; it will be overwritten later
         let module = Module::new(
@@ -94,7 +94,7 @@ impl SolarSystem {
         // Create and add charge
         let charge_key = match charge_type_id {
             Some(charge_type_id) => {
-                let charge_item_id = self.uad.items.alloc_item_id();
+                let charge_item_id = self.uad.items.alloc_id();
                 // Update user data with new charge info
                 let charge = Charge::new(
                     &self.uad.src,

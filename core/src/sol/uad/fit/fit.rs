@@ -9,7 +9,7 @@ use crate::{
             item::ShipKind,
         },
     },
-    util::{RMap, RSet},
+    util::{GetId, Named, RMap, RSet},
 };
 
 #[derive(Clone)]
@@ -102,6 +102,16 @@ impl Fit {
         items.extend(self.fighters.iter());
         items.extend(self.fw_effects.iter());
         items
+    }
+}
+impl Named for Fit {
+    fn get_name() -> &'static str {
+        "Fit"
+    }
+}
+impl GetId<FitId> for Fit {
+    fn get_id(&self) -> FitId {
+        self.id
     }
 }
 

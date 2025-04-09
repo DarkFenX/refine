@@ -3,7 +3,7 @@ use ordered_float::OrderedFloat as OF;
 use crate::{
     sol::{
         DpsProfile, ItemKey, SecZone,
-        uad::{Fits, Fleets, Items},
+        uad::{fit::Fits, fleet::Fleets, item::Items},
     },
     src::Src,
     util::RSet,
@@ -26,11 +26,11 @@ impl Uad {
     pub(in crate::sol) fn new(src: Src) -> Self {
         Self {
             src,
-            fleets: Fleets::new(),
-            fits: Fits::new(),
+            fleets: Fleets::new(5),
+            fits: Fits::new(50),
             sw_effects: RSet::new(),
             proj_effects: RSet::new(),
-            items: Items::new(),
+            items: Items::new(10000),
             default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
             sec_zone: SecZone::NullSec,
         }

@@ -10,3 +10,8 @@ impl std::fmt::Display for FitFoundError {
         write!(f, "fit {} not found", self.fit_id)
     }
 }
+impl From<FitId> for FitFoundError {
+    fn from(fit_id: FitId) -> Self {
+        Self { fit_id }
+    }
+}

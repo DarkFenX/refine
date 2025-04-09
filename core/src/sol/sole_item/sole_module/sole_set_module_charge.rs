@@ -55,7 +55,7 @@ impl SolarSystem {
         // Set new charge
         // Allocation can fail only if we didn't remove charge first, so if it fails - we don't need
         // to restore anything
-        let charge_id = self.uad.items.alloc_item_id();
+        let charge_id = self.uad.items.alloc_id();
         // Update user data
         let charge = Charge::new(
             &self.uad.src,

@@ -24,7 +24,7 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: ServiceState,
     ) -> ItemKey {
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let service = Service::new(&self.uad.src, item_id, type_id, fit_key, state);
         let item = Item::Service(service);
         let item_key = self.uad.items.add(item);

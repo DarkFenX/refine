@@ -30,7 +30,7 @@ impl SolarSystem {
             self.remove_character_internal(old_item_key).unwrap();
         }
         // Add new character
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let character = Character::new(&self.uad.src, item_id, type_id, fit_key, state);
         let item = Item::Character(character);
         let item_key = self.uad.items.add(item);

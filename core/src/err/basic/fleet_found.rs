@@ -10,3 +10,8 @@ impl std::fmt::Display for FleetFoundError {
         write!(f, "fleet {} not found", self.fleet_id)
     }
 }
+impl From<FleetId> for FleetFoundError {
+    fn from(fleet_id: FleetId) -> Self {
+        Self { fleet_id }
+    }
+}

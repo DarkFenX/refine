@@ -56,8 +56,8 @@ fn main() {
         "tq".to_string(),
     ));
     // test_hashers();
-    // test_crusader(dh, ch);
-    test_nphoon(dh, ch);
+    test_crusader(dh, ch);
+    // test_nphoon(dh, ch);
 }
 
 fn test_hashers() {

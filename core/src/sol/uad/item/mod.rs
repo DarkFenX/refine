@@ -1,6 +1,7 @@
 //! Solar system item definitions.
 
 use base::{ItemBase, ItemBaseMutable};
+pub(in crate::sol) use container::Items;
 pub(in crate::sol) use item::Item;
 pub(in crate::sol) use item_autocharge::Autocharge;
 pub(in crate::sol) use item_booster::Booster;
@@ -25,6 +26,7 @@ use misc::{Autocharges, EffectModes, Projs, bool_to_state_active, bool_to_state_
 pub use misc::{ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, MinionState};
 
 mod base;
+mod container;
 mod item;
 mod item_autocharge;
 mod item_booster;

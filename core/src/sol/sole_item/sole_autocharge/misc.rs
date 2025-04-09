@@ -23,7 +23,7 @@ impl SolarSystem {
                 if let Some(a_effect) = self.uad.src.get_a_effect(a_effect_id) {
                     if let Some(ad::AEffectChargeInfo::Attr(charge_a_attr_id)) = a_effect.charge {
                         if let Some(autocharge_a_item_id) = cloned_item.get_a_attrs().unwrap().get(&charge_a_attr_id) {
-                            let autocharge_id = self.uad.items.alloc_item_id();
+                            let autocharge_id = self.uad.items.alloc_id();
                             let mut autocharge = Autocharge::new(
                                 &self.uad.src,
                                 autocharge_id,

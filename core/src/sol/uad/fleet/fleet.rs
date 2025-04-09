@@ -1,6 +1,6 @@
 use crate::{
     sol::{FitKey, FleetId},
-    util::RSet,
+    util::{GetId, Named, RSet},
 };
 
 #[derive(Clone)]
@@ -23,5 +23,15 @@ impl Fleet {
     }
     pub(in crate::sol) fn remove_fit(&mut self, fit_key: &FitKey) {
         self.fits.remove(fit_key);
+    }
+}
+impl Named for Fleet {
+    fn get_name() -> &'static str {
+        "Fleet"
+    }
+}
+impl GetId<FleetId> for Fleet {
+    fn get_id(&self) -> FleetId {
+        self.id
     }
 }

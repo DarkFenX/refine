@@ -24,7 +24,7 @@ impl SolarSystem {
         type_id: ItemTypeId,
         state: bool,
     ) -> ItemKey {
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let fw_effect = FwEffect::new(&self.uad.src, item_id, type_id, fit_key, state);
         let item = Item::FwEffect(fw_effect);
         let item_key = self.uad.items.add(item);

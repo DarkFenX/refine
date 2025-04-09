@@ -1,6 +1,6 @@
 use crate::sol::{
     FitKey, ModRack,
-    uad::{Fits, fit::ItemVec},
+    uad::fit::{Fits, ItemVec},
 };
 
 pub(super) fn get_fit_rack(uad_fits: &mut Fits, fit_key: FitKey, rack: ModRack) -> &mut ItemVec {

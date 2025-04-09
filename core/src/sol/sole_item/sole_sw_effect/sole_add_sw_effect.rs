@@ -10,7 +10,7 @@ impl SolarSystem {
         self.get_sw_effect_internal(item_key).unwrap()
     }
     pub(in crate::sol) fn add_sw_effect_internal(&mut self, type_id: ItemTypeId, state: bool) -> ItemKey {
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let sw_effect = SwEffect::new(&self.uad.src, item_id, type_id, state);
         let item = Item::SwEffect(sw_effect);
         let item_key = self.uad.items.add(item);

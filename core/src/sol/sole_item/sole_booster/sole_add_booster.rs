@@ -25,7 +25,7 @@ impl SolarSystem {
         state: bool,
     ) -> ItemKey {
         let fit = self.uad.fits.get_mut(fit_key);
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let booster = Booster::new(&self.uad.src, item_id, type_id, fit_key, state);
         let item = Item::Booster(booster);
         let item_key = self.uad.items.add(item);

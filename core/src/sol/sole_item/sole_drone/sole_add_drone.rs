@@ -26,7 +26,7 @@ impl SolarSystem {
         state: MinionState,
         mutation: Option<ItemAddMutation>,
     ) -> ItemKey {
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let drone = Drone::new(&self.uad.src, item_id, type_id, fit_key, state, mutation);
         let item = Item::Drone(drone);
         let item_key = self.uad.items.add(item);

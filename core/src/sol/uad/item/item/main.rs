@@ -9,7 +9,7 @@ use crate::{
         },
     },
     src::Src,
-    util::{Named, RMap},
+    util::{GetId, Named, RMap},
 };
 
 #[derive(Clone)]
@@ -783,5 +783,15 @@ impl Item {
             Self::Subsystem(subsystem) => subsystem.get_a_extras(),
             Self::SwEffect(sw_effect) => sw_effect.get_a_extras(),
         }
+    }
+}
+impl Named for Item {
+    fn get_name() -> &'static str {
+        "Item"
+    }
+}
+impl GetId<ItemId> for Item {
+    fn get_id(&self) -> ItemId {
+        self.get_item_id()
     }
 }

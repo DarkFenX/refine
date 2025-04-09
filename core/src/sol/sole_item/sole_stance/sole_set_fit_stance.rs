@@ -30,7 +30,7 @@ impl SolarSystem {
             self.remove_stance_internal(old_item_key).unwrap();
         }
         // Add new stance
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let stance = Stance::new(&self.uad.src, item_id, type_id, fit_key, state);
         let item = Item::Stance(stance);
         let item_key = self.uad.items.add(item);

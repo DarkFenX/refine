@@ -37,7 +37,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_mut(fit_key);
         match fit.skills.entry(type_id) {
             Entry::Vacant(entry) => {
-                let item_id = self.uad.items.alloc_item_id();
+                let item_id = self.uad.items.alloc_id();
                 let skill = Skill::new(&self.uad.src, item_id, type_id, fit_key, level, state);
                 let item = Item::Skill(skill);
                 let item_key = self.uad.items.add(item);

@@ -30,7 +30,7 @@ impl SolarSystem {
             self.remove_ship_internal(old_item_key).unwrap();
         }
         // Add new ship
-        let item_id = self.uad.items.alloc_item_id();
+        let item_id = self.uad.items.alloc_id();
         let ship = Ship::new(&self.uad.src, item_id, type_id, fit_key, state);
         let ship_kind = ship.get_kind();
         let item = Item::Ship(ship);
