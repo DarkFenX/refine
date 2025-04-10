@@ -27,6 +27,10 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         '--fast-cleanup-check',
         action='store_true',
         help='make log check during source creation faster, but unreliable')
+    parser.addoption(
+        '--optimized',
+        action='store_true',
+        help='build server using the release-opt profile')
 
 
 @pytest.fixture(scope='session')
@@ -42,8 +46,12 @@ def reefast_config(reefast_tmp_folder: Path) -> ConfigInfo:
 
 
 @pytest.fixture(scope='session', autouse=True)
-def reefast_server(reefast_config: ConfigInfo, log_reader: LogReader) -> Iterator[ServerInfo]:
-    build_server(proj_root=PROJECT_ROOT)
+def reefast_server(
+        pytestconfig: pytest.Config,
+        reefast_config: ConfigInfo,
+        log_reader: LogReader,
+) -> Iterator[ServerInfo]:
+    build_server(proj_root=PROJECT_ROOT, optimized=pytestconfig.getoption('optimized'))
     with log_reader.get_collector() as log_collector:
         server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path)
         # Wait for server to confirm it's up before yielding

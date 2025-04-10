@@ -20,11 +20,12 @@ class ServerInfo:
     popen: subprocess.Popen
 
 
-def build_server(*, proj_root: Path) -> None:
+def build_server(*, proj_root: Path, optimized: bool) -> None:
     http_path = proj_root / 'http'
     os.chdir(http_path)
+    profile = 'release-opt' if optimized else 'release'
     subprocess.run(
-        ['cargo', 'build', '--package=reefast-http', '--profile=release-opt'],
+        ['cargo', 'build', '--package=reefast-http', f'--profile={profile}'],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True)
