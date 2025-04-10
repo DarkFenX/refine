@@ -24,7 +24,7 @@ def build_server(*, proj_root: Path) -> None:
     http_path = proj_root / 'http'
     os.chdir(http_path)
     subprocess.run(
-        ['cargo', 'build', '--package=reefast-http', '--profile=release'],
+        ['cargo', 'build', '--package=reefast-http', '--profile=release-opt'],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True)

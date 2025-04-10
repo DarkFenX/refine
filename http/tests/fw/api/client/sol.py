@@ -157,17 +157,6 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}')
 
-    def check_sol(self, *, sol_id: str) -> None:
-        resp = self.check_sol_request(sol_id=sol_id).send()
-        if resp.status_code != 200:
-            raise ApiSolCheckError
-
-    def check_sol_request(self, *, sol_id: str) -> Request:
-        return Request(
-            client=self,
-            method='GET',
-            url=f'{self._base_url}/sol/{sol_id}/check')
-
     def cleanup_sols(self) -> None:
         for sol in self.__created_sols.copy():
             sol.remove()
@@ -196,3 +185,22 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             url=f'{self._base_url}/sol/{sol_id}',
             params=params,
             json={'commands': [command]})
+
+    # Development-specific requests
+    def check_sol(self, *, sol_id: str) -> None:
+        resp = self.check_sol_request(sol_id=sol_id).send()
+        if resp.status_code != 200:
+            raise ApiSolCheckError
+
+    def check_sol_request(self, *, sol_id: str) -> Request:
+        return Request(
+            client=self,
+            method='GET',
+            url=f'{self._base_url}/sol/{sol_id}/check')
+
+    def benchmark_sol_request(self, *, sol_id: str, command: dict) -> Request:
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/benchmark',
+            json=command)

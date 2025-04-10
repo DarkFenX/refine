@@ -4,11 +4,160 @@ Just collection of methods to test with real data from time to time.
 
 import json
 from pathlib import Path
+from time import time
 
 from tests.fw.api import ValOptions
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
+
+
+def test_benchmark_attr_calc(client, consts):  # noqa: ANN001, ANN201
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_fit.add_skill(type_id=eve_skill_id, level=5)
+    api_fit.set_ship(type_id=11184)  # Crusader
+    iterations = 1000000
+    print('starting attr-calc benchmark')  # noqa: T201
+    before = time()
+    api_sol.benchmark(command={'type': 'attr_calc', 'fit_id': api_fit.id, 'type_id': 1306, 'iterations': iterations})
+    after = time()
+    print('done with attr-calc benchmark')  # noqa: T201
+    delta = after - before
+    ips = iterations / delta
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # noqa: T201
+
+
+def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_fit.add_skill(type_id=eve_skill_id, level=5)
+    api_fit.add_implant(type_id=13231)  # TD-603
+    api_fit.add_implant(type_id=10228)  # SM-703
+    api_fit.add_implant(type_id=24663)  # Zor hyperlink
+    api_fit.add_implant(type_id=13244)  # SS-903
+    api_fit.add_implant(type_id=13219)  # LP-1003
+    api_fit.add_booster(type_id=28674)  # Synth drop
+    api_fit.add_booster(type_id=28672)  # Synth crash
+    api_fit.add_booster(type_id=45999)  # Pyro 2
+    api_fit.set_ship(type_id=32311)  # NTyphoon
+    # T2 800mms with hail
+    for _ in range(3):
+        api_fit.add_module(
+            type_id=2929,
+            rack=consts.ApiRack.high,
+            state=consts.ApiModuleState.overload,
+            charge_type_id=12779)
+    # T2 torpedo launchers with thermal rages
+    for _ in range(3):
+        api_fit.add_module(
+            type_id=2420,
+            rack=consts.ApiRack.high,
+            state=consts.ApiModuleState.overload,
+            charge_type_id=2811)
+    api_fit.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
+    # T2 med cap booster with navy 800
+    api_fit.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
+    api_fit.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 EM hardener
+    api_fit.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 scram
+    api_fit.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DC
+    for _ in range(2):
+        api_fit.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 gyrostab
+    for _ in range(2):
+        api_fit.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 BCS
+    api_fit.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DDA
+    api_fit.add_rig(type_id=26436)  # T2 therm rig
+    # T1 CDFEs
+    for _ in range(2):
+        api_fit.add_rig(type_id=26088)
+    # T2 ogres
+    for _ in range(5):
+        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.engaging)
+    # T2 ogres
+    for _ in range(2):
+        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
+    api_val = api_fit.validate(options=ValOptions(default=True))
+    assert api_val.passed is True
+    iterations = 1000
+    print('starting try-fit-items benchmark')  # noqa: T201
+    before = time()
+    api_sol.benchmark(command={
+        'type': 'try_fit_items',
+        'fit_id': api_fit.id,
+        'type_ids': get_try_fit_type_ids(),
+        'validation_options': ValOptions(default=True).to_dict(),
+        'iterations': iterations})
+    after = time()
+    print('done with try-fit-items benchmark')  # noqa: T201
+    delta = after - before
+    ips = iterations / delta
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # noqa: T201
+
+
+def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_fit.add_skill(type_id=eve_skill_id, level=5)
+    api_fit.add_implant(type_id=13231)  # TD-603
+    api_fit.add_implant(type_id=10228)  # SM-703
+    api_fit.add_implant(type_id=24663)  # Zor hyperlink
+    api_fit.add_implant(type_id=13244)  # SS-903
+    api_fit.add_implant(type_id=13219)  # LP-1003
+    api_fit.add_booster(type_id=28674)  # Synth drop
+    api_fit.add_booster(type_id=28672)  # Synth crash
+    api_fit.add_booster(type_id=45999)  # Pyro 2
+    api_fit.set_ship(type_id=32311)  # NTyphoon
+    # T2 800mms with hail
+    for _ in range(3):
+        api_fit.add_module(
+            type_id=2929,
+            rack=consts.ApiRack.high,
+            state=consts.ApiModuleState.overload,
+            charge_type_id=12779)
+    # T2 torpedo launchers with thermal rages
+    for _ in range(3):
+        api_fit.add_module(
+            type_id=2420,
+            rack=consts.ApiRack.high,
+            state=consts.ApiModuleState.overload,
+            charge_type_id=2811)
+    api_fit.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
+    # T2 med cap booster with navy 800
+    api_fit.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
+    api_fit.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 EM hardener
+    api_fit.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 scram
+    api_fit.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DC
+    for _ in range(2):
+        api_fit.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 gyrostab
+    for _ in range(2):
+        api_fit.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 BCS
+    api_fit.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DDA
+    api_fit.add_rig(type_id=26436)  # T2 therm rig
+    # T1 CDFEs
+    for _ in range(2):
+        api_fit.add_rig(type_id=26088)
+    # T2 ogres
+    for _ in range(5):
+        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.engaging)
+    # T2 ogres
+    for _ in range(2):
+        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
+    api_val = api_fit.validate(options=ValOptions(default=True))
+    assert api_val.passed is True
+    try_fit_type_ids = get_try_fit_type_ids()
+    type_ids = api_fit.try_fit_items(type_ids=try_fit_type_ids, options=ValOptions(default=True))
+    print('---')  # noqa: T201
+    print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')  # noqa: T201
+    print_items(type_ids=type_ids, print_types=False)
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
@@ -82,63 +231,3 @@ def print_items(*, type_ids: list[int], print_types: bool = False) -> None:
                 continue
             seen_lines.add(line)
             print(line)  # noqa: T201
-
-
-def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
-    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
-    api_fit = api_sol.create_fit()
-    api_fit.set_character(type_id=1373)
-    for eve_skill_id in get_skill_type_ids():
-        api_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_fit.add_implant(type_id=13231)  # TD-603
-    api_fit.add_implant(type_id=10228)  # SM-703
-    api_fit.add_implant(type_id=24663)  # Zor hyperlink
-    api_fit.add_implant(type_id=13244)  # SS-903
-    api_fit.add_implant(type_id=13219)  # LP-1003
-    api_fit.add_booster(type_id=28674)  # Synth drop
-    api_fit.add_booster(type_id=28672)  # Synth crash
-    api_fit.add_booster(type_id=45999)  # Pyro 2
-    api_fit.set_ship(type_id=32311)  # NTyphoon
-    # T2 800mms with hail
-    for _ in range(3):
-        api_fit.add_module(
-            type_id=2929,
-            rack=consts.ApiRack.high,
-            state=consts.ApiModuleState.overload,
-            charge_type_id=12779)
-    # T2 torpedo launchers with thermal rages
-    for _ in range(3):
-        api_fit.add_module(
-            type_id=2420,
-            rack=consts.ApiRack.high,
-            state=consts.ApiModuleState.overload,
-            charge_type_id=2811)
-    api_fit.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
-    # T2 med cap booster with navy 800
-    api_fit.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
-    api_fit.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 EM hardener
-    api_fit.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 scram
-    api_fit.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DC
-    for _ in range(2):
-        api_fit.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 gyrostab
-    for _ in range(2):
-        api_fit.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 BCS
-    api_fit.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DDA
-    api_fit.add_rig(type_id=26436)  # T2 therm rig
-    # T1 CDFEs
-    for _ in range(2):
-        api_fit.add_rig(type_id=26088)
-    # T2 ogres
-    for _ in range(5):
-        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.engaging)
-    # T2 ogres
-    for _ in range(2):
-        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
-    api_val = api_fit.validate(options=ValOptions(default=True))
-    assert api_val.passed is True
-    try_fit_type_ids = get_try_fit_type_ids()
-    type_ids = api_fit.try_fit_items(type_ids=try_fit_type_ids, options=ValOptions(default=True))
-    print('---')  # noqa: T201
-    print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')  # noqa: T201
-    print_items(type_ids=type_ids, print_types=False)

@@ -77,9 +77,6 @@ class SolarSystem(AttrDict):
         if resp.status_code == 204:
             self._client.created_sols.remove(self)
 
-    def check(self) -> None:
-        self._client.check_sol(sol_id=self.id)
-
     def change(
             self, *,
             sec_zone: ApiSecZone | type[Absent] = Absent,
@@ -224,3 +221,11 @@ class SolarSystem(AttrDict):
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None
+
+    # Development-specific methods
+    def check(self) -> None:
+        self._client.check_sol(sol_id=self.id)
+
+    def benchmark(self, command: dict, status_code: int = 200) -> None:
+        resp = self._client.benchmark_sol_request(sol_id=self.id, command=command).send()
+        resp.check(status_code=status_code)
