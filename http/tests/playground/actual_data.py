@@ -28,7 +28,7 @@ def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
     for file in files:
         with (PHOBOS_BASE_PATH / file).open() as f:
             client._EveDataServer__setup_handler(url=f'/{data.alias}/{file}', data=f.read())  # noqa: SLF001
-    client.create_source(data = data, cleanup_check=False)
+    client.create_source(data=data, cleanup_check=False)
 
 
 def get_skill_type_ids() -> list[int]:
