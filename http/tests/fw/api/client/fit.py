@@ -51,6 +51,22 @@ class ApiClientFit(ApiClientBase):
             kwargs['json'] = body
         return Request(client=self, **kwargs)
 
+    def try_fit_items_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            type_ids: list[int],
+            options: ValOptions,
+    ) -> Request:
+        body = {
+            'type_ids': type_ids,
+            'validation_options': options.to_dict()}
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/try-items',
+            json=body)
+
     def create_fit_request(
             self, *,
             sol_id: str,

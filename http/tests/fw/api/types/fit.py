@@ -105,6 +105,23 @@ class Fit(AttrDict):
         resp_simple.check(status_code=status_code)
         return resp_simple
 
+    def try_fit_items(
+            self, *,
+            type_ids: list[int],
+            options: ValOptions,
+            status_code: int = 200,
+    ) -> list[int] | None:
+        resp = self._client.try_fit_items_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            options=options,
+            type_ids=type_ids).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            return resp.json()
+        return None
+
     def change(
             self, *,
             fleet_id: str | None | type[Absent] = Absent,
