@@ -538,15 +538,28 @@ impl HSolarSystem {
         command: HBenchmarkTryFitItemsCmd,
     ) -> Result<(), HBrError> {
         let mut core_sol = self.take_sol()?;
-        let sync_span = tracing::trace_span!("sync");
-        let core_sol = tpool
-            .heavy
-            .spawn_fifo_async(move || {
-                let _sg = sync_span.enter();
-                command.execute(&mut core_sol);
-                core_sol
-            })
-            .await;
+        let core_options1 = command.validation_options.into_core_val_options(&mut core_sol);
+        let core_options2 = core_options1.clone();
+        let mut core_sol1 = core_sol.clone();
+        let mut core_sol2 = core_sol.clone();
+        let fit_id = command.fit_id;
+        let iterations = command.iterations;
+        let mid = command.type_ids.len() / 2;
+        let (tids1, tids2) = command.type_ids.split_at(mid);
+        let tids1 = tids1.to_vec();
+        let tids2 = tids2.to_vec();
+        let sync_span1 = tracing::trace_span!("sync1");
+        let h1 = tpool.heavy.spawn_fifo_async(move || {
+            let _sg = sync_span1.enter();
+            core_sol1.benchmark_try_fit_items(&fit_id, &tids1, &core_options1, iterations);
+        });
+        let sync_span2 = tracing::trace_span!("sync2");
+        let h2 = tpool.heavy.spawn_fifo_async(move || {
+            let _sg = sync_span2.enter();
+            core_sol2.benchmark_try_fit_items(&fit_id, &tids2, &core_options2, iterations);
+        });
+        h1.await;
+        h2.await;
         self.put_sol_back(core_sol);
         Ok(())
     }

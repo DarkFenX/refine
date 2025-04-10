@@ -25,16 +25,16 @@ impl HBenchmarkAttrCalcCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HBenchmarkTryFitItemsCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    fit_id: rc::FitId,
-    type_ids: Vec<rc::ItemTypeId>,
-    validation_options: HValOptions,
-    iterations: usize,
+    pub(crate) fit_id: rc::FitId,
+    pub(crate) type_ids: Vec<rc::ItemTypeId>,
+    pub(crate) validation_options: HValOptions,
+    pub(crate) iterations: usize,
     #[serde(default)]
     threads: Option<usize>,
 }
 impl HBenchmarkTryFitItemsCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, type_ids: &[rc::ItemTypeId]) {
         let core_options = self.validation_options.into_core_val_options(core_sol);
-        core_sol.benchmark_try_fit_items(&self.fit_id, &self.type_ids, &core_options, self.iterations);
+        core_sol.benchmark_try_fit_items(&self.fit_id, type_ids, &core_options, self.iterations);
     }
 }

@@ -1,5 +1,5 @@
 #[derive(serde::Deserialize)]
-pub(in crate::cmd) struct HValOptions {
+pub(in crate) struct HValOptions {
     default: bool,
     #[serde(default)]
     cpu: Option<HValOption>,
@@ -121,7 +121,7 @@ pub(in crate::cmd) struct HValOptions {
     item_vs_ship_kind: Option<HValOption>,
 }
 impl HValOptions {
-    pub(in crate::cmd) fn into_core_val_options(&self, core_sol: &mut rc::SolarSystem) -> rc::val::ValOptions {
+    pub(crate) fn into_core_val_options(&self, core_sol: &mut rc::SolarSystem) -> rc::val::ValOptions {
         let mut core_options = match self.default {
             true => rc::val::ValOptions::all_enabled(),
             false => rc::val::ValOptions::all_disabled(),
