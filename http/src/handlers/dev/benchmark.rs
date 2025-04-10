@@ -22,8 +22,14 @@ pub(crate) async fn dev_benchmark_sol(
         HGSolResult::ErrResp(r) => return r,
     };
     let resp = match match payload {
-        HBenchmarkCmd::AttrCalc(cmd) => guarded_sol.lock().await.dev_benchmark_attrs(cmd).await,
-        HBenchmarkCmd::TryFitItems(cmd) => guarded_sol.lock().await.dev_benchmark_try_fit_items(cmd).await,
+        HBenchmarkCmd::AttrCalc(cmd) => guarded_sol.lock().await.dev_benchmark_attrs(&state.tpool, cmd).await,
+        HBenchmarkCmd::TryFitItems(cmd) => {
+            guarded_sol
+                .lock()
+                .await
+                .dev_benchmark_try_fit_items(&state.tpool, cmd)
+                .await
+        }
     } {
         Ok(_) => StatusCode::OK.into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),

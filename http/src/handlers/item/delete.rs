@@ -24,7 +24,12 @@ pub(crate) async fn delete_item(
         HGSolResult::ErrResp(r) => return r,
     };
     let Json(payload) = payload.unwrap_or_default();
-    let resp = match guarded_sol.lock().await.remove_item(&item_id, payload).await {
+    let resp = match guarded_sol
+        .lock()
+        .await
+        .remove_item(&state.tpool, &item_id, payload)
+        .await
+    {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(br_err) => {
             let code = match &br_err {

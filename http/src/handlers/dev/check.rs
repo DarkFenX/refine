@@ -16,7 +16,7 @@ pub(crate) async fn dev_check_sol(State(state): State<HAppState>, Path(sol_id): 
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.dev_consistency_check().await {
+    let resp = match guarded_sol.lock().await.dev_consistency_check(&state.tpool).await {
         Ok(result) => match result {
             true => StatusCode::OK.into_response(),
             false => StatusCode::INTERNAL_SERVER_ERROR.into_response(),

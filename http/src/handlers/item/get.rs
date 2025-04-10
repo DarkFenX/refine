@@ -25,7 +25,7 @@ pub(crate) async fn get_item(
     let resp = match guarded_sol
         .lock()
         .await
-        .get_item(&item_id, params.item.unwrap_or_default())
+        .get_item(&state.tpool, &item_id, params.item.unwrap_or_default())
         .await
     {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),

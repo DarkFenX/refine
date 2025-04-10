@@ -21,7 +21,7 @@ pub(crate) async fn delete_fit(
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.remove_fit(&fit_id).await {
+    let resp = match guarded_sol.lock().await.remove_fit(&state.tpool, &fit_id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(br_err) => {
             let code = match &br_err {

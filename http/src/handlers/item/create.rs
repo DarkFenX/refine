@@ -27,7 +27,7 @@ pub(crate) async fn create_item(
     let resp = match guarded_sol
         .lock()
         .await
-        .add_item(payload, params.item.unwrap_or_default())
+        .add_item(&state.tpool, payload, params.item.unwrap_or_default())
         .await
     {
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),

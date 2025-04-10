@@ -23,7 +23,7 @@ pub(crate) async fn create_fleet(
     let resp = match guarded_sol
         .lock()
         .await
-        .add_fleet(params.fleet.unwrap_or_default())
+        .add_fleet(&state.tpool, params.fleet.unwrap_or_default())
         .await
     {
         Ok(fleet_info) => (StatusCode::CREATED, Json(fleet_info)).into_response(),

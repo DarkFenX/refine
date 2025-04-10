@@ -27,7 +27,7 @@ pub(crate) async fn change_item(
     let resp = match guarded_sol
         .lock()
         .await
-        .change_item(&item_id, payload, params.item.unwrap_or_default())
+        .change_item(&state.tpool, &item_id, payload, params.item.unwrap_or_default())
         .await
     {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),

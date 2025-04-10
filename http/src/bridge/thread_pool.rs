@@ -1,6 +1,6 @@
 pub(crate) struct HThreadPool {
-    standard: tokio_rayon::rayon::ThreadPool,
-    heavy: tokio_rayon::rayon::ThreadPool,
+    pub(in crate::bridge) standard: tokio_rayon::rayon::ThreadPool,
+    pub(in crate::bridge) heavy: tokio_rayon::rayon::ThreadPool,
 }
 impl HThreadPool {
     pub(crate) fn new(std_threads: usize, heavy_threads: usize) -> Self {

@@ -23,7 +23,12 @@ pub(crate) async fn try_fit_items(
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.try_fit_items(&fit_id, payload).await {
+    let resp = match guarded_sol
+        .lock()
+        .await
+        .try_fit_items(&state.tpool, &fit_id, payload)
+        .await
+    {
         Ok(valid_type_ids) => (StatusCode::OK, Json(valid_type_ids)).into_response(),
         Err(br_err) => {
             let code = match &br_err {

@@ -25,7 +25,7 @@ pub(crate) async fn get_fleet(
     let resp = match guarded_sol
         .lock()
         .await
-        .get_fleet(&fleet_id, params.fleet.unwrap_or_default())
+        .get_fleet(&state.tpool, &fleet_id, params.fleet.unwrap_or_default())
         .await
     {
         Ok(fleet_info) => (StatusCode::OK, Json(fleet_info)).into_response(),
