@@ -5,7 +5,7 @@ pub(crate) use change_fit::HChangeFitCommand;
 pub(crate) use change_fleet::HChangeFleetCmd;
 pub(crate) use change_item::HChangeItemCommand;
 pub(crate) use change_sol::HChangeSolCommand;
-pub(crate) use dev::HBenchmarkCmd;
+pub(crate) use dev::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkTryFitItemsCmd};
 pub(crate) use remove_item::HRemoveItemCmd;
 pub(crate) use shared::HCmdResp;
 pub(crate) use try_fit_items::HTryFitItemsCmd;

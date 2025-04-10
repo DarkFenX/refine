@@ -1,8 +1,9 @@
 use crate::{
     bridge::HBrError,
     cmd::{
-        HAddFitCmd, HAddItemCommand, HBenchmarkCmd, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand,
-        HChangeSolCommand, HCmdResp, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd,
+        HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkTryFitItemsCmd, HChangeFitCommand,
+        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HRemoveItemCmd, HTryFitItemsCmd,
+        HValidateFitCmd,
     },
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
@@ -448,7 +449,22 @@ impl HSolarSystem {
         Ok(result)
     }
     #[tracing::instrument(name = "sol-dev-bench", level = "trace", skip_all)]
-    pub(crate) async fn dev_benchmark(&mut self, command: HBenchmarkCmd) -> Result<(), HBrError> {
+    pub(crate) async fn dev_benchmark_attrs(&mut self, command: HBenchmarkAttrCalcCmd) -> Result<(), HBrError> {
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let core_sol = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            command.execute(&mut core_sol);
+            core_sol
+        })
+        .await;
+        self.put_sol_back(core_sol);
+        Ok(())
+    }
+    pub(crate) async fn dev_benchmark_try_fit_items(
+        &mut self,
+        command: HBenchmarkTryFitItemsCmd,
+    ) -> Result<(), HBrError> {
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
         let core_sol = tokio_rayon::spawn_fifo(move || {

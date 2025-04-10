@@ -6,14 +6,6 @@ pub(crate) enum HBenchmarkCmd {
     AttrCalc(HBenchmarkAttrCalcCmd),
     TryFitItems(HBenchmarkTryFitItemsCmd),
 }
-impl HBenchmarkCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
-        match self {
-            Self::AttrCalc(cmd) => cmd.execute(core_sol),
-            Self::TryFitItems(cmd) => cmd.execute(core_sol),
-        }
-    }
-}
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
@@ -24,7 +16,7 @@ pub(crate) struct HBenchmarkAttrCalcCmd {
     iterations: usize,
 }
 impl HBenchmarkAttrCalcCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
         core_sol.benchmark_attr_calc(&self.fit_id, self.type_id, self.iterations);
     }
 }
@@ -37,9 +29,11 @@ pub(crate) struct HBenchmarkTryFitItemsCmd {
     type_ids: Vec<rc::ItemTypeId>,
     validation_options: HValOptions,
     iterations: usize,
+    #[serde(default)]
+    threads: Option<usize>,
 }
 impl HBenchmarkTryFitItemsCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
         let core_options = self.validation_options.into_core_val_options(core_sol);
         core_sol.benchmark_try_fit_items(&self.fit_id, &self.type_ids, &core_options, self.iterations);
     }
