@@ -1,19 +1,31 @@
 use crate::util::HExecError;
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub(crate) enum HBrError {
+    #[error("source alias \"{0}\" is not available")]
     SrcAliasNotAvailable(String),
+    #[error("source with alias \"{0}\" not found")]
     SrcNotFound(String),
+    #[error("default source is not defined")]
     NoDefaultSrc,
+    #[error("no solar system with ID \"{0}\"")]
     SolNotFound(String),
+    #[error("unable to take core solar system")]
     NoCoreSol,
+    #[error("unable to cast string \"{0}\" to id")]
     FitIdCastFailed(String),
+    #[error("unable to cast string \"{0}\" to id")]
     FleetIdCastFailed(String),
+    #[error("unable to cast string \"{0}\" to id")]
     ItemIdCastFailed(String),
+    #[error("EVE data handler initialization failed: {0}")]
     EdhInitFailed(String),
+    #[error("source initialization failed: {0}")]
     SrcInitFailed(String),
-    ExecFailed(HExecError),
-    ExecBatchFailed(usize, HExecError),
+    #[error("{0}")]
+    ExecFailed(#[from] HExecError),
+    #[error("command #{i} failed: {1}", i = .0 + 1)]
+    ExecBatchFailed(usize, #[source] HExecError),
 }
 impl HBrError {
     pub(crate) fn from_exec_batch(idx: usize, error: HExecError) -> Self {
@@ -33,30 +45,6 @@ impl HBrError {
             Self::SrcInitFailed(_) => "SIN-001".to_string(),
             Self::ExecFailed(e) => e.get_code(),
             Self::ExecBatchFailed(_, e) => e.get_code(),
-        }
-    }
-}
-impl From<HExecError> for HBrError {
-    fn from(exec_error: HExecError) -> Self {
-        Self::ExecFailed(exec_error)
-    }
-}
-impl std::error::Error for HBrError {}
-impl std::fmt::Display for HBrError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::SrcAliasNotAvailable(alias) => write!(f, "source alias \"{alias}\" is not available"),
-            Self::SrcNotFound(alias) => write!(f, "source with alias \"{alias}\" not found"),
-            Self::NoDefaultSrc => write!(f, "default source is not defined"),
-            Self::SolNotFound(id) => write!(f, "no solar system with ID \"{id}\""),
-            Self::NoCoreSol => write!(f, "unable to take core solar system"),
-            Self::FitIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
-            Self::FleetIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
-            Self::ItemIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
-            Self::EdhInitFailed(reason) => write!(f, "EVE data handler initialization failed: {reason}"),
-            Self::SrcInitFailed(reason) => write!(f, "source initialization failed: {reason}"),
-            Self::ExecFailed(e) => write!(f, "{e}"),
-            Self::ExecBatchFailed(i, e) => write!(f, "command #{} failed: {}", i + 1, e),
         }
     }
 }

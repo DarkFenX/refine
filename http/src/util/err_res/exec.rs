@@ -1,78 +1,67 @@
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub(crate) enum HExecError {
     // Fits
-    FitNotFoundPrimary(rc::err::basic::FitFoundError),
-    FitNotFoundSecondary(rc::err::basic::FitFoundError),
+    #[error("{0}")]
+    FitNotFoundPrimary(#[source] rc::err::basic::FitFoundError),
+    #[error("{0}")]
+    FitNotFoundSecondary(#[source] rc::err::basic::FitFoundError),
+    #[error("fit {0} has no character set")]
     FitCharacterNotFound(rc::FitId),
+    #[error("fit {0} has no ship set")]
     FitShipNotFound(rc::FitId),
+    #[error("fit {0} has no stance set")]
     FitStanceNotFound(rc::FitId),
-    FitIsNotInFleet(rc::err::basic::FitFleetAssignedError),
+    #[error("{0}")]
+    FitIsNotInFleet(#[source] rc::err::basic::FitFleetAssignedError),
+    #[error("fit {1} is not in fleet {0}")]
     FitIsNotInThisFleet(rc::FleetId, rc::FitId),
-    FitItemKindNotFound(rc::err::basic::FitHasItemKindError),
+    #[error("{0}")]
+    FitItemKindNotFound(#[source] rc::err::basic::FitHasItemKindError),
     // Fleets
-    FleetNotFoundPrimary(rc::err::basic::FleetFoundError),
-    FleetNotFoundSecondary(rc::err::basic::FleetFoundError),
+    #[error("{0}")]
+    FleetNotFoundPrimary(#[source] rc::err::basic::FleetFoundError),
+    #[error("{0}")]
+    FleetNotFoundSecondary(#[source] rc::err::basic::FleetFoundError),
     // Items
-    ItemNotFoundPrimary(rc::err::basic::ItemFoundError),
-    ItemNotFoundSecondary(rc::err::basic::ItemFoundError),
-    ItemKindMismatch(rc::err::basic::ItemKindMatchError),
-    SkillIdCollision(rc::err::basic::SkillEveTypeError),
-    MutationNotSet(rc::err::basic::ItemMutatedError),
-    ChargeNotSet(rc::err::basic::ChargeFoundError),
-    UnremovableAutocharge(rc::err::basic::ItemKindRemoveError),
-    InvalidSkillLevel(rc::err::basic::SkillLevelError),
-    InvalidFighterCount(rc::err::basic::FighterCountError),
-    ProjecteeCantTakeProjs(rc::err::basic::ItemReceiveProjError),
-    ProjectionNotFound(rc::err::basic::ProjFoundError),
-    ProjectionAlreadyExists(rc::err::basic::ProjNotFoundError),
+    #[error("{0}")]
+    ItemNotFoundPrimary(#[source] rc::err::basic::ItemFoundError),
+    #[error("{0}")]
+    ItemNotFoundSecondary(#[source] rc::err::basic::ItemFoundError),
+    #[error("{0}")]
+    ItemKindMismatch(#[source] rc::err::basic::ItemKindMatchError),
+    #[error("{0}")]
+    SkillIdCollision(#[source] rc::err::basic::SkillEveTypeError),
+    #[error("{0}")]
+    MutationNotSet(#[source] rc::err::basic::ItemMutatedError),
+    #[error("{0}")]
+    ChargeNotSet(#[source] rc::err::basic::ChargeFoundError),
+    #[error("{0}")]
+    UnremovableAutocharge(#[source] rc::err::basic::ItemKindRemoveError),
+    #[error("{0}")]
+    InvalidSkillLevel(#[source] rc::err::basic::SkillLevelError),
+    #[error("{0}")]
+    InvalidFighterCount(#[source] rc::err::basic::FighterCountError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[source] rc::err::basic::ItemReceiveProjError),
+    #[error("{0}")]
+    ProjectionNotFound(#[source] rc::err::basic::ProjFoundError),
+    #[error("{0}")]
+    ProjectionAlreadyExists(#[source] rc::err::basic::ProjNotFoundError),
     // Misc
-    InvalidSecStatus(rc::err::basic::SecStatusError),
-    InvalidDpsProfileEm(rc::err::basic::EmDmgError),
-    InvalidDpsProfileTherm(rc::err::basic::ThermDmgError),
-    InvalidDpsProfileKin(rc::err::basic::KinDmgError),
-    InvalidDpsProfileExpl(rc::err::basic::ExplDmgError),
-    InvalidBreacherAbs(rc::err::basic::BreacherAbsDmgError),
-    InvalidBreacherRel(rc::err::basic::BreacherRelDmgError),
-}
-impl std::error::Error for HExecError {}
-impl std::fmt::Display for HExecError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            // Fits
-            HExecError::FitNotFoundPrimary(e) => write!(f, "{e}"),
-            HExecError::FitNotFoundSecondary(e) => write!(f, "{e}"),
-            HExecError::FitCharacterNotFound(fit_id) => write!(f, "fit {fit_id} has no character set"),
-            HExecError::FitShipNotFound(fit_id) => write!(f, "fit {fit_id} has no ship set"),
-            HExecError::FitStanceNotFound(fit_id) => write!(f, "fit {fit_id} has no stance set"),
-            HExecError::FitIsNotInFleet(e) => write!(f, "{e}"),
-            HExecError::FitIsNotInThisFleet(fleet_id, fit_id) => write!(f, "fit {fit_id} is not in fleet {fleet_id}"),
-            HExecError::FitItemKindNotFound(e) => write!(f, "{e}"),
-            // Fleets
-            HExecError::FleetNotFoundPrimary(e) => write!(f, "{e}"),
-            HExecError::FleetNotFoundSecondary(e) => write!(f, "{e}"),
-            // Items
-            HExecError::ItemNotFoundPrimary(e) => write!(f, "{e}"),
-            HExecError::ItemNotFoundSecondary(e) => write!(f, "{e}"),
-            HExecError::ItemKindMismatch(e) => write!(f, "{e}"),
-            HExecError::SkillIdCollision(e) => write!(f, "{e}"),
-            HExecError::MutationNotSet(e) => write!(f, "{e}"),
-            HExecError::ChargeNotSet(e) => write!(f, "{e}"),
-            HExecError::UnremovableAutocharge(e) => write!(f, "{e}"),
-            HExecError::InvalidSkillLevel(e) => write!(f, "{e}"),
-            HExecError::InvalidFighterCount(e) => write!(f, "{e}"),
-            HExecError::ProjecteeCantTakeProjs(e) => write!(f, "{e}"),
-            HExecError::ProjectionNotFound(e) => write!(f, "{e}"),
-            HExecError::ProjectionAlreadyExists(e) => write!(f, "{e}"),
-            // Misc
-            HExecError::InvalidSecStatus(e) => write!(f, "{e}"),
-            HExecError::InvalidDpsProfileEm(e) => write!(f, "{e}"),
-            HExecError::InvalidDpsProfileTherm(e) => write!(f, "{e}"),
-            HExecError::InvalidDpsProfileKin(e) => write!(f, "{e}"),
-            HExecError::InvalidDpsProfileExpl(e) => write!(f, "{e}"),
-            HExecError::InvalidBreacherAbs(e) => write!(f, "{e}"),
-            HExecError::InvalidBreacherRel(e) => write!(f, "{e}"),
-        }
-    }
+    #[error("{0}")]
+    InvalidSecStatus(#[source] rc::err::basic::SecStatusError),
+    #[error("{0}")]
+    InvalidDpsProfileEm(#[source] rc::err::basic::EmDmgError),
+    #[error("{0}")]
+    InvalidDpsProfileTherm(#[source] rc::err::basic::ThermDmgError),
+    #[error("{0}")]
+    InvalidDpsProfileKin(#[source] rc::err::basic::KinDmgError),
+    #[error("{0}")]
+    InvalidDpsProfileExpl(#[source] rc::err::basic::ExplDmgError),
+    #[error("{0}")]
+    InvalidBreacherAbs(#[source] rc::err::basic::BreacherAbsDmgError),
+    #[error("{0}")]
+    InvalidBreacherRel(#[source] rc::err::basic::BreacherRelDmgError),
 }
 impl HExecError {
     pub(crate) fn get_code(&self) -> String {
