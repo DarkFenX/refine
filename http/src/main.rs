@@ -57,7 +57,7 @@ async fn main() {
         .route("/sol/{sol_id}/fit/{fit_id}", patch(handlers::change_fit))
         .route("/sol/{sol_id}/fit/{fit_id}", delete(handlers::delete_fit))
         .route("/sol/{sol_id}/fit/{fit_id}/validate", post(handlers::validate_fit))
-        .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::validate_fit))
+        .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::try_fit_items))
         .route("/sol/{sol_id}/item", post(handlers::create_item))
         .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))
         .route("/sol/{sol_id}/item/{item_id}", patch(handlers::change_item))

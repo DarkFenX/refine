@@ -368,11 +368,7 @@ impl HValOption {
     }
 }
 
-fn process_option(
-    core_sol: &rc::SolarSystem,
-    option: &Option<HValOption>,
-    core_option: &mut rc::val::ValOption,
-) {
+fn process_option(core_sol: &rc::SolarSystem, option: &Option<HValOption>, core_option: &mut rc::val::ValOption) {
     if let Some(option) = option {
         core_option.enabled = option.is_enabled();
         core_option.add_known_failures(core_sol, option.get_known_failures().iter())

@@ -7,7 +7,7 @@ use crate::{
 #[derive(serde::Deserialize, Default)]
 #[serde(transparent)]
 pub(crate) struct HValidateFitCmd {
-    val_options: HValOptions,
+    validation_options: HValOptions,
 }
 impl HValidateFitCmd {
     pub(crate) fn execute(
@@ -16,7 +16,7 @@ impl HValidateFitCmd {
         fit_id: &rc::FitId,
         valid_mode: HValidInfoMode,
     ) -> Result<HValidInfo, HExecError> {
-        let core_options = self.val_options.into_core_val_options(core_sol);
+        let core_options = self.validation_options.into_core_val_options(core_sol);
         match valid_mode {
             HValidInfoMode::Simple => core_sol.validate_fit_fast(fit_id, &core_options).map(|v| v.into()),
             HValidInfoMode::Detailed => core_sol

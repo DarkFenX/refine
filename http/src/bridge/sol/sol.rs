@@ -2,7 +2,7 @@ use crate::{
     bridge::HBrError,
     cmd::{
         HAddFitCmd, HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand,
-        HCmdResp, HRemoveItemCmd, HValidateFitCmd,
+        HCmdResp, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd,
     },
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
@@ -315,6 +315,24 @@ impl HSolarSystem {
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let result = command.execute(&mut core_sol, &fit_id, valid_mode);
+            (core_sol, result.map_err(HBrError::from))
+        })
+        .await;
+        self.put_sol_back(core_sol);
+        result
+    }
+    #[tracing::instrument(name = "sol-fit-try", level = "trace", skip_all)]
+    pub(crate) async fn try_fit_items(
+        &mut self,
+        fit_id: &str,
+        command: HTryFitItemsCmd,
+    ) -> Result<Vec<rc::ItemTypeId>, HBrError> {
+        let fit_id = self.str_to_fit_id(fit_id)?;
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = command.execute(&mut core_sol, &fit_id);
             (core_sol, result.map_err(HBrError::from))
         })
         .await;
