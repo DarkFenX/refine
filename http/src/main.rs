@@ -57,6 +57,7 @@ async fn main() {
         .route("/sol/{sol_id}/fit/{fit_id}", patch(handlers::change_fit))
         .route("/sol/{sol_id}/fit/{fit_id}", delete(handlers::delete_fit))
         .route("/sol/{sol_id}/fit/{fit_id}/validate", post(handlers::validate_fit))
+        .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::validate_fit))
         .route("/sol/{sol_id}/item", post(handlers::create_item))
         .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))
         .route("/sol/{sol_id}/item/{item_id}", patch(handlers::change_item))
@@ -65,7 +66,7 @@ async fn main() {
         .route("/sol/{sol_id}/fleet/{fleet_id}", get(handlers::get_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", patch(handlers::change_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", delete(handlers::delete_fleet))
-        // Debug handlers
+        // Debug/benchmark handlers
         .route("/sol/{sol_id}/check", get(handlers::debug_check_sol))
         .with_state(state);
     // Middleware
