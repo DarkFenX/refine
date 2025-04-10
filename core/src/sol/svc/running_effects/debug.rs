@@ -6,7 +6,7 @@ use crate::sol::{
 use super::RunningEffects;
 
 impl RunningEffects {
-    pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for (&item_key, effect_ids) in self.data.iter() {
             check_item_key(uad, item_key, true)?;
             for effect_id in effect_ids {

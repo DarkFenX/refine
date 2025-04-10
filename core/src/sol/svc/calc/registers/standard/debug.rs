@@ -7,7 +7,7 @@ use crate::sol::{
 use super::StandardRegister;
 
 impl StandardRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for ((fit_key, _), item_keys) in self.affectee_root.iter() {
             check_fit_key(uad, *fit_key)?;
             for item_key in item_keys {

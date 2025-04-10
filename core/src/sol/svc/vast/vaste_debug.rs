@@ -7,17 +7,17 @@ use crate::sol::{
 use super::{Vast, VastFitData};
 
 impl Vast {
-    pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for (&fit_key, fit_data) in self.fit_datas.iter() {
             check_fit_key(uad, fit_key)?;
-            fit_data.debug_consistency_check(uad)?;
+            fit_data.consistency_check(uad)?;
         }
         Ok(())
     }
 }
 
 impl VastFitData {
-    pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for &item_key in self.mods_svcs_online.iter() {
             check_item_key(uad, item_key, true)?;
         }

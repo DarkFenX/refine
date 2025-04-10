@@ -6,7 +6,7 @@ use crate::sol::{
 use super::ProjTracker;
 
 impl ProjTracker {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for (projectee_item_key, projector_item_keys) in self.data.iter() {
             if uad.items.try_get(*projectee_item_key).is_none() {
                 return Err(DebugError {});

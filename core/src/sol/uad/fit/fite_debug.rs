@@ -9,7 +9,7 @@ use crate::sol::{
 };
 
 impl Fit {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad, seen_item_keys: &mut Vec<ItemKey>) -> DebugResult {
+    pub(in crate::sol) fn consistency_check(&self, uad: &Uad, seen_item_keys: &mut Vec<ItemKey>) -> DebugResult {
         let fit_key = match uad.fits.key_by_id(&self.id) {
             Some(fit_key) => fit_key,
             None => return Err(DebugError {}),
@@ -38,7 +38,7 @@ impl Fit {
             if character.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Skills
         for fit_skill in self.skills.values() {
@@ -57,7 +57,7 @@ impl Fit {
             if skill.get_a_level() != fit_skill.level {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Implants
         for &implant_key in self.implants.iter() {
@@ -73,7 +73,7 @@ impl Fit {
             if implant.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Boosters
         for &booster_key in self.boosters.iter() {
@@ -89,7 +89,7 @@ impl Fit {
             if booster.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Ship
         if let Some(ship_key) = self.ship {
@@ -105,7 +105,7 @@ impl Fit {
             if ship.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Stance
         if let Some(stance_key) = self.stance {
@@ -121,7 +121,7 @@ impl Fit {
             if stance.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Subsystems
         for &subsystem_key in self.subsystems.iter() {
@@ -137,10 +137,10 @@ impl Fit {
             if subsystem.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // High slot modules
-        self.mods_high.debug_consistency_check()?;
+        self.mods_high.consistency_check()?;
         for &module_key in self.mods_high.iter_keys() {
             seen_item_keys.push(module_key);
             let item = match uad.items.try_get(module_key) {
@@ -157,11 +157,11 @@ impl Fit {
             if !matches!(module.get_rack(), ModRack::High) {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
             check_module_charge(uad, fit_key, module_key, module, seen_item_keys)?;
         }
         // Mid slot modules
-        self.mods_mid.debug_consistency_check()?;
+        self.mods_mid.consistency_check()?;
         for &module_key in self.mods_mid.iter_keys() {
             seen_item_keys.push(module_key);
             let item = match uad.items.try_get(module_key) {
@@ -178,11 +178,11 @@ impl Fit {
             if !matches!(module.get_rack(), ModRack::Mid) {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
             check_module_charge(uad, fit_key, module_key, module, seen_item_keys)?;
         }
         // Low slot modules
-        self.mods_low.debug_consistency_check()?;
+        self.mods_low.consistency_check()?;
         for &module_key in self.mods_low.iter_keys() {
             seen_item_keys.push(module_key);
             let item = match uad.items.try_get(module_key) {
@@ -199,7 +199,7 @@ impl Fit {
             if !matches!(module.get_rack(), ModRack::Low) {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
             check_module_charge(uad, fit_key, module_key, module, seen_item_keys)?;
         }
         // Rigs
@@ -216,7 +216,7 @@ impl Fit {
             if rig.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Services
         for &service_key in self.services.iter() {
@@ -232,7 +232,7 @@ impl Fit {
             if service.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Drones
         for &drone_key in self.drones.iter() {
@@ -248,7 +248,7 @@ impl Fit {
             if drone.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         // Fighters
         for &fighter_key in self.fighters.iter() {
@@ -264,7 +264,7 @@ impl Fit {
             if fighter.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
             check_fighter_autocharges(uad, fit_key, fighter_key, fighter, seen_item_keys)?;
         }
         // Fit-wide effects
@@ -281,7 +281,7 @@ impl Fit {
             if fw_effect.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(uad)?;
+            item.consistency_check(uad)?;
         }
         Ok(())
     }
@@ -310,7 +310,7 @@ fn check_module_charge(
         if charge.get_cont_item_key() != module_key {
             return Err(DebugError {});
         }
-        item.debug_consistency_check(uad)?;
+        item.consistency_check(uad)?;
     }
     Ok(())
 }
@@ -338,7 +338,7 @@ fn check_fighter_autocharges(
         if autocharge.get_cont_item_key() != fighter_key {
             return Err(DebugError {});
         }
-        item.debug_consistency_check(uad)?;
+        item.consistency_check(uad)?;
     }
     Ok(())
 }

@@ -4,7 +4,7 @@ use crate::sol::{
 };
 
 impl Fleet {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         let fleet_key = match uad.fleets.key_by_id(&self.id) {
             Some(fleet_key) => fleet_key,
             None => return Err(DebugError {}),

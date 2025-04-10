@@ -6,7 +6,7 @@ use crate::sol::{
 use super::ProjectionRegister;
 
 impl ProjectionRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for (affector_item_key, a_effect_id, affectee_item_key) in self.ranges.keys() {
             check_item_key(uad, *affector_item_key, true)?;
             check_a_effect_id(uad, a_effect_id)?;

@@ -1,3 +1,3 @@
 mod sole_benchmark_attr_calc;
 mod sole_benchmark_try_fit_items;
-mod sole_debug_consistency_check;
+mod sole_consistency_check;

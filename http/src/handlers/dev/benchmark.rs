@@ -6,21 +6,23 @@ use axum::{
 };
 
 use crate::{
-    handlers::{HGSolResult, HSingleErr, get_guarded_sol},
+    cmd::HBenchmarkCmd,
+    handlers::{HGSolResult, get_guarded_sol, shared::HSingleErr},
     state::HAppState,
 };
 
 #[allow(clippy::let_and_return)]
-pub(crate) async fn debug_check_sol(State(state): State<HAppState>, Path(sol_id): Path<String>) -> impl IntoResponse {
+pub(crate) async fn dev_benchmark_sol(
+    State(state): State<HAppState>,
+    Path(sol_id): Path<String>,
+    Json(payload): Json<HBenchmarkCmd>,
+) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.debug_consistency_check().await {
-        Ok(result) => match result {
-            true => StatusCode::OK.into_response(),
-            false => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-        },
+    let resp = match guarded_sol.lock().await.dev_benchmark(payload).await {
+        Ok(_) => StatusCode::OK.into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),
     };
     resp

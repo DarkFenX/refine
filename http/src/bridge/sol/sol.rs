@@ -1,8 +1,8 @@
 use crate::{
     bridge::HBrError,
     cmd::{
-        HAddFitCmd, HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand,
-        HCmdResp, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd,
+        HAddFitCmd, HAddItemCommand, HBenchmarkCmd, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand,
+        HChangeSolCommand, HCmdResp, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd,
     },
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
@@ -26,19 +26,6 @@ impl HSolarSystem {
     }
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
-    }
-    #[tracing::instrument(name = "sol-sol-check", level = "trace", skip_all)]
-    pub(crate) async fn debug_consistency_check(&mut self) -> Result<bool, HBrError> {
-        let core_sol = self.take_sol()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let result = core_sol.debug_consistency_check();
-            (core_sol, result)
-        })
-        .await;
-        self.put_sol_back(core_sol);
-        Ok(result)
     }
     // Solar system methods
     #[tracing::instrument(name = "sol-sol-get", level = "trace", skip_all)]
@@ -445,6 +432,33 @@ impl HSolarSystem {
                 Err(br_err)
             }
         }
+    }
+    // Development-related methods
+    #[tracing::instrument(name = "sol-dev-check", level = "trace", skip_all)]
+    pub(crate) async fn dev_consistency_check(&mut self) -> Result<bool, HBrError> {
+        let core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = core_sol.consistency_check();
+            (core_sol, result)
+        })
+        .await;
+        self.put_sol_back(core_sol);
+        Ok(result)
+    }
+    #[tracing::instrument(name = "sol-dev-bench", level = "trace", skip_all)]
+    pub(crate) async fn dev_benchmark(&mut self, command: HBenchmarkCmd) -> Result<(), HBrError> {
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let core_sol = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            command.execute(&mut core_sol);
+            core_sol
+        })
+        .await;
+        self.put_sol_back(core_sol);
+        Ok(())
     }
     // Helper methods
     fn take_sol(&mut self) -> Result<rc::SolarSystem, HBrError> {

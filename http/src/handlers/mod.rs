@@ -1,4 +1,4 @@
-pub(crate) use debug::debug_check_sol;
+pub(crate) use dev::{dev_benchmark_sol, dev_check_sol};
 pub(crate) use fit::{change_fit, create_fit, delete_fit, get_fit};
 pub(crate) use fleet::{change_fleet, create_fleet, delete_fleet, get_fleet};
 pub(crate) use item::{change_item, create_item, delete_item, get_item};
@@ -9,7 +9,7 @@ pub(crate) use src::{create_source, delete_source};
 pub(crate) use try_fit_items::try_fit_items;
 pub(crate) use validate::validate_fit;
 
-mod debug;
+mod dev;
 mod fit;
 mod fleet;
 mod item;

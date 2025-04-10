@@ -18,7 +18,7 @@ mod primitives;
 mod proj_tracker;
 mod sol;
 pub(crate) mod sole_calc;
-mod sole_debug;
+mod sole_dev;
 pub(crate) mod sole_dps_profile;
 pub(crate) mod sole_fit;
 pub(crate) mod sole_fleet;

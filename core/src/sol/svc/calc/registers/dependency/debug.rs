@@ -6,7 +6,7 @@ use crate::sol::{
 use super::DependencyRegister;
 
 impl DependencyRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, uad: &Uad) -> DebugResult {
+    pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for (affector_spec, affector_data) in self.data.iter() {
             check_item_key(uad, affector_spec.item_key, true)?;
             check_a_attr_id(uad, &affector_spec.a_attr_id)?;

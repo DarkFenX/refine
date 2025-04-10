@@ -8,15 +8,15 @@ use crate::{
 };
 
 impl Uad {
-    pub fn debug_consistency_check(&self) -> DebugResult {
+    pub fn consistency_check(&self) -> DebugResult {
         let mut seen_items = Vec::new();
         // Fleets
         for fleet in self.fleets.values() {
-            fleet.debug_consistency_check(self)?;
+            fleet.consistency_check(self)?;
         }
         // Fits
         for fit in self.fits.values() {
-            fit.debug_consistency_check(self, &mut seen_items)?;
+            fit.consistency_check(self, &mut seen_items)?;
         }
         // System-wide effects
         for &sw_effect_key in self.sw_effects.iter() {
@@ -28,7 +28,7 @@ impl Uad {
             if !matches!(item, Item::SwEffect(_)) {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(self)?;
+            item.consistency_check(self)?;
         }
         // Projected effects
         for &proj_effect_key in self.proj_effects.iter() {
@@ -40,7 +40,7 @@ impl Uad {
             if !matches!(item, Item::ProjEffect(_)) {
                 return Err(DebugError {});
             }
-            item.debug_consistency_check(self)?;
+            item.consistency_check(self)?;
         }
         // Check if we have any duplicate references to items
         if check_item_duplicates(&seen_items) {
@@ -51,9 +51,9 @@ impl Uad {
             return Err(DebugError {});
         }
         // Checks for internal container consistency
-        self.items.debug_consistency_check()?;
-        self.fits.debug_consistency_check()?;
-        self.fleets.debug_consistency_check()?;
+        self.items.consistency_check()?;
+        self.fits.consistency_check()?;
+        self.fleets.consistency_check()?;
         Ok(())
     }
 }
