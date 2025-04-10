@@ -3,6 +3,8 @@ pub(crate) struct HSetServer {
     pub(crate) port: u16,
     pub(crate) solsys_lifetime: u64,
     pub(crate) solsys_cleanup_interval: u64,
+    pub(crate) std_threads: usize,
+    pub(crate) heavy_threads: usize,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -34,6 +36,8 @@ impl HSettings {
         server_defaults.insert("port".to_string(), config::ValueKind::U64(8000));
         server_defaults.insert("solsys_lifetime".to_string(), config::ValueKind::U64(900));
         server_defaults.insert("solsys_cleanup_interval".to_string(), config::ValueKind::U64(30));
+        server_defaults.insert("std_threads".to_string(), config::ValueKind::U64(2));
+        server_defaults.insert("heavy_threads".to_string(), config::ValueKind::U64(4));
         let mut cache_defaults = config::Map::new();
         cache_defaults.insert("folder".to_string(), config::ValueKind::Nil);
         let mut log_defaults = config::Map::new();

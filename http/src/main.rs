@@ -31,7 +31,11 @@ async fn main() {
     // Logging
     let _log_guard = logging::setup(settings.log.folder, &settings.log.level, settings.log.rotate);
     // Shared state
-    let state = Arc::new(HInnerAppState::new(settings.cache.folder));
+    let state = Arc::new(HInnerAppState::new(
+        settings.cache.folder,
+        settings.server.std_threads,
+        settings.server.heavy_threads,
+    ));
 
     // Cleanup task
     let state_cleanup = state.clone();
