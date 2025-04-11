@@ -37,6 +37,8 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
         f'port = {port}',
         'solsys_lifetime = 30',
         'solsys_cleanup_interval = 5',
+        'std_threads = 2',
+        'heavy_threads = 4',
         '[log]',
         f'folder = "{log_folder}"',
         'level = "debug"',

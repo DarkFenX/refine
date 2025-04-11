@@ -1489,6 +1489,7 @@ dependencies = [
  "chrono",
  "config",
  "itertools",
+ "parking_lot",
  "reefast-core",
  "reefast-dh-adapted",
  "reefast-dh-eve",

@@ -1,3 +1,8 @@
+use std::sync::Arc;
+
+use parking_lot::{Mutex, MutexGuard};
+use tokio_rayon::rayon::prelude::*;
+
 use crate::cmd::shared::HValOptions;
 
 #[derive(serde::Deserialize)]
@@ -33,6 +38,48 @@ pub(crate) struct HBenchmarkTryFitItemsCmd {
 impl HBenchmarkTryFitItemsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
         let core_options = self.validation_options.to_core_val_options(core_sol);
-        core_sol.benchmark_try_fit_items(&self.fit_id, &self.type_ids, &core_options, self.iterations);
+        let mut breeder = HGuardedSolBreeder::new(core_sol);
+        let chunk_size = (self.type_ids.len() / tokio_rayon::rayon::current_num_threads() / 2 + 1).max(500);
+        self.type_ids.par_chunks(chunk_size).for_each(|chunk| {
+            let mut inner_sol = breeder.lock().get();
+            inner_sol.benchmark_try_fit_items(&self.fit_id, chunk, &core_options, self.iterations);
+            breeder.lock().put(inner_sol);
+        });
+    }
+}
+
+struct HGuardedSolBreeder<'a> {
+    h_breeder: Arc<Mutex<HSolBreeder<'a>>>,
+}
+impl<'a> HGuardedSolBreeder<'a> {
+    pub(crate) fn new(original: &'a rc::SolarSystem) -> Self {
+        Self {
+            h_breeder: Arc::new(Mutex::new(HSolBreeder::new(original))),
+        }
+    }
+    pub(crate) fn lock(&'a self) -> MutexGuard<HSolBreeder> {
+        self.h_breeder.lock()
+    }
+}
+
+struct HSolBreeder<'a> {
+    original: &'a rc::SolarSystem,
+    allocated: Vec<rc::SolarSystem>,
+}
+impl<'a> HSolBreeder<'a> {
+    fn new(original: &'a rc::SolarSystem) -> Self {
+        Self {
+            original,
+            allocated: Vec::new(),
+        }
+    }
+    fn get(&mut self) -> rc::SolarSystem {
+        match self.allocated.pop() {
+            Some(sol) => sol,
+            None => self.original.clone(),
+        }
+    }
+    fn put(&mut self, sol: rc::SolarSystem) {
+        self.allocated.push(sol);
     }
 }
