@@ -24,7 +24,7 @@ pub(crate) async fn create_source(
     let make_default = payload.make_default.unwrap_or(false);
     match state
         .src_mgr
-        .add(alias, data_version, data_base_url, make_default)
+        .add(&state.tpool, alias, data_version, data_base_url, make_default)
         .await
     {
         Ok(_) => StatusCode::CREATED.into_response(),
