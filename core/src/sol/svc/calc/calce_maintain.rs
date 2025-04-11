@@ -166,10 +166,9 @@ impl Calc {
     ) {
         self.projs
             .change_range(projector_item_key, a_effect.id, projectee_item_key, range);
-        // TODO: does it need to be project effect, or some new query?
         let ctx_modifiers =
             self.std
-                .project_effect(projector_item_key, a_effect.id, projectee_item_key, projectee_item);
+                .query_projected_effect(projector_item_key, a_effect.id, projectee_item_key, projectee_item);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
