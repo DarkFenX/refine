@@ -23,9 +23,8 @@ class ServerInfo:
 def build_server(*, proj_root: Path, optimized: bool) -> None:
     http_path = proj_root / 'http'
     os.chdir(http_path)
-    profile = 'release-opt' if optimized else 'release'
     subprocess.run(
-        ['cargo', 'build', '--package=reefast-http', f'--profile={profile}'],
+        ['cargo', 'build', '--package=reefast-http', f'--profile={get_profile_name(optimized=optimized)}'],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True)
@@ -48,8 +47,8 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
     return ConfigInfo(config_path=config_path, port=port)
 
 
-def run_server(*, proj_root: Path, config_path: Path) -> ServerInfo:
-    binary_path = proj_root / 'target' / 'release' / 'reefast-http'
+def run_server(*, proj_root: Path, config_path: Path, optimized: bool) -> ServerInfo:
+    binary_path = proj_root / 'target' / get_profile_name(optimized=optimized) / 'reefast-http'
     return ServerInfo(popen=subprocess.Popen(
         [binary_path, config_path],
         stdout=subprocess.DEVNULL,
@@ -59,3 +58,7 @@ def run_server(*, proj_root: Path, config_path: Path) -> ServerInfo:
 def kill_server(*, server_info: ServerInfo) -> None:
     server_info.popen.kill()
     server_info.popen.wait()
+
+
+def get_profile_name(*, optimized: bool) -> str:
+    return 'release-opt' if optimized else 'release'
