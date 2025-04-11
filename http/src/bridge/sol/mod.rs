@@ -1,5 +1,5 @@
-pub(crate) use gsol::HGuardedSol;
-pub(crate) use sol::HSolarSystem;
+pub(crate) use guarded::HSolarSystem;
+pub(crate) use inner::HSolarSystemInner;
 
-mod gsol;
-mod sol;
+mod guarded;
+mod inner;

@@ -5,12 +5,12 @@ use axum::{
 };
 
 use crate::{
-    bridge::{HBrError, HGuardedSol, HSolMgr},
+    bridge::{HBrError, HSolMgr, HSolarSystem},
     handlers::HSingleErr,
 };
 
 pub(in crate::handlers) enum HGSolResult {
-    Sol(HGuardedSol),
+    Sol(HSolarSystem),
     ErrResp(Response),
 }
 

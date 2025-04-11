@@ -5,13 +5,13 @@ use tokio_rayon::AsyncThreadPool;
 use uuid::Uuid;
 
 use crate::{
-    bridge::{HBrError, HGuardedSol, HThreadPool},
+    bridge::{HBrError, HSolarSystem, HThreadPool},
     cmd::HAddSolCmd,
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
 };
 
 pub(crate) struct HSolMgr {
-    id_sol_map: RwLock<HashMap<String, HGuardedSol>>,
+    id_sol_map: RwLock<HashMap<String, HSolarSystem>>,
 }
 impl HSolMgr {
     pub(crate) fn new() -> Self {
@@ -48,13 +48,13 @@ impl HSolMgr {
                 self.id_sol_map
                     .write()
                     .await
-                    .insert(id.clone(), HGuardedSol::new(id, core_sol));
+                    .insert(id.clone(), HSolarSystem::new(id, core_sol));
                 Ok(sol_info)
             }
             Err(br_err) => Err(br_err),
         }
     }
-    pub(crate) async fn get_sol(&self, id: &str) -> Result<HGuardedSol, HBrError> {
+    pub(crate) async fn get_sol(&self, id: &str) -> Result<HSolarSystem, HBrError> {
         self.id_sol_map
             .read()
             .await

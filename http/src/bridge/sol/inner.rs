@@ -14,12 +14,12 @@ use crate::{
     util::HExecError,
 };
 
-pub(crate) struct HSolarSystem {
+pub(crate) struct HSolarSystemInner {
     id: String,
     accessed: chrono::DateTime<chrono::Utc>,
     core_sol: Option<rc::SolarSystem>,
 }
-impl HSolarSystem {
+impl HSolarSystemInner {
     pub(crate) fn new(id: String, core_sol: rc::SolarSystem) -> Self {
         Self {
             id,
