@@ -1,9 +1,9 @@
 use crate::sol::{
     debug::{DebugError, DebugResult},
-    uad::{Uad, fleet::Fleet},
+    uad::{Uad, fleet::UadFleet},
 };
 
-impl Fleet {
+impl UadFleet {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         let fleet_key = match uad.fleets.key_by_id(&self.id) {
             Some(fleet_key) => fleet_key,

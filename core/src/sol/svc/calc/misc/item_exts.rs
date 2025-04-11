@@ -1,10 +1,10 @@
 use crate::sol::{
     ItemKey,
     svc::calc::LocationKind,
-    uad::item::{Item, ShipKind},
+    uad::item::{ShipKind, UadItem},
 };
 
-impl Item {
+impl UadItem {
     pub(in crate::sol::svc::calc) fn get_root_loc_kind(&self) -> Option<LocationKind> {
         match self {
             Self::Character(_) => Some(LocationKind::Character),

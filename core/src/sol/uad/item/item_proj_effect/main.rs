@@ -2,21 +2,21 @@ use crate::{
     ad,
     sol::{
         ItemId,
-        uad::item::{EffectModes, ItemBase, Projs, bool_to_state_active, state_to_bool},
+        uad::item::{EffectModes, Projs, UadItemBase, bool_to_state_active, state_to_bool},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct ProjEffect {
-    base: ItemBase,
+pub(in crate::sol) struct UadProjEffect {
+    base: UadItemBase,
     projs: Projs,
 }
-impl ProjEffect {
+impl UadProjEffect {
     pub(in crate::sol) fn new(src: &Src, item_id: ItemId, a_item_id: ad::AItemId, state: bool) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, bool_to_state_active(state)),
+            base: UadItemBase::new(src, item_id, a_item_id, bool_to_state_active(state)),
             projs: Projs::new(),
         }
     }
@@ -77,12 +77,12 @@ impl ProjEffect {
         &mut self.projs
     }
 }
-impl Named for ProjEffect {
+impl Named for UadProjEffect {
     fn get_name() -> &'static str {
         "ProjEffect"
     }
 }
-impl std::fmt::Display for ProjEffect {
+impl std::fmt::Display for UadProjEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

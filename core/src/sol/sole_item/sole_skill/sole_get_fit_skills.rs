@@ -14,7 +14,7 @@ impl SolarSystem {
             .get(fit_key)
             .skills
             .values()
-            .map(|fit_skill| self.get_skill_internal(fit_skill.item_key).unwrap())
+            .map(|fit_skill| self.get_skill_info_internal(fit_skill.item_key).unwrap())
             .collect()
     }
 }

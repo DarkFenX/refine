@@ -3,9 +3,9 @@ use crate::sol::{
     uad::Uad,
 };
 
-use super::Service;
+use super::UadService;
 
-impl Service {
+impl UadService {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         check_fit_key(uad, self.get_fit_key())?;
         Ok(())

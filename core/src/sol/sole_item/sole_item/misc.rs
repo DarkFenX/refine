@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     AttrVal, ad,
-    sol::{ItemKey, SolarSystem, uad::item::Item},
+    sol::{ItemKey, SolarSystem, uad::item::UadItem},
 };
 
 impl SolarSystem {
@@ -60,10 +60,10 @@ impl SolarSystem {
         for &proj_item_key in proj_incoming.iter() {
             let proj_item = self.uad.items.get(proj_item_key);
             match proj_item {
-                Item::Drone(_) => self.remove_drone_proj_internal(proj_item_key, item_key).unwrap(),
-                Item::Fighter(_) => self.remove_fighter_proj_internal(proj_item_key, item_key).unwrap(),
-                Item::Module(_) => self.remove_module_proj_internal(proj_item_key, item_key).unwrap(),
-                Item::ProjEffect(_) => self.remove_proj_effect_proj_internal(proj_item_key, item_key).unwrap(),
+                UadItem::Drone(_) => self.remove_drone_proj_internal(proj_item_key, item_key).unwrap(),
+                UadItem::Fighter(_) => self.remove_fighter_proj_internal(proj_item_key, item_key).unwrap(),
+                UadItem::Module(_) => self.remove_module_proj_internal(proj_item_key, item_key).unwrap(),
+                UadItem::ProjEffect(_) => self.remove_proj_effect_proj_internal(proj_item_key, item_key).unwrap(),
                 _ => panic!(),
             }
         }

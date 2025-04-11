@@ -6,7 +6,7 @@ use crate::{
     sol::{
         ItemId, MutaRoll,
         info::{AttrMutationInfo, ItemMutationInfo},
-        uad::item::{EffectModes, ItemAddMutation, ItemAttrMutationValue, ItemBase, ItemChangeAttrMutation},
+        uad::item::{EffectModes, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, UadItemBase},
     },
     src::Src,
     util::RMap,
@@ -22,11 +22,11 @@ use crate::{
 // - Mutated, mutation not loaded - item base stores base item type, mutation stores mutator ID and
 // attribute mutations, and mutation cache isn't set.
 #[derive(Clone)]
-pub(in crate::sol::uad::item) struct ItemBaseMutable {
-    base: ItemBase,
+pub(in crate::sol::uad::item) struct UadItemBaseMutable {
+    base: UadItemBase,
     mutation: Option<ItemMutationData>,
 }
-impl ItemBaseMutable {
+impl UadItemBaseMutable {
     pub(in crate::sol::uad::item) fn new(
         src: &Src,
         item_id: ItemId,
@@ -39,7 +39,7 @@ impl ItemBaseMutable {
             // No mutation - regular non-mutated item setup
             None => {
                 return Self {
-                    base: ItemBase::new(src, item_id, a_item_id, a_state),
+                    base: UadItemBase::new(src, item_id, a_item_id, a_state),
                     mutation: None,
                 };
             }
@@ -49,7 +49,7 @@ impl ItemBaseMutable {
             // No mutator - base item with discarded absolute mutation values
             None => {
                 return Self {
-                    base: ItemBase::new(src, item_id, a_item_id, a_state),
+                    base: UadItemBase::new(src, item_id, a_item_id, a_state),
                     mutation: Some(convert_item_mutation_basic(mutation_request)),
                 };
             }
@@ -62,7 +62,7 @@ impl ItemBaseMutable {
                 // into rolls against base item attributes.
                 Some(base_a_item) => {
                     return Self {
-                        base: ItemBase::new_with_a_item(item_id, base_a_item.clone(), a_state),
+                        base: UadItemBase::new_with_a_item(item_id, base_a_item.clone(), a_state),
                         mutation: Some(convert_item_mutation_full(
                             mutation_request,
                             &base_a_item.attrs,
@@ -74,7 +74,7 @@ impl ItemBaseMutable {
                 // just roll values.
                 None => {
                     return Self {
-                        base: ItemBase::new_with_a_item_id_not_loaded(item_id, a_item_id, a_state),
+                        base: UadItemBase::new_with_a_item_id_not_loaded(item_id, a_item_id, a_state),
                         mutation: Some(convert_item_mutation_basic(mutation_request)),
                     };
                 }
@@ -92,7 +92,7 @@ impl ItemBaseMutable {
             a_extras,
         });
         Self {
-            base: ItemBase::new_with_a_item(item_id, mutated_a_item.clone(), a_state),
+            base: UadItemBase::new_with_a_item(item_id, mutated_a_item.clone(), a_state),
             mutation: Some(item_mutation),
         }
     }

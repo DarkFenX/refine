@@ -3,7 +3,7 @@ use crate::sol::{
     info::{ItemMutationInfo, ProjInfo},
     uad::{
         Uad,
-        item::{Drone, MinionState},
+        item::{MinionState, UadDrone},
     },
 };
 
@@ -16,7 +16,7 @@ pub struct DroneInfo {
     pub projs: Vec<ProjInfo>,
 }
 impl DroneInfo {
-    pub(in crate::sol) fn from_drone(uad: &Uad, drone: &Drone) -> Self {
+    pub(in crate::sol) fn from_drone(uad: &Uad, drone: &UadDrone) -> Self {
         Self {
             id: drone.get_item_id(),
             type_id: drone.get_a_item_id(),

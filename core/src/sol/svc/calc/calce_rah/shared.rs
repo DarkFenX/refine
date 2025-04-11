@@ -2,7 +2,7 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, DpsProfile,
-        uad::{Uad, fit::Fit},
+        uad::{Uad, fit::UadFit},
     },
     util::sig_round,
 };
@@ -25,7 +25,7 @@ pub(super) fn rah_round(val: AttrVal) -> AttrVal {
     sig_round(val, 10)
 }
 
-pub(super) fn get_fit_rah_incoming_dps(uad: &Uad, fit: &Fit) -> DpsProfile {
+pub(super) fn get_fit_rah_incoming_dps(uad: &Uad, fit: &UadFit) -> DpsProfile {
     match fit.rah_incoming_dps {
         Some(dps_profile) => dps_profile,
         None => uad.default_incoming_dps,

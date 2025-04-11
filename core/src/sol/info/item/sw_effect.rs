@@ -1,4 +1,4 @@
-use crate::sol::{ItemId, ItemTypeId, uad::item::SwEffect};
+use crate::sol::{ItemId, ItemTypeId, uad::item::UadSwEffect};
 
 pub struct SwEffectInfo {
     pub id: ItemId,
@@ -6,7 +6,7 @@ pub struct SwEffectInfo {
     pub enabled: bool,
 }
 impl SwEffectInfo {
-    pub(in crate::sol) fn from_sw_effect(sw_effect: &SwEffect) -> Self {
+    pub(in crate::sol) fn from_sw_effect(sw_effect: &UadSwEffect) -> Self {
         Self {
             id: sw_effect.get_item_id(),
             type_id: sw_effect.get_a_item_id(),

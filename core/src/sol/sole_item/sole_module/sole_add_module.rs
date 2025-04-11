@@ -3,7 +3,7 @@ use crate::{
     sol::{
         FitId, FitKey, ItemKey, ItemTypeId, ModRack, SolarSystem,
         info::ModuleInfo,
-        uad::item::{Charge, Item, ItemAddMutation, Module, ModuleState},
+        uad::item::{ItemAddMutation, ModuleState, UadCharge, UadItem, UadModule},
     },
 };
 
@@ -25,7 +25,7 @@ impl SolarSystem {
     ) -> Result<ModuleInfo, AddModuleError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let item_key = self.add_module_internal(fit_key, rack, pos_mode, type_id, state, mutation, charge_type_id);
-        Ok(self.get_module_internal(item_key).unwrap())
+        Ok(self.get_module_info_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_module_internal(
         &mut self,
@@ -40,7 +40,7 @@ impl SolarSystem {
         let module_item_id = self.uad.items.alloc_id();
         let fit_rack = get_fit_rack(&mut self.uad.fits, fit_key, rack);
         // Assume some random position for now; it will be overwritten later
-        let module = Module::new(
+        let module = UadModule::new(
             &self.uad.src,
             module_item_id,
             type_id,
@@ -51,7 +51,7 @@ impl SolarSystem {
             mutation,
             None,
         );
-        let module_item = Item::Module(module);
+        let module_item = UadItem::Module(module);
         let module_key = self.uad.items.add(module_item);
         // Calculate position for the module and update part of user data (fit rack and modules from
         // it)
@@ -96,7 +96,7 @@ impl SolarSystem {
             Some(charge_type_id) => {
                 let charge_item_id = self.uad.items.alloc_id();
                 // Update user data with new charge info
-                let charge = Charge::new(
+                let charge = UadCharge::new(
                     &self.uad.src,
                     charge_item_id,
                     charge_type_id,
@@ -105,7 +105,7 @@ impl SolarSystem {
                     state.into(),
                     false,
                 );
-                let item = Item::Charge(charge);
+                let item = UadItem::Charge(charge);
                 let charge_key = self.uad.items.add(item);
                 Some(charge_key)
             }

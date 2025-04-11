@@ -5,7 +5,7 @@ use crate::{
     sol::{
         ItemGrpId, ItemId, ItemKey, ItemTypeId,
         svc::vast::VastFitData,
-        uad::{Uad, item::Ship},
+        uad::{Uad, item::UadShip},
     },
     util::RSet,
 };
@@ -36,7 +36,11 @@ impl From<&ad::AItemShipLimit> for ValShipLimitItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<ItemKey>, ship: Option<&Ship>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        ship: Option<&UadShip>,
+    ) -> bool {
         let ship = match ship {
             Some(ship) => ship,
             None => {
@@ -69,7 +73,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
-        ship: Option<&Ship>,
+        ship: Option<&UadShip>,
     ) -> Option<ValShipLimitFail> {
         if self.ship_limited_items.is_empty() {
             return None;

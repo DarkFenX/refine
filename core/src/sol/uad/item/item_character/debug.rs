@@ -3,9 +3,9 @@ use crate::sol::{
     uad::Uad,
 };
 
-use super::Character;
+use super::UadCharacter;
 
-impl Character {
+impl UadCharacter {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         check_fit_key(uad, self.get_fit_key())?;
         Ok(())

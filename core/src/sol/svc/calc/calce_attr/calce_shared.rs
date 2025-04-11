@@ -5,7 +5,7 @@ use crate::{
     sol::{
         AttrVal,
         svc::calc::{Calc, Context, CtxModifier, ModifierKind},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -111,7 +111,7 @@ impl Calc {
     }
 }
 
-pub(super) fn get_base_attr_value(item: &Item, a_attr: &ad::AAttr) -> AttrVal {
+pub(super) fn get_base_attr_value(item: &UadItem, a_attr: &ad::AAttr) -> AttrVal {
     // Fetch unmodified on-item attribute value, or use base attribute value if it is not available
     match item.get_a_attrs().unwrap().get(&a_attr.id) {
         Some(orig_val) => *orig_val as AttrVal,

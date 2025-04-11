@@ -3,7 +3,7 @@ use crate::{
     sol::{
         AttrVal, ItemKey,
         svc::{calc::Calc, vast::VastFitData},
-        uad::{Uad, fit::Fit},
+        uad::{Uad, fit::UadFit},
     },
     util::round,
 };
@@ -15,7 +15,7 @@ pub struct StatRes {
 
 impl VastFitData {
     // Public methods
-    pub(in crate::sol::svc::vast) fn get_stats_cpu(&self, uad: &Uad, calc: &mut Calc, fit: &Fit) -> StatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_cpu(&self, uad: &Uad, calc: &mut Calc, fit: &UadFit) -> StatRes {
         get_resource_stats_fitting(
             uad,
             calc,
@@ -25,7 +25,7 @@ impl VastFitData {
             &ac::attrs::CPU_OUTPUT,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_powergrid(&self, uad: &Uad, calc: &mut Calc, fit: &Fit) -> StatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_powergrid(&self, uad: &Uad, calc: &mut Calc, fit: &UadFit) -> StatRes {
         get_resource_stats_fitting(
             uad,
             calc,
@@ -35,7 +35,7 @@ impl VastFitData {
             &ac::attrs::POWER_OUTPUT,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_calibration(&self, uad: &Uad, calc: &mut Calc, fit: &Fit) -> StatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_calibration(&self, uad: &Uad, calc: &mut Calc, fit: &UadFit) -> StatRes {
         get_resource_stats_other(
             uad,
             calc,
@@ -48,7 +48,7 @@ impl VastFitData {
         &self,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> StatRes {
         get_resource_stats_other(uad, calc, fit, self.drones_volume.values(), &ac::attrs::DRONE_CAPACITY)
     }
@@ -56,7 +56,7 @@ impl VastFitData {
         &self,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> StatRes {
         get_resource_stats_other(
             uad,
@@ -70,7 +70,7 @@ impl VastFitData {
         &self,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> StatRes {
         get_resource_stats_other(uad, calc, fit, self.fighters_volume.values(), &ac::attrs::FTR_CAPACITY)
     }
@@ -79,7 +79,7 @@ impl VastFitData {
 fn get_resource_stats_fitting<'a>(
     uad: &Uad,
     calc: &mut Calc,
-    fit: &Fit,
+    fit: &UadFit,
     items: impl Iterator<Item = &'a ItemKey>,
     use_a_attr_id: &ad::AAttrId,
     output_a_attr_id: &ad::AAttrId,
@@ -97,7 +97,7 @@ fn get_resource_stats_fitting<'a>(
 fn get_resource_stats_other<'a>(
     uad: &Uad,
     calc: &mut Calc,
-    fit: &Fit,
+    fit: &UadFit,
     items_use: impl Iterator<Item = &'a AttrVal>,
     output_a_attr_id: &ad::AAttrId,
 ) -> StatRes {

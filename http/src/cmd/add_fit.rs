@@ -26,6 +26,6 @@ impl HAddFitCmd {
                 }
             }
         }
-        Ok(core_sol.get_fit(&fit_info.id).unwrap())
+        Ok(core_sol.get_fit_info(&fit_info.id).unwrap())
     }
 }

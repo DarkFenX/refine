@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId,
-    uad::{Uad, item::FwEffect},
+    uad::{Uad, item::UadFwEffect},
 };
 
 pub struct FwEffectInfo {
@@ -10,7 +10,7 @@ pub struct FwEffectInfo {
     pub enabled: bool,
 }
 impl FwEffectInfo {
-    pub(in crate::sol) fn from_fw_effect(uad: &Uad, fw_effect: &FwEffect) -> Self {
+    pub(in crate::sol) fn from_fw_effect(uad: &Uad, fw_effect: &UadFwEffect) -> Self {
         Self {
             id: fw_effect.get_item_id(),
             type_id: fw_effect.get_a_item_id(),

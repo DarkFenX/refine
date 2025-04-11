@@ -3,7 +3,7 @@ use crate::{
     sol::{
         ItemKey,
         svc::vast::{ValModuleStateModuleInfo, Vast},
-        uad::item::{Item, ModuleState},
+        uad::item::{ModuleState, UadItem},
     },
 };
 
@@ -11,12 +11,12 @@ impl Vast {
     pub(in crate::sol::svc) fn item_state_activated_loaded(
         &mut self,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_state: &ad::AState,
     ) {
         match a_state {
             ad::AState::Offline => {
-                if let Item::Rig(rig) = item {
+                if let UadItem::Rig(rig) = item {
                     if let Some(val) = rig.get_a_attrs().unwrap().get(&ac::attrs::UPGRADE_COST) {
                         let fit_data = self.get_fit_data_mut(&rig.get_fit_key());
                         fit_data.rigs_offline_calibration.insert(item_key, *val);
@@ -24,7 +24,7 @@ impl Vast {
                 }
             }
             ad::AState::Online => match item {
-                Item::Fighter(fighter) => {
+                UadItem::Fighter(fighter) => {
                     let extras = fighter.get_a_extras().unwrap();
                     let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
                     if extras.is_light_fighter {
@@ -46,7 +46,7 @@ impl Vast {
                         fit_data.standup_support_fighters_online.insert(item_key);
                     }
                 }
-                Item::Module(module) => {
+                UadItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                     let extras = module.get_a_extras().unwrap();
                     fit_data.mods_svcs_online.insert(item_key);
@@ -73,7 +73,7 @@ impl Vast {
                         );
                     }
                 }
-                Item::Service(service) => {
+                UadItem::Service(service) => {
                     let fit_data = self.get_fit_data_mut(&service.get_fit_key());
                     let extras = service.get_a_extras().unwrap();
                     fit_data.mods_svcs_online.insert(item_key);
@@ -98,14 +98,14 @@ impl Vast {
                 _ => (),
             },
             ad::AState::Active => match item {
-                Item::Charge(charge) => {
+                UadItem::Charge(charge) => {
                     let extras = charge.get_a_extras().unwrap();
                     if extras.sec_zone_limitable {
                         let fit_data = self.get_fit_data_mut(&charge.get_fit_key());
                         fit_data.sec_zone_active.insert(item_key);
                     }
                 }
-                Item::Module(module) => {
+                UadItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                     let extras = module.get_a_extras().unwrap();
                     if let Some(a_item_grp_id) = extras.val_active_group_id {
@@ -137,7 +137,7 @@ impl Vast {
                 _ => (),
             },
             ad::AState::Overload => {
-                if let Item::Module(module) = item {
+                if let UadItem::Module(module) = item {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                     let extras = module.get_a_extras().unwrap();
                     match extras.max_state {
@@ -166,18 +166,18 @@ impl Vast {
     pub(in crate::sol::svc) fn item_state_deactivated_loaded(
         &mut self,
         item_key: &ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_state: &ad::AState,
     ) {
         match a_state {
             ad::AState::Offline => {
-                if let Item::Rig(rig) = item {
+                if let UadItem::Rig(rig) = item {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_key());
                     fit_data.rigs_offline_calibration.remove(item_key);
                 }
             }
             ad::AState::Online => match item {
-                Item::Fighter(fighter) => {
+                UadItem::Fighter(fighter) => {
                     let extras = fighter.get_a_extras().unwrap();
                     let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
                     if extras.is_light_fighter {
@@ -199,7 +199,7 @@ impl Vast {
                         fit_data.standup_support_fighters_online.remove(item_key);
                     }
                 }
-                Item::Module(module) => {
+                UadItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                     let extras = module.get_a_extras().unwrap();
                     fit_data.mods_svcs_online.remove(item_key);
@@ -216,7 +216,7 @@ impl Vast {
                         fit_data.mods_state.remove(item_key);
                     }
                 }
-                Item::Service(service) => {
+                UadItem::Service(service) => {
                     let fit_data = self.get_fit_data_mut(&service.get_fit_key());
                     let extras = service.get_a_extras().unwrap();
                     fit_data.mods_svcs_online.remove(item_key);
@@ -233,11 +233,11 @@ impl Vast {
                 _ => (),
             },
             ad::AState::Active => match item {
-                Item::Charge(charge) => {
+                UadItem::Charge(charge) => {
                     let fit_data = self.get_fit_data_mut(&charge.get_fit_key());
                     fit_data.sec_zone_active.remove(item_key);
                 }
-                Item::Module(module) => {
+                UadItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                     let extras = module.get_a_extras().unwrap();
                     if let Some(a_item_grp_id) = extras.val_active_group_id {
@@ -263,7 +263,7 @@ impl Vast {
                 _ => (),
             },
             ad::AState::Overload => {
-                if let Item::Module(module) = item {
+                if let UadItem::Module(module) = item {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                     let extras = module.get_a_extras().unwrap();
                     match extras.max_state {

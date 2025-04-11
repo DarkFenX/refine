@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::Rig;
+pub(in crate::sol) use main::UadRig;
 
 mod debug;
 mod main;

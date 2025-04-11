@@ -1,4 +1,4 @@
-pub use sole_get_fit_stance::GetFitStanceError;
+pub use sole_get_fit_stance::GetFitStanceInfoError;
 pub use sole_remove_fit_stance::RemoveFitStanceError;
 pub use sole_remove_stance::RemoveStanceError;
 pub use sole_set_fit_stance::SetFitStanceError;

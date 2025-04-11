@@ -1,4 +1,4 @@
-pub use sole_get_sw_effect::GetSwEffectError;
+pub use sole_get_sw_effect::GetSwEffectInfoError;
 pub use sole_remove_sw_effect::RemoveSwEffectError;
 pub use sole_set_sw_effect_state::SetSwEffectStateError;
 

@@ -3,7 +3,7 @@ use crate::{
     sol::{
         ItemId, ItemKey,
         svc::vast::VastFitData,
-        uad::{Uad, fit::Fit, item::Ship},
+        uad::{Uad, fit::UadFit, item::UadShip},
     },
     util::RSet,
 };
@@ -19,8 +19,8 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_ship_stance_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        fit: &Fit,
-        ship: Option<&Ship>,
+        fit: &UadFit,
+        ship: Option<&UadShip>,
     ) -> bool {
         let stance_key = match fit.stance {
             Some(stance_key) => stance_key,
@@ -40,8 +40,8 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
-        fit: &Fit,
-        ship: Option<&Ship>,
+        fit: &UadFit,
+        ship: Option<&UadShip>,
     ) -> Option<ValShipStanceFail> {
         let stance_key = fit.stance?;
         let ship = match ship {

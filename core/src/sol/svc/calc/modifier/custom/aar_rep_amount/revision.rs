@@ -2,7 +2,7 @@ use crate::{
     ac,
     sol::{
         ItemKey,
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -10,10 +10,10 @@ pub(in crate::sol::svc::calc::modifier) fn revise_on_item_add_removal(
     uad: &Uad,
     affector_key: ItemKey,
     changed_item_key: ItemKey,
-    changed_item: &Item,
+    changed_item: &UadItem,
 ) -> bool {
     match uad.items.get(affector_key) {
-        Item::Module(module) => match module.get_charge_item_key() {
+        UadItem::Module(module) => match module.get_charge_item_key() {
             Some(charge_key) => {
                 changed_item_key == charge_key && changed_item.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE
             }

@@ -1,8 +1,8 @@
 use crate::sol::{debug::DebugResult, uad::Uad};
 
-use super::Item;
+use super::UadItem;
 
-impl Item {
+impl UadItem {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         match self {
             Self::Autocharge(autocharge) => autocharge.consistency_check(uad),

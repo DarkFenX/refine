@@ -5,7 +5,7 @@ impl SolarSystem {
         self.uad
             .sw_effects
             .iter()
-            .map(|item_key| self.get_sw_effect_internal(*item_key).unwrap())
+            .map(|item_key| self.get_sw_effect_info_internal(*item_key).unwrap())
             .collect()
     }
 }

@@ -14,7 +14,7 @@ impl SolarSystem {
             .get(fit_key)
             .rigs
             .iter()
-            .map(|item_key| self.get_rig_internal(*item_key).unwrap())
+            .map(|item_key| self.get_rig_info_internal(*item_key).unwrap())
             .collect()
     }
 }

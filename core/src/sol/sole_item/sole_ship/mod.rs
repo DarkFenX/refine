@@ -1,4 +1,4 @@
-pub use sole_get_fit_ship::GetFitShipError;
+pub use sole_get_fit_ship::GetFitShipInfoError;
 pub use sole_remove_fit_ship::RemoveFitShipError;
 pub use sole_remove_ship::RemoveShipError;
 pub use sole_set_fit_ship::SetFitShipError;

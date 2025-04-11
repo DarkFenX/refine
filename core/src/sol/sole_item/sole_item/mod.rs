@@ -1,4 +1,4 @@
-pub use sole_get_item::GetItemError;
+pub use sole_get_item::GetItemInfoError;
 pub use sole_remove_item::RemoveItemError;
 
 mod misc;

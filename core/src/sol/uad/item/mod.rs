@@ -1,27 +1,27 @@
 //! Solar system item definitions.
 
-use base::{ItemBase, ItemBaseMutable};
+use base::{UadItemBase, UadItemBaseMutable};
 pub(in crate::sol) use container::Items;
-pub(in crate::sol) use item::Item;
-pub(in crate::sol) use item_autocharge::Autocharge;
-pub(in crate::sol) use item_booster::Booster;
-pub(in crate::sol) use item_character::Character;
-pub(in crate::sol) use item_charge::Charge;
-pub(in crate::sol) use item_drone::Drone;
+pub(in crate::sol) use item::UadItem;
+pub(in crate::sol) use item_autocharge::UadAutocharge;
+pub(in crate::sol) use item_booster::UadBooster;
+pub(in crate::sol) use item_character::UadCharacter;
+pub(in crate::sol) use item_charge::UadCharge;
+pub(in crate::sol) use item_drone::UadDrone;
 pub(in crate::sol) use item_fighter::Fighter;
-pub(in crate::sol) use item_fw_effect::FwEffect;
-pub(in crate::sol) use item_implant::Implant;
-pub(in crate::sol) use item_module::Module;
+pub(in crate::sol) use item_fw_effect::UadFwEffect;
+pub(in crate::sol) use item_implant::UadImplant;
 pub use item_module::ModuleState;
-pub(in crate::sol) use item_proj_effect::ProjEffect;
-pub(in crate::sol) use item_rig::Rig;
-pub(in crate::sol) use item_service::Service;
+pub(in crate::sol) use item_module::UadModule;
+pub(in crate::sol) use item_proj_effect::UadProjEffect;
+pub(in crate::sol) use item_rig::UadRig;
 pub use item_service::ServiceState;
-pub(in crate::sol) use item_ship::{Ship, ShipKind};
-pub(in crate::sol) use item_skill::Skill;
-pub(in crate::sol) use item_stance::Stance;
-pub(in crate::sol) use item_subsystem::Subsystem;
-pub(in crate::sol) use item_sw_effect::SwEffect;
+pub(in crate::sol) use item_service::UadService;
+pub(in crate::sol) use item_ship::{ShipKind, UadShip};
+pub(in crate::sol) use item_skill::UadSkill;
+pub(in crate::sol) use item_stance::UadStance;
+pub(in crate::sol) use item_subsystem::UadSubsystem;
+pub(in crate::sol) use item_sw_effect::UadSwEffect;
 use misc::{Autocharges, EffectModes, Projs, bool_to_state_active, bool_to_state_offline, state_to_bool};
 pub use misc::{ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, MinionState};
 

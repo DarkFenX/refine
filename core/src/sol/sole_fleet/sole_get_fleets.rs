@@ -1,7 +1,7 @@
 use crate::sol::{SolarSystem, info::FleetInfo};
 
 impl SolarSystem {
-    pub fn get_fleets(&self) -> Vec<FleetInfo> {
+    pub fn get_fleet_infos(&self) -> Vec<FleetInfo> {
         self.uad
             .fleets
             .values()

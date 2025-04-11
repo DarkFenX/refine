@@ -2,20 +2,20 @@ use crate::{
     ad,
     sol::{
         ItemId,
-        uad::item::{EffectModes, ItemBase, bool_to_state_active, state_to_bool},
+        uad::item::{EffectModes, UadItemBase, bool_to_state_active, state_to_bool},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SwEffect {
-    base: ItemBase,
+pub(in crate::sol) struct UadSwEffect {
+    base: UadItemBase,
 }
-impl SwEffect {
+impl UadSwEffect {
     pub(in crate::sol) fn new(src: &Src, item_id: ItemId, a_item_id: ad::AItemId, state: bool) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, bool_to_state_active(state)),
+            base: UadItemBase::new(src, item_id, a_item_id, bool_to_state_active(state)),
         }
     }
     // Item base methods
@@ -69,12 +69,12 @@ impl SwEffect {
         self.base.set_a_state(bool_to_state_active(state))
     }
 }
-impl Named for SwEffect {
+impl Named for UadSwEffect {
     fn get_name() -> &'static str {
         "SwEffect"
     }
 }
-impl std::fmt::Display for SwEffect {
+impl std::fmt::Display for UadSwEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

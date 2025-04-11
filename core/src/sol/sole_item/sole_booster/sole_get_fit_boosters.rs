@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_fit_boosters(&self, fit_id: &FitId) -> Result<Vec<BoosterInfo>, GetFitBoostersError> {
+    pub fn get_fit_boosters(&self, fit_id: &FitId) -> Result<Vec<BoosterInfo>, GetFitBoosterInfosError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         Ok(self.get_fit_boosters_internal(fit_key))
     }
@@ -14,13 +14,13 @@ impl SolarSystem {
             .get(fit_key)
             .boosters
             .iter()
-            .map(|item_key| self.get_booster_internal(*item_key).unwrap())
+            .map(|item_key| self.get_booster_info_internal(*item_key).unwrap())
             .collect()
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetFitBoostersError {
+pub enum GetFitBoosterInfosError {
     #[error("{0}")]
     FitNotFound(#[from] FitFoundError),
 }

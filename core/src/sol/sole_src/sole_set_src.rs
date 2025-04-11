@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     sol::{
         SolarSystem,
-        uad::item::{Item, ShipKind},
+        uad::item::{ShipKind, UadItem},
     },
     src::Src,
     util::RMapVec,
@@ -43,7 +43,7 @@ impl SolarSystem {
         // Register things in services again
         for (item_key, item) in self.uad.items.iter() {
             match item {
-                Item::Autocharge(autocharge) => {
+                UadItem::Autocharge(autocharge) => {
                     // Autocharges are new, so we're adding them, not loading
                     self.svc.add_item(&self.uad, item_key, item);
                     // For autocharges also enable outgoing projections

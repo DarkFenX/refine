@@ -3,7 +3,7 @@ use crate::sol::{
     svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
     uad::{
         Uad,
-        item::{Item, ShipKind},
+        item::{ShipKind, UadItem},
     },
 };
 
@@ -228,7 +228,7 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc::registers::standard) fn reg_buffable_for_sw(
         &mut self,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
     ) {
         for raw_modifier in self.rmods_sw_buff.iter() {
             match raw_modifier.affectee_filter {
@@ -243,7 +243,7 @@ impl StandardRegister {
                         );
                     }
                     Location::Ship => {
-                        if let Item::Ship(ship) = item {
+                        if let UadItem::Ship(ship) = item {
                             if matches!(ship.get_kind(), ShipKind::Ship) {
                                 let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                                 add_ctx_modifier(
@@ -258,7 +258,7 @@ impl StandardRegister {
                     _ => (),
                 },
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
-                    if let Item::Ship(ship) = item {
+                    if let UadItem::Ship(ship) = item {
                         if matches!(ship.get_kind(), ShipKind::Ship) {
                             let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                             add_ctx_modifier(
@@ -271,7 +271,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
-                    if let Item::Ship(ship) = item {
+                    if let UadItem::Ship(ship) = item {
                         if matches!(ship.get_kind(), ShipKind::Ship) {
                             let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                             add_ctx_modifier(
@@ -284,7 +284,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
-                    if let Item::Ship(ship) = item {
+                    if let UadItem::Ship(ship) = item {
                         if matches!(ship.get_kind(), ShipKind::Ship) {
                             let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                             add_ctx_modifier(
@@ -304,7 +304,7 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc::registers::standard) fn unreg_buffable_for_sw(
         &mut self,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
     ) {
         for raw_modifier in self.rmods_sw_buff.iter() {
             match raw_modifier.affectee_filter {
@@ -319,7 +319,7 @@ impl StandardRegister {
                         );
                     }
                     Location::Ship => {
-                        if let Item::Ship(ship) = item {
+                        if let UadItem::Ship(ship) = item {
                             if matches!(ship.get_kind(), ShipKind::Ship) {
                                 let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                                 remove_ctx_modifier(
@@ -334,7 +334,7 @@ impl StandardRegister {
                     _ => (),
                 },
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
-                    if let Item::Ship(ship) = item {
+                    if let UadItem::Ship(ship) = item {
                         if matches!(ship.get_kind(), ShipKind::Ship) {
                             let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                             remove_ctx_modifier(
@@ -347,7 +347,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
-                    if let Item::Ship(ship) = item {
+                    if let UadItem::Ship(ship) = item {
                         if matches!(ship.get_kind(), ShipKind::Ship) {
                             let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                             remove_ctx_modifier(
@@ -360,7 +360,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
-                    if let Item::Ship(ship) = item {
+                    if let UadItem::Ship(ship) = item {
                         if matches!(ship.get_kind(), ShipKind::Ship) {
                             let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, item_key);
                             remove_ctx_modifier(

@@ -3,12 +3,12 @@ use crate::sol::{
     debug::{DebugError, DebugResult},
     uad::{
         Uad,
-        fit::Fit,
-        item::{Fighter, Item, Module},
+        fit::UadFit,
+        item::{Fighter, UadItem, UadModule},
     },
 };
 
-impl Fit {
+impl UadFit {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad, seen_item_keys: &mut Vec<ItemKey>) -> DebugResult {
         let fit_key = match uad.fits.key_by_id(&self.id) {
             Some(fit_key) => fit_key,
@@ -32,7 +32,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let character = match item {
-                Item::Character(character) => character,
+                UadItem::Character(character) => character,
                 _ => return Err(DebugError {}),
             };
             if character.get_fit_key() != fit_key {
@@ -48,7 +48,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let skill = match item {
-                Item::Skill(skill) => skill,
+                UadItem::Skill(skill) => skill,
                 _ => return Err(DebugError {}),
             };
             if skill.get_fit_key() != fit_key {
@@ -67,7 +67,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let implant = match item {
-                Item::Implant(implant) => implant,
+                UadItem::Implant(implant) => implant,
                 _ => return Err(DebugError {}),
             };
             if implant.get_fit_key() != fit_key {
@@ -83,7 +83,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let booster = match item {
-                Item::Booster(booster) => booster,
+                UadItem::Booster(booster) => booster,
                 _ => return Err(DebugError {}),
             };
             if booster.get_fit_key() != fit_key {
@@ -99,7 +99,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let ship = match item {
-                Item::Ship(ship) => ship,
+                UadItem::Ship(ship) => ship,
                 _ => return Err(DebugError {}),
             };
             if ship.get_fit_key() != fit_key {
@@ -115,7 +115,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let stance = match item {
-                Item::Stance(stance) => stance,
+                UadItem::Stance(stance) => stance,
                 _ => return Err(DebugError {}),
             };
             if stance.get_fit_key() != fit_key {
@@ -131,7 +131,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let subsystem = match item {
-                Item::Subsystem(subsystem) => subsystem,
+                UadItem::Subsystem(subsystem) => subsystem,
                 _ => return Err(DebugError {}),
             };
             if subsystem.get_fit_key() != fit_key {
@@ -148,7 +148,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let module = match item {
-                Item::Module(module) => module,
+                UadItem::Module(module) => module,
                 _ => return Err(DebugError {}),
             };
             if module.get_fit_key() != fit_key {
@@ -169,7 +169,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let module = match item {
-                Item::Module(module) => module,
+                UadItem::Module(module) => module,
                 _ => return Err(DebugError {}),
             };
             if module.get_fit_key() != fit_key {
@@ -190,7 +190,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let module = match item {
-                Item::Module(module) => module,
+                UadItem::Module(module) => module,
                 _ => return Err(DebugError {}),
             };
             if module.get_fit_key() != fit_key {
@@ -210,7 +210,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let rig = match item {
-                Item::Rig(rig) => rig,
+                UadItem::Rig(rig) => rig,
                 _ => return Err(DebugError {}),
             };
             if rig.get_fit_key() != fit_key {
@@ -226,7 +226,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let service = match item {
-                Item::Service(service) => service,
+                UadItem::Service(service) => service,
                 _ => return Err(DebugError {}),
             };
             if service.get_fit_key() != fit_key {
@@ -242,7 +242,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let drone = match item {
-                Item::Drone(drone) => drone,
+                UadItem::Drone(drone) => drone,
                 _ => return Err(DebugError {}),
             };
             if drone.get_fit_key() != fit_key {
@@ -258,7 +258,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let fighter = match item {
-                Item::Fighter(fighter) => fighter,
+                UadItem::Fighter(fighter) => fighter,
                 _ => return Err(DebugError {}),
             };
             if fighter.get_fit_key() != fit_key {
@@ -275,7 +275,7 @@ impl Fit {
                 None => return Err(DebugError {}),
             };
             let fw_effect = match item {
-                Item::FwEffect(fw_effect) => fw_effect,
+                UadItem::FwEffect(fw_effect) => fw_effect,
                 _ => return Err(DebugError {}),
             };
             if fw_effect.get_fit_key() != fit_key {
@@ -291,7 +291,7 @@ fn check_module_charge(
     uad: &Uad,
     fit_key: FitKey,
     module_key: ItemKey,
-    module: &Module,
+    module: &UadModule,
     seen_items: &mut Vec<ItemKey>,
 ) -> DebugResult {
     if let Some(charge_key) = module.get_charge_item_key() {
@@ -304,7 +304,7 @@ fn check_module_charge(
             return Err(DebugError {});
         }
         let charge = match item {
-            Item::Charge(charge) => charge,
+            UadItem::Charge(charge) => charge,
             _ => return Err(DebugError {}),
         };
         if charge.get_cont_item_key() != module_key {
@@ -332,7 +332,7 @@ fn check_fighter_autocharges(
             return Err(DebugError {});
         }
         let autocharge = match item {
-            Item::Autocharge(autocharge) => autocharge,
+            UadItem::Autocharge(autocharge) => autocharge,
             _ => return Err(DebugError {}),
         };
         if autocharge.get_cont_item_key() != fighter_key {

@@ -7,7 +7,7 @@ use crate::{
         info::SkillInfo,
         uad::{
             fit::FitSkill,
-            item::{Item, Skill},
+            item::{UadItem, UadSkill},
         },
     },
 };
@@ -25,7 +25,7 @@ impl SolarSystem {
         check_skill_level(level)?;
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let item_key = self.add_skill_internal(fit_key, type_id, level, state)?;
-        Ok(self.get_skill_internal(item_key).unwrap())
+        Ok(self.get_skill_info_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_skill_internal(
         &mut self,
@@ -38,8 +38,8 @@ impl SolarSystem {
         match fit.skills.entry(type_id) {
             Entry::Vacant(entry) => {
                 let item_id = self.uad.items.alloc_id();
-                let skill = Skill::new(&self.uad.src, item_id, type_id, fit_key, level, state);
-                let item = Item::Skill(skill);
+                let skill = UadSkill::new(&self.uad.src, item_id, type_id, fit_key, level, state);
+                let item = UadItem::Skill(skill);
                 let item_key = self.uad.items.add(item);
                 entry.insert(FitSkill { item_key, level });
                 self.add_item_key_to_svc(item_key);

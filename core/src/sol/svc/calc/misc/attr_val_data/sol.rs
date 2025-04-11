@@ -2,7 +2,7 @@ use crate::{
     sol::{
         ItemKey,
         svc::calc::{ItemAttrPostprocs, misc::ItemAttrValData},
-        uad::item::Item,
+        uad::item::UadItem,
     },
     util::RMap,
 };
@@ -32,10 +32,10 @@ impl AttrValData {
         self.data.get_mut(item_key)
     }
     // Modification methods
-    pub(in crate::sol::svc::calc) fn item_loaded(&mut self, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc::calc) fn item_loaded(&mut self, item_key: ItemKey, item: &UadItem) {
         let mut item_data = ItemAttrValData::new();
         match item {
-            Item::Fighter(_) => {
+            UadItem::Fighter(_) => {
                 item_data.postprocs.insert(
                     FTR_COUNT_ATTR,
                     ItemAttrPostprocs {
@@ -44,7 +44,7 @@ impl AttrValData {
                     },
                 );
             }
-            Item::Ship(_) => {
+            UadItem::Ship(_) => {
                 item_data.postprocs.insert(
                     SEC_STATUS_ATTR,
                     ItemAttrPostprocs {
@@ -53,7 +53,7 @@ impl AttrValData {
                     },
                 );
             }
-            Item::Skill(_) => {
+            UadItem::Skill(_) => {
                 item_data.postprocs.insert(
                     SKILL_LVL_ATTR,
                     ItemAttrPostprocs {

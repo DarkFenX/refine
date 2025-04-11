@@ -1,6 +1,6 @@
 pub use sole_add_booster::AddBoosterError;
-pub use sole_get_booster::GetBoosterError;
-pub use sole_get_fit_boosters::GetFitBoostersError;
+pub use sole_get_booster::GetBoosterInfoError;
+pub use sole_get_fit_boosters::GetFitBoosterInfosError;
 pub use sole_remove_booster::RemoveBoosterError;
 pub use sole_set_booster_side_effect_state::SetBoosterSideEffectStateError;
 pub use sole_set_booster_state::SetBoosterStateError;

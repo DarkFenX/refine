@@ -1,8 +1,8 @@
 pub use sole_add_fighter::AddFighterError;
 pub use sole_add_fighter_proj::AddFighterProjError;
 pub use sole_change_fighter_proj::ChangeFighterProjError;
-pub use sole_get_fighter::GetFighterError;
-pub use sole_get_fit_fighters::GetFitFightersError;
+pub use sole_get_fighter::GetFighterInfoError;
+pub use sole_get_fit_fighters::GetFitFighterInfosError;
 pub use sole_remove_fighter::RemoveFighterError;
 pub use sole_remove_fighter_count_override::RemoveFighterCountOverrideError;
 pub use sole_remove_fighter_proj::RemoveFighterProjError;

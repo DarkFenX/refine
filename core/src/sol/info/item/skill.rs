@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId, SkillLevel,
-    uad::{Uad, item::Skill},
+    uad::{Uad, item::UadSkill},
 };
 
 pub struct SkillInfo {
@@ -11,7 +11,7 @@ pub struct SkillInfo {
     pub enabled: bool,
 }
 impl SkillInfo {
-    pub(in crate::sol) fn from_skill(uad: &Uad, skill: &Skill) -> Self {
+    pub(in crate::sol) fn from_skill(uad: &Uad, skill: &UadSkill) -> Self {
         Self {
             id: skill.get_item_id(),
             type_id: skill.get_a_item_id(),

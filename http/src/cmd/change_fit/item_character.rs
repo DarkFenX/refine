@@ -70,14 +70,14 @@ impl HChangeCharacterViaFitIdCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<HCmdResp, HExecError> {
-        let item_id = match core_sol.get_fit_character(fit_id) {
+        let item_id = match core_sol.get_fit_character_info(fit_id) {
             Ok(core_character) => match core_character {
                 Some(core_character) => core_character.id,
                 None => return Err(HExecError::FitCharacterNotFound(*fit_id)),
             },
             Err(error) => {
                 return Err(match error {
-                    rc::err::GetFitCharacterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::GetFitCharacterInfoError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
                 });
             }
         };

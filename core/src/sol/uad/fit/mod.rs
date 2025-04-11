@@ -1,5 +1,5 @@
 pub(in crate::sol) use container::Fits;
-pub(in crate::sol) use fit::Fit;
+pub(in crate::sol) use fit::UadFit;
 pub(in crate::sol) use item_vec::ItemVec;
 pub(in crate::sol) use skill::FitSkill;
 

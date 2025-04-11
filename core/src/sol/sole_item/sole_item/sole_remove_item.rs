@@ -2,7 +2,7 @@ use crate::{
     err::basic::{ItemFoundError, ItemKindRemoveError},
     sol::{
         ItemId, ItemKey, RmMode, SolarSystem,
-        uad::item::{Autocharge, Item},
+        uad::item::{UadAutocharge, UadItem},
     },
     util::Named,
 };
@@ -20,29 +20,29 @@ impl SolarSystem {
         let item = self.uad.items.get(item_key);
         match item {
             // Autocharge can't be removed no matter what
-            Item::Autocharge(_) => {
+            UadItem::Autocharge(_) => {
                 return Err(ItemKindRemoveError {
-                    item_kind: Autocharge::get_name(),
+                    item_kind: UadAutocharge::get_name(),
                 });
             }
             // We unwrap when the only reasons of failure are when item is not found and when item
             // kind mismatches, both of which we already checked
-            Item::Booster(_) => self.remove_booster_internal(item_key).unwrap(),
-            Item::Character(_) => self.remove_character_internal(item_key).unwrap(),
-            Item::Charge(_) => self.remove_charge_internal(item_key).unwrap(),
-            Item::Drone(_) => self.remove_drone_internal(item_key).unwrap(),
-            Item::Fighter(_) => self.remove_fighter_internal(item_key).unwrap(),
-            Item::FwEffect(_) => self.remove_fw_effect_internal(item_key).unwrap(),
-            Item::Implant(_) => self.remove_implant_internal(item_key).unwrap(),
-            Item::Module(_) => self.remove_module_internal(item_key, pos_mode).unwrap(),
-            Item::ProjEffect(_) => self.remove_proj_effect_internal(item_key).unwrap(),
-            Item::Rig(_) => self.remove_rig_internal(item_key).unwrap(),
-            Item::Service(_) => self.remove_service_internal(item_key).unwrap(),
-            Item::Ship(_) => self.remove_ship_internal(item_key).unwrap(),
-            Item::Skill(_) => self.remove_skill_internal(item_key).unwrap(),
-            Item::Stance(_) => self.remove_stance_internal(item_key).unwrap(),
-            Item::Subsystem(_) => self.remove_subsystem_internal(item_key).unwrap(),
-            Item::SwEffect(_) => self.remove_sw_effect_internal(item_key).unwrap(),
+            UadItem::Booster(_) => self.remove_booster_internal(item_key).unwrap(),
+            UadItem::Character(_) => self.remove_character_internal(item_key).unwrap(),
+            UadItem::Charge(_) => self.remove_charge_internal(item_key).unwrap(),
+            UadItem::Drone(_) => self.remove_drone_internal(item_key).unwrap(),
+            UadItem::Fighter(_) => self.remove_fighter_internal(item_key).unwrap(),
+            UadItem::FwEffect(_) => self.remove_fw_effect_internal(item_key).unwrap(),
+            UadItem::Implant(_) => self.remove_implant_internal(item_key).unwrap(),
+            UadItem::Module(_) => self.remove_module_internal(item_key, pos_mode).unwrap(),
+            UadItem::ProjEffect(_) => self.remove_proj_effect_internal(item_key).unwrap(),
+            UadItem::Rig(_) => self.remove_rig_internal(item_key).unwrap(),
+            UadItem::Service(_) => self.remove_service_internal(item_key).unwrap(),
+            UadItem::Ship(_) => self.remove_ship_internal(item_key).unwrap(),
+            UadItem::Skill(_) => self.remove_skill_internal(item_key).unwrap(),
+            UadItem::Stance(_) => self.remove_stance_internal(item_key).unwrap(),
+            UadItem::Subsystem(_) => self.remove_subsystem_internal(item_key).unwrap(),
+            UadItem::SwEffect(_) => self.remove_sw_effect_internal(item_key).unwrap(),
         }
         Ok(())
     }

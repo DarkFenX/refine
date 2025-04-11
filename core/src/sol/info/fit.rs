@@ -1,6 +1,6 @@
 use crate::sol::{
     DpsProfile, FitId, FleetId, ItemId, ItemKey, SecStatus,
-    uad::{Uad, fit::Fit},
+    uad::{Uad, fit::UadFit},
 };
 
 pub struct FitInfo {
@@ -25,7 +25,7 @@ pub struct FitInfo {
     pub rah_incoming_dps: Option<DpsProfile>,
 }
 impl FitInfo {
-    pub(in crate::sol) fn from_fit(uad: &Uad, fit: &Fit) -> Self {
+    pub(in crate::sol) fn from_fit(uad: &Uad, fit: &UadFit) -> Self {
         Self {
             id: fit.id,
             fleet: fit.fleet.map(|fleet_key| uad.fleets.id_by_key(fleet_key)),

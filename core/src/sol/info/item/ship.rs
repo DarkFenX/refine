@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId,
-    uad::{Uad, item::Ship},
+    uad::{Uad, item::UadShip},
 };
 
 pub struct ShipInfo {
@@ -10,7 +10,7 @@ pub struct ShipInfo {
     pub enabled: bool,
 }
 impl ShipInfo {
-    pub(in crate::sol) fn from_ship(uad: &Uad, ship: &Ship) -> Self {
+    pub(in crate::sol) fn from_ship(uad: &Uad, ship: &UadShip) -> Self {
         Self {
             id: ship.get_item_id(),
             type_id: ship.get_a_item_id(),

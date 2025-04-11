@@ -3,7 +3,7 @@ use crate::{
     sol::{
         ItemKey,
         svc::Svc,
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -12,7 +12,7 @@ impl Svc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
     ) {

@@ -4,11 +4,11 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Fleet {
+pub(in crate::sol) struct UadFleet {
     pub(in crate::sol) id: FleetId,
     fits: RSet<FitKey>,
 }
-impl Fleet {
+impl UadFleet {
     pub(in crate::sol) fn new(id: FleetId) -> Self {
         Self { id, fits: RSet::new() }
     }
@@ -25,12 +25,12 @@ impl Fleet {
         self.fits.remove(fit_key);
     }
 }
-impl Named for Fleet {
+impl Named for UadFleet {
     fn get_name() -> &'static str {
         "Fleet"
     }
 }
-impl GetId<FleetId> for Fleet {
+impl GetId<FleetId> for UadFleet {
     fn get_id(&self) -> FleetId {
         self.id
     }

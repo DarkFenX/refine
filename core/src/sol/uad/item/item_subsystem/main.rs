@@ -2,18 +2,18 @@ use crate::{
     ad,
     sol::{
         FitKey, ItemId,
-        uad::item::{EffectModes, ItemBase, bool_to_state_offline, state_to_bool},
+        uad::item::{EffectModes, UadItemBase, bool_to_state_offline, state_to_bool},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Subsystem {
-    base: ItemBase,
+pub(in crate::sol) struct UadSubsystem {
+    base: UadItemBase,
     fit_key: FitKey,
 }
-impl Subsystem {
+impl UadSubsystem {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -22,7 +22,7 @@ impl Subsystem {
         state: bool,
     ) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
+            base: UadItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
             fit_key,
         }
     }
@@ -86,12 +86,12 @@ impl Subsystem {
         }
     }
 }
-impl Named for Subsystem {
+impl Named for UadSubsystem {
     fn get_name() -> &'static str {
         "Subsystem"
     }
 }
-impl std::fmt::Display for Subsystem {
+impl std::fmt::Display for UadSubsystem {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

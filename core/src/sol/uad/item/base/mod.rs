@@ -1,5 +1,5 @@
 mod base;
 mod mutable;
 
-pub(in crate::sol::uad::item) use base::ItemBase;
-pub(in crate::sol::uad::item) use mutable::ItemBaseMutable;
+pub(in crate::sol::uad::item) use base::UadItemBase;
+pub(in crate::sol::uad::item) use mutable::UadItemBaseMutable;

@@ -1,7 +1,7 @@
 use crate::sol::{
     FitKey,
     svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
-    uad::{Uad, fleet::Fleet, item::Item},
+    uad::{Uad, fleet::UadFleet, item::UadItem},
 };
 
 use super::{add_ctx_modifier, remove_ctx_modifier};
@@ -11,7 +11,7 @@ impl StandardRegister {
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
         uad: &Uad,
-        item: &Item,
+        item: &UadItem,
         raw_modifier: RawModifier,
     ) -> bool {
         ctx_modifiers.clear();
@@ -48,7 +48,7 @@ impl StandardRegister {
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
         uad: &Uad,
-        item: &Item,
+        item: &UadItem,
         raw_modifier: RawModifier,
     ) {
         ctx_modifiers.clear();
@@ -74,7 +74,11 @@ impl StandardRegister {
         }
         self.rmods_fleet.remove_entry(&fit_key, &raw_modifier);
     }
-    pub(in crate::sol::svc::calc) fn reg_fleet_for_fit(&mut self, fleet: &Fleet, fit_key: &FitKey) -> Vec<CtxModifier> {
+    pub(in crate::sol::svc::calc) fn reg_fleet_for_fit(
+        &mut self,
+        fleet: &UadFleet,
+        fit_key: &FitKey,
+    ) -> Vec<CtxModifier> {
         let mut raw_modifiers = Vec::new();
         let mut ctx_modifiers = Vec::new();
         // Outgoing fleet boosts
@@ -106,7 +110,7 @@ impl StandardRegister {
     }
     pub(in crate::sol::svc::calc) fn unreg_fleet_for_fit(
         &mut self,
-        fleet: &Fleet,
+        fleet: &UadFleet,
         fit_key: &FitKey,
     ) -> Vec<CtxModifier> {
         let mut raw_modifiers = Vec::new();

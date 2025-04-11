@@ -2,22 +2,22 @@ use crate::{
     ad,
     sol::{
         FitKey, ItemId, ItemKey,
-        uad::item::{EffectModes, ItemBase, Projs},
+        uad::item::{EffectModes, Projs, UadItemBase},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Autocharge {
-    base: ItemBase,
+pub(in crate::sol) struct UadAutocharge {
+    base: UadItemBase,
     fit_key: FitKey,
     cont_item_key: ItemKey,
     cont_a_effect_id: ad::AEffectId,
     projs: Projs,
     force_disable: bool,
 }
-impl Autocharge {
+impl UadAutocharge {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -29,7 +29,7 @@ impl Autocharge {
         force_disable: bool,
     ) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, cont_a_state),
+            base: UadItemBase::new(src, item_id, a_item_id, cont_a_state),
             fit_key,
             cont_item_key,
             cont_a_effect_id,
@@ -111,12 +111,12 @@ impl Autocharge {
         &mut self.projs
     }
 }
-impl Named for Autocharge {
+impl Named for UadAutocharge {
     fn get_name() -> &'static str {
         "Autocharge"
     }
 }
-impl std::fmt::Display for Autocharge {
+impl std::fmt::Display for UadAutocharge {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

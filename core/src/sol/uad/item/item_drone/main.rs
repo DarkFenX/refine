@@ -4,19 +4,19 @@ use crate::{
     sol::{
         FitKey, ItemId,
         info::ItemMutationInfo,
-        uad::item::{EffectModes, ItemAddMutation, ItemBaseMutable, ItemChangeAttrMutation, MinionState, Projs},
+        uad::item::{EffectModes, ItemAddMutation, ItemChangeAttrMutation, MinionState, Projs, UadItemBaseMutable},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Drone {
-    base: ItemBaseMutable,
+pub(in crate::sol) struct UadDrone {
+    base: UadItemBaseMutable,
     fit_key: FitKey,
     projs: Projs,
 }
-impl Drone {
+impl UadDrone {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -26,7 +26,7 @@ impl Drone {
         mutation: Option<ItemAddMutation>,
     ) -> Self {
         Self {
-            base: ItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
+            base: UadItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
             fit_key,
             projs: Projs::new(),
         }
@@ -111,12 +111,12 @@ impl Drone {
         &mut self.projs
     }
 }
-impl Named for Drone {
+impl Named for UadDrone {
     fn get_name() -> &'static str {
         "Drone"
     }
 }
-impl std::fmt::Display for Drone {
+impl std::fmt::Display for UadDrone {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

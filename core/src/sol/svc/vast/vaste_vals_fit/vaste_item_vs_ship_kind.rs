@@ -4,7 +4,7 @@ use crate::{
     sol::{
         ItemId, ItemKey,
         svc::vast::VastFitData,
-        uad::{Uad, fit::Fit, item::ShipKind},
+        uad::{Uad, fit::UadFit, item::ShipKind},
     },
     util::RSet,
 };
@@ -46,7 +46,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValItemVsShipKindFail> {
         let items: HashMap<_, _> = self
             .mods_rigs_svcs_vs_ship_kind

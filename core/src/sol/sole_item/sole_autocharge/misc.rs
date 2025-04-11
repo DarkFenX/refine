@@ -2,7 +2,7 @@ use crate::{
     ad,
     sol::{
         ItemKey, ItemTypeId, SolarSystem,
-        uad::item::{Autocharge, Item},
+        uad::item::{UadAutocharge, UadItem},
     },
 };
 
@@ -24,7 +24,7 @@ impl SolarSystem {
                     if let Some(ad::AEffectChargeInfo::Attr(charge_a_attr_id)) = a_effect.charge {
                         if let Some(autocharge_a_item_id) = cloned_item.get_a_attrs().unwrap().get(&charge_a_attr_id) {
                             let autocharge_id = self.uad.items.alloc_id();
-                            let mut autocharge = Autocharge::new(
+                            let mut autocharge = UadAutocharge::new(
                                 &self.uad.src,
                                 autocharge_id,
                                 autocharge_a_item_id.into_inner() as ItemTypeId,
@@ -43,7 +43,7 @@ impl SolarSystem {
                                 autocharge.get_projs_mut().add(*projectee_item_id, *range);
                             }
                             // Add autocharge item to user data and fill info map
-                            let ac_item = Item::Autocharge(autocharge);
+                            let ac_item = UadItem::Autocharge(autocharge);
                             let ac_key = self.uad.items.add(ac_item);
                             new_autocharges.push((*a_effect_id, ac_key));
                         }

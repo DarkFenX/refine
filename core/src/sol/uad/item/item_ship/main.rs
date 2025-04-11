@@ -2,19 +2,19 @@ use crate::{
     ac, ad,
     sol::{
         FitKey, ItemId,
-        uad::item::{EffectModes, ItemBase, ShipKind, bool_to_state_offline, state_to_bool},
+        uad::item::{EffectModes, ShipKind, UadItemBase, bool_to_state_offline, state_to_bool},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Ship {
-    base: ItemBase,
+pub(in crate::sol) struct UadShip {
+    base: UadItemBase,
     fit_key: FitKey,
     kind: ShipKind,
 }
-impl Ship {
+impl UadShip {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -23,7 +23,7 @@ impl Ship {
         state: bool,
     ) -> Self {
         let mut ship = Self {
-            base: ItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
+            base: UadItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
             fit_key,
             kind: ShipKind::Unknown,
         };
@@ -95,12 +95,12 @@ impl Ship {
         };
     }
 }
-impl Named for Ship {
+impl Named for UadShip {
     fn get_name() -> &'static str {
         "Ship"
     }
 }
-impl std::fmt::Display for Ship {
+impl std::fmt::Display for UadShip {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

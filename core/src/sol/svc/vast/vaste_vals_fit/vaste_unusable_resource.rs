@@ -7,7 +7,7 @@ use crate::{
     sol::{
         AttrVal, ItemId, ItemKey,
         svc::{calc::Calc, vast::VastFitData},
-        uad::{Uad, fit::Fit},
+        uad::{Uad, fit::UadFit},
     },
     util::RSet,
 };
@@ -28,7 +28,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         if self.drones_bandwidth.is_empty() {
             return true;
@@ -47,7 +47,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableResFail> {
         if self.drones_bandwidth.is_empty() {
             return None;

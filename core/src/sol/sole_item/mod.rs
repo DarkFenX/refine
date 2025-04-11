@@ -1,59 +1,59 @@
 //! Solar system extension methods which handle item manipulation.
 
-pub use sole_autocharge::{GetAutochargeError, SetAutochargeStateError};
+pub use sole_autocharge::{GetAutochargeInfoError, SetAutochargeStateError};
 pub use sole_booster::{
-    AddBoosterError, GetBoosterError, GetFitBoostersError, RemoveBoosterError, SetBoosterSideEffectStateError,
+    AddBoosterError, GetBoosterInfoError, GetFitBoosterInfosError, RemoveBoosterError, SetBoosterSideEffectStateError,
     SetBoosterStateError,
 };
 pub use sole_character::{
-    GetFitCharacterError, RemoveCharacterError, RemoveFitCharacterError, SetCharacterStateError, SetFitCharacterError,
-    SetFitCharacterStateError,
+    GetFitCharacterInfoError, RemoveCharacterError, RemoveFitCharacterError, SetCharacterStateError,
+    SetFitCharacterError, SetFitCharacterStateError,
 };
-pub use sole_charge::{GetChargeError, RemoveChargeError, SetChargeStateError};
+pub use sole_charge::{GetChargeInfoError, RemoveChargeError, SetChargeStateError};
 pub use sole_drone::{
     AddDroneError, AddDroneMutationError, AddDroneProjError, ChangeDroneMutationError, ChangeDroneProjError,
-    GetDroneError, GetFitDronesError, RemoveDroneError, RemoveDroneMutationError, RemoveDroneProjError,
+    GetDroneInfoError, GetFitDroneInfosError, RemoveDroneError, RemoveDroneMutationError, RemoveDroneProjError,
     SetDroneStateError,
 };
 pub use sole_fighter::{
-    AddFighterError, AddFighterProjError, ChangeFighterProjError, GetFighterError, GetFitFightersError,
+    AddFighterError, AddFighterProjError, ChangeFighterProjError, GetFighterInfoError, GetFitFighterInfosError,
     RemoveFighterCountOverrideError, RemoveFighterError, RemoveFighterProjError, SetFighterCountOverrideError,
     SetFighterStateError,
 };
 pub use sole_fw_effect::{
-    AddFwEffectError, GetFitFwEffectsError, GetFwEffectError, RemoveFwEffectError, SetFwEffectStateError,
+    AddFwEffectError, GetFitFwEffectInfosError, GetFwEffectInfoError, RemoveFwEffectError, SetFwEffectStateError,
 };
 pub use sole_implant::{
-    AddImplantError, GetFitImplantsError, GetImplantError, RemoveImplantError, SetImplantStateError,
+    AddImplantError, GetFitImplantInfosError, GetImplantInfoError, RemoveImplantError, SetImplantStateError,
 };
-pub use sole_item::{GetItemError, RemoveItemError};
+pub use sole_item::{GetItemInfoError, RemoveItemError};
 pub use sole_module::{
     AddMode, AddModuleError, AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError,
-    ChangeModuleProjError, GetFitModulesError, GetModuleError, RemoveModuleChargeError, RemoveModuleError,
+    ChangeModuleProjError, GetFitModuleInfosError, GetModuleInfoError, RemoveModuleChargeError, RemoveModuleError,
     RemoveModuleMutationError, RemoveModuleProjError, RmMode, SetModuleChargeError, SetModuleStateError,
 };
 pub use sole_proj_effect::{
-    AddProjEffectProjError, GetProjEffectError, RemoveProjEffectError, RemoveProjEffectProjError,
+    AddProjEffectProjError, GetProjEffectInfoError, RemoveProjEffectError, RemoveProjEffectProjError,
     SetProjEffectStateError,
 };
-pub use sole_rig::{AddRigError, GetFitRigsError, GetRigError, RemoveRigError, SetRigStateError};
+pub use sole_rig::{AddRigError, GetFitRigsError, GetRigInfoError, RemoveRigError, SetRigStateError};
 pub use sole_service::{
-    AddServiceError, GetFitServicesError, GetServiceError, RemoveServiceError, SetServiceStateError,
+    AddServiceError, GetFitServiceInfosError, GetServiceInfoError, RemoveServiceError, SetServiceStateError,
 };
 pub use sole_ship::{
-    GetFitShipError, RemoveFitShipError, RemoveShipError, SetFitShipError, SetFitShipStateError, SetShipStateError,
+    GetFitShipInfoError, RemoveFitShipError, RemoveShipError, SetFitShipError, SetFitShipStateError, SetShipStateError,
 };
 pub use sole_skill::{
-    AddSkillError, GetFitSkillsError, GetSkillError, RemoveSkillError, SetSkillLevelError, SetSkillStateError,
+    AddSkillError, GetFitSkillsError, GetSkillInfoError, RemoveSkillError, SetSkillLevelError, SetSkillStateError,
 };
 pub use sole_stance::{
-    GetFitStanceError, RemoveFitStanceError, RemoveStanceError, SetFitStanceError, SetFitStanceStateError,
+    GetFitStanceInfoError, RemoveFitStanceError, RemoveStanceError, SetFitStanceError, SetFitStanceStateError,
     SetStanceStateError,
 };
 pub use sole_subsystem::{
-    AddSubsystemError, GetFitSubsystemsError, GetSubsystemError, RemoveSubsystemError, SetSubsystemStateError,
+    AddSubsystemError, GetFitSubsystemsError, GetSubsystemInfoError, RemoveSubsystemError, SetSubsystemStateError,
 };
-pub use sole_sw_effect::{GetSwEffectError, RemoveSwEffectError, SetSwEffectStateError};
+pub use sole_sw_effect::{GetSwEffectInfoError, RemoveSwEffectError, SetSwEffectStateError};
 
 mod sole_autocharge;
 mod sole_booster;

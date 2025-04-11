@@ -5,7 +5,7 @@ use crate::{
     sol::{
         AttrVal, ItemId, ItemKey,
         svc::vast::VastFitData,
-        uad::{Uad, item::Ship},
+        uad::{Uad, item::UadShip},
     },
     util::RSet,
 };
@@ -19,7 +19,11 @@ pub struct ValRigSizeFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(&self, kfs: &RSet<ItemKey>, ship: Option<&Ship>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        ship: Option<&UadShip>,
+    ) -> bool {
         let allowed_size = match get_allowed_size(ship) {
             Some(allowed_size) => allowed_size,
             None => return true,
@@ -36,7 +40,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
-        ship: Option<&Ship>,
+        ship: Option<&UadShip>,
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
         let mut rig_sizes = HashMap::new();
@@ -55,6 +59,6 @@ impl VastFitData {
     }
 }
 
-fn get_allowed_size(ship: Option<&Ship>) -> Option<ad::AAttrVal> {
+fn get_allowed_size(ship: Option<&UadShip>) -> Option<ad::AAttrVal> {
     ship?.get_a_attrs()?.get(&ac::attrs::RIG_SIZE).copied()
 }

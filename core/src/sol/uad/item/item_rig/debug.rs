@@ -3,9 +3,9 @@ use crate::sol::{
     uad::Uad,
 };
 
-use super::Rig;
+use super::UadRig;
 
-impl Rig {
+impl UadRig {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         check_fit_key(uad, self.get_fit_key())?;
         Ok(())

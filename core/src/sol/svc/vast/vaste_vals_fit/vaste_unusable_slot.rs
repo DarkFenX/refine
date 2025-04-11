@@ -3,7 +3,7 @@ use crate::{
     sol::{
         Count, ItemId, ItemKey,
         svc::{calc::Calc, vast::VastFitData},
-        uad::{Uad, fit::Fit},
+        uad::{Uad, fit::UadFit},
     },
     util::RSet,
 };
@@ -24,7 +24,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
@@ -40,7 +40,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
     }
@@ -49,7 +49,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
@@ -65,7 +65,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
@@ -81,7 +81,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
@@ -97,7 +97,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
@@ -113,7 +113,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
@@ -129,7 +129,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
@@ -146,7 +146,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
@@ -162,7 +162,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
     }
@@ -171,7 +171,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
@@ -187,7 +187,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
@@ -203,7 +203,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
@@ -219,7 +219,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
@@ -235,7 +235,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
@@ -251,7 +251,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,

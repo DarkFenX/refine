@@ -5,7 +5,7 @@ use crate::{
     sol::{
         ItemId, ItemKey, SkillLevel,
         svc::vast::VastFitData,
-        uad::{Uad, fit::Fit},
+        uad::{Uad, fit::UadFit},
     },
     util::RSet,
 };
@@ -20,7 +20,7 @@ pub struct ValOverloadSkillFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<ItemKey>, fit: &Fit) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<ItemKey>, fit: &UadFit) -> bool {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
@@ -37,7 +37,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValOverloadSkillFail> {
         if self.overload_td_lvl.is_empty() {
             return None;

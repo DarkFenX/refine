@@ -2,18 +2,18 @@ use crate::{
     ad,
     sol::{
         FitKey, ItemId,
-        uad::item::{EffectModes, ItemBase, bool_to_state_offline, state_to_bool},
+        uad::item::{EffectModes, UadItemBase, bool_to_state_offline, state_to_bool},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Stance {
-    base: ItemBase,
+pub(in crate::sol) struct UadStance {
+    base: UadItemBase,
     fit_key: FitKey,
 }
-impl Stance {
+impl UadStance {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -22,7 +22,7 @@ impl Stance {
         state: bool,
     ) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
+            base: UadItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
             fit_key,
         }
     }
@@ -80,12 +80,12 @@ impl Stance {
         self.fit_key
     }
 }
-impl Named for Stance {
+impl Named for UadStance {
     fn get_name() -> &'static str {
         "Stance"
     }
 }
-impl std::fmt::Display for Stance {
+impl std::fmt::Display for UadStance {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

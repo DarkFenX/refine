@@ -3,9 +3,9 @@ use crate::sol::{
     uad::Uad,
 };
 
-use super::Charge;
+use super::UadCharge;
 
-impl Charge {
+impl UadCharge {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         check_fit_key(uad, self.get_fit_key())?;
         check_item_key(uad, self.get_cont_item_key(), false)?;

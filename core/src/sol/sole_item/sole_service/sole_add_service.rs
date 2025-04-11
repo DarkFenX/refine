@@ -3,7 +3,7 @@ use crate::{
     sol::{
         FitId, FitKey, ItemKey, ItemTypeId, SolarSystem,
         info::ServiceInfo,
-        uad::item::{Item, Service, ServiceState},
+        uad::item::{ServiceState, UadItem, UadService},
     },
 };
 
@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<ServiceInfo, AddServiceError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let item_key = self.add_service_internal(fit_key, type_id, state);
-        Ok(self.get_service_internal(item_key).unwrap())
+        Ok(self.get_service_info_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_service_internal(
         &mut self,
@@ -25,8 +25,8 @@ impl SolarSystem {
         state: ServiceState,
     ) -> ItemKey {
         let item_id = self.uad.items.alloc_id();
-        let service = Service::new(&self.uad.src, item_id, type_id, fit_key, state);
-        let item = Item::Service(service);
+        let service = UadService::new(&self.uad.src, item_id, type_id, fit_key, state);
+        let item = UadItem::Service(service);
         let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_mut(fit_key);
         fit.services.insert(item_key);

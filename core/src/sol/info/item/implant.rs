@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId, SlotIndex,
-    uad::{Uad, item::Implant},
+    uad::{Uad, item::UadImplant},
 };
 
 pub struct ImplantInfo {
@@ -11,7 +11,7 @@ pub struct ImplantInfo {
     pub enabled: bool,
 }
 impl ImplantInfo {
-    pub(in crate::sol) fn from_implant(uad: &Uad, implant: &Implant) -> Self {
+    pub(in crate::sol) fn from_implant(uad: &Uad, implant: &UadImplant) -> Self {
         Self {
             id: implant.get_item_id(),
             type_id: implant.get_a_item_id(),

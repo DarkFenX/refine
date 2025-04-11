@@ -7,7 +7,7 @@ use crate::{
     sol::{
         AttrVal, ItemId, ItemKey,
         svc::{calc::Calc, vast::VastFitData},
-        uad::{Uad, fit::Fit},
+        uad::{Uad, fit::UadFit},
     },
     util::{RSet, round},
 };
@@ -30,7 +30,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_fitting(
             kfs,
@@ -47,7 +47,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_fitting(
             kfs,
@@ -64,7 +64,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
@@ -80,7 +80,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
@@ -96,7 +96,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
@@ -112,7 +112,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
@@ -129,7 +129,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_fitting(
             kfs,
@@ -146,7 +146,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_fitting(
             kfs,
@@ -163,7 +163,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
@@ -179,7 +179,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
@@ -195,7 +195,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
@@ -211,7 +211,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
@@ -228,7 +228,7 @@ fn validate_fast_fitting<'a>(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    fit: &Fit,
+    fit: &UadFit,
     items: impl Iterator<Item = &'a ItemKey>,
     use_a_attr_id: &ad::AAttrId,
     max_a_attr_id: &ad::AAttrId,
@@ -255,7 +255,7 @@ fn validate_fast_other<'a>(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    fit: &Fit,
+    fit: &UadFit,
     items: impl Iterator<Item = (&'a ItemKey, &'a ad::AAttrVal)>,
     max_a_attr_id: &ad::AAttrId,
 ) -> bool {
@@ -278,7 +278,7 @@ fn validate_verbose_fitting<'a>(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    fit: &Fit,
+    fit: &UadFit,
     items: impl ExactSizeIterator<Item = &'a ItemKey>,
     use_a_attr_id: &ad::AAttrId,
     max_a_attr_id: &ad::AAttrId,
@@ -313,7 +313,7 @@ fn validate_verbose_other<'a>(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    fit: &Fit,
+    fit: &UadFit,
     items: impl ExactSizeIterator<Item = (&'a ItemKey, &'a ad::AAttrVal)>,
     max_a_attr_id: &ad::AAttrId,
 ) -> Option<ValResFail> {

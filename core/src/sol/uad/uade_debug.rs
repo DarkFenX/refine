@@ -2,7 +2,7 @@ use crate::{
     sol::{
         ItemKey,
         debug::{DebugError, DebugResult},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
     util::RSet,
 };
@@ -25,7 +25,7 @@ impl Uad {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if !matches!(item, Item::SwEffect(_)) {
+            if !matches!(item, UadItem::SwEffect(_)) {
                 return Err(DebugError {});
             }
             item.consistency_check(self)?;
@@ -37,7 +37,7 @@ impl Uad {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
-            if !matches!(item, Item::ProjEffect(_)) {
+            if !matches!(item, UadItem::ProjEffect(_)) {
                 return Err(DebugError {});
             }
             item.consistency_check(self)?;

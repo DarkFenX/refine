@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn get_character_internal(
+    pub(in crate::sol) fn get_character_info_internal(
         &self,
         item_key: ItemKey,
     ) -> Result<CharacterInfo, ItemKindMatchError> {

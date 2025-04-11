@@ -2,18 +2,18 @@ use crate::{
     ad,
     sol::{
         FitKey, ItemId,
-        uad::item::{EffectModes, ItemBase, bool_to_state_active, state_to_bool},
+        uad::item::{EffectModes, UadItemBase, bool_to_state_active, state_to_bool},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct FwEffect {
-    base: ItemBase,
+pub(in crate::sol) struct UadFwEffect {
+    base: UadItemBase,
     fit_key: FitKey,
 }
-impl FwEffect {
+impl UadFwEffect {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -22,7 +22,7 @@ impl FwEffect {
         state: bool,
     ) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, bool_to_state_active(state)),
+            base: UadItemBase::new(src, item_id, a_item_id, bool_to_state_active(state)),
             fit_key,
         }
     }
@@ -80,12 +80,12 @@ impl FwEffect {
         self.fit_key
     }
 }
-impl Named for FwEffect {
+impl Named for UadFwEffect {
     fn get_name() -> &'static str {
         "FwEffect"
     }
 }
-impl std::fmt::Display for FwEffect {
+impl std::fmt::Display for UadFwEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

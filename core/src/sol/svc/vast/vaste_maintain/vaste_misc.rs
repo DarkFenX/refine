@@ -5,14 +5,14 @@ use crate::{
         svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
         uad::{
             Uad,
-            item::{Fighter, Skill},
+            item::{Fighter, UadSkill},
         },
     },
 };
 use std::collections::hash_map::Entry;
 
 impl Vast {
-    pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &Uad, skill: &Skill) {
+    pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &Uad, skill: &UadSkill) {
         let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
         for other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
             let missing_skills = fit_data.srqs_missing.get_mut(other_item_key).unwrap();

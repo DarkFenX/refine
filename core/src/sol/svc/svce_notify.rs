@@ -5,8 +5,8 @@ use crate::{
         svc::Svc,
         uad::{
             Uad,
-            fleet::Fleet,
-            item::{Fighter, Item, Skill},
+            fleet::UadFleet,
+            item::{Fighter, UadItem, UadSkill},
         },
     },
     src::Src,
@@ -24,39 +24,44 @@ impl Svc {
         self.calc.fit_removed(fit_key);
         self.vast.fit_removed(&fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+    pub(in crate::sol::svc) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
         self.calc.fit_added_to_fleet(uad, fleet, fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+    pub(in crate::sol::svc) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
         self.calc.fit_removed_from_fleet(uad, fleet, fit_key);
     }
     pub(in crate::sol::svc) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
         self.calc.fit_rah_dps_profile_changed(uad, fit_key);
     }
-    pub(in crate::sol::svc) fn notify_item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn notify_item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_added(uad, item_key, item);
         self.vast.item_added(item_key, item);
     }
-    pub(in crate::sol::svc) fn notify_item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn notify_item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_removed(uad, item_key, item);
         self.vast.item_removed(uad, item_key, item);
     }
-    pub(in crate::sol::svc) fn notify_state_activated(&mut self, item_key: ItemKey, item: &Item, a_state: &ad::AState) {
+    pub(in crate::sol::svc) fn notify_state_activated(
+        &mut self,
+        item_key: ItemKey,
+        item: &UadItem,
+        a_state: &ad::AState,
+    ) {
         self.vast.item_state_activated(item_key, item, a_state);
     }
     pub(in crate::sol::svc) fn notify_state_deactivated(
         &mut self,
         item_key: &ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_state: &ad::AState,
     ) {
         self.vast.item_state_deactivated(item_key, item, a_state);
     }
-    pub(in crate::sol::svc) fn notify_item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn notify_item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_loaded(uad, item_key, item);
         self.vast.item_loaded(uad, item_key, item);
     }
-    pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_unloaded(uad, item_key, item);
         self.vast.item_unloaded(&item_key, item);
     }
@@ -71,7 +76,7 @@ impl Svc {
     pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
         &mut self,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_state: &ad::AState,
     ) {
         self.vast.item_state_activated_loaded(item_key, item, a_state);
@@ -79,7 +84,7 @@ impl Svc {
     pub(in crate::sol::svc) fn notify_item_state_deactivated_loaded(
         &mut self,
         item_key: &ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_state: &ad::AState,
     ) {
         self.vast.item_state_deactivated_loaded(item_key, item, a_state);
@@ -88,7 +93,7 @@ impl Svc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
         self.running_effects
@@ -99,7 +104,7 @@ impl Svc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
         self.calc.effects_stopped(uad, item_key, item, a_effects);
@@ -115,7 +120,7 @@ impl Svc {
         projector_item_key: ItemKey,
         a_effect: &ad::ArcEffect,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         self.calc.effect_projected(
@@ -133,7 +138,7 @@ impl Svc {
         projector_item_key: ItemKey,
         a_effect: &ad::ArcEffect,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
     ) {
         self.calc
             .effect_unprojected(uad, projector_item_key, a_effect, projectee_item_key, projectee_item);
@@ -144,7 +149,7 @@ impl Svc {
         projector_item_key: ItemKey,
         effect: &ad::ArcEffect,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         self.calc.effect_proj_range_changed(
@@ -171,7 +176,7 @@ impl Svc {
     pub(in crate::sol::svc) fn notify_ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
         self.calc.ship_sec_status_changed(uad, ship_key);
     }
-    pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &Skill) {
+    pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &UadSkill) {
         self.calc.skill_level_changed(uad, skill_key);
         self.vast.skill_level_changed(uad, skill);
     }

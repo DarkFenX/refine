@@ -3,7 +3,7 @@ use crate::sol::{
     info::{ChargeInfo, ItemMutationInfo, ProjInfo},
     uad::{
         Uad,
-        item::{Module, ModuleState},
+        item::{ModuleState, UadModule},
     },
 };
 
@@ -19,7 +19,7 @@ pub struct ModuleInfo {
     pub projs: Vec<ProjInfo>,
 }
 impl ModuleInfo {
-    pub(in crate::sol) fn from_module(uad: &Uad, module: &Module) -> Self {
+    pub(in crate::sol) fn from_module(uad: &Uad, module: &UadModule) -> Self {
         Self {
             id: module.get_item_id(),
             type_id: module.get_a_item_id(),

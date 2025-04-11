@@ -2,21 +2,21 @@ use crate::{
     ad,
     sol::{
         FitKey, ItemId, ItemKey,
-        uad::item::{EffectModes, ItemBase, Projs},
+        uad::item::{EffectModes, Projs, UadItemBase},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Charge {
-    base: ItemBase,
+pub(in crate::sol) struct UadCharge {
+    base: UadItemBase,
     fit_key: FitKey,
     cont_item_key: ItemKey,
     projs: Projs,
     force_disable: bool,
 }
-impl Charge {
+impl UadCharge {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -27,7 +27,7 @@ impl Charge {
         force_disable: bool,
     ) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, cont_a_state),
+            base: UadItemBase::new(src, item_id, a_item_id, cont_a_state),
             fit_key,
             cont_item_key,
             projs: Projs::new(),
@@ -103,12 +103,12 @@ impl Charge {
         &mut self.projs
     }
 }
-impl Named for Charge {
+impl Named for UadCharge {
     fn get_name() -> &'static str {
         "Charge"
     }
 }
-impl std::fmt::Display for Charge {
+impl std::fmt::Display for UadCharge {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

@@ -31,7 +31,7 @@ impl HAddBoosterCmd {
             return Ok(core_booster);
         };
         apply_side_effects(core_sol, &core_booster.id, &self.side_effects)?;
-        let core_booster = core_sol.get_booster(&core_booster.id).unwrap();
+        let core_booster = core_sol.get_booster_info(&core_booster.id).unwrap();
         Ok(core_booster)
     }
 }

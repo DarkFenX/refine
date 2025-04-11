@@ -5,7 +5,7 @@ use crate::{
     sol::{
         ItemId, ItemKey, ItemTypeId, SolarSystem,
         info::ChargeInfo,
-        uad::item::{Charge, Item},
+        uad::item::{UadCharge, UadItem},
     },
 };
 
@@ -17,7 +17,7 @@ impl SolarSystem {
     ) -> Result<ChargeInfo, SetModuleChargeError> {
         let module_key = self.uad.items.key_by_id_err(item_id)?;
         let charge_key = self.set_module_charge_internal(module_key, charge_type_id)?;
-        Ok(self.get_charge_internal(charge_key).unwrap())
+        Ok(self.get_charge_info_internal(charge_key).unwrap())
     }
     pub(in crate::sol) fn set_module_charge_internal(
         &mut self,
@@ -57,7 +57,7 @@ impl SolarSystem {
         // to restore anything
         let charge_id = self.uad.items.alloc_id();
         // Update user data
-        let charge = Charge::new(
+        let charge = UadCharge::new(
             &self.uad.src,
             charge_id,
             charge_type_id,
@@ -66,7 +66,7 @@ impl SolarSystem {
             module_a_state,
             false,
         );
-        let charge_item = Item::Charge(charge);
+        let charge_item = UadItem::Charge(charge);
         let new_charge_key = self.uad.items.add(charge_item);
         let module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
         module.set_charge_item_key(Some(new_charge_key));

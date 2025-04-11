@@ -11,7 +11,7 @@ use crate::{
         ItemKey, OpInfo,
         err::KeyedItemLoadedError,
         svc::calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
     util::{RMap, RMapVec, RSet, round},
 };
@@ -63,7 +63,7 @@ impl Calc {
         &mut self,
         uad: &Uad,
         item_key: &ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();

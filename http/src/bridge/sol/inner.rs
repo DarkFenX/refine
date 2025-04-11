@@ -178,8 +178,8 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 command.execute(&mut core_sol, &fleet_id).map_err(HBrError::from)?;
-                let core_info = core_sol.get_fleet(&fleet_id).map_err(|core_err| match core_err {
-                    rc::err::GetFleetError::FleetNotFound(e) => HBrError::from(HExecError::FleetNotFoundPrimary(e)),
+                let core_info = core_sol.get_fleet_info(&fleet_id).map_err(|core_err| match core_err {
+                    rc::err::GetFleetInfoError::FleetNotFound(e) => HBrError::from(HExecError::FleetNotFoundPrimary(e)),
                 })?;
                 let info = HFleetInfo::mk_info(&mut core_sol, &core_info.id, fleet_mode).map_err(HBrError::from)?;
                 Ok((core_sol, info))
@@ -385,14 +385,14 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                match core_sol.get_item(&item_id) {
+                match core_sol.get_item_info(&item_id) {
                     Ok(core_item_info) => {
                         let item_info = HItemInfo::mk_info(&mut core_sol, &core_item_info, item_mode);
                         (core_sol, Ok(item_info))
                     }
                     Err(core_err) => {
                         let exec_err = match core_err {
-                            rc::err::GetItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                            rc::err::GetItemInfoError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                         };
                         (core_sol, Err(HBrError::from(exec_err)))
                     }
@@ -448,8 +448,8 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 command.execute(&mut core_sol, &item_id).map_err(HBrError::from)?;
-                let core_info = core_sol.get_item(&item_id).map_err(|core_err| match core_err {
-                    rc::err::GetItemError::ItemNotFound(e) => HBrError::from(HExecError::ItemNotFoundPrimary(e)),
+                let core_info = core_sol.get_item_info(&item_id).map_err(|core_err| match core_err {
+                    rc::err::GetItemInfoError::ItemNotFound(e) => HBrError::from(HExecError::ItemNotFoundPrimary(e)),
                 })?;
                 let item_info = HItemInfo::mk_info(&mut core_sol, &core_info, item_mode);
                 Ok((core_sol, item_info))

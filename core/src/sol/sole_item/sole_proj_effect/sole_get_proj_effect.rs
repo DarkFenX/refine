@@ -4,11 +4,11 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_proj_effect(&self, item_id: &ItemId) -> Result<ProjEffectInfo, GetProjEffectError> {
+    pub fn get_proj_effect_info(&self, item_id: &ItemId) -> Result<ProjEffectInfo, GetProjEffectInfoError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
-        Ok(self.get_proj_effect_internal(item_key)?)
+        Ok(self.get_proj_effect_info_internal(item_key)?)
     }
-    pub(in crate::sol) fn get_proj_effect_internal(
+    pub(in crate::sol) fn get_proj_effect_info_internal(
         &self,
         item_key: ItemKey,
     ) -> Result<ProjEffectInfo, ItemKindMatchError> {
@@ -18,7 +18,7 @@ impl SolarSystem {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetProjEffectError {
+pub enum GetProjEffectInfoError {
     #[error("{0}")]
     ItemNotFound(#[from] ItemFoundError),
     #[error("{0}")]

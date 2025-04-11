@@ -2,12 +2,12 @@ use crate::{
     ac, ad,
     sol::{
         EffectMode,
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
 pub(in crate::sol::svc) fn resolve_effect_status(
-    item: &Item,
+    item: &UadItem,
     item_a_state: ad::AState,
     a_effect: &ad::AEffect,
     online_running: bool,
@@ -25,7 +25,7 @@ pub(in crate::sol::svc) fn resolve_effect_status(
 }
 
 fn resolve_effect_status_full(
-    item: &Item,
+    item: &UadItem,
     item_a_state: ad::AState,
     a_effect: &ad::AEffect,
     online_running: bool,
@@ -60,7 +60,7 @@ fn resolve_effect_status_full(
     }
 }
 
-pub(in crate::sol::svc) fn resolve_online_effect_status(uad: &Uad, item: &Item, item_a_state: ad::AState) -> bool {
+pub(in crate::sol::svc) fn resolve_online_effect_status(uad: &Uad, item: &UadItem, item_a_state: ad::AState) -> bool {
     if !item.get_a_effect_datas().unwrap().contains_key(&ac::effects::ONLINE) {
         return false;
     }

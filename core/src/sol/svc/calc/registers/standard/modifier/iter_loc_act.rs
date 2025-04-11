@@ -1,19 +1,19 @@
 use crate::sol::{
     svc::calc::LocationKind,
     uad::{
-        fit::Fit,
-        item::{Item, ShipKind},
+        fit::UadFit,
+        item::{ShipKind, UadItem},
     },
 };
 
 // Iterator over item's root location kinds which are actually assigned to a fit
 pub(super) struct ActiveLocations<'a> {
-    item: &'a Item,
-    fit: &'a Fit,
+    item: &'a UadItem,
+    fit: &'a UadFit,
     index: usize,
 }
 impl<'a> ActiveLocations<'a> {
-    pub(super) fn new(item: &'a Item, fit: &'a Fit) -> Self {
+    pub(super) fn new(item: &'a UadItem, fit: &'a UadFit) -> Self {
         Self { item, fit, index: 0 }
     }
 }

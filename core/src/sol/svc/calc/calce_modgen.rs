@@ -3,7 +3,7 @@ use crate::{
     sol::{
         ItemKey,
         svc::calc::{Calc, RawModifier, extend_with_custom_mods},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -13,7 +13,7 @@ impl Calc {
         modifiers: &mut Vec<RawModifier>,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effect: &ad::AEffect,
     ) {
         modifiers.clear();
@@ -80,7 +80,7 @@ impl Calc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
         buff_type_a_attr_id: ad::AAttrId,
     ) -> Vec<RawModifier> {
@@ -120,7 +120,7 @@ fn add_buff_mods(
     modifiers: &mut Vec<RawModifier>,
     uad: &Uad,
     item_key: ItemKey,
-    item: &Item,
+    item: &UadItem,
     a_effect: &ad::AEffect,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,
@@ -151,7 +151,7 @@ fn add_buff_mods_hardcoded(
     modifiers: &mut Vec<RawModifier>,
     uad: &Uad,
     item_key: ItemKey,
-    item: &Item,
+    item: &UadItem,
     a_effect: &ad::AEffect,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,

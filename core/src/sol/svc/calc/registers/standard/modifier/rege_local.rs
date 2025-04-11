@@ -1,6 +1,6 @@
 use crate::sol::{
     svc::calc::{AffecteeFilter, CtxModifier, Location, RawModifier, registers::StandardRegister},
-    uad::item::Item,
+    uad::item::UadItem,
 };
 
 use super::{add_ctx_modifier, remove_ctx_modifier};
@@ -8,7 +8,7 @@ use super::{add_ctx_modifier, remove_ctx_modifier};
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_local_mod(
         &mut self,
-        item: &Item,
+        item: &UadItem,
         raw_modifier: RawModifier,
     ) -> Option<CtxModifier> {
         let ctx_modifier = match raw_modifier.affectee_filter {
@@ -121,7 +121,7 @@ impl StandardRegister {
     }
     pub(in crate::sol::svc::calc) fn unreg_local_mod(
         &mut self,
-        item: &Item,
+        item: &UadItem,
         raw_modifier: RawModifier,
     ) -> Option<CtxModifier> {
         match raw_modifier.affectee_filter {

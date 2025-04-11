@@ -9,7 +9,7 @@ use crate::{
         AttrVal, ItemKey, SecZone,
         err::KeyedItemLoadedError,
         svc::calc::{AttrCalcError, Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
     util::{RMap, round},
 };
@@ -136,7 +136,7 @@ impl Calc {
         &mut self,
         uad: &Uad,
         item_key: &ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Modification> {
         let mut mods = RMap::new();

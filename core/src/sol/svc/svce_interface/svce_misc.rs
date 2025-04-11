@@ -5,7 +5,7 @@ use crate::{
         svc::Svc,
         uad::{
             Uad,
-            item::{Fighter, Skill},
+            item::{Fighter, UadSkill},
         },
     },
     src::Src,
@@ -32,7 +32,7 @@ impl Svc {
     pub(in crate::sol) fn ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
         self.notify_ship_sec_status_changed(uad, ship_key);
     }
-    pub(in crate::sol) fn skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &Skill) {
+    pub(in crate::sol) fn skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &UadSkill) {
         self.notify_skill_level_changed(uad, skill_key, skill);
     }
 }

@@ -5,7 +5,7 @@ use crate::{
     sol::{
         AttrVal, ItemKey,
         svc::calc::{AffectorInfo, Calc},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -90,7 +90,7 @@ impl AffectorValue {
         uad: &Uad,
         affector_key: ItemKey,
         added_item_key: ItemKey,
-        added_item: &Item,
+        added_item: &UadItem,
     ) -> bool {
         match self {
             Self::AttrId(_) => false,
@@ -107,7 +107,7 @@ impl AffectorValue {
         uad: &Uad,
         affector_key: ItemKey,
         removed_item_key: ItemKey,
-        removed_item: &Item,
+        removed_item: &UadItem,
     ) -> bool {
         match self {
             Self::AttrId(_) => false,

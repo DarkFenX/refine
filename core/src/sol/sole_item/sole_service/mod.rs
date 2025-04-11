@@ -1,6 +1,6 @@
 pub use sole_add_service::AddServiceError;
-pub use sole_get_fit_services::GetFitServicesError;
-pub use sole_get_service::GetServiceError;
+pub use sole_get_fit_services::GetFitServiceInfosError;
+pub use sole_get_service::GetServiceInfoError;
 pub use sole_remove_service::RemoveServiceError;
 pub use sole_set_service_state::SetServiceStateError;
 

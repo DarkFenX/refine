@@ -5,7 +5,7 @@ use crate::{
         svc::{calc::Calc, vast::VastFitData},
         uad::{
             Uad,
-            fit::{Fit, ItemVec},
+            fit::{ItemVec, UadFit},
         },
     },
     util::{RMap, RSet},
@@ -30,7 +30,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
     }
@@ -39,7 +39,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::SERVICE_SLOTS, &fit.services)
     }
@@ -48,7 +48,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::MAX_SUBSYSTEMS, &fit.subsystems)
     }
@@ -57,7 +57,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_map(
             kfs,
@@ -73,7 +73,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &self.fighters_online)
     }
@@ -82,7 +82,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -98,7 +98,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -114,7 +114,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -130,7 +130,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -146,7 +146,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -162,7 +162,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -178,7 +178,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -194,7 +194,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_unordered_set(
             kfs,
@@ -210,7 +210,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::HI_SLOTS, &fit.mods_high)
     }
@@ -219,7 +219,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::MED_SLOTS, &fit.mods_mid)
     }
@@ -228,7 +228,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> bool {
         validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::LOW_SLOTS, &fit.mods_low)
     }
@@ -238,7 +238,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
     }
@@ -247,7 +247,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::SERVICE_SLOTS, &fit.services)
     }
@@ -256,7 +256,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::MAX_SUBSYSTEMS, &fit.subsystems)
     }
@@ -265,7 +265,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_map(
             kfs,
@@ -281,7 +281,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &self.fighters_online)
     }
@@ -290,7 +290,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -306,7 +306,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -322,7 +322,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -338,7 +338,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -354,7 +354,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -370,7 +370,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -386,7 +386,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -402,7 +402,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
@@ -418,7 +418,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::HI_SLOTS, &fit.mods_high)
     }
@@ -427,7 +427,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::MED_SLOTS, &fit.mods_mid)
     }
@@ -436,7 +436,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-        fit: &Fit,
+        fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
         validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::LOW_SLOTS, &fit.mods_low)
     }

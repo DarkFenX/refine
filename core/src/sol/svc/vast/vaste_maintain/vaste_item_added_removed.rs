@@ -3,18 +3,18 @@ use std::collections::hash_map::Entry;
 use crate::sol::{
     ItemKey,
     svc::vast::{ValSrqSkillInfo, Vast},
-    uad::{Uad, item::Item},
+    uad::{Uad, item::UadItem},
 };
 
 impl Vast {
-    pub(in crate::sol::svc) fn item_added(&mut self, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn item_added(&mut self, item_key: ItemKey, item: &UadItem) {
         if !item.is_loaded() {
             if let Some(fit_key) = item.get_fit_key() {
                 let fit_data = self.get_fit_data_mut(&fit_key);
                 fit_data.not_loaded.insert(item_key);
             }
         }
-        if let Item::Skill(skill) = item {
+        if let UadItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
             for other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
@@ -30,14 +30,14 @@ impl Vast {
             }
         }
     }
-    pub(in crate::sol::svc) fn item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         if !item.is_loaded() {
             if let Some(fit_key) = item.get_fit_key() {
                 let fit_data = self.get_fit_data_mut(&fit_key);
                 fit_data.not_loaded.remove(&item_key);
             }
         }
-        if let Item::Skill(skill) = item {
+        if let UadItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
             for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {

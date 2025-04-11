@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId,
-    uad::{Uad, item::Character},
+    uad::{Uad, item::UadCharacter},
 };
 
 pub struct CharacterInfo {
@@ -10,7 +10,7 @@ pub struct CharacterInfo {
     pub enabled: bool,
 }
 impl CharacterInfo {
-    pub(in crate::sol) fn from_character(uad: &Uad, character: &Character) -> Self {
+    pub(in crate::sol) fn from_character(uad: &Uad, character: &UadCharacter) -> Self {
         Self {
             id: character.get_item_id(),
             type_id: character.get_a_item_id(),

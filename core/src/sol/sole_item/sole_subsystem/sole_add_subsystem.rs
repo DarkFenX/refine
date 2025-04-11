@@ -3,7 +3,7 @@ use crate::{
     sol::{
         FitId, FitKey, ItemKey, ItemTypeId, SolarSystem,
         info::SubsystemInfo,
-        uad::item::{Item, Subsystem},
+        uad::item::{UadItem, UadSubsystem},
     },
 };
 
@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<SubsystemInfo, AddSubsystemError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let item_key = self.add_subsystem_internal(fit_key, type_id, state);
-        Ok(self.get_subsystem_internal(item_key).unwrap())
+        Ok(self.get_subsystem_info_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_subsystem_internal(
         &mut self,
@@ -25,8 +25,8 @@ impl SolarSystem {
         state: bool,
     ) -> ItemKey {
         let item_id = self.uad.items.alloc_id();
-        let subsystem = Subsystem::new(&self.uad.src, item_id, type_id, fit_key, state);
-        let item = Item::Subsystem(subsystem);
+        let subsystem = UadSubsystem::new(&self.uad.src, item_id, type_id, fit_key, state);
+        let item = UadItem::Subsystem(subsystem);
         let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_mut(fit_key);
         fit.subsystems.insert(item_key);

@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::Service;
+pub(in crate::sol) use main::UadService;
 pub use state::ServiceState;
 
 mod debug;

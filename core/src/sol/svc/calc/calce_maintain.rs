@@ -8,7 +8,7 @@ use crate::{
             AttrSpec,
             calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
         },
-        uad::{Uad, fleet::Fleet, item::Item},
+        uad::{Uad, fleet::UadFleet, item::UadItem},
     },
     src::Src,
 };
@@ -24,14 +24,14 @@ impl Calc {
     pub(in crate::sol::svc) fn fit_removed(&mut self, fit_key: FitKey) {
         self.std.unreg_fit_for_sw(fit_key)
     }
-    pub(in crate::sol::svc) fn fit_added_to_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+    pub(in crate::sol::svc) fn fit_added_to_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
         let ctx_modifiers = self.std.reg_fleet_for_fit(fleet, fit_key);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
         }
     }
-    pub(in crate::sol::svc) fn fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &Fleet, fit_key: &FitKey) {
+    pub(in crate::sol::svc) fn fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
         let ctx_modifiers = self.std.unreg_fleet_for_fit(fleet, fit_key);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
@@ -41,7 +41,7 @@ impl Calc {
     pub(in crate::sol::svc) fn fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
         self.rah_fit_rah_dps_profile_changed(uad, fit_key);
     }
-    pub(in crate::sol::svc) fn item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         // Custom modifiers
         let ctx_modifiers = self
             .revs
@@ -56,7 +56,7 @@ impl Calc {
             }
         }
     }
-    pub(in crate::sol::svc) fn item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         // Custom modifiers
         let ctx_modifiers = self
             .revs
@@ -71,7 +71,7 @@ impl Calc {
             }
         }
     }
-    pub(in crate::sol::svc) fn item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         // Notify core calc services
         self.attrs.item_loaded(item_key, item);
         self.std.reg_affectee(item_key, item);
@@ -79,7 +79,7 @@ impl Calc {
         // Notify RAH sim
         self.rah_item_loaded(uad, item);
     }
-    pub(in crate::sol::svc) fn item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &Item) {
+    pub(in crate::sol::svc) fn item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         // Notify RAH sim
         self.rah_item_unloaded(uad, item);
         // Notify core calc services
@@ -92,7 +92,7 @@ impl Calc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
         // Notify core calc services
@@ -114,7 +114,7 @@ impl Calc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
         // Notify RAH sim
@@ -142,7 +142,7 @@ impl Calc {
         projector_item_key: ItemKey,
         a_effect: &ad::AEffect,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         self.projs
@@ -161,7 +161,7 @@ impl Calc {
         projector_item_key: ItemKey,
         a_effect: &ad::AEffect,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         self.projs
@@ -180,7 +180,7 @@ impl Calc {
         projector_item_key: ItemKey,
         a_effect: &ad::AEffect,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
     ) {
         let ctx_modifiers =
             self.std
@@ -307,7 +307,7 @@ impl Calc {
         util_cmods: &mut Vec<CtxModifier>,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         raw_modifier: RawModifier,
     ) {
         match raw_modifier.kind {
@@ -328,30 +328,30 @@ impl Calc {
                 }
             }
             ModifierKind::System => match item {
-                Item::SwEffect(_) => {
+                UadItem::SwEffect(_) => {
                     self.std.reg_sw_system_mod(util_cmods, uad, raw_modifier);
                     for ctx_modifier in util_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                     }
                 }
-                Item::FwEffect(fw_effect) => {
+                UadItem::FwEffect(fw_effect) => {
                     if let Some(ctx_modifier) = self.std.reg_fw_system_mod(fw_effect, raw_modifier) {
                         self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
                     }
                 }
-                Item::ProjEffect(_) => self.std.reg_proj_mod(raw_modifier),
+                UadItem::ProjEffect(_) => self.std.reg_proj_mod(raw_modifier),
                 _ => (),
             },
             ModifierKind::Buff => {
                 let registered = match item {
-                    Item::SwEffect(_) => {
+                    UadItem::SwEffect(_) => {
                         let registered = self.std.reg_sw_buff_mod(util_cmods, uad, raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
                             self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                         }
                         registered
                     }
-                    Item::FwEffect(fw_effect) => {
+                    UadItem::FwEffect(fw_effect) => {
                         let registered = self.std.reg_fw_buff_mod(util_cmods, uad, fw_effect, raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
                             self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
@@ -376,7 +376,7 @@ impl Calc {
         util_cmods: &mut Vec<CtxModifier>,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         raw_modifier: &RawModifier,
     ) {
         // Regular modifiers
@@ -396,13 +396,13 @@ impl Calc {
                 self.unreg_raw_mod_for_buff(item_key, raw_modifier);
             }
             ModifierKind::System => match item {
-                Item::SwEffect(_) => {
+                UadItem::SwEffect(_) => {
                     self.std.unreg_sw_system_mod(util_cmods, uad, *raw_modifier);
                     for ctx_modifier in util_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                     }
                 }
-                Item::FwEffect(fw_effect) => {
+                UadItem::FwEffect(fw_effect) => {
                     if let Some(ctx_modifier) = self.std.unreg_fw_system_mod(fw_effect, *raw_modifier) {
                         self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
                     }
@@ -413,13 +413,13 @@ impl Calc {
             },
             ModifierKind::Buff => {
                 match item {
-                    Item::SwEffect(_) => {
+                    UadItem::SwEffect(_) => {
                         self.std.unreg_sw_buff_mod(util_cmods, uad, raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
                             self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                         }
                     }
-                    Item::FwEffect(fw_effect) => {
+                    UadItem::FwEffect(fw_effect) => {
                         self.std.unreg_fw_buff_mod(util_cmods, uad, fw_effect, *raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
                             self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
@@ -427,7 +427,7 @@ impl Calc {
                     }
                     // Don't need to do anything in this case, since projected effects were
                     // removed during extraction earlier
-                    Item::ProjEffect(_) => (),
+                    UadItem::ProjEffect(_) => (),
                     _ => (),
                 }
                 self.unreg_raw_mod_for_buff(item_key, raw_modifier);
@@ -454,7 +454,7 @@ impl Calc {
             self.force_attr_value_recalc(uad, projectee_item_key, modifier.raw.affectee_a_attr_id);
         }
     }
-    fn handle_location_owner_change(&mut self, uad: &Uad, item: &Item) {
+    fn handle_location_owner_change(&mut self, uad: &Uad, item: &UadItem) {
         if item.get_root_loc_kind().is_some() {
             let mut affectees = Vec::new();
             for ctx_modifier in self.std.get_mods_for_changed_root(item) {

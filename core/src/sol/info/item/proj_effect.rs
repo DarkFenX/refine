@@ -1,6 +1,6 @@
 use crate::sol::{
     ItemId, ItemTypeId,
-    uad::{Uad, item::ProjEffect},
+    uad::{Uad, item::UadProjEffect},
 };
 
 pub struct ProjEffectInfo {
@@ -10,7 +10,7 @@ pub struct ProjEffectInfo {
     pub projs: Vec<ItemId>,
 }
 impl ProjEffectInfo {
-    pub(in crate::sol) fn from_proj_effect(uad: &Uad, proj_effect: &ProjEffect) -> Self {
+    pub(in crate::sol) fn from_proj_effect(uad: &Uad, proj_effect: &UadProjEffect) -> Self {
         Self {
             id: proj_effect.get_item_id(),
             type_id: proj_effect.get_a_item_id(),

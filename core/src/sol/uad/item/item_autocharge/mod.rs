@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::Autocharge;
+pub(in crate::sol) use main::UadAutocharge;
 
 mod debug;
 mod main;

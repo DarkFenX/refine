@@ -1,3 +1,3 @@
-pub(in crate::sol) use main::SwEffect;
+pub(in crate::sol) use main::UadSwEffect;
 
 mod main;

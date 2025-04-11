@@ -3,7 +3,7 @@ use crate::{
     sol::{
         FitId, FitKey, ItemKey, ItemTypeId, SolarSystem,
         info::ShipInfo,
-        uad::item::{Item, Ship},
+        uad::item::{UadItem, UadShip},
     },
 };
 
@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<ShipInfo, SetFitShipError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let item_key = self.set_fit_ship_internal(fit_key, type_id, state);
-        Ok(self.get_ship_internal(item_key).unwrap())
+        Ok(self.get_ship_info_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn set_fit_ship_internal(
         &mut self,
@@ -31,9 +31,9 @@ impl SolarSystem {
         }
         // Add new ship
         let item_id = self.uad.items.alloc_id();
-        let ship = Ship::new(&self.uad.src, item_id, type_id, fit_key, state);
+        let ship = UadShip::new(&self.uad.src, item_id, type_id, fit_key, state);
         let ship_kind = ship.get_kind();
-        let item = Item::Ship(ship);
+        let item = UadItem::Ship(ship);
         let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_mut(fit_key);
         fit.ship = Some(item_key);

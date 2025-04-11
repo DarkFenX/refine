@@ -11,10 +11,10 @@ impl HFleetInfoId {
         core_sol: &rc::SolarSystem,
         fleet_id: &rc::FleetId,
     ) -> Result<Self, HExecError> {
-        let core_fleet = match core_sol.get_fleet(fleet_id) {
+        let core_fleet = match core_sol.get_fleet_info(fleet_id) {
             Ok(core_fleet) => core_fleet,
             Err(error) => match error {
-                rc::err::GetFleetError::FleetNotFound(e) => return Err(HExecError::FleetNotFoundPrimary(e)),
+                rc::err::GetFleetInfoError::FleetNotFound(e) => return Err(HExecError::FleetNotFoundPrimary(e)),
             },
         };
         let info = Self { id: core_fleet.id };

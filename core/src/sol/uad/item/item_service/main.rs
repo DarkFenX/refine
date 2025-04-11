@@ -2,18 +2,18 @@ use crate::{
     ad,
     sol::{
         FitKey, ItemId,
-        uad::item::{EffectModes, ItemBase, ServiceState},
+        uad::item::{EffectModes, ServiceState, UadItemBase},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Service {
-    base: ItemBase,
+pub(in crate::sol) struct UadService {
+    base: UadItemBase,
     fit_key: FitKey,
 }
-impl Service {
+impl UadService {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -22,7 +22,7 @@ impl Service {
         state: ServiceState,
     ) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, state.into()),
+            base: UadItemBase::new(src, item_id, a_item_id, state.into()),
             fit_key,
         }
     }
@@ -80,12 +80,12 @@ impl Service {
         self.fit_key
     }
 }
-impl Named for Service {
+impl Named for UadService {
     fn get_name() -> &'static str {
         "Service"
     }
 }
-impl std::fmt::Display for Service {
+impl std::fmt::Display for UadService {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

@@ -1,6 +1,6 @@
 //! Solar system extension methods which handle fit manipulation.
 
-pub use sole_get_fit::GetFitError;
+pub use sole_get_fit::GetFitInfoError;
 pub use sole_remove_fit::RemoveFitError;
 pub use sole_set_fit_fleet::SetFitFleetError;
 pub use sole_unset_fit_fleet::UnsetFitFleetError;

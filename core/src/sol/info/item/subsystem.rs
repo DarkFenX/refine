@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId, SlotIndex,
-    uad::{Uad, item::Subsystem},
+    uad::{Uad, item::UadSubsystem},
 };
 
 pub struct SubsystemInfo {
@@ -11,7 +11,7 @@ pub struct SubsystemInfo {
     pub enabled: bool,
 }
 impl SubsystemInfo {
-    pub(in crate::sol) fn from_subsystem(uad: &Uad, subsystem: &Subsystem) -> Self {
+    pub(in crate::sol) fn from_subsystem(uad: &Uad, subsystem: &UadSubsystem) -> Self {
         Self {
             id: subsystem.get_item_id(),
             type_id: subsystem.get_a_item_id(),

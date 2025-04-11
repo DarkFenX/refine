@@ -5,7 +5,7 @@ use itertools::Itertools;
 use crate::sol::{
     EffectId, EffectMode, FitId, ItemId, ItemTypeId, SlotIndex,
     info::{SideEffectInfo, SideEffectStr},
-    uad::{Uad, item::Booster},
+    uad::{Uad, item::UadBooster},
 };
 
 pub struct BoosterInfo {
@@ -17,7 +17,7 @@ pub struct BoosterInfo {
     pub side_effects: HashMap<EffectId, SideEffectInfo>,
 }
 impl BoosterInfo {
-    pub(in crate::sol) fn from_booster(uad: &Uad, booster: &Booster) -> Self {
+    pub(in crate::sol) fn from_booster(uad: &Uad, booster: &UadBooster) -> Self {
         let mut side_effects = HashMap::new();
         if let Some(a_effect_datas) = booster.get_a_effect_datas() {
             for a_effect_id in a_effect_datas.keys() {

@@ -5,7 +5,7 @@ use crate::{
     sol::{
         ItemKey,
         svc::calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -31,7 +31,7 @@ pub(in crate::sol::svc::calc) struct RawModifier {
 impl RawModifier {
     pub(in crate::sol::svc::calc) fn try_from_a_modifier(
         affector_item_key: ItemKey,
-        affector_item: &Item,
+        affector_item: &UadItem,
         a_effect: &ad::AEffect,
         a_modifier: &ad::AEffectModifier,
     ) -> Option<Self> {
@@ -63,7 +63,7 @@ impl RawModifier {
     }
     pub(in crate::sol::svc::calc) fn try_from_a_buff_regular(
         affector_item_key: ItemKey,
-        affector_item: &Item,
+        affector_item: &UadItem,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
@@ -84,7 +84,7 @@ impl RawModifier {
     }
     pub(in crate::sol::svc::calc) fn try_from_a_buff_hardcoded(
         affector_item_key: ItemKey,
-        affector_item: &Item,
+        affector_item: &UadItem,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
@@ -104,7 +104,7 @@ impl RawModifier {
     }
     fn from_a_buff(
         affector_item_key: ItemKey,
-        affector_item: &Item,
+        affector_item: &UadItem,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
@@ -156,7 +156,7 @@ impl RawModifier {
         &self,
         uad: &Uad,
         added_item_key: ItemKey,
-        added_item: &Item,
+        added_item: &UadItem,
     ) -> bool {
         self.affector_value
             .revise_on_item_add(uad, self.affector_item_key, added_item_key, added_item)
@@ -165,7 +165,7 @@ impl RawModifier {
         &self,
         uad: &Uad,
         removed_item_key: ItemKey,
-        removed_item: &Item,
+        removed_item: &UadItem,
     ) -> bool {
         self.affector_value
             .revise_on_item_remove(uad, self.affector_item_key, removed_item_key, removed_item)
@@ -196,7 +196,7 @@ fn get_mod_kind(a_effect: &ad::AEffect, a_affectee_filter: &AffecteeFilter) -> O
     }
 }
 
-pub(in crate::sol::svc::calc) fn get_resist_a_attr_id(item: &Item, a_effect: &ad::AEffect) -> Option<ad::AAttrId> {
+pub(in crate::sol::svc::calc) fn get_resist_a_attr_id(item: &UadItem, a_effect: &ad::AEffect) -> Option<ad::AAttrId> {
     match a_effect.resist_attr_id {
         Some(resist_a_attr_id) => Some(resist_a_attr_id),
         None => match item.get_a_attrs() {

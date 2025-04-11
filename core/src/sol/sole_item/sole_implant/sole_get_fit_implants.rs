@@ -4,23 +4,23 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_fit_implants(&self, fit_id: &FitId) -> Result<Vec<ImplantInfo>, GetFitImplantsError> {
+    pub fn get_fit_implant_infos(&self, fit_id: &FitId) -> Result<Vec<ImplantInfo>, GetFitImplantInfosError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
-        Ok(self.get_fit_implants_internal(fit_key))
+        Ok(self.get_fit_implant_infos_internal(fit_key))
     }
-    pub(in crate::sol) fn get_fit_implants_internal(&self, fit_key: FitKey) -> Vec<ImplantInfo> {
+    pub(in crate::sol) fn get_fit_implant_infos_internal(&self, fit_key: FitKey) -> Vec<ImplantInfo> {
         self.uad
             .fits
             .get(fit_key)
             .implants
             .iter()
-            .map(|item_key| self.get_implant_internal(*item_key).unwrap())
+            .map(|item_key| self.get_implant_info_internal(*item_key).unwrap())
             .collect()
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetFitImplantsError {
+pub enum GetFitImplantInfosError {
     #[error("{0}")]
     FitNotFound(#[from] FitFoundError),
 }

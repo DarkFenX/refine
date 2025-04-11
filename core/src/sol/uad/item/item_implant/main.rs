@@ -2,18 +2,18 @@ use crate::{
     ad,
     sol::{
         FitKey, ItemId,
-        uad::item::{EffectModes, ItemBase, bool_to_state_offline, state_to_bool},
+        uad::item::{EffectModes, UadItemBase, bool_to_state_offline, state_to_bool},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Implant {
-    base: ItemBase,
+pub(in crate::sol) struct UadImplant {
+    base: UadItemBase,
     fit_key: FitKey,
 }
-impl Implant {
+impl UadImplant {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -22,7 +22,7 @@ impl Implant {
         state: bool,
     ) -> Self {
         Self {
-            base: ItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
+            base: UadItemBase::new(src, item_id, a_item_id, bool_to_state_offline(state)),
             fit_key,
         }
     }
@@ -86,12 +86,12 @@ impl Implant {
         }
     }
 }
-impl Named for Implant {
+impl Named for UadImplant {
     fn get_name() -> &'static str {
         "Implant"
     }
 }
-impl std::fmt::Display for Implant {
+impl std::fmt::Display for UadImplant {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

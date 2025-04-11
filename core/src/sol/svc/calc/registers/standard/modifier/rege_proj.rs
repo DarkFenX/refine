@@ -5,7 +5,7 @@ use crate::{
     sol::{
         ItemKey,
         svc::calc::{CtxModifier, ModifierKind, RawModifier, registers::StandardRegister},
-        uad::item::Item,
+        uad::item::UadItem,
     },
 };
 
@@ -19,7 +19,7 @@ impl StandardRegister {
         projector_item_key: ItemKey,
         a_effect_id: ad::AEffectId,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
     ) -> Vec<CtxModifier> {
         let raw_modifiers = self
             .rmods_proj
@@ -44,7 +44,7 @@ impl StandardRegister {
         projector_item_key: ItemKey,
         a_effect_id: ad::AEffectId,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
     ) -> Vec<CtxModifier> {
         let raw_modifiers = self
             .rmods_proj
@@ -69,7 +69,7 @@ impl StandardRegister {
         projector_item_key: ItemKey,
         a_effect_id: ad::AEffectId,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
     ) -> Vec<CtxModifier> {
         let raw_modifiers = self
             .rmods_proj

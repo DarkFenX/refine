@@ -1,6 +1,6 @@
 pub use sole_add_rig::AddRigError;
 pub use sole_get_fit_rigs::GetFitRigsError;
-pub use sole_get_rig::GetRigError;
+pub use sole_get_rig::GetRigInfoError;
 pub use sole_remove_rig::RemoveRigError;
 pub use sole_set_rig_state::SetRigStateError;
 

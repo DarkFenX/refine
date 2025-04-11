@@ -1,6 +1,6 @@
 use crate::{
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{FitId, FitKey, SolarSystem, uad::item::Ship},
+    sol::{FitId, FitKey, SolarSystem, uad::item::UadShip},
     util::Named,
 };
 
@@ -20,7 +20,7 @@ impl SolarSystem {
             None => {
                 return Err(FitHasItemKindError {
                     fit_id: fit.id,
-                    item_kind: Ship::get_name(),
+                    item_kind: UadShip::get_name(),
                 });
             }
         };

@@ -4,18 +4,21 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_fw_effect(&self, item_id: &ItemId) -> Result<FwEffectInfo, GetFwEffectError> {
+    pub fn get_fw_effect_info(&self, item_id: &ItemId) -> Result<FwEffectInfo, GetFwEffectInfoError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
-        Ok(self.get_fw_effect_internal(item_key)?)
+        Ok(self.get_fw_effect_info_internal(item_key)?)
     }
-    pub(in crate::sol) fn get_fw_effect_internal(&self, item_key: ItemKey) -> Result<FwEffectInfo, ItemKindMatchError> {
+    pub(in crate::sol) fn get_fw_effect_info_internal(
+        &self,
+        item_key: ItemKey,
+    ) -> Result<FwEffectInfo, ItemKindMatchError> {
         let fw_effect = self.uad.items.get(item_key).get_fw_effect()?;
         Ok(FwEffectInfo::from_fw_effect(&self.uad, fw_effect))
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetFwEffectError {
+pub enum GetFwEffectInfoError {
     #[error("{0}")]
     ItemNotFound(#[from] ItemFoundError),
     #[error("{0}")]

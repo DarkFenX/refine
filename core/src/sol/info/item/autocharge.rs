@@ -1,6 +1,6 @@
 use crate::sol::{
     EffectId, FitId, ItemId, ItemTypeId,
-    uad::{Uad, item::Autocharge},
+    uad::{Uad, item::UadAutocharge},
 };
 
 pub struct AutochargeInfo {
@@ -13,7 +13,7 @@ pub struct AutochargeInfo {
     // No projections because they fully match to projections of parent item
 }
 impl AutochargeInfo {
-    pub(in crate::sol) fn from_autocharge(uad: &Uad, autocharge: &Autocharge) -> Self {
+    pub(in crate::sol) fn from_autocharge(uad: &Uad, autocharge: &UadAutocharge) -> Self {
         Self {
             id: autocharge.get_item_id(),
             type_id: autocharge.get_a_item_id(),

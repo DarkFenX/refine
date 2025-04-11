@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId,
-    uad::{Uad, item::Charge},
+    uad::{Uad, item::UadCharge},
 };
 
 pub struct ChargeInfo {
@@ -12,7 +12,7 @@ pub struct ChargeInfo {
     // No projections because they fully match to projections of parent item
 }
 impl ChargeInfo {
-    pub(in crate::sol) fn from_charge(uad: &Uad, charge: &Charge) -> Self {
+    pub(in crate::sol) fn from_charge(uad: &Uad, charge: &UadCharge) -> Self {
         Self {
             id: charge.get_item_id(),
             type_id: charge.get_a_item_id(),

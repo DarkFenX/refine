@@ -70,14 +70,14 @@ impl HChangeShipViaFitIdCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<HCmdResp, HExecError> {
-        let item_id = match core_sol.get_fit_ship(fit_id) {
+        let item_id = match core_sol.get_fit_ship_info(fit_id) {
             Ok(core_ship) => match core_ship {
                 Some(core_ship) => core_ship.id,
                 None => return Err(HExecError::FitShipNotFound(*fit_id)),
             },
             Err(error) => {
                 return Err(match error {
-                    rc::err::GetFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::GetFitShipInfoError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
                 });
             }
         };

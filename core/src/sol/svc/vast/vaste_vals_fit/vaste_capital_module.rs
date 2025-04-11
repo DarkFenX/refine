@@ -5,7 +5,7 @@ use crate::{
     sol::{
         AttrVal, ItemId, ItemKey,
         svc::vast::VastFitData,
-        uad::{Uad, item::Ship},
+        uad::{Uad, item::UadShip},
     },
     util::RSet,
 };
@@ -22,7 +22,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_capital_module_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ship: Option<&Ship>,
+        ship: Option<&UadShip>,
     ) -> bool {
         if !is_ship_subcap(ship) {
             return true;
@@ -37,7 +37,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
-        ship: Option<&Ship>,
+        ship: Option<&UadShip>,
     ) -> Option<ValCapitalModFail> {
         if !is_ship_subcap(ship) {
             return None;
@@ -58,7 +58,7 @@ impl VastFitData {
     }
 }
 
-fn is_ship_subcap(ship: Option<&Ship>) -> bool {
+fn is_ship_subcap(ship: Option<&UadShip>) -> bool {
     let ship = match ship {
         Some(ship) => ship,
         None => return false,

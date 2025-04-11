@@ -7,7 +7,7 @@ use crate::{
 
 // Item base stores all the data every item should have
 #[derive(Clone)]
-pub(in crate::sol::uad::item) struct ItemBase {
+pub(in crate::sol::uad::item) struct UadItemBase {
     // User-defined data
     item_id: ItemId,
     a_item_id: ad::AItemId,
@@ -16,7 +16,7 @@ pub(in crate::sol::uad::item) struct ItemBase {
     // Source-dependent data
     cache: Option<ItemBaseCache>,
 }
-impl ItemBase {
+impl UadItemBase {
     pub(in crate::sol::uad::item) fn new(
         src: &Src,
         item_id: ItemId,

@@ -16,11 +16,11 @@ impl HChangeFleetCmd {
         core_sol: &mut rc::SolarSystem,
         fleet_id: &rc::FleetId,
     ) -> Result<rc::FleetInfo, HExecError> {
-        let core_fleet = match core_sol.get_fleet(fleet_id) {
+        let core_fleet = match core_sol.get_fleet_info(fleet_id) {
             Ok(core_fleet) => core_fleet,
             Err(error) => {
                 return Err(match error {
-                    rc::err::GetFleetError::FleetNotFound(e) => HExecError::FleetNotFoundPrimary(e),
+                    rc::err::GetFleetInfoError::FleetNotFound(e) => HExecError::FleetNotFoundPrimary(e),
                 });
             }
         };
@@ -44,7 +44,7 @@ impl HChangeFleetCmd {
                 });
             }
         }
-        let info = core_sol.get_fleet(fleet_id).unwrap();
+        let info = core_sol.get_fleet_info(fleet_id).unwrap();
         Ok(info)
     }
 }

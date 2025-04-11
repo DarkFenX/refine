@@ -3,7 +3,7 @@ use crate::{
     sol::{
         FitId, FitKey, ItemKey, ItemTypeId, SolarSystem,
         info::FwEffectInfo,
-        uad::item::{FwEffect, Item},
+        uad::item::{UadFwEffect, UadItem},
     },
 };
 
@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<FwEffectInfo, AddFwEffectError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let item_key = self.add_fw_effect_internal(fit_key, type_id, state);
-        Ok(self.get_fw_effect_internal(item_key).unwrap())
+        Ok(self.get_fw_effect_info_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn add_fw_effect_internal(
         &mut self,
@@ -25,8 +25,8 @@ impl SolarSystem {
         state: bool,
     ) -> ItemKey {
         let item_id = self.uad.items.alloc_id();
-        let fw_effect = FwEffect::new(&self.uad.src, item_id, type_id, fit_key, state);
-        let item = Item::FwEffect(fw_effect);
+        let fw_effect = UadFwEffect::new(&self.uad.src, item_id, type_id, fit_key, state);
+        let item = UadItem::FwEffect(fw_effect);
         let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_mut(fit_key);
         fit.fw_effects.insert(item_key);

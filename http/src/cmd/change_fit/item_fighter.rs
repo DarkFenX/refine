@@ -33,7 +33,7 @@ impl HAddFighterCmd {
                 });
             }
         }
-        let core_fighter = core_sol.get_fighter(&core_fighter.id).unwrap();
+        let core_fighter = core_sol.get_fighter_info(&core_fighter.id).unwrap();
         Ok(core_fighter)
     }
 }

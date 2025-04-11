@@ -4,22 +4,22 @@ use crate::{
     sol::{
         FitKey, Idx, ItemId, ItemKey, ModRack,
         info::ItemMutationInfo,
-        uad::item::{EffectModes, ItemAddMutation, ItemBaseMutable, ItemChangeAttrMutation, ModuleState, Projs},
+        uad::item::{EffectModes, ItemAddMutation, ItemChangeAttrMutation, ModuleState, Projs, UadItemBaseMutable},
     },
     src::Src,
     util::{Named, RMap},
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Module {
-    base: ItemBaseMutable,
+pub(in crate::sol) struct UadModule {
+    base: UadItemBaseMutable,
     fit_key: FitKey,
     rack: ModRack,
     pos: Idx,
     charge_item_key: Option<ItemKey>,
     projs: Projs,
 }
-impl Module {
+impl UadModule {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -32,7 +32,7 @@ impl Module {
         charge_item_key: Option<ItemKey>,
     ) -> Self {
         Self {
-            base: ItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
+            base: UadItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
             fit_key,
             rack,
             pos,
@@ -135,12 +135,12 @@ impl Module {
         &mut self.projs
     }
 }
-impl Named for Module {
+impl Named for UadModule {
     fn get_name() -> &'static str {
         "Module"
     }
 }
-impl std::fmt::Display for Module {
+impl std::fmt::Display for UadModule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

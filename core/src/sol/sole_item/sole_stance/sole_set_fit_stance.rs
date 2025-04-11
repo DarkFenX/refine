@@ -3,7 +3,7 @@ use crate::{
     sol::{
         FitId, FitKey, ItemKey, ItemTypeId, SolarSystem,
         info::StanceInfo,
-        uad::item::{Item, Stance},
+        uad::item::{UadItem, UadStance},
     },
 };
 
@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<StanceInfo, SetFitStanceError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         let item_key = self.set_fit_stance_internal(fit_key, type_id, state);
-        Ok(self.get_stance_internal(item_key).unwrap())
+        Ok(self.get_stance_info_internal(item_key).unwrap())
     }
     pub(in crate::sol) fn set_fit_stance_internal(
         &mut self,
@@ -31,8 +31,8 @@ impl SolarSystem {
         }
         // Add new stance
         let item_id = self.uad.items.alloc_id();
-        let stance = Stance::new(&self.uad.src, item_id, type_id, fit_key, state);
-        let item = Item::Stance(stance);
+        let stance = UadStance::new(&self.uad.src, item_id, type_id, fit_key, state);
+        let item = UadItem::Stance(stance);
         let item_key = self.uad.items.add(item);
         let fit = self.uad.fits.get_mut(fit_key);
         fit.stance = Some(item_key);

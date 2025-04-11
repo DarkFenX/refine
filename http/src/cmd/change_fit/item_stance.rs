@@ -70,14 +70,14 @@ impl HChangeStanceViaFitIdCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
     ) -> Result<HCmdResp, HExecError> {
-        let item_id = match core_sol.get_fit_stance(fit_id) {
+        let item_id = match core_sol.get_fit_stance_info(fit_id) {
             Ok(core_stance) => match core_stance {
                 Some(core_stance) => core_stance.id,
                 None => return Err(HExecError::FitStanceNotFound(*fit_id)),
             },
             Err(error) => {
                 return Err(match error {
-                    rc::err::GetFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::GetFitStanceInfoError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
                 });
             }
         };

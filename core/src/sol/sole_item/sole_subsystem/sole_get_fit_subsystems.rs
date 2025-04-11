@@ -14,7 +14,7 @@ impl SolarSystem {
             .get(fit_key)
             .subsystems
             .iter()
-            .map(|item_key| self.get_subsystem_internal(*item_key).unwrap())
+            .map(|item_key| self.get_subsystem_info_internal(*item_key).unwrap())
             .collect()
     }
 }

@@ -5,7 +5,7 @@ use crate::{
     sol::{
         DmgKinds, FitKey, ItemKey,
         svc::calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
     src::Src,
 };
@@ -16,19 +16,19 @@ use super::shared::{
 };
 
 impl Calc {
-    pub(in crate::sol::svc::calc) fn rah_item_loaded(&mut self, uad: &Uad, item: &Item) {
+    pub(in crate::sol::svc::calc) fn rah_item_loaded(&mut self, uad: &Uad, item: &UadItem) {
         if self.rah.sim_running {
             return;
         }
-        if let Item::Ship(ship) = item {
+        if let UadItem::Ship(ship) = item {
             self.clear_fit_rah_results(uad, &ship.get_fit_key());
         }
     }
-    pub(in crate::sol::svc::calc) fn rah_item_unloaded(&mut self, uad: &Uad, item: &Item) {
+    pub(in crate::sol::svc::calc) fn rah_item_unloaded(&mut self, uad: &Uad, item: &UadItem) {
         if self.rah.sim_running {
             return;
         }
-        if let Item::Ship(ship) = item {
+        if let UadItem::Ship(ship) = item {
             self.clear_fit_rah_results(uad, &ship.get_fit_key());
         }
     }
@@ -36,13 +36,13 @@ impl Calc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
         if self.rah.sim_running {
             return;
         }
-        if let Item::Module(module) = item {
+        if let UadItem::Module(module) = item {
             if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
                 let fit_key = module.get_fit_key();
                 // Clear sim data for other RAHs on the same fit
@@ -87,13 +87,13 @@ impl Calc {
         &mut self,
         uad: &Uad,
         item_key: &ItemKey,
-        item: &Item,
+        item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
         if self.rah.sim_running {
             return;
         }
-        if let Item::Module(module) = item {
+        if let UadItem::Module(module) = item {
             if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
                 let fit_key = module.get_fit_key();
                 // Remove postprocessors
@@ -128,8 +128,8 @@ impl Calc {
             // Ship armor resonances and RAH resonances
             ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
                 match uad.items.get(item_key) {
-                    Item::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_key()),
-                    Item::Module(module) => {
+                    UadItem::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_key()),
+                    UadItem::Module(module) => {
                         if self.rah.resonances.contains_key(&item_key) {
                             self.clear_fit_rah_results(uad, &module.get_fit_key());
                         }
@@ -161,7 +161,7 @@ impl Calc {
             }
             // Ship HP - need to clear results since breacher DPS depends on those
             SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
-                if let Item::Ship(ship) = uad.items.get(item_key) {
+                if let UadItem::Ship(ship) = uad.items.get(item_key) {
                     let fit_key = ship.get_fit_key();
                     let fit = uad.fits.get(fit_key);
                     if get_fit_rah_incoming_dps(uad, fit).deals_breacher_dps() {

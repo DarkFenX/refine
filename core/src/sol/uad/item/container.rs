@@ -1,6 +1,6 @@
 use crate::{
     err::basic::ItemFoundError,
-    sol::uad::{container::EntityContainer, item::Item},
+    sol::uad::{container::EntityContainer, item::UadItem},
 };
 
-pub(in crate::sol) type Items = EntityContainer<Item, ItemFoundError>;
+pub(in crate::sol) type Items = EntityContainer<UadItem, ItemFoundError>;

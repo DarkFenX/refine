@@ -13,7 +13,7 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Fit {
+pub(in crate::sol) struct UadFit {
     pub(in crate::sol) id: FitId,
     pub(in crate::sol) kind: ShipKind,
     pub(in crate::sol) fleet: Option<FleetKey>,
@@ -35,7 +35,7 @@ pub(in crate::sol) struct Fit {
     pub(in crate::sol) sec_status: SecStatus,
     pub(in crate::sol) rah_incoming_dps: Option<DpsProfile>,
 }
-impl Fit {
+impl UadFit {
     pub(in crate::sol) fn new(id: FitId) -> Self {
         Self {
             id,
@@ -104,12 +104,12 @@ impl Fit {
         items
     }
 }
-impl Named for Fit {
+impl Named for UadFit {
     fn get_name() -> &'static str {
         "Fit"
     }
 }
-impl GetId<FitId> for Fit {
+impl GetId<FitId> for UadFit {
     fn get_id(&self) -> FitId {
         self.id
     }

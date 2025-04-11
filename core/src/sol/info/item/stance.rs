@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId,
-    uad::{Uad, item::Stance},
+    uad::{Uad, item::UadStance},
 };
 
 pub struct StanceInfo {
@@ -10,7 +10,7 @@ pub struct StanceInfo {
     pub enabled: bool,
 }
 impl StanceInfo {
-    pub(in crate::sol) fn from_stance(uad: &Uad, stance: &Stance) -> Self {
+    pub(in crate::sol) fn from_stance(uad: &Uad, stance: &UadStance) -> Self {
         Self {
             id: stance.get_item_id(),
             type_id: stance.get_a_item_id(),

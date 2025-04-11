@@ -1,6 +1,6 @@
 use crate::sol::{
     FitId, ItemId, ItemTypeId,
-    uad::{Uad, item::Rig},
+    uad::{Uad, item::UadRig},
 };
 
 pub struct RigInfo {
@@ -10,7 +10,7 @@ pub struct RigInfo {
     pub enabled: bool,
 }
 impl RigInfo {
-    pub(in crate::sol) fn from_rig(uad: &Uad, rig: &Rig) -> Self {
+    pub(in crate::sol) fn from_rig(uad: &Uad, rig: &UadRig) -> Self {
         Self {
             id: rig.get_item_id(),
             type_id: rig.get_a_item_id(),

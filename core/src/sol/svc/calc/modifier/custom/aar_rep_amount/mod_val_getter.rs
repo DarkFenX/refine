@@ -5,7 +5,7 @@ use crate::{
     sol::{
         AttrVal, ItemKey,
         svc::calc::Calc,
-        uad::{Uad, item::Item},
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -18,7 +18,7 @@ pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
 ) -> Option<AttrVal> {
     let item = uad.items.get(item_key);
     match item {
-        Item::Module(module) => {
+        UadItem::Module(module) => {
             let charge_key = match module.get_charge_item_key() {
                 Some(charge_key) => charge_key,
                 // No charge - no extra reps

@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::sol::{
     AttrVal, ItemKey,
     svc::Svc,
-    uad::{Uad, item::Item},
+    uad::{Uad, item::UadItem},
 };
 
 use super::is_a_effect_projectable;
@@ -14,7 +14,7 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         self.notify_item_projected();
@@ -25,7 +25,7 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         let running_effects = self.running_effects.iter_running(&projector_item_key);
@@ -51,7 +51,7 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
     ) {
         self.remove_item_projection_internal(uad, projector_item_key, projectee_item_key, projectee_item);
         self.notify_item_unprojected();
@@ -61,7 +61,7 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
     ) {
         let running_effects = self.running_effects.iter_running(&projector_item_key);
         if !running_effects.is_empty() {
@@ -79,7 +79,7 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         self.notify_item_proj_range_changed();
@@ -90,7 +90,7 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
-        projectee_item: &Item,
+        projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         let running_effects = self.running_effects.iter_running(&projector_item_key);

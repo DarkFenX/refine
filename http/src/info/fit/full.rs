@@ -48,10 +48,10 @@ impl HFitInfoFull {
         fit_id: &rc::FitId,
         item_mode: HItemInfoMode,
     ) -> Result<Self, HExecError> {
-        let core_fit = match core_sol.get_fit(fit_id) {
+        let core_fit = match core_sol.get_fit_info(fit_id) {
             Ok(core_fit) => core_fit,
             Err(error) => match error {
-                rc::err::GetFitError::FitNotFound(e) => return Err(HExecError::FitNotFoundPrimary(e)),
+                rc::err::GetFitInfoError::FitNotFound(e) => return Err(HExecError::FitNotFoundPrimary(e)),
             },
         };
         let fit = Self {
@@ -59,12 +59,12 @@ impl HFitInfoFull {
             fleet: core_fit.fleet,
             character: core_fit
                 .character
-                .and_then(|v| core_sol.get_item(&v).ok())
+                .and_then(|v| core_sol.get_item_info(&v).ok())
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),
             skills: core_fit
                 .skills
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
@@ -72,7 +72,7 @@ impl HFitInfoFull {
             implants: core_fit
                 .implants
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
@@ -80,23 +80,23 @@ impl HFitInfoFull {
             boosters: core_fit
                 .boosters
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
                 .collect(),
             ship: core_fit
                 .ship
-                .and_then(|v| core_sol.get_item(&v).ok())
+                .and_then(|v| core_sol.get_item_info(&v).ok())
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),
             stance: core_fit
                 .stance
-                .and_then(|v| core_sol.get_item(&v).ok())
+                .and_then(|v| core_sol.get_item_info(&v).ok())
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),
             subsystems: core_fit
                 .subsystems
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
@@ -105,7 +105,7 @@ impl HFitInfoFull {
                 high: core_fit
                     .mods_high
                     .iter()
-                    .map(|o| o.map(|v| core_sol.get_item(&v).ok()).flatten())
+                    .map(|o| o.map(|v| core_sol.get_item_info(&v).ok()).flatten())
                     .collect_vec()
                     .into_iter()
                     .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
@@ -113,7 +113,7 @@ impl HFitInfoFull {
                 mid: core_fit
                     .mods_mid
                     .iter()
-                    .map(|o| o.map(|v| core_sol.get_item(&v).ok()).flatten())
+                    .map(|o| o.map(|v| core_sol.get_item_info(&v).ok()).flatten())
                     .collect_vec()
                     .into_iter()
                     .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
@@ -121,7 +121,7 @@ impl HFitInfoFull {
                 low: core_fit
                     .mods_low
                     .iter()
-                    .map(|o| o.map(|v| core_sol.get_item(&v).ok()).flatten())
+                    .map(|o| o.map(|v| core_sol.get_item_info(&v).ok()).flatten())
                     .collect_vec()
                     .into_iter()
                     .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
@@ -130,7 +130,7 @@ impl HFitInfoFull {
             rigs: core_fit
                 .rigs
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
@@ -138,7 +138,7 @@ impl HFitInfoFull {
             drones: core_fit
                 .drones
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
@@ -146,7 +146,7 @@ impl HFitInfoFull {
             fighters: core_fit
                 .fighters
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
@@ -154,7 +154,7 @@ impl HFitInfoFull {
             fw_effects: core_fit
                 .fw_effects
                 .iter()
-                .filter_map(|v| core_sol.get_item(v).ok())
+                .filter_map(|v| core_sol.get_item_info(v).ok())
                 .collect_vec()
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))

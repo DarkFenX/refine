@@ -1,5 +1,5 @@
 pub(in crate::sol) use kind::ShipKind;
-pub(in crate::sol) use main::Ship;
+pub(in crate::sol) use main::UadShip;
 
 mod debug;
 mod kind;

@@ -28,12 +28,12 @@ impl HSolInfoFull {
         Self {
             id: sol_id,
             fleets: core_sol
-                .get_fleets()
+                .get_fleet_infos()
                 .iter()
                 .filter_map(|core_fleet| HFleetInfo::mk_info(core_sol, &core_fleet.id, fleet_mode).ok())
                 .collect(),
             fits: core_sol
-                .get_fits()
+                .get_fit_infos()
                 .iter()
                 .filter_map(|core_fit| HFitInfo::mk_info(core_sol, &core_fit.id, fit_mode, item_mode).ok())
                 .collect(),
@@ -43,7 +43,7 @@ impl HSolInfoFull {
                 .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
                 .collect(),
             proj_effects: core_sol
-                .get_proj_effects()
+                .get_proj_effect_infos()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
                 .collect(),
