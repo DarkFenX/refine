@@ -40,8 +40,8 @@ impl HBenchmarkTryFitItemsCmd {
         let core_options = self.validation_options.to_core_val_options(core_sol);
         let mut breeder = HGuardedSolBreeder::new(core_sol);
         let chunk_size = usize::max(
-            500,
-            (self.type_ids.len() as f64 / tokio_rayon::rayon::current_num_threads() as f64 / 2.0).ceil() as usize,
+            400,
+            (self.type_ids.len() as f64 / tokio_rayon::rayon::current_num_threads() as f64 / 4.0).ceil() as usize,
         );
         self.type_ids.par_chunks(chunk_size).for_each(|chunk| {
             let mut inner_sol = breeder.lock().get();

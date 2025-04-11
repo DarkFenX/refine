@@ -85,13 +85,15 @@ def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
     api_val = api_fit.validate(options=ValOptions(default=True))
     assert api_val.passed is True
     iterations = 1000
-    print('starting try-fit-items benchmark')  # noqa: T201
+    try_fit_type_ids = get_try_fit_type_ids()
+    options = ValOptions(default=True).to_dict()
+    print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')  # noqa: T201
     before = time()
     api_sol.benchmark(command={
         'type': 'try_fit_items',
         'fit_id': api_fit.id,
-        'type_ids': get_try_fit_type_ids(),
-        'validation_options': ValOptions(default=True).to_dict(),
+        'type_ids': try_fit_type_ids,
+        'validation_options': options,
         'iterations': iterations})
     after = time()
     print('done with try-fit-items benchmark')  # noqa: T201
