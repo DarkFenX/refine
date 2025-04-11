@@ -53,12 +53,7 @@ pub(crate) async fn create_sol(
         Ok(sol_info) => sol_info,
         Err(br_err) => {
             let code = match &br_err {
-                HBrError::ExecFailed(
-                    HExecError::InvalidDpsProfileEm(_)
-                    | HExecError::InvalidDpsProfileTherm(_)
-                    | HExecError::InvalidDpsProfileKin(_)
-                    | HExecError::InvalidDpsProfileExpl(_),
-                ) => StatusCode::BAD_REQUEST,
+                HBrError::ExecFailed(HExecError::InvalidDpsProfile(_)) => StatusCode::BAD_REQUEST,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             return (code, Json(HSingleErr::from(br_err))).into_response();

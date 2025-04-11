@@ -51,17 +51,9 @@ pub(crate) enum HExecError {
     #[error("{0}")]
     InvalidSecStatus(#[source] rc::err::basic::SecStatusError),
     #[error("{0}")]
-    InvalidDpsProfileEm(#[source] rc::err::basic::EmDmgError),
+    InvalidDpsProfile(#[source] rc::err::basic::DmgError),
     #[error("{0}")]
-    InvalidDpsProfileTherm(#[source] rc::err::basic::ThermDmgError),
-    #[error("{0}")]
-    InvalidDpsProfileKin(#[source] rc::err::basic::KinDmgError),
-    #[error("{0}")]
-    InvalidDpsProfileExpl(#[source] rc::err::basic::ExplDmgError),
-    #[error("{0}")]
-    InvalidBreacherAbs(#[source] rc::err::basic::BreacherAbsDmgError),
-    #[error("{0}")]
-    InvalidBreacherRel(#[source] rc::err::basic::BreacherRelDmgError),
+    InvalidBreacher(#[source] rc::err::basic::BreacherDmgError),
 }
 impl HExecError {
     pub(crate) fn get_code(&self) -> String {
@@ -93,12 +85,8 @@ impl HExecError {
             HExecError::ProjectionAlreadyExists(_) => "EXC-023",
             // Misc
             HExecError::InvalidSecStatus(_) => "EXC-024-1",
-            HExecError::InvalidDpsProfileEm(_) => "EXC-024",
-            HExecError::InvalidDpsProfileTherm(_) => "EXC-025",
-            HExecError::InvalidDpsProfileKin(_) => "EXC-026",
-            HExecError::InvalidDpsProfileExpl(_) => "EXC-027",
-            HExecError::InvalidBreacherAbs(_) => "EXC-029",
-            HExecError::InvalidBreacherRel(_) => "EXC-030",
+            HExecError::InvalidDpsProfile(_) => "EXC-024",
+            HExecError::InvalidBreacher(_) => "EXC-029",
         }
         .to_string()
     }

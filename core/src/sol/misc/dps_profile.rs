@@ -1,7 +1,7 @@
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
-    err::basic::{EmDmgError, ExplDmgError, KinDmgError, ThermDmgError},
+    err::basic::DmgError,
     sol::{AttrVal, BreacherInfo},
 };
 
@@ -22,16 +22,16 @@ impl DpsProfile {
         breacher: Option<BreacherInfo>,
     ) -> Result<Self, NewDpsProfileError> {
         if em < OF(0.0) {
-            return Err(EmDmgError { value: em }.into());
+            return Err(DmgError::Em(em).into());
         }
         if thermal < OF(0.0) {
-            return Err(ThermDmgError { value: thermal }.into());
+            return Err(DmgError::Thermal(em).into());
         }
         if kinetic < OF(0.0) {
-            return Err(KinDmgError { value: kinetic }.into());
+            return Err(DmgError::Kinetic(em).into());
         }
         if explosive < OF(0.0) {
-            return Err(ExplDmgError { value: explosive }.into());
+            return Err(DmgError::Explosive(em).into());
         }
         Ok(Self {
             em,
@@ -67,11 +67,5 @@ impl DpsProfile {
 #[derive(thiserror::Error, Debug)]
 pub enum NewDpsProfileError {
     #[error("{0}")]
-    InvalidEm(#[from] EmDmgError),
-    #[error("{0}")]
-    InvalidThermal(#[from] ThermDmgError),
-    #[error("{0}")]
-    InvalidKinetic(#[from] KinDmgError),
-    #[error("{0}")]
-    InvalidExplosive(#[from] ExplDmgError),
+    InvalidDmg(#[from] DmgError),
 }

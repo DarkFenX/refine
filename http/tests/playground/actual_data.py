@@ -100,6 +100,9 @@ def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
     delta = after - before
     ips = iterations / delta
     print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # noqa: T201
+    ####
+    api_id = api_fit.add_rig(type_id=26436).id
+    print(f'next ID is {api_id}')
 
 
 def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
