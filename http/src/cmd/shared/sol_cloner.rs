@@ -11,7 +11,7 @@ impl<'a> HSolCloner<'a> {
             inner: Arc::new(Mutex::new(HSolClonerInner::new(original))),
         }
     }
-    pub(in crate::cmd) fn lock(&'a self) -> MutexGuard<HSolClonerInner> {
+    pub(in crate::cmd) fn lock(&'a self) -> MutexGuard<'a, HSolClonerInner<'a>> {
         self.inner.lock()
     }
 }
