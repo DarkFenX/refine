@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 
 use tokio::{sync::RwLock, time};
+use tokio_rayon::AsyncThreadPool;
 use uuid::Uuid;
 
 use crate::{
-    bridge::{HBrError, HGuardedSol},
+    bridge::{HBrError, HGuardedSol, HThreadPool},
     cmd::HAddSolCmd,
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
 };
@@ -22,6 +23,7 @@ impl HSolMgr {
     #[tracing::instrument(name = "solmgr-add", level = "trace", skip_all)]
     pub(crate) async fn add_sol(
         &self,
+        tpool: &HThreadPool,
         command: HAddSolCmd,
         src: rc::Src,
         sol_mode: HSolInfoMode,
@@ -32,13 +34,15 @@ impl HSolMgr {
         let id = get_id();
         let id_mv = id.clone();
         let sync_span = tracing::trace_span!("sync");
-        match tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let mut core_sol = command.execute(src).map_err(HBrError::from)?;
-            let sol_info = HSolInfo::mk_info(id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
-            Ok((core_sol, sol_info))
-        })
-        .await
+        match tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                let mut core_sol = command.execute(src).map_err(HBrError::from)?;
+                let sol_info = HSolInfo::mk_info(id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
+                Ok((core_sol, sol_info))
+            })
+            .await
         {
             Ok((core_sol, sol_info)) => {
                 self.id_sol_map

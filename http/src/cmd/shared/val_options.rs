@@ -1,5 +1,5 @@
 #[derive(serde::Deserialize)]
-pub(in crate) struct HValOptions {
+pub(crate) struct HValOptions {
     default: bool,
     #[serde(default)]
     cpu: Option<HValOption>,

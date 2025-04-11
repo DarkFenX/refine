@@ -1,8 +1,9 @@
 use std::collections::{HashMap, HashSet};
 
 use tokio::sync::RwLock;
+use tokio_rayon::AsyncThreadPool;
 
-use crate::bridge::HBrError;
+use crate::bridge::{HBrError, HThreadPool};
 
 pub(crate) struct HSrcMgr {
     cache_folder: Option<String>,
@@ -23,6 +24,7 @@ impl HSrcMgr {
     #[tracing::instrument(name = "srcmgr-add", level = "trace", skip_all)]
     pub(crate) async fn add(
         &self,
+        tpool: &HThreadPool,
         alias: String,
         data_version: String,
         data_base_url: String,
@@ -38,11 +40,13 @@ impl HSrcMgr {
         let cache_folder_cloned = self.cache_folder.clone();
 
         let sync_span = tracing::trace_span!("sync");
-        match tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            create_src(alias_cloned, data_base_url, data_version, cache_folder_cloned)
-        })
-        .await
+        match tpool
+            .heavy
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                create_src(alias_cloned, data_base_url, data_version, cache_folder_cloned)
+            })
+            .await
         {
             Ok(src) => {
                 if make_default {
