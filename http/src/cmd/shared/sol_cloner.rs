@@ -24,7 +24,7 @@ impl<'a> HSolClonerInner<'a> {
     fn new(original: &'a rc::SolarSystem) -> Self {
         Self {
             original,
-            allocated: Vec::new(),
+            allocated: Vec::with_capacity(tokio_rayon::rayon::current_num_threads()),
         }
     }
     pub(in crate::cmd) fn get(&mut self) -> rc::SolarSystem {
