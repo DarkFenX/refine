@@ -12,7 +12,7 @@ pub(crate) struct HFwEffectInfoFull {
 impl HFwEffectInfoFull {
     pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_fw_effect_info: &rc::FwEffectInfo) -> Self {
         let partial_info = HFwEffectInfoPartial::from(core_fw_effect_info);
-        let extended_info = HItemExtendedInfo::mk_info(core_sol, &partial_info.id);
+        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
         Self {
             partial_info,
             extended_info,

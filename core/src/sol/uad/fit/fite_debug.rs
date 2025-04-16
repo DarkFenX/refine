@@ -4,7 +4,7 @@ use crate::sol::{
     uad::{
         Uad,
         fit::UadFit,
-        item::{Fighter, UadItem, UadModule},
+        item::{UadFighter, UadItem, UadModule},
     },
 };
 
@@ -319,7 +319,7 @@ fn check_fighter_autocharges(
     uad: &Uad,
     fit_key: FitKey,
     fighter_key: ItemKey,
-    fighter: &Fighter,
+    fighter: &UadFighter,
     seen_items: &mut Vec<ItemKey>,
 ) -> DebugResult {
     for &autocharge_key in fighter.get_autocharges().values() {

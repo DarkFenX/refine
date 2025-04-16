@@ -7,6 +7,7 @@ pub use effect_info::EffectInfo;
 pub use effect_mode::EffectMode;
 pub use mod_rack::ModRack;
 pub use op::OpInfo;
+pub use pos_modes::{AddMode, RmMode};
 pub use sec_zone::{SecZone, SecZoneCorruption};
 
 mod adj_count;
@@ -18,4 +19,5 @@ mod effect_info;
 mod effect_mode;
 mod mod_rack;
 mod op;
+mod pos_modes;
 mod sec_zone;

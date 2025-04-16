@@ -12,7 +12,7 @@ pub(crate) struct HRigInfoFull {
 impl HRigInfoFull {
     pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_rig_info: &rc::RigInfo) -> Self {
         let partial_info = HRigInfoPartial::from(core_rig_info);
-        let extended_info = HItemExtendedInfo::mk_info(core_sol, &partial_info.id);
+        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
         Self {
             partial_info,
             extended_info,

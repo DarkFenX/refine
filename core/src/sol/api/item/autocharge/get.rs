@@ -1,0 +1,28 @@
+use crate::{
+    err::basic::{ItemFoundError, ItemKindMatchError},
+    sol::{
+        ItemId, SolarSystem,
+        api::{Autocharge, AutochargeMut},
+    },
+};
+
+impl SolarSystem {
+    pub fn get_autocharge(&self, item_id: &ItemId) -> Result<Autocharge, GetAutochargeError> {
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        self.uad.items.get(item_key).get_autocharge()?;
+        Ok(Autocharge::new(self, item_key))
+    }
+    pub fn get_autocharge_mut(&mut self, item_id: &ItemId) -> Result<AutochargeMut, GetAutochargeError> {
+        let item_key = self.uad.items.key_by_id_err(item_id)?;
+        self.uad.items.get(item_key).get_autocharge()?;
+        Ok(AutochargeMut::new(self, item_key))
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum GetAutochargeError {
+    #[error("{0}")]
+    ItemNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ItemIsNotAutocharge(#[from] ItemKindMatchError),
+}

@@ -13,8 +13,8 @@ impl HAddImplantCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<rc::ImplantInfo, HExecError> {
-        let core_implant = match core_sol.add_implant(fit_id, self.type_id, self.state.unwrap_or(true)) {
+    ) -> Result<rc::ItemId, HExecError> {
+        let mut core_implant = match core_sol.add_implant(fit_id, self.type_id) {
             Ok(core_implant) => core_implant,
             Err(error) => {
                 return Err(match error {
@@ -22,7 +22,10 @@ impl HAddImplantCmd {
                 });
             }
         };
-        Ok(core_implant)
+        if let Some(state) = self.state {
+            core_implant = core_implant.set_state(state);
+        };
+        Ok(core_implant.get_item_id())
     }
 }
 

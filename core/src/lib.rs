@@ -24,12 +24,14 @@ pub use sol::{
     AddMode, AttrId, AttrVal, BreacherInfo, Count, CustomEffectId, DogmaEffectId, DpsProfile, EffectId, EffectInfo,
     EffectMode, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId, ModRack, MutaRoll, OpInfo, RmMode, SecStatus,
     SecZone, SecZoneCorruption, SkillLevel, SlotIndex, SolarSystem,
-    info::{
-        AttrMutationInfo, AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FitInfo,
-        FleetInfo, FwEffectInfo, ImplantInfo, ItemInfo, ItemMutationInfo, ModuleInfo, ProjEffectInfo, ProjInfo,
-        RigInfo, ServiceInfo, ShipInfo, SideEffectInfo, SideEffectStr, SkillInfo, StanceInfo, SubsystemInfo,
-        SwEffectInfo,
+    api::{
+        Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
+        Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut,
+        Implant, ImplantMut, Item, ItemMut, Module, ModuleMut, ProjEffect, ProjEffectMut, Rig, RigMut, Service,
+        ServiceMut, Ship, ShipMut, SideEffect, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut,
+        Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
     },
+    info::{AttrMutationInfo, ItemMutationInfo, ProjInfo},
     svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo},
     uad::{
         ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, MinionState, ModuleState,

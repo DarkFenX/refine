@@ -8,7 +8,7 @@ pub(in crate::sol) use item_booster::UadBooster;
 pub(in crate::sol) use item_character::UadCharacter;
 pub(in crate::sol) use item_charge::UadCharge;
 pub(in crate::sol) use item_drone::UadDrone;
-pub(in crate::sol) use item_fighter::Fighter;
+pub(in crate::sol) use item_fighter::UadFighter;
 pub(in crate::sol) use item_fw_effect::UadFwEffect;
 pub(in crate::sol) use item_implant::UadImplant;
 pub use item_module::ModuleState;

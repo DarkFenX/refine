@@ -16,7 +16,7 @@ impl HModuleInfoFull {
         item_mode: HItemInfoMode,
     ) -> Self {
         let partial_info = HModuleInfoPartial::mk_info(core_sol, core_module_info, item_mode);
-        let extended_info = HItemExtendedInfo::mk_info(core_sol, &partial_info.id);
+        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
         Self {
             partial_info,
             extended_info,

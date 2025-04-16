@@ -9,14 +9,14 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Fighter {
+pub(in crate::sol) struct UadFighter {
     base: UadItemBase,
     fit_key: FitKey,
     count_override: Option<Count>,
     autocharges: Autocharges,
     projs: Projs,
 }
-impl Fighter {
+impl UadFighter {
     pub(in crate::sol) fn new(
         src: &Src,
         item_id: ItemId,
@@ -117,12 +117,12 @@ impl Fighter {
         &mut self.projs
     }
 }
-impl Named for Fighter {
+impl Named for UadFighter {
     fn get_name() -> &'static str {
         "Fighter"
     }
 }
-impl std::fmt::Display for Fighter {
+impl std::fmt::Display for UadFighter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

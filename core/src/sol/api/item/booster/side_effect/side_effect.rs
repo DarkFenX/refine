@@ -1,0 +1,106 @@
+use crate::{
+    ad,
+    sol::{EffectId, ItemKey, SolarSystem},
+};
+
+pub enum SideEffect<'a> {
+    Full(FullSideEffect<'a>),
+    Stub(StubSideEffect<'a>),
+}
+impl<'a> SideEffect<'a> {
+    pub fn get_effect_id(&self) -> EffectId {
+        match self {
+            Self::Full(full_side_effect) => full_side_effect.get_effect_id(),
+            Self::Stub(stub_side_effect) => stub_side_effect.get_effect_id(),
+        }
+    }
+}
+
+pub enum SideEffectMut<'a> {
+    Full(FullSideEffectMut<'a>),
+    Stub(StubSideEffectMut<'a>),
+}
+
+/// Side effect which has full functionality available.
+pub struct FullSideEffect<'a> {
+    pub(in crate::sol) sol: &'a SolarSystem,
+    pub(in crate::sol) key: ItemKey,
+    pub(in crate::sol) a_effect_id: ad::AEffectId,
+    pub(in crate::sol) chance_a_attr_id: ad::AAttrId,
+}
+impl<'a> FullSideEffect<'a> {
+    pub(in crate::sol) fn new(
+        sol: &'a SolarSystem,
+        key: ItemKey,
+        a_effect_id: ad::AEffectId,
+        chance_a_attr_id: ad::AAttrId,
+    ) -> Self {
+        Self {
+            sol,
+            key,
+            a_effect_id,
+            chance_a_attr_id,
+        }
+    }
+    pub fn get_effect_id(&self) -> EffectId {
+        self.a_effect_id.into()
+    }
+}
+
+/// Side effect which has full functionality available.
+pub struct FullSideEffectMut<'a> {
+    pub(in crate::sol) sol: &'a mut SolarSystem,
+    pub(in crate::sol) key: ItemKey,
+    pub(in crate::sol) a_effect_id: ad::AEffectId,
+    pub(in crate::sol) chance_a_attr_id: ad::AAttrId,
+}
+impl<'a> FullSideEffectMut<'a> {
+    pub(in crate::sol) fn new(
+        sol: &'a mut SolarSystem,
+        key: ItemKey,
+        a_effect_id: ad::AEffectId,
+        chance_a_attr_id: ad::AAttrId,
+    ) -> Self {
+        Self {
+            sol,
+            key,
+            a_effect_id,
+            chance_a_attr_id,
+        }
+    }
+    pub fn get_effect_id(&self) -> EffectId {
+        self.a_effect_id.into()
+    }
+}
+
+/// A non-side-effect effect, with limited functionality. Exists to expose and let manipulate side
+/// effect data on data sources which don't have this effect defined as a side effect.
+pub struct StubSideEffect<'a> {
+    pub(in crate::sol) sol: &'a SolarSystem,
+    pub(in crate::sol) key: ItemKey,
+    pub(in crate::sol) a_effect_id: ad::AEffectId,
+}
+impl<'a> StubSideEffect<'a> {
+    pub(in crate::sol) fn new(sol: &'a SolarSystem, key: ItemKey, a_effect_id: ad::AEffectId) -> Self {
+        Self { sol, key, a_effect_id }
+    }
+    pub fn get_effect_id(&self) -> EffectId {
+        self.a_effect_id.into()
+    }
+}
+
+/// A non-side-effect effect, with limited functionality. Exists to expose and let manipulate side
+/// effect data on data sources which don't have this effect defined as a side effect.
+pub struct StubSideEffectMut<'a> {
+    pub(in crate::sol) sol: &'a mut SolarSystem,
+    pub(in crate::sol) key: ItemKey,
+    pub(in crate::sol) a_effect_id: ad::AEffectId,
+}
+impl<'a> StubSideEffectMut<'a> {
+    pub(in crate::sol) fn new(sol: &'a mut SolarSystem, key: ItemKey, a_effect_id: ad::AEffectId) -> Self {
+        Self { sol, key, a_effect_id }
+    }
+    pub fn get_effect_id(&self) -> EffectId {
+        self.a_effect_id.into()
+    }
+}

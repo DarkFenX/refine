@@ -14,7 +14,7 @@ pub(crate) struct HItemExtendedInfo {
     pub(crate) mods: HashMap<rc::AttrId, Vec<HModificationInfo>>,
 }
 impl HItemExtendedInfo {
-    pub(in crate::info::item) fn mk_info(core_sol: &mut rc::SolarSystem, item_id: &rc::ItemId) -> Self {
+    pub(in crate::info::item) fn from_item_id(core_sol: &mut rc::SolarSystem, item_id: &rc::ItemId) -> Self {
         let attrs = match core_sol.iter_item_attrs(item_id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),

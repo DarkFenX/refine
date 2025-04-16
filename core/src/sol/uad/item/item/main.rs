@@ -4,7 +4,7 @@ use crate::{
     sol::{
         AttrVal, FitKey, ItemId, ItemKey,
         uad::item::{
-            Autocharges, EffectModes, Fighter, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone,
+            Autocharges, EffectModes, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter,
             UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance,
             UadSubsystem, UadSwEffect,
         },
@@ -20,7 +20,7 @@ pub(in crate::sol) enum UadItem {
     Character(UadCharacter),
     Charge(UadCharge),
     Drone(UadDrone),
-    Fighter(Fighter),
+    Fighter(UadFighter),
     FwEffect(UadFwEffect),
     Implant(UadImplant),
     Module(UadModule),
@@ -41,7 +41,7 @@ impl UadItem {
             Self::Character(_) => UadCharacter::get_name(),
             Self::Charge(_) => UadCharge::get_name(),
             Self::Drone(_) => UadDrone::get_name(),
-            Self::Fighter(_) => Fighter::get_name(),
+            Self::Fighter(_) => UadFighter::get_name(),
             Self::FwEffect(_) => UadFwEffect::get_name(),
             Self::Implant(_) => UadImplant::get_name(),
             Self::Module(_) => UadModule::get_name(),
@@ -369,22 +369,22 @@ impl UadItem {
             }),
         }
     }
-    pub(in crate::sol) fn get_fighter(&self) -> Result<&Fighter, ItemKindMatchError> {
+    pub(in crate::sol) fn get_fighter(&self) -> Result<&UadFighter, ItemKindMatchError> {
         match self {
             Self::Fighter(fighter) => Ok(fighter),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: Fighter::get_name(),
+                expected_kind: UadFighter::get_name(),
                 actual_kind: self.get_name(),
             }),
         }
     }
-    pub(in crate::sol) fn get_fighter_mut(&mut self) -> Result<&mut Fighter, ItemKindMatchError> {
+    pub(in crate::sol) fn get_fighter_mut(&mut self) -> Result<&mut UadFighter, ItemKindMatchError> {
         match self {
             Self::Fighter(fighter) => Ok(fighter),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: Fighter::get_name(),
+                expected_kind: UadFighter::get_name(),
                 actual_kind: self.get_name(),
             }),
         }

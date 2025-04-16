@@ -5,7 +5,7 @@ use crate::{
         svc::Svc,
         uad::{
             Uad,
-            item::{Fighter, UadSkill},
+            item::{UadFighter, UadSkill},
         },
     },
     src::Src,
@@ -26,7 +26,7 @@ impl Svc {
     pub(in crate::sol) fn sol_sec_zone_changed(&mut self, uad: &Uad) {
         self.notify_sol_sec_zone_changed(uad);
     }
-    pub(in crate::sol) fn fighter_count_changed(&mut self, uad: &Uad, fighter_key: ItemKey, fighter: &Fighter) {
+    pub(in crate::sol) fn fighter_count_changed(&mut self, uad: &Uad, fighter_key: ItemKey, fighter: &UadFighter) {
         self.notify_fighter_count_changed(uad, fighter_key, fighter);
     }
     pub(in crate::sol) fn ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {

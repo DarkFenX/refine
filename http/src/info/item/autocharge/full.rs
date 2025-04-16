@@ -12,7 +12,7 @@ pub(crate) struct HAutochargeInfoFull {
 impl HAutochargeInfoFull {
     pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_autocharge_info: &rc::AutochargeInfo) -> Self {
         let partial_info = HAutochargeInfoPartial::from(core_autocharge_info);
-        let extended_info = HItemExtendedInfo::mk_info(core_sol, &partial_info.id);
+        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
         Self {
             partial_info,
             extended_info,

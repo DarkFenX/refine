@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::Fighter;
+pub(in crate::sol) use main::UadFighter;
 
 mod debug;
 mod main;

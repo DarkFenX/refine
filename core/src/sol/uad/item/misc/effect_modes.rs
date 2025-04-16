@@ -9,8 +9,8 @@ impl EffectModes {
         Self { data: RMap::new() }
     }
     // Query methods
-    pub(in crate::sol) fn get(&self, effect_id: &ad::AEffectId) -> &EffectMode {
-        self.data.get(effect_id).unwrap_or(&DEFAULT_EFFECT_MODE)
+    pub(in crate::sol) fn get(&self, a_effect_id: &ad::AEffectId) -> &EffectMode {
+        self.data.get(a_effect_id).unwrap_or(&DEFAULT_EFFECT_MODE)
     }
     // Modification methods
     pub(in crate::sol) fn set(&mut self, a_effect_id: ad::AEffectId, mode: EffectMode) {

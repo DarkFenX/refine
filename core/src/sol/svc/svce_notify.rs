@@ -6,7 +6,7 @@ use crate::{
         uad::{
             Uad,
             fleet::UadFleet,
-            item::{Fighter, UadItem, UadSkill},
+            item::{UadFighter, UadItem, UadSkill},
         },
     },
     src::Src,
@@ -168,7 +168,7 @@ impl Svc {
         &mut self,
         uad: &Uad,
         fighter_key: ItemKey,
-        fighter: &Fighter,
+        fighter: &UadFighter,
     ) {
         self.calc.fighter_count_changed(uad, fighter_key);
         self.vast.fighter_count_changed(fighter_key, fighter);

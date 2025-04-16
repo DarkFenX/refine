@@ -18,14 +18,18 @@ impl HChangeImplantCmd {
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
     ) -> Result<HCmdResp, HExecError> {
-        if let Some(state) = self.state {
-            if let Err(error) = core_sol.set_implant_state(item_id, state) {
+        let mut core_implant = match core_sol.get_implant_mut(item_id) {
+            Ok(core_implant) => core_implant,
+            Err(error) => {
                 return Err(match error {
-                    rc::err::SetImplantStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetImplantStateError::ItemIsNotImplant(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::GetImplantError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::GetImplantError::ItemIsNotImplant(e) => HExecError::ItemKindMismatch(e),
                 });
             }
-        }
+        };
+        if let Some(state) = self.state {
+            core_implant = core_implant.set_state(state);
+        };
         apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }

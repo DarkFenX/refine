@@ -1,0 +1,46 @@
+use crate::sol::api::{
+    Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
+    Fighter, FighterMut, FwEffect, FwEffectMut, Implant, ImplantMut, Module, ModuleMut, ProjEffect, ProjEffectMut, Rig,
+    RigMut, Service, ServiceMut, Ship, ShipMut, Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect,
+    SwEffectMut,
+};
+
+pub enum Item<'a> {
+    Autocharge(Autocharge<'a>),
+    Booster(Booster<'a>),
+    Character(Character<'a>),
+    Charge(Charge<'a>),
+    Drone(Drone<'a>),
+    Fighter(Fighter<'a>),
+    FwEffect(FwEffect<'a>),
+    Implant(Implant<'a>),
+    Module(Module<'a>),
+    ProjEffect(ProjEffect<'a>),
+    Rig(Rig<'a>),
+    Service(Service<'a>),
+    Ship(Ship<'a>),
+    Skill(Skill<'a>),
+    Stance(Stance<'a>),
+    Subsystem(Subsystem<'a>),
+    SwEffect(SwEffect<'a>),
+}
+
+pub enum ItemMut<'a> {
+    Autocharge(AutochargeMut<'a>),
+    Booster(BoosterMut<'a>),
+    Character(CharacterMut<'a>),
+    Charge(ChargeMut<'a>),
+    Drone(DroneMut<'a>),
+    Fighter(FighterMut<'a>),
+    FwEffect(FwEffectMut<'a>),
+    Implant(ImplantMut<'a>),
+    Module(ModuleMut<'a>),
+    ProjEffect(ProjEffectMut<'a>),
+    Rig(RigMut<'a>),
+    Service(ServiceMut<'a>),
+    Ship(ShipMut<'a>),
+    Skill(SkillMut<'a>),
+    Stance(StanceMut<'a>),
+    Subsystem(SubsystemMut<'a>),
+    SwEffect(SwEffectMut<'a>),
+}

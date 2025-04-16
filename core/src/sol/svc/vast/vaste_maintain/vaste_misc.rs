@@ -5,7 +5,7 @@ use crate::{
         svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
         uad::{
             Uad,
-            item::{Fighter, UadSkill},
+            item::{UadFighter, UadSkill},
         },
     },
 };
@@ -40,7 +40,7 @@ impl Vast {
             }
         }
     }
-    pub(in crate::sol::svc) fn fighter_count_changed(&mut self, fighter_key: ItemKey, fighter: &Fighter) {
+    pub(in crate::sol::svc) fn fighter_count_changed(&mut self, fighter_key: ItemKey, fighter: &UadFighter) {
         let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
         let extras = fighter.get_a_extras().unwrap();
         let count = fighter.get_count().unwrap();
