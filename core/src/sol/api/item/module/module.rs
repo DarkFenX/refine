@@ -1,6 +1,6 @@
 use crate::sol::{
-    FitId, Idx, ItemId, ItemKey, ItemTypeId, ModRack, SolarSystem,
-    api::{Charge, ChargeMut},
+    Idx, ItemKey, ModRack, SolarSystem,
+    api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     info::{ItemMutationInfo, ProjInfo},
     uad::item::{ModuleState, UadModule},
 };
@@ -13,14 +13,8 @@ impl<'a> Module<'a> {
     pub(in crate::sol) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_item_id(&self) -> ItemId {
-        get_item_id(self.sol, self.key)
-    }
-    pub fn get_type_id(&self) -> ItemTypeId {
-        get_type_id(self.sol, self.key)
-    }
-    pub fn get_fit_id(&self) -> FitId {
-        get_fit_id(self.sol, self.key)
+    pub fn get_fit(&self) -> Fit {
+        get_fit(self.sol, self.key)
     }
     pub fn get_state(&self) -> ModuleState {
         get_state(self.sol, self.key)
@@ -41,6 +35,15 @@ impl<'a> Module<'a> {
         get_projs(self.sol, self.key)
     }
 }
+impl<'a> ItemSealed for Module<'a> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_key(&self) -> ItemKey {
+        self.key
+    }
+}
+impl<'a> ItemCommon for Module<'a> {}
 
 pub struct ModuleMut<'a> {
     pub(in crate::sol) sol: &'a mut SolarSystem,
@@ -50,14 +53,12 @@ impl<'a> ModuleMut<'a> {
     pub(in crate::sol) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_item_id(&self) -> ItemId {
-        get_item_id(self.sol, self.key)
+    pub fn get_fit(&self) -> Fit {
+        get_fit(self.sol, self.key)
     }
-    pub fn get_type_id(&self) -> ItemTypeId {
-        get_type_id(self.sol, self.key)
-    }
-    pub fn get_fit_id(&self) -> FitId {
-        get_fit_id(self.sol, self.key)
+    pub fn get_fit_mut(&mut self) -> FitMut {
+        let fit_key = get_uad_module(self.sol, self.key).get_fit_key();
+        FitMut::new(self.sol, fit_key)
     }
     pub fn get_state(&self) -> ModuleState {
         get_state(self.sol, self.key)
@@ -83,16 +84,25 @@ impl<'a> ModuleMut<'a> {
         get_projs(self.sol, self.key)
     }
 }
+impl<'a> ItemSealed for ModuleMut<'a> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_key(&self) -> ItemKey {
+        self.key
+    }
+}
+impl<'a> ItemMutSealed for ModuleMut<'a> {
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+        self.sol
+    }
+}
+impl<'a> ItemCommon for ModuleMut<'a> {}
+impl<'a> ItemMutCommon for ModuleMut<'a> {}
 
-fn get_item_id(sol: &SolarSystem, item_key: ItemKey) -> ItemId {
-    sol.uad.items.id_by_key(item_key)
-}
-fn get_type_id(sol: &SolarSystem, item_key: ItemKey) -> ItemTypeId {
-    get_uad_module(sol, item_key).get_a_item_id()
-}
-fn get_fit_id(sol: &SolarSystem, item_key: ItemKey) -> FitId {
+fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit {
     let fit_key = get_uad_module(sol, item_key).get_fit_key();
-    sol.uad.fits.id_by_key(fit_key)
+    Fit::new(sol, fit_key)
 }
 fn get_state(sol: &SolarSystem, item_key: ItemKey) -> ModuleState {
     get_uad_module(sol, item_key).get_module_state()

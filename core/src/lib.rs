@@ -20,6 +20,7 @@
 //!   and items, and fetch data and stats
 
 pub use defs::VERSION;
+pub use lender::Lender;
 pub use sol::{
     AddMode, AttrId, AttrVal, BreacherInfo, Count, CustomEffectId, DogmaEffectId, DpsProfile, EffectId, EffectInfo,
     EffectMode, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId, ModRack, MutaRoll, OpInfo, RmMode, SecStatus,
@@ -27,9 +28,10 @@ pub use sol::{
     api::{
         Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
         Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut,
-        Implant, ImplantMut, Item, ItemMut, Module, ModuleMut, ProjEffect, ProjEffectMut, Rig, RigMut, Service,
-        ServiceMut, Ship, ShipMut, SideEffect, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut,
-        Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+        Implant, ImplantMut, Item, ItemCommon, ItemMut, ItemMutCommon, Module, ModuleMut, ProjEffect, ProjEffectMut,
+        Rig, RigMut, Service, ServiceMut, Ship, ShipMut, SideEffect, SideEffectMut, SideEffectPartialStr,
+        SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut,
+        SwEffect, SwEffectMut,
     },
     info::{AttrMutationInfo, ItemMutationInfo, ProjInfo},
     svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo},

@@ -2,10 +2,21 @@ use itertools::Itertools;
 
 use crate::{
     AttrVal, ad,
-    sol::{ItemKey, SolarSystem, uad::item::UadItem},
+    sol::{
+        ItemKey, SolarSystem,
+        svc::calc::{AttrCalcError, CalcAttrVal},
+        uad::item::UadItem,
+    },
 };
 
 impl SolarSystem {
+    pub(in crate::sol) fn internal_get_item_attr(
+        &mut self,
+        item_key: ItemKey,
+        a_attr_id: &ad::AAttrId,
+    ) -> Result<CalcAttrVal, AttrCalcError> {
+        self.svc.calc.get_item_attr_val_full(&self.uad, item_key, a_attr_id)
+    }
     pub(in crate::sol::api) fn add_item_key_to_svc(&mut self, item_key: ItemKey) {
         let item = self.uad.items.get(item_key);
         self.svc.add_item(&self.uad, item_key, item);

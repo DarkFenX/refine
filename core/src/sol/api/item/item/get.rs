@@ -1,7 +1,7 @@
 use crate::{
     err::basic::ItemFoundError,
     sol::{
-        ItemId, SolarSystem,
+        ItemId, ItemKey, SolarSystem,
         api::{
             Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone,
             DroneMut, Fighter, FighterMut, FwEffect, FwEffectMut, Implant, ImplantMut, Item, ItemMut, Module,
@@ -15,8 +15,11 @@ use crate::{
 impl SolarSystem {
     pub fn get_item(&self, item_id: &ItemId) -> Result<Item, GetItemError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.internal_get_item(item_key))
+    }
+    pub fn internal_get_item(&self, item_key: ItemKey) -> Item {
         let uad_item = self.uad.items.get(item_key);
-        Ok(match uad_item {
+        match uad_item {
             UadItem::Autocharge(_) => Item::Autocharge(Autocharge::new(self, item_key)),
             UadItem::Booster(_) => Item::Booster(Booster::new(self, item_key)),
             UadItem::Character(_) => Item::Character(Character::new(self, item_key)),
@@ -34,12 +37,15 @@ impl SolarSystem {
             UadItem::Stance(_) => Item::Stance(Stance::new(self, item_key)),
             UadItem::Subsystem(_) => Item::Subsystem(Subsystem::new(self, item_key)),
             UadItem::SwEffect(_) => Item::SwEffect(SwEffect::new(self, item_key)),
-        })
+        }
     }
     pub fn get_item_mut(&mut self, item_id: &ItemId) -> Result<ItemMut, GetItemError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
+        Ok(self.internal_get_item_mut(item_key))
+    }
+    pub fn internal_get_item_mut(&mut self, item_key: ItemKey) -> ItemMut {
         let uad_item = self.uad.items.get(item_key);
-        Ok(match uad_item {
+        match uad_item {
             UadItem::Autocharge(_) => ItemMut::Autocharge(AutochargeMut::new(self, item_key)),
             UadItem::Booster(_) => ItemMut::Booster(BoosterMut::new(self, item_key)),
             UadItem::Character(_) => ItemMut::Character(CharacterMut::new(self, item_key)),
@@ -57,7 +63,7 @@ impl SolarSystem {
             UadItem::Stance(_) => ItemMut::Stance(StanceMut::new(self, item_key)),
             UadItem::Subsystem(_) => ItemMut::Subsystem(SubsystemMut::new(self, item_key)),
             UadItem::SwEffect(_) => ItemMut::SwEffect(SwEffectMut::new(self, item_key)),
-        })
+        }
     }
 }
 

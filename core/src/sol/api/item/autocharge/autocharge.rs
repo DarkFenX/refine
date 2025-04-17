@@ -1,6 +1,10 @@
 // Autocharges expose no projection info, since it fully matches projections of the parent item
 
-use crate::sol::{EffectId, FitId, ItemId, ItemKey, ItemTypeId, SolarSystem, uad::item::UadAutocharge};
+use crate::sol::{
+    EffectId, ItemKey, SolarSystem,
+    api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
+    uad::item::UadAutocharge,
+};
 
 pub struct Autocharge<'a> {
     pub(in crate::sol) sol: &'a SolarSystem,
@@ -10,17 +14,11 @@ impl<'a> Autocharge<'a> {
     pub(in crate::sol) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_item_id(&self) -> ItemId {
-        get_item_id(self.sol, self.key)
+    pub fn get_fit(&self) -> Fit {
+        get_fit(self.sol, self.key)
     }
-    pub fn get_type_id(&self) -> ItemTypeId {
-        get_type_id(self.sol, self.key)
-    }
-    pub fn get_fit_id(&self) -> FitId {
-        get_fit_id(self.sol, self.key)
-    }
-    pub fn get_cont_item_id(&self) -> ItemId {
-        get_cont_item_id(self.sol, self.key)
+    pub fn get_cont_item(&self) -> Item {
+        get_cont_item(self.sol, self.key)
     }
     pub fn get_cont_effect_id(&self) -> EffectId {
         get_cont_effect_id(self.sol, self.key)
@@ -29,6 +27,15 @@ impl<'a> Autocharge<'a> {
         get_state(self.sol, self.key)
     }
 }
+impl<'a> ItemSealed for Autocharge<'a> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_key(&self) -> ItemKey {
+        self.key
+    }
+}
+impl<'a> ItemCommon for Autocharge<'a> {}
 
 pub struct AutochargeMut<'a> {
     pub(in crate::sol) sol: &'a mut SolarSystem,
@@ -38,17 +45,19 @@ impl<'a> AutochargeMut<'a> {
     pub(in crate::sol) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_item_id(&self) -> ItemId {
-        get_item_id(self.sol, self.key)
+    pub fn get_fit(&self) -> Fit {
+        get_fit(self.sol, self.key)
     }
-    pub fn get_type_id(&self) -> ItemTypeId {
-        get_type_id(self.sol, self.key)
+    pub fn get_fit_mut(&mut self) -> FitMut {
+        let fit_key = get_uad_autocharge(self.sol, self.key).get_fit_key();
+        FitMut::new(self.sol, fit_key)
     }
-    pub fn get_fit_id(&self) -> FitId {
-        get_fit_id(self.sol, self.key)
+    pub fn get_cont_item(&self) -> Item {
+        get_cont_item(self.sol, self.key)
     }
-    pub fn get_cont_item_id(&self) -> ItemId {
-        get_cont_item_id(self.sol, self.key)
+    pub fn get_cont_item_mut(&mut self) -> ItemMut {
+        let cont_item_key = get_uad_autocharge(self.sol, self.key).get_cont_item_key();
+        ItemMut::new(self.sol, cont_item_key)
     }
     pub fn get_cont_effect_id(&self) -> EffectId {
         get_cont_effect_id(self.sol, self.key)
@@ -57,20 +66,29 @@ impl<'a> AutochargeMut<'a> {
         get_state(self.sol, self.key)
     }
 }
+impl<'a> ItemSealed for AutochargeMut<'a> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_key(&self) -> ItemKey {
+        self.key
+    }
+}
+impl<'a> ItemMutSealed for AutochargeMut<'a> {
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+        self.sol
+    }
+}
+impl<'a> ItemCommon for AutochargeMut<'a> {}
+impl<'a> ItemMutCommon for AutochargeMut<'a> {}
 
-fn get_item_id(sol: &SolarSystem, item_key: ItemKey) -> ItemId {
-    sol.uad.items.id_by_key(item_key)
-}
-fn get_type_id(sol: &SolarSystem, item_key: ItemKey) -> ItemTypeId {
-    get_uad_autocharge(sol, item_key).get_a_item_id()
-}
-fn get_fit_id(sol: &SolarSystem, item_key: ItemKey) -> FitId {
+fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit {
     let fit_key = get_uad_autocharge(sol, item_key).get_fit_key();
-    sol.uad.fits.id_by_key(fit_key)
+    Fit::new(sol, fit_key)
 }
-fn get_cont_item_id(sol: &SolarSystem, item_key: ItemKey) -> ItemId {
+fn get_cont_item(sol: &SolarSystem, item_key: ItemKey) -> Item {
     let cont_item_key = get_uad_autocharge(sol, item_key).get_cont_item_key();
-    sol.uad.items.id_by_key(cont_item_key)
+    Item::new(sol, cont_item_key)
 }
 fn get_cont_effect_id(sol: &SolarSystem, item_key: ItemKey) -> EffectId {
     get_uad_autocharge(sol, item_key).get_cont_effect_id().into()

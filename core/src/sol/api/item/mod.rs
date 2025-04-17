@@ -1,4 +1,3 @@
-pub use all::{GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError};
 pub use autocharge::{Autocharge, AutochargeMut, GetAutochargeError};
 pub use booster::{
     Booster, BoosterMut, FullSideEffect, FullSideEffectMut, GetBoosterError, SideEffect, SideEffectMut,
@@ -31,8 +30,11 @@ pub use skill::{AddSkillError, GetSkillError, SetSkillLevelError, Skill, SkillMu
 pub use stance::{GetStanceError, Stance, StanceMut};
 pub use subsystem::{GetSubsystemError, Subsystem, SubsystemMut};
 pub use sw_effect::{GetSwEffectError, SwEffect, SwEffectMut};
+pub use traits::{
+    GetItemAttrError, ItemCommon, ItemMutCommon, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
+};
+pub(in crate::sol::api) use traits::{ItemMutSealed, ItemSealed};
 
-mod all;
 mod autocharge;
 mod booster;
 mod character;
@@ -51,3 +53,4 @@ mod skill;
 mod stance;
 mod subsystem;
 mod sw_effect;
+mod traits;
