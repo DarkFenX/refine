@@ -10,16 +10,10 @@ pub(crate) struct HFighterInfoFull {
     pub(crate) extended_info: HItemExtendedInfo,
 }
 impl HFighterInfoFull {
-    pub(super) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_fighter_info: &rc::FighterInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
-        let partial_info = HFighterInfoPartial::mk_info(core_sol, core_fighter_info, item_mode);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+    pub(super) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: HFighterInfoPartial::mk_info(core_fighter, item_mode),
+            extended_info: core_fighter.into(),
         }
     }
 }

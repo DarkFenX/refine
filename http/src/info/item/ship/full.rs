@@ -9,13 +9,11 @@ pub(crate) struct HShipInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HShipInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_ship_info: &rc::ShipInfo) -> Self {
-        let partial_info = HShipInfoPartial::from(core_ship_info);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::ShipMut<'_>> for HShipInfoFull {
+    fn from(core_ship: &mut rc::ShipMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_ship.into(),
+            extended_info: core_ship.into(),
         }
     }
 }

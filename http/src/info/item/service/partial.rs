@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 use crate::shared::HServiceState;
 
 #[serde_with::serde_as]
@@ -11,14 +13,14 @@ pub(crate) struct HServiceInfoPartial {
     pub(crate) fit_id: rc::FitId,
     pub(crate) enabled: HServiceState,
 }
-impl From<&rc::ServiceInfo> for HServiceInfoPartial {
-    fn from(core_service_info: &rc::ServiceInfo) -> Self {
+impl From<&mut rc::ServiceMut<'_>> for HServiceInfoPartial {
+    fn from(core_service: &mut rc::ServiceMut) -> Self {
         Self {
-            id: core_service_info.id,
+            id: core_service.get_item_id(),
             kind: "service",
-            type_id: core_service_info.type_id,
-            fit_id: core_service_info.fit_id,
-            enabled: (&core_service_info.state).into(),
+            type_id: core_service.get_type_id(),
+            fit_id: core_service.get_fit().get_fit_id(),
+            enabled: (&core_service.get_state()).into(),
         }
     }
 }

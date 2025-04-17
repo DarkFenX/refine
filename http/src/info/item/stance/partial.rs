@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HStanceInfoPartial {
@@ -9,14 +11,14 @@ pub(crate) struct HStanceInfoPartial {
     pub(crate) fit_id: rc::FitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::StanceInfo> for HStanceInfoPartial {
-    fn from(core_stance_info: &rc::StanceInfo) -> Self {
+impl From<&mut rc::StanceMut<'_>> for HStanceInfoPartial {
+    fn from(core_stance: &mut rc::StanceMut) -> Self {
         Self {
-            id: core_stance_info.id,
+            id: core_stance.get_item_id(),
             kind: "stance",
-            type_id: core_stance_info.type_id,
-            fit_id: core_stance_info.fit_id,
-            enabled: core_stance_info.enabled,
+            type_id: core_stance.get_type_id(),
+            fit_id: core_stance.get_fit().get_fit_id(),
+            enabled: core_stance.get_state(),
         }
     }
 }

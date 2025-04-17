@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HImplantInfoPartial {
@@ -11,16 +13,15 @@ pub(crate) struct HImplantInfoPartial {
     pub(crate) slot: Option<rc::SlotIndex>,
     pub(crate) enabled: bool,
 }
-impl HImplantInfoPartial {
-    pub(super) fn from_item_id(core_sol: &rc::SolarSystem, implant_id: &rc::ItemId) -> Self {
-        let core_implant = core_sol.get_implant(implant_id).unwrap();
+impl From<&mut rc::ImplantMut<'_>> for HImplantInfoPartial {
+    fn from(core_implant: &mut rc::ImplantMut) -> Self {
         Self {
             id: core_implant.get_item_id(),
             kind: "implant",
             type_id: core_implant.get_type_id(),
-            fit_id: core_implant.get_fit_id(),
+            fit_id: core_implant.get_fit().get_fit_id(),
             slot: core_implant.get_slot(),
-            enabled: core_implant.is_enabled(),
+            enabled: core_implant.get_state(),
         }
     }
 }

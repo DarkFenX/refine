@@ -9,13 +9,11 @@ pub(crate) struct HSwEffectInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HSwEffectInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_sw_effect_info: &rc::SwEffectInfo) -> Self {
-        let partial_info = HSwEffectInfoPartial::from(core_sw_effect_info);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::SwEffectMut<'_>> for HSwEffectInfoFull {
+    fn from(core_sw_effect: &mut rc::SwEffectMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_sw_effect.into(),
+            extended_info: core_sw_effect.into(),
         }
     }
 }

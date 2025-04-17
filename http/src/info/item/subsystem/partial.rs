@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HSubsystemInfoPartial {
@@ -11,15 +13,15 @@ pub(crate) struct HSubsystemInfoPartial {
     pub(crate) slot: Option<rc::SlotIndex>,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SubsystemInfo> for HSubsystemInfoPartial {
-    fn from(core_subsystem_info: &rc::SubsystemInfo) -> Self {
+impl From<&mut rc::SubsystemMut<'_>> for HSubsystemInfoPartial {
+    fn from(core_subsystem: &mut rc::SubsystemMut) -> Self {
         Self {
-            id: core_subsystem_info.id,
+            id: core_subsystem.get_item_id(),
             kind: "subsystem",
-            type_id: core_subsystem_info.type_id,
-            fit_id: core_subsystem_info.fit_id,
-            slot: core_subsystem_info.slot,
-            enabled: core_subsystem_info.enabled,
+            type_id: core_subsystem.get_type_id(),
+            fit_id: core_subsystem.get_fit().get_fit_id(),
+            slot: core_subsystem.get_slot(),
+            enabled: core_subsystem.get_state(),
         }
     }
 }

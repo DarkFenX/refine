@@ -16,15 +16,11 @@ pub(crate) enum HFwEffectInfo {
     Full(HFwEffectInfoFull),
 }
 impl HFwEffectInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_fw_effect_info: &rc::FwEffectInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(crate) fn mk_info(core_fw_effect: &mut rc::FwEffectMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_fw_effect_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_fw_effect_info.into()),
-            HItemInfoMode::Full => Self::Full(HFwEffectInfoFull::mk_info(core_sol, core_fw_effect_info)),
+            HItemInfoMode::Id => Self::Id(core_fw_effect.into()),
+            HItemInfoMode::Partial => Self::Partial(core_fw_effect.into()),
+            HItemInfoMode::Full => Self::Full(core_fw_effect.into()),
         }
     }
 }

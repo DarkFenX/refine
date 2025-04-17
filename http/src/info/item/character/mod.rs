@@ -16,15 +16,11 @@ pub(crate) enum HCharacterInfo {
     Full(HCharacterInfoFull),
 }
 impl HCharacterInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_character_info: &rc::CharacterInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(crate) fn mk_info(core_character: &mut rc::CharacterMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_character_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_character_info.into()),
-            HItemInfoMode::Full => Self::Full(HCharacterInfoFull::mk_info(core_sol, core_character_info)),
+            HItemInfoMode::Id => Self::Id(core_character.into()),
+            HItemInfoMode::Partial => Self::Partial(core_character.into()),
+            HItemInfoMode::Full => Self::Full(core_character.into()),
         }
     }
 }

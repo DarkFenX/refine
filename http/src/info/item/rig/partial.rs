@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HRigInfoPartial {
@@ -9,14 +11,14 @@ pub(crate) struct HRigInfoPartial {
     pub(crate) fit_id: rc::FitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::RigInfo> for HRigInfoPartial {
-    fn from(core_rig_info: &rc::RigInfo) -> Self {
+impl From<&mut rc::RigMut<'_>> for HRigInfoPartial {
+    fn from(core_rig: &mut rc::RigMut) -> Self {
         Self {
-            id: core_rig_info.id,
+            id: core_rig.get_item_id(),
             kind: "rig",
-            type_id: core_rig_info.type_id,
-            fit_id: core_rig_info.fit_id,
-            enabled: core_rig_info.enabled,
+            type_id: core_rig.get_type_id(),
+            fit_id: core_rig.get_fit().get_fit_id(),
+            enabled: core_rig.get_state(),
         }
     }
 }

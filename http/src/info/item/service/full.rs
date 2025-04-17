@@ -9,13 +9,11 @@ pub(crate) struct HServiceInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HServiceInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_service_info: &rc::ServiceInfo) -> Self {
-        let partial_info = HServiceInfoPartial::from(core_service_info);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::ServiceMut<'_>> for HServiceInfoFull {
+    fn from(core_service: &mut rc::ServiceMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_service.into(),
+            extended_info: core_service.into(),
         }
     }
 }

@@ -1,13 +1,15 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HStanceInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::ItemId,
 }
-impl From<&rc::StanceInfo> for HStanceInfoId {
-    fn from(core_stance_info: &rc::StanceInfo) -> Self {
+impl From<&mut rc::StanceMut<'_>> for HStanceInfoId {
+    fn from(core_stance: &mut rc::StanceMut) -> Self {
         Self {
-            id: core_stance_info.id,
+            id: core_stance.get_item_id(),
         }
     }
 }

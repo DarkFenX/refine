@@ -16,15 +16,11 @@ pub(crate) enum HChargeInfo {
     Full(HChargeInfoFull),
 }
 impl HChargeInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_charge_info: &rc::ChargeInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(crate) fn mk_info(core_charge: &mut rc::ChargeMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_charge_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_charge_info.into()),
-            HItemInfoMode::Full => Self::Full(HChargeInfoFull::mk_info(core_sol, core_charge_info)),
+            HItemInfoMode::Id => Self::Id(core_charge.into()),
+            HItemInfoMode::Partial => Self::Partial(core_charge.into()),
+            HItemInfoMode::Full => Self::Full(core_charge.into()),
         }
     }
 }

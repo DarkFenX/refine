@@ -1,11 +1,15 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HRigInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::ItemId,
 }
-impl From<&rc::RigInfo> for HRigInfoId {
-    fn from(core_rig_info: &rc::RigInfo) -> Self {
-        Self { id: core_rig_info.id }
+impl From<&mut rc::RigMut<'_>> for HRigInfoId {
+    fn from(core_rig: &mut rc::RigMut) -> Self {
+        Self {
+            id: core_rig.get_item_id(),
+        }
     }
 }

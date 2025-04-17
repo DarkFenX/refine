@@ -16,15 +16,11 @@ pub(crate) enum HSubsystemInfo {
     Full(HSubsystemInfoFull),
 }
 impl HSubsystemInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_subsystem_info: &rc::SubsystemInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(crate) fn mk_info(core_subsystem: &mut rc::SubsystemMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_subsystem_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_subsystem_info.into()),
-            HItemInfoMode::Full => Self::Full(HSubsystemInfoFull::mk_info(core_sol, core_subsystem_info)),
+            HItemInfoMode::Id => Self::Id(core_subsystem.into()),
+            HItemInfoMode::Partial => Self::Partial(core_subsystem.into()),
+            HItemInfoMode::Full => Self::Full(core_subsystem.into()),
         }
     }
 }

@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 use crate::info::{HItemInfoMode, item::charge::HChargeInfo};
 
 #[serde_with::serde_as]
@@ -9,17 +11,12 @@ pub(crate) struct HModuleInfoId {
     pub(crate) charge: Option<HChargeInfo>,
 }
 impl HModuleInfoId {
-    pub(super) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_module_info: &rc::ModuleInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(super) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         Self {
-            id: core_module_info.id,
-            charge: core_module_info
-                .charge
-                .as_ref()
-                .map(|v| HChargeInfo::mk_info(core_sol, v, item_mode)),
+            id: core_module.get_item_id(),
+            charge: core_module
+                .get_charge_mut()
+                .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode)),
         }
     }
 }

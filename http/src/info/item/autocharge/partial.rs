@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 use crate::shared::HEffectId;
 
 #[serde_with::serde_as]
@@ -14,16 +16,16 @@ pub(crate) struct HAutochargeInfoPartial {
     pub(crate) cont_effect_id: HEffectId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::AutochargeInfo> for HAutochargeInfoPartial {
-    fn from(core_autocharge_info: &rc::AutochargeInfo) -> Self {
+impl From<&mut rc::AutochargeMut<'_>> for HAutochargeInfoPartial {
+    fn from(core_autocharge: &mut rc::AutochargeMut) -> Self {
         Self {
-            id: core_autocharge_info.id,
+            id: core_autocharge.get_item_id(),
             kind: "autocharge",
-            type_id: core_autocharge_info.type_id,
-            fit_id: core_autocharge_info.fit_id,
-            cont_item_id: core_autocharge_info.cont_item_id,
-            cont_effect_id: core_autocharge_info.cont_effect_id.into(),
-            enabled: core_autocharge_info.enabled,
+            type_id: core_autocharge.get_type_id(),
+            fit_id: core_autocharge.get_fit().get_fit_id(),
+            cont_item_id: core_autocharge.get_cont_item().get_item_id(),
+            cont_effect_id: core_autocharge.get_cont_effect_id().into(),
+            enabled: core_autocharge.get_state(),
         }
     }
 }

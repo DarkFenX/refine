@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 use crate::{info::item::mutation::HItemMutationInfo, shared::HMinionState};
 
 #[serde_with::serde_as]
@@ -16,16 +18,16 @@ pub(crate) struct HDroneInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) projs: Vec<(rc::ItemId, Option<rc::AttrVal>)>,
 }
-impl From<&rc::DroneInfo> for HDroneInfoPartial {
-    fn from(core_drone_info: &rc::DroneInfo) -> Self {
+impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
+    fn from(core_drone: &mut rc::DroneMut) -> Self {
         Self {
-            id: core_drone_info.id,
+            id: core_drone.get_item_id(),
             kind: "drone",
-            type_id: core_drone_info.type_id,
-            fit_id: core_drone_info.fit_id,
-            state: (&core_drone_info.state).into(),
-            mutation: core_drone_info.mutation.as_ref().map(|v| v.into()),
-            projs: core_drone_info.projs.iter().map(|v| (v.item_id, v.range)).collect(),
+            type_id: core_drone.get_type_id(),
+            fit_id: core_drone.get_fit().get_fit_id(),
+            state: (&core_drone.get_state()).into(),
+            mutation: core_drone.get_mutation().as_ref().map(|v| v.into()),
+            projs: core_drone.get_projs().iter().map(|v| (v.item_id, v.range)).collect(),
         }
     }
 }

@@ -5,41 +5,37 @@ pub(crate) struct HSideEffectStr {
     pub(crate) op: HSideEffectOp,
     pub(crate) val: rc::AttrVal,
 }
-impl HSideEffectStr {
-    pub(in crate::info::item::booster::side_effect) fn from_core_str(
-        core_sol: &mut rc::SolarSystem,
-        item_id: &rc::ItemId,
-        core_se_str: &rc::SideEffectStr,
-    ) -> Option<Self> {
-        let val = match core_sol.get_item_attr(item_id, &core_se_str.attr_id) {
-            Ok(val) => val.extra,
-            _ => return None,
-        };
-        match core_se_str.op {
-            rc::OpInfo::Add => Some(HSideEffectStr {
+impl TryFrom<rc::SideEffectStr> for HSideEffectStr {
+    type Error = HSideEffectStrConvError;
+    fn try_from(core_side_effect_strength: rc::SideEffectStr) -> Result<Self, Self::Error> {
+        let raw_val = core_side_effect_strength.get_value();
+        match core_side_effect_strength.get_op() {
+            rc::OpInfo::Add => Ok(HSideEffectStr {
                 op: HSideEffectOp::Add,
-                val,
+                val: raw_val,
             }),
-            rc::OpInfo::Sub => Some(HSideEffectStr {
+            rc::OpInfo::Sub => Ok(HSideEffectStr {
                 op: HSideEffectOp::Add,
-                val: -val,
+                val: -raw_val,
             }),
-            rc::OpInfo::PreMul | rc::OpInfo::PostMul | rc::OpInfo::ExtraMul => Some(HSideEffectStr {
+            rc::OpInfo::PreMul | rc::OpInfo::PostMul | rc::OpInfo::ExtraMul => Ok(HSideEffectStr {
                 op: HSideEffectOp::Perc,
-                val: (val - rc::AttrVal::from(1.0)) * rc::AttrVal::from(100.0),
+                val: (raw_val - rc::AttrVal::from(1.0)) * rc::AttrVal::from(100.0),
             }),
-            rc::OpInfo::PreDiv | rc::OpInfo::PostDiv => match val.into_inner() {
-                0.0 => None,
-                _ => Some(HSideEffectStr {
+            rc::OpInfo::PreDiv | rc::OpInfo::PostDiv => match raw_val.into_inner() {
+                0.0 => Err(HSideEffectStrConvError {}),
+                _ => Ok(HSideEffectStr {
                     op: HSideEffectOp::Perc,
-                    val: (rc::AttrVal::from(1.0) / val - rc::AttrVal::from(1.0)) * rc::AttrVal::from(100.0),
+                    val: (rc::AttrVal::from(1.0) / raw_val - rc::AttrVal::from(1.0)) * rc::AttrVal::from(100.0),
                 }),
             },
-            rc::OpInfo::PostPerc => Some(HSideEffectStr {
+            rc::OpInfo::PostPerc => Ok(HSideEffectStr {
                 op: HSideEffectOp::Perc,
-                val,
+                val: raw_val,
             }),
-            _ => None,
+            _ => Err(HSideEffectStrConvError {}),
         }
     }
 }
+
+struct HSideEffectStrConvError {}

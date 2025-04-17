@@ -16,15 +16,11 @@ pub(crate) enum HServiceInfo {
     Full(HServiceInfoFull),
 }
 impl HServiceInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_service_info: &rc::ServiceInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(crate) fn mk_info(core_service: &mut rc::ServiceMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_service_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_service_info.into()),
-            HItemInfoMode::Full => Self::Full(HServiceInfoFull::mk_info(core_sol, core_service_info)),
+            HItemInfoMode::Id => Self::Id(core_service.into()),
+            HItemInfoMode::Partial => Self::Partial(core_service.into()),
+            HItemInfoMode::Full => Self::Full(core_service.into()),
         }
     }
 }

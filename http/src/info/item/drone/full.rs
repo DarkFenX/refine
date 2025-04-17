@@ -9,13 +9,11 @@ pub(crate) struct HDroneInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HDroneInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_drone_info: &rc::DroneInfo) -> Self {
-        let partial_info = HDroneInfoPartial::from(core_drone_info);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::DroneMut<'_>> for HDroneInfoFull {
+    fn from(core_drone: &mut rc::DroneMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_drone.into(),
+            extended_info: core_drone.into(),
         }
     }
 }

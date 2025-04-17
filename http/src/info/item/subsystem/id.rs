@@ -1,13 +1,15 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HSubsystemInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::ItemId,
 }
-impl From<&rc::SubsystemInfo> for HSubsystemInfoId {
-    fn from(core_subsystem_info: &rc::SubsystemInfo) -> Self {
+impl From<&mut rc::SubsystemMut<'_>> for HSubsystemInfoId {
+    fn from(core_subsystem: &mut rc::SubsystemMut) -> Self {
         Self {
-            id: core_subsystem_info.id,
+            id: core_subsystem.get_item_id(),
         }
     }
 }

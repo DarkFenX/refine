@@ -16,15 +16,11 @@ pub(crate) enum HRigInfo {
     Full(HRigInfoFull),
 }
 impl HRigInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_rig_info: &rc::RigInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(crate) fn mk_info(core_rig: &mut rc::RigMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_rig_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_rig_info.into()),
-            HItemInfoMode::Full => Self::Full(HRigInfoFull::mk_info(core_sol, core_rig_info)),
+            HItemInfoMode::Id => Self::Id(core_rig.into()),
+            HItemInfoMode::Partial => Self::Partial(core_rig.into()),
+            HItemInfoMode::Full => Self::Full(core_rig.into()),
         }
     }
 }

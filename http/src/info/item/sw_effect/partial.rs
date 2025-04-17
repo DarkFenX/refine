@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HSwEffectInfoPartial {
@@ -7,13 +9,13 @@ pub(crate) struct HSwEffectInfoPartial {
     pub(crate) type_id: rc::ItemTypeId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SwEffectInfo> for HSwEffectInfoPartial {
-    fn from(core_sw_effect_info: &rc::SwEffectInfo) -> Self {
+impl From<&mut rc::SwEffectMut<'_>> for HSwEffectInfoPartial {
+    fn from(core_sw_effect: &mut rc::SwEffectMut) -> Self {
         Self {
-            id: core_sw_effect_info.id,
+            id: core_sw_effect.get_item_id(),
             kind: "sw_effect",
-            type_id: core_sw_effect_info.type_id,
-            enabled: core_sw_effect_info.enabled,
+            type_id: core_sw_effect.get_type_id(),
+            enabled: core_sw_effect.get_state(),
         }
     }
 }

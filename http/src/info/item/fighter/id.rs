@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use rc::{ItemCommon, Lender};
+
 use crate::{
     info::{HItemInfoMode, item::autocharge::HAutochargeInfo},
     shared::HEffectId,
@@ -14,18 +16,18 @@ pub(crate) struct HFighterInfoId {
     pub(crate) autocharges: HashMap<HEffectId, HAutochargeInfo>,
 }
 impl HFighterInfoId {
-    pub(super) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_fighter_info: &rc::FighterInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(super) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
+        let mut autocharges = HashMap::new();
+        let mut autocharge_iter = core_fighter.iter_autocharges_mut();
+        while let Some(mut autocharge) = autocharge_iter.next() {
+            autocharges.insert(
+                autocharge.get_cont_effect_id().into(),
+                HAutochargeInfo::mk_info(&mut autocharge, item_mode),
+            );
+        }
         Self {
-            id: core_fighter_info.id,
-            autocharges: core_fighter_info
-                .autocharges
-                .iter()
-                .map(|(k, v)| (k.into(), HAutochargeInfo::mk_info(core_sol, v, item_mode)))
-                .collect(),
+            id: core_fighter.get_item_id(),
+            autocharges,
         }
     }
 }

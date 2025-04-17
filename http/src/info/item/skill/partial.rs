@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HSkillInfoPartial {
@@ -10,15 +12,15 @@ pub(crate) struct HSkillInfoPartial {
     pub(crate) level: rc::SkillLevel,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SkillInfo> for HSkillInfoPartial {
-    fn from(core_skill_info: &rc::SkillInfo) -> Self {
+impl From<&mut rc::SkillMut<'_>> for HSkillInfoPartial {
+    fn from(core_skill: &mut rc::SkillMut) -> Self {
         Self {
-            id: core_skill_info.id,
+            id: core_skill.get_item_id(),
             kind: "skill",
-            type_id: core_skill_info.type_id,
-            fit_id: core_skill_info.fit_id,
-            level: core_skill_info.level,
-            enabled: core_skill_info.enabled,
+            type_id: core_skill.get_type_id(),
+            fit_id: core_skill.get_fit().get_fit_id(),
+            level: core_skill.get_level(),
+            enabled: core_skill.get_state(),
         }
     }
 }

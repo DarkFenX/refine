@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HCharacterInfoPartial {
@@ -9,14 +11,14 @@ pub(crate) struct HCharacterInfoPartial {
     pub(crate) fit_id: rc::FitId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::CharacterInfo> for HCharacterInfoPartial {
-    fn from(core_character_info: &rc::CharacterInfo) -> Self {
+impl From<&mut rc::CharacterMut<'_>> for HCharacterInfoPartial {
+    fn from(core_character: &mut rc::CharacterMut) -> Self {
         Self {
-            id: core_character_info.id,
+            id: core_character.get_item_id(),
             kind: "character",
-            type_id: core_character_info.type_id,
-            fit_id: core_character_info.fit_id,
-            enabled: core_character_info.enabled,
+            type_id: core_character.get_type_id(),
+            fit_id: core_character.get_fit().get_fit_id(),
+            enabled: core_character.get_state(),
         }
     }
 }

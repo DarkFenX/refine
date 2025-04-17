@@ -9,13 +9,11 @@ pub(crate) struct HRigInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HRigInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_rig_info: &rc::RigInfo) -> Self {
-        let partial_info = HRigInfoPartial::from(core_rig_info);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::RigMut<'_>> for HRigInfoFull {
+    fn from(core_rig: &mut rc::RigMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_rig.into(),
+            extended_info: core_rig.into(),
         }
     }
 }

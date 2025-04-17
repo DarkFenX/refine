@@ -9,13 +9,11 @@ pub(crate) struct HBoosterInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HBoosterInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_booster_info: &rc::BoosterInfo) -> Self {
-        let partial_info = HBoosterInfoPartial::mk_info(core_sol, core_booster_info);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::BoosterMut<'_>> for HBoosterInfoFull {
+    fn from(core_booster: &mut rc::BoosterMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_booster.into(),
+            extended_info: core_booster.into(),
         }
     }
 }

@@ -16,15 +16,11 @@ pub(crate) enum HStanceInfo {
     Full(HStanceInfoFull),
 }
 impl HStanceInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_stance_info: &rc::StanceInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(crate) fn mk_info(stance_implant: &mut rc::StanceMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_stance_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_stance_info.into()),
-            HItemInfoMode::Full => Self::Full(HStanceInfoFull::mk_info(core_sol, core_stance_info)),
+            HItemInfoMode::Id => Self::Id(stance_implant.into()),
+            HItemInfoMode::Partial => Self::Partial(stance_implant.into()),
+            HItemInfoMode::Full => Self::Full(stance_implant.into()),
         }
     }
 }

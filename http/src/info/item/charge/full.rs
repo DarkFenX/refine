@@ -9,13 +9,11 @@ pub(crate) struct HChargeInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HChargeInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_charge_info: &rc::ChargeInfo) -> Self {
-        let partial_info = HChargeInfoPartial::from(core_charge_info);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::ChargeMut<'_>> for HChargeInfoFull {
+    fn from(core_charge: &mut rc::ChargeMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_charge.into(),
+            extended_info: core_charge.into(),
         }
     }
 }

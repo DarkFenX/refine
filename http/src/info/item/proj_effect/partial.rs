@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HProjEffectInfoPartial {
@@ -10,14 +12,14 @@ pub(crate) struct HProjEffectInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) projs: Vec<rc::ItemId>,
 }
-impl From<&rc::ProjEffectInfo> for HProjEffectInfoPartial {
-    fn from(core_proj_effect_info: &rc::ProjEffectInfo) -> Self {
+impl From<&mut rc::ProjEffectMut<'_>> for HProjEffectInfoPartial {
+    fn from(core_proj_effect: &mut rc::ProjEffectMut) -> Self {
         Self {
-            id: core_proj_effect_info.id,
+            id: core_proj_effect.get_item_id(),
             kind: "proj_effect",
-            type_id: core_proj_effect_info.type_id,
-            enabled: core_proj_effect_info.enabled,
-            projs: core_proj_effect_info.projs.clone(),
+            type_id: core_proj_effect.get_type_id(),
+            enabled: core_proj_effect.get_state(),
+            projs: core_proj_effect.get_projs().clone(),
         }
     }
 }

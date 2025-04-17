@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use rc::{ItemCommon, Lender};
+
 use crate::shared::HEffectId;
 
 use super::side_effect::HSideEffectInfo;
@@ -19,20 +21,20 @@ pub(crate) struct HBoosterInfoPartial {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) side_effects: HashMap<HEffectId, HSideEffectInfo>,
 }
-impl HBoosterInfoPartial {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_booster_info: &rc::BoosterInfo) -> Self {
+impl From<&mut rc::BoosterMut<'_>> for HBoosterInfoPartial {
+    fn from(core_booster: &mut rc::BoosterMut) -> Self {
         let mut side_effects = HashMap::new();
-        for (effect_id, core_se_info) in core_booster_info.side_effects.iter() {
-            let se_info = HSideEffectInfo::from_core_info(core_sol, &core_booster_info.id, core_se_info);
-            side_effects.insert(effect_id.into(), se_info);
+        let mut side_effect_iter = core_booster.iter_side_effects_mut();
+        while let Some(side_effect) = side_effect_iter.next() {
+            side_effects.insert(side_effect.get_effect_id().into(), side_effect.into());
         }
         Self {
-            id: core_booster_info.id,
+            id: core_booster.get_item_id(),
             kind: "booster",
-            type_id: core_booster_info.type_id,
-            fit_id: core_booster_info.fit_id,
-            slot: core_booster_info.slot,
-            enabled: core_booster_info.enabled,
+            type_id: core_booster.get_type_id(),
+            fit_id: core_booster.get_fit().get_fit_id(),
+            slot: core_booster.get_slot(),
+            enabled: core_booster.get_state(),
             side_effects,
         }
     }

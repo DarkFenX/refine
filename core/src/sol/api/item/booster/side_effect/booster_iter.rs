@@ -12,6 +12,7 @@ use crate::{
 
 use super::shared::get_side_effect_chance_attr_id;
 
+// Lending iterator for side effects
 pub struct SideEffectIter<'this> {
     sol: &'this mut SolarSystem,
     key: ItemKey,

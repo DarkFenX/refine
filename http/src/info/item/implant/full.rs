@@ -9,13 +9,11 @@ pub(crate) struct HImplantInfoFull {
     #[serde(flatten)]
     pub(crate) extended_info: HItemExtendedInfo,
 }
-impl HImplantInfoFull {
-    pub(super) fn from_item_id(core_sol: &mut rc::SolarSystem, implant_id: &rc::ItemId) -> Self {
-        let partial_info = HImplantInfoPartial::from_item_id(core_sol, implant_id);
-        let extended_info = HItemExtendedInfo::from_item_id(core_sol, &partial_info.id);
+impl From<&mut rc::ImplantMut<'_>> for HImplantInfoFull {
+    fn from(core_implant: &mut rc::ImplantMut) -> Self {
         Self {
-            partial_info,
-            extended_info,
+            partial_info: core_implant.into(),
+            extended_info: core_implant.into(),
         }
     }
 }

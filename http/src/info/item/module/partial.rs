@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 use crate::{
     info::{
         HItemInfoMode,
@@ -27,25 +29,20 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) projs: Vec<(rc::ItemId, Option<rc::AttrVal>)>,
 }
 impl HModuleInfoPartial {
-    pub(super) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_module_info: &rc::ModuleInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
+    pub(super) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         Self {
-            id: core_module_info.id,
+            id: core_module.get_item_id(),
             kind: "module",
-            type_id: core_module_info.type_id,
-            fit_id: core_module_info.fit_id,
-            state: (&core_module_info.state).into(),
-            rack: (&core_module_info.rack).into(),
-            pos: core_module_info.pos,
-            mutation: core_module_info.mutation.as_ref().map(|v| v.into()),
-            charge: core_module_info
-                .charge
-                .as_ref()
-                .map(|v| HChargeInfo::mk_info(core_sol, v, item_mode)),
-            projs: core_module_info.projs.iter().map(|v| (v.item_id, v.range)).collect(),
+            type_id: core_module.get_type_id(),
+            fit_id: core_module.get_fit().get_fit_id(),
+            state: (&core_module.get_state()).into(),
+            rack: (&core_module.get_rack()).into(),
+            pos: core_module.get_pos(),
+            mutation: core_module.get_mutation().as_ref().map(|v| v.into()),
+            charge: core_module
+                .get_charge_mut()
+                .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode)),
+            projs: core_module.get_projs().iter().map(|v| (v.item_id, v.range)).collect(),
         }
     }
 }

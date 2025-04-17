@@ -1,13 +1,15 @@
+use rc::ItemCommon;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HChargeInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::ItemId,
 }
-impl From<&rc::ChargeInfo> for HChargeInfoId {
-    fn from(core_charge_info: &rc::ChargeInfo) -> Self {
+impl From<&mut rc::ChargeMut<'_>> for HChargeInfoId {
+    fn from(core_charge: &mut rc::ChargeMut) -> Self {
         Self {
-            id: core_charge_info.id,
+            id: core_charge.get_item_id(),
         }
     }
 }
