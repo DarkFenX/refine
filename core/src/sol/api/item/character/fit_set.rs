@@ -24,7 +24,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn set_character(&'a mut self, type_id: ItemTypeId) -> CharacterMut<'a> {
+    pub fn set_character(&mut self, type_id: ItemTypeId) -> CharacterMut {
         let item_key = self.sol.internal_set_fit_character(self.key, type_id);
         CharacterMut::new(self.sol, item_key)
     }

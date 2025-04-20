@@ -42,7 +42,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_skill(&'a mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'a>, AddSkillError> {
+    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut, AddSkillError> {
         check_skill_level(level)?;
         let item_key = self.sol.internal_add_skill(self.key, type_id, level)?;
         Ok(SkillMut::new(self.sol, item_key))

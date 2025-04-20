@@ -18,7 +18,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_implant(&'a mut self, type_id: ItemTypeId) -> ImplantMut<'a> {
+    pub fn add_implant(&mut self, type_id: ItemTypeId) -> ImplantMut {
         let item_key = self.sol.internal_add_implant(self.key, type_id);
         ImplantMut::new(self.sol, item_key)
     }

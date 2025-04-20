@@ -86,7 +86,7 @@ impl SolarSystem {
 }
 
 impl<'a> ModuleMut<'a> {
-    pub fn set_charge(&'a mut self, charge_type_id: ItemTypeId) -> ChargeMut<'a> {
+    pub fn set_charge(&mut self, charge_type_id: ItemTypeId) -> ChargeMut {
         let charge_key = self.sol.internal_set_module_charge(self.key, charge_type_id);
         ChargeMut::new(self.sol, charge_key)
     }

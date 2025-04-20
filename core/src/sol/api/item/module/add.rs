@@ -106,12 +106,12 @@ impl SolarSystem {
 
 impl<'a> FitMut<'a> {
     pub fn add_module(
-        &'a mut self,
+        &mut self,
         rack: ModRack,
         pos_mode: AddMode,
         type_id: ItemTypeId,
         state: ModuleState,
-    ) -> ModuleMut<'a> {
+    ) -> ModuleMut {
         let item_key = self
             .sol
             .internal_add_module(self.key, rack, pos_mode, type_id, state, None, None);

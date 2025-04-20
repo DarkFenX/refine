@@ -26,7 +26,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn set_ship(&'a mut self, type_id: ItemTypeId) -> ShipMut<'a> {
+    pub fn set_ship(&mut self, type_id: ItemTypeId) -> ShipMut {
         let item_key = self.sol.internal_set_fit_ship(self.key, type_id);
         ShipMut::new(self.sol, item_key)
     }

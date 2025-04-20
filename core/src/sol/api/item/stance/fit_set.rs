@@ -24,7 +24,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn set_stance(&'a mut self, type_id: ItemTypeId) -> StanceMut<'a> {
+    pub fn set_stance(&mut self, type_id: ItemTypeId) -> StanceMut {
         let item_key = self.sol.internal_set_fit_stance(self.key, type_id);
         StanceMut::new(self.sol, item_key)
     }

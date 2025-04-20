@@ -30,7 +30,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_fighter(&'a mut self, type_id: ItemTypeId, state: MinionState) -> FighterMut<'a> {
+    pub fn add_fighter(&mut self, type_id: ItemTypeId, state: MinionState) -> FighterMut {
         let item_key = self.sol.internal_add_fighter(self.key, type_id, state);
         FighterMut::new(self.sol, item_key)
     }

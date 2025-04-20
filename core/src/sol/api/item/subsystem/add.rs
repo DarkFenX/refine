@@ -18,7 +18,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_subsystem(&'a mut self, type_id: ItemTypeId) -> SubsystemMut<'a> {
+    pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> SubsystemMut {
         let item_key = self.sol.internal_add_subsystem(self.key, type_id);
         SubsystemMut::new(self.sol, item_key)
     }

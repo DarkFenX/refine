@@ -23,7 +23,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_service(&'a mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut<'a> {
+    pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut {
         let item_key = self.sol.internal_add_service(self.key, type_id, state);
         ServiceMut::new(self.sol, item_key)
     }

@@ -25,11 +25,11 @@ impl SolarSystem {
 
 impl<'a> FitMut<'a> {
     pub fn add_drone(
-        &'a mut self,
+        &mut self,
         type_id: ItemTypeId,
         state: MinionState,
         mutation: Option<ItemAddMutation>,
-    ) -> DroneMut<'a> {
+    ) -> DroneMut {
         let item_key = self.sol.internal_add_drone(self.key, type_id, state, mutation);
         DroneMut::new(self.sol, item_key)
     }
