@@ -20,18 +20,14 @@ pub use item::{
     Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed};
-pub use mut_item_iter::ItemMutIter;
-pub(in crate::sol::api) use mut_item_iter::{
-    AutochargeMutGenerator, BoosterMutGenerator, DroneMutGenerator, FighterMutGenerator, FwEffectMutGenerator,
-    ImplantMutGenerator, RigMutGenerator, ServiceMutGenerator, SkillMutGenerator, SubsystemMutGenerator,
-};
+pub use mut_iter::MutIter;
 
 mod default_incoming_dps;
 mod dev;
 mod fit;
 mod fleet;
 mod item;
-mod mut_item_iter;
+mod mut_iter;
 mod sec_zone;
 mod set_src;
 mod sole_util;

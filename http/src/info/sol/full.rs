@@ -2,6 +2,7 @@ use crate::{
     info::{HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, MkItemInfo},
     shared::{HDpsProfile, HSecZone},
 };
+use rc::Lender;
 
 #[derive(serde::Serialize)]
 pub(crate) struct HSolInfoFull {
@@ -28,24 +29,20 @@ impl HSolInfoFull {
         Self {
             id: sol_id,
             fleets: core_sol
-                .get_fleet_infos()
-                .iter()
-                .filter_map(|core_fleet| HFleetInfo::mk_info(core_sol, &core_fleet.id, fleet_mode).ok())
+                .iter_fleets_mut()
+                .map_into_iter(|mut core_fleet| HFleetInfo::mk_info(&mut core_fleet, fleet_mode))
                 .collect(),
             fits: core_sol
-                .get_fit_infos()
-                .iter()
-                .filter_map(|core_fit| HFitInfo::mk_info(core_sol, &core_fit.id, fit_mode, item_mode).ok())
+                .iter_fits_mut()
+                .map_into_iter(|mut core_fit| HFitInfo::mk_info(&mut core_fit, fit_mode, item_mode))
                 .collect(),
             sw_effects: core_sol
-                .get_sw_effects()
-                .iter()
-                .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
+                .iter_sw_effects_mut()
+                .map_into_iter(|mut core_sw_effect| HItemInfo::mk_info(&mut core_sw_effect, item_mode))
                 .collect(),
             proj_effects: core_sol
-                .get_proj_effect_infos()
-                .iter()
-                .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
+                .iter_proj_effects_mut()
+                .map_into_iter(|mut proj_effect| HItemInfo::mk_info(&mut proj_effect, item_mode))
                 .collect(),
             sec_zone: core_sol.get_sec_zone().into(),
             default_incoming_dps: (&core_sol.get_default_incoming_dps()).into(),

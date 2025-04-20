@@ -1,7 +1,7 @@
 use full::HFleetInfoFull;
 use id::HFleetInfoId;
 
-use crate::{info::HFleetInfoMode, util::HExecError};
+use crate::info::HFleetInfoMode;
 
 mod full;
 mod id;
@@ -13,15 +13,10 @@ pub(crate) enum HFleetInfo {
     Full(HFleetInfoFull),
 }
 impl HFleetInfo {
-    pub(crate) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::FleetId,
-        fleet_mode: HFleetInfoMode,
-    ) -> Result<Self, HExecError> {
-        let info = match fleet_mode {
-            HFleetInfoMode::Id => Self::Id(HFleetInfoId::mk_info(core_sol, fleet_id)?),
-            HFleetInfoMode::Full => Self::Full(HFleetInfoFull::mk_info(core_sol, fleet_id)?),
-        };
-        Ok(info)
+    pub(crate) fn mk_info(core_fleet: &mut rc::FleetMut, fleet_mode: HFleetInfoMode) -> Self {
+        match fleet_mode {
+            HFleetInfoMode::Id => Self::Id(core_fleet.into()),
+            HFleetInfoMode::Full => Self::Full(core_fleet.into()),
+        }
     }
 }

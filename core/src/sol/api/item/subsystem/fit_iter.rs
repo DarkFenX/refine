@@ -1,6 +1,6 @@
 use crate::sol::{
     FitKey, SolarSystem,
-    api::{Fit, FitMut, ItemMutIter, Subsystem, SubsystemMutGenerator},
+    api::{Fit, FitMut, MutIter, Subsystem, mut_iter::SubsystemMutGenerator},
 };
 
 impl<'a> Fit<'a> {
@@ -13,9 +13,9 @@ impl<'a> FitMut<'a> {
     pub fn iter_subsystems(&self) -> impl ExactSizeIterator<Item = Subsystem> {
         iter_subsystems(self.sol, self.key)
     }
-    pub fn iter_subsystems_mut(&mut self) -> ItemMutIter<'_, SubsystemMutGenerator> {
+    pub fn iter_subsystems_mut(&mut self) -> MutIter<'_, SubsystemMutGenerator> {
         let subsystem_keys = self.sol.uad.fits.get(self.key).subsystems.iter().copied().collect();
-        ItemMutIter::new(self.sol, subsystem_keys)
+        MutIter::new(self.sol, subsystem_keys)
     }
 }
 

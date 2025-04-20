@@ -1,6 +1,6 @@
 use crate::sol::{
     FleetKey, SolarSystem,
-    api::{Fit, Fleet, FleetMut},
+    api::{Fit, Fleet, FleetMut, MutIter, mut_iter::FitMutGenerator},
 };
 
 impl<'a> Fleet<'a> {
@@ -12,6 +12,10 @@ impl<'a> Fleet<'a> {
 impl<'a> FleetMut<'a> {
     pub fn iter_fits(&self) -> impl ExactSizeIterator<Item = Fit> {
         iter_fits(self.sol, self.key)
+    }
+    pub fn iter_fits_mut(&mut self) -> MutIter<'_, FitMutGenerator> {
+        let fit_keys = self.sol.uad.fleets.get(self.key).iter_fits().copied().collect();
+        MutIter::new(self.sol, fit_keys)
     }
 }
 

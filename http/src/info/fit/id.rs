@@ -1,5 +1,3 @@
-use crate::util::HExecError;
-
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoId {
