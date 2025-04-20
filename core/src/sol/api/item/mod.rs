@@ -1,6 +1,6 @@
 pub use autocharge::{Autocharge, AutochargeMut, GetAutochargeError};
 pub use booster::{
-    Booster, BoosterMut, FullSideEffect, FullSideEffectMut, GetBoosterError, SideEffect, SideEffectMut,
+    Booster, BoosterMut, FullSideEffect, FullSideEffectMut, GetBoosterError, SideEffect, SideEffectIter, SideEffectMut,
     SideEffectPartialStr, SideEffectStr, StubSideEffect, StubSideEffectMut,
 };
 pub use character::{Character, CharacterMut, GetCharacterError};
@@ -18,7 +18,7 @@ pub use implant::{GetImplantError, Implant, ImplantMut};
 pub use item::{GetItemError, Item, ItemMut, RemoveItemError};
 pub use module::{
     AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError, ChangeModuleProjError, GetModuleError,
-    Module, ModuleMut, RemoveModuleChargeError, RemoveModuleMutationError, RemoveModuleProjError,
+    Module, ModuleIter, ModuleMut, RemoveModuleChargeError, RemoveModuleMutationError, RemoveModuleProjError,
 };
 pub use proj_effect::{
     AddProjEffectProjError, GetProjEffectError, ProjEffect, ProjEffectMut, RemoveProjEffectProjError,

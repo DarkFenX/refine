@@ -12,16 +12,19 @@ pub use item::{
     GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError,
     GetProjEffectError, GetRigError, GetServiceError, GetShipError, GetSkillError, GetStanceError, GetSubsystemError,
     GetSwEffectError, Implant, ImplantMut, Item, ItemCommon, ItemMut, ItemMutCommon, IterItemAttrsError,
-    IterItemEffectsError, IterItemModifiersError, Module, ModuleMut, ProjEffect, ProjEffectMut,
+    IterItemEffectsError, IterItemModifiersError, Module, ModuleIter, ModuleMut, ProjEffect, ProjEffectMut,
     RemoveDroneMutationError, RemoveDroneProjError, RemoveFighterProjError, RemoveItemError, RemoveModuleChargeError,
     RemoveModuleMutationError, RemoveModuleProjError, RemoveProjEffectProjError, Rig, RigMut, Service, ServiceMut,
-    SetFighterCountOverrideError, SetSkillLevelError, Ship, ShipMut, SideEffect, SideEffectMut, SideEffectPartialStr,
-    SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut,
-    SwEffect, SwEffectMut,
+    SetFighterCountOverrideError, SetSkillLevelError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut,
+    SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut,
+    Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed};
 pub use mut_item_iter::ItemMutIter;
-pub(in crate::sol::api) use mut_item_iter::{AutochargeMutGenerator, SkillMutGenerator};
+pub(in crate::sol::api) use mut_item_iter::{
+    AutochargeMutGenerator, BoosterMutGenerator, DroneMutGenerator, FighterMutGenerator, FwEffectMutGenerator,
+    ImplantMutGenerator, RigMutGenerator, ServiceMutGenerator, SkillMutGenerator, SubsystemMutGenerator,
+};
 
 mod default_incoming_dps;
 mod dev;

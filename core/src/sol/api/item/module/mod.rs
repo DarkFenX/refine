@@ -2,6 +2,7 @@ pub use add_mutation::AddModuleMutationError;
 pub use add_proj::AddModuleProjError;
 pub use change_mutation::ChangeModuleMutationError;
 pub use change_proj::ChangeModuleProjError;
+pub use fit_iter::ModuleIter;
 pub use get::GetModuleError;
 pub use module::{Module, ModuleMut};
 pub use remove_charge::RemoveModuleChargeError;

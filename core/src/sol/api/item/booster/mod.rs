@@ -1,8 +1,8 @@
 pub use booster::{Booster, BoosterMut};
 pub use get::GetBoosterError;
 pub use side_effect::{
-    FullSideEffect, FullSideEffectMut, SideEffect, SideEffectMut, SideEffectPartialStr, SideEffectStr, StubSideEffect,
-    StubSideEffectMut,
+    FullSideEffect, FullSideEffectMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
+    StubSideEffect, StubSideEffectMut,
 };
 
 mod add;

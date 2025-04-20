@@ -1,11 +1,8 @@
-use itertools::Itertools;
-
 use rc::Lender;
 
 use crate::{
     info::{HItemInfo, HItemInfoMode, MkItemInfo},
     shared::HDpsProfile,
-    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -35,6 +32,8 @@ pub(crate) struct HFitInfoFull {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) rigs: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) services: Vec<HItemInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) drones: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fighters: Vec<HItemInfo>,
@@ -46,7 +45,7 @@ pub(crate) struct HFitInfoFull {
 }
 impl HFitInfoFull {
     pub(in crate::info::fit) fn mk_info(core_fit: &mut rc::FitMut, item_mode: HItemInfoMode) -> Self {
-        let fit = Self {
+        Self {
             id: core_fit.get_fit_id(),
             fleet: core_fit.get_fleet().map(|v| v.get_fleet_id()),
             character: core_fit
@@ -54,103 +53,69 @@ impl HFitInfoFull {
                 .map(|mut core_character| HItemInfo::mk_info(&mut core_character, item_mode)),
             skills: core_fit
                 .iter_skills_mut()
-                .map(|mut core_skill| HItemInfo::mk_info(&mut core_skill, item_mode))
-                .cloned()
+                .map_into_iter(|mut core_skill| HItemInfo::mk_info(&mut core_skill, item_mode))
                 .collect(),
             implants: core_fit
-                .implants
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_implants_mut()
+                .map_into_iter(|mut core_implant| HItemInfo::mk_info(&mut core_implant, item_mode))
                 .collect(),
             boosters: core_fit
-                .boosters
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_boosters_mut()
+                .map_into_iter(|mut core_booster| HItemInfo::mk_info(&mut core_booster, item_mode))
                 .collect(),
             ship: core_fit
-                .ship
-                .and_then(|v| core_sol.get_item_info(&v).ok())
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),
+                .get_ship_mut()
+                .map(|mut core_ship| HItemInfo::mk_info(&mut core_ship, item_mode)),
             stance: core_fit
-                .stance
-                .and_then(|v| core_sol.get_item_info(&v).ok())
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),
+                .get_stance_mut()
+                .map(|mut core_stance| HItemInfo::mk_info(&mut core_stance, item_mode)),
             subsystems: core_fit
-                .subsystems
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_subsystems_mut()
+                .map_into_iter(|mut core_subsystem| HItemInfo::mk_info(&mut core_subsystem, item_mode))
                 .collect(),
             modules: HModuleRacks {
                 high: core_fit
-                    .mods_high
-                    .iter()
-                    .map(|o| o.map(|v| core_sol.get_item_info(&v).ok()).flatten())
-                    .collect_vec()
-                    .into_iter()
-                    .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
+                    .iter_modules_mut(rc::ModRack::High)
+                    .map_into_iter(|core_module| {
+                        core_module.map(|mut core_module| HItemInfo::mk_info(&mut core_module, item_mode))
+                    })
                     .collect(),
                 mid: core_fit
-                    .mods_mid
-                    .iter()
-                    .map(|o| o.map(|v| core_sol.get_item_info(&v).ok()).flatten())
-                    .collect_vec()
-                    .into_iter()
-                    .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
+                    .iter_modules_mut(rc::ModRack::Mid)
+                    .map_into_iter(|core_module| {
+                        core_module.map(|mut core_module| HItemInfo::mk_info(&mut core_module, item_mode))
+                    })
                     .collect(),
                 low: core_fit
-                    .mods_low
-                    .iter()
-                    .map(|o| o.map(|v| core_sol.get_item_info(&v).ok()).flatten())
-                    .collect_vec()
-                    .into_iter()
-                    .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
+                    .iter_modules_mut(rc::ModRack::Low)
+                    .map_into_iter(|core_module| {
+                        core_module.map(|mut core_module| HItemInfo::mk_info(&mut core_module, item_mode))
+                    })
                     .collect(),
             },
             rigs: core_fit
-                .rigs
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_rigs_mut()
+                .map_into_iter(|mut core_rig| HItemInfo::mk_info(&mut core_rig, item_mode))
+                .collect(),
+            services: core_fit
+                .iter_services_mut()
+                .map_into_iter(|mut core_service| HItemInfo::mk_info(&mut core_service, item_mode))
                 .collect(),
             drones: core_fit
-                .drones
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_drones_mut()
+                .map_into_iter(|mut core_drone| HItemInfo::mk_info(&mut core_drone, item_mode))
                 .collect(),
             fighters: core_fit
-                .fighters
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_fighters_mut()
+                .map_into_iter(|mut core_fighter| HItemInfo::mk_info(&mut core_fighter, item_mode))
                 .collect(),
             fw_effects: core_fit
-                .fw_effects
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_fw_effects_mut()
+                .map_into_iter(|mut core_fw_effect| HItemInfo::mk_info(&mut core_fw_effect, item_mode))
                 .collect(),
-            sec_status: core_fit.sec_status,
-            rah_incoming_dps: core_fit.rah_incoming_dps.map(|v| (&v).into()),
-        };
-        Ok(fit)
+            sec_status: core_fit.get_sec_status(),
+            rah_incoming_dps: core_fit.get_rah_incoming_dps().map(|v| (&v).into()),
+        }
     }
 }
 
