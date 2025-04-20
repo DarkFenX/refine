@@ -1,5 +1,7 @@
 use itertools::Itertools;
 
+use rc::Lender;
+
 use crate::{
     info::{HItemInfo, HItemInfoMode, MkItemInfo},
     shared::HDpsProfile,
@@ -43,31 +45,17 @@ pub(crate) struct HFitInfoFull {
     pub(crate) rah_incoming_dps: Option<HDpsProfile>,
 }
 impl HFitInfoFull {
-    pub(in crate::info::fit) fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::FitId,
-        item_mode: HItemInfoMode,
-    ) -> Result<Self, HExecError> {
-        let core_fit = match core_sol.get_fit_info(fit_id) {
-            Ok(core_fit) => core_fit,
-            Err(error) => match error {
-                rc::err::GetFitInfoError::FitNotFound(e) => return Err(HExecError::FitNotFoundPrimary(e)),
-            },
-        };
+    pub(in crate::info::fit) fn mk_info(core_fit: &mut rc::FitMut, item_mode: HItemInfoMode) -> Self {
         let fit = Self {
-            id: *fit_id,
-            fleet: core_fit.fleet,
+            id: core_fit.get_fit_id(),
+            fleet: core_fit.get_fleet().map(|v| v.get_fleet_id()),
             character: core_fit
-                .character
-                .and_then(|v| core_sol.get_item_info(&v).ok())
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),
+                .get_character_mut()
+                .map(|mut core_character| HItemInfo::mk_info(&mut core_character, item_mode)),
             skills: core_fit
-                .skills
-                .iter()
-                .filter_map(|v| core_sol.get_item_info(v).ok())
-                .collect_vec()
-                .into_iter()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                .iter_skills_mut()
+                .map(|mut core_skill| HItemInfo::mk_info(&mut core_skill, item_mode))
+                .cloned()
                 .collect(),
             implants: core_fit
                 .implants

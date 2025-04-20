@@ -1,6 +1,6 @@
 use crate::sol::{
     FitKey, SolarSystem,
-    api::{Fit, FitMut, Skill},
+    api::{Fit, FitMut, ItemMutIter, Skill, SkillMutGenerator},
 };
 
 impl<'a> Fit<'a> {
@@ -12,6 +12,18 @@ impl<'a> Fit<'a> {
 impl<'a> FitMut<'a> {
     pub fn iter_skills(&self) -> impl ExactSizeIterator<Item = Skill> {
         iter_skills(self.sol, self.key)
+    }
+    pub fn iter_skills_mut(&mut self) -> ItemMutIter<'_, SkillMutGenerator> {
+        let skill_keys = self
+            .sol
+            .uad
+            .fits
+            .get(self.key)
+            .skills
+            .values()
+            .map(|fit_skill| fit_skill.item_key)
+            .collect();
+        ItemMutIter::new(self.sol, skill_keys)
     }
 }
 

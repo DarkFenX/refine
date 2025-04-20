@@ -20,12 +20,15 @@ pub use item::{
     SwEffect, SwEffectMut,
 };
 pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed};
+pub use mut_item_iter::ItemMutIter;
+pub(in crate::sol::api) use mut_item_iter::{AutochargeMutGenerator, SkillMutGenerator};
 
 mod default_incoming_dps;
 mod dev;
 mod fit;
 mod fleet;
 mod item;
+mod mut_item_iter;
 mod sec_zone;
 mod set_src;
-mod util;
+mod sole_util;

@@ -1,5 +1,3 @@
-use std::collections::VecDeque;
-
 use lender::{Lender, Lending};
 
 use crate::{
@@ -13,17 +11,19 @@ use crate::{
 use super::shared::get_side_effect_chance_attr_id;
 
 // Lending iterator for side effects
-pub struct SideEffectIter<'this> {
-    sol: &'this mut SolarSystem,
+pub struct SideEffectIter<'iter> {
+    sol: &'iter mut SolarSystem,
     key: ItemKey,
-    effects_with_chances: VecDeque<(ad::AEffectId, ad::AAttrId)>,
+    effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
+    index: usize,
 }
-impl<'this, 'lend> Lending<'lend> for SideEffectIter<'this> {
+impl<'iter, 'lend> Lending<'lend> for SideEffectIter<'iter> {
     type Lend = FullSideEffectMut<'lend>;
 }
-impl<'this> Lender for SideEffectIter<'this> {
+impl<'iter> Lender for SideEffectIter<'iter> {
     fn next(&mut self) -> Option<FullSideEffectMut> {
-        let (a_effect_id, a_attr_id) = self.effects_with_chances.pop_front()?;
+        let (a_effect_id, a_attr_id) = *self.effects_with_chances.get(self.index)?;
+        self.index += 1;
         Some(FullSideEffectMut::new(self.sol, self.key, a_effect_id, a_attr_id))
     }
 }
@@ -46,18 +46,18 @@ impl<'a> BoosterMut<'a> {
         let effects_with_chances = uad_booster
             .get_a_effect_datas()
             .into_iter()
-            .map(|a_effect_datas| {
+            .flat_map(|a_effect_datas| {
                 a_effect_datas.keys().filter_map(|a_effect_id| {
                     get_side_effect_chance_attr_id(&self.sol.uad.src, a_effect_id)
                         .map(|chance_a_attr_id| (*a_effect_id, chance_a_attr_id))
                 })
             })
-            .flatten()
             .collect();
         SideEffectIter {
             sol: self.sol,
             key: self.key,
             effects_with_chances,
+            index: 0,
         }
     }
 }
