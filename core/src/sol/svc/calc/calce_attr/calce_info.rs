@@ -6,7 +6,6 @@ use smallvec::SmallVec;
 
 use crate::{
     SecZone, ac, ad,
-    err::basic::AttrMetaFoundError,
     sol::{
         ItemKey, OpInfo,
         err::KeyedItemLoadedError,
@@ -16,7 +15,7 @@ use crate::{
     util::{RMap, RMapVec, RSet, round},
 };
 
-use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_base_attr_value};
+use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 
 struct Affection {
     modification: Modification,
@@ -32,10 +31,7 @@ impl Calc {
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for a_attr_id in self.iter_item_a_attr_ids(uad, item_key)? {
-            let mut attr_info = match self.calc_item_attr_info(uad, item_key, &a_attr_id) {
-                Ok(attr_info) => attr_info,
-                _ => continue,
-            };
+            let mut attr_info = self.calc_item_attr_info(uad, item_key, &a_attr_id);
             let mut info_vec = Vec::new();
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
@@ -95,16 +91,11 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(
-        &mut self,
-        uad: &Uad,
-        item_key: ItemKey,
-        a_attr_id: &ad::AAttrId,
-    ) -> Result<AttrValInfo, AttrMetaFoundError> {
+    fn calc_item_attr_info(&mut self, uad: &Uad, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
         let item = uad.items.get(item_key);
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
-            None => return Err(AttrMetaFoundError { attr_id: *a_attr_id }),
+            None => &get_a_attr(*a_attr_id),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute
         // value.
@@ -222,6 +213,6 @@ impl Calc {
             }
             None => extra_attr_info,
         };
-        Ok(attr_info)
+        attr_info
     }
 }

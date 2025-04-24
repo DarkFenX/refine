@@ -1,9 +1,9 @@
 use crate::{
     EffectMode,
-    err::basic::{AttrMetaFoundError, ItemLoadedError},
+    err::basic::ItemLoadedError,
     sol::{
         AttrId, EffectId, EffectInfo, ItemId, ItemTypeId,
-        svc::calc::{AttrCalcError, CalcAttrVal, ModificationInfo},
+        svc::calc::{CalcAttrVal, ModificationInfo},
     },
 };
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
@@ -42,13 +42,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         match self.get_sol_mut().internal_get_item_attr(item_key, attr_id) {
             Ok(calc_val) => Ok(calc_val),
-            Err(error) => Err(match error {
-                AttrCalcError::KeyedItemNotLoaded(_) => ItemLoadedError {
-                    item_id: self.get_sol().uad.items.id_by_key(item_key),
-                }
-                .into(),
-                AttrCalcError::AttrMetaNotFound(e) => e.into(),
-            }),
+            Err(error) => Err(ItemLoadedError {
+                item_id: self.get_sol().uad.items.id_by_key(error.item_key),
+            }
+            .into()),
         }
     }
     fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, CalcAttrVal)>, IterItemAttrsError> {
@@ -123,8 +120,6 @@ mod private {
 pub enum GetItemAttrError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
-    #[error("{0}")]
-    AttrMetaNotFound(#[from] AttrMetaFoundError),
 }
 
 #[derive(thiserror::Error, Debug)]

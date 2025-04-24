@@ -1,4 +1,3 @@
-pub use attr_meta_found::AttrMetaFoundError;
 pub use breacher_dmg::BreacherDmgError;
 pub use charge_found::ChargeFoundError;
 pub use dmg::DmgError;
@@ -24,7 +23,6 @@ pub use skill_eve_type::SkillEveTypeError;
 pub use skill_level::SkillLevelError;
 pub use total_dmg::TotalDmgError;
 
-mod attr_meta_found;
 mod breacher_dmg;
 mod charge_found;
 mod dmg;

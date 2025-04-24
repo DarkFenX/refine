@@ -111,6 +111,17 @@ impl Calc {
     }
 }
 
+pub(super) fn get_a_attr(a_attr_id: ad::AAttrId) -> ad::AAttr {
+    ad::AAttr {
+        id: a_attr_id,
+        penalizable: false,
+        hig: true,
+        def_val: OF(0.0),
+        min_attr_id: None,
+        max_attr_id: None,
+    }
+}
+
 pub(super) fn get_base_attr_value(item: &UadItem, a_attr: &ad::AAttr) -> AttrVal {
     // Fetch unmodified on-item attribute value, or use base attribute value if it is not available
     match item.get_a_attrs().unwrap().get(&a_attr.id) {

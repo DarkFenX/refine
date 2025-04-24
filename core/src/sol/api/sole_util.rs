@@ -1,12 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    AttrVal, ad,
-    sol::{
-        ItemKey, SolarSystem,
-        svc::calc::{AttrCalcError, CalcAttrVal},
-        uad::item::UadItem,
-    },
+    ad,
+    sol::{AttrVal, ItemKey, SolarSystem, err::KeyedItemLoadedError, svc::calc::CalcAttrVal, uad::item::UadItem},
 };
 
 impl SolarSystem {
@@ -14,7 +10,7 @@ impl SolarSystem {
         &mut self,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
-    ) -> Result<CalcAttrVal, AttrCalcError> {
+    ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         self.svc.calc.get_item_attr_val_full(&self.uad, item_key, a_attr_id)
     }
     pub(in crate::sol::api) fn add_item_key_to_svc(&mut self, item_key: ItemKey) {
