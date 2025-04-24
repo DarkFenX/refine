@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_fit},
+    cmd::{HFitIdResp, change_fit, shared::get_primary_fit},
     util::HExecError,
 };
 
@@ -12,7 +12,7 @@ pub(crate) struct HChangeFitCmd {
     fit_cmd: change_fit::HChangeFitCmd,
 }
 impl HChangeFitCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFitIdResp, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -24,12 +24,8 @@ pub(crate) struct HDeleteFitCmd {
     fit_id: rc::FitId,
 }
 impl HDeleteFitCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
-        match core_sol.remove_fit(&self.fit_id) {
-            Ok(_) => Ok(HCmdResp::NoData),
-            Err(error) => Err(match error {
-                rc::err::RemoveFitError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-            }),
-        }
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), HExecError> {
+        get_primary_fit(core_sol, &self.fit_id)?.remove();
+        Ok(())
     }
 }

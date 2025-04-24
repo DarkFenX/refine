@@ -16,8 +16,7 @@ impl SolarSystem {
 }
 
 impl<'a> FighterMut<'a> {
-    pub fn remove_count_override(self) -> Self {
-        self.sol.internal_remove_fighter_count_override(self.key);
-        self
+    pub fn remove_count_override(&mut self) {
+        self.sol.internal_remove_fighter_count_override(self.key)
     }
 }

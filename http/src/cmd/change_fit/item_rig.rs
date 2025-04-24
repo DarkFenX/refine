@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_item},
+    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     util::HExecError,
 };
 
@@ -13,16 +13,13 @@ impl HAddRigCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<rc::RigInfo, HExecError> {
-        let core_rig = match core_sol.add_rig(fit_id, self.type_id, self.state.unwrap_or(true)) {
-            Ok(core_rig) => core_rig,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddRigError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
-        };
-        Ok(core_rig)
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let mut core_rig = core_fit.add_rig(self.type_id);
+        if let Some(state) = self.state {
+            core_rig.set_state(state);
+        }
+        Ok(core_rig.into())
     }
 }
 
@@ -35,7 +32,7 @@ pub(crate) struct HChangeRigCmd {
     item_cmd: change_item::HChangeRigCmd,
 }
 impl HChangeRigCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

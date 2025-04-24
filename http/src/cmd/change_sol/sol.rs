@@ -1,5 +1,4 @@
 use crate::{
-    cmd::HCmdResp,
     shared::{HDpsProfile, HSecZone},
     util::HExecError,
 };
@@ -10,13 +9,13 @@ pub(crate) struct HChangeSolCmd {
     default_incoming_dps: Option<HDpsProfile>,
 }
 impl HChangeSolCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), HExecError> {
         if let Some(sec_zone) = &self.sec_zone {
             core_sol.set_sec_zone(sec_zone.into());
         }
         if let Some(default_incoming_dps) = &self.default_incoming_dps {
             core_sol.set_default_incoming_dps(default_incoming_dps.try_into()?);
         }
-        Ok(().into())
+        Ok(())
     }
 }

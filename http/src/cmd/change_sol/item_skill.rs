@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_fit},
+    cmd::{HItemIdsResp, change_fit},
     util::HExecError,
 };
 
@@ -12,7 +12,7 @@ pub(crate) struct HAddSkillCmd {
     fit_cmd: change_fit::HAddSkillCmd,
 }
 impl HAddSkillCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SkillInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -23,7 +23,7 @@ pub(crate) struct HChangeSkillCmd {
     fit_cmd: change_fit::HChangeSkillCmd,
 }
 impl HChangeSkillCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.fit_cmd.execute(core_sol)
     }
 }

@@ -64,8 +64,8 @@ pub(crate) enum HItemInfo {
     SwEffect(HSwEffectInfo),
 }
 impl MkItemInfo<&mut rc::ItemMut<'_>> for HItemInfo {
-    fn mk_info(core_item_info: &mut rc::ItemMut, item_mode: HItemInfoMode) -> Self {
-        match core_item_info {
+    fn mk_info(core_item: &mut rc::ItemMut, item_mode: HItemInfoMode) -> Self {
+        match core_item {
             rc::ItemMut::Autocharge(core_autocharge) => Self::mk_info(core_autocharge, item_mode),
             rc::ItemMut::Booster(core_booster) => Self::mk_info(core_booster, item_mode),
             rc::ItemMut::Character(core_character) => Self::mk_info(core_character, item_mode),

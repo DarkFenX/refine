@@ -23,8 +23,7 @@ impl SolarSystem {
 }
 
 impl<'a> ModuleMut<'a> {
-    pub fn set_state(self, state: ModuleState) -> Self {
-        self.sol.internal_set_module_state(self.key, state);
-        self
+    pub fn set_state(&mut self, state: ModuleState) {
+        self.sol.internal_set_module_state(self.key, state)
     }
 }

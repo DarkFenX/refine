@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_fit},
+    cmd::{HItemIdsResp, change_fit},
     util::HExecError,
 };
 
@@ -9,7 +9,7 @@ pub(crate) struct HChangeChargeCmd {
     fit_cmd: change_fit::HChangeChargeCmd,
 }
 impl HChangeChargeCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.fit_cmd.execute(core_sol)
     }
 }

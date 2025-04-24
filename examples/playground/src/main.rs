@@ -1,12 +1,9 @@
 #![allow(warnings, unused)]
 #![feature(core_intrinsics)]
 
-use ahash::RandomState as ABuildHasher;
 use chrono::Utc;
 use itertools::Itertools;
-use nohash_hasher::BuildNoHashHasher;
 use rand::{Rng, SeedableRng};
-use rustc_hash::FxBuildHasher;
 use std::{
     hash::{BuildHasher, Hasher},
     intrinsics::black_box,
@@ -18,7 +15,8 @@ use std::{
 use tracing_subscriber::prelude::*;
 
 use rc::{
-    AddMode, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption, SolarSystem, Src, VERSION,
+    AddMode, ItemCommon, ItemMutCommon, Lender, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption,
+    SolarSystem, Src, VERSION,
     ad::{AItemKind, AState, AdaptedDataHandler},
     ed::EveDataHandler,
     val::ValOptions,
@@ -55,101 +53,33 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    // test_hashers();
-    test_crusader(dh, ch);
+    test_random(dh, ch);
+    // test_crusader(dh, ch);
     // test_nphoon(dh, ch);
 }
 
-fn test_hashers() {
-    type Num = i32;
-    const RUNS: usize = 5;
-    const ITERATIONS: usize = 10_000_000;
-    const READS: usize = 5;
-    const RNG_MIN: Num = 0;
-    const RNG_MAX: Num = 10_000_000;
-    let mut rng = rand::rngs::SmallRng::from_rng(&mut rand::rng());
-    println!("----- ahash -----");
-    for k in 0..RUNS {
-        let mut hm: rc::util::Map<Num, Num, ABuildHasher> = rc::util::Map::new();
-        let before = Utc::now();
-        let mut sum: i64 = 0;
-        let mut collisions: usize = 0;
-        for i in 0..ITERATIONS {
-            if hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1).is_some() {
-                collisions += 1;
-            }
-            for _ in 0..READS {
-                if let Some(x) = hm.get(&rng.random_range(RNG_MIN..RNG_MAX)) {
-                    sum += *x as i64;
-                }
-            }
-        }
-        let after = Utc::now();
-        let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
-        println!(
-            "The sum is: {}. Collisions: {}. Time elapsed: {:.3} sec",
-            sum, collisions, delta_seconds
-        );
-    }
-
-    println!("----- rustc-hash -----");
-    for k in 0..RUNS {
-        let mut hm: rc::util::Map<Num, Num, FxBuildHasher> = rc::util::Map::new();
-        let before = Utc::now();
-        let mut sum: i64 = 0;
-        let mut collisions: usize = 0;
-        for i in 0..ITERATIONS {
-            if hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1).is_some() {
-                collisions += 1;
-            }
-            for _ in 0..READS {
-                if let Some(x) = hm.get(&rng.random_range(RNG_MIN..=RNG_MAX)) {
-                    sum += *x as i64;
-                }
-            }
-        }
-        let after = Utc::now();
-        let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
-        println!(
-            "The sum is: {}. Collisions: {}. Time elapsed: {:.3} sec",
-            sum, collisions, delta_seconds
-        );
-    }
-    //
-    println!("----- nohash-hasher -----");
-    for k in 0..RUNS {
-        let mut hm: rc::util::Map<Num, Num, BuildNoHashHasher<Num>> = rc::util::Map::new();
-        let before = Utc::now();
-        let mut sum: i64 = 0;
-        let mut collisions: usize = 0;
-        for i in 0..ITERATIONS {
-            if hm.insert(rng.random_range(RNG_MIN..=RNG_MAX), 1).is_some() {
-                collisions += 1;
-            }
-            for _ in 0..READS {
-                if let Some(x) = hm.get(&rng.random_range(RNG_MIN..=RNG_MAX)) {
-                    sum += *x as i64;
-                }
-            }
-        }
-        let after = Utc::now();
-        let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
-        println!(
-            "The sum is: {}. Collisions: {}. Time elapsed: {:.3} sec",
-            sum, collisions, delta_seconds
-        );
-    }
+fn test_random(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
+    let src = Src::new(dh, ch).unwrap();
+    let mut sol_sys = SolarSystem::new(src);
+    let mut fit = sol_sys.add_fit();
+    let mut fighter = fit.add_fighter(40562, MinionState::InBay);
+    let autocharges: Vec<_> = fighter
+        .iter_autocharges_mut()
+        .map_into_iter(|v| v.get_item_id())
+        .collect();
+    println!("{:?}", autocharges);
 }
 
 fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     let skill_ids = get_skill_ids(&dh);
     let src = Src::new(dh, ch).unwrap();
     let mut sol_sys = SolarSystem::new(src);
-    let fit = sol_sys.add_fit();
-    let ship = sol_sys.set_fit_ship(&fit.id, 11184, true).unwrap();
+    let mut fit = sol_sys.add_fit();
+    let ship_id = fit.set_ship(11184).get_item_id();
     for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(&fit.id, skill_id.to_owned(), 5, true);
+        fit.add_skill(skill_id.to_owned(), 5);
     }
+    let fit_id = fit.get_fit_id();
     // RAH
     // sol_sys.add_module(
     //     fit.id,
@@ -169,20 +99,28 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     tracing::error!("starting crusader test");
     let before = Utc::now();
     for _ in 0..iterations {
-        let anp = sol_sys
-            .add_module(
-                &fit.id,
-                ModRack::Low,
-                AddMode::Equip,
-                1306,
-                ModuleState::Online,
-                None,
-                None,
-            )
-            .unwrap();
-        black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
-        sol_sys.remove_item(&anp.id, rc::RmMode::Free);
-        black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
+        let anp_id = sol_sys
+            .get_fit_mut(&fit_id)
+            .unwrap()
+            .add_module(ModRack::Low, AddMode::Equip, 1306, ModuleState::Online)
+            .get_item_id();
+        black_box(
+            sol_sys
+                .get_item_mut(&ship_id)
+                .unwrap()
+                .iter_attrs()
+                .unwrap()
+                .for_each(drop),
+        );
+        sol_sys.get_item_mut(&anp_id).unwrap().remove(rc::RmMode::Free);
+        black_box(
+            sol_sys
+                .get_item_mut(&ship_id)
+                .unwrap()
+                .iter_attrs()
+                .unwrap()
+                .for_each(drop),
+        );
     }
     let after = Utc::now();
     tracing::error!("done with crusader test");
@@ -197,104 +135,50 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 
     let mut sol_sys = SolarSystem::new(src);
     sol_sys.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
-    let fit = sol_sys.add_fit();
+    let mut fit = sol_sys.add_fit();
 
     // Character
-    sol_sys.set_fit_character(&fit.id, 1373, true).unwrap();
+    fit.set_character(1373);
 
     // Skills
     for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(&fit.id, skill_id.to_owned(), 5, true);
+        fit.add_skill(*skill_id, 5);
     }
 
     // Implants
-    sol_sys.add_implant(&fit.id, 13231, true).unwrap(); // TD-603
-    sol_sys.add_implant(&fit.id, 10228, true).unwrap(); // SM-703
-    sol_sys.add_implant(&fit.id, 24663, true).unwrap(); // Zor hyperlink
-    sol_sys.add_implant(&fit.id, 13244, true).unwrap(); // SS-903
-    sol_sys.add_implant(&fit.id, 13219, true).unwrap(); // LP-1003
+    fit.add_implant(13231); // TD-603
+    fit.add_implant(10228); // SM-703
+    fit.add_implant(24663); // Zor hyperlink
+    fit.add_implant(13244); // SS-903
+    fit.add_implant(13219); // LP-1003
 
     // Boosters
-    sol_sys.add_booster(&fit.id, 28674, true).unwrap(); // Synth drop
-    sol_sys.add_booster(&fit.id, 28672, true).unwrap(); // Synth crash
-    sol_sys.add_booster(&fit.id, 45999, true).unwrap(); // Pyro 2
+    fit.add_booster(28674); // Synth drop
+    fit.add_booster(28672); // Synth crash
+    fit.add_booster(45999); // Pyro 2
 
     // Ship
-    sol_sys.set_fit_ship(&fit.id, 32311, true).unwrap(); // NTyphoon
+    fit.set_ship(32311); // NTyphoon
 
     // High slots
     for _ in 0..2 {
-        sol_sys
-            .add_module(
-                &fit.id,
-                ModRack::High,
-                AddMode::Equip,
-                2929,
-                ModuleState::Overload,
-                None,
-                Some(12779),
-            )
-            .unwrap(); // T2 800mm with hail
+        // T2 800mm with hail
+        fit.add_module(ModRack::High, AddMode::Equip, 2929, ModuleState::Overload)
+            .set_charge(12779);
     }
     for _ in 0..2 {
-        sol_sys
-            .add_module(
-                &fit.id,
-                ModRack::High,
-                AddMode::Equip,
-                2420,
-                ModuleState::Overload,
-                None,
-                Some(2811),
-            )
-            .unwrap(); // T2 torps with thermal rages
+        // T2 torps with thermal rages
+        fit.add_module(ModRack::High, AddMode::Equip, 2420, ModuleState::Overload)
+            .set_charge(2811);
     }
 
     // Mid slots
-    sol_sys
-        .add_module(
-            &fit.id,
-            ModRack::Mid,
-            AddMode::Equip,
-            5945,
-            ModuleState::Active,
-            None,
-            None,
-        )
-        .unwrap(); // Enduring 500MN
-    sol_sys
-        .add_module(
-            &fit.id,
-            ModRack::Mid,
-            AddMode::Equip,
-            2024,
-            ModuleState::Active,
-            None,
-            Some(32014),
-        )
-        .unwrap(); // T2 med cap booster with navy 800
-    sol_sys
-        .add_module(
-            &fit.id,
-            ModRack::Mid,
-            AddMode::Equip,
-            2301,
-            ModuleState::Active,
-            None,
-            None,
-        )
-        .unwrap(); // T2 EM hardener
-    let scram = sol_sys
-        .add_module(
-            &fit.id,
-            ModRack::Mid,
-            AddMode::Equip,
-            448,
-            ModuleState::Active,
-            None,
-            None,
-        )
-        .unwrap(); // T2 scram
+    fit.add_module(ModRack::Mid, AddMode::Equip, 5945, ModuleState::Active); // Enduring 500MN
+    // T2 med cap booster with navy 800
+    fit.add_module(ModRack::Mid, AddMode::Equip, 2024, ModuleState::Active)
+        .set_charge(32014);
+    fit.add_module(ModRack::Mid, AddMode::Equip, 2301, ModuleState::Active); // T2 EM hardener
+    fit.add_module(ModRack::Mid, AddMode::Equip, 448, ModuleState::Active); // T2 scram
     // sol_sys
     //     .add_module(
     //         fit.id,
@@ -308,69 +192,29 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     //     .unwrap(); // T2 invuln
 
     // Low slots
-    sol_sys
-        .add_module(
-            &fit.id,
-            ModRack::Low,
-            AddMode::Equip,
-            2048,
-            ModuleState::Online,
-            None,
-            None,
-        )
-        .unwrap(); // T2 DC
+    fit.add_module(ModRack::Low, AddMode::Equip, 2048, ModuleState::Online); // T2 DC
     for _ in 0..2 {
-        sol_sys
-            .add_module(
-                &fit.id,
-                ModRack::Low,
-                AddMode::Equip,
-                519,
-                ModuleState::Online,
-                None,
-                None,
-            )
-            .unwrap(); // T2 gyrostab
+        fit.add_module(ModRack::Low, AddMode::Equip, 519, ModuleState::Online); // T2 gyrostab
     }
     for _ in 0..2 {
-        sol_sys
-            .add_module(
-                &fit.id,
-                ModRack::Low,
-                AddMode::Equip,
-                22291,
-                ModuleState::Online,
-                None,
-                None,
-            )
-            .unwrap(); // T2 BCS
+        fit.add_module(ModRack::Low, AddMode::Equip, 22291, ModuleState::Online); // T2 BCS
     }
     for _ in 0..1 {
-        sol_sys
-            .add_module(
-                &fit.id,
-                ModRack::Low,
-                AddMode::Equip,
-                4405,
-                ModuleState::Online,
-                None,
-                None,
-            )
-            .unwrap(); // T2 DDA
+        fit.add_module(ModRack::Low, AddMode::Equip, 4405, ModuleState::Online); // T2 DDA
     }
 
     // Rigs
-    sol_sys.add_rig(&fit.id, 26436, true).unwrap(); // T2 therm rig
+    fit.add_rig(26436); // T2 therm rig
     for _ in 0..1 {
-        sol_sys.add_rig(&fit.id, 26088, true).unwrap(); // T1 CDFE
+        fit.add_rig(26088); // T1 CDFE
     }
 
     // Drones
     for _ in 0..5 {
-        sol_sys.add_drone(&fit.id, 2446, MinionState::Engaging, None).unwrap(); // T2 ogre
+        fit.add_drone(2446, MinionState::Engaging, None); // T2 ogre
     }
     for _ in 0..2 {
-        sol_sys.add_drone(&fit.id, 2446, MinionState::InBay, None).unwrap(); // T2 ogre
+        fit.add_drone(2446, MinionState::InBay, None); // T2 ogre
     }
 
     let val_options = ValOptions::all_enabled();
@@ -777,7 +621,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     tracing::error!("starting nphoon test, trying {} items per iteration", items.len());
     let before = Utc::now();
     for _ in 0..iterations {
-        let result = sol_sys.try_fit_items(&fit.id, &items, &val_options).unwrap();
+        let result = fit.try_fit_items(&items, &val_options);
         // println!("Valid items: {:?}", result);
     }
     let after = Utc::now();

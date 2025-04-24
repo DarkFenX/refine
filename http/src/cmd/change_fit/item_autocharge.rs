@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_item},
+    cmd::{HItemIdsResp, change_item},
     util::HExecError,
 };
 
@@ -12,7 +12,7 @@ pub(crate) struct HChangeAutochargeCmd {
     item_cmd: change_item::HChangeAutochargeCmd,
 }
 impl HChangeAutochargeCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

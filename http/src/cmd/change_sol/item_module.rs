@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_fit, shared::HCmdResp},
+    cmd::{change_fit, shared::HItemIdsResp},
     util::HExecError,
 };
 
@@ -12,7 +12,7 @@ pub(crate) struct HAddModuleCmd {
     fit_cmd: change_fit::HAddModuleCmd,
 }
 impl HAddModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::ModuleInfo, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -23,7 +23,7 @@ pub(crate) struct HChangeModuleCmd {
     fit_cmd: change_fit::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.fit_cmd.execute(core_sol)
     }
 }

@@ -1,5 +1,7 @@
+use rc::ItemCommon;
+
 use crate::{
-    cmd::{HCmdResp, change_item},
+    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     util::HExecError,
 };
 
@@ -13,16 +15,13 @@ impl HSetShipCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<rc::ShipInfo, HExecError> {
-        let core_ship = match core_sol.set_fit_ship(fit_id, self.type_id, self.state.unwrap_or(true)) {
-            Ok(core_ship) => core_ship,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::SetFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
-        };
-        Ok(core_ship)
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let mut core_ship = core_fit.set_ship(self.type_id);
+        if let Some(state) = self.state {
+            core_ship.set_state(state);
+        }
+        Ok(core_ship.into())
     }
 }
 
@@ -37,7 +36,7 @@ impl HChangeShipCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
             Self::ViaFitId(cmd) => cmd.execute(core_sol, fit_id),
@@ -54,7 +53,7 @@ pub(crate) struct HChangeShipViaItemIdCmd {
     item_cmd: change_item::HChangeShipCmd,
 }
 impl HChangeShipViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -69,19 +68,13 @@ impl HChangeShipViaFitIdCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HCmdResp, HExecError> {
-        let item_id = match core_sol.get_fit_ship_info(fit_id) {
-            Ok(core_ship) => match core_ship {
-                Some(core_ship) => core_ship.id,
-                None => return Err(HExecError::FitShipNotFound(*fit_id)),
-            },
-            Err(error) => {
-                return Err(match error {
-                    rc::err::GetFitShipInfoError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
+    ) -> Result<HItemIdsResp, HExecError> {
+        let core_fit = get_primary_fit(core_sol, fit_id)?;
+        let ship_item_id = match core_fit.get_ship() {
+            Some(core_ship) => core_ship.get_item_id(),
+            None => return Err(HExecError::FitShipNotFound(*fit_id)),
         };
-        self.item_cmd.execute(core_sol, &item_id)
+        self.item_cmd.execute(core_sol, &ship_item_id)
     }
 }
 
@@ -89,12 +82,10 @@ impl HChangeShipViaFitIdCmd {
 pub(crate) struct HRemoveShipCmd {}
 impl HRemoveShipCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
-        if let Err(error) = core_sol.remove_fit_ship(fit_id) {
-            return Err(match error {
-                rc::err::RemoveFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                rc::err::RemoveFitShipError::FitHasNoShip(e) => HExecError::FitItemKindNotFound(e),
-            });
-        };
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        if let Some(core_ship) = core_fit.get_ship_mut() {
+            core_ship.remove();
+        }
         Ok(())
     }
 }

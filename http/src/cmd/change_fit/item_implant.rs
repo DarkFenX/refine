@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_item},
+    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     util::HExecError,
 };
 
@@ -13,19 +13,13 @@ impl HAddImplantCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<rc::ItemId, HExecError> {
-        let mut core_implant = match core_sol.add_implant(fit_id, self.type_id) {
-            Ok(core_implant) => core_implant,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddImplantError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
-        };
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let mut core_implant = core_fit.add_implant(self.type_id);
         if let Some(state) = self.state {
-            core_implant = core_implant.set_state(state);
-        };
-        Ok(core_implant.get_item_id())
+            core_implant.set_state(state);
+        }
+        Ok(core_implant.into())
     }
 }
 
@@ -38,7 +32,7 @@ pub(crate) struct HChangeImplantCmd {
     item_cmd: change_item::HChangeImplantCmd,
 }
 impl HChangeImplantCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

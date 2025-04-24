@@ -1,5 +1,7 @@
+use rc::ItemCommon;
+
 use crate::{
-    cmd::{HCmdResp, change_item},
+    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     util::HExecError,
 };
 
@@ -13,16 +15,13 @@ impl HSetStanceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<rc::StanceInfo, HExecError> {
-        let core_stance = match core_sol.set_fit_stance(fit_id, self.type_id, self.state.unwrap_or(true)) {
-            Ok(core_stance) => core_stance,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::SetFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
-        };
-        Ok(core_stance)
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let mut core_stance = core_fit.set_stance(self.type_id);
+        if let Some(state) = self.state {
+            core_stance.set_state(state);
+        }
+        Ok(core_stance.into())
     }
 }
 
@@ -37,7 +36,7 @@ impl HChangeStanceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
             Self::ViaFitId(cmd) => cmd.execute(core_sol, fit_id),
@@ -54,7 +53,7 @@ pub(crate) struct HChangeStanceViaItemIdCmd {
     item_cmd: change_item::HChangeStanceCmd,
 }
 impl HChangeStanceViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -69,19 +68,13 @@ impl HChangeStanceViaFitIdCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HCmdResp, HExecError> {
-        let item_id = match core_sol.get_fit_stance_info(fit_id) {
-            Ok(core_stance) => match core_stance {
-                Some(core_stance) => core_stance.id,
-                None => return Err(HExecError::FitStanceNotFound(*fit_id)),
-            },
-            Err(error) => {
-                return Err(match error {
-                    rc::err::GetFitStanceInfoError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
+    ) -> Result<HItemIdsResp, HExecError> {
+        let core_fit = get_primary_fit(core_sol, fit_id)?;
+        let stance_item_id = match core_fit.get_stance() {
+            Some(core_stance) => core_stance.get_item_id(),
+            None => return Err(HExecError::FitStanceNotFound(*fit_id)),
         };
-        self.item_cmd.execute(core_sol, &item_id)
+        self.item_cmd.execute(core_sol, &stance_item_id)
     }
 }
 
@@ -89,12 +82,10 @@ impl HChangeStanceViaFitIdCmd {
 pub(crate) struct HRemoveStanceCmd {}
 impl HRemoveStanceCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
-        if let Err(error) = core_sol.remove_fit_stance(fit_id) {
-            return Err(match error {
-                rc::err::RemoveFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                rc::err::RemoveFitStanceError::FitHasNoStance(e) => HExecError::FitItemKindNotFound(e),
-            });
-        };
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        if let Some(core_stance) = core_fit.get_stance_mut() {
+            core_stance.remove();
+        }
         Ok(())
     }
 }

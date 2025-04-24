@@ -1,6 +1,6 @@
 pub use fit::{Fit, FitMut};
 pub use fleet::{SetFitFleetError, UnsetFitFleetError};
-pub use get::GetFitInfoError;
+pub use get::GetFitError;
 pub use rah_incoming_dps::RemoveFitRahIncomingDpsError;
 pub use sec_status::SetFitSecStatusError;
 

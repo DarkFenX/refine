@@ -11,8 +11,7 @@ impl SolarSystem {
 }
 
 impl<'a> ChargeMut<'a> {
-    pub fn set_state(self, state: bool) -> Self {
-        self.sol.internal_set_charge_state(self.key, state);
-        self
+    pub fn set_state(&mut self, state: bool) {
+        self.sol.internal_set_charge_state(self.key, state)
     }
 }

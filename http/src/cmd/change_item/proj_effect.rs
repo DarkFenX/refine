@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        HCmdResp,
+        HItemIdsResp,
         shared::{HEffectModeMap, apply_effect_modes},
     },
     util::HExecError,
@@ -9,13 +9,13 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeProjEffectCmd {
+    state: Option<bool>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
-    state: Option<bool>,
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeProjEffectCmd {
@@ -23,39 +23,34 @@ impl HChangeProjEffectCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_proj_effect = core_sol.get_proj_effect_mut(item_id).map_err(|error| match error {
+            rc::err::GetProjEffectError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+            rc::err::GetProjEffectError::ItemIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
+        })?;
+        if let Some(state) = self.state {
+            core_proj_effect.set_state(state);
+        }
         for projectee_item_id in self.add_projs.iter() {
-            if let Err(error) = core_sol.add_proj_effect_proj(item_id, projectee_item_id) {
-                return Err(match error {
-                    rc::err::AddProjEffectProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::AddProjEffectProjError::ProjectorIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
+            core_proj_effect
+                .add_proj(projectee_item_id)
+                .map_err(|error| match error {
                     rc::err::AddProjEffectProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::AddProjEffectProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
                     rc::err::AddProjEffectProjError::ProjectionAlreadyExists(e) => {
                         HExecError::ProjectionAlreadyExists(e)
                     }
-                });
-            }
+                })?;
         }
         for projectee_item_id in self.rm_projs.iter() {
-            if let Err(error) = core_sol.remove_proj_effect_proj(item_id, projectee_item_id) {
-                return Err(match error {
-                    rc::err::RemoveProjEffectProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::RemoveProjEffectProjError::ProjectorIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
+            core_proj_effect
+                .remove_proj(projectee_item_id)
+                .map_err(|error| match error {
                     rc::err::RemoveProjEffectProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::RemoveProjEffectProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                });
-            }
+                })?;
         }
-        if let Some(state) = self.state {
-            if let Err(error) = core_sol.set_proj_effect_state(item_id, state) {
-                return Err(match error {
-                    rc::err::SetProjEffectStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetProjEffectStateError::ItemIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
-                });
-            }
-        }
-        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
-        Ok(HCmdResp::NoData)
+        apply_effect_modes(&mut core_proj_effect, &self.effect_modes);
+        Ok(core_proj_effect.into())
     }
 }

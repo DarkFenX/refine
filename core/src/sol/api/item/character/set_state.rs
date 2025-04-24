@@ -11,8 +11,7 @@ impl SolarSystem {
 }
 
 impl<'a> CharacterMut<'a> {
-    pub fn set_state(self, state: bool) -> Self {
-        self.sol.internal_set_character_state(self.key, state);
-        self
+    pub fn set_state(&mut self, state: bool) {
+        self.sol.internal_set_character_state(self.key, state)
     }
 }

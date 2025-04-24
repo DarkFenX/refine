@@ -19,7 +19,8 @@ pub(crate) struct HBenchmarkAttrCalcCmd {
 }
 impl HBenchmarkAttrCalcCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
-        core_sol.benchmark_attr_calc(&self.fit_id, self.type_id, self.iterations);
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id).unwrap();
+        core_fit.benchmark_attr_calc(self.type_id, self.iterations);
     }
 }
 
@@ -42,7 +43,8 @@ impl HBenchmarkTryFitItemsCmd {
         );
         self.type_ids.par_chunks(chunk_size).for_each(|chunk| {
             let mut inner_sol = cloner.lock().get();
-            inner_sol.benchmark_try_fit_items(&self.fit_id, chunk, &core_options, self.iterations);
+            let mut inner_fit = inner_sol.get_fit_mut(&self.fit_id).unwrap();
+            inner_fit.benchmark_try_items(chunk, &core_options, self.iterations);
             cloner.lock().put(inner_sol);
         });
     }

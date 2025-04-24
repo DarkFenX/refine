@@ -11,8 +11,7 @@ impl SolarSystem {
 }
 
 impl<'a> ServiceMut<'a> {
-    pub fn set_state(self, state: ServiceState) -> Self {
-        self.sol.internal_set_service_state(self.key, state);
-        self
+    pub fn set_state(&mut self, state: ServiceState) {
+        self.sol.internal_set_service_state(self.key, state)
     }
 }

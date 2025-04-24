@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_item},
+    cmd::{HItemIdsResp, change_item},
     util::HExecError,
 };
 
@@ -9,8 +9,12 @@ pub(crate) struct HAddSwEffectCmd {
     state: Option<bool>,
 }
 impl HAddSwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::SwEffectInfo {
-        core_sol.add_sw_effect(self.type_id, self.state.unwrap_or(true))
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HItemIdsResp {
+        let mut sw_effect = core_sol.add_sw_effect(self.type_id);
+        if let Some(state) = self.state {
+            sw_effect.set_state(state);
+        }
+        sw_effect.into()
     }
 }
 
@@ -23,7 +27,7 @@ pub(crate) struct HChangeSwEffectCmd {
     item_cmd: change_item::HChangeSwEffectCmd,
 }
 impl HChangeSwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

@@ -42,6 +42,7 @@ where
 {
     fn next(&mut self) -> Option<<T as New>::This<'_>> {
         let key = *self.keys.get(self.index)?;
+        self.index += 1;
         Some(T::new_new(self.sol, key))
     }
 }

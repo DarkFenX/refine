@@ -16,7 +16,7 @@ pub(in crate::cmd) use stance::HChangeStanceCmd;
 pub(in crate::cmd) use subsystem::HChangeSubsystemCmd;
 pub(in crate::cmd) use sw_effect::HChangeSwEffectCmd;
 
-use crate::{cmd::HCmdResp, util::HExecError};
+use crate::{cmd::HItemIdsResp, util::HExecError};
 
 mod autocharge;
 mod booster;
@@ -58,7 +58,11 @@ pub(crate) enum HChangeItemCommand {
     SwEffect(HChangeSwEffectCmd),
 }
 impl HChangeItemCommand {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, item_id: &rc::ItemId) -> Result<HCmdResp, HExecError> {
+    pub(crate) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+        item_id: &rc::ItemId,
+    ) -> Result<HItemIdsResp, HExecError> {
         match self {
             Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
             Self::Booster(cmd) => cmd.execute(core_sol, item_id),

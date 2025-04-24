@@ -1,4 +1,7 @@
-use crate::{cmd::shared::HValOptions, util::HExecError};
+use crate::{
+    cmd::shared::{HValOptions, get_primary_fit},
+    util::HExecError,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HTryFitItemsCmd {
@@ -12,10 +15,7 @@ impl HTryFitItemsCmd {
         fit_id: &rc::FitId,
     ) -> Result<Vec<rc::ItemTypeId>, HExecError> {
         let core_options = self.validation_options.to_core_val_options(core_sol);
-        core_sol
-            .try_fit_items(fit_id, &self.type_ids, &core_options)
-            .map_err(|core_error| match core_error {
-                rc::err::TryFitItemsError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-            })
+        let mut primary_fit = get_primary_fit(core_sol, fit_id)?;
+        Ok(primary_fit.try_fit_items(&self.type_ids, &core_options))
     }
 }

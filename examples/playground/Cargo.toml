@@ -8,12 +8,9 @@ edition = "2024"
 rc = { package = "reefast-core", path = "../../core" }
 rdhe = { package = "reefast-dh-eve", path = "../../dh-eve", features = ["phb-file"] }
 rdha = { package = "reefast-dh-adapted", path = "../../dh-adapted", features = ["json"] }
-ahash = ">=0.8.11"
 chrono = ">=0.4.40"
 itertools = ">=0.14.0"
-nohash-hasher = ">=0.2.0"
 time = { version = ">=0.3.41", features = ["macros"] }
 rand = ">=0.9.0"
-rustc-hash = ">=2.1.1"
 tracing = ">=0.1.41"
 tracing-subscriber = { version = ">=0.3.19", features = ["time"] }

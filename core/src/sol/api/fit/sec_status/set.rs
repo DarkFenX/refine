@@ -20,10 +20,10 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn set_sec_status(self, sec_status: SecStatus) -> Result<Self, SetFitSecStatusError> {
+    pub fn set_sec_status(&mut self, sec_status: SecStatus) -> Result<(), SetFitSecStatusError> {
         check_sec_status(sec_status)?;
         self.sol.internal_set_fit_sec_status(self.key, sec_status);
-        Ok(self)
+        Ok(())
     }
 }
 

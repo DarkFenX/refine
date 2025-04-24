@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        HCmdResp,
+        HItemIdsResp,
         shared::{HEffectModeMap, apply_effect_modes},
     },
     util::HExecError,
@@ -17,16 +17,15 @@ impl HChangeCharacterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_character = core_sol.get_character_mut(item_id).map_err(|error| match error {
+            rc::err::GetCharacterError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+            rc::err::GetCharacterError::ItemIsNotCharacter(e) => HExecError::ItemKindMismatch(e),
+        })?;
         if let Some(state) = self.state {
-            if let Err(error) = core_sol.set_character_state(item_id, state) {
-                return Err(match error {
-                    rc::err::SetCharacterStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetCharacterStateError::ItemIsNotCharacter(e) => HExecError::ItemKindMismatch(e),
-                });
-            }
+            core_character.set_state(state);
         }
-        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
-        Ok(HCmdResp::NoData)
+        apply_effect_modes(&mut core_character, &self.effect_modes);
+        Ok(core_character.into())
     }
 }

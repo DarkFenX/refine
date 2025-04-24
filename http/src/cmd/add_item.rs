@@ -1,6 +1,5 @@
 use crate::{
-    cmd::change_sol,
-    info::{HItemInfo, HItemInfoMode, MkItemInfo},
+    cmd::{HItemIdsResp, change_sol},
     util::HExecError,
 };
 
@@ -26,72 +25,23 @@ pub(crate) enum HAddItemCommand {
     SwEffect(change_sol::HAddSwEffectCmd),
 }
 impl HAddItemCommand {
-    pub(crate) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        item_mode: HItemInfoMode,
-    ) -> Result<HItemInfo, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         match self {
-            Self::Booster(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Character(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Drone(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Fighter(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::FwEffect(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Implant(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Module(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::ProjEffect(cmd) => {
-                let core_info = cmd.execute(core_sol);
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Rig(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Service(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Ship(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Skill(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Stance(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Subsystem(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::SwEffect(cmd) => {
-                let core_info = cmd.execute(core_sol);
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
+            Self::Booster(cmd) => cmd.execute(core_sol),
+            Self::Character(cmd) => cmd.execute(core_sol),
+            Self::Drone(cmd) => cmd.execute(core_sol),
+            Self::Fighter(cmd) => cmd.execute(core_sol),
+            Self::FwEffect(cmd) => cmd.execute(core_sol),
+            Self::Implant(cmd) => cmd.execute(core_sol),
+            Self::Module(cmd) => cmd.execute(core_sol),
+            Self::ProjEffect(cmd) => Ok(cmd.execute(core_sol)),
+            Self::Rig(cmd) => cmd.execute(core_sol),
+            Self::Service(cmd) => cmd.execute(core_sol),
+            Self::Ship(cmd) => cmd.execute(core_sol),
+            Self::Skill(cmd) => cmd.execute(core_sol),
+            Self::Stance(cmd) => cmd.execute(core_sol),
+            Self::Subsystem(cmd) => cmd.execute(core_sol),
+            Self::SwEffect(cmd) => Ok(cmd.execute(core_sol)),
         }
     }
 }

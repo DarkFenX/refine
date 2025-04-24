@@ -10,10 +10,10 @@ impl<'a> SideEffectMut<'a> {
     /// Set side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn set_state(self, state: bool) -> Self {
+    pub fn set_state(&mut self, state: bool) {
         match self {
-            Self::Full(full_side_effect) => Self::Full(full_side_effect.set_state(state)),
-            Self::Stub(stub_side_effect) => Self::Stub(stub_side_effect.set_state(state)),
+            Self::Full(full_side_effect) => full_side_effect.set_state(state),
+            Self::Stub(stub_side_effect) => stub_side_effect.set_state(state),
         }
     }
 }
@@ -22,9 +22,8 @@ impl<'a> FullSideEffectMut<'a> {
     /// Set side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn set_state(self, state: bool) -> Self {
-        set_state(self.sol, self.key, self.a_effect_id, state);
-        self
+    pub fn set_state(&mut self, state: bool) {
+        set_state(self.sol, self.key, self.a_effect_id, state)
     }
 }
 
@@ -32,9 +31,8 @@ impl<'a> StubSideEffectMut<'a> {
     /// Set side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn set_state(self, state: bool) -> Self {
-        set_state(self.sol, self.key, self.a_effect_id, state);
-        self
+    pub fn set_state(&mut self, state: bool) {
+        set_state(self.sol, self.key, self.a_effect_id, state)
     }
 }
 

@@ -97,53 +97,53 @@ impl HChangeFitCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
             // Fit
-            Self::ChangeFit(cmd) => cmd.execute(core_sol, fit_id),
+            Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - autocharge
-            Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
+            Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - booster
             Self::AddBooster(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeBooster(cmd) => cmd.execute(core_sol),
+            Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - character
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeCharacter(cmd) => cmd.execute(core_sol, fit_id),
+            Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::RemoveCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - charge
-            Self::ChangeCharge(cmd) => cmd.execute(core_sol),
+            Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - drone
             Self::AddDrone(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeDrone(cmd) => cmd.execute(core_sol),
+            Self::ChangeDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - fighter
             Self::AddFighter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeFighter(cmd) => cmd.execute(core_sol),
+            Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeFwEffect(cmd) => cmd.execute(core_sol),
+            Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - implant
             Self::AddImplant(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeImplant(cmd) => cmd.execute(core_sol),
+            Self::ChangeImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeModule(cmd) => cmd.execute(core_sol),
+            Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeRig(cmd) => cmd.execute(core_sol),
+            Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeService(cmd) => cmd.execute(core_sol),
+            Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeShip(cmd) => cmd.execute(core_sol, fit_id),
+            Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::RemoveShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeSkill(cmd) => cmd.execute(core_sol),
+            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - stance
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeStance(cmd) => cmd.execute(core_sol, fit_id),
+            Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::RemoveStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeSubsystem(cmd) => cmd.execute(core_sol),
+            Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

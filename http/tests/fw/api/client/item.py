@@ -478,7 +478,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: ApiServiceState | type[Absent],
+            state: ApiServiceState,
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(

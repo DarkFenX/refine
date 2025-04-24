@@ -11,8 +11,7 @@ impl SolarSystem {
 }
 
 impl<'a> DroneMut<'a> {
-    pub fn set_state(self, state: MinionState) -> Self {
-        self.sol.internal_set_drone_state(self.key, state);
-        self
+    pub fn set_state(&mut self, state: MinionState) {
+        self.sol.internal_set_drone_state(self.key, state)
     }
 }

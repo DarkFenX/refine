@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        HCmdResp,
+        HItemIdsResp,
         shared::{HEffectModeMap, apply_effect_modes},
     },
     shared::HServiceState,
@@ -18,16 +18,15 @@ impl HChangeServiceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_service = core_sol.get_service_mut(item_id).map_err(|error| match error {
+            rc::err::GetServiceError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+            rc::err::GetServiceError::ItemIsNotService(e) => HExecError::ItemKindMismatch(e),
+        })?;
         if let Some(state) = &self.state {
-            if let Err(error) = core_sol.set_service_state(item_id, state.into()) {
-                return Err(match error {
-                    rc::err::SetServiceStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetServiceStateError::ItemIsNotService(e) => HExecError::ItemKindMismatch(e),
-                });
-            }
+            core_service.set_state(state.into());
         }
-        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
-        Ok(HCmdResp::NoData)
+        apply_effect_modes(&mut core_service, &self.effect_modes);
+        Ok(core_service.into())
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, change_item},
+    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     shared::HServiceState,
     util::HExecError,
 };
@@ -7,27 +7,17 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddServiceCmd {
     type_id: rc::ItemTypeId,
-    state: Option<HServiceState>,
+    state: HServiceState,
 }
 impl HAddServiceCmd {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<rc::ServiceInfo, HExecError> {
-        let core_service = match core_sol.add_service(
-            fit_id,
-            self.type_id,
-            self.state.as_ref().unwrap_or(&HServiceState::Online).into(),
-        ) {
-            Ok(core_service) => core_service,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddServiceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
-        };
-        Ok(core_service)
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let core_service = core_fit.add_service(self.type_id, (&self.state).into());
+        Ok(core_service.into())
     }
 }
 
@@ -40,7 +30,7 @@ pub(crate) struct HChangeServiceCmd {
     item_cmd: change_item::HChangeServiceCmd,
 }
 impl HChangeServiceCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

@@ -23,11 +23,6 @@ pub(crate) struct HBoosterInfoPartial {
 }
 impl From<&mut rc::BoosterMut<'_>> for HBoosterInfoPartial {
     fn from(core_booster: &mut rc::BoosterMut) -> Self {
-        let mut side_effects = HashMap::new();
-        let mut side_effect_iter = core_booster.iter_side_effects_mut();
-        while let Some(side_effect) = side_effect_iter.next() {
-            side_effects.insert(side_effect.get_effect_id().into(), side_effect.into());
-        }
         Self {
             id: core_booster.get_item_id(),
             kind: "booster",
@@ -35,7 +30,10 @@ impl From<&mut rc::BoosterMut<'_>> for HBoosterInfoPartial {
             fit_id: core_booster.get_fit().get_fit_id(),
             slot: core_booster.get_slot(),
             enabled: core_booster.get_state(),
-            side_effects,
+            side_effects: core_booster
+                .iter_side_effects_mut()
+                .map_into_iter(|core_side_effect| (core_side_effect.get_effect_id().into(), core_side_effect.into()))
+                .collect(),
         }
     }
 }

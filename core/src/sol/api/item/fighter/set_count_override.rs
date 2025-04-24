@@ -19,12 +19,12 @@ impl SolarSystem {
 }
 
 impl<'a> FighterMut<'a> {
-    pub fn set_count_override(self, count_override: Count) -> Result<Self, SetFighterCountOverrideError> {
+    pub fn set_count_override(&mut self, count_override: Count) -> Result<(), SetFighterCountOverrideError> {
         if count_override < 1 {
             return Err(FighterCountError { count: count_override }.into());
         }
         self.sol.internal_set_fighter_count_override(self.key, count_override);
-        Ok(self)
+        Ok(())
     }
 }
 

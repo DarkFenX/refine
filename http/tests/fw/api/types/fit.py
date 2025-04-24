@@ -12,6 +12,7 @@ from tests.fw.consts import (
     ApiRack,
     ApiValInfoMode,
 )
+from tests.fw.consts import ApiServiceState
 from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item
@@ -20,7 +21,6 @@ from .validation import ValResult
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import DpsProfile, MutaAdd
-    from tests.fw.consts import ApiServiceState
     from tests.fw.response import Response
     from .validation import ValOptions
 
@@ -345,7 +345,7 @@ class Fit(AttrDict):
     def add_service(
             self, *,
             type_id: int,
-            state: ApiServiceState | type[Absent] = Absent,
+            state: ApiServiceState = ApiServiceState.offline,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:

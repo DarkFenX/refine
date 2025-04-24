@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        HCmdResp,
+        HItemIdsResp,
         shared::{HEffectModeMap, HSideEffectMap, apply_effect_modes, apply_side_effects},
     },
     util::HExecError,
@@ -18,17 +18,16 @@ impl HChangeBoosterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_booster = core_sol.get_booster_mut(item_id).map_err(|error| match error {
+            rc::err::GetBoosterError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+            rc::err::GetBoosterError::ItemIsNotBooster(e) => HExecError::ItemKindMismatch(e),
+        })?;
         if let Some(state) = self.state {
-            if let Err(error) = core_sol.set_booster_state(item_id, state) {
-                return Err(match error {
-                    rc::err::SetBoosterStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetBoosterStateError::ItemIsNotBooster(e) => HExecError::ItemKindMismatch(e),
-                });
-            }
+            core_booster.set_state(state);
         }
-        apply_side_effects(core_sol, item_id, &self.side_effects)?;
-        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
-        Ok(HCmdResp::NoData)
+        apply_side_effects(&mut core_booster, &self.side_effects);
+        apply_effect_modes(&mut core_booster, &self.effect_modes);
+        Ok(core_booster.into())
     }
 }

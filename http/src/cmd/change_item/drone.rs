@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        HCmdResp,
+        HItemIdsResp,
         shared::{HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HMinionState,
@@ -28,114 +28,69 @@ impl HChangeDroneCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_drone = core_sol.get_drone_mut(item_id).map_err(|error| match error {
+            rc::err::GetDroneError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+            rc::err::GetDroneError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
+        })?;
         if let Some(state) = &self.state {
-            if let Err(error) = core_sol.set_drone_state(item_id, state.into()) {
-                return Err(match error {
-                    rc::err::SetDroneStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetDroneStateError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
-                });
-            }
+            core_drone.set_state(state.into());
         }
         match &self.mutation {
             TriStateField::Value(mutation) => match mutation {
                 HMutationOnChange::AddShort(mutator_id) => {
                     // Remove old mutation if we had any, ignore any errors on the way
-                    let _ = core_sol.remove_drone_mutation(item_id);
+                    let _ = core_drone.unmutate();
                     let mutation = rc::ItemAddMutation::new(*mutator_id);
-                    if let Err(error) = core_sol.add_drone_mutation(item_id, mutation) {
-                        match error {
-                            rc::err::AddDroneMutationError::ItemNotFound(e) => {
-                                return Err(HExecError::ItemNotFoundPrimary(e));
-                            }
-                            rc::err::AddDroneMutationError::ItemIsNotDrone(e) => {
-                                return Err(HExecError::ItemKindMismatch(e));
-                            }
-                            rc::err::AddDroneMutationError::MutationAlreadySet(_) => {
-                                panic!("no mutation should be set")
-                            }
-                        };
-                    }
+                    core_drone.mutate(mutation).unwrap();
                 }
                 HMutationOnChange::AddFull(mutation) => {
                     // Remove old mutation if we had any, ignore any errors on the way
-                    let _ = core_sol.remove_drone_mutation(item_id);
-                    if let Err(error) = core_sol.add_drone_mutation(item_id, mutation.into()) {
-                        match error {
-                            rc::err::AddDroneMutationError::ItemNotFound(e) => {
-                                return Err(HExecError::ItemNotFoundPrimary(e));
-                            }
-                            rc::err::AddDroneMutationError::ItemIsNotDrone(e) => {
-                                return Err(HExecError::ItemKindMismatch(e));
-                            }
-                            rc::err::AddDroneMutationError::MutationAlreadySet(_) => {
-                                panic!("no mutation should be set")
-                            }
-                        };
-                    }
+                    let _ = core_drone.unmutate();
+                    core_drone.mutate(mutation.into()).unwrap();
                 }
                 HMutationOnChange::ChangeAttrs(attr_mutations) => {
                     let attr_mutations = attr_mutations
                         .iter()
                         .map(|(k, v)| rc::ItemChangeAttrMutation::new(*k, v.as_ref().map(|v| v.into())))
                         .collect();
-                    if let Err(error) = core_sol.change_drone_mutation(item_id, attr_mutations) {
-                        return Err(match error {
-                            rc::err::ChangeDroneMutationError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                            rc::err::ChangeDroneMutationError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
+                    core_drone
+                        .change_mutation(attr_mutations)
+                        .map_err(|error| match error {
                             rc::err::ChangeDroneMutationError::MutationNotSet(e) => HExecError::MutationNotSet(e),
-                        });
-                    }
+                        })?;
                 }
             },
             TriStateField::None => {
-                if let Err(error) = core_sol.remove_drone_mutation(item_id) {
-                    match error {
-                        rc::err::RemoveDroneMutationError::ItemNotFound(e) => {
-                            return Err(HExecError::ItemNotFoundPrimary(e));
-                        }
-                        rc::err::RemoveDroneMutationError::ItemIsNotDrone(e) => {
-                            return Err(HExecError::ItemKindMismatch(e));
-                        }
-                        // Do nothing if mutation was not there
-                        rc::err::RemoveDroneMutationError::MutationNotSet(_) => (),
-                    };
-                };
+                // Do nothing if mutation was not there
+                let _ = core_drone.unmutate();
             }
             TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {
-            if let Err(error) = core_sol.add_drone_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
-                return Err(match error {
-                    rc::err::AddDroneProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::AddDroneProjError::ProjectorIsNotDrone(e) => HExecError::ItemKindMismatch(e),
+            core_drone
+                .add_proj(&proj_def.get_item_id(), proj_def.get_range())
+                .map_err(|error| match error {
                     rc::err::AddDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::AddDroneProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
                     rc::err::AddDroneProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
-                });
-            }
+                })?;
         }
         for proj_def in self.change_projs.iter() {
-            if let Err(error) = core_sol.change_drone_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
-                return Err(match error {
-                    rc::err::ChangeDroneProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::ChangeDroneProjError::ProjectorIsNotDrone(e) => HExecError::ItemKindMismatch(e),
+            core_drone
+                .change_proj_range(&proj_def.get_item_id(), proj_def.get_range())
+                .map_err(|error| match error {
                     rc::err::ChangeDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::ChangeDroneProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                });
-            }
+                })?;
         }
         for projectee_item_id in self.rm_projs.iter() {
-            if let Err(error) = core_sol.remove_drone_proj(item_id, projectee_item_id) {
-                return Err(match error {
-                    rc::err::RemoveDroneProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::RemoveDroneProjError::ProjectorIsNotDrone(e) => HExecError::ItemKindMismatch(e),
-                    rc::err::RemoveDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::RemoveDroneProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                });
-            }
+            core_drone.remove_proj(projectee_item_id).map_err(|error| match error {
+                rc::err::RemoveDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                rc::err::RemoveDroneProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+            })?;
         }
-        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
-        Ok(HCmdResp::NoData)
+        apply_effect_modes(&mut core_drone, &self.effect_modes);
+        Ok(core_drone.into())
     }
 }

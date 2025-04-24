@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        HCmdResp,
+        HItemIdsResp,
         shared::{HEffectModeMap, apply_effect_modes},
     },
     util::HExecError,
@@ -17,16 +17,15 @@ impl HChangeStanceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_stance = core_sol.get_stance_mut(item_id).map_err(|error| match error {
+            rc::err::GetStanceError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+            rc::err::GetStanceError::ItemIsNotStance(e) => HExecError::ItemKindMismatch(e),
+        })?;
         if let Some(state) = self.state {
-            if let Err(error) = core_sol.set_stance_state(item_id, state) {
-                return Err(match error {
-                    rc::err::SetStanceStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetStanceStateError::ItemIsNotStance(e) => HExecError::ItemKindMismatch(e),
-                });
-            }
+            core_stance.set_state(state);
         }
-        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
-        Ok(HCmdResp::NoData)
+        apply_effect_modes(&mut core_stance, &self.effect_modes);
+        Ok(core_stance.into())
     }
 }

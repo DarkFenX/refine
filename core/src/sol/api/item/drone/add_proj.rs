@@ -40,10 +40,10 @@ impl SolarSystem {
 }
 
 impl<'a> DroneMut<'a> {
-    pub fn add_proj(self, projectee_item_id: &ItemId, range: Option<AttrVal>) -> Result<Self, AddDroneProjError> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId, range: Option<AttrVal>) -> Result<(), AddDroneProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol.internal_add_drone_proj(self.key, projectee_item_key, range)?;
-        Ok(self)
+        Ok(())
     }
 }
 

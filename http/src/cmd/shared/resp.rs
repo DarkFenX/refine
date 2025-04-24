@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 #[derive(serde::Serialize)]
 #[serde(untagged)]
 pub(crate) enum HCmdResp {
@@ -11,89 +13,19 @@ impl From<()> for HCmdResp {
         HCmdResp::NoData
     }
 }
-impl From<rc::FleetInfo> for HCmdResp {
-    fn from(core_fleet: rc::FleetInfo) -> Self {
-        Self::FleetId(core_fleet.into())
+impl From<HFitIdResp> for HCmdResp {
+    fn from(resp: HFitIdResp) -> Self {
+        HCmdResp::FitId(resp)
     }
 }
-impl From<rc::FitInfo> for HCmdResp {
-    fn from(core_fit: rc::FitInfo) -> Self {
-        Self::FitId(core_fit.into())
+impl From<HFleetIdResp> for HCmdResp {
+    fn from(resp: HFleetIdResp) -> Self {
+        HCmdResp::FleetId(resp)
     }
 }
-impl From<rc::BoosterInfo> for HCmdResp {
-    fn from(core_booster: rc::BoosterInfo) -> Self {
-        Self::ItemIds(core_booster.into())
-    }
-}
-impl From<rc::CharacterInfo> for HCmdResp {
-    fn from(core_char: rc::CharacterInfo) -> Self {
-        Self::ItemIds(core_char.into())
-    }
-}
-impl From<rc::DroneInfo> for HCmdResp {
-    fn from(core_drone: rc::DroneInfo) -> Self {
-        Self::ItemIds(core_drone.into())
-    }
-}
-impl From<rc::FighterInfo> for HCmdResp {
-    fn from(core_fighter: rc::FighterInfo) -> Self {
-        Self::ItemIds(core_fighter.into())
-    }
-}
-impl From<rc::FwEffectInfo> for HCmdResp {
-    fn from(core_fw_effect: rc::FwEffectInfo) -> Self {
-        Self::ItemIds(core_fw_effect.into())
-    }
-}
-impl From<rc::ImplantInfo> for HCmdResp {
-    fn from(core_implant: rc::ImplantInfo) -> Self {
-        Self::ItemIds(core_implant.into())
-    }
-}
-impl From<rc::ModuleInfo> for HCmdResp {
-    fn from(core_module: rc::ModuleInfo) -> Self {
-        Self::ItemIds(core_module.into())
-    }
-}
-impl From<rc::ProjEffectInfo> for HCmdResp {
-    fn from(core_proj_effect: rc::ProjEffectInfo) -> Self {
-        Self::ItemIds(core_proj_effect.into())
-    }
-}
-impl From<rc::RigInfo> for HCmdResp {
-    fn from(core_rig: rc::RigInfo) -> Self {
-        Self::ItemIds(core_rig.into())
-    }
-}
-impl From<rc::ServiceInfo> for HCmdResp {
-    fn from(core_service: rc::ServiceInfo) -> Self {
-        Self::ItemIds(core_service.into())
-    }
-}
-impl From<rc::ShipInfo> for HCmdResp {
-    fn from(core_ship: rc::ShipInfo) -> Self {
-        Self::ItemIds(core_ship.into())
-    }
-}
-impl From<rc::SkillInfo> for HCmdResp {
-    fn from(core_skill: rc::SkillInfo) -> Self {
-        Self::ItemIds(core_skill.into())
-    }
-}
-impl From<rc::StanceInfo> for HCmdResp {
-    fn from(core_stance: rc::StanceInfo) -> Self {
-        Self::ItemIds(core_stance.into())
-    }
-}
-impl From<rc::SubsystemInfo> for HCmdResp {
-    fn from(core_subsystem: rc::SubsystemInfo) -> Self {
-        Self::ItemIds(core_subsystem.into())
-    }
-}
-impl From<rc::SwEffectInfo> for HCmdResp {
-    fn from(core_sw_effect: rc::SwEffectInfo) -> Self {
-        Self::ItemIds(core_sw_effect.into())
+impl From<HItemIdsResp> for HCmdResp {
+    fn from(resp: HItemIdsResp) -> Self {
+        HCmdResp::ItemIds(resp)
     }
 }
 
@@ -101,11 +33,13 @@ impl From<rc::SwEffectInfo> for HCmdResp {
 #[derive(serde::Serialize)]
 pub(crate) struct HFleetIdResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::FleetId,
+    pub(crate) id: rc::FleetId,
 }
-impl From<rc::FleetInfo> for HFleetIdResp {
-    fn from(core_fleet: rc::FleetInfo) -> Self {
-        Self { id: core_fleet.id }
+impl From<rc::FleetMut<'_>> for HFleetIdResp {
+    fn from(core_fleet: rc::FleetMut) -> Self {
+        Self {
+            id: core_fleet.get_fleet_id(),
+        }
     }
 }
 
@@ -113,11 +47,13 @@ impl From<rc::FleetInfo> for HFleetIdResp {
 #[derive(serde::Serialize)]
 pub(crate) struct HFitIdResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::FitId,
+    pub(crate) id: rc::FitId,
 }
-impl From<rc::FitInfo> for HFitIdResp {
-    fn from(core_fit: rc::FitInfo) -> Self {
-        Self { id: core_fit.id }
+impl From<rc::FitMut<'_>> for HFitIdResp {
+    fn from(core_fit: rc::FitMut) -> Self {
+        Self {
+            id: core_fit.get_fit_id(),
+        }
     }
 }
 
@@ -125,91 +61,146 @@ impl From<rc::FitInfo> for HFitIdResp {
 #[derive(serde::Serialize)]
 pub(crate) struct HItemIdsResp {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::ItemId,
+    pub(crate) id: rc::ItemId,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    charge_id: Option<rc::ItemId>,
+    pub(crate) charge: Option<rc::ItemId>,
 }
-impl HItemIdsResp {
-    fn new(item_id: rc::ItemId, charge_info: Option<rc::ChargeInfo>) -> Self {
+impl From<rc::AutochargeMut<'_>> for HItemIdsResp {
+    fn from(core_autocharge: rc::AutochargeMut) -> Self {
         Self {
-            id: item_id,
-            charge_id: charge_info.map(|v| v.id),
+            id: core_autocharge.get_item_id(),
+            charge: None,
         }
     }
 }
-impl From<rc::BoosterInfo> for HItemIdsResp {
-    fn from(core_booster: rc::BoosterInfo) -> Self {
-        Self::new(core_booster.id, None)
+impl From<rc::BoosterMut<'_>> for HItemIdsResp {
+    fn from(core_booster: rc::BoosterMut) -> Self {
+        Self {
+            id: core_booster.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::CharacterInfo> for HItemIdsResp {
-    fn from(core_char: rc::CharacterInfo) -> Self {
-        Self::new(core_char.id, None)
+impl From<rc::CharacterMut<'_>> for HItemIdsResp {
+    fn from(core_character: rc::CharacterMut) -> Self {
+        Self {
+            id: core_character.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::DroneInfo> for HItemIdsResp {
-    fn from(core_drone: rc::DroneInfo) -> Self {
-        Self::new(core_drone.id, None)
+impl From<rc::ChargeMut<'_>> for HItemIdsResp {
+    fn from(core_charge: rc::ChargeMut) -> Self {
+        Self {
+            id: core_charge.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::FighterInfo> for HItemIdsResp {
-    fn from(core_fighter: rc::FighterInfo) -> Self {
-        Self::new(core_fighter.id, None)
+impl From<rc::DroneMut<'_>> for HItemIdsResp {
+    fn from(core_drone: rc::DroneMut) -> Self {
+        Self {
+            id: core_drone.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::FwEffectInfo> for HItemIdsResp {
-    fn from(core_fw_effect: rc::FwEffectInfo) -> Self {
-        Self::new(core_fw_effect.id, None)
+impl From<rc::FighterMut<'_>> for HItemIdsResp {
+    fn from(core_fighter: rc::FighterMut) -> Self {
+        Self {
+            id: core_fighter.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::ImplantInfo> for HItemIdsResp {
-    fn from(core_implant: rc::ImplantInfo) -> Self {
-        Self::new(core_implant.id, None)
+impl From<rc::FwEffectMut<'_>> for HItemIdsResp {
+    fn from(core_fw_effect: rc::FwEffectMut) -> Self {
+        Self {
+            id: core_fw_effect.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::ModuleInfo> for HItemIdsResp {
-    fn from(core_module: rc::ModuleInfo) -> Self {
-        Self::new(core_module.id, core_module.charge)
+impl From<rc::ImplantMut<'_>> for HItemIdsResp {
+    fn from(core_implant: rc::ImplantMut) -> Self {
+        Self {
+            id: core_implant.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::ProjEffectInfo> for HItemIdsResp {
-    fn from(core_proj_effect: rc::ProjEffectInfo) -> Self {
-        Self::new(core_proj_effect.id, None)
+impl From<rc::ModuleMut<'_>> for HItemIdsResp {
+    fn from(mut core_module: rc::ModuleMut) -> Self {
+        Self {
+            id: core_module.get_item_id(),
+            charge: core_module
+                .get_charge_mut()
+                .map(|core_charge| core_charge.get_item_id()),
+        }
     }
 }
-impl From<rc::RigInfo> for HItemIdsResp {
-    fn from(core_rig: rc::RigInfo) -> Self {
-        Self::new(core_rig.id, None)
+impl From<rc::ProjEffectMut<'_>> for HItemIdsResp {
+    fn from(core_proj_effect: rc::ProjEffectMut) -> Self {
+        Self {
+            id: core_proj_effect.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::ServiceInfo> for HItemIdsResp {
-    fn from(core_service: rc::ServiceInfo) -> Self {
-        Self::new(core_service.id, None)
+impl From<rc::RigMut<'_>> for HItemIdsResp {
+    fn from(core_rig: rc::RigMut) -> Self {
+        Self {
+            id: core_rig.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::ShipInfo> for HItemIdsResp {
-    fn from(core_ship: rc::ShipInfo) -> Self {
-        Self::new(core_ship.id, None)
+impl From<rc::ServiceMut<'_>> for HItemIdsResp {
+    fn from(core_service: rc::ServiceMut) -> Self {
+        Self {
+            id: core_service.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::SkillInfo> for HItemIdsResp {
-    fn from(core_skill: rc::SkillInfo) -> Self {
-        Self::new(core_skill.id, None)
+impl From<rc::ShipMut<'_>> for HItemIdsResp {
+    fn from(core_ship: rc::ShipMut) -> Self {
+        Self {
+            id: core_ship.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::StanceInfo> for HItemIdsResp {
-    fn from(core_stance: rc::StanceInfo) -> Self {
-        Self::new(core_stance.id, None)
+impl From<rc::SkillMut<'_>> for HItemIdsResp {
+    fn from(core_skill: rc::SkillMut) -> Self {
+        Self {
+            id: core_skill.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::SubsystemInfo> for HItemIdsResp {
-    fn from(core_subsystem: rc::SubsystemInfo) -> Self {
-        Self::new(core_subsystem.id, None)
+impl From<rc::StanceMut<'_>> for HItemIdsResp {
+    fn from(core_stance: rc::StanceMut) -> Self {
+        Self {
+            id: core_stance.get_item_id(),
+            charge: None,
+        }
     }
 }
-impl From<rc::SwEffectInfo> for HItemIdsResp {
-    fn from(core_sw_effect: rc::SwEffectInfo) -> Self {
-        Self::new(core_sw_effect.id, None)
+impl From<rc::SubsystemMut<'_>> for HItemIdsResp {
+    fn from(core_subsystem: rc::SubsystemMut) -> Self {
+        Self {
+            id: core_subsystem.get_item_id(),
+            charge: None,
+        }
+    }
+}
+impl From<rc::SwEffectMut<'_>> for HItemIdsResp {
+    fn from(core_sw_effect: rc::SwEffectMut) -> Self {
+        Self {
+            id: core_sw_effect.get_item_id(),
+            charge: None,
+        }
     }
 }

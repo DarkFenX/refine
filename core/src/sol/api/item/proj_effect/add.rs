@@ -5,13 +5,13 @@ use crate::sol::{
 };
 
 impl SolarSystem {
-    pub fn add_proj_effect(&mut self, type_id: ItemTypeId, state: bool) -> ProjEffectMut {
-        let item_key = self.internal_add_proj_effect(type_id, state);
+    pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffectMut {
+        let item_key = self.internal_add_proj_effect(type_id);
         ProjEffectMut::new(self, item_key)
     }
-    pub(in crate::sol) fn internal_add_proj_effect(&mut self, type_id: ItemTypeId, state: bool) -> ItemKey {
+    pub(in crate::sol) fn internal_add_proj_effect(&mut self, type_id: ItemTypeId) -> ItemKey {
         let item_id = self.uad.items.alloc_id();
-        let uad_proj_effect = UadProjEffect::new(&self.uad.src, item_id, type_id, state);
+        let uad_proj_effect = UadProjEffect::new(&self.uad.src, item_id, type_id, true);
         let uad_item = UadItem::ProjEffect(uad_proj_effect);
         let item_key = self.uad.items.add(uad_item);
         self.uad.proj_effects.insert(item_key);

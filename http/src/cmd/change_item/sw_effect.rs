@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        HCmdResp,
+        HItemIdsResp,
         shared::{HEffectModeMap, apply_effect_modes},
     },
     util::HExecError,
@@ -17,16 +17,15 @@ impl HChangeSwEffectCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_sw_effect = core_sol.get_sw_effect_mut(item_id).map_err(|error| match error {
+            rc::err::GetSwEffectError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+            rc::err::GetSwEffectError::ItemIsNotSwEffect(e) => HExecError::ItemKindMismatch(e),
+        })?;
         if let Some(state) = self.state {
-            if let Err(error) = core_sol.set_sw_effect_state(item_id, state) {
-                return Err(match error {
-                    rc::err::SetSwEffectStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetSwEffectStateError::ItemIsNotSwEffect(e) => HExecError::ItemKindMismatch(e),
-                });
-            }
+            core_sw_effect.set_state(state);
         }
-        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
-        Ok(HCmdResp::NoData)
+        apply_effect_modes(&mut core_sw_effect, &self.effect_modes);
+        Ok(core_sw_effect.into())
     }
 }

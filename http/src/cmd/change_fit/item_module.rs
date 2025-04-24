@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
-        HCmdResp, change_item,
-        shared::{HAddMode, HMutationOnAdd},
+        HItemIdsResp, change_item,
+        shared::{HAddMode, HMutationOnAdd, get_primary_fit},
     },
     shared::{HModRack, HModuleState},
     util::HExecError,
@@ -21,24 +21,21 @@ impl HAddModuleCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<rc::ModuleInfo, HExecError> {
-        let core_module = match core_sol.add_module(
-            fit_id,
+    ) -> Result<HItemIdsResp, HExecError> {
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let mut core_module = core_fit.add_module(
             (&self.rack).into(),
             (&self.add_mode).into(),
             self.type_id,
             (&self.state).into(),
-            self.mutation.as_ref().map(|v| v.into()),
-            self.charge_type_id,
-        ) {
-            Ok(core_module) => core_module,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddModuleError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
-        };
-        Ok(core_module)
+        );
+        if let Some(mutation) = self.mutation.as_ref() {
+            core_module.mutate(mutation.into()).unwrap();
+        }
+        if let Some(charge_type_id) = self.charge_type_id {
+            core_module.set_charge(charge_type_id);
+        }
+        Ok(core_module.into())
     }
 }
 
@@ -51,7 +48,7 @@ pub(crate) struct HChangeModuleCmd {
     item_cmd: change_item::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

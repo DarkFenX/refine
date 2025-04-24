@@ -30,9 +30,9 @@ impl SolarSystem {
 }
 
 impl<'a> ModuleMut<'a> {
-    pub fn unmutate(self) -> Result<Self, RemoveModuleMutationError> {
+    pub fn unmutate(&mut self) -> Result<(), RemoveModuleMutationError> {
         self.sol.internal_remove_module_mutation(self.key)?;
-        Ok(self)
+        Ok(())
     }
 }
 

@@ -12,11 +12,11 @@ pub(crate) enum HExecError {
     #[error("fit {0} has no stance set")]
     FitStanceNotFound(rc::FitId),
     #[error("{0}")]
-    FitIsNotInFleet(#[source] rc::err::basic::FitFleetAssignedError),
-    #[error("fit {1} is not in fleet {0}")]
-    FitIsNotInThisFleet(rc::FleetId, rc::FitId),
+    FitNotInFleet(#[source] rc::err::basic::FitFleetAssignedError),
     #[error("{0}")]
-    FitItemKindNotFound(#[source] rc::err::basic::FitHasItemKindError),
+    FitNotInThisFleet(#[source] rc::err::basic::FitInThisFleetError),
+    #[error("{0}")]
+    FitAlreadyInThisFleet(#[source] rc::err::basic::FitNotInThisFleetError),
     // Fleets
     #[error("{0}")]
     FleetNotFoundPrimary(#[source] rc::err::basic::FleetFoundError),
@@ -33,8 +33,8 @@ pub(crate) enum HExecError {
     SkillIdCollision(#[source] rc::err::basic::SkillEveTypeError),
     #[error("{0}")]
     MutationNotSet(#[source] rc::err::basic::ItemMutatedError),
-    #[error("{0}")]
-    ChargeNotSet(#[source] rc::err::basic::ChargeFoundError),
+    #[error("item {0} does not have charge set")]
+    ChargeNotSet(rc::ItemId),
     #[error("{0}")]
     UnremovableAutocharge(#[source] rc::err::basic::ItemKindRemoveError),
     #[error("{0}")]
@@ -64,9 +64,9 @@ impl HExecError {
             HExecError::FitCharacterNotFound(_) => "EXC-004",
             HExecError::FitShipNotFound(_) => "EXC-005",
             HExecError::FitStanceNotFound(_) => "EXC-006",
-            HExecError::FitIsNotInFleet(_) => "EXC-007",
-            HExecError::FitIsNotInThisFleet(_, _) => "EXC-008",
-            HExecError::FitItemKindNotFound(_) => "EXC-009",
+            HExecError::FitNotInFleet(_) => "EXC-007",
+            HExecError::FitNotInThisFleet(_) => "EXC-008",
+            HExecError::FitAlreadyInThisFleet(_) => "EXC-008.1",
             // Fleets
             HExecError::FleetNotFoundPrimary(_) => "EXC-010",
             HExecError::FleetNotFoundSecondary(_) => "EXC-011",

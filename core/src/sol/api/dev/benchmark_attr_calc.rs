@@ -1,14 +1,13 @@
 use std::hint::black_box;
 
-use crate::sol::{AddMode, FitId, ItemTypeId, ModRack, SolarSystem, uad::item::ModuleState};
+use crate::sol::{AddMode, ItemTypeId, ModRack, api::FitMut, uad::item::ModuleState};
 
-impl SolarSystem {
-    pub fn benchmark_attr_calc(&mut self, fit_id: &FitId, type_id: ItemTypeId, iterations: usize) {
-        let fit_key = self.uad.fits.key_by_id(fit_id).unwrap();
-        let ship_key = self.uad.fits.get(fit_key).ship.unwrap();
+impl<'a> FitMut<'a> {
+    pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {
+        let ship_key = self.sol.uad.fits.get(self.key).ship.unwrap();
         for _ in 0..iterations {
-            let item_key = self.internal_add_module(
-                fit_key,
+            let item_key = self.sol.internal_add_module(
+                self.key,
                 ModRack::Low,
                 AddMode::Equip,
                 type_id,
@@ -17,17 +16,19 @@ impl SolarSystem {
                 None,
             );
             black_box(
-                self.svc
+                self.sol
+                    .svc
                     .calc
-                    .iter_item_attr_vals(&self.uad, ship_key)
+                    .iter_item_attr_vals(&self.sol.uad, ship_key)
                     .unwrap()
                     .for_each(drop),
             );
-            self.internal_remove_module(item_key, crate::RmMode::Free);
+            self.sol.internal_remove_module(item_key, crate::RmMode::Free);
             black_box(
-                self.svc
+                self.sol
+                    .svc
                     .calc
-                    .iter_item_attr_vals(&self.uad, ship_key)
+                    .iter_item_attr_vals(&self.sol.uad, ship_key)
                     .unwrap()
                     .for_each(drop),
             );

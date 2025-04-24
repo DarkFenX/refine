@@ -7,11 +7,11 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_fit(&self, fit_id: &FitId) -> Result<Fit, GetFitInfoError> {
+    pub fn get_fit(&self, fit_id: &FitId) -> Result<Fit, GetFitError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         Ok(self.internal_get_fit(fit_key))
     }
-    pub fn get_fit_mut(&mut self, fit_id: &FitId) -> Result<FitMut, GetFitInfoError> {
+    pub fn get_fit_mut(&mut self, fit_id: &FitId) -> Result<FitMut, GetFitError> {
         let fit_key = self.uad.fits.key_by_id_err(fit_id)?;
         Ok(self.internal_get_fit_mut(fit_key))
     }
@@ -24,7 +24,7 @@ impl SolarSystem {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetFitInfoError {
+pub enum GetFitError {
     #[error("{0}")]
     FitNotFound(#[from] FitFoundError),
 }

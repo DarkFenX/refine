@@ -24,9 +24,9 @@ impl SolarSystem {
 }
 
 impl<'a> ModuleMut<'a> {
-    pub fn mutate(self, mutation: ItemAddMutation) -> Result<Self, AddModuleMutationError> {
+    pub fn mutate(&mut self, mutation: ItemAddMutation) -> Result<(), AddModuleMutationError> {
         self.sol.internal_add_module_mutation(self.key, mutation)?;
-        Ok(self)
+        Ok(())
     }
 }
 

@@ -38,4 +38,4 @@ impl TryFrom<rc::SideEffectStr> for HSideEffectStr {
     }
 }
 
-struct HSideEffectStrConvError {}
+pub(crate) struct HSideEffectStrConvError {}

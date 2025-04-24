@@ -25,10 +25,10 @@ impl SolarSystem {
 }
 
 impl<'a> SkillMut<'a> {
-    pub fn set_level(self, level: SkillLevel) -> Result<Self, SetSkillLevelError> {
+    pub fn set_level(&mut self, level: SkillLevel) -> Result<(), SetSkillLevelError> {
         check_skill_level(level)?;
         self.sol.internal_set_skill_level(self.key, level);
-        Ok(self)
+        Ok(())
     }
 }
 

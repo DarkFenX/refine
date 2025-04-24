@@ -20,11 +20,11 @@ impl SolarSystem {
 
 impl<'a> DroneMut<'a> {
     pub fn change_mutation(
-        self,
+        &mut self,
         attr_mutations: Vec<ItemChangeAttrMutation>,
-    ) -> Result<Self, ChangeDroneMutationError> {
+    ) -> Result<(), ChangeDroneMutationError> {
         self.sol.internal_change_drone_mutation(self.key, attr_mutations)?;
-        Ok(self)
+        Ok(())
     }
 }
 

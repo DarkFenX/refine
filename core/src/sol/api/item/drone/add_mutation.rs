@@ -24,9 +24,9 @@ impl SolarSystem {
 }
 
 impl<'a> DroneMut<'a> {
-    pub fn mutate(self, mutation: ItemAddMutation) -> Result<Self, AddDroneMutationError> {
+    pub fn mutate(&mut self, mutation: ItemAddMutation) -> Result<(), AddDroneMutationError> {
         self.sol.internal_add_drone_mutation(self.key, mutation)?;
-        Ok(self)
+        Ok(())
     }
 }
 

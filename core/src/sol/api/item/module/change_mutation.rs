@@ -20,11 +20,11 @@ impl SolarSystem {
 
 impl<'a> ModuleMut<'a> {
     pub fn change_mutation(
-        self,
+        &mut self,
         attr_mutations: Vec<ItemChangeAttrMutation>,
-    ) -> Result<Self, ChangeModuleMutationError> {
+    ) -> Result<(), ChangeModuleMutationError> {
         self.sol.internal_change_module_mutation(self.key, attr_mutations)?;
-        Ok(self)
+        Ok(())
     }
 }
 

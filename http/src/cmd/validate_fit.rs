@@ -1,5 +1,5 @@
 use crate::{
-    cmd::shared::HValOptions,
+    cmd::shared::{HValOptions, get_primary_fit},
     info::{HValidInfo, HValidInfoMode},
     util::HExecError,
 };
@@ -17,14 +17,10 @@ impl HValidateFitCmd {
         valid_mode: HValidInfoMode,
     ) -> Result<HValidInfo, HExecError> {
         let core_options = self.validation_options.to_core_val_options(core_sol);
-        match valid_mode {
-            HValidInfoMode::Simple => core_sol.validate_fit_fast(fit_id, &core_options).map(|v| v.into()),
-            HValidInfoMode::Detailed => core_sol
-                .validate_fit_verbose(fit_id, &core_options)
-                .map(|v| (&v).into()),
-        }
-        .map_err(|core_error| match core_error {
-            rc::err::ValidateFitError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+        let mut primary_fit = get_primary_fit(core_sol, fit_id)?;
+        Ok(match valid_mode {
+            HValidInfoMode::Simple => primary_fit.validate_fast(&core_options).into(),
+            HValidInfoMode::Detailed => (&primary_fit.validate_verbose(&core_options)).into(),
         })
     }
 }

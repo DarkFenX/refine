@@ -28,10 +28,10 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn set_fleet(self, fleet_id: &FleetId) -> Result<Self, SetFitFleetError> {
+    pub fn set_fleet(&mut self, fleet_id: &FleetId) -> Result<(), SetFitFleetError> {
         let fleet_key = self.sol.uad.fleets.key_by_id_err(fleet_id)?;
         self.sol.internal_set_fit_fleet(self.key, fleet_key);
-        Ok(self)
+        Ok(())
     }
 }
 

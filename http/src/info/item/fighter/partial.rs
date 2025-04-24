@@ -27,14 +27,6 @@ pub(crate) struct HFighterInfoPartial {
 }
 impl HFighterInfoPartial {
     pub(super) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
-        let mut autocharges = HashMap::new();
-        let mut autocharge_iter = core_fighter.iter_autocharges_mut();
-        while let Some(mut autocharge) = autocharge_iter.next() {
-            autocharges.insert(
-                autocharge.get_cont_effect_id().into(),
-                HAutochargeInfo::mk_info(&mut autocharge, item_mode),
-            );
-        }
         Self {
             id: core_fighter.get_item_id(),
             kind: "fighter",
@@ -42,7 +34,15 @@ impl HFighterInfoPartial {
             fit_id: core_fighter.get_fit().get_fit_id(),
             state: (&core_fighter.get_state()).into(),
             count: core_fighter.get_count().as_ref().map(|v| (v.current, v.max)),
-            autocharges,
+            autocharges: core_fighter
+                .iter_autocharges_mut()
+                .map_into_iter(|mut autocharge| {
+                    (
+                        autocharge.get_cont_effect_id().into(),
+                        HAutochargeInfo::mk_info(&mut autocharge, item_mode),
+                    )
+                })
+                .collect(),
             projs: core_fighter.get_projs().iter().map(|v| (v.item_id, v.range)).collect(),
         }
     }

@@ -36,14 +36,14 @@ impl SolarSystem {
 
 impl<'a> DroneMut<'a> {
     pub fn change_proj_range(
-        self,
+        &mut self,
         projectee_item_id: &ItemId,
         range: Option<AttrVal>,
-    ) -> Result<Self, ChangeDroneProjError> {
+    ) -> Result<(), ChangeDroneProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol
             .internal_change_drone_proj(self.key, projectee_item_key, range)?;
-        Ok(self)
+        Ok(())
     }
 }
 

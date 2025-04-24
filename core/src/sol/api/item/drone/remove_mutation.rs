@@ -28,9 +28,9 @@ impl SolarSystem {
 }
 
 impl<'a> DroneMut<'a> {
-    pub fn unmutate(self) -> Result<Self, RemoveDroneMutationError> {
+    pub fn unmutate(&mut self) -> Result<(), RemoveDroneMutationError> {
         self.sol.internal_remove_drone_mutation(self.key)?;
-        Ok(self)
+        Ok(())
     }
 }
 

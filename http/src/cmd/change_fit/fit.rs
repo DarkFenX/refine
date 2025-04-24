@@ -1,5 +1,5 @@
 use crate::{
-    cmd::HCmdResp,
+    cmd::{HFitIdResp, shared::get_primary_fit},
     shared::HDpsProfile,
     util::{HExecError, TriStateField},
 };
@@ -19,55 +19,34 @@ impl HChangeFitCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HCmdResp, HExecError> {
+    ) -> Result<HFitIdResp, HExecError> {
+        let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         match self.fleet_id {
             TriStateField::Value(fleet_id) => {
-                if let Err(error) = core_sol.set_fit_fleet(fit_id, &fleet_id) {
-                    return Err(match error {
-                        rc::err::SetFitFleetError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                        rc::err::SetFitFleetError::FleetNotFound(e) => HExecError::FleetNotFoundSecondary(e),
-                    });
-                }
+                core_fit.set_fleet(&fleet_id).map_err(|error| match error {
+                    rc::err::SetFitFleetError::FleetNotFound(e) => HExecError::FleetNotFoundSecondary(e),
+                })?;
             }
             TriStateField::None => {
-                if let Err(error) = core_sol.unset_fit_fleet(fit_id) {
-                    return Err(match error {
-                        rc::err::UnsetFitFleetError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                        rc::err::UnsetFitFleetError::FitHasNoFleet(e) => HExecError::FitIsNotInFleet(e),
-                    });
-                }
+                core_fit.unset_fleet().map_err(|error| match error {
+                    rc::err::UnsetFitFleetError::FitHasNoFleet(e) => HExecError::FitNotInFleet(e),
+                })?;
             }
             TriStateField::Absent => (),
         }
         if let Some(sec_status) = self.sec_status {
-            if let Err(error) = core_sol.set_fit_sec_status(fit_id, sec_status) {
-                return Err(match error {
-                    rc::err::SetFitSecStatusError::SecStatusError(e) => HExecError::InvalidSecStatus(e),
-                    rc::err::SetFitSecStatusError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                });
-            }
+            core_fit.set_sec_status(sec_status).map_err(|error| match error {
+                rc::err::SetFitSecStatusError::SecStatusError(e) => HExecError::InvalidSecStatus(e),
+            })?;
         }
         match &self.rah_incoming_dps {
-            TriStateField::Value(rah_incoming_dps) => {
-                if let Err(error) = core_sol.set_fit_rah_incoming_dps(fit_id, rah_incoming_dps.try_into()?) {
-                    return Err(match error {
-                        rc::err::SetFitRahIncomingDpsError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    });
-                }
-            }
+            TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps.try_into()?),
             TriStateField::None => {
-                if let Err(error) = core_sol.remove_fit_rah_incoming_dps(fit_id) {
-                    match error {
-                        rc::err::RemoveFitRahIncomingDpsError::FitNotFound(e) => {
-                            return Err(HExecError::FitNotFoundPrimary(e));
-                        }
-                        // Do nothing if profile was not set
-                        rc::err::RemoveFitRahIncomingDpsError::DpsProfileNotSet(_) => (),
-                    };
-                }
+                // Do nothing if profile was not set
+                let _ = core_fit.remove_rah_incoming_dps();
             }
             TriStateField::Absent => (),
         }
-        Ok(().into())
+        Ok(core_fit.into())
     }
 }

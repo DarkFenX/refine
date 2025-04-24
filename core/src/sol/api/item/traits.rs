@@ -75,7 +75,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .into()),
         }
     }
-    fn set_effect_mode(mut self, effect_id: &EffectId, mode: EffectMode) -> Self
+    fn set_effect_mode(&mut self, effect_id: &EffectId, mode: EffectMode)
     where
         Self: Sized,
     {
@@ -89,9 +89,8 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let uad_item = sol.uad.items.get(item_key);
         sol.svc
             .process_effects(&sol.uad, item_key, uad_item, uad_item.get_a_state());
-        self
     }
-    fn set_effect_modes(mut self, modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self
+    fn set_effect_modes(&mut self, modes: impl Iterator<Item = (EffectId, EffectMode)>)
     where
         Self: Sized,
     {
@@ -104,7 +103,6 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let uad_item = sol.uad.items.get(item_key);
         sol.svc
             .process_effects(&sol.uad, item_key, uad_item, uad_item.get_a_state());
-        self
     }
 }
 
