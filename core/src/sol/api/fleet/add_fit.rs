@@ -14,7 +14,7 @@ impl<'a> FleetMut<'a> {
             }
             .into());
         }
-        self.sol.internal_set_fit_fleet(self.key, fit_key);
+        self.sol.internal_set_fit_fleet(fit_key, self.key);
         Ok(())
     }
 }

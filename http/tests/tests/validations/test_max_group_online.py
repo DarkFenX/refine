@@ -27,8 +27,8 @@ def test_same_value_service(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_service1 = api_fit.add_service(type_id=eve_service_id)
-    api_service2 = api_fit.add_service(type_id=eve_service_id)
+    api_service1 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
+    api_service2 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
@@ -314,8 +314,8 @@ def test_criterion_service_state(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_service1 = api_fit.add_service(type_id=eve_service_id)
-    api_service2 = api_fit.add_service(type_id=eve_service_id)
+    api_service1 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
+    api_service2 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
