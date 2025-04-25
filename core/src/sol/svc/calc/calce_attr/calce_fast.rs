@@ -56,11 +56,9 @@ impl Calc {
             });
         }
         // If it is not cached, calculate and cache it
-        let (mut cval, cache) = self.calc_item_attr_val(uad, item_key, a_attr_id);
+        let mut cval = self.calc_item_attr_val(uad, item_key, a_attr_id);
         let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
-        if cache {
-            item_attr_data.values.insert(*a_attr_id, cval);
-        }
+        item_attr_data.values.insert(*a_attr_id, cval);
         if let Some(postprocs) = item_attr_data.postprocs.get(a_attr_id) {
             let pp_fn = postprocs.fast;
             cval = pp_fn(self, uad, item_key, cval);
@@ -82,14 +80,12 @@ impl Calc {
         if let Some(cval) = item_attr_data.values.get(a_attr_id) {
             return Ok(*cval);
         };
-        let (cval, cache) = self.calc_item_attr_val(uad, item_key, a_attr_id);
-        if cache {
-            self.attrs
-                .get_item_attr_data_mut(&item_key)
-                .unwrap()
-                .values
-                .insert(*a_attr_id, cval);
-        }
+        let cval = self.calc_item_attr_val(uad, item_key, a_attr_id);
+        self.attrs
+            .get_item_attr_data_mut(&item_key)
+            .unwrap()
+            .values
+            .insert(*a_attr_id, cval);
         Ok(cval)
     }
     pub(in crate::sol) fn iter_item_attr_vals(
@@ -167,15 +163,11 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, uad: &Uad, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> (CalcAttrVal, bool) {
+    fn calc_item_attr_val(&mut self, uad: &Uad, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
         let item = uad.items.get(item_key);
-        let (a_attr, cache) = match uad.src.get_a_attr(a_attr_id) {
-            Some(a_attr) => (a_attr.as_ref(), true),
-            // Do not cache result when attribute data is not available. This case should be rare /
-            // nigh impossible to see with actual EVE data, since it should have all the referenced
-            // attributes defined. The reason not to save is not to "leak" memory when someone
-            // decides to fetch random attributes which do not exist
-            None => (&get_a_attr(*a_attr_id), false),
+        let a_attr = match uad.src.get_a_attr(a_attr_id) {
+            Some(a_attr) => a_attr,
+            None => &get_a_attr(*a_attr_id),
         };
         // Get base value
         let base_val = match a_attr_id {
@@ -235,13 +227,10 @@ impl Calc {
         }
         // Post-dogma calculations
         let extra_val = accumulator.apply_extra_mods(dogma_val, a_attr.hig);
-        (
-            CalcAttrVal {
-                base: base_val,
-                dogma: dogma_val,
-                extra: extra_val,
-            },
-            cache,
-        )
+        CalcAttrVal {
+            base: base_val,
+            dogma: dogma_val,
+            extra: extra_val,
+        }
     }
 }
