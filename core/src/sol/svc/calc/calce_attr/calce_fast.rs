@@ -43,7 +43,7 @@ impl Calc {
         let item_attr_data = match self.attrs.get_item_attr_data(&item_key) {
             Some(item_attr_data) => item_attr_data,
             None => {
-                return Err(KeyedItemLoadedError { item_key }.into());
+                return Err(KeyedItemLoadedError { item_key });
             }
         };
         if let Some(cval) = item_attr_data.values.get(a_attr_id) {
@@ -74,7 +74,7 @@ impl Calc {
         let item_attr_data = match self.attrs.get_item_attr_data(&item_key) {
             Some(item_attr_data) => item_attr_data,
             None => {
-                return Err(KeyedItemLoadedError { item_key }.into());
+                return Err(KeyedItemLoadedError { item_key });
             }
         };
         if let Some(cval) = item_attr_data.values.get(a_attr_id) {

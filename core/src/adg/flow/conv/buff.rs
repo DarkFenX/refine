@@ -10,7 +10,7 @@ pub(in crate::adg::flow::conv) fn conv_buffs(e_data: &EData) -> RMap<ad::ABuffId
         let op = match conv_buff_op(&e_buff.operation) {
             Ok(op) => op,
             Err(e) => {
-                let msg = format!("{}: {}", e_buff, e);
+                let msg = format!("{e_buff}: {e}");
                 tracing::warn!("{msg}");
                 continue;
             }
@@ -18,7 +18,7 @@ pub(in crate::adg::flow::conv) fn conv_buffs(e_data: &EData) -> RMap<ad::ABuffId
         let aggr_mode = match conv_buff_aggr_mode(&e_buff.aggregate_mode) {
             Ok(am) => am,
             Err(e) => {
-                let msg = format!("{}: {}", e_buff, e);
+                let msg = format!("{e_buff}: {e}");
                 tracing::warn!("{msg}");
                 continue;
             }

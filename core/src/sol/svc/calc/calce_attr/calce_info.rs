@@ -200,7 +200,7 @@ impl Calc {
         // Post-dogma calculations
         let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info, a_attr.hig);
         // Custom post-processing functions - since infos are not cached, it's fine to have it here
-        let attr_info = match self
+        match self
             .attrs
             .get_item_attr_data(&item_key)
             .unwrap()
@@ -212,7 +212,6 @@ impl Calc {
                 pp_fn(self, uad, item_key, extra_attr_info)
             }
             None => extra_attr_info,
-        };
-        attr_info
+        }
     }
 }

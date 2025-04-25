@@ -6,7 +6,7 @@ use crate::cmd::shared::{HSolCloner, HValOptions};
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HBenchmarkCmd {
     AttrCalc(HBenchmarkAttrCalcCmd),
-    TryFitItems(HBenchmarkTryFitItemsCmd),
+    TryFitItems(Box<HBenchmarkTryFitItemsCmd>),
 }
 
 #[serde_with::serde_as]

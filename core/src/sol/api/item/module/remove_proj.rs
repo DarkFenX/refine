@@ -15,8 +15,7 @@ impl SolarSystem {
             return Err(ProjFoundError {
                 projector_item_id: uad_module.get_item_id(),
                 projectee_item_id: self.uad.items.id_by_key(projectee_item_key),
-            }
-            .into());
+            });
         };
         let charge_key = uad_module.get_charge_item_key();
         if let Some(charge_key) = charge_key {

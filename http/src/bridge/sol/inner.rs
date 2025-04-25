@@ -580,7 +580,7 @@ impl HSolarSystemInner {
     pub(crate) async fn dev_benchmark_try_fit_items(
         &mut self,
         tpool: &HThreadPool,
-        command: HBenchmarkTryFitItemsCmd,
+        command: Box<HBenchmarkTryFitItemsCmd>,
     ) -> Result<(), HBrError> {
         let mut core_sol = self.take_sol()?;
         let sync_span1 = tracing::trace_span!("sync");

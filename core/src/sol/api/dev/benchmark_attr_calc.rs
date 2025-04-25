@@ -15,6 +15,7 @@ impl<'a> FitMut<'a> {
                 None,
                 None,
             );
+            #[allow(clippy::unit_arg)]
             black_box(
                 self.sol
                     .svc
@@ -24,6 +25,7 @@ impl<'a> FitMut<'a> {
                     .for_each(drop),
             );
             self.sol.internal_remove_module(item_key, crate::RmMode::Free);
+            #[allow(clippy::unit_arg)]
             black_box(
                 self.sol
                     .svc

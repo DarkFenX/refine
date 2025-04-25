@@ -22,12 +22,12 @@ pub enum EffectId {
 impl std::fmt::Display for EffectId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Dogma(id) => write!(f, "d{}", id),
-            Self::ScSystemEmitter(id) => write!(f, "scse{}", id),
-            Self::ScProxyEffect(id) => write!(f, "scpe{}", id),
-            Self::ScProxyTrap(id) => write!(f, "scpt{}", id),
-            Self::ScShipLink(id) => write!(f, "scsl{}", id),
-            Self::Custom(id) => write!(f, "c{}", id),
+            Self::Dogma(id) => write!(f, "d{id}"),
+            Self::ScSystemEmitter(id) => write!(f, "scse{id}"),
+            Self::ScProxyEffect(id) => write!(f, "scpe{id}"),
+            Self::ScProxyTrap(id) => write!(f, "scpt{id}"),
+            Self::ScShipLink(id) => write!(f, "scsl{id}"),
+            Self::Custom(id) => write!(f, "c{id}"),
         }
     }
 }

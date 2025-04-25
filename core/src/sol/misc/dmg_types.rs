@@ -19,7 +19,7 @@ impl<T> std::ops::Index<usize> for DmgKinds<T> {
             1 => &self.thermal,
             2 => &self.kinetic,
             3 => &self.explosive,
-            n => panic!("invalid DmgKinds index: {}", n),
+            n => panic!("invalid DmgKinds index: {n}"),
         }
     }
 }
@@ -30,7 +30,7 @@ impl<T> std::ops::IndexMut<usize> for DmgKinds<T> {
             1 => &mut self.thermal,
             2 => &mut self.kinetic,
             3 => &mut self.explosive,
-            n => panic!("invalid DmgKinds index: {}", n),
+            n => panic!("invalid DmgKinds index: {n}"),
         }
     }
 }

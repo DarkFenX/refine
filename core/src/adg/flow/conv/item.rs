@@ -21,7 +21,7 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) 
         let cat_id = match g_supp.grp_cat_map.get(&e_item.group_id) {
             Some(&cid) => cid,
             None => {
-                let msg = format!("unable to find category ID for {}", e_item);
+                let msg = format!("unable to find category ID for {e_item}");
                 tracing::warn!("{msg}");
                 continue;
             }

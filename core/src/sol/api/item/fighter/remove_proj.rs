@@ -18,8 +18,7 @@ impl SolarSystem {
             return Err(ProjFoundError {
                 projector_item_id: uad_fighter.get_item_id(),
                 projectee_item_id: projectee_uad_item.get_item_id(),
-            }
-            .into());
+            });
         };
         let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
         for autocharge_key in autocharge_keys {

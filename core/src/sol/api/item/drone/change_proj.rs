@@ -18,8 +18,7 @@ impl SolarSystem {
                 return Err(ProjFoundError {
                     projector_item_id: drone.get_item_id(),
                     projectee_item_id: self.uad.items.id_by_key(projectee_item_key),
-                }
-                .into());
+                });
             }
         };
         // Do nothing if ranges are equal

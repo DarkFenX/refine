@@ -10,8 +10,7 @@ impl SolarSystem {
         if !uad_drone.has_mutation_data() {
             return Err(ItemMutatedError {
                 item_id: uad_drone.get_item_id(),
-            }
-            .into());
+            });
         }
         self.svc.unload_item(&self.uad, item_key, uad_item);
         self.uad

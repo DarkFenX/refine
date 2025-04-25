@@ -64,7 +64,7 @@ pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport
                     continue;
                 }
                 Err(e) => {
-                    let msg = format!("failed to build stopper for {}: {}", a_effect, e);
+                    let msg = format!("failed to build stopper for {a_effect}: {e}");
                     tracing::warn!("{msg}");
                     mod_errs += 1;
                     continue;
@@ -85,7 +85,7 @@ pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport
             match a_mod_res {
                 Ok(a_mod) => a_effect.mods.push(a_mod),
                 Err(e) => {
-                    let msg = format!("failed to build modifier for {}: {}", a_effect, e);
+                    let msg = format!("failed to build modifier for {a_effect}: {e}");
                     tracing::warn!("{msg}");
                     mod_errs += 1;
                     continue;
@@ -238,7 +238,7 @@ fn get_mod_location(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Resu
         "targetID" => match a_effect.category {
             ac::effcats::TARGET => Ok(ad::AEffectLocation::Target),
             _ => Err(StrMsgError {
-                msg: format!("modifier uses {} domain on untargeted effect", domain),
+                msg: format!("modifier uses {domain} domain on untargeted effect"),
             }),
         },
         "otherID" => Ok(ad::AEffectLocation::Other),
