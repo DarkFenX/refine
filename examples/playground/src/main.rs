@@ -211,10 +211,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 
     // Drones
     for _ in 0..5 {
-        fit.add_drone(2446, MinionState::Engaging, None); // T2 ogre
+        fit.add_drone(2446, MinionState::Engaging); // T2 ogre
     }
     for _ in 0..2 {
-        fit.add_drone(2446, MinionState::InBay, None); // T2 ogre
+        fit.add_drone(2446, MinionState::InBay); // T2 ogre
     }
 
     let val_options = ValOptions::all_enabled();

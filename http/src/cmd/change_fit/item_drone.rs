@@ -20,11 +20,10 @@ impl HAddDroneCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let core_drone = core_fit.add_drone(
-            self.type_id,
-            (&self.state).into(),
-            self.mutation.as_ref().map(|v| v.into()),
-        );
+        let mut core_drone = core_fit.add_drone(self.type_id, (&self.state).into());
+        if let Some(mutation) = self.mutation.as_ref() {
+            core_drone.mutate(mutation.into()).unwrap();
+        }
         Ok(core_drone.into())
     }
 }
