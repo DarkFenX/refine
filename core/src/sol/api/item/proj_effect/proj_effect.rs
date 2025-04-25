@@ -1,5 +1,5 @@
 use crate::sol::{
-    ItemId, ItemKey, SolarSystem,
+    ItemKey, SolarSystem,
     api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     uad::item::UadProjEffect,
 };
@@ -14,9 +14,6 @@ impl<'a> ProjEffect<'a> {
     }
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.key)
-    }
-    pub fn get_projs(&self) -> Vec<ItemId> {
-        get_projs(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for ProjEffect<'a> {
@@ -40,9 +37,6 @@ impl<'a> ProjEffectMut<'a> {
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.key)
     }
-    pub fn get_projs(&self) -> Vec<ItemId> {
-        get_projs(self.sol, self.key)
-    }
 }
 impl<'a> ItemSealed for ProjEffectMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -62,13 +56,6 @@ impl<'a> ItemMutCommon for ProjEffectMut<'a> {}
 
 fn get_state(sol: &SolarSystem, item_key: ItemKey) -> bool {
     get_uad_proj_effect(sol, item_key).get_proj_effect_state()
-}
-fn get_projs(sol: &SolarSystem, item_key: ItemKey) -> Vec<ItemId> {
-    get_uad_proj_effect(sol, item_key)
-        .get_projs()
-        .iter_projectee_item_keys()
-        .map(|&projectee_item_key| sol.uad.items.id_by_key(projectee_item_key))
-        .collect()
 }
 fn get_uad_proj_effect(sol: &SolarSystem, item_key: ItemKey) -> &UadProjEffect {
     sol.uad.items.get(item_key).get_proj_effect().unwrap()

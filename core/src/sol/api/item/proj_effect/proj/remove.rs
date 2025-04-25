@@ -1,6 +1,6 @@
 use crate::{
-    err::basic::{ItemFoundError, ProjFoundError},
-    sol::{ItemId, ItemKey, SolarSystem, api::ProjEffectMut},
+    err::basic::ProjFoundError,
+    sol::{ItemKey, SolarSystem, api::ProjMut},
 };
 
 impl SolarSystem {
@@ -8,7 +8,7 @@ impl SolarSystem {
         &mut self,
         item_key: ItemKey,
         projectee_item_key: ItemKey,
-    ) -> Result<(), RemoveProjEffectProjError> {
+    ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
         let uad_proj_effect = self.uad.items.get(item_key).get_proj_effect().unwrap();
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
@@ -16,8 +16,7 @@ impl SolarSystem {
             return Err(ProjFoundError {
                 projector_item_id: uad_proj_effect.get_item_id(),
                 projectee_item_id: projectee_uad_item.get_item_id(),
-            }
-            .into());
+            });
         };
         // Update services
         self.svc
@@ -30,19 +29,10 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ProjEffectMut<'a> {
-    pub fn remove_proj(&mut self, projectee_item_id: &ItemId) -> Result<(), RemoveProjEffectProjError> {
-        let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
+impl<'a> ProjMut<'a> {
+    pub fn remove(self) {
         self.sol
-            .internal_remove_proj_effect_proj(self.key, projectee_item_key)?;
-        Ok(())
+            .internal_remove_proj_effect_proj(self.projector_item_key, self.projectee_item_key)
+            .unwrap();
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum RemoveProjEffectProjError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjectionNotFound(#[from] ProjFoundError),
 }

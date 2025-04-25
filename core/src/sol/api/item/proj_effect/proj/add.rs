@@ -1,6 +1,9 @@
 use crate::{
     err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
-    sol::{ItemId, ItemKey, SolarSystem, api::ProjEffectMut},
+    sol::{
+        ItemId, ItemKey, SolarSystem,
+        api::{ProjEffectMut, ProjMut},
+    },
 };
 
 impl SolarSystem {
@@ -8,7 +11,7 @@ impl SolarSystem {
         &mut self,
         item_key: ItemKey,
         projectee_item_key: ItemKey,
-    ) -> Result<(), AddProjEffectProjError> {
+    ) -> Result<(), AddProjError> {
         // Check projector
         let uad_proj_effect = self.uad.items.get(item_key).get_proj_effect().unwrap();
         // Check if projection has already been defined
@@ -39,15 +42,15 @@ impl SolarSystem {
 }
 
 impl<'a> ProjEffectMut<'a> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<(), AddProjEffectProjError> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut, AddProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol.internal_add_proj_effect_proj(self.key, projectee_item_key)?;
-        Ok(())
+        Ok(ProjMut::new(self.sol, self.key, projectee_item_key))
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum AddProjEffectProjError {
+pub enum AddProjError {
     #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),
     #[error("{0}")]

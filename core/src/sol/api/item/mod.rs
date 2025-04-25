@@ -20,9 +20,7 @@ pub use module::{
     AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError, ChangeModuleProjError, GetModuleError,
     Module, ModuleIter, ModuleMut, RemoveModuleChargeError, RemoveModuleMutationError, RemoveModuleProjError,
 };
-pub use proj_effect::{
-    AddProjEffectProjError, GetProjEffectError, ProjEffect, ProjEffectMut, RemoveProjEffectProjError,
-};
+pub use proj_effect::{AddProjError, GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjMut};
 pub use rig::{GetRigError, Rig, RigMut};
 pub use service::{GetServiceError, Service, ServiceMut};
 pub use ship::{GetShipError, Ship, ShipMut};

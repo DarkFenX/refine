@@ -19,7 +19,10 @@ impl From<&mut rc::ProjEffectMut<'_>> for HProjEffectInfoPartial {
             kind: "proj_effect",
             type_id: core_proj_effect.get_type_id(),
             enabled: core_proj_effect.get_state(),
-            projs: core_proj_effect.get_projs().clone(),
+            projs: core_proj_effect
+                .iter_projs()
+                .map(|proj| proj.get_projectee_item_id())
+                .collect(),
         }
     }
 }

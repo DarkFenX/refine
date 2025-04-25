@@ -33,10 +33,3 @@ pub(in crate::sol) fn check_a_effect_id(uad: &Uad, a_effect_id: &ad::AEffectId) 
     }
     Ok(())
 }
-
-pub(in crate::sol) fn check_a_attr_id(uad: &Uad, a_attr_id: &ad::AAttrId) -> DebugResult {
-    if uad.src.get_a_attr(a_attr_id).is_none() {
-        return Err(DebugError {});
-    }
-    Ok(())
-}

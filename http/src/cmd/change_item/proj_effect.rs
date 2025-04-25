@@ -35,20 +35,19 @@ impl HChangeProjEffectCmd {
             core_proj_effect
                 .add_proj(projectee_item_id)
                 .map_err(|error| match error {
-                    rc::err::AddProjEffectProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::AddProjEffectProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
-                    rc::err::AddProjEffectProjError::ProjectionAlreadyExists(e) => {
-                        HExecError::ProjectionAlreadyExists(e)
-                    }
+                    rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                    rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
                 })?;
         }
         for projectee_item_id in self.rm_projs.iter() {
             core_proj_effect
-                .remove_proj(projectee_item_id)
+                .get_proj_mut(projectee_item_id)
                 .map_err(|error| match error {
-                    rc::err::RemoveProjEffectProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::RemoveProjEffectProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                })?;
+                    rc::err::GetProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::GetProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                })?
+                .remove();
         }
         apply_effect_modes(&mut core_proj_effect, &self.effect_modes);
         Ok(core_proj_effect.into())

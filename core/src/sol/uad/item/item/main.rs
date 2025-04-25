@@ -4,7 +4,7 @@ use crate::{
     sol::{
         AttrVal, FitKey, ItemId, ItemKey,
         uad::item::{
-            Autocharges, EffectModes, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter,
+            Autocharges, EffectModes, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter,
             UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance,
             UadSubsystem, UadSwEffect,
         },
@@ -237,6 +237,17 @@ impl UadItem {
     }
     pub(in crate::sol) fn can_receive_projs(&self) -> bool {
         matches!(self, Self::Drone(_) | Self::Fighter(_) | Self::Ship(_))
+    }
+    pub(in crate::sol) fn get_projs(&self) -> Option<&Projs> {
+        match self {
+            Self::Autocharge(autocharge) => Some(autocharge.get_projs()),
+            Self::Charge(charge) => Some(charge.get_projs()),
+            Self::Drone(drone) => Some(drone.get_projs()),
+            Self::Fighter(fighter) => Some(fighter.get_projs()),
+            Self::Module(module) => Some(module.get_projs()),
+            Self::ProjEffect(proj_effect) => Some(proj_effect.get_projs()),
+            _ => None,
+        }
     }
     pub(in crate::sol) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<AttrVal>)>> {
         match self {
