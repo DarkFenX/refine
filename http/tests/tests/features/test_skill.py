@@ -56,9 +56,6 @@ def test_level_switch_not_loaded(client, consts):
     eve_effect_id = client.mk_eve_effect(datas=[eve_d2], mod_info=[eve_mod])
     eve_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d2], id_=eve_item_id, attrs={eve_affectee_attr_id: 100}, eff_ids=[eve_effect_id])
-    # Create another item just to prevent level attribute from getting cleaned up
-    eve_another_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_another_item_id, attrs={eve_affector_attr_id: 4})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -144,9 +141,7 @@ def test_duplicate_loaded(client, consts):
 
 
 def test_duplicate_not_loaded(client, consts):
-    eve_level_attr_id = client.mk_eve_attr(id_=consts.EveAttr.skill_level)
-    # Create another item just to make sure level attribute doesn't get cleaned up
-    client.mk_eve_item(attrs={eve_level_attr_id: 0})
+    client.mk_eve_attr(id_=consts.EveAttr.skill_level)
     eve_item_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

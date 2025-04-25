@@ -286,10 +286,8 @@ def test_rounding(client, consts):
 
 def test_no_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 5})
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -304,10 +302,8 @@ def test_no_ship(client, consts):
 
 def test_not_loaded_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 5})
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -324,11 +320,9 @@ def test_not_loaded_ship(client, consts):
 
 def test_not_loaded_user(client, consts):
     # Just check that nothing crashes, not loaded items are not supposed to even be registered
-    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_use_attr_id: 5})
     eve_drone_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -386,11 +380,9 @@ def test_no_value_use(client, consts):
 
 def test_no_value_max(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship()
-    # Make an item to ensure that max attribute is not cleaned up
-    client.mk_eve_item(attrs={eve_max_attr_id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -401,46 +393,6 @@ def test_no_value_max(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
     assert api_val.details.drone_bandwidth.max == approx(0)
-    assert api_val.details.drone_bandwidth.users == {api_drone.id: 150}
-
-
-def test_no_attr_use(client, consts):
-    # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
-    # irrelevant
-    eve_use_attr_id = consts.EveAttr.drone_bandwidth_used
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
-    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
-    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
-    assert api_val.passed is False
-    assert api_val.details.drone_bandwidth.used == approx(150)
-    assert api_val.details.drone_bandwidth.max == approx(125)
-    assert api_val.details.drone_bandwidth.users == {api_drone.id: 150}
-
-
-def test_no_attr_max(client, consts):
-    # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
-    # irrelevant
-    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
-    eve_max_attr_id = consts.EveAttr.drone_bandwidth
-    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
-    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
-    assert api_val.passed is False
-    assert api_val.details.drone_bandwidth.used == approx(150)
-    assert api_val.details.drone_bandwidth.max is None
     assert api_val.details.drone_bandwidth.users == {api_drone.id: 150}
 
 

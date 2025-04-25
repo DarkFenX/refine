@@ -176,8 +176,6 @@ def test_valid_to_no_reference_to_valid(client, consts):
         datas=[eve_d2],
         id_=eve_fighter_id,
         eff_ids=[eve_effect_id])
-    # Create item with the attribute just to make sure it is not getting removed during cleanup
-    client.mk_eve_item(datas=[eve_d2], attrs={eve_autocharge_attr_id: 1})
     client.create_sources()
     api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)

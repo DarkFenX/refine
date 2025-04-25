@@ -275,10 +275,8 @@ def test_mutation_limit_inheritance(client, consts):
 
 
 def test_no_value(client, consts):
-    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class, def_val=0)
+    client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class, def_val=0)
     eve_service_id = client.mk_eve_item()
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
@@ -291,10 +289,8 @@ def test_no_value(client, consts):
 
 
 def test_not_loaded(client, consts):
-    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class, def_val=0)
+    client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class, def_val=0)
     eve_service_id = client.alloc_item_id()
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
@@ -304,25 +300,6 @@ def test_not_loaded(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-
-
-def test_no_attr(client, consts):
-    eve_attr_id = consts.EveAttr.online_max_security_class
-    eve_service_id = client.mk_eve_item(attrs={eve_attr_id: 1})
-    client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
-    api_fit = api_sol.create_fit()
-    api_service = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.ghost)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
-    assert api_val.passed is False
-    assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_unonlineable.items == {api_service.id: sorted([
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.wspace,
-        consts.ApiSecZone.hazard])}
 
 
 def test_criterion_item_kind(client, consts):

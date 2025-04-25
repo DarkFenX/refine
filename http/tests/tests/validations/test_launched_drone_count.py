@@ -148,10 +148,8 @@ def test_fractional_max(client, consts):
 
 
 def test_no_char(client, consts):
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -183,10 +181,8 @@ def test_not_loaded_user(client, consts):
 
 
 def test_not_loaded_char(client, consts):
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     eve_char_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -202,11 +198,9 @@ def test_not_loaded_char(client, consts):
 
 
 def test_no_value_max(client, consts):
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
     eve_char_id = client.mk_eve_item()
-    # Make an item to ensure that max attribute is not cleaned up
-    client.mk_eve_item(attrs={eve_max_attr_id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -217,25 +211,6 @@ def test_no_value_max(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drone_count.used == 1
     assert api_val.details.launched_drone_count.max == 0
-    assert api_val.details.launched_drone_count.users == [api_drone.id]
-
-
-def test_no_attr_max(client, consts):
-    # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
-    # irrelevant
-    eve_max_attr_id = consts.EveAttr.max_active_drones
-    eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_character(type_id=eve_char_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
-    assert api_val.passed is False
-    assert api_val.details.launched_drone_count.used == 1
-    assert api_val.details.launched_drone_count.max is None
     assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 

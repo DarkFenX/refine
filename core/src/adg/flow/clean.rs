@@ -15,7 +15,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &GSupport) -> Resu
     let mut trash = EData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, g_supp);
-    restore_hardcoded_attrs(alive, &mut trash);
+    restore_attrs(alive, &mut trash);
     restore_hardcoded_buffs(alive, &mut trash);
 
     let mut counter = 0;
@@ -84,14 +84,12 @@ fn restore_core_items(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) {
     move_data(&mut trash.items, &mut alive.items, |v| grps.contains(&v.group_id));
 }
 
-fn restore_hardcoded_attrs(alive: &mut EData, trash: &mut EData) {
-    // Gate scramble strength: isn't defined anywhere, default value is used by HIC WDFG script
-    // effects. It is referenced from script WDFG effect modifier infos, but there is no
-    // functionality to process modifier infos during cleanup. On top of that, those modifiers are
-    // not relied upon - they are replaced with a custom set of modifiers later
-    move_data(&mut trash.attrs, &mut alive.attrs, |v| {
-        v.id == ec::attrs::GATE_SCRAMBLE_STRENGTH
-    });
+fn restore_attrs(alive: &mut EData, trash: &mut EData) {
+    // Some attributes are known to be used by EVE, despite them not referred from anywhere.
+    // Oftentimes, those are needed, due to how attribute calculation works: a user can request
+    // calculation of any attribute on any item, and this would use on-attribute info for
+    // calculation (for example, default value). Just restore all the attributes here.
+    move_data(&mut trash.attrs, &mut alive.attrs, |_| true);
 }
 
 fn restore_hardcoded_buffs(alive: &mut EData, trash: &mut EData) {

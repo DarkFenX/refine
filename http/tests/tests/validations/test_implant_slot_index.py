@@ -139,25 +139,9 @@ def test_modified_index(client, consts):
     assert api_val.details.implant_slot_index == {2: sorted([api_implant1.id, api_implant2.id])}
 
 
-def test_no_attr(client, consts):
-    eve_slot_attr_id = consts.EveAttr.implantness
-    eve_implant_id = client.mk_eve_item(attrs={eve_slot_attr_id: 1})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_implant1 = api_fit.add_implant(type_id=eve_implant_id)
-    api_implant2 = api_fit.add_implant(type_id=eve_implant_id)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
-    assert api_val.passed is False
-    assert api_val.details.implant_slot_index == {1: sorted([api_implant1.id, api_implant2.id])}
-
-
 def test_no_value(client, consts):
-    eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
+    client.mk_eve_attr(id_=consts.EveAttr.implantness)
     eve_implant_id = client.mk_eve_item()
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_slot_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -171,10 +155,8 @@ def test_no_value(client, consts):
 
 
 def test_not_loaded(client, consts):
-    eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
+    client.mk_eve_attr(id_=consts.EveAttr.implantness)
     eve_implant_id = client.alloc_item_id()
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_slot_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

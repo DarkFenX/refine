@@ -584,8 +584,6 @@ def test_to_stage1_no_base_item(client, consts):
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
-    # Make an item to ensure that attribute data is not cleaned up on 2nd source
-    client.mk_eve_item(datas=[eve_d2], attrs={eve_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()

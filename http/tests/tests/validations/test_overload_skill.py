@@ -263,11 +263,9 @@ def test_no_skill(client, consts):
 
 
 def test_no_value(client, consts):
-    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
+    client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
     eve_module_id = client.mk_eve_item()
     client.mk_eve_item(id_=consts.EveItem.thermodynamics)
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -279,28 +277,10 @@ def test_no_value(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_no_attr(client, consts):
-    eve_attr_id = consts.EveAttr.required_thermodynamics_skill
-    eve_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
-    eve_skill_id = client.mk_eve_item(id_=consts.EveItem.thermodynamics)
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
-    assert api_val.passed is False
-    assert api_val.details.overload_skill.td_lvl == 0
-    assert api_val.details.overload_skill.module_reqs == {api_module.id: 1}
-
-
 def test_not_loaded_module(client, consts):
-    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
+    client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
     eve_module_id = client.alloc_item_id()
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.thermodynamics)
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

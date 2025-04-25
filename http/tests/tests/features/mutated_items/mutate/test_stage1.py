@@ -131,8 +131,6 @@ def test_no_base_item(client, consts):
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
-    # Make an item to ensure that attributes are not cleaned up on 1st source
-    client.mk_eve_item(datas=[eve_d1], attrs={eve_roll_attr_id: 1, eve_absolute_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()

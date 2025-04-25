@@ -393,34 +393,10 @@ def test_modifier_ship_radius_changed(client, consts):
     assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
 
 
-def test_modifier_no_attr_missile_velocity(client, consts):
-    eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
-    eve_speed_attr_id = consts.EveAttr.max_velocity
-    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
-    eve_missile_id = client.mk_eve_item(
-        attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item()
-    eve_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
-    # Verification - failure to calculate dependencies means bonus is not applied
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
-
-
-def test_modifier_no_attr_ship_radius(client, consts):
+def test_modifier_ship_not_loaded(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_radius_attr_id = consts.EveAttr.radius
+    client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.missile_launching,
         cat_id=consts.EveEffCat.target)
@@ -429,7 +405,7 @@ def test_modifier_no_attr_ship_radius(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_module_id = client.mk_eve_item()
-    eve_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
+    eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

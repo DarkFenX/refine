@@ -1,5 +1,5 @@
 use crate::sol::{
-    debug::{DebugResult, check_a_attr_id, check_a_effect_id, check_item_key},
+    debug::{DebugResult, check_a_effect_id, check_item_key},
     svc::calc::debug::check_raw_modifier,
     uad::Uad,
 };
@@ -14,9 +14,8 @@ impl BuffRegister {
                 check_a_effect_id(uad, a_effect_id)?;
             }
         }
-        for ((item_key, a_attr_id), raw_modifiers) in self.modifiers.iter() {
+        for ((item_key, _), raw_modifiers) in self.modifiers.iter() {
             check_item_key(uad, *item_key, true)?;
-            check_a_attr_id(uad, a_attr_id)?;
             for raw_modifier in raw_modifiers {
                 check_raw_modifier(uad, raw_modifier)?;
             }

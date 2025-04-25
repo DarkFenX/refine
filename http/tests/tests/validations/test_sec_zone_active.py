@@ -706,10 +706,8 @@ def test_values(client, consts):
 
 
 def test_not_loaded(client, consts):
-    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_module_id = client.alloc_item_id()
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.lowsec)
     api_fit = api_sol.create_fit()
@@ -719,21 +717,6 @@ def test_not_loaded(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-
-
-def test_no_attr(client, consts):
-    eve_attr_id = consts.EveAttr.disallow_in_empire_space
-    eve_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
-    client.create_sources()
-    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.lowsec)
-    api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
-    assert api_val.passed is False
-    assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_active.items == {
-        api_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
 
 
 def test_state(client, consts):

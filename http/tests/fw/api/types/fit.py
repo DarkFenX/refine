@@ -10,9 +10,9 @@ from tests.fw.consts import (
     ApiModRmMode,
     ApiModuleState,
     ApiRack,
+    ApiServiceState,
     ApiValInfoMode,
 )
-from tests.fw.consts import ApiServiceState
 from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item

@@ -212,25 +212,6 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_no_attr(client, consts):
-    eve_group1_id = client.mk_eve_item_group()
-    eve_group2_id = client.mk_eve_item_group()
-    eve_limit_attr1_id = consts.EveAttr.allowed_drone_group1
-    eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group1_id})
-    eve_drone_id = client.mk_eve_item(grp_id=eve_group2_id)
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(grp_id=eve_group1_id)
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(drone_group=True))
-    assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
-
-
 def test_modified_limit(client, consts):
     eve_group1_id = client.mk_eve_item_group()
     eve_group2_id = client.mk_eve_item_group()
