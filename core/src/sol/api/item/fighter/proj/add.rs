@@ -2,7 +2,10 @@ use itertools::Itertools;
 
 use crate::{
     err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
-    sol::{AttrVal, ItemId, ItemKey, SolarSystem, api::FighterMut},
+    sol::{
+        AttrVal, ItemId, ItemKey, SolarSystem,
+        api::{FighterMut, ProjMut},
+    },
 };
 
 impl SolarSystem {
@@ -51,11 +54,15 @@ impl SolarSystem {
 }
 
 impl<'a> FighterMut<'a> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId, range: Option<AttrVal>) -> Result<(), AddFighterProjError> {
+    pub fn add_proj(
+        &mut self,
+        projectee_item_id: &ItemId,
+        range: Option<AttrVal>,
+    ) -> Result<ProjMut, AddFighterProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol
             .internal_add_fighter_proj(self.key, projectee_item_key, range)?;
-        Ok(())
+        Ok(ProjMut::new(self.sol, self.key, projectee_item_key))
     }
 }
 

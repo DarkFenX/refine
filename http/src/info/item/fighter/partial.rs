@@ -43,7 +43,10 @@ impl HFighterInfoPartial {
                     )
                 })
                 .collect(),
-            projs: core_fighter.get_projs().iter().map(|v| (v.item_id, v.range)).collect(),
+            projs: core_fighter
+                .iter_projs()
+                .map(|v| (v.get_projectee_item_id(), v.get_range()))
+                .collect(),
         }
     }
 }

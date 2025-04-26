@@ -1,6 +1,9 @@
 use crate::{
     err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
-    sol::{AttrVal, ItemId, ItemKey, SolarSystem, api::DroneMut},
+    sol::{
+        AttrVal, ItemId, ItemKey, SolarSystem,
+        api::{DroneMut, ProjMut},
+    },
 };
 
 impl SolarSystem {
@@ -40,10 +43,14 @@ impl SolarSystem {
 }
 
 impl<'a> DroneMut<'a> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId, range: Option<AttrVal>) -> Result<(), AddDroneProjError> {
+    pub fn add_proj(
+        &mut self,
+        projectee_item_id: &ItemId,
+        range: Option<AttrVal>,
+    ) -> Result<ProjMut, AddDroneProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol.internal_add_drone_proj(self.key, projectee_item_key, range)?;
-        Ok(())
+        Ok(ProjMut::new(self.sol, self.key, projectee_item_key))
     }
 }
 

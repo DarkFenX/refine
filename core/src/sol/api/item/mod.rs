@@ -9,10 +9,7 @@ pub use drone::{
     AddDroneMutationError, AddDroneProjError, ChangeDroneMutationError, Drone, DroneMut, GetDroneError,
     RemoveDroneMutationError,
 };
-pub use fighter::{
-    AddFighterProjError, ChangeFighterProjError, Fighter, FighterMut, GetFighterError, RemoveFighterProjError,
-    SetFighterCountOverrideError,
-};
+pub use fighter::{AddFighterProjError, Fighter, FighterMut, GetFighterError, SetFighterCountOverrideError};
 pub use fw_effect::{FwEffect, FwEffectMut, GetFwEffectError};
 pub use implant::{GetImplantError, Implant, ImplantMut};
 pub use item::{GetItemError, Item, ItemMut, RemoveItemError};

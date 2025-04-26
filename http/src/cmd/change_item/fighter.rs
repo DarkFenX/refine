@@ -58,19 +58,21 @@ impl HChangeFighterCmd {
         }
         for proj_def in self.change_projs.iter() {
             core_fighter
-                .change_proj_range(&proj_def.get_item_id(), proj_def.get_range())
+                .get_proj_mut(&proj_def.get_item_id())
                 .map_err(|error| match error {
-                    rc::err::ChangeFighterProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::ChangeFighterProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                })?;
+                    rc::err::GetRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::GetRangedProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                })?
+                .set_range(proj_def.get_range());
         }
         for projectee_item_id in self.rm_projs.iter() {
             core_fighter
-                .remove_proj(projectee_item_id)
+                .get_proj_mut(&projectee_item_id)
                 .map_err(|error| match error {
-                    rc::err::RemoveFighterProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::RemoveFighterProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                })?;
+                    rc::err::GetRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::GetRangedProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                })?
+                .remove();
         }
         apply_effect_modes(&mut core_fighter, &self.effect_modes);
         Ok(core_fighter.into())

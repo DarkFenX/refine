@@ -1,7 +1,6 @@
 use crate::sol::{
     AdjustableCount, ItemKey, SolarSystem,
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    info::ProjInfo,
     uad::item::{MinionState, UadFighter},
 };
 
@@ -21,9 +20,6 @@ impl<'a> Fighter<'a> {
     }
     pub fn get_count(&self) -> Option<AdjustableCount> {
         get_count(self.sol, self.key)
-    }
-    pub fn get_projs(&self) -> Vec<ProjInfo> {
-        get_projs(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for Fighter<'a> {
@@ -57,9 +53,6 @@ impl<'a> FighterMut<'a> {
     pub fn get_count(&self) -> Option<AdjustableCount> {
         get_count(self.sol, self.key)
     }
-    pub fn get_projs(&self) -> Vec<ProjInfo> {
-        get_projs(self.sol, self.key)
-    }
 }
 impl<'a> ItemSealed for FighterMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -86,16 +79,6 @@ fn get_state(sol: &SolarSystem, item_key: ItemKey) -> MinionState {
 }
 fn get_count(sol: &SolarSystem, item_key: ItemKey) -> Option<AdjustableCount> {
     get_uad_fighter(sol, item_key).get_count()
-}
-fn get_projs(sol: &SolarSystem, item_key: ItemKey) -> Vec<ProjInfo> {
-    get_uad_fighter(sol, item_key)
-        .get_projs()
-        .iter()
-        .map(|(&projectee_item_key, &range)| ProjInfo {
-            item_id: sol.uad.items.id_by_key(projectee_item_key),
-            range,
-        })
-        .collect()
 }
 fn get_uad_fighter(sol: &SolarSystem, item_key: ItemKey) -> &UadFighter {
     sol.uad.items.get(item_key).get_fighter().unwrap()

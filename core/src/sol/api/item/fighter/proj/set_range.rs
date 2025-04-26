@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    err::basic::{ItemFoundError, ProjFoundError},
-    sol::{AttrVal, ItemId, ItemKey, SolarSystem, api::FighterMut},
+    err::basic::ProjFoundError,
+    sol::{AttrVal, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
@@ -42,25 +42,4 @@ impl SolarSystem {
         }
         Ok(())
     }
-}
-
-impl<'a> FighterMut<'a> {
-    pub fn change_proj_range(
-        &mut self,
-        projectee_item_id: &ItemId,
-        range: Option<AttrVal>,
-    ) -> Result<(), ChangeFighterProjError> {
-        let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
-        self.sol
-            .internal_change_fighter_proj(self.key, projectee_item_key, range)?;
-        Ok(())
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum ChangeFighterProjError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjectionNotFound(#[from] ProjFoundError),
 }
