@@ -1,8 +1,8 @@
 use crate::{
-    err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
+    err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::{
         AttrVal, ItemId, ItemKey, SolarSystem,
-        api::{DroneMut, RangedProjMut},
+        api::{AddRangedProjError, DroneMut, RangedProjMut},
     },
 };
 
@@ -12,7 +12,7 @@ impl SolarSystem {
         item_key: ItemKey,
         projectee_item_key: ItemKey,
         range: Option<AttrVal>,
-    ) -> Result<(), AddDroneProjError> {
+    ) -> Result<(), AddRangedProjError> {
         // Check projector
         let uad_drone = self.uad.items.get(item_key).get_drone().unwrap();
         // Check if projection has already been defined
@@ -47,19 +47,9 @@ impl<'a> DroneMut<'a> {
         &mut self,
         projectee_item_id: &ItemId,
         range: Option<AttrVal>,
-    ) -> Result<RangedProjMut, AddDroneProjError> {
+    ) -> Result<RangedProjMut, AddRangedProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol.internal_add_drone_proj(self.key, projectee_item_key, range)?;
         Ok(RangedProjMut::new(self.sol, self.key, projectee_item_key))
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum AddDroneProjError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
-    #[error("{0}")]
-    ProjectionAlreadyExists(#[from] ProjNotFoundError),
 }

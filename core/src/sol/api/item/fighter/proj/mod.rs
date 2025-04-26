@@ -1,5 +1,3 @@
-pub use add::AddFighterProjError;
-
 mod add;
 mod fighter_iter;
 mod get;

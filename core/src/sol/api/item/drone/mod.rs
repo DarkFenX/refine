@@ -2,7 +2,6 @@ pub use add_mutation::AddDroneMutationError;
 pub use change_mutation::ChangeDroneMutationError;
 pub use drone::{Drone, DroneMut};
 pub use get::GetDroneError;
-pub use proj::AddDroneProjError;
 pub use remove_mutation::RemoveDroneMutationError;
 
 mod add;

@@ -71,9 +71,9 @@ impl HChangeDroneCmd {
             core_drone
                 .add_proj(&proj_def.get_item_id(), proj_def.get_range())
                 .map_err(|error| match error {
-                    rc::err::AddDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::AddDroneProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
-                    rc::err::AddDroneProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+                    rc::err::AddRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::AddRangedProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                    rc::err::AddRangedProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
                 })?;
         }
         for proj_def in self.change_projs.iter() {

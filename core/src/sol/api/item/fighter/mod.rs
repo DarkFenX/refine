@@ -1,6 +1,5 @@
 pub use fighter::{Fighter, FighterMut};
 pub use get::GetFighterError;
-pub use proj::AddFighterProjError;
 pub use set_count_override::SetFighterCountOverrideError;
 
 mod add;

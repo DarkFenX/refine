@@ -6,21 +6,20 @@ pub use booster::{
 pub use character::{Character, CharacterMut, GetCharacterError};
 pub use charge::{Charge, ChargeMut, GetChargeError};
 pub use drone::{
-    AddDroneMutationError, AddDroneProjError, ChangeDroneMutationError, Drone, DroneMut, GetDroneError,
-    RemoveDroneMutationError,
+    AddDroneMutationError, ChangeDroneMutationError, Drone, DroneMut, GetDroneError, RemoveDroneMutationError,
 };
-pub use fighter::{AddFighterProjError, Fighter, FighterMut, GetFighterError, SetFighterCountOverrideError};
+pub use fighter::{Fighter, FighterMut, GetFighterError, SetFighterCountOverrideError};
 pub use fw_effect::{FwEffect, FwEffectMut, GetFwEffectError};
 pub use implant::{GetImplantError, Implant, ImplantMut};
 pub use item::{GetItemError, Item, ItemMut, RemoveItemError};
 pub use module::{
-    AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError, GetModuleError, Module, ModuleIter,
-    ModuleMut, RemoveModuleChargeError, RemoveModuleMutationError,
+    AddModuleMutationError, ChangeModuleMutationError, GetModuleError, Module, ModuleIter, ModuleMut,
+    RemoveModuleChargeError, RemoveModuleMutationError,
 };
 pub use proj_effect::{AddProjError, GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjMut};
 pub use rig::{GetRigError, Rig, RigMut};
 pub use service::{GetServiceError, Service, ServiceMut};
-pub use shared::{GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
+pub use shared::{AddRangedProjError, GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
 pub use ship::{GetShipError, Ship, ShipMut};
 pub use skill::{AddSkillError, GetSkillError, SetSkillLevelError, Skill, SkillMut};
 pub use stance::{GetStanceError, Stance, StanceMut};

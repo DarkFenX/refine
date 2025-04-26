@@ -1,5 +1,3 @@
-pub use add::AddModuleProjError;
-
 mod add;
 mod get;
 mod module_iter;

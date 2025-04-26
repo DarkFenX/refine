@@ -1,5 +1,3 @@
-pub use add::AddDroneProjError;
-
 mod add;
 mod drone_iter;
 mod get;
