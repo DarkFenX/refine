@@ -29,6 +29,7 @@ mod fw_effect;
 mod implant;
 mod module;
 mod mutation;
+mod proj;
 mod proj_effect;
 mod rig;
 mod service;

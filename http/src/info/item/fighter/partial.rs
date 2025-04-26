@@ -3,7 +3,10 @@ use std::collections::HashMap;
 use rc::{ItemCommon, Lender};
 
 use crate::{
-    info::{HItemInfoMode, item::autocharge::HAutochargeInfo},
+    info::{
+        HItemInfoMode,
+        item::{autocharge::HAutochargeInfo, proj::HRangedProjInfo},
+    },
     shared::{HEffectId, HMinionState},
 };
 
@@ -21,9 +24,8 @@ pub(crate) struct HFighterInfoPartial {
     pub(crate) count: Option<(rc::Count, rc::Count)>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) autocharges: HashMap<HEffectId, HAutochargeInfo>,
-    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) projs: Vec<(rc::ItemId, Option<rc::AttrVal>)>,
+    pub(crate) projs: Vec<HRangedProjInfo>,
 }
 impl HFighterInfoPartial {
     pub(super) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
@@ -45,7 +47,7 @@ impl HFighterInfoPartial {
                 .collect(),
             projs: core_fighter
                 .iter_projs()
-                .map(|v| (v.get_projectee_item_id(), v.get_range()))
+                .map(|core_ranged_proj| core_ranged_proj.into())
                 .collect(),
         }
     }

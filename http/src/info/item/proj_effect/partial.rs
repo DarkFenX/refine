@@ -1,5 +1,7 @@
 use rc::ItemCommon;
 
+use crate::info::item::proj::HProjInfo;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HProjEffectInfoPartial {
@@ -8,9 +10,8 @@ pub(crate) struct HProjEffectInfoPartial {
     pub(crate) kind: &'static str,
     pub(crate) type_id: rc::ItemTypeId,
     pub(crate) enabled: bool,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) projs: Vec<rc::ItemId>,
+    pub(crate) projs: Vec<HProjInfo>,
 }
 impl From<&mut rc::ProjEffectMut<'_>> for HProjEffectInfoPartial {
     fn from(core_proj_effect: &mut rc::ProjEffectMut) -> Self {
@@ -21,7 +22,7 @@ impl From<&mut rc::ProjEffectMut<'_>> for HProjEffectInfoPartial {
             enabled: core_proj_effect.get_state(),
             projs: core_proj_effect
                 .iter_projs()
-                .map(|proj| proj.get_projectee_item_id())
+                .map(|core_proj| core_proj.into())
                 .collect(),
         }
     }

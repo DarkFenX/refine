@@ -3,7 +3,7 @@ use rc::ItemCommon;
 use crate::{
     info::{
         HItemInfoMode,
-        item::{charge::HChargeInfo, mutation::HItemMutationInfo},
+        item::{charge::HChargeInfo, mutation::HItemMutationInfo, proj::HRangedProjInfo},
     },
     shared::{HModRack, HModuleState},
 };
@@ -24,9 +24,8 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) mutation: Option<HItemMutationInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) charge: Option<HChargeInfo>,
-    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) projs: Vec<(rc::ItemId, Option<rc::AttrVal>)>,
+    pub(crate) projs: Vec<HRangedProjInfo>,
 }
 impl HModuleInfoPartial {
     pub(super) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
@@ -44,7 +43,7 @@ impl HModuleInfoPartial {
                 .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode)),
             projs: core_module
                 .iter_projs()
-                .map(|v| (v.get_projectee_item_id(), v.get_range()))
+                .map(|core_ranged_proj| core_ranged_proj.into())
                 .collect(),
         }
     }

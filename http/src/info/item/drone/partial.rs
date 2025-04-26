@@ -1,6 +1,9 @@
 use rc::ItemCommon;
 
-use crate::{info::item::mutation::HItemMutationInfo, shared::HMinionState};
+use crate::{
+    info::item::{mutation::HItemMutationInfo, proj::HRangedProjInfo},
+    shared::HMinionState,
+};
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
@@ -14,9 +17,8 @@ pub(crate) struct HDroneInfoPartial {
     pub(crate) state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) mutation: Option<HItemMutationInfo>,
-    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) projs: Vec<(rc::ItemId, Option<rc::AttrVal>)>,
+    pub(crate) projs: Vec<HRangedProjInfo>,
 }
 impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
     fn from(core_drone: &mut rc::DroneMut) -> Self {
@@ -29,7 +31,7 @@ impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
             mutation: core_drone.get_mutation().as_ref().map(|v| v.into()),
             projs: core_drone
                 .iter_projs()
-                .map(|v| (v.get_projectee_item_id(), v.get_range()))
+                .map(|core_ranged_proj| core_ranged_proj.into())
                 .collect(),
         }
     }
