@@ -12,6 +12,16 @@ pub struct ProjIter<'iter> {
     projectee_keys: Vec<ItemKey>,
     index: usize,
 }
+impl<'iter> ProjIter<'iter> {
+    fn new(sol: &'iter mut SolarSystem, key: ItemKey, projectee_keys: Vec<ItemKey>) -> Self {
+        Self {
+            sol,
+            key,
+            projectee_keys,
+            index: 0,
+        }
+    }
+}
 impl<'iter, 'lend> Lending<'lend> for ProjIter<'iter> {
     type Lend = ProjMut<'lend>;
 }
@@ -38,12 +48,7 @@ impl<'a> ProjEffectMut<'a> {
     /// Iterates over projected effect's projections.
     pub fn iter_projs_mut(&mut self) -> ProjIter {
         let projectee_keys = iter_projectee_item_keys(self.sol, self.key).collect();
-        ProjIter {
-            sol: self.sol,
-            key: self.key,
-            projectee_keys,
-            index: 0,
-        }
+        ProjIter::new(self.sol, self.key, projectee_keys)
     }
 }
 

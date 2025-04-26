@@ -17,6 +17,16 @@ pub struct SideEffectIter<'iter> {
     effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
     index: usize,
 }
+impl<'iter> SideEffectIter<'iter> {
+    fn new(sol: &'iter mut SolarSystem, key: ItemKey, effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>) -> Self {
+        Self {
+            sol,
+            key,
+            effects_with_chances,
+            index: 0,
+        }
+    }
+}
 impl<'iter, 'lend> Lending<'lend> for SideEffectIter<'iter> {
     type Lend = FullSideEffectMut<'lend>;
 }
@@ -53,12 +63,7 @@ impl<'a> BoosterMut<'a> {
                 })
             })
             .collect();
-        SideEffectIter {
-            sol: self.sol,
-            key: self.key,
-            effects_with_chances,
-            index: 0,
-        }
+        SideEffectIter::new(self.sol, self.key, effects_with_chances)
     }
 }
 
