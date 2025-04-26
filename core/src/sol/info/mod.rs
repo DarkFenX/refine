@@ -1,3 +1,3 @@
-pub use item::{AttrMutationInfo, ItemMutationInfo, ProjInfo};
+pub use item::{AttrMutationInfo, ItemMutationInfo};
 
 mod item;

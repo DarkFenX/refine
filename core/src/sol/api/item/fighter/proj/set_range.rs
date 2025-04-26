@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_change_fighter_proj(
+    pub(in crate::sol) fn internal_set_fighter_proj_range(
         &mut self,
         item_key: ItemKey,
         projectee_item_key: ItemKey,

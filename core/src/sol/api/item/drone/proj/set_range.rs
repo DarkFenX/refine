@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_change_drone_proj(
+    pub(in crate::sol) fn internal_set_drone_proj_range(
         &mut self,
         item_key: ItemKey,
         projectee_item_key: ItemKey,

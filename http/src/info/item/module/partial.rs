@@ -42,7 +42,10 @@ impl HModuleInfoPartial {
             charge: core_module
                 .get_charge_mut()
                 .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode)),
-            projs: core_module.get_projs().iter().map(|v| (v.item_id, v.range)).collect(),
+            projs: core_module
+                .iter_projs()
+                .map(|v| (v.get_projectee_item_id(), v.get_range()))
+                .collect(),
         }
     }
 }

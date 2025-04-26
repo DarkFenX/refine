@@ -14,8 +14,8 @@ pub use fw_effect::{FwEffect, FwEffectMut, GetFwEffectError};
 pub use implant::{GetImplantError, Implant, ImplantMut};
 pub use item::{GetItemError, Item, ItemMut, RemoveItemError};
 pub use module::{
-    AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError, ChangeModuleProjError, GetModuleError,
-    Module, ModuleIter, ModuleMut, RemoveModuleChargeError, RemoveModuleMutationError, RemoveModuleProjError,
+    AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError, GetModuleError, Module, ModuleIter,
+    ModuleMut, RemoveModuleChargeError, RemoveModuleMutationError,
 };
 pub use proj_effect::{AddProjError, GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjMut};
 pub use rig::{GetRigError, Rig, RigMut};

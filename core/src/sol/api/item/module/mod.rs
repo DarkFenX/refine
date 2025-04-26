@@ -1,26 +1,22 @@
 pub use add_mutation::AddModuleMutationError;
-pub use add_proj::AddModuleProjError;
 pub use change_mutation::ChangeModuleMutationError;
-pub use change_proj::ChangeModuleProjError;
 pub use fit_iter::ModuleIter;
 pub use get::GetModuleError;
 pub use module::{Module, ModuleMut};
+pub use proj::AddModuleProjError;
 pub use remove_charge::RemoveModuleChargeError;
 pub use remove_mutation::RemoveModuleMutationError;
-pub use remove_proj::RemoveModuleProjError;
 
 mod add;
 mod add_mutation;
-mod add_proj;
 mod change_mutation;
-mod change_proj;
 mod fit_iter;
 mod get;
 mod module;
+mod proj;
 mod remove;
 mod remove_charge;
 mod remove_mutation;
-mod remove_proj;
 mod set_charge;
 mod set_state;
 mod shared;

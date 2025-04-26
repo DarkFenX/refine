@@ -1,10 +1,10 @@
 use crate::{
-    err::basic::{ItemFoundError, ProjFoundError},
-    sol::{AttrVal, ItemId, ItemKey, SolarSystem, api::ModuleMut},
+    err::basic::ProjFoundError,
+    sol::{AttrVal, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_change_module_proj(
+    pub(in crate::sol) fn internal_set_module_proj_range(
         &mut self,
         item_key: ItemKey,
         projectee_item_key: ItemKey,
@@ -39,25 +39,4 @@ impl SolarSystem {
         }
         Ok(())
     }
-}
-
-impl<'a> ModuleMut<'a> {
-    pub fn change_proj_range(
-        &mut self,
-        projectee_item_id: &ItemId,
-        range: Option<AttrVal>,
-    ) -> Result<(), ChangeModuleProjError> {
-        let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
-        self.sol
-            .internal_change_module_proj(self.key, projectee_item_key, range)?;
-        Ok(())
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum ChangeModuleProjError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjectionNotFound(#[from] ProjFoundError),
 }

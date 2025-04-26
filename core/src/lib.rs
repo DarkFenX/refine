@@ -33,7 +33,7 @@ pub use sol::{
         SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut,
         StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
     },
-    info::{AttrMutationInfo, ItemMutationInfo, ProjInfo},
+    info::{AttrMutationInfo, ItemMutationInfo},
     svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo},
     uad::{
         ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, MinionState, ModuleState,
