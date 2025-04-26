@@ -2,7 +2,7 @@ use lender::{Lender, Lending};
 
 use crate::sol::{
     ItemKey, SolarSystem,
-    api::{Proj, ProjEffect, ProjEffectMut, ProjMut},
+    api::{Proj, ProjEffect, ProjEffectMut, ProjMut, iter_projectee_item_keys},
 };
 
 // Lending iterator for non-ranged projections
@@ -54,8 +54,4 @@ impl<'a> ProjEffectMut<'a> {
 
 fn iter_projs(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = Proj> {
     iter_projectee_item_keys(sol, item_key).map(move |projectee_item_key| Proj::new(sol, projectee_item_key))
-}
-
-fn iter_projectee_item_keys(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = ItemKey> + use<'_> {
-    sol.uad.items.get(item_key).iter_projectee_item_keys().unwrap().copied()
 }

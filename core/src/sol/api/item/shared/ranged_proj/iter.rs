@@ -1,6 +1,9 @@
 use lender::{Lender, Lending};
 
-use crate::sol::{ItemKey, SolarSystem, api::RangedProjMut};
+use crate::sol::{
+    ItemKey, SolarSystem,
+    api::{RangedProj, RangedProjMut, iter_projectee_item_keys},
+};
 
 // Lending iterator for ranged projections
 pub struct RangedProjIter<'iter> {
@@ -28,4 +31,9 @@ impl<'iter> Lender for RangedProjIter<'iter> {
         self.index += 1;
         Some(RangedProjMut::new(self.sol, self.key, projectee_item_key))
     }
+}
+
+pub(in crate::sol::api) fn iter_ranged_projs(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = RangedProj> {
+    iter_projectee_item_keys(sol, item_key)
+        .map(move |projectee_item_key| RangedProj::new(sol, item_key, projectee_item_key))
 }
