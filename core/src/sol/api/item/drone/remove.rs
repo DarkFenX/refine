@@ -17,9 +17,9 @@ impl SolarSystem {
             self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Remove incoming projections
-        self.remove_incoming_projections(item_key);
+        self.internal_remove_incoming_projections(item_key);
         // Remove drone from services
-        self.remove_item_key_from_svc(item_key);
+        self.internal_remove_item_key_from_svc(item_key);
         // Remove drone from user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.drones.remove(&item_key);

@@ -1,0 +1,59 @@
+use crate::sol::{AttrVal, ItemId, ItemKey, SolarSystem};
+
+/// Projection which allows to set range.
+pub struct RangedProj<'a> {
+    pub(in crate::sol) sol: &'a SolarSystem,
+    pub(in crate::sol) projector_item_key: ItemKey,
+    pub(in crate::sol) projectee_item_key: ItemKey,
+}
+impl<'a> RangedProj<'a> {
+    pub(in crate::sol) fn new(sol: &'a SolarSystem, projector_item_key: ItemKey, projectee_item_key: ItemKey) -> Self {
+        Self {
+            sol,
+            projector_item_key,
+            projectee_item_key,
+        }
+    }
+    pub fn get_projectee_item_id(&self) -> ItemId {
+        self.sol.uad.items.id_by_key(self.projectee_item_key)
+    }
+    pub fn get_range(&self) -> Option<AttrVal> {
+        get_range(self.sol, self.projector_item_key, &self.projectee_item_key)
+    }
+}
+
+/// Projection which allows to set range.
+pub struct RangedProjMut<'a> {
+    pub(in crate::sol) sol: &'a mut SolarSystem,
+    pub(in crate::sol) projector_item_key: ItemKey,
+    pub(in crate::sol) projectee_item_key: ItemKey,
+}
+impl<'a> RangedProjMut<'a> {
+    pub(in crate::sol) fn new(
+        sol: &'a mut SolarSystem,
+        projector_item_key: ItemKey,
+        projectee_item_key: ItemKey,
+    ) -> Self {
+        Self {
+            sol,
+            projector_item_key,
+            projectee_item_key,
+        }
+    }
+    pub fn get_projectee_item_id(&self) -> ItemId {
+        self.sol.uad.items.id_by_key(self.projectee_item_key)
+    }
+    pub fn get_range(&self) -> Option<AttrVal> {
+        get_range(self.sol, self.projector_item_key, &self.projectee_item_key)
+    }
+}
+
+fn get_range(sol: &SolarSystem, projector_item_key: ItemKey, projectee_item_key: &ItemKey) -> Option<AttrVal> {
+    *sol.uad
+        .items
+        .get(projector_item_key)
+        .get_projs()
+        .unwrap()
+        .get(projectee_item_key)
+        .unwrap()
+}

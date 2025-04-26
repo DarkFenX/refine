@@ -78,17 +78,21 @@ impl HChangeDroneCmd {
         }
         for proj_def in self.change_projs.iter() {
             core_drone
-                .change_proj_range(&proj_def.get_item_id(), proj_def.get_range())
+                .get_proj_mut(&proj_def.get_item_id())
                 .map_err(|error| match error {
-                    rc::err::ChangeDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::ChangeDroneProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                })?;
+                    rc::err::GetRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::GetRangedProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                })?
+                .set_range(proj_def.get_range());
         }
         for projectee_item_id in self.rm_projs.iter() {
-            core_drone.remove_proj(projectee_item_id).map_err(|error| match error {
-                rc::err::RemoveDroneProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                rc::err::RemoveDroneProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-            })?;
+            core_drone
+                .get_proj_mut(projectee_item_id)
+                .map_err(|error| match error {
+                    rc::err::GetRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::GetRangedProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                })?
+                .remove();
         }
         apply_effect_modes(&mut core_drone, &self.effect_modes);
         Ok(core_drone.into())

@@ -32,13 +32,13 @@ impl SolarSystem {
         uad_fighter.get_projs_mut().add(projectee_item_key, range);
         let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
         // Update services for fighter
-        self.change_item_key_projection_range_in_svc(item_key, projectee_item_key, range);
+        self.internal_change_item_key_projection_range_in_svc(item_key, projectee_item_key, range);
         for autocharge_key in autocharge_keys {
             // Update user data for autocharge
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             uad_autocharge.get_projs_mut().add(projectee_item_key, range);
             // Update services for autocharge
-            self.change_item_key_projection_range_in_svc(autocharge_key, projectee_item_key, range);
+            self.internal_change_item_key_projection_range_in_svc(autocharge_key, projectee_item_key, range);
         }
         Ok(())
     }

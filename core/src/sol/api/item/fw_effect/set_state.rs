@@ -6,7 +6,7 @@ impl SolarSystem {
         let old_a_state = uad_fw_effect.get_a_state();
         uad_fw_effect.set_fw_effect_state(state);
         let new_a_state = uad_fw_effect.get_a_state();
-        self.change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
+        self.internal_change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
     }
 }
 

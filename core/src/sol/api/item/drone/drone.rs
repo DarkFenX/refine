@@ -22,9 +22,6 @@ impl<'a> Drone<'a> {
     pub fn get_mutation(&self) -> Option<ItemMutationInfo> {
         get_mutation(self.sol, self.key)
     }
-    pub fn get_projs(&self) -> Vec<ProjInfo> {
-        get_projs(self.sol, self.key)
-    }
 }
 impl<'a> ItemSealed for Drone<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -57,9 +54,6 @@ impl<'a> DroneMut<'a> {
     pub fn get_mutation(&self) -> Option<ItemMutationInfo> {
         get_mutation(self.sol, self.key)
     }
-    pub fn get_projs(&self) -> Vec<ProjInfo> {
-        get_projs(self.sol, self.key)
-    }
 }
 impl<'a> ItemSealed for DroneMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -86,16 +80,6 @@ fn get_state(sol: &SolarSystem, item_key: ItemKey) -> MinionState {
 }
 fn get_mutation(sol: &SolarSystem, item_key: ItemKey) -> Option<ItemMutationInfo> {
     get_uad_drone(sol, item_key).get_mutation_info(&sol.uad.src)
-}
-fn get_projs(sol: &SolarSystem, item_key: ItemKey) -> Vec<ProjInfo> {
-    get_uad_drone(sol, item_key)
-        .get_projs()
-        .iter()
-        .map(|(&projectee_item_key, &range)| ProjInfo {
-            item_id: sol.uad.items.id_by_key(projectee_item_key),
-            range,
-        })
-        .collect()
 }
 fn get_uad_drone(sol: &SolarSystem, item_key: ItemKey) -> &UadDrone {
     sol.uad.items.get(item_key).get_drone().unwrap()

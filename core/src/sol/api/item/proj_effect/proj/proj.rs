@@ -3,14 +3,12 @@ use crate::sol::{ItemId, ItemKey, SolarSystem};
 /// Projection which does not allow to set range.
 pub struct Proj<'a> {
     pub(in crate::sol) sol: &'a SolarSystem,
-    pub(in crate::sol) projector_item_key: ItemKey,
     pub(in crate::sol) projectee_item_key: ItemKey,
 }
 impl<'a> Proj<'a> {
-    pub(in crate::sol) fn new(sol: &'a SolarSystem, projector_item_key: ItemKey, projectee_item_key: ItemKey) -> Self {
+    pub(in crate::sol) fn new(sol: &'a SolarSystem, projectee_item_key: ItemKey) -> Self {
         Self {
             sol,
-            projector_item_key,
             projectee_item_key,
         }
     }

@@ -5,7 +5,7 @@ use crate::sol::{
     api::{Proj, ProjEffect, ProjEffectMut, ProjMut},
 };
 
-// Lending iterator for projections
+// Lending iterator for non-ranged projections
 pub struct ProjIter<'iter> {
     sol: &'iter mut SolarSystem,
     key: ItemKey,
@@ -48,11 +48,7 @@ impl<'a> ProjEffectMut<'a> {
 }
 
 fn iter_projs(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = Proj> {
-    iter_projectee_item_keys(sol, item_key).map(move |projectee_item_key| Proj {
-        sol,
-        projector_item_key: item_key,
-        projectee_item_key,
-    })
+    iter_projectee_item_keys(sol, item_key).map(move |projectee_item_key| Proj::new(sol, projectee_item_key))
 }
 
 fn iter_projectee_item_keys(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = ItemKey> + use<'_> {

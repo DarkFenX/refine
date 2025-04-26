@@ -59,7 +59,7 @@ impl SolarSystem {
         let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
         uad_module.set_charge_item_key(Some(new_charge_key));
         // Update services
-        self.add_item_key_to_svc(new_charge_key);
+        self.internal_add_item_key_to_svc(new_charge_key);
         // Reapply module projections to charge
         if !module_projs.is_empty() {
             let charge_projs = self

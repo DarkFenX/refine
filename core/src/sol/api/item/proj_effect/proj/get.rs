@@ -9,14 +9,14 @@ use crate::{
 impl<'a> ProjEffect<'a> {
     pub fn get_proj(&self, projectee_item_id: &ItemId) -> Result<Proj, GetProjError> {
         let projectee_item_key = get_projectee_item_key(self.sol, self.key, projectee_item_id)?;
-        Ok(Proj::new(self.sol, self.key, projectee_item_key))
+        Ok(Proj::new(self.sol, projectee_item_key))
     }
 }
 
 impl<'a> ProjEffectMut<'a> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<Proj, GetProjError> {
         let projectee_item_key = get_projectee_item_key(self.sol, self.key, projectee_item_id)?;
-        Ok(Proj::new(self.sol, self.key, projectee_item_key))
+        Ok(Proj::new(self.sol, projectee_item_key))
     }
     pub fn get_proj_mut(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut, GetProjError> {
         let projectee_item_key = get_projectee_item_key(self.sol, self.key, projectee_item_id)?;

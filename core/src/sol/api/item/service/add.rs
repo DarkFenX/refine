@@ -17,7 +17,7 @@ impl SolarSystem {
         let uad_item = UadItem::Service(uad_service);
         let item_key = self.uad.items.add(uad_item);
         uad_fit.services.insert(item_key);
-        self.add_item_key_to_svc(item_key);
+        self.internal_add_item_key_to_svc(item_key);
         item_key
     }
 }

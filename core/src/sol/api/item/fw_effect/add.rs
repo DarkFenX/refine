@@ -12,7 +12,7 @@ impl SolarSystem {
         let uad_item = UadItem::FwEffect(uad_fw_effect);
         let item_key = self.uad.items.add(uad_item);
         uad_fit.fw_effects.insert(item_key);
-        self.add_item_key_to_svc(item_key);
+        self.internal_add_item_key_to_svc(item_key);
         item_key
     }
 }

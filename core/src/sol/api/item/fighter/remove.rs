@@ -28,18 +28,18 @@ impl SolarSystem {
             self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Remove incoming projections
-        self.remove_incoming_projections(item_key);
+        self.internal_remove_incoming_projections(item_key);
         // Remove autocharges
         for autocharge_key in autocharge_keys {
             // Update services for autocharge
-            self.remove_item_key_from_svc(autocharge_key);
+            self.internal_remove_item_key_from_svc(autocharge_key);
             // Update user data for autocharge - not updating fighter<->autocharge references
             // because both will be removed
             self.uad.items.remove(autocharge_key);
         }
         // Remove fighter
         // Update services for fighter
-        self.remove_item_key_from_svc(item_key);
+        self.internal_remove_item_key_from_svc(item_key);
         // Update user data for fighter
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.fighters.remove(&item_key);

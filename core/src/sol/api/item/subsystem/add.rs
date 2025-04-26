@@ -12,7 +12,7 @@ impl SolarSystem {
         let uad_item = UadItem::Subsystem(uad_subsystem);
         let item_key = self.uad.items.add(uad_item);
         uad_fit.subsystems.insert(item_key);
-        self.add_item_key_to_svc(item_key);
+        self.internal_add_item_key_to_svc(item_key);
         item_key
     }
 }

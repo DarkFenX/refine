@@ -16,7 +16,7 @@ impl SolarSystem {
             self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Remove effect from services
-        self.remove_item_key_from_svc(item_key);
+        self.internal_remove_item_key_from_svc(item_key);
         // Remove effect from user data
         self.uad.proj_effects.remove(&item_key);
         self.uad.items.remove(item_key);

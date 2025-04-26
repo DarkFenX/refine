@@ -11,7 +11,7 @@ impl SolarSystem {
         uad_fighter.set_fighter_state(state);
         let new_a_state = uad_fighter.get_a_state();
         // Update services for fighter
-        self.change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
+        self.internal_change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
         for autocharge_key in autocharge_keys {
             // Update user data for autocharge
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
@@ -19,7 +19,7 @@ impl SolarSystem {
             uad_autocharge.set_a_state(state.into());
             // Update services for autocharge
             let new_a_state = uad_autocharge.get_a_state();
-            self.change_item_key_state_in_svc(autocharge_key, old_a_state, new_a_state);
+            self.internal_change_item_key_state_in_svc(autocharge_key, old_a_state, new_a_state);
         }
     }
 }

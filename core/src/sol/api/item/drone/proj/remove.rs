@@ -1,6 +1,6 @@
 use crate::{
-    err::basic::{ItemFoundError, ProjFoundError},
-    sol::{ItemId, ItemKey, SolarSystem, api::DroneMut},
+    err::basic::ProjFoundError,
+    sol::{ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
@@ -27,20 +27,4 @@ impl SolarSystem {
         uad_drone.get_projs_mut().remove(&projectee_item_key);
         Ok(())
     }
-}
-
-impl<'a> DroneMut<'a> {
-    pub fn remove_proj(&mut self, projectee_item_id: &ItemId) -> Result<(), RemoveDroneProjError> {
-        let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
-        self.sol.internal_remove_drone_proj(self.key, projectee_item_key)?;
-        Ok(())
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum RemoveDroneProjError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjectionNotFound(#[from] ProjFoundError),
 }

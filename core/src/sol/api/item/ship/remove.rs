@@ -5,9 +5,9 @@ impl SolarSystem {
         let uad_ship = self.uad.items.get(item_key).get_ship().unwrap();
         let fit_key = uad_ship.get_fit_key();
         // Remove incoming projections
-        self.remove_incoming_projections(item_key);
+        self.internal_remove_incoming_projections(item_key);
         // Remove ship from services
-        self.remove_item_key_from_svc(item_key);
+        self.internal_remove_item_key_from_svc(item_key);
         // Remove ship from user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.ship = None;

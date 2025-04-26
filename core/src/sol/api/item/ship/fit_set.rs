@@ -20,7 +20,7 @@ impl SolarSystem {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.ship = Some(item_key);
         uad_fit.kind = ship_kind;
-        self.add_item_key_to_svc(item_key);
+        self.internal_add_item_key_to_svc(item_key);
         item_key
     }
 }

@@ -6,8 +6,8 @@ pub use booster::{
 pub use character::{Character, CharacterMut, GetCharacterError};
 pub use charge::{Charge, ChargeMut, GetChargeError};
 pub use drone::{
-    AddDroneMutationError, AddDroneProjError, ChangeDroneMutationError, ChangeDroneProjError, Drone, DroneMut,
-    GetDroneError, RemoveDroneMutationError, RemoveDroneProjError,
+    AddDroneMutationError, AddDroneProjError, ChangeDroneMutationError, Drone, DroneMut, GetDroneError,
+    RemoveDroneMutationError,
 };
 pub use fighter::{
     AddFighterProjError, ChangeFighterProjError, Fighter, FighterMut, GetFighterError, RemoveFighterProjError,
@@ -23,6 +23,7 @@ pub use module::{
 pub use proj_effect::{AddProjError, GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjMut};
 pub use rig::{GetRigError, Rig, RigMut};
 pub use service::{GetServiceError, Service, ServiceMut};
+pub use shared::{GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
 pub use ship::{GetShipError, Ship, ShipMut};
 pub use skill::{AddSkillError, GetSkillError, SetSkillLevelError, Skill, SkillMut};
 pub use stance::{GetStanceError, Stance, StanceMut};
@@ -46,6 +47,7 @@ mod module;
 mod proj_effect;
 mod rig;
 mod service;
+mod shared;
 mod ship;
 mod skill;
 mod stance;

@@ -29,7 +29,7 @@ impl SolarSystem {
                 let item = UadItem::Skill(skill);
                 let item_key = self.uad.items.add(item);
                 entry.insert(FitSkill { item_key, level });
-                self.add_item_key_to_svc(item_key);
+                self.internal_add_item_key_to_svc(item_key);
                 Ok(item_key)
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {

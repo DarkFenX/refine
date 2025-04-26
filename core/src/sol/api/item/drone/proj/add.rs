@@ -34,7 +34,7 @@ impl SolarSystem {
         uad_drone.get_projs_mut().add(projectee_item_key, range);
         self.proj_tracker.reg_projectee(item_key, projectee_item_key);
         // Update services
-        self.add_item_key_projection_to_svc(item_key, projectee_item_key, range);
+        self.internal_add_item_key_projection_to_svc(item_key, projectee_item_key, range);
         Ok(())
     }
 }

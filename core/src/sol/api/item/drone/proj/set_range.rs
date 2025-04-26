@@ -1,6 +1,6 @@
 use crate::{
-    err::basic::{ItemFoundError, ProjFoundError},
-    sol::{AttrVal, ItemId, ItemKey, SolarSystem, api::DroneMut},
+    err::basic::ProjFoundError,
+    sol::{AttrVal, ItemKey, SolarSystem},
 };
 
 impl SolarSystem {
@@ -28,28 +28,7 @@ impl SolarSystem {
         // Update user data
         drone.get_projs_mut().add(projectee_item_key, range);
         // Update services
-        self.change_item_key_projection_range_in_svc(item_key, projectee_item_key, range);
+        self.internal_change_item_key_projection_range_in_svc(item_key, projectee_item_key, range);
         Ok(())
     }
-}
-
-impl<'a> DroneMut<'a> {
-    pub fn change_proj_range(
-        &mut self,
-        projectee_item_id: &ItemId,
-        range: Option<AttrVal>,
-    ) -> Result<(), ChangeDroneProjError> {
-        let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
-        self.sol
-            .internal_change_drone_proj(self.key, projectee_item_key, range)?;
-        Ok(())
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum ChangeDroneProjError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjectionNotFound(#[from] ProjFoundError),
 }
