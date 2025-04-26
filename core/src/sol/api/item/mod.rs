@@ -16,7 +16,9 @@ pub use module::{
     AddModuleMutationError, ChangeModuleMutationError, GetModuleError, Module, ModuleIter, ModuleMut,
     RemoveModuleChargeError, RemoveModuleMutationError,
 };
-pub use proj_effect::{AddProjError, GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjMut};
+pub use proj_effect::{
+    AddProjError, GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut,
+};
 pub use rig::{GetRigError, Rig, RigMut};
 pub use service::{GetServiceError, Service, ServiceMut};
 pub use shared::{AddRangedProjError, GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};

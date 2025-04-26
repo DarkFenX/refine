@@ -1,3 +1,4 @@
+//! Validation-related exports
 pub use crate::sol::svc::vast::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail, ValChargeSizeChargeInfo,
     ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValFighterSquadSizeFail,

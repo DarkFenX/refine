@@ -1,5 +1,5 @@
 pub use get::GetProjEffectError;
-pub use proj::{AddProjError, GetProjError, Proj, ProjMut};
+pub use proj::{AddProjError, GetProjError, Proj, ProjIter, ProjMut};
 pub use proj_effect::{ProjEffect, ProjEffectMut};
 
 mod add;
