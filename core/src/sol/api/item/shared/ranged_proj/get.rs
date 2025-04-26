@@ -1,10 +1,29 @@
 use crate::{
     err::basic::{ItemFoundError, ProjFoundError},
-    sol::{ItemId, ItemKey, SolarSystem},
+    sol::{
+        ItemId, ItemKey, SolarSystem,
+        api::{RangedProj, RangedProjMut},
+    },
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_get_ranged_projectee_item_key(
+    pub(in crate::sol::api) fn internal_get_ranged_proj(
+        &self,
+        projector_item_key: ItemKey,
+        projectee_item_id: &ItemId,
+    ) -> Result<RangedProj, GetRangedProjError> {
+        let projectee_item_key = self.internal_get_ranged_projectee_item_key(projector_item_key, projectee_item_id)?;
+        Ok(RangedProj::new(self, projector_item_key, projectee_item_key))
+    }
+    pub(in crate::sol::api) fn internal_get_ranged_proj_mut(
+        &mut self,
+        projector_item_key: ItemKey,
+        projectee_item_id: &ItemId,
+    ) -> Result<RangedProjMut, GetRangedProjError> {
+        let projectee_item_key = self.internal_get_ranged_projectee_item_key(projector_item_key, projectee_item_id)?;
+        Ok(RangedProjMut::new(self, projector_item_key, projectee_item_key))
+    }
+    fn internal_get_ranged_projectee_item_key(
         &self,
         projector_item_key: ItemKey,
         projectee_item_id: &ItemId,

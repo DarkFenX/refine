@@ -5,24 +5,15 @@ use crate::sol::{
 
 impl<'a> Module<'a> {
     pub fn get_proj(&self, projectee_item_id: &ItemId) -> Result<RangedProj, GetRangedProjError> {
-        let projectee_item_key = self
-            .sol
-            .internal_get_ranged_projectee_item_key(self.key, projectee_item_id)?;
-        Ok(RangedProj::new(self.sol, self.key, projectee_item_key))
+        self.sol.internal_get_ranged_proj(self.key, projectee_item_id)
     }
 }
 
 impl<'a> ModuleMut<'a> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj, GetRangedProjError> {
-        let projectee_item_key = self
-            .sol
-            .internal_get_ranged_projectee_item_key(self.key, projectee_item_id)?;
-        Ok(RangedProj::new(self.sol, self.key, projectee_item_key))
+        self.sol.internal_get_ranged_proj(self.key, projectee_item_id)
     }
     pub fn get_proj_mut(&mut self, projectee_item_id: &ItemId) -> Result<RangedProjMut, GetRangedProjError> {
-        let projectee_item_key = self
-            .sol
-            .internal_get_ranged_projectee_item_key(self.key, projectee_item_id)?;
-        Ok(RangedProjMut::new(self.sol, self.key, projectee_item_key))
+        self.sol.internal_get_ranged_proj_mut(self.key, projectee_item_id)
     }
 }
