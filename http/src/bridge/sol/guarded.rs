@@ -9,7 +9,7 @@ pub(crate) struct HSolarSystem {
     inner: Arc<Mutex<HSolarSystemInner>>,
 }
 impl HSolarSystem {
-    pub(crate) fn new(id: String, core_sol: rc::SolarSystem) -> Self {
+    pub(crate) fn new(id: String, core_sol: Box<rc::SolarSystem>) -> Self {
         Self {
             inner: Arc::new(Mutex::new(HSolarSystemInner::new(id, core_sol))),
         }

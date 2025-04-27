@@ -17,7 +17,7 @@ use crate::{
 pub(crate) struct HSolarSystemInner {
     id: String,
     accessed: chrono::DateTime<chrono::Utc>,
-    core_sol: Option<rc::SolarSystem>,
+    core_sol: Option<Box<rc::SolarSystem>>,
 }
 /// Wraps core solar system. Serves as a bridge between async HTTP module and sync/multithreaded
 /// computational code.
@@ -31,7 +31,7 @@ pub(crate) struct HSolarSystemInner {
 ///   even if underlying operations can produce errors (e.g. there is rollback code in core library
 ///   methods).
 impl HSolarSystemInner {
-    pub(crate) fn new(id: String, core_sol: rc::SolarSystem) -> Self {
+    pub(crate) fn new(id: String, core_sol: Box<rc::SolarSystem>) -> Self {
         Self {
             id,
             accessed: chrono::Utc::now(),
@@ -596,7 +596,7 @@ impl HSolarSystemInner {
         Ok(())
     }
     // Helper methods
-    fn take_sol(&mut self) -> Result<rc::SolarSystem, HBrError> {
+    fn take_sol(&mut self) -> Result<Box<rc::SolarSystem>, HBrError> {
         match self.core_sol.take() {
             Some(core_sol) => Ok(core_sol),
             None => {
@@ -605,7 +605,7 @@ impl HSolarSystemInner {
             }
         }
     }
-    fn put_sol_back(&mut self, core_sol: rc::SolarSystem) {
+    fn put_sol_back(&mut self, core_sol: Box<rc::SolarSystem>) {
         self.core_sol = Some(core_sol);
         self.touch();
     }
