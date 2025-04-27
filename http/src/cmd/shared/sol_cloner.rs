@@ -18,6 +18,7 @@ impl<'a> HSolCloner<'a> {
 
 pub(in crate::cmd) struct HSolClonerInner<'a> {
     original: &'a rc::SolarSystem,
+    #[allow(clippy::vec_box)]
     allocated: Vec<Box<rc::SolarSystem>>,
 }
 impl<'a> HSolClonerInner<'a> {

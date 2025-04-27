@@ -67,7 +67,7 @@ impl HChangeFighterCmd {
         }
         for projectee_item_id in self.rm_projs.iter() {
             core_fighter
-                .get_proj_mut(&projectee_item_id)
+                .get_proj_mut(projectee_item_id)
                 .map_err(|error| match error {
                     rc::err::GetRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::GetRangedProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
