@@ -18,7 +18,7 @@ impl<'a> HSolCloner<'a> {
 
 pub(in crate::cmd) struct HSolClonerInner<'a> {
     original: &'a rc::SolarSystem,
-    allocated: Vec<rc::SolarSystem>,
+    allocated: Vec<Box<rc::SolarSystem>>,
 }
 impl<'a> HSolClonerInner<'a> {
     fn new(original: &'a rc::SolarSystem) -> Self {
@@ -27,13 +27,13 @@ impl<'a> HSolClonerInner<'a> {
             allocated: Vec::with_capacity(tokio_rayon::rayon::current_num_threads()),
         }
     }
-    pub(in crate::cmd) fn get(&mut self) -> rc::SolarSystem {
+    pub(in crate::cmd) fn get(&mut self) -> Box<rc::SolarSystem> {
         match self.allocated.pop() {
             Some(sol) => sol,
-            None => self.original.clone(),
+            None => Box::new(self.original.clone()),
         }
     }
-    pub(in crate::cmd) fn put(&mut self, sol: rc::SolarSystem) {
+    pub(in crate::cmd) fn put(&mut self, sol: Box<rc::SolarSystem>) {
         self.allocated.push(sol);
     }
 }
