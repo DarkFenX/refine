@@ -4,7 +4,7 @@ pub use misc::{
 };
 pub use primitives::{
     AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
-    MutaRoll, SlotIndex,
+    SlotIndex,
 };
 pub(in crate::sol) use primitives::{FitKey, FleetKey, ItemKey};
 pub use sol::SolarSystem;

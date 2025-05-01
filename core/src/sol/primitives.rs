@@ -13,7 +13,6 @@ pub type CustomEffectId = i32;
 pub type AttrVal = OF<f64>;
 pub type Count = u32;
 pub type Idx = usize;
-pub type MutaRoll = OF<f64>;
 pub type SlotIndex = i32;
 // Internal-only entity IDs
 pub(in crate::sol) type ItemKey = usize;

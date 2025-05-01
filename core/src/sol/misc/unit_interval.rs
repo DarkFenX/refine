@@ -13,8 +13,11 @@ impl UnitInterval {
         }
     }
     pub fn new_clamped(value: impl Into<f64>) -> Self {
+        Self::new_clamped_of64(OF(value.into()))
+    }
+    pub(in crate::sol) fn new_clamped_of64(value: OF<f64>) -> Self {
         Self {
-            inner: OF(0.0).max(OF(1.0).min(OF(value.into()))),
+            inner: OF(0.0).max(OF(1.0).min(value)),
         }
     }
     pub fn get_inner(&self) -> OF<f64> {

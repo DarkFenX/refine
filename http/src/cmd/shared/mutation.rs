@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::shared::HMutaRoll;
+
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnAdd {
@@ -55,13 +57,13 @@ impl From<&HItemMutationFull> for rc::ItemAddMutation {
 #[derive(serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::cmd) enum HItemAttrMutationValue {
-    Roll(rc::MutaRoll),
+    Roll(HMutaRoll),
     Absolute(rc::AttrVal),
 }
 impl From<&HItemAttrMutationValue> for rc::ItemAttrMutationValue {
     fn from(h_mutation_value: &HItemAttrMutationValue) -> Self {
         match h_mutation_value {
-            HItemAttrMutationValue::Roll(roll) => Self::Roll(*roll),
+            HItemAttrMutationValue::Roll(roll) => Self::Roll(rc::UnitInterval::new_clamped(*roll)),
             HItemAttrMutationValue::Absolute(absolute) => Self::Absolute(*absolute),
         }
     }

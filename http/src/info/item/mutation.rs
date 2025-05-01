@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::shared::HMutaRoll;
+
 #[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HItemMutationInfo {
     pub(crate) base_type_id: rc::ItemTypeId,
@@ -22,13 +24,13 @@ impl From<&rc::ItemMutationInfo> for HItemMutationInfo {
 
 #[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HAttrMutationInfo {
-    pub(crate) roll: Option<rc::MutaRoll>,
+    pub(crate) roll: Option<HMutaRoll>,
     pub(crate) value: rc::AttrVal,
 }
 impl From<&rc::AttrMutationInfo> for HAttrMutationInfo {
     fn from(core_attr_mutation_info: &rc::AttrMutationInfo) -> Self {
         Self {
-            roll: core_attr_mutation_info.roll,
+            roll: core_attr_mutation_info.roll.map(|v| v.get_inner().into_inner()),
             value: core_attr_mutation_info.value,
         }
     }

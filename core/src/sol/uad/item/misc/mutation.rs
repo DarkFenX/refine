@@ -1,4 +1,4 @@
-use crate::sol::{AttrId, AttrVal, ItemTypeId, MutaRoll};
+use crate::sol::{AttrId, AttrVal, ItemTypeId, UnitInterval};
 
 /// Specifies how item should be mutated.
 pub struct ItemAddMutation {
@@ -48,7 +48,7 @@ impl ItemChangeAttrMutation {
 /// Specifies value of a single attribute mutation.
 pub enum ItemAttrMutationValue {
     /// Roll quality as a value on range \[0, 1\].
-    Roll(MutaRoll),
+    Roll(UnitInterval),
     /// Absolute value of the attribute.
     ///
     /// Note that internally range value is used. To correctly interpret absolute value, current

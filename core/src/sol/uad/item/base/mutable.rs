@@ -4,7 +4,7 @@ use crate::{
     ad,
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
-        ItemId, MutaRoll,
+        ItemId, UnitInterval,
         info::{AttrMutationInfo, ItemMutationInfo},
         uad::item::{EffectModes, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, UadItemBase},
     },
@@ -472,12 +472,12 @@ impl UadItemBaseMutable {
 struct ItemMutationData {
     // User-defined data
     a_mutator_id: ad::AItemId,
-    attr_rolls: RMap<ad::AAttrId, MutaRoll>,
+    attr_rolls: RMap<ad::AAttrId, UnitInterval>,
     // Source-dependent data
     cache: Option<ItemMutationDataCache>,
 }
 impl ItemMutationData {
-    fn new_with_attrs(a_mutator_id: ad::AItemId, attr_rolls: RMap<ad::AAttrId, MutaRoll>) -> Self {
+    fn new_with_attrs(a_mutator_id: ad::AItemId, attr_rolls: RMap<ad::AAttrId, UnitInterval>) -> Self {
         Self {
             a_mutator_id,
             attr_rolls,
@@ -507,9 +507,9 @@ fn convert_item_mutation_basic(mutation_request: ItemAddMutation) -> ItemMutatio
     )
 }
 
-fn normalize_attr_mutation_simple(value: ItemAttrMutationValue) -> Option<MutaRoll> {
+fn normalize_attr_mutation_simple(value: ItemAttrMutationValue) -> Option<UnitInterval> {
     match value {
-        ItemAttrMutationValue::Roll(roll) => Some(limit_roll(roll)),
+        ItemAttrMutationValue::Roll(roll) => Some(roll),
         ItemAttrMutationValue::Absolute(_) => None,
     }
 }
@@ -538,9 +538,9 @@ fn normalize_attr_mutation_full_with_unmutated_values(
     unmutated_attrs: &RMap<ad::AAttrId, ad::AAttrVal>,
     a_mutator: &ad::AMuta,
     attr_mutation_value: ItemAttrMutationValue,
-) -> Option<MutaRoll> {
+) -> Option<UnitInterval> {
     match attr_mutation_value {
-        ItemAttrMutationValue::Roll(roll) => Some(limit_roll(roll)),
+        ItemAttrMutationValue::Roll(roll) => Some(roll),
         ItemAttrMutationValue::Absolute(absolute) => {
             let unmutated_value = match unmutated_attrs.get(attr_id) {
                 Some(unmutated_value) => *unmutated_value,
@@ -557,9 +557,9 @@ fn normalize_attr_mutation_full_with_unmutated_value(
     unmutated_a_value: Option<ad::AAttrVal>,
     a_mutator: &ad::AMuta,
     attr_mutation_value: ItemAttrMutationValue,
-) -> Option<MutaRoll> {
+) -> Option<UnitInterval> {
     match attr_mutation_value {
-        ItemAttrMutationValue::Roll(roll) => Some(limit_roll(roll)),
+        ItemAttrMutationValue::Roll(roll) => Some(roll),
         ItemAttrMutationValue::Absolute(absolute) => {
             let mutation_range = a_mutator.attr_mods.get(a_attr_id)?;
             normalize_a_attr_value(absolute, unmutated_a_value?, mutation_range)
@@ -571,25 +571,21 @@ fn normalize_a_attr_value(
     absolute_a_value: ad::AAttrVal,
     unmutated_a_value: ad::AAttrVal,
     a_mutation_range: &ad::AMutaAttrRange,
-) -> Option<MutaRoll> {
+) -> Option<UnitInterval> {
     let min_value = unmutated_a_value * a_mutation_range.min_mult;
     let max_value = unmutated_a_value * a_mutation_range.max_mult;
     if min_value == max_value {
         return None;
     }
     let value = (absolute_a_value - min_value) / (max_value - min_value);
-    Some(limit_roll(value))
-}
-
-fn limit_roll(roll: MutaRoll) -> MutaRoll {
-    MutaRoll::max(OF(0.0), MutaRoll::min(OF(1.0), roll))
+    Some(UnitInterval::new_clamped_of64(value))
 }
 
 // Attribute mutations
 fn apply_attr_mutations(
     a_attrs: &mut RMap<ad::AAttrId, ad::AAttrVal>,
     a_mutator: &ad::AMuta,
-    attr_rolls: &RMap<ad::AAttrId, MutaRoll>,
+    attr_rolls: &RMap<ad::AAttrId, UnitInterval>,
 ) {
     for (attr_id, attr_mutation_range) in a_mutator.attr_mods.iter() {
         let unmutated_value = match a_attrs.get(attr_id) {
@@ -613,9 +609,9 @@ fn apply_attr_mutations(
 fn mutate_a_attr_value(
     unmutated_a_value: ad::AAttrVal,
     roll_range: &ad::AMutaAttrRange,
-    roll: MutaRoll,
+    roll: UnitInterval,
 ) -> ad::AAttrVal {
-    unmutated_a_value * (roll_range.min_mult + roll * (roll_range.max_mult - roll_range.min_mult))
+    unmutated_a_value * (roll_range.min_mult + roll.get_inner() * (roll_range.max_mult - roll_range.min_mult))
 }
 
 fn limit_a_attr_value(unmutated_a_value: ad::AAttrVal, roll_range: &ad::AMutaAttrRange) -> ad::AAttrVal {

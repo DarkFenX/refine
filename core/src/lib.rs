@@ -23,8 +23,8 @@ pub use defs::VERSION;
 pub use lender::Lender;
 pub use sol::{
     AddMode, AttrId, AttrVal, BreacherInfo, Count, CustomEffectId, DogmaEffectId, DpsProfile, EffectId, EffectInfo,
-    EffectMode, FitId, FitSecStatus, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId, ModRack, MutaRoll, OpInfo, RmMode,
-    SecZone, SecZoneCorruption, SkillLevel, SlotIndex, SolarSystem,
+    EffectMode, FitId, FitSecStatus, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId, ModRack, OpInfo, RmMode, SecZone,
+    SecZoneCorruption, SkillLevel, SlotIndex, SolarSystem, UnitInterval,
     api::{
         Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
         Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut,

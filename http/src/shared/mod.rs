@@ -3,7 +3,7 @@ pub(crate) use effect_id::HEffectId;
 pub(crate) use effect_mode::HEffectMode;
 pub(crate) use minion_state::HMinionState;
 pub(crate) use module_state::HModuleState;
-pub(crate) use primitives::{HFitSecStatus, HSkillLevel};
+pub(crate) use primitives::{HFitSecStatus, HMutaRoll, HSkillLevel};
 pub(crate) use rack::HModRack;
 pub(crate) use sec_zone::HSecZone;
 pub(crate) use service_state::HServiceState;
