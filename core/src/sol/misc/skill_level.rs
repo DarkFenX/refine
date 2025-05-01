@@ -13,9 +13,9 @@ impl SkillLevel {
             level => Ok(Self { inner: level }),
         }
     }
-    pub fn new_coerced(level: impl Into<SkillLevelInner>) -> Self {
+    pub fn new_clamped(level: impl Into<SkillLevelInner>) -> Self {
         Self {
-            inner: SkillLevelInner::max(0, SkillLevelInner::min(5, level.into())),
+            inner: 0.max(5.min(level.into())),
         }
     }
     pub fn get_inner(&self) -> SkillLevelInner {

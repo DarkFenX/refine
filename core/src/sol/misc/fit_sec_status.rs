@@ -12,9 +12,9 @@ impl FitSecStatus {
             false => Err(FitSecStatusError { sec_status }),
         }
     }
-    pub fn new_coerced(sec_status: impl Into<f64>) -> Self {
+    pub fn new_clamped(sec_status: impl Into<f64>) -> Self {
         Self {
-            inner: OF::max(OF(-10.0), OF::min(OF(5.0), OF(sec_status.into()))),
+            inner: OF(-10.0).max(OF(5.0).min(OF(sec_status.into()))),
         }
     }
     pub fn get_inner(&self) -> OF<f64> {

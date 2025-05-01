@@ -11,6 +11,7 @@ pub use op::OpInfo;
 pub use pos_modes::{AddMode, RmMode};
 pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use skill_level::{SkillLevel, SkillLevelError};
+pub use unit_interval::{UnitInterval, UnitIntervalError};
 
 mod adj_count;
 mod breacher_info;
@@ -25,3 +26,4 @@ mod op;
 mod pos_modes;
 mod sec_zone;
 mod skill_level;
+mod unit_interval;

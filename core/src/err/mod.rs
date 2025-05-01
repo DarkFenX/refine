@@ -12,7 +12,7 @@ pub use crate::{
             RemoveItemError, RemoveModuleMutationError, SetFighterCountOverrideError, SetFitFleetError,
             UnsetFitFleetError,
         },
-        misc::{BreacherInfoError, DpsProfileError, FitSecStatusError, SkillLevelError},
+        misc::{BreacherInfoError, DpsProfileError, FitSecStatusError, SkillLevelError, UnitIntervalError},
     },
     src::SrcInitError,
 };

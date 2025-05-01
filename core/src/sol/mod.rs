@@ -1,6 +1,6 @@
 pub use misc::{
     AddMode, AdjustableCount, BreacherInfo, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, FitSecStatus,
-    ModRack, OpInfo, RmMode, SecZone, SecZoneCorruption, SkillLevel,
+    ModRack, OpInfo, RmMode, SecZone, SecZoneCorruption, SkillLevel, UnitInterval,
 };
 pub use primitives::{
     AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,

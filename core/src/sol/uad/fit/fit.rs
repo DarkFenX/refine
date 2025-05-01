@@ -56,7 +56,7 @@ impl UadFit {
             drones: RSet::new(),
             fighters: RSet::new(),
             fw_effects: RSet::new(),
-            sec_status: FitSecStatus::new_coerced(0.0),
+            sec_status: FitSecStatus::new_clamped(0.0),
             rah_incoming_dps: None,
         }
     }
