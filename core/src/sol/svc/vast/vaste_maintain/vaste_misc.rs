@@ -21,19 +21,19 @@ impl Vast {
                     true => {
                         entry.remove();
                     }
-                    false => entry.get_mut().current_lvl = Some(skill.get_a_level()),
+                    false => entry.get_mut().current_lvl = Some(skill.get_a_level().into()),
                 },
                 Entry::Vacant(entry) => {
                     let other_item = uad.items.get(*other_item_key);
-                    let required_lvl = *other_item
+                    let required_a_lvl = *other_item
                         .get_effective_a_skill_reqs()
                         .unwrap()
                         .get(&skill.get_a_item_id())
                         .unwrap();
-                    if skill.get_a_level() < required_lvl {
+                    if skill.get_a_level() < required_a_lvl {
                         entry.insert(ValSrqSkillInfo {
-                            current_lvl: Some(skill.get_a_level()),
-                            required_lvl,
+                            current_lvl: Some(skill.get_a_level().into()),
+                            required_lvl: required_a_lvl.into(),
                         });
                     }
                 }

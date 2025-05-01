@@ -8,7 +8,7 @@ pub struct BreacherInfo {
     relative_max: AttrVal,
 }
 impl BreacherInfo {
-    pub fn try_new(absolute_max: AttrVal, relative_max: AttrVal) -> Result<Self, NewBreacherInfoError> {
+    pub fn try_new(absolute_max: AttrVal, relative_max: AttrVal) -> Result<Self, BreacherInfoError> {
         if absolute_max < OF(0.0) {
             return Err(BreacherDmgError::Absolute(absolute_max).into());
         }
@@ -29,7 +29,7 @@ impl BreacherInfo {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum NewBreacherInfoError {
+pub enum BreacherInfoError {
     #[error("{0}")]
     InvalidValue(#[from] BreacherDmgError),
 }

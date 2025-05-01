@@ -1,9 +1,4 @@
-use crate::{
-    err::basic::SkillLevelError,
-    sol::{ItemKey, SkillLevel, SolarSystem, api::SkillMut},
-};
-
-use super::misc::check_skill_level;
+use crate::sol::{ItemKey, SkillLevel, SolarSystem, api::SkillMut};
 
 impl SolarSystem {
     pub(in crate::sol) fn internal_set_skill_level(&mut self, item_key: ItemKey, level: SkillLevel) {
@@ -11,7 +6,7 @@ impl SolarSystem {
         if uad_skill.get_a_level() == level {
             return;
         }
-        uad_skill.set_a_level(level);
+        uad_skill.set_a_level(level.into());
         self.uad
             .fits
             .get_mut(uad_skill.get_fit_key())
@@ -25,15 +20,7 @@ impl SolarSystem {
 }
 
 impl<'a> SkillMut<'a> {
-    pub fn set_level(&mut self, level: SkillLevel) -> Result<(), SetSkillLevelError> {
-        check_skill_level(level)?;
+    pub fn set_level(&mut self, level: SkillLevel) {
         self.sol.internal_set_skill_level(self.key, level);
-        Ok(())
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum SetSkillLevelError {
-    #[error("{0}")]
-    SkillLevelError(#[from] SkillLevelError),
 }

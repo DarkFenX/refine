@@ -24,7 +24,7 @@ pub use service::{GetServiceError, Service, ServiceMut};
 pub use shared::{AddRangedProjError, GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
 pub(in crate::sol::api) use shared::{iter_projectee_item_keys, iter_ranged_projs};
 pub use ship::{GetShipError, Ship, ShipMut};
-pub use skill::{AddSkillError, GetSkillError, SetSkillLevelError, Skill, SkillMut};
+pub use skill::{AddSkillError, GetSkillError, Skill, SkillMut};
 pub use stance::{GetStanceError, Stance, StanceMut};
 pub use subsystem::{GetSubsystemError, Subsystem, SubsystemMut};
 pub use sw_effect::{GetSwEffectError, SwEffect, SwEffectMut};

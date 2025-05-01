@@ -24,7 +24,7 @@ impl From<&rc::ad::AItem> for CItem {
             attrs: (&a_item.attrs).into(),
             effect_datas: a_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: a_item.defeff_id.as_ref().map(|v| v.into()),
-            srqs: (&a_item.srqs).into(),
+            srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.get_inner())).collect(),
             extras: (&a_item.extras).into(),
         }
     }
@@ -38,7 +38,11 @@ impl From<&CItem> for rc::ad::AItem {
             attrs: (&c_item.attrs).into(),
             effect_datas: c_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: c_item.defeff_id.as_ref().map(|v| v.into()),
-            srqs: (&c_item.srqs).into(),
+            srqs: c_item
+                .srqs
+                .iter()
+                .map(|(k, v)| (*k, rc::ad::ASkillLevel::new(*v)))
+                .collect(),
             extras: (&c_item.extras).into(),
         }
     }

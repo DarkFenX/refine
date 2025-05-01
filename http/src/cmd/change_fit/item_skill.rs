@@ -1,12 +1,13 @@
 use crate::{
     cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
+    shared::HSkillLevel,
     util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddSkillCmd {
     type_id: rc::ItemTypeId,
-    level: rc::SkillLevel,
+    level: HSkillLevel,
     state: Option<bool>,
 }
 impl HAddSkillCmd {
@@ -16,10 +17,10 @@ impl HAddSkillCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let core_level = rc::SkillLevel::new_checked(self.level)?;
         let mut core_skill = core_fit
-            .add_skill(self.type_id, self.level)
+            .add_skill(self.type_id, core_level)
             .map_err(|error| match error {
-                rc::err::AddSkillError::InvalidSkillLevel(e) => HExecError::InvalidSkillLevel(e),
                 rc::err::AddSkillError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
             })?;
         if let Some(state) = self.state {

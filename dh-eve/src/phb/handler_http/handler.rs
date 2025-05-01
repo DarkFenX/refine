@@ -28,7 +28,10 @@ impl PhbHttpEdh {
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
     ///
     /// This data handler assumes that data version is known before its construction.
-    pub fn new<U: IntoUrl + Copy + Into<String>>(base_url: U, data_version: String) -> Result<Self, Error> {
+    pub fn new<U>(base_url: U, data_version: String) -> Result<Self, Error>
+    where
+        U: IntoUrl + Copy + Into<String>,
+    {
         let base_url_conv = base_url
             .into_url()
             .map_err(|e| Error::PhbHttpInvalidBaseUrl(base_url.into(), format!("failed to interpret: {e}")))?;

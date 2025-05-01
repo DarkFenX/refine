@@ -20,7 +20,7 @@ impl DpsProfile {
         kinetic: AttrVal,
         explosive: AttrVal,
         breacher: Option<BreacherInfo>,
-    ) -> Result<Self, NewDpsProfileError> {
+    ) -> Result<Self, DpsProfileError> {
         if em < OF(0.0) {
             return Err(DmgError::Em(em).into());
         }
@@ -65,7 +65,7 @@ impl DpsProfile {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum NewDpsProfileError {
+pub enum DpsProfileError {
     #[error("{0}")]
     InvalidDmg(#[from] DmgError),
 }

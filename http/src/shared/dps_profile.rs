@@ -60,7 +60,7 @@ impl TryFrom<&HDpsProfile> for rc::DpsProfile {
                 Ok(breacher_info) => Some(breacher_info),
                 Err(core_err) => {
                     return Err(match core_err {
-                        rc::err::NewBreacherInfoError::InvalidValue(e) => Self::Error::InvalidBreacher(e),
+                        rc::err::BreacherInfoError::InvalidValue(e) => Self::Error::InvalidBreacher(e),
                     });
                 }
             },
@@ -75,7 +75,7 @@ impl TryFrom<&HDpsProfile> for rc::DpsProfile {
         ) {
             Ok(dps_profile) => Ok(dps_profile),
             Err(core_err) => Err(match core_err {
-                rc::err::NewDpsProfileError::InvalidDmg(e) => Self::Error::InvalidDpsProfile(e),
+                rc::err::DpsProfileError::InvalidDmg(e) => Self::Error::InvalidDpsProfile(e),
             }),
         }
     }

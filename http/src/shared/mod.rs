@@ -6,6 +6,7 @@ pub(crate) use module_state::HModuleState;
 pub(crate) use rack::HModRack;
 pub(crate) use sec_zone::HSecZone;
 pub(crate) use service_state::HServiceState;
+pub(crate) use skill_level::HSkillLevel;
 
 mod dps_profile;
 mod effect_id;
@@ -15,3 +16,4 @@ mod module_state;
 mod rack;
 mod sec_zone;
 mod service_state;
+mod skill_level;

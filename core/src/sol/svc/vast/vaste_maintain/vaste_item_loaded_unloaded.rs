@@ -31,15 +31,19 @@ impl Vast {
             if !a_srqs.is_empty() {
                 let mut missing_skills = RMap::new();
                 let fit = uad.fits.get(fit_key);
-                for (&skill_a_item_id, &required_lvl) in a_srqs.iter() {
+                for (&skill_a_item_id, &required_a_lvl) in a_srqs.iter() {
                     fit_data.srqs_skill_item_map.add_entry(skill_a_item_id, item_key);
                     let current_lvl = fit.skills.get(&skill_a_item_id).map(|v| v.level);
-                    if current_lvl.unwrap_or(0) < required_lvl {
+                    let effective_lvl = match current_lvl {
+                        Some(current_lvl) => current_lvl.get_inner(),
+                        None => 0,
+                    };
+                    if effective_lvl < required_a_lvl.get_inner() {
                         missing_skills.insert(
                             skill_a_item_id,
                             ValSrqSkillInfo {
                                 current_lvl,
-                                required_lvl,
+                                required_lvl: required_a_lvl.into(),
                             },
                         );
                     }

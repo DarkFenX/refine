@@ -78,9 +78,10 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &EData, g_supp: &GSupport) 
     }
     // Item skill requirements
     for e_item_srq in e_data.item_srqs.iter() {
-        a_items
-            .get_mut(&e_item_srq.item_id)
-            .and_then(|v| v.srqs.insert(e_item_srq.skill_id, e_item_srq.level));
+        a_items.get_mut(&e_item_srq.item_id).and_then(|v| {
+            v.srqs
+                .insert(e_item_srq.skill_id, ad::ASkillLevel::new(e_item_srq.level))
+        });
     }
     a_items
 }

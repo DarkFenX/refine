@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::shared::HSkillLevel;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
@@ -29,14 +31,16 @@ impl From<&rc::val::ValSrqFail> for HValSrqFail {
 
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HValSrqSkillInfo {
-    current_lvl: Option<rc::SkillLevel>,
-    required_lvl: rc::SkillLevel,
+    current_lvl: Option<HSkillLevel>,
+    required_lvl: HSkillLevel,
 }
 impl From<&rc::val::ValSrqSkillInfo> for HValSrqSkillInfo {
     fn from(core_val_skill: &rc::val::ValSrqSkillInfo) -> Self {
         Self {
-            current_lvl: core_val_skill.current_lvl,
-            required_lvl: core_val_skill.required_lvl,
+            current_lvl: core_val_skill
+                .current_lvl
+                .map(|core_skill_level| core_skill_level.get_inner()),
+            required_lvl: core_val_skill.required_lvl.get_inner(),
         }
     }
 }

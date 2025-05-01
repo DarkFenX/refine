@@ -23,4 +23,3 @@ pub type AItemCatId = i32;
 pub type AAttrVal = OF<f64>;
 pub type ACount = u32;
 pub type ASlotIndex = i32;
-pub type ASkillLevel = u8;

@@ -1,7 +1,7 @@
 pub use adj_count::AdjustableCount;
-pub use breacher_info::{BreacherInfo, NewBreacherInfoError};
+pub use breacher_info::{BreacherInfo, BreacherInfoError};
 pub use dmg_types::DmgKinds;
-pub use dps_profile::{DpsProfile, NewDpsProfileError};
+pub use dps_profile::{DpsProfile, DpsProfileError};
 pub use effect_id::EffectId;
 pub use effect_info::EffectInfo;
 pub use effect_mode::EffectMode;
@@ -9,6 +9,7 @@ pub use mod_rack::ModRack;
 pub use op::OpInfo;
 pub use pos_modes::{AddMode, RmMode};
 pub use sec_zone::{SecZone, SecZoneCorruption};
+pub use skill_level::{SkillLevel, SkillLevelError};
 
 mod adj_count;
 mod breacher_info;
@@ -21,3 +22,4 @@ mod mod_rack;
 mod op;
 mod pos_modes;
 mod sec_zone;
+mod skill_level;

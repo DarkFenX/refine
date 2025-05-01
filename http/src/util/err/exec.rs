@@ -38,7 +38,7 @@ pub(crate) enum HExecError {
     #[error("{0}")]
     UnremovableAutocharge(#[source] rc::err::basic::ItemKindRemoveError),
     #[error("{0}")]
-    InvalidSkillLevel(#[source] rc::err::basic::SkillLevelError),
+    InvalidSkillLevel(#[from] rc::err::SkillLevelError),
     #[error("{0}")]
     InvalidFighterCount(#[source] rc::err::basic::FighterCountError),
     #[error("{0}")]

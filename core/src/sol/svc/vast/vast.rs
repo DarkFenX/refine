@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        AttrVal, Count, FitKey, ItemKey, SkillLevel,
+        AttrVal, Count, FitKey, ItemKey,
         svc::vast::{
             ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
             ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind,
@@ -73,7 +73,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) drone_group_limit: Vec<ad::AItemGrpId>,
     pub(in crate::sol::svc::vast) drone_groups: RMap<ItemKey, ad::AItemGrpId>,
     pub(in crate::sol::svc::vast) fighter_squad_size: RMap<ItemKey, ValFighterSquadSizeFighterInfo>,
-    pub(in crate::sol::svc::vast) overload_td_lvl: RMap<ItemKey, SkillLevel>,
+    pub(in crate::sol::svc::vast) overload_td_lvl: RMap<ItemKey, ad::ASkillLevel>,
     pub(in crate::sol::svc::vast) mods_svcs_max_type_fitted: RMapRMap<ad::AItemId, ItemKey, Count>,
     pub(in crate::sol::svc::vast) sec_zone_fitted: RSet<ItemKey>,
     pub(in crate::sol::svc::vast) sec_zone_fitted_wspace_banned: RSet<ItemKey>,
