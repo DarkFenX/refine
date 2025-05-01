@@ -1,6 +1,4 @@
-pub use fit::{
-    Fit, FitMut, GetFitError, RemoveFitRahIncomingDpsError, SetFitFleetError, SetFitSecStatusError, UnsetFitFleetError,
-};
+pub use fit::{Fit, FitMut, GetFitError, RemoveFitRahIncomingDpsError, SetFitFleetError, UnsetFitFleetError};
 pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, GetFleetError};
 pub use item::{
     AddDroneMutationError, AddModuleMutationError, AddProjError, AddRangedProjError, AddSkillError, Autocharge,

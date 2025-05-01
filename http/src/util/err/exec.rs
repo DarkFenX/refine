@@ -49,7 +49,7 @@ pub(crate) enum HExecError {
     ProjectionAlreadyExists(#[source] rc::err::basic::ProjNotFoundError),
     // Misc
     #[error("{0}")]
-    InvalidSecStatus(#[source] rc::err::basic::SecStatusError),
+    InvalidSecStatus(#[from] rc::err::FitSecStatusError),
     #[error("{0}")]
     InvalidDpsProfile(#[source] rc::err::basic::DmgError),
     #[error("{0}")]

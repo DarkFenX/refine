@@ -1,6 +1,6 @@
 use crate::{
     cmd::{HFitIdResp, shared::get_primary_fit},
-    shared::HDpsProfile,
+    shared::{HDpsProfile, HFitSecStatus},
     util::{HExecError, TriStateField},
 };
 
@@ -10,7 +10,7 @@ pub(crate) struct HChangeFitCmd {
     #[serde_as(as = "TriStateField<serde_with::DisplayFromStr>")]
     #[serde(default)]
     fleet_id: TriStateField<rc::FleetId>,
-    sec_status: Option<rc::SecStatus>,
+    sec_status: Option<HFitSecStatus>,
     #[serde(default)]
     rah_incoming_dps: TriStateField<HDpsProfile>,
 }
@@ -35,9 +35,8 @@ impl HChangeFitCmd {
             TriStateField::Absent => (),
         }
         if let Some(sec_status) = self.sec_status {
-            core_fit.set_sec_status(sec_status).map_err(|error| match error {
-                rc::err::SetFitSecStatusError::SecStatusError(e) => HExecError::InvalidSecStatus(e),
-            })?;
+            let core_sec_status = rc::FitSecStatus::new_checked(sec_status)?;
+            core_fit.set_sec_status(core_sec_status);
         }
         match &self.rah_incoming_dps {
             TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps.try_into()?),

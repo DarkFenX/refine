@@ -1,10 +1,10 @@
 pub use misc::{
-    AddMode, AdjustableCount, BreacherInfo, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, ModRack, OpInfo,
-    RmMode, SecZone, SecZoneCorruption, SkillLevel,
+    AddMode, AdjustableCount, BreacherInfo, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, FitSecStatus,
+    ModRack, OpInfo, RmMode, SecZone, SecZoneCorruption, SkillLevel,
 };
 pub use primitives::{
     AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
-    MutaRoll, SecStatus, SlotIndex,
+    MutaRoll, SlotIndex,
 };
 pub(in crate::sol) use primitives::{FitKey, FleetKey, ItemKey};
 pub use sol::SolarSystem;

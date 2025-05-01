@@ -17,8 +17,8 @@ pub(super) fn sec_status_postproc_fast(
 ) -> CalcAttrVal {
     let fit_key = uad.items.get(item_key).get_ship().unwrap().get_fit_key();
     let fit = uad.fits.get(fit_key);
-    val.dogma = fit.sec_status;
-    val.extra = fit.sec_status;
+    val.dogma = fit.sec_status.get_inner();
+    val.extra = fit.sec_status.get_inner();
     val
 }
 
@@ -30,5 +30,5 @@ pub(super) fn sec_status_postproc_info(
 ) -> AttrValInfo {
     let fit_key = uad.items.get(item_key).get_ship().unwrap().get_fit_key();
     let fit = uad.fits.get(fit_key);
-    AttrValInfo::new(fit.sec_status)
+    AttrValInfo::new(fit.sec_status.get_inner())
 }

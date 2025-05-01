@@ -18,7 +18,6 @@ pub use item_not_mutated::ItemNotMutatedError;
 pub use item_receive_proj::ItemReceiveProjError;
 pub use proj_found::ProjFoundError;
 pub use proj_not_found::ProjNotFoundError;
-pub use sec_status::SecStatusError;
 pub use skill_eve_type::SkillEveTypeError;
 pub use total_dmg::TotalDmgError;
 
@@ -42,6 +41,5 @@ mod item_not_mutated;
 mod item_receive_proj;
 mod proj_found;
 mod proj_not_found;
-mod sec_status;
 mod skill_eve_type;
 mod total_dmg;

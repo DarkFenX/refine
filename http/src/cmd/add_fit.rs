@@ -1,17 +1,20 @@
-use crate::{cmd::HFitIdResp, shared::HDpsProfile, util::HExecError};
+use crate::{
+    cmd::HFitIdResp,
+    shared::{HDpsProfile, HFitSecStatus},
+    util::HExecError,
+};
 
 #[derive(Default, serde::Deserialize)]
 pub(crate) struct HAddFitCmd {
-    sec_status: Option<rc::SecStatus>,
+    sec_status: Option<HFitSecStatus>,
     rah_incoming_dps: Option<HDpsProfile>,
 }
 impl HAddFitCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFitIdResp, HExecError> {
         let mut core_fit = core_sol.add_fit();
         if let Some(sec_status) = self.sec_status {
-            core_fit.set_sec_status(sec_status).map_err(|error| match error {
-                rc::err::SetFitSecStatusError::SecStatusError(e) => HExecError::InvalidSecStatus(e),
-            })?;
+            let core_sec_status = rc::FitSecStatus::new_checked(sec_status)?;
+            core_fit.set_sec_status(core_sec_status);
         }
         if let Some(rah_incoming_dps) = &self.rah_incoming_dps {
             core_fit.set_rah_incoming_dps(rah_incoming_dps.try_into()?);

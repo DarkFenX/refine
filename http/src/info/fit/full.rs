@@ -2,7 +2,7 @@ use rc::Lender;
 
 use crate::{
     info::{HItemInfo, HItemInfoMode, MkItemInfo},
-    shared::HDpsProfile,
+    shared::{HDpsProfile, HFitSecStatus},
 };
 
 #[serde_with::serde_as]
@@ -39,7 +39,7 @@ pub(crate) struct HFitInfoFull {
     pub(crate) fighters: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fw_effects: Vec<HItemInfo>,
-    pub(crate) sec_status: rc::SecStatus,
+    pub(crate) sec_status: HFitSecStatus,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) rah_incoming_dps: Option<HDpsProfile>,
 }
@@ -113,7 +113,7 @@ impl HFitInfoFull {
                 .iter_fw_effects_mut()
                 .map_into_iter(|mut core_fw_effect| HItemInfo::mk_info(&mut core_fw_effect, item_mode))
                 .collect(),
-            sec_status: core_fit.get_sec_status(),
+            sec_status: core_fit.get_sec_status().get_inner().into_inner(),
             rah_incoming_dps: core_fit.get_rah_incoming_dps().map(|v| (&v).into()),
         }
     }
