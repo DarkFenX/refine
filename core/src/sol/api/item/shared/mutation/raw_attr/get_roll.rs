@@ -7,12 +7,14 @@ use crate::{
 };
 
 impl<'a> RawMAttr<'a> {
+    /// Return roll quality for the mutated attribute.
     pub fn get_roll(&self) -> UnitInterval {
         get_roll(self.sol, self.item_key, &self.a_attr_id)
     }
 }
 
 impl<'a> RawMAttrMut<'a> {
+    /// Return roll quality for the mutated attribute.
     pub fn get_roll(&self) -> UnitInterval {
         get_roll(self.sol, self.item_key, &self.a_attr_id)
     }

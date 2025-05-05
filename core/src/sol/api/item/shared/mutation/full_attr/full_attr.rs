@@ -5,9 +5,7 @@ use crate::{
 
 /// Full mutated attribute.
 ///
-/// Full mutated attributes are exposed by an effective item mutation, and are limited to those
-/// defined by mutator on current data source. They do not necessarily contain user-defined mutation
-/// data, but they provide full set of functionality to mutate an attribute and get its value.
+/// Attributes represented by this struct have their value impacted by mutation.
 pub struct FullMAttr<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
     pub(in crate::sol::api) item_key: ItemKey,
@@ -21,6 +19,7 @@ impl<'a> FullMAttr<'a> {
             a_attr_id,
         }
     }
+    /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
         self.a_attr_id
     }
@@ -28,9 +27,7 @@ impl<'a> FullMAttr<'a> {
 
 /// Full mutated attribute.
 ///
-/// Full mutated attributes are exposed by an effective item mutation, and are limited to those
-/// defined by mutator on current data source. They do not necessarily contain user-defined mutation
-/// data, but they provide full set of functionality to mutate an attribute and get its value.
+/// Attributes represented by this struct have their value impacted by mutation.
 pub struct FullMAttrMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
     pub(in crate::sol::api) item_key: ItemKey,
@@ -44,6 +41,7 @@ impl<'a> FullMAttrMut<'a> {
             a_attr_id,
         }
     }
+    /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
         self.a_attr_id
     }

@@ -5,9 +5,12 @@ use crate::{
 
 /// Raw mutated attribute.
 ///
-/// Raw mutated attributes contain basic data, and do not necessarily affect attributes of their
-/// parent item. However, they are the only way to access item attribute mutations which are not
-/// available on current data source.
+/// This attribute represents a user-defined mutation for the attribute. It means, when there is no
+/// user-defined mutation for an attribute, you can't get corresponding raw mutated attribute.
+///
+/// Raw mutated attributes do not necessarily affect attributes of their parent item. However, they
+/// are the only way to access item attribute mutations which are not available on current data
+/// source.
 pub struct RawMAttr<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
     pub(in crate::sol::api) item_key: ItemKey,
@@ -21,6 +24,7 @@ impl<'a> RawMAttr<'a> {
             a_attr_id,
         }
     }
+    /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
         self.a_attr_id
     }
@@ -28,9 +32,12 @@ impl<'a> RawMAttr<'a> {
 
 /// Raw mutated attribute.
 ///
-/// Raw mutated attributes contain basic data, and do not necessarily affect attributes of their
-/// parent item. However, they are the only way to access item attribute mutations which are not
-/// available on current data source.
+/// This attribute represents a user-defined mutation for the attribute. It means, when there is no
+/// user-defined mutation for an attribute, you can't get corresponding raw mutated attribute.
+///
+/// Raw mutated attributes do not necessarily affect attributes of their parent item. However, they
+/// are the only way to access item attribute mutations which are not available on current data
+/// source.
 pub struct RawMAttrMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
     pub(in crate::sol::api) item_key: ItemKey,
@@ -44,6 +51,7 @@ impl<'a> RawMAttrMut<'a> {
             a_attr_id,
         }
     }
+    /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
         self.a_attr_id
     }

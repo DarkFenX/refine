@@ -1,12 +1,12 @@
-pub use mutation_add_raw::AttrMutateRawError;
-pub use mutation_get_raw::GetRawMAttrError;
-pub use mutation_iter_raw::RawMAttrIter;
+pub use mutation_add::AttrMutateRawError;
+pub use mutation_get::GetRawMAttrError;
+pub use mutation_iter::RawMAttrIter;
 pub use raw_attr::{RawMAttr, RawMAttrMut};
 
-mod get_roll_raw;
-mod mutation_add_raw;
-mod mutation_get_raw;
-mod mutation_iter_raw;
+mod get_roll;
+mod mutation_add;
+mod mutation_get;
+mod mutation_iter;
 mod raw_attr;
-mod remove_raw;
+mod remove;
 mod set_roll;

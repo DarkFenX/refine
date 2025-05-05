@@ -1,15 +1,18 @@
 use crate::sol::{
-    UnitInterval,
-    api::RawMAttrMut,
+    AttrVal,
+    api::FullMAttrMut,
     uad::item::{ItemAttrMutationValue, ItemChangeAttrMutation, UadItem},
 };
 
-impl<'a> RawMAttrMut<'a> {
-    /// Set roll for the attribute.
-    pub fn set_roll(&mut self, roll: UnitInterval) {
+impl<'a> FullMAttrMut<'a> {
+    /// Set value for the attribute.
+    ///
+    /// If value is out of bounds allowed by mutator, it will be clamped. None as value removes
+    /// user-defined mutation.
+    pub fn set_value(&mut self, roll: Option<AttrVal>) {
         let attr_mutations = vec![ItemChangeAttrMutation::new(
             self.a_attr_id,
-            Some(ItemAttrMutationValue::Roll(roll)),
+            roll.map(|v| ItemAttrMutationValue::Absolute(v)),
         )];
         match self.sol.uad.items.get(self.item_key) {
             UadItem::Drone(_) => self

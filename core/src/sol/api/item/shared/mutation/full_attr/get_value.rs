@@ -7,12 +7,14 @@ use crate::{
 };
 
 impl<'a> FullMAttr<'a> {
+    /// Return mutated attribute value.
     pub fn get_value(&self) -> AttrVal {
         get_value(self.sol, self.item_key, &self.a_attr_id)
     }
 }
 
 impl<'a> FullMAttrMut<'a> {
+    /// Return mutated attribute value.
     pub fn get_value(&self) -> AttrVal {
         get_value(self.sol, self.item_key, &self.a_attr_id)
     }

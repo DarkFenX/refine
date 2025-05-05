@@ -5,6 +5,9 @@ use crate::sol::{
 };
 
 impl<'a> FullMAttrMut<'a> {
+    /// Set roll for the attribute.
+    ///
+    /// None as value removes user-defined mutation.
     pub fn set_roll(&mut self, roll: Option<UnitInterval>) {
         let attr_mutations = vec![ItemChangeAttrMutation::new(
             self.a_attr_id,

@@ -8,12 +8,22 @@ use crate::{
 };
 
 impl<'a> FullMAttr<'a> {
+    /// Return roll quality for the mutated attribute.
+    ///
+    /// Almost always returns result, even if roll quality wasn't set by the user for the attribute,
+    /// in which case roll is based off base attribute value. None is returned only when user roll
+    /// is not set, and there is an error with EVE data (e.g. min mult = max mult for the mutation).
     pub fn get_roll(&self) -> Option<UnitInterval> {
         get_roll(self.sol, self.item_key, &self.a_attr_id)
     }
 }
 
 impl<'a> FullMAttrMut<'a> {
+    /// Return roll quality for the mutated attribute.
+    ///
+    /// Almost always returns result, even if roll quality wasn't set by the user for the attribute,
+    /// in which case roll is based off base attribute value. None is returned only when user roll
+    /// is not set, and there is an error with EVE data (e.g. min mult = max mult for the mutation).
     pub fn get_roll(&self) -> Option<UnitInterval> {
         get_roll(self.sol, self.item_key, &self.a_attr_id)
     }
