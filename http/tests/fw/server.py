@@ -51,7 +51,7 @@ def run_server(*, proj_root: Path, config_path: Path, optimized: bool) -> Server
     binary_path = proj_root / 'target' / get_profile_name(optimized=optimized) / 'reefast-http'
     return ServerInfo(popen=subprocess.Popen(
         [binary_path, config_path],
-        stdout=subprocess.DEVNULL,
+        #stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL))
 
 

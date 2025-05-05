@@ -1,6 +1,6 @@
 //! Solar system item definitions.
 
-pub(in crate::sol) use base::{ItemMutationData, ItemMutationDataCache};
+pub(in crate::sol) use base::{ItemMutationData, normalize_a_attr_value};
 use base::{UadItemBase, UadItemBaseMutable};
 pub(in crate::sol) use container::Items;
 pub(in crate::sol) use item::UadItem;

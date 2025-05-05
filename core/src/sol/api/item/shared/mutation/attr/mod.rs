@@ -6,7 +6,8 @@ pub use mutation_iter_raw::RawMAttrIter;
 pub use raw_attr::{RawMAttr, RawMAttrMut};
 
 mod full_attr;
-mod get_roll;
+mod get_roll_full;
+mod get_roll_raw;
 mod get_value_full;
 mod mutation_add_raw;
 mod mutation_get_full;

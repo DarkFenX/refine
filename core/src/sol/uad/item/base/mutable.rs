@@ -527,7 +527,7 @@ fn normalize_attr_mutation_full_with_unmutated_value(
     }
 }
 
-fn normalize_a_attr_value(
+pub(in crate::sol) fn normalize_a_attr_value(
     absolute_a_value: ad::AAttrVal,
     unmutated_a_value: ad::AAttrVal,
     a_mutation_range: &ad::AMutaAttrRange,
