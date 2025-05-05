@@ -76,9 +76,13 @@ fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, valu
 
 fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, roll: HMutaRoll) {
     // Try to get raw attr, if it's not available - add it
-    let mut core_raw_mattr = match core_mutation.get_raw_mattr_mut(attr_id) {
-        Ok(core_raw_mattr) => core_raw_mattr,
-        Err(_) => core_mutation.mutate_raw(attr_id).unwrap(),
+    let core_roll = rc::UnitInterval::new_clamped(roll);
+    match core_mutation.get_raw_mattr_mut(attr_id) {
+        Ok(mut core_raw_mattr) => {
+            core_raw_mattr.set_roll(core_roll);
+        }
+        Err(_) => {
+            core_mutation.mutate_raw(attr_id, core_roll).unwrap();
+        }
     };
-    core_raw_mattr.set_roll(rc::UnitInterval::new_clamped(roll));
 }

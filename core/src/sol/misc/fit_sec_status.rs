@@ -7,7 +7,7 @@ pub struct FitSecStatus {
 impl FitSecStatus {
     pub fn new_checked(sec_status: impl Into<f64>) -> Result<Self, FitSecStatusError> {
         let sec_status: f64 = sec_status.into();
-        match sec_status >= -10.0 && sec_status <= 5.0 {
+        match (-10.0..=5.0).contains(&sec_status) {
             true => Ok(Self { inner: OF(sec_status) }),
             false => Err(FitSecStatusError { sec_status }),
         }

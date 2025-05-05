@@ -11,7 +11,7 @@ impl<'a> FullMAttrMut<'a> {
     pub fn set_roll(&mut self, roll: Option<UnitInterval>) {
         let attr_mutations = vec![ItemChangeAttrMutation::new(
             self.a_attr_id,
-            roll.map(|v| ItemAttrMutationValue::Roll(v)),
+            roll.map(ItemAttrMutationValue::Roll),
         )];
         match self.sol.uad.items.get(self.item_key) {
             UadItem::Drone(_) => self

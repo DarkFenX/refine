@@ -95,7 +95,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             drone_limit: c_item_extras.drone_limit.as_ref().map(|v| v.into()),
             max_fighter_count: c_item_extras.max_fighter_count,
             bandwidth_use: c_item_extras.bandwidth_use,
-            overload_td_lvl: c_item_extras.overload_td_lvl.map(|v| rc::ad::ASkillLevel::new(v)),
+            overload_td_lvl: c_item_extras.overload_td_lvl.map(rc::ad::ASkillLevel::new),
             max_type_fitted: c_item_extras.max_type_fitted,
             online_max_sec_class: c_item_extras.online_max_sec_class,
             sec_zone_limitable: c_item_extras.sec_zone_limitable,

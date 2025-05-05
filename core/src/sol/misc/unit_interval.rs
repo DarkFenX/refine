@@ -7,7 +7,7 @@ pub struct UnitInterval {
 impl UnitInterval {
     pub fn new_checked(value: impl Into<f64>) -> Result<Self, UnitIntervalError> {
         let value: f64 = value.into();
-        match value >= 0.0 && value <= 1.0 {
+        match (0.0..=1.0).contains(&value) {
             true => Ok(Self { inner: OF(value) }),
             false => Err(UnitIntervalError { value }),
         }

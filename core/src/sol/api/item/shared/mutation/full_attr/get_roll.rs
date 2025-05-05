@@ -42,8 +42,8 @@ fn get_roll(sol: &SolarSystem, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Op
         .unwrap()
         .get_a_mutator()
         .attr_mods
-        .get(&a_attr_id)
+        .get(a_attr_id)
         .unwrap();
-    let value = uad_item.get_a_attr(&a_attr_id).unwrap();
+    let value = uad_item.get_a_attr(a_attr_id).unwrap();
     normalize_a_attr_value(value, value, mutation_range)
 }
