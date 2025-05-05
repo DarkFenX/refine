@@ -175,7 +175,8 @@ def test_absolute_value_range(client, consts):
     assert api_item.attrs[eve_remove_attr_id].base == approx(100)
     # Action
     api_sol.change_src(data=eve_d2)
-    # Verification - on first source lib couldn't interpret absolute values, so defaults are exposed
+    # Verification - on the first source absolute values couldn't be set due to mutation being
+    # incomplete, so defaults are exposed on the second source
     api_item.update()
     assert len(api_item.mutation.attrs) == 7
     assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0.5)

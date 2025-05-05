@@ -88,8 +88,7 @@ def test_absolute_value_range(client, consts):
         eve_lower_attr_id: {consts.ApiAttrMutation.absolute: -53},
         eve_within_attr_id: {consts.ApiAttrMutation.absolute: 92},
         eve_higher_attr_id: {consts.ApiAttrMutation.absolute: 1009}}))
-    # Verification - mutation is not exposed, since it is not complete with data, but absolute
-    # values were resolved into rolls using base item attributes
+    # Verification
     api_item.update()
     with check_no_field():
         api_item.mutation  # noqa: B018
@@ -98,18 +97,19 @@ def test_absolute_value_range(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
     # Action
     api_sol.change_src(data=eve_d2)
-    # Verification - on 2nd source item mutations with roll value can be properly applied
+    # Verification - on the first source absolute values couldn't be set due to mutation being
+    # incomplete, so defaults are exposed on the second source
     api_item.update()
     assert len(api_item.mutation.attrs) == 3
-    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0)
-    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(80)
-    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(92)
-    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(1)
-    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(120)
-    assert api_item.attrs[eve_lower_attr_id].base == approx(80)
-    assert api_item.attrs[eve_within_attr_id].base == approx(92)
-    assert api_item.attrs[eve_higher_attr_id].base == approx(120)
+    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(100)
+    assert api_item.attrs[eve_lower_attr_id].base == approx(100)
+    assert api_item.attrs[eve_within_attr_id].base == approx(100)
+    assert api_item.attrs[eve_higher_attr_id].base == approx(100)
 
 
 def test_no_base_value(client, consts):
