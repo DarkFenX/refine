@@ -1,20 +1,12 @@
-pub use full_attr::{FullMAttr, FullMAttrMut};
 pub use mutation_add_raw::AttrMutateRawError;
 pub use mutation_get_raw::GetRawMAttrError;
-pub use mutation_iter_full::FullMAttrIter;
 pub use mutation_iter_raw::RawMAttrIter;
 pub use raw_attr::{RawMAttr, RawMAttrMut};
 
-mod full_attr;
-mod get_roll_full;
 mod get_roll_raw;
-mod get_value_full;
 mod mutation_add_raw;
-mod mutation_get_full;
 mod mutation_get_raw;
-mod mutation_iter_full;
 mod mutation_iter_raw;
 mod raw_attr;
 mod remove_raw;
 mod set_roll;
-mod set_value_full;
