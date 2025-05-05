@@ -39,21 +39,10 @@ pub(in crate::cmd) enum HItemAttrMutationValue {
 
 pub(in crate::cmd) fn apply_mattrs_on_add(mut core_mutation: rc::MutationMut, h_full_mutation: &HItemMutationFull) {
     if let Some(attr_mutations) = &h_full_mutation.attrs {
-        for (attr_id, h_value) in attr_mutations {
+        for (&attr_id, h_value) in attr_mutations {
             match h_value {
-                HItemAttrMutationValue::Absolute(value) => {
-                    // Absolute values can be applied only to effective mutations, via full mutated attributes
-                    if let rc::MutationMut::Effective(core_effective_mutation) = &mut core_mutation {
-                        if let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(*attr_id) {
-                            core_full_mattr.set_value(Some(*value))
-                        }
-                    }
-                }
-                HItemAttrMutationValue::Roll(roll) => {
-                    if let Ok(mut core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
-                        core_raw_mattr.set_roll(rc::UnitInterval::new_clamped(*roll));
-                    }
-                }
+                HItemAttrMutationValue::Absolute(value) => apply_absolute(&mut core_mutation, attr_id, *value),
+                HItemAttrMutationValue::Roll(roll) => apply_roll(&mut core_mutation, attr_id, *roll),
             }
         }
     }
@@ -63,26 +52,33 @@ pub(in crate::cmd) fn apply_mattrs_on_change(
     mut core_mutation: rc::MutationMut,
     h_changed_attrs: &HashMap<rc::AttrId, Option<HItemAttrMutationValue>>,
 ) {
-    for (attr_id, h_value) in h_changed_attrs {
+    for (&attr_id, h_value) in h_changed_attrs {
         match h_value {
-            Some(HItemAttrMutationValue::Absolute(value)) => {
-                // Absolute values can be applied only to effective mutations, via full mutated attributes
-                if let rc::MutationMut::Effective(core_effective_mutation) = &mut core_mutation {
-                    if let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(*attr_id) {
-                        core_full_mattr.set_value(Some(*value))
-                    }
-                }
-            }
-            Some(HItemAttrMutationValue::Roll(roll)) => {
-                if let Ok(mut core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
-                    core_raw_mattr.set_roll(rc::UnitInterval::new_clamped(*roll));
-                }
-            }
+            Some(HItemAttrMutationValue::Absolute(value)) => apply_absolute(&mut core_mutation, attr_id, *value),
+            Some(HItemAttrMutationValue::Roll(roll)) => apply_roll(&mut core_mutation, attr_id, *roll),
             None => {
-                if let Ok(core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
+                if let Ok(core_raw_mattr) = core_mutation.get_raw_mattr_mut(attr_id) {
                     core_raw_mattr.remove();
                 }
             }
         }
     }
+}
+
+fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, value: rc::AttrVal) {
+    // Absolute values can be applied only to effective mutations, via full mutated attributes
+    if let rc::MutationMut::Effective(core_effective_mutation) = core_mutation {
+        if let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(attr_id) {
+            core_full_mattr.set_value(Some(value))
+        }
+    }
+}
+
+fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, roll: HMutaRoll) {
+    // Try to get raw attr, if it's not available - add it
+    let mut core_raw_mattr = match core_mutation.get_raw_mattr_mut(attr_id) {
+        Ok(core_raw_mattr) => core_raw_mattr,
+        Err(_) => core_mutation.mutate_raw(attr_id).unwrap(),
+    };
+    core_raw_mattr.set_roll(rc::UnitInterval::new_clamped(roll));
 }
