@@ -1,7 +1,4 @@
-use crate::{
-    err::basic::ChargeFoundError,
-    sol::{ItemKey, SolarSystem},
-};
+use crate::sol::{ItemKey, SolarSystem, err::ChargeFoundError};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_module_charge(
