@@ -1,7 +1,7 @@
 use crate::sol::{FitKey, FitSecStatus, SolarSystem, api::FitMut};
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_set_fit_sec_status(&mut self, fit_key: FitKey, sec_status: FitSecStatus) {
+    pub(in crate::sol::api) fn internal_set_fit_sec_status(&mut self, fit_key: FitKey, sec_status: FitSecStatus) {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         let old_sec_status = uad_fit.sec_status;
         if old_sec_status == sec_status {

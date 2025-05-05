@@ -1,7 +1,10 @@
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes},
+        shared::{
+            HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes, apply_mattrs_on_add,
+            apply_mattrs_on_change,
+        },
     },
     shared::HModuleState,
     util::{HExecError, TriStateField},
@@ -40,31 +43,33 @@ impl HChangeModuleCmd {
         match &self.mutation {
             TriStateField::Value(mutation) => match mutation {
                 HMutationOnChange::AddShort(mutator_id) => {
-                    // Remove old mutation if we had any, ignore any errors on the way
-                    let _ = core_module.unmutate();
-                    let mutation = rc::ItemAddMutation::new(*mutator_id);
-                    core_module.mutate(mutation).unwrap();
+                    // Remove old mutation if we had any
+                    if let Some(core_mutation) = core_module.get_mutation_mut() {
+                        core_mutation.remove();
+                    }
+                    core_module.mutate(*mutator_id).unwrap();
                 }
                 HMutationOnChange::AddFull(mutation) => {
-                    // Remove old mutation if we had any, ignore any errors on the way
-                    let _ = core_module.unmutate();
-                    core_module.mutate(mutation.into()).unwrap();
+                    // Remove old mutation if we had any
+                    if let Some(core_mutation) = core_module.get_mutation_mut() {
+                        core_mutation.remove();
+                    }
+                    let core_mutation = core_module.mutate(mutation.mutator_id).unwrap();
+                    apply_mattrs_on_add(core_mutation, mutation);
                 }
-                HMutationOnChange::ChangeAttrs(attr_mutations) => {
-                    let attr_mutations = attr_mutations
-                        .iter()
-                        .map(|(k, v)| rc::ItemChangeAttrMutation::new(*k, v.as_ref().map(|v| v.into())))
-                        .collect();
-                    core_module
-                        .change_mutation(attr_mutations)
-                        .map_err(|error| match error {
-                            rc::err::ChangeModuleMutationError::MutationNotSet(e) => HExecError::MutationNotSet(e),
-                        })?;
+                HMutationOnChange::ChangeAttrs(h_attr_mutations) => {
+                    let core_mutation = match core_module.get_mutation_mut() {
+                        Some(core_mutation) => core_mutation,
+                        None => return Err(HExecError::MutationNotSet(*item_id)),
+                    };
+                    apply_mattrs_on_change(core_mutation, h_attr_mutations);
                 }
             },
             TriStateField::None => {
                 // Do nothing if mutation was not there
-                let _ = core_module.unmutate();
+                if let Some(core_mutation) = core_module.get_mutation_mut() {
+                    core_mutation.remove();
+                }
             }
             TriStateField::Absent => (),
         }

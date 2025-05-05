@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_remove_fit_rah_incoming_dps(
+    pub(in crate::sol::api) fn internal_remove_fit_rah_incoming_dps(
         &mut self,
         fit_key: FitKey,
     ) -> Result<(), FitDpsProfileFoundError> {

@@ -12,7 +12,6 @@ pub use sol::SolarSystem;
 pub(crate) mod api;
 mod debug;
 mod err;
-pub(crate) mod info;
 pub(crate) mod misc;
 mod primitives;
 mod proj_tracker;

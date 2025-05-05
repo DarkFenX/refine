@@ -3,8 +3,10 @@ use crate::{
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
         FitKey, Idx, ItemId, ItemKey, ModRack,
-        info::ItemMutationInfo,
-        uad::item::{EffectModes, ItemAddMutation, ItemChangeAttrMutation, ModuleState, Projs, UadItemBaseMutable},
+        uad::item::{
+            EffectModes, ItemAddMutation, ItemChangeAttrMutation, ItemMutationData, ModuleState, Projs,
+            UadItemBaseMutable,
+        },
     },
     src::Src,
     util::{Named, RMap},
@@ -84,11 +86,8 @@ impl UadModule {
         self.base.update_a_data(src);
     }
     // Mutation-specific methods
-    pub(in crate::sol) fn has_mutation_data(&self) -> bool {
-        self.base.has_mutation_data()
-    }
-    pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<ItemMutationInfo> {
-        self.base.get_mutation_info(src)
+    pub(in crate::sol) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
+        self.base.get_mutation_data()
     }
     pub(in crate::sol) fn mutate(&mut self, src: &Src, mutation: ItemAddMutation) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(src, mutation)

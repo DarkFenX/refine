@@ -8,14 +8,6 @@ pub(in crate::cmd) enum HMutationOnAdd {
     Short(rc::ItemTypeId),
     Full(HItemMutationFull),
 }
-impl From<&HMutationOnAdd> for rc::ItemAddMutation {
-    fn from(h_mutation: &HMutationOnAdd) -> Self {
-        match h_mutation {
-            HMutationOnAdd::Short(mutator_id) => Self::new(*mutator_id),
-            HMutationOnAdd::Full(full_mutation) => full_mutation.into(),
-        }
-    }
-}
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
@@ -37,22 +29,6 @@ pub(in crate::cmd) struct HItemMutationFull {
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     pub(in crate::cmd) attrs: Option<HashMap<rc::AttrId, HItemAttrMutationValue>>,
 }
-impl From<&HItemMutationFull> for rc::ItemAddMutation {
-    fn from(h_item_mutation: &HItemMutationFull) -> Self {
-        Self::new_with_attrs(
-            h_item_mutation.mutator_id,
-            h_item_mutation
-                .attrs
-                .as_ref()
-                .map(|v| {
-                    v.iter()
-                        .map(|(k, v)| rc::ItemAddAttrMutation::new(*k, v.into()))
-                        .collect()
-                })
-                .unwrap_or_default(),
-        )
-    }
-}
 
 #[derive(serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -60,11 +36,53 @@ pub(in crate::cmd) enum HItemAttrMutationValue {
     Roll(HMutaRoll),
     Absolute(rc::AttrVal),
 }
-impl From<&HItemAttrMutationValue> for rc::ItemAttrMutationValue {
-    fn from(h_mutation_value: &HItemAttrMutationValue) -> Self {
-        match h_mutation_value {
-            HItemAttrMutationValue::Roll(roll) => Self::Roll(rc::UnitInterval::new_clamped(*roll)),
-            HItemAttrMutationValue::Absolute(absolute) => Self::Absolute(*absolute),
+
+pub(in crate::cmd) fn apply_mattrs_on_add(mut core_mutation: rc::MutationMut, h_full_mutation: &HItemMutationFull) {
+    if let Some(attr_mutations) = &h_full_mutation.attrs {
+        for (attr_id, h_value) in attr_mutations {
+            match h_value {
+                HItemAttrMutationValue::Absolute(value) => {
+                    // Absolute values can be applied only to effective mutations, via full mutated attributes
+                    if let rc::MutationMut::Effective(core_effective_mutation) = &mut core_mutation {
+                        if let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(*attr_id) {
+                            core_full_mattr.set_value(Some(*value))
+                        }
+                    }
+                }
+                HItemAttrMutationValue::Roll(roll) => {
+                    if let Ok(mut core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
+                        core_raw_mattr.set_roll(rc::UnitInterval::new_clamped(*roll));
+                    }
+                }
+            }
+        }
+    }
+}
+
+pub(in crate::cmd) fn apply_mattrs_on_change(
+    mut core_mutation: rc::MutationMut,
+    h_changed_attrs: &HashMap<rc::AttrId, Option<HItemAttrMutationValue>>,
+) {
+    for (attr_id, h_value) in h_changed_attrs {
+        match h_value {
+            Some(HItemAttrMutationValue::Absolute(value)) => {
+                // Absolute values can be applied only to effective mutations, via full mutated attributes
+                if let rc::MutationMut::Effective(core_effective_mutation) = &mut core_mutation {
+                    if let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(*attr_id) {
+                        core_full_mattr.set_value(Some(*value))
+                    }
+                }
+            }
+            Some(HItemAttrMutationValue::Roll(roll)) => {
+                if let Ok(mut core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
+                    core_raw_mattr.set_roll(rc::UnitInterval::new_clamped(*roll));
+                }
+            }
+            None => {
+                if let Ok(core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
+                    core_raw_mattr.remove();
+                }
+            }
         }
     }
 }

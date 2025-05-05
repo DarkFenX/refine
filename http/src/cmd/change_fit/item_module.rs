@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HAddMode, HMutationOnAdd, get_primary_fit},
+        shared::{HAddMode, HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
     },
     shared::{HModRack, HModuleState},
     util::HExecError,
@@ -29,8 +29,16 @@ impl HAddModuleCmd {
             self.type_id,
             (&self.state).into(),
         );
-        if let Some(mutation) = self.mutation.as_ref() {
-            core_module.mutate(mutation.into()).unwrap();
+        if let Some(h_mutation) = self.mutation.as_ref() {
+            match h_mutation {
+                HMutationOnAdd::Short(mutator_id) => {
+                    core_module.mutate(*mutator_id).unwrap();
+                }
+                HMutationOnAdd::Full(h_full_mutation) => {
+                    let core_mutation = core_module.mutate(h_full_mutation.mutator_id).unwrap();
+                    apply_mattrs_on_add(core_mutation, h_full_mutation);
+                }
+            }
         }
         if let Some(charge_type_id) = self.charge_type_id {
             core_module.set_charge(charge_type_id);

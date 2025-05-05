@@ -5,7 +5,7 @@ impl SolarSystem {
         let fit_key = self.add_fit_internal();
         FitMut::new(self, fit_key)
     }
-    pub(in crate::sol) fn add_fit_internal(&mut self) -> FitKey {
+    pub(in crate::sol::api) fn add_fit_internal(&mut self) -> FitKey {
         let fit_id = self.uad.fits.alloc_id();
         let uad_fit = UadFit::new(fit_id);
         let fit_key = self.uad.fits.add(uad_fit);

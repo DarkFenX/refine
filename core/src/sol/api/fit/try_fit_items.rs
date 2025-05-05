@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_try_fit_items(
+    pub(in crate::sol::api) fn internal_try_fit_items(
         &mut self,
         fit_key: FitKey,
         type_ids: &[ItemTypeId],

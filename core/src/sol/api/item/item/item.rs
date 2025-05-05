@@ -28,7 +28,7 @@ pub enum Item<'a> {
     SwEffect(SwEffect<'a>),
 }
 impl<'a> Item<'a> {
-    pub(in crate::sol) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
         sol.internal_get_item(key)
     }
 }
@@ -98,7 +98,7 @@ pub enum ItemMut<'a> {
     SwEffect(SwEffectMut<'a>),
 }
 impl<'a> ItemMut<'a> {
-    pub(in crate::sol) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
         sol.internal_get_item_mut(key)
     }
 }

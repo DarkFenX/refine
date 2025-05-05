@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_remove_item(
+    pub(in crate::sol::api) fn internal_remove_item(
         &mut self,
         item_key: ItemKey,
         pos_mode: RmMode,

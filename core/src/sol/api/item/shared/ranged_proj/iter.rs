@@ -13,7 +13,8 @@ pub struct RangedProjIter<'iter> {
     index: usize,
 }
 impl<'iter> RangedProjIter<'iter> {
-    pub(in crate::sol::api) fn new(sol: &'iter mut SolarSystem, key: ItemKey, projectee_keys: Vec<ItemKey>) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'iter mut SolarSystem, key: ItemKey) -> Self {
+        let projectee_keys = iter_projectee_item_keys(sol, key).collect();
         Self {
             sol,
             key,
@@ -33,7 +34,10 @@ impl<'iter> Lender for RangedProjIter<'iter> {
     }
 }
 
-pub(in crate::sol::api) fn iter_ranged_projs(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = RangedProj> {
+pub(in crate::sol::api) fn iter_ranged_projs(
+    sol: &SolarSystem,
+    item_key: ItemKey,
+) -> impl ExactSizeIterator<Item = RangedProj> {
     iter_projectee_item_keys(sol, item_key)
         .map(move |projectee_item_key| RangedProj::new(sol, item_key, projectee_item_key))
 }

@@ -37,7 +37,10 @@ impl HModuleInfoPartial {
             state: (&core_module.get_state()).into(),
             rack: (&core_module.get_rack()).into(),
             pos: core_module.get_pos(),
-            mutation: core_module.get_mutation().as_ref().map(|v| v.into()),
+            mutation: match core_module.get_mutation() {
+                Some(rc::Mutation::Effective(effective_mutation)) => Some(effective_mutation.into()),
+                _ => None,
+            },
             charge: core_module
                 .get_charge_mut()
                 .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode)),

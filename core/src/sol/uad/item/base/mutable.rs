@@ -5,7 +5,6 @@ use crate::{
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
         ItemId, UnitInterval,
-        info::{AttrMutationInfo, ItemMutationInfo},
         uad::item::{EffectModes, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, UadItemBase},
     },
     src::Src,
@@ -217,71 +216,15 @@ impl UadItemBaseMutable {
         })
     }
     // Mutation-specific methods
-    pub(in crate::sol::uad::item) fn has_mutation_data(&self) -> bool {
-        self.mutation.is_some()
-    }
-    pub(in crate::sol::uad::item) fn get_mutation_info(&self, src: &Src) -> Option<ItemMutationInfo> {
-        let mutation = match &self.mutation {
-            Some(mutation) => mutation,
-            None => return None,
-        };
-        let mutation_cache = match &mutation.cache {
-            Some(mutation_cache) => mutation_cache,
-            None => return None,
-        };
-        let mut base_a_item_cache = None;
-        let mut attr_infos = Vec::with_capacity(mutation_cache.a_mutator.attr_mods.len());
-        for (a_attr_id, a_mutation_range) in mutation_cache.a_mutator.attr_mods.iter() {
-            let a_val = match mutation_cache.merged_a_attrs.get(a_attr_id) {
-                Some(a_val) => a_val,
-                // No attribute value - can't proceed, since value is part of attribute info
-                None => continue,
-            };
-            match mutation.attr_rolls.get(a_attr_id) {
-                Some(roll) => {
-                    let attr_info = AttrMutationInfo {
-                        attr_id: *a_attr_id,
-                        roll: Some(*roll),
-                        value: *a_val,
-                    };
-                    attr_infos.push(attr_info);
-                }
-                // Nothing guarantees that rolls are set for all attributes mutable by currently set
-                // mutator. If that's the case, calculate roll value before exposing it
-                None => {
-                    // Since cache was set, mutated item should be available
-                    let mutated_a_item = self.base.get_a_item().unwrap();
-                    // If there is a value in cached attributes, unmutated value has to be available
-                    let unmutated_a_value = get_combined_a_attr_value(
-                        src,
-                        &mutation_cache.base_a_item_id,
-                        &mut base_a_item_cache,
-                        mutated_a_item,
-                        a_attr_id,
-                    )
-                    .unwrap();
-                    let roll = normalize_a_attr_value(*a_val, unmutated_a_value, a_mutation_range);
-                    let attr_info = AttrMutationInfo {
-                        attr_id: *a_attr_id,
-                        roll,
-                        value: *a_val,
-                    };
-                    attr_infos.push(attr_info);
-                }
-            }
-        }
-        Some(ItemMutationInfo {
-            base_type_id: mutation_cache.base_a_item_id,
-            mutator_id: mutation.a_mutator_id,
-            attrs: attr_infos,
-        })
+    pub(in crate::sol::uad::item) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
+        self.mutation.as_ref()
     }
     pub(in crate::sol::uad::item) fn mutate(
         &mut self,
         src: &Src,
         mutation_request: ItemAddMutation,
     ) -> Result<(), ItemNotMutatedError> {
-        if self.has_mutation_data() {
+        if self.get_mutation_data().is_some() {
             return Err(ItemNotMutatedError {
                 item_id: self.get_item_id(),
             });
@@ -469,7 +412,7 @@ impl UadItemBaseMutable {
 }
 
 #[derive(Clone)]
-struct ItemMutationData {
+pub(in crate::sol) struct ItemMutationData {
     // User-defined data
     a_mutator_id: ad::AItemId,
     attr_rolls: RMap<ad::AAttrId, UnitInterval>,
@@ -484,15 +427,32 @@ impl ItemMutationData {
             cache: None,
         }
     }
+    pub(in crate::sol) fn get_a_mutator_id(&self) -> ad::AItemId {
+        self.a_mutator_id
+    }
+    pub(in crate::sol) fn get_attr_rolls(&self) -> &RMap<ad::AAttrId, UnitInterval> {
+        &self.attr_rolls
+    }
+    pub(in crate::sol) fn get_cache(&self) -> Option<&ItemMutationDataCache> {
+        self.cache.as_ref()
+    }
 }
 
 // Container for data which is source-dependent
 #[derive(Clone)]
-struct ItemMutationDataCache {
+pub(in crate::sol) struct ItemMutationDataCache {
     base_a_item_id: ad::AItemId,
     a_mutator: ad::ArcMuta,
     merged_a_attrs: RMap<ad::AAttrId, ad::AAttrVal>,
     a_extras: ad::AItemExtras,
+}
+impl ItemMutationDataCache {
+    pub(in crate::sol) fn get_base_a_item_id(&self) -> ad::AItemId {
+        self.base_a_item_id
+    }
+    pub(in crate::sol) fn get_a_mutator(&self) -> &ad::AMuta {
+        &self.a_mutator
+    }
 }
 
 // Basic conversion

@@ -1,11 +1,11 @@
 use crate::sol::{FitId, FitKey, SolarSystem};
 
 pub struct Fit<'a> {
-    pub(in crate::sol) sol: &'a SolarSystem,
-    pub(in crate::sol) key: FitKey,
+    pub(in crate::sol::api) sol: &'a SolarSystem,
+    pub(in crate::sol::api) key: FitKey,
 }
 impl<'a> Fit<'a> {
-    pub(in crate::sol) fn new(sol: &'a SolarSystem, key: FitKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: FitKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit_id(&self) -> FitId {
@@ -14,11 +14,11 @@ impl<'a> Fit<'a> {
 }
 
 pub struct FitMut<'a> {
-    pub(in crate::sol) sol: &'a mut SolarSystem,
-    pub(in crate::sol) key: FitKey,
+    pub(in crate::sol::api) sol: &'a mut SolarSystem,
+    pub(in crate::sol::api) key: FitKey,
 }
 impl<'a> FitMut<'a> {
-    pub(in crate::sol) fn new(sol: &'a mut SolarSystem, key: FitKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: FitKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit_id(&self) -> FitId {

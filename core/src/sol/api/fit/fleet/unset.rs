@@ -4,7 +4,10 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_unset_fit_fleet(&mut self, fit_key: FitKey) -> Result<(), FitFleetAssignedError> {
+    pub(in crate::sol::api) fn internal_unset_fit_fleet(
+        &mut self,
+        fit_key: FitKey,
+    ) -> Result<(), FitFleetAssignedError> {
         let uad_fit = self.uad.fits.get(fit_key);
         let fleet_key = match uad_fit.fleet {
             Some(fleet_key) => fleet_key,

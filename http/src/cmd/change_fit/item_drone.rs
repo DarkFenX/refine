@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HMutationOnAdd, get_primary_fit},
+        shared::{HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
     },
     shared::HMinionState,
     util::HExecError,
@@ -21,8 +21,16 @@ impl HAddDroneCmd {
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let mut core_drone = core_fit.add_drone(self.type_id, (&self.state).into());
-        if let Some(mutation) = self.mutation.as_ref() {
-            core_drone.mutate(mutation.into()).unwrap();
+        if let Some(h_mutation) = self.mutation.as_ref() {
+            match h_mutation {
+                HMutationOnAdd::Short(mutator_id) => {
+                    core_drone.mutate(*mutator_id).unwrap();
+                }
+                HMutationOnAdd::Full(h_full_mutation) => {
+                    let core_mutation = core_drone.mutate(h_full_mutation.mutator_id).unwrap();
+                    apply_mattrs_on_add(core_mutation, h_full_mutation);
+                }
+            }
         }
         Ok(core_drone.into())
     }

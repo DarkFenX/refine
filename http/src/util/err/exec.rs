@@ -31,8 +31,8 @@ pub(crate) enum HExecError {
     ItemKindMismatch(#[source] rc::err::basic::ItemKindMatchError),
     #[error("{0}")]
     SkillIdCollision(#[source] rc::err::basic::SkillEveTypeError),
-    #[error("{0}")]
-    MutationNotSet(#[source] rc::err::basic::ItemMutatedError),
+    #[error("item {0} is not mutated")]
+    MutationNotSet(rc::ItemId),
     #[error("item {0} does not have charge set")]
     ChargeNotSet(rc::ItemId),
     #[error("{0}")]

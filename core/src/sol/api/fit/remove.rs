@@ -1,7 +1,7 @@
 use crate::sol::{FitKey, RmMode, SolarSystem, api::FitMut};
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_remove_fit(&mut self, fit_key: FitKey) {
+    pub(in crate::sol::api) fn internal_remove_fit(&mut self, fit_key: FitKey) {
         let uad_fit = self.uad.fits.get(fit_key);
         for item_key in uad_fit.all_direct_items().into_iter() {
             self.internal_remove_item(item_key, RmMode::Free).unwrap();

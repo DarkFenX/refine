@@ -4,7 +4,7 @@ use crate::sol::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_get_fit_rah_incoming_dps(&self, fit_key: FitKey) -> Option<DpsProfile> {
+    pub(in crate::sol::api) fn internal_get_fit_rah_incoming_dps(&self, fit_key: FitKey) -> Option<DpsProfile> {
         self.uad.fits.get(fit_key).rah_incoming_dps
     }
 }

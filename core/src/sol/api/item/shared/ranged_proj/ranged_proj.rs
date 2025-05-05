@@ -2,12 +2,16 @@ use crate::sol::{AttrVal, ItemId, ItemKey, SolarSystem};
 
 /// Projection which allows to set range.
 pub struct RangedProj<'a> {
-    pub(in crate::sol) sol: &'a SolarSystem,
-    pub(in crate::sol) projector_item_key: ItemKey,
-    pub(in crate::sol) projectee_item_key: ItemKey,
+    pub(in crate::sol::api) sol: &'a SolarSystem,
+    pub(in crate::sol::api) projector_item_key: ItemKey,
+    pub(in crate::sol::api) projectee_item_key: ItemKey,
 }
 impl<'a> RangedProj<'a> {
-    pub(in crate::sol) fn new(sol: &'a SolarSystem, projector_item_key: ItemKey, projectee_item_key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(
+        sol: &'a SolarSystem,
+        projector_item_key: ItemKey,
+        projectee_item_key: ItemKey,
+    ) -> Self {
         Self {
             sol,
             projector_item_key,
@@ -24,12 +28,12 @@ impl<'a> RangedProj<'a> {
 
 /// Projection which allows to set range.
 pub struct RangedProjMut<'a> {
-    pub(in crate::sol) sol: &'a mut SolarSystem,
-    pub(in crate::sol) projector_item_key: ItemKey,
-    pub(in crate::sol) projectee_item_key: ItemKey,
+    pub(in crate::sol::api) sol: &'a mut SolarSystem,
+    pub(in crate::sol::api) projector_item_key: ItemKey,
+    pub(in crate::sol::api) projectee_item_key: ItemKey,
 }
 impl<'a> RangedProjMut<'a> {
-    pub(in crate::sol) fn new(
+    pub(in crate::sol::api) fn new(
         sol: &'a mut SolarSystem,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,

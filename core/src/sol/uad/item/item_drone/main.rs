@@ -3,8 +3,10 @@ use crate::{
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
         FitKey, ItemId,
-        info::ItemMutationInfo,
-        uad::item::{EffectModes, ItemAddMutation, ItemChangeAttrMutation, MinionState, Projs, UadItemBaseMutable},
+        uad::item::{
+            EffectModes, ItemAddMutation, ItemChangeAttrMutation, ItemMutationData, MinionState, Projs,
+            UadItemBaseMutable,
+        },
     },
     src::Src,
     util::{Named, RMap},
@@ -75,11 +77,8 @@ impl UadDrone {
         self.base.update_a_data(src);
     }
     // Mutation-specific methods
-    pub(in crate::sol) fn has_mutation_data(&self) -> bool {
-        self.base.has_mutation_data()
-    }
-    pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<ItemMutationInfo> {
-        self.base.get_mutation_info(src)
+    pub(in crate::sol) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
+        self.base.get_mutation_data()
     }
     pub(in crate::sol) fn mutate(&mut self, src: &Src, mutation: ItemAddMutation) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(src, mutation)

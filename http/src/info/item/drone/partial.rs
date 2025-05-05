@@ -28,7 +28,10 @@ impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
             type_id: core_drone.get_type_id(),
             fit_id: core_drone.get_fit().get_fit_id(),
             state: (&core_drone.get_state()).into(),
-            mutation: core_drone.get_mutation().as_ref().map(|v| v.into()),
+            mutation: match core_drone.get_mutation() {
+                Some(rc::Mutation::Effective(effective_mutation)) => Some(effective_mutation.into()),
+                _ => None,
+            },
             projs: core_drone
                 .iter_projs()
                 .map(|core_ranged_proj| core_ranged_proj.into())

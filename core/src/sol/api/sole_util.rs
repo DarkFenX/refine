@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_get_item_attr(
+    pub(in crate::sol::api) fn internal_get_item_attr(
         &mut self,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,

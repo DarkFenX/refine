@@ -1,11 +1,11 @@
 use crate::sol::{FleetId, FleetKey, SolarSystem};
 
 pub struct Fleet<'a> {
-    pub(in crate::sol) sol: &'a SolarSystem,
-    pub(in crate::sol) key: FleetKey,
+    pub(in crate::sol::api) sol: &'a SolarSystem,
+    pub(in crate::sol::api) key: FleetKey,
 }
 impl<'a> Fleet<'a> {
-    pub(in crate::sol) fn new(sol: &'a SolarSystem, key: FleetKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: FleetKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fleet_id(&self) -> FleetId {
@@ -14,11 +14,11 @@ impl<'a> Fleet<'a> {
 }
 
 pub struct FleetMut<'a> {
-    pub(in crate::sol) sol: &'a mut SolarSystem,
-    pub(in crate::sol) key: FleetKey,
+    pub(in crate::sol::api) sol: &'a mut SolarSystem,
+    pub(in crate::sol::api) key: FleetKey,
 }
 impl<'a> FleetMut<'a> {
-    pub(in crate::sol) fn new(sol: &'a mut SolarSystem, key: FleetKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: FleetKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fleet_id(&self) -> FleetId {

@@ -4,9 +4,9 @@ use crate::{
     sol::{
         AttrVal, FitKey, ItemId, ItemKey,
         uad::item::{
-            Autocharges, EffectModes, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter,
-            UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance,
-            UadSubsystem, UadSwEffect,
+            Autocharges, EffectModes, ItemMutationData, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge,
+            UadDrone, UadFighter, UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip,
+            UadSkill, UadStance, UadSubsystem, UadSwEffect,
         },
     },
     src::Src,
@@ -271,12 +271,11 @@ impl UadItem {
             _ => None,
         }
     }
-    // True if item has any mutation data on it, even if it's not being in effect
-    pub(in crate::sol) fn has_mutation_data(&self) -> bool {
+    pub(in crate::sol) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         match self {
-            Self::Drone(drone) => drone.has_mutation_data(),
-            Self::Module(module) => module.has_mutation_data(),
-            _ => false,
+            Self::Drone(drone) => drone.get_mutation_data(),
+            Self::Module(module) => module.get_mutation_data(),
+            _ => None,
         }
     }
     // Extractors of specific items

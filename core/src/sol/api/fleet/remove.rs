@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::sol::{FleetKey, SolarSystem, api::FleetMut};
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_remove_fleet(&mut self, fleet_key: FleetKey) {
+    pub(in crate::sol::api) fn internal_remove_fleet(&mut self, fleet_key: FleetKey) {
         let uad_fleet = self.uad.fleets.get(fleet_key);
         let fit_keys = uad_fleet.iter_fits().copied().collect_vec();
         for fit_key in fit_keys {
