@@ -1,8 +1,9 @@
 use crate::{
     ad,
-    err::basic::{ItemMutatedError, ItemNotMutatedError},
+    err::basic::ItemNotMutatedError,
     sol::{
         FitKey, Idx, ItemId, ItemKey, ModRack,
+        err::ItemMutatedError,
         uad::item::{
             EffectModes, ItemAddMutation, ItemChangeAttrMutation, ItemMutationData, ModuleState, Projs,
             UadItemBaseMutable,

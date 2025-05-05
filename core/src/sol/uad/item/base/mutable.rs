@@ -2,9 +2,10 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     ad,
-    err::basic::{ItemMutatedError, ItemNotMutatedError},
+    err::basic::ItemNotMutatedError,
     sol::{
         ItemId, UnitInterval,
+        err::ItemMutatedError,
         uad::item::{EffectModes, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation, UadItemBase},
     },
     src::Src,
