@@ -1,7 +1,4 @@
-use crate::sol::{
-    api::RawMAttrMut,
-    uad::item::{ItemChangeAttrMutation, UadItem},
-};
+use crate::sol::{ItemChangeAttrMutation, api::RawMAttrMut, uad::item::UadItem};
 
 impl<'a> RawMAttrMut<'a> {
     /// Remove user-defined mutation for the attribute.

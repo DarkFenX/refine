@@ -1,8 +1,4 @@
-use crate::sol::{
-    UnitInterval,
-    api::RawMAttrMut,
-    uad::item::{ItemAttrMutationValue, ItemChangeAttrMutation, UadItem},
-};
+use crate::sol::{ItemAttrMutationValue, ItemChangeAttrMutation, UnitInterval, api::RawMAttrMut, uad::item::UadItem};
 
 impl<'a> RawMAttrMut<'a> {
     /// Set roll for the attribute.

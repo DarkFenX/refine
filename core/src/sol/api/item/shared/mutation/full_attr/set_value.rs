@@ -1,8 +1,4 @@
-use crate::sol::{
-    AttrVal,
-    api::FullMAttrMut,
-    uad::item::{ItemAttrMutationValue, ItemChangeAttrMutation, UadItem},
-};
+use crate::sol::{AttrVal, ItemAttrMutationValue, ItemChangeAttrMutation, api::FullMAttrMut, uad::item::UadItem};
 
 impl<'a> FullMAttrMut<'a> {
     /// Set value for the attribute.

@@ -1,7 +1,7 @@
 use crate::sol::{
-    FitKey, ItemKey, ItemTypeId, SolarSystem,
+    FitKey, ItemAddMutation, ItemKey, ItemTypeId, SolarSystem,
     api::{DroneMut, FitMut},
-    uad::item::{ItemAddMutation, MinionState, UadDrone, UadItem},
+    uad::item::{MinionState, UadDrone, UadItem},
 };
 
 impl SolarSystem {
