@@ -318,14 +318,14 @@ impl UadItemBaseMutable {
                 &mutation_cache.base_a_item_id,
                 &mut base_a_item_cache,
                 mutated_a_item,
-                &attr_mutation_request.attr_id,
+                &attr_mutation_request.a_attr_id,
             );
             let new_a_value = match attr_mutation_request.value {
                 // Mutation change request
                 Some(attr_mutation_value) => {
                     // Normalize request to roll
                     let attr_roll = match normalize_attr_mutation_full_with_unmutated_value(
-                        &attr_mutation_request.attr_id,
+                        &attr_mutation_request.a_attr_id,
                         unmutated_a_value,
                         &mutation_cache.a_mutator,
                         attr_mutation_value,
@@ -337,7 +337,7 @@ impl UadItemBaseMutable {
                     // Update user-defined data
                     item_mutation
                         .attr_rolls
-                        .insert(attr_mutation_request.attr_id, attr_roll);
+                        .insert(attr_mutation_request.a_attr_id, attr_roll);
                     // Process source-dependent data and return new value
                     let unmutated_a_value = match unmutated_a_value {
                         Some(unmutated_a_value) => unmutated_a_value,
@@ -346,21 +346,21 @@ impl UadItemBaseMutable {
                         // updated user data, so just go to next attribute
                         None => continue,
                     };
-                    let a_mutation_range = match mutation_cache.a_mutator.attr_mods.get(&attr_mutation_request.attr_id)
-                    {
-                        Some(a_mutation_range) => a_mutation_range,
-                        // No mutation range now means there couldn't be any mutated value
-                        // earlier as well, regardless of user-defined roll data, thus attribute
-                        // value cannot change. We already updated user data, so just go to next
-                        // attribute
-                        None => continue,
-                    };
+                    let a_mutation_range =
+                        match mutation_cache.a_mutator.attr_mods.get(&attr_mutation_request.a_attr_id) {
+                            Some(a_mutation_range) => a_mutation_range,
+                            // No mutation range now means there couldn't be any mutated value
+                            // earlier as well, regardless of user-defined roll data, thus attribute
+                            // value cannot change. We already updated user data, so just go to next
+                            // attribute
+                            None => continue,
+                        };
                     mutate_a_attr_value(unmutated_a_value, a_mutation_range, attr_roll)
                 }
                 // Mutation removal request
                 None => {
                     // Update user-defined data
-                    item_mutation.attr_rolls.remove(&attr_mutation_request.attr_id);
+                    item_mutation.attr_rolls.remove(&attr_mutation_request.a_attr_id);
                     // Update source-dependent data
                     let unmutated_a_value = match unmutated_a_value {
                         Some(unmutated_a_value) => unmutated_a_value,
@@ -368,7 +368,7 @@ impl UadItemBaseMutable {
                         None => continue,
                     };
                     // Limit possible values by roll range, if it is available
-                    match mutation_cache.a_mutator.attr_mods.get(&attr_mutation_request.attr_id) {
+                    match mutation_cache.a_mutator.attr_mods.get(&attr_mutation_request.a_attr_id) {
                         Some(a_mutation_range) => limit_a_attr_value(unmutated_a_value, a_mutation_range),
                         None => unmutated_a_value,
                     }
@@ -379,10 +379,10 @@ impl UadItemBaseMutable {
             // logic as unmutated value)
             let old_a_value = mutation_cache
                 .merged_a_attrs
-                .insert(attr_mutation_request.attr_id, new_a_value)
+                .insert(attr_mutation_request.a_attr_id, new_a_value)
                 .unwrap();
             if old_a_value != new_a_value {
-                changed_a_attr_ids.push(attr_mutation_request.attr_id);
+                changed_a_attr_ids.push(attr_mutation_request.a_attr_id);
             }
         }
         Ok(changed_a_attr_ids)
@@ -463,7 +463,7 @@ fn convert_item_mutation_basic(mutation_request: ItemAddMutation) -> ItemMutatio
         mutation_request
             .attrs
             .into_iter()
-            .filter_map(|m| normalize_attr_mutation_simple(m.value).map(|r| (m.attr_id, r)))
+            .filter_map(|m| normalize_attr_mutation_simple(m.value).map(|r| (m.a_attr_id, r)))
             .collect(),
     )
 }
@@ -487,8 +487,8 @@ fn convert_item_mutation_full(
             .attrs
             .into_iter()
             .filter_map(|m| {
-                normalize_attr_mutation_full_with_unmutated_values(&m.attr_id, unmutated_a_attrs, a_mutator, m.value)
-                    .map(|r| (m.attr_id, r))
+                normalize_attr_mutation_full_with_unmutated_values(&m.a_attr_id, unmutated_a_attrs, a_mutator, m.value)
+                    .map(|r| (m.a_attr_id, r))
             })
             .collect(),
     )
@@ -645,16 +645,18 @@ fn change_mutation_attrs_ineffective(
                 match attr_mutation_request.value {
                     Some(req_val) => {
                         if let Some(roll_val) = normalize_attr_mutation_full_with_unmutated_values(
-                            &attr_mutation_request.attr_id,
+                            &attr_mutation_request.a_attr_id,
                             base_a_attrs,
                             a_mutator,
                             req_val,
                         ) {
-                            item_mutation.attr_rolls.insert(attr_mutation_request.attr_id, roll_val);
+                            item_mutation
+                                .attr_rolls
+                                .insert(attr_mutation_request.a_attr_id, roll_val);
                         }
                     }
                     None => {
-                        item_mutation.attr_rolls.remove(&attr_mutation_request.attr_id);
+                        item_mutation.attr_rolls.remove(&attr_mutation_request.a_attr_id);
                     }
                 }
             }
@@ -666,11 +668,13 @@ fn change_mutation_attrs_ineffective(
                 match attr_mutation_request.value {
                     Some(req_val) => {
                         if let Some(roll_val) = normalize_attr_mutation_simple(req_val) {
-                            item_mutation.attr_rolls.insert(attr_mutation_request.attr_id, roll_val);
+                            item_mutation
+                                .attr_rolls
+                                .insert(attr_mutation_request.a_attr_id, roll_val);
                         }
                     }
                     None => {
-                        item_mutation.attr_rolls.remove(&attr_mutation_request.attr_id);
+                        item_mutation.attr_rolls.remove(&attr_mutation_request.a_attr_id);
                     }
                 }
             }

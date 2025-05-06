@@ -1,4 +1,7 @@
-use crate::sol::{AttrId, AttrVal, ItemTypeId, UnitInterval};
+use crate::{
+    ad,
+    sol::{AttrVal, ItemTypeId, UnitInterval},
+};
 
 pub(in crate::sol) struct ItemAddMutation {
     pub(in crate::sol) mutator_id: ItemTypeId,
@@ -17,22 +20,22 @@ impl ItemAddMutation {
 }
 
 pub(in crate::sol) struct ItemAddAttrMutation {
-    pub(in crate::sol) attr_id: AttrId,
+    pub(in crate::sol) a_attr_id: ad::AAttrId,
     pub(in crate::sol) value: ItemAttrMutationValue,
 }
 impl ItemAddAttrMutation {
-    pub(in crate::sol) fn new(attr_id: AttrId, value: ItemAttrMutationValue) -> Self {
-        Self { attr_id, value }
+    pub(in crate::sol) fn new(a_attr_id: ad::AAttrId, value: ItemAttrMutationValue) -> Self {
+        Self { a_attr_id, value }
     }
 }
 
 pub(in crate::sol) struct ItemChangeAttrMutation {
-    pub(in crate::sol) attr_id: AttrId,
+    pub(in crate::sol) a_attr_id: ad::AAttrId,
     pub(in crate::sol) value: Option<ItemAttrMutationValue>,
 }
 impl ItemChangeAttrMutation {
-    pub(in crate::sol) fn new(attr_id: AttrId, value: Option<ItemAttrMutationValue>) -> Self {
-        Self { attr_id, value }
+    pub(in crate::sol) fn new(a_attr_id: ad::AAttrId, value: Option<ItemAttrMutationValue>) -> Self {
+        Self { a_attr_id, value }
     }
 }
 
