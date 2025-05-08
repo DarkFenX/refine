@@ -17,7 +17,7 @@ impl SolarSystem {
             // Still need to handle projected effect, even if projected effect is not using ranged
             // projections - this method is used not just by ranged projection removal
             UadItem::ProjEffect(_) => self.internal_remove_proj_effect_proj(projector_item_key, projectee_item_key),
-            _ => panic!(),
+            _ => unreachable!(),
         }
     }
 }

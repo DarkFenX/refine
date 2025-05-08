@@ -29,6 +29,6 @@ fn remove_mutation(sol: &mut SolarSystem, item_key: ItemKey) {
     match sol.uad.items.get(item_key) {
         UadItem::Drone(_) => sol.internal_remove_drone_mutation(item_key).unwrap(),
         UadItem::Module(_) => sol.internal_remove_module_mutation(item_key).unwrap(),
-        _ => panic!(),
+        _ => unreachable!(),
     }
 }

@@ -31,7 +31,7 @@ fn resolve_effect_status_full(
     online_running: bool,
 ) -> bool {
     match a_effect.state {
-        ad::AState::Ghost => panic!("ghost state should never reach full resolver"),
+        ad::AState::Ghost => unreachable!("ghost state should never reach full resolver"),
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
         ad::AState::Offline => item_a_state >= a_effect.state && a_effect.chance_attr_id.is_none(),

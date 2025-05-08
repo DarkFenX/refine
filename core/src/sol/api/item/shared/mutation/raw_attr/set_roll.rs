@@ -16,7 +16,7 @@ impl<'a> RawMAttrMut<'a> {
                 .sol
                 .internal_change_module_mutation(self.item_key, attr_mutations)
                 .unwrap(),
-            _ => panic!(),
+            _ => unreachable!(),
         }
     }
 }

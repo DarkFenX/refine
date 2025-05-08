@@ -32,7 +32,7 @@ impl<'a> FullMAttrMut<'a> {
                             .get_base_a_item_id(),
                         module.get_mutation_data().unwrap().get_a_mutator_id(),
                     ),
-                    _ => panic!(),
+                    _ => unreachable!(),
                 };
                 resolve_absolutes_into_rolls_with_ids(
                     &self.sol.uad.src,
@@ -55,7 +55,7 @@ impl<'a> FullMAttrMut<'a> {
                 .sol
                 .internal_change_module_mutation(self.item_key, attr_mutation_request)
                 .unwrap(),
-            _ => panic!(),
+            _ => unreachable!(),
         }
     }
 }
