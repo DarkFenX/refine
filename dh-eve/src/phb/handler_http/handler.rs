@@ -60,13 +60,80 @@ impl PhbHttpEdh {
             .map_err(|e| Error::from_suffix(e, suffix))?;
         Ok(data)
     }
-    fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> rc::ed::EResult<rc::ed::EDataCont<U>>
-    where
-        T: serde::de::DeserializeOwned + fsd::FsdMerge<U>,
-    {
-        let suffix = format!("{folder}/{file}.json");
-        let json = self.fetch_data(&suffix)?;
-        fsd::handle::<T, U>(json, &suffix)
+    // Entity-specific processing methods
+    fn process_binary_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/types.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.items = fsd::handle::<PItem, rc::ed::EItem>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/groups.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.groups = fsd::handle::<PItemGroup, rc::ed::EItemGroup>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/typelist.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.item_lists = fsd::handle::<PItemList, rc::ed::EItemList>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/dogmaattributes.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.attrs = fsd::handle::<PAttr, rc::ed::EAttr>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/typedogma.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.item_attrs = fsd::handle::<PItemAttrs, rc::ed::EItemAttr>(data.clone(), suffix)?;
+        e_data.item_effects = fsd::handle::<PItemEffects, rc::ed::EItemEffect>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/dogmaeffects.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.effects = fsd::handle::<PEffect, rc::ed::EEffect>(data, suffix)?;
+        Ok(())
+    }
+    fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_lite/fighterabilities.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.abils = fsd::handle::<PFighterAbil, rc::ed::EFighterAbil>(data, suffix)?;
+        Ok(())
+    }
+    fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_lite/fighterabilitiesbytype.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.item_abils = fsd::handle::<PItemFighterAbils, rc::ed::EItemFighterAbil>(data, suffix)?;
+        Ok(())
+    }
+    fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_lite/dbuffcollections.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.buffs = fsd::handle::<PBuff, rc::ed::EBuff>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/spacecomponentsbytype.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.space_comps = fsd::handle::<PItemSpaceComp, rc::ed::EItemSpaceComp>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/requiredskillsfortypes.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.item_srqs = fsd::handle::<PItemSkillMap, rc::ed::EItemSkillReq>(data, suffix)?;
+        Ok(())
+    }
+    fn process_binary_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+        let suffix = "fsd_binary/dynamicitemattributes.json";
+        let data = self.fetch_data(suffix)?;
+        e_data.muta_items = fsd::handle::<PMutaItemConvs, rc::ed::EMutaItemConv>(data.clone(), suffix)?;
+        e_data.muta_attrs = fsd::handle::<PMutaAttrMods, rc::ed::EMutaAttrMod>(data, suffix)?;
+        Ok(())
     }
 }
 impl fmt::Debug for PhbHttpEdh {
@@ -77,25 +144,18 @@ impl fmt::Debug for PhbHttpEdh {
 impl rc::ed::EveDataHandler for PhbHttpEdh {
     fn get_data(&self) -> rc::ed::EResult<rc::ed::EData> {
         let mut data = rc::ed::EData::new();
-        data.items = self.process_fsd::<PItem, rc::ed::EItem>("fsd_binary", "types")?;
-        data.groups = self.process_fsd::<PItemGroup, rc::ed::EItemGroup>("fsd_binary", "groups")?;
-        data.item_lists = self.process_fsd::<PItemList, rc::ed::EItemList>("fsd_binary", "typelist")?;
-        data.attrs = self.process_fsd::<PAttr, rc::ed::EAttr>("fsd_binary", "dogmaattributes")?;
-        data.item_attrs = self.process_fsd::<PItemAttrs, rc::ed::EItemAttr>("fsd_binary", "typedogma")?;
-        data.effects = self.process_fsd::<PEffect, rc::ed::EEffect>("fsd_binary", "dogmaeffects")?;
-        data.item_effects = self.process_fsd::<PItemEffects, rc::ed::EItemEffect>("fsd_binary", "typedogma")?;
-        data.abils = self.process_fsd::<PFighterAbil, rc::ed::EFighterAbil>("fsd_lite", "fighterabilities")?;
-        data.item_abils =
-            self.process_fsd::<PItemFighterAbils, rc::ed::EItemFighterAbil>("fsd_lite", "fighterabilitiesbytype")?;
-        data.buffs = self.process_fsd::<PBuff, rc::ed::EBuff>("fsd_lite", "dbuffcollections")?;
-        data.space_comps =
-            self.process_fsd::<PItemSpaceComp, rc::ed::EItemSpaceComp>("fsd_binary", "spacecomponentsbytype")?;
-        data.item_srqs =
-            self.process_fsd::<PItemSkillMap, rc::ed::EItemSkillReq>("fsd_binary", "requiredskillsfortypes")?;
-        data.muta_items =
-            self.process_fsd::<PMutaItemConvs, rc::ed::EMutaItemConv>("fsd_binary", "dynamicitemattributes")?;
-        data.muta_attrs =
-            self.process_fsd::<PMutaAttrMods, rc::ed::EMutaAttrMod>("fsd_binary", "dynamicitemattributes")?;
+        self.process_binary_types(&mut data)?;
+        self.process_binary_groups(&mut data)?;
+        self.process_binary_typelist(&mut data)?;
+        self.process_binary_dogmaattributes(&mut data)?;
+        self.process_binary_typedogma(&mut data)?;
+        self.process_binary_dogmaeffects(&mut data)?;
+        self.process_lite_fighterabilities(&mut data)?;
+        self.process_lite_fighterabilitiesbytype(&mut data)?;
+        self.process_lite_dbuffcollections(&mut data)?;
+        self.process_binary_spacecomponentsbytype(&mut data)?;
+        self.process_binary_requiredskillsfortypes(&mut data)?;
+        self.process_binary_dynamicitemattributes(&mut data)?;
         Ok(data)
     }
     fn get_data_version(&self) -> rc::ed::EResult<String> {
