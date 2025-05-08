@@ -40,6 +40,11 @@ impl EData {
         }
     }
 }
+impl Default for EData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 /// Convenience type to pass data and accumulated warnings to the caller.
 pub struct EDataCont<T> {

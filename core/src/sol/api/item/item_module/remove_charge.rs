@@ -11,8 +11,7 @@ impl SolarSystem {
             None => {
                 return Err(ChargeFoundError {
                     cont_item_id: uad_module.get_item_id(),
-                }
-                .into());
+                });
             }
         };
         self.internal_remove_charge(charge_key);
