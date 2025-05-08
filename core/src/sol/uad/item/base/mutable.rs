@@ -444,10 +444,7 @@ fn convert_request_to_data(mutation_request: ItemMutationRequest) -> ItemMutatio
         mutation_request
             .attrs
             .into_iter()
-            .filter_map(|m| match m.value {
-                Some(roll) => Some((m.a_attr_id, roll)),
-                None => None,
-            })
+            .filter_map(|attr_mutation| attr_mutation.value.map(|roll| (attr_mutation.a_attr_id, roll)))
             .collect(),
     )
 }
