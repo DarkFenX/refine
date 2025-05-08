@@ -1,16 +1,16 @@
 use ordered_float::OrderedFloat as OF;
 
-use crate::{ad, adg::EData, util::RMap};
+use crate::{ad, ed, util::RMap};
 
-pub(in crate::adg::flow::conv) fn conv_mutas(e_data: &EData) -> RMap<ad::AItemId, ad::AMuta> {
+pub(in crate::adg::flow::conv) fn conv_mutas(e_data: &ed::EData) -> RMap<ad::AItemId, ad::AMuta> {
     let mut a_mutas = RMap::new();
-    for e_muta in e_data.muta_items.iter() {
+    for e_muta in e_data.muta_items.data.iter() {
         let a_muta = a_mutas
             .entry(e_muta.muta_id)
             .or_insert_with(|| ad::AMuta::new(e_muta.muta_id));
         a_muta.item_map.insert(e_muta.in_item_id, e_muta.out_item_id);
     }
-    for e_attr_data in e_data.muta_attrs.iter() {
+    for e_attr_data in e_data.muta_attrs.data.iter() {
         // We are interested in attribute modifiers only for mutators which have in-out item
         // definitions
         if let Some(a_muta) = a_mutas.get_mut(&e_attr_data.muta_id) {

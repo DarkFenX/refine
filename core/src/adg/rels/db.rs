@@ -1,6 +1,6 @@
 use crate::{
     adg::{
-        EData, GSupport,
+        GSupport,
         rels::{Fk, KeyPart, Pk},
     },
     ed,
@@ -27,7 +27,7 @@ impl KeyDb {
         }
     }
     // Primary keys
-    pub(in crate::adg) fn new_pkdb(e_data: &EData) -> Self {
+    pub(in crate::adg) fn new_pkdb(e_data: &ed::EData) -> Self {
         let mut pkdb = Self::new();
         Self::extend_pk_vec(&mut pkdb.items, &e_data.items);
         Self::extend_pk_vec(&mut pkdb.groups, &e_data.groups);
@@ -37,13 +37,13 @@ impl KeyDb {
         Self::extend_pk_vec(&mut pkdb.buffs, &e_data.buffs);
         pkdb
     }
-    fn extend_pk_vec<T: Pk>(set: &mut RSet<KeyPart>, vec: &[T]) {
-        for i in vec.iter() {
+    fn extend_pk_vec<T: Pk>(set: &mut RSet<KeyPart>, cont: &ed::EDataCont<T>) {
+        for i in cont.data.iter() {
             set.extend(i.get_pk())
         }
     }
     // Foreign keys
-    pub(in crate::adg) fn new_fkdb(e_data: &EData, g_supp: &GSupport) -> Self {
+    pub(in crate::adg) fn new_fkdb(e_data: &ed::EData, g_supp: &GSupport) -> Self {
         let mut fkdb = Self::new();
         fkdb.extend_fk_vec(&e_data.items, g_supp);
         fkdb.extend_fk_vec(&e_data.groups, g_supp);
@@ -60,8 +60,8 @@ impl KeyDb {
         fkdb.extend_fk_vec(&e_data.muta_attrs, g_supp);
         fkdb
     }
-    fn extend_fk_vec<T: Fk>(&mut self, vec: &[T], g_supp: &GSupport) {
-        for v in vec.iter() {
+    fn extend_fk_vec<T: Fk>(&mut self, cont: &ed::EDataCont<T>, g_supp: &GSupport) {
+        for v in cont.data.iter() {
             self.items.extend(v.get_item_fks(g_supp));
             self.groups.extend(v.get_group_fks(g_supp));
             self.attrs.extend(v.get_attr_fks(g_supp));

@@ -1,5 +1,3 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
     sol::{
         FitId, FitSecStatus, FleetKey, ItemKey, ItemTypeId,

@@ -34,7 +34,7 @@
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are
 //! logged, and data is not transferred to a dogma effect.
 
-pub use cont::EDataCont;
+pub use cont::{EData, EDataCont};
 pub use data::{
     EAbilId, EAttr, EAttrId, EAttrUnitId, EAttrVal, EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM, ECount,
     EEffect, EEffectCatId, EEffectId, EEffectMod, EFighterAbil, EItem, EItemAttr, EItemCatId, EItemEffect,

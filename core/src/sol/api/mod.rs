@@ -11,9 +11,9 @@ pub use item::{
     IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, IterItemAttrsError, IterItemEffectsError,
     IterItemModifiersError, Module, ModuleIter, ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut,
     ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError,
-    RemoveModuleChargeError, Rig, RigMut, Service, ServiceMut, SetFighterCountOverrideError, Ship, ShipMut, SideEffect,
-    SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut,
-    StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+    Rig, RigMut, Service, ServiceMut, SetFighterCountOverrideError, Ship, ShipMut, SideEffect, SideEffectIter,
+    SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect,
+    StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed, iter_projectee_item_keys, iter_ranged_projs};
 pub use mut_iter::MutIter;

@@ -1,9 +1,7 @@
 use ordered_float::OrderedFloat as OF;
 
 use crate::{
-    ac, ad,
-    adg::data::EData,
-    ec, ed,
+    ac, ad, ec, ed,
     util::{RMap, RMapRSet, RSet},
 };
 
@@ -25,28 +23,28 @@ impl GSupport {
             eff_charge_map: RMap::new(),
         }
     }
-    pub(in crate::adg) fn fill(&mut self, e_data: &EData) {
+    pub(in crate::adg) fn fill(&mut self, e_data: &ed::EData) {
         self.fill_grp_cat_map(e_data);
         self.fill_rendered_type_lists(e_data);
         self.fill_attr_unit_map(e_data);
         self.fill_eff_buff_map();
         self.fill_eff_charge_map();
     }
-    fn fill_grp_cat_map(&mut self, e_data: &EData) {
-        for grp in e_data.groups.iter() {
+    fn fill_grp_cat_map(&mut self, e_data: &ed::EData) {
+        for grp in e_data.groups.data.iter() {
             self.grp_cat_map.insert(grp.id, grp.category_id);
         }
     }
-    fn fill_rendered_type_lists(&mut self, e_data: &EData) {
+    fn fill_rendered_type_lists(&mut self, e_data: &ed::EData) {
         let mut types_by_grp = RMapRSet::new();
-        for item in e_data.items.iter() {
+        for item in e_data.items.data.iter() {
             types_by_grp.add_entry(item.group_id, item.id);
         }
         let mut types_by_cat = RMapRSet::new();
-        for group in e_data.groups.iter() {
+        for group in e_data.groups.data.iter() {
             types_by_cat.extend_entries(group.category_id, types_by_grp.get(&group.id).copied());
         }
-        for item_list in &e_data.item_lists {
+        for item_list in &e_data.item_lists.data {
             let mut includes = RSet::new();
             includes.extend(item_list.included_item_ids.iter().copied());
             for included_grp_id in item_list.included_grp_ids.iter() {
@@ -137,8 +135,8 @@ impl GSupport {
             },
         );
     }
-    fn fill_attr_unit_map(&mut self, e_data: &EData) {
-        for attr in e_data.attrs.iter() {
+    fn fill_attr_unit_map(&mut self, e_data: &ed::EData) {
+        for attr in e_data.attrs.data.iter() {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
             }

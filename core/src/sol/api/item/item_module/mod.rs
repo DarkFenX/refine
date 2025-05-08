@@ -1,7 +1,6 @@
 pub use fit_iter::ModuleIter;
 pub use get::GetModuleError;
 pub use module::{Module, ModuleMut};
-pub use remove_charge::RemoveModuleChargeError;
 
 mod add;
 mod fit_iter;

@@ -1,10 +1,11 @@
 use ordered_float::OrderedFloat as OF;
 
-use crate::{ad, adg::EData, util::RMap};
+use crate::{ad, ed, util::RMap};
 
-pub(in crate::adg::flow::conv) fn conv_attrs(e_data: &EData) -> RMap<ad::AAttrId, ad::AAttr> {
+pub(in crate::adg::flow::conv) fn conv_attrs(e_data: &ed::EData) -> RMap<ad::AAttrId, ad::AAttr> {
     e_data
         .attrs
+        .data
         .iter()
         .map(|v| {
             (

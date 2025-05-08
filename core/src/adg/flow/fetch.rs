@@ -1,23 +1,16 @@
 use crate::{
-    adg::EData,
     ed,
-    ed::EveDataHandler,
     util::{Named, StrMsgError},
 };
 
 const MAX_WARNS: usize = 5;
 
-/// Fetch data from a data handler into a data vec, and report warnings, if any were encountered.
-fn fetch_data_vec<S, F, T>(e_handler: &S, func: F, vec: &mut Vec<T>) -> Result<(), StrMsgError>
+/// Report warnings.
+fn report_warnings<T>(data_cont: &ed::EDataCont<T>)
 where
-    S: ?Sized + EveDataHandler,
-    F: Fn(&S) -> ed::EResult<ed::EDataCont<T>>,
     T: Named,
 {
-    tracing::debug!("fetching {}", T::get_name());
-    let e_cont = func(e_handler).map_err(|e| StrMsgError { msg: e.to_string() })?;
-    vec.extend(e_cont.data);
-    let warn_count = e_cont.warns.len();
+    let warn_count = data_cont.warns.len();
     if warn_count > 0 {
         tracing::warn!(
             "{} warnings encountered during fetching of {}, showing up to {}:",
@@ -25,31 +18,27 @@ where
             T::get_name(),
             MAX_WARNS
         );
-        for warn_msg in e_cont.warns.iter().take(MAX_WARNS) {
+        for warn_msg in data_cont.warns.iter().take(MAX_WARNS) {
             tracing::warn!("{warn_msg}");
         }
     }
-    Ok(())
 }
 
-pub(in crate::adg) fn fetch_data(e_handler: &dyn EveDataHandler, e_data: &mut EData) -> Result<(), StrMsgError> {
-    fetch_data_vec(e_handler, EveDataHandler::get_items, &mut e_data.items)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_groups, &mut e_data.groups)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_lists, &mut e_data.item_lists)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_attrs, &mut e_data.attrs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_attrs, &mut e_data.item_attrs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_effects, &mut e_data.effects)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_effects, &mut e_data.item_effects)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_fighter_abils, &mut e_data.abils)?;
-    fetch_data_vec(
-        e_handler,
-        EveDataHandler::get_item_fighter_abils,
-        &mut e_data.item_abils,
-    )?;
-    fetch_data_vec(e_handler, EveDataHandler::get_buffs, &mut e_data.buffs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_space_comps, &mut e_data.space_comps)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_skill_reqs, &mut e_data.item_srqs)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_muta_item_convs, &mut e_data.muta_items)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_muta_attr_mods, &mut e_data.muta_attrs)?;
-    Ok(())
+pub(in crate::adg) fn fetch_data(e_handler: &dyn ed::EveDataHandler) -> Result<ed::EData, StrMsgError> {
+    let e_data = e_handler.get_data().map_err(|e| StrMsgError { msg: e.to_string() })?;
+    report_warnings(&e_data.items);
+    report_warnings(&e_data.groups);
+    report_warnings(&e_data.item_lists);
+    report_warnings(&e_data.attrs);
+    report_warnings(&e_data.item_attrs);
+    report_warnings(&e_data.effects);
+    report_warnings(&e_data.item_effects);
+    report_warnings(&e_data.abils);
+    report_warnings(&e_data.item_abils);
+    report_warnings(&e_data.buffs);
+    report_warnings(&e_data.space_comps);
+    report_warnings(&e_data.item_srqs);
+    report_warnings(&e_data.muta_items);
+    report_warnings(&e_data.muta_attrs);
+    Ok(e_data)
 }

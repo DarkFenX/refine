@@ -16,7 +16,7 @@ use tracing_subscriber::prelude::*;
 
 use rc::{
     AddMode, ItemCommon, ItemMutCommon, Lender, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption,
-    SolarSystem, Src, VERSION,
+    SkillLevel, SolarSystem, Src, VERSION,
     ad::{AItemKind, AState, AdaptedDataHandler},
     ed::EveDataHandler,
     val::ValOptions,
@@ -53,9 +53,9 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    test_random(dh, ch);
+    // test_random(dh, ch);
     // test_crusader(dh, ch);
-    // test_nphoon(dh, ch);
+    test_nphoon(dh, ch);
 }
 
 fn test_random(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
@@ -77,7 +77,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     let mut fit = sol_sys.add_fit();
     let ship_id = fit.set_ship(11184).get_item_id();
     for skill_id in skill_ids.iter() {
-        fit.add_skill(skill_id.to_owned(), 5);
+        fit.add_skill(skill_id.to_owned(), SkillLevel::new_clamped(5));
     }
     let fit_id = fit.get_fit_id();
     // RAH
@@ -142,7 +142,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 
     // Skills
     for skill_id in skill_ids.iter() {
-        fit.add_skill(*skill_id, 5);
+        fit.add_skill(*skill_id, SkillLevel::new_clamped(5));
     }
 
     // Implants
@@ -632,17 +632,16 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 }
 
 fn get_skill_ids(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::ed::EItemId> {
-    let grp_ids = dh
-        .get_item_groups()
-        .unwrap()
+    let eve_data = dh.get_data().unwrap();
+    let grp_ids = eve_data
+        .groups
         .data
         .iter()
         .filter(|v| v.category_id == 16)
         .map(|v| v.id)
         .collect_vec();
-    let skill_ids = dh
-        .get_items()
-        .unwrap()
+    let skill_ids = eve_data
+        .items
         .data
         .iter()
         .filter(|v| grp_ids.contains(&v.group_id))

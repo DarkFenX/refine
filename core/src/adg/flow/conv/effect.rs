@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use crate::{
     ac, ad,
-    adg::{EData, GSupport, get_abil_effect},
+    adg::{GSupport, get_abil_effect},
     ec, ed,
     util::{RMap, RSet, StrMsgError},
 };
@@ -16,9 +16,12 @@ impl ed::EFighterAbil {
     }
 }
 
-pub(in crate::adg::flow::conv) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> RMap<ad::AEffectId, ad::AEffect> {
+pub(in crate::adg::flow::conv) fn conv_effects(
+    e_data: &ed::EData,
+    g_supp: &GSupport,
+) -> RMap<ad::AEffectId, ad::AEffect> {
     let mut a_effects = RMap::new();
-    for e_effect in e_data.effects.iter() {
+    for e_effect in e_data.effects.data.iter() {
         let state = match e_effect.category_id {
             ec::effcats::PASSIVE => ad::AState::Offline,
             ec::effcats::ACTIVE => ad::AState::Active,
@@ -299,13 +302,13 @@ fn get_arg_str(args: &RMap<String, ed::EPrimitive>, name: &str) -> Result<String
     }
 }
 
-fn extract_ability_map<F, T>(e_data: &EData, getter: F) -> RMap<ad::AEffectId, RSet<T>>
+fn extract_ability_map<F, T>(e_data: &ed::EData, getter: F) -> RMap<ad::AEffectId, RSet<T>>
 where
     F: Fn(&ed::EFighterAbil) -> T,
     T: Eq + Hash,
 {
     let mut map = RMap::new();
-    for e_abil in e_data.abils.iter() {
+    for e_abil in e_data.abils.data.iter() {
         match get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map

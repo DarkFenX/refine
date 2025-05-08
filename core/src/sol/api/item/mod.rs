@@ -10,7 +10,7 @@ pub use item_drone::{Drone, DroneMut, GetDroneError};
 pub use item_fighter::{Fighter, FighterMut, GetFighterError, SetFighterCountOverrideError};
 pub use item_fw_effect::{FwEffect, FwEffectMut, GetFwEffectError};
 pub use item_implant::{GetImplantError, Implant, ImplantMut};
-pub use item_module::{GetModuleError, Module, ModuleIter, ModuleMut, RemoveModuleChargeError};
+pub use item_module::{GetModuleError, Module, ModuleIter, ModuleMut};
 pub use item_proj_effect::{
     AddProjError, GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut,
 };

@@ -1,13 +1,15 @@
 //! Contains facilities which clean up data to ensure no duplicate primary keys exist.
 
 use crate::{
-    adg::{EData, rels::Pk},
+    adg::rels::Pk,
+    ed,
     util::{Named, RSet},
 };
 
-fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
+fn dedup_pks_vec<T: Pk + Named>(cont: &mut ed::EDataCont<T>) {
     let mut seen_pks = RSet::new();
-    let removed = vec
+    let removed = cont
+        .data
         .extract_if(.., |v| {
             let pk = v.get_pk();
             if seen_pks.contains(&pk) {
@@ -24,7 +26,7 @@ fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
     }
 }
 
-pub(in crate::adg) fn dedup_pks(e_data: &mut EData) {
+pub(in crate::adg) fn dedup_pks(e_data: &mut ed::EData) {
     dedup_pks_vec(&mut e_data.items);
     dedup_pks_vec(&mut e_data.groups);
     dedup_pks_vec(&mut e_data.item_lists);
