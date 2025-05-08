@@ -1,7 +1,7 @@
 use crate::sol::{AttrMutationRequest, ItemKey, SolarSystem, err::ItemMutatedError};
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_change_drone_mutation(
+    pub(in crate::sol) fn internal_change_drone_mutation_attrs(
         &mut self,
         item_key: ItemKey,
         attr_mutations: Vec<AttrMutationRequest>,

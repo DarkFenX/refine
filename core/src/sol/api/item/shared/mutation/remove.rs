@@ -1,8 +1,19 @@
 use crate::sol::{
     ItemKey, SolarSystem,
     api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut},
+    err::ItemMutatedError,
     uad::item::UadItem,
 };
+
+impl SolarSystem {
+    pub(in crate::sol) fn internal_remove_item_mutation(&mut self, item_key: ItemKey) -> Result<(), ItemMutatedError> {
+        match self.uad.items.get(item_key) {
+            UadItem::Drone(_) => self.internal_remove_drone_mutation(item_key),
+            UadItem::Module(_) => self.internal_remove_module_mutation(item_key),
+            _ => unreachable!(),
+        }
+    }
+}
 
 impl<'a> MutationMut<'a> {
     pub fn remove(self) {
@@ -15,20 +26,12 @@ impl<'a> MutationMut<'a> {
 
 impl<'a> EffectiveMutationMut<'a> {
     pub fn remove(self) {
-        remove_mutation(self.sol, self.item_key)
+        self.sol.internal_remove_item_mutation(self.item_key).unwrap();
     }
 }
 
 impl<'a> IncompleteMutationMut<'a> {
     pub fn remove(self) {
-        remove_mutation(self.sol, self.item_key)
-    }
-}
-
-fn remove_mutation(sol: &mut SolarSystem, item_key: ItemKey) {
-    match sol.uad.items.get(item_key) {
-        UadItem::Drone(_) => sol.internal_remove_drone_mutation(item_key).unwrap(),
-        UadItem::Module(_) => sol.internal_remove_module_mutation(item_key).unwrap(),
-        _ => unreachable!(),
+        self.sol.internal_remove_item_mutation(self.item_key).unwrap();
     }
 }

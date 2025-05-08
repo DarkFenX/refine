@@ -7,16 +7,8 @@ impl<'a> RawMAttrMut<'a> {
             a_attr_id: self.a_attr_id,
             value: Some(roll),
         }];
-        match self.sol.uad.items.get(self.item_key) {
-            UadItem::Drone(_) => self
-                .sol
-                .internal_change_drone_mutation(self.item_key, attr_mutations)
-                .unwrap(),
-            UadItem::Module(_) => self
-                .sol
-                .internal_change_module_mutation(self.item_key, attr_mutations)
-                .unwrap(),
-            _ => unreachable!(),
-        }
+        self.sol
+            .internal_change_item_mutation_attrs(self.item_key, attr_mutations)
+            .unwrap();
     }
 }

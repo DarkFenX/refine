@@ -46,16 +46,8 @@ impl<'a> FullMAttrMut<'a> {
         if attr_mutation_request.is_empty() {
             return;
         }
-        match self.sol.uad.items.get(self.item_key) {
-            UadItem::Drone(_) => self
-                .sol
-                .internal_change_drone_mutation(self.item_key, attr_mutation_request)
-                .unwrap(),
-            UadItem::Module(_) => self
-                .sol
-                .internal_change_module_mutation(self.item_key, attr_mutation_request)
-                .unwrap(),
-            _ => unreachable!(),
-        }
+        self.sol
+            .internal_change_item_mutation_attrs(self.item_key, attr_mutation_request)
+            .unwrap();
     }
 }

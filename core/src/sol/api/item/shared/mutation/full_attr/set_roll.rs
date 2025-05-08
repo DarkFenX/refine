@@ -1,24 +1,16 @@
-use crate::sol::{AttrMutationRequest, UnitInterval, api::FullMAttrMut, uad::item::UadItem};
+use crate::sol::{AttrMutationRequest, UnitInterval, api::FullMAttrMut};
 
 impl<'a> FullMAttrMut<'a> {
     /// Set roll for the attribute.
     ///
     /// None as value removes user-defined mutation.
     pub fn set_roll(&mut self, roll: Option<UnitInterval>) {
-        let attr_mutations = vec![AttrMutationRequest {
+        let attr_mutation_request = vec![AttrMutationRequest {
             a_attr_id: self.a_attr_id,
             value: roll,
         }];
-        match self.sol.uad.items.get(self.item_key) {
-            UadItem::Drone(_) => self
-                .sol
-                .internal_change_drone_mutation(self.item_key, attr_mutations)
-                .unwrap(),
-            UadItem::Module(_) => self
-                .sol
-                .internal_change_module_mutation(self.item_key, attr_mutations)
-                .unwrap(),
-            _ => unreachable!(),
-        }
+        self.sol
+            .internal_change_item_mutation_attrs(self.item_key, attr_mutation_request)
+            .unwrap();
     }
 }
