@@ -1,9 +1,12 @@
-use crate::sol::{ItemChangeAttrMutation, api::RawMAttrMut, uad::item::UadItem};
+use crate::sol::{AttrMutationRequest, api::RawMAttrMut, uad::item::UadItem};
 
 impl<'a> RawMAttrMut<'a> {
     /// Remove user-defined mutation for the attribute.
     pub fn remove(self) {
-        let attr_mutations = vec![ItemChangeAttrMutation::new(self.a_attr_id, None)];
+        let attr_mutations = vec![AttrMutationRequest {
+            a_attr_id: self.a_attr_id,
+            value: None,
+        }];
         match self.sol.uad.items.get(self.item_key) {
             UadItem::Drone(_) => self
                 .sol

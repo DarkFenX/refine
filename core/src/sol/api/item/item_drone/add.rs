@@ -1,5 +1,5 @@
 use crate::sol::{
-    FitKey, ItemAddMutation, ItemKey, ItemTypeId, SolarSystem,
+    FitKey, ItemKey, ItemMutationRequest, ItemTypeId, SolarSystem,
     api::{DroneMut, FitMut},
     uad::item::{MinionState, UadDrone, UadItem},
 };
@@ -10,7 +10,7 @@ impl SolarSystem {
         fit_key: FitKey,
         type_id: ItemTypeId,
         state: MinionState,
-        mutation: Option<ItemAddMutation>,
+        mutation: Option<ItemMutationRequest>,
     ) -> ItemKey {
         let item_id = self.uad.items.alloc_id();
         let uad_drone = UadDrone::new(&self.uad.src, item_id, type_id, fit_key, state, mutation);

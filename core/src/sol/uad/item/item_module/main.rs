@@ -2,7 +2,7 @@ use crate::{
     ad,
     err::basic::ItemNotMutatedError,
     sol::{
-        FitKey, Idx, ItemAddMutation, ItemChangeAttrMutation, ItemId, ItemKey, ModRack,
+        AttrMutationRequest, FitKey, Idx, ItemId, ItemKey, ItemMutationRequest, ModRack,
         err::ItemMutatedError,
         uad::item::{EffectModes, ItemMutationData, ModuleState, Projs, UadItemBaseMutable},
     },
@@ -28,7 +28,7 @@ impl UadModule {
         state: ModuleState,
         rack: ModRack,
         pos: Idx,
-        mutation: Option<ItemAddMutation>,
+        mutation: Option<ItemMutationRequest>,
         charge_item_key: Option<ItemKey>,
     ) -> Self {
         Self {
@@ -87,13 +87,17 @@ impl UadModule {
     pub(in crate::sol) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
-    pub(in crate::sol) fn mutate(&mut self, src: &Src, mutation: ItemAddMutation) -> Result<(), ItemNotMutatedError> {
+    pub(in crate::sol) fn mutate(
+        &mut self,
+        src: &Src,
+        mutation: ItemMutationRequest,
+    ) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(src, mutation)
     }
     pub(in crate::sol) fn change_mutation_attrs(
         &mut self,
         src: &Src,
-        attr_mutations: Vec<ItemChangeAttrMutation>,
+        attr_mutations: Vec<AttrMutationRequest>,
     ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }

@@ -2,7 +2,7 @@ pub use misc::{
     AddMode, AdjustableCount, BreacherInfo, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, FitSecStatus,
     ModRack, OpInfo, RmMode, SecZone, SecZoneCorruption, SkillLevel, UnitInterval,
 };
-pub(in crate::sol) use misc::{ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation};
+pub(in crate::sol) use misc::{AttrMutationRequest, ItemMutationRequest};
 pub use primitives::{
     AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
     SlotIndex,

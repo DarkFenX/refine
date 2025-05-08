@@ -7,9 +7,7 @@ pub use effect_info::EffectInfo;
 pub use effect_mode::EffectMode;
 pub use fit_sec_status::{FitSecStatus, FitSecStatusError};
 pub use mod_rack::ModRack;
-pub(in crate::sol) use mutation::{
-    ItemAddAttrMutation, ItemAddMutation, ItemAttrMutationValue, ItemChangeAttrMutation,
-};
+pub(in crate::sol) use mutation_request::{AttrMutationRequest, ItemMutationRequest};
 pub use op::OpInfo;
 pub use pos_modes::{AddMode, RmMode};
 pub use sec_zone::{SecZone, SecZoneCorruption};
@@ -25,7 +23,7 @@ mod effect_info;
 mod effect_mode;
 mod fit_sec_status;
 mod mod_rack;
-mod mutation;
+mod mutation_request;
 mod op;
 mod pos_modes;
 mod sec_zone;

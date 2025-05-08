@@ -1,10 +1,10 @@
-use crate::sol::{ItemChangeAttrMutation, ItemKey, SolarSystem, err::ItemMutatedError};
+use crate::sol::{AttrMutationRequest, ItemKey, SolarSystem, err::ItemMutatedError};
 
 impl SolarSystem {
     pub(in crate::sol) fn internal_change_drone_mutation(
         &mut self,
         item_key: ItemKey,
-        attr_mutations: Vec<ItemChangeAttrMutation>,
+        attr_mutations: Vec<AttrMutationRequest>,
     ) -> Result<(), ItemMutatedError> {
         let uad_drone = self.uad.items.get_mut(item_key).get_drone_mut().unwrap();
         let changed_a_attr_ids = uad_drone.change_mutation_attrs(&self.uad.src, attr_mutations)?;

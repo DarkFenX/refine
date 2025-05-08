@@ -1,12 +1,12 @@
-use crate::sol::{ItemAttrMutationValue, ItemChangeAttrMutation, UnitInterval, api::RawMAttrMut, uad::item::UadItem};
+use crate::sol::{AttrMutationRequest, UnitInterval, api::RawMAttrMut, uad::item::UadItem};
 
 impl<'a> RawMAttrMut<'a> {
     /// Set roll for the attribute.
     pub fn set_roll(&mut self, roll: UnitInterval) {
-        let attr_mutations = vec![ItemChangeAttrMutation::new(
-            self.a_attr_id,
-            Some(ItemAttrMutationValue::Roll(roll)),
-        )];
+        let attr_mutations = vec![AttrMutationRequest {
+            a_attr_id: self.a_attr_id,
+            value: Some(roll),
+        }];
         match self.sol.uad.items.get(self.item_key) {
             UadItem::Drone(_) => self
                 .sol

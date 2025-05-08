@@ -1,23 +1,59 @@
-use crate::sol::{AttrVal, ItemAttrMutationValue, ItemChangeAttrMutation, api::FullMAttrMut, uad::item::UadItem};
+use crate::sol::{
+    AttrVal,
+    api::{FullMAttrMut, item::shared::mutation::resolve_absolutes_into_rolls_with_ids},
+    uad::item::UadItem,
+};
 
 impl<'a> FullMAttrMut<'a> {
     /// Set value for the attribute.
     ///
     /// If value is out of bounds allowed by mutator, it will be clamped. None as value removes
     /// user-defined mutation.
-    pub fn set_value(&mut self, roll: Option<AttrVal>) {
-        let attr_mutations = vec![ItemChangeAttrMutation::new(
-            self.a_attr_id,
-            roll.map(ItemAttrMutationValue::Absolute),
-        )];
+    pub fn set_value(&mut self, absolute_value: Option<AttrVal>) {
+        let uad_item = self.sol.uad.items.get(self.item_key);
+        let attr_mutation_request = match absolute_value {
+            Some(absolute_value) => {
+                let (base_a_item_id, a_mutator_id) = match uad_item {
+                    UadItem::Drone(drone) => (
+                        drone
+                            .get_mutation_data()
+                            .unwrap()
+                            .get_cache()
+                            .unwrap()
+                            .get_base_a_item_id(),
+                        drone.get_mutation_data().unwrap().get_a_mutator_id(),
+                    ),
+                    UadItem::Module(module) => (
+                        module
+                            .get_mutation_data()
+                            .unwrap()
+                            .get_cache()
+                            .unwrap()
+                            .get_base_a_item_id(),
+                        module.get_mutation_data().unwrap().get_a_mutator_id(),
+                    ),
+                    _ => panic!(),
+                };
+                resolve_absolutes_into_rolls_with_ids(
+                    &self.sol.uad.src,
+                    &base_a_item_id,
+                    &a_mutator_id,
+                    &vec![(self.a_attr_id, absolute_value)],
+                )
+            }
+            None => Vec::new(),
+        };
+        if attr_mutation_request.is_empty() {
+            return;
+        }
         match self.sol.uad.items.get(self.item_key) {
             UadItem::Drone(_) => self
                 .sol
-                .internal_change_drone_mutation(self.item_key, attr_mutations)
+                .internal_change_drone_mutation(self.item_key, attr_mutation_request)
                 .unwrap(),
             UadItem::Module(_) => self
                 .sol
-                .internal_change_module_mutation(self.item_key, attr_mutations)
+                .internal_change_module_mutation(self.item_key, attr_mutation_request)
                 .unwrap(),
             _ => panic!(),
         }

@@ -2,7 +2,7 @@ use crate::{
     ad,
     err::basic::ItemNotMutatedError,
     sol::{
-        FitKey, ItemAddMutation, ItemChangeAttrMutation, ItemId,
+        AttrMutationRequest, FitKey, ItemId, ItemMutationRequest,
         err::ItemMutatedError,
         uad::item::{EffectModes, ItemMutationData, MinionState, Projs, UadItemBaseMutable},
     },
@@ -23,7 +23,7 @@ impl UadDrone {
         a_item_id: ad::AItemId,
         fit_key: FitKey,
         state: MinionState,
-        mutation: Option<ItemAddMutation>,
+        mutation: Option<ItemMutationRequest>,
     ) -> Self {
         Self {
             base: UadItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
@@ -78,13 +78,17 @@ impl UadDrone {
     pub(in crate::sol) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
-    pub(in crate::sol) fn mutate(&mut self, src: &Src, mutation: ItemAddMutation) -> Result<(), ItemNotMutatedError> {
+    pub(in crate::sol) fn mutate(
+        &mut self,
+        src: &Src,
+        mutation: ItemMutationRequest,
+    ) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(src, mutation)
     }
     pub(in crate::sol) fn change_mutation_attrs(
         &mut self,
         src: &Src,
-        attr_mutations: Vec<ItemChangeAttrMutation>,
+        attr_mutations: Vec<AttrMutationRequest>,
     ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }

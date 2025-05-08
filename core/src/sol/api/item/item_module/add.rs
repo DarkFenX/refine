@@ -1,5 +1,5 @@
 use crate::sol::{
-    AddMode, FitKey, ItemAddMutation, ItemKey, ItemTypeId, ModRack, RmMode, SolarSystem,
+    AddMode, FitKey, ItemKey, ItemMutationRequest, ItemTypeId, ModRack, RmMode, SolarSystem,
     api::{FitMut, ModuleMut},
     uad::item::{ModuleState, UadCharge, UadItem, UadModule},
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
         pos_mode: AddMode,
         type_id: ItemTypeId,
         state: ModuleState,
-        mutation: Option<ItemAddMutation>,
+        mutation: Option<ItemMutationRequest>,
         charge_type_id: Option<ItemTypeId>,
     ) -> ItemKey {
         let module_item_id = self.uad.items.alloc_id();
