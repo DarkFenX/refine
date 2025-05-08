@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use crate::sol::{ItemKey, SolarSystem, api::FighterMut, uad::item::MinionState};
+use crate::sol::{ItemKey, MinionState, SolarSystem, api::FighterMut};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fighter_state(&mut self, item_key: ItemKey, state: MinionState) {

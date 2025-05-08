@@ -1,7 +1,7 @@
 use crate::sol::{
-    Idx, ItemKey, ModRack, SolarSystem,
+    Idx, ItemKey, ModRack, ModuleState, SolarSystem,
     api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::{ModuleState, UadModule},
+    uad::item::UadModule,
 };
 
 pub struct Module<'a> {

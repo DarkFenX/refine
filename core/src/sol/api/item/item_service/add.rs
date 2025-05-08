@@ -1,7 +1,7 @@
 use crate::sol::{
-    FitKey, ItemKey, ItemTypeId, SolarSystem,
+    FitKey, ItemKey, ItemTypeId, ServiceState, SolarSystem,
     api::{FitMut, ServiceMut},
-    uad::item::{ServiceState, UadItem, UadService},
+    uad::item::{UadItem, UadService},
 };
 
 impl SolarSystem {

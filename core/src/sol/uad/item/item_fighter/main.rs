@@ -1,8 +1,8 @@
 use crate::{
     ad,
     sol::{
-        AdjustableCount, Count, FitKey, ItemId,
-        uad::item::{Autocharges, EffectModes, MinionState, Projs, UadItemBase},
+        AdjustableCount, Count, FitKey, ItemId, MinionState,
+        uad::item::{Autocharges, EffectModes, Projs, UadItemBase},
     },
     src::Src,
     util::{Named, RMap},

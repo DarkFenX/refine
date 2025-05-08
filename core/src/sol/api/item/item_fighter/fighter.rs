@@ -1,7 +1,7 @@
 use crate::sol::{
-    AdjustableCount, ItemKey, SolarSystem,
+    AdjustableCount, ItemKey, MinionState, SolarSystem,
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::{MinionState, UadFighter},
+    uad::item::UadFighter,
 };
 
 pub struct Fighter<'a> {

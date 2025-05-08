@@ -1,6 +1,6 @@
 use std::hint::black_box;
 
-use crate::sol::{AddMode, ItemTypeId, ModRack, api::FitMut, uad::item::ModuleState};
+use crate::sol::{AddMode, ItemTypeId, ModRack, ModuleState, api::FitMut};
 
 impl<'a> FitMut<'a> {
     pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {

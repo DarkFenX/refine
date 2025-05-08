@@ -2,9 +2,9 @@ use crate::{
     ad,
     err::basic::ItemNotMutatedError,
     sol::{
-        AttrMutationRequest, FitKey, ItemId, ItemMutationRequest,
+        AttrMutationRequest, FitKey, ItemId, ItemMutationRequest, MinionState,
         err::ItemMutatedError,
-        uad::item::{EffectModes, ItemMutationData, MinionState, Projs, UadItemBaseMutable},
+        uad::item::{EffectModes, ItemMutationData, Projs, UadItemBaseMutable},
     },
     src::Src,
     util::{Named, RMap},

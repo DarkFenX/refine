@@ -1,6 +1,5 @@
 //! Solar system user & adapted data.
 
-pub use item::{MinionState, ModuleState, ServiceState};
 pub(in crate::sol) use uad::Uad;
 
 mod container;

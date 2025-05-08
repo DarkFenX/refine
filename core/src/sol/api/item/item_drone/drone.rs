@@ -1,7 +1,7 @@
 use crate::sol::{
-    ItemKey, SolarSystem,
+    ItemKey, MinionState, SolarSystem,
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::{MinionState, UadDrone},
+    uad::item::UadDrone,
 };
 
 pub struct Drone<'a> {

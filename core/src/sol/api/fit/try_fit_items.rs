@@ -1,10 +1,8 @@
 use crate::{
     ad,
     sol::{
-        AddMode, FitKey, ItemTypeId, ModRack, RmMode, SolarSystem,
-        api::FitMut,
+        AddMode, FitKey, ItemTypeId, MinionState, ModRack, ModuleState, RmMode, ServiceState, SolarSystem, api::FitMut,
         svc::vast::ValOptions,
-        uad::{MinionState, ModuleState, ServiceState},
     },
 };
 
