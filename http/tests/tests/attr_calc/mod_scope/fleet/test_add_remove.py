@@ -81,19 +81,19 @@ def test_self_buff_switch_no_default(client, consts):
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_module(charge=eve_charge1_id)
+    api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(500)
     # Action
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
@@ -159,21 +159,21 @@ def test_self_buff_switch_with_default(client, consts):
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     assert api_ship.attrs[eve_affectee_attr3_id].dogma == approx(125)
     # Action
-    api_module.change_module(charge=eve_charge1_id)
+    api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     assert api_ship.attrs[eve_affectee_attr3_id].dogma == approx(100)
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(500)
     assert api_ship.attrs[eve_affectee_attr3_id].dogma == approx(100)
     # Action
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
@@ -323,19 +323,19 @@ def test_fleeted_buff_switch(client, consts):
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_module(charge=eve_charge1_id)
+    api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(500)
     # Action
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)

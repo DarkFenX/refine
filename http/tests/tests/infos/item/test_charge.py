@@ -79,7 +79,7 @@ def test_separate(client, consts):
     with check_no_field():
         api_module.charge  # noqa: B018
     # Set charge and test response
-    api_module.change_module(charge=eve_charge_id)
+    api_module.change_module(charge_type_id=eve_charge_id)
     api_charge = api_module.charge
     assert isinstance(api_charge.id, str)
     with check_no_field():

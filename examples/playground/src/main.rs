@@ -164,19 +164,19 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     for _ in 0..2 {
         // T2 800mm with hail
         fit.add_module(ModRack::High, AddMode::Equip, 2929, ModuleState::Overload)
-            .set_charge(12779);
+            .set_charge_type_id(12779);
     }
     for _ in 0..2 {
         // T2 torps with thermal rages
         fit.add_module(ModRack::High, AddMode::Equip, 2420, ModuleState::Overload)
-            .set_charge(2811);
+            .set_charge_type_id(2811);
     }
 
     // Mid slots
     fit.add_module(ModRack::Mid, AddMode::Equip, 5945, ModuleState::Active); // Enduring 500MN
     // T2 med cap booster with navy 800
     fit.add_module(ModRack::Mid, AddMode::Equip, 2024, ModuleState::Active)
-        .set_charge(32014);
+        .set_charge_type_id(32014);
     fit.add_module(ModRack::Mid, AddMode::Equip, 2301, ModuleState::Active); // T2 EM hardener
     fit.add_module(ModRack::Mid, AddMode::Equip, 448, ModuleState::Active); // T2 scram
     // sol_sys

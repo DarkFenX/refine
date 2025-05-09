@@ -40,7 +40,7 @@ def test_affected_charge_separate(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_affector_item_id)
-    api_module.change_module(charge=eve_affectee_item_id)
+    api_module.change_module(charge_type_id=eve_affectee_item_id)
     assert api_module.update().charge.attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
@@ -82,9 +82,9 @@ def test_affected_module_separate(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_affectee_item_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
-    api_module.change_module(charge=eve_affector_item_id)
+    api_module.change_module(charge_type_id=eve_affector_item_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 

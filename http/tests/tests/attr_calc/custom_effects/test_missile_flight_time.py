@@ -159,7 +159,7 @@ def test_state(client, consts):
     assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
     # Action - just check that solar system is in consistent state when charge is removed with the
     # effect disabled
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
 
 
 def test_dogma_interaction(client, consts):

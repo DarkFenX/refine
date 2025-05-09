@@ -64,11 +64,11 @@ def test_mwd_block(client, consts):
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
     # Action
-    api_point.change_module(charge=eve_script_id)
+    api_point.change_module(charge_type_id=eve_script_id)
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(1)
     # Action
-    api_point.change_module(charge=None)
+    api_point.change_module(charge_type_id=None)
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
 
@@ -114,12 +114,12 @@ def test_mjd_block(client, consts):
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
     # Action
-    api_point.change_module(charge=eve_script_id)
+    api_point.change_module(charge_type_id=eve_script_id)
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(1)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(1)
     # Action
-    api_point.change_module(charge=None)
+    api_point.change_module(charge_type_id=None)
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)

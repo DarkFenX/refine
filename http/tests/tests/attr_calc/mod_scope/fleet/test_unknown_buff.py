@@ -70,14 +70,14 @@ def test_switch(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(20)
     # Action
-    api_module.change_module(charge=eve_charge1_id)
+    api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(20)
     # Action
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(20)

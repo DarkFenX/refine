@@ -46,11 +46,11 @@ def test_module_charge_uncharge(client, consts):
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_module(charge=eve_charge_id)
+    api_affector_module.change_module(charge_type_id=eve_charge_id)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(600)
     # Action
-    api_affector_module.change_module(charge=None)
+    api_affector_module.change_module(charge_type_id=None)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
 

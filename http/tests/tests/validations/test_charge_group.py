@@ -90,40 +90,40 @@ def test_separate(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge1_id)
+    api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp2_id, [eve_grp1_id])}
     # Action
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge1_id)
+    api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp2_id, [eve_grp1_id])}
     # Action
-    api_module.change_module(charge=None)
+    api_module.change_module(charge_type_id=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
     assert api_val.passed is True
@@ -159,28 +159,28 @@ def test_multiple_different(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge3_id)
+    api_module.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
     assert api_val.passed is False
     assert api_val.details.charge_group == {
         api_module.charge.id: (api_module.id, eve_grp3_id, [eve_grp1_id, eve_grp2_id])}
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge3_id)
+    api_module.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
     assert api_val.passed is False
     assert api_val.details.charge_group == {
         api_module.charge.id: (api_module.id, eve_grp3_id, [eve_grp1_id, eve_grp2_id])}
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
     assert api_val.passed is True
@@ -210,29 +210,29 @@ def test_known_failures(client, consts):
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module3.charge.id: (api_module3.id, eve_grp2_id, [eve_grp1_id])}
     # Action
-    api_module2.change_module(charge=eve_charge3_id)
-    api_module3.change_module(charge=eve_charge3_id)
+    api_module2.change_module(charge_type_id=eve_charge3_id)
+    api_module3.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=(True, [api_module2.charge.id])), flip_order=True)
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module3.charge.id: (api_module3.id, eve_grp3_id, [eve_grp1_id])}
     # Action
-    api_module2.change_module(charge=eve_charge2_id)
-    api_module3.change_module(charge=eve_charge2_id)
+    api_module2.change_module(charge_type_id=eve_charge2_id)
+    api_module3.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=(True, [api_module3.charge.id])), flip_order=False)
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module2.charge.id: (api_module2.id, eve_grp2_id, [eve_grp1_id])}
     # Action
-    api_module2.change_module(charge=eve_charge3_id)
-    api_module3.change_module(charge=eve_charge3_id)
+    api_module2.change_module(charge_type_id=eve_charge3_id)
+    api_module3.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=(True, [api_module3.charge.id])), flip_order=True)
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module2.charge.id: (api_module2.id, eve_grp3_id, [eve_grp1_id])}
     # Action
-    api_module2.change_module(charge=eve_charge2_id)
-    api_module3.change_module(charge=eve_charge2_id)
+    api_module2.change_module(charge_type_id=eve_charge2_id)
+    api_module3.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(
         options=ValOptions(charge_group=(True, [api_module2.charge.id, api_module3.charge.id])),
@@ -241,8 +241,8 @@ def test_known_failures(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_module(charge=eve_charge3_id)
-    api_module3.change_module(charge=eve_charge3_id)
+    api_module2.change_module(charge_type_id=eve_charge3_id)
+    api_module3.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(
         options=ValOptions(charge_group=(True, [api_module2.charge.id, api_module3.charge.id])),
@@ -251,8 +251,8 @@ def test_known_failures(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_module(charge=eve_charge2_id)
-    api_module3.change_module(charge=eve_charge2_id)
+    api_module2.change_module(charge_type_id=eve_charge2_id)
+    api_module3.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(
         charge_group=(True, [api_module2.charge.id, api_other.id, api_module3.charge.id])),
@@ -261,8 +261,8 @@ def test_known_failures(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_module(charge=eve_charge3_id)
-    api_module3.change_module(charge=eve_charge3_id)
+    api_module2.change_module(charge_type_id=eve_charge3_id)
+    api_module3.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(
         charge_group=(True, [api_module2.charge.id, api_other.id, api_module3.charge.id])),
@@ -296,14 +296,14 @@ def test_rounding(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge3_id)
+    api_module.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is False
     assert api_val.details.charge_group == {
         api_module.charge.id: (api_module.id, eve_grp3_id, [eve_grp1_id, eve_grp2_id])}
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is True
@@ -340,7 +340,7 @@ def test_modified(client, consts):
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
     # Action
-    api_module.change_module(charge=eve_charge2_id)
+    api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_grp1_id)
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
@@ -356,7 +356,7 @@ def test_modified(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(charge=eve_charge1_id)
+    api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_grp2_id)
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
@@ -393,7 +393,7 @@ def test_mutation(client, consts):
     assert api_val.details.charge_group == {
         api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id, eve_grp3_id])}
     # Action
-    api_module.change_module(charge=eve_charge3_id)
+    api_module.change_module(charge_type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is True

@@ -41,7 +41,7 @@ impl HAddModuleCmd {
             }
         }
         if let Some(charge_type_id) = self.charge_type_id {
-            core_module.set_charge(charge_type_id);
+            core_module.set_charge_type_id(charge_type_id);
         }
         Ok(core_module.into())
     }

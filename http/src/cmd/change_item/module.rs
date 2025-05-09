@@ -17,7 +17,7 @@ pub(crate) struct HChangeModuleCmd {
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
     #[serde(default)]
-    charge: TriStateField<rc::ItemTypeId>,
+    charge_type_id: TriStateField<rc::ItemTypeId>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -73,9 +73,9 @@ impl HChangeModuleCmd {
             }
             TriStateField::Absent => (),
         }
-        match &self.charge {
+        match &self.charge_type_id {
             TriStateField::Value(charge_type_id) => {
-                core_module.set_charge(*charge_type_id);
+                core_module.set_charge_type_id(*charge_type_id);
             }
             TriStateField::None => match core_module.get_charge_mut() {
                 Some(core_charge) => core_charge.remove(),

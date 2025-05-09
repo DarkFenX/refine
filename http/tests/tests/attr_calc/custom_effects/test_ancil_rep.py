@@ -78,14 +78,14 @@ def test_charge_switch(client, consts):
     with check_no_field():
         api_aar_item.mods  # noqa: B018
     # Action
-    api_aar_item.change_module(charge=eve_paste_item_id)
+    api_aar_item.change_module(charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
     assert len(api_aar_item.mods[eve_affectee_attr_id]) == 1
     # Action
-    api_aar_item.change_module(charge=None)
+    api_aar_item.change_module(charge_type_id=None)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)

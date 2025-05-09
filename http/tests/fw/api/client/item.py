@@ -374,7 +374,7 @@ class ApiClientItem(ApiClientBase):
             item_id: str,
             state: ApiModuleState | type[Absent],
             mutation: MutaAdd | MutaChange | None | type[Absent],
-            charge: int | None | type[Absent],
+            charge_type_id: int | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
             rm_projs: list[str] | type[Absent],
@@ -384,7 +384,7 @@ class ApiClientItem(ApiClientBase):
         body = {'type': 'module'}
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['mutation'], value=mutation)
-        conditional_insert(container=body, path=['charge'], value=charge)
+        conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['change_projs'], value=change_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
