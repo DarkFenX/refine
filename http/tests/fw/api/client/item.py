@@ -202,7 +202,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'drone', 'item_id': item_id}
+        body = {'type': 'drone'}
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
@@ -255,7 +255,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'fighter', 'item_id': item_id}
+        body = {'type': 'fighter'}
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['count'], value=count)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
@@ -426,7 +426,7 @@ class ApiClientItem(ApiClientBase):
             rm_projs: list[str] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'proj_effect', 'item_id': item_id}
+        body = {'type': 'proj_effect'}
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
