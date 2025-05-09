@@ -1,24 +1,23 @@
 use crate::ad;
 
-pub(in crate::sol) type SkillLevelInner = i8;
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SkillLevel {
-    inner: SkillLevelInner,
+    inner: i32,
 }
 impl SkillLevel {
-    pub fn new_checked(level: impl Into<SkillLevelInner>) -> Result<Self, SkillLevelError> {
-        match level.into() {
-            level @ ..=-1 | level @ 6.. => Err(SkillLevelError { level }),
-            level => Ok(Self { inner: level }),
+    pub fn new_checked(level: impl Into<i32>) -> Result<Self, SkillLevelError> {
+        let level = level.into();
+        match (0..=5).contains(&level) {
+            true => Ok(Self { inner: level }),
+            false => Err(SkillLevelError { level }),
         }
     }
-    pub fn new_clamped(level: impl Into<SkillLevelInner>) -> Self {
+    pub fn new_clamped(level: impl Into<i32>) -> Self {
         Self {
             inner: 0.max(5.min(level.into())),
         }
     }
-    pub fn get_inner(&self) -> SkillLevelInner {
+    pub fn get_inner(&self) -> i32 {
         self.inner
     }
 }
@@ -65,5 +64,5 @@ impl PartialOrd<SkillLevel> for ad::ASkillLevel {
 #[derive(thiserror::Error, Debug)]
 #[error("skill level {level} is out of allowed range [0, 5]")]
 pub struct SkillLevelError {
-    pub level: i8,
+    pub level: i32,
 }

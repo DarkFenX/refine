@@ -1,7 +1,7 @@
 pub use misc::{
-    AddMode, AdjustableCount, BreacherInfo, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, FitSecStatus,
-    MinionState, ModRack, ModuleState, OpInfo, RmMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
-    UnitInterval,
+    AddMode, AdjustableCount, BreacherInfo, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode,
+    FighterCountOverride, FitSecStatus, MinionState, ModRack, ModuleState, OpInfo, RmMode, SecZone, SecZoneCorruption,
+    ServiceState, SkillLevel, UnitInterval,
 };
 pub(in crate::sol) use misc::{AttrMutationRequest, ItemMutationRequest};
 pub use primitives::{

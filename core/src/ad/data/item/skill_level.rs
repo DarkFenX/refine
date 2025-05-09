@@ -1,16 +1,14 @@
-pub(in crate::ad) type ASkillLevelInner = i8;
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ASkillLevel {
-    inner: ASkillLevelInner,
+    inner: i32,
 }
 impl ASkillLevel {
-    pub fn new(level: impl Into<ASkillLevelInner>) -> Self {
+    pub fn new(level: impl Into<i32>) -> Self {
         Self {
-            inner: ASkillLevelInner::max(0, ASkillLevelInner::min(5, level.into())),
+            inner: i32::max(0, i32::min(5, level.into())),
         }
     }
-    pub fn get_inner(&self) -> ASkillLevelInner {
+    pub fn get_inner(&self) -> i32 {
         self.inner
     }
 }
