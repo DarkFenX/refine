@@ -25,6 +25,7 @@ where
 }
 
 pub(in crate::adg) fn fetch_data(e_handler: &dyn ed::EveDataHandler) -> Result<ed::EData, StrMsgError> {
+    tracing::debug!("fetching EVE data");
     let e_data = e_handler.get_data().map_err(|e| StrMsgError { msg: e.to_string() })?;
     report_warnings(&e_data.items);
     report_warnings(&e_data.groups);
