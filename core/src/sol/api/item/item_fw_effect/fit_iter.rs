@@ -1,6 +1,6 @@
 use crate::sol::{
     FitKey, SolarSystem,
-    api::{Fit, FitMut, FwEffect, MutIter, mut_iter::FwEffectMutGenerator},
+    api::{Fit, FitMut, FwEffect, FwEffectMut, MutIter},
 };
 
 impl<'a> Fit<'a> {
@@ -13,7 +13,7 @@ impl<'a> FitMut<'a> {
     pub fn iter_fw_effects(&self) -> impl ExactSizeIterator<Item = FwEffect> {
         iter_fw_effects(self.sol, self.key)
     }
-    pub fn iter_fw_effects_mut(&mut self) -> MutIter<'_, FwEffectMutGenerator> {
+    pub fn iter_fw_effects_mut(&mut self) -> MutIter<'_, FwEffectMut<'_>> {
         let implant_keys = self.sol.uad.fits.get(self.key).fw_effects.iter().copied().collect();
         MutIter::new(self.sol, implant_keys)
     }

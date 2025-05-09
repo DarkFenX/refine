@@ -53,16 +53,14 @@ pub trait New {
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_>;
 }
 // Implementations for non-item entities
-pub enum FleetMutGenerator {}
-impl New for FleetMutGenerator {
+impl New for FleetMut<'_> {
     type Key = FleetKey;
     type This<'a> = FleetMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         FleetMut::new(sol, key)
     }
 }
-pub enum FitMutGenerator {}
-impl New for FitMutGenerator {
+impl New for FitMut<'_> {
     type Key = FitKey;
     type This<'a> = FitMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
@@ -70,96 +68,84 @@ impl New for FitMutGenerator {
     }
 }
 // Implementations for items
-pub enum AutochargeMutGenerator {}
-impl New for AutochargeMutGenerator {
+impl New for AutochargeMut<'_> {
     type Key = ItemKey;
     type This<'a> = AutochargeMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         AutochargeMut::new(sol, key)
     }
 }
-pub enum BoosterMutGenerator {}
-impl New for BoosterMutGenerator {
+impl New for BoosterMut<'_> {
     type Key = ItemKey;
     type This<'a> = BoosterMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         BoosterMut::new(sol, key)
     }
 }
-pub enum DroneMutGenerator {}
-impl New for DroneMutGenerator {
+impl New for DroneMut<'_> {
     type Key = ItemKey;
     type This<'a> = DroneMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         DroneMut::new(sol, key)
     }
 }
-pub enum FighterMutGenerator {}
-impl New for FighterMutGenerator {
+impl New for FighterMut<'_> {
     type Key = ItemKey;
     type This<'a> = FighterMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         FighterMut::new(sol, key)
     }
 }
-pub enum FwEffectMutGenerator {}
-impl New for FwEffectMutGenerator {
+impl New for FwEffectMut<'_> {
     type Key = ItemKey;
     type This<'a> = FwEffectMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         FwEffectMut::new(sol, key)
     }
 }
-pub enum ImplantMutGenerator {}
-impl New for ImplantMutGenerator {
+impl New for ImplantMut<'_> {
     type Key = ItemKey;
     type This<'a> = ImplantMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         ImplantMut::new(sol, key)
     }
 }
-pub enum ProjEffectMutGenerator {}
-impl New for ProjEffectMutGenerator {
+impl New for ProjEffectMut<'_> {
     type Key = ItemKey;
     type This<'a> = ProjEffectMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         ProjEffectMut::new(sol, key)
     }
 }
-pub enum RigMutGenerator {}
-impl New for RigMutGenerator {
+impl New for RigMut<'_> {
     type Key = ItemKey;
     type This<'a> = RigMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         RigMut::new(sol, key)
     }
 }
-pub enum ServiceMutGenerator {}
-impl New for ServiceMutGenerator {
+impl New for ServiceMut<'_> {
     type Key = ItemKey;
     type This<'a> = ServiceMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         ServiceMut::new(sol, key)
     }
 }
-pub enum SkillMutGenerator {}
-impl New for SkillMutGenerator {
+impl New for SkillMut<'_> {
     type Key = ItemKey;
     type This<'a> = SkillMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         SkillMut::new(sol, key)
     }
 }
-pub enum SubsystemMutGenerator {}
-impl New for SubsystemMutGenerator {
+impl New for SubsystemMut<'_> {
     type Key = ItemKey;
     type This<'a> = SubsystemMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         SubsystemMut::new(sol, key)
     }
 }
-pub enum SwEffectMutGenerator {}
-impl New for SwEffectMutGenerator {
+impl New for SwEffectMut<'_> {
     type Key = ItemKey;
     type This<'a> = SwEffectMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {

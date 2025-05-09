@@ -1,6 +1,6 @@
 use crate::sol::{
     FitKey, SolarSystem,
-    api::{Fighter, Fit, FitMut, MutIter, mut_iter::FighterMutGenerator},
+    api::{Fighter, FighterMut, Fit, FitMut, MutIter},
 };
 
 impl<'a> Fit<'a> {
@@ -13,7 +13,7 @@ impl<'a> FitMut<'a> {
     pub fn iter_fighters(&self) -> impl ExactSizeIterator<Item = Fighter> {
         iter_fighters(self.sol, self.key)
     }
-    pub fn iter_fighters_mut(&mut self) -> MutIter<'_, FighterMutGenerator> {
+    pub fn iter_fighters_mut(&mut self) -> MutIter<'_, FighterMut<'_>> {
         let implant_keys = self.sol.uad.fits.get(self.key).fighters.iter().copied().collect();
         MutIter::new(self.sol, implant_keys)
     }

@@ -1,6 +1,6 @@
 use crate::sol::{
     SolarSystem,
-    api::{MutIter, SwEffect, mut_iter::SwEffectMutGenerator},
+    api::{MutIter, SwEffect, SwEffectMut},
 };
 
 impl SolarSystem {
@@ -10,7 +10,7 @@ impl SolarSystem {
             .iter()
             .map(|item_key| SwEffect::new(self, *item_key))
     }
-    pub fn iter_sw_effects_mut(&mut self) -> MutIter<'_, SwEffectMutGenerator> {
+    pub fn iter_sw_effects_mut(&mut self) -> MutIter<'_, SwEffectMut<'_>> {
         let sw_effect_keys = self.uad.sw_effects.iter().copied().collect();
         MutIter::new(self, sw_effect_keys)
     }

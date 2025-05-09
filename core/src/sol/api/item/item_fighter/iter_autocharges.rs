@@ -1,6 +1,6 @@
 use crate::sol::{
     ItemKey, SolarSystem,
-    api::{Autocharge, Fighter, FighterMut, MutIter, mut_iter::AutochargeMutGenerator},
+    api::{Autocharge, AutochargeMut, Fighter, FighterMut, MutIter},
 };
 
 impl<'a> Fighter<'a> {
@@ -13,7 +13,7 @@ impl<'a> FighterMut<'a> {
     pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge> {
         iter_autocharges(self.sol, self.key)
     }
-    pub fn iter_autocharges_mut(&mut self) -> MutIter<'_, AutochargeMutGenerator> {
+    pub fn iter_autocharges_mut(&mut self) -> MutIter<'_, AutochargeMut<'_>> {
         let autocharge_keys = self
             .sol
             .uad
