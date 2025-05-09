@@ -40,7 +40,7 @@ pub(crate) enum HExecError {
     #[error("{0}")]
     InvalidSkillLevel(#[from] rc::err::SkillLevelError),
     #[error("{0}")]
-    InvalidFighterCount(#[source] rc::err::basic::FighterCountError),
+    InvalidFighterCount(#[from] rc::err::FighterCountOverrideError),
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[source] rc::err::basic::ItemReceiveProjError),
     #[error("{0}")]

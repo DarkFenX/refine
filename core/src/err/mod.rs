@@ -8,10 +8,12 @@ pub use crate::{
             GetItemError, GetModuleError, GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError,
             GetRigError, GetServiceError, GetShipError, GetSkillError, GetStanceError, GetSubsystemError,
             GetSwEffectError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
-            RemoveFitRahIncomingDpsError, RemoveItemError, SetFighterCountOverrideError, SetFitFleetError,
-            UnsetFitFleetError,
+            RemoveFitRahIncomingDpsError, RemoveItemError, SetFitFleetError, UnsetFitFleetError,
         },
-        misc::{BreacherInfoError, DpsProfileError, FitSecStatusError, SkillLevelError, UnitIntervalError},
+        misc::{
+            BreacherInfoError, DpsProfileError, FighterCountOverrideError, FitSecStatusError, SkillLevelError,
+            UnitIntervalError,
+        },
     },
     src::SrcInitError,
 };

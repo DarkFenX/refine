@@ -19,9 +19,8 @@ impl HAddFighterCmd {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let mut core_fighter = core_fit.add_fighter(self.type_id, (&self.state).into());
         if let Some(count) = self.count {
-            core_fighter.set_count_override(count).map_err(|error| match error {
-                rc::err::SetFighterCountOverrideError::FighterCountError(e) => HExecError::InvalidFighterCount(e),
-            })?;
+            let fighter_count_override = rc::FighterCountOverride::new_checked(count)?;
+            core_fighter.set_count_override(Some(fighter_count_override));
         }
         Ok(core_fighter.into())
     }

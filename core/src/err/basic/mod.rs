@@ -1,6 +1,5 @@
 pub use breacher_dmg::BreacherDmgError;
 pub use dmg::DmgError;
-pub use fighter_count::FighterCountError;
 pub use fit_dps_profile_found::FitDpsProfileFoundError;
 pub use fit_fleet_assigned::FitFleetAssignedError;
 pub use fit_found::FitFoundError;
@@ -23,7 +22,6 @@ pub use skill_eve_type::SkillEveTypeError;
 
 mod breacher_dmg;
 mod dmg;
-mod fighter_count;
 mod fit_dps_profile_found;
 mod fit_fleet_assigned;
 mod fit_found;

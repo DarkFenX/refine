@@ -38,12 +38,11 @@ impl HChangeFighterCmd {
         }
         match self.count {
             TriStateField::Value(count) => {
-                core_fighter.set_count_override(count).map_err(|error| match error {
-                    rc::err::SetFighterCountOverrideError::FighterCountError(e) => HExecError::InvalidFighterCount(e),
-                })?;
+                let fighter_count_override = rc::FighterCountOverride::new_checked(count)?;
+                core_fighter.set_count_override(Some(fighter_count_override));
             }
             TriStateField::None => {
-                core_fighter.remove_count_override();
+                core_fighter.set_count_override(None);
             }
             TriStateField::Absent => (),
         }

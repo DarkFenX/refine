@@ -1,18 +1,15 @@
-use crate::{
-    err::basic::FighterCountError,
-    sol::{Count, ItemKey, SolarSystem, api::FighterMut},
-};
+use crate::sol::{FighterCountOverride, ItemKey, SolarSystem, api::FighterMut};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fighter_count_override(
         &mut self,
         item_key: ItemKey,
-        count_override: Count,
+        count_override: Option<FighterCountOverride>,
     ) {
         // Update user data
         let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
         let old_count = uad_fighter.get_count().map(|v| v.current);
-        uad_fighter.set_count_override(Some(count_override));
+        uad_fighter.set_count_override(count_override);
         let new_count = uad_fighter.get_count().map(|v| v.current);
         // Update services
         if old_count != new_count {
@@ -23,17 +20,7 @@ impl SolarSystem {
 }
 
 impl<'a> FighterMut<'a> {
-    pub fn set_count_override(&mut self, count_override: Count) -> Result<(), SetFighterCountOverrideError> {
-        if count_override < 1 {
-            return Err(FighterCountError { count: count_override }.into());
-        }
+    pub fn set_count_override(&mut self, count_override: Option<FighterCountOverride>) {
         self.sol.internal_set_fighter_count_override(self.key, count_override);
-        Ok(())
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum SetFighterCountOverrideError {
-    #[error("{0}")]
-    FighterCountError(#[from] FighterCountError),
 }

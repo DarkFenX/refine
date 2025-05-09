@@ -1,7 +1,7 @@
 use crate::{
     ad,
     sol::{
-        AdjustableCount, Count, FitKey, ItemId, MinionState,
+        AdjustableCount, FighterCountOverride, FitKey, ItemId, MinionState,
         uad::item::{Autocharges, EffectModes, Projs, UadItemBase},
     },
     src::Src,
@@ -12,7 +12,7 @@ use crate::{
 pub(in crate::sol) struct UadFighter {
     base: UadItemBase,
     fit_key: FitKey,
-    count_override: Option<Count>,
+    count_override: Option<FighterCountOverride>,
     autocharges: Autocharges,
     projs: Projs,
 }
@@ -90,7 +90,7 @@ impl UadFighter {
         match self.get_a_extras() {
             Some(extras) => match self.count_override {
                 Some(count_override) => Some(AdjustableCount {
-                    current: count_override,
+                    current: count_override.get_inner(),
                     max: extras.max_fighter_count,
                 }),
                 None => Some(AdjustableCount {
@@ -101,7 +101,7 @@ impl UadFighter {
             None => None,
         }
     }
-    pub(in crate::sol) fn set_count_override(&mut self, count_override: Option<Count>) {
+    pub(in crate::sol) fn set_count_override(&mut self, count_override: Option<FighterCountOverride>) {
         self.count_override = count_override
     }
     pub(in crate::sol) fn get_autocharges(&self) -> &Autocharges {

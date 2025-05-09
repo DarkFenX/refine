@@ -5,7 +5,7 @@ pub use dps_profile::{DpsProfile, DpsProfileError};
 pub use effect_id::EffectId;
 pub use effect_info::EffectInfo;
 pub use effect_mode::EffectMode;
-pub use fighter_count_override::FighterCountOverride;
+pub use fighter_count_override::{FighterCountOverride, FighterCountOverrideError};
 pub use fit_sec_status::{FitSecStatus, FitSecStatusError};
 pub use mod_rack::ModRack;
 pub(in crate::sol) use mutation_request::{AttrMutationRequest, ItemMutationRequest};
