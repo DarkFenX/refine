@@ -1,7 +1,5 @@
-from tests import approx, check_no_field
+from tests import approx, check_no_field, effect_dogma_to_api
 from tests.fw.api import ValOptions
-
-# As of 2024-11-05, HIC ray blocks fighter MWD and MJD even with disruption script
 
 
 def test_bubble_sig_local(client, consts):
@@ -216,7 +214,7 @@ def test_gate_scram_status_sscript(client, consts):
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
 
-def test_mwd_block_dscript(client, consts):
+def test_module_mwd_block_dscript(client, consts):
     # Disruption script doesn't disable micro warp drives
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.high_speed_maneuvering)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
@@ -238,7 +236,7 @@ def test_mwd_block_dscript(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
+    api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
@@ -261,7 +259,7 @@ def test_mwd_block_dscript(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_mwd_block_sscript(client, consts):
+def test_module_mwd_block_sscript(client, consts):
     # Scrambling script disables micro warp drives
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.high_speed_maneuvering)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
@@ -305,7 +303,7 @@ def test_mwd_block_sscript(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_mjd_block_dscript(client, consts):
+def test_module_mjd_block_dscript(client, consts):
     # Disruption script disables micro jump drives
     eve_skill_sub_id = client.mk_eve_item(id_=consts.EveItem.micro_jump_drive_operation)
     # Capital MJFG doesn't use regular skill, so test capital skill separately
@@ -353,7 +351,7 @@ def test_mjd_block_dscript(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_mjd_block_sscript(client, consts):
+def test_module_mjd_block_sscript(client, consts):
     # Scrambling script disables micro jump drives
     eve_skill_sub_id = client.mk_eve_item(id_=consts.EveItem.micro_jump_drive_operation)
     # Capital MJFG doesn't use regular skill, so test capital skill separately
@@ -399,6 +397,85 @@ def test_mjd_block_sscript(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
+
+
+def test_fighter_mwd_mjd_block_dscript(client, consts):
+    # As of 2024-11-05, even disruption script disables fighter MWD and MJD abilities
+    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
+    eve_script_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
+        cat_id=consts.EveEffCat.target)
+    eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
+    eve_ftr_mwd_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_mwd,
+        cat_id=consts.EveEffCat.active)
+    eve_ftr_mjd_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_mjd,
+        cat_id=consts.EveEffCat.active)
+    eve_fighter_id = client.mk_eve_item(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
+    client.create_sources()
+    api_ftr_mwd_effect_id = effect_dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
+    api_ftr_mjd_effect_id = effect_dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_fighter = api_affectee_fit.add_fighter(type_id=eve_fighter_id)
+    api_fighter.change_fighter(effect_modes={
+        api_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
+        api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
+    api_wdfg.change_module(add_projs=[api_fighter.id])
+    # Verification
+    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_wdfg.change_module(charge_type_id=eve_script_id)
+    # Verification
+    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    assert api_val.passed is False
+    assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
+
+
+def test_fighter_mwd_mjd_block_sscript(client, consts):
+    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
+    eve_script_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
+        cat_id=consts.EveEffCat.target)
+    eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
+    eve_ftr_mwd_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_mwd,
+        cat_id=consts.EveEffCat.active)
+    eve_ftr_mjd_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_mjd,
+        cat_id=consts.EveEffCat.active)
+    eve_fighter_id = client.mk_eve_item(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
+    client.create_sources()
+    api_ftr_mwd_effect_id = effect_dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
+    api_ftr_mjd_effect_id = effect_dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_fighter = api_affectee_fit.add_fighter(type_id=eve_fighter_id)
+    api_fighter.change_fighter(effect_modes={
+        api_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
+        api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
+    api_wdfg.change_module(add_projs=[api_fighter.id])
+    # Verification
+    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_wdfg.change_module(charge_type_id=eve_script_id)
+    # Verification
+    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    assert api_val.passed is False
+    assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
 
 
 def test_range_dscript(client, consts):

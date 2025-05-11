@@ -21,7 +21,7 @@ impl From<ad::AState> for MinionState {
 impl From<MinionState> for ad::AState {
     fn from(minion_state: MinionState) -> Self {
         match minion_state {
-            MinionState::InBay => Self::Ghost,
+            MinionState::InBay => Self::Offline,
             MinionState::InSpace => Self::Online,
             MinionState::Engaging => Self::Active,
         }

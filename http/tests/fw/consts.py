@@ -89,6 +89,8 @@ class EveEffect(IntEnum):
     fueled_armor_repair = 5275
     structure_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
+    fighter_ability_mwd = 6441
+    fighter_ability_mjd = 6442
     doomsday_aoe_web = 6476
     fighter_ability_launch_bomb = 6485
     ship_module_arar = 6651
