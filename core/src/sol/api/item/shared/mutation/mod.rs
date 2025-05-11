@@ -1,7 +1,4 @@
-pub(in crate::sol::api::item::shared::mutation) use abs_resolve::{
-    resolve_absolutes_into_rolls_with_attrs, resolve_absolutes_into_rolls_with_ids,
-    resolve_absolutes_into_rolls_with_items,
-};
+pub(in crate::sol::api::item::shared::mutation) use abs_resolve::resolve_absolutes_into_rolls_with_ids;
 pub use add::AddMutationError;
 pub use full_attr::{FullMAttr, FullMAttrIter, FullMAttrMut};
 pub use mutation::{

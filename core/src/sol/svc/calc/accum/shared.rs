@@ -12,6 +12,7 @@ const PENALTY_IMMUNE_A_ITEM_CATS: [ad::AItemCatId; 5] = [
     ac::itemcats::SUBSYSTEM,
 ];
 // Source expression: 1 / e^((1 / 2.67)^2)
+#[allow(clippy::excessive_precision)]
 pub(super) const PENALTY_BASE: AttrVal = OF(0.86911998080039742919922218788997270166873931884765625);
 
 pub(in crate::sol::svc::calc) fn is_penal(attr_penalizable: bool, affector_a_item_cat_id: &ad::AItemCatId) -> bool {

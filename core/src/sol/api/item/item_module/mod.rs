@@ -9,7 +9,6 @@ mod module;
 mod mutation;
 mod proj;
 mod remove;
-mod remove_charge;
 mod set_charge;
 mod set_state;
 mod shared;
