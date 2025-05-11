@@ -1,3 +1,4 @@
+mod vaste_effect_projected_unprojected;
 mod vaste_fit_added_removed;
 mod vaste_item_added_removed;
 mod vaste_item_loaded_unloaded;

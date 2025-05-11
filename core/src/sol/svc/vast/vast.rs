@@ -2,10 +2,13 @@ use crate::{
     ad,
     sol::{
         AttrVal, Count, FitKey, ItemKey,
-        svc::vast::{
-            ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
-            ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind,
-            ValSrqSkillInfo,
+        svc::{
+            EffectSpec,
+            vast::{
+                ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
+                ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind,
+                ValSrqSkillInfo,
+            },
         },
     },
     util::{RMap, RMapRMap, RMapRSet, RSet},
@@ -83,6 +86,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) sec_zone_unactivable: RSet<ItemKey>,
     pub(in crate::sol::svc::vast) mods_active: RSet<ItemKey>,
     pub(in crate::sol::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<ItemKey, ValShipKind>,
+    pub(in crate::sol::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -141,6 +145,7 @@ impl VastFitData {
             sec_zone_unactivable: RSet::new(),
             mods_active: RSet::new(),
             mods_rigs_svcs_vs_ship_kind: RMap::new(),
+            stopped_effects: RMapRSet::new(),
         }
     }
 }
