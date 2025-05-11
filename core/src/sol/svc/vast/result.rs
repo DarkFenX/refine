@@ -1,9 +1,9 @@
 use crate::sol::svc::vast::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
-    ValDroneGroupFail, ValFighterSquadSizeFail, ValItemKindFail, ValItemVsShipKindFail, ValMaxGroupFail,
-    ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValResFail, ValRigSizeFail,
-    ValSecZoneFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail,
-    ValUnusableResFail, ValUnusableSlotFail,
+    ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail, ValItemVsShipKindFail,
+    ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValResFail,
+    ValRigSizeFail, ValSecZoneFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
+    ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
 };
 
 pub struct ValResult {
@@ -66,6 +66,7 @@ pub struct ValResult {
     pub sec_zone_unactivable: Option<ValSecZoneFail>,
     pub activation_blocked: Option<ValActivationBlockedFail>,
     pub item_vs_ship_kind: Option<ValItemVsShipKindFail>,
+    pub effect_stopper: Option<ValEffectStopperFail>,
 }
 impl ValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -129,6 +130,7 @@ impl ValResult {
             sec_zone_unactivable: None,
             activation_blocked: None,
             item_vs_ship_kind: None,
+            effect_stopper: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -191,5 +193,6 @@ impl ValResult {
             && self.sec_zone_unactivable.is_none()
             && self.activation_blocked.is_none()
             && self.item_vs_ship_kind.is_none()
+            && self.effect_stopper.is_none()
     }
 }

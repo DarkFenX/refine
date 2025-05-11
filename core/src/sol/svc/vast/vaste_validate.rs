@@ -2,6 +2,7 @@ use crate::sol::{
     FitKey,
     svc::{
         calc::Calc,
+        running_effects::RunningEffects,
         vast::{ValOptions, ValResult, Vast},
     },
     uad::Uad,
@@ -12,6 +13,7 @@ impl Vast {
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
+        running_effects: &RunningEffects,
         fit_key: FitKey,
         options: &ValOptions,
     ) -> bool {
@@ -346,12 +348,18 @@ impl Vast {
         {
             return false;
         }
+        if options.effect_stopper.enabled
+            && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, running_effects)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
+        running_effects: &RunningEffects,
         fit_key: FitKey,
         options: &ValOptions,
     ) -> ValResult {
@@ -630,6 +638,10 @@ impl Vast {
         if options.item_vs_ship_kind.enabled {
             result.item_vs_ship_kind =
                 fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, uad, fit);
+        }
+        if options.effect_stopper.enabled {
+            result.effect_stopper =
+                fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, uad, running_effects);
         }
         result
     }

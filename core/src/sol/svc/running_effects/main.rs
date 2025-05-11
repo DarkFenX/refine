@@ -1,7 +1,7 @@
 use crate::{ad, sol::ItemKey, util::RMapRSet};
 
 #[derive(Clone)]
-pub(in crate::sol::svc) struct RunningEffects {
+pub(in crate::sol) struct RunningEffects {
     pub(super) data: RMapRSet<ItemKey, ad::AEffectId>,
 }
 impl RunningEffects {

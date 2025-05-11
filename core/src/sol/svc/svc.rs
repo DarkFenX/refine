@@ -10,7 +10,7 @@ use crate::src::Src;
 pub(in crate::sol) struct Svc {
     pub(in crate::sol) calc: Calc,
     pub(in crate::sol) vast: Vast,
-    pub(in crate::sol::svc) running_effects: RunningEffects,
+    pub(in crate::sol) running_effects: RunningEffects,
 }
 impl Svc {
     pub(in crate::sol) fn new(src: &Src) -> Self {
