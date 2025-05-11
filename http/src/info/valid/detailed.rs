@@ -1,9 +1,9 @@
 use crate::info::valid::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail,
-    HValDroneGroupFail, HValFighterSquadSizeFail, HValItemKindFail, HValItemVsShipKindFail, HValMaxGroupFail,
-    HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail, HValResFail, HValRigSizeFail,
-    HValSecZoneFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail,
-    HValUnusableResFail, HValUnusableSlotFail,
+    HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail, HValItemVsShipKindFail,
+    HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail, HValResFail,
+    HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail,
+    HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 #[derive(serde::Serialize)]
@@ -142,6 +142,8 @@ struct HValidInfoDetails {
     activation_blocked: Option<HValActivationBlockedFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     item_vs_ship_kind: Option<HValItemVsShipKindFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    effect_stopper: Option<HValEffectStopperFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -204,6 +206,7 @@ impl HValidInfoDetails {
             && self.sec_zone_unactivable.is_none()
             && self.activation_blocked.is_none()
             && self.item_vs_ship_kind.is_none()
+            && self.effect_stopper.is_none()
     }
 }
 impl From<&rc::val::ValResult> for HValidInfoDetails {
@@ -268,6 +271,7 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             sec_zone_unactivable: conv(&core_val_result.sec_zone_unactivable),
             activation_blocked: conv(&core_val_result.activation_blocked),
             item_vs_ship_kind: conv(&core_val_result.item_vs_ship_kind),
+            effect_stopper: conv(&core_val_result.effect_stopper),
         }
     }
 }
