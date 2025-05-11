@@ -1,9 +1,8 @@
+use super::{aar_rep_amount, missile_flight_time, prop_speed_boost};
 use crate::{
     ac, ad,
     sol::{ItemKey, svc::calc::modifier::RawModifier},
 };
-
-use super::{aar_rep_amount, missile_flight_time, prop_speed_boost};
 
 pub(in crate::sol::svc::calc) fn extend_with_custom_mods(
     item_key: ItemKey,

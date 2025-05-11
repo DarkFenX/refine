@@ -1,3 +1,8 @@
+use super::{
+    pp_fighter_count::{FTR_COUNT_ATTR, fighter_count_postproc_fast, fighter_count_postproc_info},
+    pp_sec_status::{SEC_STATUS_ATTR, sec_status_postproc_fast, sec_status_postproc_info},
+    pp_skill_level::{SKILL_LVL_ATTR, skill_level_postproc_fast, skill_level_postproc_info},
+};
 use crate::{
     sol::{
         ItemKey,
@@ -5,12 +10,6 @@ use crate::{
         uad::item::UadItem,
     },
     util::RMap,
-};
-
-use super::{
-    pp_fighter_count::{FTR_COUNT_ATTR, fighter_count_postproc_fast, fighter_count_postproc_info},
-    pp_sec_status::{SEC_STATUS_ATTR, sec_status_postproc_fast, sec_status_postproc_info},
-    pp_skill_level::{SKILL_LVL_ATTR, skill_level_postproc_fast, skill_level_postproc_info},
 };
 
 #[derive(Clone)]

@@ -1,9 +1,8 @@
+use super::UadCharge;
 use crate::sol::{
     debug::{DebugResult, check_fit_key, check_item_key},
     uad::Uad,
 };
-
-use super::UadCharge;
 
 impl UadCharge {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {

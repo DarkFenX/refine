@@ -5,12 +5,11 @@ use std::{
     path::PathBuf,
 };
 
+use super::data;
 use crate::{
     VERSION,
     util::{Error, move_map_to_arcmap},
 };
-
-use super::data;
 
 /// JSON adapted data handler implementation.
 ///

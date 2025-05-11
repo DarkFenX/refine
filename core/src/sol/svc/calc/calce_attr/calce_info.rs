@@ -4,6 +4,7 @@
 
 use smallvec::SmallVec;
 
+use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 use crate::{
     SecZone, ac, ad,
     sol::{
@@ -14,8 +15,6 @@ use crate::{
     },
     util::{RMap, RMapVec, RSet, round},
 };
-
-use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 
 struct Affection {
     modification: Modification,

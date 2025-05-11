@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use ordered_float::OrderedFloat as OF;
 
+use super::shared::get_max_resource;
 use crate::{
     ac, ad,
     sol::{
@@ -11,8 +12,6 @@ use crate::{
     },
     util::{RSet, round},
 };
-
-use super::shared::get_max_resource;
 
 pub struct ValResFail {
     /// How much resource is used by all of its consumers.

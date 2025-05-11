@@ -1,10 +1,9 @@
+use super::StandardRegister;
 use crate::sol::{
     debug::{DebugResult, check_a_effect_id, check_fit_key, check_item_key},
     svc::calc::debug::{check_ctx_modifier, check_raw_modifier},
     uad::Uad,
 };
-
-use super::StandardRegister;
 
 impl StandardRegister {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {

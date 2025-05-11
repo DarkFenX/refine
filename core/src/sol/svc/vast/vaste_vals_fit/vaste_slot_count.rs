@@ -1,3 +1,4 @@
+use super::shared::get_max_slots;
 use crate::{
     ac, ad,
     sol::{
@@ -10,8 +11,6 @@ use crate::{
     },
     util::{RMap, RSet},
 };
-
-use super::shared::get_max_slots;
 
 pub struct ValSlotCountFail {
     /// How many slots are taken by all the relevant items.

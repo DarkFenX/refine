@@ -1,6 +1,5 @@
-use crate::info::item::extended::HItemExtendedInfo;
-
 use super::HImplantInfoPartial;
+use crate::info::item::extended::HItemExtendedInfo;
 
 #[derive(serde::Serialize)]
 pub(crate) struct HImplantInfoFull {

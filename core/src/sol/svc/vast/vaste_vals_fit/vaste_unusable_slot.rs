@@ -1,3 +1,4 @@
+use super::shared::get_max_slots;
 use crate::{
     ac, ad,
     sol::{
@@ -7,8 +8,6 @@ use crate::{
     },
     util::RSet,
 };
-
-use super::shared::get_max_slots;
 
 pub struct ValUnusableSlotFail {
     /// How many slots available (when this validation fails, it's either None or 0).

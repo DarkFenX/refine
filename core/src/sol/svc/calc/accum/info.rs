@@ -6,6 +6,10 @@
 use ordered_float::OrderedFloat as OF;
 use smallvec::SmallVec;
 
+use super::shared::{
+    PENALTY_BASE, PENALTY_SIGNIFICANT_MODIFICATIONS, diminish_basic, diminish_mul, diminish_noop, is_penal,
+    normalize_div, normalize_noop, normalize_perc, normalize_sub,
+};
 use crate::{
     ad,
     sol::{
@@ -13,11 +17,6 @@ use crate::{
         svc::calc::{AffectorInfo, AggrKey, AggrMode, ModificationInfo, Op},
     },
     util::RMap,
-};
-
-use super::shared::{
-    PENALTY_BASE, PENALTY_SIGNIFICANT_MODIFICATIONS, diminish_basic, diminish_mul, diminish_noop, is_penal,
-    normalize_div, normalize_noop, normalize_perc, normalize_sub,
 };
 
 pub(in crate::sol::svc::calc) struct AttrValInfo {

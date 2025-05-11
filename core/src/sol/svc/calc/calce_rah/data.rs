@@ -1,11 +1,10 @@
+use super::shared::RAH_EFFECT_ID;
 use crate::{
     ad,
     sol::{DmgKinds, FitKey, ItemKey, svc::calc::CalcAttrVal},
     src::Src,
     util::{RMap, RMapRSet},
 };
-
-use super::shared::RAH_EFFECT_ID;
 
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct RahSim {

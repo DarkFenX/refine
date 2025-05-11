@@ -1,6 +1,5 @@
-use crate::info::item::extended::HItemExtendedInfo;
-
 use super::HRigInfoPartial;
+use crate::info::item::extended::HItemExtendedInfo;
 
 #[derive(serde::Serialize)]
 pub(crate) struct HRigInfoFull {

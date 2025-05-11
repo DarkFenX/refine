@@ -1,13 +1,12 @@
 use ordered_float::OrderedFloat as OF;
 
-use crate::{
-    sol::{AttrVal, ItemKey},
-    util::RMap,
-};
-
 use super::{
     rah_data_sim::RahDataSim,
     shared::{TICK_LIMIT, TickCount, rah_round},
+};
+use crate::{
+    sol::{AttrVal, ItemKey},
+    util::RMap,
 };
 
 struct RahDataIter {

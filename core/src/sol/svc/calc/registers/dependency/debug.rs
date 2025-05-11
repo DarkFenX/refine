@@ -1,9 +1,8 @@
+use super::DependencyRegister;
 use crate::sol::{
     debug::{DebugResult, check_a_effect_id, check_item_key},
     uad::Uad,
 };
-
-use super::DependencyRegister;
 
 impl DependencyRegister {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {

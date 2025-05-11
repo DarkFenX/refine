@@ -1,6 +1,5 @@
-use crate::src::Src;
-
 use super::{calc::Calc, running_effects::RunningEffects, vast::Vast};
+use crate::src::Src;
 
 // TODO: add item, remove item, add projection and remove projection methods are not called in
 // situations where type ID of an item changes (e.g. item mutation / unmutation, source switch with

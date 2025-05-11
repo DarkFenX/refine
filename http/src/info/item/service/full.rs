@@ -1,6 +1,5 @@
-use crate::info::item::extended::HItemExtendedInfo;
-
 use super::HServiceInfoPartial;
+use crate::info::item::extended::HItemExtendedInfo;
 
 #[derive(serde::Serialize)]
 pub(crate) struct HServiceInfoFull {

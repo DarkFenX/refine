@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use crate::{ad, ed, src::SrcInitError};
-
 use super::inner::InnerSrc;
+use crate::{ad, ed, src::SrcInitError};
 
 /// Data source.
 ///

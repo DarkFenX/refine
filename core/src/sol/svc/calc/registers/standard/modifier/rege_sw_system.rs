@@ -1,10 +1,9 @@
+use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     FitKey,
     svc::calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
     uad::Uad,
 };
-
-use super::{add_ctx_modifier, remove_ctx_modifier};
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_sw_system_mod(

@@ -1,9 +1,8 @@
+use super::UadSkill;
 use crate::sol::{
     debug::{DebugResult, check_fit_key},
     uad::Uad,
 };
-
-use super::UadSkill;
 
 impl UadSkill {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {

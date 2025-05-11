@@ -1,12 +1,3 @@
-use crate::{
-    ad::{
-        AAttrId, AAttrVal, ACount, AEffect, AEffectId, AItem, AItemCatId, AItemChargeLimit, AItemEffectData,
-        AItemGrpId, AItemId, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
-    },
-    ed,
-    util::{RMap, RSet},
-};
-
 use super::{
     attr_val::{get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_volume},
     charge_limit::get_item_charge_limit,
@@ -24,6 +15,14 @@ use super::{
     ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
+};
+use crate::{
+    ad::{
+        AAttrId, AAttrVal, ACount, AEffect, AEffectId, AItem, AItemCatId, AItemChargeLimit, AItemEffectData,
+        AItemGrpId, AItemId, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
+    },
+    ed,
+    util::{RMap, RSet},
 };
 
 /// Holds extra item-specific data.

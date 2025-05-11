@@ -1,5 +1,6 @@
 use lender::{Lender, Lending};
 
+use super::shared::get_side_effect_chance_attr_id;
 use crate::{
     ad,
     sol::{
@@ -7,8 +8,6 @@ use crate::{
         api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
     },
 };
-
-use super::shared::get_side_effect_chance_attr_id;
 
 // Lending iterator for side effects
 pub struct SideEffectIter<'iter> {

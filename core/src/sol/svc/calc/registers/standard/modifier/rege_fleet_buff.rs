@@ -1,10 +1,9 @@
+use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     FitKey,
     svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
     uad::{Uad, fleet::UadFleet, item::UadItem},
 };
-
-use super::{add_ctx_modifier, remove_ctx_modifier};
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_fleet_buff_mod(

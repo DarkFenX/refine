@@ -1,4 +1,3 @@
-use crate::util::RMap;
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use effect::{
@@ -15,6 +14,8 @@ pub use primitives::{
     ASlotIndex, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta,
 };
 pub use shared::{AModifierSrq, AOp, AState};
+
+use crate::util::RMap;
 
 mod attr;
 mod buff;

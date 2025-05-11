@@ -1,10 +1,9 @@
+use super::{Vast, VastFitData};
 use crate::sol::{
     debug::{DebugResult, check_fit_key, check_item_key},
     svc::vast::ValCache,
     uad::Uad,
 };
-
-use super::{Vast, VastFitData};
 
 impl Vast {
     pub(in crate::sol::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {

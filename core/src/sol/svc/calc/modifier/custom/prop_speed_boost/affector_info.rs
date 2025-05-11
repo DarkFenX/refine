@@ -1,12 +1,11 @@
 use smallvec::SmallVec;
 
+use super::attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS};
 use crate::sol::{
     ItemKey,
     svc::calc::{AffectorInfo, modifier::custom::shared::get_ship_key},
     uad::Uad,
 };
-
-use super::attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS};
 
 pub(in crate::sol::svc::calc::modifier) fn get_affector_info(
     uad: &Uad,

@@ -1,9 +1,8 @@
+use super::UadModule;
 use crate::sol::{
     debug::{DebugResult, check_fit_key, check_item_key},
     uad::Uad,
 };
-
-use super::UadModule;
 
 impl UadModule {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {

@@ -1,9 +1,8 @@
+use super::RunningEffects;
 use crate::sol::{
     debug::{DebugResult, check_a_effect_id, check_item_key},
     uad::Uad,
 };
-
-use super::RunningEffects;
 
 impl RunningEffects {
     pub(in crate::sol::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {

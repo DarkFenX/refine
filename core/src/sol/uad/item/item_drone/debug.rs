@@ -1,9 +1,8 @@
+use super::UadDrone;
 use crate::sol::{
     debug::{DebugResult, check_fit_key},
     uad::Uad,
 };
-
-use super::UadDrone;
 
 impl UadDrone {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {

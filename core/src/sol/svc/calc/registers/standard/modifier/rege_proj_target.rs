@@ -1,10 +1,9 @@
+use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     ItemKey,
     svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
     uad::item::{ShipKind, UadItem},
 };
-
-use super::{add_ctx_modifier, remove_ctx_modifier};
 
 impl StandardRegister {
     pub(super) fn proj_target_mod(

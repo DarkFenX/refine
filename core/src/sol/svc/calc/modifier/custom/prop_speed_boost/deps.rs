@@ -1,9 +1,8 @@
+use super::attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS, SHIP_SPEED};
 use crate::{
     ad,
     sol::{ItemKey, svc::calc::Calc},
 };
-
-use super::attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS, SHIP_SPEED};
 
 pub(super) fn reg_dependencies(
     calc: &mut Calc,

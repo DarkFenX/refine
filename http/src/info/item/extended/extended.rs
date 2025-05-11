@@ -2,9 +2,8 @@ use std::collections::HashMap;
 
 use rc::ItemMutCommon;
 
-use crate::shared::HEffectId;
-
 use super::{HAttrVal, HEffect, HModificationInfo};
+use crate::shared::HEffectId;
 
 #[derive(serde::Serialize)]
 pub(crate) struct HItemExtendedInfo {

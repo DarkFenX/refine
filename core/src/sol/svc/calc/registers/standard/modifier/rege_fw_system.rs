@@ -1,9 +1,8 @@
+use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     svc::calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
     uad::item::UadFwEffect,
 };
-
-use super::{add_ctx_modifier, remove_ctx_modifier};
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_fw_system_mod(

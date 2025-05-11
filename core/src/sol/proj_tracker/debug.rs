@@ -1,9 +1,8 @@
+use super::ProjTracker;
 use crate::sol::{
     debug::{DebugError, DebugResult},
     uad::Uad,
 };
-
-use super::ProjTracker;
 
 impl ProjTracker {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {

@@ -1,5 +1,6 @@
 use smallvec::{SmallVec, smallvec};
 
+use super::custom::{aar_rep_amount, missile_flight_time, prop_speed_boost};
 use crate::{
     ad,
     sol::{
@@ -8,8 +9,6 @@ use crate::{
         uad::{Uad, item::UadItem},
     },
 };
-
-use super::custom::{aar_rep_amount, missile_flight_time, prop_speed_boost};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) enum AffectorValue {

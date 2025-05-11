@@ -1,9 +1,6 @@
 #![allow(warnings, unused)]
 #![feature(core_intrinsics)]
 
-use chrono::Utc;
-use itertools::Itertools;
-use rand::{Rng, SeedableRng};
 use std::{
     hash::{BuildHasher, Hasher},
     intrinsics::black_box,
@@ -12,8 +9,10 @@ use std::{
     thread::sleep,
     time::Duration,
 };
-use tracing_subscriber::prelude::*;
 
+use chrono::Utc;
+use itertools::Itertools;
+use rand::{Rng, SeedableRng};
 use rc::{
     AddMode, ItemCommon, ItemMutCommon, Lender, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption,
     SkillLevel, SolarSystem, Src, VERSION,
@@ -21,6 +20,7 @@ use rc::{
     ed::EveDataHandler,
     val::ValOptions,
 };
+use tracing_subscriber::prelude::*;
 
 fn setup_logger() -> () {
     let time_format_full = time::macros::format_description!(

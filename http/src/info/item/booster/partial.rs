@@ -2,9 +2,8 @@ use std::collections::HashMap;
 
 use rc::{ItemCommon, Lender};
 
-use crate::shared::HEffectId;
-
 use super::side_effect::HSideEffectInfo;
+use crate::shared::HEffectId;
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]

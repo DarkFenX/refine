@@ -1,6 +1,5 @@
-use crate::sol::debug::{DebugError, DebugResult};
-
 use super::ItemVec;
+use crate::sol::debug::{DebugError, DebugResult};
 
 impl ItemVec {
     pub(in crate::sol) fn consistency_check(&self) -> DebugResult {

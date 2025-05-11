@@ -1,9 +1,8 @@
+use super::EntityContainer;
 use crate::{
     sol::debug::{DebugError, DebugResult},
     util::RSet,
 };
-
-use super::EntityContainer;
 
 impl<T, E> EntityContainer<T, E> {
     pub(in crate::sol) fn consistency_check(&self) -> DebugResult {

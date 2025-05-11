@@ -1,3 +1,4 @@
+use super::{is_a_effect_projectable, resolve_effect_status, resolve_online_effect_status};
 use crate::{
     ad,
     sol::{
@@ -6,8 +7,6 @@ use crate::{
         uad::{Uad, item::UadItem},
     },
 };
-
-use super::{is_a_effect_projectable, resolve_effect_status, resolve_online_effect_status};
 
 impl Svc {
     pub(in crate::sol) fn process_effects(

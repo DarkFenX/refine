@@ -1,12 +1,11 @@
 use itertools::Itertools;
 
+use super::is_a_effect_projectable;
 use crate::sol::{
     AttrVal, ItemKey,
     svc::Svc,
     uad::{Uad, item::UadItem},
 };
-
-use super::is_a_effect_projectable;
 
 impl Svc {
     pub(in crate::sol) fn add_item_projection(

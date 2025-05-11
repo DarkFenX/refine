@@ -1,5 +1,6 @@
 use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 
+use super::{address::Address, error::FromPath};
 use crate::{
     phb::{
         data::{
@@ -10,8 +11,6 @@ use crate::{
     },
     util::Error,
 };
-
-use super::{address::Address, error::FromPath};
 
 /// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
 pub struct PhbFileEdh {

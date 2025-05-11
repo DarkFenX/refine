@@ -1,9 +1,8 @@
+use super::UadRig;
 use crate::sol::{
     debug::{DebugResult, check_fit_key},
     uad::Uad,
 };
-
-use super::UadRig;
 
 impl UadRig {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {

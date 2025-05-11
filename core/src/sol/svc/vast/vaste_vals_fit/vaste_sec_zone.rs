@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use ordered_float::OrderedFloat as OF;
 
+use super::shared::is_flag_set;
 use crate::{
     ac, ad,
     sol::{
@@ -11,8 +12,6 @@ use crate::{
     },
     util::{RMap, RSet},
 };
-
-use super::shared::is_flag_set;
 
 pub struct ValSecZoneFail {
     /// Solar system security zone.

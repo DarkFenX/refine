@@ -1,5 +1,9 @@
 use ordered_float::OrderedFloat as OF;
 
+use super::{
+    attr::{MISSILE_VELOCITY, SHIP_RADIUS},
+    deps::reg_dependencies,
+};
 use crate::{
     ad,
     sol::{
@@ -7,11 +11,6 @@ use crate::{
         svc::calc::{Calc, modifier::custom::shared::get_ship_key},
         uad::Uad,
     },
-};
-
-use super::{
-    attr::{MISSILE_VELOCITY, SHIP_RADIUS},
-    deps::reg_dependencies,
 };
 
 pub(in crate::sol::svc::calc::modifier) fn get_mod_val(

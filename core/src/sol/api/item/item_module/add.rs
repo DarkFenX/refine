@@ -1,10 +1,9 @@
+use super::shared::get_fit_rack_mut;
 use crate::sol::{
     AddMode, FitKey, ItemKey, ItemMutationRequest, ItemTypeId, ModRack, ModuleState, RmMode, SolarSystem,
     api::{FitMut, ModuleMut},
     uad::item::{UadCharge, UadItem, UadModule},
 };
-
-use super::shared::get_fit_rack_mut;
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_module(

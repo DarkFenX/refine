@@ -3,15 +3,6 @@ use std::collections::BTreeMap;
 use itertools::Itertools;
 use ordered_float::{Float, OrderedFloat as OF};
 
-use crate::{
-    sol::{
-        AttrVal, DmgKinds, FitKey, ItemKey,
-        svc::calc::{Calc, CalcAttrVal},
-        uad::Uad,
-    },
-    util::{RMap, RSet},
-};
-
 use super::{
     rah_data_sim::RahDataSim,
     rah_history_entry::RahSimHistoryEntry,
@@ -23,6 +14,14 @@ use super::{
     },
     ship_stats::RahShipStats,
     tick_iter::RahSimTickIter,
+};
+use crate::{
+    sol::{
+        AttrVal, DmgKinds, FitKey, ItemKey,
+        svc::calc::{Calc, CalcAttrVal},
+        uad::Uad,
+    },
+    util::{RMap, RSet},
 };
 
 impl Calc {

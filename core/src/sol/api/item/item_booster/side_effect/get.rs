@@ -1,6 +1,7 @@
 // You can get any effect as a side effect, this is by design, to be able to change side effect
 // status on a source which doesn't have an effect defined as a side effect.
 
+use super::shared::get_side_effect_chance_attr_id;
 use crate::{
     ad,
     sol::{
@@ -11,8 +12,6 @@ use crate::{
         },
     },
 };
-
-use super::shared::get_side_effect_chance_attr_id;
 
 impl<'a> Booster<'a> {
     pub fn get_side_effect(&self, effect_id: &EffectId) -> SideEffect {

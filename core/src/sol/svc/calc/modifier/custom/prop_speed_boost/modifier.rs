@@ -1,3 +1,4 @@
+use super::attr::SHIP_SPEED;
 use crate::{
     ad,
     sol::{
@@ -8,8 +9,6 @@ use crate::{
         },
     },
 };
-
-use super::attr::SHIP_SPEED;
 
 pub(in crate::sol::svc::calc) fn make_mod(affector_item_key: ItemKey, a_effect_id: ad::AEffectId) -> RawModifier {
     RawModifier {

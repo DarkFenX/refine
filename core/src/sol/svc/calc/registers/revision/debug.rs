@@ -1,6 +1,5 @@
-use crate::sol::{debug::DebugResult, svc::calc::debug::check_ctx_modifier, uad::Uad};
-
 use super::RevisionRegister;
+use crate::sol::{debug::DebugResult, svc::calc::debug::check_ctx_modifier, uad::Uad};
 
 impl RevisionRegister {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {

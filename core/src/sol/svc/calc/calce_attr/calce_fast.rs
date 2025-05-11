@@ -2,6 +2,7 @@ use std::collections::hash_map::Entry;
 
 use itertools::Itertools;
 
+use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 use crate::{
     ac, ad,
     sol::{
@@ -12,8 +13,6 @@ use crate::{
     },
     util::{RMap, round},
 };
-
-use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 
 impl Calc {
     // Query methods

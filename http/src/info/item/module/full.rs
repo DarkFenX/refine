@@ -1,6 +1,5 @@
-use crate::info::{HItemInfoMode, item::extended::HItemExtendedInfo};
-
 use super::HModuleInfoPartial;
+use crate::info::{HItemInfoMode, item::extended::HItemExtendedInfo};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfoFull {

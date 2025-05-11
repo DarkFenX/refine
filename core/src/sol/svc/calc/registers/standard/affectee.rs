@@ -1,3 +1,4 @@
+use super::{PotentialLocations, StandardRegister};
 use crate::{
     sol::{
         FitKey, ItemKey,
@@ -10,8 +11,6 @@ use crate::{
     },
     util::extend_vec_from_map_set_l1,
 };
-
-use super::{PotentialLocations, StandardRegister};
 
 impl StandardRegister {
     // Query methods

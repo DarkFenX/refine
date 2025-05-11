@@ -1,12 +1,11 @@
 use smallvec::SmallVec;
 
+use super::attr::{MISSILE_VELOCITY, SHIP_RADIUS};
 use crate::sol::{
     ItemKey,
     svc::calc::{AffectorInfo, modifier::custom::shared::get_ship_key},
     uad::Uad,
 };
-
-use super::attr::{MISSILE_VELOCITY, SHIP_RADIUS};
 
 pub(in crate::sol::svc::calc::modifier) fn get_affector_info(
     uad: &Uad,

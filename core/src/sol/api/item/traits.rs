@@ -1,3 +1,5 @@
+pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
+
 use crate::{
     EffectMode,
     err::basic::ItemLoadedError,
@@ -6,7 +8,6 @@ use crate::{
         svc::calc::{CalcAttrVal, ModificationInfo},
     },
 };
-pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {

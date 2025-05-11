@@ -1,5 +1,9 @@
 use itertools::Itertools;
 
+use super::shared::{
+    ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID, HULL_HP_ATTR_ID,
+    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, get_fit_rah_incoming_dps,
+};
 use crate::{
     ad,
     sol::{
@@ -8,11 +12,6 @@ use crate::{
         uad::{Uad, item::UadItem},
     },
     src::Src,
-};
-
-use super::shared::{
-    ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID, HULL_HP_ATTR_ID,
-    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, get_fit_rah_incoming_dps,
 };
 
 impl Calc {

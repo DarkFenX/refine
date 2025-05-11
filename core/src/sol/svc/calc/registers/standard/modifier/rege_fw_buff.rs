@@ -1,3 +1,4 @@
+use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     FitKey, ItemKey,
     svc::calc::{
@@ -8,8 +9,6 @@ use crate::sol::{
         item::{ShipKind, UadFwEffect, UadItem},
     },
 };
-
-use super::{add_ctx_modifier, remove_ctx_modifier};
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_fw_buff_mod(

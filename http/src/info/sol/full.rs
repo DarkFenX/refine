@@ -1,8 +1,9 @@
+use rc::Lender;
+
 use crate::{
     info::{HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, MkItemInfo},
     shared::{HDpsProfile, HSecZone},
 };
-use rc::Lender;
 
 #[derive(serde::Serialize)]
 pub(crate) struct HSolInfoFull {

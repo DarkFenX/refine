@@ -1,3 +1,5 @@
+use std::collections::hash_map::Entry;
+
 use crate::{
     AttrVal,
     sol::{
@@ -9,7 +11,6 @@ use crate::{
         },
     },
 };
-use std::collections::hash_map::Entry;
 
 impl Vast {
     pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &Uad, skill: &UadSkill) {

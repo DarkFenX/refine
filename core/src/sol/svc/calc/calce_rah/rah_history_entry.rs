@@ -1,6 +1,5 @@
-use crate::sol::{AttrVal, DmgKinds, ItemKey, svc::calc::CalcAttrVal};
-
 use super::shared::rah_round;
+use crate::sol::{AttrVal, DmgKinds, ItemKey, svc::calc::CalcAttrVal};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct RahSimHistoryEntry {

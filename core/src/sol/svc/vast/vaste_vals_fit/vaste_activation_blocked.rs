@@ -1,3 +1,4 @@
+use super::shared::is_flag_set;
 use crate::{
     ac,
     sol::{
@@ -7,8 +8,6 @@ use crate::{
     },
     util::RSet,
 };
-
-use super::shared::is_flag_set;
 
 pub struct ValActivationBlockedFail {
     /// Item IDs of modules which are active, but their activation is blocked by something.

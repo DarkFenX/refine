@@ -1,9 +1,8 @@
+use super::Autocharges;
 use crate::sol::{
     debug::{DebugResult, check_item_key},
     uad::Uad,
 };
-
-use super::Autocharges;
 
 impl Autocharges {
     pub(in crate::sol::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {

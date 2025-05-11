@@ -1,5 +1,6 @@
 use smallvec::SmallVec;
 
+use super::AffectorValue;
 use crate::{
     AttrVal, ac, ad,
     sol::{
@@ -8,8 +9,6 @@ use crate::{
         uad::{Uad, item::UadItem},
     },
 };
-
-use super::AffectorValue;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::sol::svc::calc) struct RawModifier {

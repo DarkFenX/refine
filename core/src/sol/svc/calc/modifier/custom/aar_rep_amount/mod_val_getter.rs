@@ -1,5 +1,6 @@
 use ordered_float::OrderedFloat as OF;
 
+use super::affector_attr::AAR_MULTIPLIER;
 use crate::{
     ac,
     sol::{
@@ -8,8 +9,6 @@ use crate::{
         uad::{Uad, item::UadItem},
     },
 };
-
-use super::affector_attr::AAR_MULTIPLIER;
 
 pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
     calc: &mut Calc,

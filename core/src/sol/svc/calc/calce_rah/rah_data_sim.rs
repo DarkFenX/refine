@@ -1,8 +1,7 @@
 use ordered_float::OrderedFloat as OF;
 
-use crate::sol::{AttrVal, DmgKinds};
-
 use super::rah_info::RahInfo;
+use crate::sol::{AttrVal, DmgKinds};
 
 pub(super) struct RahDataSim {
     pub(super) info: RahInfo,

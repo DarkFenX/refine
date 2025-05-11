@@ -1,9 +1,8 @@
+use super::RahSim;
 use crate::sol::{
     debug::{DebugError, DebugResult, check_item_key},
     uad::Uad,
 };
-
-use super::RahSim;
 
 impl RahSim {
     pub(in crate::sol::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {

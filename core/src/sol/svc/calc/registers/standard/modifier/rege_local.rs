@@ -1,9 +1,8 @@
+use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     svc::calc::{AffecteeFilter, CtxModifier, Location, RawModifier, registers::StandardRegister},
     uad::item::UadItem,
 };
-
-use super::{add_ctx_modifier, remove_ctx_modifier};
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_local_mod(

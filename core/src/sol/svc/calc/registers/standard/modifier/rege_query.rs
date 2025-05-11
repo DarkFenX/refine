@@ -1,5 +1,6 @@
 use std::hash::{BuildHasher, Hash};
 
+use super::ActiveLocations;
 use crate::{
     ad,
     sol::{
@@ -12,8 +13,6 @@ use crate::{
     },
     util::MapSet,
 };
-
-use super::ActiveLocations;
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn get_mods_for_affectee(

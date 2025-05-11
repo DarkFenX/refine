@@ -1,6 +1,5 @@
-use crate::sol::{debug::DebugResult, uad::Uad};
-
 use super::UadItem;
+use crate::sol::{debug::DebugResult, uad::Uad};
 
 impl UadItem {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {

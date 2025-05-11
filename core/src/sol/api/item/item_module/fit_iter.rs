@@ -1,11 +1,10 @@
 use lender::{Lender, Lending};
 
+use super::shared::get_fit_rack;
 use crate::sol::{
     FitKey, ItemKey, ModRack, SolarSystem,
     api::{Fit, FitMut, Module, ModuleMut},
 };
-
-use super::shared::get_fit_rack;
 
 pub struct ModuleIter<'iter> {
     sol: &'iter mut SolarSystem,

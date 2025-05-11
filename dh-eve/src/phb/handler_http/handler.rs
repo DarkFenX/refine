@@ -2,6 +2,7 @@ use std::fmt;
 
 use reqwest::{IntoUrl, Url, blocking::Client};
 
+use super::error::FromSuffix;
 use crate::{
     phb::{
         data::{
@@ -12,8 +13,6 @@ use crate::{
     },
     util::Error,
 };
-
-use super::error::FromSuffix;
 
 /// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) JSON dump via HTTP
 pub struct PhbHttpEdh {

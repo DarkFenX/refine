@@ -1,6 +1,5 @@
-use crate::sol::{debug::DebugResult, uad::Uad};
-
 use super::Calc;
+use crate::sol::{debug::DebugResult, uad::Uad};
 
 impl Calc {
     pub(in crate::sol::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {
