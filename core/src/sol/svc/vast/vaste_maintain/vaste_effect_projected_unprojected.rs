@@ -27,7 +27,7 @@ impl Vast {
                         item_key: projectee_item_key,
                         a_effect_id: *stop_a_effect_id,
                     };
-                    projectee_fit_data.stopped_effects.add_entry(stopper, stopped);
+                    projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
                 }
             }
         }
@@ -51,7 +51,7 @@ impl Vast {
                         item_key: projectee_item_key,
                         a_effect_id: *stop_a_effect_id,
                     };
-                    projectee_fit_data.stopped_effects.remove_entry(&stopper, &stopped);
+                    projectee_fit_data.stopped_effects.remove_entry(&stopped, &stopper);
                 }
             }
         }

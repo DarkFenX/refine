@@ -323,6 +323,7 @@ class EveTypeFactory(EveDataManager):
             op: int | type[Absent] = Absent,
             affector_attr_id: int | type[Absent] = Absent,
             affectee_attr_id: int | type[Absent] = Absent,
+            effect_id: int | type[Absent] = Absent,
     ) -> EffectModifier:
         return EffectModifier(
             func=func,
@@ -331,7 +332,8 @@ class EveTypeFactory(EveDataManager):
             skill_req=srq,
             operation=op,
             affector_attr_id=affector_attr_id,
-            affectee_attr_id=affectee_attr_id)
+            affectee_attr_id=affectee_attr_id,
+            effect_id=effect_id)
 
     def mk_eve_buff(
             self, *,

@@ -19,6 +19,7 @@ class EffectModifier:
     affector_attr_id: int | type[Absent]
     affectee_attr_id: int | type[Absent]
     operation: int | type[Absent]
+    effect_id: int | type[Absent]
 
     def to_primitives(self) -> dict:
         mod_entry = {}
@@ -29,4 +30,5 @@ class EffectModifier:
         conditional_insert(container=mod_entry, path=['modifyingAttributeID'], value=self.affector_attr_id)
         conditional_insert(container=mod_entry, path=['modifiedAttributeID'], value=self.affectee_attr_id)
         conditional_insert(container=mod_entry, path=['operation'], value=self.operation)
+        conditional_insert(container=mod_entry, path=['effectID'], value=self.effect_id)
         return mod_entry

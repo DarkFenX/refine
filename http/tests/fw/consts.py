@@ -123,6 +123,7 @@ class EveModFunc(StrEnum):
     loc_grp = 'LocationGroupModifier'
     loc_srq = 'LocationRequiredSkillModifier'
     own_srq = 'OwnerRequiredSkillModifier'
+    stopper = 'EffectStopper'
 
 
 @unique
@@ -132,6 +133,7 @@ class EveModLoc(StrEnum):
     ship = 'shipID'
     struct = 'structureID'
     tgt = 'targetID'
+    tgt_stopper = 'target'
     other = 'otherID'
 
 

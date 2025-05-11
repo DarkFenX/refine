@@ -68,6 +68,7 @@ class ValOptions:
     sec_zone_unactivable: ValOption = Absent
     activation_blocked: ValOption = Absent
     item_vs_ship_kind: ValOption = Absent
+    effect_stopper: ValOption = Absent
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
