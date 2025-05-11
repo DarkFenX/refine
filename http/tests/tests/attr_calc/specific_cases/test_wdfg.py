@@ -1,6 +1,6 @@
-from tests import approx
+from tests import approx, check_no_field
+from tests.fw.api import ValOptions
 
-# TODO: add fighter MWD/MJD block tests, redo module MWD/MJD block tests to use restrictions
 # As of 2024-11-05, HIC ray blocks fighter MWD and MJD even with disruption script
 
 
@@ -238,18 +238,27 @@ def test_mwd_block_dscript(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id)
+    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_mwd_block_sscript(client, consts):
@@ -274,18 +283,26 @@ def test_mwd_block_sscript(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id)
+    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(1)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_mwd.id]
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_mjd_block_dscript(client, consts):
@@ -313,22 +330,27 @@ def test_mjd_block_dscript(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id)
-    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id)
+    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
+    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
-    assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(1)
-    assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(1)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
-    assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_mjd_block_sscript(client, consts):
@@ -356,22 +378,27 @@ def test_mjd_block_sscript(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id)
-    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id)
+    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
+    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
-    assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(1)
-    assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(1)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
-    assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_range_dscript(client, consts):
@@ -497,7 +524,7 @@ def test_range_sscript(client, consts):
 
 
 def test_assist_dscript(client, consts):
-    # WDFG disables assistance even when it's running with any script
+    # WDFG disables assistance even when it's running with a script
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg_id = client.mk_eve_item(
@@ -526,7 +553,7 @@ def test_assist_dscript(client, consts):
 
 
 def test_assist_sscript(client, consts):
-    # WDFG disables assistance even when it's running with any script
+    # WDFG disables assistance even when it's running with a script
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg_id = client.mk_eve_item(
