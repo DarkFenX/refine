@@ -1,10 +1,9 @@
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
 use crate::{
-    EffectMode,
     err::basic::ItemLoadedError,
     sol::{
-        AttrId, EffectId, EffectInfo, ItemId, ItemTypeId,
+        AttrId, EffectId, EffectInfo, EffectMode, ItemId, ItemTypeId,
         svc::calc::{CalcAttrVal, ModificationInfo},
     },
 };

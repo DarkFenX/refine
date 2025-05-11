@@ -6,9 +6,9 @@ use smallvec::SmallVec;
 
 use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 use crate::{
-    SecZone, ac, ad,
+    ac, ad,
     sol::{
-        ItemKey, OpInfo,
+        ItemKey, OpInfo, SecZone,
         err::KeyedItemLoadedError,
         svc::calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
         uad::{Uad, item::UadItem},

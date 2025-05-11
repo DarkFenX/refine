@@ -1,14 +1,11 @@
 use std::collections::hash_map::Entry;
 
-use crate::{
-    AttrVal,
-    sol::{
-        ItemKey,
-        svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
-        uad::{
-            Uad,
-            item::{UadFighter, UadSkill},
-        },
+use crate::sol::{
+    AttrVal, ItemKey,
+    svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
+    uad::{
+        Uad,
+        item::{UadFighter, UadSkill},
     },
 };
 

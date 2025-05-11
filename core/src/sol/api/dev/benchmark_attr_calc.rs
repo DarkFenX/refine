@@ -1,6 +1,6 @@
 use std::hint::black_box;
 
-use crate::sol::{AddMode, ItemTypeId, ModRack, ModuleState, api::FitMut};
+use crate::sol::{AddMode, ItemTypeId, ModRack, ModuleState, RmMode, api::FitMut};
 
 impl<'a> FitMut<'a> {
     pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {
@@ -24,7 +24,7 @@ impl<'a> FitMut<'a> {
                     .unwrap()
                     .for_each(drop),
             );
-            self.sol.internal_remove_module(item_key, crate::RmMode::Free);
+            self.sol.internal_remove_module(item_key, RmMode::Free);
             #[allow(clippy::unit_arg)]
             black_box(
                 self.sol
