@@ -236,10 +236,7 @@ fn validate_fast_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut force_pass = true;
     for item_key in items {
-        let item_use = match calc.get_item_attr_val_extra(uad, *item_key, use_a_attr_id) {
-            Some(item_use) => item_use,
-            None => continue,
-        };
+        let item_use = calc.get_item_attr_val_extra(uad, *item_key, use_a_attr_id).unwrap();
         if force_pass && item_use > OF(0.0) && !kfs.contains(item_key) {
             force_pass = false;
         }
@@ -286,10 +283,7 @@ fn validate_verbose_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut users = HashMap::with_capacity(items.len());
     for item_key in items {
-        let item_use = match calc.get_item_attr_val_extra(uad, *item_key, use_a_attr_id) {
-            Some(item_use) => item_use,
-            None => continue,
-        };
+        let item_use = calc.get_item_attr_val_extra(uad, *item_key, use_a_attr_id).unwrap();
         total_use += item_use;
         if item_use > OF(0.0) && !kfs.contains(item_key) {
             users.insert(uad.items.id_by_key(*item_key), item_use);

@@ -165,18 +165,7 @@ fn validate_verbose(
 }
 
 fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Count {
-    match calc.get_item_attr_val_extra(uad, item_key, a_attr_id) {
-        Some(value) => value.round() as Count,
-        // Limited items are guaranteed to have some unmodified limit value
-        None => uad
-            .items
-            .get(item_key)
-            .get_a_attrs()
-            .unwrap()
-            .get(a_attr_id)
-            .unwrap()
-            .round() as Count,
-    }
+    calc.get_item_attr_val_extra(uad, item_key, a_attr_id).unwrap().round() as Count
 }
 fn get_actual_item_count(max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>, a_item_grp_id: &ad::AItemGrpId) -> Count {
     max_group_all.get(a_item_grp_id).len() as Count

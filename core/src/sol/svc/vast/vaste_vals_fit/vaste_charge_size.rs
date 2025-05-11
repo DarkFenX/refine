@@ -35,10 +35,10 @@ impl ValChargeSizeChargeInfo {
 
 #[derive(Copy, Clone)]
 pub(in crate::sol::svc::vast) struct ValChargeSizeFailCache {
-    pub parent_item_key: ItemKey,
-    pub charge_item_key: ItemKey,
-    pub charge_size: Option<AttrVal>,
-    pub allowed_size: AttrVal,
+    pub(in crate::sol::svc::vast) parent_item_key: ItemKey,
+    pub(in crate::sol::svc::vast) charge_item_key: ItemKey,
+    pub(in crate::sol::svc::vast) charge_size: Option<AttrVal>,
+    pub(in crate::sol::svc::vast) allowed_size: AttrVal,
 }
 
 impl VastFitData {

@@ -34,10 +34,10 @@ impl ValChargeGroupChargeInfo {
 
 #[derive(Clone)]
 pub(in crate::sol::svc::vast) struct ValChargeGroupFailCache {
-    pub parent_item_key: ItemKey,
-    pub charge_item_key: ItemKey,
-    pub charge_group_id: ItemGrpId,
-    pub allowed_group_ids: Vec<ItemGrpId>,
+    pub(in crate::sol::svc::vast) parent_item_key: ItemKey,
+    pub(in crate::sol::svc::vast) charge_item_key: ItemKey,
+    pub(in crate::sol::svc::vast) charge_group_id: ItemGrpId,
+    pub(in crate::sol::svc::vast) allowed_group_ids: Vec<ItemGrpId>,
 }
 
 impl VastFitData {
