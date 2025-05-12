@@ -23,19 +23,24 @@ impl SolarSystem {
         // Remove old charge, if it was set
         if let Some(old_charge_key) = uad_module.get_charge_item_key() {
             // Remove outgoing projections
-            let charge_uad_item = self.uad.items.get(old_charge_key);
+            let old_charge_uad_item = self.uad.items.get(old_charge_key);
             // Use module projections because they should be identical
             for (projectee_item_key, _) in module_projs.iter() {
                 // Update services for charge being removed
                 let projectee_uad_item = self.uad.items.get(*projectee_item_key);
-                self.svc
-                    .remove_item_projection(&self.uad, old_charge_key, *projectee_item_key, projectee_uad_item);
+                self.svc.remove_item_projection(
+                    &self.uad,
+                    old_charge_key,
+                    old_charge_uad_item,
+                    *projectee_item_key,
+                    projectee_uad_item,
+                );
                 // Update user data for charge - do not touch projections container on charge
                 // itself, because we're removing it anyway
                 self.proj_tracker.unreg_projectee(&old_charge_key, projectee_item_key);
             }
             // Update services for charge being removed
-            self.svc.remove_item(&self.uad, old_charge_key, charge_uad_item);
+            self.svc.remove_item(&self.uad, old_charge_key, old_charge_uad_item);
             // Update user data for charge - do not update module<->charge references because charge
             // will be removed, and module will be updated later
             self.uad.items.remove(old_charge_key);
@@ -75,10 +80,17 @@ impl SolarSystem {
                 charge_projs.add(*projectee_item_id, *range);
             }
             // Update services for charge
+            let new_charge_uad_item = self.uad.items.get(new_charge_key);
             for (projectee_item_key, range) in module_projs {
                 let projectee_uad_item = self.uad.items.get(projectee_item_key);
-                self.svc
-                    .add_item_projection(&self.uad, new_charge_key, projectee_item_key, projectee_uad_item, range);
+                self.svc.add_item_projection(
+                    &self.uad,
+                    new_charge_key,
+                    new_charge_uad_item,
+                    projectee_item_key,
+                    projectee_uad_item,
+                    range,
+                );
             }
         }
         new_charge_key

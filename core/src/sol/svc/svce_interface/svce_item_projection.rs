@@ -12,17 +12,26 @@ impl Svc {
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
+        projector_item: &UadItem,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
         self.notify_item_projected();
-        self.add_item_projection_internal(uad, projector_item_key, projectee_item_key, projectee_item, range);
+        self.add_item_projection_internal(
+            uad,
+            projector_item_key,
+            projector_item,
+            projectee_item_key,
+            projectee_item,
+            range,
+        );
     }
     fn add_item_projection_internal(
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
+        projector_item: &UadItem,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<AttrVal>,
@@ -36,6 +45,7 @@ impl Svc {
                     self.notify_effect_projected(
                         uad,
                         projector_item_key,
+                        projector_item,
                         a_effect,
                         projectee_item_key,
                         projectee_item,
@@ -49,16 +59,24 @@ impl Svc {
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
+        projector_item: &UadItem,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        self.remove_item_projection_internal(uad, projector_item_key, projectee_item_key, projectee_item);
+        self.remove_item_projection_internal(
+            uad,
+            projector_item_key,
+            projector_item,
+            projectee_item_key,
+            projectee_item,
+        );
         self.notify_item_unprojected();
     }
     fn remove_item_projection_internal(
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
+        projector_item: &UadItem,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
@@ -68,7 +86,14 @@ impl Svc {
             for a_effect_id in a_effect_ids.iter() {
                 let effect = uad.src.get_a_effect(a_effect_id).unwrap();
                 if is_a_effect_projectable(effect) {
-                    self.notify_effect_unprojected(uad, projector_item_key, effect, projectee_item_key, projectee_item);
+                    self.notify_effect_unprojected(
+                        uad,
+                        projector_item_key,
+                        projector_item,
+                        effect,
+                        projectee_item_key,
+                        projectee_item,
+                    );
                 }
             }
         }

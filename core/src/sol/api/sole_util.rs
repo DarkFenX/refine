@@ -39,9 +39,16 @@ impl SolarSystem {
         projectee_item_key: ItemKey,
         range: Option<AttrVal>,
     ) {
+        let projector_item = self.uad.items.get(projector_item_key);
         let projectee_item = self.uad.items.get(projectee_item_key);
-        self.svc
-            .add_item_projection(&self.uad, projector_item_key, projectee_item_key, projectee_item, range);
+        self.svc.add_item_projection(
+            &self.uad,
+            projector_item_key,
+            projector_item,
+            projectee_item_key,
+            projectee_item,
+            range,
+        );
     }
     pub(in crate::sol::api) fn internal_change_item_key_projection_range_in_svc(
         &mut self,
@@ -58,9 +65,15 @@ impl SolarSystem {
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
     ) {
+        let projector_item = self.uad.items.get(projector_item_key);
         let projectee_item = self.uad.items.get(projectee_item_key);
-        self.svc
-            .remove_item_projection(&self.uad, projector_item_key, projectee_item_key, projectee_item);
+        self.svc.remove_item_projection(
+            &self.uad,
+            projector_item_key,
+            projector_item,
+            projectee_item_key,
+            projectee_item,
+        );
     }
     pub(in crate::sol::api) fn internal_remove_incoming_projections(&mut self, projectee_item_key: ItemKey) {
         let projector_item_keys = self

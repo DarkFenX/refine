@@ -10,7 +10,8 @@ impl SolarSystem {
         projectee_item_key: ItemKey,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
-        let uad_proj_effect = self.uad.items.get(item_key).get_proj_effect().unwrap();
+        let uad_item = self.uad.items.get(item_key);
+        let uad_proj_effect = uad_item.get_proj_effect().unwrap();
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
         if !uad_proj_effect.get_projs().contains(&projectee_item_key) {
             return Err(ProjFoundError {
@@ -20,7 +21,7 @@ impl SolarSystem {
         };
         // Update services
         self.svc
-            .remove_item_projection(&self.uad, item_key, projectee_item_key, projectee_uad_item);
+            .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
         // Update user data
         self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
         let uad_proj_effect = self.uad.items.get_mut(item_key).get_proj_effect_mut().unwrap();

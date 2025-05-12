@@ -10,7 +10,7 @@ impl SolarSystem {
             // Update services
             let uad_projectee_item = self.uad.items.get(projectee_item_key);
             self.svc
-                .remove_item_projection(&self.uad, item_key, projectee_item_key, uad_projectee_item);
+                .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, uad_projectee_item);
             // Update user data - do not update info on projected effect, because projected effect
             // will be discarded anyway
             self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);

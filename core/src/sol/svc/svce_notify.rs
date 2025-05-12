@@ -118,6 +118,7 @@ impl Svc {
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
+        projector_item: &UadItem,
         a_effect: &ad::ArcEffect,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
@@ -131,21 +132,32 @@ impl Svc {
             projectee_item,
             range,
         );
-        self.vast
-            .effect_projected(projector_item_key, a_effect, projectee_item_key, projectee_item);
+        self.vast.effect_projected(
+            projector_item_key,
+            projector_item,
+            a_effect,
+            projectee_item_key,
+            projectee_item,
+        );
     }
     pub(in crate::sol::svc) fn notify_effect_unprojected(
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
+        projector_item: &UadItem,
         a_effect: &ad::ArcEffect,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
         self.calc
             .effect_unprojected(uad, projector_item_key, a_effect, projectee_item_key, projectee_item);
-        self.vast
-            .effect_unprojected(projector_item_key, a_effect, projectee_item_key, projectee_item);
+        self.vast.effect_unprojected(
+            projector_item_key,
+            projector_item,
+            a_effect,
+            projectee_item_key,
+            projectee_item,
+        );
     }
     pub(in crate::sol::svc) fn notify_effect_proj_range_changed(
         &mut self,

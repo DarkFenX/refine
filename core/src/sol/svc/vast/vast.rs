@@ -87,6 +87,8 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) mods_active: RSet<ItemKey>,
     pub(in crate::sol::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<ItemKey, ValShipKind>,
     pub(in crate::sol::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
+    pub(in crate::sol::svc::vast) blockable_assistance: RMapRSet<EffectSpec, ItemKey>,
+    pub(in crate::sol::svc::vast) blockable_offense: RMapRSet<EffectSpec, ItemKey>,
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -146,6 +148,8 @@ impl VastFitData {
             mods_active: RSet::new(),
             mods_rigs_svcs_vs_ship_kind: RMap::new(),
             stopped_effects: RMapRSet::new(),
+            blockable_assistance: RMapRSet::new(),
+            blockable_offense: RMapRSet::new(),
         }
     }
 }

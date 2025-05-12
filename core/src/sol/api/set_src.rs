@@ -50,8 +50,14 @@ impl SolarSystem {
                     for (projectee_item_key, range) in autocharge.get_projs().iter() {
                         self.proj_tracker.reg_projectee(item_key, *projectee_item_key);
                         let projectee_item = self.uad.items.get(*projectee_item_key);
-                        self.svc
-                            .add_item_projection(&self.uad, item_key, *projectee_item_key, projectee_item, *range);
+                        self.svc.add_item_projection(
+                            &self.uad,
+                            item_key,
+                            item,
+                            *projectee_item_key,
+                            projectee_item,
+                            *range,
+                        );
                     }
                 }
                 _ => self.svc.load_item(&self.uad, item_key, item),
@@ -69,8 +75,13 @@ impl SolarSystem {
                     for &projectee_item_key in autocharge.get_projs().iter_projectee_item_keys() {
                         let projectee_item = self.uad.items.get(projectee_item_key);
                         // Update services
-                        self.svc
-                            .remove_item_projection(&self.uad, autocharge_key, projectee_item_key, projectee_item);
+                        self.svc.remove_item_projection(
+                            &self.uad,
+                            autocharge_key,
+                            autocharge_item,
+                            projectee_item_key,
+                            projectee_item,
+                        );
                         // Update user data for autocharge - don't touch data on charge itself,
                         // since charge will be removed later anyway
                         self.proj_tracker.unreg_projectee(&autocharge_key, &projectee_item_key);

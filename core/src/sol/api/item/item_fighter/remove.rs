@@ -14,15 +14,21 @@ impl SolarSystem {
             let projectee_uad_item = self.uad.items.get(projectee_item_key);
             for &autocharge_key in autocharge_keys.iter() {
                 // Update services for autocharge
-                self.svc
-                    .remove_item_projection(&self.uad, autocharge_key, projectee_item_key, projectee_uad_item);
+                let autocharge_uad_item = self.uad.items.get(autocharge_key);
+                self.svc.remove_item_projection(
+                    &self.uad,
+                    autocharge_key,
+                    autocharge_uad_item,
+                    projectee_item_key,
+                    projectee_uad_item,
+                );
                 // Update user data for autocharge - don't touch data on charge itself, since charge
                 // will be removed later anyway
                 self.proj_tracker.unreg_projectee(&autocharge_key, &projectee_item_key);
             }
             // Update services for fighter
             self.svc
-                .remove_item_projection(&self.uad, item_key, projectee_item_key, projectee_uad_item);
+                .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
             // Update user data for fighter - don't touch data on fighter itself, since fighter will
             // be removed later anyway
             self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);

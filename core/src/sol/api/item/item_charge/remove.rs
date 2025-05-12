@@ -9,7 +9,7 @@ impl SolarSystem {
             // Update services for charge
             let projectee_uad_item = self.uad.items.get(projectee_item_key);
             self.svc
-                .remove_item_projection(&self.uad, item_key, projectee_item_key, projectee_uad_item);
+                .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
             // Update user data for charge - do not touch projections container on charge itself,
             // because we're removing it anyway
             self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);

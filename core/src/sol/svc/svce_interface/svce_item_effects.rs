@@ -45,6 +45,7 @@ impl Svc {
                             self.notify_effect_projected(
                                 uad,
                                 item_key,
+                                item,
                                 a_effect,
                                 projectee_item_key,
                                 projectee_item,
@@ -61,7 +62,14 @@ impl Svc {
                     let projectee_item = uad.items.get(projectee_item_key);
                     for a_effect in to_stop.iter() {
                         if is_a_effect_projectable(a_effect) {
-                            self.notify_effect_unprojected(uad, item_key, a_effect, projectee_item_key, projectee_item);
+                            self.notify_effect_unprojected(
+                                uad,
+                                item_key,
+                                item,
+                                a_effect,
+                                projectee_item_key,
+                                projectee_item,
+                            );
                         }
                     }
                 }

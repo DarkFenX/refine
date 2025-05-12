@@ -14,12 +14,18 @@ impl SolarSystem {
         let module_projectee_item_keys = uad_module.get_projs().iter_projectee_item_keys().copied().collect_vec();
         if !module_projectee_item_keys.is_empty() {
             if let Some(charge_key) = charge_key {
+                let charge_uad_item = self.uad.items.get(charge_key);
                 // Use module projections, since module and charge projections should always match
                 for &projectee_item_key in module_projectee_item_keys.iter() {
                     let projectee_uad_item = self.uad.items.get(projectee_item_key);
                     // Update services for charge
-                    self.svc
-                        .remove_item_projection(&self.uad, charge_key, projectee_item_key, projectee_uad_item);
+                    self.svc.remove_item_projection(
+                        &self.uad,
+                        charge_key,
+                        charge_uad_item,
+                        projectee_item_key,
+                        projectee_uad_item,
+                    );
                     // Update user data for charge - don't touch data on charge itself, since charge
                     // will be removed later anyway
                     self.proj_tracker.unreg_projectee(&charge_key, &projectee_item_key);
@@ -29,7 +35,7 @@ impl SolarSystem {
                 // Update services for module
                 let projectee_uad_item = self.uad.items.get(projectee_item_id);
                 self.svc
-                    .remove_item_projection(&self.uad, item_key, projectee_item_id, projectee_uad_item);
+                    .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_id, projectee_uad_item);
                 // Update user data for module - don't touch data on module itself, since module
                 // will be removed later anyway
                 self.proj_tracker.unreg_projectee(&item_key, &projectee_item_id);
