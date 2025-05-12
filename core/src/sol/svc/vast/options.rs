@@ -65,6 +65,8 @@ pub struct ValOptions {
     pub activation_blocked: ValOption,
     pub item_vs_ship_kind: ValOption,
     pub effect_stopper: ValOption,
+    pub assist_immunity: ValOption,
+    pub offense_immunity: ValOption,
 }
 impl ValOptions {
     pub fn all_enabled() -> Self {
@@ -129,6 +131,8 @@ impl ValOptions {
             activation_blocked: ValOption::new_enabled(),
             item_vs_ship_kind: ValOption::new_enabled(),
             effect_stopper: ValOption::new_enabled(),
+            assist_immunity: ValOption::new_enabled(),
+            offense_immunity: ValOption::new_enabled(),
         }
     }
     pub fn all_disabled() -> Self {
@@ -193,6 +197,8 @@ impl ValOptions {
             activation_blocked: ValOption::new_disabled(),
             item_vs_ship_kind: ValOption::new_disabled(),
             effect_stopper: ValOption::new_disabled(),
+            assist_immunity: ValOption::new_disabled(),
+            offense_immunity: ValOption::new_disabled(),
         }
     }
 }

@@ -353,6 +353,16 @@ impl Vast {
         {
             return false;
         }
+        if options.assist_immunity.enabled
+            && !fit_data.validate_assist_immunity_fast(&options.assist_immunity.kfs, uad, calc)
+        {
+            return false;
+        }
+        if options.offense_immunity.enabled
+            && !fit_data.validate_offense_immunity_fast(&options.offense_immunity.kfs, uad, calc)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -642,6 +652,13 @@ impl Vast {
         if options.effect_stopper.enabled {
             result.effect_stopper =
                 fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, uad, running_effects);
+        }
+        if options.assist_immunity.enabled {
+            result.assist_immunity = fit_data.validate_assist_immunity_verbose(&options.assist_immunity.kfs, uad, calc);
+        }
+        if options.offense_immunity.enabled {
+            result.offense_immunity =
+                fit_data.validate_offense_immunity_verbose(&options.offense_immunity.kfs, uad, calc);
         }
         result
     }

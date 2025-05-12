@@ -1,9 +1,9 @@
 use crate::sol::svc::vast::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
-    ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail, ValItemVsShipKindFail,
-    ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValResFail,
-    ValRigSizeFail, ValSecZoneFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
-    ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
+    ValDroneGroupFail, ValEffectImmunityFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail,
+    ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
+    ValOverloadSkillFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail, ValShipStanceFail,
+    ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
 };
 
 pub struct ValResult {
@@ -67,6 +67,8 @@ pub struct ValResult {
     pub activation_blocked: Option<ValActivationBlockedFail>,
     pub item_vs_ship_kind: Option<ValItemVsShipKindFail>,
     pub effect_stopper: Option<ValEffectStopperFail>,
+    pub assist_immunity: Option<ValEffectImmunityFail>,
+    pub offense_immunity: Option<ValEffectImmunityFail>,
 }
 impl ValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -131,6 +133,8 @@ impl ValResult {
             activation_blocked: None,
             item_vs_ship_kind: None,
             effect_stopper: None,
+            assist_immunity: None,
+            offense_immunity: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -194,5 +198,7 @@ impl ValResult {
             && self.activation_blocked.is_none()
             && self.item_vs_ship_kind.is_none()
             && self.effect_stopper.is_none()
+            && self.assist_immunity.is_none()
+            && self.offense_immunity.is_none()
     }
 }

@@ -34,18 +34,6 @@ impl Vast {
                 }
             }
         }
-        if is_offense_blockable(projector_item, a_effect) {
-            if let Some(projector_fit_key) = projector_item.get_fit_key() {
-                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-                let projector_spec = EffectSpec {
-                    item_key: projector_item_key,
-                    a_effect_id: a_effect.id,
-                };
-                projector_fit_data
-                    .blockable_offense
-                    .add_entry(projector_spec, projectee_item_key);
-            }
-        }
         if a_effect.is_assist {
             if let Some(projector_fit_key) = projector_item.get_fit_key() {
                 let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
@@ -55,6 +43,18 @@ impl Vast {
                 };
                 projector_fit_data
                     .blockable_assistance
+                    .add_entry(projector_spec, projectee_item_key);
+            }
+        }
+        if is_offense_blockable(projector_item, a_effect) {
+            if let Some(projector_fit_key) = projector_item.get_fit_key() {
+                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
+                let projector_spec = EffectSpec {
+                    item_key: projector_item_key,
+                    a_effect_id: a_effect.id,
+                };
+                projector_fit_data
+                    .blockable_offense
                     .add_entry(projector_spec, projectee_item_key);
             }
         }
@@ -83,18 +83,6 @@ impl Vast {
                 }
             }
         }
-        if is_offense_blockable(projector_item, a_effect) {
-            if let Some(projector_fit_key) = projector_item.get_fit_key() {
-                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-                let projector_spec = EffectSpec {
-                    item_key: projector_item_key,
-                    a_effect_id: a_effect.id,
-                };
-                projector_fit_data
-                    .blockable_offense
-                    .remove_entry(&projector_spec, &projectee_item_key);
-            }
-        }
         if a_effect.is_assist {
             if let Some(projector_fit_key) = projector_item.get_fit_key() {
                 let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
@@ -104,6 +92,18 @@ impl Vast {
                 };
                 projector_fit_data
                     .blockable_assistance
+                    .remove_entry(&projector_spec, &projectee_item_key);
+            }
+        }
+        if is_offense_blockable(projector_item, a_effect) {
+            if let Some(projector_fit_key) = projector_item.get_fit_key() {
+                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
+                let projector_spec = EffectSpec {
+                    item_key: projector_item_key,
+                    a_effect_id: a_effect.id,
+                };
+                projector_fit_data
+                    .blockable_offense
                     .remove_entry(&projector_spec, &projectee_item_key);
             }
         }
