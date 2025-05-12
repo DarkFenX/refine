@@ -105,10 +105,13 @@ fn validate_verbose(
     for (projector_spec, projectee_item_keys) in blockable.iter() {
         for &projectee_item_key in projectee_item_keys {
             if is_flag_set(uad, calc, projectee_item_key, a_attr_id) && !kfs.contains(&projector_spec.item_key) {
-                items
+                let projectee_item_id = uad.items.id_by_key(projectee_item_key);
+                let projectee_item_ids = items
                     .entry(uad.items.id_by_key(projector_spec.item_key))
-                    .or_insert_with(Vec::new)
-                    .push(uad.items.id_by_key(projectee_item_key));
+                    .or_insert_with(Vec::new);
+                if !projectee_item_ids.contains(&projectee_item_id) {
+                    projectee_item_ids.push(projectee_item_id)
+                }
             }
         }
     }
