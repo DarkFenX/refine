@@ -121,6 +121,10 @@ pub(in crate::cmd) struct HValOptions {
     item_vs_ship_kind: Option<HValOption>,
     #[serde(default)]
     effect_stopper: Option<HValOption>,
+    #[serde(default)]
+    assist_immunity: Option<HValOption>,
+    #[serde(default)]
+    offense_immunity: Option<HValOption>,
 }
 impl HValOptions {
     pub(in crate::cmd) fn to_core_val_options(&self, core_sol: &mut rc::SolarSystem) -> rc::val::ValOptions {
@@ -276,6 +280,8 @@ impl HValOptions {
         process_option(core_sol, &self.activation_blocked, &mut core_options.activation_blocked);
         process_option(core_sol, &self.item_vs_ship_kind, &mut core_options.item_vs_ship_kind);
         process_option(core_sol, &self.effect_stopper, &mut core_options.effect_stopper);
+        process_option(core_sol, &self.assist_immunity, &mut core_options.assist_immunity);
+        process_option(core_sol, &self.offense_immunity, &mut core_options.offense_immunity);
         core_options
     }
 }
@@ -343,6 +349,8 @@ impl Default for HValOptions {
             activation_blocked: None,
             item_vs_ship_kind: None,
             effect_stopper: None,
+            assist_immunity: None,
+            offense_immunity: None,
         }
     }
 }

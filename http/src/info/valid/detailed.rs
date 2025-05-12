@@ -1,9 +1,9 @@
 use crate::info::valid::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail,
-    HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail, HValItemVsShipKindFail,
-    HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail, HValResFail,
-    HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail,
-    HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
+    HValDroneGroupFail, HValEffectImmunityFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
+    HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail,
+    HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail,
+    HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 #[derive(serde::Serialize)]
@@ -144,6 +144,10 @@ struct HValidInfoDetails {
     item_vs_ship_kind: Option<HValItemVsShipKindFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     effect_stopper: Option<HValEffectStopperFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    assist_immunity: Option<HValEffectImmunityFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    offense_immunity: Option<HValEffectImmunityFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -207,6 +211,8 @@ impl HValidInfoDetails {
             && self.activation_blocked.is_none()
             && self.item_vs_ship_kind.is_none()
             && self.effect_stopper.is_none()
+            && self.assist_immunity.is_none()
+            && self.offense_immunity.is_none()
     }
 }
 impl From<&rc::val::ValResult> for HValidInfoDetails {
@@ -272,6 +278,8 @@ impl From<&rc::val::ValResult> for HValidInfoDetails {
             activation_blocked: conv(&core_val_result.activation_blocked),
             item_vs_ship_kind: conv(&core_val_result.item_vs_ship_kind),
             effect_stopper: conv(&core_val_result.effect_stopper),
+            assist_immunity: conv(&core_val_result.assist_immunity),
+            offense_immunity: conv(&core_val_result.offense_immunity),
         }
     }
 }
