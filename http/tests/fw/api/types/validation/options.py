@@ -69,6 +69,8 @@ class ValOptions:
     activation_blocked: ValOption = Absent
     item_vs_ship_kind: ValOption = Absent
     effect_stopper: ValOption = Absent
+    assist_immunity: ValOption = Absent
+    offense_immunity: ValOption = Absent
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

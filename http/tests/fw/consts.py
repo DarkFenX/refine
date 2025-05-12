@@ -238,6 +238,7 @@ class EveAttr(IntEnum):
     max_group_active = 763
     mass_addition = 796
     disallow_assistance = 854
+    disallow_offensive_modifiers = 872
     max_group_online = 978
     disallow_in_empire_space = 1074
     boosterness = 1087
@@ -273,6 +274,7 @@ class EveAttr(IntEnum):
     rig_size = 1547
     allowed_drone_group1 = 1782
     allowed_drone_group2 = 1783
+    disallow_vs_ew_immune_tgt = 1798
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
     can_fit_ship_type5 = 1944

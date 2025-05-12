@@ -5,6 +5,7 @@ from .charge_group import ValChargeGroupFail
 from .charge_size import ValChargeSizeFail
 from .charge_volume import ValChargeVolumeFail
 from .drone_group import ValDroneGroupFail
+from .effect_immunity import ValEffectImmunityFail
 from .effect_stopper import ValEffectStopperFail
 from .fighter_squad_size import ValFighterSquadSizeFail
 from .item_kind import ValItemKindFail
@@ -95,4 +96,6 @@ class ValResultDetails(AttrDict):
             'sec_zone_unactivable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
             'activation_blocked': AttrHookDef(func=lambda d: ValActivationBlockedFail(data=d)),
             'item_vs_ship_kind': AttrHookDef(func=lambda d: ValItemVsShipKindFail(data=d)),
-            'effect_stopper': AttrHookDef(func=lambda d: ValEffectStopperFail(data=d))})
+            'effect_stopper': AttrHookDef(func=lambda d: ValEffectStopperFail(data=d)),
+            'assist_immunity': AttrHookDef(func=lambda d: ValEffectImmunityFail(data=d)),
+            'offense_immunity': AttrHookDef(func=lambda d: ValEffectImmunityFail(data=d))})
