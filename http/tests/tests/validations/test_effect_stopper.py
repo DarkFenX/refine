@@ -88,6 +88,28 @@ def test_drone_fighter(client, consts):
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
 
 
+def test_proj_effect(client, consts):
+    eve_tgt_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active)
+    eve_src_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.stopper,
+        loc=consts.EveModLoc.tgt_stopper,
+        effect_id=eve_tgt_effect_id)
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_src_mod])
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_tgt_item_id = client.mk_eve_item(eff_ids=[eve_tgt_effect_id], defeff_id=eve_tgt_effect_id)
+    client.create_sources()
+    api_tgt_effect_id = effect_dogma_to_api(dogma_effect_id=eve_tgt_effect_id)
+    api_sol = client.create_sol()
+    api_src_item = api_sol.add_proj_effect(type_id=eve_src_item_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
+    api_src_item.change_proj_effect(add_projs=[api_tgt_item.id])
+    # Verification
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
+    assert api_val.passed is False
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
+
+
 def test_multiple_src_items(client, consts):
     eve_tgt_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active)
     eve_src_mod = client.mk_eve_effect_mod(
@@ -209,6 +231,11 @@ def test_known_failures(client, consts):
     api_tgt_item2 = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     api_src_item.change_module(add_projs=[api_tgt_item1.id, api_tgt_item2.id])
     # Verification
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_src_item.id])))
+    assert api_val.passed is False
+    assert api_val.details.effect_stopper == {
+        api_tgt_item1.id: [api_tgt_effect_id],
+        api_tgt_item2.id: [api_tgt_effect_id]}
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_tgt_item1.id])))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item2.id: [api_tgt_effect_id]}
