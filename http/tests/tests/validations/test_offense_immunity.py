@@ -1,4 +1,4 @@
-from tests import check_no_field, effect_dogma_to_api
+from tests import approx, check_no_field, effect_dogma_to_api
 from tests.fw.api import ValOptions
 
 
@@ -208,9 +208,255 @@ def test_offense_multiple_src_effects(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_offense_no_modifiers(client, consts):
+def test_offense_buff(client, consts):
+    # Use disrupt lance to apply offensive debuff
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
+    client.mk_eve_buff(
+        id_=consts.EveBuff.remote_repair_impedance,
+        aggr_mode=consts.EveBuffAggrMode.min,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.debuff_lance,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
+    eve_affector_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_src_fit = api_sol.create_fit()
+    api_src_module = api_src_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
+    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - check that effect is applied, and check that validation is passed
+    assert api_tgt_ship.update().attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_offense_flag_values(client, consts):
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_effect_attr_id = client.mk_eve_attr()
+    eve_src_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_effect_attr_id,
+        affectee_attr_id=eve_effect_attr_id)
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_tgt_item1_id = client.mk_eve_item(attrs={eve_immunity_attr_id: -1})
+    eve_tgt_item2_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
+    eve_tgt_item3_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0.1})
+    eve_tgt_item4_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 50.3})
+    eve_tgt_item5_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item1 = api_tgt_fit.add_drone(type_id=eve_tgt_item1_id)
+    api_tgt_item2 = api_tgt_fit.add_drone(type_id=eve_tgt_item2_id)
+    api_tgt_item3 = api_tgt_fit.add_drone(type_id=eve_tgt_item3_id)
+    api_tgt_item4 = api_tgt_fit.add_drone(type_id=eve_tgt_item4_id)
+    api_tgt_item5 = api_tgt_fit.add_drone(type_id=eve_tgt_item5_id)
+    api_src_item.change_module(
+        add_projs=[api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id, api_tgt_item4.id, api_tgt_item5.id])
+    # Verification - no attr or value 0 doesn't fail validation
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item1.id, api_tgt_item3.id, api_tgt_item4.id]}
+
+
+def test_offense_tgt_modified(client, consts):
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_effect_attr_id = client.mk_eve_attr()
+    eve_src_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_effect_attr_id,
+        affectee_attr_id=eve_effect_attr_id)
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 0})
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_immunity_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_mod_item_id = client.mk_eve_item(attrs={eve_mod_attr_id: 1}, eff_ids=[eve_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
+    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_mod_item = api_tgt_fit.add_module(type_id=eve_mod_item_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    # Action
+    api_mod_item.remove()
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_offense_tgt_mutation(client, consts):
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_effect_attr_id = client.mk_eve_attr()
+    eve_src_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_effect_attr_id,
+        affectee_attr_id=eve_effect_attr_id)
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_tgt_base_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
+    eve_tgt_mutated_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
+    eve_tgt_mutator_id = client.mk_eve_mutator(
+        items=[([eve_tgt_base_item_id], eve_tgt_mutated_item_id)],
+        attrs={eve_immunity_attr_id: (0, 2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.add_drone(type_id=eve_tgt_base_item_id)
+    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_tgt_item.change_drone(mutation=eve_tgt_mutator_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    # Action
+    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0}})
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0.1}})
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    # Action
+    api_tgt_item.change_drone(mutation=None)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_offense_src_mutation(client, consts):
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_effect_attr_id = client.mk_eve_attr()
+    eve_src_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_effect_attr_id,
+        affectee_attr_id=eve_effect_attr_id)
+    eve_src_base_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
+    eve_src_mutated_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True,
+        mod_info=[eve_src_mod])
+    eve_src_base_item_id = client.mk_eve_item(
+        eff_ids=[eve_src_base_effect_id],
+        defeff_id=eve_src_base_effect_id)
+    eve_src_mutated_item_id = client.mk_eve_item(
+        eff_ids=[eve_src_mutated_effect_id],
+        defeff_id=eve_src_mutated_effect_id)
+    eve_src_mutator_id = client.mk_eve_mutator(items=[([eve_src_base_item_id], eve_src_mutated_item_id)])
+    eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(type_id=eve_src_base_item_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
+    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_src_item.change_module(mutation=eve_src_mutator_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    # Action
+    api_src_item.change_module(mutation=None)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_offense_criterion_no_modifiers(client, consts):
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True)
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
+    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_offense_criterion_not_offense(client, consts):
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_effect_attr_id = client.mk_eve_attr()
+    eve_src_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_effect_attr_id,
+        affectee_attr_id=eve_effect_attr_id)
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=False, mod_info=[eve_src_mod])
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
