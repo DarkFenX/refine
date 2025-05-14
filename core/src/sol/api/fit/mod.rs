@@ -1,15 +1,15 @@
 pub use fit::{Fit, FitMut};
 pub use fleet::{SetFitFleetError, UnsetFitFleetError};
-pub use get::GetFitError;
 pub use rah_incoming_dps::RemoveFitRahIncomingDpsError;
+pub use sol_get_fit::GetFitError;
 
-mod add;
 mod fit;
+mod fit_remove;
+mod fit_try_fit_items;
+mod fit_validate;
 mod fleet;
-mod get;
 mod rah_incoming_dps;
-mod remove;
 mod sec_status;
-mod sol_iter;
-mod try_fit_items;
-mod validate;
+mod sol_add_fit;
+mod sol_get_fit;
+mod sol_iter_fits;

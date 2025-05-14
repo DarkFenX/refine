@@ -1,7 +1,9 @@
 pub use charge::{Charge, ChargeMut};
-pub use get::GetChargeError;
+pub use sol_get_charge::GetChargeError;
 
 mod charge;
-mod get;
-mod remove;
-mod set_state;
+mod charge_remove;
+mod charge_set_state;
+mod charge_set_type_id;
+mod int_load_unload;
+mod sol_get_charge;

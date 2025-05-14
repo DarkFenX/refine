@@ -1,14 +1,16 @@
 pub use booster::{Booster, BoosterMut};
-pub use get::GetBoosterError;
 pub use side_effect::{
     FullSideEffect, FullSideEffectMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
     StubSideEffect, StubSideEffectMut,
 };
+pub use sol_get_booster::GetBoosterError;
 
-mod add;
 mod booster;
-mod fit_iter;
-mod get;
-mod remove;
-mod set_state;
+mod booster_remove;
+mod booster_set_state;
+mod booster_set_type_id;
+mod fit_add_booster;
+mod fit_iter_boosters;
+mod int_load_unload;
 mod side_effect;
+mod sol_get_booster;

@@ -1,9 +1,11 @@
-pub use get::GetRigError;
 pub use rig::{Rig, RigMut};
+pub use sol_get_rig::GetRigError;
 
-mod add;
-mod fit_iter;
-mod get;
-mod remove;
+mod fit_add_rig;
+mod fit_iter_rigs;
+mod int_load_unload;
 mod rig;
-mod set_state;
+mod rig_remove;
+mod rig_set_state;
+mod rig_set_type_id;
+mod sol_get_rig;

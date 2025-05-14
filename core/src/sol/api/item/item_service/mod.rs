@@ -1,9 +1,11 @@
-pub use get::GetServiceError;
 pub use service::{Service, ServiceMut};
+pub use sol_get_service::GetServiceError;
 
-mod add;
-mod fit_iter;
-mod get;
-mod remove;
+mod fit_add_service;
+mod fit_iter_services;
+mod int_load_unload;
 mod service;
-mod set_state;
+mod service_remove;
+mod service_set_state;
+mod service_set_type_id;
+mod sol_get_service;

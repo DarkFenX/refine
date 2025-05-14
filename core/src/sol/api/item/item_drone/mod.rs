@@ -1,11 +1,13 @@
 pub use drone::{Drone, DroneMut};
-pub use get::GetDroneError;
+pub use sol_get_drone::GetDroneError;
 
-mod add;
 mod drone;
-mod fit_iter;
-mod get;
+mod drone_remove;
+mod drone_set_state;
+mod drone_set_type_id;
+mod fit_add_drone;
+mod fit_iter_drones;
+mod int_load_unload;
 mod mutation;
-mod proj;
-mod remove;
-mod set_state;
+mod ranged_proj;
+mod sol_get_drone;

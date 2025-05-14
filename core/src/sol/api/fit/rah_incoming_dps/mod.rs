@@ -1,5 +1,5 @@
-pub use remove::RemoveFitRahIncomingDpsError;
+pub use fit_remove_rah_incoming_dps::RemoveFitRahIncomingDpsError;
 
-mod get;
-mod remove;
-mod set;
+mod fit_get_rah_incoming_dps;
+mod fit_remove_rah_incoming_dps;
+mod fit_set_rah_incoming_dps;

@@ -1,2 +1,2 @@
-mod get;
-mod set;
+mod sol_get_default_incoming_dps;
+mod sol_set_default_incoming_dps;

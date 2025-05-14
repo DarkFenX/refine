@@ -1,6 +1,6 @@
-pub use set::SetFitFleetError;
-pub use unset::UnsetFitFleetError;
+pub use fit_set_fleet::SetFitFleetError;
+pub use fit_unset_fleet::UnsetFitFleetError;
 
-mod get;
-mod set;
-mod unset;
+mod fit_get_fleet;
+mod fit_set_fleet;
+mod fit_unset_fleet;

@@ -1,13 +1,13 @@
-pub use add_fit::FleetAddFitError;
 pub use fleet::{Fleet, FleetMut};
-pub use get::GetFleetError;
-pub use remove_fit::FleetRemoveFitError;
+pub use fleet_add_fit::FleetAddFitError;
+pub use fleet_remove_fit::FleetRemoveFitError;
+pub use sol_get_fleet::GetFleetError;
 
-mod add;
-mod add_fit;
 mod fleet;
-mod get;
-mod iter_fits;
-mod remove;
-mod remove_fit;
-mod sol_iter;
+mod fleet_add_fit;
+mod fleet_iter_fits;
+mod fleet_remove;
+mod fleet_remove_fit;
+mod sol_add_fleet;
+mod sol_get_fleet;
+mod sol_iter_fleets;

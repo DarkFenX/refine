@@ -1,4 +1,4 @@
-mod add;
-mod change;
-mod get;
-mod remove;
+mod module_add_mutation;
+mod module_get_mutation;
+mod mutation_change;
+mod mutation_remove;

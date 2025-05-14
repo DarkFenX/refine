@@ -1,7 +1,7 @@
 pub use autocharge::{Autocharge, AutochargeMut};
-pub use get::GetAutochargeError;
+pub use sol_get_autocharge::GetAutochargeError;
 
-mod add;
 mod autocharge;
-mod get;
-mod set_state;
+mod autocharge_set_state;
+mod int_add_autocharges;
+mod sol_get_autocharge;
