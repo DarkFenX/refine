@@ -99,11 +99,13 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             side_effects: dict[str, bool] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'booster'}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['side_effects'], value=side_effects)
         params = {}
@@ -114,23 +116,6 @@ class ApiClientItem(ApiClientBase):
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
             json=body)
-
-    # Charge methods
-    def change_charge_request(
-            self, *,
-            sol_id: str,
-            item_id: int,
-            state: bool | type[Absent],
-            effect_modes: dict[str, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='charge',
-            sol_id=sol_id,
-            item_id=item_id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
 
     # Character methods
     def set_character_request(
@@ -153,6 +138,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -161,6 +147,26 @@ class ApiClientItem(ApiClientBase):
             cmd_name='character',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    # Charge methods
+    def change_charge_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            type_id: int | type[Absent],
+            state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='charge',
+            sol_id=sol_id,
+            item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -194,6 +200,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             mutation: MutaAdd | MutaChange | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
@@ -203,6 +210,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'drone'}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
@@ -247,6 +255,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             count: int | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
@@ -256,6 +265,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'fighter'}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['count'], value=count)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
@@ -292,6 +302,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -300,6 +311,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='fw_effect',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -325,6 +337,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -333,6 +346,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='implant',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -372,6 +386,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
+            type_id: int | type[Absent],
             state: ApiModuleState | type[Absent],
             mutation: MutaAdd | MutaChange | None | type[Absent],
             charge_type_id: int | None | type[Absent],
@@ -382,6 +397,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'module'}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
@@ -421,12 +437,14 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'proj_effect'}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
@@ -460,6 +478,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -468,6 +487,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='rig',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -493,6 +513,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: ApiServiceState | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -501,6 +522,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='service',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -526,6 +548,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -534,6 +557,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='ship',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -567,12 +591,14 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
+            type_id: int | type[Absent],
             level: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'skill'}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['level'], value=level)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
@@ -602,6 +628,24 @@ class ApiClientItem(ApiClientBase):
             state=state,
             item_info_mode=item_info_mode)
 
+    def change_stance_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            type_id: int | type[Absent],
+            state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='stance',
+            sol_id=sol_id,
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
     # Subsystem methods
     def add_subsystem_request(
             self, *,
@@ -623,6 +667,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -631,6 +676,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='subsystem',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -658,6 +704,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -666,6 +713,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='sw_effect',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
@@ -699,11 +747,13 @@ class ApiClientItem(ApiClientBase):
             cmd_name: str,
             sol_id: str,
             item_id: int,
+            type_id: int | type[Absent],
             state: bool | str | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': cmd_name}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}

@@ -117,6 +117,7 @@ class Item(AttrDict):
 
     def change_booster(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             side_effects: dict[str, bool] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -126,6 +127,7 @@ class Item(AttrDict):
         resp = self._client.change_booster_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             side_effects=side_effects,
             item_info_mode=item_info_mode).send()
@@ -138,6 +140,7 @@ class Item(AttrDict):
 
     def change_character(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -146,6 +149,7 @@ class Item(AttrDict):
         resp = self._client.change_character_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -158,6 +162,7 @@ class Item(AttrDict):
 
     def change_charge(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -166,6 +171,7 @@ class Item(AttrDict):
         resp = self._client.change_charge_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -178,6 +184,7 @@ class Item(AttrDict):
 
     def change_drone(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
@@ -190,6 +197,7 @@ class Item(AttrDict):
         resp = self._client.change_drone_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             mutation=mutation,
             add_projs=add_projs,
@@ -206,6 +214,7 @@ class Item(AttrDict):
 
     def change_fighter(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             count: int | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
@@ -218,6 +227,7 @@ class Item(AttrDict):
         resp = self._client.change_fighter_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             count=count,
             add_projs=add_projs,
@@ -234,6 +244,7 @@ class Item(AttrDict):
 
     def change_fw_effect(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -242,6 +253,7 @@ class Item(AttrDict):
         resp = self._client.change_fw_effect_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -254,6 +266,7 @@ class Item(AttrDict):
 
     def change_implant(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -262,6 +275,7 @@ class Item(AttrDict):
         resp = self._client.change_implant_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -274,6 +288,7 @@ class Item(AttrDict):
 
     def change_module(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
             charge_type_id: int | None | type[Absent] = Absent,
@@ -288,6 +303,7 @@ class Item(AttrDict):
         resp = self._client.change_mod_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             mutation=mutation,
             charge_type_id=charge_type_id,
@@ -305,6 +321,7 @@ class Item(AttrDict):
 
     def change_proj_effect(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
@@ -314,6 +331,7 @@ class Item(AttrDict):
         resp = self._client.change_proj_effect_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             add_projs=add_projs,
             rm_projs=rm_projs,
@@ -327,6 +345,7 @@ class Item(AttrDict):
 
     def change_rig(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -335,6 +354,7 @@ class Item(AttrDict):
         resp = self._client.change_rig_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -347,6 +367,7 @@ class Item(AttrDict):
 
     def change_service(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: ApiServiceState | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -355,6 +376,7 @@ class Item(AttrDict):
         resp = self._client.change_service_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -367,6 +389,7 @@ class Item(AttrDict):
 
     def change_ship(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -375,6 +398,7 @@ class Item(AttrDict):
         resp = self._client.change_ship_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -387,6 +411,7 @@ class Item(AttrDict):
 
     def change_skill(
             self, *,
+            type_id: int | type[Absent] = Absent,
             level: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
@@ -396,7 +421,30 @@ class Item(AttrDict):
         resp = self._client.change_skill_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             level=level,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    def change_stance(
+            self, *,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Item | None:
+        resp = self._client.change_stance_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -409,6 +457,7 @@ class Item(AttrDict):
 
     def change_subsystem(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -417,6 +466,7 @@ class Item(AttrDict):
         resp = self._client.change_subsystem_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -429,6 +479,7 @@ class Item(AttrDict):
 
     def change_sw_effect(
             self, *,
+            type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -437,6 +488,7 @@ class Item(AttrDict):
         resp = self._client.change_sw_effect_request(
             sol_id=self._sol_id,
             item_id=self.id,
+            type_id=type_id,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
