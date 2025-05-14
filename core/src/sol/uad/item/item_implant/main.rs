@@ -33,6 +33,9 @@ impl UadImplant {
     pub(in crate::sol) fn get_a_item_id(&self) -> ad::AItemId {
         self.base.get_a_item_id()
     }
+    pub(in crate::sol) fn set_a_item_id(&mut self, src: &Src, a_item_id: ad::AItemId) {
+        self.base.set_a_item_id(src, a_item_id);
+    }
     pub(in crate::sol) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_a_group_id()
     }

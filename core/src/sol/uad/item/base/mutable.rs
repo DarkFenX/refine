@@ -96,6 +96,22 @@ impl UadItemBaseMutable {
     pub(in crate::sol::uad::item) fn get_a_item_id(&self) -> ad::AItemId {
         self.base.get_a_item_id()
     }
+    pub(in crate::sol::uad::item) fn set_a_item_id(&mut self, src: &Src, a_item_id: ad::AItemId) {
+        // Since this method is supposed to update base item ID for mutated items, location of ID
+        // depends on item configuration
+        match &mut self.mutation {
+            Some(mutation_data) => match &mut mutation_data.cache {
+                // Mutation is effective only when cache is set, so process item the mutated way
+                // only in this case
+                Some(mutation_cache) => {
+                    mutation_cache.base_a_item_id = a_item_id;
+                    self.update_a_data(src);
+                }
+                None => self.base.set_a_item_id(src, a_item_id),
+            },
+            None => self.base.set_a_item_id(src, a_item_id),
+        }
+    }
     pub(in crate::sol::uad::item) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_a_group_id()
     }
@@ -164,14 +180,14 @@ impl UadItemBaseMutable {
             // No mutator - invalidate mutated cache and use non-mutated item
             None => match src.get_a_item(&base_a_item_id) {
                 Some(base_a_item) => {
-                    self.base.set_a_item_id(base_a_item_id);
-                    self.base.set_a_item(base_a_item.clone());
+                    self.base.base_set_a_item_id(base_a_item_id);
+                    self.base.base_set_a_item(base_a_item.clone());
                     item_mutation.cache = None;
                     return;
                 }
                 None => {
-                    self.base.set_a_item_id(base_a_item_id);
-                    self.base.remove_a_item();
+                    self.base.base_set_a_item_id(base_a_item_id);
+                    self.base.base_remove_a_item();
                     item_mutation.cache = None;
                     return;
                 }
@@ -183,14 +199,14 @@ impl UadItemBaseMutable {
             // item
             None => match src.get_a_item(&base_a_item_id) {
                 Some(base_a_item) => {
-                    self.base.set_a_item_id(base_a_item_id);
-                    self.base.set_a_item(base_a_item.clone());
+                    self.base.base_set_a_item_id(base_a_item_id);
+                    self.base.base_set_a_item(base_a_item.clone());
                     item_mutation.cache = None;
                     return;
                 }
                 None => {
-                    self.base.set_a_item_id(base_a_item_id);
-                    self.base.remove_a_item();
+                    self.base.base_set_a_item_id(base_a_item_id);
+                    self.base.base_remove_a_item();
                     item_mutation.cache = None;
                     return;
                 }
@@ -201,8 +217,8 @@ impl UadItemBaseMutable {
         let a_extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
-        self.base.set_a_item_id(mutated_a_item.id);
-        self.base.set_a_item(mutated_a_item.clone());
+        self.base.base_set_a_item_id(mutated_a_item.id);
+        self.base.base_set_a_item(mutated_a_item.clone());
         item_mutation.cache = Some(ItemMutationDataCache {
             base_a_item_id,
             a_mutator: a_mutator.clone(),
@@ -246,7 +262,7 @@ impl UadItemBaseMutable {
             }
         };
         // Since we have all the data now, apply mutation properly
-        let mut a_attrs = get_combined_a_attr_values(self.base.get_a_item(), mutated_a_item);
+        let mut a_attrs = get_combined_a_attr_values(self.base.base_get_a_item(), mutated_a_item);
         let a_extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation_data.attr_rolls);
         item_mutation_data.cache = Some(ItemMutationDataCache {
@@ -255,8 +271,8 @@ impl UadItemBaseMutable {
             merged_a_attrs: a_attrs,
             a_extras,
         });
-        self.base.set_a_item_id(mutated_a_item.id);
-        self.base.set_a_item(mutated_a_item.clone());
+        self.base.base_set_a_item_id(mutated_a_item.id);
+        self.base.base_set_a_item(mutated_a_item.clone());
         self.mutation = Some(item_mutation_data);
         Ok(())
     }
@@ -383,7 +399,7 @@ impl UadItemBaseMutable {
             // ID is stored on cache
             Some(cache) => {
                 let a_item_id = cache.base_a_item_id;
-                self.base.set_a_item_id_and_reload(src, a_item_id);
+                self.base.set_a_item_id(src, a_item_id);
                 self.mutation = None;
             }
             // No cache - mutation was not effective, and base item was used already. Just unassign
