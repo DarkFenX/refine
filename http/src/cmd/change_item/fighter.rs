@@ -11,6 +11,8 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeFighterCmd {
     #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
     count: TriStateField<rc::Count>,
@@ -21,6 +23,7 @@ pub(crate) struct HChangeFighterCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeFighterCmd {
@@ -33,6 +36,9 @@ impl HChangeFighterCmd {
             rc::err::GetFighterError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetFighterError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_fighter.set_type_id(type_id);
+        }
         if let Some(state) = &self.state {
             core_fighter.set_state(state.into());
         }

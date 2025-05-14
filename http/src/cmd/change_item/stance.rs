@@ -9,7 +9,11 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeStanceCmd {
+    #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     state: Option<bool>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeStanceCmd {
@@ -22,6 +26,9 @@ impl HChangeStanceCmd {
             rc::err::GetStanceError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetStanceError::ItemIsNotStance(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_stance.set_type_id(type_id);
+        }
         if let Some(state) = self.state {
             core_stance.set_state(state);
         }

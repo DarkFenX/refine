@@ -13,6 +13,9 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
+    #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     state: Option<HModuleState>,
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
@@ -25,6 +28,7 @@ pub(crate) struct HChangeModuleCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeModuleCmd {
@@ -37,6 +41,9 @@ impl HChangeModuleCmd {
             rc::err::GetModuleError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetModuleError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_module.set_type_id(type_id);
+        }
         if let Some(state) = &self.state {
             core_module.set_state(state.into());
         }

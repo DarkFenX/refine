@@ -14,6 +14,8 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeDroneCmd {
     #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
@@ -24,6 +26,7 @@ pub(crate) struct HChangeDroneCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeDroneCmd {
@@ -36,6 +39,9 @@ impl HChangeDroneCmd {
             rc::err::GetDroneError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetDroneError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_drone.set_type_id(type_id);
+        }
         if let Some(state) = &self.state {
             core_drone.set_state(state.into());
         }

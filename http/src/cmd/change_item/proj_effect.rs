@@ -9,6 +9,9 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeProjEffectCmd {
+    #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     state: Option<bool>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
@@ -16,6 +19,7 @@ pub(crate) struct HChangeProjEffectCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeProjEffectCmd {
@@ -28,6 +32,9 @@ impl HChangeProjEffectCmd {
             rc::err::GetProjEffectError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetProjEffectError::ItemIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_proj_effect.set_type_id(type_id);
+        }
         if let Some(state) = self.state {
             core_proj_effect.set_state(state);
         }

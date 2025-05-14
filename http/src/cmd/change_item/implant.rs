@@ -9,7 +9,11 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeImplantCmd {
+    #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     state: Option<bool>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeImplantCmd {
@@ -22,6 +26,9 @@ impl HChangeImplantCmd {
             rc::err::GetImplantError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetImplantError::ItemIsNotImplant(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_implant.set_type_id(type_id);
+        }
         if let Some(state) = self.state {
             core_implant.set_state(state);
         };

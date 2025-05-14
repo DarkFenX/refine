@@ -9,7 +9,11 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeRigCmd {
+    #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     state: Option<bool>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeRigCmd {
@@ -22,6 +26,9 @@ impl HChangeRigCmd {
             rc::err::GetRigError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetRigError::ItemIsNotRig(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_rig.set_type_id(type_id);
+        }
         if let Some(state) = self.state {
             core_rig.set_state(state);
         }

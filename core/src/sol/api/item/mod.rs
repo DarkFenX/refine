@@ -17,7 +17,7 @@ pub use item_proj_effect::{
 pub use item_rig::{GetRigError, Rig, RigMut};
 pub use item_service::{GetServiceError, Service, ServiceMut};
 pub use item_ship::{GetShipError, Ship, ShipMut};
-pub use item_skill::{AddSkillError, GetSkillError, Skill, SkillMut};
+pub use item_skill::{AddSkillError, GetSkillError, SetSkillTypeIdError, Skill, SkillMut};
 pub use item_stance::{GetStanceError, Stance, StanceMut};
 pub use item_subsystem::{GetSubsystemError, Subsystem, SubsystemMut};
 pub use item_sw_effect::{GetSwEffectError, SwEffect, SwEffectMut};

@@ -10,8 +10,13 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSkillCmd {
+    #[serde(default)]
+    type_id: Option<rc::ItemTypeId>,
+    #[serde(default)]
     level: Option<HSkillLevel>,
+    #[serde(default)]
     state: Option<bool>,
+    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeSkillCmd {
@@ -24,6 +29,11 @@ impl HChangeSkillCmd {
             rc::err::GetSkillError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetSkillError::ItemIsNotSkill(e) => HExecError::ItemKindMismatch(e),
         })?;
+        if let Some(type_id) = self.type_id {
+            core_skill.set_type_id(type_id).map_err(|error| match error {
+                rc::err::SetSkillTypeIdError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
+            })?;
+        }
         if let Some(h_level) = self.level {
             let core_level = rc::SkillLevel::new_checked(h_level)?;
             core_skill.set_level(core_level);
