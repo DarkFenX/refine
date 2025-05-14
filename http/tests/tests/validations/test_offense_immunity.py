@@ -210,6 +210,7 @@ def test_offense_multiple_src_effects(client, consts):
 
 def test_offense_buff(client, consts):
     # Use disrupt lance to apply offensive debuff
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
     client.mk_eve_buff(
         id_=consts.EveBuff.remote_repair_impedance,
@@ -221,7 +222,7 @@ def test_offense_buff(client, consts):
         cat_id=consts.EveEffCat.active,
         is_offensive=True)
     eve_affector_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1})
+    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1, eve_affectee_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_tgt_fit = api_sol.create_fit()
@@ -232,7 +233,9 @@ def test_offense_buff(client, consts):
         state=consts.ApiModuleState.active)
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification - check that effect is applied, and check that validation is passed
-    assert api_tgt_ship.update().attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    api_tgt_ship.update()
+    assert api_tgt_ship.attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    assert api_tgt_ship.attrs[eve_immunity_attr_id].dogma == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
