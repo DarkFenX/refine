@@ -34,6 +34,7 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) disallowed_in_wspace: bool,
     pub(in crate::handler_json) takes_turret_hardpoint: bool,
     pub(in crate::handler_json) takes_launcher_hardpoint: bool,
+    pub(in crate::handler_json) disallow_vs_ew_immune_tgt: bool,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -67,6 +68,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             disallowed_in_wspace: a_item_extras.disallowed_in_wspace,
             takes_turret_hardpoint: a_item_extras.takes_turret_hardpoint,
             takes_launcher_hardpoint: a_item_extras.takes_launcher_hardpoint,
+            disallow_vs_ew_immune_tgt: a_item_extras.disallow_vs_ew_immune_tgt,
         }
     }
 }
@@ -102,6 +104,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             disallowed_in_wspace: c_item_extras.disallowed_in_wspace,
             takes_turret_hardpoint: c_item_extras.takes_turret_hardpoint,
             takes_launcher_hardpoint: c_item_extras.takes_launcher_hardpoint,
+            disallow_vs_ew_immune_tgt: c_item_extras.disallow_vs_ew_immune_tgt,
         }
     }
 }

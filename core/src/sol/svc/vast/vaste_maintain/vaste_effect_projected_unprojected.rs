@@ -115,9 +115,5 @@ fn is_offense_blockable(projector_item: &UadItem, a_effect: &ad::ArcEffect) -> b
         return true;
     };
     // Assistance with extra flag can be blocked by the disallow offensive modifiers flag too
-    a_effect.is_assist
-        && projector_item
-            .get_a_attr(&ac::attrs::DISALLOW_VS_EW_IMMUNE_TGT)
-            .unwrap_or(OF(0.0))
-            != OF(0.0)
+    a_effect.is_assist && projector_item.get_a_extras().unwrap().disallow_vs_ew_immune_tgt
 }

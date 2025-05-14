@@ -2,6 +2,7 @@ use super::{
     attr_val::{get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_volume},
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
+    effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_count::get_max_fighter_count,
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_standup_heavy_fighter_flag, get_standup_light_fighter_flag,
@@ -89,6 +90,9 @@ pub struct AItemExtras {
     pub takes_turret_hardpoint: bool,
     /// True if item has launcherFitted effect.
     pub takes_launcher_hardpoint: bool,
+    /// True if assistive item projected to targets immune to offensive modifiers should break
+    /// the offense immunity validation.
+    pub disallow_vs_ew_immune_tgt: bool,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -122,6 +126,7 @@ impl AItemExtras {
             disallowed_in_wspace: bool::default(),
             takes_turret_hardpoint: bool::default(),
             takes_launcher_hardpoint: bool::default(),
+            disallow_vs_ew_immune_tgt: bool::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -157,6 +162,7 @@ impl AItemExtras {
             disallowed_in_wspace: a_item.extras.disallowed_in_wspace,
             takes_turret_hardpoint: is_turret(&a_item.effect_datas),
             takes_launcher_hardpoint: is_launcher(&a_item.effect_datas),
+            disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(attrs),
         }
     }
     pub(crate) fn fill(
@@ -211,5 +217,6 @@ impl AItemExtras {
         self.disallowed_in_wspace = is_disallowed_in_wspace(&item_id, type_lists);
         self.takes_turret_hardpoint = is_turret(item_effects);
         self.takes_launcher_hardpoint = is_launcher(item_effects);
+        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(item_attrs);
     }
 }
