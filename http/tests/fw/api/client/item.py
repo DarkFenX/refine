@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 from tests.fw.request import Request
-from tests.fw.util import conditional_insert
+from tests.fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
@@ -18,7 +18,6 @@ if typing.TYPE_CHECKING:
         ApiRack,
         ApiServiceState,
     )
-    from tests.fw.util import Absent
 
 
 class ApiClientItem(ApiClientBase):
@@ -66,6 +65,7 @@ class ApiClientItem(ApiClientBase):
             cmd_name='autocharge',
             sol_id=sol_id,
             item_id=item_id,
+            type_id=Absent,
             state=state,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode)
