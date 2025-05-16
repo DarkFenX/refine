@@ -21,6 +21,9 @@ impl Autocharges {
     pub(in crate::sol) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
+    pub(in crate::sol) fn len(&self) -> usize {
+        self.data.len()
+    }
     // Modification methods
     pub(in crate::sol) fn set(&mut self, a_effect_id: ad::AEffectId, autocharge_key: ItemKey) {
         self.data.insert(a_effect_id, autocharge_key);

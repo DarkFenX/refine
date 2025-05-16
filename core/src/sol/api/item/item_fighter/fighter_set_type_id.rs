@@ -9,15 +9,14 @@ impl SolarSystem {
         if uad_item.get_a_item_id() == a_item_id {
             return;
         }
-        SolarSystem::unload_fighter(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::unload_fighter(&mut self.svc, &mut self.uad, &mut self.proj_tracker, item_key);
         self.uad
             .items
             .get_mut(item_key)
             .get_fighter_mut()
             .unwrap()
             .set_a_item_id(&self.uad.src, a_item_id);
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_fighter(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::load_fighter(&mut self.svc, &mut self.uad, &mut self.proj_tracker, item_key);
     }
 }
 
