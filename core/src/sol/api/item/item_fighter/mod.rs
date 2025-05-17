@@ -9,6 +9,7 @@ mod fighter_set_state;
 mod fighter_set_type_id;
 mod fit_add_fighter;
 mod fit_iter_fighters;
+mod int_autocharges;
 mod int_load_unload;
 mod ranged_proj;
 mod sol_get_fighter;

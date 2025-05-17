@@ -17,6 +17,9 @@ impl Projs {
     pub(in crate::sol) fn remove(&mut self, item_key: &ItemKey) -> Option<Option<AttrVal>> {
         self.data.remove(item_key)
     }
+    pub(in crate::sol) fn clear(&mut self) {
+        self.data.clear()
+    }
     pub(in crate::sol) fn get(&self, item_key: &ItemKey) -> Option<&Option<AttrVal>> {
         self.data.get(item_key)
     }

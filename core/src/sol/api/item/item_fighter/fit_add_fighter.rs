@@ -20,14 +20,11 @@ impl SolarSystem {
         let uad_item = UadItem::Fighter(uad_fighter);
         let item_key = self.uad.items.add(uad_item);
         uad_fit.fighters.insert(item_key);
-        self.internal_add_item_autocharges(item_key);
         // Add fighter and autocharges to services
         let uad_item = self.uad.items.get(item_key);
         self.svc.add_item(&self.uad, item_key, uad_item);
-        for &autocharge_key in uad_item.get_fighter().unwrap().get_autocharges().values() {
-            let autocharge_uad_item = self.uad.items.get(autocharge_key);
-            self.svc.add_item(&self.uad, autocharge_key, autocharge_uad_item);
-        }
+        // Process autocharges
+        SolarSystem::add_fighter_autocharges(&mut self.svc, &mut self.uad, &mut self.proj_tracker, item_key);
         item_key
     }
 }

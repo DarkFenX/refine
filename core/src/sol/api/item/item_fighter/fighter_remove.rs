@@ -4,49 +4,39 @@ use crate::sol::{ItemKey, SolarSystem, api::FighterMut};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fighter(&mut self, item_key: ItemKey) {
-        // Check if everything is correct and collect autocharge IDs to be used later
+        SolarSystem::remove_fighter_autocharges(&mut self.svc, &mut self.uad, &mut self.proj_tracker, item_key);
+        // Remove outgoing projections
         let uad_item = self.uad.items.get(item_key);
-        let uad_fighter = uad_item.get_fighter().unwrap();
-        let fit_key = uad_fighter.get_fit_key();
-        let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
-        // Remove outgoing projections for fighter and its autocharges
-        for &projectee_item_key in uad_fighter.get_projs().iter_projectee_item_keys() {
-            let projectee_uad_item = self.uad.items.get(projectee_item_key);
-            for &autocharge_key in autocharge_keys.iter() {
-                // Update services for autocharge
-                let autocharge_uad_item = self.uad.items.get(autocharge_key);
-                self.svc.remove_item_projection(
-                    &self.uad,
-                    autocharge_key,
-                    autocharge_uad_item,
-                    projectee_item_key,
-                    projectee_uad_item,
-                );
-                // Update user data for autocharge - don't touch data on charge itself, since charge
-                // will be removed later anyway
-                self.proj_tracker.unreg_projectee(&autocharge_key, &projectee_item_key);
+        let fit_key = uad_item.get_fighter().unwrap().get_fit_key();
+        let projectee_item_keys = uad_item
+            .get_fighter()
+            .unwrap()
+            .get_projs()
+            .iter_projectee_item_keys()
+            .copied()
+            .collect_vec();
+        if !projectee_item_keys.is_empty() {
+            for projectee_item_key in projectee_item_keys.into_iter() {
+                let projectee_uad_item = self.uad.items.get(projectee_item_key);
+                self.svc
+                    .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
+                self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
             }
-            // Update services for fighter
-            self.svc
-                .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
-            // Update user data for fighter - don't touch data on fighter itself, since fighter will
-            // be removed later anyway
-            self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
+            // Clear on-fighter projections, so that they don't get processed 2nd time on fighter
+            // removal from services
+            self.uad
+                .items
+                .get_mut(item_key)
+                .get_fighter_mut()
+                .unwrap()
+                .get_projs_mut()
+                .clear();
         }
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);
-        // Remove autocharges
-        for autocharge_key in autocharge_keys {
-            // Update services for autocharge
-            self.internal_remove_item_key_from_svc(autocharge_key);
-            // Update user data for autocharge - not updating fighter<->autocharge references
-            // because both will be removed
-            self.uad.items.remove(autocharge_key);
-        }
-        // Remove fighter
-        // Update services for fighter
+        // Update services
         self.internal_remove_item_key_from_svc(item_key);
-        // Update user data for fighter
+        // Update user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.fighters.remove(&item_key);
         self.uad.items.remove(item_key);
