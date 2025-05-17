@@ -49,7 +49,7 @@ impl ItemKeys {
         };
         for (item_key, uad_item) in uad.items.iter() {
             match uad_item {
-                // Autocharges are handled by whichever item is carrying them (e.g. fighter)
+                // Autocharges are added/removed by whichever item is carrying them (e.g. fighter)
                 UadItem::Autocharge(_) => (),
                 UadItem::Booster(_) => data.boosters.push(item_key),
                 UadItem::Character(_) => data.characters.push(item_key),
@@ -76,7 +76,23 @@ impl ItemKeys {
 impl SolarSystem {
     pub fn set_src(&mut self, mut src: Src) {
         let item_keys = ItemKeys::from_uad(&self.uad);
-        // Unload items
+        self.unload_items(&item_keys);
+        // Set new source, update source-dependent data in services and reload items
+        std::mem::swap(&mut self.uad.src, &mut src);
+        self.svc.src_changed(&self.uad.src);
+        for item in self.uad.items.values_mut() {
+            item.update_a_data(&self.uad.src)
+        }
+        // Update fit kind
+        for fit in self.uad.fits.values_mut() {
+            fit.kind = match fit.ship {
+                Some(ship_key) => self.uad.items.get(ship_key).get_ship().unwrap().get_kind(),
+                None => ShipKind::Unknown,
+            }
+        }
+        self.load_items(&item_keys);
+    }
+    fn unload_items(&mut self, item_keys: &ItemKeys) {
         for &booster_item_key in item_keys.boosters.iter() {
             let uad_item = self.uad.items.get(booster_item_key);
             SolarSystem::unload_booster(&mut self.svc, &self.uad, booster_item_key, uad_item);
@@ -140,20 +156,8 @@ impl SolarSystem {
             let uad_item = self.uad.items.get(sw_effect_item_key);
             SolarSystem::unload_sw_effect(&mut self.svc, &self.uad, sw_effect_item_key, uad_item);
         }
-        // Set new source, update source-dependent data in services and reload items
-        std::mem::swap(&mut self.uad.src, &mut src);
-        self.svc.src_changed(&self.uad.src);
-        for item in self.uad.items.values_mut() {
-            item.update_a_data(&self.uad.src)
-        }
-        // Update fit kind
-        for fit in self.uad.fits.values_mut() {
-            fit.kind = match fit.ship {
-                Some(ship_key) => self.uad.items.get(ship_key).get_ship().unwrap().get_kind(),
-                None => ShipKind::Unknown,
-            }
-        }
-        // Load items
+    }
+    fn load_items(&mut self, item_keys: &ItemKeys) {
         for &booster_item_key in item_keys.boosters.iter() {
             let uad_item = self.uad.items.get(booster_item_key);
             SolarSystem::load_booster(&mut self.svc, &self.uad, booster_item_key, uad_item);
