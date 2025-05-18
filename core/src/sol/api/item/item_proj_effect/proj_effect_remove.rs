@@ -1,19 +1,34 @@
+use itertools::Itertools;
+
 use crate::sol::{ItemKey, SolarSystem, api::ProjEffectMut};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_proj_effect(&mut self, item_key: ItemKey) {
-        // Check if everything is correct
-        let uad_item = self.uad.items.get(item_key);
-        let uad_proj_effect = uad_item.get_proj_effect().unwrap();
         // Remove outgoing projections
-        for &projectee_item_key in uad_proj_effect.get_projs().iter_projectee_item_keys() {
-            // Update services
-            let uad_projectee_item = self.uad.items.get(projectee_item_key);
-            self.svc
-                .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, uad_projectee_item);
-            // Update user data - do not update info on projected effect, because projected effect
-            // will be discarded anyway
-            self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
+        let uad_item = self.uad.items.get(item_key);
+        let projectee_item_keys = uad_item
+            .get_proj_effect()
+            .unwrap()
+            .get_projs()
+            .iter_projectee_item_keys()
+            .copied()
+            .collect_vec();
+        if !projectee_item_keys.is_empty() {
+            for projectee_item_key in projectee_item_keys.into_iter() {
+                let projectee_uad_item = self.uad.items.get(projectee_item_key);
+                self.svc
+                    .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
+                self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
+            }
+            // Clear on-projected effect projections, so that they don't get processed 2nd time on
+            // projected effect removal from services
+            self.uad
+                .items
+                .get_mut(item_key)
+                .get_proj_effect_mut()
+                .unwrap()
+                .get_projs_mut()
+                .clear();
         }
         // Remove effect from services
         SolarSystem::internal_remove_item_key_from_svc(&self.uad, &mut self.svc, item_key);

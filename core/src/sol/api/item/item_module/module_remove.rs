@@ -26,8 +26,7 @@ impl SolarSystem {
                         projectee_item_key,
                         projectee_uad_item,
                     );
-                    // Update user data for charge - don't touch data on charge itself, since charge
-                    // will be removed later anyway
+                    // Update projection tracker, just because it's convenient to do it here
                     self.proj_tracker.unreg_projectee(&charge_key, &projectee_item_key);
                 }
             }
@@ -36,10 +35,27 @@ impl SolarSystem {
                 let projectee_uad_item = self.uad.items.get(projectee_item_id);
                 self.svc
                     .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_id, projectee_uad_item);
-                // Update user data for module - don't touch data on module itself, since module
-                // will be removed later anyway
+                // Update projection tracker, just because it's convenient to do it here
                 self.proj_tracker.unreg_projectee(&item_key, &projectee_item_id);
             }
+            // Clear on-module and on-charge projections, so that they don't get processed 2nd time
+            // on module/charge removal from services
+            if let Some(charge_key) = charge_key {
+                self.uad
+                    .items
+                    .get_mut(charge_key)
+                    .get_charge_mut()
+                    .unwrap()
+                    .get_projs_mut()
+                    .clear();
+            }
+            self.uad
+                .items
+                .get_mut(item_key)
+                .get_module_mut()
+                .unwrap()
+                .get_projs_mut()
+                .clear();
         }
         // Remove charge
         if let Some(charge_key) = charge_key {

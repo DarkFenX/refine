@@ -1,26 +1,41 @@
+use itertools::Itertools;
+
 use crate::sol::{ItemKey, SolarSystem, api::DroneMut};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_drone(&mut self, item_key: ItemKey) {
-        // Just check if everything is correct
-        let uad_item = self.uad.items.get(item_key);
-        let uad_drone = uad_item.get_drone().unwrap();
-        let fit_key = uad_drone.get_fit_key();
         // Remove outgoing projections
-        for &projectee_item_key in uad_drone.get_projs().iter_projectee_item_keys() {
-            // Update services
-            let projectee_uad_item = self.uad.items.get(projectee_item_key);
-            self.svc
-                .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
-            // Update user data - do not update info on drone, because drone will be discarded
-            // anyway
-            self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
+        let uad_item = self.uad.items.get(item_key);
+        let fit_key = uad_item.get_drone().unwrap().get_fit_key();
+        let projectee_item_keys = uad_item
+            .get_drone()
+            .unwrap()
+            .get_projs()
+            .iter_projectee_item_keys()
+            .copied()
+            .collect_vec();
+        if !projectee_item_keys.is_empty() {
+            for projectee_item_key in projectee_item_keys.into_iter() {
+                let projectee_uad_item = self.uad.items.get(projectee_item_key);
+                self.svc
+                    .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
+                self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
+            }
+            // Clear on-drone projections, so that they don't get processed 2nd time on drone
+            // removal from services
+            self.uad
+                .items
+                .get_mut(item_key)
+                .get_fighter_mut()
+                .unwrap()
+                .get_projs_mut()
+                .clear();
         }
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);
-        // Remove drone from services
+        // Update services
         SolarSystem::internal_remove_item_key_from_svc(&self.uad, &mut self.svc, item_key);
-        // Remove drone from user data
+        // Update user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.drones.remove(&item_key);
         self.uad.items.remove(item_key);
