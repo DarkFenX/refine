@@ -6,7 +6,13 @@ impl SolarSystem {
         let old_a_state = uad_skill.get_a_state();
         uad_skill.set_skill_state(state);
         let new_a_state = uad_skill.get_a_state();
-        self.internal_change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
+        SolarSystem::internal_change_item_key_state_in_svc(
+            &self.uad,
+            &mut self.svc,
+            item_key,
+            old_a_state,
+            new_a_state,
+        );
     }
 }
 

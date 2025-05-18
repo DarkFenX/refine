@@ -28,7 +28,13 @@ impl SolarSystem {
         // Update user data
         drone.get_projs_mut().add(projectee_item_key, range);
         // Update services
-        self.internal_change_item_key_projection_range_in_svc(item_key, projectee_item_key, range);
+        SolarSystem::internal_change_item_key_projection_range_in_svc(
+            &self.uad,
+            &mut self.svc,
+            item_key,
+            projectee_item_key,
+            range,
+        );
         Ok(())
     }
 }

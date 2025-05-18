@@ -25,7 +25,7 @@ impl SolarSystem {
         let item_key = self.uad.items.add(uad_item);
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.character = Some(item_key);
-        self.internal_add_item_key_to_svc(item_key);
+        SolarSystem::internal_add_item_key_to_svc(&self.uad, &mut self.svc, item_key);
         item_key
     }
 }

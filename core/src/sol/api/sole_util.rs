@@ -2,7 +2,12 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    sol::{AttrVal, ItemKey, SolarSystem, err::KeyedItemLoadedError, svc::calc::CalcAttrVal},
+    sol::{
+        AttrVal, ItemKey, SolarSystem,
+        err::KeyedItemLoadedError,
+        svc::{Svc, calc::CalcAttrVal},
+        uad::Uad,
+    },
 };
 
 impl SolarSystem {
@@ -13,36 +18,37 @@ impl SolarSystem {
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         self.svc.calc.get_item_attr_val_full(&self.uad, item_key, a_attr_id)
     }
-    pub(in crate::sol::api) fn internal_add_item_key_to_svc(&mut self, item_key: ItemKey) {
-        let item = self.uad.items.get(item_key);
-        self.svc.add_item(&self.uad, item_key, item);
+    pub(in crate::sol::api) fn internal_add_item_key_to_svc(uad: &Uad, svc: &mut Svc, item_key: ItemKey) {
+        let item = uad.items.get(item_key);
+        svc.add_item(uad, item_key, item);
     }
-    pub(in crate::sol::api) fn internal_remove_item_key_from_svc(&mut self, item_key: ItemKey) {
-        let item = self.uad.items.get(item_key);
-        self.svc.remove_item(&self.uad, item_key, item);
+    pub(in crate::sol::api) fn internal_remove_item_key_from_svc(uad: &Uad, svc: &mut Svc, item_key: ItemKey) {
+        let item = uad.items.get(item_key);
+        svc.remove_item(uad, item_key, item);
     }
     pub(in crate::sol::api) fn internal_change_item_key_state_in_svc(
-        &mut self,
+        uad: &Uad,
+        svc: &mut Svc,
         item_key: ItemKey,
         old_a_state: ad::AState,
         new_a_state: ad::AState,
     ) {
         if new_a_state != old_a_state {
-            let item = self.uad.items.get(item_key);
-            self.svc
-                .switch_item_state(&self.uad, item_key, item, old_a_state, new_a_state);
+            let item = uad.items.get(item_key);
+            svc.switch_item_state(uad, item_key, item, old_a_state, new_a_state);
         }
     }
     pub(in crate::sol::api) fn internal_add_item_key_projection_to_svc(
-        &mut self,
+        uad: &Uad,
+        svc: &mut Svc,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
         range: Option<AttrVal>,
     ) {
-        let projector_item = self.uad.items.get(projector_item_key);
-        let projectee_item = self.uad.items.get(projectee_item_key);
-        self.svc.add_item_projection(
-            &self.uad,
+        let projector_item = uad.items.get(projector_item_key);
+        let projectee_item = uad.items.get(projectee_item_key);
+        svc.add_item_projection(
+            uad,
             projector_item_key,
             projector_item,
             projectee_item_key,
@@ -51,24 +57,25 @@ impl SolarSystem {
         );
     }
     pub(in crate::sol::api) fn internal_change_item_key_projection_range_in_svc(
-        &mut self,
+        uad: &Uad,
+        svc: &mut Svc,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
         range: Option<AttrVal>,
     ) {
-        let projectee_item = self.uad.items.get(projectee_item_key);
-        self.svc
-            .change_item_proj_range(&self.uad, projector_item_key, projectee_item_key, projectee_item, range);
+        let projectee_item = uad.items.get(projectee_item_key);
+        svc.change_item_proj_range(uad, projector_item_key, projectee_item_key, projectee_item, range);
     }
     pub(in crate::sol::api) fn internal_remove_item_key_projection_from_svc(
-        &mut self,
+        uad: &Uad,
+        svc: &mut Svc,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
     ) {
-        let projector_item = self.uad.items.get(projector_item_key);
-        let projectee_item = self.uad.items.get(projectee_item_key);
-        self.svc.remove_item_projection(
-            &self.uad,
+        let projector_item = uad.items.get(projector_item_key);
+        let projectee_item = uad.items.get(projectee_item_key);
+        svc.remove_item_projection(
+            uad,
             projector_item_key,
             projector_item,
             projectee_item_key,

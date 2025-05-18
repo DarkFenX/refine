@@ -18,7 +18,7 @@ impl SolarSystem {
         let uad_item = UadItem::SwEffect(uad_sw_effect);
         let item_key = self.uad.items.add(uad_item);
         self.uad.sw_effects.insert(item_key);
-        self.internal_add_item_key_to_svc(item_key);
+        SolarSystem::internal_add_item_key_to_svc(&self.uad, &mut self.svc, item_key);
         item_key
     }
 }

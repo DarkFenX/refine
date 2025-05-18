@@ -38,14 +38,26 @@ impl SolarSystem {
         uad_module.get_projs_mut().add(projectee_item_key, range);
         self.proj_tracker.reg_projectee(item_key, projectee_item_key);
         // Update services for module
-        self.internal_add_item_key_projection_to_svc(item_key, projectee_item_key, range);
+        SolarSystem::internal_add_item_key_projection_to_svc(
+            &self.uad,
+            &mut self.svc,
+            item_key,
+            projectee_item_key,
+            range,
+        );
         if let Some(charge_key) = charge_key {
             // Update user data for charge
             let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
             uad_charge.get_projs_mut().add(projectee_item_key, range);
             self.proj_tracker.reg_projectee(charge_key, projectee_item_key);
             // Update services for charge
-            self.internal_add_item_key_projection_to_svc(charge_key, projectee_item_key, range);
+            SolarSystem::internal_add_item_key_projection_to_svc(
+                &self.uad,
+                &mut self.svc,
+                charge_key,
+                projectee_item_key,
+                range,
+            );
         }
         Ok(())
     }

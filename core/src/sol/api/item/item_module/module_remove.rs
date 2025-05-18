@@ -52,7 +52,7 @@ impl SolarSystem {
         }
         // Remove module
         // Update services for module
-        self.internal_remove_item_key_from_svc(item_key);
+        SolarSystem::internal_remove_item_key_from_svc(&self.uad, &mut self.svc, item_key);
         // Update user data for module
         let uad_fit_rack = get_fit_rack_mut(&mut self.uad.fits, fit_key, rack);
         match pos_mode {

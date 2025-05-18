@@ -29,7 +29,7 @@ impl SolarSystem {
                 .clear();
         }
         // Update services
-        self.internal_remove_item_key_from_svc(item_key);
+        SolarSystem::internal_remove_item_key_from_svc(&self.uad, &mut self.svc, item_key);
         // Update user data
         let uad_module = self.uad.items.get_mut(module_item_key).get_module_mut().unwrap();
         uad_module.set_charge_item_key(None);

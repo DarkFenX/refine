@@ -6,7 +6,13 @@ impl SolarSystem {
         let old_a_state = uad_sw_effect.get_a_state();
         uad_sw_effect.set_sw_effect_state(state);
         let new_a_state = uad_sw_effect.get_a_state();
-        self.internal_change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
+        SolarSystem::internal_change_item_key_state_in_svc(
+            &self.uad,
+            &mut self.svc,
+            item_key,
+            old_a_state,
+            new_a_state,
+        );
     }
 }
 

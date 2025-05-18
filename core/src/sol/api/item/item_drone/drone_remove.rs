@@ -19,7 +19,7 @@ impl SolarSystem {
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);
         // Remove drone from services
-        self.internal_remove_item_key_from_svc(item_key);
+        SolarSystem::internal_remove_item_key_from_svc(&self.uad, &mut self.svc, item_key);
         // Remove drone from user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.drones.remove(&item_key);

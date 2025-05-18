@@ -9,7 +9,13 @@ impl SolarSystem {
         uad_module.set_module_state(state);
         let new_a_state = uad_module.get_a_state();
         // Update services for module
-        self.internal_change_item_key_state_in_svc(item_key, old_a_state, new_a_state);
+        SolarSystem::internal_change_item_key_state_in_svc(
+            &self.uad,
+            &mut self.svc,
+            item_key,
+            old_a_state,
+            new_a_state,
+        );
         if let Some(charge_key) = charge_key {
             // Update user data for charge
             let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
@@ -17,7 +23,13 @@ impl SolarSystem {
             uad_charge.set_a_state(state.into());
             let new_a_state = uad_charge.get_a_state();
             // Update services for charge
-            self.internal_change_item_key_state_in_svc(charge_key, old_a_state, new_a_state);
+            SolarSystem::internal_change_item_key_state_in_svc(
+                &self.uad,
+                &mut self.svc,
+                charge_key,
+                old_a_state,
+                new_a_state,
+            );
         }
     }
 }

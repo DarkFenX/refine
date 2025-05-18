@@ -36,7 +36,13 @@ impl SolarSystem {
         uad_proj_effect.get_projs_mut().add(projectee_item_key, None);
         self.proj_tracker.reg_projectee(item_key, projectee_item_key);
         // Update services
-        self.internal_add_item_key_projection_to_svc(item_key, projectee_item_key, None);
+        SolarSystem::internal_add_item_key_projection_to_svc(
+            &self.uad,
+            &mut self.svc,
+            item_key,
+            projectee_item_key,
+            None,
+        );
         Ok(())
     }
 }

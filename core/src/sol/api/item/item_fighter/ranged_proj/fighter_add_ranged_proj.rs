@@ -40,14 +40,26 @@ impl SolarSystem {
         uad_fighter.get_projs_mut().add(projectee_item_key, range);
         self.proj_tracker.reg_projectee(item_key, projectee_item_key);
         // Update services for fighter
-        self.internal_add_item_key_projection_to_svc(item_key, projectee_item_key, range);
+        SolarSystem::internal_add_item_key_projection_to_svc(
+            &self.uad,
+            &mut self.svc,
+            item_key,
+            projectee_item_key,
+            range,
+        );
         for autocharge_key in autocharge_keys {
             // Update user data for autocharge
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             uad_autocharge.get_projs_mut().add(projectee_item_key, range);
             self.proj_tracker.reg_projectee(autocharge_key, projectee_item_key);
             // Update services for autocharge
-            self.internal_add_item_key_projection_to_svc(autocharge_key, projectee_item_key, range);
+            SolarSystem::internal_add_item_key_projection_to_svc(
+                &self.uad,
+                &mut self.svc,
+                autocharge_key,
+                projectee_item_key,
+                range,
+            );
         }
         Ok(())
     }
