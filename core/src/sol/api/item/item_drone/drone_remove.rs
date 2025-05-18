@@ -26,7 +26,7 @@ impl SolarSystem {
             self.uad
                 .items
                 .get_mut(item_key)
-                .get_fighter_mut()
+                .get_drone_mut()
                 .unwrap()
                 .get_projs_mut()
                 .clear();
