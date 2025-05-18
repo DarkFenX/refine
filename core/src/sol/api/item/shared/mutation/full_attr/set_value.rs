@@ -32,7 +32,7 @@ impl<'a> FullMAttrMut<'a> {
                             .get_base_a_item_id(),
                         module.get_mutation_data().unwrap().get_a_mutator_id(),
                     ),
-                    _ => unreachable!(),
+                    _ => unreachable!("unmutable item kind is used in mutation"),
                 };
                 resolve_absolutes_into_rolls_with_ids(
                     &self.sol.uad.src,

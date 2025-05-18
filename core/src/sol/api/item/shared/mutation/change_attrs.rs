@@ -10,7 +10,7 @@ impl SolarSystem {
         match uad_item {
             UadItem::Drone(_) => self.internal_change_drone_mutation_attrs(item_key, attr_mutations),
             UadItem::Module(_) => self.internal_change_module_mutation_attrs(item_key, attr_mutations),
-            _ => unreachable!(),
+            _ => unreachable!("unmutable item kind is used in mutation"),
         }
     }
 }
