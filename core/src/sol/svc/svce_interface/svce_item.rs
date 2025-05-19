@@ -9,9 +9,8 @@ use crate::{
 
 impl Svc {
     pub(in crate::sol) fn add_item(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        let is_a_item_loaded = item.is_loaded();
         self.notify_item_added(uad, item_key, item);
-        if is_a_item_loaded {
+        if item.is_loaded() {
             self.notify_item_loaded(uad, item_key, item)
         }
         self.switch_item_state(uad, item_key, item, ad::AState::Ghost, item.get_a_state());
