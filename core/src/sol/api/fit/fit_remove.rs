@@ -6,7 +6,7 @@ impl SolarSystem {
         for item_key in uad_fit.all_direct_items().into_iter() {
             self.internal_remove_item(item_key, RmMode::Free).unwrap();
         }
-        self.svc.remove_fit(fit_key);
+        self.svc.notify_fit_removed(fit_key);
         let uad_fit = self.uad.fits.remove(fit_key);
         if let Some(fleet_key) = uad_fit.fleet {
             let uad_fleet = self.uad.fleets.get_mut(fleet_key);

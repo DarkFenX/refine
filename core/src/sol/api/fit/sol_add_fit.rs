@@ -9,7 +9,7 @@ impl SolarSystem {
         let fit_id = self.uad.fits.alloc_id();
         let uad_fit = UadFit::new(fit_id);
         let fit_key = self.uad.fits.add(uad_fit);
-        self.svc.add_fit(fit_key);
+        self.svc.notify_fit_added(fit_key);
         fit_key
     }
 }

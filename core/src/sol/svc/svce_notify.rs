@@ -16,18 +16,18 @@ impl Svc {
     pub(in crate::sol::svc) fn notify_src_changed(&mut self, src: &Src) {
         self.calc.src_changed(src);
     }
-    pub(in crate::sol::svc) fn notify_fit_added(&mut self, fit_key: FitKey) {
+    pub(in crate::sol) fn notify_fit_added(&mut self, fit_key: FitKey) {
         self.calc.fit_added(fit_key);
         self.vast.fit_added(fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_removed(&mut self, fit_key: FitKey) {
+    pub(in crate::sol) fn notify_fit_removed(&mut self, fit_key: FitKey) {
         self.calc.fit_removed(fit_key);
         self.vast.fit_removed(&fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
+    pub(in crate::sol) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
         self.calc.fit_added_to_fleet(uad, fleet, fit_key);
     }
-    pub(in crate::sol::svc) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
+    pub(in crate::sol) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
         self.calc.fit_removed_from_fleet(uad, fleet, fit_key);
     }
     pub(in crate::sol) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
