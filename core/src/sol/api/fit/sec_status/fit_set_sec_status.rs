@@ -9,7 +9,7 @@ impl SolarSystem {
         }
         uad_fit.sec_status = sec_status;
         if let Some(ship_key) = uad_fit.ship {
-            self.svc.ship_sec_status_changed(&self.uad, ship_key);
+            self.svc.notify_ship_sec_status_changed(&self.uad, ship_key);
         }
     }
 }

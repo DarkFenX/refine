@@ -14,7 +14,7 @@ impl SolarSystem {
         // Update services
         if old_count != new_count {
             let uad_fighter = self.uad.items.get(item_key).get_fighter().unwrap();
-            self.svc.fighter_count_changed(&self.uad, item_key, uad_fighter);
+            self.svc.notify_fighter_count_changed(&self.uad, item_key, uad_fighter);
         }
     }
 }

@@ -79,7 +79,7 @@ impl SolarSystem {
         self.unload_items(&item_keys);
         // Set new source, update source-dependent data in services and reload items
         std::mem::swap(&mut self.uad.src, &mut src);
-        self.svc.src_changed(&self.uad.src);
+        self.svc.notify_src_changed(&self.uad.src);
         for item in self.uad.items.values_mut() {
             item.update_a_data(&self.uad.src)
         }

@@ -13,7 +13,7 @@ use crate::{
 };
 
 impl Svc {
-    pub(in crate::sol::svc) fn notify_src_changed(&mut self, src: &Src) {
+    pub(in crate::sol) fn notify_src_changed(&mut self, src: &Src) {
         self.calc.src_changed(src);
     }
     pub(in crate::sol) fn notify_fit_added(&mut self, fit_key: FitKey) {
@@ -65,7 +65,7 @@ impl Svc {
         self.calc.item_unloaded(uad, item_key, item);
         self.vast.item_unloaded(&item_key, item);
     }
-    pub(in crate::sol::svc) fn notify_base_attr_value_changed(
+    pub(in crate::sol) fn notify_base_attr_value_changed(
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
@@ -177,10 +177,10 @@ impl Svc {
             range,
         );
     }
-    pub(in crate::sol::svc) fn notify_sol_sec_zone_changed(&mut self, uad: &Uad) {
+    pub(in crate::sol) fn notify_sol_sec_zone_changed(&mut self, uad: &Uad) {
         self.calc.sol_sec_zone_changed(uad);
     }
-    pub(in crate::sol::svc) fn notify_fighter_count_changed(
+    pub(in crate::sol) fn notify_fighter_count_changed(
         &mut self,
         uad: &Uad,
         fighter_key: ItemKey,
@@ -189,10 +189,10 @@ impl Svc {
         self.calc.fighter_count_changed(uad, fighter_key);
         self.vast.fighter_count_changed(fighter_key, fighter);
     }
-    pub(in crate::sol::svc) fn notify_ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
+    pub(in crate::sol) fn notify_ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
         self.calc.ship_sec_status_changed(uad, ship_key);
     }
-    pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &UadSkill) {
+    pub(in crate::sol) fn notify_skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &UadSkill) {
         self.calc.skill_level_changed(uad, skill_key);
         self.vast.skill_level_changed(uad, skill);
     }

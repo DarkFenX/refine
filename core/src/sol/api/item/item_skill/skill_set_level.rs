@@ -15,7 +15,7 @@ impl SolarSystem {
             .unwrap()
             .level = level;
         let uad_skill = self.uad.items.get(item_key).get_skill().unwrap();
-        self.svc.skill_level_changed(&self.uad, item_key, uad_skill);
+        self.svc.notify_skill_level_changed(&self.uad, item_key, uad_skill);
     }
 }
 
