@@ -16,14 +16,13 @@ pub use item::{
     Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed, iter_projectee_item_keys, iter_ranged_projs};
-pub use mut_iter::MutIter;
+pub use util::MutIter;
 
 mod default_incoming_dps;
 mod dev;
 mod fit;
 mod fleet;
 mod item;
-mod mut_iter;
 mod sec_zone;
 mod sol_set_src;
-mod sole_util;
+mod util;
