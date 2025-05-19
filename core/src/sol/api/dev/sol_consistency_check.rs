@@ -6,18 +6,6 @@ impl SolarSystem {
     // should be checked, and this function should be called from tests, to ensure there are no
     // memory leaks.
     pub fn consistency_check(&self) -> bool {
-        // Check solar system structure
-        if self.uad.consistency_check().is_err() {
-            return false;
-        }
-        // Check solar system helper data containers
-        if self.proj_tracker.consistency_check(&self.uad).is_err() {
-            return false;
-        }
-        // Check services
-        if self.svc.consistency_check(&self.uad).is_err() {
-            return false;
-        }
-        true
+        self.internal_consistency_check().is_ok()
     }
 }

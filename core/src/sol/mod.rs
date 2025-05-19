@@ -18,5 +18,6 @@ pub(crate) mod misc;
 mod primitives;
 mod proj_tracker;
 mod sol;
+mod sole_debug;
 pub(crate) mod svc;
 pub(crate) mod uad;
