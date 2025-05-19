@@ -27,29 +27,29 @@ impl Vast {
         };
         let fit_data = self.get_fit_data_mut(&fit_key);
         // Skill requirements
-        if let Some(a_srqs) = item.get_effective_a_skill_reqs() {
-            if !a_srqs.is_empty() {
-                let mut missing_skills = RMap::new();
-                let fit = uad.fits.get(fit_key);
-                for (&skill_a_item_id, &required_a_lvl) in a_srqs.iter() {
-                    fit_data.srqs_skill_item_map.add_entry(skill_a_item_id, item_key);
-                    let current_lvl = fit.skills.get(&skill_a_item_id).map(|v| v.level);
-                    let effective_lvl = match current_lvl {
-                        Some(current_lvl) => current_lvl.get_inner(),
-                        None => 0,
-                    };
-                    if effective_lvl < required_a_lvl.get_inner() {
-                        missing_skills.insert(
-                            skill_a_item_id,
-                            ValSrqSkillInfo {
-                                current_lvl,
-                                required_lvl: required_a_lvl.into(),
-                            },
-                        );
-                    }
+        if let Some(a_srqs) = item.get_effective_a_skill_reqs()
+            && !a_srqs.is_empty()
+        {
+            let mut missing_skills = RMap::new();
+            let fit = uad.fits.get(fit_key);
+            for (&skill_a_item_id, &required_a_lvl) in a_srqs.iter() {
+                fit_data.srqs_skill_item_map.add_entry(skill_a_item_id, item_key);
+                let current_lvl = fit.skills.get(&skill_a_item_id).map(|v| v.level);
+                let effective_lvl = match current_lvl {
+                    Some(current_lvl) => current_lvl.get_inner(),
+                    None => 0,
+                };
+                if effective_lvl < required_a_lvl.get_inner() {
+                    missing_skills.insert(
+                        skill_a_item_id,
+                        ValSrqSkillInfo {
+                            current_lvl,
+                            required_lvl: required_a_lvl.into(),
+                        },
+                    );
                 }
-                fit_data.srqs_missing.insert(item_key, missing_skills);
             }
+            fit_data.srqs_missing.insert(item_key, missing_skills);
         }
         match item {
             UadItem::Booster(booster) => {
@@ -83,12 +83,12 @@ impl Vast {
                     }
                 }
                 // Add entry for charges with volume higher than 0
-                if let Some(volume) = extras.volume {
-                    if volume > OF(0.0) {
-                        fit_data
-                            .mods_charge_volume
-                            .insert(charge.get_cont_item_key(), ValCache::Todo(volume));
-                    }
+                if let Some(volume) = extras.volume
+                    && volume > OF(0.0)
+                {
+                    fit_data
+                        .mods_charge_volume
+                        .insert(charge.get_cont_item_key(), ValCache::Todo(volume));
                 }
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_key);
@@ -298,10 +298,10 @@ impl Vast {
                     for &drone_item_key in fit.drones.iter() {
                         let drone_item = uad.items.get(drone_item_key);
                         // Not every drone is guaranteed to be loaded
-                        if let Some(drone_a_group_id) = drone_item.get_a_group_id() {
-                            if !drone_limit.group_ids.contains(&drone_a_group_id) {
-                                fit_data.drone_groups.insert(drone_item_key, drone_a_group_id);
-                            }
+                        if let Some(drone_a_group_id) = drone_item.get_a_group_id()
+                            && !drone_limit.group_ids.contains(&drone_a_group_id)
+                        {
+                            fit_data.drone_groups.insert(drone_item_key, drone_a_group_id);
                         }
                     }
                 }
@@ -372,13 +372,13 @@ impl Vast {
         };
         let fit_data = self.get_fit_data_mut(&fit_key);
         // Skill requirements
-        if let Some(a_srqs) = item.get_effective_a_skill_reqs() {
-            if !a_srqs.is_empty() {
-                for skill_a_item_id in a_srqs.keys() {
-                    fit_data.srqs_skill_item_map.remove_entry(skill_a_item_id, item_key);
-                }
-                fit_data.srqs_missing.remove(item_key);
+        if let Some(a_srqs) = item.get_effective_a_skill_reqs()
+            && !a_srqs.is_empty()
+        {
+            for skill_a_item_id in a_srqs.keys() {
+                fit_data.srqs_skill_item_map.remove_entry(skill_a_item_id, item_key);
             }
+            fit_data.srqs_missing.remove(item_key);
         }
         match item {
             UadItem::Booster(booster) => {

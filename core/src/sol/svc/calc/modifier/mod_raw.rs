@@ -172,10 +172,10 @@ impl RawModifier {
 }
 
 fn get_mod_kind(a_effect: &ad::AEffect, a_affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
-    if let AffecteeFilter::Direct(loc) = a_affectee_filter {
-        if matches!(loc, Location::Item | Location::Other) {
-            return Some(ModifierKind::Local);
-        }
+    if let AffecteeFilter::Direct(loc) = a_affectee_filter
+        && matches!(loc, Location::Item | Location::Other)
+    {
+        return Some(ModifierKind::Local);
     }
     match (a_effect.category, &a_effect.buff) {
         // Local modifications

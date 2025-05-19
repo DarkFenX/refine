@@ -41,45 +41,45 @@ impl Calc {
         if self.rah.sim_running {
             return;
         }
-        if let UadItem::Module(module) = item {
-            if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
-                let fit_key = module.get_fit_key();
-                // Clear sim data for other RAHs on the same fit
-                self.clear_fit_rah_results(uad, &fit_key);
-                // Add sim data for RAH being started
-                self.rah.resonances.insert(item_key, None);
-                self.rah.by_fit.add_entry(fit_key, item_key);
-                // Add postprocessors
-                let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
-                item_attr_data.postprocs.insert(
-                    ARMOR_EM_ATTR_ID,
-                    ItemAttrPostprocs {
-                        fast: rah_em_resonance_postproc_fast,
-                        info: rah_em_resonance_postproc_info,
-                    },
-                );
-                item_attr_data.postprocs.insert(
-                    ARMOR_THERM_ATTR_ID,
-                    ItemAttrPostprocs {
-                        fast: rah_therm_resonance_postproc_fast,
-                        info: rah_therm_resonance_postproc_info,
-                    },
-                );
-                item_attr_data.postprocs.insert(
-                    ARMOR_KIN_ATTR_ID,
-                    ItemAttrPostprocs {
-                        fast: rah_kin_resonance_postproc_fast,
-                        info: rah_kin_resonance_postproc_info,
-                    },
-                );
-                item_attr_data.postprocs.insert(
-                    ARMOR_EXPL_ATTR_ID,
-                    ItemAttrPostprocs {
-                        fast: rah_expl_resonance_postproc_fast,
-                        info: rah_expl_resonance_postproc_info,
-                    },
-                );
-            }
+        if let UadItem::Module(module) = item
+            && a_effects.iter().any(|v| v.id == RAH_EFFECT_ID)
+        {
+            let fit_key = module.get_fit_key();
+            // Clear sim data for other RAHs on the same fit
+            self.clear_fit_rah_results(uad, &fit_key);
+            // Add sim data for RAH being started
+            self.rah.resonances.insert(item_key, None);
+            self.rah.by_fit.add_entry(fit_key, item_key);
+            // Add postprocessors
+            let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
+            item_attr_data.postprocs.insert(
+                ARMOR_EM_ATTR_ID,
+                ItemAttrPostprocs {
+                    fast: rah_em_resonance_postproc_fast,
+                    info: rah_em_resonance_postproc_info,
+                },
+            );
+            item_attr_data.postprocs.insert(
+                ARMOR_THERM_ATTR_ID,
+                ItemAttrPostprocs {
+                    fast: rah_therm_resonance_postproc_fast,
+                    info: rah_therm_resonance_postproc_info,
+                },
+            );
+            item_attr_data.postprocs.insert(
+                ARMOR_KIN_ATTR_ID,
+                ItemAttrPostprocs {
+                    fast: rah_kin_resonance_postproc_fast,
+                    info: rah_kin_resonance_postproc_info,
+                },
+            );
+            item_attr_data.postprocs.insert(
+                ARMOR_EXPL_ATTR_ID,
+                ItemAttrPostprocs {
+                    fast: rah_expl_resonance_postproc_fast,
+                    info: rah_expl_resonance_postproc_info,
+                },
+            );
         }
     }
     pub(in crate::sol::svc::calc) fn rah_effects_stopped(
@@ -92,21 +92,21 @@ impl Calc {
         if self.rah.sim_running {
             return;
         }
-        if let UadItem::Module(module) = item {
-            if a_effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
-                let fit_key = module.get_fit_key();
-                // Remove postprocessors
-                let item_attr_data = self.attrs.get_item_attr_data_mut(item_key).unwrap();
-                item_attr_data.postprocs.remove(&ARMOR_EM_ATTR_ID);
-                item_attr_data.postprocs.remove(&ARMOR_THERM_ATTR_ID);
-                item_attr_data.postprocs.remove(&ARMOR_KIN_ATTR_ID);
-                item_attr_data.postprocs.remove(&ARMOR_EXPL_ATTR_ID);
-                // Remove sim data for RAH being stopped
-                self.rah.resonances.remove(item_key);
-                self.rah.by_fit.remove_entry(&fit_key, item_key);
-                // Clear sim data for other RAHs on the same fit
-                self.clear_fit_rah_results(uad, &fit_key);
-            }
+        if let UadItem::Module(module) = item
+            && a_effects.iter().any(|v| v.id == RAH_EFFECT_ID)
+        {
+            let fit_key = module.get_fit_key();
+            // Remove postprocessors
+            let item_attr_data = self.attrs.get_item_attr_data_mut(item_key).unwrap();
+            item_attr_data.postprocs.remove(&ARMOR_EM_ATTR_ID);
+            item_attr_data.postprocs.remove(&ARMOR_THERM_ATTR_ID);
+            item_attr_data.postprocs.remove(&ARMOR_KIN_ATTR_ID);
+            item_attr_data.postprocs.remove(&ARMOR_EXPL_ATTR_ID);
+            // Remove sim data for RAH being stopped
+            self.rah.resonances.remove(item_key);
+            self.rah.by_fit.remove_entry(&fit_key, item_key);
+            // Clear sim data for other RAHs on the same fit
+            self.clear_fit_rah_results(uad, &fit_key);
         }
     }
     pub(in crate::sol::svc::calc) fn rah_attr_value_changed(

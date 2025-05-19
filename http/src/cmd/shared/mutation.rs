@@ -67,10 +67,10 @@ pub(in crate::cmd) fn apply_mattrs_on_change(
 
 fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, value: rc::AttrVal) {
     // Absolute values can be applied only to effective mutations, via full mutated attributes
-    if let rc::MutationMut::Effective(core_effective_mutation) = core_mutation {
-        if let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(attr_id) {
-            core_full_mattr.set_value(Some(value))
-        }
+    if let rc::MutationMut::Effective(core_effective_mutation) = core_mutation
+        && let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(attr_id)
+    {
+        core_full_mattr.set_value(Some(value))
     }
 }
 

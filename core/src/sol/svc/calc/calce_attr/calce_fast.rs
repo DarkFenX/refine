@@ -208,18 +208,18 @@ impl Calc {
         }
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, a_attr.hig);
         // Lower value limit
-        if let Some(limiter_attr_id) = a_attr.min_attr_id {
-            if let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_key, &limiter_attr_id) {
-                self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
-                dogma_val = AttrVal::max(dogma_val, limiter_cval.dogma);
-            }
+        if let Some(limiter_attr_id) = a_attr.min_attr_id
+            && let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_key, &limiter_attr_id)
+        {
+            self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
+            dogma_val = AttrVal::max(dogma_val, limiter_cval.dogma);
         }
         // Upper value limit
-        if let Some(limiter_attr_id) = a_attr.max_attr_id {
-            if let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_key, &limiter_attr_id) {
-                self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
-                dogma_val = AttrVal::min(dogma_val, limiter_cval.dogma);
-            }
+        if let Some(limiter_attr_id) = a_attr.max_attr_id
+            && let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_key, &limiter_attr_id)
+        {
+            self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
+            dogma_val = AttrVal::min(dogma_val, limiter_cval.dogma);
         }
         if LIMITED_PRECISION_A_ATTR_IDS.contains(a_attr_id) {
             dogma_val = round(dogma_val, 2);

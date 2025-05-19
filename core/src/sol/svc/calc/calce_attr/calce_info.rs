@@ -152,45 +152,45 @@ impl Calc {
         }
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, a_attr.hig);
         // Lower value limit
-        if let Some(limiter_a_attr_id) = a_attr.min_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id) {
-                self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
-                if limiter_val.dogma > dogma_attr_info.value {
-                    dogma_attr_info.value = limiter_val.dogma;
-                    dogma_attr_info.effective_infos.push(ModificationInfo {
-                        op: OpInfo::MinLimit,
-                        initial_val: limiter_val.dogma,
-                        range_mult: None,
-                        resist_mult: None,
-                        stacking_mult: None,
-                        applied_val: limiter_val.dogma,
-                        affectors: vec![AffectorInfo {
-                            item_id: uad.items.id_by_key(item_key),
-                            attr_id: Some(limiter_a_attr_id),
-                        }],
-                    })
-                }
+        if let Some(limiter_a_attr_id) = a_attr.min_attr_id
+            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id)
+        {
+            self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
+            if limiter_val.dogma > dogma_attr_info.value {
+                dogma_attr_info.value = limiter_val.dogma;
+                dogma_attr_info.effective_infos.push(ModificationInfo {
+                    op: OpInfo::MinLimit,
+                    initial_val: limiter_val.dogma,
+                    range_mult: None,
+                    resist_mult: None,
+                    stacking_mult: None,
+                    applied_val: limiter_val.dogma,
+                    affectors: vec![AffectorInfo {
+                        item_id: uad.items.id_by_key(item_key),
+                        attr_id: Some(limiter_a_attr_id),
+                    }],
+                })
             }
         }
         // Upper value limit
-        if let Some(limiter_a_attr_id) = a_attr.max_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id) {
-                self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
-                if limiter_val.dogma < dogma_attr_info.value {
-                    dogma_attr_info.value = limiter_val.dogma;
-                    dogma_attr_info.effective_infos.push(ModificationInfo {
-                        op: OpInfo::MaxLimit,
-                        initial_val: limiter_val.dogma,
-                        range_mult: None,
-                        resist_mult: None,
-                        stacking_mult: None,
-                        applied_val: limiter_val.dogma,
-                        affectors: vec![AffectorInfo {
-                            item_id: uad.items.id_by_key(item_key),
-                            attr_id: Some(limiter_a_attr_id),
-                        }],
-                    })
-                }
+        if let Some(limiter_a_attr_id) = a_attr.max_attr_id
+            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id)
+        {
+            self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
+            if limiter_val.dogma < dogma_attr_info.value {
+                dogma_attr_info.value = limiter_val.dogma;
+                dogma_attr_info.effective_infos.push(ModificationInfo {
+                    op: OpInfo::MaxLimit,
+                    initial_val: limiter_val.dogma,
+                    range_mult: None,
+                    resist_mult: None,
+                    stacking_mult: None,
+                    applied_val: limiter_val.dogma,
+                    affectors: vec![AffectorInfo {
+                        item_id: uad.items.id_by_key(item_key),
+                        attr_id: Some(limiter_a_attr_id),
+                    }],
+                })
             }
         }
         if LIMITED_PRECISION_A_ATTR_IDS.contains(a_attr_id) {

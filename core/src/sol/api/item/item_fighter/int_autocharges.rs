@@ -134,7 +134,7 @@ impl SolarSystem {
                 let projectee_uad_item = uad.items.get(projectee_item_key);
                 // Remove projections from services
                 svc.remove_item_projection(
-                    &uad,
+                    uad,
                     autocharge_key,
                     autocharge_uad_item,
                     projectee_item_key,
@@ -153,7 +153,7 @@ impl SolarSystem {
                 .clear();
             // Remove from services
             let autocharge_uad_item = uad.items.get(autocharge_key);
-            svc.remove_item(&uad, autocharge_key, autocharge_uad_item);
+            svc.remove_item(uad, autocharge_key, autocharge_uad_item);
         }
         // Update items
         uad.items

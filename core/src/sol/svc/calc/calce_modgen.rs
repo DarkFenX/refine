@@ -94,22 +94,21 @@ impl Calc {
         };
         for a_effect_id in a_effect_ids {
             let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
-            if let Some(a_buff_info) = a_effect.buff.as_ref() {
-                if matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs) {
-                    if let Ok(buff_id_cval) = self.get_item_attr_val_full(uad, item_key, &buff_type_a_attr_id) {
-                        add_buff_mods(
-                            &mut modifiers,
-                            uad,
-                            item_key,
-                            item,
-                            a_effect,
-                            &(buff_id_cval.extra.round() as ad::ABuffId),
-                            &a_buff_info.scope,
-                            Some(buff_type_a_attr_id),
-                            buff_value_a_attr_id,
-                        );
-                    }
-                }
+            if let Some(a_buff_info) = a_effect.buff.as_ref()
+                && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
+                && let Ok(buff_id_cval) = self.get_item_attr_val_full(uad, item_key, &buff_type_a_attr_id)
+            {
+                add_buff_mods(
+                    &mut modifiers,
+                    uad,
+                    item_key,
+                    item,
+                    a_effect,
+                    &(buff_id_cval.extra.round() as ad::ABuffId),
+                    &a_buff_info.scope,
+                    Some(buff_type_a_attr_id),
+                    buff_value_a_attr_id,
+                );
             }
         }
         modifiers

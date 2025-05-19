@@ -8,11 +8,11 @@ use crate::sol::{
 
 impl Vast {
     pub(in crate::sol::svc) fn item_added(&mut self, item_key: ItemKey, item: &UadItem) {
-        if !item.is_loaded() {
-            if let Some(fit_key) = item.get_fit_key() {
-                let fit_data = self.get_fit_data_mut(&fit_key);
-                fit_data.not_loaded.insert(item_key);
-            }
+        if !item.is_loaded()
+            && let Some(fit_key) = item.get_fit_key()
+        {
+            let fit_data = self.get_fit_data_mut(&fit_key);
+            fit_data.not_loaded.insert(item_key);
         }
         if let UadItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
@@ -31,11 +31,11 @@ impl Vast {
         }
     }
     pub(in crate::sol::svc) fn item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        if !item.is_loaded() {
-            if let Some(fit_key) = item.get_fit_key() {
-                let fit_data = self.get_fit_data_mut(&fit_key);
-                fit_data.not_loaded.remove(&item_key);
-            }
+        if !item.is_loaded()
+            && let Some(fit_key) = item.get_fit_key()
+        {
+            let fit_data = self.get_fit_data_mut(&fit_key);
+            fit_data.not_loaded.remove(&item_key);
         }
         if let UadItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills

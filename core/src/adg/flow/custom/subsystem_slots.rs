@@ -14,10 +14,10 @@ pub(in crate::adg::flow::custom) fn fix_subsysem_slot_count(a_data: &mut ad::ADa
         if item.grp_id != SHIP_GROUP {
             continue;
         }
-        if let std::collections::hash_map::Entry::Occupied(mut entry) = item.attrs.entry(SLOT_ATTR) {
-            if entry.insert(OF(4.0)) != OF(4.0) {
-                applied = true;
-            }
+        if let std::collections::hash_map::Entry::Occupied(mut entry) = item.attrs.entry(SLOT_ATTR)
+            && entry.insert(OF(4.0)) != OF(4.0)
+        {
+            applied = true;
         }
     }
     if !applied {

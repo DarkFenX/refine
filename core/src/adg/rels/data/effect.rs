@@ -33,12 +33,12 @@ impl Fk for ed::EEffect {
         vec.extend(self.get_fks_from_mod_args("modifyingAttributeID"));
         vec.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
         // Buffs can reference attributes too
-        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            if let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source {
-                for buff_custom_src in buff_custom_srcs.iter() {
-                    if let ad::AEffectBuffSrcCustom::AffectorVal(_, attr_id) = buff_custom_src {
-                        vec.push(*attr_id);
-                    }
+        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id)
+            && let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source
+        {
+            for buff_custom_src in buff_custom_srcs.iter() {
+                if let ad::AEffectBuffSrcCustom::AffectorVal(_, attr_id) = buff_custom_src {
+                    vec.push(*attr_id);
                 }
             }
         }
@@ -50,13 +50,13 @@ impl Fk for ed::EEffect {
     }
     fn get_buff_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            if let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source {
-                for buff_custom_src in buff_custom_srcs.iter() {
-                    match buff_custom_src {
-                        ad::AEffectBuffSrcCustom::AffectorVal(buff_id, _) => vec.push(*buff_id),
-                        ad::AEffectBuffSrcCustom::HardcodedVal(buff_id, _) => vec.push(*buff_id),
-                    }
+        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id)
+            && let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source
+        {
+            for buff_custom_src in buff_custom_srcs.iter() {
+                match buff_custom_src {
+                    ad::AEffectBuffSrcCustom::AffectorVal(buff_id, _) => vec.push(*buff_id),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(buff_id, _) => vec.push(*buff_id),
                 }
             }
         }
