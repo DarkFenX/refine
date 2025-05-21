@@ -571,6 +571,7 @@ def test_assist_src_mutation_add(client, consts):
 
 
 def test_assist_src_mutation_change(client, consts):
+    # Mutated value is ignored, only unmutated/unmodified item value is considered
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_vs_ew_immune_tgt)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True, is_offensive=False)
