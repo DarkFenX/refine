@@ -136,7 +136,7 @@ def test_states(client, consts):
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 
-def test_src_switch(client, consts):
+def test_switch_src(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     # The same affectee attr ID

@@ -136,7 +136,7 @@ def test_replace_root(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
-def test_affectee_switch_type_id(client, consts):
+def test_switch_type_id_affectee(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -175,7 +175,7 @@ def test_affectee_switch_type_id(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
-def test_src_switch_to_struct(client, consts):
+def test_switch_src_to_struct(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])

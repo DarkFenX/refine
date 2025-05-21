@@ -111,7 +111,34 @@ def test_propagation(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
-def test_affectee_switch_type_id(client, consts):
+def test_replace_root(client, consts):
+    # Modifiers which target items on character location shouldn't apply when character isn't set
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.char,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
+    eve_affectee_item_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
+    eve_char_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_rig(type_id=eve_affector_item_id)
+    api_fit.set_character(type_id=eve_char_item_id)
+    api_affectee_item = api_fit.add_implant(type_id=eve_affectee_item_id)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    api_fit.remove_character()
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    api_fit.set_character(type_id=eve_char_item_id)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+
+
+def test_switch_type_id_affectee(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -147,31 +174,4 @@ def test_affectee_switch_type_id(client, consts):
     # Action
     api_affectee_item.change_implant(type_id=eve_affectee_item1_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
-
-
-def test_replace_root(client, consts):
-    # Modifiers which target items on character location shouldn't apply when character isn't set
-    eve_affector_attr_id = client.mk_eve_attr()
-    eve_affectee_attr_id = client.mk_eve_attr()
-    eve_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.loc,
-        loc=consts.EveModLoc.char,
-        op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_affector_attr_id,
-        affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
-    eve_affectee_item_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
-    eve_char_item_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.add_rig(type_id=eve_affector_item_id)
-    api_fit.set_character(type_id=eve_char_item_id)
-    api_affectee_item = api_fit.add_implant(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
-    api_fit.remove_character()
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
-    api_fit.set_character(type_id=eve_char_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)

@@ -31,7 +31,7 @@ def test_affected_child_ship_multiple(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
 
 
-def test_uunaffected_child_struct(client, consts):
+def test_unaffected_child_struct(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()

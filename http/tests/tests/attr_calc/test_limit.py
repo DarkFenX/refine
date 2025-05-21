@@ -248,7 +248,7 @@ def test_unlimited(client, consts):
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id)) == 0
 
 
-def test_src_switch(client):
+def test_switch_src(client):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_limiter_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], def_val=5)

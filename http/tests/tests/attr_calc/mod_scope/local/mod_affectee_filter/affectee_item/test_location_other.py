@@ -220,7 +220,7 @@ def test_propagation_module(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
-def test_affectee_switch_type_id_module(client, consts):
+def test_switch_type_id_affectee_module(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -256,7 +256,7 @@ def test_affectee_switch_type_id_module(client, consts):
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
-def test_affectee_switch_type_id_charge(client, consts):
+def test_switch_type_id_affectee_charge(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
