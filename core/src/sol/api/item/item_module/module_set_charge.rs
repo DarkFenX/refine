@@ -16,7 +16,7 @@ impl SolarSystem {
         charge_a_item_id: ad::AItemId,
     ) -> ItemKey {
         let uad_module = self.uad.items.get(item_key).get_module().unwrap();
-        let fit_id = uad_module.get_fit_key();
+        let fit_key = uad_module.get_fit_key();
         let module_a_state = uad_module.get_a_state();
         let module_projs = uad_module
             .get_projs()
@@ -31,8 +31,10 @@ impl SolarSystem {
             for (projectee_item_key, _) in module_projs.iter() {
                 // Update services for charge being removed
                 let projectee_uad_item = self.uad.items.get(*projectee_item_key);
-                self.svc.remove_item_projection(
+                SolarSystem::util_remove_item_projection(
                     &self.uad,
+                    &mut self.svc,
+                    &mut self.reffs,
                     old_charge_key,
                     old_charge_uad_item,
                     *projectee_item_key,
@@ -40,59 +42,64 @@ impl SolarSystem {
                 );
                 // Update user data for charge - do not touch projections container on charge
                 // itself, because we're removing it anyway
-                self.proj_tracker.unreg_projectee(&old_charge_key, projectee_item_key);
+                self.rprojs.unreg_projectee(&old_charge_key, projectee_item_key);
             }
             // Update services for charge being removed
-            self.svc.remove_item(&self.uad, old_charge_key, old_charge_uad_item);
+            SolarSystem::util_remove_item(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                old_charge_key,
+                old_charge_uad_item,
+            );
             // Update user data for charge - do not update module<->charge references because charge
             // will be removed, and module will be updated later
             self.uad.items.remove(old_charge_key);
         };
         // Set new charge
-        let charge_id = self.uad.items.alloc_id();
+        let charge_item_id = self.uad.items.alloc_id();
         // Update user data
-        let uad_charge = UadCharge::new(
+        let mut uad_charge = UadCharge::new(
             &self.uad.src,
-            charge_id,
+            charge_item_id,
             charge_a_item_id,
-            fit_id,
+            fit_key,
             item_key,
             module_a_state,
             false,
         );
+        for (projectee_item_key, range) in module_projs.into_iter() {
+            uad_charge.get_projs_mut().add(projectee_item_key, range);
+        }
         let charge_uad_item = UadItem::Charge(uad_charge);
         let new_charge_key = self.uad.items.add(charge_uad_item);
         let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
         uad_module.set_charge_item_key(Some(new_charge_key));
         // Update services
-        SolarSystem::internal_add_item_key_to_svc(&self.uad, &mut self.svc, new_charge_key);
+        let new_charge_uad_item = self.uad.items.get(new_charge_key);
+        SolarSystem::util_add_item(
+            &self.uad,
+            &mut self.svc,
+            &mut self.reffs,
+            new_charge_key,
+            new_charge_uad_item,
+        );
         // Reapply module projections to charge
-        if !module_projs.is_empty() {
-            let charge_projs = self
-                .uad
-                .items
-                .get_mut(new_charge_key)
-                .get_charge_mut()
-                .unwrap()
-                .get_projs_mut();
-            // Update user data for charge
-            for (projectee_item_id, range) in module_projs.iter() {
-                self.proj_tracker.reg_projectee(new_charge_key, *projectee_item_id);
-                charge_projs.add(*projectee_item_id, *range);
-            }
+        // Update user data for charge
+        for (projectee_item_key, range) in new_charge_uad_item.get_charge().unwrap().get_projs().iter() {
+            self.rprojs.reg_projectee(new_charge_key, *projectee_item_key);
             // Update services for charge
-            let new_charge_uad_item = self.uad.items.get(new_charge_key);
-            for (projectee_item_key, range) in module_projs {
-                let projectee_uad_item = self.uad.items.get(projectee_item_key);
-                self.svc.add_item_projection(
-                    &self.uad,
-                    new_charge_key,
-                    new_charge_uad_item,
-                    projectee_item_key,
-                    projectee_uad_item,
-                    range,
-                );
-            }
+            let projectee_uad_item = self.uad.items.get(*projectee_item_key);
+            SolarSystem::util_add_item_projection(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                new_charge_key,
+                new_charge_uad_item,
+                *projectee_item_key,
+                projectee_uad_item,
+                *range,
+            );
         }
         new_charge_key
     }

@@ -13,15 +13,15 @@ impl SolarSystem {
         mutation: ItemMutationRequest,
     ) -> Result<(), ItemNotMutatedError> {
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::unload_module(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::unload_module(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
         if let Err(error) = uad_module.mutate(&self.uad.src, mutation) {
             let uad_item = self.uad.items.get(item_key);
-            SolarSystem::load_module(&mut self.svc, &self.uad, item_key, uad_item);
+            SolarSystem::load_module(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
             return Err(error);
         }
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_module(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::load_module(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         Ok(())
     }
 }

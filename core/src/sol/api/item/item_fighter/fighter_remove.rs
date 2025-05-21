@@ -1,41 +1,37 @@
-use itertools::Itertools;
-
 use crate::sol::{ItemKey, SolarSystem, api::FighterMut};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fighter(&mut self, item_key: ItemKey) {
-        SolarSystem::remove_fighter_autocharges(&mut self.svc, &mut self.uad, &mut self.proj_tracker, item_key);
+        SolarSystem::remove_fighter_autocharges(
+            &mut self.uad,
+            &mut self.svc,
+            &mut self.reffs,
+            &mut self.rprojs,
+            item_key,
+            false,
+        );
         // Remove outgoing projections
         let uad_item = self.uad.items.get(item_key);
-        let fit_key = uad_item.get_fighter().unwrap().get_fit_key();
-        let projectee_item_keys = uad_item
-            .get_fighter()
-            .unwrap()
-            .get_projs()
-            .iter_projectee_item_keys()
-            .copied()
-            .collect_vec();
-        if !projectee_item_keys.is_empty() {
-            for projectee_item_key in projectee_item_keys.into_iter() {
-                let projectee_uad_item = self.uad.items.get(projectee_item_key);
-                self.svc
-                    .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
-                self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
-            }
-            // Clear on-fighter projections, so that they don't get processed 2nd time on fighter
-            // removal from services
-            self.uad
-                .items
-                .get_mut(item_key)
-                .get_fighter_mut()
-                .unwrap()
-                .get_projs_mut()
-                .clear();
+        let uad_fighter = uad_item.get_fighter().unwrap();
+        let fit_key = uad_fighter.get_fit_key();
+        for &projectee_item_key in uad_fighter.get_projs().iter_projectee_item_keys() {
+            let projectee_uad_item = self.uad.items.get(projectee_item_key);
+            SolarSystem::util_remove_item_projection(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                item_key,
+                uad_item,
+                projectee_item_key,
+                projectee_uad_item,
+            );
+            self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);
         // Update services
-        SolarSystem::internal_remove_item_key_from_svc(&self.uad, &mut self.svc, item_key);
+        let uad_item = self.uad.items.get(item_key);
+        SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Update user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.fighters.remove(&item_key);

@@ -11,6 +11,6 @@ mod booster_set_state;
 mod booster_set_type_id;
 mod fit_add_booster;
 mod fit_iter_boosters;
-mod int_load_unload;
 mod side_effect;
 mod sol_get_booster;
+mod util_load_unload;

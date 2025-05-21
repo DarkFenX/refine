@@ -25,27 +25,34 @@ impl SolarSystem {
         if range == old_range {
             return Ok(());
         }
-        // Update user data for module
         let charge_key = uad_module.get_charge_item_key();
+        // Update user data for module
         uad_module.get_projs_mut().add(projectee_item_key, range);
-        // Update services for module
-        SolarSystem::internal_change_item_key_projection_range_in_svc(
-            &self.uad,
-            &mut self.svc,
-            item_key,
-            projectee_item_key,
-            range,
-        );
+        // Update user data for charge
         if let Some(charge_key) = charge_key {
-            // Update user data for charge
             let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
             uad_charge.get_projs_mut().add(projectee_item_key, range);
-            // Update services for charge
-            SolarSystem::internal_change_item_key_projection_range_in_svc(
+        }
+        // Update services for module
+        let projectee_uad_item = self.uad.items.get(projectee_item_key);
+        SolarSystem::util_change_item_proj_range(
+            &self.uad,
+            &mut self.svc,
+            &self.reffs,
+            item_key,
+            projectee_item_key,
+            projectee_uad_item,
+            range,
+        );
+        // Update services for charge
+        if let Some(charge_key) = charge_key {
+            SolarSystem::util_change_item_proj_range(
                 &self.uad,
                 &mut self.svc,
+                &self.reffs,
                 charge_key,
                 projectee_item_key,
+                projectee_uad_item,
                 range,
             );
         }

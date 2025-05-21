@@ -98,9 +98,11 @@ impl SolarSystem {
         uad_module.set_pos(pos);
         uad_module.set_charge_item_key(charge_key);
         // Add module and charge to services
-        SolarSystem::internal_add_item_key_to_svc(&self.uad, &mut self.svc, module_key);
+        let module_uad_item = self.uad.items.get(module_key);
+        SolarSystem::util_add_item(&self.uad, &mut self.svc, &mut self.reffs, module_key, module_uad_item);
         if let Some(charge_key) = charge_key {
-            SolarSystem::internal_add_item_key_to_svc(&self.uad, &mut self.svc, charge_key);
+            let charge_uad_item = self.uad.items.get(charge_key);
+            SolarSystem::util_add_item(&self.uad, &mut self.svc, &mut self.reffs, charge_key, charge_uad_item);
         }
         module_key
     }

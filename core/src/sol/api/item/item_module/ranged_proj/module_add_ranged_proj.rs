@@ -14,7 +14,8 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) -> Result<(), AddRangedProjError> {
         // Check projector
-        let uad_module = self.uad.items.get(item_key).get_module().unwrap();
+        let uad_item = self.uad.items.get(item_key);
+        let uad_module = uad_item.get_module().unwrap();
         // Check if projection has already been defined
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
         if uad_module.get_projs().contains(&projectee_item_key) {
@@ -32,32 +33,41 @@ impl SolarSystem {
             }
             .into());
         }
-        // Update user data for module
-        let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
         let charge_key = uad_module.get_charge_item_key();
-        uad_module.get_projs_mut().add(projectee_item_key, range);
-        self.proj_tracker.reg_projectee(item_key, projectee_item_key);
         // Update services for module
-        SolarSystem::internal_add_item_key_projection_to_svc(
+        SolarSystem::util_add_item_projection(
             &self.uad,
             &mut self.svc,
+            &self.reffs,
             item_key,
+            uad_item,
             projectee_item_key,
+            projectee_uad_item,
             range,
         );
+        // Update services for charge
         if let Some(charge_key) = charge_key {
-            // Update user data for charge
-            let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
-            uad_charge.get_projs_mut().add(projectee_item_key, range);
-            self.proj_tracker.reg_projectee(charge_key, projectee_item_key);
-            // Update services for charge
-            SolarSystem::internal_add_item_key_projection_to_svc(
+            let charge_uad_item = self.uad.items.get(charge_key);
+            SolarSystem::util_add_item_projection(
                 &self.uad,
                 &mut self.svc,
+                &self.reffs,
                 charge_key,
+                charge_uad_item,
                 projectee_item_key,
+                projectee_uad_item,
                 range,
             );
+        }
+        // Update user data for module
+        let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
+        uad_module.get_projs_mut().add(projectee_item_key, range);
+        self.rprojs.reg_projectee(item_key, projectee_item_key);
+        // Update user data for charge
+        if let Some(charge_key) = charge_key {
+            let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
+            uad_charge.get_projs_mut().add(projectee_item_key, range);
+            self.rprojs.reg_projectee(charge_key, projectee_item_key);
         }
         Ok(())
     }

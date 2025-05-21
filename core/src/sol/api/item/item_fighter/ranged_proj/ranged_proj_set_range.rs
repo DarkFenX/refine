@@ -27,28 +27,35 @@ impl SolarSystem {
         if range == old_range {
             return Ok(());
         }
+        let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
         // Update user data for fighter
         let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
         uad_fighter.get_projs_mut().add(projectee_item_key, range);
-        let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
-        // Update services for fighter
-        SolarSystem::internal_change_item_key_projection_range_in_svc(
-            &self.uad,
-            &mut self.svc,
-            item_key,
-            projectee_item_key,
-            range,
-        );
-        for autocharge_key in autocharge_keys {
-            // Update user data for autocharge
+        // Update user data for autocharges
+        for &autocharge_key in autocharge_keys.iter() {
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             uad_autocharge.get_projs_mut().add(projectee_item_key, range);
-            // Update services for autocharge
-            SolarSystem::internal_change_item_key_projection_range_in_svc(
+        }
+        // Update services for fighter
+        let projectee_uad_item = self.uad.items.get(projectee_item_key);
+        SolarSystem::util_change_item_proj_range(
+            &self.uad,
+            &mut self.svc,
+            &self.reffs,
+            item_key,
+            projectee_item_key,
+            projectee_uad_item,
+            range,
+        );
+        // Update services for autocharges
+        for autocharge_key in autocharge_keys.into_iter() {
+            SolarSystem::util_change_item_proj_range(
                 &self.uad,
                 &mut self.svc,
+                &self.reffs,
                 autocharge_key,
                 projectee_item_key,
+                projectee_uad_item,
                 range,
             );
         }

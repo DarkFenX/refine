@@ -1,5 +1,5 @@
 use crate::{
-    sol::{proj_tracker::ProjTracker, svc::Svc, uad::Uad},
+    sol::{rev_proj_tracker::RevProjTracker, running_effects::RunningEffects, svc::Svc, uad::Uad},
     src::Src,
 };
 
@@ -9,7 +9,8 @@ use crate::{
 pub struct SolarSystem {
     pub(in crate::sol) uad: Uad,
     pub(in crate::sol) svc: Svc,
-    pub(in crate::sol) proj_tracker: ProjTracker,
+    pub(in crate::sol) reffs: RunningEffects,
+    pub(in crate::sol) rprojs: RevProjTracker,
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
@@ -17,7 +18,8 @@ impl SolarSystem {
         Self {
             uad: Uad::new(src),
             svc: svcs,
-            proj_tracker: ProjTracker::new(),
+            reffs: RunningEffects::new(),
+            rprojs: RevProjTracker::new(),
         }
     }
 }

@@ -44,6 +44,12 @@ fn set_state(sol: &mut SolarSystem, item_key: ItemKey, a_effect_id: ad::AEffectI
     };
     uad_booster.get_effect_modes_mut().set(a_effect_id, effect_state);
     let uad_item = sol.uad.items.get(item_key);
-    sol.svc
-        .process_effects(&sol.uad, item_key, uad_item, uad_item.get_a_state());
+    SolarSystem::util_process_effects(
+        &sol.uad,
+        &mut sol.svc,
+        &mut sol.reffs,
+        item_key,
+        uad_item,
+        uad_item.get_a_state(),
+    );
 }

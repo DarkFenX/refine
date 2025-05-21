@@ -12,7 +12,7 @@ impl SolarSystem {
                 item_id: uad_drone.get_item_id(),
             });
         }
-        SolarSystem::unload_drone(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::unload_drone(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         self.uad
             .items
             .get_mut(item_key)
@@ -21,7 +21,7 @@ impl SolarSystem {
             .unmutate(&self.uad.src)
             .unwrap();
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_drone(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::load_drone(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         Ok(())
     }
 }

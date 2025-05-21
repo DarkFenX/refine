@@ -9,7 +9,7 @@ impl SolarSystem {
         if uad_item.get_a_item_id() == a_item_id {
             return;
         }
-        SolarSystem::unload_ship(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::unload_ship(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         let uad_ship = self.uad.items.get_mut(item_key).get_ship_mut().unwrap();
         uad_ship.set_a_item_id(&self.uad.src, a_item_id);
         // Update on-fit ship kind
@@ -17,7 +17,7 @@ impl SolarSystem {
         let ship_kind = uad_ship.get_kind();
         self.uad.fits.get_mut(fit_key).kind = ship_kind;
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_ship(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::load_ship(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
     }
 }
 

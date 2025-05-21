@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use super::shared::get_fit_rack_mut;
 use crate::sol::{ItemKey, RmMode, SolarSystem, api::ModuleMut};
 
@@ -11,65 +9,51 @@ impl SolarSystem {
         let rack = uad_module.get_rack();
         let charge_key = uad_module.get_charge_item_key();
         // Remove outgoing projections for both module and charge
-        let module_projectee_item_keys = uad_module.get_projs().iter_projectee_item_keys().copied().collect_vec();
-        if !module_projectee_item_keys.is_empty() {
-            if let Some(charge_key) = charge_key {
-                let charge_uad_item = self.uad.items.get(charge_key);
-                // Use module projections, since module and charge projections should always match
-                for &projectee_item_key in module_projectee_item_keys.iter() {
-                    let projectee_uad_item = self.uad.items.get(projectee_item_key);
-                    // Update services for charge
-                    self.svc.remove_item_projection(
-                        &self.uad,
-                        charge_key,
-                        charge_uad_item,
-                        projectee_item_key,
-                        projectee_uad_item,
-                    );
-                    // Update projection tracker, just because it's convenient to do it here
-                    self.proj_tracker.unreg_projectee(&charge_key, &projectee_item_key);
-                }
-            }
-            for projectee_item_id in module_projectee_item_keys {
-                // Update services for module
-                let projectee_uad_item = self.uad.items.get(projectee_item_id);
-                self.svc
-                    .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_id, projectee_uad_item);
-                // Update projection tracker, just because it's convenient to do it here
-                self.proj_tracker.unreg_projectee(&item_key, &projectee_item_id);
-            }
-            // Clear on-module and on-charge projections, so that they don't get processed 2nd time
-            // on module/charge removal from services
-            if let Some(charge_key) = charge_key {
-                self.uad
-                    .items
-                    .get_mut(charge_key)
-                    .get_charge_mut()
-                    .unwrap()
-                    .get_projs_mut()
-                    .clear();
-            }
-            self.uad
-                .items
-                .get_mut(item_key)
-                .get_module_mut()
-                .unwrap()
-                .get_projs_mut()
-                .clear();
-        }
-        // Remove charge
         if let Some(charge_key) = charge_key {
-            // Update services for charge
             let charge_uad_item = self.uad.items.get(charge_key);
-            self.svc.remove_item(&self.uad, charge_key, charge_uad_item);
-            // Update user data for charge - not updating module<->charge references because both
-            // will be removed
+            // Use module projections, since module and charge projections should always match
+            for &projectee_item_key in uad_module.get_projs().iter_projectee_item_keys() {
+                let projectee_uad_item = self.uad.items.get(projectee_item_key);
+                // Remove charge outgoing projections from services
+                SolarSystem::util_remove_item_projection(
+                    &self.uad,
+                    &mut self.svc,
+                    &self.reffs,
+                    charge_key,
+                    charge_uad_item,
+                    projectee_item_key,
+                    projectee_uad_item,
+                );
+                // Remove charge outgoing projections from projection tracker
+                self.rprojs.unreg_projectee(&charge_key, &projectee_item_key);
+            }
+        }
+        for &projectee_item_key in uad_module.get_projs().iter_projectee_item_keys() {
+            // Remove module outgoing projections from services
+            let projectee_uad_item = self.uad.items.get(projectee_item_key);
+            SolarSystem::util_remove_item_projection(
+                &self.uad,
+                &mut self.svc,
+                &self.reffs,
+                item_key,
+                uad_item,
+                projectee_item_key,
+                projectee_uad_item,
+            );
+            // Remove module outgoing projections from projection tracker
+            self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
+        }
+        // Remove charge from services
+        if let Some(charge_key) = charge_key {
+            let charge_uad_item = self.uad.items.get(charge_key);
+            SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, charge_key, charge_uad_item);
+        }
+        // Remove module from services
+        SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        // Update user data - not updating module<->charge references because both will be removed
+        if let Some(charge_key) = charge_key {
             self.uad.items.remove(charge_key);
         }
-        // Remove module
-        // Update services for module
-        SolarSystem::internal_remove_item_key_from_svc(&self.uad, &mut self.svc, item_key);
-        // Update user data for module
         let uad_fit_rack = get_fit_rack_mut(&mut self.uad.fits, fit_key, rack);
         match pos_mode {
             RmMode::Free => uad_fit_rack.free(&item_key),

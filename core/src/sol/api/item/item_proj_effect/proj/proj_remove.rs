@@ -20,10 +20,17 @@ impl SolarSystem {
             });
         };
         // Update services
-        self.svc
-            .remove_item_projection(&self.uad, item_key, uad_item, projectee_item_key, projectee_uad_item);
+        SolarSystem::util_remove_item_projection(
+            &self.uad,
+            &mut self.svc,
+            &self.reffs,
+            item_key,
+            uad_item,
+            projectee_item_key,
+            projectee_uad_item,
+        );
         // Update user data
-        self.proj_tracker.unreg_projectee(&item_key, &projectee_item_key);
+        self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
         let uad_proj_effect = self.uad.items.get_mut(item_key).get_proj_effect_mut().unwrap();
         uad_proj_effect.get_projs_mut().remove(&projectee_item_key);
         Ok(())

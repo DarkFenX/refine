@@ -7,7 +7,7 @@ const STATES: [AState; 5] = [
 ];
 
 /// States which are used on items and effects.
-#[derive(Copy, Clone, PartialEq, PartialOrd)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum AState {
     /// Item will receive modifications (thus its modified attributes can be checked), but will be
     /// considered as absent otherwise.

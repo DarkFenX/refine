@@ -33,23 +33,18 @@ impl Svc {
     pub(in crate::sol) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
         self.calc.fit_rah_dps_profile_changed(uad, fit_key);
     }
-    pub(in crate::sol::svc) fn notify_item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::sol) fn notify_item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_added(uad, item_key, item);
         self.vast.item_added(item_key, item);
     }
-    pub(in crate::sol::svc) fn notify_item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::sol) fn notify_item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_removed(uad, item_key, item);
         self.vast.item_removed(uad, item_key, item);
     }
-    pub(in crate::sol::svc) fn notify_state_activated(
-        &mut self,
-        item_key: ItemKey,
-        item: &UadItem,
-        a_state: &ad::AState,
-    ) {
+    pub(in crate::sol) fn notify_state_activated(&mut self, item_key: ItemKey, item: &UadItem, a_state: &ad::AState) {
         self.vast.item_state_activated(item_key, item, a_state);
     }
-    pub(in crate::sol::svc) fn notify_state_deactivated(
+    pub(in crate::sol) fn notify_state_deactivated(
         &mut self,
         item_key: &ItemKey,
         item: &UadItem,
@@ -57,11 +52,11 @@ impl Svc {
     ) {
         self.vast.item_state_deactivated(item_key, item, a_state);
     }
-    pub(in crate::sol::svc) fn notify_item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::sol) fn notify_item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_loaded(uad, item_key, item);
         self.vast.item_loaded(uad, item_key, item);
     }
-    pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::sol) fn notify_item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         self.calc.item_unloaded(uad, item_key, item);
         self.vast.item_unloaded(&item_key, item);
     }
@@ -73,7 +68,7 @@ impl Svc {
     ) {
         self.calc.force_attr_value_recalc(uad, item_key, a_attr_id);
     }
-    pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
+    pub(in crate::sol) fn notify_item_state_activated_loaded(
         &mut self,
         item_key: ItemKey,
         item: &UadItem,
@@ -81,7 +76,7 @@ impl Svc {
     ) {
         self.vast.item_state_activated_loaded(item_key, item, a_state);
     }
-    pub(in crate::sol::svc) fn notify_item_state_deactivated_loaded(
+    pub(in crate::sol) fn notify_item_state_deactivated_loaded(
         &mut self,
         item_key: &ItemKey,
         item: &UadItem,
@@ -89,18 +84,16 @@ impl Svc {
     ) {
         self.vast.item_state_deactivated_loaded(item_key, item, a_state);
     }
-    pub(in crate::sol::svc) fn notify_effects_started(
+    pub(in crate::sol) fn notify_effects_started(
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
         item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
-        self.running_effects
-            .effects_started(item_key, a_effects.iter().map(|v| v.id));
         self.calc.effects_started(uad, item_key, item, a_effects);
     }
-    pub(in crate::sol::svc) fn notify_effects_stopped(
+    pub(in crate::sol) fn notify_effects_stopped(
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
@@ -108,13 +101,11 @@ impl Svc {
         a_effects: &[ad::ArcEffect],
     ) {
         self.calc.effects_stopped(uad, item_key, item, a_effects);
-        self.running_effects
-            .effects_stopped(&item_key, a_effects.iter().map(|v| &v.id));
     }
-    pub(in crate::sol::svc) fn notify_item_projected(&mut self) {}
-    pub(in crate::sol::svc) fn notify_item_unprojected(&mut self) {}
-    pub(in crate::sol::svc) fn notify_item_proj_range_changed(&mut self) {}
-    pub(in crate::sol::svc) fn notify_effect_projected(
+    pub(in crate::sol) fn notify_item_projected(&mut self) {}
+    pub(in crate::sol) fn notify_item_unprojected(&mut self) {}
+    pub(in crate::sol) fn notify_item_proj_range_changed(&mut self) {}
+    pub(in crate::sol) fn notify_effect_projected(
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
@@ -140,7 +131,7 @@ impl Svc {
             projectee_item,
         );
     }
-    pub(in crate::sol::svc) fn notify_effect_unprojected(
+    pub(in crate::sol) fn notify_effect_unprojected(
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
@@ -159,7 +150,7 @@ impl Svc {
             projectee_item,
         );
     }
-    pub(in crate::sol::svc) fn notify_effect_proj_range_changed(
+    pub(in crate::sol) fn notify_effect_proj_range_changed(
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,

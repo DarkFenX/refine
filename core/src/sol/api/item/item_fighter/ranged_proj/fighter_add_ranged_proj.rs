@@ -34,30 +34,40 @@ impl SolarSystem {
             }
             .into());
         }
+        let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
         // Update user data for fighter
         let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
-        let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
         uad_fighter.get_projs_mut().add(projectee_item_key, range);
-        self.proj_tracker.reg_projectee(item_key, projectee_item_key);
+        self.rprojs.reg_projectee(item_key, projectee_item_key);
         // Update services for fighter
-        SolarSystem::internal_add_item_key_projection_to_svc(
+        let uad_item = self.uad.items.get(item_key);
+        let projectee_uad_item = self.uad.items.get(projectee_item_key);
+        SolarSystem::util_add_item_projection(
             &self.uad,
             &mut self.svc,
+            &self.reffs,
             item_key,
+            uad_item,
             projectee_item_key,
+            projectee_uad_item,
             range,
         );
         for autocharge_key in autocharge_keys {
             // Update user data for autocharge
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             uad_autocharge.get_projs_mut().add(projectee_item_key, range);
-            self.proj_tracker.reg_projectee(autocharge_key, projectee_item_key);
+            self.rprojs.reg_projectee(autocharge_key, projectee_item_key);
             // Update services for autocharge
-            SolarSystem::internal_add_item_key_projection_to_svc(
+            let autocharge_uad_item = self.uad.items.get(autocharge_key);
+            let projectee_uad_item = self.uad.items.get(projectee_item_key);
+            SolarSystem::util_add_item_projection(
                 &self.uad,
                 &mut self.svc,
+                &self.reffs,
                 autocharge_key,
+                autocharge_uad_item,
                 projectee_item_key,
+                projectee_uad_item,
                 range,
             );
         }

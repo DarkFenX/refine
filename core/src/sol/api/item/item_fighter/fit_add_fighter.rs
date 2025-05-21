@@ -22,9 +22,15 @@ impl SolarSystem {
         uad_fit.fighters.insert(item_key);
         // Add fighter and autocharges to services
         let uad_item = self.uad.items.get(item_key);
-        self.svc.add_item(&self.uad, item_key, uad_item);
+        SolarSystem::util_add_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Process autocharges
-        SolarSystem::add_fighter_autocharges(&mut self.svc, &mut self.uad, &mut self.proj_tracker, item_key);
+        SolarSystem::add_fighter_autocharges(
+            &mut self.uad,
+            &mut self.svc,
+            &mut self.reffs,
+            &mut self.rprojs,
+            item_key,
+        );
         item_key
     }
 }

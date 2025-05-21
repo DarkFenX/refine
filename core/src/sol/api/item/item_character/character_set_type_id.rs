@@ -9,7 +9,7 @@ impl SolarSystem {
         if uad_item.get_a_item_id() == a_item_id {
             return;
         }
-        SolarSystem::unload_character(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::unload_character(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         self.uad
             .items
             .get_mut(item_key)
@@ -17,7 +17,7 @@ impl SolarSystem {
             .unwrap()
             .set_a_item_id(&self.uad.src, a_item_id);
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_character(&mut self.svc, &self.uad, item_key, uad_item);
+        SolarSystem::load_character(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
     }
 }
 

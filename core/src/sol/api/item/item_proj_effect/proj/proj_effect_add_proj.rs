@@ -13,7 +13,8 @@ impl SolarSystem {
         projectee_item_key: ItemKey,
     ) -> Result<(), AddProjError> {
         // Check projector
-        let uad_proj_effect = self.uad.items.get(item_key).get_proj_effect().unwrap();
+        let uad_item = self.uad.items.get(item_key);
+        let uad_proj_effect = uad_item.get_proj_effect().unwrap();
         // Check if projection has already been defined
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
         if uad_proj_effect.get_projs().contains(&projectee_item_key) {
@@ -31,18 +32,21 @@ impl SolarSystem {
             }
             .into());
         }
+        // Update services
+        SolarSystem::util_add_item_projection(
+            &self.uad,
+            &mut self.svc,
+            &self.reffs,
+            item_key,
+            uad_item,
+            projectee_item_key,
+            projectee_uad_item,
+            None,
+        );
         // Update user data
         let uad_proj_effect = self.uad.items.get_mut(item_key).get_proj_effect_mut().unwrap();
         uad_proj_effect.get_projs_mut().add(projectee_item_key, None);
-        self.proj_tracker.reg_projectee(item_key, projectee_item_key);
-        // Update services
-        SolarSystem::internal_add_item_key_projection_to_svc(
-            &self.uad,
-            &mut self.svc,
-            item_key,
-            projectee_item_key,
-            None,
-        );
+        self.rprojs.reg_projectee(item_key, projectee_item_key);
         Ok(())
     }
 }

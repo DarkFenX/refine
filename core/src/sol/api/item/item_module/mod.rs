@@ -4,7 +4,6 @@ pub use sol_get_module::GetModuleError;
 
 mod fit_add_module;
 mod fit_iter_modules;
-mod int_load_unload;
 mod module;
 mod module_remove;
 mod module_set_charge;
@@ -14,3 +13,4 @@ mod mutation;
 mod ranged_proj;
 mod shared;
 mod sol_get_module;
+mod util_load_unload;

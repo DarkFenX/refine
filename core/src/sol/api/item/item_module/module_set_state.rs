@@ -9,9 +9,10 @@ impl SolarSystem {
         uad_module.set_module_state(state);
         let new_a_state = uad_module.get_a_state();
         // Update services for module
-        SolarSystem::internal_change_item_key_state_in_svc(
+        SolarSystem::util_switch_item_state(
             &self.uad,
             &mut self.svc,
+            &mut self.reffs,
             item_key,
             old_a_state,
             new_a_state,
@@ -23,9 +24,10 @@ impl SolarSystem {
             uad_charge.set_a_state(state.into());
             let new_a_state = uad_charge.get_a_state();
             // Update services for charge
-            SolarSystem::internal_change_item_key_state_in_svc(
+            SolarSystem::util_switch_item_state(
                 &self.uad,
                 &mut self.svc,
+                &mut self.reffs,
                 charge_key,
                 old_a_state,
                 new_a_state,

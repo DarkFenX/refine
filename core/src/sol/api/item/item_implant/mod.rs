@@ -7,5 +7,5 @@ mod implant;
 mod implant_remove;
 mod implant_set_state;
 mod implant_set_type_id;
-mod int_load_unload;
 mod sol_get_implant;
+mod util_load_unload;

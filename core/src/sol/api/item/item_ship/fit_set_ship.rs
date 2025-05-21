@@ -23,7 +23,8 @@ impl SolarSystem {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.ship = Some(item_key);
         uad_fit.kind = ship_kind;
-        SolarSystem::internal_add_item_key_to_svc(&self.uad, &mut self.svc, item_key);
+        let uad_item = self.uad.items.get(item_key);
+        SolarSystem::util_add_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         item_key
     }
 }

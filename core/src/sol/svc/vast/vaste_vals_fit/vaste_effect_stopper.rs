@@ -1,11 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{
-        EffectId, ItemId, ItemKey,
-        svc::{running_effects::RunningEffects, vast::VastFitData},
-        uad::Uad,
-    },
+    sol::{EffectId, ItemId, ItemKey, running_effects::RunningEffects, svc::vast::VastFitData, uad::Uad},
     util::RSet,
 };
 

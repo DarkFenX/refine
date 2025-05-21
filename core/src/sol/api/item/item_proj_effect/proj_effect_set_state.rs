@@ -6,9 +6,10 @@ impl SolarSystem {
         let old_a_state = uad_proj_effect.get_a_state();
         uad_proj_effect.set_proj_effect_state(state);
         let new_a_state = uad_proj_effect.get_a_state();
-        SolarSystem::internal_change_item_key_state_in_svc(
+        SolarSystem::util_switch_item_state(
             &self.uad,
             &mut self.svc,
+            &mut self.reffs,
             item_key,
             old_a_state,
             new_a_state,

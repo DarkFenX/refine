@@ -3,7 +3,7 @@ pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 use crate::{
     err::basic::ItemLoadedError,
     sol::{
-        AttrId, EffectId, EffectInfo, EffectMode, ItemId, ItemTypeId,
+        AttrId, EffectId, EffectInfo, EffectMode, ItemId, ItemTypeId, SolarSystem,
         svc::calc::{CalcAttrVal, ModificationInfo},
     },
 };
@@ -29,7 +29,7 @@ pub trait ItemCommon: ItemSealed {
             }
         };
         let effect_infos = a_effect_ids.map(move |a_effect_id| {
-            let running = sol.svc.is_effect_running(&item_key, a_effect_id);
+            let running = sol.reffs.is_running(&item_key, a_effect_id);
             let mode = *item.get_effect_modes().get(a_effect_id);
             (a_effect_id.into(), EffectInfo { running, mode })
         });
@@ -84,8 +84,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_effect_modes_mut()
             .set(effect_id.into(), mode);
         let uad_item = sol.uad.items.get(item_key);
-        sol.svc
-            .process_effects(&sol.uad, item_key, uad_item, uad_item.get_a_state());
+        SolarSystem::util_process_effects(
+            &sol.uad,
+            &mut sol.svc,
+            &mut sol.reffs,
+            item_key,
+            uad_item,
+            uad_item.get_a_state(),
+        );
     }
     fn set_effect_modes(&mut self, modes: impl Iterator<Item = (EffectId, EffectMode)>)
     where
@@ -98,8 +104,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             effect_modes.set(effect_id.into(), effect_mode)
         }
         let uad_item = sol.uad.items.get(item_key);
-        sol.svc
-            .process_effects(&sol.uad, item_key, uad_item, uad_item.get_a_state());
+        SolarSystem::util_process_effects(
+            &sol.uad,
+            &mut sol.svc,
+            &mut sol.reffs,
+            item_key,
+            uad_item,
+            uad_item.get_a_state(),
+        );
     }
 }
 
