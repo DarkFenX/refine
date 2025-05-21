@@ -125,6 +125,7 @@ def test_switch_type_id_affectee(client, consts):
     eve_affectee_item1_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
     eve_affectee_item2_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 50})
     eve_affectee_item3_id = client.alloc_item_id()
+    eve_affectee_item4_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -146,6 +147,10 @@ def test_switch_type_id_affectee(client, consts):
     api_affectee_item.change_ship(type_id=eve_affectee_item1_id)
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_affectee_item.change_ship(type_id=eve_affectee_item4_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(50)
 
 
 def test_switch_src_to_ship(client, consts):
