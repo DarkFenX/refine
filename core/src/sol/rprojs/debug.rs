@@ -1,12 +1,12 @@
 use itertools::Itertools;
 
-use super::RevProjTracker;
+use super::RProjs;
 use crate::sol::{
     debug::{DebugError, DebugResult},
     uad::Uad,
 };
 
-impl RevProjTracker {
+impl RProjs {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
         for (projectee_item_key, projector_item_keys) in self.data.iter() {
             if uad.items.try_get(*projectee_item_key).is_none() {
@@ -27,7 +27,7 @@ impl RevProjTracker {
                 }
             }
         }
-        // Check that all projections on items have corresponding entry in projection tracker
+        // Check that all projections on items have corresponding entry in the tracker
         for (projector_item_key, uad_item) in uad.items.iter() {
             if let Some(projections) = uad_item.get_projs() {
                 for projectee_item_key in projections.iter_projectee_item_keys() {

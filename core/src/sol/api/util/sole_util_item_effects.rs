@@ -5,7 +5,7 @@ use crate::{
     ad,
     sol::{
         ItemKey, SolarSystem,
-        running_effects::RunningEffects,
+        reffs::REffs,
         svc::Svc,
         uad::{Uad, item::UadItem},
     },
@@ -15,7 +15,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_process_effects(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         item_a_state: ad::AState,
@@ -25,7 +25,7 @@ impl SolarSystem {
     pub(in crate::sol::api::util) fn util_internal_process_effects_without_projs(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         item_a_state: ad::AState,
@@ -37,7 +37,7 @@ impl SolarSystem {
 fn process_effects(
     uad: &Uad,
     svc: &mut Svc,
-    reffs: &mut RunningEffects,
+    reffs: &mut REffs,
     item_key: ItemKey,
     uad_item: &UadItem,
     item_a_state: ad::AState,
@@ -55,7 +55,7 @@ fn process_effects(
 fn stop_all_effects(
     uad: &Uad,
     svc: &mut Svc,
-    reffs: &mut RunningEffects,
+    reffs: &mut REffs,
     item_key: ItemKey,
     uad_item: &UadItem,
     handle_projs: bool,
@@ -74,7 +74,7 @@ fn stop_all_effects(
 fn update_running_effects(
     uad: &Uad,
     svc: &mut Svc,
-    reffs: &mut RunningEffects,
+    reffs: &mut REffs,
     item_key: ItemKey,
     uad_item: &UadItem,
     item_a_state: ad::AState,

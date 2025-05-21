@@ -18,7 +18,7 @@ impl SolarSystem {
                 projectee_item_key,
                 projectee_uad_item,
             );
-            // Projection tracker
+            // Reverse projections
             self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Update services

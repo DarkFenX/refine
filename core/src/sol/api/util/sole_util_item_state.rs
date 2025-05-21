@@ -2,7 +2,7 @@ use crate::{
     ad,
     sol::{
         ItemKey, SolarSystem,
-        running_effects::RunningEffects,
+        reffs::REffs,
         svc::Svc,
         uad::{Uad, item::UadItem},
     },
@@ -12,7 +12,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_switch_item_state(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
@@ -33,7 +33,7 @@ impl SolarSystem {
     pub(in crate::sol::api::util) fn util_internal_switch_item_state(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         old_item_a_state: ad::AState,
@@ -45,7 +45,7 @@ impl SolarSystem {
     pub(in crate::sol::api::util) fn util_internal_switch_item_state_without_projs(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         old_item_a_state: ad::AState,

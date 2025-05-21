@@ -1,6 +1,6 @@
 use crate::sol::{
     FitKey,
-    running_effects::RunningEffects,
+    reffs::REffs,
     svc::{
         calc::Calc,
         vast::{ValOptions, ValResult, Vast},
@@ -13,7 +13,7 @@ impl Vast {
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
-        running_effects: &RunningEffects,
+        running_effects: &REffs,
         fit_key: FitKey,
         options: &ValOptions,
     ) -> bool {
@@ -369,7 +369,7 @@ impl Vast {
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
-        running_effects: &RunningEffects,
+        running_effects: &REffs,
         fit_key: FitKey,
         options: &ValOptions,
     ) -> ValResult {

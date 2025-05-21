@@ -1,13 +1,11 @@
-use crate::sol::{
-    ItemKey, SolarSystem, rev_proj_tracker::RevProjTracker, running_effects::RunningEffects, svc::Svc, uad::Uad,
-};
+use crate::sol::{ItemKey, SolarSystem, reffs::REffs, rprojs::RProjs, svc::Svc, uad::Uad};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn load_fighter(
         uad: &mut Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
-        rprojs: &mut RevProjTracker,
+        reffs: &mut REffs,
+        rprojs: &mut RProjs,
         item_key: ItemKey,
     ) {
         // Process fighter itself
@@ -19,8 +17,8 @@ impl SolarSystem {
     pub(in crate::sol::api) fn unload_fighter(
         uad: &mut Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
-        rprojs: &mut RevProjTracker,
+        reffs: &mut REffs,
+        rprojs: &mut RProjs,
         item_key: ItemKey,
     ) {
         // Process autocharges

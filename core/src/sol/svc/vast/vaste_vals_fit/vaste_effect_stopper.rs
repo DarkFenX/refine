@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{EffectId, ItemId, ItemKey, running_effects::RunningEffects, svc::vast::VastFitData, uad::Uad},
+    sol::{EffectId, ItemId, ItemKey, reffs::REffs, svc::vast::VastFitData, uad::Uad},
     util::RSet,
 };
 
@@ -15,7 +15,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_effect_stopper_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        running_effects: &RunningEffects,
+        running_effects: &REffs,
     ) -> bool {
         for target_effect_spec in self.stopped_effects.keys() {
             if running_effects.is_running(&target_effect_spec.item_key, &target_effect_spec.a_effect_id)
@@ -31,7 +31,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
-        running_effects: &RunningEffects,
+        running_effects: &REffs,
     ) -> Option<ValEffectStopperFail> {
         let mut items = HashMap::new();
         for target_effect_spec in self.stopped_effects.keys() {

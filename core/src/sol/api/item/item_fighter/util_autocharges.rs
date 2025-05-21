@@ -4,8 +4,8 @@ use crate::{
     ad,
     sol::{
         ItemKey, SolarSystem,
-        rev_proj_tracker::RevProjTracker,
-        running_effects::RunningEffects,
+        reffs::REffs,
+        rprojs::RProjs,
         svc::Svc,
         uad::{
             Uad,
@@ -18,8 +18,8 @@ impl SolarSystem {
     pub(in crate::sol::api) fn add_fighter_autocharges(
         uad: &mut Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
-        rprojs: &mut RevProjTracker,
+        reffs: &mut REffs,
+        rprojs: &mut RProjs,
         fighter_item_key: ItemKey,
     ) {
         // Process autocharges - start with collecting some data about fighter itself
@@ -121,8 +121,8 @@ impl SolarSystem {
     pub(in crate::sol::api) fn remove_fighter_autocharges(
         uad: &mut Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
-        rprojs: &mut RevProjTracker,
+        reffs: &mut REffs,
+        rprojs: &mut RProjs,
         fighter_item_key: ItemKey,
         clear_fighter_acs: bool,
     ) {
@@ -153,7 +153,7 @@ impl SolarSystem {
                     projectee_item_key,
                     projectee_uad_item,
                 );
-                // Update projection tracker (just because it's convenient to do it here)
+                // Update reverse projections (just because it's convenient to do it here)
                 rprojs.unreg_projectee(&ac_key, &projectee_item_key);
             }
             // Remove from services

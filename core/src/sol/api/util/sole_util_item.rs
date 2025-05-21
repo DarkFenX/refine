@@ -2,7 +2,7 @@ use crate::{
     ad,
     sol::{
         ItemKey, SolarSystem,
-        running_effects::RunningEffects,
+        reffs::REffs,
         svc::Svc,
         uad::{Uad, item::UadItem},
     },
@@ -12,7 +12,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_add_item(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
@@ -35,7 +35,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_remove_item(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
@@ -59,7 +59,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_load_item(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
@@ -79,7 +79,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_unload_item(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {

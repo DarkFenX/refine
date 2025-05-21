@@ -1,6 +1,6 @@
 use crate::sol::{
     ItemKey, SolarSystem,
-    running_effects::RunningEffects,
+    reffs::REffs,
     svc::Svc,
     uad::{Uad, item::UadItem},
 };
@@ -9,7 +9,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn load_sw_effect(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
@@ -18,7 +18,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn unload_sw_effect(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut RunningEffects,
+        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {

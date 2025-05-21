@@ -1,10 +1,11 @@
 use crate::{ad, sol::ItemKey, util::RMapRSet};
 
+/// Running effects by item.
 #[derive(Clone)]
-pub(in crate::sol) struct RunningEffects {
+pub(in crate::sol) struct REffs {
     pub(super) data: RMapRSet<ItemKey, ad::AEffectId>,
 }
-impl RunningEffects {
+impl REffs {
     pub(in crate::sol) fn new() -> Self {
         Self { data: RMapRSet::new() }
     }

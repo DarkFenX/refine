@@ -22,7 +22,7 @@ impl ProjectionRegister {
                             return Err(DebugError {});
                         }
                     }
-                    // When UAD item has no distance - it's an error, since projection tracker is
+                    // When UAD item has no distance - it's an error, since projection register is
                     // supposed to track only relations with range
                     None => return Err(DebugError {}),
                 },

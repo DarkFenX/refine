@@ -1,7 +1,7 @@
 use super::is_a_effect_projectable;
 use crate::sol::{
     AttrVal, ItemKey, SolarSystem,
-    running_effects::RunningEffects,
+    reffs::REffs,
     svc::Svc,
     uad::{Uad, item::UadItem},
 };
@@ -10,7 +10,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_add_item_projection(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &RunningEffects,
+        reffs: &REffs,
         projector_item_key: ItemKey,
         projector_uad_item: &UadItem,
         projectee_item_key: ItemKey,
@@ -36,7 +36,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_remove_item_projection(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &RunningEffects,
+        reffs: &REffs,
         projector_item_key: ItemKey,
         projector_uad_item: &UadItem,
         projectee_item_key: ItemKey,
@@ -60,7 +60,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_change_item_proj_range(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &RunningEffects,
+        reffs: &REffs,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
         projectee_uad_item: &UadItem,

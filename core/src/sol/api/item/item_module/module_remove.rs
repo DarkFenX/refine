@@ -24,7 +24,7 @@ impl SolarSystem {
                     projectee_item_key,
                     projectee_uad_item,
                 );
-                // Remove charge outgoing projections from projection tracker
+                // Remove charge outgoing projections from reverse projection tracker
                 self.rprojs.unreg_projectee(&charge_key, &projectee_item_key);
             }
         }
@@ -40,7 +40,7 @@ impl SolarSystem {
                 projectee_item_key,
                 projectee_uad_item,
             );
-            // Remove module outgoing projections from projection tracker
+            // Remove module outgoing projections from reverse projection tracker
             self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Remove charge from services
