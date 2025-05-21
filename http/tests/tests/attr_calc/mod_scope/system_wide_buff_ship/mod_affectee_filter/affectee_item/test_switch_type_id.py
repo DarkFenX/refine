@@ -1,7 +1,7 @@
 from tests import approx, check_no_field
 
 
-def test_affectee_root_ship(client, consts):
+def test_affectee_root(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()
@@ -19,6 +19,7 @@ def test_affectee_root_ship(client, consts):
     eve_ship1_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
     eve_ship2_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     eve_ship3_id = client.alloc_item_id()
+    eve_ship4_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -40,3 +41,7 @@ def test_affectee_root_ship(client, consts):
     api_ship.change_ship(type_id=eve_ship1_id)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(260)
+    # Action
+    api_ship.change_ship(type_id=eve_ship4_id)
+    # Verification
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(100)

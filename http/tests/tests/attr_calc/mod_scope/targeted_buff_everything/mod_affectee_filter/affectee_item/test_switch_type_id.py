@@ -1,7 +1,7 @@
 from tests import approx, check_no_field
 
 
-def test_affectee_root_ship(client, consts):
+def test_affectee_root(client, consts):
     eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr_id = client.mk_eve_attr()
     client.mk_eve_buff(
@@ -14,32 +14,37 @@ def test_affectee_root_ship(client, consts):
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_ship1_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
-    eve_ship2_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
-    eve_ship3_id = client.alloc_item_id()
+    eve_root1_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    eve_root2_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
+    eve_root3_id = client.alloc_item_id()
+    eve_root4_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_ship = api_fit2.set_ship(type_id=eve_ship1_id)
+    api_root = api_fit2.set_ship(type_id=eve_root1_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(90)
     # Action
-    api_ship.change_ship(type_id=eve_ship2_id)
+    api_root.change_ship(type_id=eve_root2_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(45)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(45)
     # Action
-    api_ship.change_ship(type_id=eve_ship3_id)
+    api_root.change_ship(type_id=eve_root3_id)
     # Verification
-    api_ship.update()
+    api_root.update()
     with check_no_field():
-        api_ship.attrs  # noqa: B018
+        api_root.attrs  # noqa: B018
     # Action
-    api_ship.change_ship(type_id=eve_ship1_id)
+    api_root.change_ship(type_id=eve_root1_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    # Action
+    api_root.change_ship(type_id=eve_root4_id)
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 
 def test_affectee_child_drone(client, consts):

@@ -660,7 +660,6 @@ def test_mutation(client, consts):
         api_val.details  # noqa: B018
 
 
-
 def test_values(client, consts):
     # Check that only absence of attribute value, or value equal to 0 is treated as flag disabled
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
