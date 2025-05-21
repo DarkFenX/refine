@@ -130,31 +130,36 @@ def test_switch_type_id_affectee(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_proj_effect_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
-    eve_struct1_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
-    eve_struct2_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 50})
-    eve_struct3_id = client.alloc_item_id()
+    eve_root1_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
+    eve_root2_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 50})
+    eve_root3_id = client.alloc_item_id()
+    eve_root4_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_struct = api_fit.set_ship(type_id=eve_struct1_id)
+    api_root = api_fit.set_ship(type_id=eve_root1_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_root.id])
     # Verification
-    assert api_struct.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_struct.change_ship(type_id=eve_struct2_id)
+    api_root.change_ship(type_id=eve_root2_id)
     # Verification
-    assert api_struct.update().attrs[eve_affectee_attr_id].dogma == approx(60)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(60)
     # Action
-    api_struct.change_ship(type_id=eve_struct3_id)
+    api_root.change_ship(type_id=eve_root3_id)
     # Verification
-    api_struct.update()
+    api_root.update()
     with check_no_field():
-        api_struct.attrs  # noqa: B018
+        api_root.attrs  # noqa: B018
     # Action
-    api_struct.change_ship(type_id=eve_struct1_id)
+    api_root.change_ship(type_id=eve_root1_id)
     # Verification
-    assert api_struct.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_root.change_ship(type_id=eve_root4_id)
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(50)
 
 
 def test_switch_src_to_ship(client, consts):

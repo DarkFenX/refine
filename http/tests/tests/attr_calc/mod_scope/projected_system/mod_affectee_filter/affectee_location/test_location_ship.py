@@ -105,6 +105,48 @@ def test_replace_root(client, consts):
     assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
+def test_switch_type_id_root(client, consts):
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
+    eve_proj_effect_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
+    eve_root1_id = client.mk_eve_ship()
+    eve_root2_id = client.mk_eve_struct()
+    eve_root3_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_root = api_fit.set_ship(type_id=eve_root1_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    # Verification
+    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_root.change_ship(type_id=eve_root2_id)
+    # Verification
+    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_root.change_ship(type_id=eve_root1_id)
+    # Verification
+    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_root.change_ship(type_id=eve_root3_id)
+    # Verification
+    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_root.change_ship(type_id=eve_root1_id)
+    # Verification
+    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+
+
 def test_switch_type_id_affectee(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
