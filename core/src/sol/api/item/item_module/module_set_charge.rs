@@ -34,7 +34,7 @@ impl SolarSystem {
                 SolarSystem::util_remove_item_projection(
                     &self.uad,
                     &mut self.svc,
-                    &mut self.reffs,
+                    &self.reffs,
                     old_charge_key,
                     old_charge_uad_item,
                     *projectee_item_key,
@@ -93,7 +93,7 @@ impl SolarSystem {
             SolarSystem::util_add_item_projection(
                 &self.uad,
                 &mut self.svc,
-                &mut self.reffs,
+                &self.reffs,
                 new_charge_key,
                 new_charge_uad_item,
                 *projectee_item_key,

@@ -64,7 +64,7 @@ fn switch_item_state(
     new_item_a_state: ad::AState,
 ) {
     match new_item_a_state.cmp(&old_item_a_state) {
-        std::cmp::Ordering::Equal => return,
+        std::cmp::Ordering::Equal => (),
         std::cmp::Ordering::Greater => {
             let is_item_loaded = uad_item.is_loaded();
             for a_state in ad::AState::iter().filter(|v| **v > old_item_a_state && **v <= new_item_a_state) {

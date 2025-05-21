@@ -15,19 +15,17 @@ impl ProjectionRegister {
                 None => return Err(DebugError {}),
             };
             match affector_projs.get(affectee_item_key) {
-                Some(uad_range) => match uad_range {
+                Some(Some(uad_range)) => {
                     // If ranges are defined on both, range mismatch is an error
-                    Some(uad_range) => {
-                        if uad_range != calc_range {
-                            return Err(DebugError {});
-                        }
+                    if uad_range != calc_range {
+                        return Err(DebugError {});
                     }
-                    // When UAD item has no distance - it's an error, since projection register is
-                    // supposed to track only relations with range
-                    None => return Err(DebugError {}),
-                },
-                // No projection defined on UAD item is an error
-                None => return Err(DebugError {}),
+                }
+                // Error in either of cases:
+                // - when UAD item has no distance - since projection register is supposed to track
+                // only relations with range
+                // - no projection defined on UAD item
+                _ => return Err(DebugError {}),
             }
         }
         Ok(())

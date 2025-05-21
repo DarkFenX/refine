@@ -11,7 +11,7 @@ impl SolarSystem {
             SolarSystem::util_remove_item_projection(
                 &self.uad,
                 &mut self.svc,
-                &mut self.reffs,
+                &self.reffs,
                 item_key,
                 uad_item,
                 projectee_item_key,
