@@ -263,6 +263,65 @@ def test_mutation_use(client, consts):
     assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(130)}
 
 
+def test_switch_type_id(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_drone2_id = client.mk_eve_item(attrs={eve_use_attr_id: 140})
+    eve_drone3_id = client.mk_eve_item(attrs={eve_use_attr_id: 120})
+    eve_drone4_id = client.alloc_item_id()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth.used == approx(150)
+    assert api_val.details.drone_bandwidth.max == approx(125)
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: 150}
+    # Action
+    api_drone.change_drone(type_id=eve_drone2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth.used == approx(140)
+    assert api_val.details.drone_bandwidth.max == approx(125)
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: 140}
+    # Action
+    api_drone.change_drone(type_id=eve_drone3_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_drone.change_drone(type_id=eve_drone1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth.used == approx(150)
+    assert api_val.details.drone_bandwidth.max == approx(125)
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: 150}
+    # Action
+    api_drone.change_drone(type_id=eve_drone4_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_drone.change_drone(type_id=eve_drone2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth.used == approx(140)
+    assert api_val.details.drone_bandwidth.max == approx(125)
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: 140}
+
+
 def test_rounding(client, consts):
     # Bandwidth shouldn't have its sum or individual values rounded
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)

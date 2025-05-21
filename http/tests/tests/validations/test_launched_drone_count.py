@@ -166,12 +166,29 @@ def test_not_loaded_user(client, consts):
     # Not loaded drones still take slot
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
-    eve_drone_id = client.alloc_item_id()
+    eve_drone1_id = client.alloc_item_id()
+    eve_drone2_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_character(type_id=eve_char_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    api_drone = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
+    assert api_val.passed is False
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.max == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
+    # Action
+    api_drone.change_drone(type_id=eve_drone2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
+    assert api_val.passed is False
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.max == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
+    # Action
+    api_drone.change_drone(type_id=eve_drone1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
