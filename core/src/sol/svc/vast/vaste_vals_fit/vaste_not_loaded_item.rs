@@ -13,7 +13,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_fast(&self, kfs: &RSet<ItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.not_loaded.is_empty(),
-            false => self.not_loaded.difference(kfs).nth(0).is_none(),
+            false => self.not_loaded.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations

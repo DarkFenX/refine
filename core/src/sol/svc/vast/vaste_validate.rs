@@ -13,7 +13,7 @@ impl Vast {
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
-        running_effects: &REffs,
+        reffs: &REffs,
         fit_key: FitKey,
         options: &ValOptions,
     ) -> bool {
@@ -348,8 +348,7 @@ impl Vast {
         {
             return false;
         }
-        if options.effect_stopper.enabled
-            && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, running_effects)
+        if options.effect_stopper.enabled && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, reffs)
         {
             return false;
         }
@@ -369,7 +368,7 @@ impl Vast {
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
-        running_effects: &REffs,
+        reffs: &REffs,
         fit_key: FitKey,
         options: &ValOptions,
     ) -> ValResult {
@@ -650,8 +649,7 @@ impl Vast {
                 fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, uad, fit);
         }
         if options.effect_stopper.enabled {
-            result.effect_stopper =
-                fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, uad, running_effects);
+            result.effect_stopper = fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, uad, reffs);
         }
         if options.assist_immunity.enabled {
             result.assist_immunity = fit_data.validate_assist_immunity_verbose(&options.assist_immunity.kfs, uad, calc);
