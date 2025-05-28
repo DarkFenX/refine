@@ -133,7 +133,7 @@ def test_replace_root(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
-def test_switch_type_id_root(client, consts):
+def setup_switch_type_id_root_test(*, client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
@@ -147,21 +147,49 @@ def test_switch_type_id_root(client, consts):
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
     eve_affectee_item_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1})
-    eve_char_item1_id = client.mk_eve_item()
-    eve_char_item2_id = client.alloc_item_id()
+    eve_char_loaded_id = client.mk_eve_item()
+    eve_char_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_character = api_fit.set_character(type_id=eve_char_item1_id)
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_implant(type_id=eve_affectee_item_id)
-    api_fit.add_fw_effect(type_id=eve_affector_item_id)
+    return eve_affectee_attr_id, eve_char_loaded_id, eve_char_not_loaded_id, api_fit, api_fw_effect, api_affectee_item
+
+
+def test_switch_type_id_root_loaded_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_char_loaded_id,
+     eve_char_not_loaded_id,
+     api_fit, api_fw_effect,
+     api_affectee_item) = setup_switch_type_id_root_test(client=client, consts=consts)
+    api_character = api_fit.set_character(type_id=eve_char_loaded_id)
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_character.change_character(type_id=eve_char_item2_id)
+    api_character.change_character(type_id=eve_char_not_loaded_id)
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_character.change_character(type_id=eve_char_item1_id)
+    api_fw_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_switch_type_id_root_not_loaded_to_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_char_loaded_id,
+     eve_char_not_loaded_id,
+     api_fit, api_fw_effect,
+     api_affectee_item) = setup_switch_type_id_root_test(client=client, consts=consts)
+    api_character = api_fit.set_character(type_id=eve_char_not_loaded_id)
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_character.change_character(type_id=eve_char_loaded_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_fw_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
