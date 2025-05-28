@@ -90,7 +90,7 @@ def test_replace_root(client, consts):
     assert api_affectee_item2.update().attrs[eve_affectee_attr_id].dogma == approx(60)
 
 
-def test_switch_type_id_affectee(client, consts):
+def setup_switch_type_id_test(*, client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -101,27 +101,54 @@ def test_switch_type_id_affectee(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
-    eve_affectee_item1_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
-    eve_affectee_item2_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 50})
-    eve_affectee_item3_id = client.alloc_item_id()
+    eve_affectee_loaded_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
+    eve_affectee_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_affectee_item = api_fit.set_character(type_id=eve_affectee_item1_id)
-    api_sol.add_sw_effect(type_id=eve_affector_item_id)
+    api_sw_effect = api_sol.add_sw_effect(type_id=eve_affector_item_id)
+    return eve_affectee_attr_id, eve_affectee_loaded_id, eve_affectee_not_loaded_id, api_fit, api_sw_effect
+
+
+def test_switch_type_id_affected_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_affectee_loaded_id,
+     eve_affectee_not_loaded_id,
+     api_fit,
+     api_sw_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_character(type_id=eve_affectee_loaded_id)
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_affectee_item.change_character(type_id=eve_affectee_item2_id)
-    # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(60)
-    # Action
-    api_affectee_item.change_character(type_id=eve_affectee_item3_id)
+    api_affectee_item.change_character(type_id=eve_affectee_not_loaded_id)
     # Verification
     api_affectee_item.update()
     with check_no_field():
         api_affectee_item.attrs  # noqa: B018
     # Action
-    api_affectee_item.change_character(type_id=eve_affectee_item1_id)
+    api_sw_effect.remove()
+    # Verification
+    api_affectee_item.update()
+    with check_no_field():
+        api_affectee_item.attrs  # noqa: B018
+
+
+def test_switch_type_id_not_loaded_to_affected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_affectee_loaded_id,
+     eve_affectee_not_loaded_id,
+     api_fit,
+     api_sw_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_character(type_id=eve_affectee_not_loaded_id)
+    # Verification
+    api_affectee_item.update()
+    with check_no_field():
+        api_affectee_item.attrs  # noqa: B018
+    # Action
+    api_affectee_item.change_character(type_id=eve_affectee_loaded_id)
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_sw_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)

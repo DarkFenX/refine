@@ -161,7 +161,8 @@ def test_switch_type_id_root_loaded_to_not_loaded_remove(client, consts):
     (eve_affectee_attr_id,
      eve_char_loaded_id,
      eve_char_not_loaded_id,
-     api_fit, api_fw_effect,
+     api_fit,
+     api_fw_effect,
      api_affectee_item) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_character = api_fit.set_character(type_id=eve_char_loaded_id)
     # Verification
@@ -180,7 +181,8 @@ def test_switch_type_id_root_not_loaded_to_loaded_remove(client, consts):
     (eve_affectee_attr_id,
      eve_char_loaded_id,
      eve_char_not_loaded_id,
-     api_fit, api_fw_effect,
+     api_fit,
+     api_fw_effect,
      api_affectee_item) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_character = api_fit.set_character(type_id=eve_char_not_loaded_id)
     # Verification
