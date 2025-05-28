@@ -59,6 +59,34 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_switch_type_id(client, consts):
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
+    eve_module1_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
+    eve_module2_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiServiceState.offline)
+    api_module2 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiServiceState.offline)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted == {eve_module1_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+    # Action
+    api_module2.change_module(type_id=eve_module2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module2.change_module(type_id=eve_module1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted == {eve_module1_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+
+
 def test_rounding(client, consts):
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_service1_id = client.mk_eve_item(attrs={eve_limit_attr_id: 0.6})

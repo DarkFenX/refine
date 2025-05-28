@@ -7,7 +7,7 @@ from tests import check_no_field
 from tests.fw.api import ValOptions
 
 
-def test_main(client, consts):
+def test_switch_ship(client, consts):
     eve_stance_id = client.mk_eve_item()
     eve_confessor_id = client.mk_eve_ship(id_=consts.EveItem.confessor)
     eve_hecate_id = client.mk_eve_ship(id_=consts.EveItem.hecate)
@@ -46,6 +46,52 @@ def test_main(client, consts):
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_svipul_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_stance=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_switch_ship_type_id(client, consts):
+    eve_stance_id = client.mk_eve_item()
+    eve_confessor_id = client.mk_eve_ship(id_=consts.EveItem.confessor)
+    eve_hecate_id = client.mk_eve_ship(id_=consts.EveItem.hecate)
+    eve_jackdaw_id = client.mk_eve_ship(id_=consts.EveItem.jackdaw)
+    eve_svipul_id = client.mk_eve_ship(id_=consts.EveItem.svipul)
+    eve_other_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_other_id)
+    api_stance = api_fit.set_stance(type_id=eve_stance_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_stance=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_stance.item_id == api_stance.id
+    # Action
+    api_ship.change_ship(type_id=eve_confessor_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_stance=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship.change_ship(type_id=eve_hecate_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_stance=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship.change_ship(type_id=eve_jackdaw_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_stance=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship.change_ship(type_id=eve_svipul_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True

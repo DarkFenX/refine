@@ -94,6 +94,44 @@ def test_charge_switch(client, consts):
         api_aar_item.mods  # noqa: B018
 
 
+def test_charge_type_id_switch(client, consts):
+    eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair)
+    eve_aar_item_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 3, eve_affectee_attr_id: 100},
+        eff_ids=[eve_effect_id])
+    eve_paste_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_other_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_aar_item = api_fit.add_module(
+        type_id=eve_aar_item_id,
+        rack=consts.ApiRack.low,
+        charge_type_id=eve_paste_item_id)
+    # Verification
+    api_aar_item.update()
+    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
+    assert len(api_aar_item.mods[eve_affectee_attr_id]) == 1
+    # Action
+    api_aar_item.charge.change_charge(type_id=eve_other_item_id)
+    # Verification
+    api_aar_item.update()
+    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(100)
+    with check_no_field():
+        api_aar_item.mods  # noqa: B018
+    # Action
+    api_aar_item.charge.change_charge(type_id=eve_paste_item_id)
+    # Verification
+    api_aar_item.update()
+    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
+    assert len(api_aar_item.mods[eve_affectee_attr_id]) == 1
+
+
 def test_mult_change(client, consts):
     eve_ship_id = client.mk_eve_ship()
     eve_aar_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
