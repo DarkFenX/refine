@@ -17,7 +17,7 @@ def setup_root_test(*, client, consts):
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_root_ship_id = client.mk_eve_ship()
     eve_root_struct_id = client.mk_eve_struct()
-    eve_root_unknown_id = client.alloc_item_id()
+    eve_root_not_loaded_id = client.alloc_item_id()
     eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
@@ -28,7 +28,7 @@ def setup_root_test(*, client, consts):
         eve_affectee_attr_id,
         eve_root_ship_id,
         eve_root_struct_id,
-        eve_root_unknown_id,
+        eve_root_not_loaded_id,
         api_fit,
         api_fw_effect,
         api_module)
