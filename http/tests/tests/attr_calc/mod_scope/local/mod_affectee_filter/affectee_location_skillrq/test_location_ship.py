@@ -196,7 +196,7 @@ def test_replace_root(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
-def test_switch_type_id_root(client, consts):
+def setup_switch_type_id_root_test(*, client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
@@ -210,33 +210,106 @@ def test_switch_type_id_root(client, consts):
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
     eve_affectee_item_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1})
-    eve_root1_id = client.mk_eve_ship()
-    eve_root2_id = client.mk_eve_struct()
-    eve_root3_id = client.alloc_item_id()
+    eve_root_ship_id = client.mk_eve_ship()
+    eve_root_struct_id = client.mk_eve_struct()
+    eve_root_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_root = api_fit.set_ship(type_id=eve_root1_id)
-    api_fit.add_implant(type_id=eve_affector_item_id)
-    api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item_id)
+    api_affector = api_fit.add_implant(type_id=eve_affector_item_id)
+    api_affectee = api_fit.add_rig(type_id=eve_affectee_item_id)
+    return (
+        eve_affectee_attr_id,
+        eve_root_ship_id,
+        eve_root_struct_id,
+        eve_root_not_loaded_id,
+        api_fit,
+        api_affector,
+        api_affectee)
+
+
+def test_switch_type_id_root_affected_to_unaffected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     eve_root_struct_id,
+     _,
+     api_fit,
+     api_affector,
+     api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_ship_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_root.change_ship(type_id=eve_root2_id)
+    api_root.change_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_root.change_ship(type_id=eve_root1_id)
+    api_affector.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_switch_type_id_root_affected_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
+     eve_root_not_loaded_id,
+     api_fit,
+     api_affector,
+     api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_ship_id)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_root.change_ship(type_id=eve_root3_id)
+    api_root.change_ship(type_id=eve_root_not_loaded_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_root.change_ship(type_id=eve_root1_id)
+    api_affector.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_switch_type_id_root_unaffected_to_affected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     eve_root_struct_id,
+     _,
+     api_fit,
+     api_affector,
+     api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_ship_id)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_root.change_ship(type_id=eve_root_struct_id)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_affector.remove()
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_switch_type_id_root_not_loaded_to_affected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
+     eve_root_not_loaded_id,
+     api_fit,
+     api_affector,
+     api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_ship_id)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_root.change_ship(type_id=eve_root_not_loaded_id)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_affector.remove()
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 
 def test_switch_src_to_struct(client, consts):
