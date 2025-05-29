@@ -49,11 +49,7 @@ impl StandardRegister {
         }
         for loc in PotentialLocations::new(item) {
             self.affectee_loc.add_entry((fit_key, loc), item_key);
-        }
-        for loc in PotentialLocations::new(item) {
             self.affectee_loc_grp.add_entry((fit_key, loc, a_item_grp_id), item_key);
-        }
-        for loc in PotentialLocations::new(item) {
             for srq_a_item_id in a_srqs.keys() {
                 self.affectee_loc_srq
                     .add_entry((fit_key, loc, *srq_a_item_id), item_key);
@@ -86,12 +82,8 @@ impl StandardRegister {
         }
         for loc in PotentialLocations::new(item) {
             self.affectee_loc.remove_entry(&(fit_key, loc), &item_key);
-        }
-        for loc in PotentialLocations::new(item) {
             self.affectee_loc_grp
                 .remove_entry(&(fit_key, loc, a_item_grp_id), &item_key);
-        }
-        for loc in PotentialLocations::new(item) {
             for srq_a_item_id in a_srqs.keys() {
                 self.affectee_loc_srq
                     .remove_entry(&(fit_key, loc, *srq_a_item_id), &item_key);
