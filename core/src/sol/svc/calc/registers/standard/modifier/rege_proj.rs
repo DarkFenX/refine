@@ -19,7 +19,7 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) -> Vec<CtxModifier> {
-        let raw_modifiers = self.rmods_proj.get(&projector_espec).copied().collect_vec();
+        let raw_modifiers = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
         for raw_modifier in raw_modifiers.iter() {
             if let Some(ctx_modifier) = match raw_modifier.kind {
