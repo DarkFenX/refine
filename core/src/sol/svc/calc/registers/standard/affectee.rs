@@ -34,7 +34,8 @@ impl StandardRegister {
     }
     // Modification methods
     pub(in crate::sol::svc::calc) fn reg_affectee(&mut self, item_key: ItemKey, item: &UadItem) {
-        if item.is_buffable() {
+        let is_buffable = item.is_buffable();
+        if is_buffable {
             self.reg_buffable_for_sw(item_key, item);
         }
         let fit_key = match item.get_fit_key() {
@@ -60,13 +61,14 @@ impl StandardRegister {
                 self.affectee_own_srq.add_entry((fit_key, *srq_a_item_id), item_key);
             }
         }
-        if item.is_buffable() {
+        if is_buffable {
             self.affectee_buffable.add_entry(fit_key, item_key);
             self.reg_buffable_for_fw(item_key, item, fit_key);
         }
     }
     pub(in crate::sol::svc::calc) fn unreg_affectee(&mut self, item_key: ItemKey, item: &UadItem) {
-        if item.is_buffable() {
+        let is_buffable = item.is_buffable();
+        if is_buffable {
             self.unreg_buffable_for_sw(item_key, item);
         }
         let fit_key = match item.get_fit_key() {
@@ -95,7 +97,7 @@ impl StandardRegister {
                     .remove_entry(&(fit_key, *srq_a_item_id), &item_key);
             }
         }
-        if item.is_buffable() {
+        if is_buffable {
             self.affectee_buffable.remove_entry(&fit_key, &item_key);
             self.unreg_buffable_for_fw(item_key, item, fit_key);
         }
