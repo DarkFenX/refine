@@ -9,7 +9,7 @@ impl SolarSystem {
         if uad_item.get_a_item_id() == a_item_id {
             return;
         }
-        SolarSystem::unload_fighter(
+        SolarSystem::util_remove_fighter_with_projs(
             &mut self.uad,
             &mut self.svc,
             &mut self.reffs,
@@ -22,7 +22,7 @@ impl SolarSystem {
             .get_fighter_mut()
             .unwrap()
             .set_a_item_id(&self.uad.src, a_item_id);
-        SolarSystem::load_fighter(
+        SolarSystem::util_add_fighter_with_projs(
             &mut self.uad,
             &mut self.svc,
             &mut self.reffs,

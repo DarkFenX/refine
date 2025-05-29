@@ -8,4 +8,4 @@ mod fw_effect_remove;
 mod fw_effect_set_state;
 mod fw_effect_set_type_id;
 mod sol_get_fw_effect;
-mod util_load_unload;
+mod util_add_remove;

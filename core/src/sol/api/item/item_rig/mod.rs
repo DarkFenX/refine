@@ -8,4 +8,4 @@ mod rig_remove;
 mod rig_set_state;
 mod rig_set_type_id;
 mod sol_get_rig;
-mod util_load_unload;
+mod util_add_remove;

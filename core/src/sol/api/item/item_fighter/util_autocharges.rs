@@ -91,7 +91,7 @@ impl SolarSystem {
         }
         for (_, ac_key) in effects_with_ac_keys.iter() {
             let ac_uad_item = uad.items.get(*ac_key);
-            SolarSystem::util_add_item(uad, svc, reffs, *ac_key, ac_uad_item);
+            SolarSystem::util_add_item_without_projs(uad, svc, reffs, *ac_key, ac_uad_item);
             for (projectee_item_key, range) in projections.iter() {
                 let projectee_uad_item = uad.items.get(*projectee_item_key);
                 SolarSystem::util_add_item_projection(
@@ -157,7 +157,7 @@ impl SolarSystem {
                 rprojs.unreg_projectee(&ac_key, &projectee_item_key);
             }
             // Remove from services
-            SolarSystem::util_remove_item(uad, svc, reffs, ac_key, ac_uad_item);
+            SolarSystem::util_remove_item_without_projs(uad, svc, reffs, ac_key, ac_uad_item);
         }
         // Update items
         if clear_fighter_acs {

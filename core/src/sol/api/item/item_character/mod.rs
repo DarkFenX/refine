@@ -8,4 +8,4 @@ mod character_set_type_id;
 mod fit_get_character;
 mod fit_set_character;
 mod sol_get;
-mod util_load_unload;
+mod util_add_remove;

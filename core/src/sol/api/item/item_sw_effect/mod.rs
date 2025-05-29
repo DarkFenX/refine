@@ -8,4 +8,4 @@ mod sw_effect;
 mod sw_effect_remove;
 mod sw_effect_set_state;
 mod sw_effect_set_type_id;
-mod util_load_unload;
+mod util_add_remove;

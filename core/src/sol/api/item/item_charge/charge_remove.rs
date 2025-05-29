@@ -22,7 +22,7 @@ impl SolarSystem {
             self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Update services
-        SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Update user data
         let uad_module = self.uad.items.get_mut(module_item_key).get_module_mut().unwrap();
         uad_module.set_charge_item_key(None);

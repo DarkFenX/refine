@@ -24,7 +24,7 @@ impl SolarSystem {
         uad_fit.ship = Some(item_key);
         uad_fit.kind = ship_kind;
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_add_ship(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         item_key
     }
 }

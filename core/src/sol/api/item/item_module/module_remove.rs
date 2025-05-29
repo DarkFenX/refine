@@ -46,10 +46,16 @@ impl SolarSystem {
         // Remove charge from services
         if let Some(charge_key) = charge_key {
             let charge_uad_item = self.uad.items.get(charge_key);
-            SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, charge_key, charge_uad_item);
+            SolarSystem::util_remove_item_without_projs(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                charge_key,
+                charge_uad_item,
+            );
         }
         // Remove module from services
-        SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Update user data - not updating module<->charge references because both will be removed
         if let Some(charge_key) = charge_key {
             self.uad.items.remove(charge_key);

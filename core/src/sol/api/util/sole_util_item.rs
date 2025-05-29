@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn util_add_item(
+    pub(in crate::sol::api) fn util_add_item_without_projs(
         uad: &Uad,
         svc: &mut Svc,
         reffs: &mut REffs,
@@ -20,8 +20,6 @@ impl SolarSystem {
         if uad_item.is_loaded() {
             svc.notify_item_loaded(uad, item_key, uad_item)
         }
-        // When adding item, we assume it has no projections - they should be added to services by
-        // the caller after calling this function
         SolarSystem::util_internal_switch_item_state_without_projs(
             uad,
             svc,
@@ -32,16 +30,17 @@ impl SolarSystem {
             uad_item.get_a_state(),
         );
     }
-    pub(in crate::sol::api) fn util_remove_item(
+    // When removing even projectable item from solar system, we assume that projections are handled
+    // separately, on the layers above this function. This is needed not to clean up on-item
+    // projection container, which often makes item removal more expensive due to borrow checker
+    // rules
+    pub(in crate::sol::api) fn util_remove_item_without_projs(
         uad: &Uad,
         svc: &mut Svc,
         reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
-        // When removing item, we assume that projections are handled separately. This is needed not
-        // to clean up on-item projection container, which often makes item removal more expensive
-        // due to borrow checker rules
         SolarSystem::util_internal_switch_item_state_without_projs(
             uad,
             svc,
@@ -56,13 +55,17 @@ impl SolarSystem {
         }
         svc.notify_item_removed(uad, item_key, uad_item);
     }
-    pub(in crate::sol::api) fn util_load_item(
+    // "With projections" in this case means that projections will be handled when starting effects,
+    // to emit effect projected/unprojected notifications. Notifications "projection added" is not
+    // part of it
+    pub(in crate::sol::api) fn util_add_item_with_projs(
         uad: &Uad,
         svc: &mut Svc,
         reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
+        svc.notify_item_added(uad, item_key, uad_item);
         if uad_item.is_loaded() {
             svc.notify_item_loaded(uad, item_key, uad_item);
         }
@@ -76,7 +79,10 @@ impl SolarSystem {
             uad_item.get_a_state(),
         );
     }
-    pub(in crate::sol::api) fn util_unload_item(
+    // "With projections" in this case means that projections will be handled when stopping effects,
+    // to emit effect projected/unprojected notifications. Notifications "projection added" is not
+    // part of it
+    pub(in crate::sol::api) fn util_remove_item_with_projs(
         uad: &Uad,
         svc: &mut Svc,
         reffs: &mut REffs,
@@ -95,5 +101,6 @@ impl SolarSystem {
         if uad_item.is_loaded() {
             svc.notify_item_unloaded(uad, item_key, uad_item)
         }
+        svc.notify_item_removed(uad, item_key, uad_item);
     }
 }

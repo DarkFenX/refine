@@ -31,7 +31,7 @@ impl SolarSystem {
         self.internal_remove_incoming_projections(item_key);
         // Update services
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Update user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.fighters.remove(&item_key);

@@ -11,4 +11,4 @@ mod skill_set_level;
 mod skill_set_state;
 mod skill_set_type_id;
 mod sol_get_skill;
-mod util_load_unload;
+mod util_add_remove;

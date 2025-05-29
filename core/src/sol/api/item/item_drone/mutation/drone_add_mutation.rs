@@ -13,15 +13,15 @@ impl SolarSystem {
         mutation: ItemMutationRequest,
     ) -> Result<(), ItemNotMutatedError> {
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::unload_drone(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_drone_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         let uad_drone = self.uad.items.get_mut(item_key).get_drone_mut().unwrap();
         if let Err(error) = uad_drone.mutate(&self.uad.src, mutation) {
             let uad_item = self.uad.items.get(item_key);
-            SolarSystem::load_drone(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+            SolarSystem::util_add_drone_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
             return Err(error);
         }
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_drone(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_add_drone_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         Ok(())
     }
 }

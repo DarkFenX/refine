@@ -8,7 +8,7 @@ impl SolarSystem {
         self.internal_remove_incoming_projections(item_key);
         // Remove ship from services
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_ship(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Remove ship from user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.ship = None;

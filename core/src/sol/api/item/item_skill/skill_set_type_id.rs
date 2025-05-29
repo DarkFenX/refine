@@ -27,7 +27,7 @@ impl SolarSystem {
             });
         }
         // Unload skill
-        SolarSystem::unload_skill(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_skill(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Update adapted item ID and reload adapted data
         self.uad
             .items
@@ -41,7 +41,7 @@ impl SolarSystem {
         uad_fit.skills.insert(a_item_id, fit_skill);
         // Load skill
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_skill(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_add_skill(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         Ok(())
     }
 }

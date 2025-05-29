@@ -16,7 +16,7 @@ impl SolarSystem {
         let item_key = self.uad.items.add(uad_item);
         uad_fit.fw_effects.insert(item_key);
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_add_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         item_key
     }
 }

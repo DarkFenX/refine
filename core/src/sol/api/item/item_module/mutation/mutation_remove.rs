@@ -12,7 +12,7 @@ impl SolarSystem {
                 item_id: uad_module.get_item_id(),
             });
         }
-        SolarSystem::unload_module(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_module_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         self.uad
             .items
             .get_mut(item_key)
@@ -21,7 +21,7 @@ impl SolarSystem {
             .unmutate(&self.uad.src)
             .unwrap();
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::load_module(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         Ok(())
     }
 }

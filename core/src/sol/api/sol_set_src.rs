@@ -95,22 +95,34 @@ impl SolarSystem {
     fn unload_items(&mut self, item_keys: &ItemKeys) {
         for &booster_item_key in item_keys.boosters.iter() {
             let uad_item = self.uad.items.get(booster_item_key);
-            SolarSystem::unload_booster(&self.uad, &mut self.svc, &mut self.reffs, booster_item_key, uad_item);
+            SolarSystem::util_remove_booster(&self.uad, &mut self.svc, &mut self.reffs, booster_item_key, uad_item);
         }
         for &character_item_key in item_keys.characters.iter() {
             let uad_item = self.uad.items.get(character_item_key);
-            SolarSystem::unload_character(&self.uad, &mut self.svc, &mut self.reffs, character_item_key, uad_item);
+            SolarSystem::util_remove_character(&self.uad, &mut self.svc, &mut self.reffs, character_item_key, uad_item);
         }
         for &charge_item_key in item_keys.charges.iter() {
             let uad_item = self.uad.items.get(charge_item_key);
-            SolarSystem::unload_charge(&self.uad, &mut self.svc, &mut self.reffs, charge_item_key, uad_item);
+            SolarSystem::util_remove_charge_with_projs(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                charge_item_key,
+                uad_item,
+            );
         }
         for &drone_item_key in item_keys.drones.iter() {
             let uad_item = self.uad.items.get(drone_item_key);
-            SolarSystem::unload_drone(&self.uad, &mut self.svc, &mut self.reffs, drone_item_key, uad_item);
+            SolarSystem::util_remove_drone_with_projs(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                drone_item_key,
+                uad_item,
+            );
         }
         for &fighter_item_key in item_keys.fighters.iter() {
-            SolarSystem::unload_fighter(
+            SolarSystem::util_remove_fighter_with_projs(
                 &mut self.uad,
                 &mut self.svc,
                 &mut self.reffs,
@@ -120,19 +132,25 @@ impl SolarSystem {
         }
         for &fw_effect_item_key in item_keys.fw_effects.iter() {
             let uad_item = self.uad.items.get(fw_effect_item_key);
-            SolarSystem::unload_fw_effect(&self.uad, &mut self.svc, &mut self.reffs, fw_effect_item_key, uad_item);
+            SolarSystem::util_remove_fw_effect(&self.uad, &mut self.svc, &mut self.reffs, fw_effect_item_key, uad_item);
         }
         for &implant_item_key in item_keys.implants.iter() {
             let uad_item = self.uad.items.get(implant_item_key);
-            SolarSystem::unload_implant(&self.uad, &mut self.svc, &mut self.reffs, implant_item_key, uad_item);
+            SolarSystem::util_remove_implant(&self.uad, &mut self.svc, &mut self.reffs, implant_item_key, uad_item);
         }
         for &module_item_key in item_keys.modules.iter() {
             let uad_item = self.uad.items.get(module_item_key);
-            SolarSystem::unload_module(&self.uad, &mut self.svc, &mut self.reffs, module_item_key, uad_item);
+            SolarSystem::util_remove_module_with_projs(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                module_item_key,
+                uad_item,
+            );
         }
         for &proj_effect_item_key in item_keys.proj_effects.iter() {
             let uad_item = self.uad.items.get(proj_effect_item_key);
-            SolarSystem::unload_proj_effect(
+            SolarSystem::util_remove_proj_effect_with_projs(
                 &self.uad,
                 &mut self.svc,
                 &mut self.reffs,
@@ -142,52 +160,58 @@ impl SolarSystem {
         }
         for &service_item_key in item_keys.services.iter() {
             let uad_item = self.uad.items.get(service_item_key);
-            SolarSystem::unload_service(&self.uad, &mut self.svc, &mut self.reffs, service_item_key, uad_item);
+            SolarSystem::util_remove_service(&self.uad, &mut self.svc, &mut self.reffs, service_item_key, uad_item);
         }
         for &rig_item_key in item_keys.rigs.iter() {
             let uad_item = self.uad.items.get(rig_item_key);
-            SolarSystem::unload_rig(&self.uad, &mut self.svc, &mut self.reffs, rig_item_key, uad_item);
+            SolarSystem::util_remove_rig(&self.uad, &mut self.svc, &mut self.reffs, rig_item_key, uad_item);
         }
         for &ship_item_key in item_keys.ships.iter() {
             let uad_item = self.uad.items.get(ship_item_key);
-            SolarSystem::unload_ship(&self.uad, &mut self.svc, &mut self.reffs, ship_item_key, uad_item);
+            SolarSystem::util_remove_ship(&self.uad, &mut self.svc, &mut self.reffs, ship_item_key, uad_item);
         }
         for &skill_item_key in item_keys.skills.iter() {
             let uad_item = self.uad.items.get(skill_item_key);
-            SolarSystem::unload_skill(&self.uad, &mut self.svc, &mut self.reffs, skill_item_key, uad_item);
+            SolarSystem::util_remove_skill(&self.uad, &mut self.svc, &mut self.reffs, skill_item_key, uad_item);
         }
         for &stance_item_key in item_keys.stances.iter() {
             let uad_item = self.uad.items.get(stance_item_key);
-            SolarSystem::unload_stance(&self.uad, &mut self.svc, &mut self.reffs, stance_item_key, uad_item);
+            SolarSystem::util_remove_stance(&self.uad, &mut self.svc, &mut self.reffs, stance_item_key, uad_item);
         }
         for &subsystem_item_key in item_keys.subsystems.iter() {
             let uad_item = self.uad.items.get(subsystem_item_key);
-            SolarSystem::unload_subsystem(&self.uad, &mut self.svc, &mut self.reffs, subsystem_item_key, uad_item);
+            SolarSystem::util_remove_subsystem(&self.uad, &mut self.svc, &mut self.reffs, subsystem_item_key, uad_item);
         }
         for &sw_effect_item_key in item_keys.sw_effects.iter() {
             let uad_item = self.uad.items.get(sw_effect_item_key);
-            SolarSystem::unload_sw_effect(&self.uad, &mut self.svc, &mut self.reffs, sw_effect_item_key, uad_item);
+            SolarSystem::util_remove_sw_effect(&self.uad, &mut self.svc, &mut self.reffs, sw_effect_item_key, uad_item);
         }
     }
     fn load_items(&mut self, item_keys: &ItemKeys) {
         for &booster_item_key in item_keys.boosters.iter() {
             let uad_item = self.uad.items.get(booster_item_key);
-            SolarSystem::load_booster(&self.uad, &mut self.svc, &mut self.reffs, booster_item_key, uad_item);
+            SolarSystem::util_add_booster(&self.uad, &mut self.svc, &mut self.reffs, booster_item_key, uad_item);
         }
         for &character_item_key in item_keys.characters.iter() {
             let uad_item = self.uad.items.get(character_item_key);
-            SolarSystem::load_character(&self.uad, &mut self.svc, &mut self.reffs, character_item_key, uad_item);
+            SolarSystem::util_add_character(&self.uad, &mut self.svc, &mut self.reffs, character_item_key, uad_item);
         }
         for &charge_item_key in item_keys.charges.iter() {
             let uad_item = self.uad.items.get(charge_item_key);
-            SolarSystem::load_charge(&self.uad, &mut self.svc, &mut self.reffs, charge_item_key, uad_item);
+            SolarSystem::util_add_charge_with_projs(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                charge_item_key,
+                uad_item,
+            );
         }
         for &drone_item_key in item_keys.drones.iter() {
             let uad_item = self.uad.items.get(drone_item_key);
-            SolarSystem::load_drone(&self.uad, &mut self.svc, &mut self.reffs, drone_item_key, uad_item);
+            SolarSystem::util_add_drone_with_projs(&self.uad, &mut self.svc, &mut self.reffs, drone_item_key, uad_item);
         }
         for &fighter_item_key in item_keys.fighters.iter() {
-            SolarSystem::load_fighter(
+            SolarSystem::util_add_fighter_with_projs(
                 &mut self.uad,
                 &mut self.svc,
                 &mut self.reffs,
@@ -197,19 +221,25 @@ impl SolarSystem {
         }
         for &fw_effect_item_key in item_keys.fw_effects.iter() {
             let uad_item = self.uad.items.get(fw_effect_item_key);
-            SolarSystem::load_fw_effect(&self.uad, &mut self.svc, &mut self.reffs, fw_effect_item_key, uad_item);
+            SolarSystem::util_add_fw_effect(&self.uad, &mut self.svc, &mut self.reffs, fw_effect_item_key, uad_item);
         }
         for &implant_item_key in item_keys.implants.iter() {
             let uad_item = self.uad.items.get(implant_item_key);
-            SolarSystem::load_implant(&self.uad, &mut self.svc, &mut self.reffs, implant_item_key, uad_item);
+            SolarSystem::util_add_implant(&self.uad, &mut self.svc, &mut self.reffs, implant_item_key, uad_item);
         }
         for &module_item_key in item_keys.modules.iter() {
             let uad_item = self.uad.items.get(module_item_key);
-            SolarSystem::load_module(&self.uad, &mut self.svc, &mut self.reffs, module_item_key, uad_item);
+            SolarSystem::util_add_module_with_projs(
+                &self.uad,
+                &mut self.svc,
+                &mut self.reffs,
+                module_item_key,
+                uad_item,
+            );
         }
         for &proj_effect_item_key in item_keys.proj_effects.iter() {
             let uad_item = self.uad.items.get(proj_effect_item_key);
-            SolarSystem::load_proj_effect(
+            SolarSystem::util_add_proj_effect_with_projs(
                 &self.uad,
                 &mut self.svc,
                 &mut self.reffs,
@@ -219,31 +249,31 @@ impl SolarSystem {
         }
         for &service_item_key in item_keys.services.iter() {
             let uad_item = self.uad.items.get(service_item_key);
-            SolarSystem::load_service(&self.uad, &mut self.svc, &mut self.reffs, service_item_key, uad_item);
+            SolarSystem::util_add_service(&self.uad, &mut self.svc, &mut self.reffs, service_item_key, uad_item);
         }
         for &rig_item_key in item_keys.rigs.iter() {
             let uad_item = self.uad.items.get(rig_item_key);
-            SolarSystem::load_rig(&self.uad, &mut self.svc, &mut self.reffs, rig_item_key, uad_item);
+            SolarSystem::util_add_rig(&self.uad, &mut self.svc, &mut self.reffs, rig_item_key, uad_item);
         }
         for &ship_item_key in item_keys.ships.iter() {
             let uad_item = self.uad.items.get(ship_item_key);
-            SolarSystem::load_ship(&self.uad, &mut self.svc, &mut self.reffs, ship_item_key, uad_item);
+            SolarSystem::util_add_ship(&self.uad, &mut self.svc, &mut self.reffs, ship_item_key, uad_item);
         }
         for &skill_item_key in item_keys.skills.iter() {
             let uad_item = self.uad.items.get(skill_item_key);
-            SolarSystem::load_skill(&self.uad, &mut self.svc, &mut self.reffs, skill_item_key, uad_item);
+            SolarSystem::util_add_skill(&self.uad, &mut self.svc, &mut self.reffs, skill_item_key, uad_item);
         }
         for &stance_item_key in item_keys.stances.iter() {
             let uad_item = self.uad.items.get(stance_item_key);
-            SolarSystem::load_stance(&self.uad, &mut self.svc, &mut self.reffs, stance_item_key, uad_item);
+            SolarSystem::util_add_stance(&self.uad, &mut self.svc, &mut self.reffs, stance_item_key, uad_item);
         }
         for &subsystem_item_key in item_keys.subsystems.iter() {
             let uad_item = self.uad.items.get(subsystem_item_key);
-            SolarSystem::load_subsystem(&self.uad, &mut self.svc, &mut self.reffs, subsystem_item_key, uad_item);
+            SolarSystem::util_add_subsystem(&self.uad, &mut self.svc, &mut self.reffs, subsystem_item_key, uad_item);
         }
         for &sw_effect_item_key in item_keys.sw_effects.iter() {
             let uad_item = self.uad.items.get(sw_effect_item_key);
-            SolarSystem::load_sw_effect(&self.uad, &mut self.svc, &mut self.reffs, sw_effect_item_key, uad_item);
+            SolarSystem::util_add_sw_effect(&self.uad, &mut self.svc, &mut self.reffs, sw_effect_item_key, uad_item);
         }
     }
 }

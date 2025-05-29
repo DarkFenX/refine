@@ -19,7 +19,7 @@ impl SolarSystem {
             self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
         }
         // Remove effect from services
-        SolarSystem::util_remove_item(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
         // Remove effect from user data
         self.uad.proj_effects.remove(&item_key);
         self.uad.items.remove(item_key);

@@ -6,22 +6,22 @@ use crate::sol::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn load_rig(
+    pub(in crate::sol::api) fn util_add_service(
         uad: &Uad,
         svc: &mut Svc,
         reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
-        SolarSystem::util_load_item(uad, svc, reffs, item_key, uad_item);
+        SolarSystem::util_add_item_without_projs(uad, svc, reffs, item_key, uad_item);
     }
-    pub(in crate::sol::api) fn unload_rig(
+    pub(in crate::sol::api) fn util_remove_service(
         uad: &Uad,
         svc: &mut Svc,
         reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
     ) {
-        SolarSystem::util_unload_item(uad, svc, reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(uad, svc, reffs, item_key, uad_item);
     }
 }

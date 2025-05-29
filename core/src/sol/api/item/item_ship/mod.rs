@@ -8,4 +8,4 @@ mod ship_remove;
 mod ship_set_state;
 mod ship_set_type_id;
 mod sol_get_ship;
-mod util_load_unload;
+mod util_add_remove;

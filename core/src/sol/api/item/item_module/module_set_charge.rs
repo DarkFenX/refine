@@ -45,7 +45,7 @@ impl SolarSystem {
                 self.rprojs.unreg_projectee(&old_charge_key, projectee_item_key);
             }
             // Update services for charge being removed
-            SolarSystem::util_remove_item(
+            SolarSystem::util_remove_item_without_projs(
                 &self.uad,
                 &mut self.svc,
                 &mut self.reffs,
@@ -77,7 +77,7 @@ impl SolarSystem {
         uad_module.set_charge_item_key(Some(new_charge_key));
         // Update services
         let new_charge_uad_item = self.uad.items.get(new_charge_key);
-        SolarSystem::util_add_item(
+        SolarSystem::util_add_item_without_projs(
             &self.uad,
             &mut self.svc,
             &mut self.reffs,
