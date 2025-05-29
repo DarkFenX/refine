@@ -51,14 +51,8 @@ impl DependencyRegister {
         affector_a_attr_id: ad::AAttrId,
         affectee_a_attr_id: ad::AAttrId,
     ) {
-        let affector_spec = AttrSpec {
-            item_key,
-            a_attr_id: affector_a_attr_id,
-        };
-        let affectee_spec = AttrSpec {
-            item_key,
-            a_attr_id: affectee_a_attr_id,
-        };
+        let affector_spec = AttrSpec::new(item_key, affector_a_attr_id);
+        let affectee_spec = AttrSpec::new(item_key, affectee_a_attr_id);
         self.data.add_entry(affector_spec, affectee_spec);
         self.anonymous_by_item
             .add_entry(item_key, (affector_a_attr_id, affectee_a_attr_id));
@@ -87,14 +81,8 @@ impl DependencyRegister {
         // Anonymous dependencies
         if let Some(attrs_iter) = self.anonymous_by_item.remove_key(&item_key) {
             for (affector_a_attr_id, affectee_a_attr_id) in attrs_iter {
-                let affector_spec = AttrSpec {
-                    item_key,
-                    a_attr_id: affector_a_attr_id,
-                };
-                let affectee_spec = AttrSpec {
-                    item_key,
-                    a_attr_id: affectee_a_attr_id,
-                };
+                let affector_spec = AttrSpec::new(item_key, affector_a_attr_id);
+                let affectee_spec = AttrSpec::new(item_key, affectee_a_attr_id);
                 self.data.remove_entry(&affector_spec, &affectee_spec);
             }
         }

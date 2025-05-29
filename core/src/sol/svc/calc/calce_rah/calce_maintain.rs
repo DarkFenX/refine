@@ -184,34 +184,10 @@ impl Calc {
     }
     fn clear_rah_result(&mut self, uad: &Uad, item_key: ItemKey) {
         if self.rah.resonances.get_mut(&item_key).unwrap().take().is_some() {
-            self.force_attr_postproc_recalc(
-                uad,
-                AttrSpec {
-                    item_key,
-                    a_attr_id: ARMOR_EM_ATTR_ID,
-                },
-            );
-            self.force_attr_postproc_recalc(
-                uad,
-                AttrSpec {
-                    item_key,
-                    a_attr_id: ARMOR_THERM_ATTR_ID,
-                },
-            );
-            self.force_attr_postproc_recalc(
-                uad,
-                AttrSpec {
-                    item_key,
-                    a_attr_id: ARMOR_KIN_ATTR_ID,
-                },
-            );
-            self.force_attr_postproc_recalc(
-                uad,
-                AttrSpec {
-                    item_key,
-                    a_attr_id: ARMOR_EXPL_ATTR_ID,
-                },
-            );
+            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
+            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
+            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_KIN_ATTR_ID));
+            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
         }
     }
     fn get_rah_resonances(&mut self, uad: &Uad, item_key: ItemKey) -> DmgKinds<CalcAttrVal> {

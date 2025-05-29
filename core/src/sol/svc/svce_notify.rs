@@ -66,7 +66,8 @@ impl Svc {
         item_key: ItemKey,
         a_attr_id: ad::AAttrId,
     ) {
-        self.calc.force_attr_value_recalc(uad, AttrSpec { item_key, a_attr_id });
+        self.calc
+            .force_attr_value_recalc(uad, AttrSpec::new(item_key, a_attr_id));
     }
     pub(in crate::sol) fn notify_item_state_activated_loaded(
         &mut self,
@@ -115,10 +116,7 @@ impl Svc {
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
-        let projector_espec = EffectSpec {
-            item_key: projector_item_key,
-            a_effect_id: a_effect.id,
-        };
+        let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
         self.calc
             .effect_projected(uad, projector_espec, projectee_item_key, projectee_item, range);
         self.vast.effect_projected(
@@ -138,10 +136,7 @@ impl Svc {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let projector_espec = EffectSpec {
-            item_key: projector_item_key,
-            a_effect_id: a_effect.id,
-        };
+        let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
         self.calc
             .effect_unprojected(uad, projector_espec, projectee_item_key, projectee_item);
         self.vast.effect_unprojected(
@@ -161,10 +156,7 @@ impl Svc {
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
-        let projector_espec = EffectSpec {
-            item_key: projector_item_key,
-            a_effect_id,
-        };
+        let projector_espec = EffectSpec::new(projector_item_key, a_effect_id);
         self.calc
             .effect_proj_range_changed(uad, projector_espec, projectee_item_key, projectee_item, range);
     }

@@ -124,10 +124,7 @@ impl Calc {
         let mut util_items = Vec::new();
         let mut util_cmods = Vec::new();
         for a_effect in a_effects.iter() {
-            let espec = EffectSpec {
-                item_key,
-                a_effect_id: a_effect.id,
-            };
+            let espec = EffectSpec::new(item_key, a_effect.id);
             self.std.extract_raw_mods_for_effect(&mut raw_modifiers, espec);
             for raw_modifier in raw_modifiers.iter() {
                 self.unreg_raw_mod(&mut util_items, &mut util_cmods, uad, item_key, item, raw_modifier)
@@ -202,10 +199,7 @@ impl Calc {
             for ctx_modifier in ctx_modifiers.iter() {
                 self.std.fill_affectees(&mut affectees, uad, ctx_modifier);
                 for &affectee_item_key in affectees.iter() {
-                    let projectee_aspec = AttrSpec {
-                        item_key: affectee_item_key,
-                        a_attr_id: ctx_modifier.raw.affectee_a_attr_id,
-                    };
+                    let projectee_aspec = AttrSpec::new(affectee_item_key, ctx_modifier.raw.affectee_a_attr_id);
                     self.force_attr_value_recalc(uad, projectee_aspec);
                 }
             }
@@ -285,41 +279,17 @@ impl Calc {
     }
     pub(in crate::sol::svc) fn sol_sec_zone_changed(&mut self, uad: &Uad) {
         for item_key in uad.items.keys() {
-            self.force_attr_value_recalc(
-                uad,
-                AttrSpec {
-                    item_key,
-                    a_attr_id: ac::attrs::SECURITY_MODIFIER,
-                },
-            )
+            self.force_attr_value_recalc(uad, AttrSpec::new(item_key, ac::attrs::SECURITY_MODIFIER))
         }
     }
     pub(in crate::sol::svc) fn fighter_count_changed(&mut self, uad: &Uad, fighter_key: ItemKey) {
-        self.force_attr_postproc_recalc(
-            uad,
-            AttrSpec {
-                item_key: fighter_key,
-                a_attr_id: FTR_COUNT_ATTR,
-            },
-        )
+        self.force_attr_postproc_recalc(uad, AttrSpec::new(fighter_key, FTR_COUNT_ATTR))
     }
     pub(in crate::sol::svc) fn ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
-        self.force_attr_postproc_recalc(
-            uad,
-            AttrSpec {
-                item_key: ship_key,
-                a_attr_id: SEC_STATUS_ATTR,
-            },
-        )
+        self.force_attr_postproc_recalc(uad, AttrSpec::new(ship_key, SEC_STATUS_ATTR))
     }
     pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey) {
-        self.force_attr_postproc_recalc(
-            uad,
-            AttrSpec {
-                item_key: skill_key,
-                a_attr_id: SKILL_LVL_ATTR,
-            },
-        )
+        self.force_attr_postproc_recalc(uad, AttrSpec::new(skill_key, SKILL_LVL_ATTR))
     }
     // Private methods
     fn reg_raw_mod(
@@ -460,36 +430,20 @@ impl Calc {
     }
     fn reg_raw_mod_for_buff(&mut self, item_key: ItemKey, raw_modifier: RawModifier) {
         if let Some(buff_type_attr_id) = raw_modifier.buff_type_a_attr_id {
-            self.buffs.reg_dependent_mod(
-                AttrSpec {
-                    item_key,
-                    a_attr_id: buff_type_attr_id,
-                },
-                raw_modifier,
-            );
+            self.buffs
+                .reg_dependent_mod(AttrSpec::new(item_key, buff_type_attr_id), raw_modifier);
         }
     }
     fn unreg_raw_mod_for_buff(&mut self, item_key: ItemKey, raw_modifier: &RawModifier) {
         if let Some(buff_type_attr_id) = raw_modifier.buff_type_a_attr_id {
-            self.buffs.unreg_dependent_mod(
-                &AttrSpec {
-                    item_key,
-                    a_attr_id: buff_type_attr_id,
-                },
-                raw_modifier,
-            );
+            self.buffs
+                .unreg_dependent_mod(&AttrSpec::new(item_key, buff_type_attr_id), raw_modifier);
         }
     }
     fn force_mod_affectee_attr_recalc(&mut self, affectees: &mut Vec<ItemKey>, uad: &Uad, modifier: &CtxModifier) {
         self.std.fill_affectees(affectees, uad, modifier);
         for &affectee_item_key in affectees.iter() {
-            self.force_attr_value_recalc(
-                uad,
-                AttrSpec {
-                    item_key: affectee_item_key,
-                    a_attr_id: modifier.raw.affectee_a_attr_id,
-                },
-            );
+            self.force_attr_value_recalc(uad, AttrSpec::new(affectee_item_key, modifier.raw.affectee_a_attr_id));
         }
     }
     fn handle_location_owner_change(&mut self, uad: &Uad, item: &UadItem) {

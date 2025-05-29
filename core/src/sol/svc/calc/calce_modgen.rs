@@ -77,11 +77,7 @@ impl Calc {
             }
         }
         // Custom modifiers
-        let espec = EffectSpec {
-            item_key,
-            a_effect_id: a_effect.id,
-        };
-        extend_with_custom_mods(espec, modifiers);
+        extend_with_custom_mods(EffectSpec::new(item_key, a_effect.id), modifiers);
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,

@@ -5,32 +5,17 @@ use crate::sol::{
 };
 
 pub(super) fn reg_dependencies(calc: &mut Calc, ship_item_key: ItemKey, prop_espec: EffectSpec) {
-    let affectee_aspec = AttrSpec {
-        item_key: ship_item_key,
-        a_attr_id: SHIP_SPEED,
-    };
+    let affectee_aspec = AttrSpec::new(ship_item_key, SHIP_SPEED);
     calc.deps.add_with_source(
         prop_espec,
-        AttrSpec {
-            item_key: prop_espec.item_key,
-            a_attr_id: PROP_BOOST,
-        },
+        AttrSpec::new(prop_espec.item_key, PROP_BOOST),
         affectee_aspec,
     );
     calc.deps.add_with_source(
         prop_espec,
-        AttrSpec {
-            item_key: prop_espec.item_key,
-            a_attr_id: PROP_THRUST,
-        },
+        AttrSpec::new(prop_espec.item_key, PROP_THRUST),
         affectee_aspec,
     );
-    calc.deps.add_with_source(
-        prop_espec,
-        AttrSpec {
-            item_key: ship_item_key,
-            a_attr_id: SHIP_MASS,
-        },
-        affectee_aspec,
-    );
+    calc.deps
+        .add_with_source(prop_espec, AttrSpec::new(ship_item_key, SHIP_MASS), affectee_aspec);
 }

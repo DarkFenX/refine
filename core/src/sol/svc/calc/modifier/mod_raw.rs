@@ -49,10 +49,7 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec {
-                item_key: affector_item_key,
-                a_effect_id: a_effect.id,
-            },
+            affector_espec: EffectSpec::new(affector_item_key, a_effect.id),
             affector_value: AffectorValue::AttrId(a_modifier.affector_attr_id),
             op: (&a_modifier.op).into(),
             aggr_mode: AggrMode::Stack,
@@ -123,10 +120,7 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec {
-                item_key: affector_item_key,
-                a_effect_id: a_effect.id,
-            },
+            affector_espec: EffectSpec::new(affector_item_key, a_effect.id),
             affector_value,
             op: (&a_buff.op).into(),
             aggr_mode: AggrMode::from_a_buff(a_buff),
