@@ -2,7 +2,10 @@ use crate::{
     ac, ad,
     sol::{
         ItemKey,
-        svc::calc::{Calc, RawModifier, extend_with_custom_mods},
+        svc::{
+            EffectSpec,
+            calc::{Calc, RawModifier, extend_with_custom_mods},
+        },
         uad::{Uad, item::UadItem},
     },
 };
@@ -74,7 +77,11 @@ impl Calc {
             }
         }
         // Custom modifiers
-        extend_with_custom_mods(item_key, a_effect.id, modifiers);
+        let espec = EffectSpec {
+            item_key,
+            a_effect_id: a_effect.id,
+        };
+        extend_with_custom_mods(espec, modifiers);
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,

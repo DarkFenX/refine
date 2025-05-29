@@ -5,7 +5,10 @@ use crate::{
     ad,
     sol::{
         AttrVal, ItemKey,
-        svc::calc::{AffectorInfo, Calc},
+        svc::{
+            EffectSpec,
+            calc::{AffectorInfo, Calc},
+        },
         uad::{Uad, item::UadItem},
     },
 };
@@ -50,19 +53,13 @@ impl AffectorValue {
             Self::MissileFlightTime => missile_flight_time::get_affector_info(uad, item_key),
         }
     }
-    pub(super) fn get_mod_val(
-        &self,
-        calc: &mut Calc,
-        uad: &Uad,
-        item_key: ItemKey,
-        a_effect_id: &ad::AEffectId,
-    ) -> Option<AttrVal> {
+    pub(super) fn get_mod_val(&self, calc: &mut Calc, uad: &Uad, espec: EffectSpec) -> Option<AttrVal> {
         match self {
-            Self::AttrId(a_attr_id) => Some(calc.get_item_attr_val_full(uad, item_key, a_attr_id).ok()?.dogma),
+            Self::AttrId(a_attr_id) => Some(calc.get_item_attr_val_full(uad, espec.item_key, a_attr_id).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),
-            Self::PropSpeedBoost => prop_speed_boost::get_mod_val(calc, uad, item_key, a_effect_id),
-            Self::AarRepAmount => aar_rep_amount::get_mod_val(calc, uad, item_key),
-            Self::MissileFlightTime => missile_flight_time::get_mod_val(calc, uad, item_key, a_effect_id),
+            Self::PropSpeedBoost => prop_speed_boost::get_mod_val(calc, uad, espec),
+            Self::AarRepAmount => aar_rep_amount::get_mod_val(calc, uad, espec.item_key),
+            Self::MissileFlightTime => missile_flight_time::get_mod_val(calc, uad, espec),
         }
     }
     // Revision methods - define if modification value can change upon some action

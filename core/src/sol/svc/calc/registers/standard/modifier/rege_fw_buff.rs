@@ -109,8 +109,7 @@ impl StandardRegister {
             _ => false,
         };
         if valid {
-            self.rmods_nonproj
-                .add_entry((raw_modifier.affector_item_key, raw_modifier.a_effect_id), raw_modifier);
+            self.rmods_nonproj.add_entry(raw_modifier.affector_espec, raw_modifier);
             self.rmods_fw_buff.add_entry(fw_effect.get_fit_key(), raw_modifier);
         }
         valid

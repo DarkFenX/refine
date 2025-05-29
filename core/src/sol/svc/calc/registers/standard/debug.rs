@@ -43,16 +43,16 @@ impl StandardRegister {
                 check_item_key(uad, *item_key, true)?;
             }
         }
-        for ((item_key, a_effect_id), rmods) in self.rmods_nonproj.iter() {
-            check_item_key(uad, *item_key, true)?;
-            check_a_effect_id(uad, a_effect_id)?;
+        for (effect_spec, rmods) in self.rmods_nonproj.iter() {
+            check_item_key(uad, effect_spec.item_key, true)?;
+            check_a_effect_id(uad, &effect_spec.a_effect_id)?;
             for rmod in rmods {
                 check_raw_modifier(uad, rmod)?;
             }
         }
-        for ((item_key, a_effect_id), rmods) in self.rmods_proj.iter() {
-            check_item_key(uad, *item_key, true)?;
-            check_a_effect_id(uad, a_effect_id)?;
+        for (espec, rmods) in self.rmods_proj.iter() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
             for rmod in rmods {
                 check_raw_modifier(uad, rmod)?;
             }

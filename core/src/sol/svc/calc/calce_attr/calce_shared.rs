@@ -38,11 +38,7 @@ impl Calc {
             Context::Item(projectee_item_key) => projectee_item_key,
             _ => return None,
         };
-        let proj_range = self.projs.get_range(
-            modifier.raw.affector_item_key,
-            modifier.raw.a_effect_id,
-            projectee_item_key,
-        )?;
+        let proj_range = self.projs.get_range(modifier.raw.affector_espec, projectee_item_key)?;
         match modifier.raw.kind {
             ModifierKind::Targeted => self.calc_proj_mult_targeted(uad, modifier, proj_range),
             ModifierKind::Buff => self.calc_proj_mult_buff(uad, modifier, proj_range),
@@ -54,7 +50,7 @@ impl Calc {
         // Assume optimal range is 0 if it's not available
         let affector_optimal = match modifier.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(uad, modifier.raw.affector_item_key, &optimal_a_attr_id) {
+                match self.get_item_attr_val_full(uad, modifier.raw.affector_espec.item_key, &optimal_a_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -64,7 +60,7 @@ impl Calc {
         // Assume falloff range is 0 if it's not available
         let affector_falloff = match modifier.raw.falloff_a_attr_id {
             Some(falloff_a_attr_id) => {
-                match self.get_item_attr_val_full(uad, modifier.raw.affector_item_key, &falloff_a_attr_id) {
+                match self.get_item_attr_val_full(uad, modifier.raw.affector_espec.item_key, &falloff_a_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -93,7 +89,7 @@ impl Calc {
     fn calc_proj_mult_buff(&mut self, uad: &Uad, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
         let affector_optimal = match modifier.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(uad, modifier.raw.affector_item_key, &optimal_a_attr_id) {
+                match self.get_item_attr_val_full(uad, modifier.raw.affector_espec.item_key, &optimal_a_attr_id) {
                     Ok(val) => val.dogma,
                     // If optimal range attribute ID is defined but value is not available, assume
                     // optimal range of 0

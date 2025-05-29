@@ -6,7 +6,7 @@ use crate::{
     sol::{
         ItemKey,
         svc::{
-            AttrSpec,
+            AttrSpec, EffectSpec,
             calc::{CtxModifier, RawModifier, registers::StandardRegister},
         },
         uad::{fit::Fits, item::UadItem},
@@ -91,14 +91,13 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn extract_raw_mods_for_effect(
         &mut self,
         raw_modifiers: &mut Vec<RawModifier>,
-        item_key: ItemKey,
-        a_effect_id: ad::AEffectId,
+        espec: EffectSpec,
     ) {
         raw_modifiers.clear();
-        if let Some(effect_mods) = self.rmods_nonproj.remove_key(&(item_key, a_effect_id)) {
+        if let Some(effect_mods) = self.rmods_nonproj.remove_key(&espec) {
             raw_modifiers.extend(effect_mods)
         }
-        if let Some(effect_mods) = self.rmods_proj.remove_key(&(item_key, a_effect_id)) {
+        if let Some(effect_mods) = self.rmods_proj.remove_key(&espec) {
             raw_modifiers.extend(effect_mods)
         }
     }

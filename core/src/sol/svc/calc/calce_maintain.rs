@@ -5,7 +5,7 @@ use crate::{
     sol::{
         AttrVal, FitKey, ItemKey,
         svc::{
-            AttrSpec,
+            AttrSpec, EffectSpec,
             calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
         },
         uad::{Uad, fleet::UadFleet, item::UadItem},
@@ -124,8 +124,11 @@ impl Calc {
         let mut util_items = Vec::new();
         let mut util_cmods = Vec::new();
         for a_effect in a_effects.iter() {
-            self.std
-                .extract_raw_mods_for_effect(&mut raw_modifiers, item_key, a_effect.id);
+            let espec = EffectSpec {
+                item_key: item_key,
+                a_effect_id: a_effect.id,
+            };
+            self.std.extract_raw_mods_for_effect(&mut raw_modifiers, espec);
             for raw_modifier in raw_modifiers.iter() {
                 self.unreg_raw_mod(&mut util_items, &mut util_cmods, uad, item_key, item, raw_modifier)
             }
@@ -139,17 +142,15 @@ impl Calc {
     pub(in crate::sol::svc) fn effect_projected(
         &mut self,
         uad: &Uad,
-        projector_item_key: ItemKey,
-        a_effect: &ad::AEffect,
+        projector_espec: EffectSpec,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
-        self.projs
-            .add_range(projector_item_key, a_effect.id, projectee_item_key, range);
-        let ctx_modifiers =
-            self.std
-                .project_effect(projector_item_key, a_effect.id, projectee_item_key, projectee_item);
+        self.projs.add_range(projector_espec, projectee_item_key, range);
+        let ctx_modifiers = self
+            .std
+            .project_effect(&projector_espec, projectee_item_key, projectee_item);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
@@ -158,17 +159,15 @@ impl Calc {
     pub(in crate::sol::svc) fn effect_proj_range_changed(
         &mut self,
         uad: &Uad,
-        projector_item_key: ItemKey,
-        a_effect: &ad::AEffect,
+        projector_espec: EffectSpec,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
-        self.projs
-            .change_range(projector_item_key, a_effect.id, projectee_item_key, range);
-        let ctx_modifiers =
-            self.std
-                .query_projected_effect(projector_item_key, a_effect.id, projectee_item_key, projectee_item);
+        self.projs.change_range(projector_espec, projectee_item_key, range);
+        let ctx_modifiers = self
+            .std
+            .query_projected_effect(&projector_espec, projectee_item_key, projectee_item);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
@@ -177,20 +176,18 @@ impl Calc {
     pub(in crate::sol::svc) fn effect_unprojected(
         &mut self,
         uad: &Uad,
-        projector_item_key: ItemKey,
-        a_effect: &ad::AEffect,
+        projector_espec: EffectSpec,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let ctx_modifiers =
-            self.std
-                .unproject_effect(projector_item_key, a_effect.id, projectee_item_key, projectee_item);
+        let ctx_modifiers = self
+            .std
+            .unproject_effect(&projector_espec, projectee_item_key, projectee_item);
         let mut affectees = Vec::new();
         for ctx_modifier in ctx_modifiers.iter() {
             self.force_mod_affectee_attr_recalc(&mut affectees, uad, ctx_modifier);
         }
-        self.projs
-            .remove_range(projector_item_key, a_effect.id, projectee_item_key);
+        self.projs.remove_range(projector_espec, projectee_item_key);
     }
     pub(in crate::sol::svc) fn attr_value_changed(&mut self, uad: &Uad, item_key: ItemKey, a_attr_id: ad::AAttrId) {
         // Clear up attribute values which rely on passed attribute as an upper/lower limit

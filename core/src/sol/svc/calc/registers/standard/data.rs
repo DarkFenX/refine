@@ -3,7 +3,7 @@ use crate::{
     sol::{
         FitKey, ItemKey,
         svc::{
-            AttrSpec,
+            AttrSpec, EffectSpec,
             calc::{CtxModifier, LocationKind, RawModifier},
         },
     },
@@ -31,11 +31,11 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
     // Map<affectee fit key, affectee item keys>
     pub(super) affectee_buffable: RMapRSet<FitKey, ItemKey>,
     // All non-projected raw modifiers tracked by register
-    // Map<(affector item key, affector aeffect ID), modifiers>
-    pub(super) rmods_nonproj: RMapRSet<(ItemKey, ad::AEffectId), RawModifier>,
+    // Map<affector effect spec, modifiers>
+    pub(super) rmods_nonproj: RMapRSet<EffectSpec, RawModifier>,
     // All projected raw modifiers tracked by register
-    // Map<(affector item key, affector aeffect ID), modifiers>
-    pub(super) rmods_proj: RMapRSet<(ItemKey, ad::AEffectId), RawModifier>,
+    // Map<affector effect spec, modifiers>
+    pub(super) rmods_proj: RMapRSet<EffectSpec, RawModifier>,
     // Fleet modifiers on a per-fit basis
     // Map<affector fit key, modifiers>
     pub(super) rmods_fleet: RMapRSet<FitKey, RawModifier>,

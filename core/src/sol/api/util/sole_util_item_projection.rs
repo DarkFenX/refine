@@ -73,7 +73,7 @@ impl SolarSystem {
                 svc.notify_effect_proj_range_changed(
                     uad,
                     projector_item_key,
-                    a_effect,
+                    a_effect.id,
                     projectee_item_key,
                     projectee_uad_item,
                     range,

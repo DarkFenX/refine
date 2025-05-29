@@ -147,7 +147,7 @@ impl Calc {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = uad.items.get(modifier.raw.affector_item_key);
+            let affector_item = uad.items.get(modifier.raw.affector_espec.item_key);
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
             let mod_key = ModificationKey::from(modifier);
             let modification = Modification {

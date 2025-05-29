@@ -5,7 +5,10 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, ItemKey,
-        svc::calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
+        svc::{
+            EffectSpec,
+            calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
+        },
         uad::{Uad, item::UadItem},
     },
 };
@@ -13,8 +16,7 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::sol::svc::calc) struct RawModifier {
     pub(in crate::sol::svc::calc) kind: ModifierKind,
-    pub(in crate::sol::svc::calc) affector_item_key: ItemKey,
-    pub(in crate::sol::svc::calc) a_effect_id: ad::AEffectId,
+    pub(in crate::sol::svc::calc) affector_espec: EffectSpec,
     pub(in crate::sol::svc::calc::modifier) affector_value: AffectorValue,
     pub(in crate::sol::svc::calc) op: Op,
     pub(in crate::sol::svc::calc) aggr_mode: AggrMode,
@@ -47,8 +49,10 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_item_key,
-            a_effect_id: a_effect.id,
+            affector_espec: EffectSpec {
+                item_key: affector_item_key,
+                a_effect_id: a_effect.id,
+            },
             affector_value: AffectorValue::AttrId(a_modifier.affector_attr_id),
             op: (&a_modifier.op).into(),
             aggr_mode: AggrMode::Stack,
@@ -119,8 +123,10 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_item_key,
-            a_effect_id: a_effect.id,
+            affector_espec: EffectSpec {
+                item_key: affector_item_key,
+                a_effect_id: a_effect.id,
+            },
             affector_value,
             op: (&a_buff.op).into(),
             aggr_mode: AggrMode::from_a_buff(a_buff),
@@ -138,11 +144,10 @@ impl RawModifier {
         self.affector_value.get_affector_a_attr_id()
     }
     pub(in crate::sol::svc::calc) fn get_affector_info(&self, uad: &Uad) -> SmallVec<AffectorInfo, 1> {
-        self.affector_value.get_affector_info(uad, self.affector_item_key)
+        self.affector_value.get_affector_info(uad, self.affector_espec.item_key)
     }
     pub(in crate::sol::svc::calc) fn get_mod_val(&self, calc: &mut Calc, uad: &Uad) -> Option<AttrVal> {
-        self.affector_value
-            .get_mod_val(calc, uad, self.affector_item_key, &self.a_effect_id)
+        self.affector_value.get_mod_val(calc, uad, self.affector_espec)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::sol::svc::calc) fn needs_revision_on_item_add(&self) -> bool {
@@ -158,7 +163,7 @@ impl RawModifier {
         added_item: &UadItem,
     ) -> bool {
         self.affector_value
-            .revise_on_item_add(uad, self.affector_item_key, added_item_key, added_item)
+            .revise_on_item_add(uad, self.affector_espec.item_key, added_item_key, added_item)
     }
     pub(in crate::sol::svc::calc) fn revise_on_item_remove(
         &self,
@@ -167,7 +172,7 @@ impl RawModifier {
         removed_item: &UadItem,
     ) -> bool {
         self.affector_value
-            .revise_on_item_remove(uad, self.affector_item_key, removed_item_key, removed_item)
+            .revise_on_item_remove(uad, self.affector_espec.item_key, removed_item_key, removed_item)
     }
 }
 

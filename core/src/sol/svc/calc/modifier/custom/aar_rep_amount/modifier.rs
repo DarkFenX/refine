@@ -1,19 +1,18 @@
 use crate::{
-    ac, ad,
-    sol::{
-        ItemKey,
-        svc::calc::{
+    ac,
+    sol::svc::{
+        EffectSpec,
+        calc::{
             AggrMode, Op,
             modifier::{AffecteeFilter, Location, ModifierKind, RawModifier, affector_val::AffectorValue},
         },
     },
 };
 
-pub(in crate::sol::svc::calc) fn make_mod(affector_item_key: ItemKey, a_effect_id: ad::AEffectId) -> RawModifier {
+pub(in crate::sol::svc::calc) fn make_mod(affector_espec: EffectSpec) -> RawModifier {
     RawModifier {
         kind: ModifierKind::Local,
-        affector_item_key,
-        a_effect_id,
+        affector_espec,
         affector_value: AffectorValue::AarRepAmount,
         op: Op::ExtraMul,
         aggr_mode: AggrMode::Stack,

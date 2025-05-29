@@ -2,7 +2,7 @@ use crate::{
     ad,
     sol::{
         AttrVal, FitKey, ItemKey,
-        svc::Svc,
+        svc::{EffectSpec, Svc},
         uad::{
             Uad,
             fleet::UadFleet,
@@ -115,14 +115,12 @@ impl Svc {
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
-        self.calc.effect_projected(
-            uad,
-            projector_item_key,
-            a_effect,
-            projectee_item_key,
-            projectee_item,
-            range,
-        );
+        let projector_espec = EffectSpec {
+            item_key: projector_item_key,
+            a_effect_id: a_effect.id,
+        };
+        self.calc
+            .effect_projected(uad, projector_espec, projectee_item_key, projectee_item, range);
         self.vast.effect_projected(
             projector_item_key,
             projector_item,
@@ -140,8 +138,12 @@ impl Svc {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
+        let projector_espec = EffectSpec {
+            item_key: projector_item_key,
+            a_effect_id: a_effect.id,
+        };
         self.calc
-            .effect_unprojected(uad, projector_item_key, a_effect, projectee_item_key, projectee_item);
+            .effect_unprojected(uad, projector_espec, projectee_item_key, projectee_item);
         self.vast.effect_unprojected(
             projector_item_key,
             projector_item,
@@ -154,19 +156,17 @@ impl Svc {
         &mut self,
         uad: &Uad,
         projector_item_key: ItemKey,
-        effect: &ad::ArcEffect,
+        a_effect_id: ad::AEffectId,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
-        self.calc.effect_proj_range_changed(
-            uad,
-            projector_item_key,
-            effect,
-            projectee_item_key,
-            projectee_item,
-            range,
-        );
+        let projector_espec = EffectSpec {
+            item_key: projector_item_key,
+            a_effect_id,
+        };
+        self.calc
+            .effect_proj_range_changed(uad, projector_espec, projectee_item_key, projectee_item, range);
     }
     pub(in crate::sol) fn notify_sol_sec_zone_changed(&mut self, uad: &Uad) {
         self.calc.sol_sec_zone_changed(uad);

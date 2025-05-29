@@ -5,8 +5,8 @@ use crate::sol::{
 };
 
 pub(in crate::sol::svc) fn check_raw_modifier(uad: &Uad, modifier: &RawModifier) -> DebugResult {
-    check_item_key(uad, modifier.affector_item_key, true)?;
-    check_a_effect_id(uad, &modifier.a_effect_id)?;
+    check_item_key(uad, modifier.affector_espec.item_key, true)?;
+    check_a_effect_id(uad, &modifier.affector_espec.a_effect_id)?;
     Ok(())
 }
 

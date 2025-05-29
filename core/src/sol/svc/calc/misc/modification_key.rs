@@ -19,7 +19,7 @@ pub(in crate::sol::svc::calc) struct ModificationKey {
 impl From<&CtxModifier> for ModificationKey {
     fn from(modifier: &CtxModifier) -> Self {
         ModificationKey {
-            affector_item_key: modifier.raw.affector_item_key,
+            affector_item_key: modifier.raw.affector_espec.item_key,
             affector_a_attr_id: modifier.raw.get_affector_a_attr_id(),
             op: modifier.raw.op,
         }
