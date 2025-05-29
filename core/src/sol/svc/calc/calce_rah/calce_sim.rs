@@ -18,7 +18,10 @@ use super::{
 use crate::{
     sol::{
         AttrVal, DmgKinds, FitKey, ItemKey,
-        svc::calc::{Calc, CalcAttrVal},
+        svc::{
+            calc::{Calc, CalcAttrVal},
+            misc::AttrSpec,
+        },
         uad::Uad,
     },
     util::{RMap, RSet},
@@ -282,10 +285,34 @@ impl Calc {
     fn set_rah_result(&mut self, uad: &Uad, item_key: ItemKey, resos: DmgKinds<CalcAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(&item_key).unwrap().replace(resos);
         if notify {
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_EM_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_THERM_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_KIN_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_EXPL_ATTR_ID);
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_EM_ATTR_ID,
+                },
+            );
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_THERM_ATTR_ID,
+                },
+            );
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_KIN_ATTR_ID,
+                },
+            );
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_EXPL_ATTR_ID,
+                },
+            );
         }
     }
     fn set_partial_fit_rahs_result(

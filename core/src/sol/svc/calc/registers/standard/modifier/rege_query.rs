@@ -67,9 +67,9 @@ impl StandardRegister {
     }
     pub(in crate::sol::svc::calc) fn iter_affector_spec_mods(
         &self,
-        affector_attr_spec: &AttrSpec,
+        affector_aspec: &AttrSpec,
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
-        self.cmods_by_attr_spec.get(affector_attr_spec)
+        self.cmods_by_attr_spec.get(affector_aspec)
     }
     pub(in crate::sol::svc::calc) fn get_mods_for_changed_root(&mut self, item: &UadItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();

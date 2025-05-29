@@ -2,7 +2,7 @@ use crate::{
     ad,
     sol::{
         AttrVal, FitKey, ItemKey,
-        svc::{EffectSpec, Svc},
+        svc::{EffectSpec, Svc, misc::AttrSpec},
         uad::{
             Uad,
             fleet::UadFleet,
@@ -66,7 +66,7 @@ impl Svc {
         item_key: ItemKey,
         a_attr_id: ad::AAttrId,
     ) {
-        self.calc.force_attr_value_recalc(uad, item_key, a_attr_id);
+        self.calc.force_attr_value_recalc(uad, AttrSpec { item_key, a_attr_id });
     }
     pub(in crate::sol) fn notify_item_state_activated_loaded(
         &mut self,

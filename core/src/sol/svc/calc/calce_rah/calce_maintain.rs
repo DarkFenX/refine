@@ -8,7 +8,10 @@ use crate::{
     ad,
     sol::{
         DmgKinds, FitKey, ItemKey,
-        svc::calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
+        svc::{
+            AttrSpec,
+            calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
+        },
         uad::{Uad, item::UadItem},
     },
     src::Src,
@@ -109,12 +112,7 @@ impl Calc {
             self.clear_fit_rah_results(uad, &fit_key);
         }
     }
-    pub(in crate::sol::svc::calc) fn rah_attr_value_changed(
-        &mut self,
-        uad: &Uad,
-        item_key: ItemKey,
-        a_attr_id: ad::AAttrId,
-    ) {
+    pub(in crate::sol::svc::calc) fn rah_attr_value_changed(&mut self, uad: &Uad, aspec: &AttrSpec) {
         if self.rah.sim_running {
             return;
         }
@@ -123,13 +121,13 @@ impl Calc {
         if self.rah.resonances.is_empty() {
             return;
         }
-        match a_attr_id {
+        match aspec.a_attr_id {
             // Ship armor resonances and RAH resonances
             ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
-                match uad.items.get(item_key) {
+                match uad.items.get(aspec.item_key) {
                     UadItem::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_key()),
                     UadItem::Module(module) => {
-                        if self.rah.resonances.contains_key(&item_key) {
+                        if self.rah.resonances.contains_key(&aspec.item_key) {
                             self.clear_fit_rah_results(uad, &module.get_fit_key());
                         }
                     }
@@ -138,19 +136,19 @@ impl Calc {
             }
             // RAH shift amount
             RAH_SHIFT_ATTR_ID => {
-                if self.rah.resonances.contains_key(&item_key) {
+                if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_key = uad.items.get(item_key).get_fit_key().unwrap();
+                    let fit_key = uad.items.get(aspec.item_key).get_fit_key().unwrap();
                     self.clear_fit_rah_results(uad, &fit_key);
                 }
             }
             // RAH cycle time
             a_attr_id if Some(a_attr_id) == self.rah.cycle_time_a_attr_id => {
-                if self.rah.resonances.contains_key(&item_key) {
+                if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_key = uad.items.get(item_key).get_fit_key().unwrap();
+                    let fit_key = uad.items.get(aspec.item_key).get_fit_key().unwrap();
                     // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
                     // change sim results
                     if self.rah.by_fit.get(&fit_key).len() >= 2 {
@@ -160,7 +158,7 @@ impl Calc {
             }
             // Ship HP - need to clear results since breacher DPS depends on those
             SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
-                if let UadItem::Ship(ship) = uad.items.get(item_key) {
+                if let UadItem::Ship(ship) = uad.items.get(aspec.item_key) {
                     let fit_key = ship.get_fit_key();
                     let fit = uad.fits.get(fit_key);
                     if get_fit_rah_incoming_dps(uad, fit).deals_breacher_dps() {
@@ -186,10 +184,34 @@ impl Calc {
     }
     fn clear_rah_result(&mut self, uad: &Uad, item_key: ItemKey) {
         if self.rah.resonances.get_mut(&item_key).unwrap().take().is_some() {
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_EM_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_THERM_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_KIN_ATTR_ID);
-            self.force_attr_postproc_recalc(uad, item_key, ARMOR_EXPL_ATTR_ID);
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_EM_ATTR_ID,
+                },
+            );
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_THERM_ATTR_ID,
+                },
+            );
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_KIN_ATTR_ID,
+                },
+            );
+            self.force_attr_postproc_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ARMOR_EXPL_ATTR_ID,
+                },
+            );
         }
     }
     fn get_rah_resonances(&mut self, uad: &Uad, item_key: ItemKey) -> DmgKinds<CalcAttrVal> {

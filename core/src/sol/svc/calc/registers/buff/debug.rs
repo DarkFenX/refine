@@ -13,8 +13,8 @@ impl BuffRegister {
                 check_a_effect_id(uad, a_effect_id)?;
             }
         }
-        for ((item_key, _), raw_modifiers) in self.modifiers.iter() {
-            check_item_key(uad, *item_key, true)?;
+        for (aspec, raw_modifiers) in self.modifiers.iter() {
+            check_item_key(uad, aspec.item_key, true)?;
             for raw_modifier in raw_modifiers {
                 check_raw_modifier(uad, raw_modifier)?;
             }

@@ -40,14 +40,9 @@ impl DependencyRegister {
     // Query methods
     pub(in crate::sol::svc::calc) fn get_affectee_attr_specs(
         &self,
-        affector_item_key: ItemKey,
-        affector_a_attr_id: ad::AAttrId,
+        affector_aspec: &AttrSpec,
     ) -> impl ExactSizeIterator<Item = &AttrSpec> {
-        let affector_spec = AttrSpec {
-            item_key: affector_item_key,
-            a_attr_id: affector_a_attr_id,
-        };
-        self.data.get(&affector_spec)
+        self.data.get(affector_aspec)
     }
     // Modification methods
     pub(in crate::sol::svc::calc) fn add_anonymous(
@@ -70,44 +65,21 @@ impl DependencyRegister {
     }
     pub(in crate::sol::svc::calc) fn add_with_source(
         &mut self,
-        source_item_key: ItemKey,
-        source_a_effect_id: ad::AEffectId,
-        affector_item_key: ItemKey,
-        affector_a_attr_id: ad::AAttrId,
-        affectee_item_key: ItemKey,
-        affectee_a_attr_id: ad::AAttrId,
+        source_espec: EffectSpec,
+        affector_aspec: AttrSpec,
+        affectee_aspec: AttrSpec,
     ) {
-        let source = EffectSpec {
-            item_key: source_item_key,
-            a_effect_id: source_a_effect_id,
-        };
-        let affector_spec = AttrSpec {
-            item_key: affector_item_key,
-            a_attr_id: affector_a_attr_id,
-        };
-        let affectee_spec = AttrSpec {
-            item_key: affectee_item_key,
-            a_attr_id: affectee_a_attr_id,
-        };
-        self.data.add_entry(affector_spec, affectee_spec);
-        self.by_source.add_entry(source, (affector_spec, affectee_spec));
-        self.source_by_item.add_entry(affector_item_key, source);
-        self.source_by_item.add_entry(affectee_item_key, source);
+        self.data.add_entry(affector_aspec, affectee_aspec);
+        self.by_source.add_entry(source_espec, (affector_aspec, affectee_aspec));
+        self.source_by_item.add_entry(affector_aspec.item_key, source_espec);
+        self.source_by_item.add_entry(affectee_aspec.item_key, source_espec);
     }
-    pub(in crate::sol::svc::calc) fn remove_by_source(
-        &mut self,
-        source_item_key: ItemKey,
-        source_a_effect_id: ad::AEffectId,
-    ) {
-        let source = EffectSpec {
-            item_key: source_item_key,
-            a_effect_id: source_a_effect_id,
-        };
-        if let Some(spec_iter) = self.by_source.remove_key(&source) {
+    pub(in crate::sol::svc::calc) fn remove_by_source(&mut self, source_espec: &EffectSpec) {
+        if let Some(spec_iter) = self.by_source.remove_key(source_espec) {
             for (affector_spec, affectee_spec) in spec_iter {
                 self.data.remove_entry(&affector_spec, &affectee_spec);
-                self.source_by_item.remove_entry(&affector_spec.item_key, &source);
-                self.source_by_item.remove_entry(&affectee_spec.item_key, &source);
+                self.source_by_item.remove_entry(&affector_spec.item_key, source_espec);
+                self.source_by_item.remove_entry(&affectee_spec.item_key, source_espec);
             }
         }
     }

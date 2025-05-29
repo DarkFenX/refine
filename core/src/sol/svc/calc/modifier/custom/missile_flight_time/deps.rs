@@ -1,24 +1,28 @@
 use super::attr::{MISSILE_FLIGHT_TIME, MISSILE_VELOCITY, SHIP_RADIUS};
 use crate::sol::{
     ItemKey,
-    svc::{EffectSpec, calc::Calc},
+    svc::{AttrSpec, EffectSpec, calc::Calc},
 };
 
 pub(super) fn reg_dependencies(calc: &mut Calc, ship_item_key: ItemKey, missile_espec: EffectSpec) {
+    let affectee_aspec = AttrSpec {
+        item_key: missile_espec.item_key,
+        a_attr_id: MISSILE_FLIGHT_TIME,
+    };
     calc.deps.add_with_source(
-        missile_espec.item_key,
-        missile_espec.a_effect_id,
-        missile_espec.item_key,
-        MISSILE_VELOCITY,
-        missile_espec.item_key,
-        MISSILE_FLIGHT_TIME,
+        missile_espec,
+        AttrSpec {
+            item_key: missile_espec.item_key,
+            a_attr_id: MISSILE_VELOCITY,
+        },
+        affectee_aspec,
     );
     calc.deps.add_with_source(
-        missile_espec.item_key,
-        missile_espec.a_effect_id,
-        ship_item_key,
-        SHIP_RADIUS,
-        missile_espec.item_key,
-        MISSILE_FLIGHT_TIME,
+        missile_espec,
+        AttrSpec {
+            item_key: ship_item_key,
+            a_attr_id: SHIP_RADIUS,
+        },
+        affectee_aspec,
     );
 }

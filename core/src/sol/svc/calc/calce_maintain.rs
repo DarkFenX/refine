@@ -125,7 +125,7 @@ impl Calc {
         let mut util_cmods = Vec::new();
         for a_effect in a_effects.iter() {
             let espec = EffectSpec {
-                item_key: item_key,
+                item_key,
                 a_effect_id: a_effect.id,
             };
             self.std.extract_raw_mods_for_effect(&mut raw_modifiers, espec);
@@ -136,7 +136,7 @@ impl Calc {
             self.buffs.unreg_effect(item_key, a_effect);
             // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used
             // by e.g. custom propulsion module modifier
-            self.deps.remove_by_source(item_key, a_effect.id);
+            self.deps.remove_by_source(&espec);
         }
     }
     pub(in crate::sol::svc) fn effect_projected(
@@ -189,113 +189,137 @@ impl Calc {
         }
         self.projs.remove_range(projector_espec, projectee_item_key);
     }
-    pub(in crate::sol::svc) fn attr_value_changed(&mut self, uad: &Uad, item_key: ItemKey, a_attr_id: ad::AAttrId) {
+    pub(in crate::sol::svc) fn attr_value_changed(&mut self, uad: &Uad, aspec: AttrSpec) {
         // Clear up attribute values which rely on passed attribute as an upper/lower limit
-        let attr_specs = self
-            .deps
-            .get_affectee_attr_specs(item_key, a_attr_id)
-            .copied()
-            .collect_vec();
-        for attr_spec in attr_specs.iter() {
-            self.force_attr_value_recalc(uad, attr_spec.item_key, attr_spec.a_attr_id);
+        let affectee_aspecs = self.deps.get_affectee_attr_specs(&aspec).copied().collect_vec();
+        for affectee_aspec in affectee_aspecs.into_iter() {
+            self.force_attr_value_recalc(uad, affectee_aspec);
         }
         // Clear up attribute values which rely on passed attribute as a modification source
-        let ctx_modifiers = self
-            .std
-            .iter_affector_spec_mods(&AttrSpec { item_key, a_attr_id })
-            .copied()
-            .collect_vec();
+        let ctx_modifiers = self.std.iter_affector_spec_mods(&aspec).copied().collect_vec();
         if !ctx_modifiers.is_empty() {
             let mut affectees = Vec::new();
             for ctx_modifier in ctx_modifiers.iter() {
                 self.std.fill_affectees(&mut affectees, uad, ctx_modifier);
-                for &projectee_item_key in affectees.iter() {
-                    self.force_attr_value_recalc(uad, projectee_item_key, ctx_modifier.raw.affectee_a_attr_id);
+                for &affectee_item_key in affectees.iter() {
+                    let projectee_aspec = AttrSpec {
+                        item_key: affectee_item_key,
+                        a_attr_id: ctx_modifier.raw.affectee_a_attr_id,
+                    };
+                    self.force_attr_value_recalc(uad, projectee_aspec);
                 }
             }
         }
         // Process buffs which rely on attribute being modified
-        if ac::extras::BUFF_STDATTR_IDS.contains(&a_attr_id) {
-            let item = uad.items.get(item_key);
+        if ac::extras::BUFF_STDATTR_IDS.contains(&aspec.a_attr_id) {
+            let item = uad.items.get(aspec.item_key);
             // Remove modifiers of buffs which rely on the attribute
-            if let Some(raw_modifiers) = self.buffs.extract_dependent_mods(item_key, a_attr_id) {
+            if let Some(raw_modifiers) = self.buffs.extract_dependent_mods(&aspec) {
                 let mut util_items = Vec::new();
                 let mut util_cmods = Vec::new();
                 let raw_modifiers = raw_modifiers.collect_vec();
                 for raw_modifier in raw_modifiers.iter() {
-                    self.unreg_raw_mod(&mut util_items, &mut util_cmods, uad, item_key, item, raw_modifier);
+                    self.unreg_raw_mod(
+                        &mut util_items,
+                        &mut util_cmods,
+                        uad,
+                        aspec.item_key,
+                        item,
+                        raw_modifier,
+                    );
                 }
             }
             // Generate new modifiers using new value and apply them
-            let a_effect_ids = self.buffs.get_effects(&item_key);
+            let a_effect_ids = self.buffs.get_effects(&aspec.item_key);
             if !a_effect_ids.is_empty() {
                 let effect_ids = a_effect_ids.copied().collect_vec();
                 let raw_modifiers =
-                    self.generate_dependent_buff_mods(uad, item_key, item, effect_ids.iter(), a_attr_id);
+                    self.generate_dependent_buff_mods(uad, aspec.item_key, item, effect_ids.iter(), aspec.a_attr_id);
                 for raw_modifier in raw_modifiers.iter() {
-                    self.buffs.reg_dependent_mod(item_key, a_attr_id, *raw_modifier);
+                    self.buffs.reg_dependent_mod(aspec, *raw_modifier);
                 }
                 let mut util_items = Vec::new();
                 let mut util_cmods = Vec::new();
                 for &raw_modifier in raw_modifiers.iter() {
-                    self.reg_raw_mod(&mut util_items, &mut util_cmods, uad, item_key, item, raw_modifier);
+                    self.reg_raw_mod(
+                        &mut util_items,
+                        &mut util_cmods,
+                        uad,
+                        aspec.item_key,
+                        item,
+                        raw_modifier,
+                    );
                 }
             }
         }
         // Notify RAH sim
-        self.rah_attr_value_changed(uad, item_key, a_attr_id);
+        self.rah_attr_value_changed(uad, &aspec);
     }
-    pub(in crate::sol::svc) fn force_attr_value_recalc(
-        &mut self,
-        uad: &Uad,
-        item_key: ItemKey,
-        a_attr_id: ad::AAttrId,
-    ) {
+    pub(in crate::sol::svc) fn force_attr_value_recalc(&mut self, uad: &Uad, aspec: AttrSpec) {
         // Sometimes calc service receives requests to clear attributes it does not know yet; this
         // can happen in multiple cases, e.g. when adding module with charge, with "other" location
         // modifier on module. User data gets references between charge and module set right away,
         // but calculator registers module before charge, and attempts to clear charge attributes.
         // Due to cases like this, we cannot just unwrap item attribute data.
-        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(&item_key) {
+        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(&aspec.item_key) {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). Removing attribute forces
             // recalculation
-            if item_attr_data.values.remove(&a_attr_id).is_some() {
-                self.attr_value_changed(uad, item_key, a_attr_id);
+            if item_attr_data.values.remove(&aspec.a_attr_id).is_some() {
+                self.attr_value_changed(uad, aspec);
             }
         }
     }
-    pub(in crate::sol::svc::calc) fn force_attr_postproc_recalc(
-        &mut self,
-        uad: &Uad,
-        item_key: ItemKey,
-        a_attr_id: ad::AAttrId,
-    ) {
+    pub(in crate::sol::svc::calc) fn force_attr_postproc_recalc(&mut self, uad: &Uad, aspec: AttrSpec) {
         // Almost-copy of force recalc method without attribute removal. When something that
         // installed a postprocessing function thinks its output can change, it can let calc service
         // know about it via this method.
-        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(&item_key) {
+        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(&aspec.item_key) {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). In this case we do not remove
             // attribute, because only postprocessing output is supposed to change
-            if item_attr_data.values.contains_key(&a_attr_id) {
-                self.attr_value_changed(uad, item_key, a_attr_id);
+            if item_attr_data.values.contains_key(&aspec.a_attr_id) {
+                self.attr_value_changed(uad, aspec);
             }
         }
     }
     pub(in crate::sol::svc) fn sol_sec_zone_changed(&mut self, uad: &Uad) {
         for item_key in uad.items.keys() {
-            self.force_attr_value_recalc(uad, item_key, ac::attrs::SECURITY_MODIFIER)
+            self.force_attr_value_recalc(
+                uad,
+                AttrSpec {
+                    item_key,
+                    a_attr_id: ac::attrs::SECURITY_MODIFIER,
+                },
+            )
         }
     }
     pub(in crate::sol::svc) fn fighter_count_changed(&mut self, uad: &Uad, fighter_key: ItemKey) {
-        self.force_attr_postproc_recalc(uad, fighter_key, FTR_COUNT_ATTR)
+        self.force_attr_postproc_recalc(
+            uad,
+            AttrSpec {
+                item_key: fighter_key,
+                a_attr_id: FTR_COUNT_ATTR,
+            },
+        )
     }
     pub(in crate::sol::svc) fn ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
-        self.force_attr_postproc_recalc(uad, ship_key, SEC_STATUS_ATTR)
+        self.force_attr_postproc_recalc(
+            uad,
+            AttrSpec {
+                item_key: ship_key,
+                a_attr_id: SEC_STATUS_ATTR,
+            },
+        )
     }
     pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey) {
-        self.force_attr_postproc_recalc(uad, skill_key, SKILL_LVL_ATTR)
+        self.force_attr_postproc_recalc(
+            uad,
+            AttrSpec {
+                item_key: skill_key,
+                a_attr_id: SKILL_LVL_ATTR,
+            },
+        )
     }
     // Private methods
     fn reg_raw_mod(
@@ -436,19 +460,36 @@ impl Calc {
     }
     fn reg_raw_mod_for_buff(&mut self, item_key: ItemKey, raw_modifier: RawModifier) {
         if let Some(buff_type_attr_id) = raw_modifier.buff_type_a_attr_id {
-            self.buffs.reg_dependent_mod(item_key, buff_type_attr_id, raw_modifier);
+            self.buffs.reg_dependent_mod(
+                AttrSpec {
+                    item_key,
+                    a_attr_id: buff_type_attr_id,
+                },
+                raw_modifier,
+            );
         }
     }
     fn unreg_raw_mod_for_buff(&mut self, item_key: ItemKey, raw_modifier: &RawModifier) {
         if let Some(buff_type_attr_id) = raw_modifier.buff_type_a_attr_id {
-            self.buffs
-                .unreg_dependent_mod(item_key, buff_type_attr_id, raw_modifier);
+            self.buffs.unreg_dependent_mod(
+                &AttrSpec {
+                    item_key,
+                    a_attr_id: buff_type_attr_id,
+                },
+                raw_modifier,
+            );
         }
     }
     fn force_mod_affectee_attr_recalc(&mut self, affectees: &mut Vec<ItemKey>, uad: &Uad, modifier: &CtxModifier) {
         self.std.fill_affectees(affectees, uad, modifier);
-        for &projectee_item_key in affectees.iter() {
-            self.force_attr_value_recalc(uad, projectee_item_key, modifier.raw.affectee_a_attr_id);
+        for &affectee_item_key in affectees.iter() {
+            self.force_attr_value_recalc(
+                uad,
+                AttrSpec {
+                    item_key: affectee_item_key,
+                    a_attr_id: modifier.raw.affectee_a_attr_id,
+                },
+            );
         }
     }
     fn handle_location_owner_change(&mut self, uad: &Uad, item: &UadItem) {
