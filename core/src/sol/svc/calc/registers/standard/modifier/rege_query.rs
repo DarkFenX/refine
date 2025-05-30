@@ -7,7 +7,7 @@ use crate::{
         ItemKey,
         svc::{
             AttrSpec, EffectSpec,
-            calc::{CtxModifier, RawModifier, registers::StandardRegister},
+            calc::{CtxModifier, LocationKind, RawModifier, registers::StandardRegister},
         },
         uad::{fit::Fits, item::UadItem},
     },
@@ -71,9 +71,13 @@ impl StandardRegister {
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
         self.cmods_by_attr_spec.get(affector_aspec)
     }
-    pub(in crate::sol::svc::calc) fn get_mods_for_changed_root(&mut self, item: &UadItem) -> Vec<CtxModifier> {
+    pub(in crate::sol::svc::calc) fn get_mods_for_changed_root(
+        &mut self,
+        item: &UadItem,
+        loc: LocationKind,
+    ) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
-        if let (Some(fit_key), Some(loc)) = (item.get_fit_key(), item.get_root_loc_kind()) {
+        if let Some(fit_key) = item.get_fit_key() {
             cmods.extend(self.cmods_loc.get(&(fit_key, loc)));
             for ((st_fit_key, st_loc, _), st_cmods) in self.cmods_loc_grp.iter() {
                 if fit_key == *st_fit_key && loc == *st_loc {

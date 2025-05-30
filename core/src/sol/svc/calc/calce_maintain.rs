@@ -447,9 +447,9 @@ impl Calc {
         }
     }
     fn handle_location_owner_change(&mut self, uad: &Uad, item: &UadItem) {
-        if item.get_root_loc_kind().is_some() {
+        if let Some(root_loc_kind) = item.get_root_loc_kind() {
             let mut affectees = Vec::new();
-            for ctx_modifier in self.std.get_mods_for_changed_root(item) {
+            for ctx_modifier in self.std.get_mods_for_changed_root(item, root_loc_kind) {
                 self.force_mod_affectee_attr_recalc(&mut affectees, uad, &ctx_modifier)
             }
         }
