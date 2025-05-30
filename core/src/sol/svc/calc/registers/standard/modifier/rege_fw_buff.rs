@@ -119,7 +119,7 @@ impl StandardRegister {
             _ => false,
         };
         if valid {
-            self.rmods_nonproj.add_entry(raw_modifier.affector_espec, raw_modifier);
+            self.rmods_all.add_entry(raw_modifier.affector_espec, raw_modifier);
         }
         valid
     }
@@ -301,12 +301,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(in crate::sol::svc::calc::registers::standard) fn reg_loc_root_for_fw(
-        &mut self,
-        item_key: ItemKey,
-        item: &UadItem,
-        fit_key: FitKey,
-    ) {
+    pub(super) fn reg_loc_root_for_fw(&mut self, item_key: ItemKey, item: &UadItem, fit_key: FitKey) {
         for raw_modifier in self.rmods_fw_buff_indirect.get(&fit_key) {
             match raw_modifier.affectee_filter {
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
@@ -353,12 +348,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(in crate::sol::svc::calc::registers::standard) fn unreg_loc_root_for_fw(
-        &mut self,
-        item_key: ItemKey,
-        item: &UadItem,
-        fit_key: FitKey,
-    ) {
+    pub(super) fn unreg_loc_root_for_fw(&mut self, item_key: ItemKey, item: &UadItem, fit_key: FitKey) {
         for raw_modifier in self.rmods_fw_buff_indirect.get(&fit_key) {
             match raw_modifier.affectee_filter {
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {

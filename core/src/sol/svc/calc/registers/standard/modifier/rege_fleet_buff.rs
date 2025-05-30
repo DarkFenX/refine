@@ -38,7 +38,7 @@ impl StandardRegister {
         // through when adding them; if raw modifier is valid, there will always be a ctx one
         if !ctx_modifiers.is_empty() {
             self.rmods_fleet.add_entry(fit_key, raw_modifier);
-            self.rmods_nonproj.add_entry(raw_modifier.affector_espec, raw_modifier);
+            self.rmods_all.add_entry(raw_modifier.affector_espec, raw_modifier);
         }
         !ctx_modifiers.is_empty()
     }

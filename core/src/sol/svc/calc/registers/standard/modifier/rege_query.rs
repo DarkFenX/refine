@@ -80,6 +80,7 @@ impl StandardRegister {
         if let UadItem::Ship(uad_ship) = item {
             self.reg_loc_root_for_fw(item_key, item, uad_ship.get_fit_key());
             self.reg_loc_root_for_sw(item_key, item);
+            self.reg_loc_root_for_proj_buff(item_key, item);
         }
         self.get_mods_for_changed_root(item, loc)
     }
@@ -93,6 +94,7 @@ impl StandardRegister {
         if let UadItem::Ship(uad_ship) = item {
             self.unreg_loc_root_for_fw(item_key, item, uad_ship.get_fit_key());
             self.unreg_loc_root_for_sw(item_key, item);
+            self.unreg_loc_root_for_proj_buff(item_key, item);
         }
         cmods
     }
@@ -119,10 +121,7 @@ impl StandardRegister {
         espec: EffectSpec,
     ) {
         raw_modifiers.clear();
-        if let Some(effect_mods) = self.rmods_nonproj.remove_key(&espec) {
-            raw_modifiers.extend(effect_mods)
-        }
-        if let Some(effect_mods) = self.rmods_proj.remove_key(&espec) {
+        if let Some(effect_mods) = self.rmods_all.remove_key(&espec) {
             raw_modifiers.extend(effect_mods)
         }
     }

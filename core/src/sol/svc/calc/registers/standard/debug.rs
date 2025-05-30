@@ -43,7 +43,7 @@ impl StandardRegister {
                 check_item_key(uad, *item_key, true)?;
             }
         }
-        for (effect_spec, rmods) in self.rmods_nonproj.iter() {
+        for (effect_spec, rmods) in self.rmods_all.iter() {
             check_item_key(uad, effect_spec.item_key, true)?;
             check_a_effect_id(uad, &effect_spec.a_effect_id)?;
             for rmod in rmods {
@@ -80,6 +80,20 @@ impl StandardRegister {
         }
         for (fit_key, rmods) in self.rmods_fw_buff_indirect.iter() {
             check_fit_key(uad, *fit_key)?;
+            for rmod in rmods {
+                check_raw_modifier(uad, rmod)?;
+            }
+        }
+        for (&projectee_item_key, rmods) in self.rmods_proj_active.iter() {
+            // Projectees don't have to be loaded for an entry to be added here
+            check_item_key(uad, projectee_item_key, false)?;
+            for rmod in rmods {
+                check_raw_modifier(uad, rmod)?;
+            }
+        }
+        for (&projectee_item_key, rmods) in self.rmods_proj_inactive.iter() {
+            // Projectees don't have to be loaded for an entry to be added here
+            check_item_key(uad, projectee_item_key, false)?;
             for rmod in rmods {
                 check_raw_modifier(uad, rmod)?;
             }

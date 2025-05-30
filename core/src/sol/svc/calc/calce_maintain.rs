@@ -398,8 +398,7 @@ impl Calc {
                         self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
                     }
                 }
-                // Don't need to do anything in this case, since projected effects were
-                // removed during extraction earlier
+                UadItem::ProjEffect(_) => self.std.unreg_proj_mod(raw_modifier),
                 _ => (),
             },
             ModifierKind::Buff => {
@@ -416,16 +415,13 @@ impl Calc {
                             self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                         }
                     }
-                    // Don't need to do anything in this case, since projected effects were
-                    // removed during extraction earlier
-                    UadItem::ProjEffect(_) => (),
-                    _ => (),
+                    _ => {
+                        self.std.unreg_proj_mod(raw_modifier);
+                    }
                 }
                 self.unreg_raw_mod_for_buff(item_key, raw_modifier);
             }
-            // Don't need to do anything in this case, since projected effects were
-            // removed during extraction earlier
-            ModifierKind::Targeted => (),
+            ModifierKind::Targeted => self.std.unreg_proj_mod(raw_modifier),
         }
     }
     fn reg_raw_mod_for_buff(&mut self, item_key: ItemKey, raw_modifier: RawModifier) {

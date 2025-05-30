@@ -30,9 +30,9 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
     // Everything-buff-modifiable items which belong to certain fit
     // Map<affectee fit key, affectee item keys>
     pub(super) affectee_buffable: RMapRSet<FitKey, ItemKey>,
-    // All non-projected raw modifiers tracked by register
+    // All raw modifiers tracked by register
     // Map<affector effect spec, modifiers>
-    pub(super) rmods_nonproj: RMapRSet<EffectSpec, RawModifier>,
+    pub(super) rmods_all: RMapRSet<EffectSpec, RawModifier>,
     // All projected raw modifiers tracked by register
     // Map<affector effect spec, modifiers>
     pub(super) rmods_proj: RMapRSet<EffectSpec, RawModifier>,
@@ -49,6 +49,14 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
     pub(super) rmods_fw_buff_direct: RMapRSet<FitKey, RawModifier>,
     // Fit-wide indirect buff modifiers
     pub(super) rmods_fw_buff_indirect: RMapRSet<FitKey, RawModifier>,
+    // Valid item-targeted modifiers which target eligible item kind, with projectee item passing
+    // all the checks
+    // Map<projectee item ID, modifiers>
+    pub(super) rmods_proj_active: RMapRSet<ItemKey, RawModifier>,
+    // Valid item-targeted modifiers which target eligible item kind, with projectee item failing
+    // some checks, and thus modifiers being inactive
+    // Map<projectee item ID, modifiers>
+    pub(super) rmods_proj_inactive: RMapRSet<ItemKey, RawModifier>,
     // Modifiers which rely on an item-attribute pair value
     // Map<attr spec, modifiers>
     pub(super) cmods_by_attr_spec: RMapRSet<AttrSpec, CtxModifier>,
@@ -86,7 +94,7 @@ impl StandardRegister {
             affectee_loc_srq: RMapRSet::new(),
             affectee_own_srq: RMapRSet::new(),
             affectee_buffable: RMapRSet::new(),
-            rmods_nonproj: RMapRSet::new(),
+            rmods_all: RMapRSet::new(),
             rmods_proj: RMapRSet::new(),
             rmods_fleet: RMapRSet::new(),
             rmods_sw_system: RSet::new(),
@@ -94,6 +102,8 @@ impl StandardRegister {
             rmods_sw_buff_indirect: RSet::new(),
             rmods_fw_buff_direct: RMapRSet::new(),
             rmods_fw_buff_indirect: RMapRSet::new(),
+            rmods_proj_active: RMapRSet::new(),
+            rmods_proj_inactive: RMapRSet::new(),
             cmods_by_attr_spec: RMapRSet::new(),
             cmods_direct: RMapRSet::new(),
             cmods_other: RMapRSet::new(),

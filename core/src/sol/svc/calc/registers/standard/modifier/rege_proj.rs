@@ -11,7 +11,13 @@ use crate::sol::{
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_proj_mod(&mut self, raw_modifier: RawModifier) {
-        self.rmods_proj.add_entry(raw_modifier.affector_espec, raw_modifier)
+        self.rmods_all.add_entry(raw_modifier.affector_espec, raw_modifier);
+        self.rmods_proj.add_entry(raw_modifier.affector_espec, raw_modifier);
+    }
+    pub(in crate::sol::svc::calc) fn unreg_proj_mod(&mut self, raw_modifier: &RawModifier) {
+        // Mods will be extracted from rmods_all container prior to this function, so no need to
+        // handle it
+        self.rmods_proj.remove_entry(&raw_modifier.affector_espec, raw_modifier);
     }
     pub(in crate::sol::svc::calc) fn project_effect(
         &mut self,
