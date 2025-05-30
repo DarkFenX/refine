@@ -107,7 +107,10 @@ impl StandardRegister {
             }
         }
         for (item_key, cmods) in self.cmods_direct.iter() {
-            check_item_key(uad, *item_key, true)?;
+            // TODO: if/when typelist-filtered buffs are added, and direct modification processing
+            // TODO: of non-ship entities is added, item key should be always loaded again
+            // Sometimes direct modifications can target non-loaded items (e.g. drones)
+            check_item_key(uad, *item_key, false)?;
             for cmod in cmods {
                 check_ctx_modifier(uad, cmod)?;
             }
