@@ -71,11 +71,30 @@ impl StandardRegister {
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
         self.cmods_by_attr_spec.get(affector_aspec)
     }
-    pub(in crate::sol::svc::calc) fn get_mods_for_changed_root(
+    pub(in crate::sol::svc::calc) fn get_mods_for_added_root(
         &mut self,
+        item_key: ItemKey,
         item: &UadItem,
         loc: LocationKind,
     ) -> Vec<CtxModifier> {
+        if let Some(fit_key) = item.get_fit_key() {
+            self.reg_loc_root_for_fw(item_key, item, fit_key);
+        }
+        self.get_mods_for_changed_root(item, loc)
+    }
+    pub(in crate::sol::svc::calc) fn get_mods_for_removed_root(
+        &mut self,
+        item_key: ItemKey,
+        item: &UadItem,
+        loc: LocationKind,
+    ) -> Vec<CtxModifier> {
+        let cmods = self.get_mods_for_changed_root(item, loc);
+        if let Some(fit_key) = item.get_fit_key() {
+            self.unreg_loc_root_for_fw(item_key, item, fit_key);
+        }
+        cmods
+    }
+    fn get_mods_for_changed_root(&self, item: &UadItem, loc: LocationKind) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
         if let Some(fit_key) = item.get_fit_key() {
             cmods.extend(self.cmods_loc.get(&(fit_key, loc)));

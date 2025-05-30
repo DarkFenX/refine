@@ -43,8 +43,10 @@ pub(in crate::sol::svc::calc) struct StandardRegister {
     pub(super) rmods_sw_system: RSet<RawModifier>,
     // System-wide buff modifiers
     pub(super) rmods_sw_buff: RSet<RawModifier>,
-    // Fit-wide buff modifiers
-    pub(super) rmods_fw_buff: RMapRSet<FitKey, RawModifier>,
+    // Fit-wide buff direct modifiers
+    pub(super) rmods_fw_buff_direct: RMapRSet<FitKey, RawModifier>,
+    // Fit-wide buff indirect modifiers
+    pub(super) rmods_fw_buff_indirect: RMapRSet<FitKey, RawModifier>,
     // Modifiers which rely on an item-attribute pair value
     // Map<attr spec, modifiers>
     pub(super) cmods_by_attr_spec: RMapRSet<AttrSpec, CtxModifier>,
@@ -87,7 +89,8 @@ impl StandardRegister {
             rmods_fleet: RMapRSet::new(),
             rmods_sw_system: RSet::new(),
             rmods_sw_buff: RSet::new(),
-            rmods_fw_buff: RMapRSet::new(),
+            rmods_fw_buff_direct: RMapRSet::new(),
+            rmods_fw_buff_indirect: RMapRSet::new(),
             cmods_by_attr_spec: RMapRSet::new(),
             cmods_direct: RMapRSet::new(),
             cmods_other: RMapRSet::new(),
