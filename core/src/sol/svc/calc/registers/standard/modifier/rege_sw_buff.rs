@@ -19,13 +19,13 @@ impl StandardRegister {
         let valid = match raw_modifier.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => {
-                    for projectee_item_keys in self.affectee_buffable.values() {
-                        ctx_modifiers.reserve(projectee_item_keys.len());
-                        for &projectee_item_key in projectee_item_keys {
-                            let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, projectee_item_key);
+                    for affectee_item_keys in self.affectee_buffable.values() {
+                        ctx_modifiers.reserve(affectee_item_keys.len());
+                        for &affectee_item_key in affectee_item_keys {
+                            let ctx_modifier = CtxModifier::from_raw_with_item(raw_modifier, affectee_item_key);
                             add_ctx_modifier(
                                 &mut self.cmods_direct,
-                                projectee_item_key,
+                                affectee_item_key,
                                 ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
@@ -134,13 +134,13 @@ impl StandardRegister {
         match raw_modifier.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => {
-                    for projectee_item_keys in self.affectee_buffable.values() {
-                        ctx_modifiers.reserve(projectee_item_keys.len());
-                        for projectee_item_key in projectee_item_keys {
-                            let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, *projectee_item_key);
+                    for affectee_item_keys in self.affectee_buffable.values() {
+                        ctx_modifiers.reserve(affectee_item_keys.len());
+                        for affectee_item_key in affectee_item_keys {
+                            let ctx_modifier = CtxModifier::from_raw_with_item(*raw_modifier, *affectee_item_key);
                             remove_ctx_modifier(
                                 &mut self.cmods_direct,
-                                projectee_item_key,
+                                affectee_item_key,
                                 &ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
