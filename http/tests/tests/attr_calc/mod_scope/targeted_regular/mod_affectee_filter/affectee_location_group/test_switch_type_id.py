@@ -31,7 +31,7 @@ def test_root_to_unaffected(client, consts):
     # Action
     api_root.change_ship(type_id=eve_root2_id)
     # Verification
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(96)
     # Action
     api_root.change_ship(type_id=eve_root1_id)
     # Verification

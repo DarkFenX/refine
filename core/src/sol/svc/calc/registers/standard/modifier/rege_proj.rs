@@ -104,7 +104,9 @@ impl StandardRegister {
                     ModifierKind::System => {
                         self.reg_loc_root_for_proj_system(raw_modifier, projectee_item_key, projectee_item)
                     }
-                    ModifierKind::Targeted => (),
+                    ModifierKind::Targeted => {
+                        self.reg_loc_root_for_proj_target(raw_modifier, projectee_item_key, projectee_item)
+                    }
                     ModifierKind::Buff => {
                         self.reg_loc_root_for_proj_buff(raw_modifier, projectee_item_key, projectee_item)
                     }
@@ -125,7 +127,9 @@ impl StandardRegister {
                     ModifierKind::System => {
                         self.unreg_loc_root_for_proj_system(raw_modifier, projectee_item_key, projectee_item)
                     }
-                    ModifierKind::Targeted => (),
+                    ModifierKind::Targeted => {
+                        self.unreg_loc_root_for_proj_target(raw_modifier, projectee_item_key, projectee_item)
+                    }
                     ModifierKind::Buff => {
                         self.unreg_loc_root_for_proj_buff(raw_modifier, projectee_item_key, projectee_item)
                     }
