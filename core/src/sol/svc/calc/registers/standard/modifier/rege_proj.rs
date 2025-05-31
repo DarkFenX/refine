@@ -11,12 +11,13 @@ use crate::sol::{
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_proj_mod(&mut self, raw_modifier: RawModifier) {
+        // Register projectable modifier.
         self.rmods_all.add_entry(raw_modifier.affector_espec, raw_modifier);
         self.rmods_proj.add_entry(raw_modifier.affector_espec, raw_modifier);
     }
     pub(in crate::sol::svc::calc) fn unreg_proj_mod(&mut self, raw_modifier: &RawModifier) {
-        // Mods will be extracted from rmods_all container prior to this function, so no need to
-        // handle it
+        // Unregister projectable modifiers. The rmods_all container should be emptied by the
+        // caller, so we do not need to take care about it here.
         self.rmods_proj.remove_entry(&raw_modifier.affector_espec, raw_modifier);
     }
     pub(in crate::sol::svc::calc) fn project_effect(
@@ -25,6 +26,7 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) -> Vec<CtxModifier> {
+        // Register projection and get appropriate context modifiers.
         let raw_modifiers = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
         for raw_modifier in raw_modifiers.iter() {
@@ -45,6 +47,7 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) -> Vec<CtxModifier> {
+        // Get context modifiers for projection.
         let raw_modifiers = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
         for raw_modifier in raw_modifiers.iter() {
@@ -65,6 +68,7 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) -> Vec<CtxModifier> {
+        // Unregister projection and get appropriate context modifiers.
         let raw_modifiers = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
         for raw_modifier in raw_modifiers.iter() {
@@ -78,5 +82,35 @@ impl StandardRegister {
             }
         }
         ctx_modifiers
+    }
+    pub(super) fn reg_loc_root_for_proj(&mut self, projectee_item_key: ItemKey, projectee_item: &UadItem) {
+        // Do necessary changes to projected modifiers after adding location root.
+        if let Some(raw_modifiers) = self.rmods_proj_inactive.remove_key(&projectee_item_key) {
+            for raw_modifier in raw_modifiers {
+                match raw_modifier.kind {
+                    ModifierKind::System => (),
+                    ModifierKind::Targeted => (),
+                    ModifierKind::Buff => {
+                        self.reg_loc_root_for_proj_buff(raw_modifier, projectee_item_key, projectee_item)
+                    }
+                    _ => (),
+                }
+            }
+        }
+    }
+    pub(super) fn unreg_loc_root_for_proj(&mut self, projectee_item_key: ItemKey, projectee_item: &UadItem) {
+        // Do necessary changes to projected modifiers before removing location root.
+        if let Some(raw_modifiers) = self.rmods_proj_active.remove_key(&projectee_item_key) {
+            for raw_modifier in raw_modifiers {
+                match raw_modifier.kind {
+                    ModifierKind::System => (),
+                    ModifierKind::Targeted => (),
+                    ModifierKind::Buff => {
+                        self.unreg_loc_root_for_proj_buff(raw_modifier, projectee_item_key, projectee_item)
+                    }
+                    _ => (),
+                }
+            }
+        }
     }
 }
