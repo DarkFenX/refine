@@ -119,7 +119,7 @@ def test_replace_proj(client, consts):
     assert api_struct2.update().attrs[eve_affectee_attr_id].dogma == approx(60)
 
 
-def test_switch_type_id_affectee(client, consts):
+def setup_switch_type_id_test(*, client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -130,36 +130,110 @@ def test_switch_type_id_affectee(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_proj_effect_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
-    eve_root1_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
-    eve_root2_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 50})
-    eve_root3_id = client.alloc_item_id()
-    eve_root4_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 50})
+    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
+    eve_affectee_struct_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 50})
+    eve_affectee_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_root = api_fit.set_ship(type_id=eve_root1_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    api_fit = api_sol.create_fit()
+    return (
+        eve_affectee_attr_id,
+        eve_affectee_ship_id,
+        eve_affectee_struct_id,
+        eve_affectee_not_loaded_id,
+        api_fit,
+        api_proj_effect)
+
+
+def test_switch_type_id_affected_to_unaffected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_affectee_ship_id,
+     eve_affectee_struct_id,
+     _,
+     api_fit,
+     api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_struct_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(60)
     # Action
-    api_root.change_ship(type_id=eve_root2_id)
+    api_affectee_item.change_ship(type_id=eve_affectee_ship_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(60)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_root.change_ship(type_id=eve_root3_id)
+    api_proj_effect.remove()
     # Verification
-    api_root.update()
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_switch_type_id_affected_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     _,
+     eve_affectee_struct_id,
+     eve_affectee_not_loaded_id,
+     api_fit,
+     api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_struct_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(60)
+    # Action
+    api_affectee_item.change_ship(type_id=eve_affectee_not_loaded_id)
+    # Verification
+    api_affectee_item.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_affectee_item.attrs  # noqa: B018
     # Action
-    api_root.change_ship(type_id=eve_root1_id)
+    api_proj_effect.remove()
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    api_affectee_item.update()
+    with check_no_field():
+        api_affectee_item.attrs  # noqa: B018
+
+
+def test_switch_type_id_unaffected_to_affected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_affectee_ship_id,
+     eve_affectee_struct_id,
+     _,
+     api_fit,
+     api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_root.change_ship(type_id=eve_root4_id)
+    api_affectee_item.change_ship(type_id=eve_affectee_struct_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(50)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(60)
+    # Action
+    api_proj_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(50)
+
+
+def test_switch_type_id_not_loaded_to_affected_remove(client, consts):
+    (eve_affectee_attr_id,
+     _,
+     eve_affectee_struct_id,
+     eve_affectee_not_loaded_id,
+     api_fit,
+     api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_not_loaded_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    # Verification
+    api_affectee_item.update()
+    with check_no_field():
+        api_affectee_item.attrs  # noqa: B018
+    # Action
+    api_affectee_item.change_ship(type_id=eve_affectee_struct_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(60)
+    # Action
+    api_proj_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(50)
 
 
 def test_switch_src_to_ship(client, consts):
