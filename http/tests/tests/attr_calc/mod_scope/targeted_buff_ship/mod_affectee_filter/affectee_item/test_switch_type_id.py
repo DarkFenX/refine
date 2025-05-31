@@ -1,7 +1,7 @@
 from tests import approx, check_no_field
 
 
-def test_affectee(client, consts):
+def setup_root_test(*, client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()
@@ -16,34 +16,102 @@ def test_affectee(client, consts):
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_root1_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
-    eve_root2_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
-    eve_root3_id = client.alloc_item_id()
-    eve_root4_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
+    eve_root_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    eve_root_struct_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 100})
+    eve_root_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_root = api_fit2.set_ship(type_id=eve_root1_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    return eve_affectee_attr_id, eve_root_ship_id, eve_root_struct_id, eve_root_not_loaded_id, api_fit2, api_module
+
+
+def test_root_affected_to_unaffected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     eve_root_struct_id,
+     _,
+     api_fit2,
+     api_module) = setup_root_test(client=client, consts=consts)
+    api_root = api_fit2.set_ship(type_id=eve_root_ship_id)
     api_module.change_module(add_projs=[api_root.id])
     # Verification
     assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(260)
     # Action
-    api_root.change_ship(type_id=eve_root2_id)
+    api_root.change_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(130)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_root.change_ship(type_id=eve_root3_id)
+    api_module.remove()
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_root_affected_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
+     eve_root_not_loaded_id,
+     api_fit2,
+     api_module) = setup_root_test(client=client, consts=consts)
+    api_root = api_fit2.set_ship(type_id=eve_root_ship_id)
+    api_module.change_module(add_projs=[api_root.id])
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(260)
+    # Action
+    api_root.change_ship(type_id=eve_root_not_loaded_id)
     # Verification
     api_root.update()
     with check_no_field():
         api_root.attrs  # noqa: B018
     # Action
-    api_root.change_ship(type_id=eve_root1_id)
+    api_module.remove()
+    # Verification
+    api_root.update()
+    with check_no_field():
+        api_root.attrs  # noqa: B018
+
+
+def test_root_unaffected_to_affected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     eve_root_struct_id,
+     _,
+     api_fit2,
+     api_module) = setup_root_test(client=client, consts=consts)
+    api_root = api_fit2.set_ship(type_id=eve_root_struct_id)
+    api_module.change_module(add_projs=[api_root.id])
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_root.change_ship(type_id=eve_root_ship_id)
     # Verification
     assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(260)
     # Action
-    api_root.change_ship(type_id=eve_root4_id)
+    api_module.remove()
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+
+
+def test_root_not_loaded_to_affected_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
+     eve_root_not_loaded_id,
+     api_fit2,
+     api_module) = setup_root_test(client=client, consts=consts)
+    api_root = api_fit2.set_ship(type_id=eve_root_not_loaded_id)
+    api_module.change_module(add_projs=[api_root.id])
+    # Verification
+    api_root.update()
+    with check_no_field():
+        api_root.attrs  # noqa: B018
+    # Action
+    api_root.change_ship(type_id=eve_root_ship_id)
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(260)
+    # Action
+    api_module.remove()
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(200)
