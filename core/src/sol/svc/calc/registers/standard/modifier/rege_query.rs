@@ -7,7 +7,7 @@ use crate::{
         ItemKey,
         svc::{
             AttrSpec, EffectSpec,
-            calc::{CtxModifier, LocationKind, RawModifier, registers::StandardRegister},
+            calc::{CtxModifier, RawModifier, registers::StandardRegister},
         },
         uad::{fit::Fits, item::UadItem},
     },
@@ -75,22 +75,20 @@ impl StandardRegister {
         &mut self,
         item_key: ItemKey,
         item: &UadItem,
-        loc: LocationKind,
     ) -> Vec<CtxModifier> {
         if let UadItem::Ship(uad_ship) = item {
             self.reg_loc_root_for_fw_buff(item_key, item, uad_ship.get_fit_key());
             self.reg_loc_root_for_sw_buff(item_key, item);
         }
         self.reg_loc_root_for_proj(item_key, item);
-        self.get_mods_for_changed_root(item, loc)
+        self.get_mods_for_changed_root(item)
     }
     pub(in crate::sol::svc::calc) fn get_mods_for_removed_root(
         &mut self,
         item_key: ItemKey,
         item: &UadItem,
-        loc: LocationKind,
     ) -> Vec<CtxModifier> {
-        let cmods = self.get_mods_for_changed_root(item, loc);
+        let cmods = self.get_mods_for_changed_root(item);
         if let UadItem::Ship(uad_ship) = item {
             self.unreg_loc_root_for_fw_buff(item_key, item, uad_ship.get_fit_key());
             self.unreg_loc_root_for_sw_buff(item_key, item);
@@ -98,9 +96,9 @@ impl StandardRegister {
         self.unreg_loc_root_for_proj(item_key, item);
         cmods
     }
-    fn get_mods_for_changed_root(&self, item: &UadItem, loc: LocationKind) -> Vec<CtxModifier> {
+    fn get_mods_for_changed_root(&self, item: &UadItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
-        if let Some(fit_key) = item.get_fit_key() {
+        if let (Some(fit_key), Some(loc)) = (item.get_fit_key(), item.get_root_loc_kind()) {
             cmods.extend(self.cmods_loc.get(&(fit_key, loc)));
             for ((st_fit_key, st_loc, _), st_cmods) in self.cmods_loc_grp.iter() {
                 if fit_key == *st_fit_key && loc == *st_loc {

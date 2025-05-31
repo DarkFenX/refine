@@ -42,6 +42,8 @@ impl Calc {
         self.rah_fit_rah_dps_profile_changed(uad, fit_key);
     }
     pub(in crate::sol::svc) fn item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
+        // Char/ship switches
+        self.handle_location_owner_add(uad, item_key, item);
         // Custom modifiers
         let ctx_modifiers = self
             .revs
@@ -70,12 +72,13 @@ impl Calc {
                 self.force_mod_affectee_attr_recalc(&mut util_items, uad, &ctx_modifier);
             }
         }
+        // Char/ship switches
+        self.handle_location_owner_remove(uad, item_key, item);
     }
     pub(in crate::sol::svc) fn item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
         // Notify core calc services
         self.attrs.item_loaded(item_key, item);
         self.std.reg_affectee(item_key, item);
-        self.handle_location_owner_add(uad, item_key, item);
         // Notify RAH sim
         self.rah_item_loaded(uad, item);
     }
@@ -83,7 +86,6 @@ impl Calc {
         // Notify RAH sim
         self.rah_item_unloaded(uad, item);
         // Notify core calc services
-        self.handle_location_owner_remove(uad, item_key, item);
         self.std.unreg_affectee(item_key, item);
         self.deps.remove_item(item_key);
         self.attrs.item_unloaded(&item_key);
@@ -443,17 +445,17 @@ impl Calc {
         }
     }
     fn handle_location_owner_add(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        if let Some(root_loc_kind) = item.get_root_loc_kind() {
+        if matches!(item, UadItem::Ship(_) | UadItem::Character(_)) {
             let mut affectees = Vec::new();
-            for ctx_modifier in self.std.get_mods_for_added_root(item_key, item, root_loc_kind) {
+            for ctx_modifier in self.std.get_mods_for_added_root(item_key, item) {
                 self.force_mod_affectee_attr_recalc(&mut affectees, uad, &ctx_modifier)
             }
         }
     }
     fn handle_location_owner_remove(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        if let Some(root_loc_kind) = item.get_root_loc_kind() {
+        if matches!(item, UadItem::Ship(_) | UadItem::Character(_)) {
             let mut affectees = Vec::new();
-            for ctx_modifier in self.std.get_mods_for_removed_root(item_key, item, root_loc_kind) {
+            for ctx_modifier in self.std.get_mods_for_removed_root(item_key, item) {
                 self.force_mod_affectee_attr_recalc(&mut affectees, uad, &ctx_modifier)
             }
         }
