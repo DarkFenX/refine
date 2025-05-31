@@ -88,7 +88,9 @@ impl StandardRegister {
         if let Some(raw_modifiers) = self.rmods_proj_inactive.remove_key(&projectee_item_key) {
             for raw_modifier in raw_modifiers {
                 match raw_modifier.kind {
-                    ModifierKind::System => (),
+                    ModifierKind::System => {
+                        self.reg_loc_root_for_proj_system(raw_modifier, projectee_item_key, projectee_item)
+                    }
                     ModifierKind::Targeted => (),
                     ModifierKind::Buff => {
                         self.reg_loc_root_for_proj_buff(raw_modifier, projectee_item_key, projectee_item)
@@ -103,7 +105,9 @@ impl StandardRegister {
         if let Some(raw_modifiers) = self.rmods_proj_active.remove_key(&projectee_item_key) {
             for raw_modifier in raw_modifiers {
                 match raw_modifier.kind {
-                    ModifierKind::System => (),
+                    ModifierKind::System => {
+                        self.unreg_loc_root_for_proj_system(raw_modifier, projectee_item_key, projectee_item)
+                    }
                     ModifierKind::Targeted => (),
                     ModifierKind::Buff => {
                         self.unreg_loc_root_for_proj_buff(raw_modifier, projectee_item_key, projectee_item)
@@ -112,5 +116,25 @@ impl StandardRegister {
                 }
             }
         }
+    }
+    // Utility methods for use in more specific modules
+    pub(super) fn reg_inactive_proj_rmod(
+        &mut self,
+        raw_modifier: RawModifier,
+        projectee_item_key: ItemKey,
+        register: bool,
+    ) -> Option<CtxModifier> {
+        if register {
+            self.rmods_proj_inactive.add_entry(projectee_item_key, raw_modifier);
+        }
+        None
+    }
+    pub(super) fn unreg_inactive_proj_rmod(
+        &mut self,
+        raw_modifier: &RawModifier,
+        projectee_item_key: &ItemKey,
+    ) -> Option<CtxModifier> {
+        self.rmods_proj_inactive.remove_entry(projectee_item_key, raw_modifier);
+        None
     }
 }

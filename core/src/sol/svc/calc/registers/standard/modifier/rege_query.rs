@@ -80,8 +80,8 @@ impl StandardRegister {
         if let UadItem::Ship(uad_ship) = item {
             self.reg_loc_root_for_fw(item_key, item, uad_ship.get_fit_key());
             self.reg_loc_root_for_sw(item_key, item);
-            self.reg_loc_root_for_proj(item_key, item);
         }
+        self.reg_loc_root_for_proj(item_key, item);
         self.get_mods_for_changed_root(item, loc)
     }
     pub(in crate::sol::svc::calc) fn get_mods_for_removed_root(
@@ -94,8 +94,8 @@ impl StandardRegister {
         if let UadItem::Ship(uad_ship) = item {
             self.unreg_loc_root_for_fw(item_key, item, uad_ship.get_fit_key());
             self.unreg_loc_root_for_sw(item_key, item);
-            self.unreg_loc_root_for_proj(item_key, item);
         }
+        self.unreg_loc_root_for_proj(item_key, item);
         cmods
     }
     fn get_mods_for_changed_root(&self, item: &UadItem, loc: LocationKind) -> Vec<CtxModifier> {

@@ -50,7 +50,7 @@ impl StandardRegister {
                         }
                         Some(ctx_modifier)
                     }
-                    false => self.reg_inactive_buff_rmod(raw_modifier, projectee_item_key, register),
+                    false => self.reg_inactive_proj_rmod(raw_modifier, projectee_item_key, register),
                 },
                 Location::Ship => match projectee_item {
                     UadItem::Ship(projectee_ship) => match projectee_ship.get_kind() {
@@ -67,7 +67,7 @@ impl StandardRegister {
                             }
                             Some(ctx_modifier)
                         }
-                        _ => self.reg_inactive_buff_rmod(raw_modifier, projectee_item_key, register),
+                        _ => self.reg_inactive_proj_rmod(raw_modifier, projectee_item_key, register),
                     },
                     _ => None,
                 },
@@ -88,7 +88,7 @@ impl StandardRegister {
                         }
                         Some(ctx_modifier)
                     }
-                    _ => self.reg_inactive_buff_rmod(raw_modifier, projectee_item_key, register),
+                    _ => self.reg_inactive_proj_rmod(raw_modifier, projectee_item_key, register),
                 },
                 _ => None,
             },
@@ -107,7 +107,7 @@ impl StandardRegister {
                         }
                         Some(ctx_modifier)
                     }
-                    _ => self.reg_inactive_buff_rmod(raw_modifier, projectee_item_key, register),
+                    _ => self.reg_inactive_proj_rmod(raw_modifier, projectee_item_key, register),
                 },
                 _ => None,
             },
@@ -126,7 +126,7 @@ impl StandardRegister {
                         }
                         Some(ctx_modifier)
                     }
-                    _ => self.reg_inactive_buff_rmod(raw_modifier, projectee_item_key, register),
+                    _ => self.reg_inactive_proj_rmod(raw_modifier, projectee_item_key, register),
                 },
                 _ => None,
             },
@@ -157,7 +157,7 @@ impl StandardRegister {
                         self.rmods_proj_active.remove_entry(&projectee_item_key, &raw_modifier);
                         Some(ctx_modifier)
                     }
-                    false => self.unreg_inactive_buff_rmod(&raw_modifier, &projectee_item_key),
+                    false => self.unreg_inactive_proj_rmod(&raw_modifier, &projectee_item_key),
                 },
                 Location::Ship => match projectee_item {
                     UadItem::Ship(projectee_ship) => match projectee_ship.get_kind() {
@@ -172,7 +172,7 @@ impl StandardRegister {
                             self.rmods_proj_active.remove_entry(&projectee_item_key, &raw_modifier);
                             Some(ctx_modifier)
                         }
-                        _ => self.unreg_inactive_buff_rmod(&raw_modifier, &projectee_item_key),
+                        _ => self.unreg_inactive_proj_rmod(&raw_modifier, &projectee_item_key),
                     },
                     _ => None,
                 },
@@ -191,7 +191,7 @@ impl StandardRegister {
                         self.rmods_proj_active.remove_entry(&projectee_item_key, &raw_modifier);
                         Some(ctx_modifier)
                     }
-                    _ => self.unreg_inactive_buff_rmod(&raw_modifier, &projectee_item_key),
+                    _ => self.unreg_inactive_proj_rmod(&raw_modifier, &projectee_item_key),
                 },
                 _ => None,
             },
@@ -208,7 +208,7 @@ impl StandardRegister {
                         self.rmods_proj_active.remove_entry(&projectee_item_key, &raw_modifier);
                         Some(ctx_modifier)
                     }
-                    _ => self.unreg_inactive_buff_rmod(&raw_modifier, &projectee_item_key),
+                    _ => self.unreg_inactive_proj_rmod(&raw_modifier, &projectee_item_key),
                 },
                 _ => None,
             },
@@ -225,14 +225,13 @@ impl StandardRegister {
                         self.rmods_proj_active.remove_entry(&projectee_item_key, &raw_modifier);
                         Some(ctx_modifier)
                     }
-                    _ => self.unreg_inactive_buff_rmod(&raw_modifier, &projectee_item_key),
+                    _ => self.unreg_inactive_proj_rmod(&raw_modifier, &projectee_item_key),
                 },
                 _ => None,
             },
             _ => None,
         }
     }
-    // Is supposed to be called only for buffable location roots (ships)
     pub(super) fn reg_loc_root_for_proj_buff(
         &mut self,
         raw_modifier: RawModifier,
@@ -245,7 +244,6 @@ impl StandardRegister {
         // caller.
         self.process_buff_mod(raw_modifier, projectee_item_key, projectee_item, true);
     }
-    // Is supposed to be called only for buffable location roots (ships)
     pub(super) fn unreg_loc_root_for_proj_buff(
         &mut self,
         raw_modifier: RawModifier,
@@ -329,24 +327,5 @@ impl StandardRegister {
             }
             _ => (),
         }
-    }
-    fn reg_inactive_buff_rmod(
-        &mut self,
-        raw_modifier: RawModifier,
-        projectee_item_key: ItemKey,
-        register: bool,
-    ) -> Option<CtxModifier> {
-        if register {
-            self.rmods_proj_inactive.add_entry(projectee_item_key, raw_modifier);
-        }
-        None
-    }
-    fn unreg_inactive_buff_rmod(
-        &mut self,
-        raw_modifier: &RawModifier,
-        projectee_item_key: &ItemKey,
-    ) -> Option<CtxModifier> {
-        self.rmods_proj_inactive.remove_entry(projectee_item_key, raw_modifier);
-        None
     }
 }
