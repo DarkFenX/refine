@@ -303,7 +303,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(super) fn reg_loc_root_for_sw(&mut self, item_key: ItemKey, item: &UadItem) {
+    pub(super) fn reg_loc_root_for_sw_buff(&mut self, item_key: ItemKey, item: &UadItem) {
         for raw_modifier in self.rmods_sw_buff_indirect.iter() {
             match raw_modifier.affectee_filter {
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
@@ -350,7 +350,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(super) fn unreg_loc_root_for_sw(&mut self, item_key: ItemKey, item: &UadItem) {
+    pub(super) fn unreg_loc_root_for_sw_buff(&mut self, item_key: ItemKey, item: &UadItem) {
         for raw_modifier in self.rmods_sw_buff_indirect.iter() {
             match raw_modifier.affectee_filter {
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
