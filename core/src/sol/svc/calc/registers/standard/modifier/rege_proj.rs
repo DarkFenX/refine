@@ -29,11 +29,15 @@ impl StandardRegister {
         // Register projection and get appropriate context modifiers.
         let raw_modifiers = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
-        for raw_modifier in raw_modifiers.iter() {
+        for raw_modifier in raw_modifiers.into_iter() {
+            // Validate raw modifier. If it is valid and target passes all checks, create and store
+            // appropriate context modifiers, put raw modifier into active projected modifier
+            // storage, and add context modifier to container. If it valid and target doesn't pass
+            // all checks, put raw modifier into inactive projected modifier storage.
             if let Some(ctx_modifier) = match raw_modifier.kind {
-                ModifierKind::System => self.proj_system_mod(*raw_modifier, projectee_item_key, projectee_item),
-                ModifierKind::Targeted => self.proj_target_mod(*raw_modifier, projectee_item_key, projectee_item),
-                ModifierKind::Buff => self.proj_buff_mod(*raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::System => self.proj_system_mod(raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::Targeted => self.proj_target_mod(raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::Buff => self.proj_buff_mod(raw_modifier, projectee_item_key, projectee_item),
                 _ => None,
             } {
                 ctx_modifiers.push(ctx_modifier);
@@ -50,11 +54,12 @@ impl StandardRegister {
         // Get context modifiers for projection.
         let raw_modifiers = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
-        for raw_modifier in raw_modifiers.iter() {
+        for raw_modifier in raw_modifiers.into_iter() {
+            // Validate raw modifier and its target, return context modifier if both pass checks.
             if let Some(ctx_modifier) = match raw_modifier.kind {
-                ModifierKind::System => self.query_system_mod(*raw_modifier, projectee_item_key, projectee_item),
-                ModifierKind::Targeted => self.query_target_mod(*raw_modifier, projectee_item_key, projectee_item),
-                ModifierKind::Buff => self.query_buff_mod(*raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::System => self.query_system_mod(raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::Targeted => self.query_target_mod(raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::Buff => self.query_buff_mod(raw_modifier, projectee_item_key, projectee_item),
                 _ => None,
             } {
                 ctx_modifiers.push(ctx_modifier);
@@ -71,11 +76,15 @@ impl StandardRegister {
         // Unregister projection and get appropriate context modifiers.
         let raw_modifiers = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
-        for raw_modifier in raw_modifiers.iter() {
+        for raw_modifier in raw_modifiers.into_iter() {
+            // Validate raw modifier. If it is valid and target passes all checks, remove
+            // appropriate context modifiers, remove raw modifier from active projected modifier
+            // storage, and add context modifier to container. If it is valid and target doesn't
+            // pass all checks, remove raw modifier from inactive projected modifier storage.
             if let Some(ctx_modifier) = match raw_modifier.kind {
-                ModifierKind::System => self.unproj_system_mod(*raw_modifier, projectee_item_key, projectee_item),
-                ModifierKind::Targeted => self.unproj_target_mod(*raw_modifier, projectee_item_key, projectee_item),
-                ModifierKind::Buff => self.unproj_buff_mod(*raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::System => self.unproj_system_mod(raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::Targeted => self.unproj_target_mod(raw_modifier, projectee_item_key, projectee_item),
+                ModifierKind::Buff => self.unproj_buff_mod(raw_modifier, projectee_item_key, projectee_item),
                 _ => None,
             } {
                 ctx_modifiers.push(ctx_modifier);
@@ -87,6 +96,10 @@ impl StandardRegister {
         // Do necessary changes to projected modifiers after adding location root.
         if let Some(raw_modifiers) = self.rmods_proj_inactive.remove_key(&projectee_item_key) {
             for raw_modifier in raw_modifiers {
+                // Store appropriate context modifiers, and put raw modifier into either active or
+                // inactive storage, depending on projectee. I.e. the same thing done when adding
+                // projected modifier. Emptying of inactive projected modifier storage has already
+                // been done before, so modifier kind-specific methods are not handling that.
                 match raw_modifier.kind {
                     ModifierKind::System => {
                         self.reg_loc_root_for_proj_system(raw_modifier, projectee_item_key, projectee_item)
@@ -104,6 +117,10 @@ impl StandardRegister {
         // Do necessary changes to projected modifiers before removing location root.
         if let Some(raw_modifiers) = self.rmods_proj_active.remove_key(&projectee_item_key) {
             for raw_modifier in raw_modifiers {
+                // Remove context modifiers for passed raw modifier + projection target, and add raw
+                // modifier to inactive storage. Emptying of inactive projected modifier storage has
+                // already been done before, so modifier kind-specific methods are not handling
+                // that.
                 match raw_modifier.kind {
                     ModifierKind::System => {
                         self.unreg_loc_root_for_proj_system(raw_modifier, projectee_item_key, projectee_item)

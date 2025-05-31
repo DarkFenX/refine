@@ -12,10 +12,6 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) -> Option<CtxModifier> {
-        // Validate raw modifier. If it is valid and target passes all checks, create and store
-        // appropriate context modifiers and put raw modifier into active projected modifier
-        // storage. If it valid and target doesn't pass all checks, put raw modifier into inactive
-        // projected modifier storage.
         self.process_system_mod(raw_modifier, projectee_item_key, projectee_item, true)
     }
     pub(super) fn query_system_mod(
@@ -24,7 +20,6 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) -> Option<CtxModifier> {
-        // Validate raw modifier and its target, return context modifier if both pass checks.
         self.process_system_mod(raw_modifier, projectee_item_key, projectee_item, false)
     }
     fn process_system_mod(
@@ -514,10 +509,6 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        // Store appropriate context modifiers, and put raw modifier into either active or inactive
-        // storage, depending on projectee. I.e. the same thing done when adding projected system
-        // modifier. Emptying of inactive projected modifier storage should be handled by the
-        // caller.
         self.process_system_mod(raw_modifier, projectee_item_key, projectee_item, true);
     }
     pub(super) fn unreg_loc_root_for_proj_system(
@@ -526,9 +517,6 @@ impl StandardRegister {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        // Remove context modifiers for passed raw modifier + projection target, and add raw
-        // modifier to inactive storage. Emptying of active projected modifier storage should be
-        // handled by the caller.
         match raw_modifier.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Ship => {
