@@ -38,16 +38,12 @@ impl StandardRegister {
             }
             for loc_kind in ActiveLocations::new(item, fit) {
                 filter_and_extend(&mut mods, &self.cmods_loc, &(fit_key, loc_kind), a_attr_id);
-            }
-            for loc_kind in ActiveLocations::new(item, fit) {
                 filter_and_extend(
                     &mut mods,
                     &self.cmods_loc_grp,
                     &(fit_key, loc_kind, a_item_grp_id),
                     a_attr_id,
                 );
-            }
-            for loc_kind in ActiveLocations::new(item, fit) {
                 for srq_a_item_id in a_srqs.keys() {
                     filter_and_extend(
                         &mut mods,
