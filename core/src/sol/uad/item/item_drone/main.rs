@@ -95,6 +95,13 @@ impl UadDrone {
     ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
+    pub(in crate::sol) fn set_a_mutator_id(
+        &mut self,
+        src: &Src,
+        a_mutator_id: ad::AItemId,
+    ) -> Result<(), ItemMutatedError> {
+        self.base.set_a_mutator_id(src, a_mutator_id)
+    }
     pub(in crate::sol) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
         self.base.unmutate(src)
     }

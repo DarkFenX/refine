@@ -386,6 +386,23 @@ impl UadItemBaseMutable {
         }
         Ok(changed_a_attr_ids)
     }
+    pub(in crate::sol::uad::item) fn set_a_mutator_id(
+        &mut self,
+        src: &Src,
+        a_mutator_id: ad::AItemId,
+    ) -> Result<(), ItemMutatedError> {
+        let item_mutation = match &mut self.mutation {
+            Some(item_mutation) => item_mutation,
+            None => {
+                return Err(ItemMutatedError {
+                    item_id: self.get_item_id(),
+                });
+            }
+        };
+        item_mutation.a_mutator_id = a_mutator_id;
+        self.update_a_data(src);
+        Ok(())
+    }
     pub(in crate::sol::uad::item) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
