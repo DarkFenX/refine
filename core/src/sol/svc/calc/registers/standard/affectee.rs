@@ -63,7 +63,7 @@ impl StandardRegister {
         }
         if is_buffable {
             self.affectee_buffable.add_entry(fit_key, item_key);
-            self.reg_buffable_for_fw(item_key, item, fit_key);
+            self.reg_buffable_for_fw(item_key, fit_key);
         }
     }
     pub(in crate::sol::svc::calc) fn unreg_affectee(&mut self, item_key: ItemKey, item: &UadItem) {
@@ -99,7 +99,7 @@ impl StandardRegister {
         }
         if is_buffable {
             self.affectee_buffable.remove_entry(&fit_key, &item_key);
-            self.unreg_buffable_for_fw(item_key, item, fit_key);
+            self.unreg_buffable_for_fw(item_key, fit_key);
         }
     }
     // Private methods
