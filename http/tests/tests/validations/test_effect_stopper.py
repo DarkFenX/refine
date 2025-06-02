@@ -98,7 +98,6 @@ def test_proj_effect(client, consts):
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_tgt_item_id = client.mk_eve_item(eff_ids=[eve_tgt_effect_id], defeff_id=eve_tgt_effect_id)
     client.create_sources()
-    api_tgt_effect_id = effect_dogma_to_api(dogma_effect_id=eve_tgt_effect_id)
     api_sol = client.create_sol()
     api_src_item = api_sol.add_proj_effect(type_id=eve_src_item_id)
     api_tgt_fit = api_sol.create_fit()
@@ -106,8 +105,9 @@ def test_proj_effect(client, consts):
     api_src_item.change_proj_effect(add_projs=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
-    assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_multiple_src_items(client, consts):

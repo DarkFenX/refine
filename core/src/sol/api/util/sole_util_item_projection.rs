@@ -20,7 +20,7 @@ impl SolarSystem {
         svc.notify_item_projected();
         for a_effect_id in reffs.iter_running(&projector_item_key) {
             let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
-            if is_a_effect_projectable(a_effect) {
+            if is_a_effect_projectable(projector_uad_item, a_effect) {
                 svc.notify_effect_projected(
                     uad,
                     projector_item_key,
@@ -44,7 +44,7 @@ impl SolarSystem {
     ) {
         for a_effect_id in reffs.iter_running(&projector_item_key) {
             let effect = uad.src.get_a_effect(a_effect_id).unwrap();
-            if is_a_effect_projectable(effect) {
+            if is_a_effect_projectable(projector_uad_item, effect) {
                 svc.notify_effect_unprojected(
                     uad,
                     projector_item_key,
@@ -67,17 +67,21 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) {
         svc.notify_item_proj_range_changed();
-        for a_effect_id in reffs.iter_running(&projector_item_key) {
-            let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
-            if is_a_effect_projectable(a_effect) {
-                svc.notify_effect_proj_range_changed(
-                    uad,
-                    projector_item_key,
-                    a_effect.id,
-                    projectee_item_key,
-                    projectee_uad_item,
-                    range,
-                );
+        let running_a_effect_ids = reffs.iter_running(&projector_item_key);
+        if !running_a_effect_ids.is_empty() {
+            let projector_uad_item = uad.items.get(projector_item_key);
+            for a_effect_id in reffs.iter_running(&projector_item_key) {
+                let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
+                if is_a_effect_projectable(projector_uad_item, a_effect) {
+                    svc.notify_effect_proj_range_changed(
+                        uad,
+                        projector_item_key,
+                        a_effect.id,
+                        projectee_item_key,
+                        projectee_uad_item,
+                        range,
+                    );
+                }
             }
         }
     }
