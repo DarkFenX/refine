@@ -105,6 +105,7 @@ def setup_switch_type_id_test(*, client, consts):
     eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     eve_affectee_struct_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 50})
+    eve_affectee_unknown_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 25})
     eve_affectee_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -114,15 +115,17 @@ def setup_switch_type_id_test(*, client, consts):
         eve_affectee_attr_id,
         eve_affectee_ship_id,
         eve_affectee_struct_id,
+        eve_affectee_unknown_id,
         eve_affectee_not_loaded_id,
         api_fit,
         api_sw_effect)
 
 
-def test_switch_type_id_affected_to_unaffected_remove(client, consts):
+def test_switch_type_id_ship_to_struct_remove(client, consts):
     (eve_affectee_attr_id,
      eve_affectee_ship_id,
      eve_affectee_struct_id,
+     _,
      _,
      api_fit,
      api_sw_effect) = setup_switch_type_id_test(client=client, consts=consts)
@@ -139,9 +142,31 @@ def test_switch_type_id_affected_to_unaffected_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(50)
 
 
-def test_switch_type_id_affected_to_not_loaded_remove(client, consts):
+def test_switch_type_id_ship_to_unknown_remove(client, consts):
     (eve_affectee_attr_id,
      eve_affectee_ship_id,
+     _,
+     eve_affectee_unknown_id,
+     _,
+     api_fit,
+     api_sw_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_ship_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_affectee_item.change_ship(type_id=eve_affectee_unknown_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(25)
+    # Action
+    api_sw_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(25)
+
+
+def test_switch_type_id_ship_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_affectee_ship_id,
+     _,
      _,
      eve_affectee_not_loaded_id,
      api_fit,
@@ -163,10 +188,11 @@ def test_switch_type_id_affected_to_not_loaded_remove(client, consts):
         api_affectee_item.attrs  # noqa: B018
 
 
-def test_switch_type_id_unaffected_to_affected_remove(client, consts):
+def test_switch_type_id_struct_to_ship_remove(client, consts):
     (eve_affectee_attr_id,
      eve_affectee_ship_id,
      eve_affectee_struct_id,
+     _,
      _,
      api_fit,
      api_sw_effect) = setup_switch_type_id_test(client=client, consts=consts)
@@ -183,9 +209,31 @@ def test_switch_type_id_unaffected_to_affected_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 
-def test_switch_type_id_not_loaded_to_affected_remove(client, consts):
+def test_switch_type_id_unknown_to_ship_remove(client, consts):
     (eve_affectee_attr_id,
      eve_affectee_ship_id,
+     _,
+     eve_affectee_unknown_id,
+     _,
+     api_fit,
+     api_sw_effect) = setup_switch_type_id_test(client=client, consts=consts)
+    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_unknown_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(25)
+    # Action
+    api_affectee_item.change_ship(type_id=eve_affectee_ship_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_sw_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_switch_type_id_not_loaded_to_ship_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_affectee_ship_id,
+     _,
      _,
      eve_affectee_not_loaded_id,
      api_fit,
