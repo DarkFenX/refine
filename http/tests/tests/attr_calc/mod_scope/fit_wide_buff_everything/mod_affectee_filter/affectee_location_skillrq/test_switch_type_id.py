@@ -18,6 +18,7 @@ def setup_root_test(*, client, consts):
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_root_ship_id = client.mk_eve_ship()
     eve_root_struct_id = client.mk_eve_struct()
+    eve_root_unknown_id = client.mk_eve_item()
     eve_root_not_loaded_id = client.alloc_item_id()
     eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5}, srqs={eve_skill_id: 1})
     client.create_sources()
@@ -29,16 +30,18 @@ def setup_root_test(*, client, consts):
         eve_affectee_attr_id,
         eve_root_ship_id,
         eve_root_struct_id,
+        eve_root_unknown_id,
         eve_root_not_loaded_id,
         api_fit,
         api_fw_effect,
         api_module)
 
 
-def test_root_affected_to_unaffected_remove(client, consts):
+def test_root_ship_to_struct_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
      eve_root_struct_id,
+     _,
      _,
      api_fit,
      api_fw_effect,
@@ -56,9 +59,32 @@ def test_root_affected_to_unaffected_remove(client, consts):
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_root_affected_to_not_loaded_remove(client, consts):
+def test_root_ship_to_unknown_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
+     _,
+     eve_root_unknown_id,
+     _,
+     api_fit,
+     api_fw_effect,
+     api_module) = setup_root_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_ship_id)
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    # Action
+    api_root.change_ship(type_id=eve_root_unknown_id)
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    # Action
+    api_fw_effect.remove()
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+
+
+def test_root_ship_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
      _,
      eve_root_not_loaded_id,
      api_fit,
@@ -77,10 +103,11 @@ def test_root_affected_to_not_loaded_remove(client, consts):
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_root_unaffected_to_affected_remove(client, consts):
+def test_root_struct_to_ship_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
      eve_root_struct_id,
+     _,
      _,
      api_fit,
      api_fw_effect,
@@ -98,9 +125,32 @@ def test_root_unaffected_to_affected_remove(client, consts):
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_root_not_loaded_to_affected_remove(client, consts):
+def test_root_unknown_to_ship_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
+     _,
+     eve_root_unknown_id,
+     _,
+     api_fit,
+     api_fw_effect,
+     api_module) = setup_root_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_unknown_id)
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    # Action
+    api_root.change_ship(type_id=eve_root_ship_id)
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    # Action
+    api_fw_effect.remove()
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+
+
+def test_root_not_loaded_to_ship_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
      _,
      eve_root_not_loaded_id,
      api_fit,
