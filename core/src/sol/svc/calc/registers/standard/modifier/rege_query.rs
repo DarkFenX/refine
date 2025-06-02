@@ -73,8 +73,8 @@ impl StandardRegister {
         item: &UadItem,
     ) -> Vec<CtxModifier> {
         if let UadItem::Ship(uad_ship) = item {
-            self.reg_loc_root_for_fw_buff(item_key, item, uad_ship.get_fit_key());
-            self.reg_loc_root_for_sw_buff(item_key, item);
+            self.reg_loc_root_for_fw_buff(item_key, uad_ship, uad_ship.get_fit_key());
+            self.reg_loc_root_for_sw_buff(item_key, uad_ship);
         }
         self.reg_loc_root_for_proj(item_key, item);
         self.get_mods_for_changed_root(item)
@@ -86,8 +86,8 @@ impl StandardRegister {
     ) -> Vec<CtxModifier> {
         let cmods = self.get_mods_for_changed_root(item);
         if let UadItem::Ship(uad_ship) = item {
-            self.unreg_loc_root_for_fw_buff(item_key, item, uad_ship.get_fit_key());
-            self.unreg_loc_root_for_sw_buff(item_key, item);
+            self.unreg_loc_root_for_fw_buff(item_key, uad_ship, uad_ship.get_fit_key());
+            self.unreg_loc_root_for_sw_buff(item_key, uad_ship);
         }
         self.unreg_loc_root_for_proj(item_key, item);
         cmods
