@@ -5,7 +5,7 @@ Check that multiple types of projected modifiers are processed when switching sh
 from tests import approx
 
 
-def setup_switch_type_id_test(*, client, consts):
+def setup_test(*, client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     # System effect
@@ -46,6 +46,7 @@ def setup_switch_type_id_test(*, client, consts):
     eve_affectee_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 0})
     eve_root_ship_id = client.mk_eve_ship()
     eve_root_struct_id = client.mk_eve_struct()
+    eve_root_unknown_id = client.mk_eve_item()
     eve_root_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -61,6 +62,7 @@ def setup_switch_type_id_test(*, client, consts):
         eve_affectee_attr_id,
         eve_root_ship_id,
         eve_root_struct_id,
+        eve_root_unknown_id,
         eve_root_not_loaded_id,
         api_fit,
         api_system_proj_effect,
@@ -69,16 +71,17 @@ def setup_switch_type_id_test(*, client, consts):
         api_affectee_item)
 
 
-def test_switch_type_id_ship_to_struct_remove(client, consts):
+def test_ship_to_struct_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
      eve_root_struct_id,
+     _,
      _,
      api_fit,
      api_system_proj_effect,
      api_buff_proj_effect,
      api_targeted_module,
-     api_affectee_item) = setup_switch_type_id_test(client=client, consts=consts)
+     api_affectee_item) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_ship_id)
     api_system_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
@@ -97,16 +100,46 @@ def test_switch_type_id_ship_to_struct_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
 
 
-def test_switch_type_id_ship_to_not_loaded_remove(client, consts):
+def test_ship_to_unknown_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
+     _,
+     eve_root_unknown_id,
+     _,
+     api_fit,
+     api_system_proj_effect,
+     api_buff_proj_effect,
+     api_targeted_module,
+     api_affectee_item) = setup_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_ship_id)
+    api_system_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    api_targeted_module.change_module(add_projs=[api_root.id])
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    # Action
+    api_root.change_ship(type_id=eve_root_unknown_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    # Action
+    api_system_proj_effect.remove()
+    api_buff_proj_effect.remove()
+    api_targeted_module.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+
+
+def test_ship_to_not_loaded_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
      _,
      eve_root_not_loaded_id,
      api_fit,
      api_system_proj_effect,
      api_buff_proj_effect,
      api_targeted_module,
-     api_affectee_item) = setup_switch_type_id_test(client=client, consts=consts)
+     api_affectee_item) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_ship_id)
     api_system_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
@@ -125,16 +158,17 @@ def test_switch_type_id_ship_to_not_loaded_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
 
 
-def test_switch_type_id_struct_to_ship_remove(client, consts):
+def test_struct_to_ship_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
      eve_root_struct_id,
+     _,
      _,
      api_fit,
      api_system_proj_effect,
      api_buff_proj_effect,
      api_targeted_module,
-     api_affectee_item) = setup_switch_type_id_test(client=client, consts=consts)
+     api_affectee_item) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_struct_id)
     api_system_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
@@ -153,16 +187,46 @@ def test_switch_type_id_struct_to_ship_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
 
 
-def test_switch_type_id_not_loaded_to_ship_remove(client, consts):
+def test_unknown_to_ship_remove(client, consts):
     (eve_affectee_attr_id,
      eve_root_ship_id,
+     _,
+     eve_root_unknown_id,
+     _,
+     api_fit,
+     api_system_proj_effect,
+     api_buff_proj_effect,
+     api_targeted_module,
+     api_affectee_item) = setup_test(client=client, consts=consts)
+    api_root = api_fit.set_ship(type_id=eve_root_unknown_id)
+    api_system_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    api_targeted_module.change_module(add_projs=[api_root.id])
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    # Action
+    api_root.change_ship(type_id=eve_root_ship_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    # Action
+    api_system_proj_effect.remove()
+    api_buff_proj_effect.remove()
+    api_targeted_module.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+
+
+def test_not_loaded_to_ship_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_root_ship_id,
+     _,
      _,
      eve_root_not_loaded_id,
      api_fit,
      api_system_proj_effect,
      api_buff_proj_effect,
      api_targeted_module,
-     api_affectee_item) = setup_switch_type_id_test(client=client, consts=consts)
+     api_affectee_item) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_not_loaded_id)
     api_system_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
