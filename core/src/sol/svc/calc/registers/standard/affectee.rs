@@ -36,7 +36,7 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_affectee(&mut self, item_key: ItemKey, item: &UadItem) {
         let is_buffable = item.is_buffable();
         if is_buffable {
-            self.reg_buffable_for_sw(item_key, item);
+            self.reg_buffable_for_sw(item_key);
         }
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
@@ -69,7 +69,7 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn unreg_affectee(&mut self, item_key: ItemKey, item: &UadItem) {
         let is_buffable = item.is_buffable();
         if is_buffable {
-            self.unreg_buffable_for_sw(item_key, item);
+            self.unreg_buffable_for_sw(item_key);
         }
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
