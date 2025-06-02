@@ -13,12 +13,12 @@ pub(in crate::cmd) enum HMutationOnAdd {
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnChange {
-    AddShort(rc::ItemTypeId),
-    AddFull(HItemMutationFull),
-    ChangeAttrs(
+    Mutator(rc::ItemTypeId),
+    Attrs(
         #[serde_as(as = "std::collections::HashMap<serde_with::DisplayFromStr, _>")]
         HashMap<rc::AttrId, Option<HItemAttrMutationValue>>,
     ),
+    MutatorAndAttrs(HItemMutationFull),
 }
 
 #[serde_with::serde_as]

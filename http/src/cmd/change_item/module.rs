@@ -49,27 +49,28 @@ impl HChangeModuleCmd {
         }
         match &self.mutation {
             TriStateField::Value(mutation) => match mutation {
-                HMutationOnChange::AddShort(mutator_id) => {
-                    // Remove old mutation if we had any
-                    if let Some(core_mutation) = core_module.get_mutation_mut() {
-                        core_mutation.remove();
-                    }
-                    core_module.mutate(*mutator_id).unwrap();
+                // Mutates item or updates existing mutation
+                HMutationOnChange::Mutator(mutator_id) => {
+                    match core_module.get_mutation_mut() {
+                        Some(mutation) => mutation.set_mutator_id(*mutator_id),
+                        None => core_module.mutate(*mutator_id).unwrap(),
+                    };
                 }
-                HMutationOnChange::AddFull(mutation) => {
-                    // Remove old mutation if we had any
-                    if let Some(core_mutation) = core_module.get_mutation_mut() {
-                        core_mutation.remove();
-                    }
-                    let core_mutation = core_module.mutate(mutation.mutator_id).unwrap();
-                    apply_mattrs_on_add(core_mutation, mutation);
-                }
-                HMutationOnChange::ChangeAttrs(h_attr_mutations) => {
+                // Updates existing mutation
+                HMutationOnChange::Attrs(h_attr_mutations) => {
                     let core_mutation = match core_module.get_mutation_mut() {
                         Some(core_mutation) => core_mutation,
                         None => return Err(HExecError::MutationNotSet(*item_id)),
                     };
                     apply_mattrs_on_change(core_mutation, h_attr_mutations);
+                }
+                // Mutates item, or overwrites mutation, if it was set
+                HMutationOnChange::MutatorAndAttrs(mutation) => {
+                    if let Some(core_mutation) = core_module.get_mutation_mut() {
+                        core_mutation.remove();
+                    }
+                    let core_mutation = core_module.mutate(mutation.mutator_id).unwrap();
+                    apply_mattrs_on_add(core_mutation, mutation);
                 }
             },
             TriStateField::None => {
