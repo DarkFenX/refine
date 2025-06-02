@@ -209,27 +209,6 @@ def test_switch_type_id_ship_to_struct_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(50)
 
 
-def test_switch_type_id_ship_to_struct_remove(client, consts):
-    (eve_affectee_attr_id,
-     eve_affectee_ship_id,
-     eve_affectee_struct_id,
-     _,
-     _,
-     api_fit,
-     api_sw_effect) = setup_switch_type_id_test(client=client, consts=consts)
-    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_ship_id)
-    # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
-    # Action
-    api_affectee_item.change_ship(type_id=eve_affectee_struct_id)
-    # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(60)
-    # Action
-    api_sw_effect.remove()
-    # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(50)
-
-
 def test_switch_type_id_unknown_to_struct_remove(client, consts):
     (eve_affectee_attr_id,
      _,

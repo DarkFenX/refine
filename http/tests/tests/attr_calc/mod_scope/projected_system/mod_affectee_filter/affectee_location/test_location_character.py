@@ -215,6 +215,7 @@ def setup_switch_type_id_tgt_test(*, client, consts):
     eve_char_id = client.mk_eve_item()
     eve_tgt_ship_id = client.mk_eve_ship()
     eve_tgt_struct_id = client.mk_eve_struct()
+    eve_tgt_unknown_id = client.mk_eve_item()
     eve_tgt_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -226,6 +227,7 @@ def setup_switch_type_id_tgt_test(*, client, consts):
         eve_affectee_attr_id,
         eve_tgt_ship_id,
         eve_tgt_struct_id,
+        eve_tgt_unknown_id,
         eve_tgt_not_loaded_id,
         api_fit,
         api_affectee_item,
@@ -236,6 +238,7 @@ def test_switch_type_id_tgt_ship_to_struct_remove(client, consts):
     (eve_affectee_attr_id,
      eve_tgt_ship_id,
      eve_tgt_struct_id,
+     _,
      _,
      api_fit,
      api_affectee_item,
@@ -254,9 +257,33 @@ def test_switch_type_id_tgt_ship_to_struct_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 
+def test_switch_type_id_tgt_ship_to_unknown_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_tgt_ship_id,
+     _,
+     eve_tgt_unknown_id,
+     _,
+     api_fit,
+     api_affectee_item,
+     api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
+    api_tgt = api_fit.set_ship(type_id=eve_tgt_ship_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_tgt.change_ship(type_id=eve_tgt_unknown_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_proj_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
 def test_switch_type_id_tgt_ship_to_not_loaded_remove(client, consts):
     (eve_affectee_attr_id,
      eve_tgt_ship_id,
+     _,
      _,
      eve_tgt_not_loaded_id,
      api_fit,
@@ -281,6 +308,7 @@ def test_switch_type_id_tgt_struct_to_ship_remove(client, consts):
      eve_tgt_ship_id,
      eve_tgt_struct_id,
      _,
+     _,
      api_fit,
      api_affectee_item,
      api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
@@ -302,6 +330,7 @@ def test_switch_type_id_tgt_struct_to_not_loaded_remove(client, consts):
     (eve_affectee_attr_id,
      _,
      eve_tgt_struct_id,
+     _,
      eve_tgt_not_loaded_id,
      api_fit,
      api_affectee_item,
@@ -312,6 +341,29 @@ def test_switch_type_id_tgt_struct_to_not_loaded_remove(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
     api_tgt.change_ship(type_id=eve_tgt_not_loaded_id)
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_proj_effect.remove()
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+
+
+def test_switch_type_id_tgt_unknown_to_ship_remove(client, consts):
+    (eve_affectee_attr_id,
+     eve_tgt_ship_id,
+     _,
+     eve_tgt_unknown_id,
+     _,
+     api_fit,
+     api_affectee_item,
+     api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
+    api_tgt = api_fit.set_ship(type_id=eve_tgt_unknown_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    # Verification
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_tgt.change_ship(type_id=eve_tgt_ship_id)
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
