@@ -37,7 +37,10 @@ impl UadItemBase {
     pub(in crate::sol::uad::item) fn get_a_item_id(&self) -> ad::AItemId {
         self.a_item_id
     }
-    pub(in crate::sol::uad::item) fn set_a_item_id(&mut self, src: &Src, a_item_id: ad::AItemId) {
+    pub(in crate::sol::uad::item) fn set_a_item_id(&mut self, a_item_id: ad::AItemId) {
+        self.base_set_a_item_id(a_item_id);
+    }
+    pub(in crate::sol::uad::item) fn set_a_item_id_and_reload(&mut self, src: &Src, a_item_id: ad::AItemId) {
         self.base_set_a_item_id(a_item_id);
         self.update_a_data(src);
     }

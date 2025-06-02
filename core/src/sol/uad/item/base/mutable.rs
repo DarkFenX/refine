@@ -101,16 +101,17 @@ impl UadItemBaseMutable {
         // depends on item configuration
         match &mut self.mutation {
             Some(mutation_data) => match &mut mutation_data.cache {
-                // Mutation is effective only when cache is set, so process item the mutated way
-                // only in this case
                 Some(mutation_cache) => {
                     mutation_cache.base_a_item_id = a_item_id;
-                    self.update_a_data(src);
                 }
-                None => self.base.set_a_item_id(src, a_item_id),
+                None => self.base.set_a_item_id(a_item_id),
             },
-            None => self.base.set_a_item_id(src, a_item_id),
+            None => self.base.set_a_item_id(a_item_id),
         }
+        // Even if mutation is not effective with old base type ID, it might become effective with
+        // the new one, so - reload adapted data the mutated way regardless of presence of mutation
+        // cache
+        self.update_a_data(src);
     }
     pub(in crate::sol::uad::item) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_a_group_id()
@@ -399,7 +400,7 @@ impl UadItemBaseMutable {
             // ID is stored on cache
             Some(cache) => {
                 let a_item_id = cache.base_a_item_id;
-                self.base.set_a_item_id(src, a_item_id);
+                self.base.set_a_item_id_and_reload(src, a_item_id);
                 self.mutation = None;
             }
             // No cache - mutation was not effective, and base item was used already. Just unassign
