@@ -1,2 +1,2 @@
 from .client import ApiClient
-from .types import FitValOptions
+from .types import FitValOptions, SolValOptions

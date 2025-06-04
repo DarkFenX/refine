@@ -1,2 +1,2 @@
 from .sol import SolarSystem
-from .validation import FitValOptions
+from .validation import FitValOptions, SolValOptions

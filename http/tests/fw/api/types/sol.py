@@ -144,10 +144,10 @@ class SolarSystem(AttrDict):
             status_code: int,
     ) -> Response:
         resp = self._client.validate_sol_request(
-            sol_id=self._sol_id,
+            sol_id=self.id,
             options=options,
             val_info_mode=val_info_mode).send()
-        self._client.check_sol(sol_id=self._sol_id)
+        self._client.check_sol(sol_id=self.id)
         resp.check(status_code=status_code)
         return resp
 

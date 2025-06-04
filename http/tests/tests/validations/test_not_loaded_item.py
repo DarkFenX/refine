@@ -1,5 +1,5 @@
 from tests import check_no_field
-from tests.fw.api import FitValOptions
+from tests.fw.api import FitValOptions, SolValOptions
 
 
 def test_booster(client):
@@ -420,6 +420,45 @@ def test_module_mid_switch_type_id(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_proj_effect(client):
+    eve_loaded_id = client.mk_eve_item()
+    eve_not_loaded_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sol.add_proj_effect(type_id=eve_loaded_id)
+    api_not_loaded = api_sol.add_proj_effect(type_id=eve_not_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+
+
+def test_proj_effect_switch_type_id(client):
+    eve_loaded_id = client.mk_eve_item()
+    eve_not_loaded_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_proj_effect = api_sol.add_proj_effect(type_id=eve_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_proj_effect.change_proj_effect(type_id=eve_not_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_proj_effect.id]
+    # Action
+    api_proj_effect.change_proj_effect(type_id=eve_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_rig(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
@@ -673,6 +712,45 @@ def test_subsystem_switch_type_id(client):
     api_subsystem.change_subsystem(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=FitValOptions(not_loaded_item=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_sw_effect(client):
+    eve_loaded_id = client.mk_eve_item()
+    eve_not_loaded_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sol.add_sw_effect(type_id=eve_loaded_id)
+    api_not_loaded = api_sol.add_sw_effect(type_id=eve_not_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+
+
+def test_sw_effect_switch_type_id(client):
+    eve_loaded_id = client.mk_eve_item()
+    eve_not_loaded_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sw_effect = api_sol.add_sw_effect(type_id=eve_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_sw_effect.change_sw_effect(type_id=eve_not_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_sw_effect.id]
+    # Action
+    api_sw_effect.change_sw_effect(type_id=eve_loaded_id)
+    # Verification
+    api_val = api_sol.validate(options=SolValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
