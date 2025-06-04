@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from tests.fw.util import AttrDict, AttrHookDef
 from .activation_blocked import ValActivationBlockedFail
 from .capital_module import ValCapModuleFail
@@ -31,6 +33,10 @@ class SolValResult(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={'details': AttrHookDef(func=lambda d: SolValDetails(data=d))})
+
+    @property
+    def fits(self) -> dict[str, FitValDetails]:
+        return getattr(getattr(self, 'details', {}), 'fits', {})
 
 
 class SolValDetails(AttrDict):

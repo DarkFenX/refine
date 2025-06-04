@@ -1,4 +1,6 @@
-from dataclasses import asdict, dataclass, field
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass, field, fields
 
 from tests.fw.util import Absent
 
@@ -71,6 +73,13 @@ class SolValOptions:
     effect_stopper: ValOption = Absent
     assist_immunity: ValOption = Absent
     offense_immunity: ValOption = Absent
+
+    @classmethod
+    def from_fit_options(cls, *, fit_options: FitValOptions, fits: list[str]) -> SolValOptions:
+        options = cls(fits=fits)
+        for opt_field in fields(fit_options):
+            setattr(options, opt_field.name, getattr(fit_options, opt_field.name))
+        return options
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

@@ -16,7 +16,7 @@ from tests.fw.consts import (
 from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item
-from .validation import FitValResult
+from .validation import FitValResult, SolValOptions, SolValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
@@ -81,12 +81,28 @@ class Fit(AttrDict):
                 options=options,
                 val_info_mode=ApiValInfoMode.detailed,
                 status_code=status_code)
-        # Ensure simple results are consistent with full results
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
+            # Ensure simple results are consistent with full results
             result_simple = FitValResult(data=resp_simple.json())
             result_detailed = FitValResult(data=resp_detailed.json())
             assert result_simple.passed is result_detailed.passed
             assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
+            # Ensure sol validation results are consistent with fit validation results
+            resp_sol = self._client.validate_sol_request(
+                sol_id=self._sol_id,
+                options=SolValOptions.from_fit_options(fit_options=options, fits=[self.id]),
+                val_info_mode=ApiValInfoMode.detailed).send()
+            self._client.check_sol(sol_id=self._sol_id)
+            resp_sol.check(status_code=200)
+            result_sol = SolValResult(data=resp_sol.json())
+            # If fit validation passed, fit shouldn't be in results for detailed sol validation
+            # results.
+            if result_detailed.passed:
+                assert self.id not in result_sol.fits
+            # If fit validation passed, data in sol validation should match to data in fit
+            # validation.
+            else:
+                assert result_sol.fits[self.id] == result_detailed.details
             return result_detailed
         return None
 
