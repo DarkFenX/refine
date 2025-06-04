@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import FitValOptions
 
 
 def test_same_value_module(client, consts):
@@ -12,7 +12,7 @@ def test_same_value_module(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiServiceState.offline)
     api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
@@ -26,7 +26,7 @@ def test_same_value_service(client, consts):
     api_service1 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     api_service2 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
 
@@ -42,17 +42,17 @@ def test_known_failures(client, consts):
     api_service1 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     api_service2 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=(True, [api_service1.id])))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=(True, [api_service1.id])))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service2.id: 1}]}
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=(True, [api_service2.id])))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=(True, [api_service2.id])))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1}]}
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=(True, [api_service1.id, api_service2.id])))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=(True, [api_service1.id, api_service2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
+    api_val = api_fit.validate(options=FitValOptions(
         max_type_fitted=(True, [api_service1.id, api_other.id, api_service2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -69,20 +69,20 @@ def test_switch_type_id(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiServiceState.offline)
     api_module2 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_module1_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_module2.change_module(type_id=eve_module2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module2.change_module(type_id=eve_module1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_module1_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
@@ -99,7 +99,7 @@ def test_rounding(client, consts):
     api_service3 = api_fit.add_service(type_id=eve_service2_id, state=consts.ApiServiceState.offline)
     api_service4 = api_fit.add_service(type_id=eve_service2_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {
         eve_service1_id: [2, {api_service1.id: 1, api_service2.id: 1}],
@@ -116,7 +116,7 @@ def test_non_positive(client, consts):
     api_service1 = api_fit.add_service(type_id=eve_service1_id, state=consts.ApiServiceState.offline)
     api_service2 = api_fit.add_service(type_id=eve_service2_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {
         eve_service1_id: [1, {api_service1.id: 0}],
@@ -124,13 +124,13 @@ def test_non_positive(client, consts):
     # Action
     api_service1.remove()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service2_id: [1, {api_service2.id: 0}]}
     # Action
     api_service2.remove()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -155,7 +155,7 @@ def test_modified(client, consts):
     # Verification
     assert api_service1.update().attrs[eve_limit_attr_id].extra == approx(2)
     assert api_service2.update().attrs[eve_limit_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
 
@@ -182,7 +182,7 @@ def test_mutation_limit_priority(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(5)
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
@@ -190,7 +190,7 @@ def test_mutation_limit_priority(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -199,7 +199,7 @@ def test_mutation_limit_priority(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(2)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -226,7 +226,7 @@ def test_mutation_limit_inheritance(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(5)
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
@@ -234,7 +234,7 @@ def test_mutation_limit_inheritance(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -243,7 +243,7 @@ def test_mutation_limit_inheritance(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_base_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
@@ -257,7 +257,7 @@ def test_not_loaded(client, consts):
     api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -273,7 +273,7 @@ def test_criterion_item_state(client, consts):
     api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
     api_service = api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.ghost)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_item_id: [2, {api_module.id: 1, api_service.id: 1}]}
 
@@ -305,7 +305,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    api_val = api_fit.validate(options=FitValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

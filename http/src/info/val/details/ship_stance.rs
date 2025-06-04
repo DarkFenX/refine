@@ -1,6 +1,6 @@
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValShipStanceFail {
+pub(in crate::info::val) struct HValShipStanceFail {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     stance_item_id: rc::ItemId,
 }

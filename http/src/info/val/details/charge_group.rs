@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValChargeGroupFail {
+pub(in crate::info::val) struct HValChargeGroupFail {
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
     charges: HashMap<rc::ItemId, HValChargeGroupItemInfo>,
 }
@@ -21,7 +21,7 @@ impl From<&rc::val::ValChargeGroupFail> for HValChargeGroupFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValChargeGroupItemInfo {
+pub(in crate::info::val) struct HValChargeGroupItemInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     parent_item_id: rc::ItemId,
     charge_group_id: rc::ItemGrpId,

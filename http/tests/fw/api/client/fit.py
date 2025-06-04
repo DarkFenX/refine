@@ -8,7 +8,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
-    from tests.fw.api.types.validation import ValOptions
+    from tests.fw.api.types.validation import FitValOptions
     from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
     from tests.fw.util import Absent
 
@@ -35,7 +35,7 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            options: ValOptions,
+            options: FitValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
     ) -> Request:
         params = {}
@@ -56,7 +56,7 @@ class ApiClientFit(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_ids: list[int],
-            options: ValOptions,
+            options: FitValOptions,
     ) -> Request:
         body = {
             'type_ids': type_ids,

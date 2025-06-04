@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValRigSizeFail {
+pub(in crate::info::val) struct HValRigSizeFail {
     allowed_size: rc::AttrVal,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     rig_sizes: HashMap<rc::ItemId, Option<rc::AttrVal>>,

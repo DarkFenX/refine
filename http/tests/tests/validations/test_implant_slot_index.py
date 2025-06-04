@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import FitValOptions
 
 
 def test_multiple(client, consts):
@@ -10,20 +10,20 @@ def test_multiple(client, consts):
     api_fit = api_sol.create_fit()
     api_implant1 = api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_implant2 = api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {1: sorted([api_implant1.id, api_implant2.id])}
     # Action
     api_implant1.remove()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -39,14 +39,14 @@ def test_different_slots(client, consts):
     api_implant1 = api_fit.add_implant(type_id=eve_implant1_id)
     api_fit.add_implant(type_id=eve_implant2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_implant3 = api_fit.add_implant(type_id=eve_implant1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {1: sorted([api_implant1.id, api_implant3.id])}
 
@@ -64,17 +64,17 @@ def test_known_failures(client, consts):
     api_implant2 = api_fit.add_implant(type_id=eve_implant2_id)
     api_implant3 = api_fit.add_implant(type_id=eve_implant1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant1.id])))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=(True, [api_implant1.id])))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {1: [api_implant3.id]}
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant3.id])))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=(True, [api_implant3.id])))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {1: [api_implant1.id]}
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant1.id, api_implant3.id])))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=(True, [api_implant1.id, api_implant3.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
+    api_val = api_fit.validate(options=FitValOptions(
         implant_slot_index=(True, [api_implant1.id, api_other.id, api_implant3.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -82,7 +82,7 @@ def test_known_failures(client, consts):
     # Action
     api_implant4 = api_fit.add_implant(type_id=eve_implant2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant1.id, api_implant3.id])))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=(True, [api_implant1.id, api_implant3.id])))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {2: sorted([api_implant2.id, api_implant4.id])}
 
@@ -99,7 +99,7 @@ def test_rounding(client, consts):
     api_implant2 = api_fit.add_implant(type_id=eve_implant2_id)
     api_fit.add_implant(type_id=eve_implant3_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {1: sorted([api_implant1.id, api_implant2.id])}
 
@@ -126,7 +126,7 @@ def test_modified_index(client, consts):
     # Verification
     assert api_implant1.update().attrs[eve_slot_attr_id].extra == approx(2)
     assert api_implant2.update().attrs[eve_slot_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {2: sorted([api_implant1.id, api_implant2.id])}
     # Action
@@ -134,7 +134,7 @@ def test_modified_index(client, consts):
     # Verification - attribute is modified, but not for purposes of validation
     assert api_implant1.update().attrs[eve_slot_attr_id].extra == approx(3)
     assert api_implant2.update().attrs[eve_slot_attr_id].extra == approx(3)
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {2: sorted([api_implant1.id, api_implant2.id])}
 
@@ -148,7 +148,7 @@ def test_no_value(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -163,7 +163,7 @@ def test_not_loaded(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -179,7 +179,7 @@ def test_criterion_implant_state(client, consts):
     api_implant1 = api_fit.add_implant(type_id=eve_implant_id, state=False)
     api_implant2 = api_fit.add_implant(type_id=eve_implant_id, state=False)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {1: sorted([api_implant1.id, api_implant2.id])}
 
@@ -222,7 +222,7 @@ def test_criterion_item_kind(client, consts):
     # Verification
     assert len(api_fighter1.autocharges) == 1
     assert len(api_fighter2.autocharges) == 1
-    api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
+    api_val = api_fit.validate(options=FitValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

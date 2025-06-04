@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import FitValOptions
 
 
 def test_add_remove(client, consts):
@@ -11,20 +11,20 @@ def test_add_remove(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module2.id]
     # Action
     api_module2.remove()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -38,26 +38,26 @@ def test_state_switch(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module.change_module(state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(state=consts.ApiModuleState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -74,17 +74,17 @@ def test_known_failures(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module2.id]
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module1.id]
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
+    api_val = api_fit.validate(options=FitValOptions(
         activation_blocked=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -114,7 +114,7 @@ def test_modified(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_module.update().attrs[eve_block_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -122,7 +122,7 @@ def test_modified(client, consts):
     api_rig.remove()
     # Verification
     assert api_module.update().attrs[eve_block_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
 
@@ -140,7 +140,7 @@ def test_mutation(client, consts):
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -148,14 +148,14 @@ def test_mutation(client, consts):
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0}})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -163,14 +163,14 @@ def test_mutation(client, consts):
     api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 1}})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -194,7 +194,7 @@ def test_values(client, consts):
     api_module5 = api_fit.add_module(type_id=eve_module5_id, state=consts.ApiModuleState.active)
     api_module6 = api_fit.add_module(type_id=eve_module6_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == sorted([
         api_module3.id, api_module4.id, api_module5.id, api_module6.id])
@@ -208,7 +208,7 @@ def test_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -243,7 +243,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

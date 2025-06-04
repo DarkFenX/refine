@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValDroneGroupFail {
+pub(in crate::info::val) struct HValDroneGroupFail {
     allowed_group_ids: Vec<rc::ItemGrpId>,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     drone_groups: HashMap<rc::ItemId, rc::ItemGrpId>,

@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValUnusableResFail {
+pub(in crate::info::val) struct HValUnusableResFail {
     max: Option<rc::AttrVal>,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     users: HashMap<rc::ItemId, rc::AttrVal>,

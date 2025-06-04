@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValMaxGroupFail {
+pub(in crate::info::val) struct HValMaxGroupFail {
     groups: HashMap<rc::ItemGrpId, HValMaxGroupGroupInfo>,
 }
 impl From<&rc::val::ValMaxGroupFail> for HValMaxGroupFail {
@@ -19,7 +19,7 @@ impl From<&rc::val::ValMaxGroupFail> for HValMaxGroupFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValMaxGroupGroupInfo {
+pub(in crate::info::val) struct HValMaxGroupGroupInfo {
     group_item_count: rc::Count,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, rc::Count>,

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::info::valid::details::{
+use crate::info::val::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail,
     HValDroneGroupFail, HValEffectImmunityFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
     HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail,
@@ -24,9 +24,11 @@ impl From<&rc::val::ValResultSol> for HSolValResultDetailed {
     }
 }
 
+#[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HSolValDetails {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
+    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
     fits: HashMap<rc::FitId, HValFitInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     not_loaded_item: Option<HValNotLoadedItemFail>,

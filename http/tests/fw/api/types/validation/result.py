@@ -27,13 +27,27 @@ from .unusable_resource import ValUnusableResFail
 from .unusable_slot import ValUnusableSlotFail
 
 
-class ValResult(AttrDict):
+class SolValResult(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
-        super().__init__(data=data, hooks={'details': AttrHookDef(func=lambda d: ValResultDetails(data=d))})
+        super().__init__(data=data, hooks={'details': AttrHookDef(func=lambda d: SolValDetails(data=d))})
 
 
-class ValResultDetails(AttrDict):
+class SolValDetails(AttrDict):
+
+    def __init__(self, *, data: dict) -> None:
+        super().__init__(data=data, hooks={
+            'fits': AttrHookDef(func=lambda d: {k: FitValDetails(data=v) for k, v in d.items()}),
+            'not_loaded_item': AttrHookDef(func=lambda d: ValNotLoadedItemFail(data=d))})
+
+
+class FitValResult(AttrDict):
+
+    def __init__(self, *, data: dict) -> None:
+        super().__init__(data=data, hooks={'details': AttrHookDef(func=lambda d: FitValDetails(data=d))})
+
+
+class FitValDetails(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={

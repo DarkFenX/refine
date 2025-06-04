@@ -1,7 +1,7 @@
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValNotLoadedItemFail {
+pub(in crate::info::val) struct HValNotLoadedItemFail {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     item_ids: Vec<rc::ItemId>,
 }

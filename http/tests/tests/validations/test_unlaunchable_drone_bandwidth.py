@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import FitValOptions
 
 
 def test_fail_single(client, consts):
@@ -13,7 +13,7 @@ def test_fail_single(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 50}
@@ -34,7 +34,7 @@ def test_fail_multiple_ship(client, consts):
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25, api_drone3.id: 50}
@@ -55,7 +55,7 @@ def test_fail_multiple_struct(client, consts):
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25, api_drone3.id: 50}
@@ -76,7 +76,7 @@ def test_eqial_below_max(client, consts):
     api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -98,26 +98,27 @@ def test_known_failures(client, consts):
     api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id])))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone3.id: 50}
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone3.id])))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=(True, [api_drone3.id])))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25}
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id, api_drone3.id])))
+    api_val = api_fit.validate(options=FitValOptions(
+        unlaunchable_drone_bandwidth=(True, [api_drone2.id, api_drone3.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
+    api_val = api_fit.validate(options=FitValOptions(
         unlaunchable_drone_bandwidth=(True, [api_drone2.id, api_other.id, api_drone3.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -150,7 +151,7 @@ def test_modified_use(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(20)
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 40}
@@ -158,7 +159,7 @@ def test_modified_use(client, consts):
     api_implant.remove()
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(40)
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 40}
@@ -185,7 +186,7 @@ def test_modified_max(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].extra == approx(40)
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(40)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 50}
@@ -193,7 +194,7 @@ def test_modified_max(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].extra == approx(60)
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -215,7 +216,7 @@ def test_mutation_use(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_base_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(25)
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -223,7 +224,7 @@ def test_mutation_use(client, consts):
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(56)
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: approx(50)}
@@ -231,7 +232,7 @@ def test_mutation_use(client, consts):
     api_drone.change_drone(mutation={eve_use_attr_id: None})
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(50)
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: approx(50)}
@@ -251,7 +252,7 @@ def test_rounding(client, consts):
     api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(5.226)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 5.227}
@@ -266,7 +267,7 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max is None
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 5}
@@ -283,7 +284,7 @@ def test_not_loaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max is None
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 5}
@@ -301,7 +302,7 @@ def test_not_loaded_user(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -324,7 +325,7 @@ def test_non_positive(client, consts):
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(-15)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {
@@ -343,14 +344,14 @@ def test_no_value_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 50}
@@ -367,7 +368,7 @@ def test_no_value_max(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(0)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 150}
@@ -402,7 +403,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    api_val = api_fit.validate(options=FitValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

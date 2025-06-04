@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValFighterSquadSizeFail {
+pub(in crate::info::val) struct HValFighterSquadSizeFail {
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
     fighters: HashMap<rc::ItemId, HValFighterSquadSizeFighterInfo>,
 }
@@ -21,7 +21,7 @@ impl From<&rc::val::ValFighterSquadSizeFail> for HValFighterSquadSizeFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValFighterSquadSizeFighterInfo {
+pub(in crate::info::val) struct HValFighterSquadSizeFighterInfo {
     size: rc::Count,
     max_size: rc::Count,
 }

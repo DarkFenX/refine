@@ -11,7 +11,8 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
-    from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone
+    from tests.fw.api.types.validation import SolValOptions
+    from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone, ApiValInfoMode
 
 
 class ApiSolCheckError(Exception):
@@ -185,6 +186,25 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             url=f'{self._base_url}/sol/{sol_id}',
             params=params,
             json={'commands': [command]})
+
+    def validate_sol_request(
+            self, *,
+            sol_id: str,
+            options: SolValOptions,
+            val_info_mode: ApiValInfoMode | type[Absent],
+    ) -> Request:
+        params = {}
+        conditional_insert(container=params, path=['validation'], value=val_info_mode)
+        body = options.to_dict()
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/validate',
+            'params': params}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     # Development-specific requests
     def check_sol(self, *, sol_id: str) -> None:

@@ -4,7 +4,7 @@ use crate::shared::HSecZone;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValSecZoneFail {
+pub(in crate::info::val) struct HValSecZoneFail {
     zone: HSecZone,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, Vec<HSecZone>>,

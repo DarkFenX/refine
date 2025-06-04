@@ -1,5 +1,5 @@
 from tests import approx, check_no_field, effect_dogma_to_api
-from tests.fw.api import ValOptions
+from tests.fw.api import FitValOptions
 
 
 def test_warp_scram_status(client, consts):
@@ -60,20 +60,20 @@ def test_module_mwd_block(client, consts):
     api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_point.change_module(add_projs=[api_ship.id])
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_mwd.id]
     # Action
     api_point.change_module(charge_type_id=None)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -117,20 +117,20 @@ def test_module_mjd_block(client, consts):
     api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
     api_point.change_module(add_projs=[api_ship.id])
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
     # Action
     api_point.change_module(charge_type_id=None)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -166,18 +166,18 @@ def test_fighter_mwd_mjd_block(client, consts):
         api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
     api_point.change_module(add_projs=[api_fighter.id])
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
     # Action
     api_point.change_module(charge_type_id=None)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    api_val = api_affectee_fit.validate(options=FitValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}

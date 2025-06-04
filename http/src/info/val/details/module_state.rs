@@ -5,7 +5,7 @@ use crate::shared::HModuleState;
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValModuleStateFail {
+pub(in crate::info::val) struct HValModuleStateFail {
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
     modules: HashMap<rc::ItemId, HValModuleStateModuleInfo>,
 }
@@ -23,7 +23,7 @@ impl From<&rc::val::ValModuleStateFail> for HValModuleStateFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValModuleStateModuleInfo {
+pub(in crate::info::val) struct HValModuleStateModuleInfo {
     state: HModuleState,
     max_state: HModuleState,
 }

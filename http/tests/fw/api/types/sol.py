@@ -2,18 +2,21 @@ from __future__ import annotations
 
 import typing
 
-from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
-from tests.fw.util import Absent, AttrDict, AttrHookDef, Default
+from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
+from tests.fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
 from .dmg_types import DmgTypes
 from .fit import Fit
 from .fleet import Fleet
 from .item import Item
+from .validation import SolValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw import eve
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import DpsProfile
     from tests.fw.consts import ApiSecZone
+    from tests.fw.response import Response
+    from .validation import SolValOptions
 
 
 class SolarSystem(AttrDict):
@@ -100,6 +103,53 @@ class SolarSystem(AttrDict):
         if resp.status_code == 200:
             self._data = resp.json()['solar_system']
         return self
+
+    def validate(
+            self, *,
+            options: SolValOptions,
+            status_code: int = 200,
+            flip_order: bool = False,
+    ) -> SolValResult | None:
+        if flip_order:
+            resp_detailed = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.detailed,
+                status_code=status_code)
+            resp_simple = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.simple,
+                status_code=status_code)
+        else:
+            resp_simple = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.simple,
+                status_code=status_code)
+            resp_detailed = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.detailed,
+                status_code=status_code)
+        # Ensure simple results are consistent with full results
+        if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
+            result_simple = SolValResult(data=resp_simple.json())
+            result_detailed = SolValResult(data=resp_detailed.json())
+            assert result_simple.passed is result_detailed.passed
+            assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
+            return result_detailed
+        return None
+
+    def __validate(
+            self, *,
+            options: SolValOptions,
+            val_info_mode: ApiValInfoMode | type[Absent],
+            status_code: int,
+    ) -> Response:
+        resp = self._client.validate_sol_request(
+            sol_id=self._sol_id,
+            options=options,
+            val_info_mode=val_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        return resp
 
     # Fleet methods
     def get_fleet(

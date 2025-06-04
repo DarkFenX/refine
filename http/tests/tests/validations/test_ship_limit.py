@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import FitValOptions
 
 
 def test_type_single(client, consts):
@@ -14,7 +14,7 @@ def test_type_single(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -22,7 +22,7 @@ def test_type_single(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -43,7 +43,7 @@ def test_type_multiple_different(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -52,7 +52,7 @@ def test_type_multiple_different(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -76,7 +76,7 @@ def test_type_multiple_same_rounding(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -85,7 +85,7 @@ def test_type_multiple_same_rounding(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -104,7 +104,7 @@ def test_group_single(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
@@ -112,7 +112,7 @@ def test_group_single(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -134,7 +134,7 @@ def test_group_multiple_different(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
@@ -143,7 +143,7 @@ def test_group_multiple_different(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -168,7 +168,7 @@ def test_group_multiple_same_rounding(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
@@ -177,7 +177,7 @@ def test_group_multiple_same_rounding(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -206,7 +206,7 @@ def test_combined(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
@@ -216,21 +216,21 @@ def test_combined(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_type_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_allowed_group_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_allowed_both_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -248,7 +248,7 @@ def test_struct(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_struct_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_struct_id
     assert api_val.details.ship_limit.ship_group_id == eve_struct_grp_id
@@ -256,7 +256,7 @@ def test_struct(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_struct_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -274,7 +274,7 @@ def test_rig(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -282,7 +282,7 @@ def test_rig(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -300,7 +300,7 @@ def test_service(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_struct_id)
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_struct_id
     assert api_val.details.ship_limit.ship_group_id == eve_struct_grp_id
@@ -308,7 +308,7 @@ def test_service(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_struct_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -327,7 +327,7 @@ def test_subsystem(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_subsystem = api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -335,7 +335,7 @@ def test_subsystem(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -355,7 +355,7 @@ def test_t3d_confessor(client, consts):
     api_fit.set_ship(type_id=eve_other_id)
     api_defensive = api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -363,7 +363,7 @@ def test_t3d_confessor(client, consts):
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -371,7 +371,7 @@ def test_t3d_confessor(client, consts):
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -379,21 +379,21 @@ def test_t3d_confessor(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -413,7 +413,7 @@ def test_t3d_hecate(client, consts):
     api_fit.set_ship(type_id=eve_other_id)
     api_defensive = api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -421,7 +421,7 @@ def test_t3d_hecate(client, consts):
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -429,7 +429,7 @@ def test_t3d_hecate(client, consts):
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -437,21 +437,21 @@ def test_t3d_hecate(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -471,7 +471,7 @@ def test_t3d_jackdaw(client, consts):
     api_fit.set_ship(type_id=eve_other_id)
     api_defensive = api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -479,7 +479,7 @@ def test_t3d_jackdaw(client, consts):
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -487,7 +487,7 @@ def test_t3d_jackdaw(client, consts):
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -495,21 +495,21 @@ def test_t3d_jackdaw(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -529,7 +529,7 @@ def test_t3d_svipul(client, consts):
     api_fit.set_ship(type_id=eve_other_id)
     api_defensive = api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -537,7 +537,7 @@ def test_t3d_svipul(client, consts):
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -545,7 +545,7 @@ def test_t3d_svipul(client, consts):
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_other_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -553,21 +553,21 @@ def test_t3d_svipul(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -588,42 +588,42 @@ def test_known_failures(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module_id)
     api_module2 = api_fit.add_module(type_id=eve_module_id)
     # Verification - no ship case has to be checked as well, since there is no-ship logic
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id is None
     assert api_val.details.ship_limit.ship_group_id is None
     assert api_val.details.ship_limit.items == {api_module2.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id is None
     assert api_val.details.ship_limit.ship_group_id is None
     assert api_val.details.ship_limit.items == {api_module1.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_grp1_id
     assert api_val.details.ship_limit.items == {api_module2.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_grp1_id
     assert api_val.details.ship_limit.items == {api_module1.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -654,7 +654,7 @@ def test_modified_type(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     assert api_module.update().attrs[eve_type_attr_id].extra == approx(eve_allowed_ship_id)
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -663,7 +663,7 @@ def test_modified_type(client, consts):
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     assert api_module.update().attrs[eve_type_attr_id].extra == approx(eve_allowed_ship_id)
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -695,7 +695,7 @@ def test_modified_group(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_allowed_grp_id)
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
@@ -704,7 +704,7 @@ def test_modified_group(client, consts):
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_allowed_grp_id)
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -728,7 +728,7 @@ def test_mutation_type(client, consts):
     api_fit.set_ship(type_id=eve_ship3_id)
     api_module = api_fit.add_module(type_id=eve_base_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -736,21 +736,21 @@ def test_mutation_type(client, consts):
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -758,14 +758,14 @@ def test_mutation_type(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -793,7 +793,7 @@ def test_mutation_group(client, consts):
     api_fit.set_ship(type_id=eve_ship3_id)
     api_module = api_fit.add_module(type_id=eve_base_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
@@ -801,21 +801,21 @@ def test_mutation_group(client, consts):
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp1_id
@@ -823,14 +823,14 @@ def test_mutation_group(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
@@ -848,14 +848,14 @@ def test_no_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id is None
     assert api_val.details.ship_limit.ship_group_id is None
@@ -889,7 +889,7 @@ def test_not_loaded_ship(client, consts):
     # - Module 3 fails because type is mismatched, and ship group is not available
     # - Module 4 passes because item type is matched, even if ship group is not available
     # - Module 5 fails because ship group is not available
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
     assert api_val.details.ship_limit.ship_group_id is None
@@ -902,7 +902,7 @@ def test_not_loaded_ship(client, consts):
     api_module3.remove()
     api_module5.remove()
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -924,7 +924,7 @@ def test_criterion_item_state(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id, state=False)
     api_subsystem = api_fit.add_subsystem(type_id=eve_rig_id, state=False)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
@@ -960,7 +960,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_skill(type_id=eve_item_id, level=5)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    api_val = api_fit.validate(options=FitValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

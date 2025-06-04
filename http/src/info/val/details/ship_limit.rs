@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValShipLimitFail {
+pub(in crate::info::val) struct HValShipLimitFail {
     ship_type_id: Option<rc::ItemTypeId>,
     ship_group_id: Option<rc::ItemGrpId>,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
@@ -23,7 +23,7 @@ impl From<&rc::val::ValShipLimitFail> for HValShipLimitFail {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValShipLimitItemInfo {
+pub(in crate::info::val) struct HValShipLimitItemInfo {
     allowed_type_ids: Vec<rc::ItemTypeId>,
     allowed_group_ids: Vec<rc::ItemGrpId>,
 }

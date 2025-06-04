@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValSlotIndexFail {
+pub(in crate::info::val) struct HValSlotIndexFail {
     #[serde_as(as = "HashMap<_, Vec<serde_with::DisplayFromStr>>")]
     slot_users: HashMap<rc::SlotIndex, Vec<rc::ItemId>>,
 }

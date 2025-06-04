@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValMaxTypeFail {
+pub(in crate::info::val) struct HValMaxTypeFail {
     item_types: HashMap<rc::ItemTypeId, HValMaxTypeTypeInfo>,
 }
 impl From<&rc::val::ValMaxTypeFail> for HValMaxTypeFail {
@@ -19,7 +19,7 @@ impl From<&rc::val::ValMaxTypeFail> for HValMaxTypeFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValMaxTypeTypeInfo {
+pub(in crate::info::val) struct HValMaxTypeTypeInfo {
     item_type_count: rc::Count,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, rc::Count>,

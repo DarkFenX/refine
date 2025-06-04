@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValItemKindFail {
+pub(in crate::info::val) struct HValItemKindFail {
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
     item_kinds: HashMap<rc::ItemId, HValItemKindItemInfo>,
 }
@@ -21,7 +21,7 @@ impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValItemKindItemInfo {
+pub(in crate::info::val) struct HValItemKindItemInfo {
     kind: Option<HItemKind>,
     expected_kind: HItemKind,
 }
@@ -36,7 +36,7 @@ impl From<&rc::val::ValItemKindItemInfo> for HValItemKindItemInfo {
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
-pub(in crate::info::valid) enum HItemKind {
+pub(in crate::info::val) enum HItemKind {
     Booster,
     Character,
     Charge,

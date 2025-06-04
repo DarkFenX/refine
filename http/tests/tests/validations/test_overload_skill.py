@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import FitValOptions
 
 
 def test_main(client, consts):
@@ -16,21 +16,21 @@ def test_main(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
     api_module3 = api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 0
     assert api_val.details.overload_skill.module_reqs == {api_module1.id: 1, api_module2.id: 2, api_module3.id: 5}
     # Action
     api_skill.change_skill(level=1)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.module_reqs == {api_module2.id: 2, api_module3.id: 5}
     # Action
     api_skill.change_skill(level=5)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -49,19 +49,19 @@ def test_known_failures(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 0
     assert api_val.details.overload_skill.module_reqs == {api_module2.id: 1}
-    api_val = api_fit.validate(options=ValOptions(overload_skill=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 0
     assert api_val.details.overload_skill.module_reqs == {api_module1.id: 1}
-    api_val = api_fit.validate(options=ValOptions(overload_skill=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
+    api_val = api_fit.validate(options=FitValOptions(
         overload_skill=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -69,19 +69,19 @@ def test_known_failures(client, consts):
     # Action
     api_skill.remove()
     # Verification - there is separate logic for no-skill case, check it here
-    api_val = api_fit.validate(options=ValOptions(overload_skill=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl is None
     assert api_val.details.overload_skill.module_reqs == {api_module2.id: 1}
-    api_val = api_fit.validate(options=ValOptions(overload_skill=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl is None
     assert api_val.details.overload_skill.module_reqs == {api_module1.id: 1}
-    api_val = api_fit.validate(options=ValOptions(overload_skill=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
+    api_val = api_fit.validate(options=FitValOptions(
         overload_skill=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -100,7 +100,7 @@ def test_non_positive(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -108,7 +108,7 @@ def test_non_positive(client, consts):
     api_skill.remove()
     # Verification - 2nd module required level is changed to 0 because of detail of implementation
     # (needed thermodynamics level is stored as unsigned int)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl is None
     assert api_val.details.overload_skill.module_reqs == {api_module1.id: 0, api_module2.id: 0}
@@ -126,21 +126,21 @@ def test_rounding(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 0
     assert api_val.details.overload_skill.module_reqs == {api_module1.id: 1, api_module2.id: 2}
     # Action
     api_skill.change_skill(level=1)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.module_reqs == {api_module2.id: 2}
     # Action
     api_skill.change_skill(level=2)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -169,7 +169,7 @@ def test_modified_req(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     assert api_module.update().attrs[eve_req_attr_id].extra == approx(3)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 2}
@@ -177,7 +177,7 @@ def test_modified_req(client, consts):
     api_skill.change_skill(level=2)
     # Verification
     assert api_module.update().attrs[eve_req_attr_id].extra == approx(3)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -185,7 +185,7 @@ def test_modified_req(client, consts):
     api_implant.remove()
     # Verification
     assert api_module.update().attrs[eve_req_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -193,7 +193,7 @@ def test_modified_req(client, consts):
     api_skill.change_skill(level=1)
     # Verification
     assert api_module.update().attrs[eve_req_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 2}
@@ -217,7 +217,7 @@ def test_mutation_req(client, consts):
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.9}}))
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(4.2)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
@@ -225,7 +225,7 @@ def test_mutation_req(client, consts):
     api_skill.change_skill(level=3)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(4.2)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -234,7 +234,7 @@ def test_mutation_req(client, consts):
     api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0}})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(1.5)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
@@ -242,7 +242,7 @@ def test_mutation_req(client, consts):
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 2}
@@ -256,7 +256,7 @@ def test_no_skill(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl is None
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 1}
@@ -271,7 +271,7 @@ def test_no_value(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -287,7 +287,7 @@ def test_not_loaded_module(client, consts):
     api_fit.add_skill(type_id=eve_skill_id, level=0)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -303,14 +303,14 @@ def test_not_loaded_skill(client, consts):
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=0)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 0
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 1}
     # Action
     api_skill.change_skill(level=1)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -326,7 +326,7 @@ def test_criterion_module_state(client, consts):
     api_fit.add_skill(type_id=eve_skill_id, level=0)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    api_val = api_fit.validate(options=FitValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

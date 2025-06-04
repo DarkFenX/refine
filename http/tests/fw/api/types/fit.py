@@ -16,13 +16,13 @@ from tests.fw.consts import (
 from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item
-from .validation import ValResult
+from .validation import FitValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import DpsProfile, MutaAdd
     from tests.fw.response import Response
-    from .validation import ValOptions
+    from .validation import FitValOptions
 
 
 class Fit(AttrDict):
@@ -59,10 +59,10 @@ class Fit(AttrDict):
 
     def validate(
             self, *,
-            options: ValOptions,
+            options: FitValOptions,
             status_code: int = 200,
             flip_order: bool = False,
-    ) -> ValResult | None:
+    ) -> FitValResult | None:
         if flip_order:
             resp_detailed = self.__validate(
                 options=options,
@@ -83,8 +83,8 @@ class Fit(AttrDict):
                 status_code=status_code)
         # Ensure simple results are consistent with full results
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
-            result_simple = ValResult(data=resp_simple.json())
-            result_detailed = ValResult(data=resp_detailed.json())
+            result_simple = FitValResult(data=resp_simple.json())
+            result_detailed = FitValResult(data=resp_detailed.json())
             assert result_simple.passed is result_detailed.passed
             assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
             return result_detailed
@@ -92,23 +92,23 @@ class Fit(AttrDict):
 
     def __validate(
             self, *,
-            options: ValOptions,
+            options: FitValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:
-        resp_simple = self._client.validate_fit_request(
+        resp = self._client.validate_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp_simple.check(status_code=status_code)
-        return resp_simple
+        resp.check(status_code=status_code)
+        return resp
 
     def try_fit_items(
             self, *,
             type_ids: list[int],
-            options: ValOptions,
+            options: FitValOptions,
             status_code: int = 200,
     ) -> list[int] | None:
         resp = self._client.try_fit_items_request(

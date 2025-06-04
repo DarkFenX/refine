@@ -5,7 +5,7 @@ use crate::shared::HSkillLevel;
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValSrqFail {
+pub(in crate::info::val) struct HValSrqFail {
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, HashMap<rc::ItemTypeId, HValSrqSkillInfo>>,
 }
@@ -30,7 +30,7 @@ impl From<&rc::val::ValSrqFail> for HValSrqFail {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValSrqSkillInfo {
+pub(in crate::info::val) struct HValSrqSkillInfo {
     current_lvl: Option<HSkillLevel>,
     required_lvl: HSkillLevel,
 }

@@ -4,7 +4,7 @@ use crate::shared::HSkillLevel;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValOverloadSkillFail {
+pub(in crate::info::val) struct HValOverloadSkillFail {
     td_lvl: Option<HSkillLevel>,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     module_reqs: HashMap<rc::ItemId, HSkillLevel>,

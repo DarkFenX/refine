@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValCapitalModFail {
+pub(in crate::info::val) struct HValCapitalModFail {
     max_subcap_volume: rc::AttrVal,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     module_volumes: HashMap<rc::ItemId, rc::AttrVal>,

@@ -5,7 +5,7 @@ use crate::shared::HEffectId;
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 #[serde(transparent)]
-pub(in crate::info::valid) struct HValEffectStopperFail {
+pub(in crate::info::val) struct HValEffectStopperFail {
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, Vec<HEffectId>>,
 }

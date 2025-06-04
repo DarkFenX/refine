@@ -1,2 +1,2 @@
-from .options import ValOptions
-from .result import ValResult
+from .options import FitValOptions, SolValOptions
+from .result import FitValResult, SolValResult

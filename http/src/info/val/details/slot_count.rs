@@ -1,6 +1,6 @@
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValSlotCountFail {
+pub(in crate::info::val) struct HValSlotCountFail {
     used: rc::Count,
     max: Option<rc::Count>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]

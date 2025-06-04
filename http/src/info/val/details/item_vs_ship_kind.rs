@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValItemVsShipKindFail {
+pub(in crate::info::val) struct HValItemVsShipKindFail {
     ship_kind: HShipKind,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, HShipKind>,
@@ -22,7 +22,7 @@ impl From<&rc::val::ValItemVsShipKindFail> for HValItemVsShipKindFail {
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
-pub(in crate::info::valid) enum HShipKind {
+pub(in crate::info::val) enum HShipKind {
     Ship,
     Structure,
     Unknown,
