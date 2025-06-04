@@ -19,6 +19,39 @@ def convert(*, data: dict | tuple | list) -> AttrDict | tuple | list:
     return data
 
 
+def compare(*, left: typing.Any, right: typing.Any) -> bool:
+    if type(left) is not type(right):
+        return False
+    if isinstance(left, AttrDict) and isinstance(right, AttrDict):
+        return compare_attr_dict(left=left, right=right)
+    if isinstance(left, list | tuple) and isinstance(right, list | tuple):
+        return compare_sequence(left=left, right=right)
+    return left == right
+
+
+def compare_attr_dict(*, left: AttrDict, right: AttrDict) -> bool:
+    fields_left = set(left.get_raw().keys())
+    fields_right = set(right.get_raw().keys())
+    if fields_left != fields_right:
+        return False
+    for field_name in fields_left:
+        sub_left = getattr(left, field_name)
+        sub_right = getattr(right, field_name)
+        if not compare(left=sub_left, right=sub_right):
+            return False
+    return True
+
+
+def compare_sequence(*, left: list | tuple, right: list | tuple) -> bool:
+    if len(left) != len(right):
+        return False
+    for i, sub_left in enumerate(left):
+        sub_right = right[i]
+        if not compare(left=sub_left, right=sub_right):
+            return False
+    return True
+
+
 class AttrHookDef:
 
     def __init__(self, *, func: Callable, default: Callable = lambda: NoValue) -> None:
@@ -39,6 +72,9 @@ class AttrDict:
 
     def get_raw(self) -> dict:
         return self._data
+
+    def compare(self, *, other: AttrDict) -> bool:
+        return compare(left=self, right=other)
 
     def __getitem__(self, index: int) -> typing.Any:
         return convert(data=self._data[index])

@@ -36,7 +36,8 @@ class SolValResult(AttrDict):
 
     @property
     def fits(self) -> dict[str, FitValDetails]:
-        return getattr(getattr(self, 'details', {}), 'fits', {})
+        details = getattr(self, 'details', AttrDict(data={}))
+        return getattr(details, 'fits', {})
 
 
 class SolValDetails(AttrDict):

@@ -1,4 +1,6 @@
-from dataclasses import dataclass
+
+import dataclasses
+import typing
 
 
 class ValMaxGroupFail(dict):
@@ -7,7 +9,7 @@ class ValMaxGroupFail(dict):
         super().__init__({int(k): ValMaxGroupGroup(data=v) for k, v in data.items()})
 
 
-@dataclass
+@dataclasses.dataclass
 class ValMaxGroupGroup:
 
     group_item_count: int
@@ -16,6 +18,10 @@ class ValMaxGroupGroup:
     def __init__(self, *, data: tuple) -> None:
         self.group_item_count = data[0]
         self.items = dict(data[1])
+
+    def __getitem__(self, item: int) -> typing.Any:
+        field = dataclasses.fields(self)[item]
+        return getattr(self, field.name)
 
     def __eq__(self, other: tuple) -> bool:
         return (self.group_item_count, self.items) == (other[0], other[1])

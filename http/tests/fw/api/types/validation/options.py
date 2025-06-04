@@ -77,8 +77,10 @@ class SolValOptions:
     @classmethod
     def from_fit_options(cls, *, fit_options: FitValOptions, fits: list[str]) -> SolValOptions:
         options = cls(fits=fits)
-        for opt_field in fields(fit_options):
-            setattr(options, opt_field.name, getattr(fit_options, opt_field.name))
+        field_map_src = {f.name: f for f in fields(fit_options)}
+        field_map_dst = {f.name: f for f in fields(options)}
+        for field_name in set(field_map_src).intersection(field_map_dst):
+            setattr(options, field_name, getattr(fit_options, field_name))
         return options
 
     def to_dict(self) -> dict:

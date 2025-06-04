@@ -1,9 +1,7 @@
-from __future__ import annotations
-
-from dataclasses import dataclass
+import dataclasses
 
 
-@dataclass
+@dataclasses.dataclass
 class ValShipStanceFail:
 
     item_id: str

@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+import dataclasses
 
 
-@dataclass
+@dataclasses.dataclass
 class ValSlotCountFail:
 
     used: int

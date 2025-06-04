@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+import dataclasses
+import typing
 
 
-@dataclass
+@dataclasses.dataclass
 class ValShipLimitFail:
 
     ship_type_id: int | None
@@ -16,7 +17,7 @@ class ValShipLimitFail:
         self.items = {k: ValShipLimitItemInfo(data=v) for k, v in data[2].items()}
 
 
-@dataclass
+@dataclasses.dataclass
 class ValShipLimitItemInfo:
 
     allowed_type_ids: list[int]
@@ -25,6 +26,10 @@ class ValShipLimitItemInfo:
     def __init__(self, *, data: tuple) -> None:
         self.allowed_type_ids = sorted(data[0])
         self.allowed_group_ids = sorted(data[1])
+
+    def __getitem__(self, item: int) -> typing.Any:
+        field = dataclasses.fields(self)[item]
+        return getattr(self, field.name)
 
     def __eq__(self, other: tuple) -> bool:
         return (self.allowed_type_ids, self.allowed_group_ids) == (sorted(other[0]), sorted(other[1]))

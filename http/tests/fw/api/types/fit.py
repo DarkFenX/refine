@@ -64,20 +64,20 @@ class Fit(AttrDict):
             flip_order: bool = False,
     ) -> FitValResult | None:
         if flip_order:
-            resp_detailed = self.__validate(
+            resp_detailed = self.__validate_fit(
                 options=options,
                 val_info_mode=ApiValInfoMode.detailed,
                 status_code=status_code)
-            resp_simple = self.__validate(
+            resp_simple = self.__validate_fit(
                 options=options,
                 val_info_mode=ApiValInfoMode.simple,
                 status_code=status_code)
         else:
-            resp_simple = self.__validate(
+            resp_simple = self.__validate_fit(
                 options=options,
                 val_info_mode=ApiValInfoMode.simple,
                 status_code=status_code)
-            resp_detailed = self.__validate(
+            resp_detailed = self.__validate_fit(
                 options=options,
                 val_info_mode=ApiValInfoMode.detailed,
                 status_code=status_code)
@@ -88,25 +88,30 @@ class Fit(AttrDict):
             assert result_simple.passed is result_detailed.passed
             assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
             # Ensure sol validation results are consistent with fit validation results
-            resp_sol = self._client.validate_sol_request(
-                sol_id=self._sol_id,
-                options=SolValOptions.from_fit_options(fit_options=options, fits=[self.id]),
-                val_info_mode=ApiValInfoMode.detailed).send()
-            self._client.check_sol(sol_id=self._sol_id)
-            resp_sol.check(status_code=200)
-            result_sol = SolValResult(data=resp_sol.json())
+            sol_options = SolValOptions.from_fit_options(fit_options=options, fits=[self.id])
+            resp_sol_detailed = self.__validate_sol(
+                options=sol_options,
+                val_info_mode=ApiValInfoMode.detailed,
+                status_code=200)
+            result_sol_detailed = SolValResult(data=resp_sol_detailed.json())
             # If fit validation passed, fit shouldn't be in results for detailed sol validation
             # results.
             if result_detailed.passed:
-                assert self.id not in result_sol.fits
-            # If fit validation passed, data in sol validation should match to data in fit
-            # validation.
+                assert self.id not in result_sol_detailed.fits
+            # If fit validation failed, data in sol validation should match to data in fit
+            # validation, and fast solar system validation should also fail
             else:
-                assert result_sol.fits[self.id] == result_detailed.details
+                assert result_sol_detailed.fits[self.id].compare(other=result_detailed.details)
+                resp_sol_simple = self.__validate_sol(
+                    options=sol_options,
+                    val_info_mode=ApiValInfoMode.simple,
+                    status_code=200)
+                result_sol_simple = SolValResult(data=resp_sol_simple.json())
+                assert result_sol_simple.passed is False
             return result_detailed
         return None
 
-    def __validate(
+    def __validate_fit(
             self, *,
             options: FitValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
@@ -115,6 +120,20 @@ class Fit(AttrDict):
         resp = self._client.validate_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
+            options=options,
+            val_info_mode=val_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        return resp
+
+    def __validate_sol(
+            self, *,
+            options: SolValOptions,
+            val_info_mode: ApiValInfoMode | type[Absent],
+            status_code: int,
+    ) -> Response:
+        resp = self._client.validate_sol_request(
+            sol_id=self._sol_id,
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
