@@ -12,8 +12,8 @@ pub(crate) struct HValidInfoDetailed {
     #[serde(skip_serializing_if = "HValidInfoDetails::is_empty")]
     details: HValidInfoDetails,
 }
-impl From<&rc::val::ValResult> for HValidInfoDetailed {
-    fn from(core_val_result: &rc::val::ValResult) -> Self {
+impl From<&rc::val::ValResultFit> for HValidInfoDetailed {
+    fn from(core_val_result: &rc::val::ValResultFit) -> Self {
         Self {
             passed: core_val_result.all_passed(),
             details: core_val_result.into(),
@@ -215,8 +215,8 @@ impl HValidInfoDetails {
             && self.offense_immunity.is_none()
     }
 }
-impl From<&rc::val::ValResult> for HValidInfoDetails {
-    fn from(core_val_result: &rc::val::ValResult) -> Self {
+impl From<&rc::val::ValResultFit> for HValidInfoDetails {
+    fn from(core_val_result: &rc::val::ValResultFit) -> Self {
         Self {
             cpu: conv(&core_val_result.cpu),
             powergrid: conv(&core_val_result.powergrid),

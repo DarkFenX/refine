@@ -1,12 +1,38 @@
-use crate::sol::svc::vast::{
-    ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
-    ValDroneGroupFail, ValEffectImmunityFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail,
-    ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
-    ValOverloadSkillFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail, ValShipStanceFail,
-    ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
+use std::collections::HashMap;
+
+use crate::sol::{
+    FitId,
+    svc::vast::{
+        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
+        ValDroneGroupFail, ValEffectImmunityFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail,
+        ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
+        ValOverloadSkillFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail, ValShipStanceFail,
+        ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
+    },
 };
 
-pub struct ValResult {
+/// Validation result for a solar system.
+///
+/// Contains per-fit failures, and failures for items not belonging to any fit.
+pub struct ValResultSol {
+    pub fits: HashMap<FitId, ValResultFit>,
+    /// Not loaded stand-alone items.
+    pub not_loaded_item: Option<ValNotLoadedItemFail>,
+}
+impl ValResultSol {
+    pub(in crate::sol::svc::vast) fn new() -> Self {
+        Self {
+            fits: HashMap::new(),
+            not_loaded_item: None,
+        }
+    }
+    pub fn all_passed(&self) -> bool {
+        self.fits.is_empty() && self.not_loaded_item.is_none()
+    }
+}
+
+/// Validation result for a fit.
+pub struct ValResultFit {
     pub cpu: Option<ValResFail>,
     pub powergrid: Option<ValResFail>,
     pub calibration: Option<ValResFail>,
@@ -70,7 +96,7 @@ pub struct ValResult {
     pub assist_immunity: Option<ValEffectImmunityFail>,
     pub offense_immunity: Option<ValEffectImmunityFail>,
 }
-impl ValResult {
+impl ValResultFit {
     pub(in crate::sol::svc::vast) fn new() -> Self {
         Self {
             cpu: None,

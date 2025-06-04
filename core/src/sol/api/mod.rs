@@ -25,4 +25,5 @@ mod fleet;
 mod item;
 mod sec_zone;
 mod sol_set_src;
+mod sol_validate;
 mod util;

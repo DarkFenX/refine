@@ -1,7 +1,7 @@
 use cache::ValCache;
-pub(in crate::sol) use options::{IntSolValOptions, IntValOptions};
-pub use options::{SolValOptions, ValOption, ValOptions};
-pub use result::ValResult;
+pub use options::{ValOption, ValOptions, ValOptionsSol};
+pub(in crate::sol) use options::{ValOptionsInt, ValOptionsSolInt};
+pub use result::{ValResultFit, ValResultSol};
 pub(in crate::sol::svc) use vast::Vast;
 use vast::VastFitData;
 use vaste_stats_fit::{StatRes, StatSlot};

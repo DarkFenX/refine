@@ -3,7 +3,7 @@ use crate::sol::{
     reffs::REffs,
     svc::{
         calc::Calc,
-        vast::{IntSolValOptions, IntValOptions, ValResult, Vast},
+        vast::{ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol, Vast},
     },
     uad::Uad,
 };
@@ -14,19 +14,39 @@ impl Vast {
         uad: &Uad,
         calc: &mut Calc,
         reffs: &REffs,
-        options: &IntSolValOptions,
+        options: &ValOptionsSolInt,
     ) -> bool {
-        for &fit_key in options.fit_keys.iter() {
-            if !self.validate_fit_fast(uad, calc, reffs, fit_key, &options.options) {
+        for &fit_key in options.fits.iter() {
+            if !self.validate_fit_fast(uad, calc, reffs, fit_key, &options.vals) {
                 return false;
             }
         }
-        if options.options.not_loaded_item.enabled
-            && !self.validate_not_loaded_item_fast(&options.options.not_loaded_item.kfs)
+        if options.vals.not_loaded_item.enabled
+            && !self.validate_not_loaded_item_fast(&options.vals.not_loaded_item.kfs)
         {
             return false;
         }
         true
+    }
+    pub(in crate::sol) fn validate_sol_verbose(
+        &mut self,
+        uad: &Uad,
+        calc: &mut Calc,
+        reffs: &REffs,
+        options: &ValOptionsSolInt,
+    ) -> ValResultSol {
+        let mut sol_result = ValResultSol::new();
+        for &fit_key in options.fits.iter() {
+            let fit_result = self.validate_fit_verbose(uad, calc, reffs, fit_key, &options.vals);
+            if !fit_result.all_passed() {
+                let fit_id = uad.fits.id_by_key(fit_key);
+                sol_result.fits.insert(fit_id, fit_result);
+            }
+        }
+        if options.vals.not_loaded_item.enabled {
+            sol_result.not_loaded_item = self.validate_not_loaded_item_verbose(&options.vals.not_loaded_item.kfs, uad);
+        }
+        sol_result
     }
     pub(in crate::sol) fn validate_fit_fast(
         &mut self,
@@ -34,7 +54,7 @@ impl Vast {
         calc: &mut Calc,
         reffs: &REffs,
         fit_key: FitKey,
-        options: &IntValOptions,
+        options: &ValOptionsInt,
     ) -> bool {
         let fit = uad.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
@@ -389,12 +409,12 @@ impl Vast {
         calc: &mut Calc,
         reffs: &REffs,
         fit_key: FitKey,
-        options: &IntValOptions,
-    ) -> ValResult {
+        options: &ValOptionsInt,
+    ) -> ValResultFit {
         let fit = uad.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
         let ship = fit.ship.map(|v| uad.items.get(v).get_ship().unwrap());
-        let mut result = ValResult::new();
+        let mut result = ValResultFit::new();
         if options.cpu.enabled {
             result.cpu = fit_data.validate_cpu_verbose(&options.cpu.kfs, uad, calc, fit);
         }
