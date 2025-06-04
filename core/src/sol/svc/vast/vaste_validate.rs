@@ -16,6 +16,16 @@ impl Vast {
         reffs: &REffs,
         options: &IntSolValOptions,
     ) -> bool {
+        for &fit_key in options.fit_keys.iter() {
+            if !self.validate_fit_fast(uad, calc, reffs, fit_key, &options.options) {
+                return false;
+            }
+        }
+        if options.options.not_loaded_item.enabled
+            && !self.validate_not_loaded_item_fast(&options.options.not_loaded_item.kfs)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_fast(
