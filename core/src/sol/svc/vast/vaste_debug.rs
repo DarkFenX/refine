@@ -11,6 +11,9 @@ impl Vast {
             check_fit_key(uad, fit_key)?;
             fit_data.consistency_check(uad)?;
         }
+        for &item_key in self.not_loaded.iter() {
+            check_item_key(uad, item_key, false)?;
+        }
         Ok(())
     }
 }

@@ -18,10 +18,14 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct Vast {
     pub(in crate::sol::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
+    pub(in crate::sol::svc::vast) not_loaded: RSet<ItemKey>,
 }
 impl Vast {
     pub(in crate::sol::svc) fn new() -> Self {
-        Self { fit_datas: RMap::new() }
+        Self {
+            fit_datas: RMap::new(),
+            not_loaded: RSet::new(),
+        }
     }
     pub(in crate::sol::svc::vast) fn get_fit_data_mut(&mut self, fit_key: &FitKey) -> &mut VastFitData {
         self.fit_datas.get_mut(fit_key).unwrap()
