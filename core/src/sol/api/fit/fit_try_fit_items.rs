@@ -1,8 +1,9 @@
 use crate::{
     ad,
     sol::{
-        AddMode, FitKey, ItemTypeId, MinionState, ModRack, ModuleState, RmMode, ServiceState, SolarSystem, api::FitMut,
-        svc::vast::ValOptions,
+        AddMode, FitKey, ItemTypeId, MinionState, ModRack, ModuleState, RmMode, ServiceState, SolarSystem,
+        api::FitMut,
+        svc::vast::{IntValOptions, ValOptions},
     },
 };
 
@@ -11,9 +12,8 @@ impl SolarSystem {
         &mut self,
         fit_key: FitKey,
         type_ids: &[ItemTypeId],
-        val_options: &ValOptions,
+        val_options: &IntValOptions,
     ) -> Vec<ItemTypeId> {
-        self.uad.fits.get(fit_key);
         let mut valid = Vec::new();
         for type_id in type_ids {
             let a_item = match self.uad.src.get_a_item(type_id) {
@@ -128,7 +128,8 @@ impl SolarSystem {
 
 impl<'a> FitMut<'a> {
     pub fn try_fit_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
-        self.sol.internal_try_fit_items(self.key, type_ids, val_options)
+        let int_val_options = IntValOptions::from_pub_options(self.sol, val_options);
+        self.sol.internal_try_fit_items(self.key, type_ids, &int_val_options)
     }
 }
 

@@ -1,5 +1,6 @@
 use cache::ValCache;
-pub use options::{ValOption, ValOptions};
+pub(in crate::sol) use options::{IntSolValOptions, IntValOptions};
+pub use options::{SolValOptions, ValOption, ValOptions};
 pub use result::ValResult;
 pub(in crate::sol::svc) use vast::Vast;
 use vast::VastFitData;

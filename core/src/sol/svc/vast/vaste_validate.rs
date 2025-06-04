@@ -3,19 +3,28 @@ use crate::sol::{
     reffs::REffs,
     svc::{
         calc::Calc,
-        vast::{ValOptions, ValResult, Vast},
+        vast::{IntSolValOptions, IntValOptions, ValResult, Vast},
     },
     uad::Uad,
 };
 
 impl Vast {
+    pub(in crate::sol) fn validate_sol_fast(
+        &mut self,
+        uad: &Uad,
+        calc: &mut Calc,
+        reffs: &REffs,
+        options: &IntSolValOptions,
+    ) -> bool {
+        true
+    }
     pub(in crate::sol) fn validate_fit_fast(
         &mut self,
         uad: &Uad,
         calc: &mut Calc,
         reffs: &REffs,
         fit_key: FitKey,
-        options: &ValOptions,
+        options: &IntValOptions,
     ) -> bool {
         let fit = uad.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
@@ -370,7 +379,7 @@ impl Vast {
         calc: &mut Calc,
         reffs: &REffs,
         fit_key: FitKey,
-        options: &ValOptions,
+        options: &IntValOptions,
     ) -> ValResult {
         let fit = uad.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
