@@ -76,12 +76,12 @@ class SolValOptions:
 
     @classmethod
     def from_fit_options(cls, *, fit_options: FitValOptions, fits: list[str]) -> SolValOptions:
-        options = cls(fits=fits)
+        sol_options = cls(fits=fits)
         field_map_src = {f.name: f for f in fields(fit_options)}
-        field_map_dst = {f.name: f for f in fields(options)}
+        field_map_dst = {f.name: f for f in fields(sol_options)}
         for field_name in set(field_map_src).intersection(field_map_dst):
-            setattr(options, field_name, getattr(fit_options, field_name))
-        return options
+            setattr(sol_options, field_name, getattr(fit_options, field_name))
+        return sol_options
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
@@ -153,6 +153,15 @@ class FitValOptions:
     effect_stopper: ValOption = Absent
     assist_immunity: ValOption = Absent
     offense_immunity: ValOption = Absent
+
+    @classmethod
+    def from_sol_options(cls, *, sol_options: SolValOptions) -> FitValOptions:
+        fit_options = cls()
+        field_map_src = {f.name: f for f in fields(sol_options)}
+        field_map_dst = {f.name: f for f in fields(fit_options)}
+        for field_name in set(field_map_src).intersection(field_map_dst):
+            setattr(fit_options, field_name, getattr(sol_options, field_name))
+        return fit_options
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

@@ -101,7 +101,7 @@ class Fit(AttrDict):
             # If fit validation failed, data in sol validation should match to data in fit
             # validation, and fast solar system validation should also fail
             else:
-                assert result_sol_detailed.fits[self.id].compare(other=result_detailed.details)
+                assert result_sol_detailed.fits[self.id].compare(other=result_detailed.details) is True
                 resp_sol_simple = self.__validate_sol(
                     options=sol_options,
                     val_info_mode=ApiValInfoMode.simple,
