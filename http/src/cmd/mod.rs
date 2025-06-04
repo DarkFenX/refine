@@ -9,7 +9,7 @@ pub(crate) use dev::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkTryFitItems
 pub(crate) use remove_item::HRemoveItemCmd;
 pub(crate) use shared::{HCmdResp, HFitIdResp, HFleetIdResp, HItemIdsResp, get_primary_fit, get_primary_fleet};
 pub(crate) use try_fit_items::HTryFitItemsCmd;
-pub(crate) use validate_fit::HValidateFitCmd;
+pub(crate) use validate::{HValidateFitCmd, HValidateSolCmd};
 
 mod add_fit;
 mod add_item;
@@ -22,4 +22,4 @@ mod dev;
 mod remove_item;
 mod shared;
 mod try_fit_items;
-mod validate_fit;
+mod validate;

@@ -1,3 +1,21 @@
+#[serde_with::serde_as]
+#[derive(serde::Deserialize, Default)]
+pub(in crate::cmd) struct HValOptionsSol {
+    #[serde(flatten)]
+    pub(in crate::cmd) vals: HValOptions,
+    #[serde(default)]
+    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    pub(in crate::cmd) fits: Vec<rc::FitId>,
+}
+impl HValOptionsSol {
+    pub(in crate::cmd) fn to_core(&self) -> rc::val::ValOptionsSol {
+        rc::val::ValOptionsSol {
+            vals: self.vals.to_core(),
+            fits: self.fits.clone(),
+        }
+    }
+}
+
 #[derive(serde::Deserialize)]
 pub(in crate::cmd) struct HValOptions {
     default: bool,
@@ -127,7 +145,7 @@ pub(in crate::cmd) struct HValOptions {
     offense_immunity: Option<HValOption>,
 }
 impl HValOptions {
-    pub(in crate::cmd) fn to_core_val_options(&self) -> rc::val::ValOptions {
+    pub(in crate::cmd) fn to_core(&self) -> rc::val::ValOptions {
         let mut core_options = match self.default {
             true => rc::val::ValOptions::all_enabled(),
             false => rc::val::ValOptions::all_disabled(),

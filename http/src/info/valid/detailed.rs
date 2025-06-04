@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::info::valid::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail,
     HValDroneGroupFail, HValEffectImmunityFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
@@ -6,13 +8,55 @@ use crate::info::valid::details::{
     HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
+// Sol-specific
 #[derive(serde::Serialize)]
-pub(crate) struct HValidInfoDetailed {
+pub(crate) struct HSolValResultDetailed {
     passed: bool,
-    #[serde(skip_serializing_if = "HValidInfoDetails::is_empty")]
-    details: HValidInfoDetails,
+    #[serde(skip_serializing_if = "HSolValDetails::is_empty")]
+    details: HSolValDetails,
 }
-impl From<&rc::val::ValResultFit> for HValidInfoDetailed {
+impl From<&rc::val::ValResultSol> for HSolValResultDetailed {
+    fn from(core_val_result: &rc::val::ValResultSol) -> Self {
+        Self {
+            passed: core_val_result.all_passed(),
+            details: core_val_result.into(),
+        }
+    }
+}
+
+#[derive(serde::Serialize)]
+pub(crate) struct HSolValDetails {
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
+    fits: HashMap<rc::FitId, HValFitInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    not_loaded_item: Option<HValNotLoadedItemFail>,
+}
+impl HSolValDetails {
+    fn is_empty(&self) -> bool {
+        self.fits.is_empty() && self.not_loaded_item.is_none()
+    }
+}
+impl From<&rc::val::ValResultSol> for HSolValDetails {
+    fn from(core_val_result: &rc::val::ValResultSol) -> Self {
+        Self {
+            fits: core_val_result
+                .fits
+                .iter()
+                .map(|(&fit_id, core_fit_val_result)| (fit_id, core_fit_val_result.into()))
+                .collect(),
+            not_loaded_item: conv(&core_val_result.not_loaded_item),
+        }
+    }
+}
+
+// Fit-specific
+#[derive(serde::Serialize)]
+pub(crate) struct HFitValResultDetailed {
+    passed: bool,
+    #[serde(skip_serializing_if = "HValFitInfo::is_empty")]
+    details: HValFitInfo,
+}
+impl From<&rc::val::ValResultFit> for HFitValResultDetailed {
     fn from(core_val_result: &rc::val::ValResultFit) -> Self {
         Self {
             passed: core_val_result.all_passed(),
@@ -21,9 +65,10 @@ impl From<&rc::val::ValResultFit> for HValidInfoDetailed {
     }
 }
 
+// Shared
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
-struct HValidInfoDetails {
+struct HValFitInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     cpu: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -149,7 +194,7 @@ struct HValidInfoDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     offense_immunity: Option<HValEffectImmunityFail>,
 }
-impl HValidInfoDetails {
+impl HValFitInfo {
     fn is_empty(&self) -> bool {
         self.cpu.is_none()
             && self.powergrid.is_none()
@@ -215,7 +260,7 @@ impl HValidInfoDetails {
             && self.offense_immunity.is_none()
     }
 }
-impl From<&rc::val::ValResultFit> for HValidInfoDetails {
+impl From<&rc::val::ValResultFit> for HValFitInfo {
     fn from(core_val_result: &rc::val::ValResultFit) -> Self {
         Self {
             cpu: conv(&core_val_result.cpu),

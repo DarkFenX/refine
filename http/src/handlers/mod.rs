@@ -7,7 +7,7 @@ use shared::{HGSolResult, HSingleErr, get_guarded_sol};
 pub(crate) use sol::{change_sol, change_sol_src, create_sol, delete_sol, get_sol};
 pub(crate) use src::{create_source, delete_source};
 pub(crate) use try_fit_items::try_fit_items;
-pub(crate) use validate::validate_fit;
+pub(crate) use validate::{validate_fit, validate_sol};
 
 mod dev;
 mod fit;

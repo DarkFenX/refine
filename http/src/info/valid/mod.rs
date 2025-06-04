@@ -1,5 +1,5 @@
-use detailed::HValidInfoDetailed;
-use simple::HValidInfoSimple;
+use detailed::{HFitValResultDetailed, HSolValResultDetailed};
+use simple::HValResultSimple;
 
 mod detailed;
 mod details;
@@ -7,17 +7,34 @@ mod simple;
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]
-pub(crate) enum HValidInfo {
-    Simple(HValidInfoSimple),
-    Detailed(Box<HValidInfoDetailed>),
+pub(crate) enum HSolValResult {
+    Simple(HValResultSimple),
+    Detailed(Box<HSolValResultDetailed>),
 }
-impl From<bool> for HValidInfo {
-    fn from(core_value: bool) -> Self {
-        Self::Simple(core_value.into())
+impl From<bool> for HSolValResult {
+    fn from(core_result: bool) -> Self {
+        Self::Simple(core_result.into())
     }
 }
-impl From<&rc::val::ValResultFit> for HValidInfo {
-    fn from(core_value: &rc::val::ValResultFit) -> Self {
-        Self::Detailed(Box::new(core_value.into()))
+impl From<&rc::val::ValResultSol> for HSolValResult {
+    fn from(core_result: &rc::val::ValResultSol) -> Self {
+        Self::Detailed(Box::new(core_result.into()))
+    }
+}
+
+#[derive(serde::Serialize)]
+#[serde(untagged)]
+pub(crate) enum HFitValResult {
+    Simple(HValResultSimple),
+    Detailed(Box<HFitValResultDetailed>),
+}
+impl From<bool> for HFitValResult {
+    fn from(core_result: bool) -> Self {
+        Self::Simple(core_result.into())
+    }
+}
+impl From<&rc::val::ValResultFit> for HFitValResult {
+    fn from(core_result: &rc::val::ValResultFit) -> Self {
+        Self::Detailed(Box::new(core_result.into()))
     }
 }

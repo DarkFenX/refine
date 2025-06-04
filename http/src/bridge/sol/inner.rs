@@ -5,11 +5,11 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkTryFitItemsCmd, HChangeFitCommand,
         HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HRemoveItemCmd, HTryFitItemsCmd,
-        HValidateFitCmd, get_primary_fit, get_primary_fleet,
+        HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
     },
     info::{
-        HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
-        HValidInfo, HValidInfoMode, MkItemInfo,
+        HFitInfo, HFitInfoMode, HFitValResult, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo,
+        HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
     },
     util::HExecError,
 };
@@ -362,6 +362,27 @@ impl HSolarSystemInner {
         result
     }
     /// Non-fallible
+    #[tracing::instrument(name = "sol-sol-val", level = "trace", skip_all)]
+    pub(crate) async fn validate_sol(
+        &mut self,
+        tpool: &HThreadPool,
+        command: HValidateSolCmd,
+        valid_mode: HValidInfoMode,
+    ) -> Result<HSolValResult, HBrError> {
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                let result = command.execute(&mut core_sol, valid_mode);
+                (core_sol, result)
+            })
+            .await;
+        self.put_sol_back(core_sol);
+        Ok(result)
+    }
+    /// Non-fallible
     #[tracing::instrument(name = "sol-fit-val", level = "trace", skip_all)]
     pub(crate) async fn validate_fit(
         &mut self,
@@ -369,7 +390,7 @@ impl HSolarSystemInner {
         fit_id: &str,
         command: HValidateFitCmd,
         valid_mode: HValidInfoMode,
-    ) -> Result<HValidInfo, HBrError> {
+    ) -> Result<HFitValResult, HBrError> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");

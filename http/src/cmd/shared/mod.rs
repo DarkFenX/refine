@@ -7,7 +7,7 @@ pub(crate) use resp::{HCmdResp, HFitIdResp, HFleetIdResp, HItemIdsResp};
 pub(in crate::cmd) use rm_mode::HRmMode;
 pub(in crate::cmd) use side_effect::{HSideEffectMap, apply_side_effects};
 pub(in crate::cmd) use sol_cloner::HSolCloner;
-pub(in crate::cmd) use val_options::HValOptions;
+pub(in crate::cmd) use val_options::{HValOptions, HValOptionsSol};
 
 mod add_mode;
 mod effect_mode;
