@@ -113,8 +113,7 @@ def test_known_failures(client, consts):
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25}
-    api_val = api_fit.validate(options=ValOptions(
-        unlaunchable_drone_bandwidth=(True, [api_drone2.id, api_drone3.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id, api_drone3.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

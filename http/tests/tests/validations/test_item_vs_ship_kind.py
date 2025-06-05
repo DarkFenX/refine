@@ -392,8 +392,7 @@ def test_known_failures(client, consts):
     assert api_val.details.item_vs_ship_kind.items == {
         api_ship_module.id: consts.ApiValShipType.ship,
         api_ship_service.id: consts.ApiValShipType.ship}
-    api_val = api_fit.validate(options=ValOptions(
-        item_vs_ship_kind=(True, [api_ship_module.id, api_ship_service.id])))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=(True, [api_ship_module.id, api_ship_service.id])))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {api_ship_rig.id: consts.ApiValShipType.ship}

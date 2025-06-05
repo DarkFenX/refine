@@ -499,8 +499,7 @@ def test_known_failures(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        item_kind=(True, [api_booster1.id, api_other.id, api_booster2.id])))
+    api_val = api_fit.validate(options=ValOptions(item_kind=(True, [api_booster1.id, api_other.id, api_booster2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
