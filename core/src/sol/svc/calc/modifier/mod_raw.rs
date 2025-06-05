@@ -8,6 +8,7 @@ use crate::{
         svc::{
             EffectSpec,
             calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
+            get_resist_a_attr_id,
         },
         uad::{Uad, item::UadItem},
     },
@@ -191,15 +192,5 @@ fn get_mod_kind(a_effect: &ad::AEffect, a_affectee_filter: &AffecteeFilter) -> O
         // Targeted effects
         (ac::effcats::TARGET, None) => Some(ModifierKind::Targeted),
         _ => None,
-    }
-}
-
-pub(in crate::sol::svc::calc) fn get_resist_a_attr_id(item: &UadItem, a_effect: &ad::AEffect) -> Option<ad::AAttrId> {
-    match a_effect.resist_attr_id {
-        Some(resist_a_attr_id) => Some(resist_a_attr_id),
-        None => match item.get_a_extras() {
-            Some(a_extras) => a_extras.remote_resist_attr_id,
-            None => None,
-        },
     }
 }

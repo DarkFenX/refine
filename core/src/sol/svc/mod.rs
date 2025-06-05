@@ -1,6 +1,6 @@
 //! Solar system services - attribute & stats calculations, validation, and so on.
 
-use misc::{AttrSpec, EffectSpec};
+use misc::{AttrSpec, EffectSpec, get_resist_a_attr_id};
 pub(in crate::sol) use svc::Svc;
 
 pub(crate) mod calc;

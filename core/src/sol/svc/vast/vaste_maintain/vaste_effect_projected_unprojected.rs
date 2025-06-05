@@ -2,7 +2,7 @@ use crate::{
     ac, ad,
     sol::{
         ItemKey,
-        svc::{EffectSpec, vast::Vast},
+        svc::{EffectSpec, get_resist_a_attr_id, vast::Vast},
         uad::item::UadItem,
     },
 };
@@ -27,23 +27,24 @@ impl Vast {
                     projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
                 }
             }
-            if a_effect.is_assist
-                && let Some(projector_fit_key) = projector_item.get_fit_key()
-            {
+            if let Some(projector_fit_key) = projector_item.get_fit_key() {
                 let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
                 let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
-                projector_fit_data
-                    .blockable_assistance
-                    .add_entry(projector_espec, projectee_item_key);
-            }
-            if is_offense_blockable(projector_item, a_effect)
-                && let Some(projector_fit_key) = projector_item.get_fit_key()
-            {
-                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-                let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
-                projector_fit_data
-                    .blockable_offense
-                    .add_entry(projector_espec, projectee_item_key);
+                if a_effect.is_assist {
+                    projector_fit_data
+                        .blockable_assistance
+                        .add_entry(projector_espec, projectee_item_key);
+                }
+                if is_offense_blockable(projector_item, a_effect) {
+                    projector_fit_data
+                        .blockable_offense
+                        .add_entry(projector_espec, projectee_item_key);
+                }
+                if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
+                    projector_fit_data
+                        .full_resistance
+                        .add_entry((projector_espec, projectee_item_key), resist_a_attr_id);
+                }
             }
         }
     }
@@ -66,23 +67,24 @@ impl Vast {
                     projectee_fit_data.stopped_effects.remove_entry(&stopped, &stopper);
                 }
             }
-            if a_effect.is_assist
-                && let Some(projector_fit_key) = projector_item.get_fit_key()
-            {
+            if let Some(projector_fit_key) = projector_item.get_fit_key() {
                 let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
                 let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
-                projector_fit_data
-                    .blockable_assistance
-                    .remove_entry(&projector_espec, &projectee_item_key);
-            }
-            if is_offense_blockable(projector_item, a_effect)
-                && let Some(projector_fit_key) = projector_item.get_fit_key()
-            {
-                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-                let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
-                projector_fit_data
-                    .blockable_offense
-                    .remove_entry(&projector_espec, &projectee_item_key);
+                if a_effect.is_assist {
+                    projector_fit_data
+                        .blockable_assistance
+                        .remove_entry(&projector_espec, &projectee_item_key);
+                }
+                if is_offense_blockable(projector_item, a_effect) {
+                    projector_fit_data
+                        .blockable_offense
+                        .remove_entry(&projector_espec, &projectee_item_key);
+                }
+                if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
+                    projector_fit_data
+                        .full_resistance
+                        .remove_entry(&(projector_espec, projectee_item_key), &resist_a_attr_id);
+                }
             }
         }
     }
