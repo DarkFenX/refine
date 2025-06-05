@@ -1,6 +1,6 @@
 use crate::handler_json::data::{
-    CAttrVal, CCount, CItemChargeLimit, CItemGrpId, CItemKind, CItemShipLimit, CShipDroneLimit, CShipKind, CSkillLevel,
-    CSlotIndex, CState,
+    CAttrId, CAttrVal, CCount, CItemChargeLimit, CItemGrpId, CItemKind, CItemShipLimit, CShipDroneLimit, CShipKind,
+    CSkillLevel, CSlotIndex, CState,
 };
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -35,6 +35,7 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) takes_turret_hardpoint: bool,
     pub(in crate::handler_json) takes_launcher_hardpoint: bool,
     pub(in crate::handler_json) disallow_vs_ew_immune_tgt: bool,
+    pub(in crate::handler_json) remote_resist_attr_id: Option<CAttrId>,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -69,6 +70,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             takes_turret_hardpoint: a_item_extras.takes_turret_hardpoint,
             takes_launcher_hardpoint: a_item_extras.takes_launcher_hardpoint,
             disallow_vs_ew_immune_tgt: a_item_extras.disallow_vs_ew_immune_tgt,
+            remote_resist_attr_id: a_item_extras.remote_resist_attr_id,
         }
     }
 }
@@ -105,6 +107,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             takes_turret_hardpoint: c_item_extras.takes_turret_hardpoint,
             takes_launcher_hardpoint: c_item_extras.takes_launcher_hardpoint,
             disallow_vs_ew_immune_tgt: c_item_extras.disallow_vs_ew_immune_tgt,
+            remote_resist_attr_id: c_item_extras.remote_resist_attr_id,
         }
     }
 }

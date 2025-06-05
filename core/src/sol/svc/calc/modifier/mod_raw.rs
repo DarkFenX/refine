@@ -197,14 +197,8 @@ fn get_mod_kind(a_effect: &ad::AEffect, a_affectee_filter: &AffecteeFilter) -> O
 pub(in crate::sol::svc::calc) fn get_resist_a_attr_id(item: &UadItem, a_effect: &ad::AEffect) -> Option<ad::AAttrId> {
     match a_effect.resist_attr_id {
         Some(resist_a_attr_id) => Some(resist_a_attr_id),
-        None => match item.get_a_attrs() {
-            Some(a_attrs) => match a_attrs
-                .get(&ac::attrs::REMOTE_RESISTANCE_ID)
-                .map(|v| v.into_inner() as ad::AAttrId)
-            {
-                Some(a_attr_id) if a_attr_id != 0 => Some(a_attr_id),
-                _ => None,
-            },
+        None => match item.get_a_extras() {
+            Some(a_extras) => a_extras.remote_resist_attr_id,
             None => None,
         },
     }

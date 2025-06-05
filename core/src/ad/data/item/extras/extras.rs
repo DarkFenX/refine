@@ -1,5 +1,7 @@
 use super::{
-    attr_val::{get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_volume},
+    attr_val::{
+        get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_remote_resist_attr_id, get_volume,
+    },
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
@@ -93,6 +95,8 @@ pub struct AItemExtras {
     /// True if assistive item projected to targets immune to offensive modifiers should break
     /// the offense immunity validation.
     pub disallow_vs_ew_immune_tgt: bool,
+    /// Attribute ID which defines how affectee resists effect.
+    pub remote_resist_attr_id: Option<AAttrId>,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -127,6 +131,7 @@ impl AItemExtras {
             takes_turret_hardpoint: bool::default(),
             takes_launcher_hardpoint: bool::default(),
             disallow_vs_ew_immune_tgt: bool::default(),
+            remote_resist_attr_id: Option::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -163,6 +168,7 @@ impl AItemExtras {
             takes_turret_hardpoint: is_turret(&a_item.effect_datas),
             takes_launcher_hardpoint: is_launcher(&a_item.effect_datas),
             disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(attrs),
+            remote_resist_attr_id: get_remote_resist_attr_id(attrs),
         }
     }
     pub(crate) fn fill(
@@ -218,5 +224,6 @@ impl AItemExtras {
         self.takes_turret_hardpoint = is_turret(item_effects);
         self.takes_launcher_hardpoint = is_launcher(item_effects);
         self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(item_attrs);
+        self.remote_resist_attr_id = get_remote_resist_attr_id(item_attrs);
     }
 }
