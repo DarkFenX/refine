@@ -2,7 +2,7 @@
 pub use crate::sol::svc::vast::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail, ValChargeSizeChargeInfo,
     ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail,
-    ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValFullResistFail, ValItemKindFail, ValItemKindItemInfo,
+    ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo,
     ValItemVsShipKindFail, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo,
     ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOption, ValOptions, ValOptionsSol,
     ValOverloadSkillFail, ValProjImmunityFail, ValResFail, ValResultFit, ValResultSol, ValRigSizeFail, ValSecZoneFail,

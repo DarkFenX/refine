@@ -95,7 +95,7 @@ pub struct ValOptions {
     pub effect_stopper: ValOption,
     pub assist_immunity: ValOption,
     pub offense_immunity: ValOption,
-    pub full_resist: ValOption,
+    pub resist_immunity: ValOption,
 }
 impl ValOptions {
     /// Initialize with all validations enabled.
@@ -163,7 +163,7 @@ impl ValOptions {
             effect_stopper: ValOption::new_enabled(),
             assist_immunity: ValOption::new_enabled(),
             offense_immunity: ValOption::new_enabled(),
-            full_resist: ValOption::new_enabled(),
+            resist_immunity: ValOption::new_enabled(),
         }
     }
     /// Initialize with all validations disabled.
@@ -231,7 +231,7 @@ impl ValOptions {
             effect_stopper: ValOption::new_disabled(),
             assist_immunity: ValOption::new_disabled(),
             offense_immunity: ValOption::new_disabled(),
-            full_resist: ValOption::new_disabled(),
+            resist_immunity: ValOption::new_disabled(),
         }
     }
 }
@@ -346,7 +346,7 @@ pub(in crate::sol) struct ValOptionsInt {
     pub(in crate::sol::svc::vast) effect_stopper: ValOptionInt,
     pub(in crate::sol::svc::vast) assist_immunity: ValOptionInt,
     pub(in crate::sol::svc::vast) offense_immunity: ValOptionInt,
-    pub(in crate::sol::svc::vast) full_resist: ValOptionInt,
+    pub(in crate::sol::svc::vast) resist_immunity: ValOptionInt,
 }
 impl ValOptionsInt {
     pub(in crate::sol) fn from_pub(sol: &SolarSystem, pub_opts: &ValOptions) -> Self {
@@ -431,7 +431,7 @@ impl ValOptionsInt {
             effect_stopper: ValOptionInt::from_pub(sol, &pub_opts.effect_stopper),
             assist_immunity: ValOptionInt::from_pub(sol, &pub_opts.assist_immunity),
             offense_immunity: ValOptionInt::from_pub(sol, &pub_opts.offense_immunity),
-            full_resist: ValOptionInt::from_pub(sol, &pub_opts.full_resist),
+            resist_immunity: ValOptionInt::from_pub(sol, &pub_opts.resist_immunity),
         }
     }
 }

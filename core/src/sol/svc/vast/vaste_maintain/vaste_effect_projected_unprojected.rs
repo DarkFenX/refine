@@ -43,7 +43,7 @@ impl Vast {
                 if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
                     let projectee_aspec = AttrSpec::new(projectee_item_key, resist_a_attr_id);
                     projector_fit_data
-                        .full_resist
+                        .resist_immunity
                         .add_entry(projectee_aspec, projector_espec);
                 }
             }
@@ -84,7 +84,7 @@ impl Vast {
                 if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
                     let projectee_aspec = AttrSpec::new(projectee_item_key, resist_a_attr_id);
                     projector_fit_data
-                        .full_resist
+                        .resist_immunity
                         .remove_entry(&projectee_aspec, &projector_espec);
                 }
             }

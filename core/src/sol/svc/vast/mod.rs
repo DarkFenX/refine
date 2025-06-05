@@ -8,7 +8,7 @@ use vaste_stats_fit::{StatRes, StatSlot};
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail, ValChargeSizeChargeInfo,
     ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail,
-    ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValFullResistFail, ValItemKindFail, ValItemKindItemInfo,
+    ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo,
     ValItemVsShipKindFail, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo,
     ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjImmunityFail,
     ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail,

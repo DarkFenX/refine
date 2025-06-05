@@ -233,7 +233,7 @@ impl VastFitData {
                 check_item_key(uad, projector_espec.item_key, true)?;
             }
         }
-        for (projectee_aspec, projector_especs) in self.full_resist.iter() {
+        for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
             // There is no logic which ensures that projection target is loaded
             check_item_key(uad, projectee_aspec.item_key, true)?;
             for projector_espec in projector_especs {

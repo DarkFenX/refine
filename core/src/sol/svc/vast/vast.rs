@@ -93,7 +93,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
     pub(in crate::sol::svc::vast) blockable_assistance: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::sol::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
-    pub(in crate::sol::svc::vast) full_resist: RMapRSet<AttrSpec, EffectSpec>,
+    pub(in crate::sol::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -155,7 +155,7 @@ impl VastFitData {
             stopped_effects: RMapRSet::new(),
             blockable_assistance: RMapRSet::new(),
             blockable_offense: RMapRSet::new(),
-            full_resist: RMapRSet::new(),
+            resist_immunity: RMapRSet::new(),
         }
     }
 }
