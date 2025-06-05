@@ -195,6 +195,8 @@ struct HValFitInfo {
     assist_immunity: Option<HValProjImmunityFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     offense_immunity: Option<HValProjImmunityFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    resist_immunity: Option<HValProjImmunityFail>,
 }
 impl HValFitInfo {
     fn is_empty(&self) -> bool {
@@ -260,6 +262,7 @@ impl HValFitInfo {
             && self.effect_stopper.is_none()
             && self.assist_immunity.is_none()
             && self.offense_immunity.is_none()
+            && self.resist_immunity.is_none()
     }
 }
 impl From<&rc::val::ValResultFit> for HValFitInfo {
@@ -327,6 +330,7 @@ impl From<&rc::val::ValResultFit> for HValFitInfo {
             effect_stopper: conv(&core_val_result.effect_stopper),
             assist_immunity: conv(&core_val_result.assist_immunity),
             offense_immunity: conv(&core_val_result.offense_immunity),
+            resist_immunity: conv(&core_val_result.resist_immunity),
         }
     }
 }

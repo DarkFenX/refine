@@ -125,6 +125,8 @@ pub(in crate::cmd) struct HValOptions {
     assist_immunity: Option<HValOption>,
     #[serde(default)]
     offense_immunity: Option<HValOption>,
+    #[serde(default)]
+    resist_immunity: Option<HValOption>,
 }
 impl HValOptions {
     pub(in crate::cmd) fn to_core(&self) -> rc::val::ValOptions {
@@ -233,6 +235,7 @@ impl HValOptions {
         process_option(&self.effect_stopper, &mut core_options.effect_stopper);
         process_option(&self.assist_immunity, &mut core_options.assist_immunity);
         process_option(&self.offense_immunity, &mut core_options.offense_immunity);
+        process_option(&self.resist_immunity, &mut core_options.resist_immunity);
         core_options
     }
 }
@@ -302,6 +305,7 @@ impl Default for HValOptions {
             effect_stopper: None,
             assist_immunity: None,
             offense_immunity: None,
+            resist_immunity: None,
         }
     }
 }
