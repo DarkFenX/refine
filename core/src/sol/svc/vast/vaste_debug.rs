@@ -219,21 +219,22 @@ impl VastFitData {
                 check_item_key(uad, stopper_spec.item_key, true)?;
             }
         }
-        for (espec, target_item_keys) in self.blockable_assistance.iter() {
-            check_item_key(uad, espec.item_key, true)?;
-            for &target_item_key in target_item_keys {
-                // There is no logic which ensures that projection target is loaded
-                check_item_key(uad, target_item_key, false)?;
+        for (projectee_item_key, projector_especs) in self.blockable_assistance.iter() {
+            // There is no logic which ensures that projection target is loaded
+            check_item_key(uad, *projectee_item_key, false)?;
+            for projector_espec in projector_especs {
+                check_item_key(uad, projector_espec.item_key, true)?;
             }
         }
-        for (espec, target_item_keys) in self.blockable_offense.iter() {
-            check_item_key(uad, espec.item_key, true)?;
-            for &target_item_key in target_item_keys {
-                // There is no logic which ensures that projection target is loaded
-                check_item_key(uad, target_item_key, false)?;
+        for (projectee_item_key, projector_especs) in self.blockable_offense.iter() {
+            // There is no logic which ensures that projection target is loaded
+            check_item_key(uad, *projectee_item_key, false)?;
+            for projector_espec in projector_especs {
+                check_item_key(uad, projector_espec.item_key, true)?;
             }
         }
         for (projectee_aspec, projector_especs) in self.full_resist.iter() {
+            // There is no logic which ensures that projection target is loaded
             check_item_key(uad, projectee_aspec.item_key, true)?;
             for projector_espec in projector_especs {
                 check_item_key(uad, projector_espec.item_key, true)?;

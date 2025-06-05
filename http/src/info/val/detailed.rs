@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 use crate::info::val::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail,
-    HValDroneGroupFail, HValEffectImmunityFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
-    HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail,
-    HValOverloadSkillFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail,
+    HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail, HValItemVsShipKindFail,
+    HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail,
+    HValProjImmunityFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail,
     HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
@@ -192,9 +192,9 @@ struct HValFitInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     effect_stopper: Option<HValEffectStopperFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    assist_immunity: Option<HValEffectImmunityFail>,
+    assist_immunity: Option<HValProjImmunityFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    offense_immunity: Option<HValEffectImmunityFail>,
+    offense_immunity: Option<HValProjImmunityFail>,
 }
 impl HValFitInfo {
     fn is_empty(&self) -> bool {

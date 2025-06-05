@@ -33,12 +33,12 @@ impl Vast {
                 if a_effect.is_assist {
                     projector_fit_data
                         .blockable_assistance
-                        .add_entry(projector_espec, projectee_item_key);
+                        .add_entry(projectee_item_key, projector_espec);
                 }
                 if is_offense_blockable(projector_item, a_effect) {
                     projector_fit_data
                         .blockable_offense
-                        .add_entry(projector_espec, projectee_item_key);
+                        .add_entry(projectee_item_key, projector_espec);
                 }
                 if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
                     let projectee_aspec = AttrSpec::new(projectee_item_key, resist_a_attr_id);
@@ -74,12 +74,12 @@ impl Vast {
                 if a_effect.is_assist {
                     projector_fit_data
                         .blockable_assistance
-                        .remove_entry(&projector_espec, &projectee_item_key);
+                        .remove_entry(&projectee_item_key, &projector_espec);
                 }
                 if is_offense_blockable(projector_item, a_effect) {
                     projector_fit_data
                         .blockable_offense
-                        .remove_entry(&projector_espec, &projectee_item_key);
+                        .remove_entry(&projectee_item_key, &projector_espec);
                 }
                 if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
                     let projectee_aspec = AttrSpec::new(projectee_item_key, resist_a_attr_id);

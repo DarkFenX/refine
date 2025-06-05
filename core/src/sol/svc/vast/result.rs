@@ -4,9 +4,9 @@ use crate::sol::{
     FitId,
     svc::vast::{
         ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
-        ValDroneGroupFail, ValEffectImmunityFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValFullResistFail,
-        ValItemKindFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail,
-        ValNotLoadedItemFail, ValOverloadSkillFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail,
+        ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValFullResistFail, ValItemKindFail,
+        ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
+        ValOverloadSkillFail, ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail,
         ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
     },
 };
@@ -93,8 +93,8 @@ pub struct ValResultFit {
     pub activation_blocked: Option<ValActivationBlockedFail>,
     pub item_vs_ship_kind: Option<ValItemVsShipKindFail>,
     pub effect_stopper: Option<ValEffectStopperFail>,
-    pub assist_immunity: Option<ValEffectImmunityFail>,
-    pub offense_immunity: Option<ValEffectImmunityFail>,
+    pub assist_immunity: Option<ValProjImmunityFail>,
+    pub offense_immunity: Option<ValProjImmunityFail>,
     pub full_resist: Option<ValFullResistFail>,
 }
 impl ValResultFit {

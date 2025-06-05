@@ -11,7 +11,7 @@ use crate::{
     util::{RMapRSet, RSet},
 };
 
-pub struct ValEffectImmunityFail {
+pub struct ValProjImmunityFail {
     /// Map between projecting item IDs and targets they can't be projected to.
     pub items: HashMap<ItemId, Vec<ItemId>>,
 }
@@ -52,7 +52,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-    ) -> Option<ValEffectImmunityFail> {
+    ) -> Option<ValProjImmunityFail> {
         validate_verbose(
             kfs,
             uad,
@@ -66,7 +66,7 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
-    ) -> Option<ValEffectImmunityFail> {
+    ) -> Option<ValProjImmunityFail> {
         validate_verbose(
             kfs,
             uad,
@@ -81,13 +81,18 @@ fn validate_fast(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    blockable: &RMapRSet<EffectSpec, ItemKey>,
+    blockable: &RMapRSet<ItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> bool {
-    for (projector_spec, projectee_item_keys) in blockable.iter() {
-        for &projectee_item_key in projectee_item_keys {
-            if is_flag_set(uad, calc, projectee_item_key, a_attr_id) && !kfs.contains(&projector_spec.item_key) {
-                return false;
+    for (projectee_item_key, mut projector_especs) in blockable.iter() {
+        if is_flag_set(uad, calc, *projectee_item_key, a_attr_id) {
+            match kfs.is_empty() {
+                true => return false,
+                false => {
+                    if !projector_especs.all(|v| kfs.contains(&v.item_key)) {
+                        return false;
+                    }
+                }
             }
         }
     }
@@ -98,25 +103,29 @@ fn validate_verbose(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
     calc: &mut Calc,
-    blockable: &RMapRSet<EffectSpec, ItemKey>,
+    blockable: &RMapRSet<ItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
-) -> Option<ValEffectImmunityFail> {
+) -> Option<ValProjImmunityFail> {
     let mut items = HashMap::new();
-    for (projector_spec, projectee_item_keys) in blockable.iter() {
-        for &projectee_item_key in projectee_item_keys {
-            if is_flag_set(uad, calc, projectee_item_key, a_attr_id) && !kfs.contains(&projector_spec.item_key) {
-                let projectee_item_id = uad.items.id_by_key(projectee_item_key);
-                let projectee_item_ids = items
-                    .entry(uad.items.id_by_key(projector_spec.item_key))
-                    .or_insert_with(Vec::new);
-                if !projectee_item_ids.contains(&projectee_item_id) {
-                    projectee_item_ids.push(projectee_item_id)
+    for (projectee_item_key, projector_especs) in blockable.iter() {
+        if is_flag_set(uad, calc, *projectee_item_key, a_attr_id) {
+            if !projector_especs.is_empty() {
+                let projectee_item_id = uad.items.id_by_key(*projectee_item_key);
+                for projector_espec in projector_especs {
+                    if kfs.contains(&projector_espec.item_key) {
+                        continue;
+                    }
+                    let projector_item_id = uad.items.id_by_key(projector_espec.item_key);
+                    let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
+                    if !projectee_item_ids.contains(&projectee_item_id) {
+                        projectee_item_ids.push(projectee_item_id)
+                    }
                 }
             }
         }
     }
     match items.is_empty() {
         true => None,
-        false => Some(ValEffectImmunityFail { items }),
+        false => Some(ValProjImmunityFail { items }),
     }
 }
