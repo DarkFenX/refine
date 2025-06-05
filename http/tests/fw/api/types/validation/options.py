@@ -71,6 +71,7 @@ class ValOptions:
     effect_stopper: ValOption = Absent
     assist_immunity: ValOption = Absent
     offense_immunity: ValOption = Absent
+    resist_immunity: ValOption = Absent
 
     def to_dict(self) -> dict:
         return dataclasses.asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

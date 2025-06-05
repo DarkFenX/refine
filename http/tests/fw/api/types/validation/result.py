@@ -1,32 +1,32 @@
 from __future__ import annotations
 
 from tests.fw.util import AttrDict, AttrHookDef
-from .activation_blocked import ValActivationBlockedFail
-from .capital_module import ValCapModuleFail
-from .charge_group import ValChargeGroupFail
-from .charge_size import ValChargeSizeFail
-from .charge_volume import ValChargeVolumeFail
-from .drone_group import ValDroneGroupFail
-from .proj_immunity import ValProjImmunityFail
-from .effect_stopper import ValEffectStopperFail
-from .fighter_squad_size import ValFighterSquadSizeFail
-from .item_kind import ValItemKindFail
-from .item_vs_ship_kind import ValItemVsShipKindFail
-from .max_group import ValMaxGroupFail
-from .max_type import ValMaxTypeFail
-from .module_state import ValModuleStateFail
-from .not_loaded_item import ValNotLoadedItemFail
-from .overload_skill import ValOverloadSkillFail
-from .resources import ValResourceFail
-from .rig_size import ValRigSizeFail
-from .sec_zone import ValSecZoneFail
-from .ship_limit import ValShipLimitFail
-from .ship_stance import ValShipStanceFail
-from .skill_reqs import ValSrqFail
-from .slot_count import ValSlotCountFail
-from .slot_index import ValSlotIndexFail
-from .unusable_resource import ValUnusableResFail
-from .unusable_slot import ValUnusableSlotFail
+from .val_activation_blocked import ValActivationBlockedFail
+from .val_capital_module import ValCapModuleFail
+from .val_charge_group import ValChargeGroupFail
+from .val_charge_size import ValChargeSizeFail
+from .val_charge_volume import ValChargeVolumeFail
+from .val_drone_group import ValDroneGroupFail
+from .val_proj_immunity import ValProjImmunityFail
+from .val_effect_stopper import ValEffectStopperFail
+from .val_fighter_squad_size import ValFighterSquadSizeFail
+from .val_item_kind import ValItemKindFail
+from .val_item_vs_ship_kind import ValItemVsShipKindFail
+from .val_max_group import ValMaxGroupFail
+from .val_max_type import ValMaxTypeFail
+from .val_module_state import ValModuleStateFail
+from .val_not_loaded_item import ValNotLoadedItemFail
+from .val_overload_skill import ValOverloadSkillFail
+from .val_resources import ValResourceFail
+from .val_rig_size import ValRigSizeFail
+from .val_sec_zone import ValSecZoneFail
+from .val_ship_limit import ValShipLimitFail
+from .val_ship_stance import ValShipStanceFail
+from .val_skill_reqs import ValSrqFail
+from .val_slot_count import ValSlotCountFail
+from .val_slot_index import ValSlotIndexFail
+from .val_unusable_resource import ValUnusableResFail
+from .val_unusable_slot import ValUnusableSlotFail
 
 
 class SolValResult(AttrDict):
@@ -119,4 +119,5 @@ class FitValDetails(AttrDict):
             'item_vs_ship_kind': AttrHookDef(func=lambda d: ValItemVsShipKindFail(data=d)),
             'effect_stopper': AttrHookDef(func=lambda d: ValEffectStopperFail(data=d)),
             'assist_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
-            'offense_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d))})
+            'offense_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
+            'resist_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d))})
