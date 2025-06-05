@@ -8,7 +8,7 @@ from .dmg_types import DmgTypes
 from .fit import Fit
 from .fleet import Fleet
 from .item import Item
-from .validation import FitValOptions, FitValResult, SolValResult
+from .validation import FitValResult, SolValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw import eve
@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
     from tests.fw.consts import ApiSecZone
     from tests.fw.response import Response
-    from .validation import SolValOptions
+    from .validation import ValOptions
 
 
 class SolarSystem(AttrDict):
@@ -106,25 +106,30 @@ class SolarSystem(AttrDict):
 
     def validate(
             self, *,
-            options: SolValOptions,
+            fit_ids: list[str] | type[Absent | Default] = Default,
+            options: ValOptions,
             status_code: int = 200,
             flip_order: bool = False,
     ) -> SolValResult | None:
         if flip_order:
             resp_detailed = self.__validate_sol(
+                fit_ids=fit_ids,
                 options=options,
                 val_info_mode=ApiValInfoMode.detailed,
                 status_code=status_code)
             resp_simple = self.__validate_sol(
+                fit_ids=fit_ids,
                 options=options,
                 val_info_mode=ApiValInfoMode.simple,
                 status_code=status_code)
         else:
             resp_simple = self.__validate_sol(
+                fit_ids=fit_ids,
                 options=options,
                 val_info_mode=ApiValInfoMode.simple,
                 status_code=status_code)
             resp_detailed = self.__validate_sol(
+                fit_ids=fit_ids,
                 options=options,
                 val_info_mode=ApiValInfoMode.detailed,
                 status_code=status_code)
@@ -135,18 +140,17 @@ class SolarSystem(AttrDict):
             assert result_simple.passed is result_detailed.passed
             assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
             # If there are any fit failures, compare results with per-fit requests
-            fit_options = FitValOptions.from_sol_options(sol_options=options)
             for fit_id, fit_details in result_detailed.fits.items():
                 resp_fit_simple = self.__validate_fit(
                     fit_id=fit_id,
-                    options=fit_options,
+                    options=options,
                     val_info_mode=ApiValInfoMode.simple,
                     status_code=200)
                 result_fit_simple = FitValResult(data=resp_fit_simple.json())
                 assert result_fit_simple.passed is False
                 resp_fit_detailed = self.__validate_fit(
                     fit_id=fit_id,
-                    options=fit_options,
+                    options=options,
                     val_info_mode=ApiValInfoMode.detailed,
                     status_code=200)
                 result_fit_detailed = FitValResult(data=resp_fit_detailed.json())
@@ -157,12 +161,16 @@ class SolarSystem(AttrDict):
 
     def __validate_sol(
             self, *,
-            options: SolValOptions,
+            fit_ids: list[str] | type[Absent | Default],
+            options: ValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:
+        if fit_ids is Default:
+            fit_ids = []
         resp = self._client.validate_sol_request(
             sol_id=self.id,
+            fit_ids=fit_ids,
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self.id)
@@ -172,7 +180,7 @@ class SolarSystem(AttrDict):
     def __validate_fit(
             self, *,
             fit_id: str,
-            options: FitValOptions,
+            options: ValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:

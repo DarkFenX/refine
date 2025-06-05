@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from time import time
 
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
@@ -82,11 +82,11 @@ def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
     # T2 ogres
     for _ in range(2):
         api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
-    api_val = api_fit.validate(options=FitValOptions(default=True))
+    api_val = api_fit.validate(options=ValOptions(default=True))
     assert api_val.passed is True
     iterations = 1000
     try_fit_type_ids = get_try_fit_type_ids()
-    options = FitValOptions(default=True).to_dict()
+    options = ValOptions(default=True).to_dict()
     print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')  # noqa: T201
     before = time()
     api_sol.benchmark(command={
@@ -153,10 +153,10 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
     # T2 ogres
     for _ in range(2):
         api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
-    api_val = api_fit.validate(options=FitValOptions(default=True))
+    api_val = api_fit.validate(options=ValOptions(default=True))
     assert api_val.passed is True
     try_fit_type_ids = get_try_fit_type_ids()
-    type_ids = api_fit.try_fit_items(type_ids=try_fit_type_ids, options=FitValOptions(default=True))
+    type_ids = api_fit.try_fit_items(type_ids=try_fit_type_ids, options=ValOptions(default=True))
     print('---')  # noqa: T201
     print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')  # noqa: T201
     print_items(type_ids=type_ids, print_types=False)

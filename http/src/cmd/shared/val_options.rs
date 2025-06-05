@@ -1,21 +1,3 @@
-#[serde_with::serde_as]
-#[derive(serde::Deserialize, Default)]
-pub(in crate::cmd) struct HValOptionsSol {
-    #[serde(flatten)]
-    pub(in crate::cmd) vals: HValOptions,
-    #[serde(default)]
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
-    pub(in crate::cmd) fits: Vec<rc::FitId>,
-}
-impl HValOptionsSol {
-    pub(in crate::cmd) fn to_core(&self) -> rc::val::ValOptionsSol {
-        rc::val::ValOptionsSol {
-            vals: self.vals.to_core(),
-            fits: self.fits.clone(),
-        }
-    }
-}
-
 #[derive(serde::Deserialize)]
 pub(in crate::cmd) struct HValOptions {
     default: bool,

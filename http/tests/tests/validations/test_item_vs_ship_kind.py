@@ -1,5 +1,5 @@
 from tests import check_no_field
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 
 def test_ship_kind_switching(client, consts):
@@ -28,14 +28,14 @@ def test_ship_kind_switching(client, consts):
     api_fit.add_rig(type_id=eve_other_item_id)
     api_fit.add_service(type_id=eve_other_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.ship
     assert api_val.details.item_vs_ship_kind.items == {
@@ -47,14 +47,14 @@ def test_ship_kind_switching(client, consts):
     # Action
     api_fit.remove_ship()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {
@@ -66,14 +66,14 @@ def test_ship_kind_switching(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_not_loaded_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_other_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.unknown
     assert api_val.details.item_vs_ship_kind.items == {
@@ -114,7 +114,7 @@ def test_item_add_remove_ship_ship(client, consts):
     api_other_rig = api_fit.add_rig(type_id=eve_other_item_id)
     api_other_service = api_fit.add_service(type_id=eve_other_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.ship
     assert api_val.details.item_vs_ship_kind.items == {
@@ -140,7 +140,7 @@ def test_item_add_remove_ship_ship(client, consts):
     api_other_rig.remove()
     api_other_service.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -171,7 +171,7 @@ def test_item_add_remove_ship_struct(client, consts):
     api_other_rig = api_fit.add_rig(type_id=eve_other_item_id)
     api_other_service = api_fit.add_service(type_id=eve_other_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {
@@ -197,7 +197,7 @@ def test_item_add_remove_ship_struct(client, consts):
     api_other_rig.remove()
     api_other_service.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -228,7 +228,7 @@ def test_item_add_remove_ship_unknown(client, consts):
     api_other_rig = api_fit.add_rig(type_id=eve_other_item_id)
     api_other_service = api_fit.add_service(type_id=eve_other_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.unknown
     assert api_val.details.item_vs_ship_kind.items == {
@@ -259,7 +259,7 @@ def test_item_add_remove_ship_unknown(client, consts):
     api_other_rig.remove()
     api_other_service.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -288,7 +288,7 @@ def test_item_add_remove_ship_none(client, consts):
     api_other_rig = api_fit.add_rig(type_id=eve_other_item_id)
     api_other_service = api_fit.add_service(type_id=eve_other_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -309,7 +309,7 @@ def test_item_add_remove_ship_none(client, consts):
     api_other_rig.remove()
     api_other_service.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -340,7 +340,7 @@ def test_item_add_remove_ship_not_loaded(client, consts):
     api_other_rig = api_fit.add_rig(type_id=eve_other_item_id)
     api_other_service = api_fit.add_service(type_id=eve_other_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -361,7 +361,7 @@ def test_item_add_remove_ship_not_loaded(client, consts):
     api_other_rig.remove()
     api_other_service.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -380,34 +380,34 @@ def test_known_failures(client, consts):
     api_ship_rig = api_fit.add_rig(type_id=eve_ship_item_id)
     api_ship_service = api_fit.add_service(type_id=eve_ship_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=(True, [api_ship_module.id])))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=(True, [api_ship_module.id])))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {
         api_ship_rig.id: consts.ApiValShipType.ship,
         api_ship_service.id: consts.ApiValShipType.ship}
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=(True, [api_ship_rig.id])))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=(True, [api_ship_rig.id])))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {
         api_ship_module.id: consts.ApiValShipType.ship,
         api_ship_service.id: consts.ApiValShipType.ship}
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         item_vs_ship_kind=(True, [api_ship_module.id, api_ship_service.id])))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {api_ship_rig.id: consts.ApiValShipType.ship}
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         item_vs_ship_kind=(True, [api_ship_module.id, api_other.id, api_ship_service.id])))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {api_ship_rig.id: consts.ApiValShipType.ship}
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         item_vs_ship_kind=(True, [api_ship_module.id, api_ship_rig.id, api_ship_service.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         item_vs_ship_kind=(True, [api_ship_module.id, api_ship_rig.id, api_other.id, api_ship_service.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -426,35 +426,35 @@ def test_mutation(client, consts):
     api_fit.set_ship(type_id=eve_struct_id)
     api_module = api_fit.add_module(type_id=eve_base_module_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {api_module.id: consts.ApiValShipType.ship}
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.ship
     assert api_val.details.item_vs_ship_kind.items == {api_module.id: consts.ApiValShipType.structure}
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {api_module.id: consts.ApiValShipType.ship}
@@ -471,7 +471,7 @@ def test_not_loaded_item(client):
     api_rig = api_fit.add_rig(type_id=eve_item_id)
     api_service = api_fit.add_service(type_id=eve_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -480,7 +480,7 @@ def test_not_loaded_item(client):
     api_rig.remove()
     api_service.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -497,21 +497,21 @@ def test_criterion_item_category(client, consts):
     api_fit.add_rig(type_id=eve_item_id)
     api_fit.add_service(type_id=eve_item_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -528,7 +528,7 @@ def test_criterion_item_state(client, consts):
     api_ship_rig = api_fit.add_rig(type_id=eve_ship_item_id, state=False)
     api_ship_service = api_fit.add_service(type_id=eve_ship_item_id, state=consts.ApiServiceState.ghost)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {
@@ -571,7 +571,7 @@ def test_criterion_item_kind(client, consts):
     # Verification
     assert len(api_fighter1.autocharges) == 1
     assert len(api_fighter2.autocharges) == 1
-    api_val = api_fit.validate(options=FitValOptions(item_vs_ship_kind=True))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

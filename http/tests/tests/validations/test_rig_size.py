@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 
 def test_ship(client, consts):
@@ -14,14 +14,14 @@ def test_ship(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     # Action
     api_rig1.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -39,14 +39,14 @@ def test_struct(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     # Action
     api_rig1.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -65,15 +65,15 @@ def test_known_failures(client, consts):
     api_rig2 = api_fit.add_rig(type_id=eve_rig1_id)
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=(True, [api_rig1.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_size=(True, [api_rig1.id])))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig2.id: 1}
-    api_val = api_fit.validate(options=FitValOptions(rig_size=(True, [api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_size=(True, [api_rig2.id])))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
-    api_val = api_fit.validate(options=FitValOptions(rig_size=(True, [api_rig1.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_size=(True, [api_rig1.id, api_rig2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -93,7 +93,7 @@ def test_rounding(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 2.95
     assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1.2, api_rig2.id: 2.9}
@@ -132,7 +132,7 @@ def test_modified(client, consts):
     assert api_ship.update().attrs[eve_attr_id].extra == approx(2)
     assert api_rig1.update().attrs[eve_attr_id].extra == approx(2)
     assert api_rig2.update().attrs[eve_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
@@ -146,7 +146,7 @@ def test_ship_absent(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -165,14 +165,14 @@ def test_non_positive(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 0
     assert api_val.details.rig_size.rig_sizes == {api_rig2.id: -3}
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == -3
     assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 0}
@@ -188,7 +188,7 @@ def test_no_value_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -204,7 +204,7 @@ def test_no_value_rig(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 2
     assert api_val.details.rig_size.rig_sizes == {api_rig.id: None}
@@ -220,7 +220,7 @@ def test_ship_not_loaded(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -236,7 +236,7 @@ def test_rig_not_loaded(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -253,7 +253,7 @@ def test_state(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id, state=False)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig.id: 1}
@@ -298,7 +298,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=FitValOptions(rig_size=True))
+    api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

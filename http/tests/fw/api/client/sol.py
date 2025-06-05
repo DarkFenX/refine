@@ -11,7 +11,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
-    from tests.fw.api.types.validation import SolValOptions
+    from tests.fw.api.types.validation import ValOptions
     from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone, ApiValInfoMode
 
 
@@ -190,12 +190,16 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def validate_sol_request(
             self, *,
             sol_id: str,
-            options: SolValOptions,
+            fit_ids: list[str] | type[Absent],
+            options: ValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, path=['validation'], value=val_info_mode)
-        body = options.to_dict()
+        body = {}
+        conditional_insert(container=body, path=['fit_ids'], value=fit_ids)
+        if options := options.to_dict():
+            body['options'] = options
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/validate',

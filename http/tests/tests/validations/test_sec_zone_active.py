@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 
 def test_main_module(client, consts):
@@ -131,7 +131,7 @@ def test_main_module(client, consts):
     api_module31 = api_fit.add_module(type_id=eve_module31_id, state=consts.ApiModuleState.active)
     api_module32 = api_fit.add_module(type_id=eve_module32_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
@@ -223,7 +223,7 @@ def test_main_module(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification - same as hisec, but all the items which could be in corrupted hisec are not
     # failing
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_active.items == {
@@ -258,7 +258,7 @@ def test_main_module(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_active.items == {
@@ -315,7 +315,7 @@ def test_main_module(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_active.items == {
@@ -338,21 +338,21 @@ def test_main_module(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hazard
     assert api_val.details.sec_zone_active.items == {
@@ -418,7 +418,7 @@ def test_charge(client, consts):
         charge_type_id=eve_charge_id,
         state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
@@ -426,14 +426,14 @@ def test_charge(client, consts):
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module.change_module(state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
@@ -441,7 +441,7 @@ def test_charge(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -464,21 +464,21 @@ def test_known_failures(client, consts):
     api_module3 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active)
     api_module4 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         sec_zone_active=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -486,21 +486,21 @@ def test_known_failures(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_active.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_active.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         sec_zone_active=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -508,21 +508,21 @@ def test_known_failures(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_active.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_active.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         sec_zone_active=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -530,21 +530,21 @@ def test_known_failures(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_active.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_active.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         sec_zone_active=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -552,7 +552,7 @@ def test_known_failures(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module3.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module3.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hazard
     assert api_val.details.sec_zone_active.items == {api_module4.id: sorted([
@@ -560,7 +560,7 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.lowsec,
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module4.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hazard
     assert api_val.details.sec_zone_active.items == {api_module3.id: sorted([
@@ -568,11 +568,11 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.lowsec,
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=(True, [api_module3.id, api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=(True, [api_module3.id, api_module4.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         sec_zone_active=(True, [api_module3.id, api_other.id, api_module4.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -604,7 +604,7 @@ def test_modified(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_attr_id].extra == approx(0)
     assert api_module2.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -614,7 +614,7 @@ def test_modified(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
@@ -635,7 +635,7 @@ def test_mutation(client, consts):
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -643,7 +643,7 @@ def test_mutation(client, consts):
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
@@ -652,7 +652,7 @@ def test_mutation(client, consts):
     api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0}})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -660,7 +660,7 @@ def test_mutation(client, consts):
     api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0.9)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_active.items == {
@@ -669,7 +669,7 @@ def test_mutation(client, consts):
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -694,7 +694,7 @@ def test_values(client, consts):
     api_module5 = api_fit.add_module(type_id=eve_module5_id, state=consts.ApiModuleState.active)
     api_module6 = api_fit.add_module(type_id=eve_module6_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_active.items == {
@@ -712,7 +712,7 @@ def test_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -727,7 +727,7 @@ def test_state(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_active.items == {
@@ -736,7 +736,7 @@ def test_state(client, consts):
     # Action
     api_module2.change_module(state=consts.ApiModuleState.online)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_active.items == {
@@ -744,7 +744,7 @@ def test_state(client, consts):
     # Action
     api_module1.change_module(state=consts.ApiModuleState.online)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -777,7 +777,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_active=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

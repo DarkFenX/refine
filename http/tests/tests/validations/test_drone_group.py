@@ -6,7 +6,7 @@ gets back.
 """
 
 from tests import approx, check_no_field
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 
 def test_drone_add_remove(client, consts):
@@ -27,20 +27,20 @@ def test_drone_add_remove(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == (sorted([eve_group1_id, eve_group2_id]), {api_drone.id: eve_group3_id})
     # Action
     api_drone.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -65,33 +65,33 @@ def test_ship_add_set_remove(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group3_id})
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group3_id})
     # Action
     api_fit.remove_ship()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -109,41 +109,41 @@ def test_drone_add_remove_non_limited_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone.remove()
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -170,7 +170,7 @@ def test_rounding(client, consts):
     api_fit.add_drone(type_id=eve_drone1_id)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone2.id: eve_group2_id})
 
@@ -196,17 +196,17 @@ def test_known_failures(client, consts):
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone2.id])))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone3.id: eve_group3_id})
-    api_val = api_fit.validate(options=FitValOptions(drone_group=(True, [api_drone3.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone3.id])))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone2.id: eve_group2_id})
-    api_val = api_fit.validate(options=FitValOptions(drone_group=(True, [api_drone2.id, api_drone3.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone2.id, api_drone3.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(drone_group=(True, [api_drone2.id, api_other.id, api_drone3.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone2.id, api_other.id, api_drone3.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -234,14 +234,14 @@ def test_modified_limit(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
     assert api_ship.update().attrs[eve_limit_attr_id].extra == approx(eve_group1_id)
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - attribute is modified, but not for purposes of validation
     assert api_ship.update().attrs[eve_limit_attr_id].extra == approx(eve_group2_id)
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
 
@@ -261,33 +261,33 @@ def test_mutation_drone_group(client, consts):
     api_fit.set_ship(type_id=eve_ship1_id)
     api_drone = api_fit.add_drone(type_id=eve_base_drone_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(mutation=eve_mutator_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group1_id})
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(mutation=None)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
 
@@ -301,7 +301,7 @@ def test_not_loaded_ship(client):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -318,7 +318,7 @@ def test_not_loaded_drone(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -356,7 +356,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=FitValOptions(drone_group=True))
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

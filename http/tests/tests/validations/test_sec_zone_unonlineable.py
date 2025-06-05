@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 
 def test_main(client, consts):
@@ -17,7 +17,7 @@ def test_main(client, consts):
     api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_item_id, state=consts.ApiServiceState.ghost)
     api_nullsec_service = api_fit.add_service(type_id=eve_null_item_id, state=consts.ApiServiceState.ghost)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {
@@ -36,7 +36,7 @@ def test_main(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_unonlineable.items == {
@@ -55,7 +55,7 @@ def test_main(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_unonlineable.items == {
@@ -64,7 +64,7 @@ def test_main(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_unonlineable.items == {
@@ -73,21 +73,21 @@ def test_main(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -107,12 +107,12 @@ def test_known_failures(client, consts):
     api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_service_id, state=consts.ApiServiceState.ghost)
     api_nullsec_service = api_fit.add_service(type_id=eve_null_service_id, state=consts.ApiServiceState.ghost)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=(True, [api_lowsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=(True, [api_lowsec_service.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {
         api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=(True, [api_nullsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=(True, [api_nullsec_service.id])))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {api_lowsec_service.id: sorted([
@@ -120,12 +120,12 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace,
         consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=FitValOptions(
+    api_val = api_fit.validate(options=ValOptions(
         sec_zone_unonlineable=(True, [api_lowsec_service.id, api_nullsec_service.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=(True, [
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=(True, [
         api_lowsec_service.id,
         api_other.id,
         api_nullsec_service.id,
@@ -147,7 +147,7 @@ def test_rounding(client, consts):
     api_higher_service = api_fit.add_service(type_id=eve_higher_service_id, state=consts.ApiServiceState.ghost)
     api_lower_service = api_fit.add_service(type_id=eve_lower_service_id, state=consts.ApiServiceState.ghost)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {
@@ -160,7 +160,7 @@ def test_rounding(client, consts):
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_unonlineable.items == {
@@ -189,7 +189,7 @@ def test_modified(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.ghost)
     # Verification - modification is ignored for the validation purposes
     assert api_service.update().attrs[eve_attr_id].extra == approx(2)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {api_service.id: sorted([
@@ -216,7 +216,7 @@ def test_mutation_limit_priority(client, consts):
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 1}}))
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(3)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {api_module.id: sorted([
@@ -228,7 +228,7 @@ def test_mutation_limit_priority(client, consts):
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {
@@ -252,7 +252,7 @@ def test_mutation_limit_inheritance(client, consts):
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 1}}))
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(3)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {api_module.id: sorted([
@@ -264,7 +264,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {api_module.id: sorted([
@@ -282,7 +282,7 @@ def test_no_value(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.ghost)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -296,7 +296,7 @@ def test_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.ghost)
     # Verification
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -331,7 +331,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=FitValOptions(sec_zone_unonlineable=True))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

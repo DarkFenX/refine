@@ -16,13 +16,13 @@ from tests.fw.consts import (
 from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item
-from .validation import FitValResult, SolValOptions, SolValResult
+from .validation import FitValResult, SolValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import DpsProfile, MutaAdd
     from tests.fw.response import Response
-    from .validation import FitValOptions
+    from .validation import ValOptions
 
 
 class Fit(AttrDict):
@@ -59,7 +59,7 @@ class Fit(AttrDict):
 
     def validate(
             self, *,
-            options: FitValOptions,
+            options: ValOptions,
             status_code: int = 200,
             flip_order: bool = False,
     ) -> FitValResult | None:
@@ -88,9 +88,9 @@ class Fit(AttrDict):
             assert result_simple.passed is result_detailed.passed
             assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
             # Ensure sol validation results are consistent with fit validation results
-            sol_options = SolValOptions.from_fit_options(fit_options=options, fits=[self.id])
             resp_sol_detailed = self.__validate_sol(
-                options=sol_options,
+                fit_ids=[self.id],
+                options=options,
                 val_info_mode=ApiValInfoMode.detailed,
                 status_code=200)
             result_sol_detailed = SolValResult(data=resp_sol_detailed.json())
@@ -103,7 +103,8 @@ class Fit(AttrDict):
             else:
                 assert result_sol_detailed.fits[self.id].compare(other=result_detailed.details) is True
                 resp_sol_simple = self.__validate_sol(
-                    options=sol_options,
+                    fit_ids=[self.id],
+                    options=options,
                     val_info_mode=ApiValInfoMode.simple,
                     status_code=200)
                 result_sol_simple = SolValResult(data=resp_sol_simple.json())
@@ -113,7 +114,7 @@ class Fit(AttrDict):
 
     def __validate_fit(
             self, *,
-            options: FitValOptions,
+            options: ValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:
@@ -128,12 +129,14 @@ class Fit(AttrDict):
 
     def __validate_sol(
             self, *,
-            options: SolValOptions,
+            fit_ids: list[str],
+            options: ValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:
         resp = self._client.validate_sol_request(
             sol_id=self._sol_id,
+            fit_ids=fit_ids,
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -143,7 +146,7 @@ class Fit(AttrDict):
     def try_fit_items(
             self, *,
             type_ids: list[int],
-            options: FitValOptions,
+            options: ValOptions,
             status_code: int = 200,
     ) -> list[int] | None:
         resp = self._client.try_fit_items_request(

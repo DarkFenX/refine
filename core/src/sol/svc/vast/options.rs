@@ -8,24 +8,24 @@ use crate::{
 /// Solar system validation options.
 #[derive(Clone)]
 pub struct ValOptionsSol {
-    /// Validation options.
-    pub vals: ValOptions,
     /// Fit IDs to validate.
-    pub fits: Vec<FitId>,
+    pub fit_ids: Vec<FitId>,
+    /// Validation options.
+    pub options: ValOptions,
 }
 impl ValOptionsSol {
     /// Initialize with all validations enabled.
     pub fn all_enabled() -> Self {
         Self {
-            vals: ValOptions::all_enabled(),
-            fits: Vec::new(),
+            fit_ids: Vec::new(),
+            options: ValOptions::all_enabled(),
         }
     }
     /// Initialize with all validations disabled.
     pub fn all_disabled() -> Self {
         Self {
-            vals: ValOptions::all_disabled(),
-            fits: Vec::new(),
+            fit_ids: Vec::new(),
+            options: ValOptions::all_disabled(),
         }
     }
 }
@@ -263,15 +263,15 @@ impl ValOption {
 
 // Internal variant of validation options, with fit/item keys instead of IDs.
 pub(in crate::sol) struct ValOptionsSolInt {
-    pub(in crate::sol) vals: ValOptionsInt,
-    pub(in crate::sol) fits: Vec<FitKey>,
+    pub(in crate::sol) options: ValOptionsInt,
+    pub(in crate::sol) fit_keys: Vec<FitKey>,
 }
 impl ValOptionsSolInt {
     pub(in crate::sol) fn from_pub(sol: &SolarSystem, pub_sol_opts: &ValOptionsSol) -> Self {
         Self {
-            vals: ValOptionsInt::from_pub(sol, &pub_sol_opts.vals),
-            fits: pub_sol_opts
-                .fits
+            options: ValOptionsInt::from_pub(sol, &pub_sol_opts.options),
+            fit_keys: pub_sol_opts
+                .fit_ids
                 .iter()
                 .filter_map(|fit_id| sol.uad.fits.key_by_id(fit_id))
                 .unique()

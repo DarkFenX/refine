@@ -16,13 +16,13 @@ impl Vast {
         reffs: &REffs,
         options: &ValOptionsSolInt,
     ) -> bool {
-        for &fit_key in options.fits.iter() {
-            if !self.validate_fit_fast(uad, calc, reffs, fit_key, &options.vals) {
+        for &fit_key in options.fit_keys.iter() {
+            if !self.validate_fit_fast(uad, calc, reffs, fit_key, &options.options) {
                 return false;
             }
         }
-        if options.vals.not_loaded_item.enabled
-            && !self.validate_not_loaded_item_fast(&options.vals.not_loaded_item.kfs)
+        if options.options.not_loaded_item.enabled
+            && !self.validate_not_loaded_item_fast(&options.options.not_loaded_item.kfs)
         {
             return false;
         }
@@ -36,15 +36,16 @@ impl Vast {
         options: &ValOptionsSolInt,
     ) -> ValResultSol {
         let mut sol_result = ValResultSol::new();
-        for &fit_key in options.fits.iter() {
-            let fit_result = self.validate_fit_verbose(uad, calc, reffs, fit_key, &options.vals);
+        for &fit_key in options.fit_keys.iter() {
+            let fit_result = self.validate_fit_verbose(uad, calc, reffs, fit_key, &options.options);
             if !fit_result.all_passed() {
                 let fit_id = uad.fits.id_by_key(fit_key);
                 sol_result.fits.insert(fit_id, fit_result);
             }
         }
-        if options.vals.not_loaded_item.enabled {
-            sol_result.not_loaded_item = self.validate_not_loaded_item_verbose(&options.vals.not_loaded_item.kfs, uad);
+        if options.options.not_loaded_item.enabled {
+            sol_result.not_loaded_item =
+                self.validate_not_loaded_item_verbose(&options.options.not_loaded_item.kfs, uad);
         }
         sol_result
     }

@@ -1,5 +1,5 @@
 from tests import approx, check_no_field, effect_dogma_to_api
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 
 def test_src_module_tgt_ship_project_unproject(client, consts):
@@ -15,32 +15,32 @@ def test_src_module_tgt_ship_project_unproject(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_tgt_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
-    api_val = api_tgt_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(rm_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_tgt_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -61,13 +61,13 @@ def test_src_drone_fighter(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_drone.change_drone(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_drone.id: [api_tgt_item.id]}
     # Action
     api_src_fighter.change_fighter(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {
         api_src_drone.id: [api_tgt_item.id],
@@ -75,13 +75,13 @@ def test_src_drone_fighter(client, consts):
     # Action
     api_src_drone.remove()
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_fighter.id: [api_tgt_item.id]}
     # Action
     api_src_fighter.remove()
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -101,7 +101,7 @@ def test_src_proj_effect(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_proj_effect.change_proj_effect(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -122,7 +122,7 @@ def test_tgt_drone_fighter(client, consts):
     api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_drone.id, api_tgt_fighter.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: sorted([api_tgt_drone.id, api_tgt_fighter.id])}
 
@@ -142,32 +142,32 @@ def test_multiple_src_effects(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(effect_modes={api_src_effect2_id: consts.ApiEffMode.state_compliance})
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(effect_modes={api_src_effect1_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(effect_modes={api_src_effect2_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -195,7 +195,7 @@ def test_flag_values(client, consts):
     api_src_item.change_module(
         add_projs=[api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id, api_tgt_item4.id, api_tgt_item5.id])
     # Verification - no attr or value 0 doesn't fail validation
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item1.id, api_tgt_item3.id, api_tgt_item4.id]}
 
@@ -223,7 +223,7 @@ def test_tgt_modified(client, consts):
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -231,14 +231,14 @@ def test_tgt_modified(client, consts):
     api_mod_item = api_tgt_fit.add_module(type_id=eve_mod_item_id)
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(1)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_mod_item.remove()
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -262,7 +262,7 @@ def test_tgt_mutation(client, consts):
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -270,14 +270,14 @@ def test_tgt_mutation(client, consts):
     api_tgt_item.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(1)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0}})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -285,14 +285,14 @@ def test_tgt_mutation(client, consts):
     api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0.1}})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0.2)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation=None)
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -315,20 +315,20 @@ def test_src_mutation(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(mutation=eve_src_mutator_id)
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(mutation=None)
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -347,7 +347,7 @@ def test_criterion_not_assist(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -370,17 +370,17 @@ def test_known_failures(client, consts):
     api_src_item1.change_module(add_projs=[api_tgt_item.id])
     api_src_item2.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=(True, [api_src_item1.id])))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=(True, [api_src_item1.id])))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item2.id: [api_tgt_item.id]}
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=(True, [api_src_item2.id])))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=(True, [api_src_item2.id])))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item1.id: [api_tgt_item.id]}
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=(True, [api_src_item1.id, api_src_item2.id])))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=(True, [api_src_item1.id, api_src_item2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_src_fit.validate(options=FitValOptions(
+    api_val = api_src_fit.validate(options=ValOptions(
         assist_immunity=(True, [api_src_item1.id, api_src_other.id, api_src_item2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -401,7 +401,7 @@ def test_assist_immunity(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -419,7 +419,7 @@ def test_not_loaded_src(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -438,7 +438,7 @@ def test_not_loaded_tgt(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=FitValOptions(assist_immunity=True))
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

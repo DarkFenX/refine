@@ -1,5 +1,5 @@
 from tests import check_no_field, effect_dogma_to_api
-from tests.fw.api import FitValOptions
+from tests.fw.api import ValOptions
 
 
 def test_module_project_unproject(client, consts):
@@ -20,32 +20,32 @@ def test_module_project_unproject(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_src_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
-    api_val = api_src_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(rm_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_src_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -70,20 +70,20 @@ def test_drone_fighter(client, consts):
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     api_src_item1.change_drone(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
     api_src_item1.remove()
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item2.change_fighter(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
 
@@ -104,7 +104,7 @@ def test_proj_effect(client, consts):
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     api_src_item.change_proj_effect(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -128,32 +128,32 @@ def test_multiple_src_items(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item1.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
     api_src_item2.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
     api_src_item1.change_module(rm_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
     api_src_item2.change_module(rm_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -179,32 +179,32 @@ def test_multiple_src_effects(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
     api_src_item.change_module(effect_modes={api_src_effect2_id: consts.ApiEffMode.state_compliance})
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
     api_src_item.change_module(effect_modes={api_src_effect1_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
     api_src_item.change_module(effect_modes={api_src_effect2_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -231,22 +231,22 @@ def test_known_failures(client, consts):
     api_tgt_item2 = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     api_src_item.change_module(add_projs=[api_tgt_item1.id, api_tgt_item2.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=(True, [api_src_item.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_src_item.id])))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {
         api_tgt_item1.id: [api_tgt_effect_id],
         api_tgt_item2.id: [api_tgt_effect_id]}
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=(True, [api_tgt_item1.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_tgt_item1.id])))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item2.id: [api_tgt_effect_id]}
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=(True, [api_tgt_item2.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_tgt_item2.id])))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item1.id: [api_tgt_effect_id]}
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=(True, [api_tgt_item1.id, api_tgt_item2.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_tgt_item1.id, api_tgt_item2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_tgt_fit.validate(options=FitValOptions(
+    api_val = api_tgt_fit.validate(options=ValOptions(
         effect_stopper=(True, [api_tgt_item1.id, api_tgt_other.id, api_tgt_item2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -264,21 +264,21 @@ def test_not_loaded_src(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(rm_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -300,21 +300,21 @@ def test_not_loaded_tgt(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_src_item.change_module(rm_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=FitValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
