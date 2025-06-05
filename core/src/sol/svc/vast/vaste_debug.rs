@@ -233,9 +233,11 @@ impl VastFitData {
                 check_item_key(uad, target_item_key, false)?;
             }
         }
-        for (affector_espec, affectee_item_key) in self.full_resistance.keys() {
-            check_item_key(uad, affector_espec.item_key, true)?;
-            check_item_key(uad, *affectee_item_key, true)?;
+        for (projectee_aspec, projector_especs) in self.full_resist.iter() {
+            check_item_key(uad, projectee_aspec.item_key, true)?;
+            for projector_espec in projector_especs {
+                check_item_key(uad, projector_espec.item_key, true)?;
+            }
         }
         Ok(())
     }

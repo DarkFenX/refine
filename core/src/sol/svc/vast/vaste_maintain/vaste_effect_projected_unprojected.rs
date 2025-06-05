@@ -2,7 +2,7 @@ use crate::{
     ac, ad,
     sol::{
         ItemKey,
-        svc::{EffectSpec, get_resist_a_attr_id, vast::Vast},
+        svc::{AttrSpec, EffectSpec, get_resist_a_attr_id, vast::Vast},
         uad::item::UadItem,
     },
 };
@@ -41,9 +41,10 @@ impl Vast {
                         .add_entry(projector_espec, projectee_item_key);
                 }
                 if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
+                    let projectee_aspec = AttrSpec::new(projectee_item_key, resist_a_attr_id);
                     projector_fit_data
-                        .full_resistance
-                        .add_entry((projector_espec, projectee_item_key), resist_a_attr_id);
+                        .full_resist
+                        .add_entry(projectee_aspec, projector_espec);
                 }
             }
         }
@@ -81,9 +82,10 @@ impl Vast {
                         .remove_entry(&projector_espec, &projectee_item_key);
                 }
                 if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
+                    let projectee_aspec = AttrSpec::new(projectee_item_key, resist_a_attr_id);
                     projector_fit_data
-                        .full_resistance
-                        .remove_entry(&(projector_espec, projectee_item_key), &resist_a_attr_id);
+                        .full_resist
+                        .remove_entry(&projectee_aspec, &projector_espec);
                 }
             }
         }

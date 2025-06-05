@@ -3,7 +3,7 @@ use crate::{
     sol::{
         AttrVal, Count, FitKey, ItemKey,
         svc::{
-            EffectSpec,
+            AttrSpec, EffectSpec,
             vast::{
                 ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
                 ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind,
@@ -93,7 +93,7 @@ pub(in crate::sol::svc::vast) struct VastFitData {
     pub(in crate::sol::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
     pub(in crate::sol::svc::vast) blockable_assistance: RMapRSet<EffectSpec, ItemKey>,
     pub(in crate::sol::svc::vast) blockable_offense: RMapRSet<EffectSpec, ItemKey>,
-    pub(in crate::sol::svc::vast) full_resistance: RMapRSet<(EffectSpec, ItemKey), ad::AAttrId>,
+    pub(in crate::sol::svc::vast) full_resist: RMapRSet<AttrSpec, EffectSpec>,
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -155,7 +155,7 @@ impl VastFitData {
             stopped_effects: RMapRSet::new(),
             blockable_assistance: RMapRSet::new(),
             blockable_offense: RMapRSet::new(),
-            full_resistance: RMapRSet::new(),
+            full_resist: RMapRSet::new(),
         }
     }
 }

@@ -402,6 +402,9 @@ impl Vast {
         {
             return false;
         }
+        if options.full_resist.enabled && !fit_data.validate_full_resist_fast(&options.full_resist.kfs, uad, calc) {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -697,6 +700,9 @@ impl Vast {
         if options.offense_immunity.enabled {
             result.offense_immunity =
                 fit_data.validate_offense_immunity_verbose(&options.offense_immunity.kfs, uad, calc);
+        }
+        if options.full_resist.enabled {
+            result.full_resist = fit_data.validate_full_resist_verbose(&options.full_resist.kfs, uad, calc);
         }
         result
     }

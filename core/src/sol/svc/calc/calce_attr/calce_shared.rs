@@ -4,7 +4,11 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal,
-        svc::calc::{Calc, Context, CtxModifier, ModifierKind},
+        svc::{
+            AttrSpec,
+            calc::{Calc, Context, CtxModifier, ModifierKind},
+            get_resist_mult_val,
+        },
         uad::{Uad, item::UadItem},
     },
 };
@@ -27,10 +31,7 @@ impl Calc {
             Context::Item(projectee_item_key) => projectee_item_key,
             _ => return None,
         };
-        let resist = self
-            .get_item_attr_val_full(uad, projectee_item_key, &resist_a_attr_id)
-            .ok()?
-            .dogma;
+        let resist = get_resist_mult_val(uad, self, &AttrSpec::new(projectee_item_key, resist_a_attr_id))?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, uad: &Uad, modifier: &CtxModifier) -> Option<AttrVal> {
