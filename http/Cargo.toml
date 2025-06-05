@@ -19,7 +19,7 @@ thiserror = ">=2.0.12"
 tokio = { version = ">=1.45.1", features = ["full"] }
 tokio-rayon = ">=2.1.0"
 tower = ">=0.5.2"
-tower-http = { version = ">=0.6.5", features = ["normalize-path", "trace"] }
+tower-http = { version = ">=0.6.6", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
 time = { version = ">=0.3.41", features = ["macros"] }
 tracing = ">=0.1.41"
