@@ -2,5 +2,5 @@ use crate::info::HValidInfoMode;
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HValidInfoParams {
-    pub(crate) validation: Option<HValidInfoMode>,
+    pub(in crate::handlers::validate) validation: Option<HValidInfoMode>,
 }

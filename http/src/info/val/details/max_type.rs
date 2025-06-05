@@ -19,7 +19,7 @@ impl From<&rc::val::ValMaxTypeFail> for HValMaxTypeFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValMaxTypeTypeInfo {
+struct HValMaxTypeTypeInfo {
     item_type_count: rc::Count,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, rc::Count>,

@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HFleetInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::FleetId,
+    id: rc::FleetId,
 }
 impl From<&mut rc::FleetMut<'_>> for HFleetInfoId {
     fn from(core_fleet: &mut rc::FleetMut) -> Self {

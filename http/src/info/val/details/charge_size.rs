@@ -21,7 +21,7 @@ impl From<&rc::val::ValChargeSizeFail> for HValChargeSizeFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValChargeSizeItemInfo {
+struct HValChargeSizeItemInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     parent_item_id: rc::ItemId,
     charge_size: Option<rc::AttrVal>,

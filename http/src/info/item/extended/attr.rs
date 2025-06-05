@@ -1,8 +1,8 @@
 #[derive(serde_tuple::Serialize_tuple)]
-pub(crate) struct HAttrVal {
-    pub(crate) base: rc::AttrVal,
-    pub(crate) dogma: rc::AttrVal,
-    pub(crate) extra: rc::AttrVal,
+pub(in crate::info::item::extended) struct HAttrVal {
+    base: rc::AttrVal,
+    dogma: rc::AttrVal,
+    extra: rc::AttrVal,
 }
 impl From<&rc::CalcAttrVal> for HAttrVal {
     fn from(core_attr_val: &rc::CalcAttrVal) -> Self {

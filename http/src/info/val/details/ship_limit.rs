@@ -23,7 +23,7 @@ impl From<&rc::val::ValShipLimitFail> for HValShipLimitFail {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValShipLimitItemInfo {
+struct HValShipLimitItemInfo {
     allowed_type_ids: Vec<rc::ItemTypeId>,
     allowed_group_ids: Vec<rc::ItemGrpId>,
 }

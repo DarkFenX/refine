@@ -21,7 +21,7 @@ impl From<&rc::val::ValChargeGroupFail> for HValChargeGroupFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValChargeGroupItemInfo {
+struct HValChargeGroupItemInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     parent_item_id: rc::ItemId,
     charge_group_id: rc::ItemGrpId,

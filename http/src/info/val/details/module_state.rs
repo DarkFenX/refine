@@ -23,7 +23,7 @@ impl From<&rc::val::ValModuleStateFail> for HValModuleStateFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValModuleStateModuleInfo {
+struct HValModuleStateModuleInfo {
     state: HModuleState,
     max_state: HModuleState,
 }

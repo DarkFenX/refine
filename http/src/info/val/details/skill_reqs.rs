@@ -30,7 +30,7 @@ impl From<&rc::val::ValSrqFail> for HValSrqFail {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValSrqSkillInfo {
+struct HValSrqSkillInfo {
     current_lvl: Option<HSkillLevel>,
     required_lvl: HSkillLevel,
 }

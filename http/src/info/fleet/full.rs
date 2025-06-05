@@ -4,10 +4,10 @@ use rc::Lender;
 #[derive(serde::Serialize)]
 pub(crate) struct HFleetInfoFull {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::FleetId,
+    id: rc::FleetId,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) fits: Vec<rc::FitId>,
+    fits: Vec<rc::FitId>,
 }
 impl From<&mut rc::FleetMut<'_>> for HFleetInfoFull {
     fn from(core_fleet: &mut rc::FleetMut) -> Self {

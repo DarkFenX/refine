@@ -6,13 +6,13 @@ use super::{HAttrVal, HEffect, HModificationInfo};
 use crate::shared::HEffectId;
 
 #[derive(serde::Serialize)]
-pub(crate) struct HItemExtendedInfo {
+pub(in crate::info::item) struct HItemExtendedInfo {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
+    attrs: HashMap<rc::AttrId, HAttrVal>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    pub(crate) effects: HashMap<HEffectId, HEffect>,
+    effects: HashMap<HEffectId, HEffect>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    pub(crate) mods: HashMap<rc::AttrId, Vec<HModificationInfo>>,
+    mods: HashMap<rc::AttrId, Vec<HModificationInfo>>,
 }
 impl<T> From<&mut T> for HItemExtendedInfo
 where

@@ -21,7 +21,7 @@ impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValItemKindItemInfo {
+struct HValItemKindItemInfo {
     kind: Option<HItemKind>,
     expected_kind: HItemKind,
 }
@@ -36,7 +36,7 @@ impl From<&rc::val::ValItemKindItemInfo> for HValItemKindItemInfo {
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
-pub(in crate::info::val) enum HItemKind {
+enum HItemKind {
     Booster,
     Character,
     Charge,

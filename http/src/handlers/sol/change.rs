@@ -18,7 +18,7 @@ pub(crate) struct HSolChangeReq {
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct HSolChangeResp {
+struct HSolChangeResp {
     solar_system: HSolInfo,
     cmd_results: Vec<HCmdResp>,
 }

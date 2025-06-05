@@ -1,6 +1,6 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HSolInfoId {
-    pub(crate) id: String,
+    id: String,
 }
 impl From<String> for HSolInfoId {
     fn from(sol_id: String) -> Self {

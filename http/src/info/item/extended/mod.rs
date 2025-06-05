@@ -1,6 +1,6 @@
 use attr::HAttrVal;
 use effect::HEffect;
-pub(crate) use extended::HItemExtendedInfo;
+pub(in crate::info::item) use extended::HItemExtendedInfo;
 use modification::HModificationInfo;
 
 mod attr;

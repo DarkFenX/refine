@@ -22,7 +22,7 @@ impl From<&rc::val::ValItemVsShipKindFail> for HValItemVsShipKindFail {
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
-pub(in crate::info::val) enum HShipKind {
+enum HShipKind {
     Ship,
     Structure,
     Unknown,

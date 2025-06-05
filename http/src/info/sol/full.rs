@@ -7,17 +7,17 @@ use crate::{
 
 #[derive(serde::Serialize)]
 pub(crate) struct HSolInfoFull {
-    pub(crate) id: String,
+    id: String,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) fleets: Vec<HFleetInfo>,
+    fleets: Vec<HFleetInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) fits: Vec<HFitInfo>,
+    fits: Vec<HFitInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) sw_effects: Vec<HItemInfo>,
+    sw_effects: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) proj_effects: Vec<HItemInfo>,
-    pub(crate) sec_zone: HSecZone,
-    pub(crate) default_incoming_dps: HDpsProfile,
+    proj_effects: Vec<HItemInfo>,
+    sec_zone: HSecZone,
+    default_incoming_dps: HDpsProfile,
 }
 impl HSolInfoFull {
     pub(in crate::info::sol) fn mk_info(

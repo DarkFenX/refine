@@ -19,7 +19,7 @@ impl From<&rc::val::ValMaxGroupFail> for HValMaxGroupFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValMaxGroupGroupInfo {
+struct HValMaxGroupGroupInfo {
     group_item_count: rc::Count,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, rc::Count>,

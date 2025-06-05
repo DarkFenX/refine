@@ -21,7 +21,7 @@ impl From<&rc::val::ValFighterSquadSizeFail> for HValFighterSquadSizeFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::val) struct HValFighterSquadSizeFighterInfo {
+struct HValFighterSquadSizeFighterInfo {
     size: rc::Count,
     max_size: rc::Count,
 }

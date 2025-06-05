@@ -9,39 +9,39 @@ use crate::{
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoFull {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::FitId,
+    id: rc::FitId,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) fleet: Option<rc::FleetId>,
+    fleet: Option<rc::FleetId>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) character: Option<HItemInfo>,
+    character: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) skills: Vec<HItemInfo>,
+    skills: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) implants: Vec<HItemInfo>,
+    implants: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) boosters: Vec<HItemInfo>,
+    boosters: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) ship: Option<HItemInfo>,
+    ship: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) stance: Option<HItemInfo>,
+    stance: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) subsystems: Vec<HItemInfo>,
+    subsystems: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "HModuleRacks::is_empty")]
-    pub(crate) modules: HModuleRacks,
+    modules: HModuleRacks,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) rigs: Vec<HItemInfo>,
+    rigs: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) services: Vec<HItemInfo>,
+    services: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) drones: Vec<HItemInfo>,
+    drones: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) fighters: Vec<HItemInfo>,
+    fighters: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) fw_effects: Vec<HItemInfo>,
-    pub(crate) sec_status: HFitSecStatus,
+    fw_effects: Vec<HItemInfo>,
+    sec_status: HFitSecStatus,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rah_incoming_dps: Option<HDpsProfile>,
+    rah_incoming_dps: Option<HDpsProfile>,
 }
 impl HFitInfoFull {
     pub(in crate::info::fit) fn mk_info(core_fit: &mut rc::FitMut, item_mode: HItemInfoMode) -> Self {
@@ -120,13 +120,13 @@ impl HFitInfoFull {
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct HModuleRacks {
+struct HModuleRacks {
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) high: Vec<Option<HItemInfo>>,
+    high: Vec<Option<HItemInfo>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) mid: Vec<Option<HItemInfo>>,
+    mid: Vec<Option<HItemInfo>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) low: Vec<Option<HItemInfo>>,
+    low: Vec<Option<HItemInfo>>,
 }
 impl HModuleRacks {
     fn is_empty(&self) -> bool {

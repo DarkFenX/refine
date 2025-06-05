@@ -1,14 +1,14 @@
 use super::{affector::HAffectorInfo, op::HModOp};
 
 #[derive(serde_tuple::Serialize_tuple)]
-pub(crate) struct HModificationInfo {
-    pub(crate) op: HModOp,
-    pub(crate) initial_val: rc::AttrVal,
-    pub(crate) range_mult: Option<rc::AttrVal>,
-    pub(crate) resist_mult: Option<rc::AttrVal>,
-    pub(crate) stacking_mult: Option<rc::AttrVal>,
-    pub(crate) applied_val: rc::AttrVal,
-    pub(crate) src: Vec<HAffectorInfo>,
+pub(in crate::info::item::extended) struct HModificationInfo {
+    op: HModOp,
+    initial_val: rc::AttrVal,
+    range_mult: Option<rc::AttrVal>,
+    resist_mult: Option<rc::AttrVal>,
+    stacking_mult: Option<rc::AttrVal>,
+    applied_val: rc::AttrVal,
+    src: Vec<HAffectorInfo>,
 }
 impl From<&rc::ModificationInfo> for HModificationInfo {
     fn from(core_mod_info: &rc::ModificationInfo) -> Self {

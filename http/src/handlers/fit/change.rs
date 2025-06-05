@@ -20,7 +20,7 @@ pub(crate) struct HFitChangeReq {
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct HFitChangeResp {
+struct HFitChangeResp {
     fit: HFitInfo,
     cmd_results: Vec<HCmdResp>,
 }

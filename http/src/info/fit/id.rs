@@ -2,7 +2,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::FitId,
+    id: rc::FitId,
 }
 impl From<&mut rc::FitMut<'_>> for HFitInfoId {
     fn from(core_fit: &mut rc::FitMut<'_>) -> Self {

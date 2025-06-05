@@ -1,6 +1,6 @@
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum HModOp {
+pub(in crate::info::item::extended::modification) enum HModOp {
     BaseAssign,
     PreAssign,
     PreMul,
