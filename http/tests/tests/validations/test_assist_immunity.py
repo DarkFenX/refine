@@ -88,7 +88,7 @@ def test_src_drone_fighter(client, consts):
 
 
 def test_src_proj_effect(client, consts):
-    # Since projected effect doesn't belong to any fit, it cannot be validated at the moment
+    # Projected effects do not apply targeted modifications
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
@@ -101,7 +101,7 @@ def test_src_proj_effect(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_proj_effect.change_proj_effect(add_projs=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    api_val = api_sol.validate(fit_ids=[api_src_fit.id], options=ValOptions(assist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
