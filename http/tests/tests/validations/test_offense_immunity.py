@@ -102,7 +102,8 @@ def test_offense_src_drone_fighter(client, consts):
 
 
 def test_offense_src_proj_effect(client, consts):
-    # Projected effects do not apply targeted modifications
+    # Projected effects do not apply targeted modifications, and this validation applies only to
+    # targeted effects
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
     eve_src_mod = client.mk_eve_effect_mod(
@@ -494,7 +495,13 @@ def test_offense_criterion_effect_cat(client, consts):
         op=consts.EveModOp.post_assign,
         affector_attr_id=eve_effect_attr_id,
         affectee_attr_id=eve_effect_attr_id)
-    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, is_offensive=True, mod_info=[eve_src_mod])
+    eve_src_effect_id = client.mk_eve_effect(
+        # AoE web just to enforce effect have some buffs, to let it go through generic projection
+        # filters and reach validation service
+        id_=consts.EveEffect.doomsday_aoe_web,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True,
+        mod_info=[eve_src_mod])
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()

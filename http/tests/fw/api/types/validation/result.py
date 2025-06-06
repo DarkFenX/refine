@@ -7,7 +7,6 @@ from .val_charge_group import ValChargeGroupFail
 from .val_charge_size import ValChargeSizeFail
 from .val_charge_volume import ValChargeVolumeFail
 from .val_drone_group import ValDroneGroupFail
-from .val_proj_immunity import ValProjImmunityFail
 from .val_effect_stopper import ValEffectStopperFail
 from .val_fighter_squad_size import ValFighterSquadSizeFail
 from .val_item_kind import ValItemKindFail
@@ -17,6 +16,7 @@ from .val_max_type import ValMaxTypeFail
 from .val_module_state import ValModuleStateFail
 from .val_not_loaded_item import ValNotLoadedItemFail
 from .val_overload_skill import ValOverloadSkillFail
+from .val_proj_immunity import ValProjImmunityFail
 from .val_resources import ValResourceFail
 from .val_rig_size import ValRigSizeFail
 from .val_sec_zone import ValSecZoneFail
