@@ -102,34 +102,34 @@ impl VastFitData {
         let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::FTR_SUPPORT_SLOTS);
         StatSlot { used, total }
     }
-    pub(in crate::sol) fn get_stat_launched_standup_light_fighters(
+    pub(in crate::sol) fn get_stat_launched_st_light_fighters(
         &self,
         uad: &Uad,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> StatSlot {
-        let used = self.standup_light_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::FTR_STANDUP_LIGHT_SLOTS);
+        let used = self.st_light_fighters_online.len() as Count;
+        let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::FTR_ST_LIGHT_SLOTS);
         StatSlot { used, total }
     }
-    pub(in crate::sol) fn get_stat_launched_standup_heavy_fighters(
+    pub(in crate::sol) fn get_stat_launched_st_heavy_fighters(
         &self,
         uad: &Uad,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> StatSlot {
-        let used = self.standup_heavy_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::FTR_STANDUP_HEAVY_SLOTS);
+        let used = self.st_heavy_fighters_online.len() as Count;
+        let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::FTR_ST_HEAVY_SLOTS);
         StatSlot { used, total }
     }
-    pub(in crate::sol) fn get_stat_launched_standup_support_fighters(
+    pub(in crate::sol) fn get_stat_launched_st_support_fighters(
         &self,
         uad: &Uad,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> StatSlot {
-        let used = self.standup_support_fighters_online.len() as Count;
-        let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::FTR_STANDUP_SUPPORT_SLOTS);
+        let used = self.st_support_fighters_online.len() as Count;
+        let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::FTR_ST_SUPPORT_SLOTS);
         StatSlot { used, total }
     }
 }

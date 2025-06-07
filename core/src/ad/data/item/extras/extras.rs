@@ -7,8 +7,8 @@ use super::{
     effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_count::get_max_fighter_count,
     fighter_kind::{
-        get_heavy_fighter_flag, get_light_fighter_flag, get_standup_heavy_fighter_flag, get_standup_light_fighter_flag,
-        get_standup_support_fighter_flag, get_support_fighter_flag,
+        get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
+        get_st_support_fighter_flag, get_support_fighter_flag,
     },
     kind::get_item_kind,
     max_state::get_max_state,
@@ -61,11 +61,11 @@ pub struct AItemExtras {
     /// Defines if a fighter take a support fighter slot or not.
     pub is_support_fighter: bool,
     /// Defines if a fighter take a standup light fighter slot or not.
-    pub is_standup_light_fighter: bool,
+    pub is_st_light_fighter: bool,
     /// Defines if a fighter take a standup heavy fighter slot or not.
-    pub is_standup_heavy_fighter: bool,
+    pub is_st_heavy_fighter: bool,
     /// Defines if a fighter take a standup support fighter slot or not.
-    pub is_standup_support_fighter: bool,
+    pub is_st_support_fighter: bool,
     /// Ship type.
     pub ship_kind: Option<AShipKind>,
     /// Which ship type this item fits to.
@@ -114,9 +114,9 @@ impl AItemExtras {
             is_light_fighter: bool::default(),
             is_heavy_fighter: bool::default(),
             is_support_fighter: bool::default(),
-            is_standup_light_fighter: bool::default(),
-            is_standup_heavy_fighter: bool::default(),
-            is_standup_support_fighter: bool::default(),
+            is_st_light_fighter: bool::default(),
+            is_st_heavy_fighter: bool::default(),
+            is_st_support_fighter: bool::default(),
             ship_kind: Option::default(),
             item_ship_kind: Option::default(),
             max_state: AState::Offline,
@@ -151,9 +151,9 @@ impl AItemExtras {
             is_light_fighter: get_light_fighter_flag(attrs),
             is_heavy_fighter: get_heavy_fighter_flag(attrs),
             is_support_fighter: get_support_fighter_flag(attrs),
-            is_standup_light_fighter: get_standup_light_fighter_flag(attrs),
-            is_standup_heavy_fighter: get_standup_heavy_fighter_flag(attrs),
-            is_standup_support_fighter: get_standup_support_fighter_flag(attrs),
+            is_st_light_fighter: get_st_light_fighter_flag(attrs),
+            is_st_heavy_fighter: get_st_heavy_fighter_flag(attrs),
+            is_st_support_fighter: get_st_support_fighter_flag(attrs),
             ship_kind: a_item.extras.ship_kind,
             item_ship_kind: get_item_ship_kind(a_item.cat_id, attrs),
             max_state: a_item.extras.max_state,
@@ -207,9 +207,9 @@ impl AItemExtras {
         self.is_light_fighter = get_light_fighter_flag(item_attrs);
         self.is_heavy_fighter = get_heavy_fighter_flag(item_attrs);
         self.is_support_fighter = get_support_fighter_flag(item_attrs);
-        self.is_standup_light_fighter = get_standup_light_fighter_flag(item_attrs);
-        self.is_standup_heavy_fighter = get_standup_heavy_fighter_flag(item_attrs);
-        self.is_standup_support_fighter = get_standup_support_fighter_flag(item_attrs);
+        self.is_st_light_fighter = get_st_light_fighter_flag(item_attrs);
+        self.is_st_heavy_fighter = get_st_heavy_fighter_flag(item_attrs);
+        self.is_st_support_fighter = get_st_support_fighter_flag(item_attrs);
         self.ship_kind = get_ship_kind(item_cat_id, item_srqs);
         self.item_ship_kind = get_item_ship_kind(item_cat_id, item_attrs);
         self.max_state = get_max_state(item_effects.keys(), effects);

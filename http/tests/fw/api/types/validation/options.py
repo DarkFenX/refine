@@ -23,9 +23,9 @@ class ValOptions:
     launched_support_fighter_count: ValOption = Absent
     launched_light_fighter_count: ValOption = Absent
     launched_heavy_fighter_count: ValOption = Absent
-    launched_standup_support_fighter_count: ValOption = Absent
-    launched_standup_light_fighter_count: ValOption = Absent
-    launched_standup_heavy_fighter_count: ValOption = Absent
+    launched_st_support_fighter_count: ValOption = Absent
+    launched_st_light_fighter_count: ValOption = Absent
+    launched_st_heavy_fighter_count: ValOption = Absent
     turret_slot_count: ValOption = Absent
     launcher_slot_count: ValOption = Absent
     high_slot_count: ValOption = Absent
@@ -55,9 +55,9 @@ class ValOptions:
     unlaunchable_support_fighter: ValOption = Absent
     unlaunchable_light_fighter: ValOption = Absent
     unlaunchable_heavy_fighter: ValOption = Absent
-    unlaunchable_standup_support_fighter: ValOption = Absent
-    unlaunchable_standup_light_fighter: ValOption = Absent
-    unlaunchable_standup_heavy_fighter: ValOption = Absent
+    unlaunchable_st_support_fighter: ValOption = Absent
+    unlaunchable_st_light_fighter: ValOption = Absent
+    unlaunchable_st_heavy_fighter: ValOption = Absent
     ship_stance: ValOption = Absent
     overload_skill: ValOption = Absent
     max_type_fitted: ValOption = Absent

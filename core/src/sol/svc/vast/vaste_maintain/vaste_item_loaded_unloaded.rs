@@ -137,14 +137,14 @@ impl Vast {
                 if extras.is_support_fighter {
                     fit_data.support_fighters.insert(item_key);
                 }
-                if extras.is_standup_light_fighter {
-                    fit_data.standup_light_fighters.insert(item_key);
+                if extras.is_st_light_fighter {
+                    fit_data.st_light_fighters.insert(item_key);
                 }
-                if extras.is_standup_heavy_fighter {
-                    fit_data.standup_heavy_fighters.insert(item_key);
+                if extras.is_st_heavy_fighter {
+                    fit_data.st_heavy_fighters.insert(item_key);
                 }
-                if extras.is_standup_support_fighter {
-                    fit_data.standup_support_fighters.insert(item_key);
+                if extras.is_st_support_fighter {
+                    fit_data.st_support_fighters.insert(item_key);
                 }
             }
             UadItem::Implant(implant) => {
@@ -444,14 +444,14 @@ impl Vast {
                 if extras.is_support_fighter {
                     fit_data.support_fighters.remove(item_key);
                 }
-                if extras.is_standup_light_fighter {
-                    fit_data.standup_light_fighters.remove(item_key);
+                if extras.is_st_light_fighter {
+                    fit_data.st_light_fighters.remove(item_key);
                 }
-                if extras.is_standup_heavy_fighter {
-                    fit_data.standup_heavy_fighters.remove(item_key);
+                if extras.is_st_heavy_fighter {
+                    fit_data.st_heavy_fighters.remove(item_key);
                 }
-                if extras.is_standup_support_fighter {
-                    fit_data.standup_support_fighters.remove(item_key);
+                if extras.is_st_support_fighter {
+                    fit_data.st_support_fighters.remove(item_key);
                 }
             }
             UadItem::Implant(implant) => {

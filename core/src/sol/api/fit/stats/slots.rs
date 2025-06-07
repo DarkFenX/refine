@@ -111,28 +111,28 @@ impl<'a> FitMut<'a> {
             .get_fit_data(&self.key)
             .get_stat_launched_support_fighters(&self.sol.uad, &mut self.sol.svc.calc, fit)
     }
-    pub fn get_stat_launched_standup_light_fighters(&mut self) -> StatSlot {
+    pub fn get_stat_launched_st_light_fighters(&mut self) -> StatSlot {
         let fit = self.sol.uad.fits.get(self.key);
         self.sol
             .svc
             .vast
             .get_fit_data(&self.key)
-            .get_stat_launched_standup_light_fighters(&self.sol.uad, &mut self.sol.svc.calc, fit)
+            .get_stat_launched_st_light_fighters(&self.sol.uad, &mut self.sol.svc.calc, fit)
     }
-    pub fn get_stat_launched_standup_heavy_fighters(&mut self) -> StatSlot {
+    pub fn get_stat_launched_st_heavy_fighters(&mut self) -> StatSlot {
         let fit = self.sol.uad.fits.get(self.key);
         self.sol
             .svc
             .vast
             .get_fit_data(&self.key)
-            .get_stat_launched_standup_heavy_fighters(&self.sol.uad, &mut self.sol.svc.calc, fit)
+            .get_stat_launched_st_heavy_fighters(&self.sol.uad, &mut self.sol.svc.calc, fit)
     }
-    pub fn get_stat_launched_standup_support_fighters(&mut self) -> StatSlot {
+    pub fn get_stat_launched_st_support_fighters(&mut self) -> StatSlot {
         let fit = self.sol.uad.fits.get(self.key);
         self.sol
             .svc
             .vast
             .get_fit_data(&self.key)
-            .get_stat_launched_standup_support_fighters(&self.sol.uad, &mut self.sol.svc.calc, fit)
+            .get_stat_launched_st_support_fighters(&self.sol.uad, &mut self.sol.svc.calc, fit)
     }
 }

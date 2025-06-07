@@ -45,7 +45,7 @@ def test_module_mwd_block(client, consts):
         affector_attr_id=eve_str_attr_id,
         affectee_attr_id=eve_str_attr_id)
     eve_script_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.script_standup_warp_scram,
+        id_=consts.EveEffect.script_st_warp_scram,
         cat_id=consts.EveEffCat.passive,
         mod_info=[eve_script_mod])
     eve_script_id = client.mk_eve_item(attrs={eve_str_attr_id: 1}, eff_ids=[eve_script_effect_id])
@@ -100,7 +100,7 @@ def test_module_mjd_block(client, consts):
         affector_attr_id=eve_str_attr_id,
         affectee_attr_id=eve_str_attr_id)
     eve_script_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.script_standup_warp_scram,
+        id_=consts.EveEffect.script_st_warp_scram,
         cat_id=consts.EveEffCat.passive,
         mod_info=[eve_script_mod])
     eve_script_id = client.mk_eve_item(attrs={eve_str_attr_id: 1}, eff_ids=[eve_script_effect_id])
@@ -143,7 +143,7 @@ def test_fighter_mwd_mjd_block(client, consts):
         cat_id=consts.EveEffCat.target)
     eve_point_id = client.mk_eve_item(eff_ids=[eve_point_effect_id], defeff_id=eve_point_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.script_standup_warp_scram,
+        id_=consts.EveEffect.script_st_warp_scram,
         cat_id=consts.EveEffCat.passive)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id])
     eve_ftr_mwd_effect_id = client.mk_eve_effect(

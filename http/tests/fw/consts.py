@@ -100,7 +100,7 @@ class EveEffect(IntEnum):
     mod_titan_effect_generator = 6753
     ship_mod_focused_warp_scrambling_script = 6848
     ship_mod_focused_warp_disruption_script = 6849
-    script_standup_warp_scram = 7026
+    script_st_warp_scram = 7026
     weather_darkness = 7060
     debuff_lance = 11691
     dot_missile_launching = 12174
@@ -326,12 +326,12 @@ class EveAttr(IntEnum):
     warfare_buff_4_value = 2537
     online_max_security_class = 2581
     pilot_security_status= 2610
-    ftr_standup_light_slots = 2737
-    ftr_standup_support_slots = 2738
-    ftr_standup_heavy_slots = 2739
-    ftr_sq_is_standup_light = 2740
-    ftr_sq_is_standup_support = 2741
-    ftr_sq_is_standup_heavy = 2742
+    ftr_st_light_slots = 2737
+    ftr_st_support_slots = 2738
+    ftr_st_heavy_slots = 2739
+    ftr_sq_is_st_light = 2740
+    ftr_sq_is_st_support = 2741
+    ftr_sq_is_st_heavy = 2742
     can_fit_ship_type11 = 2758
     disallow_in_hazard = 5561
     allow_in_fully_corrupted_lowsec = 5599

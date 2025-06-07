@@ -47,9 +47,9 @@ pub struct ValResultFit {
     pub launched_support_fighter_count: Option<ValSlotCountFail>,
     pub launched_light_fighter_count: Option<ValSlotCountFail>,
     pub launched_heavy_fighter_count: Option<ValSlotCountFail>,
-    pub launched_standup_support_fighter_count: Option<ValSlotCountFail>,
-    pub launched_standup_light_fighter_count: Option<ValSlotCountFail>,
-    pub launched_standup_heavy_fighter_count: Option<ValSlotCountFail>,
+    pub launched_st_support_fighter_count: Option<ValSlotCountFail>,
+    pub launched_st_light_fighter_count: Option<ValSlotCountFail>,
+    pub launched_st_heavy_fighter_count: Option<ValSlotCountFail>,
     pub turret_slot_count: Option<ValSlotCountFail>,
     pub launcher_slot_count: Option<ValSlotCountFail>,
     pub high_slot_count: Option<ValSlotCountFail>,
@@ -79,9 +79,9 @@ pub struct ValResultFit {
     pub unlaunchable_support_fighter: Option<ValUnusableSlotFail>,
     pub unlaunchable_light_fighter: Option<ValUnusableSlotFail>,
     pub unlaunchable_heavy_fighter: Option<ValUnusableSlotFail>,
-    pub unlaunchable_standup_support_fighter: Option<ValUnusableSlotFail>,
-    pub unlaunchable_standup_light_fighter: Option<ValUnusableSlotFail>,
-    pub unlaunchable_standup_heavy_fighter: Option<ValUnusableSlotFail>,
+    pub unlaunchable_st_support_fighter: Option<ValUnusableSlotFail>,
+    pub unlaunchable_st_light_fighter: Option<ValUnusableSlotFail>,
+    pub unlaunchable_st_heavy_fighter: Option<ValUnusableSlotFail>,
     pub ship_stance: Option<ValShipStanceFail>,
     pub overload_skill: Option<ValOverloadSkillFail>,
     pub max_type_fitted: Option<ValMaxTypeFail>,
@@ -114,9 +114,9 @@ impl ValResultFit {
             launched_support_fighter_count: None,
             launched_light_fighter_count: None,
             launched_heavy_fighter_count: None,
-            launched_standup_support_fighter_count: None,
-            launched_standup_light_fighter_count: None,
-            launched_standup_heavy_fighter_count: None,
+            launched_st_support_fighter_count: None,
+            launched_st_light_fighter_count: None,
+            launched_st_heavy_fighter_count: None,
             turret_slot_count: None,
             launcher_slot_count: None,
             high_slot_count: None,
@@ -146,9 +146,9 @@ impl ValResultFit {
             unlaunchable_support_fighter: None,
             unlaunchable_light_fighter: None,
             unlaunchable_heavy_fighter: None,
-            unlaunchable_standup_support_fighter: None,
-            unlaunchable_standup_light_fighter: None,
-            unlaunchable_standup_heavy_fighter: None,
+            unlaunchable_st_support_fighter: None,
+            unlaunchable_st_light_fighter: None,
+            unlaunchable_st_heavy_fighter: None,
             ship_stance: None,
             overload_skill: None,
             max_type_fitted: None,
@@ -180,9 +180,9 @@ impl ValResultFit {
             && self.launched_support_fighter_count.is_none()
             && self.launched_light_fighter_count.is_none()
             && self.launched_heavy_fighter_count.is_none()
-            && self.launched_standup_support_fighter_count.is_none()
-            && self.launched_standup_light_fighter_count.is_none()
-            && self.launched_standup_heavy_fighter_count.is_none()
+            && self.launched_st_support_fighter_count.is_none()
+            && self.launched_st_light_fighter_count.is_none()
+            && self.launched_st_heavy_fighter_count.is_none()
             && self.turret_slot_count.is_none()
             && self.launcher_slot_count.is_none()
             && self.high_slot_count.is_none()
@@ -212,9 +212,9 @@ impl ValResultFit {
             && self.unlaunchable_support_fighter.is_none()
             && self.unlaunchable_light_fighter.is_none()
             && self.unlaunchable_heavy_fighter.is_none()
-            && self.unlaunchable_standup_support_fighter.is_none()
-            && self.unlaunchable_standup_light_fighter.is_none()
-            && self.unlaunchable_standup_heavy_fighter.is_none()
+            && self.unlaunchable_st_support_fighter.is_none()
+            && self.unlaunchable_st_light_fighter.is_none()
+            && self.unlaunchable_st_heavy_fighter.is_none()
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
             && self.max_type_fitted.is_none()

@@ -126,7 +126,7 @@ impl VastFitData {
             &self.heavy_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_standup_support_fighter_count_fast(
+    pub(in crate::sol::svc::vast) fn validate_launched_st_support_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -138,11 +138,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_SUPPORT_SLOTS,
-            &self.standup_support_fighters_online,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_standup_light_fighter_count_fast(
+    pub(in crate::sol::svc::vast) fn validate_launched_st_light_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -154,11 +154,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_LIGHT_SLOTS,
-            &self.standup_light_fighters_online,
+            &ac::attrs::FTR_ST_LIGHT_SLOTS,
+            &self.st_light_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_standup_heavy_fighter_count_fast(
+    pub(in crate::sol::svc::vast) fn validate_launched_st_heavy_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -170,8 +170,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_HEAVY_SLOTS,
-            &self.standup_heavy_fighters_online,
+            &ac::attrs::FTR_ST_HEAVY_SLOTS,
+            &self.st_heavy_fighters_online,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slot_count_fast(
@@ -334,7 +334,7 @@ impl VastFitData {
             &self.heavy_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_standup_support_fighter_count_verbose(
+    pub(in crate::sol::svc::vast) fn validate_launched_st_support_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -346,11 +346,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_SUPPORT_SLOTS,
-            &self.standup_support_fighters_online,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_standup_light_fighter_count_verbose(
+    pub(in crate::sol::svc::vast) fn validate_launched_st_light_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -362,11 +362,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_LIGHT_SLOTS,
-            &self.standup_light_fighters_online,
+            &ac::attrs::FTR_ST_LIGHT_SLOTS,
+            &self.st_light_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_standup_heavy_fighter_count_verbose(
+    pub(in crate::sol::svc::vast) fn validate_launched_st_heavy_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -378,8 +378,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_HEAVY_SLOTS,
-            &self.standup_heavy_fighters_online,
+            &ac::attrs::FTR_ST_HEAVY_SLOTS,
+            &self.st_heavy_fighters_online,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slot_count_verbose(

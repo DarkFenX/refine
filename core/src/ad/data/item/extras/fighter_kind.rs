@@ -18,16 +18,16 @@ pub(super) fn get_support_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>) -> 
     get_fighter_flag(item_attrs, &ac::attrs::FTR_SQ_IS_SUPPORT)
 }
 
-pub(super) fn get_standup_light_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>) -> bool {
-    get_fighter_flag(item_attrs, &ac::attrs::FTR_SQ_IS_STANDUP_LIGHT)
+pub(super) fn get_st_light_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>) -> bool {
+    get_fighter_flag(item_attrs, &ac::attrs::FTR_SQ_IS_ST_LIGHT)
 }
 
-pub(super) fn get_standup_heavy_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>) -> bool {
-    get_fighter_flag(item_attrs, &ac::attrs::FTR_SQ_IS_STANDUP_HEAVY)
+pub(super) fn get_st_heavy_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>) -> bool {
+    get_fighter_flag(item_attrs, &ac::attrs::FTR_SQ_IS_ST_HEAVY)
 }
 
-pub(super) fn get_standup_support_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>) -> bool {
-    get_fighter_flag(item_attrs, &ac::attrs::FTR_SQ_IS_STANDUP_SUPPORT)
+pub(super) fn get_st_support_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>) -> bool {
+    get_fighter_flag(item_attrs, &ac::attrs::FTR_SQ_IS_ST_SUPPORT)
 }
 
 fn get_fighter_flag(item_attrs: &RMap<AAttrId, AAttrVal>, attr_id: &AAttrId) -> bool {

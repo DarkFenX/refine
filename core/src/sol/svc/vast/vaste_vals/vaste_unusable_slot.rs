@@ -93,7 +93,7 @@ impl VastFitData {
             &self.heavy_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_support_fighter_fast(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_support_fighter_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -105,11 +105,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_SUPPORT_SLOTS,
-            &self.standup_support_fighters,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_light_fighter_fast(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_light_fighter_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -121,11 +121,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_LIGHT_SLOTS,
-            &self.standup_light_fighters,
+            &ac::attrs::FTR_ST_LIGHT_SLOTS,
+            &self.st_light_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_heavy_fighter_fast(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_heavy_fighter_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -137,8 +137,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_HEAVY_SLOTS,
-            &self.standup_heavy_fighters,
+            &ac::attrs::FTR_ST_HEAVY_SLOTS,
+            &self.st_heavy_fighters,
         )
     }
     // Verbose validations
@@ -215,7 +215,7 @@ impl VastFitData {
             &self.heavy_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_support_fighter_verbose(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_support_fighter_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -227,11 +227,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_SUPPORT_SLOTS,
-            &self.standup_support_fighters,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_light_fighter_verbose(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_light_fighter_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -243,11 +243,11 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_LIGHT_SLOTS,
-            &self.standup_light_fighters,
+            &ac::attrs::FTR_ST_LIGHT_SLOTS,
+            &self.st_light_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_standup_heavy_fighter_verbose(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_heavy_fighter_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -259,8 +259,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_STANDUP_HEAVY_SLOTS,
-            &self.standup_heavy_fighters,
+            &ac::attrs::FTR_ST_HEAVY_SLOTS,
+            &self.st_heavy_fighters,
         )
     }
 }

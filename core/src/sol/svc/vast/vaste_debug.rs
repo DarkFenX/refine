@@ -61,22 +61,22 @@ impl VastFitData {
         for &item_key in self.heavy_fighters_online.iter() {
             check_item_key(uad, item_key, true)?;
         }
-        for &item_key in self.standup_support_fighters.iter() {
+        for &item_key in self.st_support_fighters.iter() {
             check_item_key(uad, item_key, true)?;
         }
-        for &item_key in self.standup_support_fighters_online.iter() {
+        for &item_key in self.st_support_fighters_online.iter() {
             check_item_key(uad, item_key, true)?;
         }
-        for &item_key in self.standup_light_fighters.iter() {
+        for &item_key in self.st_light_fighters.iter() {
             check_item_key(uad, item_key, true)?;
         }
-        for &item_key in self.standup_light_fighters_online.iter() {
+        for &item_key in self.st_light_fighters_online.iter() {
             check_item_key(uad, item_key, true)?;
         }
-        for &item_key in self.standup_heavy_fighters.iter() {
+        for &item_key in self.st_heavy_fighters.iter() {
             check_item_key(uad, item_key, true)?;
         }
-        for &item_key in self.standup_heavy_fighters_online.iter() {
+        for &item_key in self.st_heavy_fighters_online.iter() {
             check_item_key(uad, item_key, true)?;
         }
         for &item_key in self.mods_turret.iter() {

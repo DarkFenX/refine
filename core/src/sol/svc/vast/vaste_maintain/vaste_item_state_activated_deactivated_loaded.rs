@@ -36,14 +36,14 @@ impl Vast {
                     if extras.is_support_fighter {
                         fit_data.support_fighters_online.insert(item_key);
                     }
-                    if extras.is_standup_light_fighter {
-                        fit_data.standup_light_fighters_online.insert(item_key);
+                    if extras.is_st_light_fighter {
+                        fit_data.st_light_fighters_online.insert(item_key);
                     }
-                    if extras.is_standup_heavy_fighter {
-                        fit_data.standup_heavy_fighters_online.insert(item_key);
+                    if extras.is_st_heavy_fighter {
+                        fit_data.st_heavy_fighters_online.insert(item_key);
                     }
-                    if extras.is_standup_support_fighter {
-                        fit_data.standup_support_fighters_online.insert(item_key);
+                    if extras.is_st_support_fighter {
+                        fit_data.st_support_fighters_online.insert(item_key);
                     }
                 }
                 UadItem::Module(module) => {
@@ -189,14 +189,14 @@ impl Vast {
                     if extras.is_support_fighter {
                         fit_data.support_fighters_online.remove(item_key);
                     }
-                    if extras.is_standup_light_fighter {
-                        fit_data.standup_light_fighters_online.remove(item_key);
+                    if extras.is_st_light_fighter {
+                        fit_data.st_light_fighters_online.remove(item_key);
                     }
-                    if extras.is_standup_heavy_fighter {
-                        fit_data.standup_heavy_fighters_online.remove(item_key);
+                    if extras.is_st_heavy_fighter {
+                        fit_data.st_heavy_fighters_online.remove(item_key);
                     }
-                    if extras.is_standup_support_fighter {
-                        fit_data.standup_support_fighters_online.remove(item_key);
+                    if extras.is_st_support_fighter {
+                        fit_data.st_support_fighters_online.remove(item_key);
                     }
                 }
                 UadItem::Module(module) => {
