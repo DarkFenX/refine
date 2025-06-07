@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::ed::EAttrUnitId;
 
 pub(crate) const GROUP_ID: EAttrUnitId = 115;

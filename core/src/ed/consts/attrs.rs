@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::ed::EAttrId;
 
 pub(crate) const MASS: EAttrId = 4;
@@ -111,7 +109,6 @@ pub(crate) const FTR_TUBES: EAttrId = 2216;
 pub(crate) const FTR_LIGHT_SLOTS: EAttrId = 2217;
 pub(crate) const FTR_SUPPORT_SLOTS: EAttrId = 2218;
 pub(crate) const FTR_HEAVY_SLOTS: EAttrId = 2219;
-pub(crate) const SPEED_FACTOR_FLOOR: EAttrId = 2266;
 pub(crate) const DOOMSDAY_AOE_RANGE: EAttrId = 2279;
 pub(crate) const FTR_ABIL_BOMB_TYPE: EAttrId = 2324;
 pub(crate) const HISEC_MODIFIER: EAttrId = 2355;

@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::ed::EItemId;
 
 pub(crate) const MISSILE_LAUNCHER_OPERATION: EItemId = 3319;

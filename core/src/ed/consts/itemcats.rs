@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::ed::EItemCatId;
 
 pub(crate) const CHARGE: EItemCatId = 8;

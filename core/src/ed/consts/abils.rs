@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::ed::EAbilId;
 
 pub(crate) const WEB: EAbilId = 2;
