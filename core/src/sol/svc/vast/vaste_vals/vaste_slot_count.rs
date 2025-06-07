@@ -451,12 +451,9 @@ fn validate_fast_unordered_set(
     max_a_attr_id: &ad::AAttrId,
     users: &RSet<ItemKey>,
 ) -> bool {
-    if users.is_subset(kfs) {
-        return true;
-    }
     let used = users.len() as Count;
     let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
-    used <= max
+    used <= max || users.is_subset(kfs)
 }
 fn validate_fast_unordered_map<T>(
     kfs: &RSet<ItemKey>,
@@ -466,12 +463,9 @@ fn validate_fast_unordered_map<T>(
     max_a_attr_id: &ad::AAttrId,
     users: &RMap<ItemKey, T>,
 ) -> bool {
-    if users.is_subset(kfs) {
-        return true;
-    }
     let used = users.len() as Count;
     let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
-    used <= max
+    used <= max || users.is_subset(kfs)
 }
 fn validate_fast_ordered(
     kfs: &RSet<ItemKey>,
