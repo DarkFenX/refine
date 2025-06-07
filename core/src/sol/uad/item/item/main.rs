@@ -4,9 +4,9 @@ use crate::{
     sol::{
         AttrVal, FitKey, ItemId, ItemKey,
         uad::item::{
-            Autocharges, EffectModes, ItemMutationData, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge,
-            UadDrone, UadFighter, UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip,
-            UadSkill, UadStance, UadSubsystem, UadSwEffect,
+            EffectModes, ItemMutationData, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone,
+            UadFighter, UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill,
+            UadStance, UadSubsystem, UadSwEffect,
         },
     },
     src::Src,
@@ -158,18 +158,6 @@ impl UadItem {
             Self::Stance(stance) => stance.get_effect_modes_mut(),
             Self::Subsystem(subsystem) => subsystem.get_effect_modes_mut(),
             Self::SwEffect(sw_effect) => sw_effect.get_effect_modes_mut(),
-        }
-    }
-    pub(in crate::sol) fn get_autocharges(&self) -> Option<&Autocharges> {
-        match self {
-            Self::Fighter(fighter) => Some(fighter.get_autocharges()),
-            _ => None,
-        }
-    }
-    pub(in crate::sol) fn get_autocharges_mut(&mut self) -> Option<&mut Autocharges> {
-        match self {
-            Self::Fighter(fighter) => Some(fighter.get_autocharges_mut()),
-            _ => None,
         }
     }
     pub(in crate::sol) fn get_a_state(&self) -> ad::AState {
