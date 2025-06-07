@@ -30,7 +30,7 @@ impl<'iter, 'lend> Lending<'lend> for SideEffectIter<'iter> {
     type Lend = FullSideEffectMut<'lend>;
 }
 impl<'iter> Lender for SideEffectIter<'iter> {
-    fn next(&mut self) -> Option<FullSideEffectMut> {
+    fn next(&mut self) -> Option<FullSideEffectMut<'_>> {
         let (a_effect_id, a_attr_id) = *self.effects_with_chances.get(self.index)?;
         self.index += 1;
         Some(FullSideEffectMut::new(self.sol, self.key, a_effect_id, a_attr_id))
@@ -39,18 +39,18 @@ impl<'iter> Lender for SideEffectIter<'iter> {
 
 impl<'a> Booster<'a> {
     /// Iterates over booster's side effects.
-    pub fn iter_side_effects(&self) -> impl Iterator<Item = FullSideEffect> {
+    pub fn iter_side_effects(&self) -> impl Iterator<Item = FullSideEffect<'_>> {
         iter_side_effects(self.sol, self.key)
     }
 }
 
 impl<'a> BoosterMut<'a> {
     /// Iterates over booster's side effects.
-    pub fn iter_side_effects(&self) -> impl Iterator<Item = FullSideEffect> {
+    pub fn iter_side_effects(&self) -> impl Iterator<Item = FullSideEffect<'_>> {
         iter_side_effects(self.sol, self.key)
     }
     /// Iterates over booster's side effects.
-    pub fn iter_side_effects_mut(&mut self) -> SideEffectIter {
+    pub fn iter_side_effects_mut(&mut self) -> SideEffectIter<'_> {
         let uad_booster = self.sol.uad.items.get(self.key).get_booster().unwrap();
         let effects_with_chances = uad_booster
             .get_a_effect_datas()
@@ -66,7 +66,7 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn iter_side_effects(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = FullSideEffect> {
+fn iter_side_effects(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
     let uad_booster = sol.uad.items.get(item_key).get_booster().unwrap();
     uad_booster
         .get_a_effect_datas()

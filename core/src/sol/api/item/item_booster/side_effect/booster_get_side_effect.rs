@@ -14,16 +14,16 @@ use crate::{
 };
 
 impl<'a> Booster<'a> {
-    pub fn get_side_effect(&self, effect_id: &EffectId) -> SideEffect {
+    pub fn get_side_effect(&self, effect_id: &EffectId) -> SideEffect<'_> {
         get_side_effect(self.sol, self.key, effect_id)
     }
 }
 
 impl<'a> BoosterMut<'a> {
-    pub fn get_side_effect(&self, effect_id: &EffectId) -> SideEffect {
+    pub fn get_side_effect(&self, effect_id: &EffectId) -> SideEffect<'_> {
         get_side_effect(self.sol, self.key, effect_id)
     }
-    pub fn get_side_effect_mut(&mut self, effect_id: &EffectId) -> SideEffectMut {
+    pub fn get_side_effect_mut(&mut self, effect_id: &EffectId) -> SideEffectMut<'_> {
         let a_effect_id = ad::AEffectId::from(effect_id);
         match get_side_effect_chance_attr_id(&self.sol.uad.src, &a_effect_id) {
             Some(chance_a_attr_id) => SideEffectMut::Full(FullSideEffectMut::new(

@@ -26,7 +26,7 @@ impl<'iter, 'lend> Lending<'lend> for ProjIter<'iter> {
     type Lend = ProjMut<'lend>;
 }
 impl<'iter> Lender for ProjIter<'iter> {
-    fn next(&mut self) -> Option<ProjMut> {
+    fn next(&mut self) -> Option<ProjMut<'_>> {
         let projectee_item_key = *self.projectee_keys.get(self.index)?;
         self.index += 1;
         Some(ProjMut::new(self.sol, self.key, projectee_item_key))
@@ -35,23 +35,23 @@ impl<'iter> Lender for ProjIter<'iter> {
 
 impl<'a> ProjEffect<'a> {
     /// Iterates over projected effect's projections.
-    pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj> {
+    pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj<'_>> {
         iter_projs(self.sol, self.key)
     }
 }
 
 impl<'a> ProjEffectMut<'a> {
     /// Iterates over projected effect's projections.
-    pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj> {
+    pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj<'_>> {
         iter_projs(self.sol, self.key)
     }
     /// Iterates over projected effect's projections.
-    pub fn iter_projs_mut(&mut self) -> ProjIter {
+    pub fn iter_projs_mut(&mut self) -> ProjIter<'_> {
         let projectee_keys = iter_projectee_item_keys(self.sol, self.key).collect();
         ProjIter::new(self.sol, self.key, projectee_keys)
     }
 }
 
-fn iter_projs(sol: &SolarSystem, item_key: ItemKey) -> impl ExactSizeIterator<Item = Proj> {
+fn iter_projs(sol: &SolarSystem, item_key: ItemKey) -> impl ExactSizeIterator<Item = Proj<'_>> {
     iter_projectee_item_keys(sol, item_key).map(move |projectee_item_key| Proj::new(sol, projectee_item_key))
 }

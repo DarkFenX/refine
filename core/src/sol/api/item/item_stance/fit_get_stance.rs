@@ -4,16 +4,16 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn get_stance(&self) -> Option<Stance> {
+    pub fn get_stance(&self) -> Option<Stance<'_>> {
         get_stance(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn get_stance(&self) -> Option<Stance> {
+    pub fn get_stance(&self) -> Option<Stance<'_>> {
         get_stance(self.sol, self.key)
     }
-    pub fn get_stance_mut(&mut self) -> Option<StanceMut> {
+    pub fn get_stance_mut(&mut self) -> Option<StanceMut<'_>> {
         self.sol
             .uad
             .fits
@@ -23,7 +23,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_stance(sol: &SolarSystem, fit_key: FitKey) -> Option<Stance> {
+fn get_stance(sol: &SolarSystem, fit_key: FitKey) -> Option<Stance<'_>> {
     sol.uad
         .fits
         .get(fit_key)

@@ -13,11 +13,11 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_item(&self, item_id: &ItemId) -> Result<Item, GetItemError> {
+    pub fn get_item(&self, item_id: &ItemId) -> Result<Item<'_>, GetItemError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         Ok(self.internal_get_item(item_key))
     }
-    pub fn internal_get_item(&self, item_key: ItemKey) -> Item {
+    pub fn internal_get_item(&self, item_key: ItemKey) -> Item<'_> {
         let uad_item = self.uad.items.get(item_key);
         match uad_item {
             UadItem::Autocharge(_) => Item::Autocharge(Autocharge::new(self, item_key)),
@@ -39,11 +39,11 @@ impl SolarSystem {
             UadItem::SwEffect(_) => Item::SwEffect(SwEffect::new(self, item_key)),
         }
     }
-    pub fn get_item_mut(&mut self, item_id: &ItemId) -> Result<ItemMut, GetItemError> {
+    pub fn get_item_mut(&mut self, item_id: &ItemId) -> Result<ItemMut<'_>, GetItemError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         Ok(self.internal_get_item_mut(item_key))
     }
-    pub fn internal_get_item_mut(&mut self, item_key: ItemKey) -> ItemMut {
+    pub fn internal_get_item_mut(&mut self, item_key: ItemKey) -> ItemMut<'_> {
         let uad_item = self.uad.items.get(item_key);
         match uad_item {
             UadItem::Autocharge(_) => ItemMut::Autocharge(AutochargeMut::new(self, item_key)),

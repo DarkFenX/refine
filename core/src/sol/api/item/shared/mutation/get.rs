@@ -4,13 +4,13 @@ use crate::sol::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn api_get_item_mutation(&self, item_key: ItemKey) -> Option<Mutation> {
+    pub(in crate::sol::api) fn api_get_item_mutation(&self, item_key: ItemKey) -> Option<Mutation<'_>> {
         item_has_mutation_cache(self, item_key).map(|v| match v {
             true => Mutation::Effective(EffectiveMutation::new(self, item_key)),
             false => Mutation::Incomplete(IncompleteMutation::new(self, item_key)),
         })
     }
-    pub(in crate::sol::api) fn api_get_item_mutation_mut(&mut self, item_key: ItemKey) -> Option<MutationMut> {
+    pub(in crate::sol::api) fn api_get_item_mutation_mut(&mut self, item_key: ItemKey) -> Option<MutationMut<'_>> {
         item_has_mutation_cache(self, item_key).map(|v| match v {
             true => MutationMut::Effective(EffectiveMutationMut::new(self, item_key)),
             false => MutationMut::Incomplete(IncompleteMutationMut::new(self, item_key)),

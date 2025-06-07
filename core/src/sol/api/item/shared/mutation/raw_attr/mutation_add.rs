@@ -12,7 +12,7 @@ impl<'a> MutationMut<'a> {
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
-    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut, AttrMutateRawError> {
+    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.mutate_raw(attr_id, roll),
             Self::Incomplete(incomplete_mutation) => incomplete_mutation.mutate_raw(attr_id, roll),
@@ -25,7 +25,7 @@ impl<'a> EffectiveMutationMut<'a> {
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
-    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut, AttrMutateRawError> {
+    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
         mutate_raw(self.sol, self.item_key, attr_id, roll)
     }
 }
@@ -35,7 +35,7 @@ impl<'a> IncompleteMutationMut<'a> {
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
-    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut, AttrMutateRawError> {
+    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
         mutate_raw(self.sol, self.item_key, attr_id, roll)
     }
 }
@@ -45,7 +45,7 @@ fn mutate_raw(
     item_key: ItemKey,
     a_attr_id: ad::AAttrId,
     roll: UnitInterval,
-) -> Result<RawMAttrMut, AttrMutateRawError> {
+) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
     match sol
         .uad
         .items

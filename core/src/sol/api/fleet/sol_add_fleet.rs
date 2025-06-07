@@ -1,7 +1,7 @@
 use crate::sol::{FleetKey, SolarSystem, api::FleetMut, uad::fleet::UadFleet};
 
 impl SolarSystem {
-    pub fn add_fleet(&mut self) -> FleetMut {
+    pub fn add_fleet(&mut self) -> FleetMut<'_> {
         let fleet_key = self.add_fleet_internal();
         FleetMut::new(self, fleet_key)
     }

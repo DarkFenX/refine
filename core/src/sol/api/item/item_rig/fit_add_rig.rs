@@ -22,7 +22,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_rig(&mut self, type_id: ItemTypeId) -> RigMut {
+    pub fn add_rig(&mut self, type_id: ItemTypeId) -> RigMut<'_> {
         let item_key = self.sol.internal_add_rig(self.key, type_id);
         RigMut::new(self.sol, item_key)
     }

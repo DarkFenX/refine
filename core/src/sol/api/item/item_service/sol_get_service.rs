@@ -7,12 +7,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_service(&self, item_id: &ItemId) -> Result<Service, GetServiceError> {
+    pub fn get_service(&self, item_id: &ItemId) -> Result<Service<'_>, GetServiceError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_service()?;
         Ok(Service::new(self, item_key))
     }
-    pub fn get_service_mut(&mut self, item_id: &ItemId) -> Result<ServiceMut, GetServiceError> {
+    pub fn get_service_mut(&mut self, item_id: &ItemId) -> Result<ServiceMut<'_>, GetServiceError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_service()?;
         Ok(ServiceMut::new(self, item_key))

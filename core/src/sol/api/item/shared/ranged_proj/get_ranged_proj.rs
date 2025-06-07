@@ -11,7 +11,7 @@ impl SolarSystem {
         &self,
         projector_item_key: ItemKey,
         projectee_item_id: &ItemId,
-    ) -> Result<RangedProj, GetRangedProjError> {
+    ) -> Result<RangedProj<'_>, GetRangedProjError> {
         let projectee_item_key = self.internal_get_ranged_projectee_item_key(projector_item_key, projectee_item_id)?;
         Ok(RangedProj::new(self, projector_item_key, projectee_item_key))
     }
@@ -19,7 +19,7 @@ impl SolarSystem {
         &mut self,
         projector_item_key: ItemKey,
         projectee_item_id: &ItemId,
-    ) -> Result<RangedProjMut, GetRangedProjError> {
+    ) -> Result<RangedProjMut<'_>, GetRangedProjError> {
         let projectee_item_key = self.internal_get_ranged_projectee_item_key(projector_item_key, projectee_item_id)?;
         Ok(RangedProjMut::new(self, projector_item_key, projectee_item_key))
     }

@@ -27,7 +27,7 @@ impl<'iter, 'lend> Lending<'lend> for RangedProjIter<'iter> {
     type Lend = RangedProjMut<'lend>;
 }
 impl<'iter> Lender for RangedProjIter<'iter> {
-    fn next(&mut self) -> Option<RangedProjMut> {
+    fn next(&mut self) -> Option<RangedProjMut<'_>> {
         let projectee_item_key = *self.projectee_keys.get(self.index)?;
         self.index += 1;
         Some(RangedProjMut::new(self.sol, self.key, projectee_item_key))
@@ -37,7 +37,7 @@ impl<'iter> Lender for RangedProjIter<'iter> {
 pub(in crate::sol::api) fn iter_ranged_projs(
     sol: &SolarSystem,
     item_key: ItemKey,
-) -> impl ExactSizeIterator<Item = RangedProj> {
+) -> impl ExactSizeIterator<Item = RangedProj<'_>> {
     iter_projectee_item_keys(sol, item_key)
         .map(move |projectee_item_key| RangedProj::new(sol, item_key, projectee_item_key))
 }

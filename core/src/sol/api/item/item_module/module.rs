@@ -12,7 +12,7 @@ impl<'a> Module<'a> {
     pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_fit(&self) -> Fit {
+    pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
     pub fn get_state(&self) -> ModuleState {
@@ -24,7 +24,7 @@ impl<'a> Module<'a> {
     pub fn get_pos(&self) -> Idx {
         get_pos(self.sol, self.key)
     }
-    pub fn get_charge(&self) -> Option<Charge> {
+    pub fn get_charge(&self) -> Option<Charge<'_>> {
         get_charge(self.sol, self.key)
     }
 }
@@ -46,10 +46,10 @@ impl<'a> ModuleMut<'a> {
     pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_fit(&self) -> Fit {
+    pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
-    pub fn get_fit_mut(&mut self) -> FitMut {
+    pub fn get_fit_mut(&mut self) -> FitMut<'_> {
         let fit_key = get_uad_module(self.sol, self.key).get_fit_key();
         FitMut::new(self.sol, fit_key)
     }
@@ -62,10 +62,10 @@ impl<'a> ModuleMut<'a> {
     pub fn get_pos(&self) -> Idx {
         get_pos(self.sol, self.key)
     }
-    pub fn get_charge(&self) -> Option<Charge> {
+    pub fn get_charge(&self) -> Option<Charge<'_>> {
         get_charge(self.sol, self.key)
     }
-    pub fn get_charge_mut(&mut self) -> Option<ChargeMut> {
+    pub fn get_charge_mut(&mut self) -> Option<ChargeMut<'_>> {
         get_uad_module(self.sol, self.key)
             .get_charge_item_key()
             .map(|charge_key| ChargeMut::new(self.sol, charge_key))
@@ -87,7 +87,7 @@ impl<'a> ItemMutSealed for ModuleMut<'a> {
 impl<'a> ItemCommon for ModuleMut<'a> {}
 impl<'a> ItemMutCommon for ModuleMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit {
+fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit<'_> {
     let fit_key = get_uad_module(sol, item_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
@@ -100,7 +100,7 @@ fn get_rack(sol: &SolarSystem, item_key: ItemKey) -> ModRack {
 fn get_pos(sol: &SolarSystem, item_key: ItemKey) -> Idx {
     get_uad_module(sol, item_key).get_pos()
 }
-fn get_charge(sol: &SolarSystem, item_key: ItemKey) -> Option<Charge> {
+fn get_charge(sol: &SolarSystem, item_key: ItemKey) -> Option<Charge<'_>> {
     get_uad_module(sol, item_key)
         .get_charge_item_key()
         .map(|charge_key| Charge::new(sol, charge_key))

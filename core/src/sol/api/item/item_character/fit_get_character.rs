@@ -4,16 +4,16 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn get_character(&self) -> Option<Character> {
+    pub fn get_character(&self) -> Option<Character<'_>> {
         get_character(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn get_character(&self) -> Option<Character> {
+    pub fn get_character(&self) -> Option<Character<'_>> {
         get_character(self.sol, self.key)
     }
-    pub fn get_character_mut(&mut self) -> Option<CharacterMut> {
+    pub fn get_character_mut(&mut self) -> Option<CharacterMut<'_>> {
         self.sol
             .uad
             .fits
@@ -23,7 +23,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_character(sol: &SolarSystem, fit_key: FitKey) -> Option<Character> {
+fn get_character(sol: &SolarSystem, fit_key: FitKey) -> Option<Character<'_>> {
     sol.uad
         .fits
         .get(fit_key)

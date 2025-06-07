@@ -7,12 +7,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_proj_effect(&self, item_id: &ItemId) -> Result<ProjEffect, GetProjEffectError> {
+    pub fn get_proj_effect(&self, item_id: &ItemId) -> Result<ProjEffect<'_>, GetProjEffectError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_proj_effect()?;
         Ok(ProjEffect::new(self, item_key))
     }
-    pub fn get_proj_effect_mut(&mut self, item_id: &ItemId) -> Result<ProjEffectMut, GetProjEffectError> {
+    pub fn get_proj_effect_mut(&mut self, item_id: &ItemId) -> Result<ProjEffectMut<'_>, GetProjEffectError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_proj_effect()?;
         Ok(ProjEffectMut::new(self, item_key))

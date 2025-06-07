@@ -4,13 +4,13 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn iter_drones(&self) -> impl ExactSizeIterator<Item = Drone> {
+    pub fn iter_drones(&self) -> impl ExactSizeIterator<Item = Drone<'_>> {
         iter_drones(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn iter_drones(&self) -> impl ExactSizeIterator<Item = Drone> {
+    pub fn iter_drones(&self) -> impl ExactSizeIterator<Item = Drone<'_>> {
         iter_drones(self.sol, self.key)
     }
     pub fn iter_drones_mut(&mut self) -> MutIter<'_, DroneMut<'_>> {
@@ -19,7 +19,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_drones(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Drone> {
+fn iter_drones(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Drone<'_>> {
     sol.uad
         .fits
         .get(fit_key)

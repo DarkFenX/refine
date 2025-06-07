@@ -27,7 +27,7 @@ impl SolarSystem {
 }
 
 impl<'a> ModuleMut<'a> {
-    pub fn mutate(&mut self, mutator_id: ItemTypeId) -> Result<MutationMut, AddMutationError> {
+    pub fn mutate(&mut self, mutator_id: ItemTypeId) -> Result<MutationMut<'_>, AddMutationError> {
         let mutation = ItemMutationRequest {
             mutator_id,
             attrs: Vec::new(),

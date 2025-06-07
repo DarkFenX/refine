@@ -4,16 +4,16 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn get_ship(&self) -> Option<Ship> {
+    pub fn get_ship(&self) -> Option<Ship<'_>> {
         get_ship(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn get_ship(&self) -> Option<Ship> {
+    pub fn get_ship(&self) -> Option<Ship<'_>> {
         get_ship(self.sol, self.key)
     }
-    pub fn get_ship_mut(&mut self) -> Option<ShipMut> {
+    pub fn get_ship_mut(&mut self) -> Option<ShipMut<'_>> {
         self.sol
             .uad
             .fits
@@ -23,6 +23,6 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_ship(sol: &SolarSystem, fit_key: FitKey) -> Option<Ship> {
+fn get_ship(sol: &SolarSystem, fit_key: FitKey) -> Option<Ship<'_>> {
     sol.uad.fits.get(fit_key).ship.map(|item_key| Ship::new(sol, item_key))
 }

@@ -4,7 +4,7 @@ use crate::sol::{
 };
 
 impl SolarSystem {
-    pub fn iter_proj_effects(&self) -> impl ExactSizeIterator<Item = ProjEffect> {
+    pub fn iter_proj_effects(&self) -> impl ExactSizeIterator<Item = ProjEffect<'_>> {
         self.uad
             .proj_effects
             .iter()

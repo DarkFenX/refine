@@ -4,13 +4,13 @@ use crate::sol::{
 };
 
 impl<'a> Fleet<'a> {
-    pub fn iter_fits(&self) -> impl ExactSizeIterator<Item = Fit> {
+    pub fn iter_fits(&self) -> impl ExactSizeIterator<Item = Fit<'_>> {
         iter_fits(self.sol, self.key)
     }
 }
 
 impl<'a> FleetMut<'a> {
-    pub fn iter_fits(&self) -> impl ExactSizeIterator<Item = Fit> {
+    pub fn iter_fits(&self) -> impl ExactSizeIterator<Item = Fit<'_>> {
         iter_fits(self.sol, self.key)
     }
     pub fn iter_fits_mut(&mut self) -> MutIter<'_, FitMut<'_>> {
@@ -19,7 +19,7 @@ impl<'a> FleetMut<'a> {
     }
 }
 
-fn iter_fits(sol: &SolarSystem, fleet_key: FleetKey) -> impl ExactSizeIterator<Item = Fit> {
+fn iter_fits(sol: &SolarSystem, fleet_key: FleetKey) -> impl ExactSizeIterator<Item = Fit<'_>> {
     let uad_fleet = sol.uad.fleets.get(fleet_key);
     uad_fleet.iter_fits().map(|&fit_key| Fit::new(sol, fit_key))
 }

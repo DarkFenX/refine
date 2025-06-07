@@ -7,12 +7,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_ship(&self, item_id: &ItemId) -> Result<Ship, GetShipError> {
+    pub fn get_ship(&self, item_id: &ItemId) -> Result<Ship<'_>, GetShipError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_ship()?;
         Ok(Ship::new(self, item_key))
     }
-    pub fn get_ship_mut(&mut self, item_id: &ItemId) -> Result<ShipMut, GetShipError> {
+    pub fn get_ship_mut(&mut self, item_id: &ItemId) -> Result<ShipMut<'_>, GetShipError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_ship()?;
         Ok(ShipMut::new(self, item_key))

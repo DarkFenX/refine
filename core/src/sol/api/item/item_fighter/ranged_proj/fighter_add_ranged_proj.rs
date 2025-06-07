@@ -80,7 +80,7 @@ impl<'a> FighterMut<'a> {
         &mut self,
         projectee_item_id: &ItemId,
         range: Option<AttrVal>,
-    ) -> Result<ProjMut, AddRangedProjError> {
+    ) -> Result<ProjMut<'_>, AddRangedProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol
             .internal_add_fighter_proj(self.key, projectee_item_key, range)?;

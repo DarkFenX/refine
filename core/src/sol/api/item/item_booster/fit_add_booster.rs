@@ -22,7 +22,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_booster(&mut self, type_id: ItemTypeId) -> BoosterMut {
+    pub fn add_booster(&mut self, type_id: ItemTypeId) -> BoosterMut<'_> {
         let item_key = self.sol.internal_add_booster(self.key, type_id);
         BoosterMut::new(self.sol, item_key)
     }

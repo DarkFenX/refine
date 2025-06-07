@@ -4,13 +4,13 @@ use crate::sol::{
 };
 
 impl<'a> Fighter<'a> {
-    pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge> {
+    pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge<'_>> {
         iter_autocharges(self.sol, self.key)
     }
 }
 
 impl<'a> FighterMut<'a> {
-    pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge> {
+    pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge<'_>> {
         iter_autocharges(self.sol, self.key)
     }
     pub fn iter_autocharges_mut(&mut self) -> MutIter<'_, AutochargeMut<'_>> {
@@ -29,7 +29,7 @@ impl<'a> FighterMut<'a> {
     }
 }
 
-fn iter_autocharges(sol: &SolarSystem, fighter_key: ItemKey) -> impl Iterator<Item = Autocharge> {
+fn iter_autocharges(sol: &SolarSystem, fighter_key: ItemKey) -> impl Iterator<Item = Autocharge<'_>> {
     sol.uad
         .items
         .get(fighter_key)

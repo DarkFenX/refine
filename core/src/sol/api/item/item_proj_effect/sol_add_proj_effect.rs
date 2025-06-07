@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffectMut {
+    pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffectMut<'_> {
         let item_key = self.internal_add_proj_effect(type_id);
         ProjEffectMut::new(self, item_key)
     }

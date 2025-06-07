@@ -2,7 +2,7 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{
     ad,
-    sol::{AttrVal, Count, ItemKey, svc::calc::Calc, uad::Uad},
+    sol::{AttrVal, ItemKey, svc::calc::Calc, uad::Uad},
 };
 
 pub(super) fn get_max_resource(

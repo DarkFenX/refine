@@ -9,7 +9,7 @@ use crate::{
 
 impl<'a> EffectiveMutation<'a> {
     /// Get mutation's full mutated attribute for requested attribute ID.
-    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr, GetFullMAttrError> {
+    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, GetFullMAttrError> {
         check_prereqs(self.sol, self.item_key, &attr_id)?;
         Ok(FullMAttr::new(self.sol, self.item_key, attr_id))
     }
@@ -17,12 +17,12 @@ impl<'a> EffectiveMutation<'a> {
 
 impl<'a> EffectiveMutationMut<'a> {
     /// Get mutation's full mutated attribute for requested attribute ID.
-    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr, GetFullMAttrError> {
+    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, GetFullMAttrError> {
         check_prereqs(self.sol, self.item_key, &attr_id)?;
         Ok(FullMAttr::new(self.sol, self.item_key, attr_id))
     }
     /// Get mutation's full mutated attribute for requested attribute ID.
-    pub fn get_full_mattr_mut(&mut self, attr_id: AttrId) -> Result<FullMAttrMut, GetFullMAttrError> {
+    pub fn get_full_mattr_mut(&mut self, attr_id: AttrId) -> Result<FullMAttrMut<'_>, GetFullMAttrError> {
         check_prereqs(self.sol, self.item_key, &attr_id)?;
         Ok(FullMAttrMut::new(self.sol, self.item_key, attr_id))
     }

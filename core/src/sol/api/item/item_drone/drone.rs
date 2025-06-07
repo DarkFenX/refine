@@ -12,7 +12,7 @@ impl<'a> Drone<'a> {
     pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_fit(&self) -> Fit {
+    pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
     pub fn get_state(&self) -> MinionState {
@@ -37,10 +37,10 @@ impl<'a> DroneMut<'a> {
     pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_fit(&self) -> Fit {
+    pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
-    pub fn get_fit_mut(&mut self) -> FitMut {
+    pub fn get_fit_mut(&mut self) -> FitMut<'_> {
         let fit_key = get_uad_drone(self.sol, self.key).get_fit_key();
         FitMut::new(self.sol, fit_key)
     }
@@ -64,7 +64,7 @@ impl<'a> ItemMutSealed for DroneMut<'a> {
 impl<'a> ItemCommon for DroneMut<'a> {}
 impl<'a> ItemMutCommon for DroneMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit {
+fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit<'_> {
     let fit_key = get_uad_drone(sol, item_key).get_fit_key();
     Fit::new(sol, fit_key)
 }

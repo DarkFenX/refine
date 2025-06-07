@@ -7,12 +7,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_stance(&self, item_id: &ItemId) -> Result<Stance, GetStanceError> {
+    pub fn get_stance(&self, item_id: &ItemId) -> Result<Stance<'_>, GetStanceError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_stance()?;
         Ok(Stance::new(self, item_key))
     }
-    pub fn get_stance_mut(&mut self, item_id: &ItemId) -> Result<StanceMut, GetStanceError> {
+    pub fn get_stance_mut(&mut self, item_id: &ItemId) -> Result<StanceMut<'_>, GetStanceError> {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         self.uad.items.get(item_key).get_stance()?;
         Ok(StanceMut::new(self, item_key))

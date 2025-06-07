@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn add_sw_effect(&mut self, type_id: ItemTypeId) -> SwEffectMut {
+    pub fn add_sw_effect(&mut self, type_id: ItemTypeId) -> SwEffectMut<'_> {
         let item_key = self.internal_add_sw_effect(type_id);
         SwEffectMut::new(self, item_key)
     }

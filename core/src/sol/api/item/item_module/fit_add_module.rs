@@ -127,7 +127,7 @@ impl<'a> FitMut<'a> {
         pos_mode: AddMode,
         type_id: ItemTypeId,
         state: ModuleState,
-    ) -> ModuleMut {
+    ) -> ModuleMut<'_> {
         let item_key = self
             .sol
             .internal_add_module(self.key, rack, pos_mode, type_id, state, None, None);

@@ -14,10 +14,10 @@ impl HSolarSystem {
             inner: Arc::new(Mutex::new(HSolarSystemInner::new(id, core_sol))),
         }
     }
-    pub(crate) fn try_lock(&self) -> Result<MutexGuard<HSolarSystemInner>, TryLockError> {
+    pub(crate) fn try_lock(&self) -> Result<MutexGuard<'_, HSolarSystemInner>, TryLockError> {
         self.inner.try_lock()
     }
-    pub(crate) async fn lock(&self) -> MutexGuard<HSolarSystemInner> {
+    pub(crate) async fn lock(&self) -> MutexGuard<'_, HSolarSystemInner> {
         self.inner.lock().await
     }
 }

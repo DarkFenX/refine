@@ -22,7 +22,7 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffectMut {
+    pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffectMut<'_> {
         let item_key = self.sol.internal_add_fw_effect(self.key, type_id);
         FwEffectMut::new(self.sol, item_key)
     }

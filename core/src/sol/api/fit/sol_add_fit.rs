@@ -1,7 +1,7 @@
 use crate::sol::{FitKey, SolarSystem, api::FitMut, uad::fit::UadFit};
 
 impl SolarSystem {
-    pub fn add_fit(&mut self) -> FitMut {
+    pub fn add_fit(&mut self) -> FitMut<'_> {
         let fit_key = self.add_fit_internal();
         FitMut::new(self, fit_key)
     }

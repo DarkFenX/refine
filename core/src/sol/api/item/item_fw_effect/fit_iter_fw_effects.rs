@@ -4,13 +4,13 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn iter_fw_effects(&self) -> impl ExactSizeIterator<Item = FwEffect> {
+    pub fn iter_fw_effects(&self) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
         iter_fw_effects(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn iter_fw_effects(&self) -> impl ExactSizeIterator<Item = FwEffect> {
+    pub fn iter_fw_effects(&self) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
         iter_fw_effects(self.sol, self.key)
     }
     pub fn iter_fw_effects_mut(&mut self) -> MutIter<'_, FwEffectMut<'_>> {
@@ -19,7 +19,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_fw_effects(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = FwEffect> {
+fn iter_fw_effects(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
     sol.uad
         .fits
         .get(fit_key)

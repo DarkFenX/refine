@@ -4,13 +4,13 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn iter_skills(&self) -> impl ExactSizeIterator<Item = Skill> {
+    pub fn iter_skills(&self) -> impl ExactSizeIterator<Item = Skill<'_>> {
         iter_skills(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn iter_skills(&self) -> impl ExactSizeIterator<Item = Skill> {
+    pub fn iter_skills(&self) -> impl ExactSizeIterator<Item = Skill<'_>> {
         iter_skills(self.sol, self.key)
     }
     pub fn iter_skills_mut(&mut self) -> MutIter<'_, SkillMut<'_>> {
@@ -27,7 +27,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_skills(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Skill> {
+fn iter_skills(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Skill<'_>> {
     sol.uad
         .fits
         .get(fit_key)

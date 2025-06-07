@@ -4,22 +4,22 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn get_fleet(&self) -> Option<Fleet> {
+    pub fn get_fleet(&self) -> Option<Fleet<'_>> {
         get_fleet(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn get_fleet(&self) -> Option<Fleet> {
+    pub fn get_fleet(&self) -> Option<Fleet<'_>> {
         get_fleet(self.sol, self.key)
     }
-    pub fn get_fleet_mut(&mut self) -> Option<FleetMut> {
+    pub fn get_fleet_mut(&mut self) -> Option<FleetMut<'_>> {
         let uad_fleet = self.sol.uad.fits.get(self.key);
         uad_fleet.fleet.map(|fleet_key| FleetMut::new(self.sol, fleet_key))
     }
 }
 
-fn get_fleet(sol: &SolarSystem, fit_key: FitKey) -> Option<Fleet> {
+fn get_fleet(sol: &SolarSystem, fit_key: FitKey) -> Option<Fleet<'_>> {
     let uad_fleet = sol.uad.fits.get(fit_key);
     uad_fleet.fleet.map(|fleet_key| Fleet::new(sol, fleet_key))
 }

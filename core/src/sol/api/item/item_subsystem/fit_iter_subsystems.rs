@@ -4,13 +4,13 @@ use crate::sol::{
 };
 
 impl<'a> Fit<'a> {
-    pub fn iter_subsystems(&self) -> impl ExactSizeIterator<Item = Subsystem> {
+    pub fn iter_subsystems(&self) -> impl ExactSizeIterator<Item = Subsystem<'_>> {
         iter_subsystems(self.sol, self.key)
     }
 }
 
 impl<'a> FitMut<'a> {
-    pub fn iter_subsystems(&self) -> impl ExactSizeIterator<Item = Subsystem> {
+    pub fn iter_subsystems(&self) -> impl ExactSizeIterator<Item = Subsystem<'_>> {
         iter_subsystems(self.sol, self.key)
     }
     pub fn iter_subsystems_mut(&mut self) -> MutIter<'_, SubsystemMut<'_>> {
@@ -19,7 +19,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_subsystems(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Subsystem> {
+fn iter_subsystems(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Subsystem<'_>> {
     sol.uad
         .fits
         .get(fit_key)

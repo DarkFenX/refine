@@ -10,18 +10,18 @@ use crate::{
 
 impl<'a> EffectiveMutation<'a> {
     /// Iterates over mutation's full mutated attributes.
-    pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr> {
+    pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr<'_>> {
         iter_full_mattrs(self.sol, self.item_key)
     }
 }
 
 impl<'a> EffectiveMutationMut<'a> {
     /// Iterates over mutation's full mutated attributes.
-    pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr> {
+    pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr<'_>> {
         iter_full_mattrs(self.sol, self.item_key)
     }
     /// Iterates over mutation's full mutated attributes.
-    pub fn iter_full_mattrs_mut(&mut self) -> FullMAttrIter {
+    pub fn iter_full_mattrs_mut(&mut self) -> FullMAttrIter<'_> {
         FullMAttrIter::new(self.sol, self.item_key)
     }
 }
@@ -48,7 +48,7 @@ impl<'iter, 'lend> Lending<'lend> for FullMAttrIter<'iter> {
     type Lend = FullMAttrMut<'lend>;
 }
 impl<'iter> Lender for FullMAttrIter<'iter> {
-    fn next(&mut self) -> Option<FullMAttrMut> {
+    fn next(&mut self) -> Option<FullMAttrMut<'_>> {
         let a_attr_id = *self.a_attr_ids.get(self.index)?;
         self.index += 1;
         Some(FullMAttrMut::new(self.sol, self.item_key, a_attr_id))
@@ -69,6 +69,6 @@ fn full_mutated_a_attr_id_iter(sol: &SolarSystem, item_key: ItemKey) -> impl Ite
         .copied()
 }
 
-fn iter_full_mattrs(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = FullMAttr> + use<'_> {
+fn iter_full_mattrs(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = FullMAttr<'_>> + use<'_> {
     full_mutated_a_attr_id_iter(sol, item_key).map(move |a_attr_id| FullMAttr::new(sol, item_key, a_attr_id))
 }

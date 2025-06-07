@@ -14,10 +14,10 @@ impl<'a> Autocharge<'a> {
     pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_fit(&self) -> Fit {
+    pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
-    pub fn get_cont_item(&self) -> Item {
+    pub fn get_cont_item(&self) -> Item<'_> {
         get_cont_item(self.sol, self.key)
     }
     pub fn get_cont_effect_id(&self) -> EffectId {
@@ -45,17 +45,17 @@ impl<'a> AutochargeMut<'a> {
     pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
         Self { sol, key }
     }
-    pub fn get_fit(&self) -> Fit {
+    pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
-    pub fn get_fit_mut(&mut self) -> FitMut {
+    pub fn get_fit_mut(&mut self) -> FitMut<'_> {
         let fit_key = get_uad_autocharge(self.sol, self.key).get_fit_key();
         FitMut::new(self.sol, fit_key)
     }
-    pub fn get_cont_item(&self) -> Item {
+    pub fn get_cont_item(&self) -> Item<'_> {
         get_cont_item(self.sol, self.key)
     }
-    pub fn get_cont_item_mut(&mut self) -> ItemMut {
+    pub fn get_cont_item_mut(&mut self) -> ItemMut<'_> {
         let cont_item_key = get_uad_autocharge(self.sol, self.key).get_cont_item_key();
         ItemMut::new(self.sol, cont_item_key)
     }
@@ -82,11 +82,11 @@ impl<'a> ItemMutSealed for AutochargeMut<'a> {
 impl<'a> ItemCommon for AutochargeMut<'a> {}
 impl<'a> ItemMutCommon for AutochargeMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit {
+fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit<'_> {
     let fit_key = get_uad_autocharge(sol, item_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_cont_item(sol: &SolarSystem, item_key: ItemKey) -> Item {
+fn get_cont_item(sol: &SolarSystem, item_key: ItemKey) -> Item<'_> {
     let cont_item_key = get_uad_autocharge(sol, item_key).get_cont_item_key();
     Item::new(sol, cont_item_key)
 }
