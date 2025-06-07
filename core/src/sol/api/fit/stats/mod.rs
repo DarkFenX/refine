@@ -1,1 +1,1 @@
-mod rig_slots;
+mod slots;
