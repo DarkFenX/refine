@@ -112,16 +112,6 @@ impl Vast {
         {
             return false;
         }
-        if options.launched_support_fighter_count.enabled
-            && !fit_data.validate_launched_support_fighter_count_fast(
-                &options.launched_support_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
         if options.launched_light_fighter_count.enabled
             && !fit_data.validate_launched_light_fighter_count_fast(
                 &options.launched_light_fighter_count.kfs,
@@ -142,9 +132,9 @@ impl Vast {
         {
             return false;
         }
-        if options.launched_st_support_fighter_count.enabled
-            && !fit_data.validate_launched_st_support_fighter_count_fast(
-                &options.launched_st_support_fighter_count.kfs,
+        if options.launched_support_fighter_count.enabled
+            && !fit_data.validate_launched_support_fighter_count_fast(
+                &options.launched_support_fighter_count.kfs,
                 uad,
                 calc,
                 fit,
@@ -165,6 +155,16 @@ impl Vast {
         if options.launched_st_heavy_fighter_count.enabled
             && !fit_data.validate_launched_st_heavy_fighter_count_fast(
                 &options.launched_st_heavy_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.launched_st_support_fighter_count.enabled
+            && !fit_data.validate_launched_st_support_fighter_count_fast(
+                &options.launched_st_support_fighter_count.kfs,
                 uad,
                 calc,
                 fit,
@@ -285,16 +285,6 @@ impl Vast {
         {
             return false;
         }
-        if options.unlaunchable_support_fighter.enabled
-            && !fit_data.validate_unlaunchable_support_fighter_fast(
-                &options.unlaunchable_support_fighter.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
         if options.unlaunchable_light_fighter.enabled
             && !fit_data.validate_unlaunchable_light_fighter_fast(
                 &options.unlaunchable_light_fighter.kfs,
@@ -315,9 +305,9 @@ impl Vast {
         {
             return false;
         }
-        if options.unlaunchable_st_support_fighter.enabled
-            && !fit_data.validate_unlaunchable_st_support_fighter_fast(
-                &options.unlaunchable_st_support_fighter.kfs,
+        if options.unlaunchable_support_fighter.enabled
+            && !fit_data.validate_unlaunchable_support_fighter_fast(
+                &options.unlaunchable_support_fighter.kfs,
                 uad,
                 calc,
                 fit,
@@ -338,6 +328,16 @@ impl Vast {
         if options.unlaunchable_st_heavy_fighter.enabled
             && !fit_data.validate_unlaunchable_st_heavy_fighter_fast(
                 &options.unlaunchable_st_heavy_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.unlaunchable_st_support_fighter.enabled
+            && !fit_data.validate_unlaunchable_st_support_fighter_fast(
+                &options.unlaunchable_st_support_fighter.kfs,
                 uad,
                 calc,
                 fit,
@@ -462,14 +462,6 @@ impl Vast {
             result.launched_fighter_count =
                 fit_data.validate_launched_fighter_count_verbose(&options.launched_fighter_count.kfs, uad, calc, fit);
         }
-        if options.launched_support_fighter_count.enabled {
-            result.launched_support_fighter_count = fit_data.validate_launched_support_fighter_count_verbose(
-                &options.launched_support_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            );
-        }
         if options.launched_light_fighter_count.enabled {
             result.launched_light_fighter_count = fit_data.validate_launched_light_fighter_count_verbose(
                 &options.launched_light_fighter_count.kfs,
@@ -486,9 +478,9 @@ impl Vast {
                 fit,
             );
         }
-        if options.launched_st_support_fighter_count.enabled {
-            result.launched_st_support_fighter_count = fit_data.validate_launched_st_support_fighter_count_verbose(
-                &options.launched_st_support_fighter_count.kfs,
+        if options.launched_support_fighter_count.enabled {
+            result.launched_support_fighter_count = fit_data.validate_launched_support_fighter_count_verbose(
+                &options.launched_support_fighter_count.kfs,
                 uad,
                 calc,
                 fit,
@@ -505,6 +497,14 @@ impl Vast {
         if options.launched_st_heavy_fighter_count.enabled {
             result.launched_st_heavy_fighter_count = fit_data.validate_launched_st_heavy_fighter_count_verbose(
                 &options.launched_st_heavy_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.launched_st_support_fighter_count.enabled {
+            result.launched_st_support_fighter_count = fit_data.validate_launched_st_support_fighter_count_verbose(
+                &options.launched_st_support_fighter_count.kfs,
                 uad,
                 calc,
                 fit,
@@ -607,14 +607,6 @@ impl Vast {
             result.unlaunchable_fighter =
                 fit_data.validate_unlaunchable_fighter_verbose(&options.unlaunchable_fighter.kfs, uad, calc, fit);
         }
-        if options.unlaunchable_support_fighter.enabled {
-            result.unlaunchable_support_fighter = fit_data.validate_unlaunchable_support_fighter_verbose(
-                &options.unlaunchable_support_fighter.kfs,
-                uad,
-                calc,
-                fit,
-            );
-        }
         if options.unlaunchable_light_fighter.enabled {
             result.unlaunchable_light_fighter = fit_data.validate_unlaunchable_light_fighter_verbose(
                 &options.unlaunchable_light_fighter.kfs,
@@ -631,9 +623,9 @@ impl Vast {
                 fit,
             );
         }
-        if options.unlaunchable_st_support_fighter.enabled {
-            result.unlaunchable_st_support_fighter = fit_data.validate_unlaunchable_st_support_fighter_verbose(
-                &options.unlaunchable_st_support_fighter.kfs,
+        if options.unlaunchable_support_fighter.enabled {
+            result.unlaunchable_support_fighter = fit_data.validate_unlaunchable_support_fighter_verbose(
+                &options.unlaunchable_support_fighter.kfs,
                 uad,
                 calc,
                 fit,
@@ -650,6 +642,14 @@ impl Vast {
         if options.unlaunchable_st_heavy_fighter.enabled {
             result.unlaunchable_st_heavy_fighter = fit_data.validate_unlaunchable_st_heavy_fighter_verbose(
                 &options.unlaunchable_st_heavy_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.unlaunchable_st_support_fighter.enabled {
+            result.unlaunchable_st_support_fighter = fit_data.validate_unlaunchable_st_support_fighter_verbose(
+                &options.unlaunchable_st_support_fighter.kfs,
                 uad,
                 calc,
                 fit,

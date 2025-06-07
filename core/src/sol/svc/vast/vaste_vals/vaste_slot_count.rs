@@ -78,22 +78,6 @@ impl VastFitData {
     ) -> bool {
         validate_fast_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &self.fighters_online)
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_fast(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> bool {
-        validate_fast_unordered_set(
-            kfs,
-            uad,
-            calc,
-            fit.ship,
-            &ac::attrs::FTR_SUPPORT_SLOTS,
-            &self.support_fighters_online,
-        )
-    }
     pub(in crate::sol::svc::vast) fn validate_launched_light_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
@@ -126,7 +110,7 @@ impl VastFitData {
             &self.heavy_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_st_support_fighter_count_fast(
+    pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -138,8 +122,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
-            &self.st_support_fighters_online,
+            &ac::attrs::FTR_SUPPORT_SLOTS,
+            &self.support_fighters_online,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_st_light_fighter_count_fast(
@@ -172,6 +156,22 @@ impl VastFitData {
             fit.ship,
             &ac::attrs::FTR_ST_HEAVY_SLOTS,
             &self.st_heavy_fighters_online,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn validate_launched_st_support_fighter_count_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> bool {
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            fit.ship,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters_online,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slot_count_fast(
@@ -286,22 +286,6 @@ impl VastFitData {
     ) -> Option<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &self.fighters_online)
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_verbose(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> Option<ValSlotCountFail> {
-        validate_verbose_unordered_set(
-            kfs,
-            uad,
-            calc,
-            fit.ship,
-            &ac::attrs::FTR_SUPPORT_SLOTS,
-            &self.support_fighters_online,
-        )
-    }
     pub(in crate::sol::svc::vast) fn validate_launched_light_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
@@ -334,7 +318,7 @@ impl VastFitData {
             &self.heavy_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launched_st_support_fighter_count_verbose(
+    pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -346,8 +330,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
-            &self.st_support_fighters_online,
+            &ac::attrs::FTR_SUPPORT_SLOTS,
+            &self.support_fighters_online,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_st_light_fighter_count_verbose(
@@ -380,6 +364,22 @@ impl VastFitData {
             fit.ship,
             &ac::attrs::FTR_ST_HEAVY_SLOTS,
             &self.st_heavy_fighters_online,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn validate_launched_st_support_fighter_count_verbose(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> Option<ValSlotCountFail> {
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            fit.ship,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters_online,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slot_count_verbose(

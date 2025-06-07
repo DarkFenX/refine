@@ -45,22 +45,6 @@ impl VastFitData {
     ) -> bool {
         validate_fast(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_fast(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> bool {
-        validate_fast(
-            kfs,
-            uad,
-            calc,
-            fit.ship,
-            &ac::attrs::FTR_SUPPORT_SLOTS,
-            &self.support_fighters,
-        )
-    }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_fast(
         &self,
         kfs: &RSet<ItemKey>,
@@ -93,7 +77,7 @@ impl VastFitData {
             &self.heavy_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_support_fighter_fast(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -105,8 +89,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
-            &self.st_support_fighters,
+            &ac::attrs::FTR_SUPPORT_SLOTS,
+            &self.support_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_light_fighter_fast(
@@ -141,6 +125,22 @@ impl VastFitData {
             &self.st_heavy_fighters,
         )
     }
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_support_fighter_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> bool {
+        validate_fast(
+            kfs,
+            uad,
+            calc,
+            fit.ship,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters,
+        )
+    }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_slot_verbose(
         &self,
@@ -166,22 +166,6 @@ impl VastFitData {
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
-    }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_verbose(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> Option<ValUnusableSlotFail> {
-        validate_verbose(
-            kfs,
-            uad,
-            calc,
-            fit.ship,
-            &ac::attrs::FTR_SUPPORT_SLOTS,
-            &self.support_fighters,
-        )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_verbose(
         &self,
@@ -215,7 +199,7 @@ impl VastFitData {
             &self.heavy_fighters,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_support_fighter_verbose(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_support_fighter_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
@@ -227,8 +211,8 @@ impl VastFitData {
             uad,
             calc,
             fit.ship,
-            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
-            &self.st_support_fighters,
+            &ac::attrs::FTR_SUPPORT_SLOTS,
+            &self.support_fighters,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_light_fighter_verbose(
@@ -261,6 +245,22 @@ impl VastFitData {
             fit.ship,
             &ac::attrs::FTR_ST_HEAVY_SLOTS,
             &self.st_heavy_fighters,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_st_support_fighter_verbose(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> Option<ValUnusableSlotFail> {
+        validate_verbose(
+            kfs,
+            uad,
+            calc,
+            fit.ship,
+            &ac::attrs::FTR_ST_SUPPORT_SLOTS,
+            &self.st_support_fighters,
         )
     }
 }

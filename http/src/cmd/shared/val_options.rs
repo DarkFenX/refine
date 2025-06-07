@@ -24,17 +24,17 @@ pub(in crate::cmd) struct HValOptions {
     #[serde(default)]
     launched_fighter_count: Option<HValOption>,
     #[serde(default)]
-    launched_support_fighter_count: Option<HValOption>,
-    #[serde(default)]
     launched_light_fighter_count: Option<HValOption>,
     #[serde(default)]
     launched_heavy_fighter_count: Option<HValOption>,
     #[serde(default)]
-    launched_st_support_fighter_count: Option<HValOption>,
+    launched_support_fighter_count: Option<HValOption>,
     #[serde(default)]
     launched_st_light_fighter_count: Option<HValOption>,
     #[serde(default)]
     launched_st_heavy_fighter_count: Option<HValOption>,
+    #[serde(default)]
+    launched_st_support_fighter_count: Option<HValOption>,
     #[serde(default)]
     turret_slot_count: Option<HValOption>,
     #[serde(default)]
@@ -88,17 +88,17 @@ pub(in crate::cmd) struct HValOptions {
     #[serde(default)]
     unlaunchable_fighter: Option<HValOption>,
     #[serde(default)]
-    unlaunchable_support_fighter: Option<HValOption>,
-    #[serde(default)]
     unlaunchable_light_fighter: Option<HValOption>,
     #[serde(default)]
     unlaunchable_heavy_fighter: Option<HValOption>,
     #[serde(default)]
-    unlaunchable_st_support_fighter: Option<HValOption>,
+    unlaunchable_support_fighter: Option<HValOption>,
     #[serde(default)]
     unlaunchable_st_light_fighter: Option<HValOption>,
     #[serde(default)]
     unlaunchable_st_heavy_fighter: Option<HValOption>,
+    #[serde(default)]
+    unlaunchable_st_support_fighter: Option<HValOption>,
     #[serde(default)]
     ship_stance: Option<HValOption>,
     #[serde(default)]
@@ -146,10 +146,6 @@ impl HValOptions {
         process_option(&self.launched_drone_count, &mut core_options.launched_drone_count);
         process_option(&self.launched_fighter_count, &mut core_options.launched_fighter_count);
         process_option(
-            &self.launched_support_fighter_count,
-            &mut core_options.launched_support_fighter_count,
-        );
-        process_option(
             &self.launched_light_fighter_count,
             &mut core_options.launched_light_fighter_count,
         );
@@ -158,8 +154,8 @@ impl HValOptions {
             &mut core_options.launched_heavy_fighter_count,
         );
         process_option(
-            &self.launched_st_support_fighter_count,
-            &mut core_options.launched_st_support_fighter_count,
+            &self.launched_support_fighter_count,
+            &mut core_options.launched_support_fighter_count,
         );
         process_option(
             &self.launched_st_light_fighter_count,
@@ -168,6 +164,10 @@ impl HValOptions {
         process_option(
             &self.launched_st_heavy_fighter_count,
             &mut core_options.launched_st_heavy_fighter_count,
+        );
+        process_option(
+            &self.launched_st_support_fighter_count,
+            &mut core_options.launched_st_support_fighter_count,
         );
         process_option(&self.turret_slot_count, &mut core_options.turret_slot_count);
         process_option(&self.launcher_slot_count, &mut core_options.launcher_slot_count);
@@ -199,10 +199,6 @@ impl HValOptions {
         );
         process_option(&self.unlaunchable_fighter, &mut core_options.unlaunchable_fighter);
         process_option(
-            &self.unlaunchable_support_fighter,
-            &mut core_options.unlaunchable_support_fighter,
-        );
-        process_option(
             &self.unlaunchable_light_fighter,
             &mut core_options.unlaunchable_light_fighter,
         );
@@ -211,8 +207,8 @@ impl HValOptions {
             &mut core_options.unlaunchable_heavy_fighter,
         );
         process_option(
-            &self.unlaunchable_st_support_fighter,
-            &mut core_options.unlaunchable_st_support_fighter,
+            &self.unlaunchable_support_fighter,
+            &mut core_options.unlaunchable_support_fighter,
         );
         process_option(
             &self.unlaunchable_st_light_fighter,
@@ -221,6 +217,10 @@ impl HValOptions {
         process_option(
             &self.unlaunchable_st_heavy_fighter,
             &mut core_options.unlaunchable_st_heavy_fighter,
+        );
+        process_option(
+            &self.unlaunchable_st_support_fighter,
+            &mut core_options.unlaunchable_st_support_fighter,
         );
         process_option(&self.ship_stance, &mut core_options.ship_stance);
         process_option(&self.overload_skill, &mut core_options.overload_skill);
@@ -254,12 +254,12 @@ impl Default for HValOptions {
             subsystem_slot_count: None,
             launched_drone_count: None,
             launched_fighter_count: None,
-            launched_support_fighter_count: None,
             launched_light_fighter_count: None,
             launched_heavy_fighter_count: None,
-            launched_st_support_fighter_count: None,
+            launched_support_fighter_count: None,
             launched_st_light_fighter_count: None,
             launched_st_heavy_fighter_count: None,
+            launched_st_support_fighter_count: None,
             turret_slot_count: None,
             launcher_slot_count: None,
             high_slot_count: None,
@@ -286,12 +286,12 @@ impl Default for HValOptions {
             unlaunchable_drone_slot: None,
             unlaunchable_drone_bandwidth: None,
             unlaunchable_fighter: None,
-            unlaunchable_support_fighter: None,
             unlaunchable_light_fighter: None,
             unlaunchable_heavy_fighter: None,
-            unlaunchable_st_support_fighter: None,
+            unlaunchable_support_fighter: None,
             unlaunchable_st_light_fighter: None,
             unlaunchable_st_heavy_fighter: None,
+            unlaunchable_st_support_fighter: None,
             ship_stance: None,
             overload_skill: None,
             max_type_fitted: None,

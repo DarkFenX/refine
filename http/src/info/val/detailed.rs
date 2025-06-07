@@ -94,17 +94,17 @@ struct HValFitInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     launched_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_support_fighter_count: Option<HValSlotCountFail>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     launched_light_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     launched_heavy_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_st_support_fighter_count: Option<HValSlotCountFail>,
+    launched_support_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     launched_st_light_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     launched_st_heavy_fighter_count: Option<HValSlotCountFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    launched_st_support_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     turret_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -158,17 +158,17 @@ struct HValFitInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_fighter: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    unlaunchable_support_fighter: Option<HValUnusableSlotFail>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_light_fighter: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_heavy_fighter: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    unlaunchable_st_support_fighter: Option<HValUnusableSlotFail>,
+    unlaunchable_support_fighter: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_st_light_fighter: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_st_heavy_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_st_support_fighter: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ship_stance: Option<HValShipStanceFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -211,12 +211,12 @@ impl HValFitInfo {
             && self.subsystem_slot_count.is_none()
             && self.launched_drone_count.is_none()
             && self.launched_fighter_count.is_none()
-            && self.launched_support_fighter_count.is_none()
             && self.launched_light_fighter_count.is_none()
             && self.launched_heavy_fighter_count.is_none()
-            && self.launched_st_support_fighter_count.is_none()
+            && self.launched_support_fighter_count.is_none()
             && self.launched_st_light_fighter_count.is_none()
             && self.launched_st_heavy_fighter_count.is_none()
+            && self.launched_st_support_fighter_count.is_none()
             && self.turret_slot_count.is_none()
             && self.launcher_slot_count.is_none()
             && self.high_slot_count.is_none()
@@ -243,12 +243,12 @@ impl HValFitInfo {
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
             && self.unlaunchable_fighter.is_none()
-            && self.unlaunchable_support_fighter.is_none()
             && self.unlaunchable_light_fighter.is_none()
             && self.unlaunchable_heavy_fighter.is_none()
-            && self.unlaunchable_st_support_fighter.is_none()
+            && self.unlaunchable_support_fighter.is_none()
             && self.unlaunchable_st_light_fighter.is_none()
             && self.unlaunchable_st_heavy_fighter.is_none()
+            && self.unlaunchable_st_support_fighter.is_none()
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
             && self.max_type_fitted.is_none()
@@ -279,12 +279,12 @@ impl From<&rc::val::ValResultFit> for HValFitInfo {
             subsystem_slot_count: conv(&core_val_result.subsystem_slot_count),
             launched_drone_count: conv(&core_val_result.launched_drone_count),
             launched_fighter_count: conv(&core_val_result.launched_fighter_count),
-            launched_support_fighter_count: conv(&core_val_result.launched_support_fighter_count),
             launched_light_fighter_count: conv(&core_val_result.launched_light_fighter_count),
             launched_heavy_fighter_count: conv(&core_val_result.launched_heavy_fighter_count),
-            launched_st_support_fighter_count: conv(&core_val_result.launched_st_support_fighter_count),
+            launched_support_fighter_count: conv(&core_val_result.launched_support_fighter_count),
             launched_st_light_fighter_count: conv(&core_val_result.launched_st_light_fighter_count),
             launched_st_heavy_fighter_count: conv(&core_val_result.launched_st_heavy_fighter_count),
+            launched_st_support_fighter_count: conv(&core_val_result.launched_st_support_fighter_count),
             turret_slot_count: conv(&core_val_result.turret_slot_count),
             launcher_slot_count: conv(&core_val_result.launcher_slot_count),
             high_slot_count: conv(&core_val_result.high_slot_count),
@@ -311,12 +311,12 @@ impl From<&rc::val::ValResultFit> for HValFitInfo {
             unlaunchable_drone_slot: conv(&core_val_result.unlaunchable_drone_slot),
             unlaunchable_drone_bandwidth: conv(&core_val_result.unlaunchable_drone_bandwidth),
             unlaunchable_fighter: conv(&core_val_result.unlaunchable_fighter),
-            unlaunchable_support_fighter: conv(&core_val_result.unlaunchable_support_fighter),
             unlaunchable_light_fighter: conv(&core_val_result.unlaunchable_light_fighter),
             unlaunchable_heavy_fighter: conv(&core_val_result.unlaunchable_heavy_fighter),
-            unlaunchable_st_support_fighter: conv(&core_val_result.unlaunchable_st_support_fighter),
+            unlaunchable_support_fighter: conv(&core_val_result.unlaunchable_support_fighter),
             unlaunchable_st_light_fighter: conv(&core_val_result.unlaunchable_st_light_fighter),
             unlaunchable_st_heavy_fighter: conv(&core_val_result.unlaunchable_st_heavy_fighter),
+            unlaunchable_st_support_fighter: conv(&core_val_result.unlaunchable_st_support_fighter),
             ship_stance: conv(&core_val_result.ship_stance),
             overload_skill: conv(&core_val_result.overload_skill),
             max_type_fitted: conv(&core_val_result.max_type_fitted),

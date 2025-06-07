@@ -44,12 +44,12 @@ pub struct ValResultFit {
     pub subsystem_slot_count: Option<ValSlotCountFail>,
     pub launched_drone_count: Option<ValSlotCountFail>,
     pub launched_fighter_count: Option<ValSlotCountFail>,
-    pub launched_support_fighter_count: Option<ValSlotCountFail>,
     pub launched_light_fighter_count: Option<ValSlotCountFail>,
     pub launched_heavy_fighter_count: Option<ValSlotCountFail>,
-    pub launched_st_support_fighter_count: Option<ValSlotCountFail>,
+    pub launched_support_fighter_count: Option<ValSlotCountFail>,
     pub launched_st_light_fighter_count: Option<ValSlotCountFail>,
     pub launched_st_heavy_fighter_count: Option<ValSlotCountFail>,
+    pub launched_st_support_fighter_count: Option<ValSlotCountFail>,
     pub turret_slot_count: Option<ValSlotCountFail>,
     pub launcher_slot_count: Option<ValSlotCountFail>,
     pub high_slot_count: Option<ValSlotCountFail>,
@@ -76,12 +76,12 @@ pub struct ValResultFit {
     pub unlaunchable_drone_slot: Option<ValUnusableSlotFail>,
     pub unlaunchable_drone_bandwidth: Option<ValUnusableResFail>,
     pub unlaunchable_fighter: Option<ValUnusableSlotFail>,
-    pub unlaunchable_support_fighter: Option<ValUnusableSlotFail>,
     pub unlaunchable_light_fighter: Option<ValUnusableSlotFail>,
     pub unlaunchable_heavy_fighter: Option<ValUnusableSlotFail>,
-    pub unlaunchable_st_support_fighter: Option<ValUnusableSlotFail>,
+    pub unlaunchable_support_fighter: Option<ValUnusableSlotFail>,
     pub unlaunchable_st_light_fighter: Option<ValUnusableSlotFail>,
     pub unlaunchable_st_heavy_fighter: Option<ValUnusableSlotFail>,
+    pub unlaunchable_st_support_fighter: Option<ValUnusableSlotFail>,
     pub ship_stance: Option<ValShipStanceFail>,
     pub overload_skill: Option<ValOverloadSkillFail>,
     pub max_type_fitted: Option<ValMaxTypeFail>,
@@ -111,12 +111,12 @@ impl ValResultFit {
             subsystem_slot_count: None,
             launched_drone_count: None,
             launched_fighter_count: None,
-            launched_support_fighter_count: None,
             launched_light_fighter_count: None,
             launched_heavy_fighter_count: None,
-            launched_st_support_fighter_count: None,
+            launched_support_fighter_count: None,
             launched_st_light_fighter_count: None,
             launched_st_heavy_fighter_count: None,
+            launched_st_support_fighter_count: None,
             turret_slot_count: None,
             launcher_slot_count: None,
             high_slot_count: None,
@@ -143,12 +143,12 @@ impl ValResultFit {
             unlaunchable_drone_slot: None,
             unlaunchable_drone_bandwidth: None,
             unlaunchable_fighter: None,
-            unlaunchable_support_fighter: None,
             unlaunchable_light_fighter: None,
             unlaunchable_heavy_fighter: None,
-            unlaunchable_st_support_fighter: None,
+            unlaunchable_support_fighter: None,
             unlaunchable_st_light_fighter: None,
             unlaunchable_st_heavy_fighter: None,
+            unlaunchable_st_support_fighter: None,
             ship_stance: None,
             overload_skill: None,
             max_type_fitted: None,
@@ -177,12 +177,12 @@ impl ValResultFit {
             && self.subsystem_slot_count.is_none()
             && self.launched_drone_count.is_none()
             && self.launched_fighter_count.is_none()
-            && self.launched_support_fighter_count.is_none()
             && self.launched_light_fighter_count.is_none()
             && self.launched_heavy_fighter_count.is_none()
-            && self.launched_st_support_fighter_count.is_none()
+            && self.launched_support_fighter_count.is_none()
             && self.launched_st_light_fighter_count.is_none()
             && self.launched_st_heavy_fighter_count.is_none()
+            && self.launched_st_support_fighter_count.is_none()
             && self.turret_slot_count.is_none()
             && self.launcher_slot_count.is_none()
             && self.high_slot_count.is_none()
@@ -209,12 +209,12 @@ impl ValResultFit {
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
             && self.unlaunchable_fighter.is_none()
-            && self.unlaunchable_support_fighter.is_none()
             && self.unlaunchable_light_fighter.is_none()
             && self.unlaunchable_heavy_fighter.is_none()
-            && self.unlaunchable_st_support_fighter.is_none()
+            && self.unlaunchable_support_fighter.is_none()
             && self.unlaunchable_st_light_fighter.is_none()
             && self.unlaunchable_st_heavy_fighter.is_none()
+            && self.unlaunchable_st_support_fighter.is_none()
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
             && self.max_type_fitted.is_none()
