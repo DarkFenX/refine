@@ -27,6 +27,9 @@ impl Vast {
             not_loaded: RSet::new(),
         }
     }
+    pub(in crate::sol) fn get_fit_data(&mut self, fit_key: &FitKey) -> &VastFitData {
+        self.fit_datas.get(fit_key).unwrap()
+    }
     pub(in crate::sol::svc::vast) fn get_fit_data_mut(&mut self, fit_key: &FitKey) -> &mut VastFitData {
         self.fit_datas.get_mut(fit_key).unwrap()
     }
@@ -35,7 +38,7 @@ impl Vast {
 // TODO: check if some of data containers can be merged to save time and memory (e.g. drone
 // bandwidth, active drone count)
 #[derive(Clone)]
-pub(in crate::sol::svc::vast) struct VastFitData {
+pub(in crate::sol) struct VastFitData {
     pub(in crate::sol::svc::vast) mods_svcs_online: RSet<ItemKey>,
     pub(in crate::sol::svc::vast) rigs_offline_calibration: RMap<ItemKey, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) drones_volume: RMap<ItemKey, ad::AAttrVal>,

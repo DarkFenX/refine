@@ -13,3 +13,4 @@ mod sec_status;
 mod sol_add_fit;
 mod sol_get_fit;
 mod sol_iter_fits;
+mod stats;

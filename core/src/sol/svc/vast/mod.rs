@@ -4,6 +4,7 @@ pub(in crate::sol) use options::{ValOptionsInt, ValOptionsSolInt};
 pub use result::{ValResultFit, ValResultSol};
 pub(in crate::sol::svc) use vast::Vast;
 use vast::VastFitData;
+pub use vaste_stats_fit::{StatRes, StatSlot};
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail, ValChargeSizeChargeInfo,
     ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail,
