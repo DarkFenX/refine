@@ -19,6 +19,7 @@ use vaste_vals::{ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolum
 mod cache;
 mod options;
 mod result;
+mod shared;
 mod vast;
 mod vaste_debug;
 mod vaste_maintain;

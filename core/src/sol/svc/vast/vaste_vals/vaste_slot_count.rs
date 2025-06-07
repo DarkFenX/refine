@@ -1,9 +1,11 @@
-use super::shared::get_max_slots;
 use crate::{
     ac, ad,
     sol::{
         Count, Idx, ItemId, ItemKey,
-        svc::{calc::Calc, vast::VastFitData},
+        svc::{
+            calc::Calc,
+            vast::{VastFitData, shared::get_attr_as_count},
+        },
         uad::{
             Uad,
             fit::{ItemVec, UadFit},
@@ -453,7 +455,7 @@ fn validate_fast_unordered_set(
         return true;
     }
     let used = users.len() as Count;
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
     used <= max
 }
 fn validate_fast_unordered_map<T>(
@@ -468,7 +470,7 @@ fn validate_fast_unordered_map<T>(
         return true;
     }
     let used = users.len() as Count;
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
     used <= max
 }
 fn validate_fast_ordered(
@@ -480,7 +482,7 @@ fn validate_fast_ordered(
     users: &ItemVec,
 ) -> bool {
     let used = users.len() as Count;
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
     match kfs.is_empty() {
         true => used <= max,
         false => match used <= max {
@@ -499,7 +501,7 @@ fn validate_verbose_unordered_set(
     users: &RSet<ItemKey>,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id);
     if used <= max.unwrap_or(0) {
         return None;
     }
@@ -521,7 +523,7 @@ fn validate_verbose_unordered_map<T>(
     users: &RMap<ItemKey, T>,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id);
     if used <= max.unwrap_or(0) {
         return None;
     }
@@ -543,7 +545,7 @@ fn validate_verbose_ordered(
     users: &ItemVec,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id);
     let effective_max = max.unwrap_or(0);
     if used <= effective_max {
         return None;

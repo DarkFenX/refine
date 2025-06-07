@@ -1,9 +1,11 @@
-use super::shared::get_max_slots;
 use crate::{
     ac, ad,
     sol::{
         Count, ItemId, ItemKey,
-        svc::{calc::Calc, vast::VastFitData},
+        svc::{
+            calc::Calc,
+            vast::{VastFitData, shared::get_attr_as_count},
+        },
         uad::{Uad, fit::UadFit},
     },
     util::RSet,
@@ -274,7 +276,7 @@ fn validate_fast(
     if users.is_empty() {
         return true;
     }
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
     if max > 0 {
         return true;
     }
@@ -291,7 +293,7 @@ fn validate_verbose(
     if users.is_empty() {
         return None;
     }
-    let max = get_max_slots(uad, calc, max_item_key, max_a_attr_id);
+    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id);
     if max.unwrap_or(0) > 0 {
         return None;
     }

@@ -1,8 +1,11 @@
 use crate::{
-    ac, ad,
+    ac,
     sol::{
-        Count, ItemKey,
-        svc::{calc::Calc, vast::VastFitData},
+        Count,
+        svc::{
+            calc::Calc,
+            vast::{VastFitData, shared::get_attr_as_count},
+        },
         uad::{Uad, fit::UadFit},
     },
 };
@@ -154,14 +157,4 @@ impl VastFitData {
         let total = get_attr_as_count(uad, calc, fit.ship, &ac::attrs::LOW_SLOTS);
         StatSlot { used, total }
     }
-}
-
-fn get_attr_as_count(
-    uad: &Uad,
-    calc: &mut Calc,
-    output_item_key: Option<ItemKey>,
-    output_a_attr_id: &ad::AAttrId,
-) -> Option<Count> {
-    calc.get_item_attr_val_extra_opt(uad, output_item_key, output_a_attr_id)
-        .map(|v| v.round() as Count)
 }
