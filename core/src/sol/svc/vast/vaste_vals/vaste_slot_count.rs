@@ -26,6 +26,65 @@ pub struct ValSlotCountFail {
 
 impl VastFitData {
     // Fast validations
+    pub(in crate::sol::svc::vast) fn validate_high_slot_count_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> bool {
+        validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::HI_SLOTS, &fit.mods_high)
+    }
+    pub(in crate::sol::svc::vast) fn validate_mid_slot_count_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> bool {
+        validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::MED_SLOTS, &fit.mods_mid)
+    }
+    pub(in crate::sol::svc::vast) fn validate_low_slot_count_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> bool {
+        validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::LOW_SLOTS, &fit.mods_low)
+    }
+    pub(in crate::sol::svc::vast) fn validate_turret_slot_count_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> bool {
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            fit.ship,
+            &ac::attrs::TURRET_SLOTS_LEFT,
+            &self.mods_turret,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn validate_launcher_slot_count_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> bool {
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            fit.ship,
+            &ac::attrs::LAUNCHER_SLOTS_LEFT,
+            &self.mods_launcher,
+        )
+    }
     pub(in crate::sol::svc::vast) fn validate_rig_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
@@ -174,14 +233,42 @@ impl VastFitData {
             &self.st_support_fighters_online,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_turret_slot_count_fast(
+    // Verbose validations
+    pub(in crate::sol::svc::vast) fn validate_high_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &UadFit,
-    ) -> bool {
-        validate_fast_unordered_set(
+    ) -> Option<ValSlotCountFail> {
+        validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::HI_SLOTS, &fit.mods_high)
+    }
+    pub(in crate::sol::svc::vast) fn validate_mid_slot_count_verbose(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> Option<ValSlotCountFail> {
+        validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::MED_SLOTS, &fit.mods_mid)
+    }
+    pub(in crate::sol::svc::vast) fn validate_low_slot_count_verbose(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> Option<ValSlotCountFail> {
+        validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::LOW_SLOTS, &fit.mods_low)
+    }
+    pub(in crate::sol::svc::vast) fn validate_turret_slot_count_verbose(
+        &self,
+        kfs: &RSet<ItemKey>,
+        uad: &Uad,
+        calc: &mut Calc,
+        fit: &UadFit,
+    ) -> Option<ValSlotCountFail> {
+        validate_verbose_unordered_set(
             kfs,
             uad,
             calc,
@@ -190,14 +277,14 @@ impl VastFitData {
             &self.mods_turret,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_launcher_slot_count_fast(
+    pub(in crate::sol::svc::vast) fn validate_launcher_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
         calc: &mut Calc,
         fit: &UadFit,
-    ) -> bool {
-        validate_fast_unordered_set(
+    ) -> Option<ValSlotCountFail> {
+        validate_verbose_unordered_set(
             kfs,
             uad,
             calc,
@@ -206,34 +293,6 @@ impl VastFitData {
             &self.mods_launcher,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_high_slot_count_fast(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> bool {
-        validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::HI_SLOTS, &fit.mods_high)
-    }
-    pub(in crate::sol::svc::vast) fn validate_mid_slot_count_fast(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> bool {
-        validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::MED_SLOTS, &fit.mods_mid)
-    }
-    pub(in crate::sol::svc::vast) fn validate_low_slot_count_fast(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> bool {
-        validate_fast_ordered(kfs, uad, calc, fit.ship, &ac::attrs::LOW_SLOTS, &fit.mods_low)
-    }
-    // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
@@ -381,65 +440,6 @@ impl VastFitData {
             &ac::attrs::FTR_ST_SUPPORT_SLOTS,
             &self.st_support_fighters_online,
         )
-    }
-    pub(in crate::sol::svc::vast) fn validate_turret_slot_count_verbose(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> Option<ValSlotCountFail> {
-        validate_verbose_unordered_set(
-            kfs,
-            uad,
-            calc,
-            fit.ship,
-            &ac::attrs::TURRET_SLOTS_LEFT,
-            &self.mods_turret,
-        )
-    }
-    pub(in crate::sol::svc::vast) fn validate_launcher_slot_count_verbose(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> Option<ValSlotCountFail> {
-        validate_verbose_unordered_set(
-            kfs,
-            uad,
-            calc,
-            fit.ship,
-            &ac::attrs::LAUNCHER_SLOTS_LEFT,
-            &self.mods_launcher,
-        )
-    }
-    pub(in crate::sol::svc::vast) fn validate_high_slot_count_verbose(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> Option<ValSlotCountFail> {
-        validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::HI_SLOTS, &fit.mods_high)
-    }
-    pub(in crate::sol::svc::vast) fn validate_mid_slot_count_verbose(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> Option<ValSlotCountFail> {
-        validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::MED_SLOTS, &fit.mods_mid)
-    }
-    pub(in crate::sol::svc::vast) fn validate_low_slot_count_verbose(
-        &self,
-        kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        calc: &mut Calc,
-        fit: &UadFit,
-    ) -> Option<ValSlotCountFail> {
-        validate_verbose_ordered(kfs, uad, calc, fit.ship, &ac::attrs::LOW_SLOTS, &fit.mods_low)
     }
 }
 

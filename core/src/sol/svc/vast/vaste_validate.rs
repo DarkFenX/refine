@@ -421,42 +421,154 @@ impl Vast {
         let fit_data = self.get_fit_data_mut(&fit_key);
         let ship = fit.ship.map(|v| uad.items.get(v).get_ship().unwrap());
         let mut result = ValResultFit::new();
+        // Generic
+        if options.not_loaded_item.enabled {
+            result.not_loaded_item = fit_data.validate_not_loaded_item_verbose(&options.not_loaded_item.kfs, uad);
+        }
+        if options.item_kind.enabled {
+            result.item_kind = fit_data.validate_item_kind_verbose(&options.item_kind.kfs, uad);
+        }
+        if options.skill_reqs.enabled {
+            result.skill_reqs = fit_data.validate_skill_reqs_verbose(&options.skill_reqs.kfs, uad);
+        }
+        // Implants/boosters
+        if options.implant_slot_index.enabled {
+            result.implant_slot_index =
+                fit_data.validate_implant_slot_index_verbose(&options.implant_slot_index.kfs, uad);
+        }
+        if options.booster_slot_index.enabled {
+            result.booster_slot_index =
+                fit_data.validate_booster_slot_index_verbose(&options.booster_slot_index.kfs, uad);
+        }
+        // Shared between mod-alike items
         if options.cpu.enabled {
             result.cpu = fit_data.validate_cpu_verbose(&options.cpu.kfs, uad, calc, fit);
         }
         if options.powergrid.enabled {
             result.powergrid = fit_data.validate_powergrid_verbose(&options.powergrid.kfs, uad, calc, fit);
         }
+        if options.ship_limit.enabled {
+            result.ship_limit = fit_data.validate_ship_limit_verbose(&options.ship_limit.kfs, uad, ship);
+        }
+        if options.max_group_fitted.enabled {
+            result.max_group_fitted =
+                fit_data.validate_max_group_fitted_verbose(&options.max_group_fitted.kfs, uad, calc);
+        }
+        if options.max_group_online.enabled {
+            result.max_group_online =
+                fit_data.validate_max_group_online_verbose(&options.max_group_online.kfs, uad, calc);
+        }
+        if options.max_group_active.enabled {
+            result.max_group_active =
+                fit_data.validate_max_group_active_verbose(&options.max_group_active.kfs, uad, calc);
+        }
+        if options.max_type_fitted.enabled {
+            result.max_type_fitted = fit_data.validate_max_type_fitted_verbose(&options.max_type_fitted.kfs, uad);
+        }
+        if options.item_vs_ship_kind.enabled {
+            result.item_vs_ship_kind =
+                fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, uad, fit);
+        }
+        // Modules
+        if options.high_slot_count.enabled {
+            result.high_slot_count =
+                fit_data.validate_high_slot_count_verbose(&options.high_slot_count.kfs, uad, calc, fit);
+        }
+        if options.mid_slot_count.enabled {
+            result.mid_slot_count =
+                fit_data.validate_mid_slot_count_verbose(&options.mid_slot_count.kfs, uad, calc, fit);
+        }
+        if options.low_slot_count.enabled {
+            result.low_slot_count =
+                fit_data.validate_low_slot_count_verbose(&options.low_slot_count.kfs, uad, calc, fit);
+        }
+        if options.turret_slot_count.enabled {
+            result.turret_slot_count =
+                fit_data.validate_turret_slot_count_verbose(&options.turret_slot_count.kfs, uad, calc, fit);
+        }
+        if options.launcher_slot_count.enabled {
+            result.launcher_slot_count =
+                fit_data.validate_launcher_slot_count_verbose(&options.launcher_slot_count.kfs, uad, calc, fit);
+        }
+        if options.module_state.enabled {
+            result.module_state = fit_data.validate_module_state_verbose(&options.module_state.kfs, uad);
+        }
+        if options.capital_module.enabled {
+            result.capital_module = fit_data.validate_capital_module_verbose(&options.capital_module.kfs, uad, ship);
+        }
+        if options.overload_skill.enabled {
+            result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, uad, fit);
+        }
+        // Charges
+        if options.charge_group.enabled {
+            result.charge_group = fit_data.validate_charge_group_verbose(&options.charge_group.kfs, uad);
+        }
+        if options.charge_size.enabled {
+            result.charge_size = fit_data.validate_charge_size_verbose(&options.charge_size.kfs, uad);
+        }
+        if options.charge_volume.enabled {
+            result.charge_volume = fit_data.validate_charge_volume_verbose(&options.charge_volume.kfs, uad);
+        }
+        // Rigs
+        if options.rig_slot_count.enabled {
+            result.rig_slot_count =
+                fit_data.validate_rig_slot_count_verbose(&options.rig_slot_count.kfs, uad, calc, fit);
+        }
         if options.calibration.enabled {
             result.calibration = fit_data.validate_calibration_verbose(&options.calibration.kfs, uad, calc, fit);
         }
+        if options.rig_size.enabled {
+            result.rig_size = fit_data.validate_rig_size_verbose(&options.rig_size.kfs, uad, ship);
+        }
+        // Services
+        if options.service_slot_count.enabled {
+            result.service_slot_count =
+                fit_data.validate_service_slot_count_verbose(&options.service_slot_count.kfs, uad, calc, fit);
+        }
+        // T3 subsystems/stances
+        if options.subsystem_slot_count.enabled {
+            result.subsystem_slot_count =
+                fit_data.validate_subsystem_slot_count_verbose(&options.subsystem_slot_count.kfs, uad, calc, fit);
+        }
+        if options.subsystem_slot_index.enabled {
+            result.subsystem_slot_index =
+                fit_data.validate_subsystem_slot_index_verbose(&options.subsystem_slot_index.kfs, uad);
+        }
+        if options.ship_stance.enabled {
+            result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, uad, fit, ship);
+        }
+        // Drones
         if options.drone_bay_volume.enabled {
             result.drone_bay_volume =
                 fit_data.validate_drone_bay_volume_verbose(&options.drone_bay_volume.kfs, uad, calc, fit);
+        }
+        if options.launched_drone_count.enabled {
+            result.launched_drone_count =
+                fit_data.validate_launched_drone_count_verbose(&options.launched_drone_count.kfs, uad, calc, fit);
         }
         if options.drone_bandwidth.enabled {
             result.drone_bandwidth =
                 fit_data.validate_drone_bandwidth_verbose(&options.drone_bandwidth.kfs, uad, calc, fit);
         }
+        if options.unlaunchable_drone_slot.enabled {
+            result.unlaunchable_drone_slot =
+                fit_data.validate_unlaunchable_drone_slot_verbose(&options.unlaunchable_drone_slot.kfs, uad, calc, fit);
+        }
+        if options.unlaunchable_drone_bandwidth.enabled {
+            result.unlaunchable_drone_bandwidth = fit_data.validate_unlaunchable_drone_bandwidth_verbose(
+                &options.unlaunchable_drone_bandwidth.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.drone_group.enabled {
+            result.drone_group = fit_data.validate_drone_group_verbose(&options.drone_group.kfs, uad);
+        }
+        // Fighters
         if options.fighter_bay_volume.enabled {
             result.fighter_bay_volume =
                 fit_data.validate_fighter_bay_volume_verbose(&options.fighter_bay_volume.kfs, uad, calc, fit);
-        }
-        if options.rig_slot_count.enabled {
-            result.rig_slot_count =
-                fit_data.validate_rig_slot_count_verbose(&options.rig_slot_count.kfs, uad, calc, fit);
-        }
-        if options.service_slot_count.enabled {
-            result.service_slot_count =
-                fit_data.validate_service_slot_count_verbose(&options.service_slot_count.kfs, uad, calc, fit);
-        }
-        if options.subsystem_slot_count.enabled {
-            result.subsystem_slot_count =
-                fit_data.validate_subsystem_slot_count_verbose(&options.subsystem_slot_count.kfs, uad, calc, fit);
-        }
-        if options.launched_drone_count.enabled {
-            result.launched_drone_count =
-                fit_data.validate_launched_drone_count_verbose(&options.launched_drone_count.kfs, uad, calc, fit);
         }
         if options.launched_fighter_count.enabled {
             result.launched_fighter_count =
@@ -505,99 +617,6 @@ impl Vast {
         if options.launched_st_support_fighter_count.enabled {
             result.launched_st_support_fighter_count = fit_data.validate_launched_st_support_fighter_count_verbose(
                 &options.launched_st_support_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            );
-        }
-        if options.turret_slot_count.enabled {
-            result.turret_slot_count =
-                fit_data.validate_turret_slot_count_verbose(&options.turret_slot_count.kfs, uad, calc, fit);
-        }
-        if options.launcher_slot_count.enabled {
-            result.launcher_slot_count =
-                fit_data.validate_launcher_slot_count_verbose(&options.launcher_slot_count.kfs, uad, calc, fit);
-        }
-        if options.high_slot_count.enabled {
-            result.high_slot_count =
-                fit_data.validate_high_slot_count_verbose(&options.high_slot_count.kfs, uad, calc, fit);
-        }
-        if options.mid_slot_count.enabled {
-            result.mid_slot_count =
-                fit_data.validate_mid_slot_count_verbose(&options.mid_slot_count.kfs, uad, calc, fit);
-        }
-        if options.low_slot_count.enabled {
-            result.low_slot_count =
-                fit_data.validate_low_slot_count_verbose(&options.low_slot_count.kfs, uad, calc, fit);
-        }
-        if options.implant_slot_index.enabled {
-            result.implant_slot_index =
-                fit_data.validate_implant_slot_index_verbose(&options.implant_slot_index.kfs, uad);
-        }
-        if options.booster_slot_index.enabled {
-            result.booster_slot_index =
-                fit_data.validate_booster_slot_index_verbose(&options.booster_slot_index.kfs, uad);
-        }
-        if options.subsystem_slot_index.enabled {
-            result.subsystem_slot_index =
-                fit_data.validate_subsystem_slot_index_verbose(&options.subsystem_slot_index.kfs, uad);
-        }
-        if options.ship_limit.enabled {
-            result.ship_limit = fit_data.validate_ship_limit_verbose(&options.ship_limit.kfs, uad, ship);
-        }
-        if options.max_group_fitted.enabled {
-            result.max_group_fitted =
-                fit_data.validate_max_group_fitted_verbose(&options.max_group_fitted.kfs, uad, calc);
-        }
-        if options.max_group_online.enabled {
-            result.max_group_online =
-                fit_data.validate_max_group_online_verbose(&options.max_group_online.kfs, uad, calc);
-        }
-        if options.max_group_active.enabled {
-            result.max_group_active =
-                fit_data.validate_max_group_active_verbose(&options.max_group_active.kfs, uad, calc);
-        }
-        if options.rig_size.enabled {
-            result.rig_size = fit_data.validate_rig_size_verbose(&options.rig_size.kfs, uad, ship);
-        }
-        if options.skill_reqs.enabled {
-            result.skill_reqs = fit_data.validate_skill_reqs_verbose(&options.skill_reqs.kfs, uad);
-        }
-        if options.charge_group.enabled {
-            result.charge_group = fit_data.validate_charge_group_verbose(&options.charge_group.kfs, uad);
-        }
-        if options.charge_size.enabled {
-            result.charge_size = fit_data.validate_charge_size_verbose(&options.charge_size.kfs, uad);
-        }
-        if options.charge_volume.enabled {
-            result.charge_volume = fit_data.validate_charge_volume_verbose(&options.charge_volume.kfs, uad);
-        }
-        if options.capital_module.enabled {
-            result.capital_module = fit_data.validate_capital_module_verbose(&options.capital_module.kfs, uad, ship);
-        }
-        if options.not_loaded_item.enabled {
-            result.not_loaded_item = fit_data.validate_not_loaded_item_verbose(&options.not_loaded_item.kfs, uad);
-        }
-        if options.module_state.enabled {
-            result.module_state = fit_data.validate_module_state_verbose(&options.module_state.kfs, uad);
-        }
-        if options.item_kind.enabled {
-            result.item_kind = fit_data.validate_item_kind_verbose(&options.item_kind.kfs, uad);
-        }
-        if options.drone_group.enabled {
-            result.drone_group = fit_data.validate_drone_group_verbose(&options.drone_group.kfs, uad);
-        }
-        if options.fighter_squad_size.enabled {
-            result.fighter_squad_size =
-                fit_data.validate_fighter_squad_size_verbose(&options.fighter_squad_size.kfs, uad);
-        }
-        if options.unlaunchable_drone_slot.enabled {
-            result.unlaunchable_drone_slot =
-                fit_data.validate_unlaunchable_drone_slot_verbose(&options.unlaunchable_drone_slot.kfs, uad, calc, fit);
-        }
-        if options.unlaunchable_drone_bandwidth.enabled {
-            result.unlaunchable_drone_bandwidth = fit_data.validate_unlaunchable_drone_bandwidth_verbose(
-                &options.unlaunchable_drone_bandwidth.kfs,
                 uad,
                 calc,
                 fit,
@@ -655,15 +674,30 @@ impl Vast {
                 fit,
             );
         }
-        if options.ship_stance.enabled {
-            result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, uad, fit, ship);
+        if options.fighter_squad_size.enabled {
+            result.fighter_squad_size =
+                fit_data.validate_fighter_squad_size_verbose(&options.fighter_squad_size.kfs, uad);
         }
-        if options.overload_skill.enabled {
-            result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, uad, fit);
+        // Projection, destination side
+        if options.activation_blocked.enabled {
+            result.activation_blocked =
+                fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, uad, calc);
         }
-        if options.max_type_fitted.enabled {
-            result.max_type_fitted = fit_data.validate_max_type_fitted_verbose(&options.max_type_fitted.kfs, uad);
+        if options.effect_stopper.enabled {
+            result.effect_stopper = fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, uad, reffs);
         }
+        // Projection, source side
+        if options.assist_immunity.enabled {
+            result.assist_immunity = fit_data.validate_assist_immunity_verbose(&options.assist_immunity.kfs, uad, calc);
+        }
+        if options.offense_immunity.enabled {
+            result.offense_immunity =
+                fit_data.validate_offense_immunity_verbose(&options.offense_immunity.kfs, uad, calc);
+        }
+        if options.resist_immunity.enabled {
+            result.resist_immunity = fit_data.validate_resist_immunity_verbose(&options.resist_immunity.kfs, uad, calc);
+        }
+        // Sec zone
         if options.sec_zone_fitted.enabled {
             result.sec_zone_fitted = fit_data.validate_sec_zone_fitted_verbose(&options.sec_zone_fitted.kfs, uad, calc);
         }
@@ -680,27 +714,6 @@ impl Vast {
         if options.sec_zone_unactivable.enabled {
             result.sec_zone_unactivable =
                 fit_data.validate_sec_zone_unactivable_verbose(&options.sec_zone_unactivable.kfs, uad, calc);
-        }
-        if options.activation_blocked.enabled {
-            result.activation_blocked =
-                fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, uad, calc);
-        }
-        if options.item_vs_ship_kind.enabled {
-            result.item_vs_ship_kind =
-                fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, uad, fit);
-        }
-        if options.effect_stopper.enabled {
-            result.effect_stopper = fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, uad, reffs);
-        }
-        if options.assist_immunity.enabled {
-            result.assist_immunity = fit_data.validate_assist_immunity_verbose(&options.assist_immunity.kfs, uad, calc);
-        }
-        if options.offense_immunity.enabled {
-            result.offense_immunity =
-                fit_data.validate_offense_immunity_verbose(&options.offense_immunity.kfs, uad, calc);
-        }
-        if options.resist_immunity.enabled {
-            result.resist_immunity = fit_data.validate_resist_immunity_verbose(&options.resist_immunity.kfs, uad, calc);
         }
         result
     }
