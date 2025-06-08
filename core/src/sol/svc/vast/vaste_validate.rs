@@ -61,127 +61,29 @@ impl Vast {
         let fit_data = self.get_fit_data_mut(&fit_key);
         let ship = fit.ship.map(|v| uad.items.get(v).get_ship().unwrap());
         // Order of validations matters here; the faster validation and the more likely it is to
-        // fail, the closer to top it should be
-        if options.cpu.enabled && !fit_data.validate_cpu_fast(&options.cpu.kfs, uad, calc, fit) {
+        // fail, the closer to top it should be. This order was chosen to optimize for market
+        // filtering capabilities, which takes into account following item distribution:
+        // - modules 3249
+        // - implants 834
+        // - rigs 817
+        // - boosters 144
+        // - drones 125
+        // - fighters 94
+        // - subsystems 48
+        // - services 16
+        // Cheap generic check which applies to various item types, even if not universally
+        // applicable.
+        if options.skill_reqs.enabled && !fit_data.validate_skill_reqs_fast(&options.skill_reqs.kfs) {
             return false;
         }
-        if options.powergrid.enabled && !fit_data.validate_powergrid_fast(&options.powergrid.kfs, uad, calc, fit) {
-            return false;
-        }
-        if options.calibration.enabled && !fit_data.validate_calibration_fast(&options.calibration.kfs, uad, calc, fit)
+        // Cheap check which prevents using big groups of modules/rigs on wrong type of ship
+        if options.item_vs_ship_kind.enabled
+            && !fit_data.validate_item_vs_ship_kind_fast(&options.item_vs_ship_kind.kfs)
         {
             return false;
         }
-        if options.drone_bay_volume.enabled
-            && !fit_data.validate_drone_bay_volume_fast(&options.drone_bay_volume.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.drone_bandwidth.enabled
-            && !fit_data.validate_drone_bandwidth_fast(&options.drone_bandwidth.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.fighter_bay_volume.enabled
-            && !fit_data.validate_fighter_bay_volume_fast(&options.fighter_bay_volume.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.rig_slot_count.enabled
-            && !fit_data.validate_rig_slot_count_fast(&options.rig_slot_count.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.service_slot_count.enabled
-            && !fit_data.validate_service_slot_count_fast(&options.service_slot_count.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.subsystem_slot_count.enabled
-            && !fit_data.validate_subsystem_slot_count_fast(&options.subsystem_slot_count.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.launched_drone_count.enabled
-            && !fit_data.validate_launched_drone_count_fast(&options.launched_drone_count.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.launched_fighter_count.enabled
-            && !fit_data.validate_launched_fighter_count_fast(&options.launched_fighter_count.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.launched_light_fighter_count.enabled
-            && !fit_data.validate_launched_light_fighter_count_fast(
-                &options.launched_light_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
-        if options.launched_heavy_fighter_count.enabled
-            && !fit_data.validate_launched_heavy_fighter_count_fast(
-                &options.launched_heavy_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
-        if options.launched_support_fighter_count.enabled
-            && !fit_data.validate_launched_support_fighter_count_fast(
-                &options.launched_support_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
-        if options.launched_st_light_fighter_count.enabled
-            && !fit_data.validate_launched_st_light_fighter_count_fast(
-                &options.launched_st_light_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
-        if options.launched_st_heavy_fighter_count.enabled
-            && !fit_data.validate_launched_st_heavy_fighter_count_fast(
-                &options.launched_st_heavy_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
-        if options.launched_st_support_fighter_count.enabled
-            && !fit_data.validate_launched_st_support_fighter_count_fast(
-                &options.launched_st_support_fighter_count.kfs,
-                uad,
-                calc,
-                fit,
-            )
-        {
-            return false;
-        }
-        if options.turret_slot_count.enabled
-            && !fit_data.validate_turret_slot_count_fast(&options.turret_slot_count.kfs, uad, calc, fit)
-        {
-            return false;
-        }
-        if options.launcher_slot_count.enabled
-            && !fit_data.validate_launcher_slot_count_fast(&options.launcher_slot_count.kfs, uad, calc, fit)
-        {
-            return false;
-        }
+        // Cheap module validations are close to the top as well. The only expensive operation is
+        // grabbing modified slot count from ship.
         if options.high_slot_count.enabled
             && !fit_data.validate_high_slot_count_fast(&options.high_slot_count.kfs, uad, calc, fit)
         {
@@ -197,24 +99,30 @@ impl Vast {
         {
             return false;
         }
-        if options.implant_slot_index.enabled
-            && !fit_data.validate_implant_slot_index_fast(&options.implant_slot_index.kfs)
+        if options.turret_slot_count.enabled
+            && !fit_data.validate_turret_slot_count_fast(&options.turret_slot_count.kfs, uad, calc, fit)
         {
             return false;
         }
-        if options.booster_slot_index.enabled
-            && !fit_data.validate_booster_slot_index_fast(&options.booster_slot_index.kfs)
+        if options.launcher_slot_count.enabled
+            && !fit_data.validate_launcher_slot_count_fast(&options.launcher_slot_count.kfs, uad, calc, fit)
         {
             return false;
         }
-        if options.subsystem_slot_index.enabled
-            && !fit_data.validate_subsystem_slot_index_fast(&options.subsystem_slot_index.kfs)
-        {
+        // More expensive resource checks. PG over CPU since it is more likely to break validation
+        // (modules of bigger sizes usually instantly take more PG than a ship provides)
+        if options.powergrid.enabled && !fit_data.validate_powergrid_fast(&options.powergrid.kfs, uad, calc, fit) {
             return false;
         }
+        if options.cpu.enabled && !fit_data.validate_cpu_fast(&options.cpu.kfs, uad, calc, fit) {
+            return false;
+        }
+        // Relatively expensive check, but price scales with amount of limited items
         if options.ship_limit.enabled && !fit_data.validate_ship_limit_fast(&options.ship_limit.kfs, ship) {
             return false;
         }
+        // A group of checks which isn't too cheap to run, but scales with amount of limited items,
+        // and there are quite a few items with those limits.
         if options.max_group_fitted.enabled
             && !fit_data.validate_max_group_fitted_fast(&options.max_group_fitted.kfs, uad, calc)
         {
@@ -230,43 +138,39 @@ impl Vast {
         {
             return false;
         }
-        if options.rig_size.enabled && !fit_data.validate_rig_size_fast(&options.rig_size.kfs, ship) {
+        // Cheap module check, but only one module uses it at the moment (rorq's PANIC)
+        if options.max_type_fitted.enabled && !fit_data.validate_max_type_fitted_fast(&options.max_type_fitted.kfs) {
             return false;
         }
-        if options.skill_reqs.enabled && !fit_data.validate_skill_reqs_fast(&options.skill_reqs.kfs) {
-            return false;
-        }
-        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs, uad) {
-            return false;
-        }
-        if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs, uad) {
-            return false;
-        }
-        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs, uad) {
-            return false;
-        }
-        if options.capital_module.enabled && !fit_data.validate_capital_module_fast(&options.capital_module.kfs, ship) {
-            return false;
-        }
-        if options.not_loaded_item.enabled && !fit_data.validate_not_loaded_item_fast(&options.not_loaded_item.kfs) {
-            return false;
-        }
+        // Cheap, but somewhat useless for "try fit" functionality check, since modules are added in
+        // online state.
         if options.module_state.enabled && !fit_data.validate_module_state_fast(&options.module_state.kfs) {
             return false;
         }
-        if options.item_kind.enabled && !fit_data.validate_item_kind_fast(&options.item_kind.kfs) {
-            return false;
-        }
-        if options.drone_group.enabled && !fit_data.validate_drone_group_fast(&options.drone_group.kfs) {
-            return false;
-        }
-        if options.fighter_squad_size.enabled
-            && !fit_data.validate_fighter_squad_size_fast(&options.fighter_squad_size.kfs)
+        // Rigs - cheap slot validation first, then size which is likely to fail (~3/4th of rigs can
+        // not be fit to a ship), then calibration which is expensive and not very likely to fail
+        if options.rig_slot_count.enabled
+            && !fit_data.validate_rig_slot_count_fast(&options.rig_slot_count.kfs, uad, calc, fit)
         {
             return false;
         }
-        if options.unlaunchable_drone_slot.enabled
-            && !fit_data.validate_unlaunchable_drone_slot_fast(&options.unlaunchable_drone_slot.kfs, uad, calc, fit)
+        if options.rig_size.enabled && !fit_data.validate_rig_size_fast(&options.rig_size.kfs, ship) {
+            return false;
+        }
+        if options.calibration.enabled && !fit_data.validate_calibration_fast(&options.calibration.kfs, uad, calc, fit)
+        {
+            return false;
+        }
+        // Implants - lots of implants, but validation is not likely to fail (need implant slots
+        // filled for it to do so), so it's pushed down a bit
+        if options.implant_slot_index.enabled
+            && !fit_data.validate_implant_slot_index_fast(&options.implant_slot_index.kfs)
+        {
+            return false;
+        }
+        // Drones
+        if options.drone_bay_volume.enabled
+            && !fit_data.validate_drone_bay_volume_fast(&options.drone_bay_volume.kfs, uad, calc, fit)
         {
             return false;
         }
@@ -277,6 +181,26 @@ impl Vast {
                 calc,
                 fit,
             )
+        {
+            return false;
+        }
+        // Unlikely to fail, since drones are not added in in-space+ state
+        if options.drone_bandwidth.enabled
+            && !fit_data.validate_drone_bandwidth_fast(&options.drone_bandwidth.kfs, uad, calc, fit)
+        {
+            return false;
+        }
+        // Unlikely to fail, since drones are not added in in-space+ state
+        if options.launched_drone_count.enabled
+            && !fit_data.validate_launched_drone_count_fast(&options.launched_drone_count.kfs, uad, calc, fit)
+        {
+            return false;
+        }
+        // Fighters
+        // Volume goes first - since it's as cheap as unlaunchable fighter, but can also fail on a
+        // carrier fit.
+        if options.fighter_bay_volume.enabled
+            && !fit_data.validate_fighter_bay_volume_fast(&options.fighter_bay_volume.kfs, uad, calc, fit)
         {
             return false;
         }
@@ -345,15 +269,114 @@ impl Vast {
         {
             return false;
         }
-        if options.ship_stance.enabled && !fit_data.validate_ship_stance_fast(&options.ship_stance.kfs, fit, ship) {
+        // Launched go after launchable, since they are less likely to fail due to fighter state
+        // condition.
+        if options.launched_fighter_count.enabled
+            && !fit_data.validate_launched_fighter_count_fast(&options.launched_fighter_count.kfs, uad, calc, fit)
+        {
             return false;
         }
-        if options.overload_skill.enabled && !fit_data.validate_overload_skill_fast(&options.overload_skill.kfs, fit) {
+        if options.launched_light_fighter_count.enabled
+            && !fit_data.validate_launched_light_fighter_count_fast(
+                &options.launched_light_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
             return false;
         }
-        if options.max_type_fitted.enabled && !fit_data.validate_max_type_fitted_fast(&options.max_type_fitted.kfs) {
+        if options.launched_heavy_fighter_count.enabled
+            && !fit_data.validate_launched_heavy_fighter_count_fast(
+                &options.launched_heavy_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
             return false;
         }
+        if options.launched_support_fighter_count.enabled
+            && !fit_data.validate_launched_support_fighter_count_fast(
+                &options.launched_support_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.launched_st_light_fighter_count.enabled
+            && !fit_data.validate_launched_st_light_fighter_count_fast(
+                &options.launched_st_light_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.launched_st_heavy_fighter_count.enabled
+            && !fit_data.validate_launched_st_heavy_fighter_count_fast(
+                &options.launched_st_heavy_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.launched_st_support_fighter_count.enabled
+            && !fit_data.validate_launched_st_support_fighter_count_fast(
+                &options.launched_st_support_fighter_count.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        // Very niche, since fighter count has to be overridden to a value higher than squad
+        // supports.
+        if options.fighter_squad_size.enabled
+            && !fit_data.validate_fighter_squad_size_fast(&options.fighter_squad_size.kfs)
+        {
+            return false;
+        }
+        // Boosters are below drones and fighters because they are not likely to fail, despite being
+        // more numerous item category
+        if options.booster_slot_index.enabled
+            && !fit_data.validate_booster_slot_index_fast(&options.booster_slot_index.kfs)
+        {
+            return false;
+        }
+        // Depends on some incoming projections or system/fit-wide effects, but can fail for some
+        // modules in those conditions (e.g. MWD under ESS bubble effect).
+        if options.activation_blocked.enabled
+            && !fit_data.validate_activation_blocked_fast(&options.activation_blocked.kfs, uad, calc)
+        {
+            return false;
+        }
+        // Subsystems - very few subsystems, unlikely to fail
+        if options.subsystem_slot_index.enabled
+            && !fit_data.validate_subsystem_slot_index_fast(&options.subsystem_slot_index.kfs)
+        {
+            return false;
+        }
+        if options.subsystem_slot_count.enabled
+            && !fit_data.validate_subsystem_slot_count_fast(&options.subsystem_slot_count.kfs, uad, calc, fit)
+        {
+            return false;
+        }
+        // Services - very few services, applicable only to citadels, which usually do not have all
+        // slots filled anyway
+        if options.service_slot_count.enabled
+            && !fit_data.validate_service_slot_count_fast(&options.service_slot_count.kfs, uad, calc, fit)
+        {
+            return false;
+        }
+        // Security zone-specific checks. Usually should pass, since expectation is to have fit in
+        // nullsec, which has no sec zone limits, at least for now.
         if options.sec_zone_fitted.enabled
             && !fit_data.validate_sec_zone_fitted_fast(&options.sec_zone_fitted.kfs, uad, calc)
         {
@@ -378,20 +401,14 @@ impl Vast {
         {
             return false;
         }
-        if options.activation_blocked.enabled
-            && !fit_data.validate_activation_blocked_fast(&options.activation_blocked.kfs, uad, calc)
-        {
-            return false;
-        }
-        if options.item_vs_ship_kind.enabled
-            && !fit_data.validate_item_vs_ship_kind_fast(&options.item_vs_ship_kind.kfs)
-        {
-            return false;
-        }
+        // Incoming projection - effect stopper shouldn't fail for tried items, since there are no
+        // indirect ways to stop item effects for now.
         if options.effect_stopper.enabled && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, reffs)
         {
             return false;
         }
+        // Outgoing projections - useless for try-fit functionality, since tried items do not get
+        // outgoing projections added.
         if options.assist_immunity.enabled
             && !fit_data.validate_assist_immunity_fast(&options.assist_immunity.kfs, uad, calc)
         {
@@ -405,6 +422,48 @@ impl Vast {
         if options.resist_immunity.enabled
             && !fit_data.validate_resist_immunity_fast(&options.resist_immunity.kfs, uad, calc)
         {
+            return false;
+        }
+        // Misc checks - rarely used, or unlikely to fail
+        // Charge checks are not related to fit optimizations so far
+        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs, uad) {
+            return false;
+        }
+        if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs, uad) {
+            return false;
+        }
+        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs, uad) {
+            return false;
+        }
+        // Very niche validation, usually PG validation fails way before it
+        if options.capital_module.enabled && !fit_data.validate_capital_module_fast(&options.capital_module.kfs, ship) {
+            return false;
+        }
+        // Majority of fits are supposed to have thermodynamics 1 trained, and not every fit has
+        // overloaded modules.
+        if options.overload_skill.enabled && !fit_data.validate_overload_skill_fast(&options.overload_skill.kfs, fit) {
+            return false;
+        }
+        // T3D-specific check which should pass if nothing goes wrong on the app side
+        if options.ship_stance.enabled && !fit_data.validate_ship_stance_fast(&options.ship_stance.kfs, fit, ship) {
+            return false;
+        }
+        // Happens only at drone skill 0, which is not something likely to see
+        if options.unlaunchable_drone_slot.enabled
+            && !fit_data.validate_unlaunchable_drone_slot_fast(&options.unlaunchable_drone_slot.kfs, uad, calc, fit)
+        {
+            return false;
+        }
+        // In regular conditions, items kinds are supposed to match expected ones
+        if options.item_kind.enabled && !fit_data.validate_item_kind_fast(&options.item_kind.kfs) {
+            return false;
+        }
+        // In regular conditions, items are supposed to be loaded
+        if options.not_loaded_item.enabled && !fit_data.validate_not_loaded_item_fast(&options.not_loaded_item.kfs) {
+            return false;
+        }
+        // No known items use it, only fighter drones used to have it
+        if options.drone_group.enabled && !fit_data.validate_drone_group_fast(&options.drone_group.kfs) {
             return false;
         }
         true
