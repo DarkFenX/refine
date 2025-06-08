@@ -56,8 +56,8 @@ def run_server(*, proj_root: Path, config_path: Path, optimized: bool) -> Server
 
 
 def kill_server(*, server_info: ServerInfo) -> None:
-    server_info.popen.kill()
-    server_info.popen.wait()
+    server_info.popen.terminate()
+    server_info.popen.wait(timeout=2)
 
 
 def get_profile_name(*, optimized: bool) -> str:

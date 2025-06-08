@@ -76,7 +76,7 @@ impl Vast {
         if options.skill_reqs.enabled && !fit_data.validate_skill_reqs_fast(&options.skill_reqs.kfs) {
             return false;
         }
-        // Cheap check which prevents using big groups of modules/rigs on wrong type of ship
+        // Very cheap check which prevents using big groups of modules/rigs on wrong kind of ship
         if options.item_vs_ship_kind.enabled
             && !fit_data.validate_item_vs_ship_kind_fast(&options.item_vs_ship_kind.kfs)
         {
