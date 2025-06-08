@@ -21,9 +21,10 @@ pub struct ValSrqSkillInfo {
 impl VastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<ItemKey>) -> bool {
-        self.srqs_missing
-            .iter()
-            .all(|(item_key, missing_skills)| missing_skills.is_empty() || kfs.contains(item_key))
+        match kfs.is_empty() {
+            true => self.srqs_missing.is_empty(),
+            false => self.srqs_missing.difference(kfs).next().is_none(),
+        }
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(
@@ -34,7 +35,7 @@ impl VastFitData {
         let items: HashMap<_, _> = self
             .srqs_missing
             .iter()
-            .filter(|(item_key, missing_skills)| !missing_skills.is_empty() && !kfs.contains(item_key))
+            .filter(|(item_key, _)| !kfs.contains(item_key))
             .map(|(item_key, missing_skills)| {
                 (
                     uad.items.id_by_key(*item_key),

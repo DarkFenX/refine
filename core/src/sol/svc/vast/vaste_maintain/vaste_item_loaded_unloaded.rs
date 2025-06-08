@@ -49,7 +49,9 @@ impl Vast {
                     );
                 }
             }
-            fit_data.srqs_missing.insert(item_key, missing_skills);
+            if !missing_skills.is_empty() {
+                fit_data.srqs_missing.insert(item_key, missing_skills);
+            }
         }
         match item {
             UadItem::Booster(booster) => {

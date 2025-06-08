@@ -1,9 +1,12 @@
 use std::collections::hash_map::Entry;
 
-use crate::sol::{
-    ItemKey,
-    svc::vast::{ValSrqSkillInfo, Vast},
-    uad::{Uad, item::UadItem},
+use crate::{
+    sol::{
+        ItemKey,
+        svc::vast::{ValSrqSkillInfo, Vast},
+        uad::{Uad, item::UadItem},
+    },
+    util::RMap,
 };
 
 impl Vast {
@@ -22,14 +25,24 @@ impl Vast {
         if let UadItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
-            for other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
-                let missing_skills = fit_data.srqs_missing.get_mut(other_item_key).unwrap();
-                if let Entry::Occupied(mut entry) = missing_skills.entry(skill.get_a_item_id()) {
-                    match skill.get_a_level() >= entry.get().required_lvl {
-                        true => {
-                            entry.remove();
+            for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
+                // If a skill is being added, then all items are in skill-to-item map should have a
+                // missing entry
+                if let Entry::Occupied(mut missing_skills_entry) = fit_data.srqs_missing.entry(other_item_key) {
+                    if let Entry::Occupied(mut missing_skill_entry) =
+                        missing_skills_entry.get_mut().entry(skill.get_a_item_id())
+                    {
+                        match skill.get_a_level() >= missing_skill_entry.get().required_lvl {
+                            true => {
+                                missing_skill_entry.remove();
+                            }
+                            false => missing_skill_entry.get_mut().current_lvl = Some(skill.get_a_level().into()),
                         }
-                        false => entry.get_mut().current_lvl = Some(skill.get_a_level().into()),
+                    }
+                    // Keep root container clean if there are no missing skills for current "other"
+                    // item
+                    if missing_skills_entry.get().is_empty() {
+                        missing_skills_entry.remove();
                     }
                 }
             }
@@ -51,20 +64,47 @@ impl Vast {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
             for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
-                let missing_skills = fit_data.srqs_missing.get_mut(&other_item_key).unwrap();
-                match missing_skills.entry(skill.get_a_item_id()) {
-                    Entry::Occupied(mut entry) => entry.get_mut().current_lvl = None,
-                    Entry::Vacant(entry) => {
+                match fit_data.srqs_missing.entry(other_item_key) {
+                    Entry::Occupied(mut missing_skills_entry) => {
+                        match missing_skills_entry.get_mut().entry(skill.get_a_item_id()) {
+                            // If skill being removed already was of insufficient level, just update
+                            // info
+                            Entry::Occupied(mut missing_skill_entry) => {
+                                missing_skill_entry.get_mut().current_lvl = None;
+                            }
+                            // If skill info was missing, add it
+                            Entry::Vacant(missing_skill_entry) => {
+                                let other_item = uad.items.get(other_item_key);
+                                let required_a_lvl = *other_item
+                                    .get_effective_a_skill_reqs()
+                                    .unwrap()
+                                    .get(&skill.get_a_item_id())
+                                    .unwrap();
+                                missing_skill_entry.insert(ValSrqSkillInfo {
+                                    current_lvl: None,
+                                    required_lvl: required_a_lvl.into(),
+                                });
+                            }
+                        }
+                    }
+                    // No missing skills entry for current "other" item - skill being removed will
+                    // always lead to appearance of one
+                    Entry::Vacant(missing_skills_entry) => {
                         let other_item = uad.items.get(other_item_key);
                         let required_a_lvl = *other_item
                             .get_effective_a_skill_reqs()
                             .unwrap()
                             .get(&skill.get_a_item_id())
                             .unwrap();
-                        entry.insert(ValSrqSkillInfo {
-                            current_lvl: None,
-                            required_lvl: required_a_lvl.into(),
-                        });
+                        let mut missing_skills = RMap::new();
+                        missing_skills.insert(
+                            skill.get_a_item_id(),
+                            ValSrqSkillInfo {
+                                current_lvl: None,
+                                required_lvl: required_a_lvl.into(),
+                            },
+                        );
+                        missing_skills_entry.insert(missing_skills);
                     }
                 }
             }
