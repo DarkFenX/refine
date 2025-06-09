@@ -8,6 +8,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
+    from tests.fw.api.types.stats import StatsOptions
     from tests.fw.api.types.validation import ValOptions
     from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
     from tests.fw.util import Absent
@@ -30,6 +31,22 @@ class ApiClientFit(ApiClientBase):
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
             params=params)
+
+    def get_fit_stats_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            options: StatsOptions,
+    ) -> Request:
+        body = options.to_dict()
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/stats'}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     def validate_fit_request(
             self, *,

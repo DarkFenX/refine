@@ -16,12 +16,14 @@ from tests.fw.consts import (
 from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item
+from .stats import FitStats
 from .validation import FitValResult, SolValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import DpsProfile, MutaAdd
     from tests.fw.response import Response
+    from .stats import StatsOptions
     from .validation import ValOptions
 
 
@@ -56,6 +58,15 @@ class Fit(AttrDict):
         resp = self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
+
+    def get_stats(self, *, options: StatsOptions, status_code: int = 200) -> FitStats | None:
+        resp = self._client.get_fit_stats_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            options=options).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        return FitStats(data=resp.json())
 
     def validate(
             self, *,

@@ -1,4 +1,4 @@
-from tests import check_no_field, effect_dogma_to_api
+from tests import check_no_field
 from tests.fw.api import ValOptions
 
 

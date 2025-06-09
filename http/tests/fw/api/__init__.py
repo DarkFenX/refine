@@ -1,2 +1,2 @@
 from .client import ApiClient
-from .types import ValOptions
+from .types import StatsOptions, ValOptions
