@@ -431,6 +431,28 @@ def test_non_positive(client, consts):
     assert api_stats.cpu == (140, 125)
 
 
+def test_no_value_use(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_module2_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cpu=True))
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.max == 125
+    assert api_val.details.cpu.users == {api_module1.id: 150}
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
+
+
 def test_no_value_max(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
