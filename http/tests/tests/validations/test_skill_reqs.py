@@ -100,6 +100,118 @@ def test_skill_add_remove_higher(client):
         api_module2.id: {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)}}
 
 
+def test_skill_add_remove_zero(client):
+    eve_skill1_id = client.mk_eve_item()
+    eve_skill2_id = client.mk_eve_item()
+    eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 0})
+    eve_module2_id = client.mk_eve_item(srqs={eve_skill1_id: 0, eve_skill2_id: 5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
+    # Verification - zero is distinct from absence of skill just for the sake of consistency with
+    # general EVE approach. E.g. old shield compensation skills left +3% passive resists on active
+    # hardeners if they were not trained, and turned it to 0% at lvl 0.
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {
+        api_module1.id: {eve_skill1_id: (None, 0)},
+        api_module2.id: {eve_skill1_id: (None, 0), eve_skill2_id: (None, 5)}}
+    # Action
+    api_skill = api_fit.add_skill(type_id=eve_skill1_id, level=0)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    # Action
+    api_skill.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {
+        api_module1.id: {eve_skill1_id: (None, 0)},
+        api_module2.id: {eve_skill1_id: (None, 0), eve_skill2_id: (None, 5)}}
+
+
+def test_item_add_remove(client):
+    eve_skill1_id = client.mk_eve_item()
+    eve_skill2_id = client.mk_eve_item()
+    eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 0})
+    eve_module2_id = client.mk_eve_item(srqs={eve_skill1_id: 0, eve_skill2_id: 5})
+    eve_module3_id = client.mk_eve_item(srqs={eve_skill1_id: 3})
+    eve_module4_id = client.mk_eve_item(srqs={eve_skill1_id: 3, eve_skill2_id: 5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_skill(type_id=eve_skill1_id, level=0)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    # Action
+    api_module3 = api_fit.add_module(type_id=eve_module3_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {
+        api_module2.id: {eve_skill2_id: (None, 5)},
+        api_module3.id: {eve_skill1_id: (0, 3)}}
+    # Action
+    api_module4 = api_fit.add_module(type_id=eve_module4_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {
+        api_module2.id: {eve_skill2_id: (None, 5)},
+        api_module3.id: {eve_skill1_id: (0, 3)},
+        api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    # Action
+    api_module1.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {
+        api_module2.id: {eve_skill2_id: (None, 5)},
+        api_module3.id: {eve_skill1_id: (0, 3)},
+        api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    # Action
+    api_module2.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {
+        api_module3.id: {eve_skill1_id: (0, 3)},
+        api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    # Action
+    api_module3.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    # Action
+    api_module4.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_skill_level_change(client):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
