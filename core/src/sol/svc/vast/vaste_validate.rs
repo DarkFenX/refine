@@ -109,14 +109,6 @@ impl Vast {
         {
             return false;
         }
-        // More expensive resource checks. PG over CPU since it is more likely to break validation
-        // (modules of bigger sizes usually instantly take more PG than a ship provides)
-        if options.powergrid.enabled && !fit_data.validate_powergrid_fast(&options.powergrid.kfs, uad, calc, fit) {
-            return false;
-        }
-        if options.cpu.enabled && !fit_data.validate_cpu_fast(&options.cpu.kfs, uad, calc, fit) {
-            return false;
-        }
         // Relatively expensive check, but price scales with amount of limited items
         if options.ship_limit.enabled && !fit_data.validate_ship_limit_fast(&options.ship_limit.kfs, ship) {
             return false;
@@ -140,6 +132,11 @@ impl Vast {
         }
         // Cheap module check, but only one module uses it at the moment (rorq's PANIC)
         if options.max_type_fitted.enabled && !fit_data.validate_max_type_fitted_fast(&options.max_type_fitted.kfs) {
+            return false;
+        }
+        // Niche but very cheap. Does not allow to fit cap mods to subcaps, filters out some modules
+        // before more expensive PG check.
+        if options.capital_module.enabled && !fit_data.validate_capital_module_fast(&options.capital_module.kfs, ship) {
             return false;
         }
         // Cheap, but somewhat useless for "try fit" functionality check, since modules are added in
@@ -166,6 +163,15 @@ impl Vast {
         if options.implant_slot_index.enabled
             && !fit_data.validate_implant_slot_index_fast(&options.implant_slot_index.kfs)
         {
+            return false;
+        }
+        // Very expensive resource checks related to modules/services. PG over CPU since it is more
+        // likely to break validation (modules of bigger sizes usually instantly take more PG than a
+        // ship provides)
+        if options.powergrid.enabled && !fit_data.validate_powergrid_fast(&options.powergrid.kfs, uad, calc, fit) {
+            return false;
+        }
+        if options.cpu.enabled && !fit_data.validate_cpu_fast(&options.cpu.kfs, uad, calc, fit) {
             return false;
         }
         // Drones
@@ -433,10 +439,6 @@ impl Vast {
             return false;
         }
         if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs, uad) {
-            return false;
-        }
-        // Very niche validation, usually PG validation fails way before it
-        if options.capital_module.enabled && !fit_data.validate_capital_module_fast(&options.capital_module.kfs, ship) {
             return false;
         }
         // Majority of fits are supposed to have thermodynamics 1 trained, and not every fit has
