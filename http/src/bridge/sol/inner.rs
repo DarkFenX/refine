@@ -4,12 +4,12 @@ use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
         HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkTryFitItemsCmd, HChangeFitCommand,
-        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HRemoveItemCmd, HTryFitItemsCmd,
-        HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
+        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd, HRemoveItemCmd,
+        HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
     },
     info::{
-        HFitInfo, HFitInfoMode, HFitValResult, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo,
-        HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
+        HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode,
+        HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
     },
     util::HExecError,
 };
@@ -356,6 +356,28 @@ impl HSolarSystemInner {
                     Err(exec_error) => Err(exec_error.into()),
                 };
                 (core_sol, result)
+            })
+            .await;
+        self.put_sol_back(core_sol);
+        result
+    }
+    /// Non-fallible
+    #[tracing::instrument(name = "sol-fit-val", level = "trace", skip_all)]
+    pub(crate) async fn get_fit_stats(
+        &mut self,
+        tpool: &HThreadPool,
+        fit_id: &str,
+        command: HGetFitStatsCmd,
+    ) -> Result<HFitStats, HBrError> {
+        let fit_id = self.str_to_fit_id(fit_id)?;
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                let result = command.execute(&mut core_sol, &fit_id);
+                (core_sol, result.map_err(HBrError::from))
             })
             .await;
         self.put_sol_back(core_sol);
