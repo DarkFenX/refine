@@ -13,13 +13,13 @@ def test_fail_single(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 125)
 
 
 def test_fail_multiple_ship(client, consts):
@@ -35,13 +35,13 @@ def test_fail_multiple_ship(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module1.id: 50, api_module2.id: 100}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 125)
 
 
 def test_fail_multiple_struct(client, consts):
@@ -58,13 +58,13 @@ def test_fail_multiple_struct(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     api_service = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 50, api_service.id: 100}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 125)
 
 
 def test_equal(client, consts):
@@ -78,12 +78,12 @@ def test_equal(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 150)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 150)
 
 
 def test_known_failures(client, consts):
@@ -103,15 +103,17 @@ def test_known_failures(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 125)
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (250, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250
@@ -130,38 +132,36 @@ def test_known_failures(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (250, 125)
     # Action
     api_module3 = api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (240, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (240, 125)
     # Action
     api_module3.remove()
     api_module4 = api_fit.add_module(type_id=eve_module4_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (250, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (250, 125)
     # Action
     api_module4.remove()
     api_module5 = api_fit.add_module(type_id=eve_module5_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (250.5, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250.5
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module5.id: 0.5}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (250.5, 125)
 
 
 def test_modified_use(client, consts):
@@ -185,23 +185,23 @@ def test_modified_use(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 150
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 125)
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 75
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (75, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (75, 125)
 
 
 def test_modified_max(client, consts):
@@ -225,23 +225,23 @@ def test_modified_max(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].extra == 120
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 120)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 120
     assert api_val.details.cpu.users == {api_module.id: 150}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 120)
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].extra == 180
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 180)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 180)
 
 
 def test_mutation_use(client, consts):
@@ -260,44 +260,44 @@ def test_mutation_use(client, consts):
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 120
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (120, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (120, 125)
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.7}}))
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 129.6
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (129.6, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 129.6
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 129.6}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (129.6, 125)
     # Action
     api_module.change_module(mutation={eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}})
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 134.4
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (134.4, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 134.4
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 134.4}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (134.4, 125)
     # Action
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 120
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (120, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (120, 125)
 
 
 def test_rounding(client, consts):
@@ -313,13 +313,13 @@ def test_rounding(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (5.24, 5.23)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 5.24
     assert api_val.details.cpu.max == 5.23
     assert api_val.details.cpu.users == {api_module1.id: 0.01, api_module2.id: 5.23}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (5.24, 5.23)
 
 
 def test_sum_rounding(client, consts):
@@ -340,13 +340,13 @@ def test_sum_rounding(client, consts):
         if i == 1:
             continue
         # Verification
+        api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+        assert api_stats.cpu == (round(i / 10, 1), 0.15)
         api_val = api_fit.validate(options=ValOptions(cpu=True))
         assert api_val.passed is False
         assert api_val.details.cpu.used == round(i / 10, 1)
         assert api_val.details.cpu.max == 0.15
         assert len(api_val.details.cpu.users) == i
-        api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-        assert api_stats.cpu == (round(i / 10, 1), 0.15)
 
 
 def test_no_ship(client, consts):
@@ -358,13 +358,13 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (5, None)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 5
     assert api_val.details.cpu.max is None
     assert api_val.details.cpu.users == {api_module.id: 5}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (5, None)
 
 
 def test_not_loaded_ship(client, consts):
@@ -378,13 +378,13 @@ def test_not_loaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (5, None)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 5
     assert api_val.details.cpu.max is None
     assert api_val.details.cpu.users == {api_module.id: 5}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (5, None)
 
 
 def test_not_loaded_user(client, consts):
@@ -399,12 +399,12 @@ def test_not_loaded_user(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (0, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (0, 125)
 
 
 def test_non_positive(client, consts):
@@ -422,13 +422,13 @@ def test_non_positive(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification - items with negative and 0 use are not exposed
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (140, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 140
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module2.id: 150}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (140, 125)
 
 
 def test_no_value_use(client, consts):
@@ -444,13 +444,13 @@ def test_no_value_use(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
     api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module1.id: 150}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 125)
 
 
 def test_no_value_max(client, consts):
@@ -464,13 +464,13 @@ def test_no_value_max(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 0)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 0
     assert api_val.details.cpu.users == {api_module.id: 150}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 0)
 
 
 def test_criterion_module_state(client, consts):
@@ -484,31 +484,31 @@ def test_criterion_module_state(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.offline)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (0, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (0, 125)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (150, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (150, 125)
     # Action
     api_module.change_module(state=consts.ApiModuleState.offline)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (0, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (0, 125)
 
 
 def test_criterion_item_kind(client, consts):
@@ -542,9 +542,9 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
+    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
+    assert api_stats.cpu == (0, 125)
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
-    assert api_stats.cpu == (0, 125)
