@@ -59,7 +59,11 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
-    def get_stats(self, *, options: StatsOptions, status_code: int = 200) -> FitStats | None:
+    def get_stats(
+            self, *,
+            options: StatsOptions | type[Absent],
+            status_code: int = 200,
+    ) -> FitStats | None:
         resp = self._client.get_fit_stats_request(
             sol_id=self._sol_id,
             fit_id=self.id,
@@ -70,7 +74,7 @@ class Fit(AttrDict):
 
     def validate(
             self, *,
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             status_code: int = 200,
             flip_order: bool = False,
     ) -> FitValResult | None:
@@ -125,7 +129,7 @@ class Fit(AttrDict):
 
     def __validate_fit(
             self, *,
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:
@@ -141,7 +145,7 @@ class Fit(AttrDict):
     def __validate_sol(
             self, *,
             fit_ids: list[str],
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:
@@ -157,7 +161,7 @@ class Fit(AttrDict):
     def try_fit_items(
             self, *,
             type_ids: list[int],
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             status_code: int = 200,
     ) -> list[int] | None:
         resp = self._client.try_fit_items_request(

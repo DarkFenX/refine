@@ -107,7 +107,7 @@ class SolarSystem(AttrDict):
     def validate(
             self, *,
             fit_ids: list[str] | type[Absent | Default] = Default,
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             status_code: int = 200,
             flip_order: bool = False,
     ) -> SolValResult | None:
@@ -162,7 +162,7 @@ class SolarSystem(AttrDict):
     def __validate_sol(
             self, *,
             fit_ids: list[str] | type[Absent | Default],
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:
@@ -180,7 +180,7 @@ class SolarSystem(AttrDict):
     def __validate_fit(
             self, *,
             fit_id: str,
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
     ) -> Response:

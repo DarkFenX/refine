@@ -6,6 +6,7 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HTryFitItemsCmd {
     type_ids: Vec<rc::ItemTypeId>,
+    #[serde(default)]
     validation_options: HValOptions,
 }
 impl HTryFitItemsCmd {

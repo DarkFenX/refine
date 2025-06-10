@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import typing
 
+from tests.fw.api.types import ValOptions
 from tests.fw.request import Request
-from tests.fw.util import conditional_insert
+from tests.fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
-    from tests.fw.api.types.stats import StatsOptions
-    from tests.fw.api.types.validation import ValOptions
+    from tests.fw.api.types import StatsOptions
     from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
-    from tests.fw.util import Absent
 
 
 class ApiClientFit(ApiClientBase):
@@ -36,36 +35,34 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            options: StatsOptions,
+            options: StatsOptions | type[Absent],
     ) -> Request:
-        body = options.to_dict()
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/stats'}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
-        if body:
-            kwargs['json'] = body
+        if options is not Absent:
+            kwargs['json'] = options.to_dict()
         return Request(client=self, **kwargs)
 
     def validate_fit_request(
             self, *,
             sol_id: str,
             fit_id: str,
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, path=['validation'], value=val_info_mode)
-        body = options.to_dict()
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/validate',
             'params': params}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
-        if body:
-            kwargs['json'] = body
+        if options is not Absent:
+            kwargs['json'] = options.to_dict()
         return Request(client=self, **kwargs)
 
     def try_fit_items_request(
@@ -73,11 +70,13 @@ class ApiClientFit(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_ids: list[int],
-            options: ValOptions,
+            options: ValOptions | type[Absent],
     ) -> Request:
-        body = {
-            'type_ids': type_ids,
-            'validation_options': options.to_dict()}
+        body = {'type_ids': type_ids}
+        conditional_insert(
+            container=body,
+            path=['validation_options'],
+            value=options.to_dict() if isinstance(options, ValOptions) else options)
         return Request(
             client=self,
             method='POST',

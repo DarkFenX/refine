@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 from tests.fw import eve
-from tests.fw.api.types import SolarSystem
+from tests.fw.api.types import SolarSystem, ValOptions
 from tests.fw.consts import ApiSolInfoMode
 from tests.fw.request import Request
 from tests.fw.util import Absent, Default, conditional_insert
@@ -11,7 +11,6 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
-    from tests.fw.api.types.validation import ValOptions
     from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone, ApiValInfoMode
 
 
@@ -191,15 +190,17 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             sol_id: str,
             fit_ids: list[str] | type[Absent],
-            options: ValOptions,
+            options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, path=['validation'], value=val_info_mode)
         body = {}
         conditional_insert(container=body, path=['fit_ids'], value=fit_ids)
-        if options := options.to_dict():
-            body['options'] = options
+        conditional_insert(
+            container=body,
+            path=['options'],
+            value=options.to_dict() if isinstance(options, ValOptions) else options)
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/validate',
