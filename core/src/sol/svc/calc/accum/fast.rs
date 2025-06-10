@@ -368,11 +368,8 @@ fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool, pen_chains: &mut PenC
 }
 fn get_chain_val(vals: &mut [AttrVal]) -> AttrVal {
     let mut val = OF(1.0);
-    // Ignore 12th modification and further as non-significant
-    for (i, mod_val) in vals.iter().enumerate() {
-        if let Some(denominator) = PENALTY_DENOMINATORS.get(i) {
-            val *= OF(1.0) + (mod_val - OF(1.0)) / denominator;
-        }
+    for (mod_val, denominator) in std::iter::zip(vals.iter(), PENALTY_DENOMINATORS.iter()) {
+        val *= OF(1.0) + (mod_val - OF(1.0)) / denominator;
     }
     val
 }
