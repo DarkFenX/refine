@@ -11,6 +11,7 @@ rdha = { package = "reefast-dh-adapted", path = "../dh-adapted", features = ["js
 axum = { version = ">=0.8.4", features = ["query"] }
 chrono = ">=0.4.41"
 config = { version = ">=0.15.11", features = ["toml"] }
+educe = { version = ">=0.6.0", features = ["Default"], default-features = false }
 parking_lot = { version = ">=0.12.4", features = ["nightly"] }
 serde = { version = ">=1.0.219", features = ["derive"] }
 serde_tuple = ">=1.1.0"

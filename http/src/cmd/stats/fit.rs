@@ -1,7 +1,9 @@
 use crate::{cmd::shared::get_primary_fit, info::HFitStats, util::HExecError};
 
-#[derive(serde::Deserialize, Default)]
+#[derive(educe::Educe, serde::Deserialize)]
+#[educe(Default)]
 pub(crate) struct HGetFitStatsCmd {
+    #[educe(Default = true)]
     default: bool,
     high_slots: Option<bool>,
     mid_slots: Option<bool>,

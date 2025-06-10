@@ -1,5 +1,7 @@
-#[derive(serde::Deserialize)]
+#[derive(educe::Educe, serde::Deserialize)]
+#[educe(Default)]
 pub(in crate::cmd) struct HValOptions {
+    #[educe(Default = true)]
     default: bool,
     // Generic
     #[serde(default)]
@@ -263,89 +265,6 @@ impl HValOptions {
         process_option(&self.sec_zone_unonlineable, &mut core_options.sec_zone_unonlineable);
         process_option(&self.sec_zone_unactivable, &mut core_options.sec_zone_unactivable);
         core_options
-    }
-}
-impl Default for HValOptions {
-    fn default() -> Self {
-        Self {
-            default: true,
-            // Generic
-            not_loaded_item: None,
-            item_kind: None,
-            skill_reqs: None,
-            // Implants/boosters
-            implant_slot_index: None,
-            booster_slot_index: None,
-            // Shared between mod-alike items
-            cpu: None,
-            powergrid: None,
-            ship_limit: None,
-            max_group_fitted: None,
-            max_group_online: None,
-            max_group_active: None,
-            max_type_fitted: None,
-            item_vs_ship_kind: None,
-            // Modules
-            high_slot_count: None,
-            mid_slot_count: None,
-            low_slot_count: None,
-            turret_slot_count: None,
-            launcher_slot_count: None,
-            module_state: None,
-            capital_module: None,
-            overload_skill: None,
-            // Charges
-            charge_group: None,
-            charge_size: None,
-            charge_volume: None,
-            // Rigs
-            rig_slot_count: None,
-            calibration: None,
-            rig_size: None,
-            // Services
-            service_slot_count: None,
-            // T3 subsystems/stances
-            subsystem_slot_count: None,
-            subsystem_slot_index: None,
-            ship_stance: None,
-            // Drones
-            drone_bay_volume: None,
-            launched_drone_count: None,
-            drone_bandwidth: None,
-            unlaunchable_drone_slot: None,
-            unlaunchable_drone_bandwidth: None,
-            drone_group: None,
-            // Fighters
-            fighter_bay_volume: None,
-            launched_fighter_count: None,
-            launched_light_fighter_count: None,
-            launched_heavy_fighter_count: None,
-            launched_support_fighter_count: None,
-            launched_st_light_fighter_count: None,
-            launched_st_heavy_fighter_count: None,
-            launched_st_support_fighter_count: None,
-            unlaunchable_fighter: None,
-            unlaunchable_light_fighter: None,
-            unlaunchable_heavy_fighter: None,
-            unlaunchable_support_fighter: None,
-            unlaunchable_st_light_fighter: None,
-            unlaunchable_st_heavy_fighter: None,
-            unlaunchable_st_support_fighter: None,
-            fighter_squad_size: None,
-            // Projection, destination side
-            activation_blocked: None,
-            effect_stopper: None,
-            // Projection, source side
-            assist_immunity: None,
-            offense_immunity: None,
-            resist_immunity: None,
-            // Sec zone
-            sec_zone_fitted: None,
-            sec_zone_online: None,
-            sec_zone_active: None,
-            sec_zone_unonlineable: None,
-            sec_zone_unactivable: None,
-        }
     }
 }
 
