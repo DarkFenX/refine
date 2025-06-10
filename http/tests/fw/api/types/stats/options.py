@@ -8,7 +8,7 @@ type StatOption = bool | type[Absent]
 @dataclasses.dataclass(kw_only=True)
 class StatsOptions:
 
-    default: bool | type[Absent] = Absent
+    default: bool = False
     high_slots: StatOption  = Absent
     mid_slots: StatOption  = Absent
     low_slots: StatOption  = Absent
