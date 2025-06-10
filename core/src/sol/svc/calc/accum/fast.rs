@@ -7,8 +7,8 @@
 use ordered_float::OrderedFloat as OF;
 
 use super::shared::{
-    PENALTY_BASE, PENALTY_SIGNIFICANT_MODIFICATIONS, diminish_basic, diminish_mul, diminish_noop, is_penal,
-    normalize_div, normalize_noop, normalize_perc, normalize_sub,
+    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop,
+    normalize_perc, normalize_sub,
 };
 use crate::{
     ad,
@@ -370,10 +370,9 @@ fn get_chain_val(vals: &mut [AttrVal]) -> AttrVal {
     let mut val = OF(1.0);
     // Ignore 12th modification and further as non-significant
     for (i, mod_val) in vals.iter().enumerate() {
-        if i >= PENALTY_SIGNIFICANT_MODIFICATIONS {
-            break;
+        if let Some(denominator) = PENALTY_DENOMINATORS.get(i) {
+            val *= OF(1.0) + (mod_val - OF(1.0)) / denominator;
         }
-        val *= OF(1.0) + (mod_val - OF(1.0)) * PENALTY_BASE.powi((i as i32).pow(2));
     }
     val
 }

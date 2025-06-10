@@ -2,8 +2,6 @@ use ordered_float::OrderedFloat as OF;
 
 use crate::{ac, ad, sol::AttrVal};
 
-pub(super) const PENALTY_SIGNIFICANT_MODIFICATIONS: usize = 11;
-
 const PENALTY_IMMUNE_A_ITEM_CATS: [ad::AItemCatId; 5] = [
     ac::itemcats::SHIP,
     ac::itemcats::CHARGE,
@@ -11,9 +9,19 @@ const PENALTY_IMMUNE_A_ITEM_CATS: [ad::AItemCatId; 5] = [
     ac::itemcats::IMPLANT,
     ac::itemcats::SUBSYSTEM,
 ];
-// Source expression: 1 / e^((1 / 2.67)^2)
-#[allow(clippy::excessive_precision)]
-pub(super) const PENALTY_BASE: AttrVal = OF(0.86911998080039742919922218788997270166873931884765625);
+// Result of calculation of math.exp((i / 2.67) ** 2.0) using 64-bit python 2.7, with i being
+// position of penalizable value in chain. In EVE client, it seems to have max of 8 values, after
+// which modifications are ignored.
+pub(super) const PENALTY_DENOMINATORS: [AttrVal; 8] = [
+    OF(f64::from_bits(0x3ff0000000000000)),
+    OF(f64::from_bits(0x3ff268d024fc2657)),
+    OF(f64::from_bits(0x3ffc0a9eea34dd40)),
+    OF(f64::from_bits(0x400c45e565788da0)),
+    OF(f64::from_bits(0x4022de860d1e1273)),
+    OF(f64::from_bits(0x4040abec60cb53f1)),
+    OF(f64::from_bits(0x4063800e9ca1aa8e)),
+    OF(f64::from_bits(0x408e320fff24307e)),
+];
 
 pub(in crate::sol::svc::calc) fn is_penal(attr_penalizable: bool, affector_a_item_cat_id: &ad::AItemCatId) -> bool {
     attr_penalizable && !PENALTY_IMMUNE_A_ITEM_CATS.contains(affector_a_item_cat_id)

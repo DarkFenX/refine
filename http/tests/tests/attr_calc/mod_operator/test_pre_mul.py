@@ -135,9 +135,6 @@ def test_deep_stacking(client, consts):
     eve_affector7_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.44}, eff_ids=[eve_effect_id])
     eve_affector8_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.43}, eff_ids=[eve_effect_id])
     eve_affector9_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.42}, eff_ids=[eve_effect_id])
-    eve_affector10_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.41}, eff_ids=[eve_effect_id])
-    eve_affector11_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.40}, eff_ids=[eve_effect_id])
-    eve_affector12_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.39}, eff_ids=[eve_effect_id])
     eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
@@ -150,17 +147,14 @@ def test_deep_stacking(client, consts):
     api_affector6 = api_fit.add_rig(type_id=eve_affector6_id)
     api_affector7 = api_fit.add_rig(type_id=eve_affector7_id)
     api_affector8 = api_fit.add_rig(type_id=eve_affector8_id)
-    api_affector9 = api_fit.add_rig(type_id=eve_affector9_id)
-    api_affector10 = api_fit.add_rig(type_id=eve_affector10_id)
-    api_affector11 = api_fit.add_rig(type_id=eve_affector11_id)
-    api_fit.add_rig(type_id=eve_affector12_id)
+    api_fit.add_rig(type_id=eve_affector9_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(329.202701)
+    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(329.183576)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
-    # 12th affector is completely ignored both in calculation process and for modification listing
-    assert len(api_mods) == 11
+    # 9th affector is completely ignored both in calculation process and for modification listing
+    assert len(api_mods) == 8
     api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.pre_mul
     assert api_mod1.initial_val == approx(1.5)
@@ -201,21 +195,6 @@ def test_deep_stacking(client, consts):
     assert api_mod8.initial_val == approx(1.43)
     assert api_mod8.stacking_mult == approx(consts.PenaltyStr.p8)
     assert api_mod8.applied_val == approx(1.0004450158)
-    api_mod9 = api_mods.find_by_affector_item(affector_item_id=api_affector9.id).one()
-    assert api_mod9.op == consts.ApiModOp.pre_mul
-    assert api_mod9.initial_val == approx(1.42)
-    assert api_mod9.stacking_mult == approx(consts.PenaltyStr.p9)
-    assert api_mod9.applied_val == approx(1.00005300933)
-    api_mod10 = api_mods.find_by_affector_item(affector_item_id=api_affector10.id).one()
-    assert api_mod10.op == consts.ApiModOp.pre_mul
-    assert api_mod10.initial_val == approx(1.41)
-    assert api_mod10.stacking_mult == approx(consts.PenaltyStr.p10)
-    assert api_mod10.applied_val == approx(1.000004766969)
-    api_mod11 = api_mods.find_by_affector_item(affector_item_id=api_affector11.id).one()
-    assert api_mod11.op == consts.ApiModOp.pre_mul
-    assert api_mod11.initial_val == approx(1.40)
-    assert api_mod11.stacking_mult == approx(consts.PenaltyStr.p11)
-    assert api_mod11.applied_val == approx(1.0000003236185)
 
 
 def test_insignificant_stacking(client, consts):

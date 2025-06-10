@@ -7,8 +7,8 @@ use ordered_float::OrderedFloat as OF;
 use smallvec::SmallVec;
 
 use super::shared::{
-    PENALTY_BASE, PENALTY_SIGNIFICANT_MODIFICATIONS, diminish_basic, diminish_mul, diminish_noop, is_penal,
-    normalize_div, normalize_noop, normalize_perc, normalize_sub,
+    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop,
+    normalize_perc, normalize_sub,
 };
 use crate::{
     ad,
@@ -635,25 +635,28 @@ where
         None => false,
     };
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
-        // Ignore 12th modification and further as insignificant
-        if i >= PENALTY_SIGNIFICANT_MODIFICATIONS {
-            for info in other_attr_info.effective_infos.iter_mut() {
-                info.stacking_mult = Some(OF(0.0));
-                info.applied_val = revert_func(OF(1.0));
+        match PENALTY_DENOMINATORS.get(i) {
+            Some(denominator) => {
+                let penalty_multiplier = OF(1.0) / denominator;
+                let value_multiplier = OF(1.0) + (other_attr_info.value - OF(1.0)) * penalty_multiplier;
+                for info in other_attr_info.effective_infos.iter_mut() {
+                    info.stacking_mult = Some(penalty_multiplier);
+                    info.applied_val = revert_func(value_multiplier);
+                }
+                if first_zero && i > 0 {
+                    attr_info.merge_ineffective(other_attr_info);
+                } else {
+                    attr_info.value *= value_multiplier;
+                    attr_info.merge(other_attr_info);
+                }
             }
-            attr_info.merge_ineffective(other_attr_info);
-        } else {
-            let penalty_multiplier = PENALTY_BASE.powi((i as i32).pow(2));
-            let value_multiplier = OF(1.0) + (other_attr_info.value - OF(1.0)) * penalty_multiplier;
-            for info in other_attr_info.effective_infos.iter_mut() {
-                info.stacking_mult = Some(OF(penalty_multiplier));
-                info.applied_val = revert_func(value_multiplier);
-            }
-            if first_zero && i > 0 {
+            // Modifications past those which have penalty multiplier are insignificant
+            None => {
+                for info in other_attr_info.effective_infos.iter_mut() {
+                    info.stacking_mult = Some(OF(0.0));
+                    info.applied_val = revert_func(OF(1.0));
+                }
                 attr_info.merge_ineffective(other_attr_info);
-            } else {
-                attr_info.value *= value_multiplier;
-                attr_info.merge(other_attr_info);
             }
         }
     }
