@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import StatsOptions, ValOptions
 
 
 def test_fail_single(client, consts):
@@ -13,6 +13,8 @@ def test_fail_single(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -33,6 +35,8 @@ def test_fail_multiple_ship(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -53,6 +57,8 @@ def test_fail_multiple_struct(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -71,6 +77,8 @@ def test_equal(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(150))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -94,6 +102,8 @@ def test_known_failures(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -101,6 +111,8 @@ def test_known_failures(client, consts):
     # Action
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(250), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id])))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(250)
@@ -122,6 +134,8 @@ def test_known_failures(client, consts):
     # Action
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(240), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_drone2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -130,6 +144,8 @@ def test_known_failures(client, consts):
     api_drone3.remove()
     api_drone4 = api_fit.add_drone(type_id=eve_drone4_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(250), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_drone2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -138,6 +154,8 @@ def test_known_failures(client, consts):
     api_drone4.remove()
     api_drone5 = api_fit.add_drone(type_id=eve_drone5_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(250.5), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_drone2.id])))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == 250.5
@@ -171,6 +189,8 @@ def test_modified_use(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(75)
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -180,6 +200,8 @@ def test_modified_use(client, consts):
     api_implant.remove()
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(150)
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -208,6 +230,8 @@ def test_modified_max(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].extra == approx(120)
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(120))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -217,6 +241,8 @@ def test_modified_max(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].extra == approx(180)
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(180))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -239,6 +265,8 @@ def test_mutation_use(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_base_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(120)
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(120), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -247,6 +275,8 @@ def test_mutation_use(client, consts):
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(145.6)
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(130), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(130)
@@ -256,6 +286,8 @@ def test_mutation_use(client, consts):
     api_drone.change_drone(mutation={eve_use_attr_id: None})
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(130)
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(130), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(130)
@@ -277,6 +309,8 @@ def test_switch_type_id(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -285,6 +319,8 @@ def test_switch_type_id(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone2_id)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(140), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(140)
@@ -293,6 +329,8 @@ def test_switch_type_id(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone3_id)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(120), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -300,6 +338,8 @@ def test_switch_type_id(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone1_id)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -308,6 +348,8 @@ def test_switch_type_id(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone4_id)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -315,6 +357,8 @@ def test_switch_type_id(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone2_id)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(140), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(140)
@@ -336,6 +380,8 @@ def test_rounding(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(5.229), approx(5.223))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(5.229)
@@ -352,6 +398,8 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(5), None)
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(5)
@@ -370,6 +418,8 @@ def test_not_loaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(5), None)
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(5)
@@ -389,6 +439,8 @@ def test_not_loaded_user(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -410,6 +462,8 @@ def test_non_positive(client, consts):
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_space)
     # Verification - items with negative and 0 use are not exposed
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(140), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(140)
@@ -430,6 +484,8 @@ def test_no_value_use(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
     api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -448,6 +504,8 @@ def test_no_value_max(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(0))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -466,6 +524,8 @@ def test_criterion_drone_state(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -473,6 +533,8 @@ def test_criterion_drone_state(client, consts):
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(150)
@@ -481,6 +543,8 @@ def test_criterion_drone_state(client, consts):
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_bay)
     # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -516,6 +580,8 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
+    api_stats = api_fit.get_stats(options=StatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
