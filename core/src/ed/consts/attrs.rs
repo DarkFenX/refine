@@ -14,6 +14,7 @@ pub(crate) const CPU_OUTPUT: EAttrId = 48;
 pub(crate) const CPU: EAttrId = 50;
 pub(crate) const SPEED: EAttrId = 51;
 pub(crate) const DMG_MULT: EAttrId = 64;
+pub(crate) const AGILITY: EAttrId = 70;
 pub(crate) const ARMOR_DMG_AMOUNT: EAttrId = 84;
 pub(crate) const LAUNCHER_SLOTS_LEFT: EAttrId = 101;
 pub(crate) const TURRET_SLOTS_LEFT: EAttrId = 102;

@@ -2,7 +2,7 @@ use cache::ValCache;
 pub use options::{ValOption, ValOptions, ValOptionsSol};
 pub(in crate::sol) use options::{ValOptionsInt, ValOptionsSolInt};
 pub use result::{ValResultFit, ValResultSol};
-pub(in crate::sol::svc) use vast::Vast;
+pub(in crate::sol) use vast::Vast;
 use vast::VastFitData;
 pub use vaste_stats_fit::{StatRes, StatSlot};
 pub use vaste_vals::{
@@ -24,5 +24,6 @@ mod vast;
 mod vaste_debug;
 mod vaste_maintain;
 mod vaste_stats_fit;
+mod vaste_stats_item;
 mod vaste_validate;
 mod vaste_vals;
