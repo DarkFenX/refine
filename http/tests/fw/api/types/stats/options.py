@@ -31,7 +31,7 @@ class StatsOptions:
     drone_bay_volume: StatOption  = Absent
     drone_bandwidth: StatOption  = Absent
     fighter_bay_volume: StatOption  = Absent
-    agility_factor: StatOption  = Absent
+    agility: StatOption  = Absent
     align_time: StatOption  = Absent
     speed: StatOption  = Absent
 

@@ -16,7 +16,7 @@ impl Vast {
     pub(in crate::sol) fn get_item_speed(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
         calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::MAX_VELOCITY)
     }
-    pub(in crate::sol) fn get_item_agility_factor(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+    pub(in crate::sol) fn get_item_agility(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
         let agility = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::AGILITY)?;
         if agility == OF(0.0) {
             return None;
@@ -28,6 +28,6 @@ impl Vast {
         Some(AGILITY_CONST * agility * mass)
     }
     pub(in crate::sol) fn get_align_time(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
-        Vast::get_item_agility_factor(uad, calc, item_key).map(|v| v.ceil())
+        Vast::get_item_agility(uad, calc, item_key).map(|v| v.ceil())
     }
 }

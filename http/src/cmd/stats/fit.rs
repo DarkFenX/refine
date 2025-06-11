@@ -27,7 +27,7 @@ pub(crate) struct HGetFitStatsCmd {
     drone_bay_volume: Option<bool>,
     drone_bandwidth: Option<bool>,
     fighter_bay_volume: Option<bool>,
-    agility_factor: Option<bool>,
+    agility: Option<bool>,
     align_time: Option<bool>,
     speed: Option<bool>,
 }
@@ -101,8 +101,8 @@ impl HGetFitStatsCmd {
         if self.fighter_bay_volume.unwrap_or(self.default) {
             stats.fighter_bay_volume = Some(core_fit.get_stat_fighter_bay_volume().into());
         }
-        if self.agility_factor.unwrap_or(self.default) {
-            stats.agility_factor = core_fit.get_stat_agility_factor().into();
+        if self.agility.unwrap_or(self.default) {
+            stats.agility = core_fit.get_stat_agility().into();
         }
         if self.align_time.unwrap_or(self.default) {
             stats.align_time = core_fit.get_stat_align_time().into();

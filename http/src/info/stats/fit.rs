@@ -50,7 +50,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) fighter_bay_volume: Option<HStatRes>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) agility_factor: TriStateField<rc::AttrVal>,
+    pub(crate) agility: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) align_time: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -81,7 +81,7 @@ impl HFitStats {
             drone_bay_volume: Option::default(),
             drone_bandwidth: Option::default(),
             fighter_bay_volume: Option::default(),
-            agility_factor: TriStateField::default(),
+            agility: TriStateField::default(),
             align_time: TriStateField::default(),
             speed: TriStateField::default(),
         }

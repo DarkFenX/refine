@@ -2,7 +2,7 @@ from tests import approx
 from tests.fw.api import StatsOptions
 
 
-def test_ship_speed(client, consts):
+def test_ship_modified(client, consts):
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -31,3 +31,37 @@ def test_ship_speed(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
     assert api_stats.speed == approx(100)
+
+
+def test_ship_no_value(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    assert api_stats.speed == approx(0)
+
+
+def test_ship_no_ship(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    assert api_stats.speed is None
+
+
+def test_ship_not_loaded(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_ship_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    assert api_stats.speed is None

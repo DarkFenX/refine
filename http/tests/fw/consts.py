@@ -198,6 +198,7 @@ class EveAttr(IntEnum):
     speed = 51
     max_range = 54
     dmg_mult = 64
+    agility = 70
     duration = 73
     armor_dmg_amount = 84
     launcher_slots_left = 101
