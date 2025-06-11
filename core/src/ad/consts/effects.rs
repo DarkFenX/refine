@@ -29,6 +29,7 @@ pub(crate) const STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC: AEffectId =
     AEffectId::Dogma(ece::STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC);
 pub(crate) const SERVICE_SLOT: AEffectId = AEffectId::Dogma(ece::SERVICE_SLOT);
 pub(crate) const REMOTE_WEBIFIER_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_FALLOFF);
+pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_SENSOR_BOOST_FALLOFF);
 pub(crate) const FTR_ABIL_MISSILES: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_MISSILES);
 pub(crate) const FTR_ABIL_NEUT: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_NEUT);
 pub(crate) const FTR_ABIL_WEB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_WEB);

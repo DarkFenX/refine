@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from time import time
 
+from tests import approx
 from tests.fw.api import StatsOptions, ValOptions
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
@@ -162,6 +163,31 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
     print_items(type_ids=type_ids, print_types=False)
     stats = api_fit.get_stats(options=StatsOptions(agility_factor=True, align_time=True))
     print(f'Agility factor {stats.agility_factor}, align_time {stats.align_time}')
+
+
+def test_stacking(client, consts):  # noqa: ANN001, ANN201
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit_m = api_sol.create_fit()
+    api_fit_m.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_fit_m.add_skill(type_id=eve_skill_id, level=5)
+    api_male = api_fit_m.set_ship(type_id=11186)  # Malediction
+    for _ in range(2):
+        api_fit_s = api_sol.create_fit()
+        api_fit_s.set_character(type_id=1373)
+        for eve_skill_id in get_skill_type_ids():
+            api_fit_s.add_skill(type_id=eve_skill_id, level=5)
+        api_fit_s.set_ship(type_id=640)  # Scorpion
+        for _ in range(8):
+            api_rsb = api_fit_s.add_module(
+                type_id=1964,
+                rack=consts.ApiRack.mid,
+                state=consts.ApiModuleState.active,
+                charge_type_id=29011)
+            api_rsb.change_module(add_projs=[api_male.id])
+    # Actual value captured ingame
+    assert api_male.update().attrs[564].dogma == approx(5264.18055777, accuracy=9)
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001

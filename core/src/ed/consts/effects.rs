@@ -25,6 +25,7 @@ pub(crate) const FUELED_ARMOR_REPAIR: EEffectId = 5275;
 pub(crate) const STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC: EEffectId = 6222;
 pub(crate) const SERVICE_SLOT: EEffectId = 6306;
 pub(crate) const REMOTE_WEBIFIER_FALLOFF: EEffectId = 6426;
+pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: EEffectId = 6427;
 pub(crate) const FTR_ABIL_MISSILES: EEffectId = 6431;
 pub(crate) const FTR_ABIL_NEUT: EEffectId = 6434;
 pub(crate) const FTR_ABIL_WEB: EEffectId = 6435;
