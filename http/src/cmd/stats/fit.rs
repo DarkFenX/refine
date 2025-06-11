@@ -29,6 +29,7 @@ pub(crate) struct HGetFitStatsCmd {
     fighter_bay_volume: Option<bool>,
     agility_factor: Option<bool>,
     align_time: Option<bool>,
+    speed: Option<bool>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -101,10 +102,13 @@ impl HGetFitStatsCmd {
             stats.fighter_bay_volume = Some(core_fit.get_stat_fighter_bay_volume().into());
         }
         if self.agility_factor.unwrap_or(self.default) {
-            stats.agility_factor = core_fit.get_agility_factor().into();
+            stats.agility_factor = core_fit.get_stat_agility_factor().into();
         }
         if self.align_time.unwrap_or(self.default) {
-            stats.align_time = core_fit.get_align_time().into();
+            stats.align_time = core_fit.get_stat_align_time().into();
+        }
+        if self.speed.unwrap_or(self.default) {
+            stats.speed = core_fit.get_stat_speed().into();
         }
         Ok(stats)
     }

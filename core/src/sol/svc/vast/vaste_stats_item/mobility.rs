@@ -13,6 +13,9 @@ use crate::{
 pub(super) const AGILITY_CONST: AttrVal = OF(f64::from_bits(0x3eb74216c502a54f));
 
 impl Vast {
+    pub(in crate::sol) fn get_item_speed(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+        calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::MAX_VELOCITY)
+    }
     pub(in crate::sol) fn get_item_agility_factor(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
         let agility = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::AGILITY)?;
         if agility == OF(0.0) {

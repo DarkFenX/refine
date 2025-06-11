@@ -53,6 +53,8 @@ pub(crate) struct HFitStats {
     pub(crate) agility_factor: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) align_time: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) speed: TriStateField<rc::AttrVal>,
 }
 impl HFitStats {
     pub fn new() -> Self {
@@ -81,6 +83,7 @@ impl HFitStats {
             fighter_bay_volume: Option::default(),
             agility_factor: TriStateField::default(),
             align_time: TriStateField::default(),
+            speed: TriStateField::default(),
         }
     }
 }
