@@ -31,6 +31,8 @@ class StatsOptions:
     drone_bay_volume: StatOption  = Absent
     drone_bandwidth: StatOption  = Absent
     fighter_bay_volume: StatOption  = Absent
+    agility_factor: StatOption  = Absent
+    align_time: StatOption  = Absent
 
     def to_dict(self) -> dict:
         return dataclasses.asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

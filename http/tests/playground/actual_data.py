@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from time import time
 
-from tests.fw.api import ValOptions
+from tests.fw.api import StatsOptions, ValOptions
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
@@ -160,6 +160,8 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
     print('---')  # noqa: T201
     print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')  # noqa: T201
     print_items(type_ids=type_ids, print_types=False)
+    stats = api_fit.get_stats(options=StatsOptions(agility_factor=True, align_time=True))
+    print(f'Agility factor {stats.agility_factor}, align_time {stats.align_time}')
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001

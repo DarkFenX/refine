@@ -1,6 +1,6 @@
 // Base decoding part is inspired by https://github.com/serde-rs/serde/issues/1042
 
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_with::de::{DeserializeAs, DeserializeAsWrap};
 
 #[derive(Default)]
@@ -9,6 +9,37 @@ pub(crate) enum TriStateField<T> {
     None,
     #[default]
     Absent,
+}
+impl<T> TriStateField<T> {
+    pub(crate) fn is_absent(&self) -> bool {
+        matches!(self, Self::Absent)
+    }
+}
+impl<T> From<Option<T>> for TriStateField<T> {
+    fn from(val: Option<T>) -> Self {
+        match val {
+            Some(inner) => Self::Value(inner),
+            None => Self::None,
+        }
+    }
+}
+
+impl<T> Serialize for TriStateField<T>
+where
+    T: Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            // This still serializes None, still have to declare "skip_serializing_if" in containing
+            // struct
+            TriStateField::Absent => serializer.serialize_unit(),
+            TriStateField::None => serializer.serialize_none(),
+            TriStateField::Value(value) => value.serialize(serializer),
+        }
+    }
 }
 
 pub(crate) struct TriStateFieldVisitor<T> {
