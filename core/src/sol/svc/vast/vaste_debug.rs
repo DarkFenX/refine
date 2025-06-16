@@ -1,6 +1,6 @@
 use super::{Vast, VastFitData};
 use crate::sol::{
-    debug::{DebugResult, check_fit_key, check_item_key},
+    debug::{DebugResult, check_a_effect_id, check_fit_key, check_item_key},
     svc::vast::ValCache,
     uad::Uad,
 };
@@ -13,6 +13,22 @@ impl Vast {
         }
         for &item_key in self.not_loaded.iter() {
             check_item_key(uad, item_key, false)?;
+        }
+        for (projectee_item_key, projector_especs) in self.limitable_rsr.iter() {
+            // Projectee are not guaranteed to be loaded
+            check_item_key(uad, *projectee_item_key, false)?;
+            for projector_espec in projector_especs {
+                check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
+            }
+        }
+        for (projectee_item_key, projector_especs) in self.limitable_rar.iter() {
+            // Projectee are not guaranteed to be loaded
+            check_item_key(uad, *projectee_item_key, false)?;
+            for projector_espec in projector_especs {
+                check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
+            }
         }
         Ok(())
     }
@@ -224,6 +240,7 @@ impl VastFitData {
             check_item_key(uad, *projectee_item_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
         for (projectee_item_key, projector_especs) in self.blockable_offense.iter() {
@@ -231,6 +248,7 @@ impl VastFitData {
             check_item_key(uad, *projectee_item_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
@@ -238,7 +256,16 @@ impl VastFitData {
             check_item_key(uad, projectee_aspec.item_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
+        }
+        for espec in self.limitable_sr.iter() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
+        for espec in self.limitable_ar.iter() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
         }
         Ok(())
     }

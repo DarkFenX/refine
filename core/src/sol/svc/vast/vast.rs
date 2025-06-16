@@ -19,12 +19,17 @@ use crate::{
 pub(in crate::sol) struct Vast {
     pub(in crate::sol::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
     pub(in crate::sol::svc::vast) not_loaded: RSet<ItemKey>,
+    // Remote armor/shield rep effects which can have limited charge amount
+    pub(in crate::sol::svc::vast) limitable_rsr: RMapRSet<ItemKey, EffectSpec>,
+    pub(in crate::sol::svc::vast) limitable_rar: RMapRSet<ItemKey, EffectSpec>,
 }
 impl Vast {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
             fit_datas: RMap::new(),
             not_loaded: RSet::new(),
+            limitable_rsr: RMapRSet::new(),
+            limitable_rar: RMapRSet::new(),
         }
     }
     pub(in crate::sol) fn get_fit_data(&mut self, fit_key: &FitKey) -> &VastFitData {
@@ -39,6 +44,7 @@ impl Vast {
 // bandwidth, active drone count)
 #[derive(Clone)]
 pub(in crate::sol) struct VastFitData {
+    // Validation-related
     pub(in crate::sol::svc::vast) mods_svcs_online: RSet<ItemKey>,
     pub(in crate::sol::svc::vast) rigs_offline_calibration: RMap<ItemKey, ad::AAttrVal>,
     pub(in crate::sol::svc::vast) drones_volume: RMap<ItemKey, ad::AAttrVal>,
@@ -97,10 +103,15 @@ pub(in crate::sol) struct VastFitData {
     pub(in crate::sol::svc::vast) blockable_assistance: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::sol::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::sol::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
+    // Stats-related
+    pub(in crate::sol::svc::vast) limitable_sr: RSet<EffectSpec>,
+    pub(in crate::sol::svc::vast) limitable_ar: RSet<EffectSpec>,
+
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
+            // Validation-related
             mods_svcs_online: RSet::new(),
             rigs_offline_calibration: RMap::new(),
             drones_volume: RMap::new(),
@@ -159,6 +170,9 @@ impl VastFitData {
             blockable_assistance: RMapRSet::new(),
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
+            // Stats-related
+            limitable_sr: RSet::new(),  // Local shield reps which might have limited charges
+            limitable_ar: RSet::new(),  // Local armor reps which might have limited charges
         }
     }
 }
