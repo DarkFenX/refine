@@ -106,7 +106,6 @@ pub(in crate::sol) struct VastFitData {
     // Stats-related
     pub(in crate::sol::svc::vast) limitable_sr: RSet<EffectSpec>,
     pub(in crate::sol::svc::vast) limitable_ar: RSet<EffectSpec>,
-
 }
 impl VastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -171,8 +170,8 @@ impl VastFitData {
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
             // Stats-related
-            limitable_sr: RSet::new(),  // Local shield reps which might have limited charges
-            limitable_ar: RSet::new(),  // Local armor reps which might have limited charges
+            limitable_sr: RSet::new(), // Local shield reps which might have limited charges
+            limitable_ar: RSet::new(), // Local armor reps which might have limited charges
         }
     }
 }

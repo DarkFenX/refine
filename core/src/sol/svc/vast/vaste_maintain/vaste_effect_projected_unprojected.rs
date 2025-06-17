@@ -48,6 +48,17 @@ impl Vast {
                 }
             }
         }
+        match a_effect.id {
+            ac::effects::SHIP_MODULE_ARSR => {
+                let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+                self.limitable_rsr.add_entry(projectee_item_key, projector_espec);
+            }
+            ac::effects::SHIP_MODULE_ARAR => {
+                let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+                self.limitable_rar.add_entry(projectee_item_key, projector_espec);
+            }
+            _ => (),
+        }
     }
     pub(in crate::sol::svc) fn effect_unprojected(
         &mut self,
@@ -88,6 +99,17 @@ impl Vast {
                         .remove_entry(&projectee_aspec, &projector_espec);
                 }
             }
+        }
+        match a_effect.id {
+            ac::effects::SHIP_MODULE_ARSR => {
+                let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+                self.limitable_rsr.remove_entry(&projectee_item_key, &projector_espec);
+            }
+            ac::effects::SHIP_MODULE_ARAR => {
+                let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+                self.limitable_rar.remove_entry(&projectee_item_key, &projector_espec);
+            }
+            _ => (),
         }
     }
 }

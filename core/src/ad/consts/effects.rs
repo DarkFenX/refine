@@ -24,6 +24,7 @@ pub(crate) const HARDPOINT_MODIFIER_EFFECT: AEffectId = AEffectId::Dogma(ece::HA
 pub(crate) const SLOT_MODIFIER: AEffectId = AEffectId::Dogma(ece::SLOT_MODIFIER);
 pub(crate) const WARP_DISRUPT_SPHERE: AEffectId = AEffectId::Dogma(ece::WARP_DISRUPT_SPHERE);
 pub(crate) const ADAPTIVE_ARMOR_HARDENER: AEffectId = AEffectId::Dogma(ece::ADAPTIVE_ARMOR_HARDENER);
+pub(crate) const FUELED_SHIELD_BOOSTING: AEffectId = AEffectId::Dogma(ece::FUELED_SHIELD_BOOSTING);
 pub(crate) const FUELED_ARMOR_REPAIR: AEffectId = AEffectId::Dogma(ece::FUELED_ARMOR_REPAIR);
 pub(crate) const STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC: AEffectId =
     AEffectId::Dogma(ece::STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC);
@@ -45,6 +46,7 @@ pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AO
 pub(crate) const FTR_ABIL_BOMB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_BOMB);
 pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_KAMIKAZE);
 pub(crate) const SHIP_MODULE_ARAR: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_ARAR);
+pub(crate) const SHIP_MODULE_ARSR: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_ARSR);
 pub(crate) const STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER: AEffectId =
     AEffectId::Dogma(ece::STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER);
 pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_ENTITY);
