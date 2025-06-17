@@ -93,6 +93,7 @@ impl Svc {
         a_effects: &[ad::ArcEffect],
     ) {
         self.calc.effects_started(uad, item_key, item, a_effects);
+        self.vast.effects_started(item_key, item, a_effects);
     }
     pub(in crate::sol) fn notify_effects_stopped(
         &mut self,
@@ -102,6 +103,7 @@ impl Svc {
         a_effects: &[ad::ArcEffect],
     ) {
         self.calc.effects_stopped(uad, item_key, item, a_effects);
+        self.vast.effects_stopped(item_key, item, a_effects);
     }
     pub(in crate::sol) fn notify_item_projected(&mut self) {}
     pub(in crate::sol) fn notify_item_unprojected(&mut self) {}
