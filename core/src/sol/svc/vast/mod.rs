@@ -24,6 +24,7 @@ mod shared;
 mod vast;
 mod vaste_debug;
 mod vaste_maintain;
+mod vaste_stats_effect;
 mod vaste_stats_fit;
 mod vaste_stats_item;
 mod vaste_validate;

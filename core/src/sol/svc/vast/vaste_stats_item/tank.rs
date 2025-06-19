@@ -8,7 +8,10 @@ use crate::{
             calc::Calc,
             vast::{
                 Vast,
-                shared::{get_effect_local_armor_rep_amount, get_effect_local_shield_rep_amount},
+                vaste_stats_effect::{
+                    get_effect_cycles_until_reload, get_effect_local_armor_rep_amount,
+                    get_effect_local_shield_rep_amount,
+                },
             },
         },
         uad::{Uad, item::UadItem},
@@ -28,24 +31,53 @@ pub struct StatLayerHp {
 }
 
 impl Vast {
-    pub(in crate::sol) fn get_item_hp(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<StatTank<StatLayerHp>> {
-        let (local_ancil_shield, local_ancil_armor) = match uad.items.get(item_key) {
-            UadItem::Ship(_) => (OF(0.0), OF(0.0)),
-            _ => (OF(0.0), OF(0.0)),
-        };
+    pub(in crate::sol) fn get_item_hp(
+        &self,
+        uad: &Uad,
+        calc: &mut Calc,
+        item_key: ItemKey,
+    ) -> Option<StatTank<StatLayerHp>> {
+        // Buffer - if item is not loaded, fetching those will fail
         let shield_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::SHIELD_CAPACITY)?;
         let armor_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::ARMOR_HP)?;
         let structure_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::HP)?;
+        // Local ancillary repairs
+        let (local_ancil_shield, local_ancil_armor) = match uad.items.get(item_key) {
+            UadItem::Ship(uad_ship) => {
+                let mut local_ancil_shield = OF(0.0);
+                let mut local_ancil_armor = OF(0.0);
+                let fit_data = self.get_fit_data(&uad_ship.get_fit_key());
+                for asr_espec in fit_data.limitable_sr.iter() {
+                    if let Some(asr_hp) = get_effect_local_shield_rep_amount(uad, calc, asr_espec)
+                        && let Some(cycles) = get_effect_cycles_until_reload(uad, asr_espec)
+                    {
+                        local_ancil_shield += asr_hp * AttrVal::from(cycles);
+                    }
+                }
+                for aar_espec in fit_data.limitable_ar.iter() {
+                    if let Some(aar_hp) = get_effect_local_armor_rep_amount(uad, calc, aar_espec)
+                        && let Some(cycles) = get_effect_cycles_until_reload(uad, aar_espec)
+                    {
+                        local_ancil_armor += aar_hp * AttrVal::from(cycles);
+                    }
+                }
+                (local_ancil_shield, local_ancil_armor)
+            }
+            _ => (OF(0.0), OF(0.0)),
+        };
+        // Remote ancillary repairs
+        let mut remote_ancil_shield = OF(0.0);
+        let mut remote_ancil_armor = OF(0.0);
         Some(StatTank {
             shield: StatLayerHp {
                 buffer: shield_buffer,
                 ancil_local: local_ancil_shield,
-                ancil_remote: OF(0.0),
+                ancil_remote: remote_ancil_shield,
             },
             armor: StatLayerHp {
                 buffer: armor_buffer,
                 ancil_local: local_ancil_armor,
-                ancil_remote: OF(0.0),
+                ancil_remote: remote_ancil_armor,
             },
             structure: StatLayerHp {
                 buffer: structure_buffer,

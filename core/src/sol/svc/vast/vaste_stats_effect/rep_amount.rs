@@ -10,7 +10,7 @@ use crate::{
 pub(in crate::sol::svc::vast) fn get_effect_local_shield_rep_amount(
     uad: &Uad,
     calc: &mut Calc,
-    espec: EffectSpec,
+    espec: &EffectSpec,
 ) -> Option<AttrVal> {
     let mut amount = match espec.a_effect_id {
         ac::effects::FUELED_SHIELD_BOOSTING => {
@@ -28,7 +28,7 @@ pub(in crate::sol::svc::vast) fn get_effect_local_shield_rep_amount(
 pub(in crate::sol::svc::vast) fn get_effect_local_armor_rep_amount(
     uad: &Uad,
     calc: &mut Calc,
-    espec: EffectSpec,
+    espec: &EffectSpec,
 ) -> Option<AttrVal> {
     let mut amount = match espec.a_effect_id {
         ac::effects::FUELED_ARMOR_REPAIR => {

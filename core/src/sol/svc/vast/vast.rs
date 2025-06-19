@@ -32,7 +32,7 @@ impl Vast {
             limitable_rar: RMapRSet::new(),
         }
     }
-    pub(in crate::sol) fn get_fit_data(&mut self, fit_key: &FitKey) -> &VastFitData {
+    pub(in crate::sol) fn get_fit_data(&self, fit_key: &FitKey) -> &VastFitData {
         self.fit_datas.get(fit_key).unwrap()
     }
     pub(in crate::sol::svc::vast) fn get_fit_data_mut(&mut self, fit_key: &FitKey) -> &mut VastFitData {

@@ -259,6 +259,12 @@ impl UadItem {
             _ => None,
         }
     }
+    pub(in crate::sol) fn get_charge_item_key(&self) -> Option<ItemKey> {
+        match self {
+            Self::Module(module) => module.get_charge_item_key(),
+            _ => None,
+        }
+    }
     pub(in crate::sol) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         match self {
             Self::Drone(drone) => drone.get_mutation_data(),
