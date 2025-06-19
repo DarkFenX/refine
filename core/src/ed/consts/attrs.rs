@@ -14,6 +14,7 @@ pub(crate) const CPU_OUTPUT: EAttrId = 48;
 pub(crate) const CPU: EAttrId = 50;
 pub(crate) const SPEED: EAttrId = 51;
 pub(crate) const DMG_MULT: EAttrId = 64;
+pub(crate) const SHIELD_BONUS: EAttrId = 68;
 pub(crate) const AGILITY: EAttrId = 70;
 pub(crate) const MAX_TARGET_RANGE: EAttrId = 76;
 pub(crate) const ARMOR_DMG_AMOUNT: EAttrId = 84;
