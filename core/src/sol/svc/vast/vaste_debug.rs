@@ -259,7 +259,7 @@ impl VastFitData {
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
-        for espec in self.limitable_sr.iter() {
+        for espec in self.limitable_sb.iter() {
             check_item_key(uad, espec.item_key, true)?;
             check_a_effect_id(uad, &espec.a_effect_id)?;
         }

@@ -19,7 +19,7 @@ impl Vast {
                 ac::effects::FUELED_SHIELD_BOOSTING => {
                     if let Some(fit_id) = item.get_fit_key() {
                         let fit_data = self.get_fit_data_mut(&fit_id);
-                        fit_data.limitable_sr.insert(EffectSpec::new(item_key, a_effect.id));
+                        fit_data.limitable_sb.insert(EffectSpec::new(item_key, a_effect.id));
                     }
                 }
                 ac::effects::FUELED_ARMOR_REPAIR => {
@@ -43,7 +43,7 @@ impl Vast {
                 ac::effects::FUELED_SHIELD_BOOSTING => {
                     if let Some(fit_id) = item.get_fit_key() {
                         let fit_data = self.get_fit_data_mut(&fit_id);
-                        fit_data.limitable_sr.insert(EffectSpec::new(item_key, a_effect.id));
+                        fit_data.limitable_sb.insert(EffectSpec::new(item_key, a_effect.id));
                     }
                 }
                 ac::effects::FUELED_ARMOR_REPAIR => {

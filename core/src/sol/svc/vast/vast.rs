@@ -104,7 +104,7 @@ pub(in crate::sol) struct VastFitData {
     pub(in crate::sol::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::sol::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
     // Stats-related
-    pub(in crate::sol::svc::vast) limitable_sr: RSet<EffectSpec>,
+    pub(in crate::sol::svc::vast) limitable_sb: RSet<EffectSpec>,
     pub(in crate::sol::svc::vast) limitable_ar: RSet<EffectSpec>,
 }
 impl VastFitData {
@@ -170,7 +170,7 @@ impl VastFitData {
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
             // Stats-related
-            limitable_sr: RSet::new(), // Local shield reps which might have limited charges
+            limitable_sb: RSet::new(), // Local shield reps which might have limited charges
             limitable_ar: RSet::new(), // Local armor reps which might have limited charges
         }
     }
