@@ -15,10 +15,13 @@ impl<T> TriStateField<T> {
         matches!(self, Self::Absent)
     }
 }
-impl<T> From<Option<T>> for TriStateField<T> {
-    fn from(val: Option<T>) -> Self {
+impl<T, U> From<Option<U>> for TriStateField<T>
+where
+    U: Into<T>,
+{
+    fn from(val: Option<U>) -> Self {
         match val {
-            Some(inner) => Self::Value(inner),
+            Some(inner) => Self::Value(inner.into()),
             None => Self::None,
         }
     }

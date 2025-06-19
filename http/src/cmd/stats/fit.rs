@@ -30,6 +30,7 @@ pub(crate) struct HGetFitStatsCmd {
     agility: Option<bool>,
     align_time: Option<bool>,
     speed: Option<bool>,
+    hp: Option<bool>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -109,6 +110,9 @@ impl HGetFitStatsCmd {
         }
         if self.speed.unwrap_or(self.default) {
             stats.speed = core_fit.get_stat_speed().into();
+        }
+        if self.hp.unwrap_or(self.default) {
+            stats.hp = core_fit.get_stat_hp().into();
         }
         Ok(stats)
     }
