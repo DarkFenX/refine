@@ -1,9 +1,17 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     ac, ad,
     sol::{
         AttrVal, DmgKinds, ItemKey,
-        svc::{calc::Calc, vast::Vast},
-        uad::Uad,
+        svc::{
+            calc::Calc,
+            vast::{
+                Vast,
+                shared::{get_effect_local_armor_rep_amount, get_effect_local_shield_rep_amount},
+            },
+        },
+        uad::{Uad, item::UadItem},
     },
 };
 
@@ -13,12 +21,37 @@ pub struct StatTank<T> {
     pub structure: T,
 }
 
+pub struct StatLayerHp {
+    pub buffer: AttrVal,
+    pub ancil_local: AttrVal,
+    pub ancil_remote: AttrVal,
+}
+
 impl Vast {
-    pub(in crate::sol) fn get_item_hp(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<StatTank<AttrVal>> {
+    pub(in crate::sol) fn get_item_hp(uad: &Uad, calc: &mut Calc, item_key: ItemKey) -> Option<StatTank<StatLayerHp>> {
+        let (local_ancil_shield, local_ancil_armor) = match uad.items.get(item_key) {
+            UadItem::Ship(_) => (OF(0.0), OF(0.0)),
+            _ => (OF(0.0), OF(0.0)),
+        };
+        let shield_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::SHIELD_CAPACITY)?;
+        let armor_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::ARMOR_HP)?;
+        let structure_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::HP)?;
         Some(StatTank {
-            shield: calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::SHIELD_CAPACITY)?,
-            armor: calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::ARMOR_HP)?,
-            structure: calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::HP)?,
+            shield: StatLayerHp {
+                buffer: shield_buffer,
+                ancil_local: local_ancil_shield,
+                ancil_remote: OF(0.0),
+            },
+            armor: StatLayerHp {
+                buffer: armor_buffer,
+                ancil_local: local_ancil_armor,
+                ancil_remote: OF(0.0),
+            },
+            structure: StatLayerHp {
+                buffer: structure_buffer,
+                ancil_local: OF(0.0),
+                ancil_remote: OF(0.0),
+            },
         })
     }
     pub(in crate::sol) fn get_item_resists(
