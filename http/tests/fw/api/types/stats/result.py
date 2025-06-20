@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from tests.fw.util import AttrDict, AttrHookDef
+from .stat_hp import StatHp
 from .stat_resource import StatResource
 from .stat_slot import StatSlot
 
@@ -30,4 +31,5 @@ class FitStats(AttrDict):
             'calibration': AttrHookDef(func=lambda d: StatResource(data=d)),
             'drone_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
             'drone_bandwidth': AttrHookDef(func=lambda d: StatResource(data=d)),
-            'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d))})
+            'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
+            'hp': AttrHookDef(func=lambda d: StatHp(data=d))})

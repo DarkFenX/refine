@@ -34,6 +34,7 @@ class StatsOptions:
     agility: StatOption  = Absent
     align_time: StatOption  = Absent
     speed: StatOption  = Absent
+    hp: StatOption  = Absent
 
     def to_dict(self) -> dict:
         return dataclasses.asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
