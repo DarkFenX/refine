@@ -9,9 +9,8 @@ use crate::{
             vast::{
                 Vast,
                 vaste_stats_effect::{
-                    get_effect_cycles_until_reload, get_effect_local_armor_rep_amount,
-                    get_effect_local_shield_rep_amount, get_effect_remote_armor_rep_amount,
-                    get_effect_remote_shield_rep_amount,
+                    get_effect_charge, get_effect_local_armor_rep_amount, get_effect_local_shield_rep_amount,
+                    get_effect_remote_armor_rep_amount, get_effect_remote_shield_rep_amount,
                 },
             },
         },
@@ -50,14 +49,14 @@ impl Vast {
                 let fit_data = self.get_fit_data(&uad_ship.get_fit_key());
                 for asb_espec in fit_data.limitable_sb.iter() {
                     if let Some(asb_hp) = get_effect_local_shield_rep_amount(uad, calc, asb_espec)
-                        && let Some(cycles) = get_effect_cycles_until_reload(uad, asb_espec)
+                        && let Some(cycles) = get_effect_charge(uad, asb_espec).get_cycle_count()
                     {
                         local_asb += asb_hp * AttrVal::from(cycles);
                     }
                 }
                 for aar_espec in fit_data.limitable_ar.iter() {
                     if let Some(aar_hp) = get_effect_local_armor_rep_amount(uad, calc, aar_espec)
-                        && let Some(cycles) = get_effect_cycles_until_reload(uad, aar_espec)
+                        && let Some(cycles) = get_effect_charge(uad, aar_espec).get_cycle_count()
                     {
                         local_aar += aar_hp * AttrVal::from(cycles);
                     }
@@ -71,14 +70,14 @@ impl Vast {
         let mut remote_aar = OF(0.0);
         for rasb_espec in self.limitable_rsr.get(&item_key) {
             if let Some(rasb_hp) = get_effect_remote_shield_rep_amount(uad, calc, rasb_espec, Some(item_key))
-                && let Some(cycles) = get_effect_cycles_until_reload(uad, rasb_espec)
+                && let Some(cycles) = get_effect_charge(uad, rasb_espec).get_cycle_count()
             {
                 remote_asb += rasb_hp * AttrVal::from(cycles);
             }
         }
         for raar_espec in self.limitable_rar.get(&item_key) {
             if let Some(raar_hp) = get_effect_remote_armor_rep_amount(uad, calc, raar_espec, Some(item_key))
-                && let Some(cycles) = get_effect_cycles_until_reload(uad, raar_espec)
+                && let Some(cycles) = get_effect_charge(uad, raar_espec).get_cycle_count()
             {
                 remote_aar += raar_hp * AttrVal::from(cycles);
             }

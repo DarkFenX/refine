@@ -9,6 +9,9 @@ impl Autocharges {
         Self { data: RMap::new() }
     }
     // Query methods
+    pub(in crate::sol) fn get(&self, a_effect_id: &ad::AEffectId) -> Option<&ItemKey> {
+        self.data.get(a_effect_id)
+    }
     pub(in crate::sol) fn values(&self) -> impl ExactSizeIterator<Item = &ItemKey> {
         self.data.values()
     }

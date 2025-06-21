@@ -144,8 +144,9 @@ impl GSupport {
     }
     fn fill_eff_charge_map(&mut self) {
         // Attempt to run effects on default launcher effect just for stasis webification probes
-        self.eff_charge_map
-            .insert(ec::effects::USE_MISSILES, ad::AEffectChargeInfo::Loaded);
+        for effect_id in [ec::effects::USE_MISSILES, ec::effects::FUELED_ARMOR_REPAIR] {
+            self.eff_charge_map.insert(effect_id, ad::AEffectChargeInfo::Loaded);
+        }
         // LR fighter bombs
         self.eff_charge_map.insert(
             ec::effects::FTR_ABIL_BOMB,

@@ -4,9 +4,9 @@ use crate::{
     sol::{
         AttrVal, FitKey, ItemId, ItemKey,
         uad::item::{
-            EffectModes, ItemMutationData, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone,
-            UadFighter, UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill,
-            UadStance, UadSubsystem, UadSwEffect,
+            Autocharges, EffectModes, ItemMutationData, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge,
+            UadDrone, UadFighter, UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip,
+            UadSkill, UadStance, UadSubsystem, UadSwEffect,
         },
     },
     src::Src,
@@ -262,6 +262,12 @@ impl UadItem {
     pub(in crate::sol) fn get_charge_item_key(&self) -> Option<ItemKey> {
         match self {
             Self::Module(module) => module.get_charge_item_key(),
+            _ => None,
+        }
+    }
+    pub(in crate::sol) fn get_autocharges(&self) -> Option<&Autocharges> {
+        match self {
+            Self::Fighter(fighter) => Some(fighter.get_autocharges()),
             _ => None,
         }
     }
