@@ -1,13 +1,18 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    ad,
+    ac, ad,
     err::basic::ItemNotMutatedError,
     sol::{
-        AttrMutationRequest, FitKey, Idx, ItemId, ItemKey, ItemMutationRequest, ModRack, ModuleState,
+        AttrMutationRequest, Count, FitKey, Idx, ItemId, ItemKey, ItemMutationRequest, ModRack, ModuleState,
         err::ItemMutatedError,
-        uad::item::{EffectModes, ItemMutationData, Projs, UadItemBaseMutable},
+        uad::{
+            Uad,
+            item::{EffectModes, ItemMutationData, Projs, UadItemBaseMutable},
+        },
     },
     src::Src,
-    util::{Named, RMap},
+    util::{Named, RMap, round},
 };
 
 #[derive(Clone)]
@@ -138,6 +143,36 @@ impl UadModule {
     }
     pub(in crate::sol) fn set_charge_item_key(&mut self, charge_item_key: Option<ItemKey>) {
         self.charge_item_key = charge_item_key
+    }
+    pub(in crate::sol) fn get_charge_count(&self, uad: &Uad) -> Option<Count> {
+        // No charge - no info
+        let charge_item_key = self.get_charge_item_key()?;
+        let charge_item = uad.items.get(charge_item_key);
+        let module_capacity = match self.get_a_attrs() {
+            Some(a_attrs) => match a_attrs.get(&ac::attrs::CAPACITY) {
+                Some(&capacity) if capacity != OF(0.0) => capacity,
+                // No capacity, or capacity of zero - 0 charges
+                _ => return Some(0),
+            },
+            // Module not loaded - no info
+            _ => {
+                return None;
+            }
+        };
+        let charge_volume = match charge_item.get_a_attrs() {
+            Some(a_attrs) => match a_attrs.get(&ac::attrs::VOLUME) {
+                Some(&volume) if volume != OF(0.0) => volume,
+                // No volume, or volume of zero - no info
+                _ => return None,
+            },
+            // Charge not loaded - no info
+            _ => {
+                return None;
+            }
+        };
+        // Rounding is protection against cases like 2.3 / 0.1 = 22.999999999999996
+        let charge_count = round(module_capacity / charge_volume, 10).floor() as Count;
+        Some(charge_count)
     }
     pub(in crate::sol) fn get_projs(&self) -> &Projs {
         &self.projs

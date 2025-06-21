@@ -2,11 +2,14 @@ use crate::{
     ad,
     err::basic::ItemKindMatchError,
     sol::{
-        AttrVal, FitKey, ItemId, ItemKey,
-        uad::item::{
-            Autocharges, EffectModes, ItemMutationData, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge,
-            UadDrone, UadFighter, UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip,
-            UadSkill, UadStance, UadSubsystem, UadSwEffect,
+        AttrVal, Count, FitKey, ItemId, ItemKey,
+        uad::{
+            Uad,
+            item::{
+                Autocharges, EffectModes, ItemMutationData, Projs, UadAutocharge, UadBooster, UadCharacter, UadCharge,
+                UadDrone, UadFighter, UadFwEffect, UadImplant, UadModule, UadProjEffect, UadRig, UadService, UadShip,
+                UadSkill, UadStance, UadSubsystem, UadSwEffect,
+            },
         },
     },
     src::Src,
@@ -262,6 +265,12 @@ impl UadItem {
     pub(in crate::sol) fn get_charge_item_key(&self) -> Option<ItemKey> {
         match self {
             Self::Module(module) => module.get_charge_item_key(),
+            _ => None,
+        }
+    }
+    pub(in crate::sol) fn get_charge_count(&self, uad: &Uad) -> Option<Count> {
+        match self {
+            Self::Module(module) => module.get_charge_count(uad),
             _ => None,
         }
     }

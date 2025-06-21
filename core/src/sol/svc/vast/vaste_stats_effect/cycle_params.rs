@@ -1,5 +1,3 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
     ac, ad,
     sol::{
@@ -7,7 +5,6 @@ use crate::{
         svc::EffectSpec,
         uad::{Uad, item::UadItem},
     },
-    util::round,
 };
 
 pub(in crate::sol::svc::vast) enum EffectCharge {
@@ -47,12 +44,19 @@ pub(in crate::sol::svc::vast) fn get_effect_charge(uad: &Uad, espec: &EffectSpec
             let parent_item = uad.items.get(espec.item_key);
             let charge_item_key = match parent_item.get_charge_item_key() {
                 Some(charge_item_key) => charge_item_key,
+                // No charge - return, well, no charge
                 None => return EffectCharge::NoCharge,
             };
-            let charge_item = uad.items.get(charge_item_key);
+            let charge_count = match parent_item.get_charge_count(uad) {
+                Some(charge_count) => charge_count,
+                // No info about charge count is handled as if there was no charge. It can happen
+                // when either module or charge is not loaded, or when some attributes are missing,
+                // or in other fringe cases
+                None => return EffectCharge::NoCharge,
+            };
             EffectCharge::Charge(EffectChargeInfo {
                 item_key: charge_item_key,
-                count_info: get_count_info_for_loaded_charge(parent_item, charge_item),
+                count_info: get_count_info_for_loaded_charge(parent_item, charge_count),
             })
         }
         Some(ad::AEffectChargeInfo::Attr(_)) => {
@@ -84,31 +88,15 @@ pub(in crate::sol::svc::vast) fn get_effect_charge(uad: &Uad, espec: &EffectSpec
     }
 }
 
-fn get_count_info_for_loaded_charge(parent_item: &UadItem, charge_item: &UadItem) -> EffectChargeCountKind {
-    let parent_capacity = match parent_item.get_a_attr(&ac::attrs::CAPACITY) {
-        Some(capacity) if capacity != OF(0.0) => capacity,
-        // No capacity = zero capacity = zero charges
-        _ => {
-            return EffectChargeCountKind::Count(EffectChargeCountInfo {
-                charge_count: 0,
-                cycle_count: 0,
-            });
-        }
-    };
-    let charge_volume = match charge_item.get_a_attr(&ac::attrs::VOLUME) {
-        Some(volume) if volume != OF(0.0) => volume,
-        // No volume = zero volume = infinite charges
-        _ => return EffectChargeCountKind::Infinite,
-    };
-    // Rounding is protection against cases like 2.3 / 0.1 = 22.999999999999996
-    let charge_count = round(parent_capacity / charge_volume, 10).floor() as Count;
+fn get_count_info_for_loaded_charge(parent_item: &UadItem, charge_count: Count) -> EffectChargeCountKind {
     let charges_per_cycle = match parent_item.get_a_attr(&ac::attrs::CHARGE_RATE) {
         Some(charge_rate) => charge_rate.round() as Count,
         None => 1,
     };
     // Here it's assumed that an effect can cycle only when it has enough charges into it. This is
-    // not true for items like AAR, which can cycle for partial rep efficiency, but since the lib
-    //
+    // not true for items like AAR, which can cycle for partial rep efficiency, but since w/o manual
+    // adjustments all AARs have enough paste to run w/o partial efficiency cycles, we ignore this
+    // for simplicity's & performance's sake
     let cycle_count = charge_count / charges_per_cycle;
     EffectChargeCountKind::Count(EffectChargeCountInfo {
         charge_count,
