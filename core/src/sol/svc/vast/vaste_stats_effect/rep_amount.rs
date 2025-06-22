@@ -53,11 +53,11 @@ pub(in crate::sol::svc::vast) fn get_effect_remote_shield_rep_amount(
         ac::effects::SHIP_MODULE_ARSR => calc.get_item_attr_val_extra(uad, espec.item_key, &ac::attrs::SHIELD_BONUS)?,
         _ => return None,
     };
-    // If rep target is defined and has less than repped amount HP, limit by total HP
-    if let Some(projectee_item_key) = projectee_item_key
-        && let Some(hp) = get_ship_attr(uad, calc, projectee_item_key, &ac::attrs::SHIELD_CAPACITY)
-    {
-        amount = amount.min(hp);
+    if let Some(projectee_item_key) = projectee_item_key {
+        // If rep target has less than repped amount HP, limit by target HP
+        if let Some(hp) = calc.get_item_attr_val_extra(uad, projectee_item_key, &ac::attrs::SHIELD_CAPACITY) {
+            amount = amount.min(hp);
+        }
     }
     Some(amount)
 }
@@ -74,11 +74,11 @@ pub(in crate::sol::svc::vast) fn get_effect_remote_armor_rep_amount(
         }
         _ => return None,
     };
-    // If rep target is defined and has less than repped amount HP, limit by total HP
-    if let Some(projectee_item_key) = projectee_item_key
-        && let Some(hp) = get_ship_attr(uad, calc, projectee_item_key, &ac::attrs::ARMOR_HP)
-    {
-        amount = amount.min(hp);
+    if let Some(projectee_item_key) = projectee_item_key {
+        // If rep target has less than repped amount HP, limit by target HP
+        if let Some(hp) = calc.get_item_attr_val_extra(uad, projectee_item_key, &ac::attrs::ARMOR_HP) {
+            amount = amount.min(hp);
+        }
     }
     Some(amount)
 }
