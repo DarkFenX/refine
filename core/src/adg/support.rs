@@ -148,8 +148,8 @@ impl GSupport {
             // Ancillary modules
             ec::effects::FUELED_SHIELD_BOOSTING,
             ec::effects::FUELED_ARMOR_REPAIR,
-            ec::effects::SHIP_MODULE_ARSR,
-            ec::effects::SHIP_MODULE_ARAR,
+            ec::effects::SHIP_MODULE_RASB,
+            ec::effects::SHIP_MODULE_RAAR,
         ] {
             self.eff_charge_map.insert(effect_id, ad::AEffectChargeInfo::Loaded);
         }

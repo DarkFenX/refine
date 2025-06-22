@@ -58,7 +58,7 @@ pub(in crate::sol::svc::vast) fn get_effect_remote_shield_rep_amount(
     if let Some(projectee_item_key) = projectee_item_key {
         // RR impedance reduction
         if let Some(rr_mult) = get_resist_mult_val(uad, calc, projector_espec, projectee_item_key) {
-            amount * -rr_mult;
+            amount *= rr_mult;
         }
         // If rep target has less than repped amount HP, limit by target HP
         if let Some(hp) = calc.get_item_attr_val_extra(uad, projectee_item_key, &ac::attrs::SHIELD_CAPACITY) {
@@ -83,7 +83,7 @@ pub(in crate::sol::svc::vast) fn get_effect_remote_armor_rep_amount(
     if let Some(projectee_item_key) = projectee_item_key {
         // RR impedance reduction
         if let Some(rr_mult) = get_resist_mult_val(uad, calc, projector_espec, projectee_item_key) {
-            amount * -rr_mult;
+            amount *= rr_mult;
         }
         // If rep target has less than repped amount HP, limit by target HP
         if let Some(hp) = calc.get_item_attr_val_extra(uad, projectee_item_key, &ac::attrs::ARMOR_HP) {

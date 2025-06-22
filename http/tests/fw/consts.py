@@ -94,7 +94,8 @@ class EveEffect(IntEnum):
     fighter_ability_mjd = 6442
     doomsday_aoe_web = 6476
     fighter_ability_launch_bomb = 6485
-    ship_module_arar = 6651
+    ship_module_raar = 6651
+    ship_module_rasb = 6652
     mod_bonus_microwarpdrive = 6730
     mod_bonus_afterburner = 6731
     mod_bonus_warfare_link_armor = 6732
