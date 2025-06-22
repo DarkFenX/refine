@@ -7,7 +7,7 @@ use crate::{
     ac, ad,
     sol::{
         ItemId, ItemKey,
-        svc::{EffectSpec, calc::Calc, get_resist_mult_val, vast::VastFitData},
+        svc::{EffectSpec, calc::Calc, get_resist_mult_val_by_projectee_aspec, vast::VastFitData},
         uad::Uad,
     },
     util::{RMapRSet, RSet},
@@ -55,7 +55,7 @@ impl VastFitData {
         calc: &mut Calc,
     ) -> bool {
         for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
-            if get_resist_mult_val(uad, calc, projectee_aspec) == Some(OF(0.0)) {
+            if get_resist_mult_val_by_projectee_aspec(uad, calc, projectee_aspec) == Some(OF(0.0)) {
                 match kfs.is_empty() {
                     true => return false,
                     false => {
@@ -105,7 +105,9 @@ impl VastFitData {
     ) -> Option<ValProjImmunityFail> {
         let mut items = HashMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
-            if get_resist_mult_val(uad, calc, projectee_aspec) == Some(OF(0.0)) && !projector_especs.is_empty() {
+            if get_resist_mult_val_by_projectee_aspec(uad, calc, projectee_aspec) == Some(OF(0.0))
+                && !projector_especs.is_empty()
+            {
                 let projectee_item_id = uad.items.id_by_key(projectee_aspec.item_key);
                 for projector_espec in projector_especs {
                     if kfs.contains(&projector_espec.item_key) {

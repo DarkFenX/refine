@@ -3,8 +3,8 @@ use ordered_float::OrderedFloat as OF;
 use crate::{
     ad,
     sol::{
-        AttrVal,
-        svc::{AttrSpec, calc::Calc},
+        AttrVal, ItemKey,
+        svc::{AttrSpec, EffectSpec, calc::Calc},
         uad::{Uad, item::UadItem},
     },
 };
@@ -19,13 +19,29 @@ pub(in crate::sol::svc) fn get_resist_a_attr_id(item: &UadItem, a_effect: &ad::A
     }
 }
 
-pub(in crate::sol::svc) fn get_resist_mult_val(uad: &Uad, calc: &mut Calc, aspec: &AttrSpec) -> Option<AttrVal> {
+pub(in crate::sol::svc) fn get_resist_mult_val_by_projectee_aspec(
+    uad: &Uad,
+    calc: &mut Calc,
+    projectee_aspec: &AttrSpec,
+) -> Option<AttrVal> {
     let mult = calc
-        .get_item_attr_val_full(uad, aspec.item_key, &aspec.a_attr_id)
+        .get_item_attr_val_full(uad, projectee_aspec.item_key, &projectee_aspec.a_attr_id)
         .ok()?
         .dogma;
     Some(match mult.abs() <= 0.0001 {
         true => OF(0.0),
         false => mult,
     })
+}
+
+pub(in crate::sol::svc) fn get_resist_mult_val(
+    uad: &Uad,
+    calc: &mut Calc,
+    projector_espec: &EffectSpec,
+    projectee_item_key: ItemKey,
+) -> Option<AttrVal> {
+    let projector_a_effect = uad.src.get_a_effect(&projector_espec.a_effect_id)?;
+    let projector_item = uad.items.get(projector_espec.item_key);
+    let resist_a_attr_id = get_resist_a_attr_id(projector_item, &projector_a_effect)?;
+    get_resist_mult_val_by_projectee_aspec(uad, calc, &AttrSpec::new(projectee_item_key, resist_a_attr_id))
 }
