@@ -50,7 +50,7 @@ pub(in crate::sol::svc::vast) fn get_effect_remote_shield_rep_amount(
     projectee_item_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
     let mut amount = match projector_espec.a_effect_id {
-        ac::effects::SHIP_MODULE_ARSR => {
+        ac::effects::SHIP_MODULE_RASB => {
             calc.get_item_attr_val_extra(uad, projector_espec.item_key, &ac::attrs::SHIELD_BONUS)?
         }
         _ => return None,
@@ -75,7 +75,7 @@ pub(in crate::sol::svc::vast) fn get_effect_remote_armor_rep_amount(
     projectee_item_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
     let mut amount = match projector_espec.a_effect_id {
-        ac::effects::SHIP_MODULE_ARAR => {
+        ac::effects::SHIP_MODULE_RAAR => {
             calc.get_item_attr_val_extra(uad, projector_espec.item_key, &ac::attrs::ARMOR_DMG_AMOUNT)?
         }
         _ => return None,

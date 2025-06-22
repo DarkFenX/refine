@@ -45,8 +45,8 @@ pub(crate) const FTR_ABIL_ATK_MISSILE: AEffectId = AEffectId::Dogma(ece::FTR_ABI
 pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_WEB);
 pub(crate) const FTR_ABIL_BOMB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_BOMB);
 pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_KAMIKAZE);
-pub(crate) const SHIP_MODULE_ARAR: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RAAR);
-pub(crate) const SHIP_MODULE_ARSR: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RASB);
+pub(crate) const SHIP_MODULE_RAAR: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RAAR);
+pub(crate) const SHIP_MODULE_RASB: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RASB);
 pub(crate) const STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER: AEffectId =
     AEffectId::Dogma(ece::STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER);
 pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_ENTITY);
