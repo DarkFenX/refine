@@ -86,6 +86,7 @@ class EveEffect(IntEnum):
     slot_modifier = 3774
     max_range_hidden_preass_warp_scramble_range = 4894
     adaptive_armor_hardener = 4928
+    fueled_shield_boosting = 4936
     fueled_armor_repair = 5275
     structure_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
@@ -199,6 +200,7 @@ class EveAttr(IntEnum):
     max_range = 54
     charge_rate = 56
     dmg_mult = 64
+    shield_bonus = 68
     agility = 70
     duration = 73
     armor_dmg_amount = 84
