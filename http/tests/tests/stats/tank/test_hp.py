@@ -93,10 +93,17 @@ def test_local_aar_accuracy_and_charge_switch(client, consts):
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), approx(6900), 0)
     assert api_stats.hp.structure == (approx(1000), 0, 0)
+    # Action
+    api_aar.remove()
+    # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(3000), 0, 0)
+    assert api_stats.hp.armor == (approx(2000), 0, 0)
+    assert api_stats.hp.structure == (approx(1000), 0, 0)
 
 
-def test_local_aar_charge_rate_and_state_switch(client, consts):
-    # Rounding in this case means the way lib considers not-fully-charged-cycles
+def test_local_aar_charge_rate_rounding_and_state_switch(client, consts):
+    # Rounding in this case means the way lib considers not-fully-charged-cycle
     eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
     eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
     eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
@@ -125,7 +132,7 @@ def test_local_aar_charge_rate_and_state_switch(client, consts):
         type_id=eve_rep_item_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
-    # Verification
+    # Verification - count of cycles is floored (i.e. forced to reload on partially charged cycles)
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), approx(900), 0)
@@ -144,6 +151,80 @@ def test_local_aar_charge_rate_and_state_switch(client, consts):
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), approx(900), 0)
     assert api_stats.hp.structure == (approx(1000), 0, 0)
+    # Action
+    api_aar.remove()
+    # Verification
+    api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(3000), 0, 0)
+    assert api_stats.hp.armor == (approx(2000), 0, 0)
+    assert api_stats.hp.structure == (approx(1000), 0, 0)
+
+
+def test_local_aar_modified_and_rep_hp_limit(client, consts):
+    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
+    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
+    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
+    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_armor_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_armor_attr_id)
+    eve_rep_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_rep_amount_attr_id)
+    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair, cat_id=consts.EveEffCat.active)
+    eve_armor_mod_effect_id = client.mk_eve_effect(mod_info=[eve_armor_mod])
+    eve_rep_mod_effect_id = client.mk_eve_effect(mod_info=[eve_rep_mod])
+    eve_ship_id = client.mk_eve_ship(
+        attrs={eve_shield_attr_id: 2000, eve_armor_attr_id: 1000, eve_structure_attr_id: 500})
+    eve_rep_item_id = client.mk_eve_item(
+        attrs={
+            eve_rep_mult_attr_id: 3,
+            eve_rep_amount_attr_id: 500,
+            eve_capacity_attr_id: 0.64,
+            eve_charge_rate_attr_id: 8},
+        eff_ids=[eve_rep_effect_id],
+        defeff_id=eve_rep_effect_id)
+    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 0.01})
+    eve_armor_rig = client.mk_eve_item(attrs={eve_mod_attr_id: 70}, eff_ids=[eve_armor_mod_effect_id])
+    eve_rep_rig = client.mk_eve_item(attrs={eve_mod_attr_id: 70}, eff_ids=[eve_rep_mod_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(
+        type_id=eve_rep_item_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_item_id)
+    # Verification - reps are limited from 1500 / cycle to 1000 / cycle
+    api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(2000), 0, 0)
+    assert api_stats.hp.armor == (approx(1000), approx(8000), 0)
+    assert api_stats.hp.structure == (approx(500), 0, 0)
+    # Action
+    api_fit.add_rig(type_id=eve_armor_rig)
+    # Verification - no limit now, with armor amount increased
+    api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(2000), 0, 0)
+    assert api_stats.hp.armor == (approx(1700), approx(12000), 0)
+    assert api_stats.hp.structure == (approx(500), 0, 0)
+    # Action
+    api_fit.add_rig(type_id=eve_rep_rig)
+    # Verification - limited again from 2550 / cycle to 1700 / cycle
+    api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(2000), 0, 0)
+    assert api_stats.hp.armor == (approx(1700), approx(13600), 0)
+    assert api_stats.hp.structure == (approx(500), 0, 0)
 
 
 def test_no_ship(client, consts):
