@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl Uad {
-    pub fn consistency_check(&self) -> DebugResult {
+    pub(in crate::sol) fn consistency_check(&self) -> DebugResult {
         let mut seen_items = Vec::new();
         // Fleets
         for fleet in self.fleets.values() {

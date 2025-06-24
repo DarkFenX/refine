@@ -4,11 +4,12 @@ pub use misc::{
     ServiceState, SkillLevel, UnitInterval,
 };
 use misc::{AttrMutationRequest, ItemMutationRequest};
+pub(crate) use primitives::ItemKey;
 pub use primitives::{
     AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
     SlotIndex,
 };
-use primitives::{FitKey, FleetKey, ItemKey};
+use primitives::{FitKey, FleetKey};
 pub use sol::SolarSystem;
 
 pub(crate) mod api;

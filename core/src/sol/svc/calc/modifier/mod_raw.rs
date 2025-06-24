@@ -16,7 +16,7 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) struct RawModifier {
+pub(crate) struct RawModifier {
     pub(in crate::sol::svc::calc) kind: ModifierKind,
     pub(in crate::sol::svc::calc) affector_espec: EffectSpec,
     pub(in crate::sol::svc::calc::modifier) affector_value: AffectorValue,

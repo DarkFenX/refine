@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct Calc {
+pub(crate) struct Calc {
     pub(in crate::sol::svc::calc) attrs: AttrValData,
     pub(in crate::sol::svc::calc) std: StandardRegister,
     pub(in crate::sol::svc::calc) buffs: BuffRegister,

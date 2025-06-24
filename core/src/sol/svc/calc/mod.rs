@@ -31,15 +31,15 @@
 //!   removed whenever ship or prop is removed, or when effect/modifier is stopped.
 
 use accum::{AttrValInfo, ModAccumFast, ModAccumInfo};
-pub(in crate::sol::svc) use calc::Calc;
+pub(crate) use calc::Calc;
 pub use misc::CalcAttrVal;
 use misc::{
     FTR_COUNT_ATTR, ItemAttrPostprocs, LocationKind, Modification, ModificationKey, SEC_STATUS_ATTR, SKILL_LVL_ATTR,
 };
 pub use mod_info::{AffectorInfo, ModificationInfo};
+pub(crate) use modifier::RawModifier;
 use modifier::{
-    AffecteeFilter, AggrKey, AggrMode, Context, CtxModifier, Location, ModifierKind, Op, RawModifier, debug,
-    extend_with_custom_mods,
+    AffecteeFilter, AggrKey, AggrMode, Context, CtxModifier, Location, ModifierKind, Op, debug, extend_with_custom_mods,
 };
 
 mod accum;

@@ -5,7 +5,7 @@ use crate::{
 
 // Holds info about effect projections
 #[derive(Clone)]
-pub(in crate::sol::svc) struct EProjs {
+pub(crate) struct EProjs {
     pub(super) ranges: RMap<(EffectSpec, ItemKey), AttrVal>,
 }
 impl EProjs {

@@ -1,4 +1,4 @@
-pub(in crate::sol::svc) use main::EProjs;
+pub(crate) use main::EProjs;
 
 mod debug;
 mod main;

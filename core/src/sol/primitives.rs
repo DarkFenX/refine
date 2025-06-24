@@ -15,6 +15,6 @@ pub type Count = u32;
 pub type Idx = usize;
 pub type SlotIndex = i32;
 // Internal-only entity IDs
-pub(in crate::sol) type ItemKey = usize;
+pub(crate) type ItemKey = usize;
 pub(in crate::sol) type FitKey = usize;
 pub(in crate::sol) type FleetKey = usize;

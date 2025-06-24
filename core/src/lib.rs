@@ -48,6 +48,7 @@ mod defs;
 mod ec;
 pub mod ed;
 pub mod err;
+mod ntt;
 mod sol;
 mod src;
 pub mod stats;

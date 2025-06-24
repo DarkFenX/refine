@@ -12,7 +12,7 @@ use crate::{
 // UAD stands for User and Adapted Data. Per definition, contains user-defined data, as well as some
 // adapted data, stored on user-defined entities for optimization purposes.
 #[derive(Clone)]
-pub(in crate::sol) struct Uad {
+pub(crate) struct Uad {
     pub(in crate::sol) src: Src,
     pub(in crate::sol) fleets: Fleets,
     pub(in crate::sol) fits: Fits,

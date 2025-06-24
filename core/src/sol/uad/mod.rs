@@ -1,6 +1,6 @@
 //! Solar system user & adapted data.
 
-pub(in crate::sol) use uad::Uad;
+pub(crate) use uad::Uad;
 
 mod container;
 pub(in crate::sol) mod fit;

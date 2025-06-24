@@ -6,7 +6,7 @@ pub(in crate::sol::svc::calc) use custom::extend_with_custom_mods;
 pub(in crate::sol::svc::calc) use kind::ModifierKind;
 pub(in crate::sol::svc::calc) use location::Location;
 pub(in crate::sol::svc::calc) use mod_ctx::CtxModifier;
-pub(in crate::sol::svc::calc) use mod_raw::RawModifier;
+pub(crate) use mod_raw::RawModifier;
 pub(in crate::sol::svc::calc) use op::Op;
 
 mod affectee_filter;
