@@ -5,6 +5,7 @@ use crate::{
         svc::{
             EffectSpec,
             calc::{Calc, RawModifier, extend_with_custom_mods},
+            eprojs::EProjs,
         },
         uad::{Uad, item::UadItem},
     },
@@ -15,6 +16,7 @@ impl Calc {
         &mut self,
         modifiers: &mut Vec<RawModifier>,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
         item: &UadItem,
         a_effect: &ad::AEffect,
@@ -32,7 +34,7 @@ impl Calc {
             match &a_buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
                     for (buff_type_a_attr_id, buff_val_a_attr_id) in ac::extras::BUFF_STDATTRS {
-                        if let Ok(buff_id) = self.get_item_attr_val_full(uad, item_key, &buff_type_a_attr_id) {
+                        if let Ok(buff_id) = self.get_item_attr_val_full(uad, eprojs, item_key, &buff_type_a_attr_id) {
                             add_buff_mods(
                                 modifiers,
                                 uad,
@@ -82,6 +84,7 @@ impl Calc {
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
         item: &UadItem,
         a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
@@ -99,7 +102,7 @@ impl Calc {
             let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
             if let Some(a_buff_info) = a_effect.buff.as_ref()
                 && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
-                && let Ok(buff_id_cval) = self.get_item_attr_val_full(uad, item_key, &buff_type_a_attr_id)
+                && let Ok(buff_id_cval) = self.get_item_attr_val_full(uad, eprojs, item_key, &buff_type_a_attr_id)
             {
                 add_buff_mods(
                     &mut modifiers,

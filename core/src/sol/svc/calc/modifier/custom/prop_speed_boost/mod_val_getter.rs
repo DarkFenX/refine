@@ -9,6 +9,7 @@ use crate::sol::{
     svc::{
         EffectSpec,
         calc::{Calc, modifier::custom::shared::get_ship_key},
+        eprojs::EProjs,
     },
     uad::Uad,
 };
@@ -16,12 +17,17 @@ use crate::sol::{
 pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
     calc: &mut Calc,
     uad: &Uad,
+    eprojs: &EProjs,
     espec: EffectSpec,
 ) -> Option<AttrVal> {
     let ship_key = get_ship_key(uad, espec.item_key)?;
-    let speed_boost = calc.get_item_attr_val_full(uad, espec.item_key, &PROP_BOOST).ok()?;
-    let thrust = calc.get_item_attr_val_full(uad, espec.item_key, &PROP_THRUST).ok()?;
-    let mass = calc.get_item_attr_val_full(uad, ship_key, &SHIP_MASS).ok()?;
+    let speed_boost = calc
+        .get_item_attr_val_full(uad, eprojs, espec.item_key, &PROP_BOOST)
+        .ok()?;
+    let thrust = calc
+        .get_item_attr_val_full(uad, eprojs, espec.item_key, &PROP_THRUST)
+        .ok()?;
+    let mass = calc.get_item_attr_val_full(uad, eprojs, ship_key, &SHIP_MASS).ok()?;
     let perc = speed_boost.dogma * thrust.dogma / mass.dogma;
     if perc.is_infinite() {
         return None;

@@ -20,7 +20,7 @@ pub(in crate::sol) struct Vast {
     pub(in crate::sol::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
     pub(in crate::sol::svc::vast) not_loaded: RSet<ItemKey>,
     // Remote armor/shield rep effects which can have limited charge amount
-    pub(in crate::sol::svc::vast) limitable_rsr: RMapRSet<ItemKey, EffectSpec>,
+    pub(in crate::sol::svc::vast) limitable_rsb: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::sol::svc::vast) limitable_rar: RMapRSet<ItemKey, EffectSpec>,
 }
 impl Vast {
@@ -28,7 +28,7 @@ impl Vast {
         Self {
             fit_datas: RMap::new(),
             not_loaded: RSet::new(),
-            limitable_rsr: RMapRSet::new(),
+            limitable_rsb: RMapRSet::new(),
             limitable_rar: RMapRSet::new(),
         }
     }

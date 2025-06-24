@@ -11,7 +11,7 @@ impl SolarSystem {
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
-        self.svc.calc.get_item_attr_val_full(&self.uad, item_key, a_attr_id)
+        self.svc.get_item_attr_val_full(&self.uad, item_key, a_attr_id)
     }
     pub(in crate::sol::api) fn internal_remove_incoming_projections(&mut self, projectee_item_key: ItemKey) {
         let projector_item_keys = self.rprojs.iter_projectors(&projectee_item_key).copied().collect_vec();

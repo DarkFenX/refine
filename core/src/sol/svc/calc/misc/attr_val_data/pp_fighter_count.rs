@@ -4,7 +4,10 @@ use crate::{
     ac, ad,
     sol::{
         ItemKey,
-        svc::calc::{AttrValInfo, Calc, CalcAttrVal},
+        svc::{
+            calc::{AttrValInfo, Calc, CalcAttrVal},
+            eprojs::EProjs,
+        },
         uad::Uad,
     },
 };
@@ -14,6 +17,7 @@ pub(in crate::sol::svc::calc) const FTR_COUNT_ATTR: ad::AAttrId = ac::attrs::FTR
 pub(super) fn fighter_count_postproc_fast(
     _calc: &mut Calc,
     uad: &Uad,
+    _eprojs: &EProjs,
     item_key: ItemKey,
     mut val: CalcAttrVal,
 ) -> CalcAttrVal {
@@ -27,6 +31,7 @@ pub(super) fn fighter_count_postproc_fast(
 pub(super) fn fighter_count_postproc_info(
     _calc: &mut Calc,
     uad: &Uad,
+    _eprojs: &EProjs,
     item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {

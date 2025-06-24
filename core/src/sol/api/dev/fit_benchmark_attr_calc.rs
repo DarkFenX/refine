@@ -19,7 +19,6 @@ impl<'a> FitMut<'a> {
             black_box(
                 self.sol
                     .svc
-                    .calc
                     .iter_item_attr_vals(&self.sol.uad, ship_key)
                     .unwrap()
                     .for_each(drop),
@@ -29,7 +28,6 @@ impl<'a> FitMut<'a> {
             black_box(
                 self.sol
                     .svc
-                    .calc
                     .iter_item_attr_vals(&self.sol.uad, ship_key)
                     .unwrap()
                     .for_each(drop),

@@ -53,7 +53,9 @@ def test_local_asb_accuracy_and_charge_switch(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_shield_boosting, cat_id=consts.EveEffCat.active)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fueled_shield_boosting,
+        cat_id=consts.EveEffCat.active)
     eve_ship_id = client.mk_eve_ship(
         attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_structure_attr_id: 1000})
     eve_rep_item_id = client.mk_eve_item(
@@ -108,7 +110,9 @@ def test_local_asb_state_switch(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_shield_boosting, cat_id=consts.EveEffCat.active)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fueled_shield_boosting,
+        cat_id=consts.EveEffCat.active)
     eve_ship_id = client.mk_eve_ship(
         attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_structure_attr_id: 1000})
     eve_rep_item_id = client.mk_eve_item(
@@ -176,7 +180,9 @@ def test_local_asb_modified_and_rep_hp_limit(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_rep_amount_attr_id)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_shield_boosting, cat_id=consts.EveEffCat.active)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fueled_shield_boosting,
+        cat_id=consts.EveEffCat.active)
     eve_shield_mod_effect_id = client.mk_eve_effect(mod_info=[eve_shield_mod])
     eve_rep_mod_effect_id = client.mk_eve_effect(mod_info=[eve_rep_mod])
     eve_ship_id = client.mk_eve_ship(

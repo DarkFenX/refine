@@ -7,7 +7,7 @@ use crate::{
     ac,
     sol::{
         AttrVal, ItemId, ItemKey,
-        svc::{calc::Calc, vast::VastFitData},
+        svc::{calc::Calc, eprojs::EProjs, vast::VastFitData},
         uad::{Uad, fit::UadFit},
     },
     util::RSet,
@@ -26,13 +26,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         if self.drones_bandwidth.is_empty() {
             return true;
         }
-        let max = get_max_resource(uad, calc, fit.ship, &ac::attrs::DRONE_BANDWIDTH).unwrap_or(OF(0.0));
+        let max = get_max_resource(uad, eprojs, calc, fit.ship, &ac::attrs::DRONE_BANDWIDTH).unwrap_or(OF(0.0));
         for (item_key, &item_use) in self.drones_bandwidth.iter() {
             if item_use > max && !kfs.contains(item_key) {
                 return false;
@@ -45,13 +46,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableResFail> {
         if self.drones_bandwidth.is_empty() {
             return None;
         }
-        let max = get_max_resource(uad, calc, fit.ship, &ac::attrs::DRONE_BANDWIDTH);
+        let max = get_max_resource(uad, eprojs, calc, fit.ship, &ac::attrs::DRONE_BANDWIDTH);
         let effective_max = max.unwrap_or(OF(0.0));
         let users: HashMap<_, _> = self
             .drones_bandwidth

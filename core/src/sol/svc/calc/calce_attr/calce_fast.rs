@@ -8,7 +8,10 @@ use crate::{
     sol::{
         AttrVal, ItemKey, SecZone,
         err::KeyedItemLoadedError,
-        svc::calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
+        svc::{
+            calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
+            eprojs::EProjs,
+        },
         uad::{Uad, item::UadItem},
     },
     util::{RMap, round},
@@ -16,25 +19,32 @@ use crate::{
 
 impl Calc {
     // Query methods
-    pub(in crate::sol) fn get_item_attr_val_extra_opt(
+    pub(in crate::sol::svc) fn get_item_attr_val_extra_opt(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: Option<ItemKey>,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
-        item_key.and_then(|item_key| self.get_item_attr_val_extra(uad, item_key, a_attr_id))
+        item_key.and_then(|item_key| self.get_item_attr_val_extra(uad, eprojs, item_key, a_attr_id))
     }
-    pub(in crate::sol) fn get_item_attr_val_extra(
+    pub(in crate::sol::svc) fn get_item_attr_val_extra(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
-        Some(self.get_item_attr_val_full(uad, item_key, a_attr_id).ok()?.extra)
+        Some(
+            self.get_item_attr_val_full(uad, eprojs, item_key, a_attr_id)
+                .ok()?
+                .extra,
+        )
     }
-    pub(in crate::sol) fn get_item_attr_val_full(
+    pub(in crate::sol::svc) fn get_item_attr_val_full(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
@@ -49,24 +59,25 @@ impl Calc {
             return Ok(match item_attr_data.postprocs.get(a_attr_id) {
                 Some(postprocs) => {
                     let pp_fn = postprocs.fast;
-                    pp_fn(self, uad, item_key, *cval)
+                    pp_fn(self, uad, eprojs, item_key, *cval)
                 }
                 None => *cval,
             });
         }
         // If it is not cached, calculate and cache it
-        let mut cval = self.calc_item_attr_val(uad, item_key, a_attr_id);
+        let mut cval = self.calc_item_attr_val(uad, eprojs, item_key, a_attr_id);
         let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
         item_attr_data.values.insert(*a_attr_id, cval);
         if let Some(postprocs) = item_attr_data.postprocs.get(a_attr_id) {
             let pp_fn = postprocs.fast;
-            cval = pp_fn(self, uad, item_key, cval);
+            cval = pp_fn(self, uad, eprojs, item_key, cval);
         }
         Ok(cval)
     }
     pub(in crate::sol::svc::calc) fn get_item_attr_val_no_pp(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
@@ -79,7 +90,7 @@ impl Calc {
         if let Some(cval) = item_attr_data.values.get(a_attr_id) {
             return Ok(*cval);
         };
-        let cval = self.calc_item_attr_val(uad, item_key, a_attr_id);
+        let cval = self.calc_item_attr_val(uad, eprojs, item_key, a_attr_id);
         self.attrs
             .get_item_attr_data_mut(&item_key)
             .unwrap()
@@ -87,9 +98,10 @@ impl Calc {
             .insert(*a_attr_id, cval);
         Ok(cval)
     }
-    pub(in crate::sol) fn iter_item_attr_vals(
+    pub(in crate::sol::svc) fn iter_item_attr_vals(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, CalcAttrVal)>, KeyedItemLoadedError> {
         let item = uad.items.get(item_key);
@@ -107,7 +119,7 @@ impl Calc {
         // item
         for attr_id in item.get_a_attrs().unwrap().keys() {
             if let Entry::Vacant(entry) = cvals.entry(*attr_id) {
-                match self.get_item_attr_val_full(uad, item_key, attr_id) {
+                match self.get_item_attr_val_full(uad, eprojs, item_key, attr_id) {
                     Ok(v) => entry.insert(v),
                     _ => continue,
                 };
@@ -123,7 +135,7 @@ impl Calc {
                     .get(&pp_attr_id)
                     .unwrap()
                     .fast;
-                let cval = pp_fn(self, uad, item_key, *cval);
+                let cval = pp_fn(self, uad, eprojs, item_key, *cval);
                 cvals.insert(pp_attr_id, cval);
             }
         }
@@ -133,6 +145,7 @@ impl Calc {
     fn iter_modifications(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: &ItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
@@ -143,7 +156,7 @@ impl Calc {
             .get_mods_for_affectee(item_key, item, a_attr_id, &uad.fits)
             .iter()
         {
-            let val = match modifier.raw.get_mod_val(self, uad) {
+            let val = match modifier.raw.get_mod_val(self, uad, eprojs) {
                 Some(val) => val,
                 None => continue,
             };
@@ -153,8 +166,8 @@ impl Calc {
             let modification = Modification {
                 op: modifier.raw.op,
                 val,
-                res_mult: self.calc_resist_mult(uad, modifier),
-                proj_mult: self.calc_proj_mult(uad, modifier),
+                res_mult: self.calc_resist_mult(uad, eprojs, modifier),
+                proj_mult: self.calc_proj_mult(uad, eprojs, modifier),
                 aggr_mode: modifier.raw.aggr_mode,
                 affector_a_item_cat_id,
             };
@@ -162,7 +175,13 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, uad: &Uad, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
+    fn calc_item_attr_val(
+        &mut self,
+        uad: &Uad,
+        eprojs: &EProjs,
+        item_key: ItemKey,
+        a_attr_id: &ad::AAttrId,
+    ) -> CalcAttrVal {
         let item = uad.items.get(item_key);
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
@@ -180,7 +199,7 @@ impl Calc {
                 };
                 // Fetch base value for the generic attribute depending on solar system sec zone,
                 // using its base value as a fallback
-                match self.get_item_attr_val_full(uad, item_key, &security_a_attr_id) {
+                match self.get_item_attr_val_full(uad, eprojs, item_key, &security_a_attr_id) {
                     Ok(security_full_val) => {
                         // Ensure that change in any a security-specific attribute value triggers
                         // recalculation of generic security attribute value
@@ -195,7 +214,7 @@ impl Calc {
         };
         // Get base value;
         let mut accumulator = ModAccumFast::new();
-        for modification in self.iter_modifications(uad, &item_key, item, a_attr_id) {
+        for modification in self.iter_modifications(uad, eprojs, &item_key, item, a_attr_id) {
             accumulator.add_val(
                 modification.val,
                 modification.res_mult,
@@ -209,14 +228,14 @@ impl Calc {
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, a_attr.hig);
         // Lower value limit
         if let Some(limiter_attr_id) = a_attr.min_attr_id
-            && let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_key, &limiter_attr_id)
+            && let Ok(limiter_cval) = self.get_item_attr_val_full(uad, eprojs, item_key, &limiter_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
             dogma_val = AttrVal::max(dogma_val, limiter_cval.dogma);
         }
         // Upper value limit
         if let Some(limiter_attr_id) = a_attr.max_attr_id
-            && let Ok(limiter_cval) = self.get_item_attr_val_full(uad, item_key, &limiter_attr_id)
+            && let Ok(limiter_cval) = self.get_item_attr_val_full(uad, eprojs, item_key, &limiter_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
             dogma_val = AttrVal::min(dogma_val, limiter_cval.dogma);

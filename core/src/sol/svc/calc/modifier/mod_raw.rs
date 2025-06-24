@@ -8,6 +8,7 @@ use crate::{
         svc::{
             EffectSpec,
             calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
+            eprojs::EProjs,
             get_resist_a_attr_id,
         },
         uad::{Uad, item::UadItem},
@@ -141,8 +142,13 @@ impl RawModifier {
     pub(in crate::sol::svc::calc) fn get_affector_info(&self, uad: &Uad) -> SmallVec<AffectorInfo, 1> {
         self.affector_value.get_affector_info(uad, self.affector_espec.item_key)
     }
-    pub(in crate::sol::svc::calc) fn get_mod_val(&self, calc: &mut Calc, uad: &Uad) -> Option<AttrVal> {
-        self.affector_value.get_mod_val(calc, uad, self.affector_espec)
+    pub(in crate::sol::svc::calc) fn get_mod_val(
+        &self,
+        calc: &mut Calc,
+        uad: &Uad,
+        eprojs: &EProjs,
+    ) -> Option<AttrVal> {
+        self.affector_value.get_mod_val(calc, uad, eprojs, self.affector_espec)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::sol::svc::calc) fn needs_revision_on_item_add(&self) -> bool {

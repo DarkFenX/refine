@@ -8,7 +8,6 @@ impl Calc {
         self.buffs.consistency_check(uad)?;
         self.deps.consistency_check(uad)?;
         self.revs.consistency_check(uad)?;
-        self.projs.consistency_check(uad)?;
         self.rah.consistency_check(uad)?;
         Ok(())
     }

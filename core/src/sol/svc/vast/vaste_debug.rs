@@ -14,7 +14,7 @@ impl Vast {
         for &item_key in self.not_loaded.iter() {
             check_item_key(uad, item_key, false)?;
         }
-        for (projectee_item_key, projector_especs) in self.limitable_rsr.iter() {
+        for (projectee_item_key, projector_especs) in self.limitable_rsb.iter() {
             // Projectee are not guaranteed to be loaded
             check_item_key(uad, *projectee_item_key, false)?;
             for projector_espec in projector_especs {

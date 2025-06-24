@@ -6,18 +6,14 @@ use crate::sol::{
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_validate_fit_fast(&mut self, fit_key: FitKey, options: &ValOptionsInt) -> bool {
-        self.svc
-            .vast
-            .validate_fit_fast(&self.uad, &mut self.svc.calc, &self.reffs, fit_key, options)
+        self.svc.validate_fit_fast(&self.uad, &self.reffs, fit_key, options)
     }
     pub(in crate::sol::api) fn internal_validate_fit_verbose(
         &mut self,
         fit_key: FitKey,
         options: &ValOptionsInt,
     ) -> ValResultFit {
-        self.svc
-            .vast
-            .validate_fit_verbose(&self.uad, &mut self.svc.calc, &self.reffs, fit_key, options)
+        self.svc.validate_fit_verbose(&self.uad, &self.reffs, fit_key, options)
     }
 }
 

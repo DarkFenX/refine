@@ -4,7 +4,7 @@ use crate::{
     ac, ad,
     sol::{
         Count, ItemGrpId, ItemId, ItemKey,
-        svc::{calc::Calc, vast::VastFitData},
+        svc::{calc::Calc, eprojs::EProjs, vast::VastFitData},
         uad::Uad,
     },
     util::{RMap, RMapRSet, RSet},
@@ -28,11 +28,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.mods_svcs_rigs_max_group_fitted_all,
             &self.mods_svcs_rigs_max_group_fitted_limited,
@@ -43,11 +45,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.mods_svcs_max_group_online_all,
             &self.mods_svcs_max_group_online_limited,
@@ -58,11 +62,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.mods_max_group_active_all,
             &self.mods_max_group_active_limited,
@@ -74,11 +80,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.mods_svcs_rigs_max_group_fitted_all,
             &self.mods_svcs_rigs_max_group_fitted_limited,
@@ -89,11 +97,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.mods_svcs_max_group_online_all,
             &self.mods_svcs_max_group_online_limited,
@@ -104,11 +114,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.mods_max_group_active_all,
             &self.mods_max_group_active_limited,
@@ -120,13 +132,14 @@ impl VastFitData {
 fn validate_fast(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
+    eprojs: &EProjs,
     calc: &mut Calc,
     max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>,
     max_group_limited: &RMap<ItemKey, ad::AItemGrpId>,
     a_attr_id: &ad::AAttrId,
 ) -> bool {
     for (&item_key, a_item_grp_id) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(uad, calc, item_key, a_attr_id);
+        let allowed = get_max_allowed_item_count(uad, eprojs, calc, item_key, a_attr_id);
         let actual = get_actual_item_count(max_group_all, a_item_grp_id);
         if actual > allowed && !kfs.contains(&item_key) {
             return false;
@@ -138,6 +151,7 @@ fn validate_fast(
 fn validate_verbose(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
+    eprojs: &EProjs,
     calc: &mut Calc,
     max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>,
     max_group_limited: &RMap<ItemKey, ad::AItemGrpId>,
@@ -145,7 +159,7 @@ fn validate_verbose(
 ) -> Option<ValMaxGroupFail> {
     let mut groups = HashMap::new();
     for (&item_key, a_item_grp_id) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(uad, calc, item_key, a_attr_id);
+        let allowed = get_max_allowed_item_count(uad, eprojs, calc, item_key, a_attr_id);
         let actual = get_actual_item_count(max_group_all, a_item_grp_id);
         if actual > allowed && !kfs.contains(&item_key) {
             groups
@@ -164,8 +178,16 @@ fn validate_verbose(
     }
 }
 
-fn get_max_allowed_item_count(uad: &Uad, calc: &mut Calc, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Count {
-    calc.get_item_attr_val_extra(uad, item_key, a_attr_id).unwrap().round() as Count
+fn get_max_allowed_item_count(
+    uad: &Uad,
+    eprojs: &EProjs,
+    calc: &mut Calc,
+    item_key: ItemKey,
+    a_attr_id: &ad::AAttrId,
+) -> Count {
+    calc.get_item_attr_val_extra(uad, eprojs, item_key, a_attr_id)
+        .unwrap()
+        .round() as Count
 }
 fn get_actual_item_count(max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>, a_item_grp_id: &ad::AItemGrpId) -> Count {
     max_group_all.get(a_item_grp_id).len() as Count

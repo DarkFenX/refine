@@ -25,20 +25,20 @@ impl Svc {
         self.vast.fit_removed(&fit_key);
     }
     pub(in crate::sol) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
-        self.calc.fit_added_to_fleet(uad, fleet, fit_key);
+        self.calc.fit_added_to_fleet(uad, &self.eprojs, fleet, fit_key);
     }
     pub(in crate::sol) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
-        self.calc.fit_removed_from_fleet(uad, fleet, fit_key);
+        self.calc.fit_removed_from_fleet(uad, &self.eprojs, fleet, fit_key);
     }
     pub(in crate::sol) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
-        self.calc.fit_rah_dps_profile_changed(uad, fit_key);
+        self.calc.fit_rah_dps_profile_changed(uad, &self.eprojs, fit_key);
     }
     pub(in crate::sol) fn notify_item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_added(uad, item_key, item);
+        self.calc.item_added(uad, &self.eprojs, item_key, item);
         self.vast.item_added(item_key, item);
     }
     pub(in crate::sol) fn notify_item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_removed(uad, item_key, item);
+        self.calc.item_removed(uad, &self.eprojs, item_key, item);
         self.vast.item_removed(uad, item_key, item);
     }
     pub(in crate::sol) fn notify_state_activated(&mut self, item_key: ItemKey, item: &UadItem, a_state: &ad::AState) {
@@ -53,11 +53,11 @@ impl Svc {
         self.vast.item_state_deactivated(item_key, item, a_state);
     }
     pub(in crate::sol) fn notify_item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_loaded(uad, item_key, item);
+        self.calc.item_loaded(uad, &self.eprojs, item_key, item);
         self.vast.item_loaded(uad, item_key, item);
     }
     pub(in crate::sol) fn notify_item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_unloaded(uad, item_key, item);
+        self.calc.item_unloaded(uad, &self.eprojs, item_key, item);
         self.vast.item_unloaded(&item_key, item);
     }
     pub(in crate::sol) fn notify_base_attr_value_changed(
@@ -67,7 +67,7 @@ impl Svc {
         a_attr_id: ad::AAttrId,
     ) {
         self.calc
-            .force_attr_value_recalc(uad, AttrSpec::new(item_key, a_attr_id));
+            .force_attr_value_recalc(uad, &self.eprojs, AttrSpec::new(item_key, a_attr_id));
     }
     pub(in crate::sol) fn notify_item_state_activated_loaded(
         &mut self,
@@ -92,7 +92,7 @@ impl Svc {
         item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
-        self.calc.effects_started(uad, item_key, item, a_effects);
+        self.calc.effects_started(uad, &self.eprojs, item_key, item, a_effects);
         self.vast.effects_started(item_key, item, a_effects);
     }
     pub(in crate::sol) fn notify_effects_stopped(
@@ -102,7 +102,7 @@ impl Svc {
         item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
-        self.calc.effects_stopped(uad, item_key, item, a_effects);
+        self.calc.effects_stopped(uad, &self.eprojs, item_key, item, a_effects);
         self.vast.effects_stopped(item_key, item, a_effects);
     }
     pub(in crate::sol) fn notify_item_projected(&mut self) {}
@@ -119,8 +119,9 @@ impl Svc {
         range: Option<AttrVal>,
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+        self.eprojs.add_range(projector_espec, projectee_item_key, range);
         self.calc
-            .effect_projected(uad, projector_espec, projectee_item_key, projectee_item, range);
+            .effect_projected(uad, &self.eprojs, projector_espec, projectee_item_key, projectee_item);
         self.vast.effect_projected(
             projector_item_key,
             projector_item,
@@ -140,7 +141,7 @@ impl Svc {
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
         self.calc
-            .effect_unprojected(uad, projector_espec, projectee_item_key, projectee_item);
+            .effect_unprojected(uad, &self.eprojs, projector_espec, projectee_item_key, projectee_item);
         self.vast.effect_unprojected(
             projector_item_key,
             projector_item,
@@ -148,6 +149,7 @@ impl Svc {
             projectee_item_key,
             projectee_item,
         );
+        self.eprojs.remove_range(projector_espec, projectee_item_key);
     }
     pub(in crate::sol) fn notify_effect_proj_range_changed(
         &mut self,
@@ -159,11 +161,12 @@ impl Svc {
         range: Option<AttrVal>,
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect_id);
+        self.eprojs.change_range(projector_espec, projectee_item_key, range);
         self.calc
-            .effect_proj_range_changed(uad, projector_espec, projectee_item_key, projectee_item, range);
+            .effect_proj_range_changed(uad, &self.eprojs, projector_espec, projectee_item_key, projectee_item);
     }
     pub(in crate::sol) fn notify_sol_sec_zone_changed(&mut self, uad: &Uad) {
-        self.calc.sol_sec_zone_changed(uad);
+        self.calc.sol_sec_zone_changed(uad, &self.eprojs);
     }
     pub(in crate::sol) fn notify_fighter_count_changed(
         &mut self,
@@ -171,14 +174,14 @@ impl Svc {
         fighter_key: ItemKey,
         fighter: &UadFighter,
     ) {
-        self.calc.fighter_count_changed(uad, fighter_key);
+        self.calc.fighter_count_changed(uad, &self.eprojs, fighter_key);
         self.vast.fighter_count_changed(fighter_key, fighter);
     }
     pub(in crate::sol) fn notify_ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
-        self.calc.ship_sec_status_changed(uad, ship_key);
+        self.calc.ship_sec_status_changed(uad, &self.eprojs, ship_key);
     }
     pub(in crate::sol) fn notify_skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &UadSkill) {
-        self.calc.skill_level_changed(uad, skill_key);
+        self.calc.skill_level_changed(uad, &self.eprojs, skill_key);
         self.vast.skill_level_changed(uad, skill);
     }
 }

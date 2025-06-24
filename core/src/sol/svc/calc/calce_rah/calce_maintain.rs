@@ -11,6 +11,7 @@ use crate::{
         svc::{
             AttrSpec,
             calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
+            eprojs::EProjs,
         },
         uad::{Uad, item::UadItem},
     },
@@ -18,25 +19,26 @@ use crate::{
 };
 
 impl Calc {
-    pub(in crate::sol::svc::calc) fn rah_item_loaded(&mut self, uad: &Uad, item: &UadItem) {
+    pub(in crate::sol::svc::calc) fn rah_item_loaded(&mut self, uad: &Uad, eprojs: &EProjs, item: &UadItem) {
         if self.rah.sim_running {
             return;
         }
         if let UadItem::Ship(ship) = item {
-            self.clear_fit_rah_results(uad, &ship.get_fit_key());
+            self.clear_fit_rah_results(uad, eprojs, &ship.get_fit_key());
         }
     }
-    pub(in crate::sol::svc::calc) fn rah_item_unloaded(&mut self, uad: &Uad, item: &UadItem) {
+    pub(in crate::sol::svc::calc) fn rah_item_unloaded(&mut self, uad: &Uad, eprojs: &EProjs, item: &UadItem) {
         if self.rah.sim_running {
             return;
         }
         if let UadItem::Ship(ship) = item {
-            self.clear_fit_rah_results(uad, &ship.get_fit_key());
+            self.clear_fit_rah_results(uad, eprojs, &ship.get_fit_key());
         }
     }
     pub(in crate::sol::svc::calc) fn rah_effects_started(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
         item: &UadItem,
         a_effects: &[ad::ArcEffect],
@@ -49,7 +51,7 @@ impl Calc {
         {
             let fit_key = module.get_fit_key();
             // Clear sim data for other RAHs on the same fit
-            self.clear_fit_rah_results(uad, &fit_key);
+            self.clear_fit_rah_results(uad, eprojs, &fit_key);
             // Add sim data for RAH being started
             self.rah.resonances.insert(item_key, None);
             self.rah.by_fit.add_entry(fit_key, item_key);
@@ -88,6 +90,7 @@ impl Calc {
     pub(in crate::sol::svc::calc) fn rah_effects_stopped(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: &ItemKey,
         item: &UadItem,
         a_effects: &[ad::ArcEffect],
@@ -109,10 +112,10 @@ impl Calc {
             self.rah.resonances.remove(item_key);
             self.rah.by_fit.remove_entry(&fit_key, item_key);
             // Clear sim data for other RAHs on the same fit
-            self.clear_fit_rah_results(uad, &fit_key);
+            self.clear_fit_rah_results(uad, eprojs, &fit_key);
         }
     }
-    pub(in crate::sol::svc::calc) fn rah_attr_value_changed(&mut self, uad: &Uad, aspec: &AttrSpec) {
+    pub(in crate::sol::svc::calc) fn rah_attr_value_changed(&mut self, uad: &Uad, eprojs: &EProjs, aspec: &AttrSpec) {
         if self.rah.sim_running {
             return;
         }
@@ -125,10 +128,10 @@ impl Calc {
             // Ship armor resonances and RAH resonances
             ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
                 match uad.items.get(aspec.item_key) {
-                    UadItem::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_key()),
+                    UadItem::Ship(ship) => self.clear_fit_rah_results(uad, eprojs, &ship.get_fit_key()),
                     UadItem::Module(module) => {
                         if self.rah.resonances.contains_key(&aspec.item_key) {
-                            self.clear_fit_rah_results(uad, &module.get_fit_key());
+                            self.clear_fit_rah_results(uad, eprojs, &module.get_fit_key());
                         }
                     }
                     _ => (),
@@ -140,7 +143,7 @@ impl Calc {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
                     let fit_key = uad.items.get(aspec.item_key).get_fit_key().unwrap();
-                    self.clear_fit_rah_results(uad, &fit_key);
+                    self.clear_fit_rah_results(uad, eprojs, &fit_key);
                 }
             }
             // RAH cycle time
@@ -152,7 +155,7 @@ impl Calc {
                     // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
                     // change sim results
                     if self.rah.by_fit.get(&fit_key).len() >= 2 {
-                        self.clear_fit_rah_results(uad, &fit_key);
+                        self.clear_fit_rah_results(uad, eprojs, &fit_key);
                     }
                 }
             }
@@ -162,7 +165,7 @@ impl Calc {
                     let fit_key = ship.get_fit_key();
                     let fit = uad.fits.get(fit_key);
                     if get_fit_rah_incoming_dps(uad, fit).deals_breacher_dps() {
-                        self.clear_fit_rah_results(uad, &fit_key);
+                        self.clear_fit_rah_results(uad, eprojs, &fit_key);
                     }
                 }
             }
@@ -172,25 +175,30 @@ impl Calc {
     pub(in crate::sol::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
         self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id);
     }
-    pub(in crate::sol::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
-        self.clear_fit_rah_results(uad, fit_key);
+    pub(in crate::sol::svc::calc) fn rah_fit_rah_dps_profile_changed(
+        &mut self,
+        uad: &Uad,
+        eprojs: &EProjs,
+        fit_key: &FitKey,
+    ) {
+        self.clear_fit_rah_results(uad, eprojs, fit_key);
     }
     // Private methods
-    fn clear_fit_rah_results(&mut self, uad: &Uad, fit_key: &FitKey) {
+    fn clear_fit_rah_results(&mut self, uad: &Uad, eprojs: &EProjs, fit_key: &FitKey) {
         let rah_item_keys = self.rah.by_fit.get(fit_key).copied().collect_vec();
         for rah_item_key in rah_item_keys {
-            self.clear_rah_result(uad, rah_item_key);
+            self.clear_rah_result(uad, eprojs, rah_item_key);
         }
     }
-    fn clear_rah_result(&mut self, uad: &Uad, item_key: ItemKey) {
+    fn clear_rah_result(&mut self, uad: &Uad, eprojs: &EProjs, item_key: ItemKey) {
         if self.rah.resonances.get_mut(&item_key).unwrap().take().is_some() {
-            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
-            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
-            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_KIN_ATTR_ID));
-            self.force_attr_postproc_recalc(uad, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
+            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
+            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
+            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_KIN_ATTR_ID));
+            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
         }
     }
-    fn get_rah_resonances(&mut self, uad: &Uad, item_key: ItemKey) -> DmgKinds<CalcAttrVal> {
+    fn get_rah_resonances(&mut self, uad: &Uad, eprojs: &EProjs, item_key: ItemKey) -> DmgKinds<CalcAttrVal> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
         if let Some(val) = self.rah.resonances.get(&item_key).unwrap() {
             return *val;
@@ -198,7 +206,7 @@ impl Calc {
         // Unwrap fit ID, since registered RAHs are supposed to be modules, which have fit ID
         let fit_key = uad.items.get(item_key).get_fit_key().unwrap();
         self.rah.sim_running = true;
-        self.rah_run_simulation(uad, fit_key);
+        self.rah_run_simulation(uad, eprojs, fit_key);
         self.rah.sim_running = false;
         // Unwrap value, since simulation is supposed to always set results for RAHs of requested
         // fit
@@ -206,53 +214,86 @@ impl Calc {
     }
 }
 
-fn rah_em_resonance_postproc_fast(calc: &mut Calc, uad: &Uad, item_key: ItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
-    calc.get_rah_resonances(uad, item_key).em
+fn rah_em_resonance_postproc_fast(
+    calc: &mut Calc,
+    uad: &Uad,
+    eprojs: &EProjs,
+    item_key: ItemKey,
+    _cval: CalcAttrVal,
+) -> CalcAttrVal {
+    calc.get_rah_resonances(uad, eprojs, item_key).em
 }
 
-fn rah_therm_resonance_postproc_fast(calc: &mut Calc, uad: &Uad, item_key: ItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
-    calc.get_rah_resonances(uad, item_key).thermal
+fn rah_therm_resonance_postproc_fast(
+    calc: &mut Calc,
+    uad: &Uad,
+    eprojs: &EProjs,
+    item_key: ItemKey,
+    _cval: CalcAttrVal,
+) -> CalcAttrVal {
+    calc.get_rah_resonances(uad, eprojs, item_key).thermal
 }
 
-fn rah_kin_resonance_postproc_fast(calc: &mut Calc, uad: &Uad, item_key: ItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
-    calc.get_rah_resonances(uad, item_key).kinetic
+fn rah_kin_resonance_postproc_fast(
+    calc: &mut Calc,
+    uad: &Uad,
+    eprojs: &EProjs,
+    item_key: ItemKey,
+    _cval: CalcAttrVal,
+) -> CalcAttrVal {
+    calc.get_rah_resonances(uad, eprojs, item_key).kinetic
 }
 
-fn rah_expl_resonance_postproc_fast(calc: &mut Calc, uad: &Uad, item_key: ItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
-    calc.get_rah_resonances(uad, item_key).explosive
+fn rah_expl_resonance_postproc_fast(
+    calc: &mut Calc,
+    uad: &Uad,
+    eprojs: &EProjs,
+    item_key: ItemKey,
+    _cval: CalcAttrVal,
+) -> CalcAttrVal {
+    calc.get_rah_resonances(uad, eprojs, item_key).explosive
 }
 
-fn rah_em_resonance_postproc_info(calc: &mut Calc, uad: &Uad, item_key: ItemKey, mut info: AttrValInfo) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(uad, item_key).em.extra;
+fn rah_em_resonance_postproc_info(
+    calc: &mut Calc,
+    uad: &Uad,
+    eprojs: &EProjs,
+    item_key: ItemKey,
+    mut info: AttrValInfo,
+) -> AttrValInfo {
+    info.value = calc.get_rah_resonances(uad, eprojs, item_key).em.extra;
     info
 }
 
 fn rah_therm_resonance_postproc_info(
     calc: &mut Calc,
     uad: &Uad,
+    eprojs: &EProjs,
     item_key: ItemKey,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(uad, item_key).thermal.extra;
+    info.value = calc.get_rah_resonances(uad, eprojs, item_key).thermal.extra;
     info
 }
 
 fn rah_kin_resonance_postproc_info(
     calc: &mut Calc,
     uad: &Uad,
+    eprojs: &EProjs,
     item_key: ItemKey,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(uad, item_key).kinetic.extra;
+    info.value = calc.get_rah_resonances(uad, eprojs, item_key).kinetic.extra;
     info
 }
 
 fn rah_expl_resonance_postproc_info(
     calc: &mut Calc,
     uad: &Uad,
+    eprojs: &EProjs,
     item_key: ItemKey,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(uad, item_key).explosive.extra;
+    info.value = calc.get_rah_resonances(uad, eprojs, item_key).explosive.extra;
     info
 }

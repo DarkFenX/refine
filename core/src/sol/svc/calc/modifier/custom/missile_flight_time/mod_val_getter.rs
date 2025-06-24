@@ -9,6 +9,7 @@ use crate::sol::{
     svc::{
         EffectSpec,
         calc::{Calc, modifier::custom::shared::get_ship_key},
+        eprojs::EProjs,
     },
     uad::Uad,
 };
@@ -16,13 +17,14 @@ use crate::sol::{
 pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
     calc: &mut Calc,
     uad: &Uad,
+    eprojs: &EProjs,
     espec: EffectSpec,
 ) -> Option<AttrVal> {
     let ship_key = get_ship_key(uad, espec.item_key)?;
     let missile_velocity = calc
-        .get_item_attr_val_full(uad, espec.item_key, &MISSILE_VELOCITY)
+        .get_item_attr_val_full(uad, eprojs, espec.item_key, &MISSILE_VELOCITY)
         .ok()?;
-    let ship_radius = calc.get_item_attr_val_full(uad, ship_key, &SHIP_RADIUS).ok()?;
+    let ship_radius = calc.get_item_attr_val_full(uad, eprojs, ship_key, &SHIP_RADIUS).ok()?;
     // Missile flight time is stored in milliseconds, thus have to multiply by 1000
     let val = ship_radius.dogma / missile_velocity.dogma * OF(1000.0);
     if val.is_infinite() {

@@ -51,7 +51,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, CalcAttrVal)>, IterItemAttrsError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        match sol.svc.calc.iter_item_attr_vals(&sol.uad, item_key) {
+        match sol.svc.iter_item_attr_vals(&sol.uad, item_key) {
             Ok(attr_iter) => Ok(attr_iter),
             Err(error) => Err(ItemLoadedError {
                 item_id: sol.uad.items.id_by_key(error.item_key),
@@ -64,7 +64,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)>, IterItemModifiersError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        match sol.svc.calc.iter_item_mods(&sol.uad, item_key) {
+        match sol.svc.iter_item_mods(&sol.uad, item_key) {
             Ok(mods_iter) => Ok(mods_iter),
             Err(err) => Err(ItemLoadedError {
                 item_id: sol.uad.items.id_by_key(err.item_key),

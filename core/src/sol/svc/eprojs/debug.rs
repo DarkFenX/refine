@@ -1,12 +1,12 @@
-use super::ProjectionRegister;
+use super::EProjs;
 use crate::sol::{
     debug::{DebugError, DebugResult, check_a_effect_id, check_item_key},
     uad::Uad,
 };
 
-impl ProjectionRegister {
+impl EProjs {
     pub(in crate::sol) fn consistency_check(&self, uad: &Uad) -> DebugResult {
-        for ((affector_espec, affectee_item_key), calc_range) in self.ranges.iter() {
+        for ((affector_espec, affectee_item_key), svc_range) in self.ranges.iter() {
             check_item_key(uad, affector_espec.item_key, true)?;
             check_a_effect_id(uad, &affector_espec.a_effect_id)?;
             check_item_key(uad, *affectee_item_key, true)?;
@@ -17,7 +17,7 @@ impl ProjectionRegister {
             match affector_projs.get(affectee_item_key) {
                 Some(Some(uad_range)) => {
                     // If ranges are defined on both, range mismatch is an error
-                    if uad_range != calc_range {
+                    if uad_range != svc_range {
                         return Err(DebugError {});
                     }
                 }

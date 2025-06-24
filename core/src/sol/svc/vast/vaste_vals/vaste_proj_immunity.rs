@@ -7,7 +7,7 @@ use crate::{
     ac, ad,
     sol::{
         ItemId, ItemKey,
-        svc::{EffectSpec, calc::Calc, get_resist_mult_val_by_projectee_aspec, vast::VastFitData},
+        svc::{EffectSpec, calc::Calc, eprojs::EProjs, get_resist_mult_val_by_projectee_aspec, vast::VastFitData},
         uad::Uad,
     },
     util::{RMapRSet, RSet},
@@ -24,11 +24,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.blockable_assistance,
             &ac::attrs::DISALLOW_ASSISTANCE,
@@ -38,11 +40,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.blockable_offense,
             &ac::attrs::DISALLOW_OFFENSIVE_MODIFIERS,
@@ -52,10 +56,11 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> bool {
         for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
-            if get_resist_mult_val_by_projectee_aspec(uad, calc, projectee_aspec) == Some(OF(0.0)) {
+            if get_resist_mult_val_by_projectee_aspec(uad, eprojs, calc, projectee_aspec) == Some(OF(0.0)) {
                 match kfs.is_empty() {
                     true => return false,
                     false => {
@@ -73,11 +78,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.blockable_assistance,
             &ac::attrs::DISALLOW_ASSISTANCE,
@@ -87,11 +94,13 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             &self.blockable_offense,
             &ac::attrs::DISALLOW_OFFENSIVE_MODIFIERS,
@@ -101,11 +110,12 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
         let mut items = HashMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
-            if get_resist_mult_val_by_projectee_aspec(uad, calc, projectee_aspec) == Some(OF(0.0))
+            if get_resist_mult_val_by_projectee_aspec(uad, eprojs, calc, projectee_aspec) == Some(OF(0.0))
                 && !projector_especs.is_empty()
             {
                 let projectee_item_id = uad.items.id_by_key(projectee_aspec.item_key);
@@ -131,12 +141,13 @@ impl VastFitData {
 fn validate_fast(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
+    eprojs: &EProjs,
     calc: &mut Calc,
     blockable: &RMapRSet<ItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> bool {
     for (projectee_item_key, mut projector_especs) in blockable.iter() {
-        if is_flag_set(uad, calc, *projectee_item_key, a_attr_id) {
+        if is_flag_set(uad, eprojs, calc, *projectee_item_key, a_attr_id) {
             match kfs.is_empty() {
                 true => return false,
                 false => {
@@ -153,13 +164,14 @@ fn validate_fast(
 fn validate_verbose(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
+    eprojs: &EProjs,
     calc: &mut Calc,
     blockable: &RMapRSet<ItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> Option<ValProjImmunityFail> {
     let mut items = HashMap::new();
     for (projectee_item_key, projector_especs) in blockable.iter() {
-        if is_flag_set(uad, calc, *projectee_item_key, a_attr_id) && !projector_especs.is_empty() {
+        if is_flag_set(uad, eprojs, calc, *projectee_item_key, a_attr_id) && !projector_especs.is_empty() {
             let projectee_item_id = uad.items.id_by_key(*projectee_item_key);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_key) {

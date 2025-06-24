@@ -4,6 +4,7 @@ use crate::{
         Count, ItemId, ItemKey,
         svc::{
             calc::Calc,
+            eprojs::EProjs,
             vast::{VastFitData, shared::get_attr_as_count},
         },
         uad::{Uad, fit::UadFit},
@@ -24,12 +25,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.character,
             &ac::attrs::MAX_ACTIVE_DRONES,
@@ -40,21 +43,24 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
-        validate_fast(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
+        validate_fast(kfs, uad, eprojs, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_fast(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_LIGHT_SLOTS,
@@ -65,12 +71,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_HEAVY_SLOTS,
@@ -81,12 +89,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_SUPPORT_SLOTS,
@@ -97,12 +107,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_ST_LIGHT_SLOTS,
@@ -113,12 +125,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_ST_HEAVY_SLOTS,
@@ -129,12 +143,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_ST_SUPPORT_SLOTS,
@@ -146,12 +162,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.character,
             &ac::attrs::MAX_ACTIVE_DRONES,
@@ -162,21 +180,24 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
-        validate_verbose(kfs, uad, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
+        validate_verbose(kfs, uad, eprojs, calc, fit.ship, &ac::attrs::FTR_TUBES, &fit.fighters)
     }
     pub(in crate::sol::svc::vast) fn validate_unlaunchable_light_fighter_verbose(
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_LIGHT_SLOTS,
@@ -187,12 +208,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_HEAVY_SLOTS,
@@ -203,12 +226,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_SUPPORT_SLOTS,
@@ -219,12 +244,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_ST_LIGHT_SLOTS,
@@ -235,12 +262,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_ST_HEAVY_SLOTS,
@@ -251,12 +280,14 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             uad,
+            eprojs,
             calc,
             fit.ship,
             &ac::attrs::FTR_ST_SUPPORT_SLOTS,
@@ -268,6 +299,7 @@ impl VastFitData {
 fn validate_fast(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
+    eprojs: &EProjs,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,
@@ -276,7 +308,7 @@ fn validate_fast(
     if users.is_empty() {
         return true;
     }
-    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id).unwrap_or(0);
+    let max = get_attr_as_count(uad, eprojs, calc, max_item_key, max_a_attr_id).unwrap_or(0);
     if max > 0 {
         return true;
     }
@@ -285,6 +317,7 @@ fn validate_fast(
 fn validate_verbose(
     kfs: &RSet<ItemKey>,
     uad: &Uad,
+    eprojs: &EProjs,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,
@@ -293,7 +326,7 @@ fn validate_verbose(
     if users.is_empty() {
         return None;
     }
-    let max = get_attr_as_count(uad, calc, max_item_key, max_a_attr_id);
+    let max = get_attr_as_count(uad, eprojs, calc, max_item_key, max_a_attr_id);
     if max.unwrap_or(0) > 0 {
         return None;
     }

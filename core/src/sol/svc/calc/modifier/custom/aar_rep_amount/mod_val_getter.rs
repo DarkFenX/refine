@@ -5,7 +5,7 @@ use crate::{
     ac,
     sol::{
         AttrVal, ItemKey,
-        svc::calc::Calc,
+        svc::{calc::Calc, eprojs::EProjs},
         uad::{Uad, item::UadItem},
     },
 };
@@ -13,6 +13,7 @@ use crate::{
 pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
     calc: &mut Calc,
     uad: &Uad,
+    eprojs: &EProjs,
     item_key: ItemKey,
 ) -> Option<AttrVal> {
     let item = uad.items.get(item_key);
@@ -26,7 +27,7 @@ pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
             // If charge is referenced, we're supposed to always be able to fetch it
             let charge = uad.items.get(charge_key);
             if charge.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE {
-                match calc.get_item_attr_val_full(uad, item_key, &AAR_MULTIPLIER) {
+                match calc.get_item_attr_val_full(uad, eprojs, item_key, &AAR_MULTIPLIER) {
                     Ok(sol_attr) => Some(sol_attr.dogma),
                     // Can't fetch multiplier attr - no extra reps
                     Err(_) => Some(OF(1.0)),

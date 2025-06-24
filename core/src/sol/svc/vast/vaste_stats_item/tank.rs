@@ -6,6 +6,7 @@ use crate::{
         AttrVal, DmgKinds, ItemKey,
         svc::{
             calc::Calc,
+            eprojs::EProjs,
             vast::{
                 Vast,
                 vaste_stats_effect::{
@@ -31,16 +32,17 @@ pub struct StatLayerHp {
 }
 
 impl Vast {
-    pub(in crate::sol) fn get_item_hp(
+    pub(in crate::sol::svc) fn get_stat_item_hp(
         &self,
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<StatTank<StatLayerHp>> {
         // Buffer - if item is not loaded, fetching those will fail
-        let shield_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::SHIELD_CAPACITY)?;
-        let armor_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::ARMOR_HP)?;
-        let structure_buffer = calc.get_item_attr_val_extra(uad, item_key, &ac::attrs::HP)?;
+        let shield_buffer = calc.get_item_attr_val_extra(uad, eprojs, item_key, &ac::attrs::SHIELD_CAPACITY)?;
+        let armor_buffer = calc.get_item_attr_val_extra(uad, eprojs, item_key, &ac::attrs::ARMOR_HP)?;
+        let structure_buffer = calc.get_item_attr_val_extra(uad, eprojs, item_key, &ac::attrs::HP)?;
         // Local ancillary repairs
         let (local_asb, local_aar) = match uad.items.get(item_key) {
             UadItem::Ship(uad_ship) => {
@@ -48,14 +50,14 @@ impl Vast {
                 let mut local_aar = OF(0.0);
                 let fit_data = self.get_fit_data(&uad_ship.get_fit_key());
                 for asb_espec in fit_data.limitable_sb.iter() {
-                    if let Some(asb_hp) = get_effect_local_shield_rep_amount(uad, calc, asb_espec)
+                    if let Some(asb_hp) = get_effect_local_shield_rep_amount(uad, eprojs, calc, asb_espec)
                         && let Some(cycles) = get_effect_charge(uad, asb_espec).get_cycle_count()
                     {
                         local_asb += asb_hp * AttrVal::from(cycles);
                     }
                 }
                 for aar_espec in fit_data.limitable_ar.iter() {
-                    if let Some(aar_hp) = get_effect_local_armor_rep_amount(uad, calc, aar_espec)
+                    if let Some(aar_hp) = get_effect_local_armor_rep_amount(uad, eprojs, calc, aar_espec)
                         && let Some(cycles) = get_effect_charge(uad, aar_espec).get_cycle_count()
                     {
                         local_aar += aar_hp * AttrVal::from(cycles);
@@ -68,15 +70,15 @@ impl Vast {
         // Remote ancillary repairs
         let mut remote_asb = OF(0.0);
         let mut remote_aar = OF(0.0);
-        for rasb_espec in self.limitable_rsr.get(&item_key) {
-            if let Some(rasb_hp) = get_effect_remote_shield_rep_amount(uad, calc, rasb_espec, Some(item_key))
+        for rasb_espec in self.limitable_rsb.get(&item_key) {
+            if let Some(rasb_hp) = get_effect_remote_shield_rep_amount(uad, eprojs, calc, rasb_espec, Some(item_key))
                 && let Some(cycles) = get_effect_charge(uad, rasb_espec).get_cycle_count()
             {
                 remote_asb += rasb_hp * AttrVal::from(cycles);
             }
         }
         for raar_espec in self.limitable_rar.get(&item_key) {
-            if let Some(raar_hp) = get_effect_remote_armor_rep_amount(uad, calc, raar_espec, Some(item_key))
+            if let Some(raar_hp) = get_effect_remote_armor_rep_amount(uad, eprojs, calc, raar_espec, Some(item_key))
                 && let Some(cycles) = get_effect_charge(uad, raar_espec).get_cycle_count()
             {
                 remote_aar += raar_hp * AttrVal::from(cycles);
@@ -100,24 +102,27 @@ impl Vast {
             },
         })
     }
-    pub(in crate::sol) fn get_item_resists(
+    pub(in crate::sol::svc) fn get_stat_item_resists(
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<StatTank<DmgKinds<AttrVal>>> {
         Some(StatTank {
-            shield: Vast::get_item_shield_resists(uad, calc, item_key)?,
-            armor: Vast::get_item_armor_resists(uad, calc, item_key)?,
-            structure: Vast::get_item_structure_resists(uad, calc, item_key)?,
+            shield: Vast::get_item_shield_resists(uad, eprojs, calc, item_key)?,
+            armor: Vast::get_item_armor_resists(uad, eprojs, calc, item_key)?,
+            structure: Vast::get_item_structure_resists(uad, eprojs, calc, item_key)?,
         })
     }
-    pub(in crate::sol) fn get_item_shield_resists(
+    pub(in crate::sol::svc) fn get_item_shield_resists(
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<DmgKinds<AttrVal>> {
         get_item_layer_resists(
             uad,
+            eprojs,
             calc,
             item_key,
             &ac::attrs::SHIELD_EM_DMG_RESONANCE,
@@ -126,13 +131,15 @@ impl Vast {
             &ac::attrs::SHIELD_EXPL_DMG_RESONANCE,
         )
     }
-    pub(in crate::sol) fn get_item_armor_resists(
+    pub(in crate::sol::svc) fn get_item_armor_resists(
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<DmgKinds<AttrVal>> {
         get_item_layer_resists(
             uad,
+            eprojs,
             calc,
             item_key,
             &ac::attrs::ARMOR_EM_DMG_RESONANCE,
@@ -141,13 +148,15 @@ impl Vast {
             &ac::attrs::ARMOR_EXPL_DMG_RESONANCE,
         )
     }
-    pub(in crate::sol) fn get_item_structure_resists(
+    pub(in crate::sol::svc) fn get_item_structure_resists(
         uad: &Uad,
+        eprojs: &EProjs,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<DmgKinds<AttrVal>> {
         get_item_layer_resists(
             uad,
+            eprojs,
             calc,
             item_key,
             &ac::attrs::EM_DMG_RESONANCE,
@@ -160,6 +169,7 @@ impl Vast {
 
 fn get_item_layer_resists(
     uad: &Uad,
+    eprojs: &EProjs,
     calc: &mut Calc,
     item_key: ItemKey,
     em_a_attr_id: &ad::AAttrId,
@@ -168,9 +178,9 @@ fn get_item_layer_resists(
     expl_a_attr_id: &ad::AAttrId,
 ) -> Option<DmgKinds<AttrVal>> {
     Some(DmgKinds {
-        em: calc.get_item_attr_val_extra(uad, item_key, em_a_attr_id)?,
-        thermal: calc.get_item_attr_val_extra(uad, item_key, therm_a_attr_id)?,
-        kinetic: calc.get_item_attr_val_extra(uad, item_key, kin_a_attr_id)?,
-        explosive: calc.get_item_attr_val_extra(uad, item_key, expl_a_attr_id)?,
+        em: calc.get_item_attr_val_extra(uad, eprojs, item_key, em_a_attr_id)?,
+        thermal: calc.get_item_attr_val_extra(uad, eprojs, item_key, therm_a_attr_id)?,
+        kinetic: calc.get_item_attr_val_extra(uad, eprojs, item_key, kin_a_attr_id)?,
+        explosive: calc.get_item_attr_val_extra(uad, eprojs, item_key, expl_a_attr_id)?,
     })
 }

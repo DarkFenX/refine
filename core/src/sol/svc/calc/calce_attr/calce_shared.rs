@@ -7,6 +7,7 @@ use crate::{
         svc::{
             AttrSpec,
             calc::{Calc, Context, CtxModifier, ModifierKind},
+            eprojs::EProjs,
             get_resist_mult_val_by_projectee_aspec,
         },
         uad::{Uad, item::UadItem},
@@ -21,7 +22,7 @@ pub(super) const LIMITED_PRECISION_A_ATTR_IDS: [ad::AAttrId; 4] = [
 ];
 
 impl Calc {
-    pub(super) fn calc_resist_mult(&mut self, uad: &Uad, modifier: &CtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_resist_mult(&mut self, uad: &Uad, eprojs: &EProjs, modifier: &CtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
         if !matches!(modifier.raw.kind, ModifierKind::Buff | ModifierKind::Targeted) {
             return None;
@@ -31,28 +32,39 @@ impl Calc {
             Context::Item(projectee_item_key) => projectee_item_key,
             _ => return None,
         };
-        let resist =
-            get_resist_mult_val_by_projectee_aspec(uad, self, &AttrSpec::new(projectee_item_key, resist_a_attr_id))?;
+        let resist = get_resist_mult_val_by_projectee_aspec(
+            uad,
+            eprojs,
+            self,
+            &AttrSpec::new(projectee_item_key, resist_a_attr_id),
+        )?;
         Some(resist)
     }
-    pub(super) fn calc_proj_mult(&mut self, uad: &Uad, modifier: &CtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_proj_mult(&mut self, uad: &Uad, eprojs: &EProjs, modifier: &CtxModifier) -> Option<AttrVal> {
         let projectee_item_key = match modifier.ctx {
             Context::Item(projectee_item_key) => projectee_item_key,
             _ => return None,
         };
-        let proj_range = self.projs.get_range(modifier.raw.affector_espec, projectee_item_key)?;
+        let proj_range = eprojs.get_range(modifier.raw.affector_espec, projectee_item_key)?;
         match modifier.raw.kind {
-            ModifierKind::Targeted => self.calc_proj_mult_targeted(uad, modifier, proj_range),
-            ModifierKind::Buff => self.calc_proj_mult_buff(uad, modifier, proj_range),
+            ModifierKind::Targeted => self.calc_proj_mult_targeted(uad, eprojs, modifier, proj_range),
+            ModifierKind::Buff => self.calc_proj_mult_buff(uad, eprojs, modifier, proj_range),
             _ => None,
         }
     }
     // Private methods
-    fn calc_proj_mult_targeted(&mut self, uad: &Uad, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
+    fn calc_proj_mult_targeted(
+        &mut self,
+        uad: &Uad,
+        eprojs: &EProjs,
+        modifier: &CtxModifier,
+        proj_range: AttrVal,
+    ) -> Option<AttrVal> {
         // Assume optimal range is 0 if it's not available
         let affector_optimal = match modifier.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(uad, modifier.raw.affector_espec.item_key, &optimal_a_attr_id) {
+                match self.get_item_attr_val_full(uad, eprojs, modifier.raw.affector_espec.item_key, &optimal_a_attr_id)
+                {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -62,7 +74,8 @@ impl Calc {
         // Assume falloff range is 0 if it's not available
         let affector_falloff = match modifier.raw.falloff_a_attr_id {
             Some(falloff_a_attr_id) => {
-                match self.get_item_attr_val_full(uad, modifier.raw.affector_espec.item_key, &falloff_a_attr_id) {
+                match self.get_item_attr_val_full(uad, eprojs, modifier.raw.affector_espec.item_key, &falloff_a_attr_id)
+                {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -88,10 +101,17 @@ impl Calc {
             Some(OF(0.0))
         }
     }
-    fn calc_proj_mult_buff(&mut self, uad: &Uad, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
+    fn calc_proj_mult_buff(
+        &mut self,
+        uad: &Uad,
+        eprojs: &EProjs,
+        modifier: &CtxModifier,
+        proj_range: AttrVal,
+    ) -> Option<AttrVal> {
         let affector_optimal = match modifier.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(uad, modifier.raw.affector_espec.item_key, &optimal_a_attr_id) {
+                match self.get_item_attr_val_full(uad, eprojs, modifier.raw.affector_espec.item_key, &optimal_a_attr_id)
+                {
                     Ok(val) => val.dogma,
                     // If optimal range attribute ID is defined but value is not available, assume
                     // optimal range of 0

@@ -10,7 +10,10 @@ use crate::{
     sol::{
         ItemKey, OpInfo, SecZone,
         err::KeyedItemLoadedError,
-        svc::calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
+        svc::{
+            calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
+            eprojs::EProjs,
+        },
         uad::{Uad, item::UadItem},
     },
     util::{RMap, RMapVec, RSet, round},
@@ -23,14 +26,15 @@ struct Affection {
 
 impl Calc {
     // Query methods
-    pub(in crate::sol) fn iter_item_mods(
+    pub(in crate::sol::svc) fn iter_item_mods(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: ItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for a_attr_id in self.iter_item_a_attr_ids(uad, item_key)? {
-            let mut attr_info = self.calc_item_attr_info(uad, item_key, &a_attr_id);
+            let mut attr_info = self.calc_item_attr_info(uad, eprojs, item_key, &a_attr_id);
             let mut info_vec = Vec::new();
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
@@ -57,6 +61,7 @@ impl Calc {
     fn iter_affections(
         &mut self,
         uad: &Uad,
+        eprojs: &EProjs,
         item_key: &ItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
@@ -67,7 +72,7 @@ impl Calc {
             .get_mods_for_affectee(item_key, item, a_attr_id, &uad.fits)
             .iter()
         {
-            let val = match modifier.raw.get_mod_val(self, uad) {
+            let val = match modifier.raw.get_mod_val(self, uad, eprojs) {
                 Some(val) => val,
                 None => continue,
             };
@@ -77,8 +82,8 @@ impl Calc {
             let modification = Modification {
                 op: modifier.raw.op,
                 val,
-                res_mult: self.calc_resist_mult(uad, modifier),
-                proj_mult: self.calc_proj_mult(uad, modifier),
+                res_mult: self.calc_resist_mult(uad, eprojs, modifier),
+                proj_mult: self.calc_proj_mult(uad, eprojs, modifier),
                 aggr_mode: modifier.raw.aggr_mode,
                 affector_a_item_cat_id,
             };
@@ -90,7 +95,13 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, uad: &Uad, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
+    fn calc_item_attr_info(
+        &mut self,
+        uad: &Uad,
+        eprojs: &EProjs,
+        item_key: ItemKey,
+        a_attr_id: &ad::AAttrId,
+    ) -> AttrValInfo {
         let item = uad.items.get(item_key);
         let a_attr = match uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
@@ -107,7 +118,7 @@ impl Calc {
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
                     _ => ac::attrs::NULLSEC_MODIFIER,
                 };
-                match self.get_item_attr_val_full(uad, item_key, &security_a_attr_id) {
+                match self.get_item_attr_val_full(uad, eprojs, item_key, &security_a_attr_id) {
                     Ok(security_full_val) => {
                         // Ensure that change in any a security-specific attribute value triggers
                         // recalculation of generic security attribute value
@@ -138,7 +149,7 @@ impl Calc {
             _ => AttrValInfo::new(get_base_attr_value(item, a_attr)),
         };
         let mut accumulator = ModAccumInfo::new();
-        for affection in self.iter_affections(uad, &item_key, item, a_attr_id) {
+        for affection in self.iter_affections(uad, eprojs, &item_key, item, a_attr_id) {
             accumulator.add_val(
                 affection.modification.val,
                 affection.modification.proj_mult,
@@ -153,7 +164,7 @@ impl Calc {
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, a_attr.hig);
         // Lower value limit
         if let Some(limiter_a_attr_id) = a_attr.min_attr_id
-            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id)
+            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, eprojs, item_key, &limiter_a_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
             if limiter_val.dogma > dogma_attr_info.value {
@@ -174,7 +185,7 @@ impl Calc {
         }
         // Upper value limit
         if let Some(limiter_a_attr_id) = a_attr.max_attr_id
-            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_key, &limiter_a_attr_id)
+            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, eprojs, item_key, &limiter_a_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
             if limiter_val.dogma < dogma_attr_info.value {
@@ -208,7 +219,7 @@ impl Calc {
         {
             Some(postprocs) => {
                 let pp_fn = postprocs.info;
-                pp_fn(self, uad, item_key, extra_attr_info)
+                pp_fn(self, uad, eprojs, item_key, extra_attr_info)
             }
             None => extra_attr_info,
         }
