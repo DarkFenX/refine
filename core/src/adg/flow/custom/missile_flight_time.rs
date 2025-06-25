@@ -16,13 +16,6 @@ pub(in crate::adg::flow::custom) fn add_missile_flight_time(a_data: &mut ad::ADa
             || v.effect_datas.contains_key(&ac::effects::FOF_MISSILE_LAUNCHING)
             || v.effect_datas.contains_key(&ac::effects::DOT_MISSILE_LAUNCHING)
     }) {
-        item.effect_datas.insert(
-            effect_id,
-            ad::AItemEffectData {
-                cd: None,
-                charge_count: None,
-                charge_reload_time: None,
-            },
-        );
+        item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
     }
 }

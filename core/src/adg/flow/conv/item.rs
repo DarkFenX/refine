@@ -53,11 +53,7 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &ed::EData, g_supp: &GSuppo
         a_items.get_mut(&e_item_effect.item_id).and_then(|v| {
             v.effect_datas.insert(
                 ad::AEffectId::Dogma(e_item_effect.effect_id),
-                ad::AItemEffectData {
-                    cd: None,
-                    charge_count: None,
-                    charge_reload_time: None,
-                },
+                ad::AItemEffectData::default(),
             )
         });
     }

@@ -18,9 +18,9 @@ pub struct AAttr {
     /// Default value of the attribute, used if not provided by an item type.
     pub def_val: AAttrVal,
     /// Refers another attribute, whose value limits minimum value of this attribute.
-    pub min_attr_id: Option<AAttrId>,
+    pub min_attr_id: Option<AAttrId> = None,
     /// Refers another attribute, whose value limits maximum value of this attribute.
-    pub max_attr_id: Option<AAttrId>,
+    pub max_attr_id: Option<AAttrId> = None,
 }
 impl Named for AAttr {
     fn get_name() -> &'static str {

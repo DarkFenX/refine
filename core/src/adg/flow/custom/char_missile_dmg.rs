@@ -18,14 +18,8 @@ pub(in crate::adg::flow::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::A
         .values_mut()
         .filter(|v| v.grp_id == ac::itemgrps::CHARACTER)
     {
-        item.effect_datas.insert(
-            ac::effects::REE_CHAR_MISSILE_DMG,
-            ad::AItemEffectData {
-                cd: None,
-                charge_count: None,
-                charge_reload_time: None,
-            },
-        );
+        item.effect_datas
+            .insert(ac::effects::REE_CHAR_MISSILE_DMG, ad::AItemEffectData::default());
     }
 }
 

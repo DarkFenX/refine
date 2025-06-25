@@ -65,12 +65,10 @@ fn process_buffs(
         ..
     };
     a_data.effects.insert(effect_id, effect);
-    a_data.items.get_mut(&item_id).unwrap().effect_datas.insert(
-        effect_id,
-        ad::AItemEffectData {
-            cd: None,
-            charge_count: None,
-            charge_reload_time: None,
-        },
-    );
+    a_data
+        .items
+        .get_mut(&item_id)
+        .unwrap()
+        .effect_datas
+        .insert(effect_id, ad::AItemEffectData::default());
 }

@@ -23,14 +23,7 @@ pub(in crate::adg::flow::custom) fn add_wubble_effect(a_data: &mut ad::AData) {
     a_data.effects.insert(effect.id, effect);
     match a_data.items.get_mut(&WEB_BUBBLE) {
         Some(a_item) => {
-            a_item.effect_datas.insert(
-                effect_id,
-                ad::AItemEffectData {
-                    cd: None,
-                    charge_count: None,
-                    charge_reload_time: None,
-                },
-            );
+            a_item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
             a_item.defeff_id = Some(effect_id);
         }
         None => tracing::info!("web bubble {WEB_BUBBLE} is not found for customization"),
