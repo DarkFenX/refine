@@ -1,0 +1,12 @@
+use crate::{ac, ad, ec, ntt::NttEffect};
+
+// Abyssal firestorm weather
+pub(crate) const EFF_D7062: NttEffect = NttEffect {
+    eid: Some(ec::effects::WEATHER_INFERNAL),
+    aid: ac::effects::WEATHER_INFERNAL,
+    buff_info: Some(ad::AEffectBuffInfo {
+        source: ad::AEffectBuffSrc::DefaultAttrs,
+        scope: ad::AEffectBuffScope::Everything,
+    }),
+    ..
+};

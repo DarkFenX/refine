@@ -64,6 +64,7 @@ pub(crate) const SHIP_MOD_FOCUSED_WARP_DISRUPTION_SCRIPT: AEffectId =
     AEffectId::Dogma(ece::SHIP_MOD_FOCUSED_WARP_DISRUPTION_SCRIPT);
 pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_BIOLUMINESCENCE_CLOUD);
 pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_CAUSTIC_CLOUD);
+pub(crate) const AOE_BEACON_PULSE_01: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_PULSE_01);
 pub(crate) const AOE_BEACON_FILAMENT_CLOUD: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_FILAMENT_CLOUD);
 pub(crate) const WEATHER_CAUSTIC_TOXIN: AEffectId = AEffectId::Dogma(ece::WEATHER_CAUSTIC_TOXIN);
 pub(crate) const WEATHER_DARKNESS: AEffectId = AEffectId::Dogma(ece::WEATHER_DARKNESS);
