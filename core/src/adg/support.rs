@@ -1,7 +1,5 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    ac, ad, ec, ed,
+    ac, ad, ec, ed, ntt,
     util::{RMap, RMapRSet, RSet},
 };
 
@@ -66,74 +64,13 @@ impl GSupport {
         }
     }
     fn fill_eff_buff_map(&mut self) {
-        // Fleet buffs which rely on standard on-item attributes to define buffs
-        for effect_id in [
-            ec::effects::MOD_BONUS_WARFARE_LINK_ARMOR,
-            ec::effects::MOD_BONUS_WARFARE_LINK_INFO,
-            ec::effects::MOD_BONUS_WARFARE_LINK_MINING,
-            ec::effects::MOD_BONUS_WARFARE_LINK_SHIELD,
-            ec::effects::MOD_BONUS_WARFARE_LINK_SKIRMISH,
-        ] {
-            self.eff_buff_map.insert(
-                effect_id,
-                ad::AEffectBuffInfo {
-                    source: ad::AEffectBuffSrc::DefaultAttrs,
-                    scope: ad::AEffectBuffScope::FleetShips,
-                },
-            );
+        for ntt_effect in ntt::get_ntt_effects() {
+            if let Some(buff_info) = ntt_effect.buff_info
+                && let Some(e_effect_id) = ntt_effect.eid
+            {
+                self.eff_buff_map.insert(e_effect_id, buff_info);
+            }
         }
-        // Buffs which affect everything, and which rely on standard on-item attributes
-        for effect_id in [
-            ec::effects::WEATHER_ELECTRIC_STORM,
-            ec::effects::WEATHER_INFERNAL,
-            ec::effects::WEATHER_CAUSTIC_TOXIN,
-            ec::effects::WEATHER_XENON_GAS,
-            ec::effects::WEATHER_DARKNESS,
-            ec::effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD,
-            ec::effects::AOE_BEACON_CAUSTIC_CLOUD,
-            ec::effects::AOE_BEACON_FILAMENT_CLOUD,
-            ec::effects::AOE_BEACON_PULSE_01, // Tracking towers in the abyss
-        ] {
-            self.eff_buff_map.insert(
-                effect_id,
-                ad::AEffectBuffInfo {
-                    source: ad::AEffectBuffSrc::DefaultAttrs,
-                    scope: ad::AEffectBuffScope::Everything,
-                },
-            );
-        }
-        // Buffs which affect only ships, and which rely on standard on-item attributes
-        self.eff_buff_map.insert(
-            ec::effects::MOD_TITAN_EFFECT_GENERATOR,
-            ad::AEffectBuffInfo {
-                source: ad::AEffectBuffSrc::DefaultAttrs,
-                scope: ad::AEffectBuffScope::Ships,
-            },
-        );
-        // Bursts with hardcoded IDs
-        self.eff_buff_map.insert(
-            ec::effects::DOOMSDAY_AOE_WEB,
-            ad::AEffectBuffInfo {
-                source: ad::AEffectBuffSrc::Customized(vec![ad::AEffectBuffSrcCustom::AffectorVal(
-                    ac::buffs::STASIS_WEBIFICATION_BURST,
-                    ac::attrs::SPEED_FACTOR,
-                )]),
-                scope: ad::AEffectBuffScope::Everything,
-            },
-        );
-        // Full hardcode
-        self.eff_buff_map.insert(
-            ec::effects::DEBUFF_LANCE,
-            ad::AEffectBuffInfo {
-                source: ad::AEffectBuffSrc::Customized(vec![
-                    ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::REMOTE_REPAIR_IMPEDANCE, OF(-50.0)),
-                    ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::WARP_PENALTY, OF(100.0)),
-                    ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_DOCK_JUMP, OF(1.0)),
-                    ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_TETHER, OF(1.0)),
-                ]),
-                scope: ad::AEffectBuffScope::Everything,
-            },
-        );
     }
     fn fill_attr_unit_map(&mut self, e_data: &ed::EData) {
         for attr in e_data.attrs.data.iter() {
@@ -143,20 +80,12 @@ impl GSupport {
         }
     }
     fn fill_eff_charge_map(&mut self) {
-        for effect_id in [
-            ec::effects::USE_MISSILES,
-            // Ancillary modules
-            ec::effects::FUELED_SHIELD_BOOSTING,
-            ec::effects::FUELED_ARMOR_REPAIR,
-            ec::effects::SHIP_MODULE_RASB,
-            ec::effects::SHIP_MODULE_RAAR,
-        ] {
-            self.eff_charge_map.insert(effect_id, ad::AEffectChargeInfo::Loaded);
+        for ntt_effect in ntt::get_ntt_effects() {
+            if let Some(charge_info) = ntt_effect.charge_info
+                && let Some(e_effect_id) = ntt_effect.eid
+            {
+                self.eff_charge_map.insert(e_effect_id, charge_info);
+            }
         }
-        // LR fighter bombs
-        self.eff_charge_map.insert(
-            ec::effects::FTR_ABIL_BOMB,
-            ad::AEffectChargeInfo::Attr(ac::attrs::FTR_ABIL_BOMB_TYPE),
-        );
     }
 }

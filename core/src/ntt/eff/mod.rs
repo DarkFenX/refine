@@ -1,8 +1,14 @@
-pub(in crate::ntt) use def::NttEffect;
+pub(crate) use def::NttEffect;
 
 mod def;
+mod eff_d101_use_missiles;
 mod eff_d11691_debuff_lance;
+mod eff_d4936_fueled_shield_boosting;
+mod eff_d5275_fueled_armor_repair;
 mod eff_d6476_doomsday_aoe_web;
+mod eff_d6485_ftr_abil_bomb;
+mod eff_d6651_ship_module_raar;
+mod eff_d6652_ship_module_rasb;
 mod eff_d6732_warfare_link_armor;
 mod eff_d6733_warfare_link_shield;
 mod eff_d6734_warfare_link_skirmish;
@@ -19,9 +25,15 @@ mod eff_d7061_weather_electric_storm;
 mod eff_d7062_weather_infernal;
 mod eff_d7063_weather_xenon_gas;
 
-fn get_ntt_effects() -> Vec<NttEffect> {
+pub(crate) fn get_ntt_effects() -> Vec<NttEffect> {
     vec![
+        eff_d101_use_missiles::mk_ntt_effect(),
+        eff_d4936_fueled_shield_boosting::mk_ntt_effect(),
+        eff_d5275_fueled_armor_repair::mk_ntt_effect(),
         eff_d6476_doomsday_aoe_web::mk_ntt_effect(),
+        eff_d6485_ftr_abil_bomb::mk_ntt_effect(),
+        eff_d6651_ship_module_raar::mk_ntt_effect(),
+        eff_d6652_ship_module_rasb::mk_ntt_effect(),
         eff_d6732_warfare_link_armor::mk_ntt_effect(),
         eff_d6733_warfare_link_shield::mk_ntt_effect(),
         eff_d6734_warfare_link_skirmish::mk_ntt_effect(),
