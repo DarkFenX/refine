@@ -5,23 +5,8 @@ pub(in crate::adg::flow::custom) fn add_aar_paste_boost_effect(a_data: &mut ad::
         id: ac::effects::REE_AAR_PASTE_BOOST,
         category: ac::effcats::PASSIVE,
         state: ad::AState::Offline,
-        is_assist: false,
-        is_offense: false,
-        hisec: None,
-        lowsec: None,
-        discharge_attr_id: None,
-        duration_attr_id: None,
-        range_attr_id: None,
-        falloff_attr_id: None,
-        track_attr_id: None,
-        chance_attr_id: None,
-        resist_attr_id: None,
         mod_build_status: ad::AEffectModBuildStatus::Custom,
-        // No modifiers, a custom one is added
-        mods: Vec::new(),
-        stop_ids: Vec::new(),
-        buff: None,
-        charge: None,
+        ..
     };
     let effect_id = effect.id;
     a_data.effects.insert(effect.id, effect);

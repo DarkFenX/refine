@@ -41,8 +41,6 @@ pub(in crate::adg::flow::conv) fn conv_effects(
             state,
             is_assist: e_effect.is_assistance,
             is_offense: e_effect.is_offensive,
-            hisec: None,
-            lowsec: None,
             discharge_attr_id: e_effect.discharge_attr_id,
             duration_attr_id: e_effect.duration_attr_id,
             range_attr_id: e_effect.range_attr_id,
@@ -51,10 +49,9 @@ pub(in crate::adg::flow::conv) fn conv_effects(
             chance_attr_id: e_effect.usage_chance_attr_id,
             resist_attr_id: e_effect.resist_attr_id,
             mod_build_status: ad::AEffectModBuildStatus::Unbuilt,
-            mods: Vec::new(),
-            stop_ids: Vec::new(),
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             charge: g_supp.eff_charge_map.get(&e_effect.id).copied(),
+            ..
         };
         let mut mod_errs = 0;
         for e_modifier in e_effect.mods.iter() {

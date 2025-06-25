@@ -19,38 +19,38 @@ pub struct AEffect {
     /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: AState,
     /// Defines if the effect is considered as an assistance.
-    pub is_assist: bool,
+    pub is_assist: bool = false,
     /// Defines if the effect is offensive or not.
-    pub is_offense: bool,
+    pub is_offense: bool = false,
     /// Defines if the effect can be used in hisec.
-    pub hisec: Option<bool>,
+    pub hisec: Option<bool> = None,
     /// Defines if the effect can be used in lowsec.
-    pub lowsec: Option<bool>,
+    pub lowsec: Option<bool> = None,
     /// Refers an attribute value which defines capacitor cost to run the effect.
-    pub discharge_attr_id: Option<AAttrId>,
+    pub discharge_attr_id: Option<AAttrId> = None,
     /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
-    pub duration_attr_id: Option<AAttrId>,
+    pub duration_attr_id: Option<AAttrId> = None,
     /// Refers an attribute value which defines optimal range of the effect in meters.
-    pub range_attr_id: Option<AAttrId>,
+    pub range_attr_id: Option<AAttrId> = None,
     /// Refers an attribute value which defines falloff range of the effect in meters.
-    pub falloff_attr_id: Option<AAttrId>,
+    pub falloff_attr_id: Option<AAttrId> = None,
     /// Refers an attribute value which defines tracking speed of the effect.
-    pub track_attr_id: Option<AAttrId>,
+    pub track_attr_id: Option<AAttrId> = None,
     /// Refers an attribute value which defines chance of the effect to run when its parent item is
     /// fitted.
-    pub chance_attr_id: Option<AAttrId>,
+    pub chance_attr_id: Option<AAttrId> = None,
     /// Refers an attribute value which defines resistance strength to the effect.
-    pub resist_attr_id: Option<AAttrId>,
+    pub resist_attr_id: Option<AAttrId> = None,
     /// Modifier build status.
-    pub mod_build_status: AEffectModBuildStatus,
+    pub mod_build_status: AEffectModBuildStatus = AEffectModBuildStatus::Unbuilt,
     /// Attribute modifiers carried by the effect
-    pub mods: Vec<AEffectModifier>,
+    pub mods: Vec<AEffectModifier> = Vec::new(),
     /// Refers effects this effect stops on target.
-    pub stop_ids: Vec<AEffectId>,
+    pub stop_ids: Vec<AEffectId> = Vec::new(),
     /// Buff carried by the effect.
-    pub buff: Option<AEffectBuffInfo>,
+    pub buff: Option<AEffectBuffInfo> = None,
     /// Charge used by the effect.
-    pub charge: Option<AEffectChargeInfo>,
+    pub charge: Option<AEffectChargeInfo> = None,
 }
 impl Named for AEffect {
     fn get_name() -> &'static str {

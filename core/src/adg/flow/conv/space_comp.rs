@@ -60,22 +60,9 @@ fn process_buffs(
         id: effect_id,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Offline,
-        is_assist: false,
-        is_offense: false,
-        hisec: None,
-        lowsec: None,
-        discharge_attr_id: None,
-        duration_attr_id: None,
-        range_attr_id: None,
-        falloff_attr_id: None,
-        track_attr_id: None,
-        chance_attr_id: None,
-        resist_attr_id: None,
         mod_build_status: ad::AEffectModBuildStatus::Success,
-        mods: Vec::new(),
-        stop_ids: Vec::new(),
         buff: Some(buff_info),
-        charge: None,
+        ..
     };
     a_data.effects.insert(effect_id, effect);
     a_data.items.get_mut(&item_id).unwrap().effect_datas.insert(

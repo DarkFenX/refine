@@ -5,22 +5,8 @@ pub(in crate::adg::flow::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::A
         id: ac::effects::REE_CHAR_MISSILE_DMG,
         category: ac::effcats::PASSIVE,
         state: ad::AState::Offline,
-        is_assist: false,
-        is_offense: false,
-        hisec: None,
-        lowsec: None,
-        discharge_attr_id: None,
-        duration_attr_id: None,
-        range_attr_id: None,
-        falloff_attr_id: None,
-        track_attr_id: None,
-        chance_attr_id: None,
-        resist_attr_id: None,
         mod_build_status: ad::AEffectModBuildStatus::Custom,
-        mods: Vec::new(),
-        stop_ids: Vec::new(),
-        buff: None,
-        charge: None,
+        ..
     };
     effect.mods.push(mk_modifier(ac::attrs::EM_DMG));
     effect.mods.push(mk_modifier(ac::attrs::THERM_DMG));
