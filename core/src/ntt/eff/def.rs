@@ -20,7 +20,7 @@ pub(crate) struct NttEffect {
     // Specifies if effect uses charges
     pub(crate) charge_info: Option<ad::AEffectChargeInfo> = None,
     // Effect customization function ran during cache generation time
-    pub(crate) custom_fn_adg: Option<fn(&mut ad::AEffect)> = None,
+    pub(crate) custom_fn_adg: Option<fn(&mut ad::AData)> = None,
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) custom_fn_calc: Option<fn(&mut Vec<RawModifier>)> = None,
     // Specific effect getters

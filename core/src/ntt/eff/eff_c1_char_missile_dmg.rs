@@ -1,8 +1,19 @@
-use crate::{ac, ad};
+use crate::{ac, ad, ntt::NttEffect};
 
-pub(in crate::adg::flow::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) {
+const A_EFFECT_ID: ad::AEffectId = ac::effects::CHAR_MISSILE_DMG;
+
+pub(super) fn mk_ntt_effect() -> NttEffect {
+    NttEffect {
+        eid: None,
+        aid: A_EFFECT_ID,
+        custom_fn_adg: Some(add_custom_effect),
+        ..
+    }
+}
+
+fn add_custom_effect(a_data: &mut ad::AData) {
     let mut effect = ad::AEffect {
-        id: ac::effects::REE_CHAR_MISSILE_DMG,
+        id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
         state: ad::AState::Offline,
         mod_build_status: ad::AEffectModBuildStatus::Custom,
@@ -19,7 +30,7 @@ pub(in crate::adg::flow::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::A
         .filter(|v| v.grp_id == ac::itemgrps::CHARACTER)
     {
         item.effect_datas
-            .insert(ac::effects::REE_CHAR_MISSILE_DMG, ad::AItemEffectData::default());
+            .insert(ac::effects::CHAR_MISSILE_DMG, ad::AItemEffectData::default());
     }
 }
 

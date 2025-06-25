@@ -6,10 +6,10 @@ use crate::{
 
 pub(in crate::sol::svc::calc) fn extend_with_custom_mods(espec: EffectSpec, mods: &mut Vec<RawModifier>) {
     match espec.a_effect_id {
-        ac::effects::REE_AAR_PASTE_BOOST => mods.push(aar_rep_amount::make_mod(espec)),
+        ac::effects::AAR_PASTE_BOOST => mods.push(aar_rep_amount::make_mod(espec)),
         ac::effects::MOD_BONUS_AFTERBURNER => mods.push(prop_speed_boost::make_mod(espec)),
         ac::effects::MOD_BONUS_MICROWARPDRIVE => mods.push(prop_speed_boost::make_mod(espec)),
-        ac::effects::REE_MISSILE_FLIGHT_TIME => mods.push(missile_flight_time::make_mod(espec)),
+        ac::effects::MISSILE_FLIGHT_TIME => mods.push(missile_flight_time::make_mod(espec)),
         _ => (),
     }
 }

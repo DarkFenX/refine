@@ -1,5 +1,5 @@
 use crate::{
-    ac, ad, ec, ed, ntt,
+    ad, ed, ntt,
     util::{RMap, RMapRSet, RSet},
 };
 

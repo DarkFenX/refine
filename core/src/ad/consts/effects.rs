@@ -75,7 +75,7 @@ pub(crate) const DEBUFF_LANCE: AEffectId = AEffectId::Dogma(ece::DEBUFF_LANCE);
 pub(crate) const DOT_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::DOT_MISSILE_LAUNCHING);
 
 // Library-specific effects
-pub(crate) const REE_CHAR_MISSILE_DMG: AEffectId = AEffectId::Custom(1);
-pub(crate) const REE_AAR_PASTE_BOOST: AEffectId = AEffectId::Custom(2);
-pub(crate) const REE_STASIS_WEB_PROBE: AEffectId = AEffectId::Custom(3);
-pub(crate) const REE_MISSILE_FLIGHT_TIME: AEffectId = AEffectId::Custom(4);
+pub(crate) const CHAR_MISSILE_DMG: AEffectId = AEffectId::Custom(1);
+pub(crate) const AAR_PASTE_BOOST: AEffectId = AEffectId::Custom(2);
+pub(crate) const STASIS_WEB_PROBE: AEffectId = AEffectId::Custom(3);
+pub(crate) const MISSILE_FLIGHT_TIME: AEffectId = AEffectId::Custom(4);

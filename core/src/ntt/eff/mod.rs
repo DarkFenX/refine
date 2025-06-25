@@ -1,6 +1,10 @@
 pub(crate) use def::NttEffect;
 
 mod def;
+mod eff_c1_char_missile_dmg;
+mod eff_c2_aar_paste_boost;
+mod eff_c3_stasis_web_probe;
+mod eff_c4_missile_flight_time;
 mod eff_d101_use_missiles;
 mod eff_d11691_debuff_lance;
 mod eff_d4936_fueled_shield_boosting;
@@ -27,6 +31,10 @@ mod eff_d7063_weather_xenon_gas;
 
 pub(crate) fn get_ntt_effects() -> Vec<NttEffect> {
     vec![
+        eff_c1_char_missile_dmg::mk_ntt_effect(),
+        eff_c2_aar_paste_boost::mk_ntt_effect(),
+        eff_c3_stasis_web_probe::mk_ntt_effect(),
+        eff_c4_missile_flight_time::mk_ntt_effect(),
         eff_d101_use_missiles::mk_ntt_effect(),
         eff_d4936_fueled_shield_boosting::mk_ntt_effect(),
         eff_d5275_fueled_armor_repair::mk_ntt_effect(),

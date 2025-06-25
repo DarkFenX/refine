@@ -1,10 +1,20 @@
-use crate::{ac, ad};
+use crate::{ac, ad, ntt::NttEffect};
 
 const WEB_BUBBLE: ad::AItemId = ac::items::STASIS_WEBIFICATION_PROBE;
+const A_EFFECT_ID: ad::AEffectId = ac::effects::STASIS_WEB_PROBE;
 
-pub(in crate::adg::flow::custom) fn add_wubble_effect(a_data: &mut ad::AData) {
+pub(super) fn mk_ntt_effect() -> NttEffect {
+    NttEffect {
+        eid: None,
+        aid: A_EFFECT_ID,
+        custom_fn_adg: Some(add_custom_effect),
+        ..
+    }
+}
+
+fn add_custom_effect(a_data: &mut ad::AData) {
     let effect = ad::AEffect {
-        id: ac::effects::REE_STASIS_WEB_PROBE,
+        id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Active,
         is_offense: true,
