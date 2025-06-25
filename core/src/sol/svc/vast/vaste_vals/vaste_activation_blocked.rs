@@ -3,8 +3,7 @@ use crate::{
     ac,
     sol::{
         ItemId, ItemKey,
-        svc::{calc::Calc, eprojs::EProjs, vast::VastFitData},
-        uad::Uad,
+        svc::{SvcCtx, calc::Calc, vast::VastFitData},
     },
     util::RSet,
 };
@@ -19,27 +18,25 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_activation_blocked_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         self.mods_active
             .difference(kfs)
-            .all(|item_key| !is_flag_set(uad, eprojs, calc, *item_key, &ac::attrs::ACTIVATION_BLOCKED))
+            .all(|item_key| !is_flag_set(ctx, calc, *item_key, &ac::attrs::ACTIVATION_BLOCKED))
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_activation_blocked_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
         let module_ids: Vec<_> = self
             .mods_active
             .difference(kfs)
-            .filter(|item_key| is_flag_set(uad, eprojs, calc, **item_key, &ac::attrs::ACTIVATION_BLOCKED))
-            .map(|item_key| uad.items.id_by_key(*item_key))
+            .filter(|item_key| is_flag_set(ctx, calc, **item_key, &ac::attrs::ACTIVATION_BLOCKED))
+            .map(|item_key| ctx.uad.items.id_by_key(*item_key))
             .collect();
         match module_ids.is_empty() {
             true => None,

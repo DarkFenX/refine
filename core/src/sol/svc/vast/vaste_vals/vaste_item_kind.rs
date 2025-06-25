@@ -2,7 +2,10 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    sol::{ItemId, ItemKey, svc::vast::VastFitData, uad::Uad},
+    sol::{
+        ItemId, ItemKey,
+        svc::{SvcCtx, vast::VastFitData},
+    },
     util::RSet,
 };
 
@@ -31,13 +34,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_item_kind_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValItemKindFail> {
         let item_kinds: HashMap<_, _> = self
             .item_kind
             .iter()
             .filter(|(item_key, _)| !kfs.contains(item_key))
-            .map(|(item_key, item_info)| (uad.items.id_by_key(*item_key), *item_info))
+            .map(|(item_key, item_info)| (ctx.uad.items.id_by_key(*item_key), *item_info))
             .collect();
         match item_kinds.is_empty() {
             true => None,

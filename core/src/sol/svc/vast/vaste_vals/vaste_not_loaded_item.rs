@@ -1,8 +1,10 @@
 use crate::{
     sol::{
         ItemId, ItemKey,
-        svc::vast::{Vast, VastFitData},
-        uad::Uad,
+        svc::{
+            SvcCtx,
+            vast::{Vast, VastFitData},
+        },
     },
     util::RSet,
 };
@@ -19,9 +21,9 @@ impl Vast {
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValNotLoadedItemFail> {
-        validate_verbose(kfs, &self.not_loaded, uad)
+        validate_verbose(kfs, &self.not_loaded, ctx)
     }
 }
 
@@ -32,9 +34,9 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValNotLoadedItemFail> {
-        validate_verbose(kfs, &self.not_loaded, uad)
+        validate_verbose(kfs, &self.not_loaded, ctx)
     }
 }
 
@@ -45,11 +47,11 @@ fn validate_fast(kfs: &RSet<ItemKey>, not_loaded: &RSet<ItemKey>) -> bool {
     }
 }
 
-fn validate_verbose(kfs: &RSet<ItemKey>, not_loaded: &RSet<ItemKey>, uad: &Uad) -> Option<ValNotLoadedItemFail> {
+fn validate_verbose(kfs: &RSet<ItemKey>, not_loaded: &RSet<ItemKey>, ctx: &SvcCtx) -> Option<ValNotLoadedItemFail> {
     let item_ids: Vec<_> = not_loaded
         .iter()
         .filter(|item_key| !kfs.contains(item_key))
-        .map(|item_key| uad.items.id_by_key(*item_key))
+        .map(|item_key| ctx.uad.items.id_by_key(*item_key))
         .collect();
     match item_ids.is_empty() {
         true => None,

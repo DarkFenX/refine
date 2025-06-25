@@ -3,10 +3,9 @@ use crate::{
     sol::{
         ItemKey,
         svc::{
+            SvcCtx,
             calc::{AttrValInfo, Calc, CalcAttrVal},
-            eprojs::EProjs,
         },
-        uad::Uad,
     },
 };
 
@@ -14,13 +13,12 @@ pub(in crate::sol::svc::calc) const SEC_STATUS_ATTR: ad::AAttrId = ac::attrs::PI
 
 pub(super) fn sec_status_postproc_fast(
     _calc: &mut Calc,
-    uad: &Uad,
-    _eprojs: &EProjs,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     mut val: CalcAttrVal,
 ) -> CalcAttrVal {
-    let fit_key = uad.items.get(item_key).get_ship().unwrap().get_fit_key();
-    let fit = uad.fits.get(fit_key);
+    let fit_key = ctx.uad.items.get(item_key).get_ship().unwrap().get_fit_key();
+    let fit = ctx.uad.fits.get(fit_key);
     val.dogma = fit.sec_status.get_inner();
     val.extra = fit.sec_status.get_inner();
     val
@@ -28,12 +26,11 @@ pub(super) fn sec_status_postproc_fast(
 
 pub(super) fn sec_status_postproc_info(
     _calc: &mut Calc,
-    uad: &Uad,
-    _eprojs: &EProjs,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {
-    let fit_key = uad.items.get(item_key).get_ship().unwrap().get_fit_key();
-    let fit = uad.fits.get(fit_key);
+    let fit_key = ctx.uad.items.get(item_key).get_ship().unwrap().get_fit_key();
+    let fit = ctx.uad.fits.get(fit_key);
     AttrValInfo::new(fit.sec_status.get_inner())
 }

@@ -1,5 +1,6 @@
 //! Solar system services - attribute & stats calculations, validation, and so on.
 
+pub(in crate::sol::svc) use misc::SvcCtx;
 use misc::{AttrSpec, EffectSpec, get_resist_a_attr_id, get_resist_mult_val, get_resist_mult_val_by_projectee_aspec};
 pub(in crate::sol) use svc::Svc;
 

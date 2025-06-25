@@ -5,10 +5,9 @@ use crate::{
     sol::{
         ItemKey,
         svc::{
+            SvcCtx,
             calc::{AttrValInfo, Calc, CalcAttrVal},
-            eprojs::EProjs,
         },
-        uad::Uad,
     },
 };
 
@@ -16,12 +15,11 @@ pub(in crate::sol::svc::calc) const FTR_COUNT_ATTR: ad::AAttrId = ac::attrs::FTR
 
 pub(super) fn fighter_count_postproc_fast(
     _calc: &mut Calc,
-    uad: &Uad,
-    _eprojs: &EProjs,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     mut val: CalcAttrVal,
 ) -> CalcAttrVal {
-    let count = uad.items.get(item_key).get_fighter().unwrap().get_count().unwrap();
+    let count = ctx.uad.items.get(item_key).get_fighter().unwrap().get_count().unwrap();
     let current_count = OF::from(count.current);
     val.dogma = current_count;
     val.extra = current_count;
@@ -30,12 +28,11 @@ pub(super) fn fighter_count_postproc_fast(
 
 pub(super) fn fighter_count_postproc_info(
     _calc: &mut Calc,
-    uad: &Uad,
-    _eprojs: &EProjs,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {
-    let count = uad.items.get(item_key).get_fighter().unwrap().get_count().unwrap();
+    let count = ctx.uad.items.get(item_key).get_fighter().unwrap().get_count().unwrap();
     let current_count = OF::from(count.current);
     AttrValInfo::new(current_count)
 }

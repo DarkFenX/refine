@@ -1,15 +1,18 @@
 use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     FitKey,
-    svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
-    uad::{Uad, fleet::UadFleet, item::UadItem},
+    svc::{
+        SvcCtx,
+        calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
+    },
+    uad::{fleet::UadFleet, item::UadItem},
 };
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_fleet_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         item: &UadItem,
         raw_modifier: RawModifier,
     ) -> bool {
@@ -18,10 +21,10 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return false,
         };
-        let affector_fit = uad.fits.get(fit_key);
+        let affector_fit = ctx.uad.fits.get(fit_key);
         match affector_fit.fleet {
             Some(fleet_key) => {
-                let fleet = uad.fleets.get(fleet_key);
+                let fleet = ctx.uad.fleets.get(fleet_key);
                 for &fleet_fit_key in fleet.iter_fits() {
                     if let Some(ctx_modifier) = self.apply_fleet_mod(raw_modifier, fleet_fit_key) {
                         ctx_modifiers.push(ctx_modifier);
@@ -45,7 +48,7 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn unreg_fleet_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         item: &UadItem,
         raw_modifier: RawModifier,
     ) {
@@ -54,10 +57,10 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return,
         };
-        let affector_fit = uad.fits.get(fit_key);
+        let affector_fit = ctx.uad.fits.get(fit_key);
         match affector_fit.fleet {
             Some(fleet_key) => {
-                let fleet = uad.fleets.get(fleet_key);
+                let fleet = ctx.uad.fleets.get(fleet_key);
                 for &fleet_fit_key in fleet.iter_fits() {
                     if let Some(ctx_modifier) = self.unapply_fleet_mod(raw_modifier, fleet_fit_key) {
                         ctx_modifiers.push(ctx_modifier);

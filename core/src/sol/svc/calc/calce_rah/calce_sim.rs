@@ -19,43 +19,41 @@ use crate::{
     sol::{
         AttrVal, DmgKinds, FitKey, ItemKey,
         svc::{
-            AttrSpec,
+            AttrSpec, SvcCtx,
             calc::{Calc, CalcAttrVal},
-            eprojs::EProjs,
         },
-        uad::Uad,
     },
     util::{RMap, RSet},
 };
 
 impl Calc {
-    pub(super) fn rah_run_simulation(&mut self, uad: &Uad, eprojs: &EProjs, fit_key: FitKey) {
-        let fit = uad.fits.get(fit_key);
+    pub(super) fn rah_run_simulation(&mut self, ctx: &SvcCtx, fit_key: FitKey) {
+        let fit = ctx.uad.fits.get(fit_key);
         let ship_key = match fit.ship {
             Some(ship_key) => ship_key,
             None => {
                 // Since there were no calculated values stored in sim prior to simulation, and we
                 // are setting unadapted values - effectively values of resonances do not change,
                 // and no updates needed
-                self.set_fit_rahs_unadapted(uad, eprojs, &fit_key, false);
+                self.set_fit_rahs_unadapted(ctx, &fit_key, false);
                 return;
             }
         };
         // Keys in this map have to be sorted, since it defines RAH order in simulation history,
         // which hashes vectors with history entries
-        let mut sim_datas = self.get_fit_rah_sim_datas(uad, eprojs, &fit_key);
+        let mut sim_datas = self.get_fit_rah_sim_datas(ctx, &fit_key);
         // If the map is empty, no setting fallbacks needed, they were set in the data getter
         if sim_datas.is_empty() {
             return;
         }
-        let dps_profile = get_fit_rah_incoming_dps(uad, fit);
+        let dps_profile = get_fit_rah_incoming_dps(ctx, fit);
         let mut history_entries_seen = RSet::new();
         let mut sim_history = Vec::new();
         // Run "zero" simulation tick - write initial results and record initial state in history
         let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
         for (&item_key, item_sim_data) in sim_datas.iter() {
             // Sets unadapted values, since info contains unadapted resonance values
-            self.set_rah_result(uad, eprojs, item_key, item_sim_data.info.resos, false);
+            self.set_rah_result(ctx, item_key, item_sim_data.info.resos, false);
             // Round resonances for the zero history tick. Later they will be rounded by function
             // which adapts resonances to damage
             let item_history_entry = RahSimHistoryEntry::new(item_key, OF(0.0), &item_sim_data.info.resos, true);
@@ -66,13 +64,13 @@ impl Calc {
         // Run simulation
         for tick_data in RahSimTickIter::new(sim_datas.iter()) {
             // For each RAH, calculate damage received during this tick
-            let ship_stats = match self.get_ship_stats(uad, eprojs, ship_key) {
+            let ship_stats = match self.get_ship_stats(ctx, ship_key) {
                 Some(ship_stats) => ship_stats,
                 None => {
                     for &item_key in sim_datas.keys() {
                         // Any issues with ship resonance fetch should happen on the very first sim
                         // tick, so results should coincide to default state
-                        self.set_rah_unadapted(uad, eprojs, item_key, false);
+                        self.set_rah_unadapted(ctx, item_key, false);
                     }
                     return;
                 }
@@ -112,7 +110,7 @@ impl Calc {
                 );
                 // Write new resonances to results, letting everyone know about the changes. This is
                 // needed to get updated ship resonances next tick.
-                self.set_rah_result(uad, eprojs, cycled_item_key, next_resos, true);
+                self.set_rah_result(ctx, cycled_item_key, next_resos, true);
             }
             // Compose history entry of current tick
             let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
@@ -130,13 +128,13 @@ impl Calc {
                 // Normal process uses history values, which contains rounded resonances
                 if sim_history.len() <= 1 {
                     for (&item_key, item_sim_data) in sim_datas.iter() {
-                        self.set_rah_result(uad, eprojs, item_key, item_sim_data.info.resos, false);
+                        self.set_rah_result(ctx, item_key, item_sim_data.info.resos, false);
                     }
                     return;
                 }
                 let index = sim_history.iter().position(|v| v == &sim_history_entry).unwrap();
                 let avg_resos = get_average_resonances(&sim_history[index..]);
-                self.set_partial_fit_rahs_result(uad, eprojs, avg_resos, &sim_datas);
+                self.set_partial_fit_rahs_result(ctx, avg_resos, &sim_datas);
                 return;
             }
             // No loop - update history
@@ -149,34 +147,34 @@ impl Calc {
         // Never ignore more than half of the history
         let ticks_to_ignore = ticks_to_ignore.min(sim_history.len() / 2);
         let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
-        self.set_partial_fit_rahs_result(uad, eprojs, avg_resos, &sim_datas);
+        self.set_partial_fit_rahs_result(ctx, avg_resos, &sim_datas);
     }
-    fn get_ship_stats(&mut self, uad: &Uad, eprojs: &EProjs, ship_key: ItemKey) -> Option<RahShipStats> {
+    fn get_ship_stats(&mut self, ctx: &SvcCtx, ship_key: ItemKey) -> Option<RahShipStats> {
         let em = self
-            .get_item_attr_val_full(uad, eprojs, ship_key, &ARMOR_EM_ATTR_ID)
+            .get_item_attr_val_full(ctx, ship_key, &ARMOR_EM_ATTR_ID)
             .ok()?
             .dogma;
         let thermal = self
-            .get_item_attr_val_full(uad, eprojs, ship_key, &ARMOR_THERM_ATTR_ID)
+            .get_item_attr_val_full(ctx, ship_key, &ARMOR_THERM_ATTR_ID)
             .ok()?
             .dogma;
         let kinetic = self
-            .get_item_attr_val_full(uad, eprojs, ship_key, &ARMOR_KIN_ATTR_ID)
+            .get_item_attr_val_full(ctx, ship_key, &ARMOR_KIN_ATTR_ID)
             .ok()?
             .dogma;
         let explosive = self
-            .get_item_attr_val_full(uad, eprojs, ship_key, &ARMOR_EXPL_ATTR_ID)
+            .get_item_attr_val_full(ctx, ship_key, &ARMOR_EXPL_ATTR_ID)
             .ok()?
             .dogma;
-        let shield_hp = match self.get_item_attr_val_full(uad, eprojs, ship_key, &SHIELD_HP_ATTR_ID) {
+        let shield_hp = match self.get_item_attr_val_full(ctx, ship_key, &SHIELD_HP_ATTR_ID) {
             Ok(shield_hp) => shield_hp.dogma,
             Err(_) => OF(0.0),
         };
-        let armor_hp = match self.get_item_attr_val_full(uad, eprojs, ship_key, &ARMOR_HP_ATTR_ID) {
+        let armor_hp = match self.get_item_attr_val_full(ctx, ship_key, &ARMOR_HP_ATTR_ID) {
             Ok(armor_hp) => armor_hp.dogma,
             Err(_) => OF(0.0),
         };
-        let hull_hp = match self.get_item_attr_val_full(uad, eprojs, ship_key, &HULL_HP_ATTR_ID) {
+        let hull_hp = match self.get_item_attr_val_full(ctx, ship_key, &HULL_HP_ATTR_ID) {
             Ok(hull_hp) => hull_hp.dogma,
             Err(_) => OF(0.0),
         };
@@ -190,16 +188,16 @@ impl Calc {
             total_hp: shield_hp + armor_hp + hull_hp,
         })
     }
-    fn get_fit_rah_sim_datas(&mut self, uad: &Uad, eprojs: &EProjs, fit_key: &FitKey) -> BTreeMap<ItemKey, RahDataSim> {
+    fn get_fit_rah_sim_datas(&mut self, ctx: &SvcCtx, fit_key: &FitKey) -> BTreeMap<ItemKey, RahDataSim> {
         let mut rah_datas = BTreeMap::new();
         for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
-            let rah_attrs = match self.get_rah_sim_data(uad, eprojs, item_key) {
+            let rah_attrs = match self.get_rah_sim_data(ctx, item_key) {
                 Some(rah_attrs) => rah_attrs,
                 // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
                 // don't add it to the map. No updates needed, since this method should be called
                 // before sim makes any changes
                 None => {
-                    self.set_rah_unadapted(uad, eprojs, item_key, false);
+                    self.set_rah_unadapted(ctx, item_key, false);
                     continue;
                 }
             };
@@ -207,20 +205,12 @@ impl Calc {
         }
         rah_datas
     }
-    fn get_rah_sim_data(&mut self, uad: &Uad, eprojs: &EProjs, item_key: ItemKey) -> Option<RahDataSim> {
+    fn get_rah_sim_data(&mut self, ctx: &SvcCtx, item_key: ItemKey) -> Option<RahDataSim> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
-        let res_em = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_EM_ATTR_ID)
-            .ok()?;
-        let res_therm = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_THERM_ATTR_ID)
-            .ok()?;
-        let res_kin = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_KIN_ATTR_ID)
-            .ok()?;
-        let res_expl = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_EXPL_ATTR_ID)
-            .ok()?;
+        let res_em = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EM_ATTR_ID).ok()?;
+        let res_therm = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_THERM_ATTR_ID).ok()?;
+        let res_kin = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_KIN_ATTR_ID).ok()?;
+        let res_expl = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EXPL_ATTR_ID).ok()?;
         if res_em.dogma == OF(1.0)
             && res_therm.dogma == OF(1.0)
             && res_kin.dogma == OF(1.0)
@@ -232,7 +222,7 @@ impl Calc {
         // Divide by 100 for convenience - raw form of shift amount is defined in percentages, while
         // resonances are in absolute form
         let shift_amount = self
-            .get_item_attr_val_full(uad, eprojs, item_key, &RAH_SHIFT_ATTR_ID)
+            .get_item_attr_val_full(ctx, item_key, &RAH_SHIFT_ATTR_ID)
             .ok()?
             .dogma
             / OF(100.0);
@@ -240,7 +230,7 @@ impl Calc {
             return None;
         }
         // Raw form of cycle time is defined in milliseconds, convert into seconds
-        let cycle_s = self.get_item_effect_id_duration(uad, eprojs, item_key, &RAH_EFFECT_ID)? / OF(1000.0);
+        let cycle_s = self.get_item_effect_id_duration(ctx, item_key, &RAH_EFFECT_ID)? / OF(1000.0);
         if cycle_s <= OF(0.0) {
             return None;
         }
@@ -248,35 +238,35 @@ impl Calc {
         Some(RahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, uad: &Uad, eprojs: &EProjs, fit_key: &FitKey, notify: bool) {
+    fn set_fit_rahs_unadapted(&mut self, ctx: &SvcCtx, fit_key: &FitKey, notify: bool) {
         for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
-            self.set_rah_unadapted(uad, eprojs, item_key, notify);
+            self.set_rah_unadapted(ctx, item_key, notify);
         }
     }
-    fn set_rah_unadapted(&mut self, uad: &Uad, eprojs: &EProjs, item_key: ItemKey, notify: bool) {
+    fn set_rah_unadapted(&mut self, ctx: &SvcCtx, item_key: ItemKey, notify: bool) {
         let em = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_EM_ATTR_ID)
+            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EM_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
                 extra: OF(1.0),
             });
         let thermal = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_THERM_ATTR_ID)
+            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_THERM_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
                 extra: OF(1.0),
             });
         let kinetic = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_KIN_ATTR_ID)
+            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_KIN_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
                 extra: OF(1.0),
             });
         let explosive = self
-            .get_item_attr_val_no_pp(uad, eprojs, item_key, &ARMOR_EXPL_ATTR_ID)
+            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EXPL_ATTR_ID)
             .unwrap_or(CalcAttrVal {
                 base: OF(1.0),
                 dogma: OF(1.0),
@@ -288,29 +278,21 @@ impl Calc {
             kinetic,
             explosive,
         };
-        self.set_rah_result(uad, eprojs, item_key, rah_resos, notify);
+        self.set_rah_result(ctx, item_key, rah_resos, notify);
     }
     // Result application methods
-    fn set_rah_result(
-        &mut self,
-        uad: &Uad,
-        eprojs: &EProjs,
-        item_key: ItemKey,
-        resos: DmgKinds<CalcAttrVal>,
-        notify: bool,
-    ) {
+    fn set_rah_result(&mut self, ctx: &SvcCtx, item_key: ItemKey, resos: DmgKinds<CalcAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(&item_key).unwrap().replace(resos);
         if notify {
-            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
-            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
-            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_KIN_ATTR_ID));
-            self.force_attr_postproc_recalc(uad, eprojs, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
+            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
+            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
+            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_KIN_ATTR_ID));
+            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
         }
     }
     fn set_partial_fit_rahs_result(
         &mut self,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         resos: RMap<ItemKey, DmgKinds<AttrVal>>,
         sim_datas: &BTreeMap<ItemKey, RahDataSim>,
     ) {
@@ -343,7 +325,7 @@ impl Calc {
                 },
                 None => item_sim_data.info.resos,
             };
-            self.set_rah_result(uad, eprojs, item_key, item_resos, true)
+            self.set_rah_result(ctx, item_key, item_resos, true)
         }
     }
 }

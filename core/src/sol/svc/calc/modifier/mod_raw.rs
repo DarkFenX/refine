@@ -6,12 +6,11 @@ use crate::{
     sol::{
         AttrVal, ItemKey,
         svc::{
-            EffectSpec,
+            EffectSpec, SvcCtx,
             calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
-            eprojs::EProjs,
             get_resist_a_attr_id,
         },
-        uad::{Uad, item::UadItem},
+        uad::item::UadItem,
     },
 };
 
@@ -139,16 +138,11 @@ impl RawModifier {
     pub(in crate::sol::svc::calc) fn get_affector_a_attr_id(&self) -> Option<ad::AAttrId> {
         self.affector_value.get_affector_a_attr_id()
     }
-    pub(in crate::sol::svc::calc) fn get_affector_info(&self, uad: &Uad) -> SmallVec<AffectorInfo, 1> {
-        self.affector_value.get_affector_info(uad, self.affector_espec.item_key)
+    pub(in crate::sol::svc::calc) fn get_affector_info(&self, ctx: &SvcCtx) -> SmallVec<AffectorInfo, 1> {
+        self.affector_value.get_affector_info(ctx, self.affector_espec.item_key)
     }
-    pub(in crate::sol::svc::calc) fn get_mod_val(
-        &self,
-        calc: &mut Calc,
-        uad: &Uad,
-        eprojs: &EProjs,
-    ) -> Option<AttrVal> {
-        self.affector_value.get_mod_val(calc, uad, eprojs, self.affector_espec)
+    pub(in crate::sol::svc::calc) fn get_mod_val(&self, calc: &mut Calc, ctx: &SvcCtx) -> Option<AttrVal> {
+        self.affector_value.get_mod_val(calc, ctx, self.affector_espec)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::sol::svc::calc) fn needs_revision_on_item_add(&self) -> bool {
@@ -159,21 +153,21 @@ impl RawModifier {
     }
     pub(in crate::sol::svc::calc) fn revise_on_item_add(
         &self,
-        uad: &Uad,
+        ctx: &SvcCtx,
         added_item_key: ItemKey,
         added_item: &UadItem,
     ) -> bool {
         self.affector_value
-            .revise_on_item_add(uad, self.affector_espec.item_key, added_item_key, added_item)
+            .revise_on_item_add(ctx, self.affector_espec.item_key, added_item_key, added_item)
     }
     pub(in crate::sol::svc::calc) fn revise_on_item_remove(
         &self,
-        uad: &Uad,
+        ctx: &SvcCtx,
         removed_item_key: ItemKey,
         removed_item: &UadItem,
     ) -> bool {
         self.affector_value
-            .revise_on_item_remove(uad, self.affector_espec.item_key, removed_item_key, removed_item)
+            .revise_on_item_remove(ctx, self.affector_espec.item_key, removed_item_key, removed_item)
     }
 }
 

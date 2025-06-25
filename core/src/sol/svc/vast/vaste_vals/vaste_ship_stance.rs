@@ -2,8 +2,8 @@ use crate::{
     ac,
     sol::{
         ItemId, ItemKey,
-        svc::vast::VastFitData,
-        uad::{Uad, fit::UadFit, item::UadShip},
+        svc::{SvcCtx, vast::VastFitData},
+        uad::{fit::UadFit, item::UadShip},
     },
     util::RSet,
 };
@@ -39,7 +39,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_ship_stance_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         fit: &UadFit,
         ship: Option<&UadShip>,
     ) -> Option<ValShipStanceFail> {
@@ -48,7 +48,7 @@ impl VastFitData {
             Some(ship) => ship,
             None => {
                 return Some(ValShipStanceFail {
-                    stance_item_id: uad.items.id_by_key(stance_key),
+                    stance_item_id: ctx.uad.items.id_by_key(stance_key),
                 });
             }
         };
@@ -62,7 +62,7 @@ impl VastFitData {
             return None;
         }
         Some(ValShipStanceFail {
-            stance_item_id: uad.items.id_by_key(stance_key),
+            stance_item_id: ctx.uad.items.id_by_key(stance_key),
         })
     }
 }

@@ -4,8 +4,8 @@ use crate::{
     ad,
     sol::{
         ItemGrpId, ItemId, ItemKey, ItemTypeId,
-        svc::vast::VastFitData,
-        uad::{Uad, item::UadShip},
+        svc::{SvcCtx, vast::VastFitData},
+        uad::item::UadShip,
     },
     util::RSet,
 };
@@ -72,7 +72,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_ship_limit_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValShipLimitFail> {
         if self.ship_limited_items.is_empty() {
@@ -97,7 +97,7 @@ impl VastFitData {
             if kfs.contains(limited_item_key) {
                 continue;
             }
-            mismatches.insert(uad.items.id_by_key(*limited_item_key), ship_limit.into());
+            mismatches.insert(ctx.uad.items.id_by_key(*limited_item_key), ship_limit.into());
         }
         match mismatches.is_empty() {
             true => None,

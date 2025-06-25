@@ -1,23 +1,25 @@
 use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     FitKey,
-    svc::calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
-    uad::Uad,
+    svc::{
+        SvcCtx,
+        calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
+    },
 };
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_sw_system_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         raw_modifier: RawModifier,
     ) {
         ctx_modifiers.clear();
         let valid = match raw_modifier.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         add_ctx_modifier(
                             &mut self.cmods_root,
@@ -33,8 +35,8 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc,
@@ -50,8 +52,8 @@ impl StandardRegister {
             },
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_grp,
@@ -67,8 +69,8 @@ impl StandardRegister {
             },
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         add_ctx_modifier(
                             &mut self.cmods_loc_srq,
@@ -83,8 +85,8 @@ impl StandardRegister {
                 _ => false,
             },
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                ctx_modifiers.reserve(uad.fits.len());
-                for fit_key in uad.fits.keys() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for fit_key in ctx.uad.fits.keys() {
                     let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                     add_ctx_modifier(
                         &mut self.cmods_own_srq,
@@ -105,15 +107,15 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn unreg_sw_system_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         raw_modifier: RawModifier,
     ) {
         ctx_modifiers.clear();
         match raw_modifier.affectee_filter {
             AffecteeFilter::Direct(loc) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         remove_ctx_modifier(
                             &mut self.cmods_root,
@@ -127,8 +129,8 @@ impl StandardRegister {
             }
             AffecteeFilter::Loc(loc) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc,
@@ -142,8 +144,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_grp,
@@ -157,8 +159,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit_key in uad.fits.keys() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for fit_key in ctx.uad.fits.keys() {
                         let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                         remove_ctx_modifier(
                             &mut self.cmods_loc_srq,
@@ -171,8 +173,8 @@ impl StandardRegister {
                 }
             }
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                ctx_modifiers.reserve(uad.fits.len());
-                for fit_key in uad.fits.keys() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for fit_key in ctx.uad.fits.keys() {
                     let ctx_modifier = CtxModifier::from_raw_with_fit(raw_modifier, fit_key);
                     remove_ctx_modifier(
                         &mut self.cmods_own_srq,

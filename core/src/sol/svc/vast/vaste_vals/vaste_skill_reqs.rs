@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{ItemId, ItemKey, ItemTypeId, SkillLevel, svc::vast::VastFitData, uad::Uad},
+    sol::{
+        ItemId, ItemKey, ItemTypeId, SkillLevel,
+        svc::{SvcCtx, vast::VastFitData},
+    },
     util::RSet,
 };
 
@@ -30,7 +33,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValSrqFail> {
         let items: HashMap<_, _> = self
             .srqs_missing
@@ -38,7 +41,7 @@ impl VastFitData {
             .filter(|(item_key, _)| !kfs.contains(item_key))
             .map(|(item_key, missing_skills)| {
                 (
-                    uad.items.id_by_key(*item_key),
+                    ctx.uad.items.id_by_key(*item_key),
                     missing_skills
                         .iter()
                         .map(|(skill_a_item_id, skill_info)| (*skill_a_item_id, *skill_info))

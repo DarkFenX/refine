@@ -4,8 +4,8 @@ use crate::{
     ac,
     sol::{
         ItemId, ItemKey, SkillLevel,
-        svc::vast::VastFitData,
-        uad::{Uad, fit::UadFit},
+        svc::{SvcCtx, vast::VastFitData},
+        uad::fit::UadFit,
     },
     util::RSet,
 };
@@ -36,7 +36,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_overload_skill_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         fit: &UadFit,
     ) -> Option<ValOverloadSkillFail> {
         if self.overload_td_lvl.is_empty() {
@@ -50,7 +50,7 @@ impl VastFitData {
                 Some(td_lvl) => **req_lvl > td_lvl,
                 None => true,
             } && !kfs.contains(item_key))
-            .map(|(&item_key, &req_lvl)| (uad.items.id_by_key(item_key), req_lvl.into()))
+            .map(|(&item_key, &req_lvl)| (ctx.uad.items.id_by_key(item_key), req_lvl.into()))
             .collect();
         match module_reqs.is_empty() {
             true => None,

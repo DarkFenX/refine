@@ -2,7 +2,10 @@ use crate::{
     ad,
     sol::{
         AttrVal, FitKey, ItemKey,
-        svc::{EffectSpec, Svc, misc::AttrSpec},
+        svc::{
+            EffectSpec, Svc,
+            misc::{AttrSpec, SvcCtx},
+        },
         uad::{
             Uad,
             fleet::UadFleet,
@@ -25,20 +28,25 @@ impl Svc {
         self.vast.fit_removed(&fit_key);
     }
     pub(in crate::sol) fn notify_fit_added_to_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
-        self.calc.fit_added_to_fleet(uad, &self.eprojs, fleet, fit_key);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.fit_added_to_fleet(&svc_ctx, fleet, fit_key);
     }
     pub(in crate::sol) fn notify_fit_removed_from_fleet(&mut self, uad: &Uad, fleet: &UadFleet, fit_key: &FitKey) {
-        self.calc.fit_removed_from_fleet(uad, &self.eprojs, fleet, fit_key);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.fit_removed_from_fleet(&svc_ctx, fleet, fit_key);
     }
     pub(in crate::sol) fn notify_fit_rah_dps_profile_changed(&mut self, uad: &Uad, fit_key: &FitKey) {
-        self.calc.fit_rah_dps_profile_changed(uad, &self.eprojs, fit_key);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.fit_rah_dps_profile_changed(&svc_ctx, fit_key);
     }
     pub(in crate::sol) fn notify_item_added(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_added(uad, &self.eprojs, item_key, item);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.item_added(&svc_ctx, item_key, item);
         self.vast.item_added(item_key, item);
     }
     pub(in crate::sol) fn notify_item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_removed(uad, &self.eprojs, item_key, item);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.item_removed(&svc_ctx, item_key, item);
         self.vast.item_removed(uad, item_key, item);
     }
     pub(in crate::sol) fn notify_state_activated(&mut self, item_key: ItemKey, item: &UadItem, a_state: &ad::AState) {
@@ -53,11 +61,13 @@ impl Svc {
         self.vast.item_state_deactivated(item_key, item, a_state);
     }
     pub(in crate::sol) fn notify_item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_loaded(uad, &self.eprojs, item_key, item);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.item_loaded(&svc_ctx, item_key, item);
         self.vast.item_loaded(uad, item_key, item);
     }
     pub(in crate::sol) fn notify_item_unloaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
-        self.calc.item_unloaded(uad, &self.eprojs, item_key, item);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.item_unloaded(&svc_ctx, item_key, item);
         self.vast.item_unloaded(&item_key, item);
     }
     pub(in crate::sol) fn notify_base_attr_value_changed(
@@ -66,8 +76,9 @@ impl Svc {
         item_key: ItemKey,
         a_attr_id: ad::AAttrId,
     ) {
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
-            .force_attr_value_recalc(uad, &self.eprojs, AttrSpec::new(item_key, a_attr_id));
+            .force_attr_value_recalc(&svc_ctx, AttrSpec::new(item_key, a_attr_id));
     }
     pub(in crate::sol) fn notify_item_state_activated_loaded(
         &mut self,
@@ -92,7 +103,8 @@ impl Svc {
         item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
-        self.calc.effects_started(uad, &self.eprojs, item_key, item, a_effects);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.effects_started(&svc_ctx, item_key, item, a_effects);
         self.vast.effects_started(item_key, item, a_effects);
     }
     pub(in crate::sol) fn notify_effects_stopped(
@@ -102,7 +114,8 @@ impl Svc {
         item: &UadItem,
         a_effects: &[ad::ArcEffect],
     ) {
-        self.calc.effects_stopped(uad, &self.eprojs, item_key, item, a_effects);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.effects_stopped(&svc_ctx, item_key, item, a_effects);
         self.vast.effects_stopped(item_key, item, a_effects);
     }
     pub(in crate::sol) fn notify_item_projected(&mut self) {}
@@ -120,8 +133,9 @@ impl Svc {
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
         self.eprojs.add_range(projector_espec, projectee_item_key, range);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
-            .effect_projected(uad, &self.eprojs, projector_espec, projectee_item_key, projectee_item);
+            .effect_projected(&svc_ctx, projector_espec, projectee_item_key, projectee_item);
         self.vast.effect_projected(
             projector_item_key,
             projector_item,
@@ -140,8 +154,9 @@ impl Svc {
         projectee_item: &UadItem,
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
-            .effect_unprojected(uad, &self.eprojs, projector_espec, projectee_item_key, projectee_item);
+            .effect_unprojected(&svc_ctx, projector_espec, projectee_item_key, projectee_item);
         self.vast.effect_unprojected(
             projector_item_key,
             projector_item,
@@ -162,11 +177,13 @@ impl Svc {
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect_id);
         self.eprojs.change_range(projector_espec, projectee_item_key, range);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
-            .effect_proj_range_changed(uad, &self.eprojs, projector_espec, projectee_item_key, projectee_item);
+            .effect_proj_range_changed(&svc_ctx, projector_espec, projectee_item_key, projectee_item);
     }
     pub(in crate::sol) fn notify_sol_sec_zone_changed(&mut self, uad: &Uad) {
-        self.calc.sol_sec_zone_changed(uad, &self.eprojs);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.sol_sec_zone_changed(&svc_ctx);
     }
     pub(in crate::sol) fn notify_fighter_count_changed(
         &mut self,
@@ -174,14 +191,17 @@ impl Svc {
         fighter_key: ItemKey,
         fighter: &UadFighter,
     ) {
-        self.calc.fighter_count_changed(uad, &self.eprojs, fighter_key);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.fighter_count_changed(&svc_ctx, fighter_key);
         self.vast.fighter_count_changed(fighter_key, fighter);
     }
     pub(in crate::sol) fn notify_ship_sec_status_changed(&mut self, uad: &Uad, ship_key: ItemKey) {
-        self.calc.ship_sec_status_changed(uad, &self.eprojs, ship_key);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.ship_sec_status_changed(&svc_ctx, ship_key);
     }
     pub(in crate::sol) fn notify_skill_level_changed(&mut self, uad: &Uad, skill_key: ItemKey, skill: &UadSkill) {
-        self.calc.skill_level_changed(uad, &self.eprojs, skill_key);
+        let svc_ctx = SvcCtx::new(uad, &self.eprojs);
+        self.calc.skill_level_changed(&svc_ctx, skill_key);
         self.vast.skill_level_changed(uad, skill);
     }
 }

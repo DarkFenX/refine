@@ -3,11 +3,10 @@ use crate::{
     sol::{
         ItemKey,
         svc::{
-            EffectSpec,
+            EffectSpec, SvcCtx,
             calc::{Calc, RawModifier, extend_with_custom_mods},
-            eprojs::EProjs,
         },
-        uad::{Uad, item::UadItem},
+        uad::item::UadItem,
     },
 };
 
@@ -15,8 +14,7 @@ impl Calc {
     pub(super) fn generate_mods_for_effect(
         &mut self,
         modifiers: &mut Vec<RawModifier>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
         a_effect: &ad::AEffect,
@@ -34,10 +32,10 @@ impl Calc {
             match &a_buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
                     for (buff_type_a_attr_id, buff_val_a_attr_id) in ac::extras::BUFF_STDATTRS {
-                        if let Ok(buff_id) = self.get_item_attr_val_full(uad, eprojs, item_key, &buff_type_a_attr_id) {
+                        if let Ok(buff_id) = self.get_item_attr_val_full(ctx, item_key, &buff_type_a_attr_id) {
                             add_buff_mods(
                                 modifiers,
-                                uad,
+                                ctx,
                                 item_key,
                                 item,
                                 a_effect,
@@ -54,7 +52,7 @@ impl Calc {
                         match a_buff_custom_src {
                             ad::AEffectBuffSrcCustom::AffectorVal(a_buff_id, buff_val_a_attr_id) => add_buff_mods(
                                 modifiers,
-                                uad,
+                                ctx,
                                 item_key,
                                 item,
                                 a_effect,
@@ -65,7 +63,7 @@ impl Calc {
                             ),
                             ad::AEffectBuffSrcCustom::HardcodedVal(a_buff_id, buff_a_val) => add_buff_mods_hardcoded(
                                 modifiers,
-                                uad,
+                                ctx,
                                 item_key,
                                 item,
                                 a_effect,
@@ -83,8 +81,7 @@ impl Calc {
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
         a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
@@ -99,14 +96,14 @@ impl Calc {
             _ => return modifiers,
         };
         for a_effect_id in a_effect_ids {
-            let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
+            let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
             if let Some(a_buff_info) = a_effect.buff.as_ref()
                 && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
-                && let Ok(buff_id_cval) = self.get_item_attr_val_full(uad, eprojs, item_key, &buff_type_a_attr_id)
+                && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_a_attr_id)
             {
                 add_buff_mods(
                     &mut modifiers,
-                    uad,
+                    ctx,
                     item_key,
                     item,
                     a_effect,
@@ -123,7 +120,7 @@ impl Calc {
 
 fn add_buff_mods(
     modifiers: &mut Vec<RawModifier>,
-    uad: &Uad,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     item: &UadItem,
     a_effect: &ad::AEffect,
@@ -132,7 +129,7 @@ fn add_buff_mods(
     buff_type_a_attr_id: Option<ad::AAttrId>,
     buff_val_a_attr_id: ad::AAttrId,
 ) {
-    if let Some(buff) = uad.src.get_a_buff(a_buff_id) {
+    if let Some(buff) = ctx.uad.src.get_a_buff(a_buff_id) {
         for buff_mod in buff.mods.iter() {
             let modifier = match RawModifier::try_from_a_buff_regular(
                 item_key,
@@ -154,7 +151,7 @@ fn add_buff_mods(
 
 fn add_buff_mods_hardcoded(
     modifiers: &mut Vec<RawModifier>,
-    uad: &Uad,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     item: &UadItem,
     a_effect: &ad::AEffect,
@@ -162,7 +159,7 @@ fn add_buff_mods_hardcoded(
     a_buff_scope: &ad::AEffectBuffScope,
     buff_a_val: ad::AAttrVal,
 ) {
-    if let Some(buff) = uad.src.get_a_buff(a_buff_id) {
+    if let Some(buff) = ctx.uad.src.get_a_buff(a_buff_id) {
         for buff_mod in buff.mods.iter() {
             let modifier = match RawModifier::try_from_a_buff_hardcoded(
                 item_key,

@@ -6,8 +6,10 @@ use crate::{
     ac,
     sol::{
         AttrVal, ItemId, ItemKey,
-        svc::vast::{ValCache, VastFitData},
-        uad::Uad,
+        svc::{
+            SvcCtx,
+            vast::{ValCache, VastFitData},
+        },
     },
     util::RSet,
 };
@@ -26,9 +28,9 @@ pub struct ValChargeVolumeChargeInfo {
     pub max_volume: AttrVal,
 }
 impl ValChargeVolumeChargeInfo {
-    fn from_fail_cache(uad: &Uad, fail_cache: &ValChargeVolumeFailCache) -> Self {
+    fn from_fail_cache(ctx: &SvcCtx, fail_cache: &ValChargeVolumeFailCache) -> Self {
         Self {
-            parent_item_id: uad.items.id_by_key(fail_cache.parent_item_key),
+            parent_item_id: ctx.uad.items.id_by_key(fail_cache.parent_item_key),
             charge_volume: fail_cache.charge_volume,
             max_volume: fail_cache.max_volume,
         }
@@ -45,10 +47,10 @@ pub(in crate::sol::svc::vast) struct ValChargeVolumeFailCache {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<ItemKey>, uad: &Uad) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<ItemKey>, ctx: &SvcCtx) -> bool {
         for (module_item_key, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
-                ValCache::Todo(charge_volume) => match calculate_item_result(uad, *module_item_key, *charge_volume) {
+                ValCache::Todo(charge_volume) => match calculate_item_result(ctx, *module_item_key, *charge_volume) {
                     ValCache::Pass(pass) => cache.pass(pass),
                     ValCache::Fail(fail_cache) => {
                         let ret_fail = !kfs.contains(&fail_cache.charge_item_key);
@@ -73,18 +75,18 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_charge_volume_verbose(
         &mut self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValChargeVolumeFail> {
         let mut charges = HashMap::new();
         for (module_item_key, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
-                ValCache::Todo(charge_volume) => match calculate_item_result(uad, *module_item_key, *charge_volume) {
+                ValCache::Todo(charge_volume) => match calculate_item_result(ctx, *module_item_key, *charge_volume) {
                     ValCache::Pass(pass) => cache.pass(pass),
                     ValCache::Fail(fail_cache) => {
                         if !kfs.contains(&fail_cache.charge_item_key) {
                             charges.insert(
-                                uad.items.id_by_key(fail_cache.charge_item_key),
-                                ValChargeVolumeChargeInfo::from_fail_cache(uad, &fail_cache),
+                                ctx.uad.items.id_by_key(fail_cache.charge_item_key),
+                                ValChargeVolumeChargeInfo::from_fail_cache(ctx, &fail_cache),
                             );
                         }
                         cache.fail(fail_cache);
@@ -95,8 +97,8 @@ impl VastFitData {
                 ValCache::Fail(fail_cache) => {
                     if !kfs.contains(&fail_cache.charge_item_key) {
                         charges.insert(
-                            uad.items.id_by_key(fail_cache.charge_item_key),
-                            ValChargeVolumeChargeInfo::from_fail_cache(uad, fail_cache),
+                            ctx.uad.items.id_by_key(fail_cache.charge_item_key),
+                            ValChargeVolumeChargeInfo::from_fail_cache(ctx, fail_cache),
                         );
                     }
                 }
@@ -110,11 +112,11 @@ impl VastFitData {
 }
 
 fn calculate_item_result(
-    uad: &Uad,
+    ctx: &SvcCtx,
     module_item_key: ItemKey,
     charge_volume: AttrVal,
 ) -> ValCache<AttrVal, ValChargeVolumeFailCache> {
-    let module = uad.items.get(module_item_key).get_module().unwrap();
+    let module = ctx.uad.items.get(module_item_key).get_module().unwrap();
     let module_capacity = match module.get_a_attrs() {
         Some(attrs) => match attrs.get(&ac::attrs::CAPACITY) {
             Some(module_capacity) => *module_capacity,

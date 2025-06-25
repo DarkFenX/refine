@@ -2,7 +2,10 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    sol::{ItemId, ItemKey, SlotIndex, svc::vast::VastFitData, uad::Uad},
+    sol::{
+        ItemId, ItemKey, SlotIndex,
+        svc::{SvcCtx, vast::VastFitData},
+    },
     util::{RMapRSet, RSet},
 };
 
@@ -26,23 +29,23 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_implant_slot_index_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValSlotIndexFail> {
-        validate_slot_index_verbose(kfs, uad, &self.slotted_implants)
+        validate_slot_index_verbose(kfs, ctx, &self.slotted_implants)
     }
     pub(in crate::sol::svc::vast) fn validate_booster_slot_index_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValSlotIndexFail> {
-        validate_slot_index_verbose(kfs, uad, &self.slotted_boosters)
+        validate_slot_index_verbose(kfs, ctx, &self.slotted_boosters)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_index_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValSlotIndexFail> {
-        validate_slot_index_verbose(kfs, uad, &self.slotted_subsystems)
+        validate_slot_index_verbose(kfs, ctx, &self.slotted_subsystems)
     }
 }
 
@@ -52,7 +55,7 @@ fn validate_slot_index_fast(kfs: &RSet<ItemKey>, data: &RMapRSet<SlotIndex, Item
 }
 fn validate_slot_index_verbose(
     kfs: &RSet<ItemKey>,
-    uad: &Uad,
+    ctx: &SvcCtx,
     data: &RMapRSet<ad::ASlotIndex, ItemKey>,
 ) -> Option<ValSlotIndexFail> {
     let mut slot_users = HashMap::new();
@@ -60,7 +63,7 @@ fn validate_slot_index_verbose(
         if users.len() >= 2 {
             let users: Vec<_> = users
                 .filter(|item_key| !kfs.contains(item_key))
-                .map(|item_key| uad.items.id_by_key(*item_key))
+                .map(|item_key| ctx.uad.items.id_by_key(*item_key))
                 .collect();
             if !users.is_empty() {
                 slot_users.insert(*a_slot, users);

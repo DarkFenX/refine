@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{Count, ItemId, ItemKey, ItemTypeId, svc::vast::VastFitData, uad::Uad},
+    sol::{
+        Count, ItemId, ItemKey, ItemTypeId,
+        svc::{SvcCtx, vast::VastFitData},
+    },
     util::RSet,
 };
 
@@ -33,7 +36,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_max_type_fitted_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValMaxTypeFail> {
         let mut item_types = HashMap::new();
         for (a_item_id, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
@@ -47,7 +50,7 @@ impl VastFitData {
                             items: HashMap::new(),
                         })
                         .items
-                        .insert(uad.items.id_by_key(*item_key), allowed);
+                        .insert(ctx.uad.items.id_by_key(*item_key), allowed);
                 }
             }
         }

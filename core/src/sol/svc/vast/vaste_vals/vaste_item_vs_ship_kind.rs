@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use crate::{
     sol::{
         ItemId, ItemKey,
-        svc::vast::VastFitData,
-        uad::{Uad, fit::UadFit, item::ShipKind},
+        svc::{SvcCtx, vast::VastFitData},
+        uad::{fit::UadFit, item::ShipKind},
     },
     util::RSet,
 };
@@ -45,13 +45,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_item_vs_ship_kind_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         fit: &UadFit,
     ) -> Option<ValItemVsShipKindFail> {
         let items: HashMap<_, _> = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(item_key, needed_kind)| (uad.items.id_by_key(*item_key), *needed_kind))
+            .map(|(item_key, needed_kind)| (ctx.uad.items.id_by_key(*item_key), *needed_kind))
             .collect();
         match items.is_empty() {
             true => None,

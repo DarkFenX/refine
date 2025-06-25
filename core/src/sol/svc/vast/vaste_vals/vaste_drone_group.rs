@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{ItemGrpId, ItemId, ItemKey, svc::vast::VastFitData, uad::Uad},
+    sol::{
+        ItemGrpId, ItemId, ItemKey,
+        svc::{SvcCtx, vast::VastFitData},
+    },
     util::RSet,
 };
 
@@ -24,7 +27,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_drone_group_verbose(
         &mut self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValDroneGroupFail> {
         if self.drone_groups.is_empty() {
             return None;
@@ -33,7 +36,7 @@ impl VastFitData {
             .drone_groups
             .iter()
             .filter(|(drone_key, _)| !kfs.contains(drone_key))
-            .map(|(drone_key, drone_a_group_id)| (uad.items.id_by_key(*drone_key), *drone_a_group_id))
+            .map(|(drone_key, drone_a_group_id)| (ctx.uad.items.id_by_key(*drone_key), *drone_a_group_id))
             .collect();
         match drone_groups.is_empty() {
             true => None,

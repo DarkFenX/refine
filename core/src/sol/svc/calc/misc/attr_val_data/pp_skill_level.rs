@@ -5,10 +5,9 @@ use crate::{
     sol::{
         ItemKey,
         svc::{
+            SvcCtx,
             calc::{AttrValInfo, Calc, CalcAttrVal},
-            eprojs::EProjs,
         },
-        uad::Uad,
     },
 };
 
@@ -16,12 +15,11 @@ pub(in crate::sol::svc::calc) const SKILL_LVL_ATTR: ad::AAttrId = ac::attrs::SKI
 
 pub(super) fn skill_level_postproc_fast(
     _calc: &mut Calc,
-    uad: &Uad,
-    _eprojs: &EProjs,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     mut cval: CalcAttrVal,
 ) -> CalcAttrVal {
-    let level = uad.items.get(item_key).get_skill().unwrap().get_a_level();
+    let level = ctx.uad.items.get(item_key).get_skill().unwrap().get_a_level();
     let level = OF::from(level.get_inner());
     cval.dogma = level;
     cval.extra = level;
@@ -30,12 +28,11 @@ pub(super) fn skill_level_postproc_fast(
 
 pub(super) fn skill_level_postproc_info(
     _calc: &mut Calc,
-    uad: &Uad,
-    _eprojs: &EProjs,
+    ctx: &SvcCtx,
     item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {
-    let level = uad.items.get(item_key).get_skill().unwrap().get_a_level();
+    let level = ctx.uad.items.get(item_key).get_skill().unwrap().get_a_level();
     let level = OF::from(level.get_inner());
     AttrValInfo::new(level)
 }

@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{Count, ItemId, ItemKey, svc::vast::VastFitData, uad::Uad},
+    sol::{
+        Count, ItemId, ItemKey,
+        svc::{SvcCtx, vast::VastFitData},
+    },
     util::RSet,
 };
 
@@ -30,13 +33,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_fighter_squad_size_verbose(
         &mut self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValFighterSquadSizeFail> {
         let fighters: HashMap<_, _> = self
             .fighter_squad_size
             .iter()
             .filter(|(fighter_key, _)| !kfs.contains(fighter_key))
-            .map(|(fighter_key, fighter_info)| (uad.items.id_by_key(*fighter_key), *fighter_info))
+            .map(|(fighter_key, fighter_info)| (ctx.uad.items.id_by_key(*fighter_key), *fighter_info))
             .collect();
         match fighters.is_empty() {
             true => None,

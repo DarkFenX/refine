@@ -4,8 +4,8 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, ItemId, ItemKey,
-        svc::vast::VastFitData,
-        uad::{Uad, item::UadShip},
+        svc::{SvcCtx, vast::VastFitData},
+        uad::item::UadShip,
     },
     util::RSet,
 };
@@ -39,14 +39,14 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_rig_size_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
         let mut rig_sizes = HashMap::new();
         for (rig_key, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) && !kfs.contains(rig_key) {
-                rig_sizes.insert(uad.items.id_by_key(*rig_key), rig_size);
+                rig_sizes.insert(ctx.uad.items.id_by_key(*rig_key), rig_size);
             }
         }
         match rig_sizes.is_empty() {

@@ -7,8 +7,8 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, ItemId, ItemKey,
-        svc::{calc::Calc, eprojs::EProjs, vast::VastFitData},
-        uad::{Uad, fit::UadFit},
+        svc::{SvcCtx, calc::Calc, vast::VastFitData},
+        uad::fit::UadFit,
     },
     util::{RSet, round},
 };
@@ -27,15 +27,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_cpu_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast_fitting(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.mods_svcs_online.iter(),
@@ -46,15 +44,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_powergrid_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast_fitting(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.mods_svcs_online.iter(),
@@ -65,15 +61,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_calibration_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.rigs_offline_calibration.iter(),
@@ -83,15 +77,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.drones_volume.iter(),
@@ -101,15 +93,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.drones_online_bandwidth.iter(),
@@ -119,15 +109,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
         validate_fast_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.fighters_volume.iter(),
@@ -138,15 +126,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_fitting(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.mods_svcs_online.iter(),
@@ -157,15 +143,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_fitting(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.mods_svcs_online.iter(),
@@ -176,15 +160,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.rigs_offline_calibration.iter(),
@@ -194,15 +176,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.drones_volume.iter(),
@@ -212,15 +192,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.drones_online_bandwidth.iter(),
@@ -230,15 +208,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValResFail> {
         validate_verbose_other(
             kfs,
-            uad,
-            eprojs,
+            ctx,
             calc,
             fit,
             self.fighters_volume.iter(),
@@ -249,8 +225,7 @@ impl VastFitData {
 
 fn validate_fast_fitting<'a>(
     kfs: &RSet<ItemKey>,
-    uad: &Uad,
-    eprojs: &EProjs,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UadFit,
     items: impl Iterator<Item = &'a ItemKey>,
@@ -260,9 +235,7 @@ fn validate_fast_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut force_pass = true;
     for item_key in items {
-        let item_use = calc
-            .get_item_attr_val_extra(uad, eprojs, *item_key, use_a_attr_id)
-            .unwrap();
+        let item_use = calc.get_item_attr_val_extra(ctx, *item_key, use_a_attr_id).unwrap();
         if force_pass && item_use > OF(0.0) && !kfs.contains(item_key) {
             force_pass = false;
         }
@@ -271,13 +244,12 @@ fn validate_fast_fitting<'a>(
     if force_pass {
         return true;
     }
-    let max = get_max_resource(uad, eprojs, calc, fit.ship, max_a_attr_id).unwrap_or(OF(0.0));
+    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id).unwrap_or(OF(0.0));
     round(total_use, 2) <= max
 }
 fn validate_fast_other<'a>(
     kfs: &RSet<ItemKey>,
-    uad: &Uad,
-    eprojs: &EProjs,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UadFit,
     items: impl Iterator<Item = (&'a ItemKey, &'a ad::AAttrVal)>,
@@ -294,14 +266,13 @@ fn validate_fast_other<'a>(
     if force_pass {
         return true;
     }
-    let max = get_max_resource(uad, eprojs, calc, fit.ship, max_a_attr_id).unwrap_or(OF(0.0));
+    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id).unwrap_or(OF(0.0));
     total_use <= max
 }
 
 fn validate_verbose_fitting<'a>(
     kfs: &RSet<ItemKey>,
-    uad: &Uad,
-    eprojs: &EProjs,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UadFit,
     items: impl ExactSizeIterator<Item = &'a ItemKey>,
@@ -311,19 +282,17 @@ fn validate_verbose_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut users = HashMap::with_capacity(items.len());
     for item_key in items {
-        let item_use = calc
-            .get_item_attr_val_extra(uad, eprojs, *item_key, use_a_attr_id)
-            .unwrap();
+        let item_use = calc.get_item_attr_val_extra(ctx, *item_key, use_a_attr_id).unwrap();
         total_use += item_use;
         if item_use > OF(0.0) && !kfs.contains(item_key) {
-            users.insert(uad.items.id_by_key(*item_key), item_use);
+            users.insert(ctx.uad.items.id_by_key(*item_key), item_use);
         }
     }
     if users.is_empty() {
         return None;
     }
     let total_use = round(total_use, 2);
-    let max = get_max_resource(uad, eprojs, calc, fit.ship, max_a_attr_id);
+    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id);
     if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }
@@ -335,8 +304,7 @@ fn validate_verbose_fitting<'a>(
 }
 fn validate_verbose_other<'a>(
     kfs: &RSet<ItemKey>,
-    uad: &Uad,
-    eprojs: &EProjs,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UadFit,
     items: impl ExactSizeIterator<Item = (&'a ItemKey, &'a ad::AAttrVal)>,
@@ -347,13 +315,13 @@ fn validate_verbose_other<'a>(
     for (item_key, &item_use) in items {
         total_use += item_use;
         if item_use > OF(0.0) && !kfs.contains(item_key) {
-            users.insert(uad.items.id_by_key(*item_key), item_use);
+            users.insert(ctx.uad.items.id_by_key(*item_key), item_use);
         }
     }
     if users.is_empty() {
         return None;
     }
-    let max = get_max_resource(uad, eprojs, calc, fit.ship, max_a_attr_id);
+    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id);
     if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }

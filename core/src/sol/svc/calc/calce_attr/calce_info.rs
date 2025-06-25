@@ -11,10 +11,10 @@ use crate::{
         ItemKey, OpInfo, SecZone,
         err::KeyedItemLoadedError,
         svc::{
+            SvcCtx,
             calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
-            eprojs::EProjs,
         },
-        uad::{Uad, item::UadItem},
+        uad::item::UadItem,
     },
     util::{RMap, RMapVec, RSet, round},
 };
@@ -28,13 +28,12 @@ impl Calc {
     // Query methods
     pub(in crate::sol::svc) fn iter_item_mods(
         &mut self,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         item_key: ItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
-        for a_attr_id in self.iter_item_a_attr_ids(uad, item_key)? {
-            let mut attr_info = self.calc_item_attr_info(uad, eprojs, item_key, &a_attr_id);
+        for a_attr_id in self.iter_item_a_attr_ids(ctx, item_key)? {
+            let mut attr_info = self.calc_item_attr_info(ctx, item_key, &a_attr_id);
             let mut info_vec = Vec::new();
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
@@ -47,10 +46,10 @@ impl Calc {
     // Private methods
     fn iter_item_a_attr_ids(
         &self,
-        uad: &Uad,
+        ctx: &SvcCtx,
         item_key: ItemKey,
     ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, KeyedItemLoadedError> {
-        let item_a_attrs = match uad.items.get(item_key).get_a_attrs() {
+        let item_a_attrs = match ctx.uad.items.get(item_key).get_a_attrs() {
             Some(item_a_attrs) => item_a_attrs,
             None => return Err(KeyedItemLoadedError { item_key }),
         };
@@ -60,8 +59,7 @@ impl Calc {
     }
     fn iter_affections(
         &mut self,
-        uad: &Uad,
-        eprojs: &EProjs,
+        ctx: &SvcCtx,
         item_key: &ItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
@@ -69,41 +67,35 @@ impl Calc {
         let mut affections = RMap::new();
         for modifier in self
             .std
-            .get_mods_for_affectee(item_key, item, a_attr_id, &uad.fits)
+            .get_mods_for_affectee(item_key, item, a_attr_id, &ctx.uad.fits)
             .iter()
         {
-            let val = match modifier.raw.get_mod_val(self, uad, eprojs) {
+            let val = match modifier.raw.get_mod_val(self, ctx) {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = uad.items.get(modifier.raw.affector_espec.item_key);
+            let affector_item = ctx.uad.items.get(modifier.raw.affector_espec.item_key);
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
             let mod_key = ModificationKey::from(modifier);
             let modification = Modification {
                 op: modifier.raw.op,
                 val,
-                res_mult: self.calc_resist_mult(uad, eprojs, modifier),
-                proj_mult: self.calc_proj_mult(uad, eprojs, modifier),
+                res_mult: self.calc_resist_mult(ctx, modifier),
+                proj_mult: self.calc_proj_mult(ctx, modifier),
                 aggr_mode: modifier.raw.aggr_mode,
                 affector_a_item_cat_id,
             };
             let affection = Affection {
                 modification,
-                affectors: modifier.raw.get_affector_info(uad),
+                affectors: modifier.raw.get_affector_info(ctx),
             };
             affections.insert(mod_key, affection);
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(
-        &mut self,
-        uad: &Uad,
-        eprojs: &EProjs,
-        item_key: ItemKey,
-        a_attr_id: &ad::AAttrId,
-    ) -> AttrValInfo {
-        let item = uad.items.get(item_key);
-        let a_attr = match uad.src.get_a_attr(a_attr_id) {
+    fn calc_item_attr_info(&mut self, ctx: &SvcCtx, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
+        let item = ctx.uad.items.get(item_key);
+        let a_attr = match ctx.uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,
             None => &get_a_attr(*a_attr_id),
         };
@@ -113,12 +105,12 @@ impl Calc {
             &ac::attrs::SECURITY_MODIFIER => {
                 // Fetch base value for the generic attribute depending on solar system sec zone,
                 // using its base value as a fallback
-                let security_a_attr_id = match uad.sec_zone {
+                let security_a_attr_id = match ctx.uad.sec_zone {
                     SecZone::HiSec(_) => ac::attrs::HISEC_MODIFIER,
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
                     _ => ac::attrs::NULLSEC_MODIFIER,
                 };
-                match self.get_item_attr_val_full(uad, eprojs, item_key, &security_a_attr_id) {
+                match self.get_item_attr_val_full(ctx, item_key, &security_a_attr_id) {
                     Ok(security_full_val) => {
                         // Ensure that change in any a security-specific attribute value triggers
                         // recalculation of generic security attribute value
@@ -137,7 +129,7 @@ impl Calc {
                             stacking_mult: None,
                             applied_val: security_full_val.dogma,
                             affectors: vec![AffectorInfo {
-                                item_id: uad.items.id_by_key(item_key),
+                                item_id: ctx.uad.items.id_by_key(item_key),
                                 attr_id: Some(security_a_attr_id),
                             }],
                         });
@@ -149,7 +141,7 @@ impl Calc {
             _ => AttrValInfo::new(get_base_attr_value(item, a_attr)),
         };
         let mut accumulator = ModAccumInfo::new();
-        for affection in self.iter_affections(uad, eprojs, &item_key, item, a_attr_id) {
+        for affection in self.iter_affections(ctx, &item_key, item, a_attr_id) {
             accumulator.add_val(
                 affection.modification.val,
                 affection.modification.proj_mult,
@@ -164,7 +156,7 @@ impl Calc {
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, a_attr.hig);
         // Lower value limit
         if let Some(limiter_a_attr_id) = a_attr.min_attr_id
-            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, eprojs, item_key, &limiter_a_attr_id)
+            && let Ok(limiter_val) = self.get_item_attr_val_full(ctx, item_key, &limiter_a_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
             if limiter_val.dogma > dogma_attr_info.value {
@@ -177,7 +169,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![AffectorInfo {
-                        item_id: uad.items.id_by_key(item_key),
+                        item_id: ctx.uad.items.id_by_key(item_key),
                         attr_id: Some(limiter_a_attr_id),
                     }],
                 })
@@ -185,7 +177,7 @@ impl Calc {
         }
         // Upper value limit
         if let Some(limiter_a_attr_id) = a_attr.max_attr_id
-            && let Ok(limiter_val) = self.get_item_attr_val_full(uad, eprojs, item_key, &limiter_a_attr_id)
+            && let Ok(limiter_val) = self.get_item_attr_val_full(ctx, item_key, &limiter_a_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
             if limiter_val.dogma < dogma_attr_info.value {
@@ -198,7 +190,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![AffectorInfo {
-                        item_id: uad.items.id_by_key(item_key),
+                        item_id: ctx.uad.items.id_by_key(item_key),
                         attr_id: Some(limiter_a_attr_id),
                     }],
                 })
@@ -219,7 +211,7 @@ impl Calc {
         {
             Some(postprocs) => {
                 let pp_fn = postprocs.info;
-                pp_fn(self, uad, eprojs, item_key, extra_attr_info)
+                pp_fn(self, ctx, item_key, extra_attr_info)
             }
             None => extra_attr_info,
         }

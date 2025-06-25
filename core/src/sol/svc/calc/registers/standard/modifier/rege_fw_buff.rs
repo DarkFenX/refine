@@ -1,20 +1,20 @@
 use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     FitKey, ItemKey,
-    svc::calc::{
-        AffecteeFilter, Location, LocationKind, RawModifier, modifier::CtxModifier, registers::StandardRegister,
+    svc::{
+        SvcCtx,
+        calc::{
+            AffecteeFilter, Location, LocationKind, RawModifier, modifier::CtxModifier, registers::StandardRegister,
+        },
     },
-    uad::{
-        Uad,
-        item::{ShipKind, UadFwEffect, UadShip},
-    },
+    uad::item::{ShipKind, UadFwEffect, UadShip},
 };
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_fw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         fw_effect: &UadFwEffect,
         raw_modifier: RawModifier,
     ) -> bool {
@@ -40,7 +40,7 @@ impl StandardRegister {
                 }
                 Location::Ship => {
                     let fit_key = fw_effect.get_fit_key();
-                    let fit = uad.fits.get(fit_key);
+                    let fit = ctx.uad.fits.get(fit_key);
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
@@ -60,7 +60,7 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
                 let fit_key = fw_effect.get_fit_key();
-                let fit = uad.fits.get(fit_key);
+                let fit = ctx.uad.fits.get(fit_key);
                 if let Some(ship_key) = fit.ship
                     && matches!(fit.kind, ShipKind::Ship)
                 {
@@ -78,7 +78,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                let fit = uad.fits.get(fit_key);
+                let fit = ctx.uad.fits.get(fit_key);
                 if let Some(ship_key) = fit.ship
                     && matches!(fit.kind, ShipKind::Ship)
                 {
@@ -96,7 +96,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                let fit = uad.fits.get(fit_key);
+                let fit = ctx.uad.fits.get(fit_key);
                 if let Some(ship_key) = fit.ship
                     && matches!(fit.kind, ShipKind::Ship)
                 {
@@ -122,7 +122,7 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn unreg_fw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         fw_effect: &UadFwEffect,
         raw_modifier: RawModifier,
     ) {
@@ -147,7 +147,7 @@ impl StandardRegister {
                 }
                 Location::Ship => {
                     let fit_key = fw_effect.get_fit_key();
-                    let fit = uad.fits.get(fit_key);
+                    let fit = ctx.uad.fits.get(fit_key);
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
@@ -166,7 +166,7 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
                 let fit_key = fw_effect.get_fit_key();
-                let fit = uad.fits.get(fit_key);
+                let fit = ctx.uad.fits.get(fit_key);
                 if let Some(ship_key) = fit.ship
                     && matches!(fit.kind, ShipKind::Ship)
                 {
@@ -183,7 +183,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                let fit = uad.fits.get(fit_key);
+                let fit = ctx.uad.fits.get(fit_key);
                 if let Some(ship_key) = fit.ship
                     && matches!(fit.kind, ShipKind::Ship)
                 {
@@ -200,7 +200,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                let fit = uad.fits.get(fit_key);
+                let fit = ctx.uad.fits.get(fit_key);
                 if let Some(ship_key) = fit.ship
                     && matches!(fit.kind, ShipKind::Ship)
                 {

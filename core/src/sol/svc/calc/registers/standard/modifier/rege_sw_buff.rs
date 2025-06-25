@@ -1,18 +1,18 @@
 use super::{add_ctx_modifier, remove_ctx_modifier};
 use crate::sol::{
     ItemKey,
-    svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
-    uad::{
-        Uad,
-        item::{ShipKind, UadShip},
+    svc::{
+        SvcCtx,
+        calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
     },
+    uad::item::{ShipKind, UadShip},
 };
 
 impl StandardRegister {
     pub(in crate::sol::svc::calc) fn reg_sw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         raw_modifier: RawModifier,
     ) -> bool {
         ctx_modifiers.clear();
@@ -37,8 +37,8 @@ impl StandardRegister {
                 }
                 Location::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for (fit_key, fit) in uad.fits.iter() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for (fit_key, fit) in ctx.uad.fits.iter() {
                         if matches!(fit.kind, ShipKind::Ship)
                             && let Some(ship_key) = fit.ship
                         {
@@ -59,8 +59,8 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
                 // Assume all fits are of ship type
-                ctx_modifiers.reserve(uad.fits.len());
-                for (fit_key, fit) in uad.fits.iter() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for (fit_key, fit) in ctx.uad.fits.iter() {
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
@@ -79,8 +79,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
                 // Assume all fits are of ship type
-                ctx_modifiers.reserve(uad.fits.len());
-                for (fit_key, fit) in uad.fits.iter() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for (fit_key, fit) in ctx.uad.fits.iter() {
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
@@ -99,8 +99,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
                 // Assume all fits are of ship type
-                ctx_modifiers.reserve(uad.fits.len());
-                for (fit_key, fit) in uad.fits.iter() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for (fit_key, fit) in ctx.uad.fits.iter() {
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
@@ -127,7 +127,7 @@ impl StandardRegister {
     pub(in crate::sol::svc::calc) fn unreg_sw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         raw_modifier: &RawModifier,
     ) {
         ctx_modifiers.clear();
@@ -151,8 +151,8 @@ impl StandardRegister {
                 }
                 Location::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for (fit_key, fit) in uad.fits.iter() {
+                    ctx_modifiers.reserve(ctx.uad.fits.len());
+                    for (fit_key, fit) in ctx.uad.fits.iter() {
                         if matches!(fit.kind, ShipKind::Ship)
                             && let Some(ship_key) = fit.ship
                         {
@@ -172,8 +172,8 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
                 // Assume all fits are of ship type
-                ctx_modifiers.reserve(uad.fits.len());
-                for (fit_key, fit) in uad.fits.iter() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for (fit_key, fit) in ctx.uad.fits.iter() {
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
@@ -191,8 +191,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
                 // Assume all fits are of ship type
-                ctx_modifiers.reserve(uad.fits.len());
-                for (fit_key, fit) in uad.fits.iter() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for (fit_key, fit) in ctx.uad.fits.iter() {
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
@@ -210,8 +210,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
                 // Assume all fits are of ship type
-                ctx_modifiers.reserve(uad.fits.len());
-                for (fit_key, fit) in uad.fits.iter() {
+                ctx_modifiers.reserve(ctx.uad.fits.len());
+                for (fit_key, fit) in ctx.uad.fits.iter() {
                     if matches!(fit.kind, ShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {

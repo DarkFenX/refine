@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    sol::{ItemId, ItemKey, ModuleState, svc::vast::VastFitData, uad::Uad},
+    sol::{
+        ItemId, ItemKey, ModuleState,
+        svc::{SvcCtx, vast::VastFitData},
+    },
     util::RSet,
 };
 
@@ -29,13 +32,13 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_module_state_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
     ) -> Option<ValModuleStateFail> {
         let modules: HashMap<_, _> = self
             .mods_state
             .iter()
             .filter(|(module_item_key, _)| !kfs.contains(module_item_key))
-            .map(|(module_item_key, module_info)| (uad.items.id_by_key(*module_item_key), *module_info))
+            .map(|(module_item_key, module_info)| (ctx.uad.items.id_by_key(*module_item_key), *module_info))
             .collect();
         match modules.is_empty() {
             true => None,

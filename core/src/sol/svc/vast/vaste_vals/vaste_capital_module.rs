@@ -4,8 +4,8 @@ use crate::{
     ac, ad,
     sol::{
         AttrVal, ItemId, ItemKey,
-        svc::vast::VastFitData,
-        uad::{Uad, item::UadShip},
+        svc::{SvcCtx, vast::VastFitData},
+        uad::item::UadShip,
     },
     util::RSet,
 };
@@ -36,7 +36,7 @@ impl VastFitData {
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        uad: &Uad,
+        ctx: &SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValCapitalModFail> {
         if !is_ship_subcap(ship) {
@@ -46,7 +46,7 @@ impl VastFitData {
             .mods_capital
             .iter()
             .filter(|(module_key, _)| !kfs.contains(module_key))
-            .map(|(module_key, module_volume)| (uad.items.id_by_key(*module_key), *module_volume))
+            .map(|(module_key, module_volume)| (ctx.uad.items.id_by_key(*module_key), *module_volume))
             .collect();
         match module_volumes.is_empty() {
             true => None,

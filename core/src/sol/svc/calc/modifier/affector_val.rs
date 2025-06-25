@@ -6,11 +6,10 @@ use crate::{
     sol::{
         AttrVal, ItemKey,
         svc::{
-            EffectSpec,
+            EffectSpec, SvcCtx,
             calc::{AffectorInfo, Calc},
-            eprojs::EProjs,
         },
-        uad::{Uad, item::UadItem},
+        uad::item::UadItem,
     },
 };
 
@@ -36,41 +35,31 @@ impl AffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, uad: &Uad, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+    pub(super) fn get_affector_info(&self, ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
         match self {
             Self::AttrId(attr_id) => smallvec![AffectorInfo {
-                item_id: uad.items.id_by_key(item_key),
+                item_id: ctx.uad.items.id_by_key(item_key),
                 attr_id: Some(*attr_id)
             }],
             Self::Hardcoded(_) => smallvec![AffectorInfo {
-                item_id: uad.items.id_by_key(item_key),
+                item_id: ctx.uad.items.id_by_key(item_key),
                 attr_id: None
             }],
-            Self::PropSpeedBoost => prop_speed_boost::get_affector_info(uad, item_key),
+            Self::PropSpeedBoost => prop_speed_boost::get_affector_info(ctx, item_key),
             Self::AarRepAmount => smallvec![AffectorInfo {
-                item_id: uad.items.id_by_key(item_key),
+                item_id: ctx.uad.items.id_by_key(item_key),
                 attr_id: Some(aar_rep_amount::AAR_MULTIPLIER)
             }],
-            Self::MissileFlightTime => missile_flight_time::get_affector_info(uad, item_key),
+            Self::MissileFlightTime => missile_flight_time::get_affector_info(ctx, item_key),
         }
     }
-    pub(super) fn get_mod_val(
-        &self,
-        calc: &mut Calc,
-        uad: &Uad,
-        eprojs: &EProjs,
-        espec: EffectSpec,
-    ) -> Option<AttrVal> {
+    pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
         match self {
-            Self::AttrId(a_attr_id) => Some(
-                calc.get_item_attr_val_full(uad, eprojs, espec.item_key, a_attr_id)
-                    .ok()?
-                    .dogma,
-            ),
+            Self::AttrId(a_attr_id) => Some(calc.get_item_attr_val_full(ctx, espec.item_key, a_attr_id).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),
-            Self::PropSpeedBoost => prop_speed_boost::get_mod_val(calc, uad, eprojs, espec),
-            Self::AarRepAmount => aar_rep_amount::get_mod_val(calc, uad, eprojs, espec.item_key),
-            Self::MissileFlightTime => missile_flight_time::get_mod_val(calc, uad, eprojs, espec),
+            Self::PropSpeedBoost => prop_speed_boost::get_mod_val(calc, ctx, espec),
+            Self::AarRepAmount => aar_rep_amount::get_mod_val(calc, ctx, espec.item_key),
+            Self::MissileFlightTime => missile_flight_time::get_mod_val(calc, ctx, espec),
         }
     }
     // Revision methods - define if modification value can change upon some action
@@ -94,7 +83,7 @@ impl AffectorValue {
     }
     pub(super) fn revise_on_item_add(
         &self,
-        uad: &Uad,
+        ctx: &SvcCtx,
         affector_key: ItemKey,
         added_item_key: ItemKey,
         added_item: &UadItem,
@@ -104,14 +93,14 @@ impl AffectorValue {
             Self::Hardcoded(_) => false,
             Self::PropSpeedBoost => false,
             Self::AarRepAmount => {
-                aar_rep_amount::revise_on_item_add_removal(uad, affector_key, added_item_key, added_item)
+                aar_rep_amount::revise_on_item_add_removal(ctx, affector_key, added_item_key, added_item)
             }
-            Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(uad, affector_key, added_item),
+            Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(ctx, affector_key, added_item),
         }
     }
     pub(super) fn revise_on_item_remove(
         &self,
-        uad: &Uad,
+        ctx: &SvcCtx,
         affector_key: ItemKey,
         removed_item_key: ItemKey,
         removed_item: &UadItem,
@@ -121,9 +110,9 @@ impl AffectorValue {
             Self::Hardcoded(_) => false,
             Self::PropSpeedBoost => false,
             Self::AarRepAmount => {
-                aar_rep_amount::revise_on_item_add_removal(uad, affector_key, removed_item_key, removed_item)
+                aar_rep_amount::revise_on_item_add_removal(ctx, affector_key, removed_item_key, removed_item)
             }
-            Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(uad, affector_key, removed_item),
+            Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(ctx, affector_key, removed_item),
         }
     }
 }
