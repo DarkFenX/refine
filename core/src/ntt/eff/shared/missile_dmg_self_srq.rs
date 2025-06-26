@@ -1,13 +1,10 @@
 use crate::{ac, ad};
 
-pub(in crate::adg::flow::custom) fn mk_self_skillreq_modifier_missile_dmg(a_data: &mut ad::AData) {
-    add_mod_for_effect_attr(a_data, ac::effects::MISSILE_EM_DMG_BONUS, ac::attrs::EM_DMG);
-    add_mod_for_effect_attr(a_data, ac::effects::MISSILE_THERM_DMG_BONUS, ac::attrs::THERM_DMG);
-    add_mod_for_effect_attr(a_data, ac::effects::MISSILE_KIN_DMG_BONUS, ac::attrs::KIN_DMG);
-    add_mod_for_effect_attr(a_data, ac::effects::MISSILE_EXPL_DMG_BONUS, ac::attrs::EXPL_DMG);
-}
-
-fn add_mod_for_effect_attr(a_data: &mut ad::AData, effect_id: ad::AEffectId, attr_id: ad::AAttrId) {
+pub(in crate::ntt::eff) fn add_mod_for_effect_attr(
+    a_data: &mut ad::AData,
+    effect_id: ad::AEffectId,
+    attr_id: ad::AAttrId,
+) {
     match a_data.effects.get_mut(&effect_id) {
         Some(effect) => {
             if !effect.mods.is_empty() {
