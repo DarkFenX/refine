@@ -12,6 +12,8 @@ mod eff_d11691_debuff_lance;
 mod eff_d16_online;
 mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
+mod eff_d3773_hardpoint_modifier_effect;
+mod eff_d3774_slot_modifier;
 mod eff_d4928_adaptive_armor_hardener;
 mod eff_d4936_fueled_shield_boosting;
 mod eff_d5275_fueled_armor_repair;
@@ -60,6 +62,8 @@ fn get_ntt_effects() -> Vec<NttEffect> {
         eff_d668_missile_kin_dmg_bonus::mk_ntt_effect(),
         eff_d1730_drone_dmg_bonus::mk_ntt_effect(),
         eff_d1851_self_rof::mk_ntt_effect(),
+        eff_d3773_hardpoint_modifier_effect::mk_ntt_effect(),
+        eff_d3774_slot_modifier::mk_ntt_effect(),
         eff_d4928_adaptive_armor_hardener::mk_ntt_effect(),
         eff_d4936_fueled_shield_boosting::mk_ntt_effect(),
         eff_d5275_fueled_armor_repair::mk_ntt_effect(),
