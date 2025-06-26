@@ -1,12 +1,22 @@
-use crate::{ac, ad};
+use crate::{ac, ad, ec, ed, ntt::NttEffect};
 
-const RSB_EFFECT: ad::AEffectId = ac::effects::REMOTE_SENSOR_BOOST_FALLOFF;
+const E_EFFECT_ID: ed::EEffectId = ec::effects::REMOTE_SENSOR_BOOST_FALLOFF;
+const A_EFFECT_ID: ad::AEffectId = ac::effects::REMOTE_SENSOR_BOOST_FALLOFF;
 
-pub(in crate::adg::flow::custom) fn add_rsb_modifiers(a_data: &mut ad::AData) {
-    match a_data.effects.get_mut(&RSB_EFFECT) {
+pub(super) fn mk_ntt_effect() -> NttEffect {
+    NttEffect {
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        custom_fn_adg: Some(update_effect),
+        ..
+    }
+}
+
+fn update_effect(a_data: &mut ad::AData) {
+    match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("RSB effect {RSB_EFFECT} has modifiers, overwriting them");
+                tracing::info!("RSB effect {A_EFFECT_ID} has modifiers, overwriting them");
                 effect.mods.clear();
             }
             effect.mods.push(make_rsb_mod(
@@ -35,7 +45,7 @@ pub(in crate::adg::flow::custom) fn add_rsb_modifiers(a_data: &mut ad::AData) {
             ));
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("RSB effect {RSB_EFFECT} is not found for customization"),
+        None => tracing::info!("RSB effect {A_EFFECT_ID} is not found for customization"),
     }
 }
 

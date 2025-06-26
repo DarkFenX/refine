@@ -12,8 +12,11 @@ mod eff_d11691_debuff_lance;
 mod eff_d16_online;
 mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
+mod eff_d4928_adaptive_armor_hardener;
 mod eff_d4936_fueled_shield_boosting;
 mod eff_d5275_fueled_armor_repair;
+mod eff_d6222_struct_warp_scram_block_mwd_with_npc;
+mod eff_d6427_remote_sensor_boost_falloff;
 mod eff_d6476_doomsday_aoe_web;
 mod eff_d6485_ftr_abil_bomb;
 mod eff_d660_missile_em_dmg_bonus;
@@ -22,6 +25,8 @@ mod eff_d662_missile_therm_dmg_bonus;
 mod eff_d6651_ship_module_raar;
 mod eff_d6652_ship_module_rasb;
 mod eff_d668_missile_kin_dmg_bonus;
+mod eff_d6730_mod_bonus_microwarpdrive;
+mod eff_d6731_mod_bonus_afterburner;
 mod eff_d6732_warfare_link_armor;
 mod eff_d6733_warfare_link_shield;
 mod eff_d6734_warfare_link_skirmish;
@@ -55,12 +60,17 @@ fn get_ntt_effects() -> Vec<NttEffect> {
         eff_d668_missile_kin_dmg_bonus::mk_ntt_effect(),
         eff_d1730_drone_dmg_bonus::mk_ntt_effect(),
         eff_d1851_self_rof::mk_ntt_effect(),
+        eff_d4928_adaptive_armor_hardener::mk_ntt_effect(),
         eff_d4936_fueled_shield_boosting::mk_ntt_effect(),
         eff_d5275_fueled_armor_repair::mk_ntt_effect(),
+        eff_d6222_struct_warp_scram_block_mwd_with_npc::mk_ntt_effect(),
+        eff_d6427_remote_sensor_boost_falloff::mk_ntt_effect(),
         eff_d6476_doomsday_aoe_web::mk_ntt_effect(),
         eff_d6485_ftr_abil_bomb::mk_ntt_effect(),
         eff_d6651_ship_module_raar::mk_ntt_effect(),
         eff_d6652_ship_module_rasb::mk_ntt_effect(),
+        eff_d6730_mod_bonus_microwarpdrive::mk_ntt_effect(),
+        eff_d6731_mod_bonus_afterburner::mk_ntt_effect(),
         eff_d6732_warfare_link_armor::mk_ntt_effect(),
         eff_d6733_warfare_link_shield::mk_ntt_effect(),
         eff_d6734_warfare_link_skirmish::mk_ntt_effect(),

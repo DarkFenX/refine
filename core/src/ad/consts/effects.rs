@@ -26,8 +26,8 @@ pub(crate) const WARP_DISRUPT_SPHERE: AEffectId = AEffectId::Dogma(ece::WARP_DIS
 pub(crate) const ADAPTIVE_ARMOR_HARDENER: AEffectId = AEffectId::Dogma(ece::ADAPTIVE_ARMOR_HARDENER);
 pub(crate) const FUELED_SHIELD_BOOSTING: AEffectId = AEffectId::Dogma(ece::FUELED_SHIELD_BOOSTING);
 pub(crate) const FUELED_ARMOR_REPAIR: AEffectId = AEffectId::Dogma(ece::FUELED_ARMOR_REPAIR);
-pub(crate) const STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC: AEffectId =
-    AEffectId::Dogma(ece::STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC);
+pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: AEffectId =
+    AEffectId::Dogma(ece::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC);
 pub(crate) const SERVICE_SLOT: AEffectId = AEffectId::Dogma(ece::SERVICE_SLOT);
 pub(crate) const REMOTE_WEBIFIER_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_FALLOFF);
 pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_SENSOR_BOOST_FALLOFF);
@@ -47,8 +47,8 @@ pub(crate) const FTR_ABIL_BOMB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_BOMB)
 pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_KAMIKAZE);
 pub(crate) const SHIP_MODULE_RAAR: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RAAR);
 pub(crate) const SHIP_MODULE_RASB: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RASB);
-pub(crate) const STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER: AEffectId =
-    AEffectId::Dogma(ece::STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER);
+pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: AEffectId =
+    AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
 pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_ENTITY);
 pub(crate) const MOD_BONUS_MICROWARPDRIVE: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_MICROWARPDRIVE);
 pub(crate) const MOD_BONUS_AFTERBURNER: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_AFTERBURNER);

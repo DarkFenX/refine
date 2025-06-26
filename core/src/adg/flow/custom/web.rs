@@ -5,7 +5,7 @@ pub(in crate::adg::flow::custom) fn add_ship_web_modifiers(a_data: &mut ad::ADat
 }
 
 pub(in crate::adg::flow::custom) fn add_structure_web_modifiers(a_data: &mut ad::AData) {
-    process_web_effect(a_data, ac::effects::STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER);
+    process_web_effect(a_data, ac::effects::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
 }
 
 pub(in crate::adg::flow::custom) fn add_drone_web_modifiers(a_data: &mut ad::AData) {

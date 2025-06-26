@@ -1,12 +1,22 @@
-use crate::{ac, ad};
+use crate::{ac, ad, ec, ed, ntt::NttEffect};
 
-const RAH_EFFECT: ad::AEffectId = ac::effects::ADAPTIVE_ARMOR_HARDENER;
+const E_EFFECT_ID: ed::EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
+const A_EFFECT_ID: ad::AEffectId = ac::effects::ADAPTIVE_ARMOR_HARDENER;
 
-pub(in crate::adg::flow::custom) fn add_rah_modifiers(a_data: &mut ad::AData) {
-    match a_data.effects.get_mut(&RAH_EFFECT) {
+pub(super) fn mk_ntt_effect() -> NttEffect {
+    NttEffect {
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        custom_fn_adg: Some(update_effect),
+        ..
+    }
+}
+
+fn update_effect(a_data: &mut ad::AData) {
+    match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("RAH effect {RAH_EFFECT} has modifiers, overwriting them");
+                tracing::info!("RAH effect {A_EFFECT_ID} has modifiers, overwriting them");
                 effect.mods.clear();
             }
             effect
@@ -23,7 +33,7 @@ pub(in crate::adg::flow::custom) fn add_rah_modifiers(a_data: &mut ad::AData) {
                 .push(mk_rah_resonance_mod(ac::attrs::ARMOR_EXPL_DMG_RESONANCE));
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("RAH effect {RAH_EFFECT} is not found for customization"),
+        None => tracing::info!("RAH effect {A_EFFECT_ID} is not found for customization"),
     }
 }
 

@@ -2,10 +2,6 @@
 
 use crate::{ad, ntt::NTT_EFFECTS};
 
-mod prop_mods;
-mod reactive_armor_hardener;
-mod rsb;
-mod structure_point;
 mod subsystem_mods;
 mod subsystem_slots;
 mod wdfg;
@@ -17,11 +13,6 @@ pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
             customizer(a_data);
         }
     }
-    prop_mods::add_ab_modifiers(a_data);
-    prop_mods::add_mwd_modifiers(a_data);
-    reactive_armor_hardener::add_rah_modifiers(a_data);
-    rsb::add_rsb_modifiers(a_data);
-    structure_point::add_structure_point_modifiers(a_data);
     subsystem_mods::add_subsystem_modifiers(a_data);
     wdfg::add_wdfg_modifiers(a_data);
     web::add_drone_web_modifiers(a_data);

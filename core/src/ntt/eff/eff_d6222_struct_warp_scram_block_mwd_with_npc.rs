@@ -1,11 +1,19 @@
-// Structure disruptor prevents fighter MJDs/MWDs even w/o script, and blocks MWDs/MJDs with script
+use crate::{ac, ad, ec, ed, ntt::NttEffect};
 
-use crate::{ac, ad};
+const E_EFFECT_ID: ed::EEffectId = ec::effects::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
+const A_EFFECT_ID: ad::AEffectId = ac::effects::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
 
-const POINT_EFFECT: ad::AEffectId = ac::effects::STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC;
+pub(super) fn mk_ntt_effect() -> NttEffect {
+    NttEffect {
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        custom_fn_adg: Some(update_effect),
+        ..
+    }
+}
 
-pub(in crate::adg::flow::custom) fn add_structure_point_modifiers(a_data: &mut ad::AData) {
-    match a_data.effects.get_mut(&POINT_EFFECT) {
+fn update_effect(a_data: &mut ad::AData) {
+    match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             // Effect is expected to have some modifiers, so we're silently clearing them up
             effect.mods.clear();
@@ -51,6 +59,6 @@ pub(in crate::adg::flow::custom) fn add_structure_point_modifiers(a_data: &mut a
             effect.stop_ids.push(ac::effects::FTR_ABIL_MJD);
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("structure disruptor effect {POINT_EFFECT} is not found for customization"),
+        None => tracing::info!("structure disruptor effect {A_EFFECT_ID} is not found for customization"),
     }
 }
