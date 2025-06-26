@@ -1,6 +1,7 @@
 use crate::ad::{AAttrVal, ACount};
 
 /// Stores item-specific effect data.
+#[derive(Default)]
 pub struct AItemEffectData {
     /// Defines cooldown of the effect in seconds.
     pub cd: Option<AAttrVal> = None,
@@ -8,9 +9,4 @@ pub struct AItemEffectData {
     pub charge_count: Option<ACount> = None,
     /// Defines how much time each charge of the effect takes to reload, in seconds.
     pub charge_reload_time: Option<AAttrVal> = None,
-}
-impl Default for AItemEffectData {
-    fn default() -> Self {
-        Self { .. }
-    }
 }
