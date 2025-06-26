@@ -1,6 +1,6 @@
 use crate::{
     ac, ad, ec, ed,
-    ntt::{NttEffect, eff::shared::missile_dmg_self_srq::add_mod_for_effect_attr},
+    ntt::{NttEffect, eff::shared::missile_dmg_self_srq::update_effect},
 };
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::MISSILE_EXPL_DMG_BONUS;
@@ -10,7 +10,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        custom_fn_adg: Some(|a_data| add_mod_for_effect_attr(a_data, A_EFFECT_ID, ac::attrs::EXPL_DMG)),
+        custom_fn_adg: Some(|a_data| update_effect(a_data, A_EFFECT_ID, ac::attrs::EXPL_DMG)),
         ..
     }
 }

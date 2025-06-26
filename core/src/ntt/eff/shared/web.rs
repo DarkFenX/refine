@@ -1,18 +1,6 @@
 use crate::{ac, ad};
 
-pub(in crate::adg::flow::custom) fn add_ship_web_modifiers(a_data: &mut ad::AData) {
-    process_web_effect(a_data, ac::effects::REMOTE_WEBIFIER_FALLOFF);
-}
-
-pub(in crate::adg::flow::custom) fn add_structure_web_modifiers(a_data: &mut ad::AData) {
-    process_web_effect(a_data, ac::effects::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
-}
-
-pub(in crate::adg::flow::custom) fn add_drone_web_modifiers(a_data: &mut ad::AData) {
-    process_web_effect(a_data, ac::effects::REMOTE_WEBIFIER_ENTITY);
-}
-
-fn process_web_effect(a_data: &mut ad::AData, effect_id: ad::AEffectId) {
+pub(in crate::ntt::eff) fn update_effect(a_data: &mut ad::AData, effect_id: ad::AEffectId) {
     match a_data.effects.get_mut(&effect_id) {
         Some(effect) => {
             if !effect.mods.is_empty() {

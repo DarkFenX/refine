@@ -58,10 +58,10 @@ pub(crate) const MOD_BONUS_WARFARE_LINK_SKIRMISH: AEffectId = AEffectId::Dogma(e
 pub(crate) const MOD_BONUS_WARFARE_LINK_INFO: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_WARFARE_LINK_INFO);
 pub(crate) const MOD_BONUS_WARFARE_LINK_MINING: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_WARFARE_LINK_MINING);
 pub(crate) const MOD_TITAN_EFFECT_GENERATOR: AEffectId = AEffectId::Dogma(ece::MOD_TITAN_EFFECT_GENERATOR);
-pub(crate) const SHIP_MOD_FOCUSED_WARP_SCRAMBLING_SCRIPT: AEffectId =
-    AEffectId::Dogma(ece::SHIP_MOD_FOCUSED_WARP_SCRAMBLING_SCRIPT);
-pub(crate) const SHIP_MOD_FOCUSED_WARP_DISRUPTION_SCRIPT: AEffectId =
-    AEffectId::Dogma(ece::SHIP_MOD_FOCUSED_WARP_DISRUPTION_SCRIPT);
+pub(crate) const SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT: AEffectId =
+    AEffectId::Dogma(ece::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT);
+pub(crate) const SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT: AEffectId =
+    AEffectId::Dogma(ece::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT);
 pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_BIOLUMINESCENCE_CLOUD);
 pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_CAUSTIC_CLOUD);
 pub(crate) const AOE_BEACON_PULSE_01: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_PULSE_01);

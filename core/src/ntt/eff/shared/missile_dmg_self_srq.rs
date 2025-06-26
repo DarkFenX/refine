@@ -1,10 +1,6 @@
 use crate::{ac, ad};
 
-pub(in crate::ntt::eff) fn add_mod_for_effect_attr(
-    a_data: &mut ad::AData,
-    effect_id: ad::AEffectId,
-    attr_id: ad::AAttrId,
-) {
+pub(in crate::ntt::eff) fn update_effect(a_data: &mut ad::AData, effect_id: ad::AEffectId, attr_id: ad::AAttrId) {
     match a_data.effects.get_mut(&effect_id) {
         Some(effect) => {
             if !effect.mods.is_empty() {
