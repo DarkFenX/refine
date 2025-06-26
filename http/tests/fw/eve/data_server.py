@@ -17,18 +17,18 @@ class EveDataServer:
     def _setup_eve_data_server(self, *, data: EveObjects) -> None:
         str_data = data.render()
         suffix_cont_map = {
-            'fsd_binary/types.json': str_data.types,
-            'fsd_binary/groups.json': str_data.groups,
-            'fsd_binary/typelist.json': str_data.typelist,
-            'fsd_binary/dogmaattributes.json': str_data.dogmaattributes,
-            'fsd_binary/typedogma.json': str_data.typedogma,
-            'fsd_binary/dogmaeffects.json': str_data.dogmaeffects,
+            'fsd_built/types.json': str_data.types,
+            'fsd_built/groups.json': str_data.groups,
+            'fsd_built/typelist.json': str_data.typelist,
+            'fsd_built/dogmaattributes.json': str_data.dogmaattributes,
+            'fsd_built/typedogma.json': str_data.typedogma,
+            'fsd_built/dogmaeffects.json': str_data.dogmaeffects,
             'fsd_lite/fighterabilities.json': str_data.fighterabilities,
             'fsd_lite/fighterabilitiesbytype.json': str_data.fighterabilitiesbytype,
             'fsd_lite/dbuffcollections.json': str_data.dbuffcollections,
-            'fsd_binary/spacecomponentsbytype.json': str_data.spacecomponentsbytype,
-            'fsd_binary/requiredskillsfortypes.json': str_data.requiredskillsfortypes,
-            'fsd_binary/dynamicitemattributes.json': str_data.dynamicitemattributes}
+            'fsd_built/spacecomponentsbytype.json': str_data.spacecomponentsbytype,
+            'fsd_built/requiredskillsfortypes.json': str_data.requiredskillsfortypes,
+            'fsd_built/dynamicitemattributes.json': str_data.dynamicitemattributes}
         for suffix, container in suffix_cont_map.items():
             self.__setup_handler(url=f'/{data.alias}/{suffix}', data=container)
 

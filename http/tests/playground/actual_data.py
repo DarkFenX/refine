@@ -190,18 +190,18 @@ def test_stacking(client, consts):  # noqa: ANN001, ANN201
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
     files = [
-        'fsd_binary/types.json',
-        'fsd_binary/groups.json',
-        'fsd_binary/typelist.json',
-        'fsd_binary/dogmaattributes.json',
-        'fsd_binary/typedogma.json',
-        'fsd_binary/dogmaeffects.json',
+        'fsd_built/types.json',
+        'fsd_built/groups.json',
+        'fsd_built/typelist.json',
+        'fsd_built/dogmaattributes.json',
+        'fsd_built/typedogma.json',
+        'fsd_built/dogmaeffects.json',
         'fsd_lite/fighterabilities.json',
         'fsd_lite/fighterabilitiesbytype.json',
         'fsd_lite/dbuffcollections.json',
-        'fsd_binary/spacecomponentsbytype.json',
-        'fsd_binary/requiredskillsfortypes.json',
-        'fsd_binary/dynamicitemattributes.json']
+        'fsd_built/spacecomponentsbytype.json',
+        'fsd_built/requiredskillsfortypes.json',
+        'fsd_built/dynamicitemattributes.json']
     for file in files:
         with (PHOBOS_BASE_PATH / file).open() as f:
             client._EveDataServer__setup_handler(url=f'/{data.alias}/{file}', data=f.read())  # noqa: SLF001
@@ -219,19 +219,19 @@ def get_try_fit_type_ids() -> list[int]:
 
 
 def print_items(*, type_ids: list[int], print_types: bool = False) -> None:
-    with (PHOBOS_BASE_PATH / 'fsd_binary' / 'types.json').open() as f:
+    with (PHOBOS_BASE_PATH / 'fsd_built' / 'types.json').open() as f:
         item_id_item_name_map = {}
         item_id_group_id_map = {}
         for entry in json.load(f).values():
             item_id_item_name_map[entry['typeID']] = entry['typeName']
             item_id_group_id_map[entry['typeID']] = entry['groupID']
-    with (PHOBOS_BASE_PATH / 'fsd_binary' / 'groups.json').open() as f:
+    with (PHOBOS_BASE_PATH / 'fsd_built' / 'groups.json').open() as f:
         group_id_group_name_map = {}
         group_id_category_id_map = {}
         for entry in json.load(f).values():
             group_id_group_name_map[entry['groupID']] = entry['groupName']
             group_id_category_id_map[entry['groupID']] = entry['categoryID']
-    with (PHOBOS_BASE_PATH / 'fsd_binary' / 'categories.json').open() as f:
+    with (PHOBOS_BASE_PATH / 'fsd_built' / 'categories.json').open() as f:
         category_id_category_name_map = {}
         for entry in json.load(f).values():
             category_id_category_name_map[entry['categoryID']] = entry['categoryName']

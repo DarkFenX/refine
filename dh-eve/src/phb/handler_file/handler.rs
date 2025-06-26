@@ -20,7 +20,7 @@ impl PhbFileEdh {
     /// Constructs file EVE data handler using provided path.
     ///
     /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
-    /// `/phobos_en-us/fsd_binary`.
+    /// `/phobos_en-us/fsd_built`.
     pub fn new(path: PathBuf) -> Self {
         Self { base_path: path }
     }
@@ -33,38 +33,38 @@ impl PhbFileEdh {
     }
     // Entity-specific processing methods
     fn process_binary_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "types");
+        let addr = Address::new("fsd_built", "types");
         let data = self.read_json(&addr)?;
         e_data.items = fsd::handle::<PItem, rc::ed::EItem>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_binary_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "groups");
+        let addr = Address::new("fsd_built", "groups");
         let data = self.read_json(&addr)?;
         e_data.groups = fsd::handle::<PItemGroup, rc::ed::EItemGroup>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_binary_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "typelist");
+        let addr = Address::new("fsd_built", "typelist");
         let data = self.read_json(&addr)?;
         e_data.item_lists = fsd::handle::<PItemList, rc::ed::EItemList>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_binary_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "dogmaattributes");
+        let addr = Address::new("fsd_built", "dogmaattributes");
         let data = self.read_json(&addr)?;
         e_data.attrs = fsd::handle::<PAttr, rc::ed::EAttr>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_binary_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "typedogma");
+        let addr = Address::new("fsd_built", "typedogma");
         let data = self.read_json(&addr)?;
         e_data.item_attrs = fsd::handle::<PItemAttrs, rc::ed::EItemAttr>(data.clone(), &addr.get_part_str())?;
         e_data.item_effects = fsd::handle::<PItemEffects, rc::ed::EItemEffect>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_binary_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "dogmaeffects");
+        let addr = Address::new("fsd_built", "dogmaeffects");
         let data = self.read_json(&addr)?;
         e_data.effects = fsd::handle::<PEffect, rc::ed::EEffect>(data, &addr.get_part_str())?;
         Ok(())
@@ -88,19 +88,19 @@ impl PhbFileEdh {
         Ok(())
     }
     fn process_binary_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "spacecomponentsbytype");
+        let addr = Address::new("fsd_built", "spacecomponentsbytype");
         let data = self.read_json(&addr)?;
         e_data.space_comps = fsd::handle::<PItemSpaceComp, rc::ed::EItemSpaceComp>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_binary_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "requiredskillsfortypes");
+        let addr = Address::new("fsd_built", "requiredskillsfortypes");
         let data = self.read_json(&addr)?;
         e_data.item_srqs = fsd::handle::<PItemSkillMap, rc::ed::EItemSkillReq>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_binary_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let addr = Address::new("fsd_binary", "dynamicitemattributes");
+        let addr = Address::new("fsd_built", "dynamicitemattributes");
         let data = self.read_json(&addr)?;
         e_data.muta_items = fsd::handle::<PMutaItemConvs, rc::ed::EMutaItemConv>(data.clone(), &addr.get_part_str())?;
         e_data.muta_attrs = fsd::handle::<PMutaAttrMods, rc::ed::EMutaAttrMod>(data, &addr.get_part_str())?;

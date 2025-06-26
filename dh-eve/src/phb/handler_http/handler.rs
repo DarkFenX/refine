@@ -24,7 +24,7 @@ impl PhbHttpEdh {
     /// Constructs HTTP EVE data handler using provided base URL and data version.
     ///
     /// URL should end with a trailing slash, and should point to the top-level directory of
-    /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
+    /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_built/`.
     ///
     /// This data handler assumes that data version is known before its construction.
     pub fn new<U>(base_url: U, data_version: String) -> Result<Self, Error>
@@ -61,38 +61,38 @@ impl PhbHttpEdh {
     }
     // Entity-specific processing methods
     fn process_binary_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/types.json";
+        let suffix = "fsd_built/types.json";
         let data = self.fetch_data(suffix)?;
         e_data.items = fsd::handle::<PItem, rc::ed::EItem>(data, suffix)?;
         Ok(())
     }
     fn process_binary_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/groups.json";
+        let suffix = "fsd_built/groups.json";
         let data = self.fetch_data(suffix)?;
         e_data.groups = fsd::handle::<PItemGroup, rc::ed::EItemGroup>(data, suffix)?;
         Ok(())
     }
     fn process_binary_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/typelist.json";
+        let suffix = "fsd_built/typelist.json";
         let data = self.fetch_data(suffix)?;
         e_data.item_lists = fsd::handle::<PItemList, rc::ed::EItemList>(data, suffix)?;
         Ok(())
     }
     fn process_binary_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/dogmaattributes.json";
+        let suffix = "fsd_built/dogmaattributes.json";
         let data = self.fetch_data(suffix)?;
         e_data.attrs = fsd::handle::<PAttr, rc::ed::EAttr>(data, suffix)?;
         Ok(())
     }
     fn process_binary_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/typedogma.json";
+        let suffix = "fsd_built/typedogma.json";
         let data = self.fetch_data(suffix)?;
         e_data.item_attrs = fsd::handle::<PItemAttrs, rc::ed::EItemAttr>(data.clone(), suffix)?;
         e_data.item_effects = fsd::handle::<PItemEffects, rc::ed::EItemEffect>(data, suffix)?;
         Ok(())
     }
     fn process_binary_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/dogmaeffects.json";
+        let suffix = "fsd_built/dogmaeffects.json";
         let data = self.fetch_data(suffix)?;
         e_data.effects = fsd::handle::<PEffect, rc::ed::EEffect>(data, suffix)?;
         Ok(())
@@ -116,19 +116,19 @@ impl PhbHttpEdh {
         Ok(())
     }
     fn process_binary_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/spacecomponentsbytype.json";
+        let suffix = "fsd_built/spacecomponentsbytype.json";
         let data = self.fetch_data(suffix)?;
         e_data.space_comps = fsd::handle::<PItemSpaceComp, rc::ed::EItemSpaceComp>(data, suffix)?;
         Ok(())
     }
     fn process_binary_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/requiredskillsfortypes.json";
+        let suffix = "fsd_built/requiredskillsfortypes.json";
         let data = self.fetch_data(suffix)?;
         e_data.item_srqs = fsd::handle::<PItemSkillMap, rc::ed::EItemSkillReq>(data, suffix)?;
         Ok(())
     }
     fn process_binary_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
-        let suffix = "fsd_binary/dynamicitemattributes.json";
+        let suffix = "fsd_built/dynamicitemattributes.json";
         let data = self.fetch_data(suffix)?;
         e_data.muta_items = fsd::handle::<PMutaItemConvs, rc::ed::EMutaItemConv>(data.clone(), suffix)?;
         e_data.muta_attrs = fsd::handle::<PMutaAttrMods, rc::ed::EMutaAttrMod>(data, suffix)?;
