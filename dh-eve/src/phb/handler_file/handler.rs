@@ -32,38 +32,38 @@ impl PhbFileEdh {
         Ok(data)
     }
     // Entity-specific processing methods
-    fn process_binary_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "types");
         let data = self.read_json(&addr)?;
         e_data.items = fsd::handle::<PItem, rc::ed::EItem>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "groups");
         let data = self.read_json(&addr)?;
         e_data.groups = fsd::handle::<PItemGroup, rc::ed::EItemGroup>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "typelist");
         let data = self.read_json(&addr)?;
         e_data.item_lists = fsd::handle::<PItemList, rc::ed::EItemList>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "dogmaattributes");
         let data = self.read_json(&addr)?;
         e_data.attrs = fsd::handle::<PAttr, rc::ed::EAttr>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "typedogma");
         let data = self.read_json(&addr)?;
         e_data.item_attrs = fsd::handle::<PItemAttrs, rc::ed::EItemAttr>(data.clone(), &addr.get_part_str())?;
         e_data.item_effects = fsd::handle::<PItemEffects, rc::ed::EItemEffect>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "dogmaeffects");
         let data = self.read_json(&addr)?;
         e_data.effects = fsd::handle::<PEffect, rc::ed::EEffect>(data, &addr.get_part_str())?;
@@ -87,19 +87,19 @@ impl PhbFileEdh {
         e_data.buffs = fsd::handle::<PBuff, rc::ed::EBuff>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "spacecomponentsbytype");
         let data = self.read_json(&addr)?;
         e_data.space_comps = fsd::handle::<PItemSpaceComp, rc::ed::EItemSpaceComp>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "requiredskillsfortypes");
         let data = self.read_json(&addr)?;
         e_data.item_srqs = fsd::handle::<PItemSkillMap, rc::ed::EItemSkillReq>(data, &addr.get_part_str())?;
         Ok(())
     }
-    fn process_binary_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
+    fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "dynamicitemattributes");
         let data = self.read_json(&addr)?;
         e_data.muta_items = fsd::handle::<PMutaItemConvs, rc::ed::EMutaItemConv>(data.clone(), &addr.get_part_str())?;
@@ -115,18 +115,18 @@ impl fmt::Debug for PhbFileEdh {
 impl rc::ed::EveDataHandler for PhbFileEdh {
     fn get_data(&self) -> rc::ed::EResult<rc::ed::EData> {
         let mut data = rc::ed::EData::new();
-        self.process_binary_types(&mut data)?;
-        self.process_binary_groups(&mut data)?;
-        self.process_binary_typelist(&mut data)?;
-        self.process_binary_dogmaattributes(&mut data)?;
-        self.process_binary_typedogma(&mut data)?;
-        self.process_binary_dogmaeffects(&mut data)?;
+        self.process_built_types(&mut data)?;
+        self.process_built_groups(&mut data)?;
+        self.process_built_typelist(&mut data)?;
+        self.process_built_dogmaattributes(&mut data)?;
+        self.process_built_typedogma(&mut data)?;
+        self.process_built_dogmaeffects(&mut data)?;
         self.process_lite_fighterabilities(&mut data)?;
         self.process_lite_fighterabilitiesbytype(&mut data)?;
         self.process_lite_dbuffcollections(&mut data)?;
-        self.process_binary_spacecomponentsbytype(&mut data)?;
-        self.process_binary_requiredskillsfortypes(&mut data)?;
-        self.process_binary_dynamicitemattributes(&mut data)?;
+        self.process_built_spacecomponentsbytype(&mut data)?;
+        self.process_built_requiredskillsfortypes(&mut data)?;
+        self.process_built_dynamicitemattributes(&mut data)?;
         Ok(data)
     }
     fn get_data_version(&self) -> rc::ed::EResult<String> {
