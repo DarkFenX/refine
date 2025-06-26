@@ -1,6 +1,6 @@
 //! Data customizations which are applied on adapted data generation.
 
-use crate::{ad, ntt};
+use crate::{ad, ntt, ntt::NTT_EFFECTS};
 
 mod drone_dmg_self_srq;
 mod missile_dmg_self_srq;
@@ -16,7 +16,7 @@ mod wdfg;
 mod web;
 
 pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
-    for ntt_effect in ntt::get_ntt_effects() {
+    for ntt_effect in NTT_EFFECTS.iter() {
         if let Some(customizer) = ntt_effect.custom_fn_adg {
             customizer(a_data);
         }

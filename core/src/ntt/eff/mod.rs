@@ -1,3 +1,5 @@
+use std::sync::LazyLock;
+
 pub(crate) use def::NttEffect;
 
 mod def;
@@ -29,7 +31,9 @@ mod eff_d7061_weather_electric_storm;
 mod eff_d7062_weather_infernal;
 mod eff_d7063_weather_xenon_gas;
 
-pub(crate) fn get_ntt_effects() -> Vec<NttEffect> {
+pub(crate) static NTT_EFFECTS: LazyLock<Vec<NttEffect>> = LazyLock::new(get_ntt_effects);
+
+fn get_ntt_effects() -> Vec<NttEffect> {
     vec![
         eff_c1_char_missile_dmg::mk_ntt_effect(),
         eff_c2_aar_paste_boost::mk_ntt_effect(),

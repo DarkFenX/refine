@@ -1,3 +1,3 @@
-pub(crate) use eff::{NttEffect, get_ntt_effects};
+pub(crate) use eff::{NTT_EFFECTS, NttEffect};
 
 mod eff;
