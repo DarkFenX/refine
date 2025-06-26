@@ -2,7 +2,7 @@ pub use affectee_filter::AEffectAffecteeFilter;
 pub use buff_info::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom};
 pub use build_status::AEffectModBuildStatus;
 pub use charge_info::AEffectChargeInfo;
-pub use effect::AEffect;
+pub use effect::{AEffect, REffect};
 pub use id::AEffectId;
 pub use location::AEffectLocation;
 pub use modifier::AEffectModifier;

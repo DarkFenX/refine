@@ -1,6 +1,7 @@
 use std::sync::LazyLock;
 
 pub(crate) use def::NttEffect;
+pub use def::REffectData;
 
 mod def;
 mod eff_c1_char_missile_dmg;

@@ -3,10 +3,11 @@ use crate::{
         AAttrId, AEffectBuffInfo, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectModBuildStatus, AEffectModifier,
         AState,
     },
+    ntt,
     util::Named,
 };
 
-/// Represents an adapted dogma effect.
+/// Represents an adapted effect.
 ///
 /// Effects are higher-level modification descriptors, as opposed to modifiers, which are
 /// lower-level. An effect can contain any number of modifiers under a single roof, accompanied by
@@ -60,5 +61,23 @@ impl Named for AEffect {
 impl std::fmt::Display for AEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}(id={})", Self::get_name(), self.id)
+    }
+}
+
+/// Adapted effect with extra data added to it during runtime.
+pub struct REffect {
+    /// Adapted effect.
+    ae: AEffect,
+    /// Runtime-specific data.
+    rt: ntt::REffectData,
+}
+impl Named for REffect {
+    fn get_name() -> &'static str {
+        "REffect"
+    }
+}
+impl std::fmt::Display for REffect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}(id={})", Self::get_name(), self.ae.id)
     }
 }
