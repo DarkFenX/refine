@@ -10,6 +10,9 @@ use crate::{
     },
 };
 
+pub(crate) type LocalRepGetter = fn(&Uad, &EProjs, &mut Calc, ItemKey) -> Option<AttrVal>;
+pub(crate) type RemoteRepGetter = fn(&Uad, &EProjs, &mut Calc, ItemKey, Option<ItemKey>) -> Option<AttrVal>;
+
 pub(crate) struct NttEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
     pub(crate) eid: Option<ed::EEffectId>,
@@ -24,13 +27,10 @@ pub(crate) struct NttEffect {
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) custom_fn_calc: Option<fn(&mut Vec<RawModifier>)> = None,
     // Specific effect getters
-    pub(crate) get_local_armor_rep_amount: Option<fn(&Uad, &EProjs, &mut Calc, ItemKey) -> Option<AttrVal>> = None,
-    pub(crate) get_local_shield_rep_amount: Option<fn(&Uad, &EProjs, &mut Calc, ItemKey) -> Option<AttrVal>> = None,
-    pub(crate) get_local_structure_rep_amount: Option<fn(&Uad, &EProjs, &mut Calc, ItemKey) -> Option<AttrVal>> = None,
-    pub(crate) get_remote_armor_rep_amount:
-        Option<fn(&Uad, &EProjs, &mut Calc, ItemKey, ItemKey) -> Option<AttrVal>> = None,
-    pub(crate) get_remote_shield_rep_amount:
-        Option<fn(&Uad, &EProjs, &mut Calc, ItemKey, ItemKey) -> Option<AttrVal>> = None,
-    pub(crate) get_remote_structure_rep_amount:
-        Option<fn(&Uad, &EProjs, &mut Calc, ItemKey, ItemKey) -> Option<AttrVal>> = None,
+    pub(crate) get_local_armor_rep_amount: Option<LocalRepGetter> = None,
+    pub(crate) get_local_shield_rep_amount: Option<LocalRepGetter> = None,
+    pub(crate) get_local_structure_rep_amount: Option<LocalRepGetter> = None,
+    pub(crate) get_remote_armor_rep_amount: Option<RemoteRepGetter> = None,
+    pub(crate) get_remote_shield_rep_amount: Option<RemoteRepGetter> = None,
+    pub(crate) get_remote_structure_rep_amount: Option<RemoteRepGetter> = None,
 }
