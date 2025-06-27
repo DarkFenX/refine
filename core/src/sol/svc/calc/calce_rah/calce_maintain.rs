@@ -39,13 +39,13 @@ impl Calc {
         ctx: &SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffect],
+        a_effects: &[ad::ArcEffectRt],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UadItem::Module(module) = item
-            && a_effects.iter().any(|v| v.id == RAH_EFFECT_ID)
+            && a_effects.iter().any(|v| v.ae.id == RAH_EFFECT_ID)
         {
             let fit_key = module.get_fit_key();
             // Clear sim data for other RAHs on the same fit
@@ -90,13 +90,13 @@ impl Calc {
         ctx: &SvcCtx,
         item_key: &ItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffect],
+        a_effects: &[ad::ArcEffectRt],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UadItem::Module(module) = item
-            && a_effects.iter().any(|v| v.id == RAH_EFFECT_ID)
+            && a_effects.iter().any(|v| v.ae.id == RAH_EFFECT_ID)
         {
             let fit_key = module.get_fit_key();
             // Remove postprocessors
@@ -170,7 +170,7 @@ impl Calc {
         }
     }
     pub(in crate::sol::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
-        self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id);
+        self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.ae.duration_attr_id);
     }
     pub(in crate::sol::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: &SvcCtx, fit_key: &FitKey) {
         self.clear_fit_rah_results(ctx, fit_key);

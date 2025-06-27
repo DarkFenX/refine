@@ -65,18 +65,28 @@ impl std::fmt::Display for AEffect {
 }
 
 /// Adapted effect with extra data added to it during runtime.
-pub struct REffect {
+pub struct AEffectRt {
     /// Adapted effect.
-    ae: AEffect,
+    pub ae: AEffect,
     /// Runtime-specific data.
-    rt: ntt::REffectData,
+    pub(crate) rt: ntt::EffectRtData,
 }
-impl Named for REffect {
-    fn get_name() -> &'static str {
-        "REffect"
+impl AEffectRt {
+    /// Construct new adapted effect with runtime data.
+    pub fn new(a_effect: AEffect) -> Self {
+        let a_effect_id = a_effect.id;
+        Self {
+            ae: a_effect,
+            rt: ntt::NTT_EFFECT_MAP.get(&a_effect_id).map(|v| v.rt).unwrap_or_default(),
+        }
     }
 }
-impl std::fmt::Display for REffect {
+impl Named for AEffectRt {
+    fn get_name() -> &'static str {
+        "AEffectRT"
+    }
+}
+impl std::fmt::Display for AEffectRt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}(id={})", Self::get_name(), self.ae.id)
     }

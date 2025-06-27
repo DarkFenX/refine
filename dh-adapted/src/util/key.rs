@@ -19,10 +19,10 @@ impl Key for rc::ad::AAttr {
         self.id
     }
 }
-impl Key for rc::ad::AEffect {
+impl Key for rc::ad::AEffectRt {
     type Item = rc::ad::AEffectId;
     fn get_key(&self) -> Self::Item {
-        self.id
+        self.ae.id
     }
 }
 impl Key for rc::ad::AMuta {
@@ -38,16 +38,18 @@ impl Key for rc::ad::ABuff {
     }
 }
 
-pub(crate) fn move_map_to_arcmap<K, V, H>(map: rc::util::Map<V, K, H>, arcmap: &mut rc::util::Map<V, Arc<K>, H>)
-where
-    K: Key<Item = V>,
-    V: Eq + PartialEq + Hash,
+pub(crate) fn move_map_to_arcmap<K, V, H>(
+    map: impl ExactSizeIterator<Item = V>,
+    arcmap: &mut rc::util::Map<K, Arc<V>, H>,
+) where
+    K: Eq + PartialEq + Hash,
+    V: Key<Item = K>,
     H: BuildHasher + Default,
 {
     arcmap.clear();
     arcmap.shrink_to_fit();
     arcmap.reserve(map.len());
-    map.into_values().for_each(|v| {
+    map.for_each(|v| {
         arcmap.insert(v.get_key(), Arc::new(v));
     });
 }

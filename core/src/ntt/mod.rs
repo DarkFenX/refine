@@ -1,4 +1,4 @@
-pub use eff::REffectData;
-pub(crate) use eff::{NTT_EFFECTS, NttEffect};
+pub use eff::EffectRtData;
+pub(crate) use eff::{NTT_EFFECT_MAP, NTT_EFFECTS, NttEffect};
 
 mod eff;

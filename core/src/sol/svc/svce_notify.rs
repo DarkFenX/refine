@@ -101,7 +101,7 @@ impl Svc {
         uad: &Uad,
         item_key: ItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffect],
+        a_effects: &[ad::ArcEffectRt],
     ) {
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc.effects_started(&svc_ctx, item_key, item, a_effects);
@@ -112,7 +112,7 @@ impl Svc {
         uad: &Uad,
         item_key: ItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffect],
+        a_effects: &[ad::ArcEffectRt],
     ) {
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc.effects_stopped(&svc_ctx, item_key, item, a_effects);
@@ -126,12 +126,12 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projector_item: &UadItem,
-        a_effect: &ad::ArcEffect,
+        a_effect: &ad::AEffectRt,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<AttrVal>,
     ) {
-        let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+        let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
         self.eprojs.add_range(projector_espec, projectee_item_key, range);
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
@@ -149,11 +149,11 @@ impl Svc {
         uad: &Uad,
         projector_item_key: ItemKey,
         projector_item: &UadItem,
-        a_effect: &ad::ArcEffect,
+        a_effect: &ad::AEffectRt,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let projector_espec = EffectSpec::new(projector_item_key, a_effect.id);
+        let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
             .effect_unprojected(&svc_ctx, projector_espec, projectee_item_key, projectee_item);

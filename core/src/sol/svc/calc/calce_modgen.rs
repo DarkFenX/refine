@@ -17,18 +17,18 @@ impl Calc {
         ctx: &SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
-        a_effect: &ad::AEffect,
+        a_effect: &ad::AEffectRt,
     ) {
         modifiers.clear();
         // Regular modifiers
-        for a_mod in a_effect.mods.iter() {
+        for a_mod in a_effect.ae.mods.iter() {
             match RawModifier::try_from_a_modifier(item_key, item, a_effect, a_mod) {
                 Some(sol_mod) => modifiers.push(sol_mod),
                 None => continue,
             };
         }
         // Buffs
-        if let Some(a_buff_info) = a_effect.buff.as_ref() {
+        if let Some(a_buff_info) = a_effect.ae.buff.as_ref() {
             match &a_buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
                     for (buff_type_a_attr_id, buff_val_a_attr_id) in ac::extras::BUFF_STDATTRS {
@@ -77,7 +77,7 @@ impl Calc {
             }
         }
         // Custom modifiers
-        extend_with_custom_mods(EffectSpec::new(item_key, a_effect.id), modifiers);
+        extend_with_custom_mods(EffectSpec::new(item_key, a_effect.ae.id), modifiers);
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
@@ -97,7 +97,7 @@ impl Calc {
         };
         for a_effect_id in a_effect_ids {
             let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
-            if let Some(a_buff_info) = a_effect.buff.as_ref()
+            if let Some(a_buff_info) = a_effect.ae.buff.as_ref()
                 && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_a_attr_id)
             {
@@ -123,7 +123,7 @@ fn add_buff_mods(
     ctx: &SvcCtx,
     item_key: ItemKey,
     item: &UadItem,
-    a_effect: &ad::AEffect,
+    a_effect: &ad::AEffectRt,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,
     buff_type_a_attr_id: Option<ad::AAttrId>,
@@ -154,7 +154,7 @@ fn add_buff_mods_hardcoded(
     ctx: &SvcCtx,
     item_key: ItemKey,
     item: &UadItem,
-    a_effect: &ad::AEffect,
+    a_effect: &ad::AEffectRt,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,
     buff_a_val: ad::AAttrVal,

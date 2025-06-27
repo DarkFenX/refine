@@ -27,10 +27,11 @@ pub(crate) struct NttEffect {
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) custom_fn_calc: Option<fn(&mut Vec<RawModifier>)> = None,
     // Effect data
-    pub(crate) rt: REffectData = REffectData { .. },
+    pub(crate) rt: EffectRtData = EffectRtData { .. },
 }
 
-pub struct REffectData {
+#[derive(Copy, Clone, Default)]
+pub struct EffectRtData {
     pub(crate) get_local_armor_rep_amount: Option<LocalRepGetter> = None,
     pub(crate) get_local_shield_rep_amount: Option<LocalRepGetter> = None,
     pub(crate) get_local_structure_rep_amount: Option<LocalRepGetter> = None,

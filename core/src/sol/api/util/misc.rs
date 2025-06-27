@@ -1,14 +1,14 @@
 use crate::{ac, ad, sol::uad::item::UadItem};
 
-pub(super) fn is_a_effect_projectable(uad_item: &UadItem, a_effect: &ad::AEffect) -> bool {
+pub(super) fn is_a_effect_projectable(uad_item: &UadItem, a_effect: &ad::AEffectRt) -> bool {
     // Projected effects do not apply targeted effects. Projected effects are item-targetable
     // version of system-wide and fit-wide effects for more granular application; so they work only
     // with system effects and buff effects
-    (a_effect.category == ac::effcats::TARGET && !matches!(uad_item, UadItem::ProjEffect(_)))
-        || (a_effect.category == ac::effcats::SYSTEM
+    (a_effect.ae.category == ac::effcats::TARGET && !matches!(uad_item, UadItem::ProjEffect(_)))
+        || (a_effect.ae.category == ac::effcats::SYSTEM
             && matches!(
                 uad_item,
                 UadItem::SwEffect(_) | UadItem::FwEffect(_) | UadItem::ProjEffect(_)
             ))
-        || a_effect.buff.is_some()
+        || a_effect.ae.buff.is_some()
 }

@@ -12,7 +12,7 @@ use crate::{
 pub struct RamOnlyAdh {
     storage_items: rc::util::RMap<rc::ad::AItemId, rc::ad::ArcItem>,
     storage_attrs: rc::util::RMap<rc::ad::AAttrId, rc::ad::ArcAttr>,
-    storage_effects: rc::util::RMap<rc::ad::AEffectId, rc::ad::ArcEffect>,
+    storage_effects: rc::util::RMap<rc::ad::AEffectId, rc::ad::ArcEffectRt>,
     storage_mutas: rc::util::RMap<rc::ad::AItemId, rc::ad::ArcMuta>,
     storage_buffs: rc::util::RMap<rc::ad::ABuffId, rc::ad::ArcBuff>,
 }
@@ -40,7 +40,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     fn get_attr(&self, id: &rc::ad::AAttrId) -> Option<&rc::ad::ArcAttr> {
         self.storage_attrs.get(id)
     }
-    fn get_effect(&self, id: &rc::ad::AEffectId) -> Option<&rc::ad::ArcEffect> {
+    fn get_effect(&self, id: &rc::ad::AEffectId) -> Option<&rc::ad::ArcEffectRt> {
         self.storage_effects.get(id)
     }
     fn get_mutator(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcMuta> {
@@ -58,11 +58,14 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         Err(Error::NoCacheSupport.into())
     }
     fn update_data(&mut self, a_data: rc::ad::AData, _: String) {
-        move_map_to_arcmap(a_data.items, &mut self.storage_items);
-        move_map_to_arcmap(a_data.attrs, &mut self.storage_attrs);
-        move_map_to_arcmap(a_data.effects, &mut self.storage_effects);
-        move_map_to_arcmap(a_data.mutas, &mut self.storage_mutas);
-        move_map_to_arcmap(a_data.buffs, &mut self.storage_buffs);
+        move_map_to_arcmap(a_data.items.into_values(), &mut self.storage_items);
+        move_map_to_arcmap(a_data.attrs.into_values(), &mut self.storage_attrs);
+        move_map_to_arcmap(
+            a_data.effects.into_values().map(|v| rc::ad::AEffectRt::new(v)),
+            &mut self.storage_effects,
+        );
+        move_map_to_arcmap(a_data.mutas.into_values(), &mut self.storage_mutas);
+        move_map_to_arcmap(a_data.buffs.into_values(), &mut self.storage_buffs);
     }
     fn get_handler_version(&self) -> String {
         VERSION.to_string()

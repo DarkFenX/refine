@@ -29,7 +29,7 @@ impl Src {
     pub(crate) fn get_a_attr(&self, id: &ad::AAttrId) -> Option<&ad::ArcAttr> {
         self.inner.a_handler.get_attr(id)
     }
-    pub(crate) fn get_a_effect(&self, id: &ad::AEffectId) -> Option<&ad::ArcEffect> {
+    pub(crate) fn get_a_effect(&self, id: &ad::AEffectId) -> Option<&ad::ArcEffectRt> {
         self.inner.a_handler.get_effect(id)
     }
     pub(crate) fn get_a_mutator(&self, id: &ad::AItemId) -> Option<&ad::ArcMuta> {

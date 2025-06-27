@@ -27,14 +27,14 @@ impl BuffRegister {
     ) -> impl ExactSizeIterator<Item = &ad::AEffectId> {
         self.a_effect_ids.get(item_key)
     }
-    pub(in crate::sol::svc::calc) fn reg_effect(&mut self, item_key: ItemKey, effect: &ad::AEffect) {
+    pub(in crate::sol::svc::calc) fn reg_effect(&mut self, item_key: ItemKey, effect: &ad::AEffectRt) {
         if uses_default_attrs(effect) {
-            self.a_effect_ids.add_entry(item_key, effect.id);
+            self.a_effect_ids.add_entry(item_key, effect.ae.id);
         }
     }
-    pub(in crate::sol::svc::calc) fn unreg_effect(&mut self, item_key: ItemKey, effect: &ad::AEffect) {
+    pub(in crate::sol::svc::calc) fn unreg_effect(&mut self, item_key: ItemKey, effect: &ad::AEffectRt) {
         if uses_default_attrs(effect) {
-            self.a_effect_ids.remove_entry(&item_key, &effect.id);
+            self.a_effect_ids.remove_entry(&item_key, &effect.ae.id);
         }
     }
     // Modifier methods
@@ -52,8 +52,8 @@ impl BuffRegister {
     }
 }
 
-fn uses_default_attrs(effect: &ad::AEffect) -> bool {
-    match &effect.buff {
+fn uses_default_attrs(effect: &ad::AEffectRt) -> bool {
+    match &effect.ae.buff {
         Some(buff_info) => matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs),
         _ => false,
     }

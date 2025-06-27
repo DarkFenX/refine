@@ -8,9 +8,9 @@ pub use data::{
     AAttr, AAttrId, AAttrVal, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ACount,
     ACustomEffectId, AData, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope,
     AEffectBuffSrc, AEffectBuffSrcCustom, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectLocation,
-    AEffectModBuildStatus, AEffectModifier, AItem, AItemCatId, AItemChargeLimit, AItemEffectData, AItemExtras,
-    AItemGrpId, AItemId, AItemKind, AItemShipLimit, AModifierSrq, AMuta, AMutaAttrRange, AOp, AShipDroneLimit,
-    AShipKind, ASkillLevel, ASlotIndex, AState, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta, REffect,
+    AEffectModBuildStatus, AEffectModifier, AEffectRt, AItem, AItemCatId, AItemChargeLimit, AItemEffectData,
+    AItemExtras, AItemGrpId, AItemId, AItemKind, AItemShipLimit, AModifierSrq, AMuta, AMutaAttrRange, AOp,
+    AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState, ArcAttr, ArcBuff, ArcEffectRt, ArcItem, ArcMuta,
 };
 pub use handler::AdaptedDataHandler;
 pub use result::AResult;

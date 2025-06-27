@@ -2,12 +2,12 @@ use std::sync::Arc;
 
 use ordered_float::OrderedFloat as OF;
 
-use crate::ad::{AAttr, ABuff, AEffect, AItem, AMuta};
+use crate::ad::{AAttr, ABuff, AEffectRt, AItem, AMuta};
 
 // Arcs to entities returned by handler
 pub type ArcAttr = Arc<AAttr>;
 pub type ArcBuff = Arc<ABuff>;
-pub type ArcEffect = Arc<AEffect>;
+pub type ArcEffectRt = Arc<AEffectRt>;
 pub type ArcItem = Arc<AItem>;
 pub type ArcMuta = Arc<AMuta>;
 // Entity IDs

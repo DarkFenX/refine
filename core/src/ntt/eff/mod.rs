@@ -1,7 +1,9 @@
-use std::sync::LazyLock;
+use std::{collections::HashMap, sync::LazyLock};
 
+pub use def::EffectRtData;
 pub(crate) use def::NttEffect;
-pub use def::REffectData;
+
+use crate::ad;
 
 mod def;
 mod eff_c1_char_missile_dmg;
@@ -54,6 +56,7 @@ mod eff_d7063_weather_xenon_gas;
 mod shared;
 
 pub(crate) static NTT_EFFECTS: LazyLock<Vec<NttEffect>> = LazyLock::new(get_ntt_effects);
+pub(crate) static NTT_EFFECT_MAP: LazyLock<HashMap<ad::AEffectId, NttEffect>> = LazyLock::new(get_ntt_effect_map);
 
 fn get_ntt_effects() -> Vec<NttEffect> {
     vec![
@@ -105,4 +108,8 @@ fn get_ntt_effects() -> Vec<NttEffect> {
         eff_d7063_weather_xenon_gas::mk_ntt_effect(),
         eff_d11691_debuff_lance::mk_ntt_effect(),
     ]
+}
+
+fn get_ntt_effect_map() -> HashMap<ad::AEffectId, NttEffect> {
+    get_ntt_effects().into_iter().map(|v| (v.aid, v)).collect()
 }

@@ -96,8 +96,8 @@ fn update_running_effects(
             to_start.push(a_effect.clone());
         };
     }
-    reffs.effects_started(item_key, to_start.iter().map(|a_effect| a_effect.id));
-    reffs.effects_stopped(&item_key, to_stop.iter().map(|a_effect| &a_effect.id));
+    reffs.effects_started(item_key, to_start.iter().map(|a_effect| a_effect.ae.id));
+    reffs.effects_stopped(&item_key, to_stop.iter().map(|a_effect| &a_effect.ae.id));
     process_stop_start(uad, svc, item_key, uad_item, to_start, to_stop, handle_projs)
 }
 
@@ -106,8 +106,8 @@ fn process_stop_start(
     svc: &mut Svc,
     item_key: ItemKey,
     uad_item: &UadItem,
-    to_start: Vec<ad::ArcEffect>,
-    to_stop: Vec<ad::ArcEffect>,
+    to_start: Vec<ad::ArcEffectRt>,
+    to_stop: Vec<ad::ArcEffectRt>,
     handle_projs: bool,
 ) {
     if !to_start.is_empty() {

@@ -95,7 +95,7 @@ impl Calc {
         ctx: &SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffect],
+        a_effects: &[ad::ArcEffectRt],
     ) {
         // Notify core calc services
         let mut raw_modifiers = Vec::new();
@@ -117,7 +117,7 @@ impl Calc {
         ctx: &SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffect],
+        a_effects: &[ad::ArcEffectRt],
     ) {
         // Notify RAH sim
         self.rah_effects_stopped(ctx, &item_key, item, a_effects);
@@ -126,7 +126,7 @@ impl Calc {
         let mut util_items = Vec::new();
         let mut util_cmods = Vec::new();
         for a_effect in a_effects.iter() {
-            let espec = EffectSpec::new(item_key, a_effect.id);
+            let espec = EffectSpec::new(item_key, a_effect.ae.id);
             self.std.extract_raw_mods_for_effect(&mut raw_modifiers, espec);
             for raw_modifier in raw_modifiers.iter() {
                 self.unreg_raw_mod(&mut util_items, &mut util_cmods, ctx, item_key, item, raw_modifier)

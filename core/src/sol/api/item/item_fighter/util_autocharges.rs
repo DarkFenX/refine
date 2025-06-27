@@ -36,7 +36,7 @@ impl SolarSystem {
             .keys()
             .filter_map(|&a_effect_id| {
                 let a_effect = uad.src.get_a_effect(&a_effect_id)?;
-                let ac_a_item_id = match a_effect.charge {
+                let ac_a_item_id = match a_effect.ae.charge {
                     Some(ad::AEffectChargeInfo::Attr(charge_a_attr_id)) => uad_fighter
                         .get_a_attrs()
                         .unwrap()

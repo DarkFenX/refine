@@ -18,7 +18,7 @@ impl RahSim {
         Self {
             resonances: RMap::new(),
             by_fit: RMapRSet::new(),
-            cycle_time_a_attr_id: src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id),
+            cycle_time_a_attr_id: src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.ae.duration_attr_id),
             sim_running: false,
         }
     }

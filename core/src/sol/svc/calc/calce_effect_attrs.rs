@@ -20,9 +20,9 @@ impl Calc {
         &mut self,
         ctx: &SvcCtx,
         item_key: ItemKey,
-        a_effect: &ad::ArcEffect,
+        a_effect: &ad::ArcEffectRt,
     ) -> Option<AttrVal> {
-        let attr_id = a_effect.duration_attr_id?;
+        let attr_id = a_effect.ae.duration_attr_id?;
         let val = self.get_item_attr_val_full(ctx, item_key, &attr_id).ok()?;
         Some(val.dogma)
     }
