@@ -23,17 +23,15 @@ pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
                 // No charge - no extra reps
                 None => return Some(OF(1.0)),
             };
-            // If charge is referenced, we're supposed to always be able to fetch it
             let charge = ctx.uad.items.get(charge_key);
-            if charge.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE {
-                match calc.get_item_attr_val_full(ctx, item_key, &AAR_MULTIPLIER) {
+            match charge.get_a_item_id() {
+                ac::items::NANITE_REPAIR_PASTE => match calc.get_item_attr_val_full(ctx, item_key, &AAR_MULTIPLIER) {
                     Ok(sol_attr) => Some(sol_attr.dogma),
                     // Can't fetch multiplier attr - no extra reps
                     Err(_) => Some(OF(1.0)),
-                }
-            } else {
+                },
                 // Different charge - no extra reps
-                Some(OF(1.0))
+                _ => Some(OF(1.0)),
             }
         }
         // Not a module - don't calculate (should never happen with correct data)

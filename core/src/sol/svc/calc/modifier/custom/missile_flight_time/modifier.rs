@@ -16,9 +16,6 @@ pub(in crate::sol::svc::calc) fn make_mod(affector_espec: EffectSpec) -> RawModi
         aggr_mode: AggrMode::Stack,
         affectee_filter: AffecteeFilter::Direct(Location::Item),
         affectee_a_attr_id: MISSILE_FLIGHT_TIME,
-        buff_type_a_attr_id: None,
-        resist_a_attr_id: None,
-        optimal_a_attr_id: None,
-        falloff_a_attr_id: None,
+        ..
     }
 }

@@ -24,11 +24,11 @@ pub(crate) struct RawModifier {
     pub(in crate::sol::svc::calc) affectee_filter: AffecteeFilter,
     pub(in crate::sol::svc::calc) affectee_a_attr_id: ad::AAttrId,
     // Buff-related
-    pub(in crate::sol::svc::calc) buff_type_a_attr_id: Option<ad::AAttrId>,
+    pub(in crate::sol::svc::calc) buff_type_a_attr_id: Option<ad::AAttrId> = None,
     // Projection-related
-    pub(in crate::sol::svc::calc) resist_a_attr_id: Option<ad::AAttrId>,
-    pub(in crate::sol::svc::calc) optimal_a_attr_id: Option<ad::AAttrId>,
-    pub(in crate::sol::svc::calc) falloff_a_attr_id: Option<ad::AAttrId>,
+    pub(in crate::sol::svc::calc) resist_a_attr_id: Option<ad::AAttrId> = None,
+    pub(in crate::sol::svc::calc) optimal_a_attr_id: Option<ad::AAttrId> = None,
+    pub(in crate::sol::svc::calc) falloff_a_attr_id: Option<ad::AAttrId> = None,
 }
 impl RawModifier {
     pub(in crate::sol::svc::calc) fn try_from_a_modifier(
