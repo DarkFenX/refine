@@ -1,7 +1,7 @@
 use crate::ad;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum Location {
+pub(crate) enum Location {
     Everything,
     Ship,
     Structure,

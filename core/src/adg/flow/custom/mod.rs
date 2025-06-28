@@ -7,7 +7,7 @@ mod subsystem_slots;
 pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     // Effect customization/fixes
     for ntt_effect in NTT_EFFECTS.iter() {
-        if let Some(customizer_fn) = ntt_effect.custom_fn_adg {
+        if let Some(customizer_fn) = ntt_effect.adg_custom_fn {
             customizer_fn(a_data);
         }
     }

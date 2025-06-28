@@ -16,19 +16,19 @@ use crate::{
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) struct RawModifier {
-    pub(in crate::sol::svc::calc) kind: ModifierKind,
-    pub(in crate::sol::svc::calc) affector_espec: EffectSpec,
-    pub(in crate::sol::svc::calc::modifier) affector_value: AffectorValue,
-    pub(in crate::sol::svc::calc) op: Op,
-    pub(in crate::sol::svc::calc) aggr_mode: AggrMode,
-    pub(in crate::sol::svc::calc) affectee_filter: AffecteeFilter,
-    pub(in crate::sol::svc::calc) affectee_a_attr_id: ad::AAttrId,
+    pub(crate) kind: ModifierKind,
+    pub(crate) affector_espec: EffectSpec,
+    pub(crate) affector_value: AffectorValue,
+    pub(crate) op: Op,
+    pub(crate) aggr_mode: AggrMode,
+    pub(crate) affectee_filter: AffecteeFilter,
+    pub(crate) affectee_a_attr_id: ad::AAttrId,
     // Buff-related
-    pub(in crate::sol::svc::calc) buff_type_a_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) buff_type_a_attr_id: Option<ad::AAttrId> = None,
     // Projection-related
-    pub(in crate::sol::svc::calc) resist_a_attr_id: Option<ad::AAttrId> = None,
-    pub(in crate::sol::svc::calc) optimal_a_attr_id: Option<ad::AAttrId> = None,
-    pub(in crate::sol::svc::calc) falloff_a_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) resist_a_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) optimal_a_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) falloff_a_attr_id: Option<ad::AAttrId> = None,
 }
 impl RawModifier {
     pub(in crate::sol::svc::calc) fn try_from_a_modifier(

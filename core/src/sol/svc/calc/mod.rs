@@ -37,10 +37,10 @@ use misc::{
     FTR_COUNT_ATTR, ItemAttrPostprocs, LocationKind, Modification, ModificationKey, SEC_STATUS_ATTR, SKILL_LVL_ATTR,
 };
 pub use mod_info::{AffectorInfo, ModificationInfo};
-pub(crate) use modifier::RawModifier;
-use modifier::{
-    AffecteeFilter, AggrKey, AggrMode, Context, CtxModifier, Location, ModifierKind, Op, debug, extend_with_custom_mods,
+pub(crate) use modifier::{
+    AffecteeFilter, AffectorValue, AggrKey, AggrMode, CustomAffectorValue, Location, ModifierKind, Op, RawModifier,
 };
+use modifier::{Context, CtxModifier, debug, extend_with_custom_mods};
 
 mod accum;
 mod calc;

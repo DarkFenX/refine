@@ -16,7 +16,7 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct UadModule {
+pub(crate) struct UadModule {
     base: UadItemBaseMutable,
     fit_key: FitKey,
     rack: ModRack,
@@ -138,7 +138,7 @@ impl UadModule {
     pub(in crate::sol) fn set_pos(&mut self, pos: Idx) {
         self.pos = pos
     }
-    pub(in crate::sol) fn get_charge_item_key(&self) -> Option<ItemKey> {
+    pub(crate) fn get_charge_item_key(&self) -> Option<ItemKey> {
         self.charge_item_key
     }
     pub(in crate::sol) fn set_charge_item_key(&mut self, charge_item_key: Option<ItemKey>) {

@@ -1,10 +1,10 @@
 use crate::ad;
 
-pub(in crate::sol::svc::calc) type AggrKey = ad::ABuffId;
+pub(crate) type AggrKey = ad::ABuffId;
 
 // Defines how a modification will be aggregated.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum AggrMode {
+pub(crate) enum AggrMode {
     // All modifications are applied.
     Stack,
     // Min value will be used, from values with provided key.

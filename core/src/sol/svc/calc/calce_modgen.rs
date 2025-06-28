@@ -78,6 +78,9 @@ impl Calc {
         }
         // Custom modifiers
         extend_with_custom_mods(EffectSpec::new(item_key, a_effect.ae.id), modifiers);
+        if let Some(customizer) = a_effect.rt.calc_custom_fn {
+            customizer(modifiers, item_key);
+        }
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,

@@ -35,7 +35,7 @@ impl Calc {
     ) -> Option<AttrVal> {
         Some(self.get_item_attr_val_full(ctx, item_key, a_attr_id).ok()?.extra)
     }
-    pub(in crate::sol::svc) fn get_item_attr_val_full(
+    pub(crate) fn get_item_attr_val_full(
         &mut self,
         ctx: &SvcCtx,
         item_key: ItemKey,

@@ -21,8 +21,8 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        charge_info: Some(ad::AEffectChargeInfo::Loaded),
-        custom_fn_adg: Some(update_effect),
+        adg_charge_info: Some(ad::AEffectChargeInfo::Loaded),
+        adg_custom_fn: Some(update_effect),
         ..
     }
 }

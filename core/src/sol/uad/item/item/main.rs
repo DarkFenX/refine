@@ -17,7 +17,7 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) enum UadItem {
+pub(crate) enum UadItem {
     Autocharge(UadAutocharge),
     Booster(UadBooster),
     Character(UadCharacter),
@@ -79,7 +79,7 @@ impl UadItem {
             Self::SwEffect(sw_effect) => sw_effect.get_item_id(),
         }
     }
-    pub(in crate::sol) fn get_a_item_id(&self) -> ad::AItemId {
+    pub(crate) fn get_a_item_id(&self) -> ad::AItemId {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_item_id(),
             Self::Booster(booster) => booster.get_a_item_id(),

@@ -5,7 +5,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(ec::effects::AOE_BEACON_PULSE_01),
         aid: ac::effects::AOE_BEACON_PULSE_01,
-        buff_info: Some(ad::AEffectBuffInfo {
+        adg_buff_info: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::DefaultAttrs,
             scope: ad::AEffectBuffScope::Everything,
         }),

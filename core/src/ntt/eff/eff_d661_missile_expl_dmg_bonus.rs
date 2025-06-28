@@ -10,7 +10,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        custom_fn_adg: Some(|a_data| update_effect(a_data, A_EFFECT_ID, ac::attrs::EXPL_DMG)),
+        adg_custom_fn: Some(|a_data| update_effect(a_data, A_EFFECT_ID, ac::attrs::EXPL_DMG)),
         ..
     }
 }

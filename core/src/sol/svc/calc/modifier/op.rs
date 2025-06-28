@@ -1,7 +1,7 @@
 use crate::{ad, sol::OpInfo};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum Op {
+pub(crate) enum Op {
     PreAssign,
     PreMul,
     PreDiv,

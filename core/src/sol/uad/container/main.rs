@@ -7,7 +7,7 @@ use crate::util::{GetId, Named, RMap};
 type Id = u32;
 type Key = usize;
 
-pub(in crate::sol) struct EntityContainer<T, E> {
+pub(crate) struct EntityContainer<T, E> {
     counter: Wrapping<Id>,
     pub(super) data: Slab<T>,
     pub(super) id_to_key: RMap<Id, Key>,
@@ -53,13 +53,13 @@ where
             None => Err(E::from(*id)),
         }
     }
-    pub(in crate::sol) fn id_by_key(&self, key: Key) -> Id {
+    pub(crate) fn id_by_key(&self, key: Key) -> Id {
         self.get(key).get_id()
     }
     pub(in crate::sol) fn try_get(&self, key: Key) -> Option<&T> {
         self.data.get(key)
     }
-    pub(in crate::sol) fn get(&self, key: Key) -> &T {
+    pub(crate) fn get(&self, key: Key) -> &T {
         // Keys are supposed to be valid throughout whole lib, so just unwrap
         self.data.get(key).unwrap()
     }

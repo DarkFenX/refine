@@ -5,7 +5,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(ec::effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD),
         aid: ac::effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD,
-        buff_info: Some(ad::AEffectBuffInfo {
+        adg_buff_info: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::DefaultAttrs,
             scope: ad::AEffectBuffScope::Everything,
         }),

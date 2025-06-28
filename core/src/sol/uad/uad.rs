@@ -18,7 +18,7 @@ pub(crate) struct Uad {
     pub(in crate::sol) fits: Fits,
     pub(in crate::sol) sw_effects: RSet<ItemKey>,
     pub(in crate::sol) proj_effects: RSet<ItemKey>,
-    pub(in crate::sol) items: Items,
+    pub(crate) items: Items,
     pub(in crate::sol) default_incoming_dps: DpsProfile,
     pub(in crate::sol) sec_zone: SecZone,
 }

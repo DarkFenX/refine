@@ -19,19 +19,21 @@ pub(crate) struct NttEffect {
     // Adapted data effect ID
     pub(crate) aid: ad::AEffectId,
     // Specifies if effect applies any buffs
-    pub(crate) buff_info: Option<ad::AEffectBuffInfo> = None,
+    pub(crate) adg_buff_info: Option<ad::AEffectBuffInfo> = None,
     // Specifies if effect uses charges
-    pub(crate) charge_info: Option<ad::AEffectChargeInfo> = None,
-    // Effect customization function ran during cache generation time
-    pub(crate) custom_fn_adg: Option<fn(&mut ad::AData)> = None,
-    // Effect modifier customization function ran during runtime in calculator service
-    pub(crate) custom_fn_calc: Option<fn(&mut Vec<RawModifier>)> = None,
+    pub(crate) adg_charge_info: Option<ad::AEffectChargeInfo> = None,
+    // Data customization function ran during cache generation time. Can change anything, but is
+    // attached to effect, since it mostly operates on effects
+    pub(crate) adg_custom_fn: Option<fn(&mut ad::AData)> = None,
     // Effect data
     pub(crate) rt: EffectRtData = EffectRtData { .. },
 }
 
 #[derive(Copy, Clone, Default)]
 pub struct EffectRtData {
+    // Effect modifier customization function ran during runtime in calculator service
+    pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, ItemKey)> = None,
+    // Functions which fetch
     pub(crate) get_local_armor_rep_amount: Option<LocalRepGetter> = None,
     pub(crate) get_local_shield_rep_amount: Option<LocalRepGetter> = None,
     pub(crate) get_local_structure_rep_amount: Option<LocalRepGetter> = None,

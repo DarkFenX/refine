@@ -4,7 +4,7 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::calc) enum AffecteeFilter {
+pub(crate) enum AffecteeFilter {
     Direct(Location),
     Loc(Location),
     LocGrp(Location, ad::AItemGrpId),

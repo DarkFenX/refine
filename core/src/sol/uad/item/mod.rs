@@ -3,7 +3,7 @@
 pub(in crate::sol) use base::{ItemMutationData, get_combined_a_attr_values};
 use base::{UadItemBase, UadItemBaseMutable};
 pub(in crate::sol) use container::Items;
-pub(in crate::sol) use item::UadItem;
+pub(crate) use item::UadItem;
 pub(in crate::sol) use item_autocharge::UadAutocharge;
 pub(in crate::sol) use item_booster::UadBooster;
 pub(in crate::sol) use item_character::UadCharacter;

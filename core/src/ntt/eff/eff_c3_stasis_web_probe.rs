@@ -7,7 +7,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: None,
         aid: A_EFFECT_ID,
-        custom_fn_adg: Some(add_custom_effect),
+        adg_custom_fn: Some(add_custom_effect),
         ..
     }
 }

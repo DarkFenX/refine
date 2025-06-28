@@ -1,17 +1,40 @@
-use crate::{ac, ad, ntt::NttEffect};
+use ordered_float::OrderedFloat as OF;
+use smallvec::{SmallVec, smallvec};
+
+use crate::{
+    ac, ad,
+    ntt::{EffectRtData, NttEffect},
+    sol::{
+        AttrVal, ItemKey,
+        svc::{
+            EffectSpec, SvcCtx,
+            calc::{
+                AffecteeFilter, AffectorInfo, AffectorValue, AggrMode, Calc, CustomAffectorValue, Location,
+                ModifierKind, Op, RawModifier,
+            },
+        },
+        uad::item::UadItem,
+    },
+};
 
 const A_EFFECT_ID: ad::AEffectId = ac::effects::AAR_PASTE_BOOST;
+const AAR_MULTIPLIER: ad::AAttrId = ac::attrs::CHARGED_ARMOR_DMG_MULT;
 
 pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: None,
         aid: A_EFFECT_ID,
-        custom_fn_adg: Some(add_custom_effect),
+        adg_custom_fn: Some(adg_add_custom_effect),
+        rt: EffectRtData {
+            calc_custom_fn: Some(calc_add_custom_modifier),
+            ..
+        },
         ..
     }
 }
 
-fn add_custom_effect(a_data: &mut ad::AData) {
+// ADG customizations
+fn adg_add_custom_effect(a_data: &mut ad::AData) {
     let effect = ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
@@ -26,5 +49,77 @@ fn add_custom_effect(a_data: &mut ad::AData) {
             || v.effect_datas.contains_key(&ac::effects::SHIP_MODULE_RAAR)
     }) {
         item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
+    }
+}
+
+// Calc customizations
+fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, item_key: ItemKey) {
+    let rmod = RawModifier {
+        kind: ModifierKind::Local,
+        affector_espec: EffectSpec::new(item_key, A_EFFECT_ID),
+        affector_value: AffectorValue::Custom(CustomAffectorValue {
+            affector_a_attr_id: Some(AAR_MULTIPLIER),
+            affector_info_getter: get_affector_info,
+            mod_val_getter: get_mod_val,
+            item_add_reviser: Some(revise_on_item_add_removal),
+            item_remove_reviser: Some(revise_on_item_add_removal),
+        }),
+        op: Op::ExtraMul,
+        aggr_mode: AggrMode::Stack,
+        affectee_filter: AffecteeFilter::Direct(Location::Item),
+        affectee_a_attr_id: ac::attrs::ARMOR_DMG_AMOUNT,
+        ..
+    };
+    rmods.push(rmod);
+}
+
+fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, item_key: ItemKey) -> Option<AttrVal> {
+    let item = ctx.uad.items.get(item_key);
+    match item {
+        UadItem::Module(module) => {
+            let charge_key = match module.get_charge_item_key() {
+                Some(charge_key) => charge_key,
+                // No charge - no extra reps
+                None => return Some(OF(1.0)),
+            };
+            let charge = ctx.uad.items.get(charge_key);
+            match charge.get_a_item_id() {
+                ac::items::NANITE_REPAIR_PASTE => match calc.get_item_attr_val_full(ctx, item_key, &AAR_MULTIPLIER) {
+                    Ok(sol_attr) => Some(sol_attr.dogma),
+                    // Can't fetch multiplier attr - no extra reps
+                    Err(_) => Some(OF(1.0)),
+                },
+                // Different charge - no extra reps
+                _ => Some(OF(1.0)),
+            }
+        }
+        // Not a module - don't calculate (should never happen with correct data)
+        _ => None,
+    }
+}
+
+fn get_affector_info(ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+    smallvec![AffectorInfo {
+        item_id: ctx.uad.items.id_by_key(item_key),
+        attr_id: Some(AAR_MULTIPLIER)
+    }]
+}
+
+fn revise_on_item_add_removal(
+    ctx: &SvcCtx,
+    affector_key: ItemKey,
+    changed_item_key: ItemKey,
+    changed_item: &UadItem,
+) -> bool {
+    match ctx.uad.items.get(affector_key) {
+        UadItem::Module(module) => match module.get_charge_item_key() {
+            Some(charge_key) => {
+                changed_item_key == charge_key && changed_item.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE
+            }
+            // No charge on AAR -> not changing anything
+            None => false,
+        },
+        // The modifier isn't supposed to be carried on anything but a module
+        _ => false,
     }
 }

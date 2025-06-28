@@ -65,7 +65,7 @@ impl GSupport {
     }
     fn fill_eff_buff_map(&mut self) {
         for ntt_effect in ntt::NTT_EFFECTS.iter() {
-            if let Some(buff_info) = &ntt_effect.buff_info
+            if let Some(buff_info) = &ntt_effect.adg_buff_info
                 && let Some(e_effect_id) = ntt_effect.eid
             {
                 self.eff_buff_map.insert(e_effect_id, buff_info.clone());
@@ -81,7 +81,7 @@ impl GSupport {
     }
     fn fill_eff_charge_map(&mut self) {
         for ntt_effect in ntt::NTT_EFFECTS.iter() {
-            if let Some(charge_info) = ntt_effect.charge_info
+            if let Some(charge_info) = ntt_effect.adg_charge_info
                 && let Some(e_effect_id) = ntt_effect.eid
             {
                 self.eff_charge_map.insert(e_effect_id, charge_info);
