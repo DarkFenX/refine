@@ -100,7 +100,7 @@ impl UadItem {
             Self::SwEffect(sw_effect) => sw_effect.get_a_item_id(),
         }
     }
-    pub(in crate::sol) fn get_fit_key(&self) -> Option<FitKey> {
+    pub(crate) fn get_fit_key(&self) -> Option<FitKey> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_fit_key()),
             Self::Booster(booster) => Some(booster.get_fit_key()),

@@ -1,6 +1,6 @@
 use smallvec::{SmallVec, smallvec};
 
-use super::custom::{missile_flight_time, prop_speed_boost};
+use super::custom::missile_flight_time;
 use crate::{
     ad,
     sol::{
@@ -17,7 +17,6 @@ use crate::{
 pub(crate) enum AffectorValue {
     AttrId(ad::AAttrId),
     Hardcoded(ad::AAttrVal),
-    PropSpeedBoost,
     MissileFlightTime,
     Custom(CustomAffectorValue),
 }
@@ -29,7 +28,6 @@ impl AffectorValue {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
             Self::Hardcoded(_) => None,
-            Self::PropSpeedBoost => None,
             Self::MissileFlightTime => None,
             Self::Custom(custom) => custom.affector_a_attr_id,
         }
@@ -45,7 +43,6 @@ impl AffectorValue {
                 item_id: ctx.uad.items.id_by_key(item_key),
                 attr_id: None
             }],
-            Self::PropSpeedBoost => prop_speed_boost::get_affector_info(ctx, item_key),
             Self::MissileFlightTime => missile_flight_time::get_affector_info(ctx, item_key),
             Self::Custom(custom) => (custom.affector_info_getter)(ctx, item_key),
         }
@@ -54,9 +51,8 @@ impl AffectorValue {
         match self {
             Self::AttrId(a_attr_id) => Some(calc.get_item_attr_val_full(ctx, espec.item_key, a_attr_id).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),
-            Self::PropSpeedBoost => prop_speed_boost::get_mod_val(calc, ctx, espec),
             Self::MissileFlightTime => missile_flight_time::get_mod_val(calc, ctx, espec),
-            Self::Custom(custom) => (custom.mod_val_getter)(calc, ctx, espec.item_key),
+            Self::Custom(custom) => (custom.mod_val_getter)(calc, ctx, espec),
         }
     }
     // Revision methods - define if modification value can change upon some action
@@ -64,7 +60,6 @@ impl AffectorValue {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,
-            Self::PropSpeedBoost => false,
             Self::MissileFlightTime => true,
             Self::Custom(custom) => custom.item_add_reviser.is_some(),
         }
@@ -73,7 +68,6 @@ impl AffectorValue {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,
-            Self::PropSpeedBoost => false,
             Self::MissileFlightTime => true,
             Self::Custom(custom) => custom.item_remove_reviser.is_some(),
         }
@@ -88,7 +82,6 @@ impl AffectorValue {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,
-            Self::PropSpeedBoost => false,
             Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(ctx, affector_key, added_item),
             Self::Custom(custom) => custom.item_add_reviser.unwrap()(ctx, affector_key, added_item_key, added_item),
         }
@@ -103,7 +96,6 @@ impl AffectorValue {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,
-            Self::PropSpeedBoost => false,
             Self::MissileFlightTime => missile_flight_time::revise_on_item_add_removal(ctx, affector_key, removed_item),
             Self::Custom(custom) => {
                 custom.item_remove_reviser.unwrap()(ctx, affector_key, removed_item_key, removed_item)

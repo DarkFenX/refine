@@ -12,7 +12,7 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct UadFit {
+pub(crate) struct UadFit {
     pub(in crate::sol) id: FitId,
     pub(in crate::sol) kind: ShipKind,
     pub(in crate::sol) fleet: Option<FleetKey>,
@@ -20,7 +20,7 @@ pub(in crate::sol) struct UadFit {
     pub(in crate::sol) skills: RMap<ad::AItemId, FitSkill>,
     pub(in crate::sol) implants: RSet<ItemKey>,
     pub(in crate::sol) boosters: RSet<ItemKey>,
-    pub(in crate::sol) ship: Option<ItemKey>,
+    pub(crate) ship: Option<ItemKey>,
     pub(in crate::sol) stance: Option<ItemKey>,
     pub(in crate::sol) subsystems: RSet<ItemKey>,
     pub(in crate::sol) mods_high: ItemVec,

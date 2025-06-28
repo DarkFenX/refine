@@ -15,7 +15,7 @@ use crate::{
 pub(crate) struct Uad {
     pub(in crate::sol) src: Src,
     pub(in crate::sol) fleets: Fleets,
-    pub(in crate::sol) fits: Fits,
+    pub(crate) fits: Fits,
     pub(in crate::sol) sw_effects: RSet<ItemKey>,
     pub(in crate::sol) proj_effects: RSet<ItemKey>,
     pub(crate) items: Items,

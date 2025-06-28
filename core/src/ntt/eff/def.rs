@@ -3,6 +3,7 @@ use crate::{
     sol::{
         AttrVal, ItemKey,
         svc::{
+            EffectSpec,
             calc::{Calc, RawModifier},
             eprojs::EProjs,
         },
@@ -26,13 +27,13 @@ pub(crate) struct NttEffect {
     // attached to effect, since it mostly operates on effects
     pub(crate) adg_custom_fn: Option<fn(&mut ad::AData)> = None,
     // Effect data
-    pub(crate) rt: EffectRtData = EffectRtData { .. },
+    pub(crate) rt: NttEffectRt = NttEffectRt { .. },
 }
 
 #[derive(Copy, Clone, Default)]
-pub struct EffectRtData {
+pub struct NttEffectRt {
     // Effect modifier customization function ran during runtime in calculator service
-    pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, ItemKey)> = None,
+    pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, EffectSpec)> = None,
     // Functions which fetch
     pub(crate) get_local_armor_rep_amount: Option<LocalRepGetter> = None,
     pub(crate) get_local_shield_rep_amount: Option<LocalRepGetter> = None,

@@ -1,8 +1,8 @@
 use crate::{
     ac, ad, ec, ed,
     ntt::{
-        NttEffect,
-        eff::shared::prop_mods::{mk_mass_mod, mk_sig_mod},
+        NttEffect, NttEffectRt,
+        eff::shared::prop_mods::{calc_add_custom_modifier, mk_a_modifier_mass, mk_a_modifier_sig},
     },
 };
 
@@ -13,22 +13,26 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(update_effect),
+        adg_custom_fn: Some(update_a_effect),
+        rt: NttEffectRt {
+            calc_custom_fn: Some(calc_add_custom_modifier),
+            ..
+        },
         ..
     }
 }
 
-fn update_effect(a_data: &mut ad::AData) {
+fn update_a_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("slot modifier effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!("MWD effect {A_EFFECT_ID} has modifiers, overwriting them");
                 effect.mods.clear();
             }
-            effect.mods.push(mk_mass_mod());
-            effect.mods.push(mk_sig_mod());
+            effect.mods.push(mk_a_modifier_mass());
+            effect.mods.push(mk_a_modifier_sig());
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("slot modifier effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("MWD effect {A_EFFECT_ID} is not found for customization"),
     }
 }

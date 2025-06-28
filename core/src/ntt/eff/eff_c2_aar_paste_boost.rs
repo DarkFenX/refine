@@ -3,7 +3,7 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac, ad,
-    ntt::{EffectRtData, NttEffect},
+    ntt::{NttEffect, NttEffectRt},
     sol::{
         AttrVal, ItemKey,
         svc::{
@@ -25,7 +25,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         eid: None,
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(adg_add_custom_effect),
-        rt: EffectRtData {
+        rt: NttEffectRt {
             calc_custom_fn: Some(calc_add_custom_modifier),
             ..
         },
@@ -53,10 +53,10 @@ fn adg_add_custom_effect(a_data: &mut ad::AData) {
 }
 
 // Calc customizations
-fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, item_key: ItemKey) {
+fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
     let rmod = RawModifier {
         kind: ModifierKind::Local,
-        affector_espec: EffectSpec::new(item_key, A_EFFECT_ID),
+        affector_espec: espec,
         affector_value: AffectorValue::Custom(CustomAffectorValue {
             affector_a_attr_id: Some(AAR_MULTIPLIER),
             affector_info_getter: get_affector_info,
@@ -73,8 +73,8 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, item_key: ItemKey) {
     rmods.push(rmod);
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, item_key: ItemKey) -> Option<AttrVal> {
-    let item = ctx.uad.items.get(item_key);
+fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+    let item = ctx.uad.items.get(espec.item_key);
     match item {
         UadItem::Module(module) => {
             let charge_key = match module.get_charge_item_key() {
@@ -84,11 +84,13 @@ fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, item_key: ItemKey) -> Option<AttrV
             };
             let charge = ctx.uad.items.get(charge_key);
             match charge.get_a_item_id() {
-                ac::items::NANITE_REPAIR_PASTE => match calc.get_item_attr_val_full(ctx, item_key, &AAR_MULTIPLIER) {
-                    Ok(sol_attr) => Some(sol_attr.dogma),
-                    // Can't fetch multiplier attr - no extra reps
-                    Err(_) => Some(OF(1.0)),
-                },
+                ac::items::NANITE_REPAIR_PASTE => {
+                    match calc.get_item_attr_val_full(ctx, espec.item_key, &AAR_MULTIPLIER) {
+                        Ok(sol_attr) => Some(sol_attr.dogma),
+                        // Can't fetch multiplier attr - no extra reps
+                        Err(_) => Some(OF(1.0)),
+                    }
+                }
                 // Different charge - no extra reps
                 _ => Some(OF(1.0)),
             }

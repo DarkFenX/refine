@@ -10,7 +10,7 @@ use crate::{
 // Intended to hold ad-hoc dependencies between attributes, which are not covered by registers
 // which hold data about regular modifiers.
 #[derive(Clone)]
-pub(in crate::sol::svc::calc) struct DependencyRegister {
+pub(crate) struct DependencyRegister {
     // Map<affector spec, affectee specs> - this map could be StMapSetL2 with Option<EffectSpec> as
     // source in 3rd generic parameter, just to process collisions - i.e. when the same affector
     // attribute and affectee attribute are used for anonymous and source-based dependency. But in
@@ -57,7 +57,7 @@ impl DependencyRegister {
         self.anonymous_by_item
             .add_entry(item_key, (affector_a_attr_id, affectee_a_attr_id));
     }
-    pub(in crate::sol::svc::calc) fn add_with_source(
+    pub(crate) fn add_with_source(
         &mut self,
         source_espec: EffectSpec,
         affector_aspec: AttrSpec,

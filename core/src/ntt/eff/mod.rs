@@ -1,7 +1,7 @@
 use std::{collections::HashMap, sync::LazyLock};
 
-pub use def::EffectRtData;
 pub(crate) use def::NttEffect;
+pub use def::NttEffectRt;
 
 use crate::ad;
 

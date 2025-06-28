@@ -69,7 +69,7 @@ pub struct AEffectRt {
     /// Adapted effect.
     pub ae: AEffect,
     /// Runtime-specific data.
-    pub(crate) rt: ntt::EffectRtData,
+    pub(crate) rt: ntt::NttEffectRt,
 }
 impl AEffectRt {
     /// Construct new adapted effect with runtime data.
