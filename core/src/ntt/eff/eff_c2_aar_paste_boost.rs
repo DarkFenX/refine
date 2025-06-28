@@ -75,13 +75,8 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
 
 fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
     let item = ctx.uad.items.get(espec.item_key);
-    match item {
-        UadItem::Module(module) => {
-            let charge_key = match module.get_charge_item_key() {
-                Some(charge_key) => charge_key,
-                // No charge - no extra reps
-                None => return Some(OF(1.0)),
-            };
+    match item.get_charge_item_key() {
+        Some(charge_key) => {
             let charge = ctx.uad.items.get(charge_key);
             match charge.get_a_item_id() {
                 ac::items::NANITE_REPAIR_PASTE => {
@@ -95,8 +90,8 @@ fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrV
                 _ => Some(OF(1.0)),
             }
         }
-        // Not a module - don't calculate (should never happen with correct data)
-        _ => None,
+        // No charge - no extra reps
+        None => Some(OF(1.0)),
     }
 }
 

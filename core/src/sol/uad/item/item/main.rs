@@ -262,7 +262,7 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(in crate::sol) fn get_charge_item_key(&self) -> Option<ItemKey> {
+    pub(crate) fn get_charge_item_key(&self) -> Option<ItemKey> {
         match self {
             Self::Module(module) => module.get_charge_item_key(),
             _ => None,
