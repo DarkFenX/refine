@@ -40,7 +40,7 @@ pub use mod_info::{AffectorInfo, ModificationInfo};
 pub(crate) use modifier::{
     AffecteeFilter, AffectorValue, AggrKey, AggrMode, CustomAffectorValue, Location, ModifierKind, Op, RawModifier,
 };
-use modifier::{Context, CtxModifier, debug, extend_with_custom_mods};
+use modifier::{Context, CtxModifier, debug};
 
 mod accum;
 mod calc;

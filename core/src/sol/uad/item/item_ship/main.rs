@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct UadShip {
+pub(crate) struct UadShip {
     base: UadItemBase,
     fit_key: FitKey,
     kind: ShipKind,
@@ -85,7 +85,7 @@ impl UadShip {
     pub(in crate::sol) fn set_ship_state(&mut self, state: bool) {
         self.base.set_a_state(bool_to_state_offline(state))
     }
-    pub(in crate::sol) fn get_fit_key(&self) -> FitKey {
+    pub(crate) fn get_fit_key(&self) -> FitKey {
         self.fit_key
     }
     pub(in crate::sol) fn get_kind(&self) -> ShipKind {

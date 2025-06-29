@@ -3,7 +3,6 @@ pub(crate) use affector_val::AffectorValue;
 pub(crate) use aggr_mode::{AggrKey, AggrMode};
 pub(in crate::sol::svc::calc) use context::Context;
 pub(crate) use custom::CustomAffectorValue;
-pub(in crate::sol::svc::calc) use custom::extend_with_custom_mods;
 pub(crate) use kind::ModifierKind;
 pub(crate) use location::Location;
 pub(in crate::sol::svc::calc) use mod_ctx::CtxModifier;

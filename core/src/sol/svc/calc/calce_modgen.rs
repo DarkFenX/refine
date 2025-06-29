@@ -4,7 +4,7 @@ use crate::{
         ItemKey,
         svc::{
             EffectSpec, SvcCtx,
-            calc::{Calc, RawModifier, extend_with_custom_mods},
+            calc::{Calc, RawModifier},
         },
         uad::item::UadItem,
     },
@@ -77,7 +77,6 @@ impl Calc {
             }
         }
         // Custom modifiers
-        extend_with_custom_mods(EffectSpec::new(item_key, a_effect.ae.id), modifiers);
         if let Some(customizer) = a_effect.rt.calc_custom_fn {
             customizer(modifiers, EffectSpec::new(item_key, a_effect.ae.id));
         }
