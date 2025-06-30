@@ -1,6 +1,7 @@
-use ordered_float::OrderedFloat as OF;
-
-use crate::{ac, ad, def::AttrVal};
+use crate::{
+    ac, ad,
+    def::{AttrVal, OF},
+};
 
 const PENALTY_IMMUNE_A_ITEM_CATS: [ad::AItemCatId; 5] = [
     ac::itemcats::SHIP,

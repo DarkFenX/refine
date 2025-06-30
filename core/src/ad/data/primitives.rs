@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
-use ordered_float::OrderedFloat as OF;
-
-use crate::ad::{AAttr, ABuff, AEffectRt, AItem, AMuta};
+use crate::{
+    ad::{AAttr, ABuff, AEffectRt, AItem, AMuta},
+    def::OF,
+};
 
 // Arcs to entities returned by handler
 pub type ArcAttr = Arc<AAttr>;

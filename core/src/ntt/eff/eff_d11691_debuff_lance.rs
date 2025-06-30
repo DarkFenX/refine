@@ -1,6 +1,4 @@
-use ordered_float::OrderedFloat as OF;
-
-use crate::{ac, ad, ec, ntt::NttEffect};
+use crate::{ac, ad, def::OF, ec, ntt::NttEffect};
 
 pub(super) fn mk_ntt_effect() -> NttEffect {
     // Dreadnought lance

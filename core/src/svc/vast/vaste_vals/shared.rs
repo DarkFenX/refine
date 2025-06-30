@@ -1,8 +1,6 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
     ad,
-    def::{AttrVal, ItemKey},
+    def::{AttrVal, ItemKey, OF},
     svc::{SvcCtx, calc::Calc},
 };
 

@@ -1,8 +1,7 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
     ac,
     ad::{AAttrId, AAttrVal, ACount},
+    def::OF,
     util::RMap,
 };
 

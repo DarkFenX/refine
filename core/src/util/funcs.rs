@@ -1,4 +1,6 @@
-use ordered_float::{Float, OrderedFloat as OF};
+use ordered_float::Float;
+
+use crate::def::OF;
 
 pub(crate) fn vec_push_opt<T>(vec: &mut Vec<T>, opt: Option<T>) {
     if let Some(v) = opt {

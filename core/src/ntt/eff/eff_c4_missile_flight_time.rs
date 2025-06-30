@@ -1,9 +1,8 @@
-use ordered_float::OrderedFloat as OF;
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey},
+    def::{AttrVal, ItemKey, OF},
     misc::{AttrSpec, EffectSpec},
     ntt::{NttEffect, NttEffectRt, eff::shared::util::get_item_fit_ship_key},
     svc::{

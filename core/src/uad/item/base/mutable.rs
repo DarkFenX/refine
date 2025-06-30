@@ -1,8 +1,6 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
     ad,
-    def::ItemId,
+    def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, ItemMutationRequest, UnitInterval},
     src::Src,

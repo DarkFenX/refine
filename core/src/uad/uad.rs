@@ -1,7 +1,5 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    def::ItemKey,
+    def::{ItemKey, OF},
     misc::{DpsProfile, SecZone},
     src::Src,
     uad::{fit::Fits, fleet::Fleets, item::Items},

@@ -1,8 +1,8 @@
-use ordered_float::{Float, OrderedFloat as OF};
+use ordered_float::Float;
 
 use crate::{
     ac, ad,
-    def::AttrVal,
+    def::{AttrVal, OF},
     misc::AttrSpec,
     svc::{
         SvcCtx,

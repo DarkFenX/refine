@@ -1,6 +1,4 @@
-use ordered_float::OrderedFloat as OF;
-
-use crate::{ad, ed, util::RMap};
+use crate::{ad, def::OF, ed, util::RMap};
 
 pub(in crate::adg::flow::conv) fn conv_mutas(e_data: &ed::EData) -> RMap<ad::AItemId, ad::AMuta> {
     let mut a_mutas = RMap::new();

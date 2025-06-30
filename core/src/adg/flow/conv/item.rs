@@ -1,8 +1,7 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
     ad,
     adg::{GSupport, get_abil_effect},
+    def::OF,
     ed,
     util::RMap,
 };

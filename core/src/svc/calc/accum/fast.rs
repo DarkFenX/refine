@@ -4,15 +4,13 @@
 //! what went into it. Since they duplicate each other, when doing any changes, MAKE SURE TO APPLY
 //! THEM TO BOTH.
 
-use ordered_float::OrderedFloat as OF;
-
 use super::shared::{
     PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop,
     normalize_perc, normalize_sub,
 };
 use crate::{
     ad,
-    def::AttrVal,
+    def::{AttrVal, OF},
     svc::calc::{AggrKey, AggrMode, Op},
     util::RMap,
 };

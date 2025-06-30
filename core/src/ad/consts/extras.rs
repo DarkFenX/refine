@@ -1,7 +1,8 @@
-use ordered_float::OrderedFloat as OF;
-
-use crate::ad::{AAttrId, AAttrVal, consts::attrs};
 pub(crate) use crate::ed::consts::extras::BUFF_STDATTR_IDS;
+use crate::{
+    ad::{AAttrId, AAttrVal, consts::attrs},
+    def::OF,
+};
 
 pub(crate) const MAX_SUBCAP_MODULE_VOLUME: AAttrVal = OF(3500.0);
 

@@ -1,9 +1,7 @@
 // Subsystem count attribute seems to have no effect on anything in EVE; the lib uses it to expose
 // max count of subsystem slots, so fix it from 5 in data to 4
 
-use ordered_float::OrderedFloat as OF;
-
-use crate::{ac, ad};
+use crate::{ac, ad, def::OF};
 
 const SLOT_ATTR: ad::AAttrId = ac::attrs::MAX_SUBSYSTEMS;
 const SHIP_GROUP: ad::AItemGrpId = ac::itemgrps::STRATEGIC_CRUISER;
