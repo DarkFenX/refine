@@ -61,7 +61,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         move_map_to_arcmap(a_data.items.into_values(), &mut self.storage_items);
         move_map_to_arcmap(a_data.attrs.into_values(), &mut self.storage_attrs);
         move_map_to_arcmap(
-            a_data.effects.into_values().map(|v| rc::ad::AEffectRt::new(v)),
+            a_data.effects.into_values().map(rc::ad::AEffectRt::new),
             &mut self.storage_effects,
         );
         move_map_to_arcmap(a_data.mutas.into_values(), &mut self.storage_mutas);
