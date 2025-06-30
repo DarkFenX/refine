@@ -27,7 +27,7 @@ impl UadFleet {
 }
 impl Named for UadFleet {
     fn get_name() -> &'static str {
-        "UadFleet"
+        "Fleet"
     }
 }
 impl GetId<FleetId> for UadFleet {

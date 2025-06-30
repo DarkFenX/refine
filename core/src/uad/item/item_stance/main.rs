@@ -77,7 +77,7 @@ impl UadStance {
 }
 impl Named for UadStance {
     fn get_name() -> &'static str {
-        "UadStance"
+        "Stance"
     }
 }
 impl std::fmt::Display for UadStance {

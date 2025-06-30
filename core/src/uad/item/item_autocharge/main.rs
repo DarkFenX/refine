@@ -111,7 +111,7 @@ impl UadAutocharge {
 }
 impl Named for UadAutocharge {
     fn get_name() -> &'static str {
-        "UadAutocharge"
+        "Autocharge"
     }
 }
 impl std::fmt::Display for UadAutocharge {

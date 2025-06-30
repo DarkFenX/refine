@@ -115,7 +115,7 @@ impl UadFighter {
 }
 impl Named for UadFighter {
     fn get_name() -> &'static str {
-        "UadFighter"
+        "Fighter"
     }
 }
 impl std::fmt::Display for UadFighter {

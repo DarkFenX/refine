@@ -103,7 +103,7 @@ impl UadFit {
 }
 impl Named for UadFit {
     fn get_name() -> &'static str {
-        "UadFit"
+        "Fit"
     }
 }
 impl GetId<FitId> for UadFit {

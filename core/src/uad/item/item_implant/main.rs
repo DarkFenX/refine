@@ -83,7 +83,7 @@ impl UadImplant {
 }
 impl Named for UadImplant {
     fn get_name() -> &'static str {
-        "UadImplant"
+        "Implant"
     }
 }
 impl std::fmt::Display for UadImplant {

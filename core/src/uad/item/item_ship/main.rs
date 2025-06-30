@@ -93,7 +93,7 @@ impl UadShip {
 }
 impl Named for UadShip {
     fn get_name() -> &'static str {
-        "UadShip"
+        "Ship"
     }
 }
 impl std::fmt::Display for UadShip {

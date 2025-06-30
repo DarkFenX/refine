@@ -77,7 +77,7 @@ impl UadCharacter {
 }
 impl Named for UadCharacter {
     fn get_name() -> &'static str {
-        "UadCharacter"
+        "Character"
     }
 }
 impl std::fmt::Display for UadCharacter {

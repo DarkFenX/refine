@@ -77,7 +77,7 @@ impl UadFwEffect {
 }
 impl Named for UadFwEffect {
     fn get_name() -> &'static str {
-        "UadFwEffect"
+        "FwEffect"
     }
 }
 impl std::fmt::Display for UadFwEffect {

@@ -106,7 +106,7 @@ impl UadCharge {
 }
 impl Named for UadCharge {
     fn get_name() -> &'static str {
-        "UadCharge"
+        "Charge"
     }
 }
 impl std::fmt::Display for UadCharge {

@@ -172,7 +172,7 @@ impl UadModule {
 }
 impl Named for UadModule {
     fn get_name() -> &'static str {
-        "UadModule"
+        "Module"
     }
 }
 impl std::fmt::Display for UadModule {

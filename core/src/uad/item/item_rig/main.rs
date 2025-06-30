@@ -77,7 +77,7 @@ impl UadRig {
 }
 impl Named for UadRig {
     fn get_name() -> &'static str {
-        "UadRig"
+        "Rig"
     }
 }
 impl std::fmt::Display for UadRig {

@@ -802,7 +802,7 @@ impl UadItem {
 }
 impl Named for UadItem {
     fn get_name() -> &'static str {
-        "UadItem"
+        "Item"
     }
 }
 impl GetId<ItemId> for UadItem {

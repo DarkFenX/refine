@@ -80,7 +80,7 @@ impl UadProjEffect {
 }
 impl Named for UadProjEffect {
     fn get_name() -> &'static str {
-        "UadProjEffect"
+        "ProjEffect"
     }
 }
 impl std::fmt::Display for UadProjEffect {

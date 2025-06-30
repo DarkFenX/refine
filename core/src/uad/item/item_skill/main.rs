@@ -92,7 +92,7 @@ impl UadSkill {
 }
 impl Named for UadSkill {
     fn get_name() -> &'static str {
-        "UadSkill"
+        "Skill"
     }
 }
 impl std::fmt::Display for UadSkill {
