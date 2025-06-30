@@ -1,3 +1,5 @@
+use std::hash::{Hash, Hasher};
+
 use smallvec::SmallVec;
 
 use crate::{
@@ -12,7 +14,16 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
+pub(crate) enum CustomAffectorValueKind {
+    PropSpeedBoost,
+    AarRepAmount,
+    MissileFlightTime,
+}
+
+#[derive(Copy, Clone)]
 pub(crate) struct CustomAffectorValue {
+    // Field to use for hashing/comparison, not to rely on function pointers
+    pub(crate) kind: CustomAffectorValueKind,
     // Modifiers have two ways to define affector attribute:
     // - cheap way is via this field, with limitation that value of the attribute has to be on the
     //   same item as the effect modifier is created from. All the regular modifiers use this
@@ -29,4 +40,15 @@ pub(crate) struct CustomAffectorValue {
     // values are marked for recalculation.
     pub(crate) item_add_reviser: Option<fn(&SvcCtx, ItemKey, ItemKey, &UadItem) -> bool> = None,
     pub(crate) item_remove_reviser: Option<fn(&SvcCtx, ItemKey, ItemKey, &UadItem) -> bool> = None,
+}
+impl PartialEq for CustomAffectorValue {
+    fn eq(&self, other: &Self) -> bool {
+        self.kind.eq(&other.kind)
+    }
+}
+impl Eq for CustomAffectorValue {}
+impl Hash for CustomAffectorValue {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.kind.hash(state);
+    }
 }

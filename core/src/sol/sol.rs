@@ -12,7 +12,7 @@ pub struct SolarSystem {
     pub(crate) uad: Uad,
     pub(crate) svc: Svc,
     pub(crate) reffs: REffs,
-    pub(crate) rprojs: RProjs,
+    pub(in crate::sol) rprojs: RProjs,
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
