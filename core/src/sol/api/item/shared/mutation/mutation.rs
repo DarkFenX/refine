@@ -1,4 +1,4 @@
-use crate::sol::{ItemKey, SolarSystem};
+use crate::{def::ItemKey, sol::SolarSystem};
 
 pub enum Mutation<'a> {
     Effective(EffectiveMutation<'a>),

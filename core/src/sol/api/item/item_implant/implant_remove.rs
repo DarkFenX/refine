@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::ImplantMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::ImplantMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_implant(&mut self, item_key: ItemKey) {

@@ -1,6 +1,9 @@
-use crate::sol::{
-    FleetKey, SolarSystem,
-    api::{Fit, FitMut, Fleet, FleetMut, MutIter},
+use crate::{
+    def::FleetKey,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, Fleet, FleetMut, MutIter},
+    },
 };
 
 impl<'a> Fleet<'a> {

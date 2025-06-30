@@ -3,12 +3,10 @@ use itertools::Itertools;
 use super::{is_a_effect_projectable, resolve_effect_status, resolve_online_effect_status};
 use crate::{
     ad,
-    sol::{
-        ItemKey, SolarSystem,
-        reffs::REffs,
-        svc::Svc,
-        uad::{Uad, item::UadItem},
-    },
+    def::ItemKey,
+    sol::{SolarSystem, reffs::REffs},
+    svc::Svc,
+    uad::{Uad, UadItem},
 };
 
 impl SolarSystem {

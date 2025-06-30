@@ -1,11 +1,13 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     ad,
+    def::{FitKey, ItemKey, ItemTypeId},
+    misc::{AddMode, ItemMutationRequest, ModRack, ModuleState, RmMode},
     sol::{
-        AddMode, FitKey, ItemKey, ItemMutationRequest, ItemTypeId, ModRack, ModuleState, RmMode, SolarSystem,
+        SolarSystem,
         api::{FitMut, ModuleMut},
-        uad::item::{UadCharge, UadItem, UadModule},
     },
+    uad::{UadCharge, UadItem, UadModule},
 };
 
 impl SolarSystem {

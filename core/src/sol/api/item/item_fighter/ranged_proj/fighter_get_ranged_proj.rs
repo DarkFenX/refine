@@ -1,6 +1,6 @@
-use crate::sol::{
-    ItemId,
-    api::{Fighter, FighterMut, GetRangedProjError, RangedProj, RangedProjMut},
+use crate::{
+    def::ItemId,
+    sol::api::{Fighter, FighterMut, GetRangedProjError, RangedProj, RangedProjMut},
 };
 
 impl<'a> Fighter<'a> {

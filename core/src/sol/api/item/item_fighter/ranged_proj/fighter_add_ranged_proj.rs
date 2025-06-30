@@ -1,9 +1,10 @@
 use itertools::Itertools;
 
 use crate::{
+    def::{AttrVal, ItemId, ItemKey},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::{
-        AttrVal, ItemId, ItemKey, SolarSystem,
+        SolarSystem,
         api::{AddRangedProjError, FighterMut, ProjMut},
     },
 };

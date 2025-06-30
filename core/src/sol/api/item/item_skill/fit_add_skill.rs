@@ -2,15 +2,14 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     ad,
+    def::{FitKey, ItemKey, ItemTypeId},
     err::basic::SkillEveTypeError,
+    misc::SkillLevel,
     sol::{
-        FitKey, ItemKey, ItemTypeId, SkillLevel, SolarSystem,
+        SolarSystem,
         api::{FitMut, SkillMut},
-        uad::{
-            fit::FitSkill,
-            item::{UadItem, UadSkill},
-        },
     },
+    uad::{FitSkill, UadItem, UadSkill},
 };
 
 impl SolarSystem {

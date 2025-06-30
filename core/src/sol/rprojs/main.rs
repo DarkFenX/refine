@@ -1,4 +1,4 @@
-use crate::{sol::ItemKey, util::RMapRSet};
+use crate::{def::ItemKey, util::RMapRSet};
 
 /// Projector-to-projectee relations are tracked on projector items. This tracker is for projectee-
 /// to-projector relations, to allow finding projectors given a projectee.

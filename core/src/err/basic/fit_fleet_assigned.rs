@@ -1,4 +1,4 @@
-use crate::sol::FitId;
+use crate::def::FitId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("fit {fit_id} does not belong to any fleet")]

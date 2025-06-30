@@ -1,4 +1,8 @@
-use crate::sol::{FitKey, RmMode, SolarSystem, api::FitMut};
+use crate::{
+    def::FitKey,
+    misc::RmMode,
+    sol::{SolarSystem, api::FitMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fit(&mut self, fit_key: FitKey) {

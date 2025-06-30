@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
-use super::RProjs;
-use crate::sol::{
-    debug::{DebugError, DebugResult},
+use crate::{
+    dbg::{DebugError, DebugResult},
+    sol::rprojs::RProjs,
     uad::Uad,
 };
 

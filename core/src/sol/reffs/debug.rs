@@ -1,6 +1,6 @@
-use super::REffs;
-use crate::sol::{
-    debug::{DebugResult, check_a_effect_id, check_item_key},
+use crate::{
+    dbg::{DebugResult, check_a_effect_id, check_item_key},
+    sol::reffs::REffs,
     uad::Uad,
 };
 

@@ -1,7 +1,10 @@
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadProjEffect,
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadProjEffect,
 };
 
 pub struct ProjEffect<'a> {

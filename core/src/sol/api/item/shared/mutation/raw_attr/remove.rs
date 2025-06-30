@@ -1,4 +1,4 @@
-use crate::sol::{AttrMutationRequest, api::RawMAttrMut};
+use crate::{misc::AttrMutationRequest, sol::api::RawMAttrMut};
 
 impl<'a> RawMAttrMut<'a> {
     /// Remove user-defined mutation for the attribute.

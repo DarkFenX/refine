@@ -1,10 +1,13 @@
 use lender::{Lender, Lending};
 
-use crate::sol::{
-    FitKey, FleetKey, ItemKey, SolarSystem,
-    api::{
-        AutochargeMut, BoosterMut, DroneMut, FighterMut, FitMut, FleetMut, FwEffectMut, ImplantMut, ProjEffectMut,
-        RigMut, ServiceMut, SkillMut, SubsystemMut, SwEffectMut,
+use crate::{
+    def::{FitKey, FleetKey, ItemKey},
+    sol::{
+        SolarSystem,
+        api::{
+            AutochargeMut, BoosterMut, DroneMut, FighterMut, FitMut, FleetMut, FwEffectMut, ImplantMut, ProjEffectMut,
+            RigMut, ServiceMut, SkillMut, SubsystemMut, SwEffectMut,
+        },
     },
 };
 

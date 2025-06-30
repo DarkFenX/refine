@@ -1,5 +1,5 @@
-use crate::sol::{
-    SolarSystem,
+use crate::{
+    sol::SolarSystem,
     svc::vast::{ValOptionsSol, ValOptionsSolInt, ValResultSol},
 };
 

@@ -1,10 +1,9 @@
 use crate::{
+    def::ItemKey,
     err::basic::ItemKindRemoveError,
-    sol::{
-        ItemKey, RmMode, SolarSystem,
-        api::ItemMut,
-        uad::item::{UadAutocharge, UadItem},
-    },
+    misc::RmMode,
+    sol::{SolarSystem, api::ItemMut},
+    uad::{UadAutocharge, UadItem},
     util::Named,
 };
 

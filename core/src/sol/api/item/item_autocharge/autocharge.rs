@@ -1,11 +1,14 @@
-// Autocharges expose no projection info, since it fully matches projections of the parent item
-
-use crate::sol::{
-    EffectId, ItemKey, SolarSystem,
-    api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadAutocharge,
+use crate::{
+    def::ItemKey,
+    misc::EffectId,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadAutocharge,
 };
 
+// Autocharges expose no projection info, since it fully matches projections of the parent item
 pub struct Autocharge<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
     pub(in crate::sol::api) key: ItemKey,

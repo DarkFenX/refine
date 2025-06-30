@@ -1,4 +1,4 @@
-use crate::sol::{FitId, ItemId, ItemTypeId};
+use crate::def::{FitId, ItemId, ItemTypeId};
 
 #[derive(thiserror::Error, Debug)]
 #[error("skill {type_id} already exists on fit {fit_id}, item {item_id} has the same type ID")]

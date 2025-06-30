@@ -1,6 +1,7 @@
 use crate::{
+    def::FitId,
     err::basic::{FitFoundError, FitNotInThisFleetError},
-    sol::{FitId, api::FleetMut},
+    sol::api::FleetMut,
 };
 
 impl<'a> FleetMut<'a> {

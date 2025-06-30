@@ -1,6 +1,7 @@
 use crate::{
+    def::FitKey,
     err::basic::FitDpsProfileFoundError,
-    sol::{FitKey, SolarSystem, api::FitMut},
+    sol::{SolarSystem, api::FitMut},
 };
 
 impl SolarSystem {

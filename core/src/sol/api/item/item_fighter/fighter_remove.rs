@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::FighterMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::FighterMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fighter(&mut self, item_key: ItemKey) {

@@ -1,7 +1,10 @@
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadStance,
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadStance,
 };
 
 pub struct Stance<'a> {

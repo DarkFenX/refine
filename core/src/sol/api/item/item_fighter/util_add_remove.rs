@@ -1,4 +1,9 @@
-use crate::sol::{ItemKey, SolarSystem, reffs::REffs, rprojs::RProjs, svc::Svc, uad::Uad};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, reffs::REffs, rprojs::RProjs},
+    svc::Svc,
+    uad::Uad,
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_add_fighter_with_projs(

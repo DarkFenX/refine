@@ -1,6 +1,7 @@
 use crate::{
+    def::{FitKey, FleetId, FleetKey},
     err::basic::FleetFoundError,
-    sol::{FitKey, FleetId, FleetKey, SolarSystem, api::FitMut},
+    sol::{SolarSystem, api::FitMut},
 };
 
 impl SolarSystem {

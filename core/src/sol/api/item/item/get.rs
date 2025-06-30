@@ -1,15 +1,16 @@
 use crate::{
+    def::{ItemId, ItemKey},
     err::basic::ItemFoundError,
     sol::{
-        ItemId, ItemKey, SolarSystem,
+        SolarSystem,
         api::{
             Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone,
             DroneMut, Fighter, FighterMut, FwEffect, FwEffectMut, Implant, ImplantMut, Item, ItemMut, Module,
             ModuleMut, ProjEffect, ProjEffectMut, Rig, RigMut, Service, ServiceMut, Ship, ShipMut, Skill, SkillMut,
             Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
         },
-        uad::item::UadItem,
     },
+    uad::UadItem,
 };
 
 impl SolarSystem {

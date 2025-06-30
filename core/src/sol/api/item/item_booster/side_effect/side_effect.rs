@@ -1,7 +1,4 @@
-use crate::{
-    ad,
-    sol::{EffectId, ItemKey, SolarSystem},
-};
+use crate::{ad, def::ItemKey, misc::EffectId, sol::SolarSystem};
 
 pub enum SideEffect<'a> {
     Full(FullSideEffect<'a>),

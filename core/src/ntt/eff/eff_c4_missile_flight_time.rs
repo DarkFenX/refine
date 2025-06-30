@@ -3,18 +3,17 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac, ad,
+    def::{AttrVal, ItemKey},
+    misc::{AttrSpec, EffectSpec},
     ntt::{NttEffect, NttEffectRt, eff::shared::util::get_item_fit_ship_key},
-    sol::{
-        AttrVal, ItemKey,
-        svc::{
-            AttrSpec, EffectSpec, SvcCtx,
-            calc::{
-                AffecteeFilter, AffectorInfo, AffectorValue, AggrMode, Calc, CustomAffectorValue, Location,
-                ModifierKind, Op, RawModifier,
-            },
+    svc::{
+        SvcCtx,
+        calc::{
+            AffecteeFilter, AffectorInfo, AffectorValue, AggrMode, Calc, CustomAffectorValue, Location, ModifierKind,
+            Op, RawModifier,
         },
-        uad::item::UadItem,
     },
+    uad::UadItem,
 };
 
 const A_EFFECT_ID: ad::AEffectId = ac::effects::MISSILE_FLIGHT_TIME;

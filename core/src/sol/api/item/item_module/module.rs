@@ -1,7 +1,11 @@
-use crate::sol::{
-    Idx, ItemKey, ModRack, ModuleState, SolarSystem,
-    api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadModule,
+use crate::{
+    def::{Idx, ItemKey},
+    misc::{ModRack, ModuleState},
+    sol::{
+        SolarSystem,
+        api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadModule,
 };
 
 pub struct Module<'a> {

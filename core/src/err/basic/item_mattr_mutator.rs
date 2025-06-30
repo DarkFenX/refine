@@ -1,4 +1,4 @@
-use crate::sol::{AttrId, ItemId, ItemTypeId};
+use crate::def::{AttrId, ItemId, ItemTypeId};
 
 #[derive(thiserror::Error, Debug)]
 #[error("attribute {attr_id} is not mutable according to mutator {mutator_id} on item {item_id}")]

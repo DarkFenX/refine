@@ -1,7 +1,7 @@
-use crate::sol::{
-    AttrVal,
-    api::{FullMAttrMut, item::shared::mutation::resolve_absolutes_into_rolls_with_ids},
-    uad::item::UadItem,
+use crate::{
+    def::AttrVal,
+    sol::api::{FullMAttrMut, item::shared::mutation::resolve_absolutes_into_rolls_with_ids},
+    uad::UadItem,
 };
 
 impl<'a> FullMAttrMut<'a> {

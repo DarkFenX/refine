@@ -1,6 +1,6 @@
-use crate::sol::{
-    ItemId,
-    api::{GetRangedProjError, Module, ModuleMut, RangedProj, RangedProjMut},
+use crate::{
+    def::ItemId,
+    sol::api::{GetRangedProjError, Module, ModuleMut, RangedProj, RangedProjMut},
 };
 
 impl<'a> Module<'a> {

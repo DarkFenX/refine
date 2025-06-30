@@ -1,4 +1,4 @@
-use crate::{ad, adg, defs::VERSION, ed, src::SrcInitError};
+use crate::{ad, adg, def::VERSION, ed, src::SrcInitError};
 
 pub(crate) struct InnerSrc {
     pub(crate) a_handler: Box<dyn ad::AdaptedDataHandler>,

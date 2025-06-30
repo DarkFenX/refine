@@ -1,6 +1,7 @@
-use crate::sol::{
-    AttrVal, DmgKinds,
-    api::FitMut,
+use crate::{
+    def::AttrVal,
+    misc::DmgKinds,
+    sol::api::FitMut,
     svc::vast::{StatLayerHp, StatTank},
 };
 

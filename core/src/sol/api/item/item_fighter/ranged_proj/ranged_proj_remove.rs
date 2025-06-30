@@ -1,9 +1,6 @@
 use itertools::Itertools;
 
-use crate::{
-    err::basic::ProjFoundError,
-    sol::{ItemKey, SolarSystem},
-};
+use crate::{def::ItemKey, err::basic::ProjFoundError, sol::SolarSystem};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fighter_proj(

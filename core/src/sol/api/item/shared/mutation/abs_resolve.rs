@@ -1,7 +1,9 @@
 use crate::{
     ad,
-    sol::{AttrMutationRequest, AttrVal, UnitInterval, uad::item::get_combined_a_attr_values},
+    def::AttrVal,
+    misc::{AttrMutationRequest, UnitInterval},
     src::Src,
+    uad::get_combined_a_attr_values,
     util::RMap,
 };
 

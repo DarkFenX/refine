@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::ProjEffectMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::ProjEffectMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_proj_effect(&mut self, item_key: ItemKey) {

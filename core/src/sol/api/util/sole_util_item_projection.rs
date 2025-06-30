@@ -1,9 +1,9 @@
 use super::is_a_effect_projectable;
-use crate::sol::{
-    AttrVal, ItemKey, SolarSystem,
-    reffs::REffs,
+use crate::{
+    def::{AttrVal, ItemKey},
+    sol::{SolarSystem, reffs::REffs},
     svc::Svc,
-    uad::{Uad, item::UadItem},
+    uad::{Uad, UadItem},
 };
 
 impl SolarSystem {

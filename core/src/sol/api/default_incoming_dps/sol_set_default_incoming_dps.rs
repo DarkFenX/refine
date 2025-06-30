@@ -1,4 +1,4 @@
-use crate::sol::{DpsProfile, SolarSystem};
+use crate::{misc::DpsProfile, sol::SolarSystem};
 
 impl SolarSystem {
     pub fn set_default_incoming_dps(&mut self, dps_profile: DpsProfile) {

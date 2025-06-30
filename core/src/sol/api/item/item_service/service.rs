@@ -1,7 +1,11 @@
-use crate::sol::{
-    ItemKey, ServiceState, SolarSystem,
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadService,
+use crate::{
+    def::ItemKey,
+    misc::ServiceState,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadService,
 };
 
 pub struct Service<'a> {

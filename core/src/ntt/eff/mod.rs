@@ -1,11 +1,11 @@
 use std::{collections::HashMap, sync::LazyLock};
 
-pub(crate) use def::NttEffect;
-pub use def::NttEffectRt;
+pub(crate) use eff::NttEffect;
+pub use eff::NttEffectRt;
 
 use crate::ad;
 
-mod def;
+mod eff;
 mod eff_c1_char_missile_dmg;
 mod eff_c2_aar_paste_boost;
 mod eff_c3_stasis_web_probe;

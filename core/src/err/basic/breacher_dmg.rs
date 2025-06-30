@@ -1,4 +1,4 @@
-use crate::sol::AttrVal;
+use crate::def::AttrVal;
 
 #[derive(thiserror::Error, Debug)]
 pub enum BreacherDmgError {

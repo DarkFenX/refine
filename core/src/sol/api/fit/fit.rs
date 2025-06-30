@@ -1,4 +1,7 @@
-use crate::sol::{FitId, FitKey, SolarSystem};
+use crate::{
+    def::{FitId, FitKey},
+    sol::SolarSystem,
+};
 
 pub struct Fit<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,

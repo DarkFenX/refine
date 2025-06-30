@@ -1,6 +1,6 @@
-use crate::sol::{
-    FitKey, SolarSystem,
-    api::FitMut,
+use crate::{
+    def::FitKey,
+    sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt, ValResultFit},
 };
 

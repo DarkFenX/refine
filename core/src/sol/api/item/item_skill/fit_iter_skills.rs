@@ -1,6 +1,9 @@
-use crate::sol::{
-    FitKey, SolarSystem,
-    api::{Fit, FitMut, MutIter, Skill, SkillMut},
+use crate::{
+    def::FitKey,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, MutIter, Skill, SkillMut},
+    },
 };
 
 impl<'a> Fit<'a> {

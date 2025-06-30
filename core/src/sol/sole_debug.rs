@@ -1,4 +1,4 @@
-use crate::sol::{SolarSystem, debug::DebugResult};
+use crate::{dbg::DebugResult, sol::SolarSystem};
 
 impl SolarSystem {
     pub(in crate::sol) fn internal_consistency_check(&self) -> DebugResult {

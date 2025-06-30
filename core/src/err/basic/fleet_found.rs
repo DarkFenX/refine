@@ -1,4 +1,4 @@
-use crate::sol::FleetId;
+use crate::def::FleetId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("fleet {fleet_id} not found")]

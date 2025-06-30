@@ -1,4 +1,8 @@
-use crate::sol::{ItemKey, SolarSystem, api::ShipMut, uad::item::ShipKind};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::ShipMut},
+    uad::ShipKind,
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_ship(&mut self, item_key: ItemKey) {

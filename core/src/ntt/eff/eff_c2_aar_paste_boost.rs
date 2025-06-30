@@ -3,18 +3,17 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac, ad,
+    def::{AttrVal, ItemKey},
+    misc::EffectSpec,
     ntt::{NttEffect, NttEffectRt},
-    sol::{
-        AttrVal, ItemKey,
-        svc::{
-            EffectSpec, SvcCtx,
-            calc::{
-                AffecteeFilter, AffectorInfo, AffectorValue, AggrMode, Calc, CustomAffectorValue, Location,
-                ModifierKind, Op, RawModifier,
-            },
+    svc::{
+        SvcCtx,
+        calc::{
+            AffecteeFilter, AffectorInfo, AffectorValue, AggrMode, Calc, CustomAffectorValue, Location, ModifierKind,
+            Op, RawModifier,
         },
-        uad::item::UadItem,
     },
+    uad::UadItem,
 };
 
 const A_EFFECT_ID: ad::AEffectId = ac::effects::AAR_PASTE_BOOST;

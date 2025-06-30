@@ -1,9 +1,13 @@
 use lender::{Lender, Lending};
 
 use super::shared::get_fit_rack;
-use crate::sol::{
-    FitKey, ItemKey, ModRack, SolarSystem,
-    api::{Fit, FitMut, Module, ModuleMut},
+use crate::{
+    def::{FitKey, ItemKey},
+    misc::ModRack,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, Module, ModuleMut},
+    },
 };
 
 pub struct ModuleIter<'iter> {

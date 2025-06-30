@@ -1,4 +1,8 @@
-use crate::sol::{ItemKey, ModuleState, SolarSystem, api::ModuleMut};
+use crate::{
+    def::ItemKey,
+    misc::ModuleState,
+    sol::{SolarSystem, api::ModuleMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_module_state(&mut self, item_key: ItemKey, state: ModuleState) {

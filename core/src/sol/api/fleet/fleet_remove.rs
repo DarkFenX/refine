@@ -1,6 +1,9 @@
 use itertools::Itertools;
 
-use crate::sol::{FleetKey, SolarSystem, api::FleetMut};
+use crate::{
+    def::FleetKey,
+    sol::{SolarSystem, api::FleetMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fleet(&mut self, fleet_key: FleetKey) {

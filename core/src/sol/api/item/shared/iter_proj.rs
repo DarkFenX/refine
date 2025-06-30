@@ -1,4 +1,4 @@
-use crate::sol::{ItemKey, SolarSystem};
+use crate::{def::ItemKey, sol::SolarSystem};
 
 pub(in crate::sol::api) fn iter_projectee_item_keys(
     sol: &SolarSystem,

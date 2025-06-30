@@ -1,11 +1,13 @@
-// Charges expose no projection info, since it fully matches projections of the parent item
-
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadCharge,
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadCharge,
 };
 
+// Charges expose no projection info, since it fully matches projections of the parent item
 pub struct Charge<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
     pub(in crate::sol::api) key: ItemKey,

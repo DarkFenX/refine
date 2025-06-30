@@ -1,7 +1,8 @@
 use crate::{
     ad,
+    def::{ItemKey, ItemTypeId},
     err::basic::SkillEveTypeError,
-    sol::{ItemKey, ItemTypeId, SolarSystem, api::SkillMut},
+    sol::{SolarSystem, api::SkillMut},
     util::GetId,
 };
 

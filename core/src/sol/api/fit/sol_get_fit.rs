@@ -1,7 +1,8 @@
 use crate::{
+    def::FitId,
     err::basic::FitFoundError,
     sol::{
-        FitId, SolarSystem,
+        SolarSystem,
         api::{Fit, FitMut},
     },
 };

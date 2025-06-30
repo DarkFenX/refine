@@ -1,7 +1,10 @@
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadSwEffect,
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadSwEffect,
 };
 
 pub struct SwEffect<'a> {

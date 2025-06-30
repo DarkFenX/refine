@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::RigMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::RigMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_rig(&mut self, item_key: ItemKey) {

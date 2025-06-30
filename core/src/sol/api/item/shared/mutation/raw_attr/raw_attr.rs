@@ -1,6 +1,7 @@
 use crate::{
     ad,
-    sol::{AttrId, ItemKey, SolarSystem},
+    def::{AttrId, ItemKey},
+    sol::SolarSystem,
 };
 
 /// Raw mutated attribute.

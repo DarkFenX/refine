@@ -1,4 +1,4 @@
-use crate::sol::FitId;
+use crate::def::FitId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("DPS profile not found on fit {fit_id}")]

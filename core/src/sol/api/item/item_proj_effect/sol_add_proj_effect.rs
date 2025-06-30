@@ -1,10 +1,8 @@
 use crate::{
     ad,
-    sol::{
-        ItemKey, ItemTypeId, SolarSystem,
-        api::ProjEffectMut,
-        uad::item::{UadItem, UadProjEffect},
-    },
+    def::{ItemKey, ItemTypeId},
+    sol::{SolarSystem, api::ProjEffectMut},
+    uad::{UadItem, UadProjEffect},
 };
 
 impl SolarSystem {

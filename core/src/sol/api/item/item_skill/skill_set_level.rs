@@ -1,4 +1,8 @@
-use crate::sol::{ItemKey, SkillLevel, SolarSystem, api::SkillMut};
+use crate::{
+    def::ItemKey,
+    misc::SkillLevel,
+    sol::{SolarSystem, api::SkillMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_skill_level(&mut self, item_key: ItemKey, level: SkillLevel) {

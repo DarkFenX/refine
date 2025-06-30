@@ -1,8 +1,10 @@
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut},
-    err::ItemMutatedError,
-    uad::item::UadItem,
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut},
+    },
+    uad::{UadItem, err::ItemMutatedError},
 };
 
 impl SolarSystem {

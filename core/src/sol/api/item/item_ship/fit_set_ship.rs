@@ -1,10 +1,11 @@
 use crate::{
     ad,
+    def::{FitKey, ItemKey, ItemTypeId},
     sol::{
-        FitKey, ItemKey, ItemTypeId, SolarSystem,
+        SolarSystem,
         api::{FitMut, ShipMut},
-        uad::item::{UadItem, UadShip},
     },
+    uad::{UadItem, UadShip},
 };
 
 impl SolarSystem {

@@ -1,6 +1,10 @@
-use crate::sol::{
-    DpsProfile, FitKey, SolarSystem,
-    api::{Fit, FitMut},
+use crate::{
+    def::FitKey,
+    misc::DpsProfile,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut},
+    },
 };
 
 impl SolarSystem {

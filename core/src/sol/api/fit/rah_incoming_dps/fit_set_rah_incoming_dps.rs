@@ -1,4 +1,8 @@
-use crate::sol::{DpsProfile, FitKey, SolarSystem, api::FitMut};
+use crate::{
+    def::FitKey,
+    misc::DpsProfile,
+    sol::{SolarSystem, api::FitMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fit_rah_incoming_dps(&mut self, fit_key: FitKey, dps_profile: DpsProfile) {

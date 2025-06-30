@@ -1,5 +1,9 @@
 use super::shared::get_fit_rack_mut;
-use crate::sol::{ItemKey, RmMode, SolarSystem, api::ModuleMut};
+use crate::{
+    def::ItemKey,
+    misc::RmMode,
+    sol::{SolarSystem, api::ModuleMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_module(&mut self, item_key: ItemKey, pos_mode: RmMode) {

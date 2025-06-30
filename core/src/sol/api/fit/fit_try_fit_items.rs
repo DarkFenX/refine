@@ -1,10 +1,9 @@
 use crate::{
     ad,
-    sol::{
-        AddMode, FitKey, ItemTypeId, MinionState, ModRack, ModuleState, RmMode, ServiceState, SolarSystem,
-        api::FitMut,
-        svc::vast::{ValOptions, ValOptionsInt},
-    },
+    def::{FitKey, ItemTypeId},
+    misc::{AddMode, MinionState, ModRack, ModuleState, RmMode, ServiceState},
+    sol::{SolarSystem, api::FitMut},
+    svc::vast::{ValOptions, ValOptionsInt},
 };
 
 impl SolarSystem {

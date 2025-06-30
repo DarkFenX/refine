@@ -1,10 +1,12 @@
 use crate::{
     ad,
+    def::{FitKey, ItemKey, ItemTypeId},
+    misc::MinionState,
     sol::{
-        FitKey, ItemKey, ItemTypeId, MinionState, SolarSystem,
+        SolarSystem,
         api::{FighterMut, FitMut},
-        uad::item::{UadFighter, UadItem},
     },
+    uad::{UadFighter, UadItem},
 };
 
 impl SolarSystem {

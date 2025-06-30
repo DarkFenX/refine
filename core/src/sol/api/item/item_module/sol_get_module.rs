@@ -1,7 +1,8 @@
 use crate::{
+    def::ItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::{
-        ItemId, SolarSystem,
+        SolarSystem,
         api::{Module, ModuleMut},
     },
 };

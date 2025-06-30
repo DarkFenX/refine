@@ -1,4 +1,7 @@
-use crate::sol::{AttrVal, ItemId, ItemKey, SolarSystem};
+use crate::{
+    def::{AttrVal, ItemId, ItemKey},
+    sol::SolarSystem,
+};
 
 /// Projection which allows to set range.
 pub struct RangedProj<'a> {

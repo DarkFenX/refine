@@ -1,10 +1,12 @@
 use crate::{
     ad,
+    def::{FitKey, ItemKey, ItemTypeId},
+    misc::{ItemMutationRequest, MinionState},
     sol::{
-        FitKey, ItemKey, ItemMutationRequest, ItemTypeId, MinionState, SolarSystem,
+        SolarSystem,
         api::{DroneMut, FitMut},
-        uad::item::{UadDrone, UadItem},
     },
+    uad::{UadDrone, UadItem},
 };
 
 impl SolarSystem {

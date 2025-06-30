@@ -2,16 +2,10 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    sol::{
-        ItemKey, SolarSystem,
-        reffs::REffs,
-        rprojs::RProjs,
-        svc::Svc,
-        uad::{
-            Uad,
-            item::{UadAutocharge, UadItem},
-        },
-    },
+    def::ItemKey,
+    sol::{SolarSystem, reffs::REffs, rprojs::RProjs},
+    svc::Svc,
+    uad::{Uad, UadAutocharge, UadItem},
 };
 
 impl SolarSystem {

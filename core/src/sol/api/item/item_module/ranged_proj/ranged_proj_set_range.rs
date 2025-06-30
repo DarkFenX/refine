@@ -1,6 +1,7 @@
 use crate::{
+    def::{AttrVal, ItemKey},
     err::basic::ProjFoundError,
-    sol::{AttrVal, ItemKey, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {

@@ -1,4 +1,4 @@
-use crate::sol::{api::FitMut, svc::vast::StatRes};
+use crate::{sol::api::FitMut, svc::vast::StatRes};
 
 impl<'a> FitMut<'a> {
     pub fn get_stat_cpu(&mut self) -> StatRes {

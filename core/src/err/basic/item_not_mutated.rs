@@ -1,4 +1,4 @@
-use crate::sol::ItemId;
+use crate::def::ItemId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("item {item_id} is mutated")]

@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::StanceMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::StanceMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_stance_state(&mut self, item_key: ItemKey, state: bool) {

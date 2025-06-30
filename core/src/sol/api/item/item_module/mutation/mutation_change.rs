@@ -1,4 +1,4 @@
-use crate::sol::{AttrMutationRequest, ItemKey, SolarSystem, err::ItemMutatedError};
+use crate::{def::ItemKey, misc::AttrMutationRequest, sol::SolarSystem, uad::err::ItemMutatedError};
 
 impl SolarSystem {
     pub(in crate::sol) fn internal_change_module_mutation_attrs(

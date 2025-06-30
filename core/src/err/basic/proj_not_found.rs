@@ -1,4 +1,4 @@
-use crate::sol::ItemId;
+use crate::def::ItemId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("projection {projector_item_id}->{projectee_item_id} is already defined")]

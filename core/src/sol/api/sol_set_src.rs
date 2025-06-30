@@ -1,12 +1,8 @@
 use crate::{
-    sol::{
-        ItemKey, SolarSystem,
-        uad::{
-            Uad,
-            item::{ShipKind, UadItem},
-        },
-    },
+    def::ItemKey,
+    sol::SolarSystem,
     src::Src,
+    uad::{ShipKind, Uad, UadItem},
 };
 
 struct ItemKeys {

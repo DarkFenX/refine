@@ -1,4 +1,8 @@
-use crate::sol::{FighterCountOverride, ItemKey, SolarSystem, api::FighterMut};
+use crate::{
+    def::ItemKey,
+    misc::FighterCountOverride,
+    sol::{SolarSystem, api::FighterMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fighter_count_override(

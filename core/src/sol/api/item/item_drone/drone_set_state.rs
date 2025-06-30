@@ -1,4 +1,8 @@
-use crate::sol::{ItemKey, MinionState, SolarSystem, api::DroneMut};
+use crate::{
+    def::ItemKey,
+    misc::MinionState,
+    sol::{SolarSystem, api::DroneMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_drone_state(&mut self, item_key: ItemKey, state: MinionState) {

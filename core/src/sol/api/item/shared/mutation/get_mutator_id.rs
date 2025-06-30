@@ -1,6 +1,11 @@
-use crate::sol::{
-    ItemKey, ItemTypeId, SolarSystem,
-    api::{EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut},
+use crate::{
+    def::{ItemKey, ItemTypeId},
+    sol::{
+        SolarSystem,
+        api::{
+            EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut,
+        },
+    },
 };
 
 impl SolarSystem {

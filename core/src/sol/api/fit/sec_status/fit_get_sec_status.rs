@@ -1,6 +1,10 @@
-use crate::sol::{
-    FitKey, FitSecStatus, SolarSystem,
-    api::{Fit, FitMut},
+use crate::{
+    def::FitKey,
+    misc::FitSecStatus,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut},
+    },
 };
 
 impl SolarSystem {

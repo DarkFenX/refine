@@ -1,7 +1,11 @@
-use crate::sol::{
-    AdjustableCount, ItemKey, MinionState, SolarSystem,
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadFighter,
+use crate::{
+    def::ItemKey,
+    misc::{AdjustableCount, MinionState},
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadFighter,
 };
 
 pub struct Fighter<'a> {

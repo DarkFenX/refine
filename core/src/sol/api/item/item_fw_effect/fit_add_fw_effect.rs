@@ -1,10 +1,11 @@
 use crate::{
     ad,
+    def::{FitKey, ItemKey, ItemTypeId},
     sol::{
-        FitKey, ItemKey, ItemTypeId, SolarSystem,
+        SolarSystem,
         api::{FitMut, FwEffectMut},
-        uad::item::{UadFwEffect, UadItem},
     },
+    uad::{UadFwEffect, UadItem},
 };
 
 impl SolarSystem {

@@ -1,10 +1,13 @@
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{
-        Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
-        Fighter, FighterMut, FwEffect, FwEffectMut, Implant, ImplantMut, ItemCommon, ItemMutCommon, ItemMutSealed,
-        ItemSealed, Module, ModuleMut, ProjEffect, ProjEffectMut, Rig, RigMut, Service, ServiceMut, Ship, ShipMut,
-        Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{
+            Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone,
+            DroneMut, Fighter, FighterMut, FwEffect, FwEffectMut, Implant, ImplantMut, ItemCommon, ItemMutCommon,
+            ItemMutSealed, ItemSealed, Module, ModuleMut, ProjEffect, ProjEffectMut, Rig, RigMut, Service, ServiceMut,
+            Ship, ShipMut, Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+        },
     },
 };
 

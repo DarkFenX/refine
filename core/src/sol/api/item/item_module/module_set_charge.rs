@@ -2,11 +2,12 @@ use itertools::Itertools;
 
 use crate::{
     ad,
+    def::{ItemKey, ItemTypeId},
     sol::{
-        ItemKey, ItemTypeId, SolarSystem,
+        SolarSystem,
         api::{ChargeMut, ModuleMut},
-        uad::item::{UadCharge, UadItem},
     },
+    uad::{UadCharge, UadItem},
 };
 
 impl SolarSystem {

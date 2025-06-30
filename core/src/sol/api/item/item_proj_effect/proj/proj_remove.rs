@@ -1,6 +1,7 @@
 use crate::{
+    def::ItemKey,
     err::basic::ProjFoundError,
-    sol::{ItemKey, SolarSystem, api::ProjMut},
+    sol::{SolarSystem, api::ProjMut},
 };
 
 impl SolarSystem {

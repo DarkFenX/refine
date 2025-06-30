@@ -1,7 +1,11 @@
-use crate::sol::{
-    ItemKey, SkillLevel, SolarSystem,
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadSkill,
+use crate::{
+    def::ItemKey,
+    misc::SkillLevel,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadSkill,
 };
 
 pub struct Skill<'a> {

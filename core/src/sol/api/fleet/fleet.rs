@@ -1,4 +1,7 @@
-use crate::sol::{FleetId, FleetKey, SolarSystem};
+use crate::{
+    def::{FleetId, FleetKey},
+    sol::SolarSystem,
+};
 
 pub struct Fleet<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,

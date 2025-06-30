@@ -2,10 +2,9 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    sol::{
-        AttrId, AttrVal, OpInfo,
-        api::{FullSideEffect, FullSideEffectMut},
-    },
+    def::{AttrId, AttrVal},
+    misc::OpInfo,
+    sol::api::{FullSideEffect, FullSideEffectMut},
     src::Src,
 };
 

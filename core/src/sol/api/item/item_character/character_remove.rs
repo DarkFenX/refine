@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::CharacterMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::CharacterMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_character(&mut self, item_key: ItemKey) {

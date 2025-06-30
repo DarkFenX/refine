@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::DroneMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::DroneMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_drone(&mut self, item_key: ItemKey) {

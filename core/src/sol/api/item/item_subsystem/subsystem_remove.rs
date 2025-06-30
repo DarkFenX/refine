@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::SubsystemMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::SubsystemMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_subsystem(&mut self, item_key: ItemKey) {

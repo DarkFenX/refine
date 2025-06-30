@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::FwEffectMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::FwEffectMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fw_effect(&mut self, item_key: ItemKey) {

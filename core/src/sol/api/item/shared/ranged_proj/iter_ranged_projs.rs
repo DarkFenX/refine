@@ -1,8 +1,11 @@
 use lender::{Lender, Lending};
 
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{RangedProj, RangedProjMut, iter_projectee_item_keys},
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{RangedProj, RangedProjMut, iter_projectee_item_keys},
+    },
 };
 
 // Lending iterator for ranged projections

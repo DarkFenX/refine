@@ -1,8 +1,8 @@
 use std::hint::black_box;
 
-use crate::sol::{
-    ItemTypeId,
-    api::FitMut,
+use crate::{
+    def::ItemTypeId,
+    sol::api::FitMut,
     svc::vast::{ValOptions, ValOptionsInt},
 };
 

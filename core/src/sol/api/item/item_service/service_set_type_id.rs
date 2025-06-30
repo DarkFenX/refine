@@ -1,6 +1,7 @@
 use crate::{
     ad,
-    sol::{ItemKey, ItemTypeId, SolarSystem, api::ServiceMut},
+    def::{ItemKey, ItemTypeId},
+    sol::{SolarSystem, api::ServiceMut},
 };
 
 impl SolarSystem {

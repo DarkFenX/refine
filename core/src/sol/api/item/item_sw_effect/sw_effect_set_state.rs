@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::SwEffectMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::SwEffectMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_sw_effect_state(&mut self, item_key: ItemKey, state: bool) {

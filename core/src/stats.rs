@@ -1,2 +1,2 @@
 //! Stats-related exports
-pub use crate::sol::svc::vast::{StatLayerHp, StatRes, StatSlot, StatTank};
+pub use crate::svc::vast::{StatLayerHp, StatRes, StatSlot, StatTank};

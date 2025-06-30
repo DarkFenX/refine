@@ -1,4 +1,8 @@
-use crate::sol::{FleetKey, SolarSystem, api::FleetMut, uad::fleet::UadFleet};
+use crate::{
+    def::FleetKey,
+    sol::{SolarSystem, api::FleetMut},
+    uad::UadFleet,
+};
 
 impl SolarSystem {
     pub fn add_fleet(&mut self) -> FleetMut<'_> {

@@ -1,4 +1,4 @@
-use crate::{ac, ad, sol::uad::item::UadItem};
+use crate::{ac, ad, uad::UadItem};
 
 pub(super) fn is_a_effect_projectable(uad_item: &UadItem, a_effect: &ad::AEffectRt) -> bool {
     // Projected effects do not apply targeted effects. Projected effects are item-targetable

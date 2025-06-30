@@ -4,8 +4,10 @@
 use super::shared::get_side_effect_chance_attr_id;
 use crate::{
     ad,
+    def::ItemKey,
+    misc::EffectId,
     sol::{
-        EffectId, ItemKey, SolarSystem,
+        SolarSystem,
         api::{
             Booster, BoosterMut, FullSideEffect, FullSideEffectMut, SideEffect, SideEffectMut, StubSideEffect,
             StubSideEffectMut,

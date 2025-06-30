@@ -1,7 +1,10 @@
-use crate::sol::{
-    ItemKey, SlotIndex, SolarSystem,
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadSubsystem,
+use crate::{
+    def::{ItemKey, SlotIndex},
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadSubsystem,
 };
 
 pub struct Subsystem<'a> {

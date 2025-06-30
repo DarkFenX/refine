@@ -1,7 +1,8 @@
 use crate::{
+    def::FleetId,
     err::basic::FleetFoundError,
     sol::{
-        FleetId, SolarSystem,
+        SolarSystem,
         api::{Fleet, FleetMut},
     },
 };

@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::ChargeMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::ChargeMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_charge_state(&mut self, item_key: ItemKey, state: bool) {

@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::ImplantMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::ImplantMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_implant_state(&mut self, item_key: ItemKey, state: bool) {

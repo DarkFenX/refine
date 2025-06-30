@@ -1,4 +1,7 @@
-use crate::sol::{ItemKey, SolarSystem, api::BoosterMut};
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, api::BoosterMut},
+};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_booster(&mut self, item_key: ItemKey) {

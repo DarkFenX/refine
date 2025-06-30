@@ -2,7 +2,9 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    sol::{ItemKey, SolarSystem, err::KeyedItemLoadedError, svc::calc::CalcAttrVal},
+    def::ItemKey,
+    sol::SolarSystem,
+    svc::{calc::CalcAttrVal, err::KeyedItemLoadedError},
 };
 
 impl SolarSystem {

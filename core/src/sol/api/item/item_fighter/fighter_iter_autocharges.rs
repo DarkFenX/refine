@@ -1,6 +1,9 @@
-use crate::sol::{
-    ItemKey, SolarSystem,
-    api::{Autocharge, AutochargeMut, Fighter, FighterMut, MutIter},
+use crate::{
+    def::ItemKey,
+    sol::{
+        SolarSystem,
+        api::{Autocharge, AutochargeMut, Fighter, FighterMut, MutIter},
+    },
 };
 
 impl<'a> Fighter<'a> {

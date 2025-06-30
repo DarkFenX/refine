@@ -1,6 +1,6 @@
-use crate::sol::{
-    AttrId, AttrVal,
-    api::{FullSideEffect, FullSideEffectMut},
+use crate::{
+    def::{AttrId, AttrVal},
+    sol::api::{FullSideEffect, FullSideEffectMut},
 };
 
 impl<'a> FullSideEffect<'a> {

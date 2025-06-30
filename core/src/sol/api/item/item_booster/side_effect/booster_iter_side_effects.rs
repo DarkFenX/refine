@@ -3,8 +3,9 @@ use lender::{Lender, Lending};
 use super::shared::get_side_effect_chance_attr_id;
 use crate::{
     ad,
+    def::ItemKey,
     sol::{
-        ItemKey, SolarSystem,
+        SolarSystem,
         api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
     },
 };

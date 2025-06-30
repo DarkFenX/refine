@@ -1,8 +1,8 @@
-use crate::sol::{
-    ItemKey, SolarSystem,
-    reffs::REffs,
+use crate::{
+    def::ItemKey,
+    sol::{SolarSystem, reffs::REffs},
     svc::Svc,
-    uad::{Uad, item::UadItem},
+    uad::{Uad, UadItem},
 };
 
 impl SolarSystem {

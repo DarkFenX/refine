@@ -1,7 +1,11 @@
-use crate::sol::{
-    ItemKey, MinionState, SolarSystem,
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    uad::item::UadDrone,
+use crate::{
+    def::ItemKey,
+    misc::MinionState,
+    sol::{
+        SolarSystem,
+        api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    },
+    uad::UadDrone,
 };
 
 pub struct Drone<'a> {

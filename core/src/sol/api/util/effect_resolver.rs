@@ -1,9 +1,7 @@
 use crate::{
     ac, ad,
-    sol::{
-        EffectMode,
-        uad::{Uad, item::UadItem},
-    },
+    misc::EffectMode,
+    uad::{Uad, UadItem},
 };
 
 pub(in crate::sol::api::util) fn resolve_effect_status(

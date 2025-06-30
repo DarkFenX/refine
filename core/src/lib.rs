@@ -20,13 +20,18 @@
 //! - you create [`SolarSystem`](crate::SolarSystem), and manipulate it to create fits with ships
 //!   and items, and fetch data and stats
 
-pub use defs::VERSION;
+pub use def::{
+    AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
+    SlotIndex, VERSION,
+};
 pub use lender::Lender;
+pub use misc::{
+    AddMode, BreacherInfo, BreacherInfoError, DpsProfile, EffectId, EffectInfo, EffectMode, FighterCountOverride,
+    FitSecStatus, MinionState, ModRack, ModuleState, OpInfo, RmMode, SecZone, SecZoneCorruption, ServiceState,
+    SkillLevel, UnitInterval,
+};
 pub use sol::{
-    AddMode, AttrId, AttrVal, BreacherInfo, Count, CustomEffectId, DogmaEffectId, DpsProfile, EffectId, EffectInfo,
-    EffectMode, FighterCountOverride, FitId, FitSecStatus, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId, MinionState,
-    ModRack, ModuleState, OpInfo, RmMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, SolarSystem,
-    UnitInterval,
+    SolarSystem,
     api::{
         Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
         EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr,
@@ -37,21 +42,24 @@ pub use sol::{
         ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut,
         Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
     },
-    svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo},
 };
 pub use src::Src;
+pub use svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo};
 
 mod ac;
 pub mod ad;
 mod adg;
-mod config;
-mod defs;
+mod dbg;
+mod def;
 mod ec;
 pub mod ed;
 pub mod err;
+mod misc;
 mod ntt;
 mod sol;
 mod src;
 pub mod stats;
+mod svc;
+mod uad;
 pub mod util;
 pub mod val;

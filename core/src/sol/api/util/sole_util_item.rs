@@ -1,11 +1,9 @@
 use crate::{
     ad,
-    sol::{
-        ItemKey, SolarSystem,
-        reffs::REffs,
-        svc::Svc,
-        uad::{Uad, item::UadItem},
-    },
+    def::ItemKey,
+    sol::{SolarSystem, reffs::REffs},
+    svc::Svc,
+    uad::{Uad, UadItem},
 };
 
 impl SolarSystem {

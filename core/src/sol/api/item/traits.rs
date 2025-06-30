@@ -1,11 +1,11 @@
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
 use crate::{
+    def::{AttrId, ItemId, ItemTypeId},
     err::basic::ItemLoadedError,
-    sol::{
-        AttrId, EffectId, EffectInfo, EffectMode, ItemId, ItemTypeId, SolarSystem,
-        svc::calc::{CalcAttrVal, ModificationInfo},
-    },
+    misc::{EffectId, EffectInfo, EffectMode},
+    sol::SolarSystem,
+    svc::calc::{CalcAttrVal, ModificationInfo},
 };
 
 pub trait ItemCommon: ItemSealed {
@@ -116,7 +116,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
 }
 
 mod private {
-    use crate::sol::{ItemKey, SolarSystem};
+    use crate::{def::ItemKey, sol::SolarSystem};
 
     pub trait ItemSealed: Sized {
         fn get_sol(&self) -> &SolarSystem;

@@ -1,7 +1,8 @@
 use crate::{
     ad,
+    def::{AttrVal, ItemKey},
     sol::{
-        AttrVal, ItemKey, SolarSystem,
+        SolarSystem,
         api::{FullMAttr, FullMAttrMut},
     },
 };

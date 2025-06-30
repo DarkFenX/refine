@@ -1,4 +1,4 @@
-use crate::sol::{api::FitMut, svc::vast::StatSlot};
+use crate::{sol::api::FitMut, svc::vast::StatSlot};
 
 impl<'a> FitMut<'a> {
     // Modules

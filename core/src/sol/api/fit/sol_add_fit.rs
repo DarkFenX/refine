@@ -1,4 +1,8 @@
-use crate::sol::{FitKey, SolarSystem, api::FitMut, uad::fit::UadFit};
+use crate::{
+    def::FitKey,
+    sol::{SolarSystem, api::FitMut},
+    uad::UadFit,
+};
 
 impl SolarSystem {
     pub fn add_fit(&mut self) -> FitMut<'_> {

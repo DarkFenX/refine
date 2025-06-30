@@ -1,4 +1,4 @@
-use crate::sol::{AttrVal, api::ShipMut};
+use crate::{def::AttrVal, sol::api::ShipMut};
 
 impl<'a> ShipMut<'a> {
     pub fn get_speed(&mut self) -> Option<AttrVal> {
