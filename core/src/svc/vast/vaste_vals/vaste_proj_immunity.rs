@@ -19,7 +19,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_assist_immunity_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
@@ -33,7 +33,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_offense_immunity_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
@@ -47,7 +47,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_resist_immunity_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
@@ -68,7 +68,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_assist_immunity_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
         validate_verbose(
@@ -82,7 +82,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_offense_immunity_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
         validate_verbose(
@@ -96,7 +96,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_resist_immunity_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
         let mut items = HashMap::new();
@@ -126,7 +126,7 @@ impl VastFitData {
 
 fn validate_fast(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     blockable: &RMapRSet<ItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
@@ -148,7 +148,7 @@ fn validate_fast(
 
 fn validate_verbose(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     blockable: &RMapRSet<ItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,

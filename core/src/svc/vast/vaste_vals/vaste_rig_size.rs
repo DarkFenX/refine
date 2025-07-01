@@ -33,7 +33,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_rig_size_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;

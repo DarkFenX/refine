@@ -11,7 +11,7 @@ pub(in crate::svc::calc) const FTR_COUNT_ATTR: ad::AAttrId = ac::attrs::FTR_SQ_S
 
 pub(super) fn fighter_count_postproc_fast(
     _calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     mut val: CalcAttrVal,
 ) -> CalcAttrVal {
@@ -24,7 +24,7 @@ pub(super) fn fighter_count_postproc_fast(
 
 pub(super) fn fighter_count_postproc_info(
     _calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {

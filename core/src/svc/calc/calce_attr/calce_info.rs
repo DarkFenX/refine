@@ -27,7 +27,7 @@ impl Calc {
     // Query methods
     pub(in crate::svc) fn iter_item_mods(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
@@ -45,7 +45,7 @@ impl Calc {
     // Private methods
     fn iter_item_a_attr_ids(
         &self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
     ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, KeyedItemLoadedError> {
         let item_a_attrs = match ctx.uad.items.get(item_key).get_a_attrs() {
@@ -58,7 +58,7 @@ impl Calc {
     }
     fn iter_affections(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: &ItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
@@ -92,7 +92,7 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: &SvcCtx, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
+    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
         let item = ctx.uad.items.get(item_key);
         let a_attr = match ctx.uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,

@@ -24,7 +24,7 @@ pub struct ValChargeVolumeChargeInfo {
     pub max_volume: AttrVal,
 }
 impl ValChargeVolumeChargeInfo {
-    fn from_fail_cache(ctx: &SvcCtx, fail_cache: &ValChargeVolumeFailCache) -> Self {
+    fn from_fail_cache(ctx: SvcCtx, fail_cache: &ValChargeVolumeFailCache) -> Self {
         Self {
             parent_item_id: ctx.uad.items.id_by_key(fail_cache.parent_item_key),
             charge_volume: fail_cache.charge_volume,
@@ -43,7 +43,7 @@ pub(in crate::svc::vast) struct ValChargeVolumeFailCache {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<ItemKey>, ctx: &SvcCtx) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<ItemKey>, ctx: SvcCtx) -> bool {
         for (module_item_key, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
                 ValCache::Todo(charge_volume) => match calculate_item_result(ctx, *module_item_key, *charge_volume) {
@@ -71,7 +71,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_charge_volume_verbose(
         &mut self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
     ) -> Option<ValChargeVolumeFail> {
         let mut charges = HashMap::new();
         for (module_item_key, cache) in self.mods_charge_volume.iter_mut() {
@@ -108,7 +108,7 @@ impl VastFitData {
 }
 
 fn calculate_item_result(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     module_item_key: ItemKey,
     charge_volume: AttrVal,
 ) -> ValCache<AttrVal, ValChargeVolumeFailCache> {

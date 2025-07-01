@@ -32,7 +32,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_skill_reqs_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
     ) -> Option<ValSrqFail> {
         let items: HashMap<_, _> = self
             .srqs_missing

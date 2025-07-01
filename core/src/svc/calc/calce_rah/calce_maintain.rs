@@ -17,7 +17,7 @@ use crate::{
 };
 
 impl Calc {
-    pub(in crate::svc::calc) fn rah_item_loaded(&mut self, ctx: &SvcCtx, item: &UadItem) {
+    pub(in crate::svc::calc) fn rah_item_loaded(&mut self, ctx: SvcCtx, item: &UadItem) {
         if self.rah.sim_running {
             return;
         }
@@ -25,7 +25,7 @@ impl Calc {
             self.clear_fit_rah_results(ctx, &ship.get_fit_key());
         }
     }
-    pub(in crate::svc::calc) fn rah_item_unloaded(&mut self, ctx: &SvcCtx, item: &UadItem) {
+    pub(in crate::svc::calc) fn rah_item_unloaded(&mut self, ctx: SvcCtx, item: &UadItem) {
         if self.rah.sim_running {
             return;
         }
@@ -35,7 +35,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn rah_effects_started(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
         a_effects: &[ad::ArcEffectRt],
@@ -86,7 +86,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn rah_effects_stopped(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: &ItemKey,
         item: &UadItem,
         a_effects: &[ad::ArcEffectRt],
@@ -111,7 +111,7 @@ impl Calc {
             self.clear_fit_rah_results(ctx, &fit_key);
         }
     }
-    pub(in crate::svc::calc) fn rah_attr_value_changed(&mut self, ctx: &SvcCtx, aspec: &AttrSpec) {
+    pub(in crate::svc::calc) fn rah_attr_value_changed(&mut self, ctx: SvcCtx, aspec: &AttrSpec) {
         if self.rah.sim_running {
             return;
         }
@@ -171,17 +171,17 @@ impl Calc {
     pub(in crate::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
         self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.ae.duration_attr_id);
     }
-    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: &SvcCtx, fit_key: &FitKey) {
+    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &FitKey) {
         self.clear_fit_rah_results(ctx, fit_key);
     }
     // Private methods
-    fn clear_fit_rah_results(&mut self, ctx: &SvcCtx, fit_key: &FitKey) {
+    fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_key: &FitKey) {
         let rah_item_keys = self.rah.by_fit.get(fit_key).copied().collect_vec();
         for rah_item_key in rah_item_keys {
             self.clear_rah_result(ctx, rah_item_key);
         }
     }
-    fn clear_rah_result(&mut self, ctx: &SvcCtx, item_key: ItemKey) {
+    fn clear_rah_result(&mut self, ctx: SvcCtx, item_key: ItemKey) {
         if self.rah.resonances.get_mut(&item_key).unwrap().take().is_some() {
             self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
             self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
@@ -189,7 +189,7 @@ impl Calc {
             self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
         }
     }
-    fn get_rah_resonances(&mut self, ctx: &SvcCtx, item_key: ItemKey) -> DmgKinds<CalcAttrVal> {
+    fn get_rah_resonances(&mut self, ctx: SvcCtx, item_key: ItemKey) -> DmgKinds<CalcAttrVal> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
         if let Some(val) = self.rah.resonances.get(&item_key).unwrap() {
             return *val;
@@ -205,31 +205,26 @@ impl Calc {
     }
 }
 
-fn rah_em_resonance_postproc_fast(calc: &mut Calc, ctx: &SvcCtx, item_key: ItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
+fn rah_em_resonance_postproc_fast(calc: &mut Calc, ctx: SvcCtx, item_key: ItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
     calc.get_rah_resonances(ctx, item_key).em
 }
 
 fn rah_therm_resonance_postproc_fast(
     calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     _cval: CalcAttrVal,
 ) -> CalcAttrVal {
     calc.get_rah_resonances(ctx, item_key).thermal
 }
 
-fn rah_kin_resonance_postproc_fast(
-    calc: &mut Calc,
-    ctx: &SvcCtx,
-    item_key: ItemKey,
-    _cval: CalcAttrVal,
-) -> CalcAttrVal {
+fn rah_kin_resonance_postproc_fast(calc: &mut Calc, ctx: SvcCtx, item_key: ItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
     calc.get_rah_resonances(ctx, item_key).kinetic
 }
 
 fn rah_expl_resonance_postproc_fast(
     calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     _cval: CalcAttrVal,
 ) -> CalcAttrVal {
@@ -238,7 +233,7 @@ fn rah_expl_resonance_postproc_fast(
 
 fn rah_em_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
@@ -248,7 +243,7 @@ fn rah_em_resonance_postproc_info(
 
 fn rah_therm_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
@@ -258,7 +253,7 @@ fn rah_therm_resonance_postproc_info(
 
 fn rah_kin_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
@@ -268,7 +263,7 @@ fn rah_kin_resonance_postproc_info(
 
 fn rah_expl_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     mut info: AttrValInfo,
 ) -> AttrValInfo {

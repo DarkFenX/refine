@@ -37,7 +37,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_ship_stance_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         fit: &UadFit,
         ship: Option<&UadShip>,
     ) -> Option<ValShipStanceFail> {

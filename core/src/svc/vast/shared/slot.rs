@@ -5,7 +5,7 @@ use crate::{
 };
 
 pub(in crate::svc::vast) fn get_attr_as_count(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,

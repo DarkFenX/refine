@@ -14,7 +14,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_fw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         fw_effect: &UadFwEffect,
         raw_modifier: RawModifier,
     ) -> bool {
@@ -122,7 +122,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unreg_fw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         fw_effect: &UadFwEffect,
         raw_modifier: RawModifier,
     ) {

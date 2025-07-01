@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub(in crate::svc::vast) fn get_effect_local_shield_rep_amount(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     espec: &EffectSpec,
 ) -> Option<AttrVal> {
@@ -24,7 +24,7 @@ pub(in crate::svc::vast) fn get_effect_local_shield_rep_amount(
 }
 
 pub(in crate::svc::vast) fn get_effect_local_armor_rep_amount(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     espec: &EffectSpec,
 ) -> Option<AttrVal> {
@@ -42,7 +42,7 @@ pub(in crate::svc::vast) fn get_effect_local_armor_rep_amount(
 }
 
 pub(in crate::svc::vast) fn get_effect_remote_shield_rep_amount(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: &EffectSpec,
     projectee_item_key: Option<ItemKey>,
@@ -67,7 +67,7 @@ pub(in crate::svc::vast) fn get_effect_remote_shield_rep_amount(
 }
 
 pub(in crate::svc::vast) fn get_effect_remote_armor_rep_amount(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: &EffectSpec,
     projectee_item_key: Option<ItemKey>,
@@ -91,7 +91,7 @@ pub(in crate::svc::vast) fn get_effect_remote_armor_rep_amount(
     Some(amount)
 }
 
-fn get_ship_attr(ctx: &SvcCtx, calc: &mut Calc, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Option<AttrVal> {
+fn get_ship_attr(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Option<AttrVal> {
     let fit_key = ctx.uad.items.get(item_key).get_fit_key()?;
     let ship_key = ctx.uad.fits.get(fit_key).ship?;
     calc.get_item_attr_val_extra(ctx, ship_key, a_attr_id)

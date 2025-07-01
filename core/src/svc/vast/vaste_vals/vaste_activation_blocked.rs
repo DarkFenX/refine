@@ -16,7 +16,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_activation_blocked_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         self.mods_active
@@ -27,7 +27,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
         let module_ids: Vec<_> = self

@@ -29,7 +29,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_effect_stopper_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         reffs: &REffs,
     ) -> Option<ValEffectStopperFail> {
         let mut items = HashMap::new();

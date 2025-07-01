@@ -1,5 +1,6 @@
 use crate::{svc::eprojs::EProjs, uad::Uad};
 
+#[derive(Copy, Clone)]
 pub(crate) struct SvcCtx<'u, 'p> {
     pub(crate) uad: &'u Uad,
     pub(in crate::svc) eprojs: &'p EProjs,

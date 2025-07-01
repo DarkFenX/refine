@@ -37,7 +37,7 @@ pub(in crate::svc::vast) struct EffectChargeCountInfo {
     pub(in crate::svc::vast) cycle_count: Count,
 }
 
-pub(in crate::svc::vast) fn get_effect_charge(ctx: &SvcCtx, espec: &EffectSpec) -> EffectCharge {
+pub(in crate::svc::vast) fn get_effect_charge(ctx: SvcCtx, espec: &EffectSpec) -> EffectCharge {
     match ctx.uad.src.get_a_effect(&espec.a_effect_id).unwrap().ae.charge {
         Some(ad::AEffectChargeInfo::Loaded) => {
             let parent_item = ctx.uad.items.get(espec.item_key);

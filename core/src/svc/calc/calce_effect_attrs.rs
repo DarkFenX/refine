@@ -7,7 +7,7 @@ use crate::{
 impl Calc {
     pub(in crate::svc::calc) fn get_item_effect_id_duration(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         a_effect_id: &ad::AEffectId,
     ) -> Option<AttrVal> {
@@ -16,7 +16,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn get_item_effect_duration(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         a_effect: &ad::ArcEffectRt,
     ) -> Option<AttrVal> {

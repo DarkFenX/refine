@@ -66,7 +66,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_ship_limit_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValShipLimitFail> {
         if self.ship_limited_items.is_empty() {

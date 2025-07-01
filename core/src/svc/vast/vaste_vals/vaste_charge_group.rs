@@ -23,7 +23,7 @@ pub struct ValChargeGroupChargeInfo {
     pub allowed_group_ids: Vec<ItemGrpId>,
 }
 impl ValChargeGroupChargeInfo {
-    fn from_fail_cache(ctx: &SvcCtx, fail_cache: &ValChargeGroupFailCache) -> Self {
+    fn from_fail_cache(ctx: SvcCtx, fail_cache: &ValChargeGroupFailCache) -> Self {
         Self {
             parent_item_id: ctx.uad.items.id_by_key(fail_cache.parent_item_key),
             charge_group_id: fail_cache.charge_group_id,
@@ -42,7 +42,7 @@ pub(in crate::svc::vast) struct ValChargeGroupFailCache {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &RSet<ItemKey>, ctx: &SvcCtx) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &RSet<ItemKey>, ctx: SvcCtx) -> bool {
         for (module_item_key, cache) in self.mods_charge_group.iter_mut() {
             match cache {
                 ValCache::Todo(_) => match calculate_item_result(ctx, *module_item_key) {
@@ -70,7 +70,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_charge_group_verbose(
         &mut self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
     ) -> Option<ValChargeGroupFail> {
         let mut charges = HashMap::new();
         for (module_item_key, cache) in self.mods_charge_group.iter_mut() {
@@ -106,7 +106,7 @@ impl VastFitData {
     }
 }
 
-fn calculate_item_result(ctx: &SvcCtx, module_item_key: ItemKey) -> ValCache<(), ValChargeGroupFailCache> {
+fn calculate_item_result(ctx: SvcCtx, module_item_key: ItemKey) -> ValCache<(), ValChargeGroupFailCache> {
     let module = ctx.uad.items.get(module_item_key).get_module().unwrap();
     let charge_item_key = match module.get_charge_item_key() {
         Some(charge_item_key) => charge_item_key,

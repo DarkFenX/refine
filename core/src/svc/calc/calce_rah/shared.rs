@@ -18,7 +18,7 @@ pub(super) fn rah_round(val: AttrVal) -> AttrVal {
     sig_round(val, 10)
 }
 
-pub(super) fn get_fit_rah_incoming_dps(ctx: &SvcCtx, fit: &UadFit) -> DpsProfile {
+pub(super) fn get_fit_rah_incoming_dps(ctx: SvcCtx, fit: &UadFit) -> DpsProfile {
     match fit.rah_incoming_dps {
         Some(dps_profile) => dps_profile,
         None => ctx.uad.default_incoming_dps,

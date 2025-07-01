@@ -25,7 +25,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_drone_group_verbose(
         &mut self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
     ) -> Option<ValDroneGroupFail> {
         if self.drone_groups.is_empty() {
             return None;

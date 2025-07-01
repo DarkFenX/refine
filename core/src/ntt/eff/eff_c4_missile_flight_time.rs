@@ -76,7 +76,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
     rmods.push(rmod);
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
     let ship_key = get_item_fit_ship_key(ctx, espec.item_key)?;
     let missile_velocity = calc
         .get_item_attr_val_full(ctx, espec.item_key, &MISSILE_VELOCITY)
@@ -93,7 +93,7 @@ fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrV
     Some(val)
 }
 
-fn get_affector_info(ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
     match get_item_fit_ship_key(ctx, item_key) {
         Some(ship_key) => {
             smallvec!(
@@ -112,7 +112,7 @@ fn get_affector_info(ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 
 }
 
 fn revise_on_item_add_removal(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     affector_key: ItemKey,
     _changed_item_key: ItemKey,
     changed_item: &UadItem,

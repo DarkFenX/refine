@@ -28,7 +28,7 @@ impl AffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
         match self {
             Self::AttrId(attr_id) => smallvec![AffectorInfo {
                 item_id: ctx.uad.items.id_by_key(item_key),
@@ -41,7 +41,7 @@ impl AffectorValue {
             Self::Custom(custom) => (custom.affector_info_getter)(ctx, item_key),
         }
     }
-    pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+    pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
         match self {
             Self::AttrId(a_attr_id) => Some(calc.get_item_attr_val_full(ctx, espec.item_key, a_attr_id).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),

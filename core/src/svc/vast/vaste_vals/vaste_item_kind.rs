@@ -32,7 +32,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_item_kind_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
     ) -> Option<ValItemKindFail> {
         let item_kinds: HashMap<_, _> = self
             .item_kind

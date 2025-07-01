@@ -25,7 +25,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_high_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -34,7 +34,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_mid_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -43,7 +43,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_low_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -52,7 +52,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_turret_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -68,7 +68,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launcher_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -84,7 +84,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_rig_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -93,7 +93,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_service_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -102,7 +102,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_subsystem_slot_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -111,7 +111,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_drone_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -127,7 +127,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -136,7 +136,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_light_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -152,7 +152,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_heavy_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -168,7 +168,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_support_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -184,7 +184,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_st_light_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -200,7 +200,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_st_heavy_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -216,7 +216,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_st_support_fighter_count_fast(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> bool {
@@ -233,7 +233,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_high_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -242,7 +242,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_mid_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -251,7 +251,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_low_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -260,7 +260,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_turret_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -276,7 +276,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launcher_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -292,7 +292,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_rig_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -301,7 +301,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_service_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -310,7 +310,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_subsystem_slot_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -319,7 +319,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_drone_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -335,7 +335,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -344,7 +344,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_light_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -360,7 +360,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_heavy_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -376,7 +376,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_support_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -392,7 +392,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_st_light_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -408,7 +408,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_st_heavy_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -424,7 +424,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_launched_st_support_fighter_count_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
     ) -> Option<ValSlotCountFail> {
@@ -441,7 +441,7 @@ impl VastFitData {
 
 fn validate_fast_unordered_set(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,
@@ -453,7 +453,7 @@ fn validate_fast_unordered_set(
 }
 fn validate_fast_unordered_map<T>(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,
@@ -465,7 +465,7 @@ fn validate_fast_unordered_map<T>(
 }
 fn validate_fast_ordered(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,
@@ -484,7 +484,7 @@ fn validate_fast_ordered(
 
 fn validate_verbose_unordered_set(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,
@@ -506,7 +506,7 @@ fn validate_verbose_unordered_set(
 }
 fn validate_verbose_unordered_map<T>(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,
@@ -528,7 +528,7 @@ fn validate_verbose_unordered_map<T>(
 }
 fn validate_verbose_ordered(
     kfs: &RSet<ItemKey>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<ItemKey>,
     max_a_attr_id: &ad::AAttrId,

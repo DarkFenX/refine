@@ -14,7 +14,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn fill_affectees(
         &self,
         affectees: &mut Vec<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         modifier: &CtxModifier,
     ) {
         affectees.clear();
@@ -100,7 +100,7 @@ impl StandardRegister {
         }
     }
     // Private methods
-    fn fill_affectees_no_context(&self, affectees: &mut Vec<ItemKey>, ctx: &SvcCtx, modifier: &CtxModifier) {
+    fn fill_affectees_no_context(&self, affectees: &mut Vec<ItemKey>, ctx: SvcCtx, modifier: &CtxModifier) {
         if let AffecteeFilter::Direct(loc) = modifier.raw.affectee_filter {
             match loc {
                 Location::Item => {
@@ -119,7 +119,7 @@ impl StandardRegister {
     fn fill_affectees_for_fit(
         &self,
         affectees: &mut Vec<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         modifier: &CtxModifier,
         fit_key: FitKey,
     ) {
@@ -204,7 +204,7 @@ impl StandardRegister {
     fn fill_affectees_for_item_system(
         &self,
         affectees: &mut Vec<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         modifier: &CtxModifier,
         projectee_item_key: ItemKey,
     ) {
@@ -362,7 +362,7 @@ impl StandardRegister {
     fn fill_affectees_for_item_target(
         &self,
         affectees: &mut Vec<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         modifier: &CtxModifier,
         projectee_item_key: ItemKey,
     ) {
@@ -447,7 +447,7 @@ impl StandardRegister {
     fn fill_affectees_for_item_buff(
         &self,
         affectees: &mut Vec<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         modifier: &CtxModifier,
         projectee_item_key: ItemKey,
     ) {
@@ -564,7 +564,7 @@ fn check_loc_owner(loc: Location, fit: &UadFit) -> bool {
     }
 }
 
-fn is_fit_of_ship_kind(ctx: &SvcCtx, fit_key: FitKey) -> bool {
+fn is_fit_of_ship_kind(ctx: SvcCtx, fit_key: FitKey) -> bool {
     let fit = ctx.uad.fits.get(fit_key);
     matches!(fit.kind, ShipKind::Ship)
 }

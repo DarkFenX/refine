@@ -59,7 +59,7 @@ pub(in crate::ntt::eff) fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>
     rmods.push(rmod);
 }
 
-fn get_affector_info(ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
     match get_item_fit_ship_key(ctx, item_key) {
         Some(ship_key) => {
             let item_id = ctx.uad.items.id_by_key(item_key);
@@ -82,7 +82,7 @@ fn get_affector_info(ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 
     }
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
     let ship_key = get_item_fit_ship_key(ctx, espec.item_key)?;
     let speed_boost = calc.get_item_attr_val_full(ctx, espec.item_key, &PROP_BOOST).ok()?;
     let thrust = calc.get_item_attr_val_full(ctx, espec.item_key, &PROP_THRUST).ok()?;

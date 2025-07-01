@@ -12,7 +12,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_fleet_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item: &UadItem,
         raw_modifier: RawModifier,
     ) -> bool {
@@ -48,7 +48,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unreg_fleet_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<CtxModifier>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item: &UadItem,
         raw_modifier: RawModifier,
     ) {

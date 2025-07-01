@@ -11,7 +11,7 @@ pub(in crate::svc::calc) const SKILL_LVL_ATTR: ad::AAttrId = ac::attrs::SKILL_LE
 
 pub(super) fn skill_level_postproc_fast(
     _calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     mut cval: CalcAttrVal,
 ) -> CalcAttrVal {
@@ -24,7 +24,7 @@ pub(super) fn skill_level_postproc_fast(
 
 pub(super) fn skill_level_postproc_info(
     _calc: &mut Calc,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {

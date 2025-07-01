@@ -72,7 +72,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
     rmods.push(rmod);
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
     let item = ctx.uad.items.get(espec.item_key);
     match item.get_charge_item_key() {
         Some(charge_key) => {
@@ -94,7 +94,7 @@ fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<AttrV
     }
 }
 
-fn get_affector_info(ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
     smallvec![AffectorInfo {
         item_id: ctx.uad.items.id_by_key(item_key),
         attr_id: Some(AAR_MULTIPLIER)
@@ -102,7 +102,7 @@ fn get_affector_info(ctx: &SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 
 }
 
 fn revise_on_item_add_removal(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     affector_key: ItemKey,
     changed_item_key: ItemKey,
     changed_item: &UadItem,

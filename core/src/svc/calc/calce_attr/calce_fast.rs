@@ -20,7 +20,7 @@ impl Calc {
     // Query methods
     pub(in crate::svc) fn get_item_attr_val_extra_opt(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: Option<ItemKey>,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
@@ -28,7 +28,7 @@ impl Calc {
     }
     pub(in crate::svc) fn get_item_attr_val_extra(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
@@ -36,7 +36,7 @@ impl Calc {
     }
     pub(crate) fn get_item_attr_val_full(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
@@ -68,7 +68,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn get_item_attr_val_no_pp(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
@@ -91,7 +91,7 @@ impl Calc {
     }
     pub(in crate::svc) fn iter_item_attr_vals(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, CalcAttrVal)> + use<>, KeyedItemLoadedError> {
         let item = ctx.uad.items.get(item_key);
@@ -134,7 +134,7 @@ impl Calc {
     // Private methods
     fn iter_modifications(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: &ItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
@@ -164,7 +164,7 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, ctx: &SvcCtx, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
+    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
         let item = ctx.uad.items.get(item_key);
         let a_attr = match ctx.uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,

@@ -13,7 +13,7 @@ impl Calc {
     pub(super) fn generate_mods_for_effect(
         &mut self,
         modifiers: &mut Vec<RawModifier>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
         a_effect: &ad::AEffectRt,
@@ -82,7 +82,7 @@ impl Calc {
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
         a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
@@ -121,7 +121,7 @@ impl Calc {
 
 fn add_buff_mods(
     modifiers: &mut Vec<RawModifier>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     item: &UadItem,
     a_effect: &ad::AEffectRt,
@@ -152,7 +152,7 @@ fn add_buff_mods(
 
 fn add_buff_mods_hardcoded(
     modifiers: &mut Vec<RawModifier>,
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     item_key: ItemKey,
     item: &UadItem,
     a_effect: &ad::AEffectRt,

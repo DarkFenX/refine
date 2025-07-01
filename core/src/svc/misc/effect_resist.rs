@@ -17,7 +17,7 @@ pub(in crate::svc) fn get_resist_a_attr_id(item: &UadItem, a_effect: &ad::AEffec
 }
 
 pub(in crate::svc) fn get_resist_mult_val_by_projectee_aspec(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     projectee_aspec: &AttrSpec,
 ) -> Option<AttrVal> {
@@ -32,7 +32,7 @@ pub(in crate::svc) fn get_resist_mult_val_by_projectee_aspec(
 }
 
 pub(in crate::svc) fn get_resist_mult_val(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: &EffectSpec,
     projectee_item_key: ItemKey,

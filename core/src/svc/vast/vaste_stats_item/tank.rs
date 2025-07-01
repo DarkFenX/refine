@@ -31,7 +31,7 @@ pub struct StatLayerHp {
 impl Vast {
     pub(in crate::svc) fn get_stat_item_hp(
         &self,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<StatTank<StatLayerHp>> {
@@ -99,7 +99,7 @@ impl Vast {
         })
     }
     pub(in crate::svc) fn get_stat_item_resists(
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<StatTank<DmgKinds<AttrVal>>> {
@@ -110,7 +110,7 @@ impl Vast {
         })
     }
     pub(in crate::svc) fn get_item_shield_resists(
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<DmgKinds<AttrVal>> {
@@ -125,7 +125,7 @@ impl Vast {
         )
     }
     pub(in crate::svc) fn get_item_armor_resists(
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<DmgKinds<AttrVal>> {
@@ -140,7 +140,7 @@ impl Vast {
         )
     }
     pub(in crate::svc) fn get_item_structure_resists(
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<DmgKinds<AttrVal>> {
@@ -157,7 +157,7 @@ impl Vast {
 }
 
 fn get_item_layer_resists(
-    ctx: &SvcCtx,
+    ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,
     em_a_attr_id: &ad::AAttrId,

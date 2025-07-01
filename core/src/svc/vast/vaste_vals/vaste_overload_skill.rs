@@ -35,7 +35,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_overload_skill_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
         fit: &UadFit,
     ) -> Option<ValOverloadSkillFail> {
         if self.overload_td_lvl.is_empty() {

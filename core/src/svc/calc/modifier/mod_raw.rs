@@ -139,10 +139,10 @@ impl RawModifier {
     pub(in crate::svc::calc) fn get_affector_a_attr_id(&self) -> Option<ad::AAttrId> {
         self.affector_value.get_affector_a_attr_id()
     }
-    pub(in crate::svc::calc) fn get_affector_info(&self, ctx: &SvcCtx) -> SmallVec<AffectorInfo, 1> {
+    pub(in crate::svc::calc) fn get_affector_info(&self, ctx: SvcCtx) -> SmallVec<AffectorInfo, 1> {
         self.affector_value.get_affector_info(ctx, self.affector_espec.item_key)
     }
-    pub(in crate::svc::calc) fn get_mod_val(&self, calc: &mut Calc, ctx: &SvcCtx) -> Option<AttrVal> {
+    pub(in crate::svc::calc) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx) -> Option<AttrVal> {
         self.affector_value.get_mod_val(calc, ctx, self.affector_espec)
     }
     // Revision methods - define if modification value can change upon some action

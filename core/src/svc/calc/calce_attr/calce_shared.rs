@@ -20,7 +20,7 @@ pub(super) const LIMITED_PRECISION_A_ATTR_IDS: [ad::AAttrId; 4] = [
 ];
 
 impl Calc {
-    pub(super) fn calc_resist_mult(&mut self, ctx: &SvcCtx, modifier: &CtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, modifier: &CtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
         if !matches!(modifier.raw.kind, ModifierKind::Buff | ModifierKind::Targeted) {
             return None;
@@ -34,7 +34,7 @@ impl Calc {
             get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(projectee_item_key, resist_a_attr_id))?;
         Some(resist)
     }
-    pub(super) fn calc_proj_mult(&mut self, ctx: &SvcCtx, modifier: &CtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, modifier: &CtxModifier) -> Option<AttrVal> {
         let projectee_item_key = match modifier.ctx {
             Context::Item(projectee_item_key) => projectee_item_key,
             _ => return None,
@@ -47,12 +47,7 @@ impl Calc {
         }
     }
     // Private methods
-    fn calc_proj_mult_targeted(
-        &mut self,
-        ctx: &SvcCtx,
-        modifier: &CtxModifier,
-        proj_range: AttrVal,
-    ) -> Option<AttrVal> {
+    fn calc_proj_mult_targeted(&mut self, ctx: SvcCtx, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
         // Assume optimal range is 0 if it's not available
         let affector_optimal = match modifier.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
@@ -92,7 +87,7 @@ impl Calc {
             Some(OF(0.0))
         }
     }
-    fn calc_proj_mult_buff(&mut self, ctx: &SvcCtx, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
+    fn calc_proj_mult_buff(&mut self, ctx: SvcCtx, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
         let affector_optimal = match modifier.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
                 match self.get_item_attr_val_full(ctx, modifier.raw.affector_espec.item_key, &optimal_a_attr_id) {

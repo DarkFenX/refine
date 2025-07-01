@@ -31,7 +31,7 @@ impl VastFitData {
     pub(in crate::svc::vast) fn validate_module_state_verbose(
         &self,
         kfs: &RSet<ItemKey>,
-        ctx: &SvcCtx,
+        ctx: SvcCtx,
     ) -> Option<ValModuleStateFail> {
         let modules: HashMap<_, _> = self
             .mods_state
