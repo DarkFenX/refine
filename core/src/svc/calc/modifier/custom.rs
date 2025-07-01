@@ -20,6 +20,9 @@ pub(crate) enum CustomAffectorValueKind {
     MissileFlightTime,
 }
 
+pub(crate) type ItemAddReviser = fn(&SvcCtx, ItemKey, ItemKey, &UadItem) -> bool;
+pub(crate) type ItemRemoveReviser = fn(&SvcCtx, ItemKey, ItemKey, &UadItem) -> bool;
+
 #[derive(Copy, Clone)]
 pub(crate) struct CustomAffectorValue {
     // Field to use for hashing/comparison, not to rely on function pointers
@@ -38,8 +41,8 @@ pub(crate) struct CustomAffectorValue {
     pub(crate) mod_val_getter: fn(&mut Calc, &SvcCtx, EffectSpec) -> Option<AttrVal>,
     // Reviser functions are triggered upon certain events; if they return true, affected attribute
     // values are marked for recalculation.
-    pub(crate) item_add_reviser: Option<fn(&SvcCtx, ItemKey, ItemKey, &UadItem) -> bool> = None,
-    pub(crate) item_remove_reviser: Option<fn(&SvcCtx, ItemKey, ItemKey, &UadItem) -> bool> = None,
+    pub(crate) item_add_reviser: Option<ItemAddReviser> = None,
+    pub(crate) item_remove_reviser: Option<ItemRemoveReviser> = None,
 }
 impl PartialEq for CustomAffectorValue {
     fn eq(&self, other: &Self) -> bool {
