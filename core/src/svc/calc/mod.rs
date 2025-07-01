@@ -38,8 +38,8 @@ use misc::{
 };
 pub use mod_info::{AffectorInfo, ModificationInfo};
 pub(crate) use modifier::{
-    AffecteeFilter, AffectorValue, AggrKey, AggrMode, CustomAffectorValue, CustomAffectorValueKind, Location,
-    ModifierKind, Op, RawModifier,
+    AffecteeFilter, AffectorValue, AggrKey, AggrMode, CustomAffectorValue, CustomAffectorValueKind, ItemAddReviser,
+    ItemRemoveReviser, Location, ModifierKind, Op, RawModifier,
 };
 use modifier::{Context, CtxModifier, debug};
 

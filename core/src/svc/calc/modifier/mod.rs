@@ -2,7 +2,7 @@ pub(crate) use affectee_filter::AffecteeFilter;
 pub(crate) use affector_val::AffectorValue;
 pub(crate) use aggr_mode::{AggrKey, AggrMode};
 pub(in crate::svc::calc) use context::Context;
-pub(crate) use custom::{CustomAffectorValue, CustomAffectorValueKind};
+pub(crate) use custom::{CustomAffectorValue, CustomAffectorValueKind, ItemAddReviser, ItemRemoveReviser};
 pub(crate) use kind::ModifierKind;
 pub(crate) use location::Location;
 pub(in crate::svc::calc) use mod_ctx::CtxModifier;

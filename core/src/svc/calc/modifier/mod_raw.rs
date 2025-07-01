@@ -7,7 +7,9 @@ use crate::{
     misc::EffectSpec,
     svc::{
         SvcCtx,
-        calc::{AffecteeFilter, AffectorInfo, AggrMode, Calc, Location, ModifierKind, Op},
+        calc::{
+            AffecteeFilter, AffectorInfo, AggrMode, Calc, ItemAddReviser, ItemRemoveReviser, Location, ModifierKind, Op,
+        },
         get_resist_a_attr_id,
     },
     uad::UadItem,
@@ -144,29 +146,11 @@ impl RawModifier {
         self.affector_value.get_mod_val(calc, ctx, self.affector_espec)
     }
     // Revision methods - define if modification value can change upon some action
-    pub(in crate::svc::calc) fn needs_revision_on_item_add(&self) -> bool {
-        self.affector_value.revisable_on_item_add()
+    pub(in crate::svc::calc) fn get_item_add_reviser(&self) -> Option<ItemAddReviser> {
+        self.affector_value.get_item_add_reviser()
     }
-    pub(in crate::svc::calc) fn needs_revision_on_item_remove(&self) -> bool {
-        self.affector_value.revisable_on_item_remove()
-    }
-    pub(in crate::svc::calc) fn revise_on_item_add(
-        &self,
-        ctx: &SvcCtx,
-        added_item_key: ItemKey,
-        added_item: &UadItem,
-    ) -> bool {
-        self.affector_value
-            .revise_on_item_add(ctx, self.affector_espec.item_key, added_item_key, added_item)
-    }
-    pub(in crate::svc::calc) fn revise_on_item_remove(
-        &self,
-        ctx: &SvcCtx,
-        removed_item_key: ItemKey,
-        removed_item: &UadItem,
-    ) -> bool {
-        self.affector_value
-            .revise_on_item_remove(ctx, self.affector_espec.item_key, removed_item_key, removed_item)
+    pub(in crate::svc::calc) fn get_item_remove_reviser(&self) -> Option<ItemRemoveReviser> {
+        self.affector_value.get_item_remove_reviser()
     }
 }
 

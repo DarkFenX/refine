@@ -6,9 +6,8 @@ use crate::{
     misc::EffectSpec,
     svc::{
         SvcCtx,
-        calc::{AffectorInfo, Calc, CustomAffectorValue},
+        calc::{AffectorInfo, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
     },
-    uad::UadItem,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -50,46 +49,18 @@ impl AffectorValue {
         }
     }
     // Revision methods - define if modification value can change upon some action
-    pub(super) fn revisable_on_item_add(&self) -> bool {
+    pub(super) fn get_item_add_reviser(&self) -> Option<ItemAddReviser> {
         match self {
-            Self::AttrId(_) => false,
-            Self::Hardcoded(_) => false,
-            Self::Custom(custom) => custom.item_add_reviser.is_some(),
+            Self::AttrId(_) => None,
+            Self::Hardcoded(_) => None,
+            Self::Custom(custom) => custom.item_add_reviser,
         }
     }
-    pub(super) fn revisable_on_item_remove(&self) -> bool {
+    pub(super) fn get_item_remove_reviser(&self) -> Option<ItemRemoveReviser> {
         match self {
-            Self::AttrId(_) => false,
-            Self::Hardcoded(_) => false,
-            Self::Custom(custom) => custom.item_remove_reviser.is_some(),
-        }
-    }
-    pub(super) fn revise_on_item_add(
-        &self,
-        ctx: &SvcCtx,
-        affector_key: ItemKey,
-        added_item_key: ItemKey,
-        added_item: &UadItem,
-    ) -> bool {
-        match self {
-            Self::AttrId(_) => false,
-            Self::Hardcoded(_) => false,
-            Self::Custom(custom) => custom.item_add_reviser.unwrap()(ctx, affector_key, added_item_key, added_item),
-        }
-    }
-    pub(super) fn revise_on_item_remove(
-        &self,
-        ctx: &SvcCtx,
-        affector_key: ItemKey,
-        removed_item_key: ItemKey,
-        removed_item: &UadItem,
-    ) -> bool {
-        match self {
-            Self::AttrId(_) => false,
-            Self::Hardcoded(_) => false,
-            Self::Custom(custom) => {
-                custom.item_remove_reviser.unwrap()(ctx, affector_key, removed_item_key, removed_item)
-            }
+            Self::AttrId(_) => None,
+            Self::Hardcoded(_) => None,
+            Self::Custom(custom) => custom.item_remove_reviser,
         }
     }
 }

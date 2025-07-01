@@ -46,9 +46,9 @@ impl Calc {
         // Custom modifiers
         let ctx_modifiers = self
             .revs
-            .iter_mods_on_item_add()
-            .filter(|v| v.raw.revise_on_item_add(ctx, item_key, item))
-            .copied()
+            .iter_revs_on_item_add()
+            .filter(|(cmod, reviser)| reviser(ctx, cmod.raw.affector_espec.item_key, item_key, item))
+            .map(|(cmod, _reviser)| *cmod)
             .collect_vec();
         if !ctx_modifiers.is_empty() {
             let mut util_items = Vec::new();
@@ -61,9 +61,9 @@ impl Calc {
         // Custom modifiers
         let ctx_modifiers = self
             .revs
-            .iter_mods_on_item_remove()
-            .filter(|v| v.raw.revise_on_item_remove(ctx, item_key, item))
-            .copied()
+            .iter_revs_on_item_remove()
+            .filter(|(cmod, reviser)| reviser(ctx, cmod.raw.affector_espec.item_key, item_key, item))
+            .map(|(cmod, _reviser)| *cmod)
             .collect_vec();
         if !ctx_modifiers.is_empty() {
             let mut util_items = Vec::new();
