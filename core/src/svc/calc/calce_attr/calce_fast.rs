@@ -140,24 +140,24 @@ impl Calc {
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Modification> {
         let mut mods = RMap::new();
-        for modifier in self
+        for cmod in self
             .std
             .get_mods_for_affectee(item_key, item, a_attr_id, &ctx.uad.fits)
             .iter()
         {
-            let val = match modifier.raw.get_mod_val(self, ctx) {
+            let val = match cmod.raw.get_mod_val(self, ctx) {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = ctx.uad.items.get(modifier.raw.affector_espec.item_key);
+            let affector_item = ctx.uad.items.get(cmod.raw.affector_espec.item_key);
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
-            let mod_key = ModificationKey::from(modifier);
+            let mod_key = ModificationKey::from(cmod);
             let modification = Modification {
-                op: modifier.raw.op,
+                op: cmod.raw.op,
                 val,
-                res_mult: self.calc_resist_mult(ctx, modifier),
-                proj_mult: self.calc_proj_mult(ctx, modifier),
-                aggr_mode: modifier.raw.aggr_mode,
+                res_mult: self.calc_resist_mult(ctx, cmod),
+                proj_mult: self.calc_proj_mult(ctx, cmod),
+                aggr_mode: cmod.raw.aggr_mode,
                 affector_a_item_cat_id,
             };
             mods.insert(mod_key, modification);

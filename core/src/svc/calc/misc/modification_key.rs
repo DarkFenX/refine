@@ -15,11 +15,11 @@ pub(in crate::svc::calc) struct ModificationKey {
     pub(in crate::svc::calc) op: Op,
 }
 impl From<&CtxModifier> for ModificationKey {
-    fn from(modifier: &CtxModifier) -> Self {
+    fn from(cmod: &CtxModifier) -> Self {
         ModificationKey {
-            affector_item_key: modifier.raw.affector_espec.item_key,
-            affector_a_attr_id: modifier.raw.get_affector_a_attr_id(),
-            op: modifier.raw.op,
+            affector_item_key: cmod.raw.affector_espec.item_key,
+            affector_a_attr_id: cmod.raw.get_affector_a_attr_id(),
+            op: cmod.raw.op,
         }
     }
 }

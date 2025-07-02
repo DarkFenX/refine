@@ -1,4 +1,4 @@
-use func::{add_ctx_modifier, remove_ctx_modifier};
+use func::{add_cmod, remove_cmod};
 use iter_loc_act::ActiveLocations;
 
 mod func;

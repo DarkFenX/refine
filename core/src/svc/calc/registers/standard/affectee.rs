@@ -13,18 +13,18 @@ impl StandardRegister {
     // Query methods
     pub(in crate::svc::calc) fn fill_affectees(
         &self,
-        affectees: &mut Vec<ItemKey>,
+        reuse_affectees: &mut Vec<ItemKey>,
         ctx: SvcCtx,
-        modifier: &CtxModifier,
+        cmod: &CtxModifier,
     ) {
-        affectees.clear();
-        match modifier.ctx {
-            Context::None => self.fill_affectees_no_context(affectees, ctx, modifier),
-            Context::Fit(fit_key) => self.fill_affectees_for_fit(affectees, ctx, modifier, fit_key),
-            Context::Item(item_key) => match modifier.raw.kind {
-                ModifierKind::System => self.fill_affectees_for_item_system(affectees, ctx, modifier, item_key),
-                ModifierKind::Targeted => self.fill_affectees_for_item_target(affectees, ctx, modifier, item_key),
-                ModifierKind::Buff => self.fill_affectees_for_item_buff(affectees, ctx, modifier, item_key),
+        reuse_affectees.clear();
+        match cmod.ctx {
+            Context::None => self.fill_affectees_no_context(reuse_affectees, ctx, cmod),
+            Context::Fit(fit_key) => self.fill_affectees_for_fit(reuse_affectees, ctx, cmod, fit_key),
+            Context::Item(item_key) => match cmod.raw.kind {
+                ModifierKind::System => self.fill_affectees_for_item_system(reuse_affectees, ctx, cmod, item_key),
+                ModifierKind::Targeted => self.fill_affectees_for_item_target(reuse_affectees, ctx, cmod, item_key),
+                ModifierKind::Buff => self.fill_affectees_for_item_buff(reuse_affectees, ctx, cmod, item_key),
                 _ => (),
             },
         }
@@ -100,14 +100,14 @@ impl StandardRegister {
         }
     }
     // Private methods
-    fn fill_affectees_no_context(&self, affectees: &mut Vec<ItemKey>, ctx: SvcCtx, modifier: &CtxModifier) {
-        if let AffecteeFilter::Direct(loc) = modifier.raw.affectee_filter {
+    fn fill_affectees_no_context(&self, affectees: &mut Vec<ItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
+        if let AffecteeFilter::Direct(loc) = cmod.raw.affectee_filter {
             match loc {
                 Location::Item => {
-                    affectees.push(modifier.raw.affector_espec.item_key);
+                    affectees.push(cmod.raw.affector_espec.item_key);
                 }
                 Location::Other => {
-                    let item = ctx.uad.items.get(modifier.raw.affector_espec.item_key);
+                    let item = ctx.uad.items.get(cmod.raw.affector_espec.item_key);
                     if let Some(other_item_key) = item.get_other_key() {
                         affectees.push(other_item_key);
                     }
@@ -116,14 +116,8 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_affectees_for_fit(
-        &self,
-        affectees: &mut Vec<ItemKey>,
-        ctx: SvcCtx,
-        modifier: &CtxModifier,
-        fit_key: FitKey,
-    ) {
-        match modifier.raw.affectee_filter {
+    fn fill_affectees_for_fit(&self, affectees: &mut Vec<ItemKey>, ctx: SvcCtx, cmod: &CtxModifier, fit_key: FitKey) {
+        match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => extend_vec_from_map_set_l1(affectees, &self.affectee_buffable, &fit_key),
                 _ => {
@@ -205,10 +199,10 @@ impl StandardRegister {
         &self,
         affectees: &mut Vec<ItemKey>,
         ctx: SvcCtx,
-        modifier: &CtxModifier,
+        cmod: &CtxModifier,
         projectee_item_key: ItemKey,
     ) {
-        match modifier.raw.affectee_filter {
+        match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Ship => {
                     let projectee_item = ctx.uad.items.get(projectee_item_key);
@@ -363,10 +357,10 @@ impl StandardRegister {
         &self,
         affectees: &mut Vec<ItemKey>,
         ctx: SvcCtx,
-        modifier: &CtxModifier,
+        cmod: &CtxModifier,
         projectee_item_key: ItemKey,
     ) {
-        match modifier.raw.affectee_filter {
+        match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => {
                 if matches!(loc, Location::Target) {
                     affectees.push(projectee_item_key)
@@ -448,10 +442,10 @@ impl StandardRegister {
         &self,
         affectees: &mut Vec<ItemKey>,
         ctx: SvcCtx,
-        modifier: &CtxModifier,
+        cmod: &CtxModifier,
         projectee_item_key: ItemKey,
     ) {
-        match modifier.raw.affectee_filter {
+        match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => {
                     let projectee_item = ctx.uad.items.get(projectee_item_key);

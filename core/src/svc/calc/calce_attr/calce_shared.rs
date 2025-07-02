@@ -20,13 +20,13 @@ pub(super) const LIMITED_PRECISION_A_ATTR_IDS: [ad::AAttrId; 4] = [
 ];
 
 impl Calc {
-    pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, modifier: &CtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
-        if !matches!(modifier.raw.kind, ModifierKind::Buff | ModifierKind::Targeted) {
+        if !matches!(cmod.raw.kind, ModifierKind::Buff | ModifierKind::Targeted) {
             return None;
         }
-        let resist_a_attr_id = modifier.raw.resist_a_attr_id?;
-        let projectee_item_key = match modifier.ctx {
+        let resist_a_attr_id = cmod.raw.resist_a_attr_id?;
+        let projectee_item_key = match cmod.ctx {
             Context::Item(projectee_item_key) => projectee_item_key,
             _ => return None,
         };
@@ -34,24 +34,24 @@ impl Calc {
             get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(projectee_item_key, resist_a_attr_id))?;
         Some(resist)
     }
-    pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, modifier: &CtxModifier) -> Option<AttrVal> {
-        let projectee_item_key = match modifier.ctx {
+    pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
+        let projectee_item_key = match cmod.ctx {
             Context::Item(projectee_item_key) => projectee_item_key,
             _ => return None,
         };
-        let proj_range = ctx.eprojs.get_range(modifier.raw.affector_espec, projectee_item_key)?;
-        match modifier.raw.kind {
-            ModifierKind::Targeted => self.calc_proj_mult_targeted(ctx, modifier, proj_range),
-            ModifierKind::Buff => self.calc_proj_mult_buff(ctx, modifier, proj_range),
+        let proj_range = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_item_key)?;
+        match cmod.raw.kind {
+            ModifierKind::Targeted => self.calc_proj_mult_targeted(ctx, cmod, proj_range),
+            ModifierKind::Buff => self.calc_proj_mult_buff(ctx, cmod, proj_range),
             _ => None,
         }
     }
     // Private methods
-    fn calc_proj_mult_targeted(&mut self, ctx: SvcCtx, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
+    fn calc_proj_mult_targeted(&mut self, ctx: SvcCtx, cmod: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
         // Assume optimal range is 0 if it's not available
-        let affector_optimal = match modifier.raw.optimal_a_attr_id {
+        let affector_optimal = match cmod.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(ctx, modifier.raw.affector_espec.item_key, &optimal_a_attr_id) {
+                match self.get_item_attr_val_full(ctx, cmod.raw.affector_espec.item_key, &optimal_a_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -59,9 +59,9 @@ impl Calc {
             None => OF(0.0),
         };
         // Assume falloff range is 0 if it's not available
-        let affector_falloff = match modifier.raw.falloff_a_attr_id {
+        let affector_falloff = match cmod.raw.falloff_a_attr_id {
             Some(falloff_a_attr_id) => {
-                match self.get_item_attr_val_full(ctx, modifier.raw.affector_espec.item_key, &falloff_a_attr_id) {
+                match self.get_item_attr_val_full(ctx, cmod.raw.affector_espec.item_key, &falloff_a_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -87,10 +87,10 @@ impl Calc {
             Some(OF(0.0))
         }
     }
-    fn calc_proj_mult_buff(&mut self, ctx: SvcCtx, modifier: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
-        let affector_optimal = match modifier.raw.optimal_a_attr_id {
+    fn calc_proj_mult_buff(&mut self, ctx: SvcCtx, cmod: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
+        let affector_optimal = match cmod.raw.optimal_a_attr_id {
             Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(ctx, modifier.raw.affector_espec.item_key, &optimal_a_attr_id) {
+                match self.get_item_attr_val_full(ctx, cmod.raw.affector_espec.item_key, &optimal_a_attr_id) {
                     Ok(val) => val.dogma,
                     // If optimal range attribute ID is defined but value is not available, assume
                     // optimal range of 0

@@ -27,7 +27,7 @@ pub(in crate::svc::calc) struct ModAccumFast {
     post_assign: AttrAggr,
     extra_add: AttrAggr,
     extra_mul: AttrAggr,
-    pen_chains: PenChains,
+    reuse_pen_chains: PenChains,
 }
 impl ModAccumFast {
     pub(in crate::svc::calc) fn new() -> Self {
@@ -43,7 +43,7 @@ impl ModAccumFast {
             post_assign: AttrAggr::new(),
             extra_add: AttrAggr::new(),
             extra_mul: AttrAggr::new(),
-            pen_chains: PenChains::new(),
+            reuse_pen_chains: PenChains::new(),
         }
     }
     pub(in crate::svc::calc) fn add_val(
@@ -133,49 +133,58 @@ impl ModAccumFast {
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
         let val = apply_assign(
             base_val,
-            self.pre_assign.get_comb_val(combine_assigns, hig, &mut self.pen_chains),
+            self.pre_assign
+                .get_comb_val(combine_assigns, hig, &mut self.reuse_pen_chains),
         );
         let val = apply_mul(
             val,
             self.pre_mul
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
         );
         let val = apply_mul(
             val,
             self.pre_div
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
         );
-        let val = apply_add(val, self.add.get_comb_val(combine_adds, hig, &mut self.pen_chains));
-        let val = apply_add(val, self.sub.get_comb_val(combine_adds, hig, &mut self.pen_chains));
+        let val = apply_add(
+            val,
+            self.add.get_comb_val(combine_adds, hig, &mut self.reuse_pen_chains),
+        );
+        let val = apply_add(
+            val,
+            self.sub.get_comb_val(combine_adds, hig, &mut self.reuse_pen_chains),
+        );
         let val = apply_mul(
             val,
             self.post_mul
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
         );
         let val = apply_mul(
             val,
             self.post_div
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
         );
         let val = apply_mul(
             val,
             self.post_perc
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
         );
         apply_assign(
             val,
             self.post_assign
-                .get_comb_val(combine_assigns, hig, &mut self.pen_chains),
+                .get_comb_val(combine_assigns, hig, &mut self.reuse_pen_chains),
         )
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: AttrVal, hig: bool) -> AttrVal {
         let val = apply_add(
             val,
-            self.extra_add.get_comb_val(combine_adds, hig, &mut self.pen_chains),
+            self.extra_add
+                .get_comb_val(combine_adds, hig, &mut self.reuse_pen_chains),
         );
         apply_mul(
             val,
-            self.extra_mul.get_comb_val(combine_muls, hig, &mut self.pen_chains),
+            self.extra_mul
+                .get_comb_val(combine_muls, hig, &mut self.reuse_pen_chains),
         )
     }
 }
@@ -215,16 +224,16 @@ impl AttrStack {
         comb_func: F1,
         pen_func: F2,
         hig: bool,
-        pen_chains: &mut PenChains,
+        reuse_pen_chains: &mut PenChains,
     ) -> Option<AttrVal>
     where
         F1: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
         F2: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
     {
-        if let Some(val) = self.penalized.get_comb_val(pen_func, hig, pen_chains) {
+        if let Some(val) = self.penalized.get_comb_val(pen_func, hig, reuse_pen_chains) {
             self.stacked.add_processed_val(val, &AggrMode::Stack);
         }
-        self.stacked.get_comb_val(comb_func, hig, pen_chains)
+        self.stacked.get_comb_val(comb_func, hig, reuse_pen_chains)
     }
 }
 
@@ -267,7 +276,7 @@ impl AttrAggr {
             AggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(val),
         }
     }
-    fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool, pen_chains: &mut PenChains) -> Option<AttrVal>
+    fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool, reuse_pen_chains: &mut PenChains) -> Option<AttrVal>
     where
         F: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
     {
@@ -282,7 +291,7 @@ impl AttrAggr {
                 self.stack.push(val);
             }
         }
-        comb_func(&self.stack, high_is_good, pen_chains)
+        comb_func(&self.stack, high_is_good, reuse_pen_chains)
     }
 }
 
@@ -324,19 +333,19 @@ fn apply_mul(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
 }
 
 // Regular combination functions
-fn combine_assigns(vals: &[AttrVal], high_is_good: bool, _pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_assigns(vals: &[AttrVal], high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
     match high_is_good {
         true => get_max(vals),
         false => get_min(vals),
     }
 }
-fn combine_adds(vals: &[AttrVal], _high_is_good: bool, _pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_adds(vals: &[AttrVal], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
     Some(vals.iter().sum())
 }
-fn combine_muls(vals: &[AttrVal], _high_is_good: bool, _pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_muls(vals: &[AttrVal], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
@@ -344,25 +353,25 @@ fn combine_muls(vals: &[AttrVal], _high_is_good: bool, _pen_chains: &mut PenChai
 }
 
 // Penalized combination functions
-fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool, pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool, reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
     // Gather positive multipliers into one chain, negative into another, with stronger
     // modifications being first
-    pen_chains.clear();
+    reuse_pen_chains.clear();
     for val in vals.iter() {
         if *val > OF(1.0) {
-            pen_chains.positive.push(*val);
+            reuse_pen_chains.positive.push(*val);
         } else if *val < OF(1.0) {
-            pen_chains.negative.push(*val);
+            reuse_pen_chains.negative.push(*val);
         }
     }
-    if pen_chains.is_empty() {
+    if reuse_pen_chains.is_empty() {
         return None;
     }
-    pen_chains.positive.sort_unstable_by_key(|v| -v);
-    pen_chains.negative.sort_unstable();
-    Some(get_chain_val(&mut pen_chains.positive) * get_chain_val(&mut pen_chains.negative))
+    reuse_pen_chains.positive.sort_unstable_by_key(|v| -v);
+    reuse_pen_chains.negative.sort_unstable();
+    Some(get_chain_val(&reuse_pen_chains.positive) * get_chain_val(&reuse_pen_chains.negative))
 }
-fn get_chain_val(vals: &mut [AttrVal]) -> AttrVal {
+fn get_chain_val(vals: &[AttrVal]) -> AttrVal {
     let mut val = OF(1.0);
     for (mod_val, denominator) in std::iter::zip(vals.iter(), PENALTY_DENOMINATORS.iter()) {
         val *= OF(1.0) + (mod_val - OF(1.0)) / denominator;

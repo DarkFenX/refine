@@ -24,17 +24,17 @@ impl Calc {
         self.std.unreg_fit_for_sw(fit_key)
     }
     pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: SvcCtx, fleet: &UadFleet, fit_key: &FitKey) {
-        let ctx_modifiers = self.std.reg_fleet_for_fit(fleet, fit_key);
-        let mut affectees = Vec::new();
-        for ctx_modifier in ctx_modifiers.iter() {
-            self.force_mod_affectee_attr_recalc(&mut affectees, ctx, ctx_modifier);
+        let cmods = self.std.reg_fleet_for_fit(fleet, fit_key);
+        let mut reuse_affectees = Vec::new();
+        for cmod in cmods.iter() {
+            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
     pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: SvcCtx, fleet: &UadFleet, fit_key: &FitKey) {
-        let ctx_modifiers = self.std.unreg_fleet_for_fit(fleet, fit_key);
-        let mut affectees = Vec::new();
-        for ctx_modifier in ctx_modifiers.iter() {
-            self.force_mod_affectee_attr_recalc(&mut affectees, ctx, ctx_modifier);
+        let cmods = self.std.unreg_fleet_for_fit(fleet, fit_key);
+        let mut reuse_affectees = Vec::new();
+        for cmod in cmods.iter() {
+            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
     pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &FitKey) {
@@ -44,31 +44,31 @@ impl Calc {
         // Char/ship switches
         self.handle_location_owner_add(ctx, item_key, item);
         // Custom modifiers
-        let ctx_modifiers = self
+        let cmods = self
             .revs
             .iter_revs_on_item_add()
             .filter(|(cmod, reviser)| reviser(ctx, cmod.raw.affector_espec.item_key, item_key, item))
             .map(|(cmod, _reviser)| *cmod)
             .collect_vec();
-        if !ctx_modifiers.is_empty() {
-            let mut util_items = Vec::new();
-            for ctx_modifier in ctx_modifiers {
-                self.force_mod_affectee_attr_recalc(&mut util_items, ctx, &ctx_modifier);
+        if !cmods.is_empty() {
+            let mut reuse_items = Vec::new();
+            for cmod in cmods {
+                self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
             }
         }
     }
     pub(in crate::svc) fn item_removed(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
         // Custom modifiers
-        let ctx_modifiers = self
+        let cmods = self
             .revs
             .iter_revs_on_item_remove()
             .filter(|(cmod, reviser)| reviser(ctx, cmod.raw.affector_espec.item_key, item_key, item))
             .map(|(cmod, _reviser)| *cmod)
             .collect_vec();
-        if !ctx_modifiers.is_empty() {
-            let mut util_items = Vec::new();
-            for ctx_modifier in ctx_modifiers {
-                self.force_mod_affectee_attr_recalc(&mut util_items, ctx, &ctx_modifier);
+        if !cmods.is_empty() {
+            let mut reuse_items = Vec::new();
+            for cmod in cmods {
+                self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
             }
         }
         // Char/ship switches
@@ -97,13 +97,13 @@ impl Calc {
         a_effects: &[ad::ArcEffectRt],
     ) {
         // Notify core calc services
-        let mut raw_modifiers = Vec::new();
-        let mut util_items = Vec::new();
-        let mut util_cmods = Vec::new();
+        let mut reuse_rmods = Vec::new();
+        let mut reuse_items = Vec::new();
+        let mut reuse_cmods = Vec::new();
         for a_effect in a_effects.iter() {
-            self.generate_mods_for_effect(&mut raw_modifiers, ctx, item_key, item, a_effect);
-            for &raw_modifier in raw_modifiers.iter() {
-                self.reg_raw_mod(&mut util_items, &mut util_cmods, ctx, item_key, item, raw_modifier);
+            self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_key, item, a_effect);
+            for &rmod in reuse_rmods.iter() {
+                self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod);
             }
             // Buff maintenance - add info about effects which use default buff attributes
             self.buffs.reg_effect(item_key, a_effect);
@@ -121,14 +121,14 @@ impl Calc {
         // Notify RAH sim
         self.rah_effects_stopped(ctx, &item_key, item, a_effects);
         // Notify core calc services
-        let mut raw_modifiers = Vec::new();
-        let mut util_items = Vec::new();
-        let mut util_cmods = Vec::new();
+        let mut reuse_rmods = Vec::new();
+        let mut reuse_items = Vec::new();
+        let mut reuse_cmods = Vec::new();
         for a_effect in a_effects.iter() {
             let espec = EffectSpec::new(item_key, a_effect.ae.id);
-            self.std.extract_raw_mods_for_effect(&mut raw_modifiers, espec);
-            for raw_modifier in raw_modifiers.iter() {
-                self.unreg_raw_mod(&mut util_items, &mut util_cmods, ctx, item_key, item, raw_modifier)
+            self.std.extract_raw_mods_for_effect(&mut reuse_rmods, espec);
+            for rmod in reuse_rmods.iter() {
+                self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod)
             }
             // Buff maintenance - remove info about effects which use default buff attributes
             self.buffs.unreg_effect(item_key, a_effect);
@@ -144,12 +144,12 @@ impl Calc {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let ctx_modifiers = self
+        let cmods = self
             .std
             .project_effect(&projector_espec, projectee_item_key, projectee_item);
-        let mut affectees = Vec::new();
-        for ctx_modifier in ctx_modifiers.iter() {
-            self.force_mod_affectee_attr_recalc(&mut affectees, ctx, ctx_modifier);
+        let mut reuse_affectees = Vec::new();
+        for cmod in cmods.iter() {
+            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
     pub(in crate::svc) fn effect_proj_range_changed(
@@ -159,12 +159,12 @@ impl Calc {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let ctx_modifiers = self
+        let cmods = self
             .std
             .query_projected_effect(&projector_espec, projectee_item_key, projectee_item);
-        let mut affectees = Vec::new();
-        for ctx_modifier in ctx_modifiers.iter() {
-            self.force_mod_affectee_attr_recalc(&mut affectees, ctx, ctx_modifier);
+        let mut reuse_affectees = Vec::new();
+        for cmod in cmods.iter() {
+            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
     pub(in crate::svc) fn effect_unprojected(
@@ -174,12 +174,12 @@ impl Calc {
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let ctx_modifiers = self
+        let cmods = self
             .std
             .unproject_effect(&projector_espec, projectee_item_key, projectee_item);
-        let mut affectees = Vec::new();
-        for ctx_modifier in ctx_modifiers.iter() {
-            self.force_mod_affectee_attr_recalc(&mut affectees, ctx, ctx_modifier);
+        let mut reuse_affectees = Vec::new();
+        for cmod in cmods.iter() {
+            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
     pub(in crate::svc) fn attr_value_changed(&mut self, ctx: SvcCtx, aspec: AttrSpec) {
@@ -189,13 +189,13 @@ impl Calc {
             self.force_attr_value_recalc(ctx, affectee_aspec);
         }
         // Clear up attribute values which rely on passed attribute as a modification source
-        let ctx_modifiers = self.std.iter_affector_spec_mods(&aspec).copied().collect_vec();
-        if !ctx_modifiers.is_empty() {
-            let mut affectees = Vec::new();
-            for ctx_modifier in ctx_modifiers.iter() {
-                self.std.fill_affectees(&mut affectees, ctx, ctx_modifier);
-                for &affectee_item_key in affectees.iter() {
-                    let projectee_aspec = AttrSpec::new(affectee_item_key, ctx_modifier.raw.affectee_a_attr_id);
+        let cmods = self.std.iter_affector_spec_mods(&aspec).copied().collect_vec();
+        if !cmods.is_empty() {
+            let mut reuse_affectees = Vec::new();
+            for cmod in cmods.iter() {
+                self.std.fill_affectees(&mut reuse_affectees, ctx, cmod);
+                for &affectee_item_key in reuse_affectees.iter() {
+                    let projectee_aspec = AttrSpec::new(affectee_item_key, cmod.raw.affectee_a_attr_id);
                     self.force_attr_value_recalc(ctx, projectee_aspec);
                 }
             }
@@ -204,41 +204,27 @@ impl Calc {
         if ac::extras::BUFF_STDATTR_IDS.contains(&aspec.a_attr_id) {
             let item = ctx.uad.items.get(aspec.item_key);
             // Remove modifiers of buffs which rely on the attribute
-            if let Some(raw_modifiers) = self.buffs.extract_dependent_mods(&aspec) {
-                let mut util_items = Vec::new();
-                let mut util_cmods = Vec::new();
-                let raw_modifiers = raw_modifiers.collect_vec();
-                for raw_modifier in raw_modifiers.iter() {
-                    self.unreg_raw_mod(
-                        &mut util_items,
-                        &mut util_cmods,
-                        ctx,
-                        aspec.item_key,
-                        item,
-                        raw_modifier,
-                    );
+            if let Some(rmods) = self.buffs.extract_dependent_mods(&aspec) {
+                let mut reuse_items = Vec::new();
+                let mut reuse_cmods = Vec::new();
+                let rmods = rmods.collect_vec();
+                for rmod in rmods.iter() {
+                    self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, aspec.item_key, item, rmod);
                 }
             }
             // Generate new modifiers using new value and apply them
             let a_effect_ids = self.buffs.get_effects(&aspec.item_key);
             if !a_effect_ids.is_empty() {
                 let effect_ids = a_effect_ids.copied().collect_vec();
-                let raw_modifiers =
+                let rmods =
                     self.generate_dependent_buff_mods(ctx, aspec.item_key, item, effect_ids.iter(), aspec.a_attr_id);
-                for raw_modifier in raw_modifiers.iter() {
-                    self.buffs.reg_dependent_mod(aspec, *raw_modifier);
+                for rmod in rmods.iter() {
+                    self.buffs.reg_dependent_mod(aspec, *rmod);
                 }
-                let mut util_items = Vec::new();
-                let mut util_cmods = Vec::new();
-                for &raw_modifier in raw_modifiers.iter() {
-                    self.reg_raw_mod(
-                        &mut util_items,
-                        &mut util_cmods,
-                        ctx,
-                        aspec.item_key,
-                        item,
-                        raw_modifier,
-                    );
+                let mut reuse_items = Vec::new();
+                let mut reuse_cmods = Vec::new();
+                for &rmod in rmods.iter() {
+                    self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, aspec.item_key, item, rmod);
                 }
             }
         }
@@ -290,167 +276,167 @@ impl Calc {
     // Private methods
     fn reg_raw_mod(
         &mut self,
-        util_items: &mut Vec<ItemKey>,
-        util_cmods: &mut Vec<CtxModifier>,
+        reuse_items: &mut Vec<ItemKey>,
+        reuse_cmods: &mut Vec<CtxModifier>,
         ctx: SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
-        raw_modifier: RawModifier,
+        rmod: RawModifier,
     ) {
-        match raw_modifier.kind {
+        match rmod.kind {
             ModifierKind::Local => {
-                if let Some(ctx_modifier) = self.std.reg_local_mod(item, raw_modifier) {
-                    self.force_mod_affectee_attr_recalc(util_items, ctx, &ctx_modifier);
+                if let Some(cmod) = self.std.reg_local_mod(item, rmod) {
+                    self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     // Revisions - we need those only for local modifiers for now
-                    self.revs.reg_mod(&ctx_modifier);
+                    self.revs.reg_mod(&cmod);
                 }
             }
             ModifierKind::FleetBuff => {
-                let registered = self.std.reg_fleet_buff_mod(util_cmods, ctx, item, raw_modifier);
-                for ctx_modifier in util_cmods.iter() {
-                    self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                let registered = self.std.reg_fleet_buff_mod(reuse_cmods, ctx, item, rmod);
+                for cmod in reuse_cmods.iter() {
+                    self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                 }
                 if registered {
-                    self.reg_raw_mod_for_buff(item_key, raw_modifier);
+                    self.reg_raw_mod_for_buff(item_key, rmod);
                 }
             }
             ModifierKind::System => match item {
                 UadItem::SwEffect(_) => {
-                    self.std.reg_sw_system_mod(util_cmods, ctx, raw_modifier);
-                    for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                    self.std.reg_sw_system_mod(reuse_cmods, ctx, rmod);
+                    for cmod in reuse_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
                 }
                 UadItem::FwEffect(fw_effect) => {
-                    if let Some(ctx_modifier) = self.std.reg_fw_system_mod(fw_effect, raw_modifier) {
-                        self.force_mod_affectee_attr_recalc(util_items, ctx, &ctx_modifier);
+                    if let Some(cmod) = self.std.reg_fw_system_mod(fw_effect, rmod) {
+                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     }
                 }
-                UadItem::ProjEffect(_) => self.std.reg_proj_mod(raw_modifier),
+                UadItem::ProjEffect(_) => self.std.reg_proj_mod(rmod),
                 _ => (),
             },
             ModifierKind::Buff => {
                 let registered = match item {
                     UadItem::SwEffect(_) => {
-                        let registered = self.std.reg_sw_buff_mod(util_cmods, ctx, raw_modifier);
-                        for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                        let registered = self.std.reg_sw_buff_mod(reuse_cmods, ctx, rmod);
+                        for cmod in reuse_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                         }
                         registered
                     }
                     UadItem::FwEffect(fw_effect) => {
-                        let registered = self.std.reg_fw_buff_mod(util_cmods, ctx, fw_effect, raw_modifier);
-                        for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                        let registered = self.std.reg_fw_buff_mod(reuse_cmods, ctx, fw_effect, rmod);
+                        for cmod in reuse_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                         }
                         registered
                     }
                     _ => {
-                        self.std.reg_proj_mod(raw_modifier);
+                        self.std.reg_proj_mod(rmod);
                         true
                     }
                 };
                 if registered {
-                    self.reg_raw_mod_for_buff(item_key, raw_modifier);
+                    self.reg_raw_mod_for_buff(item_key, rmod);
                 }
             }
-            ModifierKind::Targeted => self.std.reg_proj_mod(raw_modifier),
+            ModifierKind::Targeted => self.std.reg_proj_mod(rmod),
         }
     }
     fn unreg_raw_mod(
         &mut self,
-        util_items: &mut Vec<ItemKey>,
-        util_cmods: &mut Vec<CtxModifier>,
+        reuse_items: &mut Vec<ItemKey>,
+        reuse_cmods: &mut Vec<CtxModifier>,
         ctx: SvcCtx,
         item_key: ItemKey,
         item: &UadItem,
-        raw_modifier: &RawModifier,
+        rmod: &RawModifier,
     ) {
         // Regular modifiers
-        match raw_modifier.kind {
+        match rmod.kind {
             ModifierKind::Local => {
-                if let Some(ctx_modifier) = self.std.unreg_local_mod(item, *raw_modifier) {
-                    self.force_mod_affectee_attr_recalc(util_items, ctx, &ctx_modifier);
+                if let Some(cmod) = self.std.unreg_local_mod(item, *rmod) {
+                    self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     // Revisions - we need those only for local modifiers for now
-                    self.revs.unreg_mod(&ctx_modifier);
+                    self.revs.unreg_mod(&cmod);
                 }
             }
             ModifierKind::FleetBuff => {
-                self.std.unreg_fleet_buff_mod(util_cmods, ctx, item, *raw_modifier);
-                for ctx_modifier in util_cmods.iter() {
-                    self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                self.std.unreg_fleet_buff_mod(reuse_cmods, ctx, item, *rmod);
+                for cmod in reuse_cmods.iter() {
+                    self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                 }
-                self.unreg_raw_mod_for_buff(item_key, raw_modifier);
+                self.unreg_raw_mod_for_buff(item_key, rmod);
             }
             ModifierKind::System => match item {
                 UadItem::SwEffect(_) => {
-                    self.std.unreg_sw_system_mod(util_cmods, ctx, *raw_modifier);
-                    for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                    self.std.unreg_sw_system_mod(reuse_cmods, ctx, *rmod);
+                    for cmod in reuse_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
                 }
                 UadItem::FwEffect(fw_effect) => {
-                    if let Some(ctx_modifier) = self.std.unreg_fw_system_mod(fw_effect, *raw_modifier) {
-                        self.force_mod_affectee_attr_recalc(util_items, ctx, &ctx_modifier);
+                    if let Some(cmod) = self.std.unreg_fw_system_mod(fw_effect, *rmod) {
+                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     }
                 }
-                UadItem::ProjEffect(_) => self.std.unreg_proj_mod(raw_modifier),
+                UadItem::ProjEffect(_) => self.std.unreg_proj_mod(rmod),
                 _ => (),
             },
             ModifierKind::Buff => {
                 match item {
                     UadItem::SwEffect(_) => {
-                        self.std.unreg_sw_buff_mod(util_cmods, ctx, raw_modifier);
-                        for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                        self.std.unreg_sw_buff_mod(reuse_cmods, ctx, rmod);
+                        for cmod in reuse_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                         }
                     }
                     UadItem::FwEffect(fw_effect) => {
-                        self.std.unreg_fw_buff_mod(util_cmods, ctx, fw_effect, *raw_modifier);
-                        for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, ctx, ctx_modifier);
+                        self.std.unreg_fw_buff_mod(reuse_cmods, ctx, fw_effect, *rmod);
+                        for cmod in reuse_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                         }
                     }
                     _ => {
-                        self.std.unreg_proj_mod(raw_modifier);
+                        self.std.unreg_proj_mod(rmod);
                     }
                 }
-                self.unreg_raw_mod_for_buff(item_key, raw_modifier);
+                self.unreg_raw_mod_for_buff(item_key, rmod);
             }
-            ModifierKind::Targeted => self.std.unreg_proj_mod(raw_modifier),
+            ModifierKind::Targeted => self.std.unreg_proj_mod(rmod),
         }
     }
-    fn reg_raw_mod_for_buff(&mut self, item_key: ItemKey, raw_modifier: RawModifier) {
-        if let Some(buff_type_attr_id) = raw_modifier.buff_type_a_attr_id {
+    fn reg_raw_mod_for_buff(&mut self, item_key: ItemKey, rmod: RawModifier) {
+        if let Some(buff_type_attr_id) = rmod.buff_type_a_attr_id {
             self.buffs
-                .reg_dependent_mod(AttrSpec::new(item_key, buff_type_attr_id), raw_modifier);
+                .reg_dependent_mod(AttrSpec::new(item_key, buff_type_attr_id), rmod);
         }
     }
-    fn unreg_raw_mod_for_buff(&mut self, item_key: ItemKey, raw_modifier: &RawModifier) {
-        if let Some(buff_type_attr_id) = raw_modifier.buff_type_a_attr_id {
+    fn unreg_raw_mod_for_buff(&mut self, item_key: ItemKey, rmod: &RawModifier) {
+        if let Some(buff_type_attr_id) = rmod.buff_type_a_attr_id {
             self.buffs
-                .unreg_dependent_mod(&AttrSpec::new(item_key, buff_type_attr_id), raw_modifier);
+                .unreg_dependent_mod(&AttrSpec::new(item_key, buff_type_attr_id), rmod);
         }
     }
-    fn force_mod_affectee_attr_recalc(&mut self, affectees: &mut Vec<ItemKey>, ctx: SvcCtx, modifier: &CtxModifier) {
-        self.std.fill_affectees(affectees, ctx, modifier);
-        for &affectee_item_key in affectees.iter() {
-            self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_item_key, modifier.raw.affectee_a_attr_id));
+    fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<ItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
+        self.std.fill_affectees(reuse_affectees, ctx, cmod);
+        for &affectee_item_key in reuse_affectees.iter() {
+            self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_item_key, cmod.raw.affectee_a_attr_id));
         }
     }
     fn handle_location_owner_add(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
         if matches!(item, UadItem::Ship(_) | UadItem::Character(_)) {
-            let mut affectees = Vec::new();
-            for ctx_modifier in self.std.get_mods_for_added_root(item_key, item) {
-                self.force_mod_affectee_attr_recalc(&mut affectees, ctx, &ctx_modifier)
+            let mut reuse_affectees = Vec::new();
+            for cmod in self.std.get_mods_for_added_root(item_key, item) {
+                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
             }
         }
     }
     fn handle_location_owner_remove(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
         if matches!(item, UadItem::Ship(_) | UadItem::Character(_)) {
-            let mut affectees = Vec::new();
-            for ctx_modifier in self.std.get_mods_for_removed_root(item_key, item) {
-                self.force_mod_affectee_attr_recalc(&mut affectees, ctx, &ctx_modifier)
+            let mut reuse_affectees = Vec::new();
+            for cmod in self.std.get_mods_for_removed_root(item_key, item) {
+                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
             }
         }
     }

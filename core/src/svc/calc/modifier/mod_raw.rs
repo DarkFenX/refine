@@ -32,13 +32,13 @@ pub(crate) struct RawModifier {
     pub(crate) falloff_a_attr_id: Option<ad::AAttrId> = None,
 }
 impl RawModifier {
-    pub(in crate::svc::calc) fn try_from_a_modifier(
+    pub(in crate::svc::calc) fn try_from_amod(
         affector_item_key: ItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
-        a_modifier: &ad::AEffectModifier,
+        amod: &ad::AEffectModifier,
     ) -> Option<Self> {
-        let affectee_filter = AffecteeFilter::from_a_effect_affectee_filter(&a_modifier.affectee_filter, affector_item);
+        let affectee_filter = AffecteeFilter::from_a_effect_affectee_filter(&amod.affectee_filter, affector_item);
         let kind = get_mod_kind(a_effect, &affectee_filter)?;
         // Targeted effects are affected by both range and resists
         let (resist_a_attr_id, optimal_a_attr_id, falloff_a_attr_id) = match kind {
@@ -52,11 +52,11 @@ impl RawModifier {
         Some(Self {
             kind,
             affector_espec: EffectSpec::new(affector_item_key, a_effect.ae.id),
-            affector_value: AffectorValue::AttrId(a_modifier.affector_attr_id),
-            op: (&a_modifier.op).into(),
+            affector_value: AffectorValue::AttrId(amod.affector_attr_id),
+            op: (&amod.op).into(),
             aggr_mode: AggrMode::Stack,
             affectee_filter,
-            affectee_a_attr_id: a_modifier.affectee_attr_id,
+            affectee_a_attr_id: amod.affectee_attr_id,
             buff_type_a_attr_id: None,
             resist_a_attr_id,
             optimal_a_attr_id,

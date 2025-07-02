@@ -107,12 +107,12 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn extract_raw_mods_for_effect(
         &mut self,
-        raw_modifiers: &mut Vec<RawModifier>,
+        reuse_raw_modifiers: &mut Vec<RawModifier>,
         espec: EffectSpec,
     ) {
-        raw_modifiers.clear();
+        reuse_raw_modifiers.clear();
         if let Some(effect_mods) = self.rmods_all.remove_key(&espec) {
-            raw_modifiers.extend(effect_mods)
+            reuse_raw_modifiers.extend(effect_mods)
         }
     }
 }

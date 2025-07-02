@@ -28,20 +28,20 @@ impl RevisionRegister {
         self.item_remove.iter()
     }
     // Modification methods
-    pub(in crate::svc::calc) fn reg_mod(&mut self, modifier: &CtxModifier) {
-        if let Some(item_add_reviser) = modifier.raw.get_item_add_reviser() {
-            self.item_add.insert(*modifier, item_add_reviser);
+    pub(in crate::svc::calc) fn reg_mod(&mut self, cmod: &CtxModifier) {
+        if let Some(item_add_reviser) = cmod.raw.get_item_add_reviser() {
+            self.item_add.insert(*cmod, item_add_reviser);
         }
-        if let Some(item_remove_reviser) = modifier.raw.get_item_remove_reviser() {
-            self.item_remove.insert(*modifier, item_remove_reviser);
+        if let Some(item_remove_reviser) = cmod.raw.get_item_remove_reviser() {
+            self.item_remove.insert(*cmod, item_remove_reviser);
         }
     }
-    pub(in crate::svc::calc) fn unreg_mod(&mut self, modifier: &CtxModifier) {
-        if modifier.raw.get_item_add_reviser().is_some() {
-            self.item_add.remove(modifier);
+    pub(in crate::svc::calc) fn unreg_mod(&mut self, cmod: &CtxModifier) {
+        if cmod.raw.get_item_add_reviser().is_some() {
+            self.item_add.remove(cmod);
         }
-        if modifier.raw.get_item_remove_reviser().is_some() {
-            self.item_remove.remove(modifier);
+        if cmod.raw.get_item_remove_reviser().is_some() {
+            self.item_remove.remove(cmod);
         }
     }
 }

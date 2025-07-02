@@ -4,13 +4,13 @@ use crate::{ad, def::ItemKey, misc::AttrSpec, svc::calc::RawModifier, util::RMap
 #[derive(Clone)]
 pub(in crate::svc::calc) struct BuffRegister {
     pub(super) a_effect_ids: RMapRSet<ItemKey, ad::AEffectId>,
-    pub(super) modifiers: RMapRSet<AttrSpec, RawModifier>,
+    pub(super) rmods: RMapRSet<AttrSpec, RawModifier>,
 }
 impl BuffRegister {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
             a_effect_ids: RMapRSet::new(),
-            modifiers: RMapRSet::new(),
+            rmods: RMapRSet::new(),
         }
     }
     // Effect methods
@@ -35,13 +35,13 @@ impl BuffRegister {
         &mut self,
         aspec: &AttrSpec,
     ) -> Option<impl ExactSizeIterator<Item = RawModifier> + use<>> {
-        self.modifiers.remove_key(aspec)
+        self.rmods.remove_key(aspec)
     }
-    pub(in crate::svc::calc) fn reg_dependent_mod(&mut self, aspec: AttrSpec, modifier: RawModifier) {
-        self.modifiers.add_entry(aspec, modifier)
+    pub(in crate::svc::calc) fn reg_dependent_mod(&mut self, aspec: AttrSpec, rmod: RawModifier) {
+        self.rmods.add_entry(aspec, rmod)
     }
-    pub(in crate::svc::calc) fn unreg_dependent_mod(&mut self, aspec: &AttrSpec, modifier: &RawModifier) {
-        self.modifiers.remove_entry(aspec, modifier);
+    pub(in crate::svc::calc) fn unreg_dependent_mod(&mut self, aspec: &AttrSpec, rmod: &RawModifier) {
+        self.rmods.remove_entry(aspec, rmod);
     }
 }
 
