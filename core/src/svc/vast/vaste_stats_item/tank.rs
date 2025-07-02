@@ -8,8 +8,7 @@ use crate::{
         vast::{
             Vast,
             vaste_stats_effect::{
-                get_effect_charge, get_effect_local_armor_rep_amount, get_effect_local_shield_rep_amount,
-                get_effect_remote_armor_rep_amount, get_effect_remote_shield_rep_amount,
+                get_effect_charge, get_effect_remote_armor_rep_amount, get_effect_remote_shield_rep_amount,
             },
         },
     },
@@ -45,15 +44,15 @@ impl Vast {
                 let mut local_asb = OF(0.0);
                 let mut local_aar = OF(0.0);
                 let fit_data = self.get_fit_data(&uad_ship.get_fit_key());
-                for asb_espec in fit_data.limitable_sb.iter() {
-                    if let Some(asb_hp) = get_effect_local_shield_rep_amount(ctx, calc, asb_espec)
+                for (asb_espec, rep_getter) in fit_data.limitable_sb.iter() {
+                    if let Some(asb_hp) = rep_getter(ctx, calc, asb_espec.item_key)
                         && let Some(cycles) = get_effect_charge(ctx, asb_espec).get_cycle_count()
                     {
                         local_asb += asb_hp * AttrVal::from(cycles);
                     }
                 }
-                for aar_espec in fit_data.limitable_ar.iter() {
-                    if let Some(aar_hp) = get_effect_local_armor_rep_amount(ctx, calc, aar_espec)
+                for (aar_espec, rep_getter) in fit_data.limitable_ar.iter() {
+                    if let Some(aar_hp) = rep_getter(ctx, calc, aar_espec.item_key)
                         && let Some(cycles) = get_effect_charge(ctx, aar_espec).get_cycle_count()
                     {
                         local_aar += aar_hp * AttrVal::from(cycles);

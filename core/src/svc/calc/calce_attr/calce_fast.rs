@@ -18,7 +18,7 @@ use crate::{
 
 impl Calc {
     // Query methods
-    pub(in crate::svc) fn get_item_attr_val_extra_opt(
+    pub(crate) fn get_item_attr_val_extra_opt(
         &mut self,
         ctx: SvcCtx,
         item_key: Option<ItemKey>,
@@ -26,7 +26,7 @@ impl Calc {
     ) -> Option<AttrVal> {
         item_key.and_then(|item_key| self.get_item_attr_val_extra(ctx, item_key, a_attr_id))
     }
-    pub(in crate::svc) fn get_item_attr_val_extra(
+    pub(crate) fn get_item_attr_val_extra(
         &mut self,
         ctx: SvcCtx,
         item_key: ItemKey,

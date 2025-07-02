@@ -1,7 +1,7 @@
 use std::{collections::HashMap, sync::LazyLock};
 
-pub(crate) use eff::NttEffect;
 pub use eff::NttEffectRt;
+pub(crate) use eff::{LocalRepGetter, NttEffect, RemoteRepGetter};
 
 use crate::ad;
 

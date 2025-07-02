@@ -4,14 +4,13 @@ use crate::{
     ed,
     misc::EffectSpec,
     svc::{
+        SvcCtx,
         calc::{Calc, RawModifier},
-        eprojs::EProjs,
     },
-    uad::Uad,
 };
 
-pub(crate) type LocalRepGetter = fn(&Uad, &EProjs, &mut Calc, ItemKey) -> Option<AttrVal>;
-pub(crate) type RemoteRepGetter = fn(&Uad, &EProjs, &mut Calc, ItemKey, Option<ItemKey>) -> Option<AttrVal>;
+pub(crate) type LocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
+pub(crate) type RemoteRepGetter = fn(SvcCtx, &mut Calc, ItemKey, Option<ItemKey>) -> Option<AttrVal>;
 
 pub(crate) struct NttEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means

@@ -2,6 +2,7 @@ use crate::{
     ad,
     def::{AttrVal, Count, FitKey, ItemKey},
     misc::{AttrSpec, EffectSpec},
+    ntt::LocalRepGetter,
     svc::vast::{
         ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -99,8 +100,8 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
     // Stats-related
-    pub(in crate::svc::vast) limitable_sb: RSet<EffectSpec>,
-    pub(in crate::svc::vast) limitable_ar: RSet<EffectSpec>,
+    pub(in crate::svc::vast) limitable_sb: RMap<EffectSpec, LocalRepGetter>,
+    pub(in crate::svc::vast) limitable_ar: RMap<EffectSpec, LocalRepGetter>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -165,8 +166,8 @@ impl VastFitData {
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
             // Stats-related
-            limitable_sb: RSet::new(), // Local shield reps which might have limited charges
-            limitable_ar: RSet::new(), // Local armor reps which might have limited charges
+            limitable_sb: RMap::new(), // Local shield reps which might have limited charges
+            limitable_ar: RMap::new(), // Local armor reps which might have limited charges
         }
     }
 }
