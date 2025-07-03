@@ -1,6 +1,7 @@
 use crate::{
-    def::{AttrVal, ItemKey},
+    def::ItemKey,
     err::basic::ProjFoundError,
+    misc::ProjRange,
     sol::{SolarSystem, api::RangedProjMut},
     uad::UadItem,
 };
@@ -10,7 +11,7 @@ impl SolarSystem {
         &mut self,
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
-        range: Option<AttrVal>,
+        range: ProjRange,
     ) -> Result<(), ProjFoundError> {
         let projector_uad_item = self.uad.items.get(projector_item_key);
         match projector_uad_item {
@@ -23,7 +24,7 @@ impl SolarSystem {
 }
 
 impl<'a> RangedProjMut<'a> {
-    pub fn set_range(&mut self, range: Option<AttrVal>) {
+    pub fn set_range(&mut self, range: ProjRange) {
         self.sol
             .internal_set_projection_range(self.projector_item_key, self.projectee_item_key, range)
             .unwrap()

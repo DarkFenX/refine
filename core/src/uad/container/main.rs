@@ -67,6 +67,14 @@ where
         // Keys are supposed to be valid throughout whole lib, so just unwrap
         self.data.get_mut(key).unwrap()
     }
+    pub(crate) fn get2_mut(&mut self, key1: Key, key2: Key) -> (&mut T, &mut T) {
+        // Keys are supposed to be valid throughout whole lib, so just unwrap
+        self.data.get2_mut(key1, key2).unwrap()
+    }
+    pub(crate) fn get_disjoint_mut<const N: Key>(&mut self, keys: [Key; N]) -> [&mut T; N] {
+        // Keys are supposed to be valid throughout whole lib, so just unwrap
+        self.data.get_disjoint_mut(keys).unwrap()
+    }
     pub(crate) fn remove(&mut self, key: Key) -> T {
         // Keys are supposed to be valid throughout whole lib, so use non-try removal
         let entity = self.data.remove(key);

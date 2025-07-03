@@ -1,7 +1,8 @@
 use crate::{
-    def::{AttrVal, ItemKey},
+    def::ItemKey,
     err::basic::ProjFoundError,
-    sol::SolarSystem,
+    misc::ProjRange,
+    sol::{SolarSystem, api::get_ship_a_extras},
     uad::UadProjRange,
 };
 
@@ -10,12 +11,12 @@ impl SolarSystem {
         &mut self,
         item_key: ItemKey,
         projectee_item_key: ItemKey,
-        range: Option<AttrVal>,
+        range: ProjRange,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined before changing it
-        let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
-        let old_range = match uad_module.get_projs().get(&projectee_item_key) {
-            Some(old_range) => *old_range,
+        let uad_module = self.uad.items.get(item_key).get_module().unwrap();
+        let old_uad_prange = match uad_module.get_projs().get(&projectee_item_key) {
+            Some(old_uad_prange) => *old_uad_prange,
             None => {
                 return Err(ProjFoundError {
                     projector_item_id: uad_module.get_item_id(),
@@ -23,21 +24,23 @@ impl SolarSystem {
                 });
             }
         };
+        let uad_prange = UadProjRange::from_prange_with_extras(
+            range,
+            get_ship_a_extras(&self.uad, uad_module.get_fit_key()),
+            self.uad.items.get(projectee_item_key).get_a_extras(),
+        );
         // Do nothing if ranges are equal
-        if range == old_range.map(|v| v.c2c) {
+        if uad_prange == old_uad_prange {
             return Ok(());
         }
+        let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
         let charge_key = uad_module.get_charge_item_key();
         // Update user data for module
-        uad_module
-            .get_projs_mut()
-            .add(projectee_item_key, range.map(UadProjRange::new_tmp));
+        uad_module.get_projs_mut().add(projectee_item_key, uad_prange);
         // Update user data for charge
         if let Some(charge_key) = charge_key {
             let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
-            uad_charge
-                .get_projs_mut()
-                .add(projectee_item_key, range.map(UadProjRange::new_tmp));
+            uad_charge.get_projs_mut().add(projectee_item_key, uad_prange);
         }
         // Update services for module
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
@@ -48,7 +51,7 @@ impl SolarSystem {
             item_key,
             projectee_item_key,
             projectee_uad_item,
-            range.map(UadProjRange::new_tmp),
+            uad_prange,
         );
         // Update services for charge
         if let Some(charge_key) = charge_key {
@@ -59,7 +62,7 @@ impl SolarSystem {
                 charge_key,
                 projectee_item_key,
                 projectee_uad_item,
-                range.map(UadProjRange::new_tmp),
+                uad_prange,
             );
         }
         Ok(())

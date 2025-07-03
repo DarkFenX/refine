@@ -1,9 +1,10 @@
 use crate::{
-    def::{AttrVal, ItemId, ItemKey},
+    def::{ItemId, ItemKey},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
+    misc::ProjRange,
     sol::{
         SolarSystem,
-        api::{AddRangedProjError, ModuleMut, RangedProjMut},
+        api::{AddRangedProjError, ModuleMut, RangedProjMut, get_ship_a_extras},
     },
     uad::UadProjRange,
 };
@@ -13,7 +14,7 @@ impl SolarSystem {
         &mut self,
         item_key: ItemKey,
         projectee_item_key: ItemKey,
-        range: Option<AttrVal>,
+        range: ProjRange,
     ) -> Result<(), AddRangedProjError> {
         // Check projector
         let uad_item = self.uad.items.get(item_key);
@@ -35,6 +36,11 @@ impl SolarSystem {
             }
             .into());
         }
+        let uad_prange = UadProjRange::from_prange_with_extras(
+            range,
+            get_ship_a_extras(&self.uad, uad_module.get_fit_key()),
+            projectee_uad_item.get_a_extras(),
+        );
         let charge_key = uad_module.get_charge_item_key();
         // Update services for module
         SolarSystem::util_add_item_projection(
@@ -45,7 +51,7 @@ impl SolarSystem {
             uad_item,
             projectee_item_key,
             projectee_uad_item,
-            range.map(UadProjRange::new_tmp),
+            uad_prange,
         );
         // Update services for charge
         if let Some(charge_key) = charge_key {
@@ -58,21 +64,17 @@ impl SolarSystem {
                 charge_uad_item,
                 projectee_item_key,
                 projectee_uad_item,
-                range.map(UadProjRange::new_tmp),
+                uad_prange,
             );
         }
         // Update user data for module
         let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
-        uad_module
-            .get_projs_mut()
-            .add(projectee_item_key, range.map(UadProjRange::new_tmp));
+        uad_module.get_projs_mut().add(projectee_item_key, uad_prange);
         self.rprojs.reg_projectee(item_key, projectee_item_key);
         // Update user data for charge
         if let Some(charge_key) = charge_key {
             let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
-            uad_charge
-                .get_projs_mut()
-                .add(projectee_item_key, range.map(UadProjRange::new_tmp));
+            uad_charge.get_projs_mut().add(projectee_item_key, uad_prange);
             self.rprojs.reg_projectee(charge_key, projectee_item_key);
         }
         Ok(())
@@ -83,7 +85,7 @@ impl<'a> ModuleMut<'a> {
     pub fn add_proj(
         &mut self,
         projectee_item_id: &ItemId,
-        range: Option<AttrVal>,
+        range: ProjRange,
     ) -> Result<RangedProjMut<'_>, AddRangedProjError> {
         let projectee_item_key = self.sol.uad.items.key_by_id_err(projectee_item_id)?;
         self.sol.internal_add_module_proj(self.key, projectee_item_key, range)?;
