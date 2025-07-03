@@ -41,6 +41,15 @@ def check_no_field() -> Iterator[None]:
         yield
 
 
+# Projection range converters
+def range_s2s_to_api(*, val: float) -> str:
+    return f's{val}'
+
+
+def range_c2c_to_api(*, val: float) -> str:
+    return f'c{val}'
+
+
 # Mutated attribute value converters
 def muta_roll_to_api(*, val: float) -> str:
     return f'r{val}'
