@@ -1,6 +1,7 @@
 use super::{
     attr_val::{
-        get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_remote_resist_attr_id, get_volume,
+        get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_radius, get_remote_resist_attr_id,
+        get_volume,
     },
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
@@ -38,6 +39,8 @@ pub struct AItemExtras {
     pub kind: Option<AItemKind>,
     /// Unmodified and unmutated item volume.
     pub volume: Option<AAttrVal>,
+    /// Unmodified and unmutated item radius.
+    pub radius: Option<AAttrVal>,
     /// If set, item can be fit to a ship which fits into the limit.
     pub ship_limit: Option<AItemShipLimit>,
     /// If set, item can load only charges which fit into limit.
@@ -103,6 +106,7 @@ impl AItemExtras {
         Self {
             kind: Option::default(),
             volume: Option::default(),
+            radius: Option::default(),
             ship_limit: Option::default(),
             charge_limit: Option::default(),
             val_fitted_group_id: Option::default(),
@@ -140,6 +144,7 @@ impl AItemExtras {
         Self {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
             volume: get_volume(attrs),
+            radius: get_radius(attrs),
             ship_limit: get_item_ship_limit(a_item.id, attrs),
             charge_limit: get_item_charge_limit(attrs),
             val_fitted_group_id: a_item.extras.val_fitted_group_id,
@@ -187,6 +192,7 @@ impl AItemExtras {
     ) {
         self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
         self.volume = get_volume(item_attrs);
+        self.radius = get_radius(item_attrs);
         self.ship_limit = get_item_ship_limit(item_id, item_attrs);
         self.charge_limit = get_item_charge_limit(item_attrs);
         self.val_fitted_group_id = match fitted_limited_groups.contains(&item_grp_id) {

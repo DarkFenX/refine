@@ -7,6 +7,7 @@ use crate::handler_json::data::{
 pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) kind: Option<CItemKind>,
     pub(in crate::handler_json) volume: Option<CAttrVal>,
+    pub(in crate::handler_json) radius: Option<CAttrVal>,
     pub(in crate::handler_json) ship_limit: Option<CItemShipLimit>,
     pub(in crate::handler_json) charge_limit: Option<CItemChargeLimit>,
     pub(in crate::handler_json) val_fitted_group_id: Option<CItemGrpId>,
@@ -42,6 +43,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
         Self {
             kind: a_item_extras.kind.as_ref().map(|v| v.into()),
             volume: a_item_extras.volume,
+            radius: a_item_extras.radius,
             ship_limit: a_item_extras.ship_limit.as_ref().map(|v| v.into()),
             charge_limit: a_item_extras.charge_limit.as_ref().map(|v| v.into()),
             val_fitted_group_id: a_item_extras.val_fitted_group_id,
@@ -79,6 +81,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
         Self {
             kind: c_item_extras.kind.as_ref().map(|v| v.into()),
             volume: c_item_extras.volume,
+            radius: c_item_extras.radius,
             ship_limit: c_item_extras.ship_limit.as_ref().map(|v| v.into()),
             charge_limit: c_item_extras.charge_limit.as_ref().map(|v| v.into()),
             val_fitted_group_id: c_item_extras.val_fitted_group_id,

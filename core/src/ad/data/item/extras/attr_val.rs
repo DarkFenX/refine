@@ -8,6 +8,9 @@ use crate::{
 pub(super) fn get_volume(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrVal> {
     item_attrs.get(&ac::attrs::VOLUME).copied()
 }
+pub(super) fn get_radius(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrVal> {
+    item_attrs.get(&ac::attrs::RADIUS).copied()
+}
 pub(super) fn get_bandwidth_use(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrVal> {
     item_attrs.get(&ac::attrs::DRONE_BANDWIDTH_USED).copied()
 }
