@@ -1,10 +1,10 @@
 use crate::{
     ad,
-    def::{AttrVal, FitKey, ItemKey},
+    def::{FitKey, ItemKey},
     misc::{AttrSpec, EffectSpec},
     src::Src,
     svc::{Svc, SvcCtx},
-    uad::{Uad, UadFighter, UadFleet, UadItem, UadSkill},
+    uad::{ProjRange, Uad, UadFighter, UadFleet, UadItem, UadSkill},
 };
 
 impl Svc {
@@ -111,7 +111,7 @@ impl Svc {
         a_effect: &ad::AEffectRt,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
-        range: Option<AttrVal>,
+        range: Option<ProjRange>,
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
         self.eprojs.add_range(projector_espec, projectee_item_key, range);
@@ -155,7 +155,7 @@ impl Svc {
         a_effect_id: ad::AEffectId,
         projectee_item_key: ItemKey,
         projectee_item: &UadItem,
-        range: Option<AttrVal>,
+        range: Option<ProjRange>,
     ) {
         let projector_espec = EffectSpec::new(projector_item_key, a_effect_id);
         self.eprojs.change_range(projector_espec, projectee_item_key, range);

@@ -1,12 +1,12 @@
 use crate::{
     ad,
-    def::{AttrVal, Count, FitKey, ItemId, ItemKey},
+    def::{Count, FitKey, ItemId, ItemKey},
     err::basic::ItemKindMatchError,
     src::Src,
     uad::{
         Uad, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFwEffect, UadImplant,
         UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance, UadSubsystem, UadSwEffect,
-        item::{Autocharges, EffectModes, ItemMutationData, Projs},
+        item::{Autocharges, EffectModes, ItemMutationData, ProjRange, Projs},
     },
     util::{GetId, Named, RMap},
 };
@@ -235,7 +235,7 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<AttrVal>)>> {
+    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<ProjRange>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Charge(charge) => Some(charge.get_projs().iter()),

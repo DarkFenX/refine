@@ -3,9 +3,9 @@
 pub(crate) use fit::{FitSkill, Fits, ItemVec, UadFit};
 pub(crate) use fleet::UadFleet;
 pub(crate) use item::{
-    ShipKind, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFwEffect, UadImplant,
-    UadItem, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance, UadSubsystem, UadSwEffect,
-    get_combined_a_attr_values,
+    ProjRange, ShipKind, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFwEffect,
+    UadImplant, UadItem, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance, UadSubsystem,
+    UadSwEffect, get_combined_a_attr_values,
 };
 pub(crate) use uad::Uad;
 

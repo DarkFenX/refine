@@ -4,6 +4,7 @@ use crate::{
     def::{AttrVal, ItemKey},
     err::basic::ProjFoundError,
     sol::SolarSystem,
+    uad::ProjRange,
 };
 
 impl SolarSystem {
@@ -25,17 +26,21 @@ impl SolarSystem {
             }
         };
         // Do nothing if ranges are equal
-        if range == old_range {
+        if range == old_range.map(|v| v.c2c) {
             return Ok(());
         }
         let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
         // Update user data for fighter
         let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
-        uad_fighter.get_projs_mut().add(projectee_item_key, range);
+        uad_fighter
+            .get_projs_mut()
+            .add(projectee_item_key, range.map(ProjRange::new_tmp));
         // Update user data for autocharges
         for &autocharge_key in autocharge_keys.iter() {
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
-            uad_autocharge.get_projs_mut().add(projectee_item_key, range);
+            uad_autocharge
+                .get_projs_mut()
+                .add(projectee_item_key, range.map(ProjRange::new_tmp));
         }
         // Update services for fighter
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
@@ -46,7 +51,7 @@ impl SolarSystem {
             item_key,
             projectee_item_key,
             projectee_uad_item,
-            range,
+            range.map(ProjRange::new_tmp),
         );
         // Update services for autocharges
         for autocharge_key in autocharge_keys.into_iter() {
@@ -57,7 +62,7 @@ impl SolarSystem {
                 autocharge_key,
                 projectee_item_key,
                 projectee_uad_item,
-                range,
+                range.map(ProjRange::new_tmp),
             );
         }
         Ok(())

@@ -41,8 +41,8 @@ impl Calc {
         };
         let proj_range = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_item_key)?;
         match cmod.raw.kind {
-            ModifierKind::Targeted => self.calc_proj_mult_targeted(ctx, cmod, proj_range),
-            ModifierKind::Buff => self.calc_proj_mult_buff(ctx, cmod, proj_range),
+            ModifierKind::Targeted => self.calc_proj_mult_targeted(ctx, cmod, proj_range.s2s),
+            ModifierKind::Buff => self.calc_proj_mult_buff(ctx, cmod, proj_range.s2s),
             _ => None,
         }
     }

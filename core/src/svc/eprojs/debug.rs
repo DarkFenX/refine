@@ -10,6 +10,7 @@ impl EProjs {
             check_item_key(uad, affector_espec.item_key, true)?;
             check_a_effect_id(uad, &affector_espec.a_effect_id)?;
             check_item_key(uad, *affectee_item_key, true)?;
+            svc_range.consistency_check()?;
             let affector_projs = match uad.items.get(affector_espec.item_key).get_projs() {
                 Some(affector_projs) => affector_projs,
                 None => return Err(DebugError {}),

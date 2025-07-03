@@ -56,11 +56,12 @@ impl<'a> RangedProjMut<'a> {
 }
 
 fn get_range(sol: &SolarSystem, projector_item_key: ItemKey, projectee_item_key: &ItemKey) -> Option<AttrVal> {
-    *sol.uad
+    sol.uad
         .items
         .get(projector_item_key)
         .get_projs()
         .unwrap()
         .get(projectee_item_key)
         .unwrap()
+        .map(|v| v.c2c)
 }
