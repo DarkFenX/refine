@@ -1,7 +1,9 @@
 pub(in crate::cmd) use add_mode::HAddMode;
 pub(in crate::cmd) use effect_mode::{HEffectModeMap, apply_effect_modes};
 pub(crate) use getters::{get_primary_fit, get_primary_fleet};
-pub(in crate::cmd) use mutation::{HMutationOnAdd, HMutationOnChange, apply_mattrs_on_add, apply_mattrs_on_change};
+pub(in crate::cmd) use mutation::{
+    HItemAttrMutationValue, HMutationOnAdd, HMutationOnChange, apply_mattrs_on_add, apply_mattrs_on_change,
+};
 pub(in crate::cmd) use proj::{HProjDef, HProjDefFull, HProjRange};
 pub(crate) use resp::{HCmdResp, HFitIdResp, HFleetIdResp, HItemIdsResp};
 pub(in crate::cmd) use rm_mode::HRmMode;

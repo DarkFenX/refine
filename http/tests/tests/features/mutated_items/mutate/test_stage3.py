@@ -1,7 +1,7 @@
-from tests import approx, check_no_field
+from tests import approx, check_no_field, muta_abs_to_api, muta_roll_to_api
 
 
-def test_rolls_range(client, consts):
+def test_rolls_range(client):
     # Check processing of roll values - within range and out of range
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -30,9 +30,9 @@ def test_rolls_range(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
-        eve_lower_attr_id: {consts.ApiAttrMutation.roll: -5},
-        eve_within_attr_id: {consts.ApiAttrMutation.roll: 0.3},
-        eve_higher_attr_id: {consts.ApiAttrMutation.roll: 128}}))
+        eve_lower_attr_id: muta_roll_to_api(val=-5),
+        eve_within_attr_id: muta_roll_to_api(val=0.3),
+        eve_higher_attr_id: muta_roll_to_api(val=128)}))
     # Verification
     api_item.update()
     with check_no_field():
@@ -56,7 +56,7 @@ def test_rolls_range(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(120)
 
 
-def test_absolute_value_range(client, consts):
+def test_absolute_value_range(client):
     # Check processing of absolute values - within range and out of range
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -85,9 +85,9 @@ def test_absolute_value_range(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
-        eve_lower_attr_id: {consts.ApiAttrMutation.absolute: -53},
-        eve_within_attr_id: {consts.ApiAttrMutation.absolute: 92},
-        eve_higher_attr_id: {consts.ApiAttrMutation.absolute: 1009}}))
+        eve_lower_attr_id: muta_abs_to_api(val=-53),
+        eve_within_attr_id: muta_abs_to_api(val=92),
+        eve_higher_attr_id: muta_abs_to_api(val=1009)}))
     # Verification
     api_item.update()
     with check_no_field():
@@ -112,7 +112,7 @@ def test_absolute_value_range(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
 
 
-def test_no_base_value(client, consts):
+def test_no_base_value(client):
     # Rolls accepted, absolutes discarded when base value is not available
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -139,8 +139,8 @@ def test_no_base_value(client, consts):
         api_item.attrs  # noqa: B018
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
-        eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
-        eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
+        eve_roll_attr_id: muta_roll_to_api(val=0.7),
+        eve_absolute_attr_id: muta_abs_to_api(val=54)}))
     # Verification
     api_item.update()
     with check_no_field():
@@ -162,7 +162,7 @@ def test_no_base_value(client, consts):
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
 
 
-def test_no_mutation_range(client, consts):
+def test_no_mutation_range(client):
     # Check that absolute values are discarded when mutation range is not defined
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -195,8 +195,8 @@ def test_no_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
-        eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
-        eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
+        eve_roll_attr_id: muta_roll_to_api(val=0.7),
+        eve_absolute_attr_id: muta_abs_to_api(val=54)}))
     # Verification
     api_item.update()
     with check_no_field():
@@ -218,7 +218,7 @@ def test_no_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
 
 
-def test_zero_mutation_range(client, consts):
+def test_zero_mutation_range(client):
     # Check that absolute values are discarded when mutation range has zero width
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -266,10 +266,10 @@ def test_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
-        eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
-        eve_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 54},
-        eve_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 54},
-        eve_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
+        eve_roll_attr_id: muta_roll_to_api(val=0.7),
+        eve_absolute_low_attr_id: muta_abs_to_api(val=54),
+        eve_absolute_mid_attr_id: muta_abs_to_api(val=54),
+        eve_absolute_high_attr_id: muta_abs_to_api(val=54)}))
     # Verification
     api_item.update()
     with check_no_field():
@@ -299,7 +299,7 @@ def test_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
 
 
-def test_zero_base_value(client, consts):
+def test_zero_base_value(client):
     # Check that absolute values are discarded when base value is zero
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -342,10 +342,10 @@ def test_zero_base_value(client, consts):
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(0)
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
-        eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
-        eve_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -3},
-        eve_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
-        eve_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 6}}))
+        eve_roll_attr_id: muta_roll_to_api(val=0.7),
+        eve_absolute_low_attr_id: muta_abs_to_api(val=-3),
+        eve_absolute_mid_attr_id: muta_abs_to_api(val=0),
+        eve_absolute_high_attr_id: muta_abs_to_api(val=6)}))
     # Verification
     api_item.update()
     with check_no_field():

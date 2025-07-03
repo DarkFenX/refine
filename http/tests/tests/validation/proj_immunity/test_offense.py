@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, effect_dogma_to_api
+from tests import approx, check_no_field, effect_dogma_to_api, muta_roll_to_api
 from tests.fw.api import ValOptions
 
 
@@ -365,7 +365,7 @@ def test_offense_tgt_mutation(client, consts):
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
-    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0}})
+    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: muta_roll_to_api(val=0)})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -373,7 +373,7 @@ def test_offense_tgt_mutation(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0.1}})
+    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: muta_roll_to_api(val=0.1)})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0.2)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -632,7 +632,7 @@ def test_assist_src_mutation_add(client, consts):
     api_src_item = api_src_fit.add_module(
         type_id=eve_src_base_item_id,
         state=consts.ApiModuleState.active,
-        mutation=(eve_src_mutator_id, {eve_assist_attr_id: {consts.ApiAttrMutation.roll: 0}}))
+        mutation=(eve_src_mutator_id, {eve_assist_attr_id: muta_roll_to_api(val=0)}))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
@@ -674,14 +674,14 @@ def test_assist_src_mutation_change(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: {consts.ApiAttrMutation.roll: 0}}))
+    api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: muta_roll_to_api(val=0)}))
     # Verification
     assert api_src_item.update().attrs[eve_assist_attr_id].extra == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
-    api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: {consts.ApiAttrMutation.roll: 0.5}}))
+    api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: muta_roll_to_api(val=0.5)}))
     # Verification
     assert api_src_item.update().attrs[eve_assist_attr_id].extra == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))

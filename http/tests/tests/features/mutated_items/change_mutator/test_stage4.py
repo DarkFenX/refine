@@ -1,7 +1,7 @@
-from tests import approx, check_no_field
+from tests import approx, check_no_field, muta_roll_to_api
 
 
-def test_from_stage1(client, consts):
+def test_from_stage1(client):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
@@ -14,7 +14,7 @@ def test_from_stage1(client, consts):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator1_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
+        mutation=(eve_mutator1_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -34,7 +34,7 @@ def test_from_stage1(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(92)
 
 
-def test_from_stage2(client, consts):
+def test_from_stage2(client):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
@@ -51,7 +51,7 @@ def test_from_stage2(client, consts):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator1_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
+        mutation=(eve_mutator1_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -71,7 +71,7 @@ def test_from_stage2(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(109)
 
 
-def test_from_stage3(client, consts):
+def test_from_stage3(client):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item1_id = client.alloc_item_id()
@@ -87,7 +87,7 @@ def test_from_stage3(client, consts):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator1_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
+        mutation=(eve_mutator1_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -107,7 +107,7 @@ def test_from_stage3(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(109)
 
 
-def test_from_stage4_range_value(client, consts):
+def test_from_stage4_range_value(client):
     # Base scenario, where only mutation ranges change
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
@@ -123,7 +123,7 @@ def test_from_stage4_range_value(client, consts):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator1_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
+        mutation=(eve_mutator1_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -146,7 +146,7 @@ def test_from_stage4_range_value(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(109)
 
 
-def test_from_stage4_attr_ranges(client, consts):
+def test_from_stage4_attr_ranges(client):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
@@ -161,8 +161,8 @@ def test_from_stage4_attr_ranges(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator1_id, {
-        eve_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
-        eve_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
+        eve_attr1_id: muta_roll_to_api(val=0.3),
+        eve_attr2_id: muta_roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -187,7 +187,7 @@ def test_from_stage4_attr_ranges(client, consts):
     assert api_item.attrs[eve_attr2_id].base == approx(92)
 
 
-def test_from_stage4_mutated_item(client, consts):
+def test_from_stage4_mutated_item(client):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
@@ -203,8 +203,8 @@ def test_from_stage4_mutated_item(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator1_id, {
-        eve_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
-        eve_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
+        eve_attr1_id: muta_roll_to_api(val=0.3),
+        eve_attr2_id: muta_roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item1_id

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::shared::HMutaRoll;
+use crate::{cmd::shared::HItemAttrMutationValue, shared::HMutaRoll};
 
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
@@ -28,13 +28,6 @@ pub(in crate::cmd) struct HItemMutationFull {
     // Workaround for https://github.com/serde-rs/serde/issues/1183
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     pub(in crate::cmd) attrs: Option<HashMap<rc::AttrId, HItemAttrMutationValue>>,
-}
-
-#[derive(serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub(in crate::cmd) enum HItemAttrMutationValue {
-    Roll(HMutaRoll),
-    Absolute(rc::AttrVal),
 }
 
 pub(in crate::cmd) fn apply_mattrs_on_add(mut core_mutation: rc::MutationMut, h_full_mutation: &HItemMutationFull) {

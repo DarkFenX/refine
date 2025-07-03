@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from tests import approx, check_no_field, muta_roll_to_api
 from tests.fw.api import ValOptions
 
 
@@ -210,7 +210,7 @@ def test_mutation_limit_priority(client, consts):
     api_module = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiServiceState.online,
-        mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 1}}))
+        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=1)}))
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(3)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
@@ -246,7 +246,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_module = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiServiceState.online,
-        mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 1}}))
+        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=1)}))
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(3)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))

@@ -41,6 +41,15 @@ def check_no_field() -> Iterator[None]:
         yield
 
 
+# Mutated attribute value converters
+def muta_roll_to_api(*, val: float) -> str:
+    return f'r{val}'
+
+
+def muta_abs_to_api(*, val: float) -> str:
+    return f'a{val}'
+
+
 # Effect ID converters
 def effect_dogma_to_api(*, dogma_effect_id: int) -> str:
     return f'd{dogma_effect_id}'

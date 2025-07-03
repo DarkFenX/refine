@@ -411,12 +411,6 @@ class ApiRack(StrEnum):
 
 
 @unique
-class ApiAttrMutation(StrEnum):
-    roll = 'roll'
-    absolute = 'absolute'
-
-
-@unique
 class ApiEffMode(StrEnum):
     full_compliance = 'full'
     state_compliance = 'state'

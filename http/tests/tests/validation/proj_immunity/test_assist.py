@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, effect_dogma_to_api
+from tests import approx, check_no_field, effect_dogma_to_api, muta_roll_to_api
 from tests.fw.api import ValOptions
 
 
@@ -275,7 +275,7 @@ def test_tgt_mutation(client, consts):
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
-    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0}})
+    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: muta_roll_to_api(val=0)})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
@@ -283,7 +283,7 @@ def test_tgt_mutation(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: {consts.ApiAttrMutation.roll: 0.1}})
+    api_tgt_item.change_drone(mutation={eve_immunity_attr_id: muta_roll_to_api(val=0.1)})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0.2)
     api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
