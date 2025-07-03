@@ -54,7 +54,13 @@ impl HChangeFighterCmd {
         }
         for proj_def in self.add_projs.iter() {
             core_fighter
-                .add_proj(&proj_def.get_item_id(), proj_def.get_range())
+                .add_proj(
+                    &proj_def.get_item_id(),
+                    match proj_def.get_range() {
+                        Some(range) => rc::ProjRange::S2S(range),
+                        None => rc::ProjRange::None,
+                    },
+                )
                 .map_err(|error| match error {
                     rc::err::AddRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                     rc::err::AddRangedProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
