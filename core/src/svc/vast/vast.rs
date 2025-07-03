@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::{AttrVal, Count, FitKey, ItemKey},
     misc::{AttrSpec, EffectSpec},
-    ntt::LocalRepGetter,
+    ntt::{LocalRepGetter, RemoteRepGetter},
     svc::vast::{
         ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -16,16 +16,16 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<ItemKey>,
     // Remote armor/shield rep effects which can have limited charge amount
-    pub(in crate::svc::vast) limitable_rsb: RMapRSet<ItemKey, EffectSpec>,
-    pub(in crate::svc::vast) limitable_rar: RMapRSet<ItemKey, EffectSpec>,
+    pub(in crate::svc::vast) limitable_rsb: RMapRMap<ItemKey, EffectSpec, RemoteRepGetter>,
+    pub(in crate::svc::vast) limitable_rar: RMapRMap<ItemKey, EffectSpec, RemoteRepGetter>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
         Self {
             fit_datas: RMap::new(),
             not_loaded: RSet::new(),
-            limitable_rsb: RMapRSet::new(),
-            limitable_rar: RMapRSet::new(),
+            limitable_rsb: RMapRMap::new(),
+            limitable_rar: RMapRMap::new(),
         }
     }
     pub(in crate::svc) fn get_fit_data(&self, fit_key: &FitKey) -> &VastFitData {

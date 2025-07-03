@@ -5,12 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        vast::{
-            Vast,
-            vaste_stats_effect::{
-                get_effect_charge, get_effect_remote_armor_rep_amount, get_effect_remote_shield_rep_amount,
-            },
-        },
+        vast::{Vast, vaste_stats_effect::get_effect_charge},
     },
     uad::UadItem,
 };
@@ -65,18 +60,22 @@ impl Vast {
         // Remote ancillary repairs
         let mut remote_asb = OF(0.0);
         let mut remote_aar = OF(0.0);
-        for rasb_espec in self.limitable_rsb.get(&item_key) {
-            if let Some(rasb_hp) = get_effect_remote_shield_rep_amount(ctx, calc, rasb_espec, Some(item_key))
-                && let Some(cycles) = get_effect_charge(ctx, rasb_espec).get_cycle_count()
-            {
-                remote_asb += rasb_hp * AttrVal::from(cycles);
+        if let Some(item_limitable_rsbs) = self.limitable_rsb.get_l1(&item_key) {
+            for (rasb_espec, rep_getter) in item_limitable_rsbs.iter() {
+                if let Some(rasb_hp) = rep_getter(ctx, calc, rasb_espec, Some(item_key))
+                    && let Some(cycles) = get_effect_charge(ctx, rasb_espec).get_cycle_count()
+                {
+                    remote_asb += rasb_hp * AttrVal::from(cycles);
+                }
             }
         }
-        for raar_espec in self.limitable_rar.get(&item_key) {
-            if let Some(raar_hp) = get_effect_remote_armor_rep_amount(ctx, calc, raar_espec, Some(item_key))
-                && let Some(cycles) = get_effect_charge(ctx, raar_espec).get_cycle_count()
-            {
-                remote_aar += raar_hp * AttrVal::from(cycles);
+        if let Some(item_limitable_rars) = self.limitable_rar.get_l1(&item_key) {
+            for (raar_espec, rep_getter) in item_limitable_rars.iter() {
+                if let Some(raar_hp) = rep_getter(ctx, calc, raar_espec, Some(item_key))
+                    && let Some(cycles) = get_effect_charge(ctx, raar_espec).get_cycle_count()
+                {
+                    remote_aar += raar_hp * AttrVal::from(cycles);
+                }
             }
         }
         Some(StatTank {

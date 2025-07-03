@@ -10,7 +10,7 @@ use crate::{
 };
 
 pub(crate) type LocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
-pub(crate) type RemoteRepGetter = fn(SvcCtx, &mut Calc, ItemKey, Option<ItemKey>) -> Option<AttrVal>;
+pub(crate) type RemoteRepGetter = fn(SvcCtx, &mut Calc, &EffectSpec, Option<ItemKey>) -> Option<AttrVal>;
 
 pub(crate) struct NttEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means

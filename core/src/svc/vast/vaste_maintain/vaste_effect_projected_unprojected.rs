@@ -47,16 +47,19 @@ impl Vast {
                 }
             }
         }
-        match a_effect.ae.id {
-            ac::effects::SHIP_MODULE_RASB => {
-                let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
-                self.limitable_rsb.add_entry(projectee_item_key, projector_espec);
-            }
-            ac::effects::SHIP_MODULE_RAAR => {
-                let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
-                self.limitable_rar.add_entry(projectee_item_key, projector_espec);
-            }
-            _ => (),
+        if let Some(rep_getter) = a_effect.rt.get_remote_shield_rep_amount
+            && matches!(a_effect.ae.charge, Some(ad::AEffectChargeInfo::Loaded))
+        {
+            let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
+            self.limitable_rsb
+                .add_value(projectee_item_key, projector_espec, rep_getter);
+        }
+        if let Some(rep_getter) = a_effect.rt.get_remote_armor_rep_amount
+            && matches!(a_effect.ae.charge, Some(ad::AEffectChargeInfo::Loaded))
+        {
+            let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
+            self.limitable_rar
+                .add_value(projectee_item_key, projector_espec, rep_getter);
         }
     }
     pub(in crate::svc) fn effect_unprojected(
@@ -99,16 +102,17 @@ impl Vast {
                 }
             }
         }
-        match a_effect.ae.id {
-            ac::effects::SHIP_MODULE_RASB => {
-                let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
-                self.limitable_rsb.remove_entry(&projectee_item_key, &projector_espec);
-            }
-            ac::effects::SHIP_MODULE_RAAR => {
-                let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
-                self.limitable_rar.remove_entry(&projectee_item_key, &projector_espec);
-            }
-            _ => (),
+        if a_effect.rt.get_remote_shield_rep_amount.is_some()
+            && matches!(a_effect.ae.charge, Some(ad::AEffectChargeInfo::Loaded))
+        {
+            let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
+            self.limitable_rsb.remove_l2(&projectee_item_key, &projector_espec);
+        }
+        if a_effect.rt.get_remote_armor_rep_amount.is_some()
+            && matches!(a_effect.ae.charge, Some(ad::AEffectChargeInfo::Loaded))
+        {
+            let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
+            self.limitable_rar.remove_l2(&projectee_item_key, &projector_espec);
         }
     }
 }

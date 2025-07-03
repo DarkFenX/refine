@@ -31,7 +31,7 @@ pub(in crate::svc) fn get_resist_mult_val_by_projectee_aspec(
     })
 }
 
-pub(in crate::svc) fn get_resist_mult_val(
+pub(crate) fn get_resist_mult_val(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: &EffectSpec,

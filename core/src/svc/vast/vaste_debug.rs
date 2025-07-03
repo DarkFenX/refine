@@ -17,7 +17,7 @@ impl Vast {
         for (projectee_item_key, projector_especs) in self.limitable_rsb.iter() {
             // Projectee are not guaranteed to be loaded
             check_item_key(uad, *projectee_item_key, false)?;
-            for projector_espec in projector_especs {
+            for projector_espec in projector_especs.keys() {
                 check_item_key(uad, projector_espec.item_key, true)?;
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
@@ -25,7 +25,7 @@ impl Vast {
         for (projectee_item_key, projector_especs) in self.limitable_rar.iter() {
             // Projectee are not guaranteed to be loaded
             check_item_key(uad, *projectee_item_key, false)?;
-            for projector_espec in projector_especs {
+            for projector_espec in projector_especs.keys() {
                 check_item_key(uad, projector_espec.item_key, true)?;
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
