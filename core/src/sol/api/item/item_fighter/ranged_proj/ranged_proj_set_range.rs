@@ -4,7 +4,7 @@ use crate::{
     def::{AttrVal, ItemKey},
     err::basic::ProjFoundError,
     sol::SolarSystem,
-    uad::ProjRange,
+    uad::UadProjRange,
 };
 
 impl SolarSystem {
@@ -34,13 +34,13 @@ impl SolarSystem {
         let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
         uad_fighter
             .get_projs_mut()
-            .add(projectee_item_key, range.map(ProjRange::new_tmp));
+            .add(projectee_item_key, range.map(UadProjRange::new_tmp));
         // Update user data for autocharges
         for &autocharge_key in autocharge_keys.iter() {
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             uad_autocharge
                 .get_projs_mut()
-                .add(projectee_item_key, range.map(ProjRange::new_tmp));
+                .add(projectee_item_key, range.map(UadProjRange::new_tmp));
         }
         // Update services for fighter
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
@@ -51,7 +51,7 @@ impl SolarSystem {
             item_key,
             projectee_item_key,
             projectee_uad_item,
-            range.map(ProjRange::new_tmp),
+            range.map(UadProjRange::new_tmp),
         );
         // Update services for autocharges
         for autocharge_key in autocharge_keys.into_iter() {
@@ -62,7 +62,7 @@ impl SolarSystem {
                 autocharge_key,
                 projectee_item_key,
                 projectee_uad_item,
-                range.map(ProjRange::new_tmp),
+                range.map(UadProjRange::new_tmp),
             );
         }
         Ok(())

@@ -6,7 +6,7 @@ use crate::{
     uad::{
         Uad, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFwEffect, UadImplant,
         UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance, UadSubsystem, UadSwEffect,
-        item::{Autocharges, EffectModes, ItemMutationData, ProjRange, Projs},
+        item::{Autocharges, EffectModes, ItemMutationData, Projs, UadProjRange},
     },
     util::{GetId, Named, RMap},
 };
@@ -235,7 +235,7 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<ProjRange>)>> {
+    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<UadProjRange>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Charge(charge) => Some(charge.get_projs().iter()),

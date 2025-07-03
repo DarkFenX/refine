@@ -21,7 +21,7 @@ pub(crate) use item_skill::UadSkill;
 pub(crate) use item_stance::UadStance;
 pub(crate) use item_subsystem::UadSubsystem;
 pub(crate) use item_sw_effect::UadSwEffect;
-pub(crate) use misc::{Autocharges, EffectModes, ProjRange, Projs};
+pub(crate) use misc::{Autocharges, EffectModes, Projs, UadProjRange};
 use misc::{bool_to_state_active, bool_to_state_offline, state_to_bool};
 
 mod base;

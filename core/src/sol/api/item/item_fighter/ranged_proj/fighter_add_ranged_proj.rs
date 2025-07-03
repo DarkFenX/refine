@@ -7,7 +7,7 @@ use crate::{
         SolarSystem,
         api::{AddRangedProjError, FighterMut, ProjMut},
     },
-    uad::ProjRange,
+    uad::UadProjRange,
 };
 
 impl SolarSystem {
@@ -41,7 +41,7 @@ impl SolarSystem {
         let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
         uad_fighter
             .get_projs_mut()
-            .add(projectee_item_key, range.map(ProjRange::new_tmp));
+            .add(projectee_item_key, range.map(UadProjRange::new_tmp));
         self.rprojs.reg_projectee(item_key, projectee_item_key);
         // Update services for fighter
         let uad_item = self.uad.items.get(item_key);
@@ -54,14 +54,14 @@ impl SolarSystem {
             uad_item,
             projectee_item_key,
             projectee_uad_item,
-            range.map(ProjRange::new_tmp),
+            range.map(UadProjRange::new_tmp),
         );
         for autocharge_key in autocharge_keys {
             // Update user data for autocharge
             let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             uad_autocharge
                 .get_projs_mut()
-                .add(projectee_item_key, range.map(ProjRange::new_tmp));
+                .add(projectee_item_key, range.map(UadProjRange::new_tmp));
             self.rprojs.reg_projectee(autocharge_key, projectee_item_key);
             // Update services for autocharge
             let autocharge_uad_item = self.uad.items.get(autocharge_key);
@@ -74,7 +74,7 @@ impl SolarSystem {
                 autocharge_uad_item,
                 projectee_item_key,
                 projectee_uad_item,
-                range.map(ProjRange::new_tmp),
+                range.map(UadProjRange::new_tmp),
             );
         }
         Ok(())

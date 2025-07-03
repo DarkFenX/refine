@@ -5,7 +5,7 @@ use crate::{
         SolarSystem,
         api::{AddRangedProjError, ModuleMut, RangedProjMut},
     },
-    uad::ProjRange,
+    uad::UadProjRange,
 };
 
 impl SolarSystem {
@@ -45,7 +45,7 @@ impl SolarSystem {
             uad_item,
             projectee_item_key,
             projectee_uad_item,
-            range.map(ProjRange::new_tmp),
+            range.map(UadProjRange::new_tmp),
         );
         // Update services for charge
         if let Some(charge_key) = charge_key {
@@ -58,21 +58,21 @@ impl SolarSystem {
                 charge_uad_item,
                 projectee_item_key,
                 projectee_uad_item,
-                range.map(ProjRange::new_tmp),
+                range.map(UadProjRange::new_tmp),
             );
         }
         // Update user data for module
         let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
         uad_module
             .get_projs_mut()
-            .add(projectee_item_key, range.map(ProjRange::new_tmp));
+            .add(projectee_item_key, range.map(UadProjRange::new_tmp));
         self.rprojs.reg_projectee(item_key, projectee_item_key);
         // Update user data for charge
         if let Some(charge_key) = charge_key {
             let uad_charge = self.uad.items.get_mut(charge_key).get_charge_mut().unwrap();
             uad_charge
                 .get_projs_mut()
-                .add(projectee_item_key, range.map(ProjRange::new_tmp));
+                .add(projectee_item_key, range.map(UadProjRange::new_tmp));
             self.rprojs.reg_projectee(charge_key, projectee_item_key);
         }
         Ok(())

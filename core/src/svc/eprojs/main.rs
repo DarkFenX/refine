@@ -1,9 +1,9 @@
-use crate::{def::ItemKey, misc::EffectSpec, uad::ProjRange, util::RMap};
+use crate::{def::ItemKey, misc::EffectSpec, uad::UadProjRange, util::RMap};
 
 // Holds info about effect projections
 #[derive(Clone)]
 pub(crate) struct EProjs {
-    pub(super) ranges: RMap<(EffectSpec, ItemKey), ProjRange>,
+    pub(super) ranges: RMap<(EffectSpec, ItemKey), UadProjRange>,
 }
 impl EProjs {
     pub(in crate::svc) fn new() -> Self {
@@ -14,7 +14,7 @@ impl EProjs {
         &self,
         affector_espec: EffectSpec,
         affectee_item_key: ItemKey,
-    ) -> Option<ProjRange> {
+    ) -> Option<UadProjRange> {
         self.ranges.get(&(affector_espec, affectee_item_key)).copied()
     }
     // Modification methods
@@ -22,7 +22,7 @@ impl EProjs {
         &mut self,
         affector_espec: EffectSpec,
         affectee_item_key: ItemKey,
-        range: Option<ProjRange>,
+        range: Option<UadProjRange>,
     ) {
         if let Some(range) = range {
             self.ranges.insert((affector_espec, affectee_item_key), range);
@@ -32,7 +32,7 @@ impl EProjs {
         &mut self,
         affector_espec: EffectSpec,
         affectee_item_key: ItemKey,
-        range: Option<ProjRange>,
+        range: Option<UadProjRange>,
     ) {
         match range {
             Some(range) => self.ranges.insert((affector_espec, affectee_item_key), range),

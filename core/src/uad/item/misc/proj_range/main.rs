@@ -1,7 +1,7 @@
 use crate::def::{AttrVal, OF};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) struct ProjRange {
+pub(crate) struct UadProjRange {
     // Center-to-center range
     pub(crate) c2c: AttrVal,
     // Surface-to-surface range
@@ -9,7 +9,7 @@ pub(crate) struct ProjRange {
     pub(crate) src_radius: AttrVal,
     pub(crate) tgt_radius: AttrVal,
 }
-impl ProjRange {
+impl UadProjRange {
     pub(crate) fn new_tmp(range: AttrVal) -> Self {
         Self {
             c2c: range,

@@ -3,7 +3,7 @@ use crate::{
     def::ItemKey,
     sol::{SolarSystem, reffs::REffs},
     svc::Svc,
-    uad::{ProjRange, Uad, UadItem},
+    uad::{Uad, UadItem, UadProjRange},
 };
 
 impl SolarSystem {
@@ -15,7 +15,7 @@ impl SolarSystem {
         projector_uad_item: &UadItem,
         projectee_item_key: ItemKey,
         projectee_uad_item: &UadItem,
-        range: Option<ProjRange>,
+        range: Option<UadProjRange>,
     ) {
         svc.notify_item_projected();
         for a_effect_id in reffs.iter_running(&projector_item_key) {
@@ -64,7 +64,7 @@ impl SolarSystem {
         projector_item_key: ItemKey,
         projectee_item_key: ItemKey,
         projectee_uad_item: &UadItem,
-        range: Option<ProjRange>,
+        range: Option<UadProjRange>,
     ) {
         svc.notify_item_proj_range_changed();
         let running_a_effect_ids = reffs.iter_running(&projector_item_key);

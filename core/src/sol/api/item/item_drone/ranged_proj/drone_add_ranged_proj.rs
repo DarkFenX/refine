@@ -5,7 +5,7 @@ use crate::{
         SolarSystem,
         api::{AddRangedProjError, DroneMut, RangedProjMut},
     },
-    uad::ProjRange,
+    uad::UadProjRange,
 };
 
 impl SolarSystem {
@@ -44,13 +44,13 @@ impl SolarSystem {
             uad_item,
             projectee_item_key,
             projectee_uad_item,
-            range.map(ProjRange::new_tmp),
+            range.map(UadProjRange::new_tmp),
         );
         // Update user data
         let uad_drone = self.uad.items.get_mut(item_key).get_drone_mut().unwrap();
         uad_drone
             .get_projs_mut()
-            .add(projectee_item_key, range.map(ProjRange::new_tmp));
+            .add(projectee_item_key, range.map(UadProjRange::new_tmp));
         self.rprojs.reg_projectee(item_key, projectee_item_key);
         Ok(())
     }

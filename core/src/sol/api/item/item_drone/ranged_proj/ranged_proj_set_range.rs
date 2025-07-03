@@ -2,7 +2,7 @@ use crate::{
     def::{AttrVal, ItemKey},
     err::basic::ProjFoundError,
     sol::SolarSystem,
-    uad::ProjRange,
+    uad::UadProjRange,
 };
 
 impl SolarSystem {
@@ -30,7 +30,7 @@ impl SolarSystem {
         // Update user data
         uad_drone
             .get_projs_mut()
-            .add(projectee_item_key, range.map(ProjRange::new_tmp));
+            .add(projectee_item_key, range.map(UadProjRange::new_tmp));
         // Update services
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
         SolarSystem::util_change_item_proj_range(
@@ -40,7 +40,7 @@ impl SolarSystem {
             item_key,
             projectee_item_key,
             projectee_uad_item,
-            range.map(ProjRange::new_tmp),
+            range.map(UadProjRange::new_tmp),
         );
         Ok(())
     }

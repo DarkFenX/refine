@@ -1,18 +1,18 @@
-use crate::{def::ItemKey, uad::ProjRange, util::RMap};
+use crate::{def::ItemKey, uad::UadProjRange, util::RMap};
 
 #[derive(Clone)]
 pub(crate) struct Projs {
-    pub(super) data: RMap<ItemKey, Option<ProjRange>>,
+    pub(super) data: RMap<ItemKey, Option<UadProjRange>>,
 }
 impl Projs {
     pub(in crate::uad::item) fn new() -> Self {
         Self { data: RMap::new() }
     }
     // Query methods
-    pub(crate) fn get(&self, item_key: &ItemKey) -> Option<&Option<ProjRange>> {
+    pub(crate) fn get(&self, item_key: &ItemKey) -> Option<&Option<UadProjRange>> {
         self.data.get(item_key)
     }
-    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&ItemKey, &Option<ProjRange>)> {
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&ItemKey, &Option<UadProjRange>)> {
         self.data.iter()
     }
     pub(crate) fn iter_projectee_item_keys(&self) -> impl ExactSizeIterator<Item = &ItemKey> {
@@ -22,10 +22,10 @@ impl Projs {
         self.data.contains_key(item_key)
     }
     // Modification methods
-    pub(crate) fn add(&mut self, item_key: ItemKey, range: Option<ProjRange>) {
+    pub(crate) fn add(&mut self, item_key: ItemKey, range: Option<UadProjRange>) {
         self.data.insert(item_key, range);
     }
-    pub(crate) fn remove(&mut self, item_key: &ItemKey) -> Option<Option<ProjRange>> {
+    pub(crate) fn remove(&mut self, item_key: &ItemKey) -> Option<Option<UadProjRange>> {
         self.data.remove(item_key)
     }
 }
