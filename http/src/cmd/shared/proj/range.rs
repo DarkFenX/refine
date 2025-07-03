@@ -30,7 +30,7 @@ impl<'de> serde::Deserialize<'de> for HProjRange {
             type Value = HProjRange;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                formatter.write_str("float, int, string with range float with optional \"c\"/\"s\" prefix, or null")
+                formatter.write_str("number, string with number with optional type prefix, or null")
             }
 
             fn visit_unit<E>(self) -> Result<Self::Value, E>
