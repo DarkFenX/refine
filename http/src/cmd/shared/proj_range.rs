@@ -24,9 +24,9 @@ impl<'de> serde::Deserialize<'de> for HProjRange {
     where
         D: serde::de::Deserializer<'de>,
     {
-        struct HEffectIdVisitor;
+        struct HProjRangeVisitor;
 
-        impl<'de> serde::de::Visitor<'de> for HEffectIdVisitor {
+        impl<'de> serde::de::Visitor<'de> for HProjRangeVisitor {
             type Value = HProjRange;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -138,6 +138,6 @@ impl<'de> serde::Deserialize<'de> for HProjRange {
                 Ok(Self::Value::S2S(prange))
             }
         }
-        deserializer.deserialize_str(HEffectIdVisitor)
+        deserializer.deserialize_any(HProjRangeVisitor)
     }
 }
