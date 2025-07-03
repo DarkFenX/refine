@@ -10,7 +10,7 @@ from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
-    from tests.fw.api.aliases import MutaAdd, MutaChange
+    from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
     from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
 
 
@@ -187,8 +187,8 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
-            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
-            change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
+            add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
+            change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -217,8 +217,8 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             count: int | None | type[Absent] = Absent,
-            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
-            change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
+            add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
+            change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -292,8 +292,8 @@ class Item(AttrDict):
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
             charge_type_id: int | None | type[Absent] = Absent,
-            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
-            change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
+            add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
+            change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,

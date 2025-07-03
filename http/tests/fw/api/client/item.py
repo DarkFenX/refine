@@ -7,7 +7,7 @@ from tests.fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.aliases import MutaAdd, MutaChange
+    from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
     from tests.fw.consts import (
         ApiEffMode,
         ApiItemInfoMode,
@@ -203,8 +203,8 @@ class ApiClientItem(ApiClientBase):
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             mutation: MutaAdd | MutaChange | None | type[Absent],
-            add_projs: list[tuple[str, float | None] | str] | type[Absent],
-            change_projs: list[tuple[str, float | None]] | type[Absent],
+            add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
+            change_projs: list[tuple[str, ProjRange]] | type[Absent],
             rm_projs: list[str] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -258,8 +258,8 @@ class ApiClientItem(ApiClientBase):
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             count: int | None | type[Absent],
-            add_projs: list[tuple[str, float | None] | str] | type[Absent],
-            change_projs: list[tuple[str, float | None]] | type[Absent],
+            add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
+            change_projs: list[tuple[str, ProjRange]] | type[Absent],
             rm_projs: list[str] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -390,8 +390,8 @@ class ApiClientItem(ApiClientBase):
             state: ApiModuleState | type[Absent],
             mutation: MutaAdd | MutaChange | None | type[Absent],
             charge_type_id: int | None | type[Absent],
-            add_projs: list[tuple[str, float | None] | str] | type[Absent],
-            change_projs: list[tuple[str, float | None]] | type[Absent],
+            add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
+            change_projs: list[tuple[str, ProjRange]] | type[Absent],
             rm_projs: list[str] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
