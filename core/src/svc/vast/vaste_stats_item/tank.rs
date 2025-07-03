@@ -57,7 +57,7 @@ impl Vast {
             }
             _ => (OF(0.0), OF(0.0)),
         };
-        // Remote ancillary repairs
+        // Incoming remote ancillary repairs
         let mut remote_asb = OF(0.0);
         let mut remote_aar = OF(0.0);
         if let Some(item_limitable_rsbs) = self.limitable_rsb.get_l1(&item_key) {
