@@ -11,6 +11,7 @@ impl SolarSystem {
             return;
         }
         SolarSystem::util_remove_drone_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        // Set type ID and update UAD item
         let uad_drone = self.uad.items.get_mut(item_key).get_drone_mut().unwrap();
         uad_drone.set_a_item_id(&self.uad.src, a_item_id);
         // Update drone radius for outgoing projections
