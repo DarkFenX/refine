@@ -1,5 +1,3 @@
-use itertools::chain;
-
 use crate::{
     ad,
     def::{ItemKey, ItemTypeId, OF},
@@ -21,41 +19,22 @@ impl SolarSystem {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.kind = ship_kind;
         // Update outgoing projections for all on-ship items
-        let uad_ship = self.uad.items.get(item_key).get_ship().unwrap();
-        let ship_radius = uad_ship.get_a_extras().and_then(|v| v.radius).unwrap_or(OF(0.0));
-        let mut projections_to_update = Vec::new();
-        for &module_item_key in chain!(
-            uad_fit.mods_high.iter_keys(),
-            uad_fit.mods_mid.iter_keys(),
-            uad_fit.mods_low.iter_keys()
-        ) {
-            let uad_module = self.uad.items.get_mut(module_item_key).get_module_mut().unwrap();
-            for (projectee_item_key, uad_prange) in uad_module.get_projs_mut().iter_projectees_and_ranges_mut() {
-                if uad_prange.update_src_rad(ship_radius) {
-                    projections_to_update.push((module_item_key, *projectee_item_key, *uad_prange));
-                }
-            }
-            if let Some(charge_item_key) = uad_module.get_charge_item_key() {
-                let uad_charge = self.uad.items.get_mut(charge_item_key).get_charge_mut().unwrap();
-                for (projectee_item_key, uad_prange) in uad_charge.get_projs_mut().iter_projectees_and_ranges_mut() {
-                    if uad_prange.update_src_rad(ship_radius) {
-                        projections_to_update.push((charge_item_key, *projectee_item_key, *uad_prange));
-                    }
-                }
-            }
-        }
-        for (projector_item_key, projectee_item_key, prange) in projections_to_update {
-            let projectee_uad_item = self.uad.items.get(projectee_item_key);
-            SolarSystem::util_change_item_proj_range(
-                &self.uad,
-                &mut self.svc,
-                &self.reffs,
-                projector_item_key,
-                projectee_item_key,
-                projectee_uad_item,
-                Some(prange),
-            );
-        }
+        let ship_radius = self
+            .uad
+            .items
+            .get(item_key)
+            .get_ship()
+            .unwrap()
+            .get_a_extras()
+            .and_then(|v| v.radius)
+            .unwrap_or(OF(0.0));
+        SolarSystem::util_update_ship_radius_for_outgoing_projs(
+            &mut self.uad,
+            &mut self.svc,
+            &self.reffs,
+            fit_key,
+            ship_radius,
+        );
         // Update incoming projections
         for &projector_item_key in self.rprojs.iter_projectors(&item_key) {
             let projector_uad_item = self.uad.items.get_mut(projector_item_key);
