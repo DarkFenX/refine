@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    def::{ItemKey, ItemTypeId},
+    def::{ItemKey, ItemTypeId, OF},
     sol::{SolarSystem, api::DroneMut},
 };
 
@@ -11,12 +11,13 @@ impl SolarSystem {
             return;
         }
         SolarSystem::util_remove_drone_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
-        self.uad
-            .items
-            .get_mut(item_key)
-            .get_drone_mut()
-            .unwrap()
-            .set_a_item_id(&self.uad.src, a_item_id);
+        let uad_drone = self.uad.items.get_mut(item_key).get_drone_mut().unwrap();
+        uad_drone.set_a_item_id(&self.uad.src, a_item_id);
+        // Update drone radius for outgoing projections
+        let drone_radius = uad_drone.get_a_extras().and_then(|v| v.radius).unwrap_or(OF(0.0));
+        for uad_prange in uad_drone.get_projs_mut().iter_ranges_mut() {
+            uad_prange.update_src_rad(drone_radius);
+        }
         let uad_item = self.uad.items.get(item_key);
         SolarSystem::util_add_drone_with_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
     }

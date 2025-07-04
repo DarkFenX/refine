@@ -41,11 +41,34 @@ impl UadProjRange {
             }),
             ProjRange::C2C(range) => Some(Self {
                 c2c: range,
-                s2s: AttrVal::max(OF(0.0), range - src_rad - tgt_rad),
+                s2s: calc_s2s_range(range, src_rad, tgt_rad),
                 src_rad,
                 tgt_rad,
             }),
             ProjRange::None => None,
         }
     }
+    pub(crate) fn update_src_rad(&mut self, src_rad: AttrVal) -> bool {
+        if self.src_rad == src_rad {
+            return false;
+        };
+        self.src_rad = src_rad;
+        self.update_s2s_range();
+        true
+    }
+    pub(crate) fn update_tgt_rad(&mut self, tgt_rad: AttrVal) -> bool {
+        if self.tgt_rad == tgt_rad {
+            return false;
+        };
+        self.tgt_rad = tgt_rad;
+        self.update_s2s_range();
+        true
+    }
+    fn update_s2s_range(&mut self) {
+        self.s2s = calc_s2s_range(self.c2c, self.src_rad, self.tgt_rad)
+    }
+}
+
+fn calc_s2s_range(c2c_range: AttrVal, src_rad: AttrVal, tgt_rad: AttrVal) -> AttrVal {
+    AttrVal::max(OF(0.0), c2c_range - src_rad - tgt_rad)
 }

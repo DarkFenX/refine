@@ -15,6 +15,9 @@ impl Projs {
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&ItemKey, &Option<UadProjRange>)> {
         self.data.iter()
     }
+    pub(crate) fn iter_ranges_mut(&mut self) -> impl Iterator<Item = &mut UadProjRange> {
+        self.data.values_mut().filter_map(|v| v.as_mut())
+    }
     pub(crate) fn iter_projectee_item_keys(&self) -> impl ExactSizeIterator<Item = &ItemKey> {
         self.data.keys()
     }
