@@ -1,6 +1,6 @@
 //! User & adapted data.
 
-pub(crate) use fit::{FitSkill, Fits, ItemVec, UadFit};
+pub(crate) use fit::{Fits, ItemVec, UadFit, UadFitSkill};
 pub(crate) use fleet::UadFleet;
 pub(crate) use item::{
     ShipKind, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFwEffect, UadImplant,

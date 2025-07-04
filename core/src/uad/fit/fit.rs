@@ -3,7 +3,7 @@ use crate::{
     def::{FitId, FleetKey, ItemKey},
     misc::{DpsProfile, FitSecStatus},
     uad::{
-        fit::{FitSkill, ItemVec},
+        fit::{ItemVec, UadFitSkill},
         item::ShipKind,
     },
     util::{GetId, Named, RMap, RSet},
@@ -15,7 +15,7 @@ pub(crate) struct UadFit {
     pub(crate) kind: ShipKind,
     pub(crate) fleet: Option<FleetKey>,
     pub(crate) character: Option<ItemKey>,
-    pub(crate) skills: RMap<ad::AItemId, FitSkill>,
+    pub(crate) skills: RMap<ad::AItemId, UadFitSkill>,
     pub(crate) implants: RSet<ItemKey>,
     pub(crate) boosters: RSet<ItemKey>,
     pub(crate) ship: Option<ItemKey>,

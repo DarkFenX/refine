@@ -1,7 +1,7 @@
 pub(crate) use container::Fits;
 pub(crate) use fit::UadFit;
 pub(crate) use item_vec::ItemVec;
-pub(crate) use skill::FitSkill;
+pub(crate) use skill::UadFitSkill;
 
 mod container;
 mod fit;

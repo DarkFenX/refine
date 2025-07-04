@@ -9,7 +9,7 @@ use crate::{
         SolarSystem,
         api::{FitMut, SkillMut},
     },
-    uad::{FitSkill, UadItem, UadSkill},
+    uad::{UadFitSkill, UadItem, UadSkill},
 };
 
 impl SolarSystem {
@@ -26,7 +26,7 @@ impl SolarSystem {
                 let skill = UadSkill::new(&self.uad.src, item_id, a_item_id, fit_key, level.into(), true);
                 let item = UadItem::Skill(skill);
                 let item_key = self.uad.items.add(item);
-                entry.insert(FitSkill { item_key, level });
+                entry.insert(UadFitSkill { item_key, level });
                 let uad_item = self.uad.items.get(item_key);
                 SolarSystem::util_add_skill(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
                 Ok(item_key)
