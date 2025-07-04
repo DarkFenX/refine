@@ -6,16 +6,16 @@ use crate::{
 
 impl EProjs {
     pub(crate) fn consistency_check(&self, uad: &Uad) -> DebugResult {
-        for ((affector_espec, affectee_item_key), svc_range) in self.ranges.iter() {
-            check_item_key(uad, affector_espec.item_key, true)?;
-            check_a_effect_id(uad, &affector_espec.a_effect_id)?;
-            check_item_key(uad, *affectee_item_key, true)?;
+        for ((projector_espec, projectee_item_key), svc_range) in self.ranges.iter() {
+            check_item_key(uad, projector_espec.item_key, true)?;
+            check_a_effect_id(uad, &projector_espec.a_effect_id)?;
+            check_item_key(uad, *projectee_item_key, true)?;
             svc_range.consistency_check()?;
-            let affector_projs = match uad.items.get(affector_espec.item_key).get_projs() {
-                Some(affector_projs) => affector_projs,
+            let projector_projs = match uad.items.get(projector_espec.item_key).get_projs() {
+                Some(projector_projs) => projector_projs,
                 None => return Err(DebugError {}),
             };
-            match affector_projs.get(affectee_item_key) {
+            match projector_projs.get(projectee_item_key) {
                 Some(Some(uad_range)) => {
                     // If ranges are defined on both, range mismatch is an error
                     if uad_range != svc_range {
