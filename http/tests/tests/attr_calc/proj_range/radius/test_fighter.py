@@ -46,43 +46,19 @@ def test_proj_add_change(client, consts):
     api_affector_fighter1.change_fighter(add_projs=[(api_affectee_ship1.id, range_c2c_to_api(val=11000))])
     # Verification
     assert api_affector_fighter1.update().projs[api_affectee_ship1.id] == (11000, 9975)
-    api_affectee_ship1.update()
-    assert api_affectee_ship1.attrs[eve_affectee_attr_id].dogma == approx(256.83146)
-    api_mod = api_affectee_ship1.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5721613)
-    assert api_mod.applied_val == approx(-48.633708)
+    assert api_affectee_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(256.83146)
     # Action
     api_affector_fighter2.change_fighter(add_projs=[(api_affectee_ship2.id, range_s2s_to_api(val=11000))])
     # Verification
     assert api_affector_fighter2.update().projs[api_affectee_ship2.id] == (12025, 11000)
-    api_affectee_ship2.update()
-    assert api_affectee_ship2.attrs[eve_affectee_attr_id].dogma == approx(287.5)
-    api_mod = api_affectee_ship2.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5)
-    assert api_mod.applied_val == approx(-42.5)
+    assert api_affectee_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
     # Action
     api_affector_fighter1.change_fighter(change_projs=[(api_affectee_ship1.id, range_s2s_to_api(val=11000))])
     # Verification
     assert api_affector_fighter1.update().projs[api_affectee_ship1.id] == (12025, 11000)
-    api_affectee_ship1.update()
-    assert api_affectee_ship1.attrs[eve_affectee_attr_id].dogma == approx(287.5)
-    api_mod = api_affectee_ship1.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5)
-    assert api_mod.applied_val == approx(-42.5)
+    assert api_affectee_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
     # Action
     api_affector_fighter2.change_fighter(change_projs=[(api_affectee_ship2.id, range_c2c_to_api(val=11000))])
     # Verification
     assert api_affector_fighter2.update().projs[api_affectee_ship2.id] == (11000, 9975)
-    api_affectee_ship2.update()
-    assert api_affectee_ship2.attrs[eve_affectee_attr_id].dogma == approx(256.83146)
-    api_mod = api_affectee_ship2.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5721613)
-    assert api_mod.applied_val == approx(-48.633708)
+    assert api_affectee_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(256.83146)

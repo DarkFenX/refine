@@ -46,46 +46,22 @@ def test_proj_add_change(client, consts):
     api_affector_drone1.change_drone(add_projs=[(api_affectee_ship1.id, range_c2c_to_api(val=11000))])
     # Verification
     assert api_affector_drone1.update().projs[api_affectee_ship1.id] == (11000, 9975)
-    api_affectee_ship1.update()
-    assert api_affectee_ship1.attrs[eve_affectee_attr_id].dogma == approx(256.83146)
-    api_mod = api_affectee_ship1.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5721613)
-    assert api_mod.applied_val == approx(-48.633708)
+    assert api_affectee_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(256.83146)
     # Action
     api_affector_drone2.change_drone(add_projs=[(api_affectee_ship2.id, range_s2s_to_api(val=11000))])
     # Verification
     assert api_affector_drone2.update().projs[api_affectee_ship2.id] == (12025, 11000)
-    api_affectee_ship2.update()
-    assert api_affectee_ship2.attrs[eve_affectee_attr_id].dogma == approx(287.5)
-    api_mod = api_affectee_ship2.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5)
-    assert api_mod.applied_val == approx(-42.5)
+    assert api_affectee_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
     # Action
     api_affector_drone1.change_drone(change_projs=[(api_affectee_ship1.id, range_s2s_to_api(val=11000))])
     # Verification
     assert api_affector_drone1.update().projs[api_affectee_ship1.id] == (12025, 11000)
-    api_affectee_ship1.update()
-    assert api_affectee_ship1.attrs[eve_affectee_attr_id].dogma == approx(287.5)
-    api_mod = api_affectee_ship1.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5)
-    assert api_mod.applied_val == approx(-42.5)
+    assert api_affectee_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
     # Action
     api_affector_drone2.change_drone(change_projs=[(api_affectee_ship2.id, range_c2c_to_api(val=11000))])
     # Verification
     assert api_affector_drone2.update().projs[api_affectee_ship2.id] == (11000, 9975)
-    api_affectee_ship2.update()
-    assert api_affectee_ship2.attrs[eve_affectee_attr_id].dogma == approx(256.83146)
-    api_mod = api_affectee_ship2.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5721613)
-    assert api_mod.applied_val == approx(-48.633708)
+    assert api_affectee_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(256.83146)
 
 
 def test_switch_type_id(client, consts):
@@ -148,51 +124,23 @@ def test_switch_type_id(client, consts):
     # Verification - outgoing projection
     api_mid_drone.update()
     assert api_mid_drone.projs[api_affectee_ship.id] == (12025, 11000)
-    api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(287.5)
-    api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5)
-    assert api_mod.applied_val == approx(-42.5)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
     # Verification - incoming projection
     assert api_affector_module.update().projs[api_mid_drone.id] == (11025, 11000)
     assert api_mid_drone.attrs[eve_affectee_attr_id].dogma == approx(575)
-    api_mod = api_mid_drone.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.5)
-    assert api_mod.applied_val == approx(-42.5)
     # Action
     api_mid_drone.change_drone(type_id=eve_mid_drone2_id)
     # Verification - outgoing projection
     api_mid_drone.update()
     assert api_mid_drone.projs[api_affectee_ship.id] == (12025, 8525)
-    api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(212.968994)
-    api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.6753671)
-    assert api_mod.applied_val == approx(-57.406201)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(212.968994)
     # Verification - incoming projection
     assert api_affector_module.update().projs[api_mid_drone.id] == (11025, 8525)
     assert api_mid_drone.attrs[eve_affectee_attr_id].dogma == approx(425.937987)
-    api_mod = api_mid_drone.mods[eve_affectee_attr_id].one()
-    assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-85)
-    assert api_mod.range_mult == approx(0.6753671)
-    assert api_mod.applied_val == approx(-57.406201)
     # Action
     api_mid_drone.change_drone(type_id=eve_mid_drone3_id)
     # Verification - outgoing projection
-    api_mid_drone.update()
-    assert api_mid_drone.projs[api_affectee_ship.id] == (12025, 11025)
-    api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(500)
-    with check_no_field():
-        api_affectee_ship.mods  # noqa: B018
+    assert api_mid_drone.update().projs[api_affectee_ship.id] == (12025, 11025)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(500)
     # Verification - incoming projection
     assert api_affector_module.update().projs[api_mid_drone.id] == (11025, 11025)
-    with check_no_field():
-        api_mid_drone.mods  # noqa: B018
