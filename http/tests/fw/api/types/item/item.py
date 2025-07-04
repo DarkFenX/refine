@@ -1,47 +1,20 @@
 from __future__ import annotations
 
 import typing
-from dataclasses import dataclass
 
 from tests.fw.consts import ApiItemInfoMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
+from .attr_vals import AttrVals
+from .effect import EffectInfo
 from .mod_info import AttrModInfoMap
+from .mutation import AttrMutation, ItemMutation
+from .proj_range import ProjRangeInfo
 from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
     from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
-
-
-@dataclass(kw_only=True)
-class ItemMutation:
-
-    base_type_id: int
-    mutator_id: int
-    attrs: dict[int, AttrMutation]
-
-
-@dataclass(kw_only=True)
-class AttrMutation:
-
-    roll: float | None
-    absolute: float
-
-
-@dataclass(kw_only=True)
-class AttrVals:
-
-    base: float
-    dogma: float
-    extra: float
-
-
-@dataclass(kw_only=True)
-class EffectInfo:
-
-    running: bool
-    mode: ApiEffMode
 
 
 class Item(AttrDict):
@@ -62,6 +35,7 @@ class Item(AttrDict):
                     status=v[1],
                     str=None if v[2] is None else SideEffectStrInfo(op=v[2][0], val=v[2][1]))
                 for k, v in ses.items()}),
+            'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
             'attrs': AttrHookDef(func=lambda attrs: {
                 int(k): AttrVals(base=v[0], dogma=v[1], extra=v[2])
                 for k, v in attrs.items()}),
