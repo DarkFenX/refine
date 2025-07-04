@@ -18,13 +18,13 @@ impl From<rc::Proj<'_>> for HProjInfo {
 pub(in crate::info::item) struct HRangedProjInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     projectee_item_id: rc::ItemId,
-    range: Option<rc::AttrVal>,
+    range: Option<(rc::AttrVal, rc::AttrVal)>,
 }
 impl From<rc::RangedProj<'_>> for HRangedProjInfo {
     fn from(core_ranged_proj: rc::RangedProj) -> Self {
         Self {
             projectee_item_id: core_ranged_proj.get_projectee_item_id(),
-            range: core_ranged_proj.get_range(),
+            range: core_ranged_proj.get_range().map(|prange| (prange.c2c, prange.s2s)),
         }
     }
 }

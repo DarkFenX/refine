@@ -1,5 +1,6 @@
 use crate::{
-    def::{AttrVal, ItemId, ItemKey},
+    def::{ItemId, ItemKey},
+    misc::ProjRangeInfo,
     sol::SolarSystem,
 };
 
@@ -24,7 +25,7 @@ impl<'a> RangedProj<'a> {
     pub fn get_projectee_item_id(&self) -> ItemId {
         self.sol.uad.items.id_by_key(self.projectee_item_key)
     }
-    pub fn get_range(&self) -> Option<AttrVal> {
+    pub fn get_range(&self) -> Option<ProjRangeInfo> {
         get_range(self.sol, self.projector_item_key, &self.projectee_item_key)
     }
 }
@@ -50,12 +51,12 @@ impl<'a> RangedProjMut<'a> {
     pub fn get_projectee_item_id(&self) -> ItemId {
         self.sol.uad.items.id_by_key(self.projectee_item_key)
     }
-    pub fn get_range(&self) -> Option<AttrVal> {
+    pub fn get_range(&self) -> Option<ProjRangeInfo> {
         get_range(self.sol, self.projector_item_key, &self.projectee_item_key)
     }
 }
 
-fn get_range(sol: &SolarSystem, projector_item_key: ItemKey, projectee_item_key: &ItemKey) -> Option<AttrVal> {
+fn get_range(sol: &SolarSystem, projector_item_key: ItemKey, projectee_item_key: &ItemKey) -> Option<ProjRangeInfo> {
     sol.uad
         .items
         .get(projector_item_key)
@@ -63,5 +64,5 @@ fn get_range(sol: &SolarSystem, projector_item_key: ItemKey, projectee_item_key:
         .unwrap()
         .get(projectee_item_key)
         .unwrap()
-        .map(|v| v.c2c)
+        .map(|v| v.into())
 }
