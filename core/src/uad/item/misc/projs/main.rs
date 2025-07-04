@@ -15,9 +15,6 @@ impl Projs {
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&ItemKey, &Option<UadProjRange>)> {
         self.data.iter()
     }
-    pub(crate) fn iter_ranges_mut(&mut self) -> impl Iterator<Item = &mut UadProjRange> {
-        self.data.values_mut().filter_map(|v| v.as_mut())
-    }
     pub(crate) fn iter_projectee_item_keys(&self) -> impl ExactSizeIterator<Item = &ItemKey> {
         self.data.keys()
     }
@@ -25,6 +22,15 @@ impl Projs {
         self.data.contains_key(item_key)
     }
     // Modification methods
+    pub(crate) fn iter_ranges_mut(&mut self) -> impl Iterator<Item = &mut UadProjRange> {
+        self.data.values_mut().filter_map(|v| v.as_mut())
+    }
+    pub(crate) fn get_mut_range(&mut self, item_key: &ItemKey) -> Option<&mut UadProjRange> {
+        match self.data.get_mut(item_key) {
+            Some(Some(uad_proj_range)) => Some(uad_proj_range),
+            _ => None,
+        }
+    }
     pub(crate) fn add(&mut self, item_key: ItemKey, range: Option<UadProjRange>) {
         self.data.insert(item_key, range);
     }

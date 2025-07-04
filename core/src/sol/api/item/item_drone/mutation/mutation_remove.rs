@@ -29,7 +29,7 @@ impl SolarSystem {
         let mut updated_projectors = Vec::new();
         for &projector_item_key in self.rprojs.iter_projectors(&item_key) {
             let projector_uad_item = self.uad.items.get_mut(projector_item_key);
-            for uad_prange in projector_uad_item.get_projs_mut().unwrap().iter_ranges_mut() {
+            if let Some(uad_prange) = projector_uad_item.get_projs_mut().unwrap().get_mut_range(&item_key) {
                 if uad_prange.update_tgt_rad(drone_radius) {
                     updated_projectors.push((projector_item_key, *uad_prange));
                 }
