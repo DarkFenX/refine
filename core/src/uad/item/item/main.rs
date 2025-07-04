@@ -235,6 +235,17 @@ impl UadItem {
             _ => None,
         }
     }
+    pub(crate) fn get_projs_mut(&mut self) -> Option<&mut Projs> {
+        match self {
+            Self::Autocharge(autocharge) => Some(autocharge.get_projs_mut()),
+            Self::Charge(charge) => Some(charge.get_projs_mut()),
+            Self::Drone(drone) => Some(drone.get_projs_mut()),
+            Self::Fighter(fighter) => Some(fighter.get_projs_mut()),
+            Self::Module(module) => Some(module.get_projs_mut()),
+            Self::ProjEffect(proj_effect) => Some(proj_effect.get_projs_mut()),
+            _ => None,
+        }
+    }
     pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<UadProjRange>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
