@@ -12,31 +12,31 @@ impl EProjs {
     // Query methods
     pub(in crate::svc) fn get_range(
         &self,
-        affector_espec: EffectSpec,
-        affectee_item_key: ItemKey,
+        projector_espec: EffectSpec,
+        projectee_item_key: ItemKey,
     ) -> Option<UadProjRange> {
-        self.ranges.get(&(affector_espec, affectee_item_key)).copied()
+        self.ranges.get(&(projector_espec, projectee_item_key)).copied()
     }
     // Modification methods
     pub(in crate::svc) fn add_range(
         &mut self,
-        affector_espec: EffectSpec,
-        affectee_item_key: ItemKey,
+        projector_espec: EffectSpec,
+        projectee_item_key: ItemKey,
         range: Option<UadProjRange>,
     ) {
         if let Some(range) = range {
-            self.ranges.insert((affector_espec, affectee_item_key), range);
+            self.ranges.insert((projector_espec, projectee_item_key), range);
         }
     }
     pub(in crate::svc) fn change_range(
         &mut self,
-        affector_espec: EffectSpec,
-        affectee_item_key: ItemKey,
+        projector_espec: EffectSpec,
+        projectee_item_key: ItemKey,
         range: Option<UadProjRange>,
     ) {
         match range {
-            Some(range) => self.ranges.insert((affector_espec, affectee_item_key), range),
-            None => self.ranges.remove(&(affector_espec, affectee_item_key)),
+            Some(range) => self.ranges.insert((projector_espec, projectee_item_key), range),
+            None => self.ranges.remove(&(projector_espec, projectee_item_key)),
         };
     }
     pub(in crate::svc) fn remove_range(&mut self, affector_espec: EffectSpec, affectee_item_key: ItemKey) {
