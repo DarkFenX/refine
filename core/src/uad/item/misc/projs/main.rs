@@ -25,6 +25,11 @@ impl Projs {
     pub(crate) fn iter_ranges_mut(&mut self) -> impl Iterator<Item = &mut UadProjRange> {
         self.data.values_mut().filter_map(|v| v.as_mut())
     }
+    pub(crate) fn iter_projectees_and_ranges_mut(&mut self) -> impl Iterator<Item = (&ItemKey, &mut UadProjRange)> {
+        self.data
+            .iter_mut()
+            .filter_map(|(projectee_item_key, prange)| prange.as_mut().map(|prange| (projectee_item_key, prange)))
+    }
     pub(crate) fn get_mut_range(&mut self, item_key: &ItemKey) -> Option<&mut UadProjRange> {
         match self.data.get_mut(item_key) {
             Some(Some(uad_proj_range)) => Some(uad_proj_range),
