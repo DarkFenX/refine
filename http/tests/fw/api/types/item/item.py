@@ -7,9 +7,9 @@ from tests.fw.util import Absent, AttrDict, AttrHookDef
 from .attr_vals import AttrVals
 from .effect import EffectInfo
 from .mod_info import AttrModInfoMap
-from .mutation import AttrMutation, ItemMutation
+from .mutation import ItemMutation
 from .proj_range import ProjRangeInfo
-from .side_effect_info import SideEffectInfo, SideEffectStrInfo
+from .side_effect_info import SideEffectInfo
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
@@ -21,27 +21,15 @@ class Item(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
         super().__init__(data=data, hooks={
-            'mutation': AttrHookDef(func=lambda m: ItemMutation(
-                base_type_id=m[0],
-                mutator_id=m[1],
-                attrs={int(k): AttrMutation(roll=v[0], absolute=v[1]) for k, v in m[2].items()})),
+            'mutation': AttrHookDef(func=lambda m: ItemMutation(data=m)),
             'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
             'autocharges': AttrHookDef(func=lambda acs: {
                 k: Item(client=client, data=v, sol_id=sol_id)
                 for k, v in acs.items()}),
-            'side_effects': AttrHookDef(func=lambda ses: {
-                k: SideEffectInfo(
-                    chance=v[0],
-                    status=v[1],
-                    str=None if v[2] is None else SideEffectStrInfo(op=v[2][0], val=v[2][1]))
-                for k, v in ses.items()}),
+            'side_effects': AttrHookDef(func=lambda ses: {k: SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
-            'attrs': AttrHookDef(func=lambda attrs: {
-                int(k): AttrVals(base=v[0], dogma=v[1], extra=v[2])
-                for k, v in attrs.items()}),
-            'effects': AttrHookDef(func=lambda effects: {
-                k: EffectInfo(running=v[0], mode=v[1])
-                for k, v in effects.items()}),
+            'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(data=v) for k, v in attrs.items()}),
+            'effects': AttrHookDef(func=lambda effects: {k: EffectInfo(data=v) for k, v in effects.items()}),
             'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
         self._client = client
         self._sol_id = sol_id
