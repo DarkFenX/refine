@@ -23,6 +23,14 @@ impl SolarSystem {
             .get_fighter_mut()
             .unwrap()
             .set_a_item_id(&self.uad.src, a_item_id);
+        // Update just fighter, autocharges will copy updated projection ranges
+        SolarSystem::util_update_item_radius_in_projs(
+            &mut self.uad,
+            &self.rprojs,
+            &mut self.svc,
+            &self.reffs,
+            item_key,
+        );
         SolarSystem::util_add_fighter_with_projs(
             &mut self.uad,
             &mut self.svc,

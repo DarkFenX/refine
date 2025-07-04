@@ -1,7 +1,7 @@
 from tests import approx, range_c2c_to_api, range_s2s_to_api
 
 
-def test_proj_add_change(client, consts):
+def test_outgoing_proj_add_change(client, consts):
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
