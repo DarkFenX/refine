@@ -5,6 +5,7 @@ pub use mut_iter::MutIter;
 mod effect_resolver;
 mod misc;
 mod mut_iter;
+mod sole_util_change_radius;
 mod sole_util_item;
 mod sole_util_item_effects;
 mod sole_util_item_projection;
