@@ -267,6 +267,15 @@ impl SolarSystem {
                 record_projection(&mut projection_updates, &self.uad, fighter_key, fighter_radius);
             }
         }
+        for (projector_key, projectee_key, src_rad, tgt_rag) in projection_updates {
+            let projector_uad_item = self.uad.items.get_mut(projector_key);
+            projector_uad_item
+                .get_projs_mut()
+                .unwrap()
+                .get_range_mut(&projectee_key)
+                .unwrap()
+                .update_radii(src_rad, tgt_rag);
+        }
     }
 }
 
