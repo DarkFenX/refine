@@ -37,8 +37,8 @@ impl Calc {
             Context::Item(projectee_key) => projectee_key,
             _ => return None,
         };
+        let proj_mult_getter = cmod.raw.proj_mult_getter?;
         let a_effect = ctx.uad.src.get_a_effect(&cmod.raw.affector_espec.a_effect_id)?;
-        let proj_mult_getter = a_effect.rt.get_proj_mult?;
         let prange = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_key)?;
         Some(proj_mult_getter(
             ctx,
