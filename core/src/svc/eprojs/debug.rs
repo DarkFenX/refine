@@ -19,7 +19,7 @@ impl EProjs {
             match projector_projs.get(projectee_item_key) {
                 Some(Some(uad_range)) => {
                     // If ranges are defined on both, range mismatch is an error
-                    if uad_range != svc_range {
+                    if uad_range != *svc_range {
                         return Err(DebugError {});
                     }
                 }

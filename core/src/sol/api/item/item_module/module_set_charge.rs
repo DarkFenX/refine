@@ -19,11 +19,7 @@ impl SolarSystem {
         let uad_module = self.uad.items.get(item_key).get_module().unwrap();
         let fit_key = uad_module.get_fit_key();
         let module_a_state = uad_module.get_a_state();
-        let module_projs = uad_module
-            .get_projs()
-            .iter()
-            .map(|(projectee_item_key, range)| (*projectee_item_key, *range))
-            .collect_vec();
+        let module_projs = uad_module.get_projs().iter().collect_vec();
         // Remove old charge, if it was set
         if let Some(old_charge_key) = uad_module.get_charge_item_key() {
             // Remove outgoing projections
@@ -88,18 +84,18 @@ impl SolarSystem {
         // Reapply module projections to charge
         // Update user data for charge
         for (projectee_item_key, range) in new_charge_uad_item.get_charge().unwrap().get_projs().iter() {
-            self.rprojs.reg_projectee(new_charge_key, *projectee_item_key);
+            self.rprojs.reg_projectee(new_charge_key, projectee_item_key);
             // Update services for charge
-            let projectee_uad_item = self.uad.items.get(*projectee_item_key);
+            let projectee_uad_item = self.uad.items.get(projectee_item_key);
             SolarSystem::util_add_item_projection(
                 &self.uad,
                 &mut self.svc,
                 &self.reffs,
                 new_charge_key,
                 new_charge_uad_item,
-                *projectee_item_key,
+                projectee_item_key,
                 projectee_uad_item,
-                *range,
+                range,
             );
         }
         new_charge_key

@@ -9,7 +9,7 @@ impl SolarSystem {
         let uad_item = self.uad.items.get(item_key);
         let uad_drone = uad_item.get_drone().unwrap();
         let fit_key = uad_drone.get_fit_key();
-        for &projectee_item_key in uad_drone.get_projs().iter_projectee_item_keys() {
+        for projectee_item_key in uad_drone.get_projs().iter_projectees() {
             let projectee_uad_item = self.uad.items.get(projectee_item_key);
             SolarSystem::util_remove_item_projection(
                 &self.uad,

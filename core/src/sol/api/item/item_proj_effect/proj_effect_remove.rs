@@ -8,7 +8,7 @@ impl SolarSystem {
         // Remove outgoing projections
         let uad_item = self.uad.items.get(item_key);
         let uad_proj_effect = uad_item.get_proj_effect().unwrap();
-        for &projectee_item_key in uad_proj_effect.get_projs().iter_projectee_item_keys() {
+        for projectee_item_key in uad_proj_effect.get_projs().iter_projectees() {
             let projectee_uad_item = self.uad.items.get(projectee_item_key);
             SolarSystem::util_remove_item_projection(
                 &self.uad,

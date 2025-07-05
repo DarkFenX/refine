@@ -16,7 +16,7 @@ impl SolarSystem {
         // Check if projection is defined before changing it
         let uad_drone = self.uad.items.get_mut(item_key).get_drone_mut().unwrap();
         let old_uad_prange = match uad_drone.get_projs().get(&projectee_item_key) {
-            Some(old_uad_prange) => *old_uad_prange,
+            Some(old_uad_prange) => old_uad_prange,
             None => {
                 return Err(ProjFoundError {
                     projector_item_id: uad_drone.get_item_id(),

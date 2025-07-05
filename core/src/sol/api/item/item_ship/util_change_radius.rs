@@ -25,14 +25,14 @@ impl SolarSystem {
             let uad_module = uad.items.get_mut(module_item_key).get_module_mut().unwrap();
             for (projectee_item_key, uad_prange) in uad_module.get_projs_mut().iter_projectees_and_ranges_mut() {
                 if uad_prange.update_src_rad(ship_radius) {
-                    projections_to_update.push((module_item_key, *projectee_item_key, *uad_prange));
+                    projections_to_update.push((module_item_key, projectee_item_key, *uad_prange));
                 }
             }
             if let Some(charge_item_key) = uad_module.get_charge_item_key() {
                 let uad_charge = uad.items.get_mut(charge_item_key).get_charge_mut().unwrap();
                 for (projectee_item_key, uad_prange) in uad_charge.get_projs_mut().iter_projectees_and_ranges_mut() {
                     if uad_prange.update_src_rad(ship_radius) {
-                        projections_to_update.push((charge_item_key, *projectee_item_key, *uad_prange));
+                        projections_to_update.push((charge_item_key, projectee_item_key, *uad_prange));
                     }
                 }
             }

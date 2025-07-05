@@ -9,7 +9,7 @@ impl SolarSystem {
         let uad_charge = uad_item.get_charge().unwrap();
         let module_item_key = uad_charge.get_cont_item_key();
         // Remove outgoing projections
-        for &projectee_item_key in uad_charge.get_projs().iter_projectee_item_keys() {
+        for projectee_item_key in uad_charge.get_projs().iter_projectees() {
             // Update services
             let projectee_uad_item = self.uad.items.get(projectee_item_key);
             SolarSystem::util_remove_item_projection(

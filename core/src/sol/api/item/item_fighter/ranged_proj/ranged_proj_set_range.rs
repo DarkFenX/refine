@@ -11,15 +11,13 @@ impl SolarSystem {
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined before changing it
         let uad_fighter = self.uad.items.get(item_key).get_fighter().unwrap();
-        let old_uad_prange = match uad_fighter.get_projs().get(&projectee_item_key) {
-            Some(old_uad_prange) => *old_uad_prange,
-            None => {
-                return Err(ProjFoundError {
-                    projector_item_id: uad_fighter.get_item_id(),
-                    projectee_item_id: self.uad.items.id_by_key(projectee_item_key),
-                });
-            }
-        };
+        let old_uad_prange = uad_fighter
+            .get_projs()
+            .get(&projectee_item_key)
+            .ok_or_else(|| ProjFoundError {
+                projector_item_id: uad_fighter.get_item_id(),
+                projectee_item_id: self.uad.items.id_by_key(projectee_item_key),
+            })?;
         let projectee_uad_item = self.uad.items.get(projectee_item_key);
         let uad_prange =
             UadProjRange::from_prange_with_extras(range, uad_fighter.get_a_extras(), projectee_uad_item.get_a_extras());

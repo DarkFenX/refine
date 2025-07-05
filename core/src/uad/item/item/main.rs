@@ -246,7 +246,7 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&ItemKey, &Option<UadProjRange>)>> {
+    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (ItemKey, Option<UadProjRange>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Charge(charge) => Some(charge.get_projs().iter()),
@@ -257,14 +257,14 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_projectee_item_keys(&self) -> Option<impl ExactSizeIterator<Item = &ItemKey>> {
+    pub(crate) fn iter_projectees(&self) -> Option<impl ExactSizeIterator<Item = ItemKey>> {
         match self {
-            Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter_projectee_item_keys()),
-            Self::Charge(charge) => Some(charge.get_projs().iter_projectee_item_keys()),
-            Self::Drone(drone) => Some(drone.get_projs().iter_projectee_item_keys()),
-            Self::Fighter(fighter) => Some(fighter.get_projs().iter_projectee_item_keys()),
-            Self::Module(module) => Some(module.get_projs().iter_projectee_item_keys()),
-            Self::ProjEffect(proj_effect) => Some(proj_effect.get_projs().iter_projectee_item_keys()),
+            Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter_projectees()),
+            Self::Charge(charge) => Some(charge.get_projs().iter_projectees()),
+            Self::Drone(drone) => Some(drone.get_projs().iter_projectees()),
+            Self::Fighter(fighter) => Some(fighter.get_projs().iter_projectees()),
+            Self::Module(module) => Some(module.get_projs().iter_projectees()),
+            Self::ProjEffect(proj_effect) => Some(proj_effect.get_projs().iter_projectees()),
             _ => None,
         }
     }

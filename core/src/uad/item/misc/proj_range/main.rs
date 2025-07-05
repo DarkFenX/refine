@@ -64,6 +64,11 @@ impl UadProjRange {
         self.update_s2s_range();
         true
     }
+    pub(crate) fn update_radii(&mut self, src_rad: AttrVal, tgt_rad: AttrVal) {
+        self.src_rad = src_rad;
+        self.tgt_rad = tgt_rad;
+        self.update_s2s_range();
+    }
     fn update_s2s_range(&mut self) {
         self.s2s = calc_s2s_range(self.c2c, self.src_rad, self.tgt_rad)
     }

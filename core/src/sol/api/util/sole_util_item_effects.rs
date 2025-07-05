@@ -111,7 +111,7 @@ fn process_stop_start(
     if !to_start.is_empty() {
         svc.notify_effects_started(uad, item_key, uad_item, &to_start);
         if handle_projs && let Some(projs) = uad_item.iter_projs() {
-            for (&projectee_item_key, range) in projs {
+            for (projectee_item_key, range) in projs {
                 let projectee_item = uad.items.get(projectee_item_key);
                 for a_effect in to_start.iter() {
                     if is_a_effect_projectable(uad_item, a_effect) {
@@ -122,7 +122,7 @@ fn process_stop_start(
                             a_effect,
                             projectee_item_key,
                             projectee_item,
-                            *range,
+                            range,
                         );
                     }
                 }
@@ -130,8 +130,8 @@ fn process_stop_start(
         }
     }
     if !to_stop.is_empty() {
-        if handle_projs && let Some(projectee_item_keys) = uad_item.iter_projectee_item_keys() {
-            for &projectee_item_key in projectee_item_keys {
+        if handle_projs && let Some(projectee_item_keys) = uad_item.iter_projectees() {
+            for projectee_item_key in projectee_item_keys {
                 let projectee_item = uad.items.get(projectee_item_key);
                 for a_effect in to_stop.iter() {
                     if is_a_effect_projectable(uad_item, a_effect) {

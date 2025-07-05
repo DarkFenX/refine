@@ -14,7 +14,7 @@ impl UadModule {
         self.get_projs().consistency_check(uad)?;
         // If module has a charge, make sure projections on them match
         if let Some(charge_key) = self.get_charge_item_key() {
-            let module_projs = self.get_projs().iter().map(|(k, v)| (*k, *v)).sorted().collect_vec();
+            let module_projs = self.get_projs().iter().sorted().collect_vec();
             let charge_projs = uad
                 .items
                 .get(charge_key)
@@ -22,7 +22,6 @@ impl UadModule {
                 .unwrap()
                 .get_projs()
                 .iter()
-                .map(|(k, v)| (*k, *v))
                 .sorted()
                 .collect_vec();
             if module_projs != charge_projs {

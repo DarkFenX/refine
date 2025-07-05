@@ -22,7 +22,7 @@ impl SolarSystem {
         // Incoming projections
         for &projector_item_key in rprojs.iter_projectors(&item_key) {
             let projector_uad_item = uad.items.get_mut(projector_item_key);
-            if let Some(uad_prange) = projector_uad_item.get_projs_mut().unwrap().get_mut_range(&item_key)
+            if let Some(uad_prange) = projector_uad_item.get_projs_mut().unwrap().get_range_mut(&item_key)
                 && uad_prange.update_tgt_rad(item_radius)
             {
                 let uad_prange = Some(*uad_prange);

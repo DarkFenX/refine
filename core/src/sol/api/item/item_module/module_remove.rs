@@ -16,7 +16,7 @@ impl SolarSystem {
         if let Some(charge_key) = charge_key {
             let charge_uad_item = self.uad.items.get(charge_key);
             // Use module projections, since module and charge projections should always match
-            for &projectee_item_key in uad_module.get_projs().iter_projectee_item_keys() {
+            for projectee_item_key in uad_module.get_projs().iter_projectees() {
                 let projectee_uad_item = self.uad.items.get(projectee_item_key);
                 // Remove charge outgoing projections from services
                 SolarSystem::util_remove_item_projection(
@@ -32,7 +32,7 @@ impl SolarSystem {
                 self.rprojs.unreg_projectee(&charge_key, &projectee_item_key);
             }
         }
-        for &projectee_item_key in uad_module.get_projs().iter_projectee_item_keys() {
+        for projectee_item_key in uad_module.get_projs().iter_projectees() {
             // Remove module outgoing projections from services
             let projectee_uad_item = self.uad.items.get(projectee_item_key);
             SolarSystem::util_remove_item_projection(

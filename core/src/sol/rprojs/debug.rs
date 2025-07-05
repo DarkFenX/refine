@@ -30,8 +30,8 @@ impl RProjs {
         // Check that all projections on items have corresponding entry in the tracker
         for (projector_item_key, uad_item) in uad.items.iter() {
             if let Some(projections) = uad_item.get_projs() {
-                for projectee_item_key in projections.iter_projectee_item_keys() {
-                    if !self.data.get(projectee_item_key).contains(&projector_item_key) {
+                for projectee_item_key in projections.iter_projectees() {
+                    if !self.data.get(&projectee_item_key).contains(&projector_item_key) {
                         return Err(DebugError {});
                     }
                 }

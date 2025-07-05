@@ -1,5 +1,7 @@
+use itertools::chain;
+
 use crate::{
-    def::ItemKey,
+    def::{AttrVal, ItemKey, OF},
     sol::SolarSystem,
     src::Src,
     uad::{ShipKind, Uad, UadItem},
@@ -86,6 +88,8 @@ impl SolarSystem {
                 None => ShipKind::Unknown,
             }
         }
+        // Update on-projection data due to changed item radii
+        self.update_projections();
         self.load_items(&item_keys);
     }
     fn unload_items(&mut self, item_keys: &ItemKeys) {
@@ -272,4 +276,53 @@ impl SolarSystem {
             SolarSystem::util_add_sw_effect(&self.uad, &mut self.svc, &mut self.reffs, sw_effect_item_key, uad_item);
         }
     }
+    fn update_projections(&mut self) {
+        let mut projection_updates = Vec::new();
+        for uad_fit in self.uad.fits.values() {
+            let ship_radius = uad_fit
+                .ship
+                .map(|ship_key| get_item_radius(&self.uad, ship_key))
+                .unwrap_or(OF(0.0));
+            for &module_key in chain!(
+                uad_fit.mods_high.iter_keys(),
+                uad_fit.mods_mid.iter_keys(),
+                uad_fit.mods_low.iter_keys()
+            ) {
+                record_projection(&mut projection_updates, &self.uad, module_key, ship_radius);
+                let uad_module = self.uad.items.get(module_key).get_module().unwrap();
+                if let Some(charge_key) = uad_module.get_charge_item_key() {
+                    record_projection(&mut projection_updates, &self.uad, charge_key, ship_radius);
+                }
+            }
+            for &drone_key in uad_fit.drones.iter() {
+                let drone_radius = get_item_radius(&self.uad, drone_key);
+                record_projection(&mut projection_updates, &self.uad, drone_key, drone_radius);
+            }
+            for &fighter_key in uad_fit.fighters.iter() {
+                let fighter_radius = get_item_radius(&self.uad, fighter_key);
+                record_projection(&mut projection_updates, &self.uad, fighter_key, fighter_radius);
+            }
+        }
+    }
+}
+
+fn record_projection(
+    projection_updates: &mut Vec<(ItemKey, ItemKey, AttrVal, AttrVal)>,
+    uad: &Uad,
+    item_key: ItemKey,
+    src_rad: AttrVal,
+) {
+    let uad_item = uad.items.get(item_key);
+    for (projectee_key, _uad_prange) in uad_item.get_projs().unwrap().iter_projectees_and_ranges() {
+        let projectee_rad = get_item_radius(uad, projectee_key);
+        projection_updates.push((item_key, projectee_key, src_rad, projectee_rad));
+    }
+}
+
+fn get_item_radius(uad: &Uad, item_key: ItemKey) -> AttrVal {
+    uad.items
+        .get(item_key)
+        .get_a_extras()
+        .and_then(|a_extras| a_extras.radius)
+        .unwrap_or(OF(0.0))
 }

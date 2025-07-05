@@ -46,11 +46,7 @@ impl SolarSystem {
         if effects_with_ac_a_item_ids.is_empty() {
             return;
         }
-        let projections = uad_fighter
-            .get_projs()
-            .iter()
-            .map(|(&projectee_item_key, &range)| (projectee_item_key, range))
-            .collect_vec();
+        let projections = uad_fighter.get_projs().iter().collect_vec();
         let effects_with_ac_keys = effects_with_ac_a_item_ids
             .into_iter()
             .filter_map(|(a_effect_id, ac_a_item_id)| {
@@ -135,7 +131,7 @@ impl SolarSystem {
         for &ac_key in ac_keys.iter() {
             let ac_uad_item = uad.items.get(ac_key);
             let uad_ac = ac_uad_item.get_autocharge().unwrap();
-            for &projectee_item_key in uad_ac.get_projs().iter_projectee_item_keys() {
+            for projectee_item_key in uad_ac.get_projs().iter_projectees() {
                 // Remove projections from services
                 let projectee_uad_item = uad.items.get(projectee_item_key);
                 SolarSystem::util_remove_item_projection(
