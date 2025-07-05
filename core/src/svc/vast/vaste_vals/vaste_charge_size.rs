@@ -126,7 +126,7 @@ fn calculate_item_result(
         None => {
             return ValCache::Fail(ValChargeSizeFailCache {
                 parent_key: module_key,
-                charge_key: charge_key,
+                charge_key,
                 charge_size: None,
                 allowed_size,
             });
@@ -136,7 +136,7 @@ fn calculate_item_result(
         true => ValCache::Pass(allowed_size),
         false => ValCache::Fail(ValChargeSizeFailCache {
             parent_key: module_key,
-            charge_key: charge_key,
+            charge_key,
             charge_size: Some(charge_size),
             allowed_size,
         }),
