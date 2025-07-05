@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, ItemKey},
     sol::SolarSystem,
     src::Src,
     uad::{ShipKind, Uad, UadItem},
@@ -246,11 +246,8 @@ impl SolarSystem {
     }
     fn update_projections(&mut self) {
         let mut projection_updates = Vec::new();
-        for uad_fit in self.uad.fits.values() {
-            let ship_radius = uad_fit
-                .ship
-                .map(|ship_key| get_item_radius(&self.uad, ship_key))
-                .unwrap_or(OF(0.0));
+        for (fit_key, uad_fit) in self.uad.fits.iter() {
+            let ship_radius = self.uad.get_ship_radius_by_fit_key(fit_key);
             for module_key in uad_fit.iter_module_keys() {
                 record_projection(&mut projection_updates, &self.uad, module_key, ship_radius);
                 let uad_module = self.uad.items.get(module_key).get_module().unwrap();
@@ -259,11 +256,11 @@ impl SolarSystem {
                 }
             }
             for &drone_key in uad_fit.drones.iter() {
-                let drone_radius = get_item_radius(&self.uad, drone_key);
+                let drone_radius = self.uad.get_item_radius(drone_key);
                 record_projection(&mut projection_updates, &self.uad, drone_key, drone_radius);
             }
             for &fighter_key in uad_fit.fighters.iter() {
-                let fighter_radius = get_item_radius(&self.uad, fighter_key);
+                let fighter_radius = self.uad.get_item_radius(fighter_key);
                 record_projection(&mut projection_updates, &self.uad, fighter_key, fighter_radius);
             }
         }
@@ -287,15 +284,7 @@ fn record_projection(
 ) {
     let uad_item = uad.items.get(item_key);
     for (projectee_key, _uad_prange) in uad_item.get_projs().unwrap().iter_projectees_and_ranges() {
-        let projectee_rad = get_item_radius(uad, projectee_key);
+        let projectee_rad = uad.get_item_radius(projectee_key);
         projection_updates.push((item_key, projectee_key, src_rad, projectee_rad));
     }
-}
-
-fn get_item_radius(uad: &Uad, item_key: ItemKey) -> AttrVal {
-    uad.items
-        .get(item_key)
-        .get_a_extras()
-        .and_then(|a_extras| a_extras.radius)
-        .unwrap_or(OF(0.0))
 }
