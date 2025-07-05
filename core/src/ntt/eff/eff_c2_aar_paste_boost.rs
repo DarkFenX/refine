@@ -74,7 +74,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
 
 fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
     let item = ctx.uad.items.get(espec.item_key);
-    match item.get_charge_item_key() {
+    match item.get_charge_key() {
         Some(charge_key) => {
             let charge = ctx.uad.items.get(charge_key);
             match charge.get_a_item_id() {
@@ -104,18 +104,12 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
 fn revise_on_item_add_removal(
     ctx: SvcCtx,
     affector_key: ItemKey,
-    changed_item_key: ItemKey,
+    changed_key: ItemKey,
     changed_item: &UadItem,
 ) -> bool {
-    match ctx.uad.items.get(affector_key) {
-        UadItem::Module(module) => match module.get_charge_item_key() {
-            Some(charge_key) => {
-                changed_item_key == charge_key && changed_item.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE
-            }
-            // No charge on AAR -> not changing anything
-            None => false,
-        },
-        // The modifier isn't supposed to be carried on anything but a module
-        _ => false,
+    match ctx.uad.items.get(affector_key).get_charge_key() {
+        Some(charge_key) => changed_key == charge_key && changed_item.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE,
+        // Not chargeable item, or no charge on AAR -> not changing anything
+        None => false,
     }
 }

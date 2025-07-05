@@ -18,7 +18,7 @@ pub(crate) struct UadModule {
     fit_key: FitKey,
     rack: ModRack,
     pos: Idx,
-    charge_item_key: Option<ItemKey>,
+    charge_key: Option<ItemKey>,
     projs: Projs,
 }
 impl UadModule {
@@ -31,14 +31,14 @@ impl UadModule {
         rack: ModRack,
         pos: Idx,
         mutation: Option<ItemMutationRequest>,
-        charge_item_key: Option<ItemKey>,
+        charge_key: Option<ItemKey>,
     ) -> Self {
         Self {
             base: UadItemBaseMutable::new(src, item_id, a_item_id, state.into(), mutation),
             fit_key,
             rack,
             pos,
-            charge_item_key,
+            charge_key,
             projs: Projs::new(),
         }
     }
@@ -127,16 +127,16 @@ impl UadModule {
     pub(crate) fn set_pos(&mut self, pos: Idx) {
         self.pos = pos
     }
-    pub(crate) fn get_charge_item_key(&self) -> Option<ItemKey> {
-        self.charge_item_key
+    pub(crate) fn get_charge_key(&self) -> Option<ItemKey> {
+        self.charge_key
     }
-    pub(crate) fn set_charge_item_key(&mut self, charge_item_key: Option<ItemKey>) {
-        self.charge_item_key = charge_item_key
+    pub(crate) fn set_charge_key(&mut self, charge_key: Option<ItemKey>) {
+        self.charge_key = charge_key
     }
     pub(crate) fn get_charge_count(&self, uad: &Uad) -> Option<Count> {
         // No charge - no info
-        let charge_item_key = self.get_charge_item_key()?;
-        let charge_item = uad.items.get(charge_item_key);
+        let charge_key = self.get_charge_key()?;
+        let charge_item = uad.items.get(charge_key);
         let module_capacity = match self.get_a_attrs() {
             Some(a_attrs) => match a_attrs.get(&ac::attrs::CAPACITY) {
                 Some(&capacity) if capacity != OF(0.0) => capacity,

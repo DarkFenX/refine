@@ -268,9 +268,9 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn get_charge_item_key(&self) -> Option<ItemKey> {
+    pub(crate) fn get_charge_key(&self) -> Option<ItemKey> {
         match self {
-            Self::Module(module) => module.get_charge_item_key(),
+            Self::Module(module) => module.get_charge_key(),
             _ => None,
         }
     }

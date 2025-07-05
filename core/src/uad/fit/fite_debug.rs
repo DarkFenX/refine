@@ -291,7 +291,7 @@ fn check_module_charge(
     module: &UadModule,
     seen_items: &mut Vec<ItemKey>,
 ) -> DebugResult {
-    if let Some(charge_key) = module.get_charge_item_key() {
+    if let Some(charge_key) = module.get_charge_key() {
         seen_items.push(charge_key);
         let item = match uad.items.try_get(charge_key) {
             Some(item) => item,
@@ -304,7 +304,7 @@ fn check_module_charge(
             UadItem::Charge(charge) => charge,
             _ => return Err(DebugError {}),
         };
-        if charge.get_cont_item_key() != module_key {
+        if charge.get_cont_key() != module_key {
             return Err(DebugError {});
         }
         item.consistency_check(uad)?;
@@ -332,7 +332,7 @@ fn check_fighter_autocharges(
             UadItem::Autocharge(autocharge) => autocharge,
             _ => return Err(DebugError {}),
         };
-        if autocharge.get_cont_item_key() != fighter_key {
+        if autocharge.get_cont_key() != fighter_key {
             return Err(DebugError {});
         }
         item.consistency_check(uad)?;

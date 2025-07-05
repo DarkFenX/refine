@@ -17,18 +17,18 @@ impl SolarSystem {
         let uad_item = self.uad.items.get(item_key);
         let uad_fighter = uad_item.get_fighter().unwrap();
         let fit_key = uad_fighter.get_fit_key();
-        for projectee_item_key in uad_fighter.get_projs().iter_projectees() {
-            let projectee_uad_item = self.uad.items.get(projectee_item_key);
+        for projectee_key in uad_fighter.get_projs().iter_projectees() {
+            let projectee_uad_item = self.uad.items.get(projectee_key);
             SolarSystem::util_remove_item_projection(
                 &self.uad,
                 &mut self.svc,
                 &self.reffs,
                 item_key,
                 uad_item,
-                projectee_item_key,
+                projectee_key,
                 projectee_uad_item,
             );
-            self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
+            self.rprojs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);

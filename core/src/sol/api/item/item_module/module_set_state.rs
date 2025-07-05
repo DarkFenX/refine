@@ -8,7 +8,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_module_state(&mut self, item_key: ItemKey, state: ModuleState) {
         // Update user data for module
         let uad_module = self.uad.items.get_mut(item_key).get_module_mut().unwrap();
-        let charge_key = uad_module.get_charge_item_key();
+        let charge_key = uad_module.get_charge_key();
         let old_a_state = uad_module.get_a_state();
         uad_module.set_module_state(state);
         let new_a_state = uad_module.get_a_state();

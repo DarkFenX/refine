@@ -25,7 +25,7 @@ pub struct ValChargeGroupChargeInfo {
 impl ValChargeGroupChargeInfo {
     fn from_fail_cache(ctx: SvcCtx, fail_cache: &ValChargeGroupFailCache) -> Self {
         Self {
-            parent_item_id: ctx.uad.items.id_by_key(fail_cache.parent_item_key),
+            parent_item_id: ctx.uad.items.id_by_key(fail_cache.parent_key),
             charge_group_id: fail_cache.charge_group_id,
             allowed_group_ids: fail_cache.allowed_group_ids.clone(),
         }
@@ -34,8 +34,8 @@ impl ValChargeGroupChargeInfo {
 
 #[derive(Clone)]
 pub(in crate::svc::vast) struct ValChargeGroupFailCache {
-    pub(in crate::svc::vast) parent_item_key: ItemKey,
-    pub(in crate::svc::vast) charge_item_key: ItemKey,
+    pub(in crate::svc::vast) parent_key: ItemKey,
+    pub(in crate::svc::vast) charge_key: ItemKey,
     pub(in crate::svc::vast) charge_group_id: ItemGrpId,
     pub(in crate::svc::vast) allowed_group_ids: Vec<ItemGrpId>,
 }
@@ -43,12 +43,12 @@ pub(in crate::svc::vast) struct ValChargeGroupFailCache {
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &RSet<ItemKey>, ctx: SvcCtx) -> bool {
-        for (module_item_key, cache) in self.mods_charge_group.iter_mut() {
+        for (module_key, cache) in self.mods_charge_group.iter_mut() {
             match cache {
-                ValCache::Todo(_) => match calculate_item_result(ctx, *module_item_key) {
+                ValCache::Todo(_) => match calculate_item_result(ctx, *module_key) {
                     ValCache::Pass(pass) => cache.pass(pass),
                     ValCache::Fail(fail_cache) => {
-                        let ret_fail = !kfs.contains(&fail_cache.charge_item_key);
+                        let ret_fail = !kfs.contains(&fail_cache.charge_key);
                         cache.fail(fail_cache);
                         if ret_fail {
                             return false;
@@ -58,7 +58,7 @@ impl VastFitData {
                 },
                 ValCache::Pass(_) => (),
                 ValCache::Fail(fail_cache) => {
-                    if !kfs.contains(&fail_cache.charge_item_key) {
+                    if !kfs.contains(&fail_cache.charge_key) {
                         return false;
                     }
                 }
@@ -73,14 +73,14 @@ impl VastFitData {
         ctx: SvcCtx,
     ) -> Option<ValChargeGroupFail> {
         let mut charges = HashMap::new();
-        for (module_item_key, cache) in self.mods_charge_group.iter_mut() {
+        for (module_key, cache) in self.mods_charge_group.iter_mut() {
             match cache {
-                ValCache::Todo(_) => match calculate_item_result(ctx, *module_item_key) {
+                ValCache::Todo(_) => match calculate_item_result(ctx, *module_key) {
                     ValCache::Pass(pass) => cache.pass(pass),
                     ValCache::Fail(fail_cache) => {
-                        if !kfs.contains(&fail_cache.charge_item_key) {
+                        if !kfs.contains(&fail_cache.charge_key) {
                             charges.insert(
-                                ctx.uad.items.id_by_key(fail_cache.charge_item_key),
+                                ctx.uad.items.id_by_key(fail_cache.charge_key),
                                 ValChargeGroupChargeInfo::from_fail_cache(ctx, &fail_cache),
                             );
                         }
@@ -90,9 +90,9 @@ impl VastFitData {
                 },
                 ValCache::Pass(_) => (),
                 ValCache::Fail(fail_cache) => {
-                    if !kfs.contains(&fail_cache.charge_item_key) {
+                    if !kfs.contains(&fail_cache.charge_key) {
                         charges.insert(
-                            ctx.uad.items.id_by_key(fail_cache.charge_item_key),
+                            ctx.uad.items.id_by_key(fail_cache.charge_key),
                             ValChargeGroupChargeInfo::from_fail_cache(ctx, fail_cache),
                         );
                     }
@@ -106,10 +106,10 @@ impl VastFitData {
     }
 }
 
-fn calculate_item_result(ctx: SvcCtx, module_item_key: ItemKey) -> ValCache<(), ValChargeGroupFailCache> {
-    let module = ctx.uad.items.get(module_item_key).get_module().unwrap();
-    let charge_item_key = match module.get_charge_item_key() {
-        Some(charge_item_key) => charge_item_key,
+fn calculate_item_result(ctx: SvcCtx, module_key: ItemKey) -> ValCache<(), ValChargeGroupFailCache> {
+    let module = ctx.uad.items.get(module_key).get_module().unwrap();
+    let charge_key = match module.get_charge_key() {
+        Some(charge_key) => charge_key,
         None => return ValCache::Pass(()),
     };
     let allowed_group_ids = module
@@ -120,15 +120,15 @@ fn calculate_item_result(ctx: SvcCtx, module_item_key: ItemKey) -> ValCache<(), 
         .unwrap()
         .group_ids
         .clone();
-    let charge_group_id = match ctx.uad.items.get(charge_item_key).get_a_group_id() {
+    let charge_group_id = match ctx.uad.items.get(charge_key).get_a_group_id() {
         Some(charge_group_id) => charge_group_id,
         None => return ValCache::Pass(()),
     };
     match allowed_group_ids.contains(&charge_group_id) {
         true => ValCache::Pass(()),
         false => ValCache::Fail(ValChargeGroupFailCache {
-            parent_item_key: module_item_key,
-            charge_item_key,
+            parent_key: module_key,
+            charge_key,
             charge_group_id,
             allowed_group_ids,
         }),

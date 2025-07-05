@@ -36,8 +36,8 @@ impl VastFitData {
         let modules: HashMap<_, _> = self
             .mods_state
             .iter()
-            .filter(|(module_item_key, _)| !kfs.contains(module_item_key))
-            .map(|(module_item_key, module_info)| (ctx.uad.items.id_by_key(*module_item_key), *module_info))
+            .filter(|(module_key, _)| !kfs.contains(module_key))
+            .map(|(module_key, module_info)| (ctx.uad.items.id_by_key(*module_key), *module_info))
             .collect();
         match modules.is_empty() {
             true => None,

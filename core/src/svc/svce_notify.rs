@@ -106,62 +106,52 @@ impl Svc {
     pub(crate) fn notify_effect_projected(
         &mut self,
         uad: &Uad,
-        projector_item_key: ItemKey,
+        projector_key: ItemKey,
         projector_item: &UadItem,
         a_effect: &ad::AEffectRt,
-        projectee_item_key: ItemKey,
+        projectee_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<UadProjRange>,
     ) {
-        let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
-        self.eprojs.add_range(projector_espec, projectee_item_key, range);
+        let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
+        self.eprojs.add_range(projector_espec, projectee_key, range);
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
-            .effect_projected(svc_ctx, projector_espec, projectee_item_key, projectee_item);
-        self.vast.effect_projected(
-            projector_item_key,
-            projector_item,
-            a_effect,
-            projectee_item_key,
-            projectee_item,
-        );
+            .effect_projected(svc_ctx, projector_espec, projectee_key, projectee_item);
+        self.vast
+            .effect_projected(projector_key, projector_item, a_effect, projectee_key, projectee_item);
     }
     pub(crate) fn notify_effect_unprojected(
         &mut self,
         uad: &Uad,
-        projector_item_key: ItemKey,
+        projector_key: ItemKey,
         projector_item: &UadItem,
         a_effect: &ad::AEffectRt,
-        projectee_item_key: ItemKey,
+        projectee_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let projector_espec = EffectSpec::new(projector_item_key, a_effect.ae.id);
+        let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
-            .effect_unprojected(svc_ctx, projector_espec, projectee_item_key, projectee_item);
-        self.vast.effect_unprojected(
-            projector_item_key,
-            projector_item,
-            a_effect,
-            projectee_item_key,
-            projectee_item,
-        );
-        self.eprojs.remove_range(projector_espec, projectee_item_key);
+            .effect_unprojected(svc_ctx, projector_espec, projectee_key, projectee_item);
+        self.vast
+            .effect_unprojected(projector_key, projector_item, a_effect, projectee_key, projectee_item);
+        self.eprojs.remove_range(projector_espec, projectee_key);
     }
     pub(crate) fn notify_effect_proj_range_changed(
         &mut self,
         uad: &Uad,
-        projector_item_key: ItemKey,
+        projector_key: ItemKey,
         a_effect_id: ad::AEffectId,
-        projectee_item_key: ItemKey,
+        projectee_key: ItemKey,
         projectee_item: &UadItem,
         range: Option<UadProjRange>,
     ) {
-        let projector_espec = EffectSpec::new(projector_item_key, a_effect_id);
-        self.eprojs.change_range(projector_espec, projectee_item_key, range);
+        let projector_espec = EffectSpec::new(projector_key, a_effect_id);
+        self.eprojs.change_range(projector_espec, projectee_key, range);
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
-            .effect_proj_range_changed(svc_ctx, projector_espec, projectee_item_key, projectee_item);
+            .effect_proj_range_changed(svc_ctx, projector_espec, projectee_key, projectee_item);
     }
     pub(crate) fn notify_sol_sec_zone_changed(&mut self, uad: &Uad) {
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);

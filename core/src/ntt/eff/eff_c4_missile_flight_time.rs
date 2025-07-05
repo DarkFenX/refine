@@ -114,7 +114,7 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
 fn revise_on_item_add_removal(
     ctx: SvcCtx,
     affector_key: ItemKey,
-    _changed_item_key: ItemKey,
+    _changed_key: ItemKey,
     changed_item: &UadItem,
 ) -> bool {
     match changed_item {
@@ -125,7 +125,7 @@ fn revise_on_item_add_removal(
     }
 }
 
-fn reg_dependencies(calc: &mut Calc, ship_item_key: ItemKey, missile_espec: EffectSpec) {
+fn reg_dependencies(calc: &mut Calc, ship_key: ItemKey, missile_espec: EffectSpec) {
     let affectee_aspec = AttrSpec::new(missile_espec.item_key, MISSILE_FLIGHT_TIME);
     calc.deps.add_with_source(
         missile_espec,
@@ -133,5 +133,5 @@ fn reg_dependencies(calc: &mut Calc, ship_item_key: ItemKey, missile_espec: Effe
         affectee_aspec,
     );
     calc.deps
-        .add_with_source(missile_espec, AttrSpec::new(ship_item_key, SHIP_RADIUS), affectee_aspec);
+        .add_with_source(missile_espec, AttrSpec::new(ship_key, SHIP_RADIUS), affectee_aspec);
 }

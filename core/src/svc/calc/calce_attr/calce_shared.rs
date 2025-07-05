@@ -26,20 +26,20 @@ impl Calc {
             return None;
         }
         let resist_a_attr_id = cmod.raw.resist_a_attr_id?;
-        let projectee_item_key = match cmod.ctx {
-            Context::Item(projectee_item_key) => projectee_item_key,
+        let projectee_key = match cmod.ctx {
+            Context::Item(projectee_key) => projectee_key,
             _ => return None,
         };
         let resist =
-            get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(projectee_item_key, resist_a_attr_id))?;
+            get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(projectee_key, resist_a_attr_id))?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
-        let projectee_item_key = match cmod.ctx {
-            Context::Item(projectee_item_key) => projectee_item_key,
+        let projectee_key = match cmod.ctx {
+            Context::Item(projectee_key) => projectee_key,
             _ => return None,
         };
-        let proj_range = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_item_key)?;
+        let proj_range = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_key)?;
         match cmod.raw.kind {
             ModifierKind::Targeted => self.calc_proj_mult_targeted(ctx, cmod, proj_range.s2s),
             ModifierKind::Buff => self.calc_proj_mult_buff(ctx, cmod, proj_range.s2s),

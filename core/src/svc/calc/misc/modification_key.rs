@@ -10,14 +10,14 @@ use crate::{
 // test_similar_modifiers.py
 #[derive(Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) struct ModificationKey {
-    pub(in crate::svc::calc) affector_item_key: ItemKey,
+    pub(in crate::svc::calc) affector_key: ItemKey,
     pub(in crate::svc::calc) affector_a_attr_id: Option<ad::AAttrId>,
     pub(in crate::svc::calc) op: Op,
 }
 impl From<&CtxModifier> for ModificationKey {
     fn from(cmod: &CtxModifier) -> Self {
         ModificationKey {
-            affector_item_key: cmod.raw.affector_espec.item_key,
+            affector_key: cmod.raw.affector_espec.item_key,
             affector_a_attr_id: cmod.raw.get_affector_a_attr_id(),
             op: cmod.raw.op,
         }

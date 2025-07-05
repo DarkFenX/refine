@@ -141,12 +141,10 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         projector_espec: EffectSpec,
-        projectee_item_key: ItemKey,
+        projectee_key: ItemKey,
         projectee_item: &UadItem,
     ) {
-        let cmods = self
-            .std
-            .project_effect(&projector_espec, projectee_item_key, projectee_item);
+        let cmods = self.std.project_effect(&projector_espec, projectee_key, projectee_item);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
@@ -156,12 +154,12 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         projector_espec: EffectSpec,
-        projectee_item_key: ItemKey,
+        projectee_key: ItemKey,
         projectee_item: &UadItem,
     ) {
         let cmods = self
             .std
-            .query_projected_effect(&projector_espec, projectee_item_key, projectee_item);
+            .query_projected_effect(&projector_espec, projectee_key, projectee_item);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
@@ -171,12 +169,12 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         projector_espec: EffectSpec,
-        projectee_item_key: ItemKey,
+        projectee_key: ItemKey,
         projectee_item: &UadItem,
     ) {
         let cmods = self
             .std
-            .unproject_effect(&projector_espec, projectee_item_key, projectee_item);
+            .unproject_effect(&projector_espec, projectee_key, projectee_item);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
@@ -194,8 +192,8 @@ impl Calc {
             let mut reuse_affectees = Vec::new();
             for cmod in cmods.iter() {
                 self.std.fill_affectees(&mut reuse_affectees, ctx, cmod);
-                for &affectee_item_key in reuse_affectees.iter() {
-                    let projectee_aspec = AttrSpec::new(affectee_item_key, cmod.raw.affectee_a_attr_id);
+                for &affectee_key in reuse_affectees.iter() {
+                    let projectee_aspec = AttrSpec::new(affectee_key, cmod.raw.affectee_a_attr_id);
                     self.force_attr_value_recalc(ctx, projectee_aspec);
                 }
             }
@@ -420,8 +418,8 @@ impl Calc {
     }
     fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<ItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
         self.std.fill_affectees(reuse_affectees, ctx, cmod);
-        for &affectee_item_key in reuse_affectees.iter() {
-            self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_item_key, cmod.raw.affectee_a_attr_id));
+        for &affectee_key in reuse_affectees.iter() {
+            self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_key, cmod.raw.affectee_a_attr_id));
         }
     }
     fn handle_location_owner_add(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {

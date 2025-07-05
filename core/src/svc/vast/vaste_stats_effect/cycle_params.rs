@@ -41,8 +41,8 @@ pub(in crate::svc::vast) fn get_effect_charge(ctx: SvcCtx, espec: &EffectSpec) -
     match ctx.uad.src.get_a_effect(&espec.a_effect_id).unwrap().ae.charge {
         Some(ad::AEffectChargeInfo::Loaded) => {
             let parent_item = ctx.uad.items.get(espec.item_key);
-            let charge_item_key = match parent_item.get_charge_item_key() {
-                Some(charge_item_key) => charge_item_key,
+            let charge_key = match parent_item.get_charge_key() {
+                Some(charge_key) => charge_key,
                 // No charge - return, well, no charge
                 None => return EffectCharge::NoCharge,
             };
@@ -54,15 +54,15 @@ pub(in crate::svc::vast) fn get_effect_charge(ctx: SvcCtx, espec: &EffectSpec) -
                 None => return EffectCharge::NoCharge,
             };
             EffectCharge::Charge(EffectChargeInfo {
-                item_key: charge_item_key,
+                item_key: charge_key,
                 count_info: get_count_info_for_loaded_charge(parent_item, charge_count),
             })
         }
         Some(ad::AEffectChargeInfo::Attr(_)) => {
             let parent_item = ctx.uad.items.get(espec.item_key);
-            let charge_item_key = match parent_item.get_autocharges() {
+            let charge_key = match parent_item.get_autocharges() {
                 Some(autocharges) => match autocharges.get(&espec.a_effect_id) {
-                    Some(charge_item_key) => *charge_item_key,
+                    Some(charge_key) => *charge_key,
                     None => return EffectCharge::NoCharge,
                 },
                 None => return EffectCharge::NoCharge,
@@ -79,7 +79,7 @@ pub(in crate::svc::vast) fn get_effect_charge(ctx: SvcCtx, espec: &EffectSpec) -
                 None => EffectChargeCountKind::Infinite,
             };
             EffectCharge::Charge(EffectChargeInfo {
-                item_key: charge_item_key,
+                item_key: charge_key,
                 count_info,
             })
         }

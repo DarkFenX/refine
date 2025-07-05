@@ -10,7 +10,7 @@ use crate::{
 pub(crate) struct UadCharge {
     base: UadItemBase,
     fit_key: FitKey,
-    cont_item_key: ItemKey,
+    cont_key: ItemKey,
     projs: Projs,
     force_disable: bool,
 }
@@ -20,14 +20,14 @@ impl UadCharge {
         item_id: ItemId,
         a_item_id: ad::AItemId,
         fit_key: FitKey,
-        cont_item_key: ItemKey,
+        cont_key: ItemKey,
         cont_a_state: ad::AState,
         force_disable: bool,
     ) -> Self {
         Self {
             base: UadItemBase::new(src, item_id, a_item_id, cont_a_state),
             fit_key,
-            cont_item_key,
+            cont_key,
             projs: Projs::new(),
             force_disable,
         }
@@ -94,8 +94,8 @@ impl UadCharge {
     pub(crate) fn get_fit_key(&self) -> FitKey {
         self.fit_key
     }
-    pub(crate) fn get_cont_item_key(&self) -> ItemKey {
-        self.cont_item_key
+    pub(crate) fn get_cont_key(&self) -> ItemKey {
+        self.cont_key
     }
     pub(crate) fn get_projs(&self) -> &Projs {
         &self.projs

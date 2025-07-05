@@ -131,8 +131,8 @@ fn validate_fast(
     blockable: &RMapRSet<ItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> bool {
-    for (projectee_item_key, mut projector_especs) in blockable.iter() {
-        if is_flag_set(ctx, calc, *projectee_item_key, a_attr_id) {
+    for (projectee_key, mut projector_especs) in blockable.iter() {
+        if is_flag_set(ctx, calc, *projectee_key, a_attr_id) {
             match kfs.is_empty() {
                 true => return false,
                 false => {
@@ -154,9 +154,9 @@ fn validate_verbose(
     a_attr_id: &ad::AAttrId,
 ) -> Option<ValProjImmunityFail> {
     let mut items = HashMap::new();
-    for (projectee_item_key, projector_especs) in blockable.iter() {
-        if is_flag_set(ctx, calc, *projectee_item_key, a_attr_id) && !projector_especs.is_empty() {
-            let projectee_item_id = ctx.uad.items.id_by_key(*projectee_item_key);
+    for (projectee_key, projector_especs) in blockable.iter() {
+        if is_flag_set(ctx, calc, *projectee_key, a_attr_id) && !projector_especs.is_empty() {
+            let projectee_item_id = ctx.uad.items.id_by_key(*projectee_key);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_key) {
                     continue;

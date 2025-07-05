@@ -98,8 +98,8 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(val)
 }
 
-fn reg_dependencies(calc: &mut Calc, ship_item_key: ItemKey, prop_espec: EffectSpec) {
-    let affectee_aspec = AttrSpec::new(ship_item_key, SHIP_SPEED);
+fn reg_dependencies(calc: &mut Calc, ship_key: ItemKey, prop_espec: EffectSpec) {
+    let affectee_aspec = AttrSpec::new(ship_key, SHIP_SPEED);
     calc.deps.add_with_source(
         prop_espec,
         AttrSpec::new(prop_espec.item_key, PROP_BOOST),
@@ -111,5 +111,5 @@ fn reg_dependencies(calc: &mut Calc, ship_item_key: ItemKey, prop_espec: EffectS
         affectee_aspec,
     );
     calc.deps
-        .add_with_source(prop_espec, AttrSpec::new(ship_item_key, SHIP_MASS), affectee_aspec);
+        .add_with_source(prop_espec, AttrSpec::new(ship_key, SHIP_MASS), affectee_aspec);
 }

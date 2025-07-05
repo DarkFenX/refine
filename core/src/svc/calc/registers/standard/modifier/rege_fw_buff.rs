@@ -23,16 +23,11 @@ impl StandardRegister {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => {
                     let fit_key = fw_effect.get_fit_key();
-                    let affectee_item_keys = self.affectee_buffable.get(&fit_key);
-                    reuse_cmods.reserve(affectee_item_keys.len());
-                    for &affectee_item_key in affectee_item_keys {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, affectee_item_key);
-                        add_cmod(
-                            &mut self.cmods_direct,
-                            affectee_item_key,
-                            cmod,
-                            &mut self.cmods_by_attr_spec,
-                        );
+                    let affectee_keys = self.affectee_buffable.get(&fit_key);
+                    reuse_cmods.reserve(affectee_keys.len());
+                    for &affectee_key in affectee_keys {
+                        let cmod = CtxModifier::from_raw_with_item(rmod, affectee_key);
+                        add_cmod(&mut self.cmods_direct, affectee_key, cmod, &mut self.cmods_by_attr_spec);
                         reuse_cmods.push(cmod)
                     }
                     self.rmods_fw_buff_direct.add_entry(fit_key, rmod);
@@ -131,13 +126,13 @@ impl StandardRegister {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => {
                     let fit_key = fw_effect.get_fit_key();
-                    let affectee_item_keys = self.affectee_buffable.get(&fit_key);
-                    reuse_cmods.reserve(affectee_item_keys.len());
-                    for affectee_item_key in affectee_item_keys {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, *affectee_item_key);
+                    let affectee_keys = self.affectee_buffable.get(&fit_key);
+                    reuse_cmods.reserve(affectee_keys.len());
+                    for affectee_key in affectee_keys {
+                        let cmod = CtxModifier::from_raw_with_item(rmod, *affectee_key);
                         remove_cmod(
                             &mut self.cmods_direct,
-                            affectee_item_key,
+                            affectee_key,
                             &cmod,
                             &mut self.cmods_by_attr_spec,
                         );

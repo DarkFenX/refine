@@ -11,13 +11,13 @@ impl SolarSystem {
         let uad_module = uad_item.get_module().unwrap();
         let fit_key = uad_module.get_fit_key();
         let rack = uad_module.get_rack();
-        let charge_key = uad_module.get_charge_item_key();
+        let charge_key = uad_module.get_charge_key();
         // Remove outgoing projections for both module and charge
         if let Some(charge_key) = charge_key {
             let charge_uad_item = self.uad.items.get(charge_key);
             // Use module projections, since module and charge projections should always match
-            for projectee_item_key in uad_module.get_projs().iter_projectees() {
-                let projectee_uad_item = self.uad.items.get(projectee_item_key);
+            for projectee_key in uad_module.get_projs().iter_projectees() {
+                let projectee_uad_item = self.uad.items.get(projectee_key);
                 // Remove charge outgoing projections from services
                 SolarSystem::util_remove_item_projection(
                     &self.uad,
@@ -25,27 +25,27 @@ impl SolarSystem {
                     &self.reffs,
                     charge_key,
                     charge_uad_item,
-                    projectee_item_key,
+                    projectee_key,
                     projectee_uad_item,
                 );
                 // Remove charge outgoing projections from reverse projection tracker
-                self.rprojs.unreg_projectee(&charge_key, &projectee_item_key);
+                self.rprojs.unreg_projectee(&charge_key, &projectee_key);
             }
         }
-        for projectee_item_key in uad_module.get_projs().iter_projectees() {
+        for projectee_key in uad_module.get_projs().iter_projectees() {
             // Remove module outgoing projections from services
-            let projectee_uad_item = self.uad.items.get(projectee_item_key);
+            let projectee_uad_item = self.uad.items.get(projectee_key);
             SolarSystem::util_remove_item_projection(
                 &self.uad,
                 &mut self.svc,
                 &self.reffs,
                 item_key,
                 uad_item,
-                projectee_item_key,
+                projectee_key,
                 projectee_uad_item,
             );
             // Remove module outgoing projections from reverse projection tracker
-            self.rprojs.unreg_projectee(&item_key, &projectee_item_key);
+            self.rprojs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove charge from services
         if let Some(charge_key) = charge_key {

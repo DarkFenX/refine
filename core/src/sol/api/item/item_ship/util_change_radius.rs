@@ -17,34 +17,34 @@ impl SolarSystem {
     ) {
         let mut projections_to_update = Vec::new();
         let uad_fit = uad.fits.get(fit_key);
-        for &module_item_key in chain!(
+        for &module_key in chain!(
             uad_fit.mods_high.iter_keys(),
             uad_fit.mods_mid.iter_keys(),
             uad_fit.mods_low.iter_keys()
         ) {
-            let uad_module = uad.items.get_mut(module_item_key).get_module_mut().unwrap();
-            for (projectee_item_key, uad_prange) in uad_module.get_projs_mut().iter_projectees_and_ranges_mut() {
+            let uad_module = uad.items.get_mut(module_key).get_module_mut().unwrap();
+            for (projectee_key, uad_prange) in uad_module.get_projs_mut().iter_projectees_and_ranges_mut() {
                 if uad_prange.update_src_rad(ship_radius) {
-                    projections_to_update.push((module_item_key, projectee_item_key, *uad_prange));
+                    projections_to_update.push((module_key, projectee_key, *uad_prange));
                 }
             }
-            if let Some(charge_item_key) = uad_module.get_charge_item_key() {
-                let uad_charge = uad.items.get_mut(charge_item_key).get_charge_mut().unwrap();
-                for (projectee_item_key, uad_prange) in uad_charge.get_projs_mut().iter_projectees_and_ranges_mut() {
+            if let Some(charge_key) = uad_module.get_charge_key() {
+                let uad_charge = uad.items.get_mut(charge_key).get_charge_mut().unwrap();
+                for (projectee_key, uad_prange) in uad_charge.get_projs_mut().iter_projectees_and_ranges_mut() {
                     if uad_prange.update_src_rad(ship_radius) {
-                        projections_to_update.push((charge_item_key, projectee_item_key, *uad_prange));
+                        projections_to_update.push((charge_key, projectee_key, *uad_prange));
                     }
                 }
             }
         }
-        for (projector_item_key, projectee_item_key, prange) in projections_to_update {
-            let projectee_uad_item = uad.items.get(projectee_item_key);
+        for (projector_key, projectee_key, prange) in projections_to_update {
+            let projectee_uad_item = uad.items.get(projectee_key);
             SolarSystem::util_change_item_proj_range(
                 uad,
                 svc,
                 reffs,
-                projector_item_key,
-                projectee_item_key,
+                projector_key,
+                projectee_key,
                 projectee_uad_item,
                 Some(prange),
             );

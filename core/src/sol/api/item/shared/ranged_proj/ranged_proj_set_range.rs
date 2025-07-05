@@ -9,15 +9,15 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_projection_range(
         &mut self,
-        projector_item_key: ItemKey,
-        projectee_item_key: ItemKey,
+        projector_key: ItemKey,
+        projectee_key: ItemKey,
         range: ProjRange,
     ) -> Result<(), ProjFoundError> {
-        let projector_uad_item = self.uad.items.get(projector_item_key);
+        let projector_uad_item = self.uad.items.get(projector_key);
         match projector_uad_item {
-            UadItem::Drone(_) => self.internal_set_drone_proj_range(projector_item_key, projectee_item_key, range),
-            UadItem::Fighter(_) => self.internal_set_fighter_proj_range(projector_item_key, projectee_item_key, range),
-            UadItem::Module(_) => self.internal_set_module_proj_range(projector_item_key, projectee_item_key, range),
+            UadItem::Drone(_) => self.internal_set_drone_proj_range(projector_key, projectee_key, range),
+            UadItem::Fighter(_) => self.internal_set_fighter_proj_range(projector_key, projectee_key, range),
+            UadItem::Module(_) => self.internal_set_module_proj_range(projector_key, projectee_key, range),
             _ => unreachable!("un-range-projectable item kind is used in projection"),
         }
     }
@@ -26,7 +26,7 @@ impl SolarSystem {
 impl<'a> RangedProjMut<'a> {
     pub fn set_range(&mut self, range: ProjRange) {
         self.sol
-            .internal_set_projection_range(self.projector_item_key, self.projectee_item_key, range)
+            .internal_set_projection_range(self.projector_key, self.projectee_key, range)
             .unwrap()
     }
 }

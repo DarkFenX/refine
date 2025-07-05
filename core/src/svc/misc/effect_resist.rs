@@ -35,10 +35,10 @@ pub(crate) fn get_resist_mult_val(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: &EffectSpec,
-    projectee_item_key: ItemKey,
+    projectee_key: ItemKey,
 ) -> Option<AttrVal> {
     let projector_a_effect = ctx.uad.src.get_a_effect(&projector_espec.a_effect_id)?;
     let projector_item = ctx.uad.items.get(projector_espec.item_key);
     let resist_a_attr_id = get_resist_a_attr_id(projector_item, projector_a_effect)?;
-    get_resist_mult_val_by_projectee_aspec(ctx, calc, &AttrSpec::new(projectee_item_key, resist_a_attr_id))
+    get_resist_mult_val_by_projectee_aspec(ctx, calc, &AttrSpec::new(projectee_key, resist_a_attr_id))
 }

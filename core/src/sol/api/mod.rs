@@ -16,7 +16,7 @@ pub use item::{
     Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 pub(in crate::sol::api) use item::{
-    ItemMutSealed, ItemSealed, get_ship_a_extras, iter_projectee_item_keys, iter_ranged_projs,
+    ItemMutSealed, ItemSealed, get_ship_a_extras, iter_projectee_keys, iter_ranged_projs,
 };
 pub use util::MutIter;
 

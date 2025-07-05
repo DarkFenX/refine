@@ -176,9 +176,9 @@ impl Calc {
     }
     // Private methods
     fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_key: &FitKey) {
-        let rah_item_keys = self.rah.by_fit.get(fit_key).copied().collect_vec();
-        for rah_item_key in rah_item_keys {
-            self.clear_rah_result(ctx, rah_item_key);
+        let rah_keys = self.rah.by_fit.get(fit_key).copied().collect_vec();
+        for rah_key in rah_keys {
+            self.clear_rah_result(ctx, rah_key);
         }
     }
     fn clear_rah_result(&mut self, ctx: SvcCtx, item_key: ItemKey) {

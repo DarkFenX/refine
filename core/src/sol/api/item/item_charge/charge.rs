@@ -55,8 +55,8 @@ impl<'a> ChargeMut<'a> {
         get_cont_item(self.sol, self.key)
     }
     pub fn get_cont_item_mut(&mut self) -> ItemMut<'_> {
-        let cont_item_key = get_uad_charge(self.sol, self.key).get_cont_item_key();
-        ItemMut::new(self.sol, cont_item_key)
+        let cont_key = get_uad_charge(self.sol, self.key).get_cont_key();
+        ItemMut::new(self.sol, cont_key)
     }
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.key)
@@ -83,8 +83,8 @@ fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit<'_> {
     Fit::new(sol, fit_key)
 }
 fn get_cont_item(sol: &SolarSystem, item_key: ItemKey) -> Item<'_> {
-    let cont_item_key = get_uad_charge(sol, item_key).get_cont_item_key();
-    Item::new(sol, cont_item_key)
+    let cont_key = get_uad_charge(sol, item_key).get_cont_key();
+    Item::new(sol, cont_key)
 }
 fn get_state(sol: &SolarSystem, item_key: ItemKey) -> bool {
     !get_uad_charge(sol, item_key).get_force_disable()

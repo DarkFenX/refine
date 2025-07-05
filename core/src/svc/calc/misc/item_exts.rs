@@ -47,8 +47,8 @@ impl UadItem {
     }
     pub(in crate::svc::calc) fn get_other_key(&self) -> Option<ItemKey> {
         match self {
-            Self::Charge(charge) => Some(charge.get_cont_item_key()),
-            Self::Module(module) => module.get_charge_item_key(),
+            Self::Charge(charge) => Some(charge.get_cont_key()),
+            Self::Module(module) => module.get_charge_key(),
             _ => None,
         }
     }

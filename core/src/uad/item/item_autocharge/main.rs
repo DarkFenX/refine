@@ -10,7 +10,7 @@ use crate::{
 pub(crate) struct UadAutocharge {
     base: UadItemBase,
     fit_key: FitKey,
-    cont_item_key: ItemKey,
+    cont_key: ItemKey,
     cont_a_effect_id: ad::AEffectId,
     projs: Projs,
     force_disable: bool,
@@ -21,7 +21,7 @@ impl UadAutocharge {
         item_id: ItemId,
         a_item_id: ad::AItemId,
         fit_key: FitKey,
-        cont_item_key: ItemKey,
+        cont_key: ItemKey,
         cont_a_effect_id: ad::AEffectId,
         cont_a_state: ad::AState,
         force_disable: bool,
@@ -29,7 +29,7 @@ impl UadAutocharge {
         Self {
             base: UadItemBase::new(src, item_id, a_item_id, cont_a_state),
             fit_key,
-            cont_item_key,
+            cont_key,
             cont_a_effect_id,
             projs: Projs::new(),
             force_disable,
@@ -96,8 +96,8 @@ impl UadAutocharge {
     pub(crate) fn get_fit_key(&self) -> FitKey {
         self.fit_key
     }
-    pub(crate) fn get_cont_item_key(&self) -> ItemKey {
-        self.cont_item_key
+    pub(crate) fn get_cont_key(&self) -> ItemKey {
+        self.cont_key
     }
     pub(crate) fn get_cont_effect_id(&self) -> ad::AEffectId {
         self.cont_a_effect_id

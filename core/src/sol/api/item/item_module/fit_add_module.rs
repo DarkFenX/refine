@@ -98,7 +98,7 @@ impl SolarSystem {
         // Update on-module data regarding position and charge
         let uad_module = self.uad.items.get_mut(module_key).get_module_mut().unwrap();
         uad_module.set_pos(pos);
-        uad_module.set_charge_item_key(charge_key);
+        uad_module.set_charge_key(charge_key);
         // Add module and charge to services
         let module_uad_item = self.uad.items.get(module_key);
         SolarSystem::util_add_item_without_projs(

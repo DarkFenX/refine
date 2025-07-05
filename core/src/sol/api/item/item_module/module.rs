@@ -71,7 +71,7 @@ impl<'a> ModuleMut<'a> {
     }
     pub fn get_charge_mut(&mut self) -> Option<ChargeMut<'_>> {
         get_uad_module(self.sol, self.key)
-            .get_charge_item_key()
+            .get_charge_key()
             .map(|charge_key| ChargeMut::new(self.sol, charge_key))
     }
 }
@@ -106,7 +106,7 @@ fn get_pos(sol: &SolarSystem, item_key: ItemKey) -> Idx {
 }
 fn get_charge(sol: &SolarSystem, item_key: ItemKey) -> Option<Charge<'_>> {
     get_uad_module(sol, item_key)
-        .get_charge_item_key()
+        .get_charge_key()
         .map(|charge_key| Charge::new(sol, charge_key))
 }
 fn get_uad_module(sol: &SolarSystem, item_key: ItemKey) -> &UadModule {

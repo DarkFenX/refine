@@ -33,7 +33,7 @@ pub(crate) struct RawModifier {
 }
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_amod(
-        affector_item_key: ItemKey,
+        affector_key: ItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         amod: &ad::AEffectModifier,
@@ -51,7 +51,7 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_item_key, a_effect.ae.id),
+            affector_espec: EffectSpec::new(affector_key, a_effect.ae.id),
             affector_value: AffectorValue::AttrId(amod.affector_attr_id),
             op: (&amod.op).into(),
             aggr_mode: AggrMode::Stack,
@@ -64,7 +64,7 @@ impl RawModifier {
         })
     }
     pub(in crate::svc::calc) fn try_from_a_buff_regular(
-        affector_item_key: ItemKey,
+        affector_key: ItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         a_buff: &ad::ABuff,
@@ -74,7 +74,7 @@ impl RawModifier {
         buff_type_a_attr_id: Option<ad::AAttrId>,
     ) -> Option<Self> {
         RawModifier::from_a_buff(
-            affector_item_key,
+            affector_key,
             affector_item,
             a_effect,
             a_buff,
@@ -85,7 +85,7 @@ impl RawModifier {
         )
     }
     pub(in crate::svc::calc) fn try_from_a_buff_hardcoded(
-        affector_item_key: ItemKey,
+        affector_key: ItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         a_buff: &ad::ABuff,
@@ -94,7 +94,7 @@ impl RawModifier {
         loc: Location,
     ) -> Option<Self> {
         RawModifier::from_a_buff(
-            affector_item_key,
+            affector_key,
             affector_item,
             a_effect,
             a_buff,
@@ -105,7 +105,7 @@ impl RawModifier {
         )
     }
     fn from_a_buff(
-        affector_item_key: ItemKey,
+        affector_key: ItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         a_buff: &ad::ABuff,
@@ -122,7 +122,7 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_item_key, a_effect.ae.id),
+            affector_espec: EffectSpec::new(affector_key, a_effect.ae.id),
             affector_value,
             op: (&a_buff.op).into(),
             aggr_mode: AggrMode::from_a_buff(a_buff),

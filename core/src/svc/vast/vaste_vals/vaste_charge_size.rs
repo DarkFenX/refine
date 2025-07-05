@@ -26,7 +26,7 @@ pub struct ValChargeSizeChargeInfo {
 impl ValChargeSizeChargeInfo {
     fn from_fail_cache(ctx: SvcCtx, fail_cache: &ValChargeSizeFailCache) -> Self {
         Self {
-            parent_item_id: ctx.uad.items.id_by_key(fail_cache.parent_item_key),
+            parent_item_id: ctx.uad.items.id_by_key(fail_cache.parent_key),
             charge_size: fail_cache.charge_size,
             allowed_size: fail_cache.allowed_size,
         }
@@ -35,8 +35,8 @@ impl ValChargeSizeChargeInfo {
 
 #[derive(Copy, Clone)]
 pub(in crate::svc::vast) struct ValChargeSizeFailCache {
-    pub(in crate::svc::vast) parent_item_key: ItemKey,
-    pub(in crate::svc::vast) charge_item_key: ItemKey,
+    pub(in crate::svc::vast) parent_key: ItemKey,
+    pub(in crate::svc::vast) charge_key: ItemKey,
     pub(in crate::svc::vast) charge_size: Option<AttrVal>,
     pub(in crate::svc::vast) allowed_size: AttrVal,
 }
@@ -44,12 +44,12 @@ pub(in crate::svc::vast) struct ValChargeSizeFailCache {
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_charge_size_fast(&mut self, kfs: &RSet<ItemKey>, ctx: SvcCtx) -> bool {
-        for (module_item_key, cache) in self.mods_charge_size.iter_mut() {
+        for (module_key, cache) in self.mods_charge_size.iter_mut() {
             match cache {
-                ValCache::Todo(allowed_size) => match calculate_item_result(ctx, *module_item_key, *allowed_size) {
+                ValCache::Todo(allowed_size) => match calculate_item_result(ctx, *module_key, *allowed_size) {
                     ValCache::Pass(pass) => cache.pass(pass),
                     ValCache::Fail(fail_cache) => {
-                        let ret_fail = !kfs.contains(&fail_cache.charge_item_key);
+                        let ret_fail = !kfs.contains(&fail_cache.charge_key);
                         cache.fail(fail_cache);
                         if ret_fail {
                             return false;
@@ -59,7 +59,7 @@ impl VastFitData {
                 },
                 ValCache::Pass(_) => (),
                 ValCache::Fail(fail_cache) => {
-                    if !kfs.contains(&fail_cache.charge_item_key) {
+                    if !kfs.contains(&fail_cache.charge_key) {
                         return false;
                     }
                 }
@@ -74,14 +74,14 @@ impl VastFitData {
         ctx: SvcCtx,
     ) -> Option<ValChargeSizeFail> {
         let mut charges = HashMap::new();
-        for (module_item_key, cache) in self.mods_charge_size.iter_mut() {
+        for (module_key, cache) in self.mods_charge_size.iter_mut() {
             match cache {
-                ValCache::Todo(allowed_size) => match calculate_item_result(ctx, *module_item_key, *allowed_size) {
+                ValCache::Todo(allowed_size) => match calculate_item_result(ctx, *module_key, *allowed_size) {
                     ValCache::Pass(pass) => cache.pass(pass),
                     ValCache::Fail(fail_cache) => {
-                        if !kfs.contains(&fail_cache.charge_item_key) {
+                        if !kfs.contains(&fail_cache.charge_key) {
                             charges.insert(
-                                ctx.uad.items.id_by_key(fail_cache.charge_item_key),
+                                ctx.uad.items.id_by_key(fail_cache.charge_key),
                                 ValChargeSizeChargeInfo::from_fail_cache(ctx, &fail_cache),
                             );
                         }
@@ -91,9 +91,9 @@ impl VastFitData {
                 },
                 ValCache::Pass(_) => (),
                 ValCache::Fail(fail_cache) => {
-                    if !kfs.contains(&fail_cache.charge_item_key) {
+                    if !kfs.contains(&fail_cache.charge_key) {
                         charges.insert(
-                            ctx.uad.items.id_by_key(fail_cache.charge_item_key),
+                            ctx.uad.items.id_by_key(fail_cache.charge_key),
                             ValChargeSizeChargeInfo::from_fail_cache(ctx, fail_cache),
                         );
                     }
@@ -109,15 +109,15 @@ impl VastFitData {
 
 fn calculate_item_result(
     ctx: SvcCtx,
-    module_item_key: ItemKey,
+    module_key: ItemKey,
     allowed_size: AttrVal,
 ) -> ValCache<AttrVal, ValChargeSizeFailCache> {
-    let module = ctx.uad.items.get(module_item_key).get_module().unwrap();
-    let charge_item_key = match module.get_charge_item_key() {
-        Some(charge_item_key) => charge_item_key,
+    let module = ctx.uad.items.get(module_key).get_module().unwrap();
+    let charge_key = match module.get_charge_key() {
+        Some(charge_key) => charge_key,
         None => return ValCache::Pass(allowed_size),
     };
-    let charge_attrs = match ctx.uad.items.get(charge_item_key).get_a_attrs() {
+    let charge_attrs = match ctx.uad.items.get(charge_key).get_a_attrs() {
         Some(charge_attrs) => charge_attrs,
         None => return ValCache::Pass(allowed_size),
     };
@@ -125,8 +125,8 @@ fn calculate_item_result(
         Some(charge_size) => *charge_size,
         None => {
             return ValCache::Fail(ValChargeSizeFailCache {
-                parent_item_key: module_item_key,
-                charge_item_key,
+                parent_key: module_key,
+                charge_key: charge_key,
                 charge_size: None,
                 allowed_size,
             });
@@ -135,8 +135,8 @@ fn calculate_item_result(
     match charge_size == allowed_size {
         true => ValCache::Pass(allowed_size),
         false => ValCache::Fail(ValChargeSizeFailCache {
-            parent_item_key: module_item_key,
-            charge_item_key,
+            parent_key: module_key,
+            charge_key: charge_key,
             charge_size: Some(charge_size),
             allowed_size,
         }),

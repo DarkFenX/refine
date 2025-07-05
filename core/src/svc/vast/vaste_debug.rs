@@ -14,17 +14,17 @@ impl Vast {
         for &item_key in self.not_loaded.iter() {
             check_item_key(uad, item_key, false)?;
         }
-        for (projectee_item_key, projector_especs) in self.limitable_rsb.iter() {
+        for (projectee_key, projector_especs) in self.limitable_rsb.iter() {
             // Projectee are not guaranteed to be loaded
-            check_item_key(uad, *projectee_item_key, false)?;
+            check_item_key(uad, *projectee_key, false)?;
             for projector_espec in projector_especs.keys() {
                 check_item_key(uad, projector_espec.item_key, true)?;
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
-        for (projectee_item_key, projector_especs) in self.limitable_rar.iter() {
+        for (projectee_key, projector_especs) in self.limitable_rar.iter() {
             // Projectee are not guaranteed to be loaded
-            check_item_key(uad, *projectee_item_key, false)?;
+            check_item_key(uad, *projectee_key, false)?;
             for projector_espec in projector_especs.keys() {
                 check_item_key(uad, projector_espec.item_key, true)?;
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
@@ -155,27 +155,27 @@ impl VastFitData {
         for &item_key in self.srqs_missing.keys() {
             check_item_key(uad, item_key, true)?;
         }
-        for (&module_item_key, module_data) in self.mods_charge_group.iter() {
-            check_item_key(uad, module_item_key, true)?;
+        for (&module_key, module_data) in self.mods_charge_group.iter() {
+            check_item_key(uad, module_key, true)?;
             if let ValCache::Fail(fail_cache) = module_data {
-                check_item_key(uad, fail_cache.parent_item_key, true)?;
-                check_item_key(uad, fail_cache.charge_item_key, true)?;
+                check_item_key(uad, fail_cache.parent_key, true)?;
+                check_item_key(uad, fail_cache.charge_key, true)?;
             }
         }
-        for (&module_item_key, module_data) in self.mods_charge_size.iter() {
-            check_item_key(uad, module_item_key, true)?;
+        for (&module_key, module_data) in self.mods_charge_size.iter() {
+            check_item_key(uad, module_key, true)?;
             if let ValCache::Fail(fail_cache) = module_data {
-                check_item_key(uad, fail_cache.parent_item_key, true)?;
-                check_item_key(uad, fail_cache.charge_item_key, true)?;
+                check_item_key(uad, fail_cache.parent_key, true)?;
+                check_item_key(uad, fail_cache.charge_key, true)?;
             }
         }
-        for (&module_item_key, module_data) in self.mods_charge_volume.iter() {
+        for (&module_key, module_data) in self.mods_charge_volume.iter() {
             // This container can store info about non-loaded modules
-            check_item_key(uad, module_item_key, false)?;
+            check_item_key(uad, module_key, false)?;
             if let ValCache::Fail(fail_cache) = module_data {
                 // This container can store info about non-loaded modules
-                check_item_key(uad, fail_cache.parent_item_key, false)?;
-                check_item_key(uad, fail_cache.charge_item_key, true)?;
+                check_item_key(uad, fail_cache.parent_key, false)?;
+                check_item_key(uad, fail_cache.charge_key, true)?;
             }
         }
         for &item_key in self.mods_capital.keys() {
@@ -235,17 +235,17 @@ impl VastFitData {
                 check_item_key(uad, stopper_spec.item_key, true)?;
             }
         }
-        for (projectee_item_key, projector_especs) in self.blockable_assistance.iter() {
+        for (projectee_key, projector_especs) in self.blockable_assistance.iter() {
             // There is no logic which ensures that projection target is loaded
-            check_item_key(uad, *projectee_item_key, false)?;
+            check_item_key(uad, *projectee_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(uad, projector_espec.item_key, true)?;
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
-        for (projectee_item_key, projector_especs) in self.blockable_offense.iter() {
+        for (projectee_key, projector_especs) in self.blockable_offense.iter() {
             // There is no logic which ensures that projection target is loaded
-            check_item_key(uad, *projectee_item_key, false)?;
+            check_item_key(uad, *projectee_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(uad, projector_espec.item_key, true)?;
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;

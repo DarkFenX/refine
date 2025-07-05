@@ -62,11 +62,11 @@ impl Vast {
                 let extras = charge.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_key, extras.kind, ad::AItemKind::Charge);
                 // Reset result to uncalculated when adding a charge
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_item_key()) {
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_key()) {
                     entry.insert(ValCache::Todo(()));
                 }
                 // Reset result to uncalculated when adding a charge
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_size.entry(charge.get_cont_item_key()) {
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_size.entry(charge.get_cont_key()) {
                     match entry.get() {
                         ValCache::Pass(allowed_charge_size) => {
                             entry.insert(ValCache::Todo(*allowed_charge_size));
@@ -83,7 +83,7 @@ impl Vast {
                 {
                     fit_data
                         .mods_charge_volume
-                        .insert(charge.get_cont_item_key(), ValCache::Todo(volume));
+                        .insert(charge.get_cont_key(), ValCache::Todo(volume));
                 }
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_key);
@@ -173,14 +173,14 @@ impl Vast {
                 }
                 if extras.charge_limit.is_some() {
                     // If there is a charge, calculate later, otherwise mark as no issue
-                    match module.get_charge_item_key() {
+                    match module.get_charge_key() {
                         Some(_) => fit_data.mods_charge_group.insert(item_key, ValCache::Todo(())),
                         None => fit_data.mods_charge_group.insert(item_key, ValCache::Pass(())),
                     };
                 }
                 if let Some(allowed_charge_size) = module.get_a_attrs().unwrap().get(&ac::attrs::CHARGE_SIZE) {
                     // If there is a charge, calculate later, otherwise mark as no issue
-                    match module.get_charge_item_key() {
+                    match module.get_charge_key() {
                         Some(_) => fit_data
                             .mods_charge_size
                             .insert(item_key, ValCache::Todo(*allowed_charge_size)),
@@ -290,13 +290,13 @@ impl Vast {
                 // If new ship limits drones which can be used, fill the mismatch data up
                 if let Some(drone_limit) = &extras.drone_limit {
                     fit_data.drone_group_limit.extend(drone_limit.group_ids.iter());
-                    for &drone_item_key in fit.drones.iter() {
-                        let drone_item = uad.items.get(drone_item_key);
+                    for &drone_key in fit.drones.iter() {
+                        let drone_item = uad.items.get(drone_key);
                         // Not every drone is guaranteed to be loaded
                         if let Some(drone_a_group_id) = drone_item.get_a_group_id()
                             && !drone_limit.group_ids.contains(&drone_a_group_id)
                         {
-                            fit_data.drone_groups.insert(drone_item_key, drone_a_group_id);
+                            fit_data.drone_groups.insert(drone_key, drone_a_group_id);
                         }
                     }
                 }
@@ -390,11 +390,11 @@ impl Vast {
             UadItem::Charge(charge) => {
                 let extras = charge.get_a_extras().unwrap();
                 item_kind_remove(fit_data, item_key, extras.kind, ad::AItemKind::Charge);
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_item_key()) {
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_key()) {
                     // No charge - check should pass
                     entry.insert(ValCache::Pass(()));
                 }
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_size.entry(charge.get_cont_item_key()) {
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_size.entry(charge.get_cont_key()) {
                     // No charge - check should pass
                     match entry.get() {
                         ValCache::Todo(allowed_charge_size) => {
@@ -406,7 +406,7 @@ impl Vast {
                         _ => (),
                     }
                 }
-                fit_data.mods_charge_volume.remove(&charge.get_cont_item_key());
+                fit_data.mods_charge_volume.remove(&charge.get_cont_key());
                 if extras.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.remove(item_key);
                 }
@@ -582,8 +582,8 @@ impl Vast {
     }
 }
 
-fn handle_charge_volume_for_module(fit_data: &mut VastFitData, module_item_key: ItemKey) {
-    if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(module_item_key) {
+fn handle_charge_volume_for_module(fit_data: &mut VastFitData, module_key: ItemKey) {
+    if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(module_key) {
         match entry.get() {
             ValCache::Pass(charge_volume) => {
                 entry.insert(ValCache::Todo(*charge_volume));

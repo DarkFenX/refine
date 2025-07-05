@@ -38,11 +38,11 @@ impl Projs {
     pub(crate) fn iter_projectees_and_ranges(&self) -> impl Iterator<Item = (ItemKey, UadProjRange)> {
         self.data
             .iter()
-            .filter_map(|(projectee_item_key, prange)| prange.map(|prange| (*projectee_item_key, prange)))
+            .filter_map(|(projectee_key, prange)| prange.map(|prange| (*projectee_key, prange)))
     }
     pub(crate) fn iter_projectees_and_ranges_mut(&mut self) -> impl Iterator<Item = (ItemKey, &mut UadProjRange)> {
         self.data
             .iter_mut()
-            .filter_map(|(projectee_item_key, prange)| prange.as_mut().map(|prange| (*projectee_item_key, prange)))
+            .filter_map(|(projectee_key, prange)| prange.as_mut().map(|prange| (*projectee_key, prange)))
     }
 }

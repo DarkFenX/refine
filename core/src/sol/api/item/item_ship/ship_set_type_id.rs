@@ -36,8 +36,8 @@ impl SolarSystem {
             ship_radius,
         );
         // Update incoming projections
-        for &projector_item_key in self.rprojs.iter_projectors(&item_key) {
-            let projector_uad_item = self.uad.items.get_mut(projector_item_key);
+        for &projector_key in self.rprojs.iter_projectors(&item_key) {
+            let projector_uad_item = self.uad.items.get_mut(projector_key);
             if let Some(uad_prange) = projector_uad_item.get_projs_mut().unwrap().get_range_mut(&item_key)
                 && uad_prange.update_tgt_rad(ship_radius)
             {
@@ -47,7 +47,7 @@ impl SolarSystem {
                     &self.uad,
                     &mut self.svc,
                     &self.reffs,
-                    projector_item_key,
+                    projector_key,
                     item_key,
                     uad_item,
                     uad_prange,
