@@ -94,6 +94,94 @@ def test_outgoing_proj_add_change(client, consts):
     assert api_affectee_ship2.update().attrs[eve_affectee_attr2_id].dogma == approx(197.389333)
 
 
+def test_outgoing_switch_ship(client, consts):
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr1_id)
+    eve_effect1_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod1])
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr2_id)
+    eve_effect2_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod2])
+    eve_affector_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
+        eff_ids=[eve_effect1_id],
+        defeff_id=eve_effect1_id)
+    eve_affector_charge_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
+        eff_ids=[eve_effect2_id],
+        defeff_id=eve_effect2_id)
+    eve_affector_ship1_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
+    eve_affector_ship2_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 1000})
+    eve_affector_ship3_id = client.alloc_item_id()
+    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        rack=consts.ApiRack.low,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_affector_charge_id)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_affector_module.change_module(add_projs=[(api_affectee_ship.id, range_s2s_to_api(val=11000))])
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(287.5)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(287.5)
+    # Action
+    api_affector_fit.set_ship(type_id=eve_affector_ship1_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 9000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(227.271997)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(227.271997)
+    # Action
+    api_affector_fit.set_ship(type_id=eve_affector_ship2_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 10000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(257.58771)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(257.58771)
+    # Action
+    api_affector_fit.set_ship(type_id=eve_affector_ship3_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(287.5)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(287.5)
+    # Action
+    api_ship = api_affector_fit.set_ship(type_id=eve_affector_ship1_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 9000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(227.271997)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(227.271997)
+    # Action
+    api_ship.remove()
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(287.5)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(287.5)
+
+
 def test_outgoing_switch_type_id(client, consts):
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_affector_attr_id = client.mk_eve_attr()

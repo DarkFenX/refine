@@ -1,5 +1,5 @@
 use crate::{
-    def::ItemKey,
+    def::{ItemKey, OF},
     sol::{SolarSystem, api::ShipMut},
     uad::ShipKind,
 };
@@ -18,6 +18,14 @@ impl SolarSystem {
         uad_fit.ship = None;
         uad_fit.kind = ShipKind::Unknown;
         self.uad.items.remove(item_key);
+        // Update projections outgoing from on-ship items
+        SolarSystem::util_update_ship_radius_for_outgoing_projs(
+            &mut self.uad,
+            &mut self.svc,
+            &self.reffs,
+            fit_key,
+            OF(0.0),
+        );
     }
 }
 
