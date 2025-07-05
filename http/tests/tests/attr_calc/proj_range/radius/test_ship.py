@@ -133,7 +133,8 @@ def test_outgoing_switch_ship(client, consts):
         defeff_id=eve_effect2_id)
     eve_affector_ship1_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
     eve_affector_ship2_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 1000})
-    eve_affector_ship3_id = client.alloc_item_id()
+    eve_affector_ship3_id = client.mk_eve_ship()
+    eve_affector_ship4_id = client.alloc_item_id()
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
     client.create_sources()
     api_sol = client.create_sol()
@@ -164,6 +165,12 @@ def test_outgoing_switch_ship(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(257.58771)
     # Action
     api_affector_fit.set_ship(type_id=eve_affector_ship3_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(287.5)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(287.5)
+    # Action
+    api_affector_fit.set_ship(type_id=eve_affector_ship4_id)
     # Verification
     assert api_affector_module.update().projs[api_affectee_ship.id] == (11000, 11000)
     assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(287.5)
@@ -221,7 +228,8 @@ def test_outgoing_switch_type_id(client, consts):
         defeff_id=eve_effect2_id)
     eve_affector_ship1_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
     eve_affector_ship2_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 1000})
-    eve_affector_ship3_id = client.alloc_item_id()
+    eve_affector_ship3_id = client.mk_eve_ship()
+    eve_affector_ship4_id = client.alloc_item_id()
     eve_affectee_ship_id = client.mk_eve_ship(
         attrs={eve_radius_attr_id: 1000, eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
     client.create_sources()
@@ -248,6 +256,12 @@ def test_outgoing_switch_type_id(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(316.285838)
     # Action
     api_affector_ship.change_ship(type_id=eve_affector_ship3_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_ship.id] == (14000, 13000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(343.358896)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr2_id].dogma == approx(343.358896)
+    # Action
+    api_affector_ship.change_ship(type_id=eve_affector_ship4_id)
     # Verification
     assert api_affector_module.update().projs[api_affectee_ship.id] == (14000, 13000)
     assert api_affectee_ship.update().attrs[eve_affectee_attr1_id].dogma == approx(343.358896)
@@ -283,7 +297,8 @@ def test_incoming_switch_type_id(client, consts):
         defeff_id=eve_effect_id)
     eve_affectee_ship1_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
     eve_affectee_ship2_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 500, eve_affectee_attr_id: 1000})
-    eve_affectee_ship3_id = client.alloc_item_id()
+    eve_affectee_ship3_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
+    eve_affectee_ship4_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -303,6 +318,11 @@ def test_incoming_switch_type_id(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(546.78155)
     # Action
     api_affectee_ship.change_ship(type_id=eve_affectee_ship3_id)
+    # Verification
+    assert api_affector_fighter.update().projs[api_affectee_ship.id] == (11025, 11025)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(576.472223)
+    # Action
+    api_affectee_ship.change_ship(type_id=eve_affectee_ship4_id)
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (11025, 11025)
     api_affectee_ship.update()

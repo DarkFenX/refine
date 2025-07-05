@@ -139,20 +139,23 @@ def test_outgoing_switch_type_id(client, consts):
         eff_ids=[eve_effect2_id],
         defeff_id=eve_effect2_id)
 
-    def make_eve_fighter(*, radius: float) -> int:
+    def make_eve_fighter(*, radius: float | None) -> int:
+        attrs = {
+            eve_affector_attr_id: -85,
+            eve_optimal_attr_id: 1000,
+            eve_falloff_attr_id: 10000,
+            eve_autocharge_attr_id: eve_autocharge_id}
+        if radius is not None:
+            attrs[eve_radius_attr_id] = radius
         return client.mk_eve_item(
-            attrs={
-                eve_radius_attr_id: radius,
-                eve_affector_attr_id: -85,
-                eve_optimal_attr_id: 1000,
-                eve_falloff_attr_id: 10000,
-                eve_autocharge_attr_id: eve_autocharge_id},
+            attrs=attrs,
             eff_ids=[eve_effect1_id, eve_autocharge_effect_id],
             defeff_id=eve_effect1_id)
 
     eve_affector_fighter1_id = make_eve_fighter(radius=25)
     eve_affector_fighter2_id = make_eve_fighter(radius=500)
-    eve_affector_fighter3_id = client.alloc_item_id()
+    eve_affector_fighter3_id = make_eve_fighter(radius=None)
+    eve_affector_fighter4_id = client.alloc_item_id()
     eve_affectee_ship_id = client.mk_eve_ship(attrs={
         eve_radius_attr_id: 1000,
         eve_affectee_attr1_id: 500,
@@ -180,6 +183,13 @@ def test_outgoing_switch_type_id(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].dogma == approx(273.390775)
     # Action
     api_affector_fighter.change_fighter(type_id=eve_affector_fighter3_id)
+    # Verification
+    assert api_affector_fighter.update().projs[api_affectee_ship.id] == (12025, 11025)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].dogma == approx(288.236112)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].dogma == approx(288.236112)
+    # Action
+    api_affector_fighter.change_fighter(type_id=eve_affector_fighter4_id)
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (12025, 11025)
     api_affectee_ship.update()
@@ -217,7 +227,8 @@ def test_incoming_switch_type_id(client, consts):
         defeff_id=eve_effect_id)
     eve_affectee_fighter1_id = client.mk_eve_item(attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
     eve_affectee_fighter2_id = client.mk_eve_item(attrs={eve_radius_attr_id: 500, eve_affectee_attr_id: 1000})
-    eve_affectee_fighter3_id = client.alloc_item_id()
+    eve_affectee_fighter3_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
+    eve_affectee_fighter4_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -235,6 +246,11 @@ def test_incoming_switch_type_id(client, consts):
     assert api_affectee_fighter.update().attrs[eve_affectee_attr_id].dogma == approx(546.78155)
     # Action
     api_affectee_fighter.change_fighter(type_id=eve_affectee_fighter3_id)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_fighter.id] == (11025, 11025)
+    assert api_affectee_fighter.update().attrs[eve_affectee_attr_id].dogma == approx(576.472223)
+    # Action
+    api_affectee_fighter.change_fighter(type_id=eve_affectee_fighter4_id)
     # Verification
     assert api_affector_drone.update().projs[api_affectee_fighter.id] == (11025, 11025)
     api_affectee_fighter.update()
