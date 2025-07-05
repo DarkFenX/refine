@@ -13,7 +13,7 @@ def test_resisted_value_change(client, consts):
         op=consts.EveBuffOp.post_mul,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_sw_effect_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
+        id_=consts.UtilEffect.buff_everything,
         cat_id=consts.EveEffCat.active,
         resist_attr_id=eve_resist_attr_id)
     eve_sw_effect_id = client.mk_eve_item(

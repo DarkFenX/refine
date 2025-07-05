@@ -15,9 +15,7 @@ def test_resist_aggr_max(client, consts):
         aggr_mode=consts.EveBuffAggrMode.min,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={
             eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -80,

@@ -9,9 +9,7 @@ def test_add_sw_fit_item_remove_sw_item_fit(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_titan_effect_generator,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_ships, cat_id=consts.EveEffCat.active)
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -40,9 +38,7 @@ def test_add_fit_sw_item_remove_item_sw_fit(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_titan_effect_generator,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_ships, cat_id=consts.EveEffCat.active)
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -70,9 +66,7 @@ def test_add_fit_item_sw_remove_fit_sw(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_titan_effect_generator,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_ships, cat_id=consts.EveEffCat.active)
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -100,9 +94,7 @@ def test_add_sw_fit_item_state_remove_state_item_fit_sw(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_titan_effect_generator,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_ships, cat_id=consts.EveEffCat.active)
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],

@@ -14,7 +14,7 @@ def test_to_struct(client, consts):
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveEffect.weather_darkness,
+        id_=consts.UtilEffect.buff_everything,
         cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         datas=[eve_d1, eve_d2],

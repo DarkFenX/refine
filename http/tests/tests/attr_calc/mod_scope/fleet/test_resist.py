@@ -13,7 +13,7 @@ def test_unresisted_self_root_ship(client, consts):
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_bonus_warfare_link_armor,
+        id_=consts.UtilEffect.buff_fleet_ships,
         cat_id=consts.EveEffCat.active,
         resist_attr_id=eve_resist_attr_id)
     eve_module_id = client.mk_eve_item(
@@ -40,7 +40,7 @@ def test_unresisted_fleeted_root_ship(client, consts):
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_bonus_warfare_link_armor,
+        id_=consts.UtilEffect.buff_fleet_ships,
         cat_id=consts.EveEffCat.active,
         resist_attr_id=eve_resist_attr_id)
     eve_module_id = client.mk_eve_item(

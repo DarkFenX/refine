@@ -12,9 +12,7 @@ def test_add_max(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.mod_add,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -40},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -46,9 +44,7 @@ def test_add_min(client, consts):
         aggr_mode=consts.EveBuffAggrMode.min,
         op=consts.EveBuffOp.mod_add,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -40},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -80,9 +76,7 @@ def test_postmul_max(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 0.6},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -114,9 +108,7 @@ def test_postmul_min(client, consts):
         aggr_mode=consts.EveBuffAggrMode.min,
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 0.6},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -148,9 +140,7 @@ def test_postperc_max(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -40},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -182,9 +172,7 @@ def test_postperc_min(client, consts):
         aggr_mode=consts.EveBuffAggrMode.min,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -40},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -216,9 +204,7 @@ def test_postassign_max(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_assign,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -40},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -250,9 +236,7 @@ def test_postassign_min(client, consts):
         aggr_mode=consts.EveBuffAggrMode.min,
         op=consts.EveBuffOp.post_assign,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect1_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -40},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -290,9 +274,7 @@ def test_different_buffs(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect_id = client.mk_eve_item(
         attrs={
             eve_buff_type_attr1_id: eve_buff1_id, eve_buff_val_attr1_id: -40,
@@ -332,15 +314,11 @@ def test_different_sources(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr1_id: eve_buff_id, eve_buff_val_attr1_id: 4.7},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_module_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_bonus_warfare_link_armor,
-        cat_id=consts.EveEffCat.active)
+    eve_module_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_val_attr2_id: 1.25},
         eff_ids=[eve_module_effect_id],

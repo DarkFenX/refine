@@ -24,9 +24,7 @@ def setup_test(*, client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.mod_add,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_buff_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_buff_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_buff_proj_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 11},
         eff_ids=[eve_buff_effect_id], defeff_id=eve_buff_effect_id)

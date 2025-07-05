@@ -6,9 +6,7 @@ def test_project_unproject_root(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_proj_effect_id = client.mk_eve_item(
         # Buff ID which we didn't create
         attrs={eve_buff_type_attr_id: 7, eve_buff_val_attr_id: 5},

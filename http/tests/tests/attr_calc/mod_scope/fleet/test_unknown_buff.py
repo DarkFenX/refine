@@ -6,9 +6,7 @@ def test_static(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_bonus_warfare_link_armor,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: 7, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -34,9 +32,7 @@ def test_switch(client, consts):
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_buff2_id = client.alloc_buff_id()
-    eve_module_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_bonus_warfare_link_armor,
-        cat_id=consts.EveEffCat.active)
+    eve_module_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_val_attr_id: 1.25},
         eff_ids=[eve_module_effect_id],

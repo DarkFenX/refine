@@ -528,3 +528,9 @@ class PenaltyStr(float, Enum):
     p6 = 0.02999116653328046
     p7 = 0.006410183117533506
     p8 = 0.0010349204826687042
+
+
+class UtilEffect(IntEnum):
+    buff_everything = EveEffect.weather_darkness
+    buff_ships = EveEffect.mod_titan_effect_generator
+    buff_fleet_ships = EveEffect.mod_bonus_warfare_link_armor
