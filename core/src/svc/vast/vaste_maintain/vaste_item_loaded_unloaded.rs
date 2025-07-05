@@ -308,12 +308,10 @@ impl Vast {
                 }
                 // Ship/structure modules are not enforced when ship is not set. When we get one,
                 // fill the data container up
-                for &item_key in chain!(
-                    fit.mods_high.iter_keys(),
-                    fit.mods_mid.iter_keys(),
-                    fit.mods_low.iter_keys(),
-                    fit.rigs.iter(),
-                    fit.services.iter()
+                for item_key in chain!(
+                    fit.iter_module_keys(),
+                    fit.rigs.iter().copied(),
+                    fit.services.iter().copied(),
                 ) {
                     let item = uad.items.get(item_key);
                     // Not every item is guaranteed to be loaded

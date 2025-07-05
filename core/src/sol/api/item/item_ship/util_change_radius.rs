@@ -1,5 +1,3 @@
-use itertools::chain;
-
 use crate::{
     def::{AttrVal, FitKey},
     sol::{SolarSystem, reffs::REffs},
@@ -16,12 +14,7 @@ impl SolarSystem {
         ship_radius: AttrVal,
     ) {
         let mut projections_to_update = Vec::new();
-        let uad_fit = uad.fits.get(fit_key);
-        for &module_key in chain!(
-            uad_fit.mods_high.iter_keys(),
-            uad_fit.mods_mid.iter_keys(),
-            uad_fit.mods_low.iter_keys()
-        ) {
+        for module_key in uad.fits.get(fit_key).iter_module_keys() {
             let uad_module = uad.items.get_mut(module_key).get_module_mut().unwrap();
             for (projectee_key, uad_prange) in uad_module.get_projs_mut().iter_projectees_and_ranges_mut() {
                 if uad_prange.update_src_rad(ship_radius) {

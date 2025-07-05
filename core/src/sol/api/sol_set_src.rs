@@ -1,5 +1,3 @@
-use itertools::chain;
-
 use crate::{
     def::{AttrVal, ItemKey, OF},
     sol::SolarSystem,
@@ -253,11 +251,7 @@ impl SolarSystem {
                 .ship
                 .map(|ship_key| get_item_radius(&self.uad, ship_key))
                 .unwrap_or(OF(0.0));
-            for &module_key in chain!(
-                uad_fit.mods_high.iter_keys(),
-                uad_fit.mods_mid.iter_keys(),
-                uad_fit.mods_low.iter_keys()
-            ) {
+            for module_key in uad_fit.iter_module_keys() {
                 record_projection(&mut projection_updates, &self.uad, module_key, ship_radius);
                 let uad_module = self.uad.items.get(module_key).get_module().unwrap();
                 if let Some(charge_key) = uad_module.get_charge_key() {

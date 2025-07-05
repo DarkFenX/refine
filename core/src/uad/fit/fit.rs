@@ -1,3 +1,5 @@
+use itertools::chain;
+
 use crate::{
     ad,
     def::{FitId, FleetKey, ItemKey},
@@ -56,6 +58,13 @@ impl UadFit {
             sec_status: FitSecStatus::new_clamped(0.0),
             rah_incoming_dps: None,
         }
+    }
+    pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = ItemKey> {
+        chain!(
+            self.mods_high.iter_keys().copied(),
+            self.mods_mid.iter_keys().copied(),
+            self.mods_low.iter_keys().copied(),
+        )
     }
     pub(crate) fn all_direct_items(&self) -> Vec<ItemKey> {
         // Calculate capacity
