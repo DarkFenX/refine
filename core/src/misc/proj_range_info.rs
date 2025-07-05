@@ -10,8 +10,8 @@ pub struct ProjRangeInfo {
 impl From<UadProjRange> for ProjRangeInfo {
     fn from(uad_prange: UadProjRange) -> Self {
         Self {
-            c2c: uad_prange.c2c,
-            s2s: uad_prange.s2s,
+            c2c: uad_prange.get_c2c(),
+            s2s: uad_prange.get_s2s(),
         }
     }
 }

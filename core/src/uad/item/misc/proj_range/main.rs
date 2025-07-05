@@ -7,11 +7,11 @@ use crate::{
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct UadProjRange {
     // Center-to-center range
-    pub(crate) c2c: AttrVal,
+    pub(super) c2c: AttrVal,
     // Surface-to-surface range
-    pub(crate) s2s: AttrVal,
-    pub(crate) src_rad: AttrVal,
-    pub(crate) tgt_rad: AttrVal,
+    pub(super) s2s: AttrVal,
+    pub(super) src_rad: AttrVal,
+    pub(super) tgt_rad: AttrVal,
 }
 impl UadProjRange {
     pub(crate) fn from_prange_with_extras(
@@ -47,6 +47,21 @@ impl UadProjRange {
             }),
             ProjRange::None => None,
         }
+    }
+    pub(crate) fn get_c2c(&self) -> AttrVal {
+        self.c2c
+    }
+    pub(crate) fn get_s2s(&self) -> AttrVal {
+        self.s2s
+    }
+    pub(crate) fn get_c2s(&self) -> AttrVal {
+        AttrVal::max(OF(0.0), self.c2c - self.tgt_rad)
+    }
+    pub(crate) fn get_src_rad(&self) -> AttrVal {
+        self.src_rad
+    }
+    pub(crate) fn get_tgt_rad(&self) -> AttrVal {
+        self.tgt_rad
     }
     pub(crate) fn update_src_rad(&mut self, src_rad: AttrVal) -> bool {
         if self.src_rad == src_rad {

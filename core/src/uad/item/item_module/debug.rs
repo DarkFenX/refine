@@ -17,10 +17,10 @@ impl UadModule {
         let ship_radius = uad.get_ship_radius_by_fit_key(self.get_fit_key());
         for (projectee_key, prange) in self.get_projs().iter() {
             if let Some(prange) = prange {
-                if prange.src_rad != ship_radius {
+                if prange.get_src_rad() != ship_radius {
                     return Err(DebugError {});
                 }
-                if prange.tgt_rad != uad.get_item_radius(projectee_key) {
+                if prange.get_tgt_rad() != uad.get_item_radius(projectee_key) {
                     return Err(DebugError {});
                 }
             }
