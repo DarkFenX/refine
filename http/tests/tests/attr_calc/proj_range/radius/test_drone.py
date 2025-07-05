@@ -64,133 +64,6 @@ def test_outgoing_proj_add_change(client, consts):
     assert api_affectee_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(256.83146)
 
 
-def test_outgoing_switch_type_id(client, consts):
-    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_affector_attr_id = client.mk_eve_attr()
-    eve_affectee_attr_id = client.mk_eve_attr()
-    eve_optimal_attr_id = client.mk_eve_attr()
-    eve_falloff_attr_id = client.mk_eve_attr()
-    eve_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        loc=consts.EveModLoc.tgt,
-        op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_affector_attr_id,
-        affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(
-        cat_id=consts.EveEffCat.target,
-        range_attr_id=eve_optimal_attr_id,
-        falloff_attr_id=eve_falloff_attr_id,
-        mod_info=[eve_mod])
-
-    def make_eve_drone(*, radius: float | None) -> int:
-        attrs = {
-            eve_affector_attr_id: -85,
-            eve_optimal_attr_id: 1000,
-            eve_falloff_attr_id: 10000}
-        if radius is not None:
-            attrs[eve_radius_attr_id] = radius
-        return client.mk_eve_item(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-
-    eve_affector_drone1_id = make_eve_drone(radius=25)
-    eve_affector_drone2_id = make_eve_drone(radius=2500)
-    eve_affector_drone3_id = make_eve_drone(radius=None)
-    eve_affector_drone4_id = client.alloc_item_id()
-    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 1000, eve_affectee_attr_id: 500})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affector_drone = api_affector_fit.add_drone(
-        type_id=eve_affector_drone1_id,
-        state=consts.ApiMinionState.engaging)
-    api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
-    api_affector_drone.change_drone(add_projs=[(api_affectee_ship.id, range_s2s_to_api(val=11000))])
-    # Verification
-    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11000)
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
-    # Action
-    api_affector_drone.change_drone(type_id=eve_affector_drone2_id)
-    # Verification
-    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 8525)
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(212.968994)
-    # Action
-    api_affector_drone.change_drone(type_id=eve_affector_drone3_id)
-    # Verification
-    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11025)
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(288.236112)
-    # Action
-    api_affector_drone.change_drone(type_id=eve_affector_drone4_id)
-    # Verification
-    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11025)
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(500)
-    # Action
-    api_affector_drone.change_drone(type_id=eve_affector_drone1_id)
-    # Verification
-    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11000)
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
-
-
-def test_incoming_switch_type_id(client, consts):
-    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_affector_attr_id = client.mk_eve_attr()
-    eve_affectee_attr_id = client.mk_eve_attr()
-    eve_optimal_attr_id = client.mk_eve_attr()
-    eve_falloff_attr_id = client.mk_eve_attr()
-    eve_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        loc=consts.EveModLoc.tgt,
-        op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_affector_attr_id,
-        affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(
-        cat_id=consts.EveEffCat.target,
-        range_attr_id=eve_optimal_attr_id,
-        falloff_attr_id=eve_falloff_attr_id,
-        mod_info=[eve_mod])
-    eve_affector_module_id = client.mk_eve_item(
-        attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
-    eve_affectee_drone1_id = client.mk_eve_item(attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
-    eve_affectee_drone2_id = client.mk_eve_item(attrs={eve_radius_attr_id: 2500, eve_affectee_attr_id: 1000})
-    eve_affectee_drone3_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
-    eve_affectee_drone4_id = client.alloc_item_id()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_module(
-        type_id=eve_affector_module_id,
-        state=consts.ApiModuleState.active)
-    api_affectee_fit = api_sol.create_fit()
-    api_affectee_drone = api_affectee_fit.add_drone(type_id=eve_affectee_drone1_id)
-    api_affector_module.change_module(add_projs=[(api_affectee_drone.id, range_s2s_to_api(val=11000))])
-    # Verification
-    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11000)
-    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(575)
-    # Action
-    api_affectee_drone.change_drone(type_id=eve_affectee_drone2_id)
-    # Verification
-    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 8525)
-    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(425.937987)
-    # Action
-    api_affectee_drone.change_drone(type_id=eve_affectee_drone3_id)
-    # Verification
-    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11025)
-    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(576.472223)
-    # Action
-    api_affectee_drone.change_drone(type_id=eve_affectee_drone4_id)
-    # Verification
-    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11025)
-    api_affectee_drone.update()
-    with check_no_field():
-        api_affectee_drone.attrs  # noqa: B018
-    # Action
-    api_affectee_drone.change_drone(type_id=eve_affectee_drone1_id)
-    # Verification
-    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11000)
-    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(575)
-
-
 def test_outgoing_mutation(client, consts):
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_affector_attr_id = client.mk_eve_attr()
@@ -447,3 +320,289 @@ def test_incoming_mutation(client, consts):
     api_affectee_drone3.update()
     with check_no_field():
         api_affectee_drone3.attrs  # noqa: B018
+
+
+def test_outgoing_switch_type_id(client, consts):
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod])
+
+    def make_eve_drone(*, radius: float | None) -> int:
+        attrs = {
+            eve_affector_attr_id: -85,
+            eve_optimal_attr_id: 1000,
+            eve_falloff_attr_id: 10000}
+        if radius is not None:
+            attrs[eve_radius_attr_id] = radius
+        return client.mk_eve_item(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+
+    eve_affector_drone1_id = make_eve_drone(radius=25)
+    eve_affector_drone2_id = make_eve_drone(radius=2500)
+    eve_affector_drone3_id = make_eve_drone(radius=None)
+    eve_affector_drone4_id = client.alloc_item_id()
+    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 1000, eve_affectee_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affector_drone = api_affector_fit.add_drone(
+        type_id=eve_affector_drone1_id,
+        state=consts.ApiMinionState.engaging)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_affector_drone.change_drone(add_projs=[(api_affectee_ship.id, range_s2s_to_api(val=11000))])
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
+    # Action
+    api_affector_drone.change_drone(type_id=eve_affector_drone2_id)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 8525)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(212.968994)
+    # Action
+    api_affector_drone.change_drone(type_id=eve_affector_drone3_id)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11025)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(288.236112)
+    # Action
+    api_affector_drone.change_drone(type_id=eve_affector_drone4_id)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11025)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    # Action
+    api_affector_drone.change_drone(type_id=eve_affector_drone1_id)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
+
+
+def test_incoming_switch_type_id(client, consts):
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod])
+    eve_affector_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_affectee_drone1_id = client.mk_eve_item(attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
+    eve_affectee_drone2_id = client.mk_eve_item(attrs={eve_radius_attr_id: 2500, eve_affectee_attr_id: 1000})
+    eve_affectee_drone3_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
+    eve_affectee_drone4_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_drone = api_affectee_fit.add_drone(type_id=eve_affectee_drone1_id)
+    api_affector_module.change_module(add_projs=[(api_affectee_drone.id, range_s2s_to_api(val=11000))])
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11000)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(575)
+    # Action
+    api_affectee_drone.change_drone(type_id=eve_affectee_drone2_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 8525)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(425.937987)
+    # Action
+    api_affectee_drone.change_drone(type_id=eve_affectee_drone3_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11025)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(576.472223)
+    # Action
+    api_affectee_drone.change_drone(type_id=eve_affectee_drone4_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11025)
+    api_affectee_drone.update()
+    with check_no_field():
+        api_affectee_drone.attrs  # noqa: B018
+    # Action
+    api_affectee_drone.change_drone(type_id=eve_affectee_drone1_id)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11000)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(575)
+
+
+def test_outgoing_switch_src(client, consts):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_d3 = client.mk_eve_data()
+    eve_d4 = client.mk_eve_data()
+    eve_radius_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3, eve_d4], id_=consts.EveAttr.radius)
+    eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3])
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
+    eve_optimal_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3])
+    eve_falloff_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3])
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(
+        datas=[eve_d1, eve_d2, eve_d3],
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod])
+    eve_affector_drone_id = client.alloc_item_id(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
+    client.mk_eve_item(
+        datas=[eve_d1],
+        id_=eve_affector_drone_id,
+        attrs={
+            eve_radius_attr_id: 25,
+            eve_affector_attr_id: -85,
+            eve_optimal_attr_id: 1000,
+            eve_falloff_attr_id: 10000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.mk_eve_item(
+        datas=[eve_d2],
+        id_=eve_affector_drone_id,
+        attrs={
+            eve_radius_attr_id: 2500,
+            eve_affector_attr_id: -85,
+            eve_optimal_attr_id: 1000,
+            eve_falloff_attr_id: 10000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.mk_eve_item(
+        datas=[eve_d3],
+        id_=eve_affector_drone_id,
+        attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_affectee_ship_id = client.mk_eve_ship(
+        datas=[eve_d1, eve_d2, eve_d3, eve_d4],
+        attrs={eve_radius_attr_id: 1000, eve_affectee_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_drone = api_affector_fit.add_drone(
+        type_id=eve_affector_drone_id,
+        state=consts.ApiMinionState.engaging)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_affector_drone.change_drone(add_projs=[(api_affectee_ship.id, range_s2s_to_api(val=11000))])
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 8525)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(212.968994)
+    # Action
+    api_sol.change_src(data=eve_d3)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11025)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(288.236112)
+    # Action
+    api_sol.change_src(data=eve_d4)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11025)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    # Action
+    api_sol.change_src(data=eve_d1)
+    # Verification
+    assert api_affector_drone.update().projs[api_affectee_ship.id] == (12025, 11000)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(287.5)
+
+
+def test_incoming_switch_src(client, consts):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_d3 = client.mk_eve_data()
+    eve_d4 = client.mk_eve_data()
+    eve_radius_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3, eve_d4], id_=consts.EveAttr.radius)
+    eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3])
+    eve_optimal_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
+    eve_falloff_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(
+        datas=[eve_d1, eve_d2, eve_d3, eve_d4],
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod])
+    eve_affector_module_id = client.mk_eve_item(
+        datas=[eve_d1, eve_d2, eve_d3, eve_d4],
+        attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_affectee_drone_id = client.alloc_item_id(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
+    client.mk_eve_item(
+        datas=[eve_d1],
+        id_=eve_affectee_drone_id,
+        attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
+    client.mk_eve_item(
+        datas=[eve_d2],
+        id_=eve_affectee_drone_id,
+        attrs={eve_radius_attr_id: 2500, eve_affectee_attr_id: 1000})
+    client.mk_eve_item(datas=[eve_d3], id_=eve_affectee_drone_id, attrs={eve_affectee_attr_id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_drone = api_affectee_fit.add_drone(type_id=eve_affectee_drone_id)
+    api_affector_module.change_module(add_projs=[(api_affectee_drone.id, range_s2s_to_api(val=11000))])
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11000)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(575)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 8525)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(425.937987)
+    # Action
+    api_sol.change_src(data=eve_d3)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11025)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(576.472223)
+    # Action
+    api_sol.change_src(data=eve_d4)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11025)
+    api_affectee_drone.update()
+    with check_no_field():
+        api_affectee_drone.attrs  # noqa: B018
+    # Action
+    api_sol.change_src(data=eve_d1)
+    # Verification
+    assert api_affector_module.update().projs[api_affectee_drone.id] == (11025, 11000)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(575)
