@@ -1,4 +1,7 @@
-use crate::{ac, ad, ntt::NttEffect};
+use crate::{
+    ac, ad,
+    ntt::{NttEffect, NttEffectRt, eff::shared::proj_mult::get_proj_mult_simple_s2s},
+};
 
 const WEB_BUBBLE: ad::AItemId = ac::items::STASIS_WEBIFICATION_PROBE;
 const A_EFFECT_ID: ad::AEffectId = ac::effects::STASIS_WEB_PROBE;
@@ -8,6 +11,10 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         eid: None,
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(add_custom_effect),
+        rt: NttEffectRt {
+            get_proj_mult: Some(get_proj_mult_simple_s2s),
+            ..
+        },
         ..
     }
 }

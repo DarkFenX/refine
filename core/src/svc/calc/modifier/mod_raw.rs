@@ -1,3 +1,5 @@
+use std::hash::{Hash, Hasher};
+
 use smallvec::SmallVec;
 
 use super::AffectorValue;
@@ -5,6 +7,7 @@ use crate::{
     ac, ad,
     def::{AttrVal, ItemKey},
     misc::EffectSpec,
+    ntt::ProjMultGetter,
     svc::{
         SvcCtx,
         calc::{
@@ -15,7 +18,7 @@ use crate::{
     uad::UadItem,
 };
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(crate) struct RawModifier {
     pub(crate) kind: ModifierKind,
     pub(crate) affector_espec: EffectSpec,
@@ -26,10 +29,37 @@ pub(crate) struct RawModifier {
     pub(crate) affectee_a_attr_id: ad::AAttrId,
     // Buff-related
     pub(crate) buff_type_a_attr_id: Option<ad::AAttrId> = None,
-    // Projection-related
-    pub(crate) resist_a_attr_id: Option<ad::AAttrId> = None,
+    // Projection-related old
     pub(crate) optimal_a_attr_id: Option<ad::AAttrId> = None,
     pub(crate) falloff_a_attr_id: Option<ad::AAttrId> = None,
+    // Projection-related
+    pub(crate) resist_a_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) proj_mult_getter: Option<ProjMultGetter> = None,
+}
+impl PartialEq for RawModifier {
+    fn eq(&self, other: &Self) -> bool {
+        self.kind.eq(&other.kind)
+            && self.affector_espec.eq(&other.affector_espec)
+            && self.affector_value.eq(&other.affector_value)
+            && self.op.eq(&other.op)
+            && self.aggr_mode.eq(&other.aggr_mode)
+            && self.affectee_filter.eq(&other.affectee_filter)
+            && self.affectee_a_attr_id.eq(&other.affectee_a_attr_id)
+            && self.buff_type_a_attr_id.eq(&other.buff_type_a_attr_id)
+    }
+}
+impl Eq for RawModifier {}
+impl Hash for RawModifier {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.kind.hash(state);
+        self.affector_espec.hash(state);
+        self.affector_value.hash(state);
+        self.op.hash(state);
+        self.aggr_mode.hash(state);
+        self.affectee_filter.hash(state);
+        self.affectee_a_attr_id.hash(state);
+        self.buff_type_a_attr_id.hash(state);
+    }
 }
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_amod(
@@ -61,6 +91,7 @@ impl RawModifier {
             resist_a_attr_id,
             optimal_a_attr_id,
             falloff_a_attr_id,
+            ..
         })
     }
     pub(in crate::svc::calc) fn try_from_a_buff_regular(
@@ -134,6 +165,7 @@ impl RawModifier {
             // Modifiers created from buffs never define falloff - buffs either apply fully, or they
             // don't
             falloff_a_attr_id: None,
+            ..
         })
     }
     pub(in crate::svc::calc) fn get_affector_a_attr_id(&self) -> Option<ad::AAttrId> {

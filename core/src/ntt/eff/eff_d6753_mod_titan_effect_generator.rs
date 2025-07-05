@@ -1,4 +1,7 @@
-use crate::{ac, ad, ec, ntt::NttEffect};
+use crate::{
+    ac, ad, ec,
+    ntt::{NttEffect, NttEffectRt, eff::shared::proj_mult::get_proj_mult_simple_s2s},
+};
 
 pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
@@ -8,6 +11,10 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
             source: ad::AEffectBuffSrc::DefaultAttrs,
             scope: ad::AEffectBuffScope::Ships,
         }),
+        rt: NttEffectRt {
+            get_proj_mult: Some(get_proj_mult_simple_s2s),
+            ..
+        },
         ..
     }
 }

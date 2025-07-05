@@ -7,8 +7,10 @@ use crate::{
         SvcCtx,
         calc::{Calc, RawModifier},
     },
+    uad::UadProjRange,
 };
 
+pub(crate) type ProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
 pub(crate) type LocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
 pub(crate) type RemoteRepGetter = fn(SvcCtx, &mut Calc, &EffectSpec, Option<ItemKey>) -> Option<AttrVal>;
 
@@ -32,7 +34,8 @@ pub(crate) struct NttEffect {
 pub struct NttEffectRt {
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, EffectSpec)> = None,
-    // Functions which fetch
+    pub(crate) get_proj_mult: Option<ProjMultGetter> = None,
+    // Functions which fetch various stats
     pub(crate) get_local_armor_rep_amount: Option<LocalRepGetter> = None,
     pub(crate) get_local_shield_rep_amount: Option<LocalRepGetter> = None,
     pub(crate) get_local_structure_rep_amount: Option<LocalRepGetter> = None,

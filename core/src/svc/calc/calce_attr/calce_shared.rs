@@ -1,5 +1,3 @@
-use ordered_float::Float;
-
 use crate::{
     ac, ad,
     def::{AttrVal, OF},
@@ -39,72 +37,16 @@ impl Calc {
             Context::Item(projectee_key) => projectee_key,
             _ => return None,
         };
-        let proj_range = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_key)?;
-        match cmod.raw.kind {
-            ModifierKind::Targeted => self.calc_proj_mult_targeted(ctx, cmod, proj_range.s2s),
-            ModifierKind::Buff => self.calc_proj_mult_buff(ctx, cmod, proj_range.s2s),
-            _ => None,
-        }
-    }
-    // Private methods
-    fn calc_proj_mult_targeted(&mut self, ctx: SvcCtx, cmod: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
-        // Assume optimal range is 0 if it's not available
-        let affector_optimal = match cmod.raw.optimal_a_attr_id {
-            Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(ctx, cmod.raw.affector_espec.item_key, &optimal_a_attr_id) {
-                    Ok(val) => val.dogma,
-                    _ => OF(0.0),
-                }
-            }
-            None => OF(0.0),
-        };
-        // Assume falloff range is 0 if it's not available
-        let affector_falloff = match cmod.raw.falloff_a_attr_id {
-            Some(falloff_a_attr_id) => {
-                match self.get_item_attr_val_full(ctx, cmod.raw.affector_espec.item_key, &falloff_a_attr_id) {
-                    Ok(val) => val.dogma,
-                    _ => OF(0.0),
-                }
-            }
-            None => OF(0.0),
-        };
-        // TODO: do not hardcode it here, define on a per-effect basis
-        let restricted_range = false;
-        // Calculate actual range multiplier after collecting all the data
-        if affector_falloff > OF(0.0) {
-            if restricted_range && proj_range > affector_optimal + OF(3.0) * affector_falloff {
-                Some(OF(0.0))
-            } else {
-                let val = Float::powf(
-                    OF(0.5),
-                    (Float::max(OF(0.0), proj_range - affector_optimal) / affector_falloff).powi(2),
-                );
-                Some(val)
-            }
-        } else if proj_range <= affector_optimal {
-            Some(OF(1.0))
-        } else {
-            Some(OF(0.0))
-        }
-    }
-    fn calc_proj_mult_buff(&mut self, ctx: SvcCtx, cmod: &CtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
-        let affector_optimal = match cmod.raw.optimal_a_attr_id {
-            Some(optimal_a_attr_id) => {
-                match self.get_item_attr_val_full(ctx, cmod.raw.affector_espec.item_key, &optimal_a_attr_id) {
-                    Ok(val) => val.dogma,
-                    // If optimal range attribute ID is defined but value is not available, assume
-                    // optimal range of 0
-                    _ => OF(0.0),
-                }
-            }
-            // If optimal range attribute ID not defined, assume buff is not restricted by range
-            None => return None,
-        };
-        if proj_range <= affector_optimal {
-            Some(OF(1.0))
-        } else {
-            Some(OF(0.0))
-        }
+        let a_effect = ctx.uad.src.get_a_effect(&cmod.raw.affector_espec.a_effect_id)?;
+        let proj_mult_getter = a_effect.rt.get_proj_mult?;
+        let prange = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_key)?;
+        Some(proj_mult_getter(
+            ctx,
+            self,
+            cmod.raw.affector_espec.item_key,
+            &a_effect.ae,
+            prange,
+        ))
     }
 }
 

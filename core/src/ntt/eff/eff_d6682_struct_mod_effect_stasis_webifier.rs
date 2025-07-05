@@ -1,6 +1,9 @@
 use crate::{
     ac, ad, ec, ed,
-    ntt::{NttEffect, eff::shared::web::update_effect},
+    ntt::{
+        NttEffect, NttEffectRt,
+        eff::shared::{proj_mult::get_proj_mult_simple_s2s, web::update_effect},
+    },
 };
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::STRUCT_MOD_EFFECT_STASIS_WEBIFIER;
@@ -11,6 +14,10 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(|a_data| update_effect(a_data, A_EFFECT_ID)),
+        rt: NttEffectRt {
+            get_proj_mult: Some(get_proj_mult_simple_s2s),
+            ..
+        },
         ..
     }
 }

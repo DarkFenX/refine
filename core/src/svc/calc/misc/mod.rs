@@ -8,7 +8,7 @@ pub(in crate::svc::calc) use modification_key::ModificationKey;
 
 mod attr_val;
 mod attr_val_data;
-mod item_exts;
 mod loc_kind;
 mod modification;
 mod modification_key;
+mod uad_item_exts;

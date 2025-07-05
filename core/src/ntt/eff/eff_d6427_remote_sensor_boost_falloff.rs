@@ -1,4 +1,7 @@
-use crate::{ac, ad, ec, ed, ntt::NttEffect};
+use crate::{
+    ac, ad, ec, ed,
+    ntt::{NttEffect, NttEffectRt, eff::shared::proj_mult::get_proj_mult_normal_restricted_s2s},
+};
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::REMOTE_SENSOR_BOOST_FALLOFF;
 const A_EFFECT_ID: ad::AEffectId = ac::effects::REMOTE_SENSOR_BOOST_FALLOFF;
@@ -8,6 +11,10 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(update_effect),
+        rt: NttEffectRt {
+            get_proj_mult: Some(get_proj_mult_normal_restricted_s2s),
+            ..
+        },
         ..
     }
 }
