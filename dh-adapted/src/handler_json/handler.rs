@@ -19,7 +19,7 @@ use crate::{
 pub struct RamJsonAdh {
     folder: PathBuf,
     name: String,
-    storage_items: rc::util::RMap<rc::ad::AItemId, rc::ad::ArcItem>,
+    storage_items: rc::util::RMap<rc::ad::AItemId, rc::ad::ArcItemRt>,
     storage_attrs: rc::util::RMap<rc::ad::AAttrId, rc::ad::ArcAttr>,
     storage_effects: rc::util::RMap<rc::ad::AEffectId, rc::ad::ArcEffectRt>,
     storage_mutas: rc::util::RMap<rc::ad::AItemId, rc::ad::ArcMuta>,
@@ -56,7 +56,10 @@ impl RamJsonAdh {
         }
     }
     fn update_memory_cache(&mut self, a_data: rc::ad::AData, fingerprint: String) {
-        move_map_to_arcmap(a_data.items.into_values(), &mut self.storage_items);
+        move_map_to_arcmap(
+            a_data.items.into_values().map(rc::ad::AItemRt::new),
+            &mut self.storage_items,
+        );
         move_map_to_arcmap(a_data.attrs.into_values(), &mut self.storage_attrs);
         move_map_to_arcmap(
             a_data.effects.into_values().map(rc::ad::AEffectRt::new),
@@ -99,7 +102,7 @@ impl fmt::Debug for RamJsonAdh {
     }
 }
 impl rc::ad::AdaptedDataHandler for RamJsonAdh {
-    fn get_item(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcItem> {
+    fn get_item(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcItemRt> {
         self.storage_items.get(id)
     }
     fn get_attr(&self, id: &rc::ad::AAttrId) -> Option<&rc::ad::ArcAttr> {

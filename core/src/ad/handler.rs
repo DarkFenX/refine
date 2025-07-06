@@ -1,7 +1,7 @@
 use std::fmt;
 
 use crate::ad::{
-    AAttrId, ABuffId, AData, AEffectId, AItemId, AResult, ArcAttr, ArcBuff, ArcEffectRt, ArcItem, ArcMuta,
+    AAttrId, ABuffId, AData, AEffectId, AItemId, AResult, ArcAttr, ArcBuff, ArcEffectRt, ArcItemRt, ArcMuta,
 };
 
 /// Adapted data handler interface definition.
@@ -11,7 +11,7 @@ use crate::ad::{
 /// adapted data on every run.
 pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted item.
-    fn get_item(&self, id: &AItemId) -> Option<&ArcItem>;
+    fn get_item(&self, id: &AItemId) -> Option<&ArcItemRt>;
     /// Get adapted attribute.
     fn get_attr(&self, id: &AAttrId) -> Option<&ArcAttr>;
     /// Get adapted effect.

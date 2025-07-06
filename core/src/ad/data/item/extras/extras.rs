@@ -22,8 +22,8 @@ use super::{
 };
 use crate::{
     ad::{
-        AAttrId, AAttrVal, ACount, AEffect, AEffectId, AItem, AItemCatId, AItemChargeLimit, AItemEffectData,
-        AItemGrpId, AItemId, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
+        AAttrId, AAttrVal, ACount, AEffect, AEffectId, AItemCatId, AItemChargeLimit, AItemEffectData, AItemGrpId,
+        AItemId, AItemKind, AItemRt, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
     },
     ed,
     util::{RMap, RSet},
@@ -140,16 +140,16 @@ impl AItemExtras {
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
     // not rely on them
-    pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &RMap<AAttrId, AAttrVal>) -> Self {
+    pub(crate) fn inherit_with_attrs(a_item: &AItemRt, attrs: &RMap<AAttrId, AAttrVal>) -> Self {
         Self {
-            kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
+            kind: get_item_kind(a_item.ai.grp_id, a_item.ai.cat_id, attrs, &a_item.ai.effect_datas),
             volume: get_volume(attrs),
             radius: get_radius(attrs),
-            ship_limit: get_item_ship_limit(a_item.id, attrs),
+            ship_limit: get_item_ship_limit(a_item.ai.id, attrs),
             charge_limit: get_item_charge_limit(attrs),
-            val_fitted_group_id: a_item.extras.val_fitted_group_id,
-            val_online_group_id: a_item.extras.val_online_group_id,
-            val_active_group_id: a_item.extras.val_active_group_id,
+            val_fitted_group_id: a_item.ai.extras.val_fitted_group_id,
+            val_online_group_id: a_item.ai.extras.val_online_group_id,
+            val_active_group_id: a_item.ai.extras.val_active_group_id,
             implant_slot: get_implant_slot(attrs),
             booster_slot: get_booster_slot(attrs),
             subsystem_slot: get_subsystem_slot(attrs),
@@ -159,9 +159,9 @@ impl AItemExtras {
             is_st_light_fighter: get_st_light_fighter_flag(attrs),
             is_st_heavy_fighter: get_st_heavy_fighter_flag(attrs),
             is_st_support_fighter: get_st_support_fighter_flag(attrs),
-            ship_kind: a_item.extras.ship_kind,
-            item_ship_kind: get_item_ship_kind(a_item.cat_id, attrs),
-            max_state: a_item.extras.max_state,
+            ship_kind: a_item.ai.extras.ship_kind,
+            item_ship_kind: get_item_ship_kind(a_item.ai.cat_id, attrs),
+            max_state: a_item.ai.extras.max_state,
             drone_limit: get_ship_drone_limit(attrs),
             max_fighter_count: get_max_fighter_count(attrs),
             bandwidth_use: get_bandwidth_use(attrs),
@@ -169,9 +169,9 @@ impl AItemExtras {
             max_type_fitted: get_max_type_fitted_count(attrs),
             online_max_sec_class: get_online_max_sec_class(attrs),
             sec_zone_limitable: is_sec_zone_limitable(attrs),
-            disallowed_in_wspace: a_item.extras.disallowed_in_wspace,
-            takes_turret_hardpoint: is_turret(&a_item.effect_datas),
-            takes_launcher_hardpoint: is_launcher(&a_item.effect_datas),
+            disallowed_in_wspace: a_item.ai.extras.disallowed_in_wspace,
+            takes_turret_hardpoint: is_turret(&a_item.ai.effect_datas),
+            takes_launcher_hardpoint: is_launcher(&a_item.ai.effect_datas),
             disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(attrs),
             remote_resist_attr_id: get_remote_resist_attr_id(attrs),
         }

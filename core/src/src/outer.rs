@@ -23,7 +23,7 @@ impl Src {
         };
         Ok(src)
     }
-    pub(crate) fn get_a_item(&self, id: &ad::AItemId) -> Option<&ad::ArcItem> {
+    pub(crate) fn get_a_item(&self, id: &ad::AItemId) -> Option<&ad::ArcItemRt> {
         self.inner.a_handler.get_item(id)
     }
     pub(crate) fn get_a_attr(&self, id: &ad::AAttrId) -> Option<&ad::ArcAttr> {

@@ -35,25 +35,25 @@ impl UadItemBase {
         self.update_a_data(src);
     }
     pub(in crate::uad::item) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base_get_a_item().map(|v| v.grp_id)
+        self.base_get_a_item().map(|v| v.ai.grp_id)
     }
     pub(in crate::uad::item) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
-        self.base_get_a_item().map(|v| v.cat_id)
+        self.base_get_a_item().map(|v| v.ai.cat_id)
     }
     pub(in crate::uad::item) fn get_a_attrs(&self) -> Option<&RMap<ad::AAttrId, ad::AAttrVal>> {
-        self.base_get_a_item().map(|v| &v.attrs)
+        self.base_get_a_item().map(|v| &v.ai.attrs)
     }
     pub(in crate::uad::item) fn get_a_effect_datas(&self) -> Option<&RMap<ad::AEffectId, ad::AItemEffectData>> {
-        self.base_get_a_item().map(|v| &v.effect_datas)
+        self.base_get_a_item().map(|v| &v.ai.effect_datas)
     }
     pub(in crate::uad::item) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
-        self.base_get_a_item().map(|v| v.defeff_id)
+        self.base_get_a_item().map(|v| v.ai.defeff_id)
     }
     pub(in crate::uad::item) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
-        self.base_get_a_item().map(|v| &v.srqs)
+        self.base_get_a_item().map(|v| &v.ai.srqs)
     }
     pub(in crate::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
-        self.base_get_a_item().map(|v| &v.extras)
+        self.base_get_a_item().map(|v| &v.ai.extras)
     }
     pub(in crate::uad::item) fn get_a_state(&self) -> ad::AState {
         self.a_state
@@ -91,12 +91,12 @@ impl UadItemBase {
     }
     pub(in crate::uad::item::base) fn new_with_a_item(
         item_id: ItemId,
-        a_item: ad::ArcItem,
+        a_item: ad::ArcItemRt,
         a_state: ad::AState,
     ) -> Self {
         Self {
             item_id,
-            a_item_id: a_item.id,
+            a_item_id: a_item.ai.id,
             a_state,
             effect_modes: EffectModes::new(),
             cache: Some(ItemBaseCache { a_item }),
@@ -105,7 +105,7 @@ impl UadItemBase {
     pub(in crate::uad::item::base) fn base_set_a_item_id(&mut self, a_item_id: ad::AItemId) {
         self.a_item_id = a_item_id;
     }
-    pub(in crate::uad::item::base) fn base_set_a_item(&mut self, a_item: ad::ArcItem) {
+    pub(in crate::uad::item::base) fn base_set_a_item(&mut self, a_item: ad::ArcItemRt) {
         match &mut self.cache {
             Some(cache) => cache.a_item = a_item,
             None => self.cache = Some(ItemBaseCache { a_item }),
@@ -114,12 +114,12 @@ impl UadItemBase {
     pub(in crate::uad::item::base) fn base_remove_a_item(&mut self) {
         self.cache = None;
     }
-    pub(in crate::uad::item::base) fn base_get_a_item(&self) -> Option<&ad::ArcItem> {
+    pub(in crate::uad::item::base) fn base_get_a_item(&self) -> Option<&ad::ArcItemRt> {
         self.cache.as_ref().map(|v| &v.a_item)
     }
 }
 
 #[derive(Clone)]
 struct ItemBaseCache {
-    a_item: ad::ArcItem,
+    a_item: ad::ArcItemRt,
 }

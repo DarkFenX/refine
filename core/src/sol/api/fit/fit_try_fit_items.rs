@@ -19,7 +19,7 @@ impl SolarSystem {
                 Some(a_item) => a_item,
                 None => continue,
             };
-            let item_kind = match a_item.extras.kind {
+            let item_kind = match a_item.ai.extras.kind {
                 Some(item_kind) => item_kind,
                 None => continue,
             };
@@ -58,7 +58,7 @@ impl SolarSystem {
                         ModRack::High,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(a_item.extras.max_state),
+                        conv_state(a_item.ai.extras.max_state),
                         None,
                         None,
                     );
@@ -73,7 +73,7 @@ impl SolarSystem {
                         ModRack::Mid,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(a_item.extras.max_state),
+                        conv_state(a_item.ai.extras.max_state),
                         None,
                         None,
                     );
@@ -88,7 +88,7 @@ impl SolarSystem {
                         ModRack::Low,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(a_item.extras.max_state),
+                        conv_state(a_item.ai.extras.max_state),
                         None,
                         None,
                     );

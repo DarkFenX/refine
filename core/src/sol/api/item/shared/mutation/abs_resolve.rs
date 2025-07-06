@@ -27,8 +27,8 @@ pub(in crate::sol::api::item::shared::mutation) fn resolve_absolutes_into_rolls_
 }
 
 pub(in crate::sol::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_items(
-    base_a_item: Option<&ad::ArcItem>,
-    mutated_a_item: Option<&ad::ArcItem>,
+    base_a_item: Option<&ad::ArcItemRt>,
+    mutated_a_item: Option<&ad::ArcItemRt>,
     a_mutator: &ad::AMuta,
     values: &[(ad::AAttrId, AttrVal)],
 ) -> Vec<AttrMutationRequest> {
@@ -37,9 +37,9 @@ pub(in crate::sol::api::item::shared::mutation) fn resolve_absolutes_into_rolls_
             let combined_attrs = get_combined_a_attr_values(Some(base_a_item), mutated_a_item);
             resolve_absolutes_into_rolls_with_attrs(&combined_attrs, a_mutator, values)
         }
-        (Some(base_a_item), None) => resolve_absolutes_into_rolls_with_attrs(&base_a_item.attrs, a_mutator, values),
+        (Some(base_a_item), None) => resolve_absolutes_into_rolls_with_attrs(&base_a_item.ai.attrs, a_mutator, values),
         (None, Some(mutated_a_item)) => {
-            resolve_absolutes_into_rolls_with_attrs(&mutated_a_item.attrs, a_mutator, values)
+            resolve_absolutes_into_rolls_with_attrs(&mutated_a_item.ai.attrs, a_mutator, values)
         }
         (None, None) => Vec::new(),
     }

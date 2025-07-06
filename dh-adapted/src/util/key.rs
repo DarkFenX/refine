@@ -7,10 +7,10 @@ pub trait Key {
     type Item;
     fn get_key(&self) -> Self::Item;
 }
-impl Key for rc::ad::AItem {
+impl Key for rc::ad::AItemRt {
     type Item = rc::ad::AItemId;
     fn get_key(&self) -> Self::Item {
-        self.id
+        self.ai.id
     }
 }
 impl Key for rc::ad::AAttr {

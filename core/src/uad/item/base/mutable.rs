@@ -217,7 +217,7 @@ impl UadItemBaseMutable {
         let a_extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
-        self.base.base_set_a_item_id(mutated_a_item.id);
+        self.base.base_set_a_item_id(mutated_a_item.ai.id);
         self.base.base_set_a_item(mutated_a_item.clone());
         item_mutation.cache = Some(ItemMutationDataCache {
             base_a_item_id,
@@ -271,7 +271,7 @@ impl UadItemBaseMutable {
             merged_a_attrs: a_attrs,
             a_extras,
         });
-        self.base.base_set_a_item_id(mutated_a_item.id);
+        self.base.base_set_a_item_id(mutated_a_item.ai.id);
         self.base.base_set_a_item(mutated_a_item.clone());
         self.mutation = Some(item_mutation_data);
         Ok(())
@@ -529,22 +529,22 @@ fn limit_a_attr_value(unmutated_a_value: ad::AAttrVal, roll_range: &ad::AMutaAtt
 fn get_combined_a_attr_value<'a>(
     src: &'a Src,
     base_a_item_id: &ad::AItemId,
-    base_a_item_cache: &mut Option<Option<&'a ad::ArcItem>>,
-    mutated_a_item: &ad::AItem,
+    base_a_item_cache: &mut Option<Option<&'a ad::ArcItemRt>>,
+    mutated_a_item: &ad::AItemRt,
     a_attr_id: &ad::AAttrId,
 ) -> Option<ad::AAttrVal> {
-    match mutated_a_item.attrs.get(a_attr_id) {
+    match mutated_a_item.ai.attrs.get(a_attr_id) {
         Some(unmutated_value) => Some(*unmutated_value),
         None => match base_a_item_cache {
             Some(opt_base_a_item) => match opt_base_a_item {
-                Some(base_a_item) => base_a_item.attrs.get(a_attr_id).copied(),
+                Some(base_a_item) => base_a_item.ai.attrs.get(a_attr_id).copied(),
                 None => None,
             },
             None => {
                 let opt_base_a_item = src.get_a_item(base_a_item_id);
                 base_a_item_cache.replace(opt_base_a_item);
                 match opt_base_a_item {
-                    Some(base_a_item) => base_a_item.attrs.get(a_attr_id).copied(),
+                    Some(base_a_item) => base_a_item.ai.attrs.get(a_attr_id).copied(),
                     None => None,
                 }
             }
@@ -553,18 +553,18 @@ fn get_combined_a_attr_value<'a>(
 }
 
 pub(crate) fn get_combined_a_attr_values(
-    base_a_item: Option<&ad::ArcItem>,
-    mutated_a_item: &ad::AItem,
+    base_a_item: Option<&ad::ArcItemRt>,
+    mutated_a_item: &ad::AItemRt,
 ) -> RMap<ad::AAttrId, ad::AAttrVal> {
     match base_a_item {
         Some(base_a_item) => {
-            let mut attrs = base_a_item.attrs.clone();
+            let mut attrs = base_a_item.ai.attrs.clone();
             // Mutated item attributes have priority in case of collisions
-            for (attr_id, attr_val) in mutated_a_item.attrs.iter() {
+            for (attr_id, attr_val) in mutated_a_item.ai.attrs.iter() {
                 attrs.insert(*attr_id, *attr_val);
             }
             attrs
         }
-        None => mutated_a_item.attrs.clone(),
+        None => mutated_a_item.ai.attrs.clone(),
     }
 }

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    ad::{AAttr, ABuff, AEffectRt, AItem, AMuta},
+    ad::{AAttr, ABuff, AEffectRt, AItemRt, AMuta},
     def::OF,
 };
 
@@ -9,7 +9,7 @@ use crate::{
 pub type ArcAttr = Arc<AAttr>;
 pub type ArcBuff = Arc<ABuff>;
 pub type ArcEffectRt = Arc<AEffectRt>;
-pub type ArcItem = Arc<AItem>;
+pub type ArcItemRt = Arc<AItemRt>;
 pub type ArcMuta = Arc<AMuta>;
 // Entity IDs
 pub type AAttrId = i32;
