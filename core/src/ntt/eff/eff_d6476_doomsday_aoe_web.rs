@@ -1,7 +1,7 @@
 use crate::{
     ac, ad, ec,
     ntt::{
-        NttEffect, NttEffectRt,
+        NttEffect, NttEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_aoe_burst, get_proj_mult_aoe_burst},
     },
 };
@@ -18,7 +18,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
             scope: ad::AEffectBuffScope::Everything,
         }),
         xt_get_proj_attrs: Some(get_proj_attrs_aoe_burst),
-        rt: NttEffectRt {
+        hc: NttEffectHc {
             get_proj_mult: Some(get_proj_mult_aoe_burst),
             ..
         },

@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::LazyLock};
 
-pub use eff::NttEffectRt;
+pub use eff::NttEffectHc;
 pub(crate) use eff::{LocalRepGetter, NttEffect, ProjMultGetter, RemoteRepGetter};
 
 use crate::ad;

@@ -4,7 +4,7 @@ use crate::{
     ac, ad,
     def::{AttrVal, ItemKey, OF},
     misc::EffectSpec,
-    ntt::{NttEffect, NttEffectRt},
+    ntt::{NttEffect, NttEffectHc},
     svc::{
         SvcCtx,
         calc::{
@@ -23,7 +23,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         eid: None,
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(adg_add_custom_effect),
-        rt: NttEffectRt {
+        hc: NttEffectHc {
             calc_custom_fn: Some(calc_add_custom_modifier),
             ..
         },

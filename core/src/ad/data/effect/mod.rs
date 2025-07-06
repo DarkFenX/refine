@@ -3,7 +3,7 @@ pub use buff_info::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBu
 pub use build_status::AEffectModBuildStatus;
 pub use charge_info::AEffectChargeInfo;
 pub use effect::{AEffect, AEffectRt};
-pub(crate) use extras::AEffectExtras;
+pub(crate) use extras::AEffectXt;
 pub use id::AEffectId;
 pub use location::AEffectLocation;
 pub use modifier::AEffectModifier;

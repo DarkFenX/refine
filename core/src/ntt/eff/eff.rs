@@ -30,11 +30,11 @@ pub(crate) struct NttEffect {
     // Getter for attribute IDs which define projection range of effect
     pub(crate) xt_get_proj_attrs: Option<ProjAttrGetter> = None,
     // Effect data hardcoded in the library
-    pub(crate) rt: NttEffectRt = NttEffectRt { .. },
+    pub(crate) hc: NttEffectHc = NttEffectHc { .. },
 }
 
 #[derive(Copy, Clone, Default)]
-pub struct NttEffectRt {
+pub struct NttEffectHc {
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, EffectSpec)> = None,
     // Projection-related

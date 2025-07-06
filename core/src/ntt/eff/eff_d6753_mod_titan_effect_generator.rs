@@ -1,7 +1,7 @@
 use crate::{
     ac, ad, ec,
     ntt::{
-        NttEffect, NttEffectRt,
+        NttEffect, NttEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
 };
@@ -15,7 +15,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
             scope: ad::AEffectBuffScope::Ships,
         }),
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
-        rt: NttEffectRt {
+        hc: NttEffectHc {
             get_proj_mult: Some(get_proj_mult_simple_s2s),
             ..
         },

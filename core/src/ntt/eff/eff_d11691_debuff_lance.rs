@@ -3,7 +3,7 @@ use crate::{
     def::OF,
     ec,
     ntt::{
-        NttEffect, NttEffectRt,
+        NttEffect, NttEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
 };
@@ -25,7 +25,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         // TODO: test if it uses surface-to-surface range (might use center-to-surface), and check
         // TODO: if damage radius is needed to be added to range or not
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
-        rt: NttEffectRt {
+        hc: NttEffectHc {
             get_proj_mult: Some(get_proj_mult_simple_s2s),
             ..
         },

@@ -1,6 +1,6 @@
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
-pub(crate) use effect::AEffectExtras;
+pub(crate) use effect::AEffectXt;
 pub use effect::{
     AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom,
     AEffectChargeInfo, AEffectId, AEffectLocation, AEffectModBuildStatus, AEffectModifier, AEffectRt,

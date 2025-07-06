@@ -1,7 +1,7 @@
 use crate::{
     ac, ad, ec, ed,
     ntt::{
-        NttEffect, NttEffectRt,
+        NttEffect, NttEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_restricted_s2s},
     },
 };
@@ -15,7 +15,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(update_effect),
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
-        rt: NttEffectRt {
+        hc: NttEffectHc {
             get_proj_mult: Some(get_proj_mult_normal_restricted_s2s),
             ..
         },

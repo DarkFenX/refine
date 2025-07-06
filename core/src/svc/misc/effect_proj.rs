@@ -12,7 +12,7 @@ pub(crate) fn get_proj_mult(
 ) -> Option<AttrVal> {
     let prange = ctx.eprojs.get_range(projector_espec, projectee_key)?;
     let projector_a_effect = ctx.uad.src.get_a_effect(&projector_espec.a_effect_id)?;
-    let proj_mult_getter = projector_a_effect.rt.get_proj_mult?;
+    let proj_mult_getter = projector_a_effect.hc.get_proj_mult?;
     Some(proj_mult_getter(
         ctx,
         calc,

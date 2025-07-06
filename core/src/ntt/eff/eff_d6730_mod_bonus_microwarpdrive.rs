@@ -1,7 +1,7 @@
 use crate::{
     ac, ad, ec, ed,
     ntt::{
-        NttEffect, NttEffectRt,
+        NttEffect, NttEffectHc,
         eff::shared::prop_mods::{calc_add_custom_modifier, mk_a_modifier_mass, mk_a_modifier_sig},
     },
 };
@@ -14,7 +14,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(update_a_effect),
-        rt: NttEffectRt {
+        hc: NttEffectHc {
             calc_custom_fn: Some(calc_add_custom_modifier),
             ..
         },

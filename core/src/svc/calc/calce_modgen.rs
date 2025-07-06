@@ -76,7 +76,7 @@ impl Calc {
             }
         }
         // Custom modifiers
-        if let Some(customizer) = a_effect.rt.calc_custom_fn {
+        if let Some(customizer) = a_effect.hc.calc_custom_fn {
             customizer(reuse_rmods, EffectSpec::new(item_key, a_effect.ae.id));
         }
     }

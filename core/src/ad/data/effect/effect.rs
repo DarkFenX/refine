@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectChargeInfo, AEffectExtras, AEffectId, AEffectModBuildStatus,
-        AEffectModifier, AState,
+        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectModBuildStatus, AEffectModifier,
+        AEffectXt, AState,
     },
     ntt,
     util::Named,
@@ -68,16 +68,16 @@ impl std::fmt::Display for AEffect {
 pub struct AEffectRt {
     /// Adapted effect.
     pub ae: AEffect,
-    /// Runtime-specific data.
-    pub(crate) rt: ntt::NttEffectRt,
-    /// Extra data, which is generated using data from adapted and runtime part.
-    pub(crate) xt: AEffectExtras,
+    /// Hardcoded data for the effect.
+    pub(crate) hc: ntt::NttEffectHc,
+    /// Extra data, which is generated using data from adapted data during runtime.
+    pub(crate) xt: AEffectXt,
 }
 impl AEffectRt {
     /// Construct new adapted effect with runtime data.
     pub fn new(a_effect: AEffect) -> Self {
         let ntt_effect = ntt::NTT_EFFECT_MAP.get(&a_effect.id);
-        let xt = AEffectExtras {
+        let xt = AEffectXt {
             proj_a_attr_ids: ntt_effect
                 .and_then(|v| v.xt_get_proj_attrs)
                 .map(|get_proj_attrs| get_proj_attrs(&a_effect))
@@ -85,7 +85,7 @@ impl AEffectRt {
         };
         Self {
             ae: a_effect,
-            rt: ntt_effect.map(|v| v.rt).unwrap_or_default(),
+            hc: ntt_effect.map(|v| v.hc).unwrap_or_default(),
             xt,
         }
     }
