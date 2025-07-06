@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, range_s2s_to_api
 from tests.fw.api import StatsOptions
 
 
@@ -595,6 +595,64 @@ def test_remote_asb_resist_and_rep_hp_limit(client, consts):
     assert api_stats.hp.structure == (approx(250), 0, 0)
 
 
+def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
+    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
+    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
+    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_module_rasb,
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id)
+    eve_ship_id = client.mk_eve_ship(
+        attrs={eve_shield_attr_id: 1000, eve_armor_attr_id: 500, eve_structure_attr_id: 250})
+    eve_rep_item_id = client.mk_eve_item(
+        attrs={
+            eve_rep_amount_attr_id: 1500,
+            eve_capacity_attr_id: 112,
+            eve_charge_rate_attr_id: 1,
+            eve_optimal_attr_id: 10000,
+            eve_falloff_attr_id: 5000},
+        eff_ids=[eve_rep_effect_id],
+        defeff_id=eve_rep_effect_id)
+    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 12})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_rasb = api_src_fit.add_module(
+        type_id=eve_rep_item_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_item_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(1000), 0, 0)
+    assert api_stats.hp.armor == (approx(500), 0, 0)
+    assert api_stats.hp.structure == (approx(250), 0, 0)
+    # Action
+    api_rasb.change_module(add_projs=[(api_ship.id, range_s2s_to_api(val=10000))])
+    # Verification - reps are limited from 1500 / cycle to 1000 / cycle
+    api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(1000), 0, approx(9000))
+    assert api_stats.hp.armor == (approx(500), 0, 0)
+    assert api_stats.hp.structure == (approx(250), 0, 0)
+    # Action
+    api_rasb.change_module(change_projs=[(api_ship.id, range_s2s_to_api(val=15000))])
+    # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
+    # 1500 (not 1000) * 9 * 0.5 = 6750
+    api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(1000), 0, approx(6750))
+    assert api_stats.hp.armor == (approx(500), 0, 0)
+    assert api_stats.hp.structure == (approx(250), 0, 0)
+
+
 def test_remote_aar_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
     eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
@@ -785,6 +843,66 @@ def test_remote_aar_resist_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, 0)
+    assert api_stats.hp.structure == (approx(500), 0, 0)
+
+
+def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
+    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
+    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
+    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
+    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_module_raar,
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id)
+    eve_ship_id = client.mk_eve_ship(
+        attrs={eve_shield_attr_id: 2000, eve_armor_attr_id: 1000, eve_structure_attr_id: 500})
+    eve_rep_item_id = client.mk_eve_item(
+        attrs={
+            eve_rep_mult_attr_id: 3,
+            eve_rep_amount_attr_id: 500,
+            eve_capacity_attr_id: 0.64,
+            eve_charge_rate_attr_id: 8,
+            eve_optimal_attr_id: 10000,
+            eve_falloff_attr_id: 5000},
+        eff_ids=[eve_rep_effect_id],
+        defeff_id=eve_rep_effect_id)
+    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 0.01})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_raar = api_src_fit.add_module(
+        type_id=eve_rep_item_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_item_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(2000), 0, 0)
+    assert api_stats.hp.armor == (approx(1000), 0, 0)
+    assert api_stats.hp.structure == (approx(500), 0, 0)
+    # Action
+    api_raar.change_module(add_projs=[(api_ship.id, range_s2s_to_api(val=10000))])
+    # Verification - reps are limited from 1500 / cycle to 1000 / cycle
+    api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(2000), 0, 0)
+    assert api_stats.hp.armor == (approx(1000), 0, approx(8000))
+    assert api_stats.hp.structure == (approx(500), 0, 0)
+    # Action
+    api_raar.change_module(change_projs=[(api_ship.id, range_s2s_to_api(val=15000))])
+    # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
+    # 1500 (not 1000) * 8 * 0.5 = 6000
+    api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
+    assert api_stats.hp.shield == (approx(2000), 0, 0)
+    assert api_stats.hp.armor == (approx(1000), 0, approx(6000))
     assert api_stats.hp.structure == (approx(500), 0, 0)
 
 
