@@ -83,6 +83,7 @@ impl RawModifier {
             affectee_a_attr_id: amod.affectee_attr_id,
             buff_type_a_attr_id: None,
             resist_a_attr_id,
+            proj_mult_getter: a_effect.rt.get_proj_mult,
             proj_a_attr_ids: a_effect.xt.proj_a_attr_ids,
             ..
         })
@@ -154,6 +155,7 @@ impl RawModifier {
             affectee_a_attr_id: a_mod.affectee_attr_id,
             buff_type_a_attr_id,
             resist_a_attr_id,
+            proj_mult_getter: a_effect.rt.get_proj_mult,
             proj_a_attr_ids: a_effect.xt.proj_a_attr_ids,
             ..
         })
