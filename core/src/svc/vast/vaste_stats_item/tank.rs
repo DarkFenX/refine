@@ -62,7 +62,7 @@ impl Vast {
         let mut remote_aar = OF(0.0);
         if let Some(item_limitable_rsbs) = self.limitable_rsb.get_l1(&item_key) {
             for (rasb_espec, rep_getter) in item_limitable_rsbs.iter() {
-                if let Some(rasb_hp) = rep_getter(ctx, calc, rasb_espec, Some(item_key))
+                if let Some(rasb_hp) = rep_getter(ctx, calc, *rasb_espec, Some(item_key))
                     && let Some(cycles) = get_effect_charge(ctx, rasb_espec).get_cycle_count()
                 {
                     remote_asb += rasb_hp * AttrVal::from(cycles);
@@ -71,7 +71,7 @@ impl Vast {
         }
         if let Some(item_limitable_rars) = self.limitable_rar.get_l1(&item_key) {
             for (raar_espec, rep_getter) in item_limitable_rars.iter() {
-                if let Some(raar_hp) = rep_getter(ctx, calc, raar_espec, Some(item_key))
+                if let Some(raar_hp) = rep_getter(ctx, calc, *raar_espec, Some(item_key))
                     && let Some(cycles) = get_effect_charge(ctx, raar_espec).get_cycle_count()
                 {
                     remote_aar += raar_hp * AttrVal::from(cycles);

@@ -10,11 +10,7 @@ impl EProjs {
         Self { ranges: RMap::new() }
     }
     // Query methods
-    pub(in crate::svc) fn get_range(
-        &self,
-        projector_espec: EffectSpec,
-        projectee_key: ItemKey,
-    ) -> Option<UadProjRange> {
+    pub(crate) fn get_range(&self, projector_espec: EffectSpec, projectee_key: ItemKey) -> Option<UadProjRange> {
         self.ranges.get(&(projector_espec, projectee_key)).copied()
     }
     // Modification methods
