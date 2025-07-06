@@ -11,11 +11,13 @@ mod eff_c2_aar_paste_boost;
 mod eff_c3_stasis_web_probe;
 mod eff_c4_missile_flight_time;
 mod eff_d101_use_missiles;
+mod eff_d10_tgt_attack;
 mod eff_d11691_debuff_lance;
 mod eff_d16_online;
 mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
 mod eff_d3380_warp_disrupt_sphere;
+mod eff_d34_projectile_fired;
 mod eff_d3773_hardpoint_modifier_effect;
 mod eff_d3774_slot_modifier;
 mod eff_d4928_adaptive_armor_hardener;
@@ -44,6 +46,7 @@ mod eff_d6736_warfare_link_mining;
 mod eff_d6753_mod_titan_effect_generator;
 mod eff_d6848_ship_mod_focused_warp_scram_script;
 mod eff_d6849_ship_mod_focused_warp_disrupt_script;
+mod eff_d6995_tgt_disintegrator_attack;
 mod eff_d7050_aoe_beacon_bioluminescence_cloud;
 mod eff_d7051_aoe_beacon_caustic_cloud;
 mod eff_d7053_aoe_beacon_pulse_01;
@@ -64,7 +67,9 @@ fn get_ntt_effects() -> Vec<NttEffect> {
         eff_c2_aar_paste_boost::mk_ntt_effect(),
         eff_c3_stasis_web_probe::mk_ntt_effect(),
         eff_c4_missile_flight_time::mk_ntt_effect(),
+        eff_d10_tgt_attack::mk_ntt_effect(),
         eff_d16_online::mk_ntt_effect(),
+        eff_d34_projectile_fired::mk_ntt_effect(),
         eff_d101_use_missiles::mk_ntt_effect(),
         eff_d660_missile_em_dmg_bonus::mk_ntt_effect(),
         eff_d661_missile_expl_dmg_bonus::mk_ntt_effect(),
@@ -97,6 +102,7 @@ fn get_ntt_effects() -> Vec<NttEffect> {
         eff_d6753_mod_titan_effect_generator::mk_ntt_effect(),
         eff_d6848_ship_mod_focused_warp_scram_script::mk_ntt_effect(),
         eff_d6849_ship_mod_focused_warp_disrupt_script::mk_ntt_effect(),
+        eff_d6995_tgt_disintegrator_attack::mk_ntt_effect(),
         eff_d7050_aoe_beacon_bioluminescence_cloud::mk_ntt_effect(),
         eff_d7051_aoe_beacon_caustic_cloud::mk_ntt_effect(),
         eff_d7053_aoe_beacon_pulse_01::mk_ntt_effect(),

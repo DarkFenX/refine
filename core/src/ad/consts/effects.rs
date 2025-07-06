@@ -4,10 +4,12 @@
 use crate::{ad::AEffectId, ed::consts::effects as ece};
 
 pub(crate) const MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::MISSILE_LAUNCHING);
+pub(crate) const TGT_ATTACK: AEffectId = AEffectId::Dogma(ece::TGT_ATTACK);
 pub(crate) const LO_POWER: AEffectId = AEffectId::Dogma(ece::LO_POWER);
 pub(crate) const HI_POWER: AEffectId = AEffectId::Dogma(ece::HI_POWER);
 pub(crate) const MED_POWER: AEffectId = AEffectId::Dogma(ece::MED_POWER);
 pub(crate) const ONLINE: AEffectId = AEffectId::Dogma(ece::ONLINE);
+pub(crate) const PROJECTILE_FIRED: AEffectId = AEffectId::Dogma(ece::PROJECTILE_FIRED);
 pub(crate) const LAUNCHER_FITTED: AEffectId = AEffectId::Dogma(ece::LAUNCHER_FITTED);
 pub(crate) const TURRET_FITTED: AEffectId = AEffectId::Dogma(ece::TURRET_FITTED);
 pub(crate) const USE_MISSILES: AEffectId = AEffectId::Dogma(ece::USE_MISSILES);
@@ -62,6 +64,7 @@ pub(crate) const SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT: AEffectId =
     AEffectId::Dogma(ece::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT);
 pub(crate) const SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT: AEffectId =
     AEffectId::Dogma(ece::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT);
+pub(crate) const TGT_DISINTEGRATOR_ATTACK: AEffectId = AEffectId::Dogma(ece::TGT_DISINTEGRATOR_ATTACK);
 pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_BIOLUMINESCENCE_CLOUD);
 pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_CAUSTIC_CLOUD);
 pub(crate) const AOE_BEACON_PULSE_01: AEffectId = AEffectId::Dogma(ece::AOE_BEACON_PULSE_01);

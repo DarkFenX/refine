@@ -1,10 +1,12 @@
 use crate::ed::EEffectId;
 
 pub(crate) const MISSILE_LAUNCHING: EEffectId = 9;
+pub(crate) const TGT_ATTACK: EEffectId = 10;
 pub(crate) const LO_POWER: EEffectId = 11;
 pub(crate) const HI_POWER: EEffectId = 12;
 pub(crate) const MED_POWER: EEffectId = 13;
 pub(crate) const ONLINE: EEffectId = 16;
+pub(crate) const PROJECTILE_FIRED: EEffectId = 34;
 pub(crate) const LAUNCHER_FITTED: EEffectId = 40;
 pub(crate) const TURRET_FITTED: EEffectId = 42;
 pub(crate) const USE_MISSILES: EEffectId = 101;
@@ -55,6 +57,7 @@ pub(crate) const MOD_BONUS_WARFARE_LINK_MINING: EEffectId = 6736;
 pub(crate) const MOD_TITAN_EFFECT_GENERATOR: EEffectId = 6753;
 pub(crate) const SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT: EEffectId = 6848;
 pub(crate) const SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT: EEffectId = 6849;
+pub(crate) const TGT_DISINTEGRATOR_ATTACK: EEffectId = 6995;
 pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: EEffectId = 7050;
 pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: EEffectId = 7051;
 pub(crate) const AOE_BEACON_PULSE_01: EEffectId = 7053;

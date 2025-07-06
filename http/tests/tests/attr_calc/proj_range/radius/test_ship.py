@@ -15,6 +15,7 @@ def test_proj_add_change_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_effect1_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -26,6 +27,7 @@ def test_proj_add_change_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr2_id)
     eve_effect2_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal2,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -106,6 +108,7 @@ def test_proj_add_change_incoming(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -160,6 +163,7 @@ def test_switch_ship_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_effect1_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -171,6 +175,7 @@ def test_switch_ship_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr2_id)
     eve_effect2_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal2,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -255,6 +260,7 @@ def test_switch_type_id_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_effect1_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -266,6 +272,7 @@ def test_switch_type_id_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr2_id)
     eve_effect2_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal2,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -338,6 +345,7 @@ def test_switch_type_id_incoming(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -405,6 +413,7 @@ def test_switch_src_outgoing(client, consts):
         affectee_attr_id=eve_affectee_attr1_id)
     eve_effect1_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2, eve_d3],
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -417,6 +426,7 @@ def test_switch_src_outgoing(client, consts):
         affectee_attr_id=eve_affectee_attr2_id)
     eve_effect2_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2, eve_d3],
+        id_=consts.UtilEffect.tgt_normal2,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -498,6 +508,7 @@ def test_switch_src_incoming(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2, eve_d3, eve_d4],
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -567,6 +578,7 @@ def test_modified_radius_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_effect1_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -578,6 +590,7 @@ def test_modified_radius_outgoing(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr2_id)
     eve_effect2_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal2,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
@@ -647,6 +660,7 @@ def test_modified_radius_incoming(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,

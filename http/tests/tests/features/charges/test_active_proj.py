@@ -202,6 +202,7 @@ def test_range(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,

@@ -63,10 +63,12 @@ class EveItemList(IntEnum):
 @unique
 class EveEffect(IntEnum):
     missile_launching = 9
+    tgt_attack = 10
     lo_power = 11
     hi_power = 12
     med_power = 13
     online = 16
+    projectile_fired = 34
     launcher_fitted = 40
     turret_fitted = 42
     use_missiles = 101
@@ -102,6 +104,7 @@ class EveEffect(IntEnum):
     mod_titan_effect_generator = 6753
     ship_mod_focused_warp_scrambling_script = 6848
     ship_mod_focused_warp_disruption_script = 6849
+    tgt_disintegrator_attack = 6995
     script_st_warp_scram = 7026
     weather_darkness = 7060
     debuff_lance = 11691
@@ -534,3 +537,10 @@ class UtilEffect(IntEnum):
     buff_everything = EveEffect.weather_darkness
     buff_ships = EveEffect.mod_titan_effect_generator
     buff_fleet_ships = EveEffect.mod_bonus_warfare_link_armor
+    # Use targetAttack/projectileFired effects, since they bring no extra modifiers and define
+    # optimal/falloff as range-defining attributes
+    tgt_normal1 = EveEffect.tgt_attack
+    tgt_normal2 = EveEffect.projectile_fired
+    # Use targetDisintegratorAttack effect, since it brings no extra modifiers and defines optimal
+    # as a range-defining attribute
+    tgt_simple = EveEffect.tgt_disintegrator_attack
