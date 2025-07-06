@@ -11,6 +11,7 @@ use crate::{
 };
 
 pub(crate) type ProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
+pub(crate) type ProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
 pub(crate) type LocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
 pub(crate) type RemoteRepGetter = fn(SvcCtx, &mut Calc, &EffectSpec, Option<ItemKey>) -> Option<AttrVal>;
 
@@ -27,7 +28,7 @@ pub(crate) struct NttEffect {
     // attached to effect, since it mostly operates on effects
     pub(crate) adg_custom_fn: Option<fn(&mut ad::AData)> = None,
     // Getter for attribute IDs which define projection range of effect
-    pub(crate) xt_get_proj_attrs: Option<fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2]> = None,
+    pub(crate) xt_get_proj_attrs: Option<ProjAttrGetter> = None,
     // Effect data hardcoded in the library
     pub(crate) rt: NttEffectRt = NttEffectRt { .. },
 }
