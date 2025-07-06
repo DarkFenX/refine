@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectModBuildStatus, AEffectModifier,
-        AState,
+        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectChargeInfo, AEffectExtras, AEffectId, AEffectModBuildStatus,
+        AEffectModifier, AState,
     },
     ntt,
     util::Named,
@@ -70,20 +70,29 @@ pub struct AEffectRt {
     pub ae: AEffect,
     /// Runtime-specific data.
     pub(crate) rt: ntt::NttEffectRt,
+    /// Extra data, which is generated using data from adapted and runtime part.
+    pub(crate) xt: AEffectExtras,
 }
 impl AEffectRt {
     /// Construct new adapted effect with runtime data.
     pub fn new(a_effect: AEffect) -> Self {
-        let a_effect_id = a_effect.id;
+        let ntt_effect = ntt::NTT_EFFECT_MAP.get(&a_effect.id);
+        let xt = AEffectExtras {
+            proj_a_attr_ids: ntt_effect
+                .and_then(|v| v.xt_get_proj_attrs)
+                .map(|get_proj_attrs| get_proj_attrs(&a_effect))
+                .unwrap_or_default(),
+        };
         Self {
             ae: a_effect,
-            rt: ntt::NTT_EFFECT_MAP.get(&a_effect_id).map(|v| v.rt).unwrap_or_default(),
+            rt: ntt_effect.map(|v| v.rt).unwrap_or_default(),
+            xt,
         }
     }
 }
 impl Named for AEffectRt {
     fn get_name() -> &'static str {
-        "AEffectRT"
+        "AEffectRt"
     }
 }
 impl std::fmt::Display for AEffectRt {

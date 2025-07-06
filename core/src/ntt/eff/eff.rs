@@ -26,7 +26,9 @@ pub(crate) struct NttEffect {
     // Data customization function ran during cache generation time. Can change anything, but is
     // attached to effect, since it mostly operates on effects
     pub(crate) adg_custom_fn: Option<fn(&mut ad::AData)> = None,
-    // Effect data
+    // Getter for attribute IDs which define projection range of effect
+    pub(crate) xt_get_proj_attrs: Option<fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2]> = None,
+    // Effect data hardcoded in the library
     pub(crate) rt: NttEffectRt = NttEffectRt { .. },
 }
 
@@ -34,6 +36,7 @@ pub(crate) struct NttEffect {
 pub struct NttEffectRt {
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, EffectSpec)> = None,
+    // Projection-related
     pub(crate) get_proj_mult: Option<ProjMultGetter> = None,
     // Functions which fetch various stats
     pub(crate) get_local_armor_rep_amount: Option<LocalRepGetter> = None,

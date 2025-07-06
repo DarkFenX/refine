@@ -25,13 +25,11 @@ pub(super) fn add_cmod<K, H1, H2>(
         let affector_aspec = AttrSpec::new(ctx_item_id, resist_a_attr_id);
         attr_spec_storage.add_entry(affector_aspec, cmod);
     }
-    if let Some(optimal_a_attr_id) = cmod.raw.optimal_a_attr_id {
-        let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, optimal_a_attr_id);
-        attr_spec_storage.add_entry(affector_aspec, cmod);
-    }
-    if let Some(falloff_a_attr_id) = cmod.raw.falloff_a_attr_id {
-        let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, falloff_a_attr_id);
-        attr_spec_storage.add_entry(affector_aspec, cmod);
+    for proj_a_attr_id in cmod.raw.proj_a_attr_ids {
+        if let Some(proj_a_attr_id) = proj_a_attr_id {
+            let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, proj_a_attr_id);
+            attr_spec_storage.add_entry(affector_aspec, cmod);
+        }
     }
 }
 
@@ -54,12 +52,10 @@ pub(super) fn remove_cmod<K, H1, H2>(
         let affector_aspec = AttrSpec::new(ctx_item_id, resist_a_attr_id);
         attr_spec_storage.remove_entry(&affector_aspec, cmod);
     }
-    if let Some(optimal_a_attr_id) = cmod.raw.optimal_a_attr_id {
-        let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, optimal_a_attr_id);
-        attr_spec_storage.remove_entry(&affector_aspec, cmod);
-    }
-    if let Some(falloff_a_attr_id) = cmod.raw.falloff_a_attr_id {
-        let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, falloff_a_attr_id);
-        attr_spec_storage.remove_entry(&affector_aspec, cmod);
+    for proj_a_attr_id in cmod.raw.proj_a_attr_ids {
+        if let Some(proj_a_attr_id) = proj_a_attr_id {
+            let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, proj_a_attr_id);
+            attr_spec_storage.remove_entry(&affector_aspec, cmod);
+        }
     }
 }

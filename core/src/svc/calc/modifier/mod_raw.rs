@@ -29,12 +29,10 @@ pub(crate) struct RawModifier {
     pub(crate) affectee_a_attr_id: ad::AAttrId,
     // Buff-related
     pub(crate) buff_type_a_attr_id: Option<ad::AAttrId> = None,
-    // Projection-related old
-    pub(crate) optimal_a_attr_id: Option<ad::AAttrId> = None,
-    pub(crate) falloff_a_attr_id: Option<ad::AAttrId> = None,
     // Projection-related
     pub(crate) resist_a_attr_id: Option<ad::AAttrId> = None,
     pub(crate) proj_mult_getter: Option<ProjMultGetter> = None,
+    pub(crate) proj_a_attr_ids: [Option<ad::AAttrId>; 2] = [None, None],
 }
 impl PartialEq for RawModifier {
     fn eq(&self, other: &Self) -> bool {
@@ -70,14 +68,10 @@ impl RawModifier {
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_a_effect_affectee_filter(&amod.affectee_filter, affector_item);
         let kind = get_mod_kind(a_effect, &affectee_filter)?;
-        // Targeted effects are affected by both range and resists
-        let (resist_a_attr_id, optimal_a_attr_id, falloff_a_attr_id) = match kind {
-            ModifierKind::Targeted => (
-                get_resist_a_attr_id(affector_item, a_effect),
-                a_effect.ae.range_attr_id,
-                a_effect.ae.falloff_attr_id,
-            ),
-            _ => (None, None, None),
+        // Targeted effects are affected resists
+        let resist_a_attr_id = match kind {
+            ModifierKind::Targeted => get_resist_a_attr_id(affector_item, a_effect),
+            _ => None,
         };
         Some(Self {
             kind,
@@ -89,8 +83,7 @@ impl RawModifier {
             affectee_a_attr_id: amod.affectee_attr_id,
             buff_type_a_attr_id: None,
             resist_a_attr_id,
-            optimal_a_attr_id,
-            falloff_a_attr_id,
+            proj_a_attr_ids: a_effect.xt.proj_a_attr_ids,
             ..
         })
     }
@@ -147,9 +140,9 @@ impl RawModifier {
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
         let kind = get_mod_kind(a_effect, &affectee_filter)?;
-        let (resist_a_attr_id, optimal_a_attr_id) = match kind {
-            ModifierKind::Buff => (get_resist_a_attr_id(affector_item, a_effect), a_effect.ae.range_attr_id),
-            _ => (None, None),
+        let resist_a_attr_id = match kind {
+            ModifierKind::Buff => get_resist_a_attr_id(affector_item, a_effect),
+            _ => None,
         };
         Some(Self {
             kind,
@@ -161,10 +154,7 @@ impl RawModifier {
             affectee_a_attr_id: a_mod.affectee_attr_id,
             buff_type_a_attr_id,
             resist_a_attr_id,
-            optimal_a_attr_id,
-            // Modifiers created from buffs never define falloff - buffs either apply fully, or they
-            // don't
-            falloff_a_attr_id: None,
+            proj_a_attr_ids: a_effect.xt.proj_a_attr_ids,
             ..
         })
     }

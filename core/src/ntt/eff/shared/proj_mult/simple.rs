@@ -6,6 +6,10 @@ use crate::{
     uad::UadProjRange,
 };
 
+pub(crate) fn get_proj_attrs_simple(a_effect: &ad::AEffect) -> [Option<ad::AAttrId>; 2] {
+    [a_effect.range_attr_id, None]
+}
+
 pub(crate) fn get_proj_mult_simple_s2s(
     ctx: SvcCtx,
     calc: &mut Calc,

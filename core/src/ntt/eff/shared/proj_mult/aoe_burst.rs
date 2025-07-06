@@ -6,6 +6,10 @@ use crate::{
     uad::UadProjRange,
 };
 
+pub(crate) fn get_proj_attrs_aoe_burst(a_effect: &ad::AEffect) -> [Option<ad::AAttrId>; 2] {
+    [a_effect.range_attr_id, Some(ac::attrs::DOOMSDAY_AOE_RANGE)]
+}
+
 pub(crate) fn get_proj_mult_aoe_burst(
     ctx: SvcCtx,
     calc: &mut Calc,

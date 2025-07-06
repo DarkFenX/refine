@@ -8,6 +8,10 @@ use crate::{
     uad::UadProjRange,
 };
 
+pub(crate) fn get_proj_attrs_normal(a_effect: &ad::AEffect) -> [Option<ad::AAttrId>; 2] {
+    [a_effect.range_attr_id, a_effect.falloff_attr_id]
+}
+
 pub(crate) fn get_proj_mult_normal_restricted_s2s(
     ctx: SvcCtx,
     calc: &mut Calc,

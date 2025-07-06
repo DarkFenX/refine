@@ -2,7 +2,10 @@ use crate::{
     ac, ad, ec, ed,
     ntt::{
         NttEffect, NttEffectRt,
-        eff::shared::{proj_mult::get_proj_mult_normal_restricted_s2s, web::update_effect},
+        eff::shared::{
+            proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_restricted_s2s},
+            web::update_effect,
+        },
     },
 };
 
@@ -14,6 +17,7 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_custom_fn: Some(|a_data| update_effect(a_data, A_EFFECT_ID)),
+        xt_get_proj_attrs: Some(get_proj_attrs_normal),
         rt: NttEffectRt {
             get_proj_mult: Some(get_proj_mult_normal_restricted_s2s),
             ..
