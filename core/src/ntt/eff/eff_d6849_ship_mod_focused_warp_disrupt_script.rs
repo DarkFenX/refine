@@ -71,6 +71,6 @@ fn update_effect(a_data: &mut ad::AData) {
             effect.range_attr_id = Some(ac::attrs::MAX_RANGE_HIDDEN);
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("focused disruption script effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: focused disruption script effect is not found for customization"),
     }
 }

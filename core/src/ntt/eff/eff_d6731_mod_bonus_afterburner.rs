@@ -26,12 +26,12 @@ fn update_a_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("AB effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!("effect {A_EFFECT_ID}: AB effect has modifiers, overwriting them");
                 effect.mods.clear();
             }
             effect.mods.push(mk_a_modifier_mass());
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("AB effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: AB effect is not found for customization"),
     }
 }

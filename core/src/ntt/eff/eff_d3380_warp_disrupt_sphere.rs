@@ -31,7 +31,7 @@ fn update_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("WDFG bubble effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!("effect {A_EFFECT_ID}: WDFG bubble effect has modifiers, overwriting them");
                 effect.mods.clear();
             }
             // Signature radius
@@ -64,6 +64,6 @@ fn update_effect(a_data: &mut ad::AData) {
             });
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("WDFG bubble effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: WDFG bubble effect is not found for customization"),
     }
 }

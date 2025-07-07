@@ -16,7 +16,7 @@ fn update_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("RAH effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!("effect {A_EFFECT_ID}: RAH effect has modifiers, overwriting them");
                 effect.mods.clear();
             }
             effect
@@ -33,7 +33,7 @@ fn update_effect(a_data: &mut ad::AData) {
                 .push(mk_rah_resonance_mod(ac::attrs::ARMOR_EXPL_DMG_RESONANCE));
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("RAH effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: RAH effect is not found for customization"),
     }
 }
 

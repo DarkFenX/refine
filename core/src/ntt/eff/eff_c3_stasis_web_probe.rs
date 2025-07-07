@@ -47,6 +47,6 @@ fn add_custom_effect(a_data: &mut ad::AData) {
             a_item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
             a_item.defeff_id = Some(effect_id);
         }
-        None => tracing::info!("web bubble {WEB_BUBBLE} is not found for customization"),
+        None => tracing::info!("item {WEB_BUBBLE}: web bubble is not found for customization"),
     }
 }

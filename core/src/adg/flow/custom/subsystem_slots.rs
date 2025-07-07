@@ -19,6 +19,6 @@ pub(in crate::adg::flow::custom) fn fix_subsysem_slot_count(a_data: &mut ad::ADa
         }
     }
     if !applied {
-        tracing::info!("fix for t3c subsystem count attribute {SLOT_ATTR} wasn't applied");
+        tracing::info!("attribute {SLOT_ATTR}: fix for t3c subsystem count wasn't applied");
     }
 }

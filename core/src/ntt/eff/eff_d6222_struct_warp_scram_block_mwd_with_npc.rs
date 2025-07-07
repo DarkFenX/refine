@@ -70,6 +70,6 @@ fn update_effect(a_data: &mut ad::AData) {
             effect.stop_ids.push(ac::effects::FTR_ABIL_MJD);
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("structure disruptor effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: structure disruptor effect is not found for customization"),
     }
 }

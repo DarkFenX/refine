@@ -15,9 +15,11 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
 fn update_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => match effect.state {
-            ad::AState::Online => tracing::info!("\"online\" effect {A_EFFECT_ID} category did not need fixing"),
+            ad::AState::Online => {
+                tracing::info!("effect {A_EFFECT_ID}: \"online\" effect category did not need fixing")
+            }
             _ => effect.state = ad::AState::Online,
         },
-        None => tracing::info!("\"online\" effect {A_EFFECT_ID} is not found for fixing"),
+        None => tracing::info!("effect {A_EFFECT_ID}: \"online\" effect is not found for fixing"),
     }
 }

@@ -16,7 +16,9 @@ fn update_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("self-skillreq missile rof effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!(
+                    "effect {A_EFFECT_ID}: self-skillreq missile rof effect has modifiers, overwriting them"
+                );
                 effect.mods.clear();
             }
             let modifier = ad::AEffectModifier {
@@ -31,6 +33,6 @@ fn update_effect(a_data: &mut ad::AData) {
             effect.mods.push(modifier);
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("self-skillreq missile rof effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: self-skillreq missile rof effect is not found for customization"),
     }
 }

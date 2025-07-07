@@ -4,7 +4,7 @@ pub(in crate::ntt::eff) fn update_effect(a_data: &mut ad::AData, effect_id: ad::
     match a_data.effects.get_mut(&effect_id) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("self-skillreq missile dmg effect {effect_id} has modifiers, overwriting them");
+                tracing::info!("effect {effect_id}: self-skillreq missile dmg effect has modifiers, overwriting them");
                 effect.mods.clear();
             }
             let modifier = ad::AEffectModifier {
@@ -16,6 +16,6 @@ pub(in crate::ntt::eff) fn update_effect(a_data: &mut ad::AData, effect_id: ad::
             effect.mods.push(modifier);
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("self-skillreq missile dmg effect {effect_id} is not found for customization"),
+        None => tracing::info!("effect {effect_id}: self-skillreq missile dmg effect is not found for customization"),
     }
 }

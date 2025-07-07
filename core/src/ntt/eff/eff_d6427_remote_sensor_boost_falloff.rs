@@ -27,7 +27,7 @@ fn update_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("RSB effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!("effect {A_EFFECT_ID}: RSB effect has modifiers, overwriting them");
                 effect.mods.clear();
             }
             effect.mods.push(make_rsb_mod(
@@ -56,7 +56,7 @@ fn update_effect(a_data: &mut ad::AData) {
             ));
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("RSB effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: RSB effect is not found for customization"),
     }
 }
 

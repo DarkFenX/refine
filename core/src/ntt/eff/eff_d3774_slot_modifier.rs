@@ -19,7 +19,7 @@ fn update_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("slot modifier effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!("effect {A_EFFECT_ID}: slot modifier effect has modifiers, overwriting them");
                 effect.mods.clear();
             }
             effect
@@ -33,6 +33,6 @@ fn update_effect(a_data: &mut ad::AData) {
                 .push(mk_modifier(ac::attrs::LOW_SLOT_MODIFIER, ac::attrs::LOW_SLOTS));
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("slot modifier effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: slot modifier effect is not found for customization"),
     }
 }

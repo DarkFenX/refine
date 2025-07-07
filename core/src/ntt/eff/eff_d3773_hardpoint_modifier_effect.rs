@@ -19,7 +19,7 @@ fn update_effect(a_data: &mut ad::AData) {
     match a_data.effects.get_mut(&A_EFFECT_ID) {
         Some(effect) => {
             if !effect.mods.is_empty() {
-                tracing::info!("hardpoint modifier effect {A_EFFECT_ID} has modifiers, overwriting them");
+                tracing::info!("effect {A_EFFECT_ID}: hardpoint modifier effect has modifiers, overwriting them");
                 effect.mods.clear();
             }
             effect.mods.push(mk_modifier(
@@ -32,6 +32,6 @@ fn update_effect(a_data: &mut ad::AData) {
             ));
             effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         }
-        None => tracing::info!("hardpoint modifier effect {A_EFFECT_ID} is not found for customization"),
+        None => tracing::info!("effect {A_EFFECT_ID}: hardpoint modifier effect is not found for customization"),
     }
 }
