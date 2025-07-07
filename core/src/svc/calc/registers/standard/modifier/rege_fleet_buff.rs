@@ -144,7 +144,7 @@ impl StandardRegister {
                     &mut self.cmods_root,
                     (fit_key, LocationKind::Ship),
                     cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }
@@ -154,7 +154,7 @@ impl StandardRegister {
                     &mut self.cmods_loc,
                     (fit_key, LocationKind::Ship),
                     cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }
@@ -164,7 +164,7 @@ impl StandardRegister {
                     &mut self.cmods_loc_grp,
                     (fit_key, LocationKind::Ship, a_item_grp_id),
                     cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }
@@ -174,7 +174,7 @@ impl StandardRegister {
                     &mut self.cmods_loc_srq,
                     (fit_key, LocationKind::Ship, srq_a_item_id),
                     cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }
@@ -191,7 +191,7 @@ impl StandardRegister {
                     &mut self.cmods_root,
                     &(fit_key, LocationKind::Ship),
                     &cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }
@@ -201,7 +201,7 @@ impl StandardRegister {
                     &mut self.cmods_loc,
                     &(fit_key, LocationKind::Ship),
                     &cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }
@@ -211,7 +211,7 @@ impl StandardRegister {
                     &mut self.cmods_loc_grp,
                     &(fit_key, LocationKind::Ship, a_item_grp_id),
                     &cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }
@@ -221,7 +221,7 @@ impl StandardRegister {
                     &mut self.cmods_loc_srq,
                     &(fit_key, LocationKind::Ship, srq_a_item_id),
                     &cmod,
-                    &mut self.cmods_by_attr_spec,
+                    &mut self.cmods_by_aspec,
                 );
                 Some(cmod)
             }

@@ -43,9 +43,9 @@ impl StandardRegister {
                 check_item_key(uad, *item_key, true)?;
             }
         }
-        for (effect_spec, rmods) in self.rmods_all.iter() {
-            check_item_key(uad, effect_spec.item_key, true)?;
-            check_a_effect_id(uad, &effect_spec.a_effect_id)?;
+        for (espec, rmods) in self.rmods_all.iter() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
             for rmod in rmods {
                 check_rmod(uad, rmod)?;
             }
@@ -100,8 +100,8 @@ impl StandardRegister {
         }
         // Attributes of attr specs are not checked, because we do not verify if those do exist when
         // adding modifiers
-        for (attr_spec, cmods) in self.cmods_by_attr_spec.iter() {
-            check_item_key(uad, attr_spec.item_key, true)?;
+        for (aspec, cmods) in self.cmods_by_aspec.iter() {
+            check_item_key(uad, aspec.item_key, true)?;
             for cmod in cmods {
                 check_cmod(uad, cmod)?;
             }

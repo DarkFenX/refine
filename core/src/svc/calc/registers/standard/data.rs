@@ -55,7 +55,7 @@ pub(in crate::svc::calc) struct StandardRegister {
     pub(super) rmods_proj_inactive: RMapRSet<ItemKey, RawModifier>,
     // Modifiers which rely on an item-attribute pair value
     // Map<attr spec, modifiers>
-    pub(super) cmods_by_attr_spec: RMapRSet<AttrSpec, CtxModifier>,
+    pub(super) cmods_by_aspec: RMapRSet<AttrSpec, CtxModifier>,
     // Modifiers which modify item directly
     // Map<affectee item key, modifiers>
     pub(super) cmods_direct: RMapRSet<ItemKey, CtxModifier>,
@@ -100,7 +100,7 @@ impl StandardRegister {
             rmods_fw_buff_indirect: RMapRSet::new(),
             rmods_proj_active: RMapRSet::new(),
             rmods_proj_inactive: RMapRSet::new(),
-            cmods_by_attr_spec: RMapRSet::new(),
+            cmods_by_aspec: RMapRSet::new(),
             cmods_direct: RMapRSet::new(),
             cmods_other: RMapRSet::new(),
             cmods_root: RMapRSet::new(),

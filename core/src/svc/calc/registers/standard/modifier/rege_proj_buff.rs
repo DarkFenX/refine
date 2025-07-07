@@ -35,12 +35,7 @@ impl StandardRegister {
                     true => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                         if register {
-                            add_cmod(
-                                &mut self.cmods_direct,
-                                projectee_key,
-                                cmod,
-                                &mut self.cmods_by_attr_spec,
-                            );
+                            add_cmod(&mut self.cmods_direct, projectee_key, cmod, &mut self.cmods_by_aspec);
                             self.rmods_proj_active.add_entry(projectee_key, rmod);
                         }
                         Some(cmod)
@@ -52,12 +47,7 @@ impl StandardRegister {
                         ShipKind::Ship => {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             if register {
-                                add_cmod(
-                                    &mut self.cmods_direct,
-                                    projectee_key,
-                                    cmod,
-                                    &mut self.cmods_by_attr_spec,
-                                );
+                                add_cmod(&mut self.cmods_direct, projectee_key, cmod, &mut self.cmods_by_aspec);
                                 self.rmods_proj_active.add_entry(projectee_key, rmod);
                             }
                             Some(cmod)
@@ -77,7 +67,7 @@ impl StandardRegister {
                                 &mut self.cmods_loc,
                                 (projectee_ship.get_fit_key(), LocationKind::Ship),
                                 cmod,
-                                &mut self.cmods_by_attr_spec,
+                                &mut self.cmods_by_aspec,
                             );
                             self.rmods_proj_active.add_entry(projectee_key, rmod);
                         }
@@ -96,7 +86,7 @@ impl StandardRegister {
                                 &mut self.cmods_loc_grp,
                                 (projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
                                 cmod,
-                                &mut self.cmods_by_attr_spec,
+                                &mut self.cmods_by_aspec,
                             );
                             self.rmods_proj_active.add_entry(projectee_key, rmod);
                         }
@@ -115,7 +105,7 @@ impl StandardRegister {
                                 &mut self.cmods_loc_srq,
                                 (projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
                                 cmod,
-                                &mut self.cmods_by_attr_spec,
+                                &mut self.cmods_by_aspec,
                             );
                             self.rmods_proj_active.add_entry(projectee_key, rmod);
                         }
@@ -139,12 +129,7 @@ impl StandardRegister {
                 Location::Everything => match projectee_item.is_buffable() {
                     true => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        remove_cmod(
-                            &mut self.cmods_direct,
-                            &projectee_key,
-                            &cmod,
-                            &mut self.cmods_by_attr_spec,
-                        );
+                        remove_cmod(&mut self.cmods_direct, &projectee_key, &cmod, &mut self.cmods_by_aspec);
                         self.rmods_proj_active.remove_entry(&projectee_key, &rmod);
                         Some(cmod)
                     }
@@ -154,12 +139,7 @@ impl StandardRegister {
                     UadItem::Ship(projectee_ship) => match projectee_ship.get_kind() {
                         ShipKind::Ship => {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                            remove_cmod(
-                                &mut self.cmods_direct,
-                                &projectee_key,
-                                &cmod,
-                                &mut self.cmods_by_attr_spec,
-                            );
+                            remove_cmod(&mut self.cmods_direct, &projectee_key, &cmod, &mut self.cmods_by_aspec);
                             self.rmods_proj_active.remove_entry(&projectee_key, &rmod);
                             Some(cmod)
                         }
@@ -177,7 +157,7 @@ impl StandardRegister {
                             &mut self.cmods_loc,
                             &(projectee_ship.get_fit_key(), LocationKind::Ship),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         self.rmods_proj_active.remove_entry(&projectee_key, &rmod);
                         Some(cmod)
@@ -194,7 +174,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_grp,
                             &(projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         self.rmods_proj_active.remove_entry(&projectee_key, &rmod);
                         Some(cmod)
@@ -211,7 +191,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_srq,
                             &(projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         self.rmods_proj_active.remove_entry(&projectee_key, &rmod);
                         Some(cmod)
@@ -242,12 +222,7 @@ impl StandardRegister {
                 Location::Everything => {
                     if projectee_item.is_buffable() {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        remove_cmod(
-                            &mut self.cmods_direct,
-                            &projectee_key,
-                            &cmod,
-                            &mut self.cmods_by_attr_spec,
-                        );
+                        remove_cmod(&mut self.cmods_direct, &projectee_key, &cmod, &mut self.cmods_by_aspec);
                         self.rmods_proj_inactive.add_entry(projectee_key, rmod);
                     }
                 }
@@ -256,12 +231,7 @@ impl StandardRegister {
                         && matches!(projectee_ship.get_kind(), ShipKind::Ship)
                     {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        remove_cmod(
-                            &mut self.cmods_direct,
-                            &projectee_key,
-                            &cmod,
-                            &mut self.cmods_by_attr_spec,
-                        );
+                        remove_cmod(&mut self.cmods_direct, &projectee_key, &cmod, &mut self.cmods_by_aspec);
                         self.rmods_proj_inactive.add_entry(projectee_key, rmod);
                     }
                 }
@@ -276,7 +246,7 @@ impl StandardRegister {
                         &mut self.cmods_loc,
                         &(projectee_ship.get_fit_key(), LocationKind::Ship),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     self.rmods_proj_inactive.add_entry(projectee_key, rmod);
                 }
@@ -290,7 +260,7 @@ impl StandardRegister {
                         &mut self.cmods_loc_grp,
                         &(projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     self.rmods_proj_inactive.add_entry(projectee_key, rmod);
                 }
@@ -304,7 +274,7 @@ impl StandardRegister {
                         &mut self.cmods_loc_srq,
                         &(projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     self.rmods_proj_inactive.add_entry(projectee_key, rmod);
                 }

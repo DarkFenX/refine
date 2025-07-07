@@ -36,7 +36,7 @@ impl DependencyRegister {
         }
     }
     // Query methods
-    pub(in crate::svc::calc) fn get_affectee_attr_specs(
+    pub(in crate::svc::calc) fn get_affectee_aspecs(
         &self,
         affector_aspec: &AttrSpec,
     ) -> impl ExactSizeIterator<Item = &AttrSpec> {
@@ -87,8 +87,8 @@ impl DependencyRegister {
         // Dependencies with source
         if let Some(sources) = self.source_by_item.remove_key(&item_key) {
             for source in sources {
-                if let Some(attr_spec_iter) = self.by_source.remove_key(&source) {
-                    for (affector_spec, affectee_spec) in attr_spec_iter {
+                if let Some(aspec_iter) = self.by_source.remove_key(&source) {
+                    for (affector_spec, affectee_spec) in aspec_iter {
                         self.data.remove_entry(&affector_spec, &affectee_spec);
                     }
                 }

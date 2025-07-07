@@ -27,7 +27,7 @@ impl StandardRegister {
                     reuse_cmods.reserve(affectee_keys.len());
                     for &affectee_key in affectee_keys {
                         let cmod = CtxModifier::from_raw_with_item(rmod, affectee_key);
-                        add_cmod(&mut self.cmods_direct, affectee_key, cmod, &mut self.cmods_by_attr_spec);
+                        add_cmod(&mut self.cmods_direct, affectee_key, cmod, &mut self.cmods_by_aspec);
                         reuse_cmods.push(cmod)
                     }
                     self.rmods_fw_buff_direct.add_entry(fit_key, rmod);
@@ -44,7 +44,7 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             (fit_key, LocationKind::Ship),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -64,7 +64,7 @@ impl StandardRegister {
                         &mut self.cmods_loc,
                         (fit_key, LocationKind::Ship),
                         cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -82,7 +82,7 @@ impl StandardRegister {
                         &mut self.cmods_loc_grp,
                         (fit_key, LocationKind::Ship, a_item_grp_id),
                         cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -100,7 +100,7 @@ impl StandardRegister {
                         &mut self.cmods_loc_srq,
                         (fit_key, LocationKind::Ship, srq_a_item_id),
                         cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -130,12 +130,7 @@ impl StandardRegister {
                     reuse_cmods.reserve(affectee_keys.len());
                     for affectee_key in affectee_keys {
                         let cmod = CtxModifier::from_raw_with_item(rmod, *affectee_key);
-                        remove_cmod(
-                            &mut self.cmods_direct,
-                            affectee_key,
-                            &cmod,
-                            &mut self.cmods_by_attr_spec,
-                        );
+                        remove_cmod(&mut self.cmods_direct, affectee_key, &cmod, &mut self.cmods_by_aspec);
                         reuse_cmods.push(cmod);
                     }
                     self.rmods_fw_buff_direct.remove_entry(&fit_key, &rmod);
@@ -151,7 +146,7 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             &(fit_key, LocationKind::Ship),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -170,7 +165,7 @@ impl StandardRegister {
                         &mut self.cmods_loc,
                         &(fit_key, LocationKind::Ship),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -187,7 +182,7 @@ impl StandardRegister {
                         &mut self.cmods_loc_grp,
                         &(fit_key, LocationKind::Ship, a_item_grp_id),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -204,7 +199,7 @@ impl StandardRegister {
                         &mut self.cmods_loc_srq,
                         &(fit_key, LocationKind::Ship, srq_a_item_id),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -222,7 +217,7 @@ impl StandardRegister {
         for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::Everything) = rmod.affectee_filter {
                 let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                add_cmod(&mut self.cmods_direct, item_key, cmod, &mut self.cmods_by_attr_spec);
+                add_cmod(&mut self.cmods_direct, item_key, cmod, &mut self.cmods_by_aspec);
             }
         }
     }
@@ -235,7 +230,7 @@ impl StandardRegister {
         for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::Everything) = rmod.affectee_filter {
                 let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                remove_cmod(&mut self.cmods_direct, &item_key, &cmod, &mut self.cmods_by_attr_spec);
+                remove_cmod(&mut self.cmods_direct, &item_key, &cmod, &mut self.cmods_by_aspec);
             }
         }
     }
@@ -250,7 +245,7 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             (fit_key, LocationKind::Ship),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -261,7 +256,7 @@ impl StandardRegister {
                             &mut self.cmods_loc,
                             (fit_key, LocationKind::Ship),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -272,7 +267,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_grp,
                             (fit_key, LocationKind::Ship, a_item_grp_id),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -283,7 +278,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_srq,
                             (fit_key, LocationKind::Ship, srq_a_item_id),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -302,7 +297,7 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             &(fit_key, LocationKind::Ship),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -313,7 +308,7 @@ impl StandardRegister {
                             &mut self.cmods_loc,
                             &(fit_key, LocationKind::Ship),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -324,7 +319,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_grp,
                             &(fit_key, LocationKind::Ship, a_item_grp_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -335,7 +330,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_srq,
                             &(fit_key, LocationKind::Ship, srq_a_item_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }

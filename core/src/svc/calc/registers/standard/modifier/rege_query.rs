@@ -61,7 +61,7 @@ impl StandardRegister {
         &self,
         affector_aspec: &AttrSpec,
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
-        self.cmods_by_attr_spec.get(affector_aspec)
+        self.cmods_by_aspec.get(affector_aspec)
     }
     pub(in crate::svc::calc) fn get_mods_for_added_root(
         &mut self,

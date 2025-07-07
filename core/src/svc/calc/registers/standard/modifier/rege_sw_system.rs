@@ -25,7 +25,7 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             (fit_key, loc_kind),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -38,12 +38,7 @@ impl StandardRegister {
                     reuse_cmods.reserve(ctx.uad.fits.len());
                     for fit_key in ctx.uad.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                        add_cmod(
-                            &mut self.cmods_loc,
-                            (fit_key, loc_kind),
-                            cmod,
-                            &mut self.cmods_by_attr_spec,
-                        );
+                        add_cmod(&mut self.cmods_loc, (fit_key, loc_kind), cmod, &mut self.cmods_by_aspec);
                         reuse_cmods.push(cmod);
                     }
                     true
@@ -59,7 +54,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_grp,
                             (fit_key, loc_kind, a_item_grp_id),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -76,7 +71,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_srq,
                             (fit_key, loc_kind, srq_a_item_id),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -92,7 +87,7 @@ impl StandardRegister {
                         &mut self.cmods_own_srq,
                         (fit_key, srq_a_item_id),
                         cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -121,7 +116,7 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             &(fit_key, loc_kind),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -136,7 +131,7 @@ impl StandardRegister {
                             &mut self.cmods_loc,
                             &(fit_key, loc_kind),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -151,7 +146,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_grp,
                             &(fit_key, loc_kind, a_item_grp_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -166,7 +161,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_srq,
                             &(fit_key, loc_kind, srq_a_item_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                         reuse_cmods.push(cmod);
                     }
@@ -180,7 +175,7 @@ impl StandardRegister {
                         &mut self.cmods_own_srq,
                         &(fit_key, srq_a_item_id),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                     reuse_cmods.push(cmod);
                 }
@@ -199,19 +194,14 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             (fit_key, loc_kind),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
                 AffecteeFilter::Loc(loc) => {
                     if let Ok(loc_kind) = loc.try_into() {
                         let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
-                        add_cmod(
-                            &mut self.cmods_loc,
-                            (fit_key, loc_kind),
-                            cmod,
-                            &mut self.cmods_by_attr_spec,
-                        );
+                        add_cmod(&mut self.cmods_loc, (fit_key, loc_kind), cmod, &mut self.cmods_by_aspec);
                     }
                 }
                 AffecteeFilter::LocGrp(loc, a_item_grp_id) => {
@@ -221,7 +211,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_grp,
                             (fit_key, loc_kind, a_item_grp_id),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -232,7 +222,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_srq,
                             (fit_key, loc_kind, srq_a_item_id),
                             cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -242,7 +232,7 @@ impl StandardRegister {
                         &mut self.cmods_own_srq,
                         (fit_key, srq_a_item_id),
                         cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                 }
             }
@@ -259,7 +249,7 @@ impl StandardRegister {
                             &mut self.cmods_root,
                             &(fit_key, loc_kind),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -270,7 +260,7 @@ impl StandardRegister {
                             &mut self.cmods_loc,
                             &(fit_key, loc_kind),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -281,7 +271,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_grp,
                             &(fit_key, loc_kind, a_item_grp_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -292,7 +282,7 @@ impl StandardRegister {
                             &mut self.cmods_loc_srq,
                             &(fit_key, loc_kind, srq_a_item_id),
                             &cmod,
-                            &mut self.cmods_by_attr_spec,
+                            &mut self.cmods_by_aspec,
                         );
                     }
                 }
@@ -302,7 +292,7 @@ impl StandardRegister {
                         &mut self.cmods_own_srq,
                         &(fit_key, srq_a_item_id),
                         &cmod,
-                        &mut self.cmods_by_attr_spec,
+                        &mut self.cmods_by_aspec,
                     );
                 }
             }
