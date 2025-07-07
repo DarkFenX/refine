@@ -46,8 +46,11 @@ pub(super) fn normalize_perc(val: AttrVal) -> Option<AttrVal> {
 }
 
 // Apply diminishing factors (resistance- and projection-related reductions)
-pub(super) fn diminish_noop(val: AttrVal, _proj_mult: Option<AttrVal>, _res_mult: Option<AttrVal>) -> AttrVal {
-    val
+pub(super) fn diminish_sharp(val: AttrVal, proj_mult: Option<AttrVal>, res_mult: Option<AttrVal>) -> AttrVal {
+    match proj_mult == Some(OF(0.0)) || res_mult == Some(OF(0.0)) {
+        true => OF(0.0),
+        false => val,
+    }
 }
 pub(super) fn diminish_basic(mut val: AttrVal, proj_mult: Option<AttrVal>, res_mult: Option<AttrVal>) -> AttrVal {
     if let Some(proj_mult) = proj_mult {

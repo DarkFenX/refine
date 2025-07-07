@@ -155,8 +155,8 @@ impl Calc {
             let modification = Modification {
                 op: cmod.raw.op,
                 val,
-                res_mult: self.calc_resist_mult(ctx, cmod),
                 proj_mult: self.calc_proj_mult(ctx, cmod),
+                res_mult: self.calc_resist_mult(ctx, cmod),
                 aggr_mode: cmod.raw.aggr_mode,
                 affector_a_item_cat_id,
             };
@@ -200,8 +200,8 @@ impl Calc {
         for modification in self.iter_modifications(ctx, &item_key, item, a_attr_id) {
             accumulator.add_val(
                 modification.val,
-                modification.res_mult,
                 modification.proj_mult,
+                modification.res_mult,
                 &modification.op,
                 a_attr.penalizable,
                 &modification.affector_a_item_cat_id,

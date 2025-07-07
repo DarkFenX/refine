@@ -5,7 +5,7 @@
 //! THEM TO BOTH.
 
 use super::shared::{
-    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop,
+    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_sharp, is_penal, normalize_div, normalize_noop,
     normalize_perc, normalize_sub,
 };
 use crate::{
@@ -57,9 +57,10 @@ impl ModAccumFast {
         aggr_mode: &AggrMode,
     ) {
         match op {
-            Op::PreAssign => self
-                .pre_assign
-                .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
+            Op::PreAssign => {
+                self.pre_assign
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_sharp, aggr_mode)
+            }
             Op::PreMul => self.pre_mul.add_val(
                 val,
                 proj_mult,
@@ -119,9 +120,10 @@ impl ModAccumFast {
                 self.post_perc
                     .add_val(val, proj_mult, res_mult, normalize_perc, diminish_mul, false, aggr_mode)
             }
-            Op::PostAssign => self
-                .post_assign
-                .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
+            Op::PostAssign => {
+                self.post_assign
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_sharp, aggr_mode)
+            }
             Op::ExtraAdd => self
                 .extra_add
                 .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),

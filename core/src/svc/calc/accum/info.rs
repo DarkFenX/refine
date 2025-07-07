@@ -6,7 +6,7 @@
 use smallvec::SmallVec;
 
 use super::shared::{
-    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop,
+    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_sharp, is_penal, normalize_div, normalize_noop,
     normalize_perc, normalize_sub,
 };
 use crate::{
@@ -97,10 +97,10 @@ impl ModAccumInfo {
             Op::PreAssign => self.pre_assign.add_val(
                 Op::PreAssign,
                 val,
-                None,
-                None,
+                proj_mult,
+                res_mult,
                 &normalize_noop,
-                &diminish_noop,
+                &diminish_sharp,
                 &revert_noop,
                 aggr_mode,
                 affectors,
@@ -214,10 +214,10 @@ impl ModAccumInfo {
             Op::PostAssign => self.post_assign.add_val(
                 Op::PostAssign,
                 val,
-                None,
-                None,
+                proj_mult,
+                res_mult,
                 &normalize_noop,
-                &diminish_noop,
+                &diminish_sharp,
                 &revert_noop,
                 aggr_mode,
                 affectors,

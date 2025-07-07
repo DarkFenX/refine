@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_roll_to_api
+from tests import approx, check_no_field, muta_roll_to_api, range_s2s_to_api
 from tests.fw.api import ValOptions
 
 
@@ -92,37 +92,59 @@ def test_known_failures(client, consts):
 
 
 def test_modified(client, consts):
-    # This is the basic use-case (although in EVE it's mostly via projected items), usually modules
-    # don't have it set, and external factors (e.g. scrambler) set it to 1
+    # This is the basic use-case, usually modules don't have it set, and external factors (e.g.
+    # scrambler) set it to 1
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked)
-    eve_module_id = client.mk_eve_item(attrs={eve_block_attr_id: 1})
-    eve_mod_attr_id = client.mk_eve_attr()
+    eve_range_attr_id = client.mk_eve_attr()
+    eve_affector_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        loc=consts.EveModLoc.ship,
-        op=consts.EveModOp.post_assign,
-        affector_attr_id=eve_mod_attr_id,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_block_attr_id)
-    eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 0}, eff_ids=[eve_mod_effect_id])
-    eve_ship_id = client.mk_eve_ship()
+    eve_affector_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_simple,
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_range_attr_id,
+        mod_info=[eve_mod])
+    eve_affector_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 1, eve_range_attr_id: 10000},
+        eff_ids=[eve_affector_effect_id],
+        defeff_id=eve_affector_effect_id)
+    eve_affectee_module_id = client.mk_eve_item()
+    eve_affectee_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_module = api_affectee_fit.add_module(type_id=eve_affectee_module_id, state=consts.ApiModuleState.active)
     # Verification
-    assert api_module.update().attrs[eve_block_attr_id].extra == approx(0)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_rig.remove()
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
-    assert api_module.update().attrs[eve_block_attr_id].extra == approx(1)
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_module.id]
+    # Action
+    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, range_s2s_to_api(val=10001))])
+    # Verification
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, range_s2s_to_api(val=10000))])
+    # Verification
+    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
 
