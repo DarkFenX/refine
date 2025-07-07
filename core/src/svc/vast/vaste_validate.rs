@@ -409,7 +409,8 @@ impl Vast {
         }
         // Incoming projection - effect stopper shouldn't fail for tried items, since there are no
         // indirect ways to stop item effects for now.
-        if options.effect_stopper.enabled && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, reffs)
+        if options.effect_stopper.enabled
+            && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, ctx, calc, reffs)
         {
             return false;
         }
@@ -745,7 +746,8 @@ impl Vast {
                 fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, ctx, calc);
         }
         if options.effect_stopper.enabled {
-            result.effect_stopper = fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, ctx, reffs);
+            result.effect_stopper =
+                fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, ctx, calc, reffs);
         }
         // Projection, source side
         if options.assist_immunity.enabled {

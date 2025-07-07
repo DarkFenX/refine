@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemId, ItemKey},
-    misc::EffectId,
+    def::{ItemId, ItemKey, OF},
+    misc::{EffectId, EffectSpec},
     sol::REffs,
-    svc::{SvcCtx, vast::VastFitData},
+    svc::{SvcCtx, calc::Calc, get_proj_mult, vast::VastFitData},
     util::RSet,
 };
 
@@ -15,10 +15,17 @@ pub struct ValEffectStopperFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_effect_stopper_fast(&self, kfs: &RSet<ItemKey>, reffs: &REffs) -> bool {
-        for target_effect_spec in self.stopped_effects.keys() {
-            if reffs.is_running(&target_effect_spec.item_key, &target_effect_spec.a_effect_id)
-                && !kfs.contains(&target_effect_spec.item_key)
+    pub(in crate::svc::vast) fn validate_effect_stopper_fast(
+        &self,
+        kfs: &RSet<ItemKey>,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        reffs: &REffs,
+    ) -> bool {
+        for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
+            if reffs.is_running(&stopped_espec.item_key, &stopped_espec.a_effect_id)
+                && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
+                && !kfs.contains(&stopped_espec.item_key)
             {
                 return false;
             }
@@ -30,17 +37,19 @@ impl VastFitData {
         &self,
         kfs: &RSet<ItemKey>,
         ctx: SvcCtx,
+        calc: &mut Calc,
         reffs: &REffs,
     ) -> Option<ValEffectStopperFail> {
         let mut items = HashMap::new();
-        for target_effect_spec in self.stopped_effects.keys() {
-            if reffs.is_running(&target_effect_spec.item_key, &target_effect_spec.a_effect_id)
-                && !kfs.contains(&target_effect_spec.item_key)
+        for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
+            if reffs.is_running(&stopped_espec.item_key, &stopped_espec.a_effect_id)
+                && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
+                && !kfs.contains(&stopped_espec.item_key)
             {
                 items
-                    .entry(ctx.uad.items.id_by_key(target_effect_spec.item_key))
+                    .entry(ctx.uad.items.id_by_key(stopped_espec.item_key))
                     .or_insert_with(Vec::new)
-                    .push(target_effect_spec.a_effect_id.into());
+                    .push(stopped_espec.a_effect_id.into());
             }
         }
         match items.is_empty() {
@@ -48,4 +57,20 @@ impl VastFitData {
             false => Some(ValEffectStopperFail { items }),
         }
     }
+}
+
+// Returns true if any of projectors is in range to block target effect
+fn is_any_in_effective_range(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    stopper_especs: impl Iterator<Item = EffectSpec>,
+    stopped_item_key: ItemKey,
+) -> bool {
+    for stopper_espec in stopper_especs {
+        match get_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
+            Some(OF(0.0)) => (),
+            _ => return true,
+        }
+    }
+    false
 }

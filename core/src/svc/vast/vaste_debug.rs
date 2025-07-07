@@ -228,11 +228,11 @@ impl VastFitData {
         for &item_key in self.mods_rigs_svcs_vs_ship_kind.keys() {
             check_item_key(uad, item_key, true)?;
         }
-        for (stopped_spec, stopper_specs) in self.stopped_effects.iter() {
+        for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
             // There is no logic which ensures that projection target is loaded
-            check_item_key(uad, stopped_spec.item_key, false)?;
-            for stopper_spec in stopper_specs {
-                check_item_key(uad, stopper_spec.item_key, true)?;
+            check_item_key(uad, stopped_espec.item_key, false)?;
+            for stopper_espec in stopper_especs {
+                check_item_key(uad, stopper_espec.item_key, true)?;
             }
         }
         for (projectee_key, projector_especs) in self.blockable_assistance.iter() {
