@@ -61,9 +61,9 @@ fn is_ship_subcap(ship: Option<&UadShip>) -> bool {
         Some(ship) => ship,
         None => return false,
     };
-    let extras = match ship.get_a_extras() {
+    let a_item_xt = match ship.get_a_xt() {
         Some(extras) => extras,
         None => return false,
     };
-    matches!(extras.ship_kind, Some(ad::AShipKind::Ship))
+    matches!(a_item_xt.ship_kind, Some(ad::AShipKind::Ship))
 }

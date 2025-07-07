@@ -76,19 +76,20 @@ impl UadItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let mut a_attrs = get_combined_a_attr_values(src.get_a_item(&a_item_id), mutated_a_item);
-        let a_extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &a_attrs);
+        let a_item_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation_data.attr_rolls);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_a_item_id: a_item_id,
             a_mutator: a_mutator.clone(),
             merged_a_attrs: a_attrs,
-            a_extras,
+            a_xt: a_item_xt,
         });
         Self {
             base: UadItemBase::new_with_a_item(item_id, mutated_a_item.clone(), a_state),
             mutation: Some(item_mutation_data),
         }
     }
+    // Basic data access methods
     pub(in crate::uad::item) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -137,16 +138,30 @@ impl UadItemBaseMutable {
     pub(in crate::uad::item) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(in crate::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
+    // Extra data access methods
+    pub(in crate::uad::item) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
         let item_mutation = match &self.mutation {
             Some(item_mutation) => item_mutation,
-            None => return self.base.get_a_extras(),
+            None => return self.base.get_a_xt(),
         };
         match &item_mutation.cache {
-            Some(cache) => Some(&cache.a_extras),
-            None => self.base.get_a_extras(),
+            Some(cache) => Some(&cache.a_xt),
+            None => self.base.get_a_xt(),
         }
     }
+    pub(in crate::uad::item) fn get_max_a_state(&self) -> Option<ad::AState> {
+        self.base.base_get_a_item().map(|v| v.ai.max_state)
+    }
+    pub(in crate::uad::item) fn get_val_fitted_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base.base_get_a_item().and_then(|v| v.ai.val_fitted_group_id)
+    }
+    pub(in crate::uad::item) fn get_val_online_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base.base_get_a_item().and_then(|v| v.ai.val_online_group_id)
+    }
+    pub(in crate::uad::item) fn get_val_active_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base.base_get_a_item().and_then(|v| v.ai.val_active_group_id)
+    }
+    // Misc methods
     pub(in crate::uad::item) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
     }
@@ -214,7 +229,7 @@ impl UadItemBaseMutable {
         };
         // Compose attribute cache
         let mut a_attrs = get_combined_a_attr_values(src.get_a_item(&base_a_item_id), mutated_a_item);
-        let a_extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &a_attrs);
+        let a_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
         self.base.base_set_a_item_id(mutated_a_item.ai.id);
@@ -223,7 +238,7 @@ impl UadItemBaseMutable {
             base_a_item_id,
             a_mutator: a_mutator.clone(),
             merged_a_attrs: a_attrs,
-            a_extras,
+            a_xt,
         })
     }
     // Mutation-specific methods
@@ -263,13 +278,13 @@ impl UadItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let mut a_attrs = get_combined_a_attr_values(self.base.base_get_a_item(), mutated_a_item);
-        let a_extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &a_attrs);
+        let a_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation_data.attr_rolls);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_a_item_id,
             a_mutator: a_mutator.clone(),
             merged_a_attrs: a_attrs,
-            a_extras,
+            a_xt,
         });
         self.base.base_set_a_item_id(mutated_a_item.ai.id);
         self.base.base_set_a_item(mutated_a_item.clone());
@@ -460,7 +475,7 @@ pub(crate) struct ItemMutationDataCache {
     base_a_item_id: ad::AItemId,
     a_mutator: ad::ArcMuta,
     merged_a_attrs: RMap<ad::AAttrId, ad::AAttrVal>,
-    a_extras: ad::AItemExtras,
+    a_xt: ad::AItemXt,
 }
 impl ItemMutationDataCache {
     pub(crate) fn get_base_a_item_id(&self) -> ad::AItemId {

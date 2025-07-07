@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::handler_json::data::{
-    CAttrId, CAttrVal, CEffectId, CItemCatId, CItemEffectData, CItemExtras, CItemGrpId, CItemId, CSkillLevel,
+    CAttrId, CAttrVal, CEffectId, CItemCatId, CItemEffectData, CItemGrpId, CItemId, CSkillLevel, CState,
 };
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -13,7 +13,11 @@ pub(in crate::handler_json) struct CItem {
     effect_datas: HashMap<CEffectId, CItemEffectData>,
     defeff_id: Option<CEffectId>,
     srqs: HashMap<CItemId, CSkillLevel>,
-    extras: CItemExtras,
+    max_state: CState,
+    val_fitted_group_id: Option<CItemGrpId>,
+    val_online_group_id: Option<CItemGrpId>,
+    val_active_group_id: Option<CItemGrpId>,
+    disallowed_in_wspace: bool,
 }
 impl From<&rc::ad::AItem> for CItem {
     fn from(a_item: &rc::ad::AItem) -> Self {
@@ -25,7 +29,11 @@ impl From<&rc::ad::AItem> for CItem {
             effect_datas: a_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: a_item.defeff_id.as_ref().map(|v| v.into()),
             srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.get_inner())).collect(),
-            extras: (&a_item.extras).into(),
+            max_state: (&a_item.max_state).into(),
+            val_fitted_group_id: a_item.val_fitted_group_id,
+            val_online_group_id: a_item.val_online_group_id,
+            val_active_group_id: a_item.val_active_group_id,
+            disallowed_in_wspace: a_item.disallowed_in_wspace,
         }
     }
 }
@@ -43,7 +51,11 @@ impl From<&CItem> for rc::ad::AItem {
                 .iter()
                 .map(|(k, v)| (*k, rc::ad::ASkillLevel::new(*v)))
                 .collect(),
-            extras: (&c_item.extras).into(),
+            max_state: (&c_item.max_state).into(),
+            val_fitted_group_id: c_item.val_fitted_group_id,
+            val_online_group_id: c_item.val_online_group_id,
+            val_active_group_id: c_item.val_active_group_id,
+            disallowed_in_wspace: c_item.disallowed_in_wspace,
         }
     }
 }

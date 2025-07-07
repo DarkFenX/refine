@@ -7,7 +7,7 @@ impl SolarSystem {
         projectee_key: ItemKey,
         range: ProjRange,
     ) -> Result<(), ProjFoundError> {
-        let tgt_item_radius = self.uad.items.get(projectee_key).get_a_extras().and_then(|v| v.radius);
+        let tgt_item_radius = self.uad.items.get(projectee_key).get_a_xt().and_then(|v| v.radius);
         // Check if projection is defined before changing it
         let uad_drone = self.uad.items.get_mut(item_key).get_drone_mut().unwrap();
         let old_uad_prange = match uad_drone.get_projs().get(&projectee_key) {
@@ -19,11 +19,8 @@ impl SolarSystem {
                 });
             }
         };
-        let uad_prange = UadProjRange::from_prange_with_radii(
-            range,
-            uad_drone.get_a_extras().and_then(|v| v.radius),
-            tgt_item_radius,
-        );
+        let uad_prange =
+            UadProjRange::from_prange_with_radii(range, uad_drone.get_a_xt().and_then(|v| v.radius), tgt_item_radius);
         // Do nothing if ranges are equal
         if uad_prange == old_uad_prange {
             return Ok(());

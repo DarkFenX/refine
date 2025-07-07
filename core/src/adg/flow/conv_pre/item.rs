@@ -2,19 +2,16 @@ use crate::{
     ad,
     adg::{GSupport, get_abil_effect},
     def::OF,
-    ed,
-    util::RMap,
+    ec, ed,
+    util::{RMap, RSet},
 };
 
-pub(in crate::adg::flow::conv) fn conv_items(e_data: &ed::EData, g_supp: &GSupport) -> RMap<ad::AItemId, ad::AItem> {
+pub(in crate::adg::flow::conv_pre) fn conv_items(
+    e_data: &ed::EData,
+    g_supp: &GSupport,
+) -> RMap<ad::AItemId, ad::AItem> {
     // Auxiliary maps
-    let defeff_map = e_data
-        .item_effects
-        .data
-        .iter()
-        .filter(|v| v.is_default)
-        .map(|v| (v.item_id, v.effect_id))
-        .collect::<RMap<ed::EItemId, ed::EEffectId>>();
+    let defeff_map = make_item_defeff_map(e_data);
     let mut a_items = RMap::new();
     for e_item in e_data.items.data.iter() {
         // Item category ID
@@ -37,7 +34,13 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &ed::EData, g_supp: &GSuppo
             effect_datas: RMap::new(),
             defeff_id: defeff_id.map(ad::AEffectId::Dogma),
             srqs: RMap::new(),
-            extras: ad::AItemExtras::new(),
+            disallowed_in_wspace: is_disallowed_in_wspace(&e_item.id, &g_supp.rendered_type_lists),
+            // Following fields are set to some default values, actual values will be set after
+            // customization
+            max_state: ad::AState::Offline,
+            val_fitted_group_id: None,
+            val_online_group_id: None,
+            val_active_group_id: None,
         };
         a_items.insert(a_item.id, a_item);
     }
@@ -80,4 +83,22 @@ pub(in crate::adg::flow::conv) fn conv_items(e_data: &ed::EData, g_supp: &GSuppo
         });
     }
     a_items
+}
+
+fn make_item_defeff_map(e_data: &ed::EData) -> RMap<ed::EItemId, ed::EEffectId> {
+    e_data
+        .item_effects
+        .data
+        .iter()
+        .filter(|v| v.is_default)
+        .map(|v| (v.item_id, v.effect_id))
+        .collect()
+}
+
+fn is_disallowed_in_wspace(e_item_id: &ed::EItemId, type_lists: &RMap<ed::EItemListId, RSet<ed::EItemId>>) -> bool {
+    let type_list = match type_lists.get(&ec::itemlists::WORMHOLE_JUMP_BLACK_LIST) {
+        Some(type_list) => type_list,
+        None => return false,
+    };
+    type_list.contains(e_item_id)
 }

@@ -12,144 +12,121 @@ use super::{
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
     kind::get_item_kind,
-    max_state::get_max_state,
     module_hardpoint::{is_launcher, is_turret},
     overload_td_lvl::get_overload_td_lvl,
-    sec_zone::{is_disallowed_in_wspace, is_sec_zone_limitable},
+    sec_zone::is_sec_zone_limitable,
     ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
     ad::{
-        AAttrId, AAttrVal, ACount, AEffect, AEffectId, AItemCatId, AItemChargeLimit, AItemEffectData, AItemGrpId,
-        AItemId, AItemKind, AItemRt, AItemShipLimit, AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex, AState,
+        AAttrId, AAttrVal, ACount, AItem, AItemChargeLimit, AItemKind, AItemRt, AItemShipLimit, AShipDroneLimit,
+        AShipKind, ASkillLevel, ASlotIndex,
     },
-    ed,
-    util::{RMap, RSet},
+    util::RMap,
 };
 
-/// Holds extra item-specific data.
-///
-/// It is derived from data normally available on item and other entities, but is calculated on
-/// cache generation time for optimization purposes.
+// Extra data attached to item during runtime
 #[derive(Clone)]
-pub struct AItemExtras {
-    /// Item type.
-    pub kind: Option<AItemKind>,
-    /// Unmodified and unmutated item volume.
-    pub volume: Option<AAttrVal>,
-    /// Unmodified and unmutated item radius.
-    pub radius: Option<AAttrVal>,
-    /// If set, item can be fit to a ship which fits into the limit.
-    pub ship_limit: Option<AItemShipLimit>,
-    /// If set, item can load only charges which fit into limit.
-    pub charge_limit: Option<AItemChargeLimit>,
-    /// Item effectively has this group ID for purposes of "max group fitted" validation.
-    pub val_fitted_group_id: Option<AItemGrpId>,
-    /// Item effectively has this group ID for purposes of "max group online" validation.
-    pub val_online_group_id: Option<AItemGrpId>,
-    /// Item effectively has this group ID for purposes of "max group active" validation.
-    pub val_active_group_id: Option<AItemGrpId>,
-    /// Slot index an implant takes.
-    pub implant_slot: Option<ASlotIndex>,
-    /// Slot index a booster takes.
-    pub booster_slot: Option<ASlotIndex>,
-    /// Slot index a subsystem takes.
-    pub subsystem_slot: Option<ASlotIndex>,
-    /// Defines if a fighter take a light fighter slot or not.
-    pub is_light_fighter: bool,
-    /// Defines if a fighter take a heavy fighter slot or not.
-    pub is_heavy_fighter: bool,
-    /// Defines if a fighter take a support fighter slot or not.
-    pub is_support_fighter: bool,
-    /// Defines if a fighter take a standup light fighter slot or not.
-    pub is_st_light_fighter: bool,
-    /// Defines if a fighter take a standup heavy fighter slot or not.
-    pub is_st_heavy_fighter: bool,
-    /// Defines if a fighter take a standup support fighter slot or not.
-    pub is_st_support_fighter: bool,
-    /// Ship type.
-    pub ship_kind: Option<AShipKind>,
-    /// Which ship type this item fits to.
-    pub item_ship_kind: Option<AShipKind>,
-    /// Max state item can take.
-    pub max_state: AState,
-    /// If set, ship can use drones which fit into the limit.
-    pub drone_limit: Option<AShipDroneLimit>,
-    /// By default, a fighter squad will have this count of fighters.
-    pub max_fighter_count: ACount,
-    /// Drone bandwidth consumption.
-    pub bandwidth_use: Option<AAttrVal>,
-    /// Required thermodynamics skill level.
-    pub overload_td_lvl: Option<ASkillLevel>,
-    /// Max amount of items with this type ID a fit can have.
-    pub max_type_fitted: Option<ACount>,
-    /// Max security class this module can be online in (2 hisec, 1 lowsec, 0 the rest).
-    pub online_max_sec_class: Option<AAttrVal>,
-    /// Can be limited to specific security zones if some of the limit attributes are defined.
-    pub sec_zone_limitable: bool,
-    /// Can ship be in wormhole space or not.
-    pub disallowed_in_wspace: bool,
-    /// True if item has turretFitted effect.
-    pub takes_turret_hardpoint: bool,
-    /// True if item has launcherFitted effect.
-    pub takes_launcher_hardpoint: bool,
-    /// True if assistive item projected to targets immune to offensive modifiers should break
-    /// the offense immunity validation.
-    pub disallow_vs_ew_immune_tgt: bool,
-    /// Attribute ID which defines how affectee resists effect.
-    pub remote_resist_attr_id: Option<AAttrId>,
+pub(crate) struct AItemXt {
+    // Item type
+    pub(crate) kind: Option<AItemKind>,
+    // Unmutated and unmodified item volume
+    pub(crate) volume: Option<AAttrVal>,
+    // Unmutated and unmodified item radius
+    pub(crate) radius: Option<AAttrVal>,
+    // If set, item can be fit to a ship which fits into the limit
+    pub(crate) ship_limit: Option<AItemShipLimit>,
+    // If set, item can load only charges which fit into limit
+    pub(crate) charge_limit: Option<AItemChargeLimit>,
+    // Slot index an implant takes
+    pub(crate) implant_slot: Option<ASlotIndex>,
+    // Slot index a booster takes
+    pub(crate) booster_slot: Option<ASlotIndex>,
+    // Slot index a subsystem takes
+    pub(crate) subsystem_slot: Option<ASlotIndex>,
+    // Defines if a fighter takes a light fighter slot or not
+    pub(crate) is_light_fighter: bool,
+    // Defines if a fighter takes a heavy fighter slot or not
+    pub(crate) is_heavy_fighter: bool,
+    // Defines if a fighter takes a support fighter slot or not
+    pub(crate) is_support_fighter: bool,
+    // Defines if a fighter takes a standup light fighter slot or not
+    pub(crate) is_st_light_fighter: bool,
+    // Defines if a fighter takes a standup heavy fighter slot or not
+    pub(crate) is_st_heavy_fighter: bool,
+    // Defines if a fighter takes a standup support fighter slot or not
+    pub(crate) is_st_support_fighter: bool,
+    // Ship type
+    pub(crate) ship_kind: Option<AShipKind>,
+    // Which ship type this item fits to
+    pub(crate) item_ship_kind: Option<AShipKind>,
+    // If set, ship can use drones which fit into the limit
+    pub(crate) drone_limit: Option<AShipDroneLimit>,
+    // By default, a fighter squad will have this count of fighters
+    pub(crate) max_fighter_count: ACount,
+    // Drone bandwidth consumption
+    pub(crate) bandwidth_use: Option<AAttrVal>,
+    // Required thermodynamics skill level
+    pub(crate) overload_td_lvl: Option<ASkillLevel>,
+    // Max amount of items with this type ID a fit can have
+    pub(crate) max_type_fitted: Option<ACount>,
+    // Max security class this module can be online in (2 hisec, 1 lowsec, 0 the rest)
+    pub(crate) online_max_sec_class: Option<AAttrVal>,
+    // Can be limited to specific security zones if some of the limit attributes are defined
+    pub(crate) sec_zone_limitable: bool,
+    // True if item has turretFitted effect
+    pub(crate) takes_turret_hardpoint: bool,
+    // True if item has launcherFitted effect
+    pub(crate) takes_launcher_hardpoint: bool,
+    // True if assistive item projected to targets immune to offensive modifiers should break the
+    // offense immunity validation
+    pub(crate) disallow_vs_ew_immune_tgt: bool,
+    // Attribute ID which defines how affectee resists effect
+    pub(crate) remote_resist_attr_id: Option<AAttrId>,
 }
-impl AItemExtras {
-    pub(crate) fn new() -> Self {
+impl AItemXt {
+    // Build extras out of item with its original attributes
+    pub(crate) fn new_initial(a_item: &AItem) -> Self {
         Self {
-            kind: Option::default(),
-            volume: Option::default(),
-            radius: Option::default(),
-            ship_limit: Option::default(),
-            charge_limit: Option::default(),
-            val_fitted_group_id: Option::default(),
-            val_online_group_id: Option::default(),
-            val_active_group_id: Option::default(),
-            implant_slot: Option::default(),
-            booster_slot: Option::default(),
-            subsystem_slot: Option::default(),
-            is_light_fighter: bool::default(),
-            is_heavy_fighter: bool::default(),
-            is_support_fighter: bool::default(),
-            is_st_light_fighter: bool::default(),
-            is_st_heavy_fighter: bool::default(),
-            is_st_support_fighter: bool::default(),
-            ship_kind: Option::default(),
-            item_ship_kind: Option::default(),
-            max_state: AState::Offline,
-            drone_limit: Option::default(),
-            max_fighter_count: 1,
-            bandwidth_use: Option::default(),
-            overload_td_lvl: Option::default(),
-            max_type_fitted: Option::default(),
-            online_max_sec_class: Option::default(),
-            sec_zone_limitable: bool::default(),
-            disallowed_in_wspace: bool::default(),
-            takes_turret_hardpoint: bool::default(),
-            takes_launcher_hardpoint: bool::default(),
-            disallow_vs_ew_immune_tgt: bool::default(),
-            remote_resist_attr_id: Option::default(),
+            kind: get_item_kind(a_item.grp_id, a_item.cat_id, &a_item.attrs, &a_item.effect_datas),
+            volume: get_volume(&a_item.attrs),
+            radius: get_radius(&a_item.attrs),
+            ship_limit: get_item_ship_limit(a_item.id, &a_item.attrs),
+            charge_limit: get_item_charge_limit(&a_item.attrs),
+            implant_slot: get_implant_slot(&a_item.attrs),
+            booster_slot: get_booster_slot(&a_item.attrs),
+            subsystem_slot: get_subsystem_slot(&a_item.attrs),
+            is_light_fighter: get_light_fighter_flag(&a_item.attrs),
+            is_heavy_fighter: get_heavy_fighter_flag(&a_item.attrs),
+            is_support_fighter: get_support_fighter_flag(&a_item.attrs),
+            is_st_light_fighter: get_st_light_fighter_flag(&a_item.attrs),
+            is_st_heavy_fighter: get_st_heavy_fighter_flag(&a_item.attrs),
+            is_st_support_fighter: get_st_support_fighter_flag(&a_item.attrs),
+            ship_kind: get_ship_kind(a_item.cat_id, &a_item.srqs),
+            item_ship_kind: get_item_ship_kind(a_item.cat_id, &a_item.attrs),
+            drone_limit: get_ship_drone_limit(&a_item.attrs),
+            max_fighter_count: get_max_fighter_count(&a_item.attrs),
+            bandwidth_use: get_bandwidth_use(&a_item.attrs),
+            overload_td_lvl: get_overload_td_lvl(&a_item.attrs),
+            max_type_fitted: get_max_type_fitted_count(&a_item.attrs),
+            online_max_sec_class: get_online_max_sec_class(&a_item.attrs),
+            sec_zone_limitable: is_sec_zone_limitable(&a_item.attrs),
+            takes_turret_hardpoint: is_turret(&a_item.effect_datas),
+            takes_launcher_hardpoint: is_launcher(&a_item.effect_datas),
+            disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(&a_item.attrs),
+            remote_resist_attr_id: get_remote_resist_attr_id(&a_item.attrs),
         }
     }
-    // Build new instance, rebuilding all the data based on new attributes, copying data which does
-    // not rely on them
-    pub(crate) fn inherit_with_attrs(a_item: &AItemRt, attrs: &RMap<AAttrId, AAttrVal>) -> Self {
+    // Build extras out of item with overridden attributes
+    pub(crate) fn new_inherited(a_item: &AItemRt, attrs: &RMap<AAttrId, AAttrVal>) -> Self {
         Self {
             kind: get_item_kind(a_item.ai.grp_id, a_item.ai.cat_id, attrs, &a_item.ai.effect_datas),
             volume: get_volume(attrs),
             radius: get_radius(attrs),
             ship_limit: get_item_ship_limit(a_item.ai.id, attrs),
             charge_limit: get_item_charge_limit(attrs),
-            val_fitted_group_id: a_item.ai.extras.val_fitted_group_id,
-            val_online_group_id: a_item.ai.extras.val_online_group_id,
-            val_active_group_id: a_item.ai.extras.val_active_group_id,
             implant_slot: get_implant_slot(attrs),
             booster_slot: get_booster_slot(attrs),
             subsystem_slot: get_subsystem_slot(attrs),
@@ -159,9 +136,8 @@ impl AItemExtras {
             is_st_light_fighter: get_st_light_fighter_flag(attrs),
             is_st_heavy_fighter: get_st_heavy_fighter_flag(attrs),
             is_st_support_fighter: get_st_support_fighter_flag(attrs),
-            ship_kind: a_item.ai.extras.ship_kind,
+            ship_kind: a_item.xt.ship_kind,
             item_ship_kind: get_item_ship_kind(a_item.ai.cat_id, attrs),
-            max_state: a_item.ai.extras.max_state,
             drone_limit: get_ship_drone_limit(attrs),
             max_fighter_count: get_max_fighter_count(attrs),
             bandwidth_use: get_bandwidth_use(attrs),
@@ -169,67 +145,10 @@ impl AItemExtras {
             max_type_fitted: get_max_type_fitted_count(attrs),
             online_max_sec_class: get_online_max_sec_class(attrs),
             sec_zone_limitable: is_sec_zone_limitable(attrs),
-            disallowed_in_wspace: a_item.ai.extras.disallowed_in_wspace,
             takes_turret_hardpoint: is_turret(&a_item.ai.effect_datas),
             takes_launcher_hardpoint: is_launcher(&a_item.ai.effect_datas),
             disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(attrs),
             remote_resist_attr_id: get_remote_resist_attr_id(attrs),
         }
-    }
-    pub(crate) fn fill(
-        &mut self,
-        item_id: AItemId,
-        item_grp_id: AItemGrpId,
-        item_cat_id: AItemCatId,
-        item_attrs: &RMap<AAttrId, AAttrVal>,
-        item_effects: &RMap<AEffectId, AItemEffectData>,
-        item_srqs: &RMap<AItemId, ASkillLevel>,
-        effects: &RMap<AEffectId, AEffect>,
-        type_lists: &RMap<ed::EItemListId, RSet<AItemId>>,
-        fitted_limited_groups: &RSet<AItemGrpId>,
-        online_limited_groups: &RSet<AItemGrpId>,
-        active_limited_groups: &RSet<AItemGrpId>,
-    ) {
-        self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
-        self.volume = get_volume(item_attrs);
-        self.radius = get_radius(item_attrs);
-        self.ship_limit = get_item_ship_limit(item_id, item_attrs);
-        self.charge_limit = get_item_charge_limit(item_attrs);
-        self.val_fitted_group_id = match fitted_limited_groups.contains(&item_grp_id) {
-            true => Some(item_grp_id),
-            false => None,
-        };
-        self.val_online_group_id = match online_limited_groups.contains(&item_grp_id) {
-            true => Some(item_grp_id),
-            false => None,
-        };
-        self.val_active_group_id = match active_limited_groups.contains(&item_grp_id) {
-            true => Some(item_grp_id),
-            false => None,
-        };
-        self.implant_slot = get_implant_slot(item_attrs);
-        self.booster_slot = get_booster_slot(item_attrs);
-        self.subsystem_slot = get_subsystem_slot(item_attrs);
-        self.is_light_fighter = get_light_fighter_flag(item_attrs);
-        self.is_heavy_fighter = get_heavy_fighter_flag(item_attrs);
-        self.is_support_fighter = get_support_fighter_flag(item_attrs);
-        self.is_st_light_fighter = get_st_light_fighter_flag(item_attrs);
-        self.is_st_heavy_fighter = get_st_heavy_fighter_flag(item_attrs);
-        self.is_st_support_fighter = get_st_support_fighter_flag(item_attrs);
-        self.ship_kind = get_ship_kind(item_cat_id, item_srqs);
-        self.item_ship_kind = get_item_ship_kind(item_cat_id, item_attrs);
-        self.max_state = get_max_state(item_effects.keys(), effects);
-        self.drone_limit = get_ship_drone_limit(item_attrs);
-        self.max_fighter_count = get_max_fighter_count(item_attrs);
-        self.bandwidth_use = get_bandwidth_use(item_attrs);
-        self.overload_td_lvl = get_overload_td_lvl(item_attrs);
-        self.max_type_fitted = get_max_type_fitted_count(item_attrs);
-        self.online_max_sec_class = get_online_max_sec_class(item_attrs);
-        self.sec_zone_limitable = is_sec_zone_limitable(item_attrs);
-        self.disallowed_in_wspace = is_disallowed_in_wspace(&item_id, type_lists);
-        self.takes_turret_hardpoint = is_turret(item_effects);
-        self.takes_launcher_hardpoint = is_launcher(item_effects);
-        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(item_attrs);
-        self.remote_resist_attr_id = get_remote_resist_attr_id(item_attrs);
     }
 }

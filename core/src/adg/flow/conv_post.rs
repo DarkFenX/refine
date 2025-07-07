@@ -1,32 +1,50 @@
 use crate::{
     ac, ad,
-    adg::GSupport,
     util::{RMap, RMapRSet, RSet},
 };
 
-pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData, g_supp: &GSupport) {
+pub(in crate::adg) fn convert_post(a_data: &mut ad::AData) {
+    // Max allowed state
+    for a_item in a_data.items.values_mut() {
+        a_item.max_state = get_max_state(a_item.effect_datas.keys(), &a_data.effects);
+    }
     // Data for item count in a group limit - need to do it here for efficiency, and to take into
     // account that mutated item can have the limit even if raw mutated type has no such limit
     let grp_mutations = get_grp_mutations(a_data);
     let limited_fitted_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ac::attrs::MAX_GROUP_FITTED);
     let limited_online_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ac::attrs::MAX_GROUP_ONLINE);
     let limited_active_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ac::attrs::MAX_GROUP_ACTIVE);
-    // The rest
     for a_item in a_data.items.values_mut() {
-        a_item.extras.fill(
-            a_item.id,
-            a_item.grp_id,
-            a_item.cat_id,
-            &a_item.attrs,
-            &a_item.effect_datas,
-            &a_item.srqs,
-            &a_data.effects,
-            &g_supp.rendered_type_lists,
-            &limited_fitted_grp_ids,
-            &limited_online_grp_ids,
-            &limited_active_grp_ids,
-        )
+        a_item.val_fitted_group_id = match limited_fitted_grp_ids.contains(&a_item.grp_id) {
+            true => Some(a_item.grp_id),
+            false => None,
+        };
+        a_item.val_online_group_id = match limited_online_grp_ids.contains(&a_item.grp_id) {
+            true => Some(a_item.grp_id),
+            false => None,
+        };
+        a_item.val_active_group_id = match limited_active_grp_ids.contains(&a_item.grp_id) {
+            true => Some(a_item.grp_id),
+            false => None,
+        };
     }
+}
+
+fn get_max_state<'a>(
+    item_effects: impl Iterator<Item = &'a ad::AEffectId>,
+    effects: &RMap<ad::AEffectId, ad::AEffect>,
+) -> ad::AState {
+    let mut max_state = ad::AState::Offline;
+    for effect_id in item_effects {
+        let effect = match effects.get(effect_id) {
+            Some(effect) => effect,
+            None => continue,
+        };
+        if effect.state > max_state {
+            max_state = effect.state;
+        }
+    }
+    max_state
 }
 
 fn get_grp_mutations(a_data: &ad::AData) -> RMapRSet<ad::AItemGrpId, ad::AItemGrpId> {

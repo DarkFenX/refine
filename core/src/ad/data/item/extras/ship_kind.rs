@@ -4,9 +4,8 @@ use crate::{
     util::RMap,
 };
 
-/// Adapted ship type.
 #[derive(Copy, Clone)]
-pub enum AShipKind {
+pub(crate) enum AShipKind {
     Ship,
     CapitalShip,
     Structure,

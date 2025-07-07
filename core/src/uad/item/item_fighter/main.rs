@@ -53,8 +53,8 @@ impl UadFighter {
     pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(crate) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
-        self.base.get_a_extras()
+    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
+        self.base.get_a_xt()
     }
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
@@ -83,15 +83,15 @@ impl UadFighter {
         self.fit_key
     }
     pub(crate) fn get_count(&self) -> Option<AdjustableCount> {
-        match self.get_a_extras() {
-            Some(extras) => match self.count_override {
+        match self.get_a_xt() {
+            Some(a_xt) => match self.count_override {
                 Some(count_override) => Some(AdjustableCount {
                     current: count_override.get_inner(),
-                    max: extras.max_fighter_count,
+                    max: a_xt.max_fighter_count,
                 }),
                 None => Some(AdjustableCount {
-                    current: extras.max_fighter_count,
-                    max: extras.max_fighter_count,
+                    current: a_xt.max_fighter_count,
+                    max: a_xt.max_fighter_count,
                 }),
             },
             None => None,

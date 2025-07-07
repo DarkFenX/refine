@@ -6,7 +6,6 @@ pub(in crate::handler_json) use effect::CEffect;
 pub(in crate::handler_json) use id::CEffectId;
 pub(in crate::handler_json) use location::CEffectLocation;
 pub(in crate::handler_json) use modifier::CEffectModifier;
-pub(in crate::handler_json) use state::CState;
 
 mod affectee_filter;
 mod buff_info;
@@ -16,4 +15,3 @@ mod effect;
 mod id;
 mod location;
 mod modifier;
-mod state;

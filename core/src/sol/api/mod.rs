@@ -15,9 +15,7 @@ pub use item::{
     SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut,
     Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
-pub(in crate::sol::api) use item::{
-    ItemMutSealed, ItemSealed, get_ship_a_extras, iter_projectee_keys, iter_ranged_projs,
-};
+pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed, get_a_ship_xt, iter_projectee_keys, iter_ranged_projs};
 pub use util::MutIter;
 
 mod default_incoming_dps;

@@ -1,7 +1,6 @@
 use crate::{
     ad::{
-        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemExtras, AItemGrpId, AItemId, AItemXt,
-        ASkillLevel,
+        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemXt, ASkillLevel, AState,
     },
     util::{Named, RMap},
 };
@@ -25,8 +24,16 @@ pub struct AItem {
     pub defeff_id: Option<AEffectId>,
     /// Skill requirement map.
     pub srqs: RMap<AItemId, ASkillLevel>,
-    /// Struct with extra data which is calculated during cache generation.
-    pub extras: AItemExtras,
+    /// Max state item can take.
+    pub max_state: AState,
+    /// Item effectively has this group ID for purposes of "max group fitted" validation.
+    pub val_fitted_group_id: Option<AItemGrpId>,
+    /// Item effectively has this group ID for purposes of "max group online" validation.
+    pub val_online_group_id: Option<AItemGrpId>,
+    /// Item effectively has this group ID for purposes of "max group active" validation.
+    pub val_active_group_id: Option<AItemGrpId>,
+    /// Can ship be in wormhole space or not.
+    pub disallowed_in_wspace: bool,
 }
 impl Named for AItem {
     fn get_name() -> &'static str {
@@ -49,10 +56,8 @@ pub struct AItemRt {
 impl AItemRt {
     /// Construct new adapted item with extra data.
     pub fn new(a_item: AItem) -> Self {
-        Self {
-            ai: a_item,
-            xt: AItemXt {},
-        }
+        let xt = AItemXt::new_initial(&a_item);
+        Self { ai: a_item, xt }
     }
 }
 impl Named for AItemRt {

@@ -789,25 +789,25 @@ impl UadItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(crate) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
+    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_a_extras(),
-            Self::Booster(booster) => booster.get_a_extras(),
-            Self::Character(character) => character.get_a_extras(),
-            Self::Charge(charge) => charge.get_a_extras(),
-            Self::Drone(drone) => drone.get_a_extras(),
-            Self::Fighter(fighter) => fighter.get_a_extras(),
-            Self::FwEffect(fw_effect) => fw_effect.get_a_extras(),
-            Self::Implant(implant) => implant.get_a_extras(),
-            Self::Module(module) => module.get_a_extras(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_a_extras(),
-            Self::Rig(rig) => rig.get_a_extras(),
-            Self::Service(service) => service.get_a_extras(),
-            Self::Ship(ship) => ship.get_a_extras(),
-            Self::Skill(skill) => skill.get_a_extras(),
-            Self::Stance(stance) => stance.get_a_extras(),
-            Self::Subsystem(subsystem) => subsystem.get_a_extras(),
-            Self::SwEffect(sw_effect) => sw_effect.get_a_extras(),
+            Self::Autocharge(autocharge) => autocharge.get_a_xt(),
+            Self::Booster(booster) => booster.get_a_xt(),
+            Self::Character(character) => character.get_a_xt(),
+            Self::Charge(charge) => charge.get_a_xt(),
+            Self::Drone(drone) => drone.get_a_xt(),
+            Self::Fighter(fighter) => fighter.get_a_xt(),
+            Self::FwEffect(fw_effect) => fw_effect.get_a_xt(),
+            Self::Implant(implant) => implant.get_a_xt(),
+            Self::Module(module) => module.get_a_xt(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_a_xt(),
+            Self::Rig(rig) => rig.get_a_xt(),
+            Self::Service(service) => service.get_a_xt(),
+            Self::Ship(ship) => ship.get_a_xt(),
+            Self::Skill(skill) => skill.get_a_xt(),
+            Self::Stance(stance) => stance.get_a_xt(),
+            Self::Subsystem(subsystem) => subsystem.get_a_xt(),
+            Self::SwEffect(sw_effect) => sw_effect.get_a_xt(),
         }
     }
 }

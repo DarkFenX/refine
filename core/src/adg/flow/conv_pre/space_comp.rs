@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{ac, ad, ed};
 
-pub(in crate::adg::flow::conv) fn apply_space_comps(e_data: &ed::EData, a_data: &mut ad::AData) {
+pub(in crate::adg::flow::conv_pre) fn apply_space_comps(e_data: &ed::EData, a_data: &mut ad::AData) {
     for e_space_comp in e_data.space_comps.data.iter() {
         if !a_data.items.contains_key(&e_space_comp.item_id) {
             continue;

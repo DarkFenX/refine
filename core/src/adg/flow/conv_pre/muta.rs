@@ -1,6 +1,6 @@
 use crate::{ad, def::OF, ed, util::RMap};
 
-pub(in crate::adg::flow::conv) fn conv_mutas(e_data: &ed::EData) -> RMap<ad::AItemId, ad::AMuta> {
+pub(in crate::adg::flow::conv_pre) fn conv_mutas(e_data: &ed::EData) -> RMap<ad::AItemId, ad::AMuta> {
     let mut a_mutas = RMap::new();
     for e_muta in e_data.muta_items.data.iter() {
         let a_muta = a_mutas

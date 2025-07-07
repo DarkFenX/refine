@@ -8,10 +8,9 @@ use crate::{
 
 const GROUP_ATTRS: [AAttrId; 2] = [ac::attrs::ALLOWED_DRONE_GROUP1, ac::attrs::ALLOWED_DRONE_GROUP2];
 
-/// If a ship is limited, it can only use drones from specified groups.
 #[derive(Clone)]
-pub struct AShipDroneLimit {
-    pub group_ids: Vec<AItemGrpId>,
+pub(crate) struct AShipDroneLimit {
+    pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
 pub(super) fn get_ship_drone_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AShipDroneLimit> {

@@ -10,5 +10,4 @@ pub(in crate::handler_json) type CItemCatId = rc::ad::AItemCatId;
 // Misc
 pub(in crate::handler_json) type CAttrVal = rc::ad::AAttrVal;
 pub(in crate::handler_json) type CCount = rc::ad::ACount;
-pub(in crate::handler_json) type CSlotIndex = rc::ad::ASlotIndex;
 pub(in crate::handler_json) type CSkillLevel = i32;

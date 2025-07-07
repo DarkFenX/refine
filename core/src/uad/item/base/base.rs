@@ -21,6 +21,7 @@ impl UadItemBase {
             cache: src.get_a_item(&a_item_id).map(|v| ItemBaseCache { a_item: v.clone() }),
         }
     }
+    // Basic data access methods
     pub(in crate::uad::item) fn get_item_id(&self) -> ItemId {
         self.item_id
     }
@@ -52,9 +53,20 @@ impl UadItemBase {
     pub(in crate::uad::item) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base_get_a_item().map(|v| &v.ai.srqs)
     }
-    pub(in crate::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
-        self.base_get_a_item().map(|v| &v.ai.extras)
+    // Extra data access methods
+    pub(in crate::uad::item) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
+        self.base_get_a_item().map(|v| &v.xt)
     }
+    pub(in crate::uad::item) fn get_disallowed_in_wspace(&self) -> Option<bool> {
+        self.base_get_a_item().map(|v| v.ai.disallowed_in_wspace)
+    }
+    pub(in crate::uad::item) fn get_val_fitted_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base_get_a_item().and_then(|v| v.ai.val_fitted_group_id)
+    }
+    pub(in crate::uad::item) fn get_val_online_a_group_id(&self) -> Option<ad::AItemGrpId> {
+        self.base_get_a_item().and_then(|v| v.ai.val_online_group_id)
+    }
+    // Misc methods
     pub(in crate::uad::item) fn get_a_state(&self) -> ad::AState {
         self.a_state
     }

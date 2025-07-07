@@ -51,8 +51,8 @@ impl UadShip {
     pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(crate) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
-        self.base.get_a_extras()
+    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
+        self.base.get_a_xt()
     }
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
@@ -82,6 +82,9 @@ impl UadShip {
     }
     pub(crate) fn get_kind(&self) -> ShipKind {
         self.kind
+    }
+    pub(crate) fn get_disallowed_in_wspace(&self) -> Option<bool> {
+        self.base.get_disallowed_in_wspace()
     }
     fn update_ship_kind(&mut self) {
         self.kind = match self.get_a_category_id() {

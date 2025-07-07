@@ -14,10 +14,9 @@ const GROUP_ATTRS: [AAttrId; 5] = [
     ac::attrs::CHARGE_GROUP5,
 ];
 
-/// If a module is limited, it can only load charges of specific group.
 #[derive(Clone)]
-pub struct AItemChargeLimit {
-    pub group_ids: Vec<AItemGrpId>,
+pub(crate) struct AItemChargeLimit {
+    pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
 pub(super) fn get_item_charge_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AItemChargeLimit> {

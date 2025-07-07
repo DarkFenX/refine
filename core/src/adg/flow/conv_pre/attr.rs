@@ -1,6 +1,6 @@
 use crate::{ad, def::OF, ed, util::RMap};
 
-pub(in crate::adg::flow::conv) fn conv_attrs(e_data: &ed::EData) -> RMap<ad::AAttrId, ad::AAttr> {
+pub(in crate::adg::flow::conv_pre) fn conv_attrs(e_data: &ed::EData) -> RMap<ad::AAttrId, ad::AAttr> {
     e_data
         .attrs
         .data

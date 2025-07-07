@@ -16,7 +16,7 @@ impl ed::EFighterAbil {
     }
 }
 
-pub(in crate::adg::flow::conv) fn conv_effects(
+pub(in crate::adg::flow::conv_pre) fn conv_effects(
     e_data: &ed::EData,
     g_supp: &GSupport,
 ) -> RMap<ad::AEffectId, ad::AEffect> {

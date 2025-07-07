@@ -9,8 +9,8 @@ use crate::{
 pub(in crate::svc) fn get_resist_a_attr_id(item: &UadItem, a_effect: &ad::AEffectRt) -> Option<ad::AAttrId> {
     match a_effect.ae.resist_attr_id {
         Some(resist_a_attr_id) => Some(resist_a_attr_id),
-        None => match item.get_a_extras() {
-            Some(a_extras) => a_extras.remote_resist_attr_id,
+        None => match item.get_a_xt() {
+            Some(a_item_xt) => a_item_xt.remote_resist_attr_id,
             None => None,
         },
     }

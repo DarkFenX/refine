@@ -3,7 +3,7 @@ use crate::{
     util::{RMap, StrMsgError},
 };
 
-pub(in crate::adg::flow::conv) fn conv_buffs(e_data: &ed::EData) -> RMap<ad::ABuffId, ad::ABuff> {
+pub(in crate::adg::flow::conv_pre) fn conv_buffs(e_data: &ed::EData) -> RMap<ad::ABuffId, ad::ABuff> {
     let mut a_buffs = RMap::new();
     for e_buff in e_data.buffs.data.iter() {
         let op = match conv_buff_op(&e_buff.operation) {

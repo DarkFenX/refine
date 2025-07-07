@@ -2,7 +2,7 @@ use crate::{
     def::ItemKey,
     err::basic::ProjFoundError,
     misc::ProjRange,
-    sol::{SolarSystem, api::get_ship_a_extras},
+    sol::{SolarSystem, api::get_a_ship_xt},
     uad::UadProjRange,
 };
 
@@ -22,10 +22,10 @@ impl SolarSystem {
                 projector_item_id: uad_module.get_item_id(),
                 projectee_item_id: self.uad.items.id_by_key(projectee_key),
             })?;
-        let uad_prange = UadProjRange::from_prange_with_extras(
+        let uad_prange = UadProjRange::from_prange_with_xt(
             range,
-            get_ship_a_extras(&self.uad, uad_module.get_fit_key()),
-            self.uad.items.get(projectee_key).get_a_extras(),
+            get_a_ship_xt(&self.uad, uad_module.get_fit_key()),
+            self.uad.items.get(projectee_key).get_a_xt(),
         );
         // Do nothing if ranges are equal
         if uad_prange == old_uad_prange {

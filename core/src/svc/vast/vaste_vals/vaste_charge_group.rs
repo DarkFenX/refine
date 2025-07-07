@@ -113,7 +113,7 @@ fn calculate_item_result(ctx: SvcCtx, module_key: ItemKey) -> ValCache<(), ValCh
         None => return ValCache::Pass(()),
     };
     let allowed_group_ids = module
-        .get_a_extras()
+        .get_a_xt()
         .unwrap()
         .charge_limit
         .as_ref()

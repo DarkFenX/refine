@@ -14,15 +14,15 @@ pub(crate) struct UadProjRange {
     pub(super) tgt_rad: AttrVal,
 }
 impl UadProjRange {
-    pub(crate) fn from_prange_with_extras(
+    pub(crate) fn from_prange_with_xt(
         prange: ProjRange,
-        src_a_extras: Option<&ad::AItemExtras>,
-        tgt_a_extras: Option<&ad::AItemExtras>,
+        src_a_item_xt: Option<&ad::AItemXt>,
+        tgt_a_item_xt: Option<&ad::AItemXt>,
     ) -> Option<Self> {
         UadProjRange::from_prange_with_radii(
             prange,
-            src_a_extras.and_then(|v| v.radius),
-            tgt_a_extras.and_then(|v| v.radius),
+            src_a_item_xt.and_then(|v| v.radius),
+            tgt_a_item_xt.and_then(|v| v.radius),
         )
     }
     pub(crate) fn from_prange_with_radii(

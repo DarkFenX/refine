@@ -23,4 +23,4 @@ pub type AItemCatId = i32;
 // Misc
 pub type AAttrVal = OF<f64>;
 pub type ACount = u32;
-pub type ASlotIndex = i32;
+pub(crate) type ASlotIndex = i32;

@@ -4,17 +4,16 @@ use attr::CAttr;
 use buff::{CBuff, CBuffAffecteeFilter, CBuffAggrMode, CBuffModifier};
 use effect::{
     CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectChargeInfo, CEffectId, CEffectLocation, CEffectModifier,
-    CModBuildStatus, CState,
+    CModBuildStatus,
 };
-use item::{
-    CItem, CItemChargeLimit, CItemEffectData, CItemExtras, CItemKind, CItemShipLimit, CShipDroneLimit, CShipKind,
-};
+use item::{CItem, CItemEffectData};
 use mod_shared::{CModifierSrq, COp};
 use muta::{CMuta, CMutaAttrRange};
 use primitives::{
     CAttrId, CAttrVal, CBuffId, CCount, CCustomEffectId, CDogmaEffectId, CEffectCatId, CItemCatId, CItemGrpId, CItemId,
-    CSkillLevel, CSlotIndex,
+    CSkillLevel,
 };
+use shared::CState;
 
 mod attr;
 mod buff;
@@ -23,6 +22,7 @@ mod item;
 mod mod_shared;
 mod muta;
 mod primitives;
+mod shared;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub(in crate::handler_json) struct CData {

@@ -44,11 +44,10 @@ const GROUP_ATTRS: [AAttrId; 20] = [
     ac::attrs::CAN_FIT_SHIP_GROUP20,
 ];
 
-/// If a module is limited, it can only be fit to a ship of specific type or group.
 #[derive(Clone)]
-pub struct AItemShipLimit {
-    pub type_ids: Vec<AItemId>,
-    pub group_ids: Vec<AItemGrpId>,
+pub(crate) struct AItemShipLimit {
+    pub(crate) type_ids: Vec<AItemId>,
+    pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
 pub(super) fn get_item_ship_limit(a_item_id: AItemId, item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AItemShipLimit> {

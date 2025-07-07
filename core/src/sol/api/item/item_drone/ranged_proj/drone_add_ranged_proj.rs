@@ -36,8 +36,7 @@ impl SolarSystem {
             }
             .into());
         }
-        let uad_prange =
-            UadProjRange::from_prange_with_extras(range, uad_drone.get_a_extras(), projectee_uad_item.get_a_extras());
+        let uad_prange = UadProjRange::from_prange_with_xt(range, uad_drone.get_a_xt(), projectee_uad_item.get_a_xt());
         // Update services
         SolarSystem::util_add_item_projection(
             &self.uad,
