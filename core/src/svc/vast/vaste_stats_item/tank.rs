@@ -164,9 +164,9 @@ fn get_item_layer_resists(
     expl_a_attr_id: &ad::AAttrId,
 ) -> Option<DmgKinds<AttrVal>> {
     Some(DmgKinds {
-        em: calc.get_item_attr_val_extra(ctx, item_key, em_a_attr_id)?,
-        thermal: calc.get_item_attr_val_extra(ctx, item_key, therm_a_attr_id)?,
-        kinetic: calc.get_item_attr_val_extra(ctx, item_key, kin_a_attr_id)?,
-        explosive: calc.get_item_attr_val_extra(ctx, item_key, expl_a_attr_id)?,
+        em: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, em_a_attr_id)?,
+        thermal: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, therm_a_attr_id)?,
+        kinetic: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, kin_a_attr_id)?,
+        explosive: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, expl_a_attr_id)?,
     })
 }

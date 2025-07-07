@@ -213,6 +213,10 @@ class EveAttr(IntEnum):
     warp_scramble_range = 103
     warp_scramble_status = 104
     warp_scramble_strength = 105
+    kin_dmg_resonance = 109
+    therm_dmg_resonance = 110
+    expl_dmg_resonance = 111
+    em_dmg_resonance = 113
     em_dmg = 114
     expl_dmg = 116
     kin_dmg = 117
@@ -228,6 +232,10 @@ class EveAttr(IntEnum):
     armor_expl_dmg_resonance = 268
     armor_kin_dmg_resonance = 269
     armor_therm_dmg_resonance = 270
+    shield_em_dmg_resonance = 271
+    shield_expl_dmg_resonance = 272
+    shield_kin_dmg_resonance = 273
+    shield_therm_dmg_resonance = 274
     skill_level = 280
     explosion_delay = 281
     drone_capacity = 283
