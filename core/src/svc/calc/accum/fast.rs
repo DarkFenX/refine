@@ -5,8 +5,8 @@
 //! THEM TO BOTH.
 
 use super::shared::{
-    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_sharp, is_penal, normalize_div, normalize_noop,
-    normalize_perc, normalize_sub,
+    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
+    normalize_sub, preprocess_assign_diminish_mult,
 };
 use crate::{
     ad,
@@ -58,8 +58,12 @@ impl ModAccumFast {
     ) {
         match op {
             Op::PreAssign => {
-                self.pre_assign
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_sharp, aggr_mode)
+                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
+                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
+                {
+                    self.pre_assign
+                        .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
+                }
             }
             Op::PreMul => self.pre_mul.add_val(
                 val,
@@ -121,8 +125,12 @@ impl ModAccumFast {
                     .add_val(val, proj_mult, res_mult, normalize_perc, diminish_mul, false, aggr_mode)
             }
             Op::PostAssign => {
-                self.post_assign
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_sharp, aggr_mode)
+                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
+                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
+                {
+                    self.post_assign
+                        .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
+                }
             }
             Op::ExtraAdd => self
                 .extra_add

@@ -46,12 +46,6 @@ pub(super) fn normalize_perc(val: AttrVal) -> Option<AttrVal> {
 }
 
 // Apply diminishing factors (resistance- and projection-related reductions)
-pub(super) fn diminish_sharp(val: AttrVal, proj_mult: Option<AttrVal>, res_mult: Option<AttrVal>) -> AttrVal {
-    match proj_mult == Some(OF(0.0)) || res_mult == Some(OF(0.0)) {
-        true => OF(0.0),
-        false => val,
-    }
-}
 pub(super) fn diminish_basic(mut val: AttrVal, proj_mult: Option<AttrVal>, res_mult: Option<AttrVal>) -> AttrVal {
     if let Some(proj_mult) = proj_mult {
         val *= proj_mult;
@@ -66,4 +60,15 @@ pub(super) fn diminish_mul(val: AttrVal, proj_mult: Option<AttrVal>, res_mult: O
         return val;
     }
     diminish_basic(val - OF(1.0), res_mult, proj_mult) + OF(1.0)
+}
+
+// Multipliers affect assign operations differently: if any of multipliers is 0.0, then modification
+// is not applied altogether, otherwise it is applied fully.
+pub(super) fn preprocess_assign_diminish_mult(mult: Option<AttrVal>) -> Option<Option<AttrVal>> {
+    match mult {
+        // None means modification shouldn't be added
+        Some(OF(0.0)) => None,
+        Some(_) => Some(Some(OF(1.0))),
+        None => Some(None),
+    }
 }

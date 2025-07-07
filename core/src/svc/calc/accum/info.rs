@@ -6,8 +6,8 @@
 use smallvec::SmallVec;
 
 use super::shared::{
-    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, diminish_sharp, is_penal, normalize_div, normalize_noop,
-    normalize_perc, normalize_sub,
+    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
+    normalize_sub, preprocess_assign_diminish_mult,
 };
 use crate::{
     ad,
@@ -94,17 +94,23 @@ impl ModAccumInfo {
         affectors: SmallVec<AffectorInfo, 1>,
     ) {
         match op {
-            Op::PreAssign => self.pre_assign.add_val(
-                Op::PreAssign,
-                val,
-                proj_mult,
-                res_mult,
-                &normalize_noop,
-                &diminish_sharp,
-                &revert_noop,
-                aggr_mode,
-                affectors,
-            ),
+            Op::PreAssign => {
+                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
+                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
+                {
+                    self.pre_assign.add_val(
+                        Op::PreAssign,
+                        val,
+                        proj_mult,
+                        res_mult,
+                        &normalize_noop,
+                        &diminish_basic,
+                        &revert_noop,
+                        aggr_mode,
+                        affectors,
+                    )
+                }
+            }
             Op::PreMul => self.pre_mul.add_val(
                 Op::PreMul,
                 val,
@@ -211,17 +217,23 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PostAssign => self.post_assign.add_val(
-                Op::PostAssign,
-                val,
-                proj_mult,
-                res_mult,
-                &normalize_noop,
-                &diminish_sharp,
-                &revert_noop,
-                aggr_mode,
-                affectors,
-            ),
+            Op::PostAssign => {
+                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
+                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
+                {
+                    self.post_assign.add_val(
+                        Op::PostAssign,
+                        val,
+                        proj_mult,
+                        res_mult,
+                        &normalize_noop,
+                        &diminish_basic,
+                        &revert_noop,
+                        aggr_mode,
+                        affectors,
+                    )
+                }
+            }
             Op::ExtraAdd => self.extra_add.add_val(
                 Op::ExtraAdd,
                 val,

@@ -1,8 +1,8 @@
-from tests import approx
+from tests import approx, check_no_field
 
 
 def test_pre_assign(client, consts):
-    # Assignment is not affected by resistance
+    # Assignment is not affected by resistance, unless resistance is 100%
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_resist_attr_id = client.mk_eve_attr()
@@ -20,23 +20,32 @@ def test_pre_assign(client, consts):
         attrs={eve_affector_attr_id: 400},
         eff_ids=[eve_module_effect_id],
         defeff_id=eve_module_effect_id)
-    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500, eve_resist_attr_id: 0.4})
+    eve_affectee_ship1_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500, eve_resist_attr_id: 0.4})
+    eve_affectee_ship2_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500, eve_resist_attr_id: 0.0})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship1_id)
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    # Verification - value is not getting reduced despite being resisted
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(400)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
     assert api_mod.initial_val == approx(400)
-    assert api_mod.resist_mult is None
+    assert api_mod.resist_mult == approx(1.0)
     assert api_mod.applied_val == approx(400)
+    # Action
+    api_affectee_ship.change_ship(type_id=eve_affectee_ship2_id)
+    # Verification - when resistance reaches 100%, assignment is not applied altogether
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(500)
+    with check_no_field():
+        api_affectee_ship.mods  # noqa: B018
 
 
 def test_pre_mul(client, consts):
@@ -306,7 +315,7 @@ def test_post_percent(client, consts):
 
 
 def test_post_assign(client, consts):
-    # Assignment is not affected by resistance
+    # Assignment is not affected by resistance, unless resistance is 100%
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_resist_attr_id = client.mk_eve_attr()
@@ -324,20 +333,29 @@ def test_post_assign(client, consts):
         attrs={eve_affector_attr_id: 400},
         eff_ids=[eve_module_effect_id],
         defeff_id=eve_module_effect_id)
-    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500, eve_resist_attr_id: 0.4})
+    eve_affectee_ship1_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500, eve_resist_attr_id: 0.4})
+    eve_affectee_ship2_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500, eve_resist_attr_id: 0.0})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship1_id)
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    # Verification - value is not getting reduced despite being resisted
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(400)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
     assert api_mod.initial_val == approx(400)
-    assert api_mod.resist_mult is None
+    assert api_mod.resist_mult == approx(1.0)
     assert api_mod.applied_val == approx(400)
+    # Action
+    api_affectee_ship.change_ship(type_id=eve_affectee_ship2_id)
+    # Verification - when resistance reaches 100%, assignment is not applied altogether
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(500)
+    with check_no_field():
+        api_affectee_ship.mods  # noqa: B018
