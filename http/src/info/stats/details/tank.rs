@@ -36,3 +36,21 @@ impl From<rc::stats::StatLayerHp> for HStatLayerHp {
         }
     }
 }
+
+#[derive(serde_tuple::Serialize_tuple)]
+pub(crate) struct HStatLayerResist {
+    em: rc::AttrVal,
+    thermal: rc::AttrVal,
+    kinetic: rc::AttrVal,
+    explosive: rc::AttrVal,
+}
+impl From<rc::stats::DmgKinds<rc::AttrVal>> for HStatLayerResist {
+    fn from(core_stat: rc::stats::DmgKinds<rc::AttrVal>) -> Self {
+        Self {
+            em: core_stat.em,
+            thermal: core_stat.thermal,
+            kinetic: core_stat.kinetic,
+            explosive: core_stat.explosive,
+        }
+    }
+}

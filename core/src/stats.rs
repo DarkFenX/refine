@@ -1,2 +1,5 @@
 //! Stats-related exports
-pub use crate::svc::vast::{StatLayerHp, StatRes, StatSlot, StatTank};
+pub use crate::{
+    misc::DmgKinds,
+    svc::vast::{StatLayerHp, StatRes, StatSlot, StatTank},
+};

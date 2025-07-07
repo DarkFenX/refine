@@ -1,5 +1,5 @@
 use crate::{
-    info::stats::details::{HStatLayerHp, HStatRes, HStatSlot, HStatTank},
+    info::stats::details::{HStatLayerHp, HStatLayerResist, HStatRes, HStatSlot, HStatTank},
     util::TriStateField,
 };
 
@@ -57,6 +57,8 @@ pub(crate) struct HFitStats {
     pub(crate) speed: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
 }
 impl HFitStats {
     pub fn new() -> Self {
@@ -87,6 +89,7 @@ impl HFitStats {
             align_time: TriStateField::default(),
             speed: TriStateField::default(),
             hp: TriStateField::default(),
+            resists: TriStateField::default(),
         }
     }
 }
