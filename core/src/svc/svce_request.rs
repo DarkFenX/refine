@@ -1,14 +1,15 @@
 use crate::{
     ad,
     def::{AttrVal, FitKey, ItemKey},
-    misc::DmgKinds,
+    misc::{DmgKinds, DpsProfile},
     sol::REffs,
     svc::{
         Svc, SvcCtx,
         calc::{CalcAttrVal, ModificationInfo},
         err::KeyedItemLoadedError,
         vast::{
-            StatLayerHp, StatRes, StatSlot, StatTank, ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol, Vast,
+            StatLayerEhp, StatLayerHp, StatRes, StatSlot, StatTank, ValOptionsInt, ValOptionsSolInt, ValResultFit,
+            ValResultSol, Vast,
         },
     },
     uad::{Uad, UadFit},
@@ -233,6 +234,19 @@ impl Svc {
     pub(crate) fn get_stat_item_hp(&mut self, uad: &Uad, item_key: ItemKey) -> Option<StatTank<StatLayerHp>> {
         self.vast
             .get_stat_item_hp(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
+    }
+    pub(crate) fn get_stat_item_ehp(
+        &mut self,
+        uad: &Uad,
+        item_key: ItemKey,
+        incoming_dps: Option<&DpsProfile>,
+    ) -> Option<StatTank<StatLayerEhp>> {
+        self.vast
+            .get_stat_item_ehp(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, incoming_dps)
+    }
+    pub(crate) fn get_stat_item_wcehp(&mut self, uad: &Uad, item_key: ItemKey) -> Option<StatTank<StatLayerEhp>> {
+        self.vast
+            .get_stat_item_wcehp(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_resists(
         &mut self,

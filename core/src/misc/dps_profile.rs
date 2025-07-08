@@ -61,6 +61,9 @@ impl DpsProfile {
             None => false,
         }
     }
+    pub(crate) fn get_sum_regular(&self) -> AttrVal {
+        self.em + self.thermal + self.kinetic + self.explosive
+    }
 }
 
 #[derive(thiserror::Error, Debug)]
