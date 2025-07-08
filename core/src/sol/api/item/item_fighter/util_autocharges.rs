@@ -1,7 +1,6 @@
 use itertools::Itertools;
 
 use crate::{
-    ad,
     def::ItemKey,
     sol::{SolarSystem, reffs::REffs, rprojs::RProjs},
     svc::Svc,
@@ -27,20 +26,11 @@ impl SolarSystem {
         let effects_with_ac_a_item_ids = uad_fighter
             .get_a_effect_datas()
             .unwrap()
-            .keys()
-            .filter_map(|&a_effect_id| {
-                let a_effect = uad.src.get_a_effect(&a_effect_id)?;
-                let ac_a_item_id = match a_effect.ae.charge {
-                    Some(ad::AEffectChargeInfo::Attr(charge_a_attr_id)) => uad_fighter
-                        .get_a_attrs()
-                        .unwrap()
-                        .get(&charge_a_attr_id)?
-                        .into_inner()
-                        .round()
-                        as ad::AItemId,
-                    _ => return None,
-                };
-                Some((a_effect_id, ac_a_item_id))
+            .iter()
+            .filter_map(|(a_effect_id, a_effect_data)| {
+                a_effect_data
+                    .autocharge
+                    .map(|ac_a_item_id| (*a_effect_id, ac_a_item_id))
             })
             .collect_vec();
         if effects_with_ac_a_item_ids.is_empty() {

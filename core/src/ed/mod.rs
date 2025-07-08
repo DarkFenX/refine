@@ -9,24 +9,24 @@
 //! [adapted data](crate::ad).
 //!
 //! ### Primary keys
-//! Almost every data entry provided by a [`ed::EveDataHandler`](crate::ed::EveDataHandler)
-//! implementation has a private PK getter defined. For every vector there can be maximum one entry
-//! with the same PK. When there are multiple entries with the same PK, only first seen entry is
-//! kept, with the rest being completely ignored.
+//! Almost every data entry provided by a [`ed::EveDataHandler`](EveDataHandler) implementation has
+//! a private PK getter defined. For every vector there can be maximum one entry with the same PK.
+//! When there are multiple entries with the same PK, only first seen entry is kept, with the rest
+//! being completely ignored.
 //!
 //! ### Item's default dogma effect
 //! Every item can have a maximum of one default dogma effect. For any given item,
-//! [`ed::EItemEffect`](crate::ed::EItemEffect) which is marked as default will be marked as
-//! non-default past first seen entry.
+//! [`ed::EItemEffect`](EItemEffect) which is marked as default will be marked as non-default past
+//! first seen entry.
 //!
 //! ### Ability-to-effect data transfer
 //! Reefast assumes that dogma effects which power fighter abilities are used only by those
 //! abilities and nothing else. During data adaptation, this assumption allows to move all the
 //! fighter ability data to data structures related to dogma effects.
 //!
-//! - Data defined on [`ed::EFighterAbil`](crate::ed::EFighterAbil) is moved to
+//! - Data defined on [`ed::EFighterAbil`](EFighterAbil) is moved to
 //!   [`ad::AEffect`](crate::ad::AEffect).
-//! - Data defined on [`ed::EItemFighterAbil`](crate::ed::EItemFighterAbil) is moved to
+//! - Data defined on [`ed::EItemFighterAbil`](EItemFighterAbil) is moved to
 //!   [`ad::AItemEffData`](crate::ad::AItemEffectData), which describe effect properties specific to
 //!   parent [`ad::AItem`](crate::ad::AItem).
 //!

@@ -1,10 +1,16 @@
-use crate::{ac, ad, ec, ntt::NttEffect};
+use crate::{
+    ac, ec,
+    ntt::{NttEffect, NttEffectCharge, NttEffectHc},
+};
 
 pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(ec::effects::FTR_ABIL_BOMB),
         aid: ac::effects::FTR_ABIL_BOMB,
-        adg_charge_info: Some(ad::AEffectChargeInfo::Attr(ac::attrs::FTR_ABIL_BOMB_TYPE)),
+        hc: NttEffectHc {
+            charge: Some(NttEffectCharge::Attr(ac::attrs::FTR_ABIL_BOMB_TYPE)),
+            ..
+        },
         ..
     }
 }

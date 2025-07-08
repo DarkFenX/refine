@@ -1,3 +1,6 @@
+pub(crate) use effect_charge::{NttEffectCharge, NttEffectChargeDepl};
+
+mod effect_charge;
 pub(in crate::ntt::eff) mod missile_dmg_self_srq;
 pub(in crate::ntt::eff) mod proj_mult;
 pub(in crate::ntt::eff) mod prop_mods;

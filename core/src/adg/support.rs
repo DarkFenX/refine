@@ -9,7 +9,6 @@ pub(in crate::adg) struct GSupport {
     pub(in crate::adg) rendered_type_lists: RMap<ed::EItemListId, RSet<ad::AItemId>>,
     pub(in crate::adg) attr_unit_map: RMap<ed::EAttrId, ed::EAttrUnitId>,
     pub(in crate::adg) eff_buff_map: RMap<ed::EEffectId, ad::AEffectBuffInfo>,
-    pub(in crate::adg) eff_charge_map: RMap<ed::EEffectId, ad::AEffectChargeInfo>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
@@ -18,7 +17,6 @@ impl GSupport {
             rendered_type_lists: RMap::new(),
             attr_unit_map: RMap::new(),
             eff_buff_map: RMap::new(),
-            eff_charge_map: RMap::new(),
         }
     }
     pub(in crate::adg) fn fill(&mut self, e_data: &ed::EData) {
@@ -26,7 +24,6 @@ impl GSupport {
         self.fill_rendered_type_lists(e_data);
         self.fill_attr_unit_map(e_data);
         self.fill_eff_buff_map();
-        self.fill_eff_charge_map();
     }
     fn fill_grp_cat_map(&mut self, e_data: &ed::EData) {
         for grp in e_data.groups.data.iter() {
@@ -76,15 +73,6 @@ impl GSupport {
         for attr in e_data.attrs.data.iter() {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
-            }
-        }
-    }
-    fn fill_eff_charge_map(&mut self) {
-        for ntt_effect in ntt::NTT_EFFECTS.iter() {
-            if let Some(charge_info) = ntt_effect.adg_charge_info
-                && let Some(e_effect_id) = ntt_effect.eid
-            {
-                self.eff_charge_map.insert(e_effect_id, charge_info);
             }
         }
     }

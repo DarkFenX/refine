@@ -7,10 +7,9 @@
 pub use data::{
     AAttr, AAttrId, AAttrVal, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ACount,
     ACustomEffectId, AData, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope,
-    AEffectBuffSrc, AEffectBuffSrcCustom, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectLocation,
-    AEffectModBuildStatus, AEffectModifier, AEffectRt, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId,
-    AItemKind, AItemRt, AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState, ArcAttr, ArcBuff, ArcEffectRt,
-    ArcItemRt, ArcMuta,
+    AEffectBuffSrc, AEffectBuffSrcCustom, AEffectCatId, AEffectId, AEffectLocation, AEffectModBuildStatus,
+    AEffectModifier, AEffectRt, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemKind, AItemRt,
+    AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState, ArcAttr, ArcBuff, ArcEffectRt, ArcItemRt, ArcMuta,
 };
 pub(crate) use data::{AEffectXt, AItemChargeLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind, ASlotIndex};
 pub use handler::AdaptedDataHandler;

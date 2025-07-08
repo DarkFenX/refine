@@ -2,6 +2,7 @@ use std::{collections::HashMap, sync::LazyLock};
 
 pub use eff::NttEffectHc;
 pub(crate) use eff::{LocalRepGetter, NttEffect, ProjMultGetter, RemoteRepGetter};
+pub(crate) use shared::{NttEffectCharge, NttEffectChargeDepl};
 
 use crate::ad;
 

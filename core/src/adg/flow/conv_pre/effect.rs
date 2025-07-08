@@ -50,7 +50,6 @@ pub(in crate::adg::flow::conv_pre) fn conv_effects(
             resist_attr_id: e_effect.resist_attr_id,
             mod_build_status: ad::AEffectModBuildStatus::Unbuilt,
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
-            charge: g_supp.eff_charge_map.get(&e_effect.id).copied(),
             ..
         };
         let mut mod_errs = 0;

@@ -12,7 +12,10 @@
 // well (although transferring would also work).
 // Script effects are defined in other files.
 
-use crate::{ac, ad, ec, ed, ntt::NttEffect};
+use crate::{
+    ac, ad, ec, ed,
+    ntt::{NttEffect, NttEffectCharge, NttEffectChargeDepl, NttEffectHc},
+};
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
 const A_EFFECT_ID: ad::AEffectId = ac::effects::WARP_DISRUPT_SPHERE;
@@ -21,8 +24,12 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_charge_info: Some(ad::AEffectChargeInfo::Loaded),
         adg_custom_fn: Some(update_effect),
+        hc: NttEffectHc {
+            // TODO: add comment that charge needs to be specified to run on-charge effects
+            charge: Some(NttEffectCharge::Loaded(NttEffectChargeDepl::None)),
+            ..
+        },
         ..
     }
 }

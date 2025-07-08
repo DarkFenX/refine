@@ -1,7 +1,7 @@
 use crate::{
     ac, ad, ec, ed,
     ntt::{
-        NttEffect, NttEffectHc,
+        NttEffect, NttEffectCharge, NttEffectChargeDepl, NttEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_unrestricted_s2s},
     },
 };
@@ -13,9 +13,9 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_charge_info: Some(ad::AEffectChargeInfo::Loaded),
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NttEffectHc {
+            charge: Some(NttEffectCharge::Loaded(NttEffectChargeDepl::ChargeRate)),
             get_proj_mult: Some(get_proj_mult_normal_unrestricted_s2s),
             ..
         },

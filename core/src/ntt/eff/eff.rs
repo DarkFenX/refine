@@ -3,6 +3,7 @@ use crate::{
     def::{AttrVal, ItemKey},
     ed,
     misc::EffectSpec,
+    ntt::NttEffectCharge,
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
@@ -22,8 +23,6 @@ pub(crate) struct NttEffect {
     pub(crate) aid: ad::AEffectId,
     // Specifies if effect applies any buffs
     pub(crate) adg_buff_info: Option<ad::AEffectBuffInfo> = None,
-    // Specifies if effect uses charges
-    pub(crate) adg_charge_info: Option<ad::AEffectChargeInfo> = None,
     // Data customization function ran during cache generation time. Can change anything, but is
     // attached to effect, since it mostly operates on effects
     pub(crate) adg_custom_fn: Option<fn(&mut ad::AData)> = None,
@@ -35,6 +34,7 @@ pub(crate) struct NttEffect {
 
 #[derive(Copy, Clone, Default)]
 pub struct NttEffectHc {
+    pub(crate) charge: Option<NttEffectCharge> = None,
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, EffectSpec)> = None,
     // Projection-related

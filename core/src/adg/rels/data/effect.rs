@@ -5,6 +5,7 @@ use crate::{
         rels::{Fk, KeyPart, Pk},
     },
     ed,
+    ntt::{NTT_EFFECT_MAP, NttEffectCharge},
     util::vec_push_opt,
 };
 
@@ -41,6 +42,12 @@ impl Fk for ed::EEffect {
                     vec.push(*attr_id);
                 }
             }
+        }
+        // Hardcoded charge info can reference attributes
+        if let Some(ntt_effect) = NTT_EFFECT_MAP.get(&ad::AEffectId::Dogma(self.id))
+            && let Some(NttEffectCharge::Attr(attr_id)) = ntt_effect.hc.charge
+        {
+            vec.push(attr_id);
         }
         vec
     }

@@ -1,7 +1,6 @@
 use crate::{
     ad::{
-        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectChargeInfo, AEffectId, AEffectModBuildStatus, AEffectModifier,
-        AEffectXt, AState,
+        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModBuildStatus, AEffectModifier, AEffectXt, AState,
     },
     ntt,
     util::Named,
@@ -50,8 +49,6 @@ pub struct AEffect {
     pub stop_ids: Vec<AEffectId> = Vec::new(),
     /// Buff carried by the effect.
     pub buff: Option<AEffectBuffInfo> = None,
-    /// Charge used by the effect.
-    pub charge: Option<AEffectChargeInfo> = None,
 }
 impl Named for AEffect {
     fn get_name() -> &'static str {

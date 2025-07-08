@@ -1,4 +1,7 @@
-use crate::{ac, ad, ec, ntt::NttEffect};
+use crate::{
+    ac, ad, ec,
+    ntt::{NttEffect, NttEffectCharge, NttEffectChargeDepl, NttEffectHc},
+};
 
 pub(super) fn mk_ntt_effect() -> NttEffect {
     NttEffect {
@@ -8,7 +11,10 @@ pub(super) fn mk_ntt_effect() -> NttEffect {
             source: ad::AEffectBuffSrc::DefaultAttrs,
             scope: ad::AEffectBuffScope::FleetShips,
         }),
-        adg_charge_info: Some(ad::AEffectChargeInfo::Loaded),
+        hc: NttEffectHc {
+            charge: Some(NttEffectCharge::Loaded(NttEffectChargeDepl::ChargeRate)),
+            ..
+        },
         ..
     }
 }
