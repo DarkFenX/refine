@@ -2,7 +2,7 @@ from tests import approx, range_s2s_to_api
 from tests.fw.api import StatsOptions
 
 
-def test_buffer_modified(client, consts):
+def test_buffer(client, consts):
     eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
     eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
     eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
