@@ -1,5 +1,5 @@
 use crate::{
-    ad, ed, ntt,
+    ad, ed, nd,
     util::{RMap, RMapRSet, RSet},
 };
 
@@ -61,9 +61,9 @@ impl GSupport {
         }
     }
     fn fill_eff_buff_map(&mut self) {
-        for ntt_effect in ntt::NTT_EFFECTS.iter() {
-            if let Some(buff_info) = &ntt_effect.adg_buff_info
-                && let Some(e_effect_id) = ntt_effect.eid
+        for n_effect in nd::N_EFFECTS.iter() {
+            if let Some(buff_info) = &n_effect.adg_buff_info
+                && let Some(e_effect_id) = n_effect.eid
             {
                 self.eff_buff_map.insert(e_effect_id, buff_info.clone());
             }

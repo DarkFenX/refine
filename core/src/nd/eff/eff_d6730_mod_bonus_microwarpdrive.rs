@@ -1,0 +1,38 @@
+use crate::{
+    ac, ad, ec, ed,
+    nd::{
+        NEffect, NEffectHc,
+        eff::shared::prop_mods::{calc_add_custom_modifier, mk_a_modifier_mass, mk_a_modifier_sig},
+    },
+};
+
+const E_EFFECT_ID: ed::EEffectId = ec::effects::MOD_BONUS_MICROWARPDRIVE;
+const A_EFFECT_ID: ad::AEffectId = ac::effects::MOD_BONUS_MICROWARPDRIVE;
+
+pub(super) fn mk_n_effect() -> NEffect {
+    NEffect {
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        adg_custom_fn: Some(update_a_effect),
+        hc: NEffectHc {
+            calc_custom_fn: Some(calc_add_custom_modifier),
+            ..
+        },
+        ..
+    }
+}
+
+fn update_a_effect(a_data: &mut ad::AData) {
+    match a_data.effects.get_mut(&A_EFFECT_ID) {
+        Some(effect) => {
+            if !effect.mods.is_empty() {
+                tracing::info!("effect {A_EFFECT_ID}: MWD effect has modifiers, overwriting them");
+                effect.mods.clear();
+            }
+            effect.mods.push(mk_a_modifier_mass());
+            effect.mods.push(mk_a_modifier_sig());
+            effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
+        }
+        None => tracing::info!("effect {A_EFFECT_ID}: MWD effect is not found for customization"),
+    }
+}

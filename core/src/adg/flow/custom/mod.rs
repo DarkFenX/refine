@@ -1,13 +1,13 @@
 //! Data customizations which are applied on adapted data generation.
 
-use crate::{ad, ntt::NTT_EFFECTS};
+use crate::{ad, nd::N_EFFECTS};
 
 mod subsystem_slots;
 
 pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     // Effect customization/fixes
-    for ntt_effect in NTT_EFFECTS.iter() {
-        if let Some(customizer_fn) = ntt_effect.adg_custom_fn {
+    for n_effect in N_EFFECTS.iter() {
+        if let Some(customizer_fn) = n_effect.adg_custom_fn {
             customizer_fn(a_data);
         }
     }

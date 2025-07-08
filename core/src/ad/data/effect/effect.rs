@@ -2,7 +2,7 @@ use crate::{
     ad::{
         AAttrId, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModBuildStatus, AEffectModifier, AEffectXt, AState,
     },
-    ntt,
+    nd,
     util::Named,
 };
 
@@ -66,23 +66,23 @@ pub struct AEffectRt {
     /// Adapted effect.
     pub ae: AEffect,
     /// Hardcoded data for the effect.
-    pub(crate) hc: ntt::NttEffectHc,
-    /// Extra data, which is generated using data from adapted data during runtime.
+    pub(crate) hc: nd::NEffectHc,
+    /// Extra data, which is generated using adapted data and hardcoded data.
     pub(crate) xt: AEffectXt,
 }
 impl AEffectRt {
     /// Construct new adapted effect with runtime data.
     pub fn new(a_effect: AEffect) -> Self {
-        let ntt_effect = ntt::NTT_EFFECT_MAP.get(&a_effect.id);
+        let n_effect = nd::N_EFFECT_MAP.get(&a_effect.id);
         let xt = AEffectXt {
-            proj_a_attr_ids: ntt_effect
+            proj_a_attr_ids: n_effect
                 .and_then(|v| v.xt_get_proj_attrs)
                 .map(|get_proj_attrs| get_proj_attrs(&a_effect))
                 .unwrap_or_default(),
         };
         Self {
             ae: a_effect,
-            hc: ntt_effect.map(|v| v.hc).unwrap_or_default(),
+            hc: n_effect.map(|n_effect| n_effect.hc).unwrap_or_default(),
             xt,
         }
     }

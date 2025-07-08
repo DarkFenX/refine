@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::{AttrVal, Count, FitKey, ItemKey},
     misc::{AttrSpec, EffectSpec},
-    ntt::{LocalRepGetter, RemoteRepGetter},
+    nd::{LocalRepGetter, RemoteRepGetter},
     svc::vast::{
         ValCache, ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache,
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,

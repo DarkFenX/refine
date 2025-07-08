@@ -7,7 +7,7 @@ use crate::{
     ac, ad,
     def::{AttrVal, ItemKey},
     misc::EffectSpec,
-    ntt::ProjMultGetter,
+    nd::ProjMultGetter,
     svc::{
         SvcCtx,
         calc::{

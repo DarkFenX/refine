@@ -54,7 +54,7 @@ mod ec;
 pub mod ed;
 pub mod err;
 mod misc;
-mod ntt;
+mod nd;
 mod sol;
 mod src;
 pub mod stats;

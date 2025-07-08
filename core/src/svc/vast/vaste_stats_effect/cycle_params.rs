@@ -2,7 +2,7 @@ use crate::{
     ac,
     def::{Count, ItemKey},
     misc::EffectSpec,
-    ntt::NttEffectCharge,
+    nd::NEffectCharge,
     svc::SvcCtx,
     uad::UadItem,
 };
@@ -40,7 +40,7 @@ pub(in crate::svc::vast) struct EffectChargeCountInfo {
 
 pub(in crate::svc::vast) fn get_effect_charge(ctx: SvcCtx, espec: &EffectSpec) -> EffectCharge {
     match ctx.uad.src.get_a_effect(&espec.a_effect_id).unwrap().hc.charge {
-        Some(NttEffectCharge::Loaded(_)) => {
+        Some(NEffectCharge::Loaded(_)) => {
             let parent_item = ctx.uad.items.get(espec.item_key);
             let charge_key = match parent_item.get_charge_key() {
                 Some(charge_key) => charge_key,
@@ -59,7 +59,7 @@ pub(in crate::svc::vast) fn get_effect_charge(ctx: SvcCtx, espec: &EffectSpec) -
                 count_info: get_count_info_for_loaded_charge(parent_item, charge_count),
             })
         }
-        Some(NttEffectCharge::Attr(_)) => {
+        Some(NEffectCharge::Attr(_)) => {
             let parent_item = ctx.uad.items.get(espec.item_key);
             let charge_key = match parent_item.get_autocharges() {
                 Some(autocharges) => match autocharges.get(&espec.a_effect_id) {
