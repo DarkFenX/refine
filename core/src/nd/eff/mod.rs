@@ -1,7 +1,6 @@
 use std::{collections::HashMap, sync::LazyLock};
 
-pub use eff::NEffectHc;
-pub(crate) use eff::{NEffect, NLocalRepGetter, NProjMultGetter, NRemoteRepGetter};
+pub(crate) use eff::{NEffect, NEffectHc, NLocalRepGetter, NProjMultGetter, NRemoteRepGetter};
 pub(crate) use shared::{NEffectCharge, NEffectChargeDepl};
 
 use crate::ad;
