@@ -244,9 +244,9 @@ impl Svc {
         self.vast
             .get_stat_item_ehp(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, incoming_dps)
     }
-    pub(crate) fn get_stat_item_wcehp(&mut self, uad: &Uad, item_key: ItemKey) -> Option<StatTank<StatLayerEhp>> {
+    pub(crate) fn get_stat_item_wc_ehp(&mut self, uad: &Uad, item_key: ItemKey) -> Option<StatTank<StatLayerEhp>> {
         self.vast
-            .get_stat_item_wcehp(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
+            .get_stat_item_wc_ehp(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_resists(
         &mut self,

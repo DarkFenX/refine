@@ -31,6 +31,8 @@ pub(crate) struct HGetFitStatsCmd {
     align_time: Option<bool>,
     speed: Option<bool>,
     hp: Option<bool>,
+    ehp: Option<bool>,
+    wc_ehp: Option<bool>,
     resists: Option<bool>,
 }
 impl HGetFitStatsCmd {
@@ -114,6 +116,12 @@ impl HGetFitStatsCmd {
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();
+        }
+        if self.ehp.unwrap_or(self.default) {
+            stats.ehp = core_fit.get_stat_ehp(None).into();
+        }
+        if self.wc_ehp.unwrap_or(self.default) {
+            stats.wc_ehp = core_fit.get_stat_wc_ehp().into();
         }
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();

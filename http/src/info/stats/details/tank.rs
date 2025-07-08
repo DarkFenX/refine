@@ -38,6 +38,24 @@ impl From<rc::stats::StatLayerHp> for HStatLayerHp {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
+pub(crate) struct HStatLayerEhp {
+    buffer: rc::AttrVal,
+    ancil_local: rc::AttrVal,
+    ancil_remote: rc::AttrVal,
+    mult: rc::AttrVal,
+}
+impl From<rc::stats::StatLayerEhp> for HStatLayerEhp {
+    fn from(core_stat: rc::stats::StatLayerEhp) -> Self {
+        Self {
+            buffer: core_stat.buffer,
+            ancil_local: core_stat.ancil_local,
+            ancil_remote: core_stat.ancil_remote,
+            mult: core_stat.mult,
+        }
+    }
+}
+
+#[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HStatLayerResist {
     em: rc::AttrVal,
     thermal: rc::AttrVal,

@@ -31,7 +31,7 @@ impl Vast {
         let struct_mult = Vast::get_tanking_efficiency(&resists.structure, incoming_dps);
         Some(make_ehp(hp, shield_mult, armor_mult, struct_mult))
     }
-    pub(in crate::svc) fn get_stat_item_wcehp(
+    pub(in crate::svc) fn get_stat_item_wc_ehp(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
