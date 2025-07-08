@@ -11,7 +11,9 @@ pub use data::{
     AEffectModifier, AEffectRt, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemKind, AItemRt,
     AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState, ArcAttr, ArcBuff, ArcEffectRt, ArcItemRt, ArcMuta,
 };
-pub(crate) use data::{AEffectXt, AItemChargeLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind, ASlotIndex};
+pub(crate) use data::{
+    AEffectXt, AItemChargeLimit, AItemContainerLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind, ASlotIndex,
+};
 pub use handler::AdaptedDataHandler;
 pub use result::AResult;
 

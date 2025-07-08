@@ -4,6 +4,7 @@ use super::{
         get_volume,
     },
     charge_limit::get_item_charge_limit,
+    container_limit::get_item_container_limit,
     drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_count::get_max_fighter_count,
@@ -21,8 +22,8 @@ use super::{
 };
 use crate::{
     ad::{
-        AAttrId, AAttrVal, ACount, AItem, AItemChargeLimit, AItemKind, AItemRt, AItemShipLimit, AShipDroneLimit,
-        AShipKind, ASkillLevel, ASlotIndex,
+        AAttrId, AAttrVal, ACount, AItem, AItemChargeLimit, AItemContainerLimit, AItemKind, AItemRt, AItemShipLimit,
+        AShipDroneLimit, AShipKind, ASkillLevel, ASlotIndex,
     },
     util::RMap,
 };
@@ -40,6 +41,8 @@ pub(crate) struct AItemXt {
     pub(crate) ship_limit: Option<AItemShipLimit>,
     // If set, item can load only charges which fit into limit
     pub(crate) charge_limit: Option<AItemChargeLimit>,
+    // If set, item can be loaded as charge into other items which fits this limit
+    pub(crate) container_limit: Option<AItemContainerLimit>,
     // Slot index an implant takes
     pub(crate) implant_slot: Option<ASlotIndex>,
     // Slot index a booster takes
@@ -95,6 +98,7 @@ impl AItemXt {
             radius: get_radius(&a_item.attrs),
             ship_limit: get_item_ship_limit(a_item.id, &a_item.attrs),
             charge_limit: get_item_charge_limit(&a_item.attrs),
+            container_limit: get_item_container_limit(&a_item.attrs),
             implant_slot: get_implant_slot(&a_item.attrs),
             booster_slot: get_booster_slot(&a_item.attrs),
             subsystem_slot: get_subsystem_slot(&a_item.attrs),
@@ -127,6 +131,7 @@ impl AItemXt {
             radius: get_radius(attrs),
             ship_limit: get_item_ship_limit(a_item.ai.id, attrs),
             charge_limit: get_item_charge_limit(attrs),
+            container_limit: get_item_container_limit(attrs),
             implant_slot: get_implant_slot(attrs),
             booster_slot: get_booster_slot(attrs),
             subsystem_slot: get_subsystem_slot(attrs),

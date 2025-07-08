@@ -6,7 +6,7 @@ pub use effect::{
     AEffectLocation, AEffectModBuildStatus, AEffectModifier, AEffectRt,
 };
 pub use item::{AItem, AItemEffectData, AItemKind, AItemRt, ASkillLevel};
-pub(crate) use item::{AItemChargeLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind};
+pub(crate) use item::{AItemChargeLimit, AItemContainerLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind};
 pub use muta::{AMuta, AMutaAttrRange};
 pub(crate) use primitives::ASlotIndex;
 pub use primitives::{

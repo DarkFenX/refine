@@ -1,4 +1,5 @@
 pub(crate) use charge_limit::AItemChargeLimit;
+pub(crate) use container_limit::AItemContainerLimit;
 pub(crate) use drone_limit::AShipDroneLimit;
 pub(crate) use extras::AItemXt;
 pub use kind::AItemKind;
@@ -7,6 +8,7 @@ pub(crate) use ship_limit::AItemShipLimit;
 
 mod attr_val;
 mod charge_limit;
+mod container_limit;
 mod drone_limit;
 mod effect_immunity;
 mod extras;
