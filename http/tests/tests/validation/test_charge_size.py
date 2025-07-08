@@ -223,6 +223,76 @@ def test_rounding(client, consts):
     assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2.01, 2)}
 
 
+def test_switch_type_id_module(client, consts):
+    eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
+    eve_charge_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_module1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_module2_id = client.mk_eve_item(attrs={eve_size_attr_id: 3})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=False)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=False)
+    assert api_val.passed is False
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 3)}
+    # Action
+    api_module.change_module(type_id=eve_module1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=True)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=True)
+    assert api_val.passed is False
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 3)}
+
+
+def test_switch_type_id_charge(client, consts):
+    eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 3})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=False)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.charge.change_charge(type_id=eve_charge2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=False)
+    assert api_val.passed is False
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 3, 2)}
+    # Action
+    api_module.charge.change_charge(type_id=eve_charge1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=True)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.charge.change_charge(type_id=eve_charge2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_size=True), flip_order=True)
+    assert api_val.passed is False
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 3, 2)}
+
+
 def test_modified_module(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
     eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})

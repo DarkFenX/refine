@@ -311,6 +311,80 @@ def test_rounding(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_switch_type_id_module(client, consts):
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_charge_id = client.mk_eve_item(grp_id=eve_grp1_id)
+    eve_module1_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
+    eve_module2_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp2_id})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
+    # Action
+    api_module.change_module(type_id=eve_module1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
+
+
+def test_switch_type_id_charge(client, consts):
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
+    eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.charge.change_charge(type_id=eve_charge2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=False)
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp2_id, [eve_grp1_id])}
+    # Action
+    api_module.charge.change_charge(type_id=eve_charge1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.charge.change_charge(type_id=eve_charge2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True), flip_order=True)
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp2_id, [eve_grp1_id])}
+
+
 def test_modified(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
