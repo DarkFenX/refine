@@ -1,9 +1,10 @@
 use crate::{
     ac, ad,
-    def::{Count, ItemKey},
+    def::{Count, ItemKey, OF},
     misc::{CycleCount, EffectSpec},
     nd::{NEffectCharge, NEffectChargeDepl},
     svc::SvcCtx,
+    util::round,
 };
 
 pub(crate) fn get_espec_cycle_count(ctx: SvcCtx, espec: EffectSpec) -> CycleCount {
@@ -17,7 +18,7 @@ pub(crate) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &
             NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(ctx, item_key, a_effect),
             NEffectCharge::Loaded(charge_depletion) => match charge_depletion {
                 NEffectChargeDepl::ChargeRate => get_charge_rate_cycle_count(ctx, item_key),
-                NEffectChargeDepl::Crystal => CycleCount::Infinite,
+                NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, item_key),
                 NEffectChargeDepl::None => CycleCount::Infinite,
             },
         },
@@ -63,4 +64,40 @@ fn get_charge_rate_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
     // adjustments all AARs have enough paste to run w/o partial efficiency cycles, we ignore this
     // for simplicity's & performance's sake
     CycleCount::Count(charge_count / charges_per_cycle)
+}
+
+fn get_crystal_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
+    let charge_uad_item = match ctx.uad.items.get(item_key).get_charge_key() {
+        Some(charge_key) => ctx.uad.items.get(charge_key),
+        // No charge - can't cycle
+        None => return CycleCount::Count(0),
+    };
+    let charge_attrs = match charge_uad_item.get_a_attrs() {
+        Some(attrs) => attrs,
+        // Charge is not loaded - can't cycle
+        None => return CycleCount::Count(0),
+    };
+    if charge_attrs
+        .get(&ac::attrs::CRYSTALS_GET_DAMAGED)
+        .copied()
+        .unwrap_or(OF(0.0))
+        == OF(0.0)
+    {
+        return CycleCount::Infinite;
+    }
+    // Damage or chance of 0 or not defined - can cycle infinitely
+    let dmg = match charge_attrs.get(&ac::attrs::CRYSTAL_VOLATILITY_DAMAGE) {
+        Some(OF(0.0)) => return CycleCount::Infinite,
+        Some(dmg) => *dmg,
+        None => return CycleCount::Infinite,
+    };
+    let chance = match charge_attrs.get(&ac::attrs::CRYSTAL_VOLATILITY_CHANCE) {
+        Some(OF(0.0)) => return CycleCount::Infinite,
+        Some(dmg) => *dmg,
+        None => return CycleCount::Infinite,
+    };
+    let hp = charge_attrs.get(&ac::attrs::HP).copied().unwrap_or(OF(0.0));
+    // Rounding is protection against float precision loss
+    let cycle_count = round(hp / (dmg * chance), 10).floor() as Count;
+    CycleCount::Count(cycle_count)
 }
