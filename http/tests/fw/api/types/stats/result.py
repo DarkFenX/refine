@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from tests.fw.util import AttrDict, AttrHookDef
+from .stat_ehp import StatEhp
 from .stat_hp import StatHp
 from .stat_resists import StatResists
 from .stat_resource import StatResource
@@ -34,4 +35,6 @@ class FitStats(AttrDict):
             'drone_bandwidth': AttrHookDef(func=lambda d: StatResource(data=d)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
             'hp': AttrHookDef(func=lambda d: StatHp(data=d) if d is not None else None),
+            'ehp': AttrHookDef(func=lambda d: StatEhp(data=d) if d is not None else None),
+            'wc_ehp': AttrHookDef(func=lambda d: StatEhp(data=d) if d is not None else None),
             'resists': AttrHookDef(func=lambda d: StatResists(data=d) if d is not None else None)})

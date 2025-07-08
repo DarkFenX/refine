@@ -35,6 +35,8 @@ class StatsOptions:
     align_time: StatOption  = Absent
     speed: StatOption  = Absent
     hp: StatOption  = Absent
+    ehp: StatOption  = Absent
+    wc_ehp: StatOption  = Absent
     resists: StatOption  = Absent
 
     def to_dict(self) -> dict:
