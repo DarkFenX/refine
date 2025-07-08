@@ -11,10 +11,10 @@ use crate::{
     uad::UadProjRange,
 };
 
-pub(crate) type ProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
-pub(crate) type ProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
-pub(crate) type LocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
-pub(crate) type RemoteRepGetter = fn(SvcCtx, &mut Calc, EffectSpec, Option<ItemKey>) -> Option<AttrVal>;
+pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
+pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
+pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
+pub(crate) type NRemoteRepGetter = fn(SvcCtx, &mut Calc, EffectSpec, Option<ItemKey>) -> Option<AttrVal>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -27,7 +27,7 @@ pub(crate) struct NEffect {
     // attached to effect, since it mostly operates on effects
     pub(crate) adg_custom_fn: Option<fn(&mut ad::AData)> = None,
     // Getter for attribute IDs which define projection range of effect
-    pub(crate) xt_get_proj_attrs: Option<ProjAttrGetter> = None,
+    pub(crate) xt_get_proj_attrs: Option<NProjAttrGetter> = None,
     // Effect data hardcoded in the library
     pub(crate) hc: NEffectHc = NEffectHc { .. },
 }
@@ -38,12 +38,12 @@ pub struct NEffectHc {
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, EffectSpec)> = None,
     // Projection-related
-    pub(crate) get_proj_mult: Option<ProjMultGetter> = None,
+    pub(crate) get_proj_mult: Option<NProjMultGetter> = None,
     // Functions which fetch various stats
-    pub(crate) get_local_armor_rep_amount: Option<LocalRepGetter> = None,
-    pub(crate) get_local_shield_rep_amount: Option<LocalRepGetter> = None,
-    pub(crate) get_local_structure_rep_amount: Option<LocalRepGetter> = None,
-    pub(crate) get_remote_armor_rep_amount: Option<RemoteRepGetter> = None,
-    pub(crate) get_remote_shield_rep_amount: Option<RemoteRepGetter> = None,
-    pub(crate) get_remote_structure_rep_amount: Option<RemoteRepGetter> = None,
+    pub(crate) get_local_armor_rep_amount: Option<NLocalRepGetter> = None,
+    pub(crate) get_local_shield_rep_amount: Option<NLocalRepGetter> = None,
+    pub(crate) get_local_structure_rep_amount: Option<NLocalRepGetter> = None,
+    pub(crate) get_remote_armor_rep_amount: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_shield_rep_amount: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_structure_rep_amount: Option<NRemoteRepGetter> = None,
 }

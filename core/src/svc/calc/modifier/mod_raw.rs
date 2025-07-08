@@ -7,7 +7,7 @@ use crate::{
     ac, ad,
     def::{AttrVal, ItemKey},
     misc::EffectSpec,
-    nd::ProjMultGetter,
+    nd::NProjMultGetter,
     svc::{
         SvcCtx,
         calc::{
@@ -31,7 +31,7 @@ pub(crate) struct RawModifier {
     pub(crate) buff_type_a_attr_id: Option<ad::AAttrId> = None,
     // Projection-related
     pub(crate) resist_a_attr_id: Option<ad::AAttrId> = None,
-    pub(crate) proj_mult_getter: Option<ProjMultGetter> = None,
+    pub(crate) proj_mult_getter: Option<NProjMultGetter> = None,
     pub(crate) proj_a_attr_ids: [Option<ad::AAttrId>; 2] = [None, None],
 }
 impl PartialEq for RawModifier {
