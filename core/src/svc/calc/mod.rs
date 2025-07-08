@@ -47,7 +47,6 @@ mod accum;
 mod calc;
 mod calce_attr;
 mod calce_debug;
-mod calce_effect_attrs;
 mod calce_maintain;
 mod calce_modgen;
 mod calce_rah;

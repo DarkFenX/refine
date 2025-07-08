@@ -5,8 +5,9 @@ use crate::ad;
 pub(crate) enum NEffectCharge {
     // Effect uses charge loaded into item
     Loaded(NEffectChargeDepl),
-    // Effect uses charge referenced by an attribute on effect item
-    Attr(ad::AAttrId),
+    // Effect uses charge referenced by an attribute on effect item, which is automatically loaded
+    // into containing item
+    Autocharge(ad::AAttrId),
 }
 
 // Charge depletion mode

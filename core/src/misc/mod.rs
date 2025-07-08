@@ -1,6 +1,7 @@
 pub use adj_count::AdjustableCount;
 pub(crate) use attr_spec::AttrSpec;
 pub use breacher_info::{BreacherInfo, BreacherInfoError};
+pub(crate) use cycle_count::CycleCount;
 pub use dmg_types::DmgKinds;
 pub use dps_profile::{DpsProfile, DpsProfileError};
 pub use effect_id::EffectId;
@@ -23,6 +24,7 @@ pub use unit_interval::{UnitInterval, UnitIntervalError};
 mod adj_count;
 mod attr_spec;
 mod breacher_info;
+mod cycle_count;
 mod dmg_types;
 mod dps_profile;
 mod effect_id;

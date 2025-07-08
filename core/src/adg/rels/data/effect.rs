@@ -45,7 +45,7 @@ impl Fk for ed::EEffect {
         }
         // Hardcoded charge info can reference attributes
         if let Some(n_effect) = N_EFFECT_MAP.get(&ad::AEffectId::Dogma(self.id))
-            && let Some(NEffectCharge::Attr(attr_id)) = n_effect.hc.charge
+            && let Some(NEffectCharge::Autocharge(attr_id)) = n_effect.hc.charge
         {
             vec.push(attr_id);
         }

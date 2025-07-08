@@ -8,7 +8,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(ec::effects::FTR_ABIL_BOMB),
         aid: ac::effects::FTR_ABIL_BOMB,
         hc: NEffectHc {
-            charge: Some(NEffectCharge::Attr(ac::attrs::FTR_ABIL_BOMB_TYPE)),
+            charge: Some(NEffectCharge::Autocharge(ac::attrs::FTR_ABIL_BOMB_TYPE)),
             ..
         },
         ..

@@ -17,10 +17,11 @@ use super::{
 };
 use crate::{
     def::{AttrVal, FitKey, ItemKey, OF},
-    misc::{AttrSpec, DmgKinds},
+    misc::{AttrSpec, DmgKinds, EffectSpec},
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVal},
+        efuncs,
     },
     util::{RMap, RSet},
 };
@@ -229,7 +230,7 @@ impl Calc {
             return None;
         }
         // Raw form of cycle time is defined in milliseconds, convert into seconds
-        let cycle_s = self.get_item_effect_id_duration(ctx, item_key, &RAH_EFFECT_ID)? / OF(1000.0);
+        let cycle_s = efuncs::get_espec_cycle_time(ctx, self, EffectSpec::new(item_key, RAH_EFFECT_ID))? / OF(1000.0);
         if cycle_s <= OF(0.0) {
             return None;
         }

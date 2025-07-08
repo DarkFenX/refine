@@ -1,6 +1,6 @@
 //! Solar system services - attribute & stats calculations, validation, and so on.
 
-pub(crate) use misc::{SvcCtx, get_proj_mult, get_resist_mult};
+pub(crate) use misc::{SvcCtx, efuncs, get_proj_mult, get_resist_mult};
 use misc::{get_resist_a_attr_id, get_resist_mult_val_by_projectee_aspec};
 pub(crate) use svc::Svc;
 

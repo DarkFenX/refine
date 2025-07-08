@@ -18,6 +18,9 @@ impl Autocharges {
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
+    pub(crate) fn contains_ac_for_effect(&self, a_effect_id: &ad::AEffectId) -> bool {
+        self.data.contains_key(a_effect_id)
+    }
     // Modification methods
     pub(crate) fn set(&mut self, a_effect_id: ad::AEffectId, autocharge_key: ItemKey) {
         self.data.insert(a_effect_id, autocharge_key);
