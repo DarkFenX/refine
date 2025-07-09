@@ -7,9 +7,9 @@ use crate::{
     util::round,
 };
 
-pub(in crate::svc) fn get_espec_cycle_count(ctx: SvcCtx, espec: EffectSpec) -> CycleCount {
-    let a_effect = ctx.uad.src.get_a_effect(&espec.a_effect_id).unwrap();
-    get_effect_cycle_count(ctx, espec.item_key, a_effect)
+pub(in crate::svc) fn get_espec_cycle_count(ctx: SvcCtx, espec: EffectSpec) -> Option<CycleCount> {
+    let a_effect = ctx.uad.src.get_a_effect(&espec.a_effect_id)?;
+    Some(get_effect_cycle_count(ctx, espec.item_key, a_effect))
 }
 
 pub(in crate::svc) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &ad::ArcEffectRt) -> CycleCount {
