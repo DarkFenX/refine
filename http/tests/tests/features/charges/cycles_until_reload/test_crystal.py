@@ -298,19 +298,17 @@ def test_multiple_charges(client, consts):
         eve_chance_attr_id: 0.1,
         eve_dmg_attr_id: 0.01})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 2},
+        attrs={eve_capacity_attr_id: 2.9},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
-    # Verification - cycles until reload doesn't change. Charge count ideally shouldn't change as
-    # well (e.g. lasers should have max 1 loadable crystal regardless of how much capacity they
-    # have), but it is not implemented, subject to change in the future
+    # Verification - cycles until reload increases proportionally with loaded charge count
     api_module.update()
     assert api_module.charge_count == 2
-    assert api_module.cycles_until_reload == 1000
+    assert api_module.cycles_until_reload == 2000
 
 
 def test_no_charge(client, consts):

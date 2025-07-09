@@ -67,11 +67,15 @@ fn get_charge_rate_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
 }
 
 fn get_crystal_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
-    let charge_uad_item = match ctx.uad.items.get(item_key).get_charge_key() {
-        Some(charge_key) => ctx.uad.items.get(charge_key),
-        // No charge - can't cycle
+    let uad_item = ctx.uad.items.get(item_key);
+    let charge_count = match uad_item.get_charge_count(ctx.uad) {
+        // Not enough space to fit a single charge - can't cycle
+        Some(0) => return CycleCount::Count(0),
+        Some(charge_count) => charge_count,
+        // When effect wants charge, but doesn't have one / it is not loaded - can't cycle
         None => return CycleCount::Count(0),
     };
+    let charge_uad_item = ctx.uad.items.get(uad_item.get_charge_key().unwrap());
     let charge_attrs = match charge_uad_item.get_a_attrs() {
         Some(attrs) => attrs,
         // Charge is not loaded - can't cycle
@@ -98,6 +102,6 @@ fn get_crystal_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
     };
     let hp = charge_attrs.get(&ac::attrs::HP).copied().unwrap_or(OF(0.0));
     // Rounding is protection against float precision loss
-    let cycle_count = round(hp / (dmg * chance), 10).floor() as Count;
-    CycleCount::Count(cycle_count)
+    let cycle_count_per_charge = round(hp / (dmg * chance), 10).floor() as Count;
+    CycleCount::Count(charge_count * cycle_count_per_charge)
 }
