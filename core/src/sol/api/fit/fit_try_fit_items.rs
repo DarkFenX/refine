@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     ad,
     def::{FitKey, ItemKey, ItemTypeId, OF},

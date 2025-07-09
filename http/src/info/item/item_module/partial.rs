@@ -24,6 +24,8 @@ pub(crate) struct HModuleInfoPartial {
     mutation: Option<HItemMutationInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<HChargeInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    charge_count: Option<rc::Count>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -44,6 +46,7 @@ impl HModuleInfoPartial {
             charge: core_module
                 .get_charge_mut()
                 .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode)),
+            charge_count: core_module.get_charge_count(),
             projs: core_module
                 .iter_projs()
                 .map(|core_ranged_proj| core_ranged_proj.into())

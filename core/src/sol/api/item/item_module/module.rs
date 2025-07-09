@@ -1,5 +1,5 @@
 use crate::{
-    def::{Idx, ItemKey},
+    def::{Count, Idx, ItemKey},
     misc::{ModRack, ModuleState},
     sol::{
         SolarSystem,
@@ -30,6 +30,9 @@ impl<'a> Module<'a> {
     }
     pub fn get_charge(&self) -> Option<Charge<'_>> {
         get_charge(self.sol, self.key)
+    }
+    pub fn get_charge_count(&self) -> Option<Count> {
+        get_charge_count(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for Module<'a> {
@@ -74,6 +77,9 @@ impl<'a> ModuleMut<'a> {
             .get_charge_key()
             .map(|charge_key| ChargeMut::new(self.sol, charge_key))
     }
+    pub fn get_charge_count(&self) -> Option<Count> {
+        get_charge_count(self.sol, self.key)
+    }
 }
 impl<'a> ItemSealed for ModuleMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -108,6 +114,9 @@ fn get_charge(sol: &SolarSystem, item_key: ItemKey) -> Option<Charge<'_>> {
     get_uad_module(sol, item_key)
         .get_charge_key()
         .map(|charge_key| Charge::new(sol, charge_key))
+}
+fn get_charge_count(sol: &SolarSystem, item_key: ItemKey) -> Option<Count> {
+    get_uad_module(sol, item_key).get_charge_count(&sol.uad)
 }
 fn get_uad_module(sol: &SolarSystem, item_key: ItemKey) -> &UadModule {
     sol.uad.items.get(item_key).get_module().unwrap()

@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    def::{Count, FitKey, Idx, ItemId, ItemKey},
+    def::{Count, FitKey, Idx, ItemId, ItemKey, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, ItemMutationRequest, ModRack, ModuleState},
     src::Src,
@@ -157,8 +157,8 @@ impl UadModule {
             }
         };
         let charge_volume = match charge_item.get_a_xt() {
-            Some(a_xt) => a_xt.volume,
-            // Charge not loaded - no info
+            Some(a_xt) if a_xt.volume != OF(0.0) => a_xt.volume,
+            // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;
             }
