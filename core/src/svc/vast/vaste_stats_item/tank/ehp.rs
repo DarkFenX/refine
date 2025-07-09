@@ -25,7 +25,7 @@ impl Vast {
     ) -> Option<StatTank<StatLayerEhp>> {
         let hp = self.get_stat_item_hp(ctx, calc, item_key)?;
         let resists = Vast::get_stat_item_resists(ctx, calc, item_key)?;
-        let incoming_dps = incoming_dps.unwrap_or_else(|| &ctx.uad.default_incoming_dps);
+        let incoming_dps = incoming_dps.unwrap_or(&ctx.uad.default_incoming_dps);
         let shield_mult = Vast::get_tanking_efficiency(&resists.shield, incoming_dps);
         let armor_mult = Vast::get_tanking_efficiency(&resists.armor, incoming_dps);
         let struct_mult = Vast::get_tanking_efficiency(&resists.structure, incoming_dps);

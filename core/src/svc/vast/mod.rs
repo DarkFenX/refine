@@ -1,4 +1,3 @@
-use cache::ValCache;
 pub use options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
 pub use result::{ValResultFit, ValResultSol};
@@ -6,7 +5,6 @@ pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 pub use vaste_stats_fit::{StatRes, StatSlot};
 pub use vaste_stats_item::{StatLayerEhp, StatLayerHp, StatTank};
-use vaste_vals::ValChargeGroupFailCache;
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail, ValChargeSizeChargeInfo,
     ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail,
@@ -17,7 +15,6 @@ pub use vaste_vals::{
     ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };
 
-mod cache;
 mod options;
 mod result;
 mod shared;

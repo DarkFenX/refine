@@ -433,7 +433,7 @@ impl Vast {
         }
         // Misc checks - rarely used, or unlikely to fail
         // Charge checks are not related to fit optimizations so far
-        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs, ctx) {
+        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs) {
             return false;
         }
         if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs) {

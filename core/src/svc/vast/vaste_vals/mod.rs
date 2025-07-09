@@ -1,6 +1,5 @@
 pub use vaste_activation_blocked::ValActivationBlockedFail;
 pub use vaste_capital_module::ValCapitalModFail;
-pub(in crate::svc::vast) use vaste_charge_group::ValChargeGroupFailCache;
 pub use vaste_charge_group::{ValChargeGroupChargeInfo, ValChargeGroupFail};
 pub use vaste_charge_size::{ValChargeSizeChargeInfo, ValChargeSizeFail};
 pub use vaste_charge_volume::{ValChargeVolumeChargeInfo, ValChargeVolumeFail};

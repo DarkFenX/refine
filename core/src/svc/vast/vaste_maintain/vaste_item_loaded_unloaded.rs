@@ -1,14 +1,10 @@
-use std::collections::hash_map::Entry;
-
 use itertools::chain;
 
 use crate::{
     ac, ad,
     def::{AttrVal, FitKey, ItemKey},
     misc::ModRack,
-    svc::vast::{
-        ValCache, ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, ValSrqSkillInfo, Vast, VastFitData,
-    },
+    svc::vast::{ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, ValSrqSkillInfo, Vast, VastFitData},
     uad::{ShipKind, Uad, UadItem, UadModule},
     util::RMap,
 };
@@ -63,11 +59,14 @@ impl Vast {
                 let cont_key = charge.get_cont_key();
                 let cont_item = uad.items.get(cont_key);
                 item_kind_add(fit_data, item_key, a_item_xt.kind, ad::AItemKind::Charge);
-                // Reset result to uncalculated when adding a charge
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_key()) {
-                    entry.insert(ValCache::Todo(()));
-                }
                 if let Some(cont_a_item_xt) = cont_item.get_a_xt() {
+                    handle_charge_group_add(
+                        fit_data,
+                        cont_key,
+                        cont_a_item_xt,
+                        item_key,
+                        &charge.get_a_group_id().unwrap(),
+                    );
                     handle_charge_size_add(fit_data, cont_key, cont_a_item_xt, item_key, a_item_xt);
                     handle_charge_volume_add(fit_data, cont_key, cont_a_item_xt, item_key, a_item_xt);
                 }
@@ -153,15 +152,11 @@ impl Vast {
                             .insert(item_key, a_item_grp_id);
                     }
                 }
-                if a_item_xt.charge_limit.is_some() {
-                    // If there is a charge, calculate later, otherwise mark as no issue
-                    match module.get_charge_key() {
-                        Some(_) => fit_data.mods_charge_group.insert(item_key, ValCache::Todo(())),
-                        None => fit_data.mods_charge_group.insert(item_key, ValCache::Pass(())),
-                    };
-                }
                 if let Some(charge_key) = module.get_charge_key() {
                     let charge_item = uad.items.get(charge_key);
+                    if let Some(charge_a_grp_id) = charge_item.get_a_group_id() {
+                        handle_charge_group_add(fit_data, item_key, a_item_xt, charge_key, &charge_a_grp_id);
+                    }
                     if let Some(charge_a_item_xt) = charge_item.get_a_xt() {
                         handle_charge_size_add(fit_data, item_key, a_item_xt, charge_key, charge_a_item_xt);
                         handle_charge_volume_add(fit_data, item_key, a_item_xt, charge_key, charge_a_item_xt);
@@ -362,10 +357,7 @@ impl Vast {
             UadItem::Charge(charge) => {
                 let a_item_xt = charge.get_a_xt().unwrap();
                 item_kind_remove(fit_data, item_key, a_item_xt.kind, ad::AItemKind::Charge);
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_key()) {
-                    // No charge - check should pass
-                    entry.insert(ValCache::Pass(()));
-                }
+                fit_data.charge_group.remove(item_key);
                 fit_data.charge_size.remove(item_key);
                 fit_data.charge_volume.remove(item_key);
                 if a_item_xt.sec_zone_limitable {
@@ -435,11 +427,13 @@ impl Vast {
                         .remove_entry(&a_item_grp_id, item_key);
                     fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
                 }
-                if a_item_xt.charge_limit.is_some() {
-                    fit_data.mods_charge_group.remove(item_key);
-                }
                 if let Some(charge_key) = module.get_charge_key() {
-                    fit_data.charge_size.remove(&charge_key);
+                    if a_item_xt.charge_limit.is_some() {
+                        fit_data.charge_group.remove(&charge_key);
+                    }
+                    if a_item_xt.charge_size.is_some() {
+                        fit_data.charge_size.remove(&charge_key);
+                    }
                     fit_data.charge_volume.remove(&charge_key);
                 }
                 if let Some(ad::AShipKind::CapitalShip) = a_item_xt.item_ship_kind {
@@ -618,6 +612,20 @@ fn item_vs_ship_kind_add(
             }
         },
         _ => (),
+    }
+}
+
+fn handle_charge_group_add(
+    fit_data: &mut VastFitData,
+    cont_key: ItemKey,
+    cont_a_item_xt: &ad::AItemXt,
+    charge_key: ItemKey,
+    charge_a_group_id: &ad::AItemGrpId,
+) {
+    if let Some(charge_limit) = &cont_a_item_xt.charge_limit
+        && !charge_limit.group_ids.contains(charge_a_group_id)
+    {
+        fit_data.charge_group.insert(charge_key, cont_key);
     }
 }
 

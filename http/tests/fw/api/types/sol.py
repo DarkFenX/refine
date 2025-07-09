@@ -109,30 +109,17 @@ class SolarSystem(AttrDict):
             fit_ids: list[str] | type[Absent | Default] = Default,
             options: ValOptions | type[Absent],
             status_code: int = 200,
-            flip_order: bool = False,
     ) -> SolValResult | None:
-        if flip_order:
-            resp_detailed = self.__validate_sol(
-                fit_ids=fit_ids,
-                options=options,
-                val_info_mode=ApiValInfoMode.detailed,
-                status_code=status_code)
-            resp_simple = self.__validate_sol(
-                fit_ids=fit_ids,
-                options=options,
-                val_info_mode=ApiValInfoMode.simple,
-                status_code=status_code)
-        else:
-            resp_simple = self.__validate_sol(
-                fit_ids=fit_ids,
-                options=options,
-                val_info_mode=ApiValInfoMode.simple,
-                status_code=status_code)
-            resp_detailed = self.__validate_sol(
-                fit_ids=fit_ids,
-                options=options,
-                val_info_mode=ApiValInfoMode.detailed,
-                status_code=status_code)
+        resp_simple = self.__validate_sol(
+            fit_ids=fit_ids,
+            options=options,
+            val_info_mode=ApiValInfoMode.simple,
+            status_code=status_code)
+        resp_detailed = self.__validate_sol(
+            fit_ids=fit_ids,
+            options=options,
+            val_info_mode=ApiValInfoMode.detailed,
+            status_code=status_code)
         # Ensure simple results are consistent with full results
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
             result_simple = SolValResult(data=resp_simple.json())

@@ -4,8 +4,7 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     nd::{NLocalRepGetter, NRemoteRepGetter},
     svc::vast::{
-        ValCache, ValChargeGroupFailCache, ValFighterSquadSizeFighterInfo, ValItemKindItemInfo,
-        ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
+        ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
     },
     util::{RMap, RMapRMap, RMapRSet, RSet},
 };
@@ -75,7 +74,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) rigs_rig_size: RMap<ItemKey, Option<ad::AAttrVal>>,
     pub(in crate::svc::vast) srqs_skill_item_map: RMapRSet<ad::AItemId, ItemKey>,
     pub(in crate::svc::vast) srqs_missing: RMap<ItemKey, RMap<ad::AItemId, ValSrqSkillInfo>>,
-    pub(in crate::svc::vast) mods_charge_group: RMap<ItemKey, ValCache<(), ValChargeGroupFailCache>>,
+    pub(in crate::svc::vast) charge_group: RMap<ItemKey, ItemKey>,
     pub(in crate::svc::vast) charge_size: RMap<ItemKey, ItemKey>,
     pub(in crate::svc::vast) charge_volume: RMap<ItemKey, ItemKey>,
     pub(in crate::svc::vast) mods_capital: RMap<ItemKey, AttrVal>,
@@ -141,7 +140,7 @@ impl VastFitData {
             rigs_rig_size: RMap::new(),
             srqs_skill_item_map: RMapRSet::new(),
             srqs_missing: RMap::new(),
-            mods_charge_group: RMap::new(),
+            charge_group: RMap::new(),
             charge_size: RMap::new(),
             charge_volume: RMap::new(),
             mods_capital: RMap::new(),

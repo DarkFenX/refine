@@ -76,26 +76,15 @@ class Fit(AttrDict):
             self, *,
             options: ValOptions | type[Absent],
             status_code: int = 200,
-            flip_order: bool = False,
     ) -> FitValResult | None:
-        if flip_order:
-            resp_detailed = self.__validate_fit(
-                options=options,
-                val_info_mode=ApiValInfoMode.detailed,
-                status_code=status_code)
-            resp_simple = self.__validate_fit(
-                options=options,
-                val_info_mode=ApiValInfoMode.simple,
-                status_code=status_code)
-        else:
-            resp_simple = self.__validate_fit(
-                options=options,
-                val_info_mode=ApiValInfoMode.simple,
-                status_code=status_code)
-            resp_detailed = self.__validate_fit(
-                options=options,
-                val_info_mode=ApiValInfoMode.detailed,
-                status_code=status_code)
+        resp_simple = self.__validate_fit(
+            options=options,
+            val_info_mode=ApiValInfoMode.simple,
+            status_code=status_code)
+        resp_detailed = self.__validate_fit(
+            options=options,
+            val_info_mode=ApiValInfoMode.detailed,
+            status_code=status_code)
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
             # Ensure simple results are consistent with full results
             result_simple = FitValResult(data=resp_simple.json())

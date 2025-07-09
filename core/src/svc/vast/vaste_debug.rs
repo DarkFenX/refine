@@ -1,7 +1,6 @@
 use super::{Vast, VastFitData};
 use crate::{
     dbg::{DebugResult, check_a_effect_id, check_fit_key, check_item_key},
-    svc::vast::ValCache,
     uad::Uad,
 };
 
@@ -155,12 +154,9 @@ impl VastFitData {
         for &item_key in self.srqs_missing.keys() {
             check_item_key(uad, item_key, true)?;
         }
-        for (&module_key, module_data) in self.mods_charge_group.iter() {
-            check_item_key(uad, module_key, true)?;
-            if let ValCache::Fail(fail_cache) = module_data {
-                check_item_key(uad, fail_cache.parent_key, true)?;
-                check_item_key(uad, fail_cache.charge_key, true)?;
-            }
+        for (&charge_key, &cont_key) in self.charge_group.iter() {
+            check_item_key(uad, cont_key, true)?;
+            check_item_key(uad, charge_key, true)?;
         }
         for (&charge_key, &cont_key) in self.charge_size.iter() {
             check_item_key(uad, cont_key, true)?;
