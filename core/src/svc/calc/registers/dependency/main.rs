@@ -36,7 +36,7 @@ impl DependencyRegister {
         }
     }
     // Query methods
-    pub(in crate::svc::calc) fn get_affectee_aspecs(
+    pub(in crate::svc::calc) fn iter_affectee_aspecs(
         &self,
         affector_aspec: &AttrSpec,
     ) -> impl ExactSizeIterator<Item = &AttrSpec> {

@@ -182,7 +182,7 @@ impl Calc {
     }
     pub(in crate::svc) fn attr_value_changed(&mut self, ctx: SvcCtx, aspec: AttrSpec) {
         // Clear up attribute values which rely on passed attribute as an upper/lower limit
-        let affectee_aspecs = self.deps.get_affectee_aspecs(&aspec).copied().collect_vec();
+        let affectee_aspecs = self.deps.iter_affectee_aspecs(&aspec).copied().collect_vec();
         for affectee_aspec in affectee_aspecs.into_iter() {
             self.force_attr_value_recalc(ctx, affectee_aspec);
         }
