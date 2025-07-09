@@ -1,6 +1,6 @@
 use crate::{
     def::{Count, Idx, ItemKey},
-    misc::{ModRack, ModuleState},
+    misc::{CycleCount, ModRack, ModuleState},
     sol::{
         SolarSystem,
         api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
@@ -33,6 +33,9 @@ impl<'a> Module<'a> {
     }
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.key)
+    }
+    pub fn get_cycles_until_reload(&self) -> Option<Count> {
+        get_cycles_until_reload(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for Module<'a> {
@@ -80,6 +83,9 @@ impl<'a> ModuleMut<'a> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.key)
     }
+    pub fn get_cycles_until_reload(&self) -> Option<Count> {
+        get_cycles_until_reload(self.sol, self.key)
+    }
 }
 impl<'a> ItemSealed for ModuleMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -117,6 +123,12 @@ fn get_charge(sol: &SolarSystem, item_key: ItemKey) -> Option<Charge<'_>> {
 }
 fn get_charge_count(sol: &SolarSystem, item_key: ItemKey) -> Option<Count> {
     get_uad_module(sol, item_key).get_charge_count(&sol.uad)
+}
+fn get_cycles_until_reload(sol: &SolarSystem, item_key: ItemKey) -> Option<Count> {
+    match sol.svc.get_effect_cycle_count(&sol.uad, item_key) {
+        Some(CycleCount::Count(count)) => Some(count),
+        _ => None,
+    }
 }
 fn get_uad_module(sol: &SolarSystem, item_key: ItemKey) -> &UadModule {
     sol.uad.items.get(item_key).get_module().unwrap()

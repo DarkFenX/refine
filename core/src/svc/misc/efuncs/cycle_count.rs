@@ -7,12 +7,12 @@ use crate::{
     util::round,
 };
 
-pub(crate) fn get_espec_cycle_count(ctx: SvcCtx, espec: EffectSpec) -> CycleCount {
+pub(in crate::svc) fn get_espec_cycle_count(ctx: SvcCtx, espec: EffectSpec) -> CycleCount {
     let a_effect = ctx.uad.src.get_a_effect(&espec.a_effect_id).unwrap();
     get_effect_cycle_count(ctx, espec.item_key, a_effect)
 }
 
-pub(crate) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &ad::ArcEffectRt) -> CycleCount {
+pub(in crate::svc) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &ad::ArcEffectRt) -> CycleCount {
     match a_effect.hc.charge {
         Some(n_charge) => match n_charge {
             NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(ctx, item_key, a_effect),
