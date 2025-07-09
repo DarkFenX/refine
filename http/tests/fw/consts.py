@@ -558,3 +558,4 @@ class UtilEffect(IntEnum):
     # Use targetDisintegratorAttack effect, since it brings no extra modifiers and defines optimal
     # as a range-defining attribute
     tgt_simple = EveEffect.tgt_disintegrator_attack
+    cycle_charge_rate = EveEffect.projectile_fired

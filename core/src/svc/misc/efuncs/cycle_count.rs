@@ -59,11 +59,14 @@ fn get_charge_rate_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
         Some(charge_rate) => charge_rate.round() as Count,
         None => 1,
     };
-    // Here it's assumed that an effect can cycle only when it has enough charges into it. This is
-    // not true for items like AAR, which can cycle for partial rep efficiency, but since w/o manual
-    // adjustments all AARs have enough paste to run w/o partial efficiency cycles, we ignore this
-    // for simplicity's & performance's sake
-    CycleCount::Count(charge_count / charges_per_cycle)
+    match charges_per_cycle == 0 {
+        true => CycleCount::Infinite,
+        // Here it's assumed that an effect can cycle only when it has enough charges into it. This
+        // is not true for items like AAR, which can cycle for partial rep efficiency, but since w/o
+        // manual adjustments all AARs have enough paste to run w/o partial efficiency cycles, we
+        // ignore this for simplicity's & performance's sake
+        false => CycleCount::Count(charge_count / charges_per_cycle),
+    }
 }
 
 fn get_crystal_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
