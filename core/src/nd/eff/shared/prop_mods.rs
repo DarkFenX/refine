@@ -45,7 +45,8 @@ pub(in crate::nd::eff) fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>,
         affector_espec,
         affector_value: AffectorValue::Custom(CustomAffectorValue {
             kind: CustomAffectorValueKind::PropSpeedBoost,
-            // Exposing just 1 attribute here, not to handle it via dependencies
+            // Exposing just 1 on-item attribute here which should change more than the other one,
+            // not to handle it via dependencies
             affector_a_attr_id: Some(PROP_BOOST),
             affector_info_getter: get_affector_info,
             mod_val_getter: get_mod_val,

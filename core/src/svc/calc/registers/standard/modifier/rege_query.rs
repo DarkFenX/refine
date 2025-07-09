@@ -57,7 +57,7 @@ impl StandardRegister {
         }
         mods
     }
-    pub(in crate::svc::calc) fn iter_affector_spec_mods(
+    pub(in crate::svc::calc) fn iter_affector_spec_cmods(
         &self,
         affector_aspec: &AttrSpec,
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {

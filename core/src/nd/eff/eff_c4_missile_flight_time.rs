@@ -102,6 +102,8 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
                     item_id: ctx.uad.items.id_by_key(item_key),
                     attr_id: Some(MISSILE_VELOCITY),
                 },
+                // There is no dependency on modified ship radius, but we add it for informational
+                // purposes nevertheless
                 AffectorInfo {
                     item_id: ctx.uad.items.id_by_key(ship_key),
                     attr_id: Some(SHIP_RADIUS),

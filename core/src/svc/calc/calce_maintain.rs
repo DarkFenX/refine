@@ -187,7 +187,7 @@ impl Calc {
             self.force_attr_value_recalc(ctx, affectee_aspec);
         }
         // Clear up attribute values which rely on passed attribute as a modification source
-        let cmods = self.std.iter_affector_spec_mods(&aspec).copied().collect_vec();
+        let cmods = self.std.iter_affector_spec_cmods(&aspec).copied().collect_vec();
         if !cmods.is_empty() {
             let mut reuse_affectees = Vec::new();
             for cmod in cmods.iter() {
