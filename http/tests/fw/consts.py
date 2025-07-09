@@ -559,3 +559,4 @@ class UtilEffect(IntEnum):
     # as a range-defining attribute
     tgt_simple = EveEffect.tgt_disintegrator_attack
     cycle_charge_rate = EveEffect.projectile_fired
+    cycle_none = EveEffect.warp_disrupt_sphere
