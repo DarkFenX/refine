@@ -24,6 +24,7 @@ In no particular order:
 - automatically loaded charges by some effects (e.g. LR fighter bombs)
   - auto-charges are exposed as regular items so that it's possible to check their attributes and effects (but there are some limits, e.g. you cannot remove them)
 - fast & flexible fit validation
+  - "try fit items" functionality which accepts list of items, checks which can be fit to a fit according to passed validation settings, and returns those which can be fit
 - reactive armor hardener support
   - it is possible to fit multiple RAHs with different stats (validation fails, but they are properly simulated nevertheless)
 - modifications applied via space component EVE system: things like insurgency tackle range, skyhook silo link, nexus event buff "mines", Pochven subpylons are defined via it

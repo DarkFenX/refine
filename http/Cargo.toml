@@ -10,7 +10,7 @@ rdhe = { package = "reefast-dh-eve", path = "../dh-eve", features = ["phb-http"]
 rdha = { package = "reefast-dh-adapted", path = "../dh-adapted", features = ["json", "ram"] }
 axum = { version = ">=0.8.4", features = ["query"] }
 chrono = ">=0.4.41"
-config = { version = ">=0.15.11", features = ["toml"] }
+config = { version = ">=0.15.13", features = ["toml"] }
 educe = { version = ">=0.6.0", features = ["Default"], default-features = false }
 parking_lot = { version = ">=0.12.4", features = ["nightly"] }
 serde = { version = ">=1.0.219", features = ["derive"] }
