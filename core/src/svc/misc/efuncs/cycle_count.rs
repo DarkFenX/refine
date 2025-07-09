@@ -55,10 +55,7 @@ fn get_charge_rate_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
         // When effect wants charge, but doesn't have one / it is not loaded - it can't cycle
         None => return CycleCount::Count(0),
     };
-    let charges_per_cycle = match uad_item.get_a_attr(&ac::attrs::CHARGE_RATE) {
-        Some(charge_rate) => charge_rate.round() as Count,
-        None => 1,
-    };
+    let charges_per_cycle = uad_item.get_a_xt().unwrap().charge_rate;
     match charges_per_cycle == 0 {
         true => CycleCount::Infinite,
         // Here it's assumed that an effect can cycle only when it has enough charges into it. This

@@ -1,7 +1,7 @@
 use super::{
     attr_val::{
-        get_bandwidth_use, get_capacity, get_charge_size, get_max_type_fitted_count, get_online_max_sec_class,
-        get_radius, get_remote_resist_attr_id, get_volume,
+        get_bandwidth_use, get_capacity, get_charge_rate, get_charge_size, get_max_type_fitted_count,
+        get_online_max_sec_class, get_radius, get_remote_resist_attr_id, get_volume,
     },
     charge_limit::get_item_charge_limit,
     container_limit::get_item_container_limit,
@@ -90,8 +90,10 @@ pub(crate) struct AItemXt {
     pub(crate) disallow_vs_ew_immune_tgt: bool,
     // Attribute ID which defines how affectee resists effect
     pub(crate) remote_resist_attr_id: Option<AAttrId>,
-    // Unmutated and unmodified item volume
+    // Unmutated and unmodified charge size
     pub(crate) charge_size: Option<AAttrVal>,
+    // Unmutated and unmodified charge rate
+    pub(crate) charge_rate: ACount,
 }
 impl AItemXt {
     // Build extras out of item with its original attributes
@@ -127,6 +129,7 @@ impl AItemXt {
             disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(&a_item.attrs),
             remote_resist_attr_id: get_remote_resist_attr_id(&a_item.attrs),
             charge_size: get_charge_size(&a_item.attrs),
+            charge_rate: get_charge_rate(&a_item.attrs),
         }
     }
     // Build extras out of item with overridden attributes
@@ -162,6 +165,7 @@ impl AItemXt {
             disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(attrs),
             remote_resist_attr_id: get_remote_resist_attr_id(attrs),
             charge_size: get_charge_size(attrs),
+            charge_rate: get_charge_rate(attrs),
         }
     }
 }
