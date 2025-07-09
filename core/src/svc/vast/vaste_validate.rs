@@ -436,6 +436,11 @@ impl Vast {
         if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs) {
             return false;
         }
+        if options.charge_parent_group.enabled
+            && !fit_data.validate_charge_cont_group_fast(&options.charge_parent_group.kfs)
+        {
+            return false;
+        }
         if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs) {
             return false;
         }
@@ -564,6 +569,10 @@ impl Vast {
         // Charges
         if options.charge_group.enabled {
             result.charge_group = fit_data.validate_charge_group_verbose(&options.charge_group.kfs, ctx);
+        }
+        if options.charge_parent_group.enabled {
+            result.charge_parent_group =
+                fit_data.validate_charge_cont_group_verbose(&options.charge_parent_group.kfs, ctx);
         }
         if options.charge_size.enabled {
             result.charge_size = fit_data.validate_charge_size_verbose(&options.charge_size.kfs, ctx);

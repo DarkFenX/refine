@@ -61,6 +61,7 @@ pub struct ValOptions {
     pub overload_skill: ValOption,
     // Charges
     pub charge_group: ValOption,
+    pub charge_parent_group: ValOption,
     pub charge_size: ValOption,
     pub charge_volume: ValOption,
     // Rigs
@@ -142,6 +143,7 @@ impl ValOptions {
             overload_skill: ValOption::new_enabled(),
             // Charges
             charge_group: ValOption::new_enabled(),
+            charge_parent_group: ValOption::new_enabled(),
             charge_size: ValOption::new_enabled(),
             charge_volume: ValOption::new_enabled(),
             // Rigs
@@ -223,6 +225,7 @@ impl ValOptions {
             overload_skill: ValOption::new_disabled(),
             // Charges
             charge_group: ValOption::new_disabled(),
+            charge_parent_group: ValOption::new_disabled(),
             charge_size: ValOption::new_disabled(),
             charge_volume: ValOption::new_disabled(),
             // Rigs
@@ -351,6 +354,7 @@ pub(crate) struct ValOptionsInt {
     pub(in crate::svc::vast) overload_skill: ValOptionInt,
     // Charges
     pub(in crate::svc::vast) charge_group: ValOptionInt,
+    pub(in crate::svc::vast) charge_parent_group: ValOptionInt,
     pub(in crate::svc::vast) charge_size: ValOptionInt,
     pub(in crate::svc::vast) charge_volume: ValOptionInt,
     // Rigs
@@ -431,6 +435,7 @@ impl ValOptionsInt {
             overload_skill: ValOptionInt::from_pub(sol, &pub_opts.overload_skill),
             // Charges
             charge_group: ValOptionInt::from_pub(sol, &pub_opts.charge_group),
+            charge_parent_group: ValOptionInt::from_pub(sol, &pub_opts.charge_parent_group),
             charge_size: ValOptionInt::from_pub(sol, &pub_opts.charge_size),
             charge_volume: ValOptionInt::from_pub(sol, &pub_opts.charge_volume),
             // Rigs

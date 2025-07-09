@@ -158,6 +158,10 @@ impl VastFitData {
             check_item_key(uad, cont_key, true)?;
             check_item_key(uad, charge_key, true)?;
         }
+        for (&charge_key, &cont_key) in self.charge_cont_group.iter() {
+            check_item_key(uad, cont_key, true)?;
+            check_item_key(uad, charge_key, true)?;
+        }
         for (&charge_key, &cont_key) in self.charge_size.iter() {
             check_item_key(uad, cont_key, true)?;
             check_item_key(uad, charge_key, true)?;

@@ -70,6 +70,9 @@ impl Vast {
                     handle_charge_size_add(fit_data, cont_key, cont_a_item_xt, item_key, a_item_xt);
                     handle_charge_volume_add(fit_data, cont_key, cont_a_item_xt, item_key, a_item_xt);
                 }
+                if let Some(cont_a_grp_id) = cont_item.get_a_group_id() {
+                    handle_charge_cont_group_add(fit_data, cont_key, &cont_a_grp_id, item_key, a_item_xt);
+                }
                 if a_item_xt.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_key);
                 }
@@ -158,6 +161,9 @@ impl Vast {
                         handle_charge_group_add(fit_data, item_key, a_item_xt, charge_key, &charge_a_grp_id);
                     }
                     if let Some(charge_a_item_xt) = charge_item.get_a_xt() {
+                        if let Some(a_grp_id) = item.get_a_group_id() {
+                            handle_charge_cont_group_add(fit_data, item_key, &a_grp_id, charge_key, charge_a_item_xt);
+                        }
                         handle_charge_size_add(fit_data, item_key, a_item_xt, charge_key, charge_a_item_xt);
                         handle_charge_volume_add(fit_data, item_key, a_item_xt, charge_key, charge_a_item_xt);
                     }
@@ -358,6 +364,9 @@ impl Vast {
                 let a_item_xt = charge.get_a_xt().unwrap();
                 item_kind_remove(fit_data, item_key, a_item_xt.kind, ad::AItemKind::Charge);
                 fit_data.charge_group.remove(item_key);
+                if a_item_xt.cont_limit.is_some() {
+                    fit_data.charge_cont_group.remove(item_key);
+                }
                 fit_data.charge_size.remove(item_key);
                 fit_data.charge_volume.remove(item_key);
                 if a_item_xt.sec_zone_limitable {
@@ -431,6 +440,7 @@ impl Vast {
                     if a_item_xt.charge_limit.is_some() {
                         fit_data.charge_group.remove(&charge_key);
                     }
+                    fit_data.charge_cont_group.remove(&charge_key);
                     if a_item_xt.charge_size.is_some() {
                         fit_data.charge_size.remove(&charge_key);
                     }
@@ -626,6 +636,20 @@ fn handle_charge_group_add(
         && !charge_limit.group_ids.contains(charge_a_group_id)
     {
         fit_data.charge_group.insert(charge_key, cont_key);
+    }
+}
+
+fn handle_charge_cont_group_add(
+    fit_data: &mut VastFitData,
+    cont_key: ItemKey,
+    cont_a_group_id: &ad::AItemGrpId,
+    charge_key: ItemKey,
+    charge_a_item_xt: &ad::AItemXt,
+) {
+    if let Some(charge_cont_limit) = &charge_a_item_xt.cont_limit
+        && !charge_cont_limit.group_ids.contains(cont_a_group_id)
+    {
+        fit_data.charge_cont_group.insert(charge_key, cont_key);
     }
 }
 

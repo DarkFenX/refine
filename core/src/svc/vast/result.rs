@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use crate::{
     def::FitId,
     svc::vast::{
-        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
-        ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail, ValItemVsShipKindFail,
-        ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail,
-        ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail, ValShipStanceFail,
-        ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
+        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail, ValChargeSizeFail,
+        ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail,
+        ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
+        ValOverloadSkillFail, ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail,
+        ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
     },
 };
 
@@ -60,6 +60,7 @@ pub struct ValResultFit {
     pub overload_skill: Option<ValOverloadSkillFail>,
     // Charges
     pub charge_group: Option<ValChargeGroupFail>,
+    pub charge_parent_group: Option<ValChargeParentGroupFail>,
     pub charge_size: Option<ValChargeSizeFail>,
     pub charge_volume: Option<ValChargeVolumeFail>,
     // Rigs
@@ -140,6 +141,7 @@ impl ValResultFit {
             overload_skill: None,
             // Charges
             charge_group: None,
+            charge_parent_group: None,
             charge_size: None,
             charge_volume: None,
             // Rigs
@@ -219,6 +221,7 @@ impl ValResultFit {
             && self.overload_skill.is_none()
             // Charges
             && self.charge_group.is_none()
+            && self.charge_parent_group.is_none()
             && self.charge_size.is_none()
             && self.charge_volume.is_none()
             // Rigs
