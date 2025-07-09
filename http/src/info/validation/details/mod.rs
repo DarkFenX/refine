@@ -1,6 +1,7 @@
 pub(in crate::info::validation) use activation_blocked::HValActivationBlockedFail;
 pub(in crate::info::validation) use capital_module::HValCapitalModFail;
 pub(in crate::info::validation) use charge_group::HValChargeGroupFail;
+pub(in crate::info::validation) use charge_parent_group::HValChargeParentGroupFail;
 pub(in crate::info::validation) use charge_size::HValChargeSizeFail;
 pub(in crate::info::validation) use charge_volume::HValChargeVolumeFail;
 pub(in crate::info::validation) use drone_group::HValDroneGroupFail;
@@ -28,6 +29,7 @@ pub(in crate::info::validation) use unusable_slot::HValUnusableSlotFail;
 mod activation_blocked;
 mod capital_module;
 mod charge_group;
+mod charge_parent_group;
 mod charge_size;
 mod charge_volume;
 mod drone_group;

@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
 use crate::info::validation::details::{
-    HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail,
-    HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail, HValItemVsShipKindFail,
-    HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail,
-    HValProjImmunityFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail,
-    HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
+    HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail, HValChargeSizeFail,
+    HValChargeVolumeFail, HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
+    HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail,
+    HValOverloadSkillFail, HValProjImmunityFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail,
+    HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 // Sol-specific
@@ -120,6 +120,8 @@ struct HValFitInfo {
     // Charges
     #[serde(skip_serializing_if = "Option::is_none")]
     charge_group: Option<HValChargeGroupFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    charge_parent_group: Option<HValChargeParentGroupFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     charge_size: Option<HValChargeSizeFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -240,6 +242,7 @@ impl HValFitInfo {
             && self.overload_skill.is_none()
             // Charges
             && self.charge_group.is_none()
+            && self.charge_parent_group.is_none()
             && self.charge_size.is_none()
             && self.charge_volume.is_none()
             // Rigs
@@ -321,6 +324,7 @@ impl From<&rc::val::ValResultFit> for HValFitInfo {
             overload_skill: conv(&core_val_result.overload_skill),
             // Charges
             charge_group: conv(&core_val_result.charge_group),
+            charge_parent_group: conv(&core_val_result.charge_parent_group),
             charge_size: conv(&core_val_result.charge_size),
             charge_volume: conv(&core_val_result.charge_volume),
             // Rigs

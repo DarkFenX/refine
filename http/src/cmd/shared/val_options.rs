@@ -53,6 +53,8 @@ pub(in crate::cmd) struct HValOptions {
     #[serde(default)]
     charge_group: Option<HValOption>,
     #[serde(default)]
+    charge_parent_group: Option<HValOption>,
+    #[serde(default)]
     charge_size: Option<HValOption>,
     #[serde(default)]
     charge_volume: Option<HValOption>,
@@ -176,6 +178,7 @@ impl HValOptions {
         process_option(&self.overload_skill, &mut core_options.overload_skill);
         // Charges
         process_option(&self.charge_group, &mut core_options.charge_group);
+        process_option(&self.charge_parent_group, &mut core_options.charge_parent_group);
         process_option(&self.charge_size, &mut core_options.charge_size);
         process_option(&self.charge_volume, &mut core_options.charge_volume);
         // Rigs
