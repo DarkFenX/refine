@@ -7,7 +7,7 @@ from pathlib import Path
 from time import time
 
 from tests import approx
-from tests.fw.api import StatsOptions, ValOptions
+from tests.fw.api import ValOptions
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()

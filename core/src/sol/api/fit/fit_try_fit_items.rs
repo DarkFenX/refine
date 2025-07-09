@@ -1,9 +1,12 @@
+use itertools::Itertools;
+
 use crate::{
     ad,
-    def::{FitKey, ItemTypeId},
+    def::{FitKey, ItemKey, ItemTypeId, OF},
     misc::{AddMode, MinionState, ModRack, ModuleState, RmMode, ServiceState},
     sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt},
+    uad::Uad,
 };
 
 impl SolarSystem {
@@ -14,6 +17,7 @@ impl SolarSystem {
         val_options: &ValOptionsInt,
     ) -> Vec<ItemTypeId> {
         let mut valid = Vec::new();
+        let chargeable_module_keys = get_chargeable_modules(&self.uad, fit_key);
         for type_id in type_ids {
             let a_item = match self.uad.src.get_a_item(type_id) {
                 Some(a_item) => a_item,
@@ -97,6 +101,20 @@ impl SolarSystem {
                     }
                     self.internal_remove_module(module_key, RmMode::Free);
                 }
+                // TODO: setting charge is a destructive action (since it removes old charge with
+                // TODO: all its settings), rework it to be non-destructive, unless it is too
+                // TODO: expensive - HTTP module copies solar system before trying to fit anyway
+                ad::AItemKind::Charge => {
+                    for &module_key in chargeable_module_keys.iter() {
+                        let charge_key = self.internal_set_module_charge(module_key, *type_id);
+                        if self.internal_validate_fit_fast(fit_key, val_options) {
+                            valid.push(*type_id);
+                            self.internal_remove_charge(charge_key);
+                            break;
+                        }
+                        self.internal_remove_charge(charge_key);
+                    }
+                }
                 ad::AItemKind::Rig => {
                     let rig_key = self.internal_add_rig(fit_key, *type_id);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
@@ -130,6 +148,27 @@ impl<'a> FitMut<'a> {
         let int_val_options = ValOptionsInt::from_pub(self.sol, val_options);
         self.sol.internal_try_fit_items(self.key, type_ids, &int_val_options)
     }
+}
+
+fn get_chargeable_modules(uad: &Uad, fit_key: FitKey) -> Vec<ItemKey> {
+    let mut seen_a_item_ids = Vec::new();
+    let mut module_keys = Vec::new();
+    for module_key in uad.fits.get(fit_key).iter_module_keys() {
+        let uad_item = uad.items.get(module_key);
+        let a_item_id = uad_item.get_a_item_id();
+        if seen_a_item_ids.contains(&a_item_id) {
+            continue;
+        }
+        seen_a_item_ids.push(a_item_id);
+        let a_item_xt = match uad_item.get_a_xt() {
+            Some(a_item_xt) => a_item_xt,
+            None => continue,
+        };
+        if a_item_xt.capacity > OF(0.0) {
+            module_keys.push(module_key);
+        }
+    }
+    module_keys
 }
 
 fn conv_state(a_state: ad::AState) -> ModuleState {
