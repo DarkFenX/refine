@@ -72,11 +72,9 @@ impl Vast {
         let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
         let a_fighter_xt = fighter.get_a_xt().unwrap();
         let count = fighter.get_count().unwrap();
-        if let Some(volume) = a_fighter_xt.volume {
-            fit_data
-                .fighters_volume
-                .insert(fighter_key, volume * AttrVal::from(count.current));
-        }
+        fit_data
+            .fighters_volume
+            .insert(fighter_key, a_fighter_xt.volume * AttrVal::from(count.current));
         match count.current > count.max {
             true => fit_data.fighter_squad_size.insert(
                 fighter_key,

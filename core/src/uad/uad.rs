@@ -36,7 +36,7 @@ impl Uad {
         self.items
             .get(item_key)
             .get_a_xt()
-            .and_then(|a_xt| a_xt.radius)
+            .map(|a_xt| a_xt.radius)
             .unwrap_or(OF(0.0))
     }
     pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: FitKey) -> AttrVal {

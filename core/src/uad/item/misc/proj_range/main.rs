@@ -19,11 +19,7 @@ impl UadProjRange {
         src_a_item_xt: Option<&ad::AItemXt>,
         tgt_a_item_xt: Option<&ad::AItemXt>,
     ) -> Option<Self> {
-        UadProjRange::from_prange_with_radii(
-            prange,
-            src_a_item_xt.and_then(|v| v.radius),
-            tgt_a_item_xt.and_then(|v| v.radius),
-        )
+        UadProjRange::from_prange_with_radii(prange, src_a_item_xt.map(|v| v.radius), tgt_a_item_xt.map(|v| v.radius))
     }
     pub(crate) fn from_prange_with_radii(
         prange: ProjRange,

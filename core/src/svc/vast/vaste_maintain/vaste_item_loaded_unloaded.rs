@@ -78,12 +78,10 @@ impl Vast {
                     }
                 }
                 // Add entry for charges with volume higher than 0
-                if let Some(volume) = a_item_xt.volume
-                    && volume > OF(0.0)
-                {
+                if a_item_xt.volume > OF(0.0) {
                     fit_data
                         .mods_charge_volume
-                        .insert(charge.get_cont_key(), ValCache::Todo(volume));
+                        .insert(charge.get_cont_key(), ValCache::Todo(a_item_xt.volume));
                 }
                 if a_item_xt.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_key);
@@ -92,9 +90,7 @@ impl Vast {
             UadItem::Drone(drone) => {
                 let a_item_xt = drone.get_a_xt().unwrap();
                 item_kind_add(fit_data, item_key, a_item_xt.kind, ad::AItemKind::Drone);
-                if let Some(volume) = a_item_xt.volume {
-                    fit_data.drones_volume.insert(item_key, volume);
-                }
+                fit_data.drones_volume.insert(item_key, a_item_xt.volume);
                 if let Some(bandwidth) = a_item_xt.bandwidth_use {
                     fit_data.drones_bandwidth.insert(item_key, bandwidth);
                 };
@@ -109,11 +105,9 @@ impl Vast {
                 let a_item_xt = fighter.get_a_xt().unwrap();
                 item_kind_add(fit_data, item_key, a_item_xt.kind, ad::AItemKind::Fighter);
                 let count = fighter.get_count().unwrap();
-                if let Some(volume) = a_item_xt.volume {
-                    fit_data
-                        .fighters_volume
-                        .insert(item_key, volume * AttrVal::from(count.current));
-                }
+                fit_data
+                    .fighters_volume
+                    .insert(item_key, a_item_xt.volume * AttrVal::from(count.current));
                 if count.current > count.max {
                     fit_data.fighter_squad_size.insert(
                         item_key,
@@ -198,8 +192,7 @@ impl Vast {
                 // we just reset validation result when a module is being loaded
                 handle_charge_volume_for_module(fit_data, item_key);
                 if let Some(ad::AShipKind::CapitalShip) = a_item_xt.item_ship_kind {
-                    // Unwrap, since item ship kind is set to capital only when volume is available
-                    fit_data.mods_capital.insert(item_key, a_item_xt.volume.unwrap());
+                    fit_data.mods_capital.insert(item_key, a_item_xt.volume);
                 }
                 if let Some(sec_class) = a_item_xt.online_max_sec_class {
                     fit_data.sec_zone_unonlineable_class.insert(item_key, sec_class);

@@ -1,7 +1,7 @@
 use super::{
     attr_val::{
-        get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_radius, get_remote_resist_attr_id,
-        get_volume,
+        get_bandwidth_use, get_capacity, get_max_type_fitted_count, get_online_max_sec_class, get_radius,
+        get_remote_resist_attr_id, get_volume,
     },
     charge_limit::get_item_charge_limit,
     container_limit::get_item_container_limit,
@@ -34,9 +34,11 @@ pub(crate) struct AItemXt {
     // Item type
     pub(crate) kind: Option<AItemKind>,
     // Unmutated and unmodified item volume
-    pub(crate) volume: Option<AAttrVal>,
+    pub(crate) volume: AAttrVal,
+    // Unmutated and unmodified item capacity
+    pub(crate) capacity: AAttrVal,
     // Unmutated and unmodified item radius
-    pub(crate) radius: Option<AAttrVal>,
+    pub(crate) radius: AAttrVal,
     // If set, item can be fit to a ship which fits into the limit
     pub(crate) ship_limit: Option<AItemShipLimit>,
     // If set, item can load only charges which fit into limit
@@ -95,6 +97,7 @@ impl AItemXt {
         Self {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, &a_item.attrs, &a_item.effect_datas),
             volume: get_volume(&a_item.attrs),
+            capacity: get_capacity(&a_item.attrs),
             radius: get_radius(&a_item.attrs),
             ship_limit: get_item_ship_limit(a_item.id, &a_item.attrs),
             charge_limit: get_item_charge_limit(&a_item.attrs),
@@ -128,6 +131,7 @@ impl AItemXt {
         Self {
             kind: get_item_kind(a_item.ai.grp_id, a_item.ai.cat_id, attrs, &a_item.ai.effect_datas),
             volume: get_volume(attrs),
+            capacity: get_capacity(attrs),
             radius: get_radius(attrs),
             ship_limit: get_item_ship_limit(a_item.ai.id, attrs),
             charge_limit: get_item_charge_limit(attrs),
