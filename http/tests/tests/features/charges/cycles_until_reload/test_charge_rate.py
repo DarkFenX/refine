@@ -190,7 +190,7 @@ def test_no_charge_rate(client, consts):
     assert api_module.update().cycles_until_reload == 10
 
 
-def test_charge_not_loaded(client, consts):
+def test_not_loaded_charge(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)

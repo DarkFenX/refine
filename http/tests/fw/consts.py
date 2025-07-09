@@ -255,6 +255,9 @@ class EveAttr(IntEnum):
     charge_group4 = 609
     charge_group5 = 610
     max_group_active = 763
+    crystal_volatility_chance = 783
+    crystal_volatility_damage = 784
+    crystals_get_damaged = 786
     mass_addition = 796
     disallow_assistance = 854
     disallow_offensive_modifiers = 872
@@ -559,4 +562,5 @@ class UtilEffect(IntEnum):
     # as a range-defining attribute
     tgt_simple = EveEffect.tgt_disintegrator_attack
     cycle_charge_rate = EveEffect.projectile_fired
+    cycle_crystal = EveEffect.tgt_attack
     cycle_none = EveEffect.warp_disrupt_sphere
