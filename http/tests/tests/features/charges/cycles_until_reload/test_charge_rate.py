@@ -1,7 +1,7 @@
 from tests import check_no_field
 
 
-def test_charge_rate_basic(client, consts):
+def test_basic(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
@@ -19,7 +19,7 @@ def test_charge_rate_basic(client, consts):
     assert api_module.update().cycles_until_reload == 10
 
 
-def test_charge_rate_rounding_cycles(client, consts):
+def test_rounding_cycles(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
@@ -38,7 +38,7 @@ def test_charge_rate_rounding_cycles(client, consts):
     assert api_module.update().cycles_until_reload == 9
 
 
-def test_charge_rate_rounding_charge_rate(client, consts):
+def test_rounding_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
@@ -62,7 +62,7 @@ def test_charge_rate_rounding_charge_rate(client, consts):
     assert api_module2.update().cycles_until_reload == 5
 
 
-def test_charge_rate_zero_charge_rate(client, consts):
+def test_zero_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
@@ -80,7 +80,7 @@ def test_charge_rate_zero_charge_rate(client, consts):
     assert api_module.update().cycles_until_reload is None
 
 
-def test_charge_rate_no_charge(client, consts):
+def test_no_charge(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
@@ -98,7 +98,7 @@ def test_charge_rate_no_charge(client, consts):
         api_module.cycles_until_reload  # noqa: B018
 
 
-def test_charge_rate_no_charge_rate(client, consts):
+def test_no_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
@@ -115,7 +115,7 @@ def test_charge_rate_no_charge_rate(client, consts):
     assert api_module.update().cycles_until_reload == 10
 
 
-def test_charge_rate_charge_not_loaded(client, consts):
+def test_charge_not_loaded(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
@@ -130,32 +130,3 @@ def test_charge_rate_charge_not_loaded(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
     assert api_module.update().cycles_until_reload == 0
-
-
-def test_no_default_effect(client, consts):
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
-    eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_effect_id])
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
-    # Verification
-    assert api_module.update().cycles_until_reload is None
-
-
-def test_module_not_loaded(client, consts):
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
-    eve_module_id = client.alloc_item_id()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
-    # Verification
-    assert api_module.update().cycles_until_reload is None
