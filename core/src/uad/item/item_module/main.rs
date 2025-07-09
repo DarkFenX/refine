@@ -1,6 +1,6 @@
 use crate::{
-    ac, ad,
-    def::{Count, FitKey, Idx, ItemId, ItemKey, OF},
+    ad,
+    def::{Count, FitKey, Idx, ItemId, ItemKey},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, ItemMutationRequest, ModRack, ModuleState},
     src::Src,
@@ -149,23 +149,15 @@ impl UadModule {
         // No charge - no info
         let charge_key = self.get_charge_key()?;
         let charge_item = uad.items.get(charge_key);
-        let module_capacity = match self.get_a_attrs() {
-            Some(a_attrs) => match a_attrs.get(&ac::attrs::CAPACITY) {
-                Some(&capacity) if capacity != OF(0.0) => capacity,
-                // No capacity, or capacity of zero - 0 charges
-                _ => return Some(0),
-            },
+        let module_capacity = match self.get_a_xt() {
+            Some(a_xt) => a_xt.capacity,
             // Module not loaded - no info
             _ => {
                 return None;
             }
         };
-        let charge_volume = match charge_item.get_a_attrs() {
-            Some(a_attrs) => match a_attrs.get(&ac::attrs::VOLUME) {
-                Some(&volume) if volume != OF(0.0) => volume,
-                // No volume, or volume of zero - no info
-                _ => return None,
-            },
+        let charge_volume = match charge_item.get_a_xt() {
+            Some(a_xt) => a_xt.volume,
             // Charge not loaded - no info
             _ => {
                 return None;

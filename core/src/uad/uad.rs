@@ -33,11 +33,10 @@ impl Uad {
         }
     }
     pub(crate) fn get_item_radius(&self, item_key: ItemKey) -> AttrVal {
-        self.items
-            .get(item_key)
-            .get_a_xt()
-            .map(|a_xt| a_xt.radius)
-            .unwrap_or(OF(0.0))
+        match self.items.get(item_key).get_a_xt() {
+            Some(a_xt) => a_xt.radius,
+            None => OF(0.0),
+        }
     }
     pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: FitKey) -> AttrVal {
         let ship_key = match self.fits.get(fit_key).ship {

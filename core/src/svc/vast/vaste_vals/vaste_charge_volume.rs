@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    ac,
-    def::{AttrVal, ItemId, ItemKey, OF},
+    def::{AttrVal, ItemId, ItemKey},
     svc::{
         SvcCtx,
         vast::{ValCache, VastFitData},
@@ -113,11 +112,8 @@ fn calculate_item_result(
     charge_volume: AttrVal,
 ) -> ValCache<AttrVal, ValChargeVolumeFailCache> {
     let module = ctx.uad.items.get(module_key).get_module().unwrap();
-    let module_capacity = match module.get_a_attrs() {
-        Some(attrs) => match attrs.get(&ac::attrs::CAPACITY) {
-            Some(module_capacity) => *module_capacity,
-            None => OF(0.0),
-        },
+    let module_capacity = match module.get_a_xt() {
+        Some(a_xt) => a_xt.capacity,
         None => return ValCache::Pass(charge_volume),
     };
     match charge_volume <= module_capacity {

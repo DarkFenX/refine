@@ -1,3 +1,4 @@
+use super::attr_val::get_volume;
 use crate::{
     ac,
     ad::{AAttrId, AAttrVal, AItemCatId, AItemId, ASkillLevel},
@@ -24,12 +25,9 @@ pub(super) fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &RMap<AItemId, A
 
 pub(super) fn get_item_ship_kind(item_cat_id: AItemCatId, item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AShipKind> {
     match item_cat_id {
-        ac::itemcats::MODULE => match item_attrs.get(&ac::attrs::VOLUME) {
-            Some(&volume) => match volume <= ac::extras::MAX_SUBCAP_MODULE_VOLUME {
-                true => Some(AShipKind::Ship),
-                false => Some(AShipKind::CapitalShip),
-            },
-            None => Some(AShipKind::Ship),
+        ac::itemcats::MODULE => match get_volume(item_attrs) <= ac::extras::MAX_SUBCAP_MODULE_VOLUME {
+            true => Some(AShipKind::Ship),
+            false => Some(AShipKind::CapitalShip),
         },
         ac::itemcats::STRUCTURE_MODULE => Some(AShipKind::Structure),
         _ => None,

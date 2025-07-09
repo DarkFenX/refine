@@ -45,7 +45,8 @@ pub(in crate::nd::eff) fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>,
         affector_espec,
         affector_value: AffectorValue::Custom(CustomAffectorValue {
             kind: CustomAffectorValueKind::PropSpeedBoost,
-            affector_a_attr_id: None,
+            // Exposing just 1 attribute here, not to handle it via dependencies
+            affector_a_attr_id: Some(PROP_BOOST),
             affector_info_getter: get_affector_info,
             mod_val_getter: get_mod_val,
             ..
@@ -99,12 +100,8 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
 }
 
 fn reg_dependencies(calc: &mut Calc, ship_key: ItemKey, prop_espec: EffectSpec) {
+    // Prop boost attribute is declared the usual way, everything else is declared here
     let affectee_aspec = AttrSpec::new(ship_key, SHIP_SPEED);
-    calc.deps.add_with_source(
-        prop_espec,
-        AttrSpec::new(prop_espec.item_key, PROP_BOOST),
-        affectee_aspec,
-    );
     calc.deps.add_with_source(
         prop_espec,
         AttrSpec::new(prop_espec.item_key, PROP_THRUST),

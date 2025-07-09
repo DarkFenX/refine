@@ -3,7 +3,7 @@ use smallvec::{SmallVec, smallvec};
 use crate::{
     ac, ad,
     def::{AttrVal, ItemKey, OF},
-    misc::{AttrSpec, EffectSpec},
+    misc::EffectSpec,
     nd::{NEffect, NEffectHc, eff::shared::util::get_item_fit_ship_key},
     svc::{
         SvcCtx,
@@ -61,7 +61,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
         affector_espec: espec,
         affector_value: AffectorValue::Custom(CustomAffectorValue {
             kind: CustomAffectorValueKind::MissileFlightTime,
-            affector_a_attr_id: None,
+            affector_a_attr_id: Some(MISSILE_VELOCITY),
             affector_info_getter: get_affector_info,
             mod_val_getter: get_mod_val,
             item_add_reviser: Some(revise_on_item_add_removal),
@@ -81,15 +81,16 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     let missile_velocity = calc
         .get_item_attr_val_full(ctx, espec.item_key, &MISSILE_VELOCITY)
         .ok()?;
-    let ship_radius = calc.get_item_attr_val_full(ctx, ship_key, &SHIP_RADIUS).ok()?;
+    let ship_radius = ctx.uad.get_item_radius(ship_key);
     // Missile flight time is stored in milliseconds, thus have to multiply by 1000
-    let val = ship_radius.dogma / missile_velocity.dogma * OF(1000.0);
+    let val = ship_radius / missile_velocity.dogma * OF(1000.0);
     if val.is_infinite() {
         return None;
     }
-    // Register dependencies, so that affectee attribute is properly cleared up when any of affector
-    // attributes change
-    reg_dependencies(calc, ship_key, espec);
+    // No need to register dependencies here, because missile velocity attribute is getting cleared
+    // the regular modifier way, and ship radius is taken unmodified intentionally. Since it is
+    // taken unmodified, it should stay as-is, and applied modification doesn't need to be cleared
+    // up whenever modified value changes
     Some(val)
 }
 
@@ -123,15 +124,4 @@ fn revise_on_item_add_removal(
         }
         _ => false,
     }
-}
-
-fn reg_dependencies(calc: &mut Calc, ship_key: ItemKey, missile_espec: EffectSpec) {
-    let affectee_aspec = AttrSpec::new(missile_espec.item_key, MISSILE_FLIGHT_TIME);
-    calc.deps.add_with_source(
-        missile_espec,
-        AttrSpec::new(missile_espec.item_key, MISSILE_VELOCITY),
-        affectee_aspec,
-    );
-    calc.deps
-        .add_with_source(missile_espec, AttrSpec::new(ship_key, SHIP_RADIUS), affectee_aspec);
 }

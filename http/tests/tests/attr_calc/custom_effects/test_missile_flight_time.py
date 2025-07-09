@@ -294,6 +294,52 @@ def test_modifier_ship_change(client, consts):
     assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(12000)
 
 
+def test_modifier_switch_type_id_ship(client, consts):
+    eve_skill_id = client.mk_eve_item()
+    eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_missile_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.missile_launching,
+        cat_id=consts.EveEffCat.target)
+    eve_missile_id = client.mk_eve_item(
+        attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
+        eff_ids=[eve_missile_effect_id],
+        defeff_id=eve_missile_effect_id,
+        srqs={eve_skill_id: 2})
+    eve_module_id = client.mk_eve_item()
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 1000})
+    eve_unloaded_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
+    # Verification
+    api_module.update()
+    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
+    # Verification
+    api_module.update()
+    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(12000)
+    # Action
+    api_ship.change_ship(type_id=eve_unloaded_id)
+    # Verification
+    api_module.update()
+    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    # Action
+    api_ship.change_ship(type_id=eve_ship1_id)
+    # Verification
+    api_module.update()
+    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+
+
 def test_modifier_missile_velocity_changed(client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
@@ -345,7 +391,6 @@ def test_modifier_missile_velocity_changed(client, consts):
 
 
 def test_modifier_ship_radius_changed(client, consts):
-    # Not realistic at all, but the lib uses modified radius attr, so check it
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
@@ -379,11 +424,11 @@ def test_modifier_ship_radius_changed(client, consts):
     assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    # Verification
+    # Verification - lib uses unmodified ship radius for calculations, so result does not change
     assert api_ship.update().attrs[eve_radius_attr_id].dogma == approx(1600)
     api_module.update()
     assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(13200)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
     # Action
     api_rig.remove()
     # Verification
