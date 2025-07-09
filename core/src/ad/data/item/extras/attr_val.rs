@@ -40,3 +40,6 @@ pub(super) fn get_remote_resist_attr_id(item_attrs: &RMap<AAttrId, AAttrVal>) ->
             _ => Some(val.into_inner().round() as AAttrId),
         })
 }
+pub(super) fn get_charge_size(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrVal> {
+    item_attrs.get(&ac::attrs::CHARGE_SIZE).copied()
+}

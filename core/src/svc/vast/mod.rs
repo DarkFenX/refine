@@ -15,7 +15,7 @@ pub use vaste_vals::{
     ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail,
     ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };
-use vaste_vals::{ValChargeGroupFailCache, ValChargeSizeFailCache, ValChargeVolumeFailCache};
+use vaste_vals::{ValChargeGroupFailCache, ValChargeVolumeFailCache};
 
 mod cache;
 mod options;

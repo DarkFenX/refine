@@ -162,12 +162,9 @@ impl VastFitData {
                 check_item_key(uad, fail_cache.charge_key, true)?;
             }
         }
-        for (&module_key, module_data) in self.mods_charge_size.iter() {
+        for (&charge_key, &module_key) in self.charge_size.iter() {
             check_item_key(uad, module_key, true)?;
-            if let ValCache::Fail(fail_cache) = module_data {
-                check_item_key(uad, fail_cache.parent_key, true)?;
-                check_item_key(uad, fail_cache.charge_key, true)?;
-            }
+            check_item_key(uad, charge_key, true)?;
         }
         for (&module_key, module_data) in self.mods_charge_volume.iter() {
             // This container can store info about non-loaded modules
