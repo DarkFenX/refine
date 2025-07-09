@@ -3,7 +3,6 @@ pub use vaste_capital_module::ValCapitalModFail;
 pub(in crate::svc::vast) use vaste_charge_group::ValChargeGroupFailCache;
 pub use vaste_charge_group::{ValChargeGroupChargeInfo, ValChargeGroupFail};
 pub use vaste_charge_size::{ValChargeSizeChargeInfo, ValChargeSizeFail};
-pub(in crate::svc::vast) use vaste_charge_volume::ValChargeVolumeFailCache;
 pub use vaste_charge_volume::{ValChargeVolumeChargeInfo, ValChargeVolumeFail};
 pub use vaste_drone_group::ValDroneGroupFail;
 pub use vaste_effect_stopper::ValEffectStopperFail;

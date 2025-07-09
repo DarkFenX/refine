@@ -16,11 +16,11 @@ const GROUP_ATTRS: [AAttrId; 6] = [
 ];
 
 #[derive(Clone)]
-pub(crate) struct AItemContainerLimit {
+pub(crate) struct AItemContLimit {
     pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_item_container_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AItemContainerLimit> {
+pub(super) fn get_item_container_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AItemContLimit> {
     let group_ids = GROUP_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
@@ -30,5 +30,5 @@ pub(super) fn get_item_container_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> 
     if group_ids.is_empty() {
         return None;
     }
-    Some(AItemContainerLimit { group_ids })
+    Some(AItemContLimit { group_ids })
 }

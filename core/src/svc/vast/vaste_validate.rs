@@ -439,7 +439,7 @@ impl Vast {
         if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs) {
             return false;
         }
-        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs, ctx) {
+        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs) {
             return false;
         }
         // Majority of fits are supposed to have thermodynamics 1 trained, and not every fit has

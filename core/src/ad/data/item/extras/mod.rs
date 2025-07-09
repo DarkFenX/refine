@@ -1,5 +1,5 @@
 pub(crate) use charge_limit::AItemChargeLimit;
-pub(crate) use container_limit::AItemContainerLimit;
+pub(crate) use container_limit::AItemContLimit;
 pub(crate) use drone_limit::AShipDroneLimit;
 pub(crate) use extras::AItemXt;
 pub use kind::AItemKind;

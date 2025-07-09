@@ -6,6 +6,7 @@ pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 pub use vaste_stats_fit::{StatRes, StatSlot};
 pub use vaste_stats_item::{StatLayerEhp, StatLayerHp, StatTank};
+use vaste_vals::ValChargeGroupFailCache;
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail, ValChargeSizeChargeInfo,
     ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail,
@@ -15,7 +16,6 @@ pub use vaste_vals::{
     ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail,
     ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };
-use vaste_vals::{ValChargeGroupFailCache, ValChargeVolumeFailCache};
 
 mod cache;
 mod options;
