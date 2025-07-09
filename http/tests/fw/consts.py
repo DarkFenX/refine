@@ -222,6 +222,7 @@ class EveAttr(IntEnum):
     kin_dmg = 117
     therm_dmg = 118
     charge_size = 128
+    launcher_group = 137
     falloff = 158
     volume = 161
     radius = 162
@@ -246,6 +247,8 @@ class EveAttr(IntEnum):
     sig_radius = 552
     sig_radius_bonus = 554
     speed_boost_factor = 567
+    launcher_group2 = 602
+    launcher_group3 = 603
     charge_group1 = 604
     charge_group2 = 605
     charge_group3 = 606
@@ -300,6 +303,9 @@ class EveAttr(IntEnum):
     ftr_capacity = 2055
     service_slots = 2056
     can_fit_ship_group9 = 2065
+    launcher_group4 = 2076
+    launcher_group5 = 2077
+    launcher_group6 = 2078
     can_fit_ship_type6 = 2103
     remote_resistance_id = 2138
     ftr_tubes = 2216

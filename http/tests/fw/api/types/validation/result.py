@@ -4,6 +4,7 @@ from tests.fw.util import AttrDict, AttrHookDef
 from .val_activation_blocked import ValActivationBlockedFail
 from .val_capital_module import ValCapModuleFail
 from .val_charge_group import ValChargeGroupFail
+from .val_charge_parent_group import ValChargeParentGroupFail
 from .val_charge_size import ValChargeSizeFail
 from .val_charge_volume import ValChargeVolumeFail
 from .val_drone_group import ValDroneGroupFail
@@ -85,6 +86,7 @@ class FitValDetails(AttrDict):
             'overload_skill': AttrHookDef(func=lambda d: ValOverloadSkillFail(data=d)),
             # Charges
             'charge_group': AttrHookDef(func=lambda d: ValChargeGroupFail(data=d)),
+            'charge_parent_group': AttrHookDef(func=lambda d: ValChargeParentGroupFail(data=d)),
             'charge_size': AttrHookDef(func=lambda d: ValChargeSizeFail(data=d)),
             'charge_volume': AttrHookDef(func=lambda d: ValChargeVolumeFail(data=d)),
             # Rigs
