@@ -28,16 +28,16 @@ def test_state(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_hull=True))
-    assert api_stats.rr_structure == approx(9.7)
+    assert api_stats.rr_hull == approx(9.7)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_hull=True))
-    assert api_stats.rr_structure == approx(0)
+    assert api_stats.rr_hull == approx(0)
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_hull=True))
-    assert api_stats.rr_structure == approx(9.7)
+    assert api_stats.rr_hull == approx(9.7)
