@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::{Count, FitKey, Idx, ItemId, ItemKey, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, ItemMutationRequest, ModRack, ModuleState},
+    misc::{AttrMutationRequest, ItemMutationRequest, ModRack, ModuleState, Spool},
     src::Src,
     uad::{
         Uad,
@@ -19,6 +19,7 @@ pub(crate) struct UadModule {
     rack: ModRack,
     pos: Idx,
     charge_key: Option<ItemKey>,
+    spool: Option<Spool>,
     projs: Projs,
 }
 impl UadModule {
@@ -39,6 +40,7 @@ impl UadModule {
             rack,
             pos,
             charge_key,
+            spool: None,
             projs: Projs::new(),
         }
     }
@@ -165,6 +167,12 @@ impl UadModule {
         };
         let charge_count = floor_unerr(module_capacity / charge_volume) as Count;
         Some(charge_count)
+    }
+    pub(crate) fn get_spool(&self) -> Option<Spool> {
+        self.spool
+    }
+    pub(crate) fn set_spool(&mut self, spool: Option<Spool>) {
+        self.spool = spool
     }
     pub(crate) fn get_projs(&self) -> &Projs {
         &self.projs

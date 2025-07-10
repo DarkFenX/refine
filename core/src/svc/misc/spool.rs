@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, Count, OF},
-    misc::SpoolOptions,
+    misc::Spool,
     util::{ceil_unerr, floor_unerr},
 };
 
@@ -10,7 +10,7 @@ pub(in crate::svc) struct ResolvedSpool {
 }
 
 pub(in crate::svc) fn resolve_spool(
-    options: SpoolOptions,
+    options: Spool,
     max: AttrVal,
     step: AttrVal,
     cycle_time: AttrVal,
@@ -20,12 +20,12 @@ pub(in crate::svc) fn resolve_spool(
         return None;
     }
     let cycles = match options {
-        SpoolOptions::Cycles(cycles_opt) => {
+        Spool::Cycles(cycles_opt) => {
             // Limit requested count by max spool cycles
             let cycles_max = ceil_unerr(max / step) as Count;
             cycles_max.min(cycles_opt)
         }
-        SpoolOptions::Time(time) => {
+        Spool::Time(time) => {
             if cycle_time == OF(0.0) {
                 return None;
             }
@@ -34,11 +34,11 @@ pub(in crate::svc) fn resolve_spool(
             let cycles_by_time = floor_unerr(time / cycle_time) as Count;
             cycles_max.min(cycles_by_time)
         }
-        SpoolOptions::SpoolScale(range_value) => {
+        Spool::SpoolScale(range_value) => {
             let cycles = ceil_unerr(range_value.get_inner() * max / step) as Count;
             cycles
         }
-        SpoolOptions::CycleScale(range_value) => {
+        Spool::CycleScale(range_value) => {
             let cycles_max = ceil_unerr(max / step) as Count;
             let cycles = ceil_unerr(range_value.get_inner() * cycles_max as f64) as Count;
             cycles

@@ -2,6 +2,7 @@ use crate::{
     ad,
     def::{Count, FitKey, ItemId, ItemKey},
     err::basic::ItemKindMatchError,
+    misc::Spool,
     src::Src,
     uad::{
         Uad, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFwEffect, UadImplant,
@@ -280,6 +281,13 @@ impl UadItem {
             _ => None,
         }
     }
+    pub(crate) fn get_spool(&self) -> Option<Spool> {
+        match self {
+            Self::Module(module) => module.get_spool(),
+            _ => None,
+        }
+    }
+
     pub(crate) fn get_autocharges(&self) -> Option<&Autocharges> {
         match self {
             Self::Fighter(fighter) => Some(fighter.get_autocharges()),

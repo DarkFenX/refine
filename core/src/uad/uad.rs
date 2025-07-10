@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, FitKey, ItemKey, OF},
-    misc::{DpsProfile, SecZone},
+    misc::{DpsProfile, SecZone, Spool, UnitInterval},
     src::Src,
     uad::{fit::Fits, fleet::Fleets, item::Items},
     util::RSet,
@@ -17,6 +17,7 @@ pub(crate) struct Uad {
     pub(crate) proj_effects: RSet<ItemKey>,
     pub(crate) items: Items,
     pub(crate) default_incoming_dps: DpsProfile,
+    pub(crate) default_spool: Spool,
     pub(crate) sec_zone: SecZone,
 }
 impl Uad {
@@ -29,6 +30,7 @@ impl Uad {
             proj_effects: RSet::new(),
             items: Items::new(10000),
             default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
+            default_spool: Spool::SpoolScale(UnitInterval::new_clamped_of64(OF(1.0))),
             sec_zone: SecZone::NullSec,
         }
     }

@@ -4,7 +4,8 @@ use crate::{
 };
 
 /// Controls on which spool cycle spoolable modules will be set.
-pub enum SpoolOptions {
+#[derive(Copy, Clone)]
+pub enum Spool {
     /// Module will use this number, or max spool cycles supported by module, whichever is lower.
     Cycles(Count),
     /// Module will use count of full cycles it finishes by this time, or max spool cycles supported

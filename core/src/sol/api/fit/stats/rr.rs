@@ -1,10 +1,10 @@
-use crate::{def::AttrVal, misc::SpoolOptions, sol::api::FitMut};
+use crate::{def::AttrVal, misc::Spool, sol::api::FitMut};
 
 impl<'a> FitMut<'a> {
     pub fn get_stat_rr_shield(&mut self) -> AttrVal {
         self.sol.svc.get_stat_fit_orr_shield(&self.sol.uad, self.key)
     }
-    pub fn get_stat_rr_armor(&mut self, spool: Option<SpoolOptions>) -> AttrVal {
+    pub fn get_stat_rr_armor(&mut self, spool: Option<Spool>) -> AttrVal {
         self.sol.svc.get_stat_fit_orr_armor(&self.sol.uad, self.key, spool)
     }
     pub fn get_stat_rr_hull(&mut self) -> AttrVal {
