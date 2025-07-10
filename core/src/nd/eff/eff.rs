@@ -45,5 +45,6 @@ pub(crate) struct NEffectHc {
     pub(crate) get_local_structure_rep_amount: Option<NLocalRepGetter> = None,
     pub(crate) get_remote_armor_rep_amount: Option<NRemoteRepGetter> = None,
     pub(crate) get_remote_shield_rep_amount: Option<NRemoteRepGetter> = None,
-    pub(crate) get_remote_structure_rep_amount: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_struct_rep_amount: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_cap_rep_amount: Option<NRemoteRepGetter> = None,
 }

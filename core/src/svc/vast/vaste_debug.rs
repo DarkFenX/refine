@@ -13,7 +13,7 @@ impl Vast {
         for &item_key in self.not_loaded.iter() {
             check_item_key(uad, item_key, false)?;
         }
-        for (projectee_key, projector_especs) in self.limitable_rsb.iter() {
+        for (projectee_key, projector_especs) in self.irr_shield_limitable.iter() {
             // Projectee are not guaranteed to be loaded
             check_item_key(uad, *projectee_key, false)?;
             for projector_espec in projector_especs.keys() {
@@ -21,7 +21,7 @@ impl Vast {
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
-        for (projectee_key, projector_especs) in self.limitable_rar.iter() {
+        for (projectee_key, projector_especs) in self.irr_armor_limitable.iter() {
             // Projectee are not guaranteed to be loaded
             check_item_key(uad, *projectee_key, false)?;
             for projector_espec in projector_especs.keys() {
@@ -251,11 +251,27 @@ impl VastFitData {
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
-        for espec in self.limitable_sb.keys() {
+        for espec in self.lr_shield_limitable.keys() {
             check_item_key(uad, espec.item_key, true)?;
             check_a_effect_id(uad, &espec.a_effect_id)?;
         }
-        for espec in self.limitable_ar.keys() {
+        for espec in self.lr_armor_limitable.keys() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
+        for espec in self.orr_shield.keys() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
+        for espec in self.orr_armor.keys() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
+        for espec in self.orr_struct.keys() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
+        for espec in self.orr_cap.keys() {
             check_item_key(uad, espec.item_key, true)?;
             check_a_effect_id(uad, &espec.a_effect_id)?;
         }

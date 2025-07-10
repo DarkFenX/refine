@@ -15,16 +15,16 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<ItemKey>,
     // Remote armor/shield rep effects which can have limited charge amount
-    pub(in crate::svc::vast) limitable_rsb: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) limitable_rar: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_shield_limitable: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_armor_limitable: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
         Self {
             fit_datas: RMap::new(),
             not_loaded: RSet::new(),
-            limitable_rsb: RMapRMap::new(),
-            limitable_rar: RMapRMap::new(),
+            irr_shield_limitable: RMapRMap::new(),
+            irr_armor_limitable: RMapRMap::new(),
         }
     }
     pub(in crate::svc) fn get_fit_data(&self, fit_key: &FitKey) -> &VastFitData {
@@ -99,9 +99,14 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_assistance: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
-    // Stats-related
-    pub(in crate::svc::vast) limitable_sb: RMap<EffectSpec, NLocalRepGetter>,
-    pub(in crate::svc::vast) limitable_ar: RMap<EffectSpec, NLocalRepGetter>,
+    // Stats-related - local ancillary reps
+    pub(in crate::svc::vast) lr_shield_limitable: RMap<EffectSpec, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_armor_limitable: RMap<EffectSpec, NLocalRepGetter>,
+    // Outgoing remote reps
+    pub(in crate::svc::vast) orr_shield: RMap<EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_armor: RMap<EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_struct: RMap<EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_cap: RMap<EffectSpec, NRemoteRepGetter>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -167,8 +172,12 @@ impl VastFitData {
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
             // Stats-related
-            limitable_sb: RMap::new(), // Local shield reps which might have limited charges
-            limitable_ar: RMap::new(), // Local armor reps which might have limited charges
+            lr_shield_limitable: RMap::new(),
+            lr_armor_limitable: RMap::new(),
+            orr_shield: RMap::new(),
+            orr_armor: RMap::new(),
+            orr_struct: RMap::new(),
+            orr_cap: RMap::new(),
         }
     }
 }

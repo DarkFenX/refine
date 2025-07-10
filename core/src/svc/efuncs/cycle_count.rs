@@ -12,7 +12,7 @@ pub(in crate::svc) fn get_espec_cycle_count(ctx: SvcCtx, espec: EffectSpec) -> O
     Some(get_effect_cycle_count(ctx, espec.item_key, a_effect))
 }
 
-pub(in crate::svc) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &ad::ArcEffectRt) -> CycleCount {
+pub(in crate::svc) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &ad::AEffectRt) -> CycleCount {
     match a_effect.hc.charge {
         Some(n_charge) => match n_charge {
             NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(ctx, item_key, a_effect),
@@ -26,7 +26,7 @@ pub(in crate::svc) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_e
     }
 }
 
-fn get_autocharge_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &ad::ArcEffectRt) -> CycleCount {
+fn get_autocharge_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_effect: &ad::AEffectRt) -> CycleCount {
     let uad_item = ctx.uad.items.get(item_key);
     let autocharges = match uad_item.get_autocharges() {
         Some(autocharges) => autocharges,

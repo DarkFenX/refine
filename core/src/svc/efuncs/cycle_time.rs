@@ -14,9 +14,13 @@ pub(in crate::svc) fn get_effect_cycle_time(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,
-    a_effect: &ad::ArcEffectRt,
+    a_effect: &ad::AEffectRt,
 ) -> Option<AttrVal> {
     let attr_id = a_effect.ae.duration_attr_id?;
     let val = calc.get_item_attr_val_full(ctx, item_key, &attr_id).ok()?;
     Some(val.dogma)
+}
+
+pub(in crate::svc) fn has_cycle_time(a_effect: &ad::AEffectRt) -> bool {
+    a_effect.ae.duration_attr_id.is_some()
 }

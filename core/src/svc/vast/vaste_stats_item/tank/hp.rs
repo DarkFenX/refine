@@ -34,14 +34,14 @@ impl Vast {
                 let mut local_asb = OF(0.0);
                 let mut local_aar = OF(0.0);
                 let fit_data = self.get_fit_data(&uad_ship.get_fit_key());
-                for (asb_espec, rep_getter) in fit_data.limitable_sb.iter() {
+                for (asb_espec, rep_getter) in fit_data.lr_shield_limitable.iter() {
                     if let Some(asb_hp) = rep_getter(ctx, calc, asb_espec.item_key)
                         && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *asb_espec)
                     {
                         local_asb += asb_hp * AttrVal::from(cycles);
                     }
                 }
-                for (aar_espec, rep_getter) in fit_data.limitable_ar.iter() {
+                for (aar_espec, rep_getter) in fit_data.lr_armor_limitable.iter() {
                     if let Some(aar_hp) = rep_getter(ctx, calc, aar_espec.item_key)
                         && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *aar_espec)
                     {
@@ -55,7 +55,7 @@ impl Vast {
         // Incoming remote ancillary repairs
         let mut remote_asb = OF(0.0);
         let mut remote_aar = OF(0.0);
-        if let Some(item_limitable_rsbs) = self.limitable_rsb.get_l1(&item_key) {
+        if let Some(item_limitable_rsbs) = self.irr_shield_limitable.get_l1(&item_key) {
             for (rasb_espec, rep_getter) in item_limitable_rsbs.iter() {
                 if let Some(rasb_hp) = rep_getter(ctx, calc, *rasb_espec, Some(item_key))
                     && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *rasb_espec)
@@ -64,7 +64,7 @@ impl Vast {
                 }
             }
         }
-        if let Some(item_limitable_rars) = self.limitable_rar.get_l1(&item_key) {
+        if let Some(item_limitable_rars) = self.irr_armor_limitable.get_l1(&item_key) {
             for (raar_espec, rep_getter) in item_limitable_rars.iter() {
                 if let Some(raar_hp) = rep_getter(ctx, calc, *raar_espec, Some(item_key))
                     && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *raar_espec)
