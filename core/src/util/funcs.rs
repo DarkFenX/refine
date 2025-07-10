@@ -21,3 +21,9 @@ pub(crate) fn round(val: OF<f64>, digits: i32) -> OF<f64> {
     let mul = OF(10.0).powi(digits);
     (val * mul).round() / mul
 }
+
+// Should be used where float value is coerced into integer by rounding down, to avoid cases like
+// 2.3 / 0.1 = 22.999999999999996 becoming 22 instead of 23
+pub(crate) fn float_unerr(val: OF<f64>) -> OF<f64> {
+    round(val, 10)
+}

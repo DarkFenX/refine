@@ -9,7 +9,7 @@ use crate::{
         err::ItemMutatedError,
         item::{EffectModes, ItemMutationData, Projs, UadItemBaseMutable},
     },
-    util::{Named, RMap, round},
+    util::{Named, RMap, float_unerr},
 };
 
 #[derive(Clone)]
@@ -163,8 +163,7 @@ impl UadModule {
                 return None;
             }
         };
-        // Rounding is protection against cases like 2.3 / 0.1 = 22.999999999999996
-        let charge_count = round(module_capacity / charge_volume, 10).floor() as Count;
+        let charge_count = float_unerr(module_capacity / charge_volume).floor() as Count;
         Some(charge_count)
     }
     pub(crate) fn get_projs(&self) -> &Projs {
