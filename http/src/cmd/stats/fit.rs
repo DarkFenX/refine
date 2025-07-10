@@ -134,7 +134,7 @@ impl HGetFitStatsCmd {
             stats.rr_shield = core_fit.get_stat_rr_shield().into();
         }
         if self.rr_armor.unwrap_or(self.default) {
-            stats.rr_armor = core_fit.get_stat_rr_armor().into();
+            stats.rr_armor = core_fit.get_stat_rr_armor(None).into();
         }
         if self.rr_hull.unwrap_or(self.default) {
             stats.rr_hull = core_fit.get_stat_rr_hull().into();

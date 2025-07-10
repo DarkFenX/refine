@@ -1,5 +1,6 @@
 use crate::{
     def::{AttrVal, FitKey},
+    misc::SpoolOptions,
     svc::{Svc, SvcCtx},
     uad::Uad,
 };
@@ -10,10 +11,15 @@ impl Svc {
             .get_fit_data(&fit_key)
             .get_stat_orr_shield(SvcCtx::new(uad, &self.eprojs), &mut self.calc)
     }
-    pub(crate) fn get_stat_fit_orr_armor(&mut self, uad: &Uad, fit_key: FitKey) -> AttrVal {
+    pub(crate) fn get_stat_fit_orr_armor(
+        &mut self,
+        uad: &Uad,
+        fit_key: FitKey,
+        spool: Option<SpoolOptions>,
+    ) -> AttrVal {
         self.vast
             .get_fit_data(&fit_key)
-            .get_stat_orr_armor(SvcCtx::new(uad, &self.eprojs), &mut self.calc)
+            .get_stat_orr_armor(SvcCtx::new(uad, &self.eprojs), &mut self.calc, spool)
     }
     pub(crate) fn get_stat_fit_orr_hull(&mut self, uad: &Uad, fit_key: FitKey) -> AttrVal {
         self.vast
