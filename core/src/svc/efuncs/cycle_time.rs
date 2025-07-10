@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey},
+    def::{AttrVal, ItemKey, OF},
     misc::EffectSpec,
     svc::{SvcCtx, calc::Calc},
 };
@@ -18,7 +18,7 @@ pub(in crate::svc) fn get_effect_cycle_time(
 ) -> Option<AttrVal> {
     let attr_id = a_effect.ae.duration_attr_id?;
     let val = calc.get_item_attr_val_full(ctx, item_key, &attr_id).ok()?;
-    Some(val.dogma)
+    Some(val.dogma / OF(1000.0))
 }
 
 pub(in crate::svc) fn has_cycle_time(a_effect: &ad::AEffectRt) -> bool {
