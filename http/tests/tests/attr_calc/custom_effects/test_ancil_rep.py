@@ -34,7 +34,7 @@ def test_remote_aar(client, consts):
     # Check that paste boost works on remote ancillary repairer
     eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
     eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_module_raar)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer)
     eve_aar_item_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 3, eve_affectee_attr_id: 100},
         eff_ids=[eve_effect_id])

@@ -418,7 +418,9 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_module_rasb, cat_id=consts.EveEffCat.target)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
+        cat_id=consts.EveEffCat.target)
     eve_ship_id = client.mk_eve_ship(
         attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_structure_attr_id: 1000})
     eve_rep_item_id = client.mk_eve_item(
@@ -475,7 +477,9 @@ def test_remote_asb_state_switch(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_module_rasb, cat_id=consts.EveEffCat.target)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
+        cat_id=consts.EveEffCat.target)
     eve_ship_id = client.mk_eve_ship(
         attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_structure_attr_id: 1000})
     eve_rep_item_id = client.mk_eve_item(
@@ -542,7 +546,7 @@ def test_remote_asb_resist_and_rep_hp_limit(client, consts):
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_resist_attr_id)
     eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_module_rasb,
+        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
         cat_id=consts.EveEffCat.target,
         resist_attr_id=eve_resist_attr_id)
     eve_resist_mod_effect_id = client.mk_eve_effect(mod_info=[eve_resist_mod])
@@ -606,7 +610,7 @@ def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
     eve_optimal_attr_id = client.mk_eve_attr()
     eve_falloff_attr_id = client.mk_eve_attr()
     eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_module_rasb,
+        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id)
@@ -663,7 +667,9 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_module_raar, cat_id=consts.EveEffCat.target)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target)
     eve_ship_id = client.mk_eve_ship(
         attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_structure_attr_id: 1000})
     eve_rep_item_id = client.mk_eve_item(
@@ -723,7 +729,9 @@ def test_remote_aar_charge_rate_rounding_and_state_switch(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_module_raar, cat_id=consts.EveEffCat.target)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target)
     eve_ship_id = client.mk_eve_ship(
         attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_structure_attr_id: 1000})
     eve_rep_item_id = client.mk_eve_item(
@@ -792,7 +800,7 @@ def test_remote_aar_resist_and_rep_hp_limit(client, consts):
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_resist_attr_id)
     eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_module_raar,
+        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
         cat_id=consts.EveEffCat.target,
         resist_attr_id=eve_resist_attr_id)
     eve_resist_mod_effect_id = client.mk_eve_effect(mod_info=[eve_resist_mod])
@@ -858,7 +866,7 @@ def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
     eve_optimal_attr_id = client.mk_eve_attr()
     eve_falloff_attr_id = client.mk_eve_attr()
     eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_module_raar,
+        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
         cat_id=consts.EveEffCat.target,
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id)

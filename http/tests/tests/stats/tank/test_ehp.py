@@ -210,7 +210,9 @@ def test_remote_asb(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_module_rasb, cat_id=consts.EveEffCat.target)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
+        cat_id=consts.EveEffCat.target)
     eve_ship_id = client.mk_eve_ship(attrs={
         eve_shield_attr_id: 833,
         eve_shield_em_attr_id: 0.25,
@@ -280,7 +282,9 @@ def test_remote_aar(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ship_module_raar, cat_id=consts.EveEffCat.target)
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target)
     eve_ship_id = client.mk_eve_ship(attrs={
         eve_shield_attr_id: 225,
         eve_shield_em_attr_id: 1,
