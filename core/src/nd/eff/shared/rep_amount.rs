@@ -6,21 +6,17 @@ use crate::{
 };
 
 pub(crate) fn get_local_shield_rep_amount(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
-    let mut amount = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_BONUS)?;
-    // If rep target is defined and has less than repped amount HP, limit by total HP
-    if let Some(hp) = get_ship_attr(ctx, calc, item_key, &ac::attrs::SHIELD_CAPACITY) {
-        amount = amount.min(hp);
-    }
-    Some(amount)
+    get_local_rep_amount(
+        ctx,
+        calc,
+        item_key,
+        &ac::attrs::SHIELD_BONUS,
+        &ac::attrs::SHIELD_CAPACITY,
+    )
 }
 
 pub(crate) fn get_local_armor_rep_amount(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
-    let mut amount = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::ARMOR_DMG_AMOUNT)?;
-    // If rep target is defined and has less than repped amount HP, limit by total HP
-    if let Some(hp) = get_ship_attr(ctx, calc, item_key, &ac::attrs::ARMOR_HP) {
-        amount = amount.min(hp);
-    }
-    Some(amount)
+    get_local_rep_amount(ctx, calc, item_key, &ac::attrs::ARMOR_DMG_AMOUNT, &ac::attrs::ARMOR_HP)
 }
 
 pub(crate) fn get_remote_shield_rep_amount(
@@ -29,22 +25,14 @@ pub(crate) fn get_remote_shield_rep_amount(
     projector_espec: EffectSpec,
     projectee_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
-    let mut amount = calc.get_item_attr_val_extra(ctx, projector_espec.item_key, &ac::attrs::SHIELD_BONUS)?;
-    if let Some(projectee_key) = projectee_key {
-        // RR impedance reduction
-        if let Some(rr_mult) = get_resist_mult(ctx, calc, &projector_espec, projectee_key) {
-            amount *= rr_mult;
-        }
-        // Range reduction
-        if let Some(proj_mult) = get_proj_mult(ctx, calc, projector_espec, projectee_key) {
-            amount *= proj_mult;
-        }
-        // If rep target has less than repped amount HP, limit by target HP
-        if let Some(hp) = calc.get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::SHIELD_CAPACITY) {
-            amount = amount.min(hp);
-        }
-    }
-    Some(amount)
+    get_remote_rep_amount(
+        ctx,
+        calc,
+        projector_espec,
+        projectee_key,
+        &ac::attrs::SHIELD_BONUS,
+        &ac::attrs::SHIELD_CAPACITY,
+    )
 }
 
 pub(crate) fn get_remote_armor_rep_amount(
@@ -53,9 +41,74 @@ pub(crate) fn get_remote_armor_rep_amount(
     projector_espec: EffectSpec,
     projectee_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
-    let mut amount = calc.get_item_attr_val_extra(ctx, projector_espec.item_key, &ac::attrs::ARMOR_DMG_AMOUNT)?;
+    get_remote_rep_amount(
+        ctx,
+        calc,
+        projector_espec,
+        projectee_key,
+        &ac::attrs::ARMOR_DMG_AMOUNT,
+        &ac::attrs::ARMOR_HP,
+    )
+}
+
+pub(crate) fn get_remote_struct_rep_amount(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_espec: EffectSpec,
+    projectee_key: Option<ItemKey>,
+) -> Option<AttrVal> {
+    get_remote_rep_amount(
+        ctx,
+        calc,
+        projector_espec,
+        projectee_key,
+        &ac::attrs::STRUCT_DMG_AMOUNT,
+        &ac::attrs::HP,
+    )
+}
+
+pub(crate) fn get_remote_cap_rep_amount(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_espec: EffectSpec,
+    projectee_key: Option<ItemKey>,
+) -> Option<AttrVal> {
+    get_remote_rep_amount(
+        ctx,
+        calc,
+        projector_espec,
+        projectee_key,
+        &ac::attrs::POWER_TRANSFER_AMOUNT,
+        &ac::attrs::CAPACITOR_CAPACITY,
+    )
+}
+
+fn get_local_rep_amount(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: ItemKey,
+    rep_attr_id: &ad::AAttrId,
+    limit_attr_id: &ad::AAttrId,
+) -> Option<AttrVal> {
+    let mut amount = calc.get_item_attr_val_extra(ctx, item_key, rep_attr_id)?;
+    // Total resource pool limit
+    if let Some(hp) = get_ship_attr(ctx, calc, item_key, limit_attr_id) {
+        amount = amount.min(hp);
+    }
+    Some(amount)
+}
+
+fn get_remote_rep_amount(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_espec: EffectSpec,
+    projectee_key: Option<ItemKey>,
+    rep_attr_id: &ad::AAttrId,
+    limit_attr_id: &ad::AAttrId,
+) -> Option<AttrVal> {
+    let mut amount = calc.get_item_attr_val_extra(ctx, projector_espec.item_key, rep_attr_id)?;
     if let Some(projectee_key) = projectee_key {
-        // RR impedance reduction
+        // Effect resistance reduction
         if let Some(rr_mult) = get_resist_mult(ctx, calc, &projector_espec, projectee_key) {
             amount *= rr_mult;
         }
@@ -63,8 +116,8 @@ pub(crate) fn get_remote_armor_rep_amount(
         if let Some(proj_mult) = get_proj_mult(ctx, calc, projector_espec, projectee_key) {
             amount *= proj_mult;
         }
-        // If rep target has less than repped amount HP, limit by target HP
-        if let Some(hp) = calc.get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::ARMOR_HP) {
+        // Total resource pool limit
+        if let Some(hp) = calc.get_item_attr_val_extra(ctx, projectee_key, limit_attr_id) {
             amount = amount.min(hp);
         }
     }

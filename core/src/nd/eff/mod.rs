@@ -23,6 +23,10 @@ mod eff_d3774_slot_modifier;
 mod eff_d4928_adaptive_armor_hardener;
 mod eff_d4936_fueled_shield_boosting;
 mod eff_d5275_fueled_armor_repair;
+mod eff_d6184_ship_mod_remote_capacitor_transmitter;
+mod eff_d6185_ship_mod_remote_hull_repairer;
+mod eff_d6186_ship_mod_remote_shield_booster;
+mod eff_d6188_ship_mod_remote_armor_repairer;
 mod eff_d6222_struct_warp_scram_block_mwd_with_npc;
 mod eff_d6426_remote_webifier_falloff;
 mod eff_d6427_remote_sensor_boost_falloff;
@@ -31,9 +35,12 @@ mod eff_d6485_ftr_abil_bomb;
 mod eff_d660_missile_em_dmg_bonus;
 mod eff_d661_missile_expl_dmg_bonus;
 mod eff_d662_missile_therm_dmg_bonus;
-mod eff_d6651_ship_module_raar;
-mod eff_d6652_ship_module_rasb;
+mod eff_d6651_ship_mod_ancillary_remote_armor_repairer;
+mod eff_d6652_ship_mod_ancillary_shield_booster;
 mod eff_d6682_struct_mod_effect_stasis_webifier;
+mod eff_d6687_npc_entity_remote_armor_repairer;
+mod eff_d6688_npc_entity_remote_shield_booster;
+mod eff_d6689_npc_entity_remote_hull_repairer;
 mod eff_d668_missile_kin_dmg_bonus;
 mod eff_d6690_remote_webifier_entity;
 mod eff_d6730_mod_bonus_microwarpdrive;
@@ -56,6 +63,7 @@ mod eff_d7060_weather_darkness;
 mod eff_d7061_weather_electric_storm;
 mod eff_d7062_weather_infernal;
 mod eff_d7063_weather_xenon_gas;
+mod eff_d7166_ship_mod_remote_armor_mutadaptive_repairer;
 mod shared;
 
 pub(crate) static N_EFFECTS: LazyLock<Vec<NEffect>> = LazyLock::new(get_n_effects);
@@ -83,14 +91,21 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d4928_adaptive_armor_hardener::mk_n_effect(),
         eff_d4936_fueled_shield_boosting::mk_n_effect(),
         eff_d5275_fueled_armor_repair::mk_n_effect(),
+        eff_d6184_ship_mod_remote_capacitor_transmitter::mk_n_effect(),
+        eff_d6185_ship_mod_remote_hull_repairer::mk_n_effect(),
+        eff_d6186_ship_mod_remote_shield_booster::mk_n_effect(),
+        eff_d6188_ship_mod_remote_armor_repairer::mk_n_effect(),
         eff_d6222_struct_warp_scram_block_mwd_with_npc::mk_n_effect(),
         eff_d6426_remote_webifier_falloff::mk_n_effect(),
         eff_d6427_remote_sensor_boost_falloff::mk_n_effect(),
         eff_d6476_doomsday_aoe_web::mk_n_effect(),
         eff_d6485_ftr_abil_bomb::mk_n_effect(),
-        eff_d6651_ship_module_raar::mk_n_effect(),
-        eff_d6652_ship_module_rasb::mk_n_effect(),
+        eff_d6651_ship_mod_ancillary_remote_armor_repairer::mk_n_effect(),
+        eff_d6652_ship_mod_ancillary_shield_booster::mk_n_effect(),
         eff_d6682_struct_mod_effect_stasis_webifier::mk_n_effect(),
+        eff_d6687_npc_entity_remote_armor_repairer::mk_n_effect(),
+        eff_d6688_npc_entity_remote_shield_booster::mk_n_effect(),
+        eff_d6689_npc_entity_remote_hull_repairer::mk_n_effect(),
         eff_d6690_remote_webifier_entity::mk_n_effect(),
         eff_d6730_mod_bonus_microwarpdrive::mk_n_effect(),
         eff_d6731_mod_bonus_afterburner::mk_n_effect(),
@@ -112,6 +127,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d7061_weather_electric_storm::mk_n_effect(),
         eff_d7062_weather_infernal::mk_n_effect(),
         eff_d7063_weather_xenon_gas::mk_n_effect(),
+        eff_d7166_ship_mod_remote_armor_mutadaptive_repairer::mk_n_effect(),
         eff_d11691_debuff_lance::mk_n_effect(),
     ]
 }

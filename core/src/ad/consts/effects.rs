@@ -28,6 +28,11 @@ pub(crate) const WARP_DISRUPT_SPHERE: AEffectId = AEffectId::Dogma(ece::WARP_DIS
 pub(crate) const ADAPTIVE_ARMOR_HARDENER: AEffectId = AEffectId::Dogma(ece::ADAPTIVE_ARMOR_HARDENER);
 pub(crate) const FUELED_SHIELD_BOOSTING: AEffectId = AEffectId::Dogma(ece::FUELED_SHIELD_BOOSTING);
 pub(crate) const FUELED_ARMOR_REPAIR: AEffectId = AEffectId::Dogma(ece::FUELED_ARMOR_REPAIR);
+pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: AEffectId =
+    AEffectId::Dogma(ece::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER);
+pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_REMOTE_HULL_REPAIRER);
+pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_REMOTE_SHIELD_BOOSTER);
+pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_REMOTE_ARMOR_REPAIRER);
 pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: AEffectId =
     AEffectId::Dogma(ece::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC);
 pub(crate) const SERVICE_SLOT: AEffectId = AEffectId::Dogma(ece::SERVICE_SLOT);
@@ -47,10 +52,15 @@ pub(crate) const FTR_ABIL_ATK_MISSILE: AEffectId = AEffectId::Dogma(ece::FTR_ABI
 pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_WEB);
 pub(crate) const FTR_ABIL_BOMB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_BOMB);
 pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_KAMIKAZE);
-pub(crate) const SHIP_MODULE_RAAR: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RAAR);
-pub(crate) const SHIP_MODULE_RASB: AEffectId = AEffectId::Dogma(ece::SHIP_MODULE_RASB);
+pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: AEffectId =
+    AEffectId::Dogma(ece::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER);
+pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: AEffectId =
+    AEffectId::Dogma(ece::SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER);
 pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: AEffectId =
     AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
+pub(crate) const NPC_ENTITY_REMOTE_ARMOR_REPAIRER: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_REMOTE_ARMOR_REPAIRER);
+pub(crate) const NPC_ENTITY_REMOTE_SHIELD_BOOSTER: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_REMOTE_SHIELD_BOOSTER);
+pub(crate) const NPC_ENTITY_REMOTE_HULL_REPAIRER: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_REMOTE_HULL_REPAIRER);
 pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_ENTITY);
 pub(crate) const MOD_BONUS_MICROWARPDRIVE: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_MICROWARPDRIVE);
 pub(crate) const MOD_BONUS_AFTERBURNER: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_AFTERBURNER);
@@ -74,6 +84,8 @@ pub(crate) const WEATHER_DARKNESS: AEffectId = AEffectId::Dogma(ece::WEATHER_DAR
 pub(crate) const WEATHER_ELECTRIC_STORM: AEffectId = AEffectId::Dogma(ece::WEATHER_ELECTRIC_STORM);
 pub(crate) const WEATHER_INFERNAL: AEffectId = AEffectId::Dogma(ece::WEATHER_INFERNAL);
 pub(crate) const WEATHER_XENON_GAS: AEffectId = AEffectId::Dogma(ece::WEATHER_XENON_GAS);
+pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: AEffectId =
+    AEffectId::Dogma(ece::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER);
 pub(crate) const DEBUFF_LANCE: AEffectId = AEffectId::Dogma(ece::DEBUFF_LANCE);
 pub(crate) const DOT_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::DOT_MISSILE_LAUNCHING);
 

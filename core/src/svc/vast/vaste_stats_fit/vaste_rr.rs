@@ -27,10 +27,10 @@ fn get_orrps<'a>(
 ) -> AttrVal {
     let mut rps = OF(0.0);
     for (&espec, rep_getter) in data {
-        if let Some(reps_per_cycle) = rep_getter(ctx, calc, espec, None) {
+        if let Some(rep_amount_per_cycle) = rep_getter(ctx, calc, espec, None) {
             let cycle_time = efuncs::get_espec_cycle_time(ctx, calc, espec).unwrap();
             if cycle_time != OF(0.0) {
-                rps += reps_per_cycle / cycle_time;
+                rps += rep_amount_per_cycle / cycle_time;
             }
         }
     }

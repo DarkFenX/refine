@@ -11,8 +11,8 @@ use crate::{
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(ec::effects::SHIP_MODULE_RAAR),
-        aid: ac::effects::SHIP_MODULE_RAAR,
+        eid: Some(ec::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER),
+        aid: ac::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER,
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NEffectHc {
             charge: Some(NEffectCharge::Loaded(NEffectChargeDepl::ChargeRate)),

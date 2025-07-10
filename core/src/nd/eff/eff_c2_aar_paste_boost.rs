@@ -44,7 +44,8 @@ fn adg_add_custom_effect(a_data: &mut ad::AData) {
     a_data.effects.insert(effect.id, effect);
     for item in a_data.items.values_mut().filter(|v| {
         v.effect_datas.contains_key(&ac::effects::FUELED_ARMOR_REPAIR)
-            || v.effect_datas.contains_key(&ac::effects::SHIP_MODULE_RAAR)
+            || v.effect_datas
+                .contains_key(&ac::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
     }) {
         item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
     }
