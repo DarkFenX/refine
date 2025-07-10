@@ -9,19 +9,19 @@ class StatResists:
 
     shield: StatLayerResists
     armor: StatLayerResists
-    structure: StatLayerResists
+    hull: StatLayerResists
 
     def __init__(self, *, data: tuple) -> None:
         self.shield = StatLayerResists(data=data[0])
         self.armor = StatLayerResists(data=data[1])
-        self.structure = StatLayerResists(data=data[2])
+        self.hull = StatLayerResists(data=data[2])
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
         return getattr(self, field.name)
 
     def __eq__(self, other: tuple) -> bool:
-        return (self.shield, self.armor, self.structure) == (other[0], other[1], other[2])
+        return (self.shield, self.armor, self.hull) == (other[0], other[1], other[2])
 
 
 @dataclasses.dataclass

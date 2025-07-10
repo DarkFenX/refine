@@ -267,7 +267,7 @@ impl VastFitData {
             check_item_key(uad, espec.item_key, true)?;
             check_a_effect_id(uad, &espec.a_effect_id)?;
         }
-        for espec in self.orr_struct.keys() {
+        for espec in self.orr_hull.keys() {
             check_item_key(uad, espec.item_key, true)?;
             check_a_effect_id(uad, &espec.a_effect_id)?;
         }

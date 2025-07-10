@@ -28,8 +28,8 @@ impl Vast {
         let incoming_dps = incoming_dps.unwrap_or(&ctx.uad.default_incoming_dps);
         let shield_mult = Vast::get_tanking_efficiency(&resists.shield, incoming_dps);
         let armor_mult = Vast::get_tanking_efficiency(&resists.armor, incoming_dps);
-        let struct_mult = Vast::get_tanking_efficiency(&resists.structure, incoming_dps);
-        Some(make_ehp(hp, shield_mult, armor_mult, struct_mult))
+        let hull_mult = Vast::get_tanking_efficiency(&resists.hull, incoming_dps);
+        Some(make_ehp(hp, shield_mult, armor_mult, hull_mult))
     }
     pub(in crate::svc) fn get_stat_item_wc_ehp(
         &self,
@@ -41,8 +41,8 @@ impl Vast {
         let resists = Vast::get_stat_item_resists(ctx, calc, item_key)?;
         let shield_mult = Vast::get_worst_case_tanking_efficiency(&resists.shield);
         let armor_mult = Vast::get_worst_case_tanking_efficiency(&resists.armor);
-        let struct_mult = Vast::get_worst_case_tanking_efficiency(&resists.structure);
-        Some(make_ehp(hp, shield_mult, armor_mult, struct_mult))
+        let hull_mult = Vast::get_worst_case_tanking_efficiency(&resists.hull);
+        Some(make_ehp(hp, shield_mult, armor_mult, hull_mult))
     }
     fn get_tanking_efficiency(resists: &DmgKinds<AttrVal>, incoming_dps: &DpsProfile) -> AttrVal {
         let dealt = incoming_dps.get_sum_regular();
@@ -63,7 +63,7 @@ fn make_ehp(
     hp: StatTank<StatLayerHp>,
     shield_mult: AttrVal,
     armor_mult: AttrVal,
-    struct_mult: AttrVal,
+    hull_mult: AttrVal,
 ) -> StatTank<StatLayerEhp> {
     StatTank {
         shield: StatLayerEhp {
@@ -78,11 +78,11 @@ fn make_ehp(
             ancil_remote: hp.armor.ancil_remote * armor_mult,
             mult: armor_mult,
         },
-        structure: StatLayerEhp {
-            buffer: hp.structure.buffer * struct_mult,
-            ancil_local: hp.structure.ancil_local * struct_mult,
-            ancil_remote: hp.structure.ancil_remote * struct_mult,
-            mult: struct_mult,
+        hull: StatLayerEhp {
+            buffer: hp.hull.buffer * hull_mult,
+            ancil_local: hp.hull.ancil_local * hull_mult,
+            ancil_remote: hp.hull.ancil_remote * hull_mult,
+            mult: hull_mult,
         },
     }
 }

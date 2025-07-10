@@ -105,7 +105,7 @@ pub(in crate::svc) struct VastFitData {
     // Outgoing remote reps
     pub(in crate::svc::vast) orr_shield: RMap<EffectSpec, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_armor: RMap<EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_struct: RMap<EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_hull: RMap<EffectSpec, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_cap: RMap<EffectSpec, NRemoteRepGetter>,
 }
 impl VastFitData {
@@ -176,7 +176,7 @@ impl VastFitData {
             lr_armor_limitable: RMap::new(),
             orr_shield: RMap::new(),
             orr_armor: RMap::new(),
-            orr_struct: RMap::new(),
+            orr_hull: RMap::new(),
             orr_cap: RMap::new(),
         }
     }

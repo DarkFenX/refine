@@ -42,9 +42,9 @@ pub(crate) struct NEffectHc {
     // Functions which fetch various stats
     pub(crate) get_local_armor_rep_amount: Option<NLocalRepGetter> = None,
     pub(crate) get_local_shield_rep_amount: Option<NLocalRepGetter> = None,
-    pub(crate) get_local_structure_rep_amount: Option<NLocalRepGetter> = None,
+    pub(crate) get_local_hull_rep_amount: Option<NLocalRepGetter> = None,
     pub(crate) get_remote_armor_rep_amount: Option<NRemoteRepGetter> = None,
     pub(crate) get_remote_shield_rep_amount: Option<NRemoteRepGetter> = None,
-    pub(crate) get_remote_struct_rep_amount: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_hull_rep_amount: Option<NRemoteRepGetter> = None,
     pub(crate) get_remote_cap_rep_amount: Option<NRemoteRepGetter> = None,
 }

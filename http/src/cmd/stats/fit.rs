@@ -36,7 +36,7 @@ pub(crate) struct HGetFitStatsCmd {
     resists: Option<bool>,
     rr_shield: Option<bool>,
     rr_armor: Option<bool>,
-    rr_structure: Option<bool>,
+    rr_hull: Option<bool>,
     rr_capacitor: Option<bool>,
 }
 impl HGetFitStatsCmd {
@@ -136,8 +136,8 @@ impl HGetFitStatsCmd {
         if self.rr_armor.unwrap_or(self.default) {
             stats.rr_armor = core_fit.get_stat_rr_armor().into();
         }
-        if self.rr_structure.unwrap_or(self.default) {
-            stats.rr_structure = core_fit.get_stat_rr_structure().into();
+        if self.rr_hull.unwrap_or(self.default) {
+            stats.rr_hull = core_fit.get_stat_rr_hull().into();
         }
         if self.rr_capacitor.unwrap_or(self.default) {
             stats.rr_capacitor = core_fit.get_stat_rr_capacitor().into();

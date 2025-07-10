@@ -27,7 +27,7 @@ impl Vast {
         // Buffer - if item is not loaded, fetching those will fail
         let shield_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)?;
         let armor_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::ARMOR_HP)?;
-        let structure_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::HP)?;
+        let hull_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::HP)?;
         // Local ancillary repairs
         let (local_asb, local_aar) = match ctx.uad.items.get(item_key) {
             UadItem::Ship(uad_ship) => {
@@ -84,8 +84,8 @@ impl Vast {
                 ancil_local: local_aar,
                 ancil_remote: remote_aar,
             },
-            structure: StatLayerHp {
-                buffer: structure_buffer,
+            hull: StatLayerHp {
+                buffer: hull_buffer,
                 ancil_local: OF(0.0),
                 ancil_remote: OF(0.0),
             },

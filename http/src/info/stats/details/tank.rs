@@ -5,7 +5,7 @@ where
 {
     shield: T,
     armor: T,
-    structure: T,
+    hull: T,
 }
 impl<T, U> From<rc::stats::StatTank<U>> for HStatTank<T>
 where
@@ -16,7 +16,7 @@ where
         Self {
             shield: core_stat.shield.into(),
             armor: core_stat.armor.into(),
-            structure: core_stat.structure.into(),
+            hull: core_stat.hull.into(),
         }
     }
 }

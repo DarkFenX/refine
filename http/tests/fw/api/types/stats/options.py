@@ -40,7 +40,7 @@ class StatsOptions:
     resists: StatOption  = Absent
     rr_shield: StatOption  = Absent
     rr_armor: StatOption  = Absent
-    rr_structure: StatOption  = Absent
+    rr_hull: StatOption  = Absent
     rr_capacitor: StatOption  = Absent
 
     def to_dict(self) -> dict:

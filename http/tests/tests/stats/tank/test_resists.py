@@ -81,14 +81,14 @@ def test_modified(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(resists=True))
     assert api_stats.resists.shield == (approx(0), approx(0.2), approx(0.4), approx(0.6))
     assert api_stats.resists.armor == (approx(0.5), approx(0.35), approx(0.25), approx(0.3))
-    assert api_stats.resists.structure == (approx(0.33), approx(0.33), approx(0.33), approx(0.33))
+    assert api_stats.resists.hull == (approx(0.33), approx(0.33), approx(0.33), approx(0.33))
     # Action
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(resists=True))
     assert api_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
     assert api_stats.resists.armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
-    assert api_stats.resists.structure == (approx(0.598), approx(0.598), approx(0.598), approx(0.598))
+    assert api_stats.resists.hull == (approx(0.598), approx(0.598), approx(0.598), approx(0.598))
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {
         eve_struct_em_mod_attr_id: muta_roll_to_api(val=0.22),
@@ -99,7 +99,7 @@ def test_modified(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(resists=True))
     assert api_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
     assert api_stats.resists.armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
-    assert api_stats.resists.structure == (approx(0.624934), approx(0.585739), approx(0.599608), approx(0.612271))
+    assert api_stats.resists.hull == (approx(0.624934), approx(0.585739), approx(0.599608), approx(0.612271))
 
 
 def test_no_ship(client, consts):

@@ -68,7 +68,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) rr_armor: Option<rc::AttrVal>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rr_structure: Option<rc::AttrVal>,
+    pub(crate) rr_hull: Option<rc::AttrVal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) rr_capacitor: Option<rc::AttrVal>,
 }
@@ -106,7 +106,7 @@ impl HFitStats {
             resists: TriStateField::default(),
             rr_shield: Option::default(),
             rr_armor: Option::default(),
-            rr_structure: Option::default(),
+            rr_hull: Option::default(),
             rr_capacitor: Option::default(),
         }
     }

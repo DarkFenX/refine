@@ -4,7 +4,7 @@ use crate::{
         NEffect, NEffectHc,
         eff::shared::{
             proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_restricted_s2s},
-            rep_amount::get_remote_struct_rep_amount,
+            rep_amount::get_remote_hull_rep_amount,
         },
     },
 };
@@ -16,7 +16,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NEffectHc {
             get_proj_mult: Some(get_proj_mult_normal_restricted_s2s),
-            get_remote_struct_rep_amount: Some(get_remote_struct_rep_amount),
+            get_remote_hull_rep_amount: Some(get_remote_hull_rep_amount),
             ..
         },
         ..

@@ -15,10 +15,10 @@ impl Svc {
             .get_fit_data(&fit_key)
             .get_stat_orr_armor(SvcCtx::new(uad, &self.eprojs), &mut self.calc)
     }
-    pub(crate) fn get_stat_fit_orr_struct(&mut self, uad: &Uad, fit_key: FitKey) -> AttrVal {
+    pub(crate) fn get_stat_fit_orr_hull(&mut self, uad: &Uad, fit_key: FitKey) -> AttrVal {
         self.vast
             .get_fit_data(&fit_key)
-            .get_stat_orr_struct(SvcCtx::new(uad, &self.eprojs), &mut self.calc)
+            .get_stat_orr_hull(SvcCtx::new(uad, &self.eprojs), &mut self.calc)
     }
     pub(crate) fn get_stat_fit_orr_cap(&mut self, uad: &Uad, fit_key: FitKey) -> AttrVal {
         self.vast

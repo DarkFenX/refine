@@ -44,12 +44,12 @@ impl Vast {
                         .orr_armor
                         .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
                 }
-                if let Some(rep_getter) = a_effect.hc.get_remote_struct_rep_amount
+                if let Some(rep_getter) = a_effect.hc.get_remote_hull_rep_amount
                     && efuncs::has_cycle_time(a_effect)
                 {
                     let fit_data = self.get_fit_data_mut(&fit_id);
                     fit_data
-                        .orr_struct
+                        .orr_hull
                         .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
                 }
                 if let Some(rep_getter) = a_effect.hc.get_remote_cap_rep_amount
@@ -88,9 +88,9 @@ impl Vast {
                     let fit_data = self.get_fit_data_mut(&fit_id);
                     fit_data.orr_armor.remove(&EffectSpec::new(item_key, a_effect.ae.id));
                 }
-                if a_effect.hc.get_remote_struct_rep_amount.is_some() && efuncs::has_cycle_time(a_effect) {
+                if a_effect.hc.get_remote_hull_rep_amount.is_some() && efuncs::has_cycle_time(a_effect) {
                     let fit_data = self.get_fit_data_mut(&fit_id);
-                    fit_data.orr_struct.remove(&EffectSpec::new(item_key, a_effect.ae.id));
+                    fit_data.orr_hull.remove(&EffectSpec::new(item_key, a_effect.ae.id));
                 }
                 if a_effect.hc.get_remote_cap_rep_amount.is_some() && efuncs::has_cycle_time(a_effect) {
                     let fit_data = self.get_fit_data_mut(&fit_id);

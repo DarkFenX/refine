@@ -18,7 +18,7 @@ impl Vast {
         Some(StatTank {
             shield: Vast::get_item_shield_resists(ctx, calc, item_key)?,
             armor: Vast::get_item_armor_resists(ctx, calc, item_key)?,
-            structure: Vast::get_item_structure_resists(ctx, calc, item_key)?,
+            hull: Vast::get_item_hull_resists(ctx, calc, item_key)?,
         })
     }
     fn get_item_shield_resists(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<DmgKinds<AttrVal>> {
@@ -43,7 +43,7 @@ impl Vast {
             &ac::attrs::ARMOR_EXPL_DMG_RESONANCE,
         )
     }
-    fn get_item_structure_resists(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<DmgKinds<AttrVal>> {
+    fn get_item_hull_resists(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<DmgKinds<AttrVal>> {
         get_item_layer_resists(
             ctx,
             calc,

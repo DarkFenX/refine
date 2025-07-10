@@ -27,21 +27,21 @@ def test_buffer(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3750), 0, 0)
     assert api_stats.hp.armor == (approx(2500), 0, 0)
-    assert api_stats.hp.structure == (approx(1250), 0, 0)
+    assert api_stats.hp.hull == (approx(1250), 0, 0)
     # Action
     api_rig.remove()
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_local_asb_accuracy_and_charge_switch(client, consts):
@@ -78,28 +78,28 @@ def test_local_asb_accuracy_and_charge_switch(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), approx(6900), 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_asb.change_module(charge_type_id=None)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_asb.change_module(charge_type_id=eve_charge_item_id)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), approx(6900), 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_asb.remove()
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_local_asb_state_switch(client, consts):
@@ -135,28 +135,28 @@ def test_local_asb_state_switch(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), approx(900), 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_asb.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_asb.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), approx(900), 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_asb.remove()
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_local_asb_modified_and_rep_hp_limit(client, consts):
@@ -209,21 +209,21 @@ def test_local_asb_modified_and_rep_hp_limit(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), approx(9000), 0)
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
     api_fit.add_rig(type_id=eve_hp_rig)
     # Verification - no limit now, with shield HP increased
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1700), approx(13500), 0)
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
     api_fit.add_rig(type_id=eve_rep_rig)
     # Verification - limited again from 2550 / cycle to 1700 / cycle
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1700), approx(15300), 0)
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
 
 
 def test_local_aar_accuracy_and_charge_switch(client, consts):
@@ -260,28 +260,28 @@ def test_local_aar_accuracy_and_charge_switch(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), approx(6900), 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.change_module(charge_type_id=None)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.change_module(charge_type_id=eve_charge_item_id)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), approx(6900), 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.remove()
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_local_aar_charge_rate_rounding_and_state_switch(client, consts):
@@ -318,28 +318,28 @@ def test_local_aar_charge_rate_rounding_and_state_switch(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), approx(900), 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), approx(900), 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.remove()
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_local_aar_modified_and_rep_hp_limit(client, consts):
@@ -392,21 +392,21 @@ def test_local_aar_modified_and_rep_hp_limit(client, consts):
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), approx(8000), 0)
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
     api_fit.add_rig(type_id=eve_hp_rig)
     # Verification - no limit now, with armor HP increased
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1700), approx(12000), 0)
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
     api_fit.add_rig(type_id=eve_rep_rig)
     # Verification - limited again from 2550 / cycle to 1700 / cycle
     api_stats = api_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1700), approx(13600), 0)
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
 
 
 def test_remote_asb_accuracy_and_charge_switch(client, consts):
@@ -445,28 +445,28 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, approx(6900))
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_rasb.change_module(charge_type_id=None)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_rasb.change_module(charge_type_id=eve_charge_item_id)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, approx(6900))
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_rasb.remove()
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_remote_asb_state_switch(client, consts):
@@ -504,28 +504,28 @@ def test_remote_asb_state_switch(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, approx(900))
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_rasb.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_rasb.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, approx(900))
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_rasb.remove()
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_remote_asb_resist_and_rep_hp_limit(client, consts):
@@ -574,14 +574,14 @@ def test_remote_asb_resist_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, 0)
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
     api_rasb.change_module(add_projs=[api_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, approx(9000))
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
     api_tgt_fit.add_rig(type_id=eve_resist_rig)
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
@@ -589,14 +589,14 @@ def test_remote_asb_resist_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, approx(4050))
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
     api_rasb.change_module(rm_projs=[api_ship.id])
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, 0)
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
 
 
 def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
@@ -639,14 +639,14 @@ def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, 0)
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
     api_rasb.change_module(add_projs=[(api_ship.id, range_s2s_to_api(val=10000))])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, approx(9000))
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
     api_rasb.change_module(change_projs=[(api_ship.id, range_s2s_to_api(val=15000))])
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
@@ -654,7 +654,7 @@ def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, approx(6750))
     assert api_stats.hp.armor == (approx(500), 0, 0)
-    assert api_stats.hp.structure == (approx(250), 0, 0)
+    assert api_stats.hp.hull == (approx(250), 0, 0)
 
 
 def test_remote_aar_accuracy_and_charge_switch(client, consts):
@@ -695,28 +695,28 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, approx(6900))
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.change_module(charge_type_id=None)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.change_module(charge_type_id=eve_charge_item_id)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, approx(6900))
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.remove()
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_remote_aar_charge_rate_rounding_and_state_switch(client, consts):
@@ -757,28 +757,28 @@ def test_remote_aar_charge_rate_rounding_and_state_switch(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, approx(900))
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, approx(900))
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.remove()
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(3000), 0, 0)
     assert api_stats.hp.armor == (approx(2000), 0, 0)
-    assert api_stats.hp.structure == (approx(1000), 0, 0)
+    assert api_stats.hp.hull == (approx(1000), 0, 0)
 
 
 def test_remote_aar_resist_and_rep_hp_limit(client, consts):
@@ -829,14 +829,14 @@ def test_remote_aar_resist_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, 0)
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
     api_raar.change_module(add_projs=[api_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, approx(8000))
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
     api_tgt_fit.add_rig(type_id=eve_resist_rig)
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
@@ -844,14 +844,14 @@ def test_remote_aar_resist_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, approx(3600))
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
     api_raar.change_module(rm_projs=[api_ship.id])
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, 0)
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
 
 
 def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
@@ -896,14 +896,14 @@ def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, 0)
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
     api_raar.change_module(add_projs=[(api_ship.id, range_s2s_to_api(val=10000))])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, approx(8000))
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
     api_raar.change_module(change_projs=[(api_ship.id, range_s2s_to_api(val=15000))])
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
@@ -911,7 +911,7 @@ def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, approx(6000))
-    assert api_stats.hp.structure == (approx(500), 0, 0)
+    assert api_stats.hp.hull == (approx(500), 0, 0)
 
 
 def test_no_ship(client, consts):

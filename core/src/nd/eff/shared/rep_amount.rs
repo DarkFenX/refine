@@ -51,7 +51,7 @@ pub(crate) fn get_remote_armor_rep_amount(
     )
 }
 
-pub(crate) fn get_remote_struct_rep_amount(
+pub(crate) fn get_remote_hull_rep_amount(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
