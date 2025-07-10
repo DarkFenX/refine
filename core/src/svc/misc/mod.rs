@@ -6,4 +6,3 @@ pub(in crate::svc) use effect_resist::{get_resist_a_attr_id, get_resist_mult_val
 mod ctx;
 mod effect_proj;
 mod effect_resist;
-pub(in crate::svc) mod efuncs;
