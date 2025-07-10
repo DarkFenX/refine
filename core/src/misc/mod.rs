@@ -18,6 +18,7 @@ pub use proj_range::ProjRange;
 pub use proj_range_info::ProjRangeInfo;
 pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use skill_level::{SkillLevel, SkillLevelError};
+pub use spool_options::SpoolOptions;
 pub use states::{MinionState, ModuleState, ServiceState};
 pub use unit_interval::{UnitInterval, UnitIntervalError};
 
@@ -41,5 +42,6 @@ mod proj_range;
 mod proj_range_info;
 mod sec_zone;
 mod skill_level;
+mod spool_options;
 mod states;
 mod unit_interval;
