@@ -34,6 +34,10 @@ pub(crate) struct HGetFitStatsCmd {
     ehp: Option<bool>,
     wc_ehp: Option<bool>,
     resists: Option<bool>,
+    rr_shield: Option<bool>,
+    rr_armor: Option<bool>,
+    rr_structure: Option<bool>,
+    rr_capacitor: Option<bool>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -125,6 +129,18 @@ impl HGetFitStatsCmd {
         }
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
+        }
+        if self.rr_shield.unwrap_or(self.default) {
+            stats.rr_shield = core_fit.get_stat_rr_shield().into();
+        }
+        if self.rr_armor.unwrap_or(self.default) {
+            stats.rr_armor = core_fit.get_stat_rr_armor().into();
+        }
+        if self.rr_structure.unwrap_or(self.default) {
+            stats.rr_structure = core_fit.get_stat_rr_structure().into();
+        }
+        if self.rr_capacitor.unwrap_or(self.default) {
+            stats.rr_capacitor = core_fit.get_stat_rr_capacitor().into();
         }
         Ok(stats)
     }

@@ -38,6 +38,10 @@ class StatsOptions:
     ehp: StatOption  = Absent
     wc_ehp: StatOption  = Absent
     resists: StatOption  = Absent
+    rr_shield: StatOption  = Absent
+    rr_armor: StatOption  = Absent
+    rr_structure: StatOption  = Absent
+    rr_capacitor: StatOption  = Absent
 
     def to_dict(self) -> dict:
         return dataclasses.asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
