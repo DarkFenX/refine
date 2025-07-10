@@ -9,7 +9,7 @@ use crate::{
         err::ItemMutatedError,
         item::{EffectModes, ItemMutationData, Projs, UadItemBaseMutable},
     },
-    util::{Named, RMap, float_unerr},
+    util::{Named, RMap, floor_unerr},
 };
 
 #[derive(Clone)]
@@ -163,7 +163,7 @@ impl UadModule {
                 return None;
             }
         };
-        let charge_count = float_unerr(module_capacity / charge_volume).floor() as Count;
+        let charge_count = floor_unerr(module_capacity / charge_volume) as Count;
         Some(charge_count)
     }
     pub(crate) fn get_projs(&self) -> &Projs {

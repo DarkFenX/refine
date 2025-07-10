@@ -24,6 +24,14 @@ pub(crate) fn round(val: OF<f64>, digits: i32) -> OF<f64> {
 
 // Should be used where float value is coerced into integer by rounding down, to avoid cases like
 // 2.3 / 0.1 = 22.999999999999996 becoming 22 instead of 23
-pub(crate) fn float_unerr(val: OF<f64>) -> OF<f64> {
+fn float_unerr(val: OF<f64>) -> OF<f64> {
     round(val, 10)
+}
+
+pub(crate) fn floor_unerr(val: OF<f64>) -> f64 {
+    float_unerr(val).floor().into_inner()
+}
+
+pub(crate) fn ceil_unerr(val: OF<f64>) -> f64 {
+    float_unerr(val).ceil().into_inner()
 }
