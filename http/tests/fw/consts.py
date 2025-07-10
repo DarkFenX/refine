@@ -90,6 +90,7 @@ class EveEffect(IntEnum):
     adaptive_armor_hardener = 4928
     fueled_shield_boosting = 4936
     fueled_armor_repair = 5275
+    ship_mod_remote_capacitor_transmitter = 6184
     ship_mod_remote_hull_repairer = 6185
     ship_mod_remote_shield_booster = 6186
     ship_mod_remote_armor_repairer = 6188
@@ -113,6 +114,7 @@ class EveEffect(IntEnum):
     tgt_disintegrator_attack = 6995
     script_st_warp_scram = 7026
     weather_darkness = 7060
+    ship_mod_remote_armor_mutadaptive_repairer = 7166
     debuff_lance = 11691
     dot_missile_launching = 12174
 
@@ -213,7 +215,9 @@ class EveAttr(IntEnum):
     shield_bonus = 68
     agility = 70
     duration = 73
+    structure_dmg_amount = 83
     armor_dmg_amount = 84
+    power_transfer_amount = 90
     launcher_slots_left = 101
     turret_slots_left = 102
     warp_scramble_range = 103
