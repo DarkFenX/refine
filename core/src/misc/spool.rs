@@ -5,7 +5,7 @@ use crate::{
 };
 
 pub(crate) struct ResolvedSpool {
-    pub(crate) value: AttrVal,
+    pub(crate) mult: AttrVal,
     pub(crate) cycles: Count,
 }
 
@@ -65,7 +65,7 @@ impl Spool {
                 cycles
             }
         };
-        let value = max.min(step * cycles as f64);
-        Some(ResolvedSpool { cycles, value })
+        let mult = OF(1.0) + max.min(step * cycles as f64);
+        Some(ResolvedSpool { cycles, mult })
     }
 }

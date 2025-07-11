@@ -45,7 +45,7 @@ impl HModuleInfoPartial {
             false => TriStateField::Absent,
         };
         let cycles_until_reload = match charge_info.is_some() {
-            true => match core_module.get_cycles_until_reload() {
+            true => match core_module.get_cycle_count_until_reload() {
                 Some(cycles_until_reload) => TriStateField::Value(cycles_until_reload),
                 None => TriStateField::None,
             },
