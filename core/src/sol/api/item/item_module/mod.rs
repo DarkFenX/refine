@@ -7,6 +7,7 @@ mod fit_iter_modules;
 mod module;
 mod module_remove;
 mod module_set_charge;
+mod module_set_spool;
 mod module_set_state;
 mod module_set_type_id;
 mod mutation;
