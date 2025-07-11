@@ -1,2 +1,2 @@
-from .options import StatsOptionRr, StatsOptions
+from .options import StatsOptionEhp, StatsOptionRr, StatsOptions
 from .result import FitStats

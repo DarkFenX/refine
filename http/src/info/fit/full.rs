@@ -114,7 +114,7 @@ impl HFitInfoFull {
                 .map_into_iter(|mut core_fw_effect| HItemInfo::mk_info(&mut core_fw_effect, item_mode))
                 .collect(),
             sec_status: core_fit.get_sec_status().get_inner().into_inner(),
-            rah_incoming_dps: core_fit.get_rah_incoming_dps().map(|v| (&v).into()),
+            rah_incoming_dps: core_fit.get_rah_incoming_dps().map(|v| v.into()),
         }
     }
 }

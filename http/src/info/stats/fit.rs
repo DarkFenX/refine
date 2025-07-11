@@ -57,8 +57,8 @@ pub(crate) struct HFitStats {
     pub(crate) speed: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
-    #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) ehp: TriStateField<HStatTank<HStatLayerEhp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) ehp: Option<Vec<Option<HStatTank<HStatLayerEhp>>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) wc_ehp: TriStateField<HStatTank<HStatLayerEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -101,7 +101,7 @@ impl HFitStats {
             align_time: TriStateField::default(),
             speed: TriStateField::default(),
             hp: TriStateField::default(),
-            ehp: TriStateField::default(),
+            ehp: Option::default(),
             wc_ehp: TriStateField::default(),
             resists: TriStateField::default(),
             rr_shield: Option::default(),

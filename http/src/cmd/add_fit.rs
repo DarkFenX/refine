@@ -16,7 +16,7 @@ impl HAddFitCmd {
             let core_sec_status = rc::FitSecStatus::new_checked(sec_status)?;
             core_fit.set_sec_status(core_sec_status);
         }
-        if let Some(rah_incoming_dps) = &self.rah_incoming_dps {
+        if let Some(rah_incoming_dps) = self.rah_incoming_dps {
             core_fit.set_rah_incoming_dps(rah_incoming_dps.try_into()?);
         }
         Ok(core_fit.into())

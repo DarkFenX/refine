@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
         shared::get_primary_fit,
-        stats::options::{HStatOption, HStatRrOption},
+        stats::options::{HStatOption, HStatOptionEhp, HStatOptionRr},
     },
     info::HFitStats,
     util::HExecError,
@@ -38,13 +38,13 @@ pub(crate) struct HGetFitStatsCmd {
     align_time: Option<bool>,
     speed: Option<bool>,
     hp: Option<bool>,
-    ehp: Option<bool>,
+    ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
     resists: Option<bool>,
-    rr_shield: Option<HStatOption<HStatRrOption>>,
-    rr_armor: Option<HStatOption<HStatRrOption>>,
-    rr_hull: Option<HStatOption<HStatRrOption>>,
-    rr_capacitor: Option<HStatOption<HStatRrOption>>,
+    rr_shield: Option<HStatOption<HStatOptionRr>>,
+    rr_armor: Option<HStatOption<HStatOptionRr>>,
+    rr_hull: Option<HStatOption<HStatOptionRr>>,
+    rr_capacitor: Option<HStatOption<HStatOptionRr>>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -128,8 +128,24 @@ impl HGetFitStatsCmd {
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();
         }
-        if self.ehp.unwrap_or(self.default) {
-            stats.ehp = core_fit.get_stat_ehp(None).into();
+        let ehp_opt = LocalOpt::new(&self.ehp, self.default);
+        if ehp_opt.enabled {
+            stats.ehp = Some(
+                ehp_opt
+                    .options
+                    .iter()
+                    .map(|inner_opt| {
+                        let core_incoming_dps = match inner_opt.incoming_dps {
+                            // When conversion error happens, return None as stat result
+                            Some(h_incoming_dps) => Some(h_incoming_dps.try_into().ok()?),
+                            None => None,
+                        };
+                        core_fit
+                            .get_stat_ehp(core_incoming_dps.as_ref())
+                            .map(|core_ehp| core_ehp.into())
+                    })
+                    .collect(),
+            )
         }
         if self.wc_ehp.unwrap_or(self.default) {
             stats.wc_ehp = core_fit.get_stat_wc_ehp().into();
@@ -143,7 +159,7 @@ impl HGetFitStatsCmd {
                 rr_shield_opt
                     .options
                     .iter()
-                    .map(|rr_opt| core_fit.get_stat_rr_shield(rr_opt.spool.map(|spool| spool.into())))
+                    .map(|inner_opt| core_fit.get_stat_rr_shield(inner_opt.spool.map(|spool| spool.into())))
                     .collect(),
             )
         }
@@ -153,7 +169,7 @@ impl HGetFitStatsCmd {
                 rr_armor_opt
                     .options
                     .iter()
-                    .map(|rr_opt| core_fit.get_stat_rr_armor(rr_opt.spool.map(|spool| spool.into())))
+                    .map(|inner_opt| core_fit.get_stat_rr_armor(inner_opt.spool.map(|spool| spool.into())))
                     .collect(),
             )
         }
@@ -163,7 +179,7 @@ impl HGetFitStatsCmd {
                 rr_hull_opt
                     .options
                     .iter()
-                    .map(|rr_opt| core_fit.get_stat_rr_hull(rr_opt.spool.map(|spool| spool.into())))
+                    .map(|inner_opt| core_fit.get_stat_rr_hull(inner_opt.spool.map(|spool| spool.into())))
                     .collect(),
             )
         }
@@ -173,7 +189,7 @@ impl HGetFitStatsCmd {
                 rr_capacitor_opt
                     .options
                     .iter()
-                    .map(|rr_opt| core_fit.get_stat_rr_capacitor(rr_opt.spool.map(|spool| spool.into())))
+                    .map(|inner_opt| core_fit.get_stat_rr_capacitor(inner_opt.spool.map(|spool| spool.into())))
                     .collect(),
             )
         }

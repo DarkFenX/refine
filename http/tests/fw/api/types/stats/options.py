@@ -1,8 +1,10 @@
 import dataclasses
 
+from tests.fw.api.aliases import DpsProfile
 from tests.fw.util import Absent
 
 type StatOptionAlias = bool | type[Absent]
+type StatOptionAliasEhp = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
 type StatOptionAliasRr = StatOptionAlias | tuple[bool, list[StatsOptionRr]]
 
 
@@ -43,6 +45,15 @@ class StatsOptions:
     rr_armor: StatOptionAliasRr = Absent
     rr_hull: StatOptionAliasRr = Absent
     rr_capacitor: StatOptionAliasRr = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionEhp:
+
+    incoming_dps: DpsProfile | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

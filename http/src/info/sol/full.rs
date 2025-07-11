@@ -48,7 +48,7 @@ impl HSolInfoFull {
                 .collect(),
             sec_zone: core_sol.get_sec_zone().into(),
             default_spool: core_sol.get_default_spool().into(),
-            default_incoming_dps: (&core_sol.get_default_incoming_dps()).into(),
+            default_incoming_dps: core_sol.get_default_incoming_dps().into(),
         }
     }
 }

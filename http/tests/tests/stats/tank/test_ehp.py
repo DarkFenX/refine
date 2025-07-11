@@ -40,16 +40,16 @@ def test_buffer(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(321.428571), 0, 0, approx(1.428571))
-    assert api_stats.ehp.armor == (approx(884.615385), 0, 0, approx(1.538462))
-    assert api_stats.ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(321.428571), 0, 0, approx(1.428571))
+    assert api_stats.ehp[0].armor == (approx(884.615385), 0, 0, approx(1.538462))
+    assert api_stats.ehp[0].hull == (approx(783.58209), 0, 0, approx(1.492537))
     # Action
     api_sol.change(default_incoming_dps=(1, 1, 0, 0))
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(250), 0, 0, approx(1.111111))
-    assert api_stats.ehp.armor == (approx(1000), 0, 0, approx(1.73913))
-    assert api_stats.ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(250), 0, 0, approx(1.111111))
+    assert api_stats.ehp[0].armor == (approx(1000), 0, 0, approx(1.73913))
+    assert api_stats.ehp[0].hull == (approx(783.58209), 0, 0, approx(1.492537))
 
 
 def test_local_asb(client, consts):
@@ -109,16 +109,16 @@ def test_local_asb(client, consts):
         charge_type_id=eve_charge_item_id)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(1904), approx(3003.428571), 0, approx(2.285714))
-    assert api_stats.ehp.armor == (approx(880.963855), 0, 0, approx(1.927711))
-    assert api_stats.ehp.hull == (approx(902.985075), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(1904), approx(3003.428571), 0, approx(2.285714))
+    assert api_stats.ehp[0].armor == (approx(880.963855), 0, 0, approx(1.927711))
+    assert api_stats.ehp[0].hull == (approx(902.985075), 0, 0, approx(1.492537))
     # Action
     api_sol.change(default_incoming_dps=(1, 1, 0, 0))
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(2563.076923), approx(4043.076923), 0, approx(3.076923))
-    assert api_stats.ehp.armor == (approx(2150.588235), 0, 0, approx(4.705882))
-    assert api_stats.ehp.hull == (approx(902.985075), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(2563.076923), approx(4043.076923), 0, approx(3.076923))
+    assert api_stats.ehp[0].armor == (approx(2150.588235), 0, 0, approx(4.705882))
+    assert api_stats.ehp[0].hull == (approx(902.985075), 0, 0, approx(1.492537))
 
 
 def test_local_aar(client, consts):
@@ -178,16 +178,16 @@ def test_local_aar(client, consts):
         charge_type_id=eve_charge_item_id)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(321.428571), 0, 0, approx(1.428571))
-    assert api_stats.ehp.armor == (approx(884.615385), approx(1920), 0, approx(1.538462))
-    assert api_stats.ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(321.428571), 0, 0, approx(1.428571))
+    assert api_stats.ehp[0].armor == (approx(884.615385), approx(1920), 0, approx(1.538462))
+    assert api_stats.ehp[0].hull == (approx(783.58209), 0, 0, approx(1.492537))
     # Action
     api_sol.change(default_incoming_dps=(1, 1, 0, 0))
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(250), 0, 0, approx(1.111111))
-    assert api_stats.ehp.armor == (approx(1000), approx(2170.434782), 0, approx(1.73913))
-    assert api_stats.ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(250), 0, 0, approx(1.111111))
+    assert api_stats.ehp[0].armor == (approx(1000), approx(2170.434782), 0, approx(1.73913))
+    assert api_stats.ehp[0].hull == (approx(783.58209), 0, 0, approx(1.492537))
 
 
 def test_remote_asb(client, consts):
@@ -249,16 +249,16 @@ def test_remote_asb(client, consts):
     api_rasb.change_module(add_projs=[api_ship.id])
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(1904), 0, approx(9771.428571), approx(2.285714))
-    assert api_stats.ehp.armor == (approx(880.963855), 0, 0, approx(1.927711))
-    assert api_stats.ehp.hull == (approx(902.985075), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(1904), 0, approx(9771.428571), approx(2.285714))
+    assert api_stats.ehp[0].armor == (approx(880.963855), 0, 0, approx(1.927711))
+    assert api_stats.ehp[0].hull == (approx(902.985075), 0, 0, approx(1.492537))
     # Action
     api_sol.change(default_incoming_dps=(1, 1, 0, 0))
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(2563.076923), 0, approx(13153.846154), approx(3.076923))
-    assert api_stats.ehp.armor == (approx(2150.588235), 0, 0, approx(4.705882))
-    assert api_stats.ehp.hull == (approx(902.985075), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(2563.076923), 0, approx(13153.846154), approx(3.076923))
+    assert api_stats.ehp[0].armor == (approx(2150.588235), 0, 0, approx(4.705882))
+    assert api_stats.ehp[0].hull == (approx(902.985075), 0, 0, approx(1.492537))
 
 
 def test_remote_aar(client, consts):
@@ -322,16 +322,16 @@ def test_remote_aar(client, consts):
     api_raar.change_module(add_projs=[api_ship.id])
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(321.428571), 0, 0, approx(1.428571))
-    assert api_stats.ehp.armor == (approx(884.615385), 0, approx(1366.153846), approx(1.538462))
-    assert api_stats.ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(321.428571), 0, 0, approx(1.428571))
+    assert api_stats.ehp[0].armor == (approx(884.615385), 0, approx(1366.153846), approx(1.538462))
+    assert api_stats.ehp[0].hull == (approx(783.58209), 0, 0, approx(1.492537))
     # Action
     api_sol.change(default_incoming_dps=(1, 1, 0, 0))
     # Verification
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp.shield == (approx(250), 0, 0, approx(1.111111))
-    assert api_stats.ehp.armor == (approx(1000), 0, approx(1544.347826), approx(1.73913))
-    assert api_stats.ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    assert api_stats.ehp[0].shield == (approx(250), 0, 0, approx(1.111111))
+    assert api_stats.ehp[0].armor == (approx(1000), 0, approx(1544.347826), approx(1.73913))
+    assert api_stats.ehp[0].hull == (approx(783.58209), 0, 0, approx(1.492537))
 
 
 def test_no_ship(client, consts):
@@ -355,7 +355,7 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp is None
+    assert api_stats.ehp == [None]
 
 
 def test_ship_not_loaded(client, consts):
@@ -381,4 +381,4 @@ def test_ship_not_loaded(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(ehp=True))
-    assert api_stats.ehp is None
+    assert api_stats.ehp == [None]

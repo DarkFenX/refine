@@ -1,6 +1,6 @@
 use crate::util::HExecError;
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
 pub(crate) enum HDpsProfile {
     Full(HDpsProfileFull),
@@ -38,8 +38,8 @@ impl HDpsProfile {
         }
     }
 }
-impl From<&rc::DpsProfile> for HDpsProfile {
-    fn from(core_dps_profile: &rc::DpsProfile) -> Self {
+impl From<rc::DpsProfile> for HDpsProfile {
+    fn from(core_dps_profile: rc::DpsProfile) -> Self {
         Self::Full(HDpsProfileFull {
             em: core_dps_profile.get_em(),
             thermal: core_dps_profile.get_thermal(),
@@ -51,10 +51,10 @@ impl From<&rc::DpsProfile> for HDpsProfile {
         })
     }
 }
-impl TryFrom<&HDpsProfile> for rc::DpsProfile {
+impl TryFrom<HDpsProfile> for rc::DpsProfile {
     type Error = HExecError;
 
-    fn try_from(h_dps_profile: &HDpsProfile) -> Result<Self, Self::Error> {
+    fn try_from(h_dps_profile: HDpsProfile) -> Result<Self, Self::Error> {
         let breacher_info = match h_dps_profile.get_breacher() {
             Some((br_abs, br_rel)) => match rc::BreacherInfo::try_new(br_abs, br_rel) {
                 Ok(breacher_info) => Some(breacher_info),
@@ -81,7 +81,7 @@ impl TryFrom<&HDpsProfile> for rc::DpsProfile {
     }
 }
 
-#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+#[derive(Copy, Clone, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(crate) struct HDpsProfileFull {
     em: rc::AttrVal,
     thermal: rc::AttrVal,
@@ -90,7 +90,7 @@ pub(crate) struct HDpsProfileFull {
     breacher: Option<(rc::AttrVal, rc::AttrVal)>,
 }
 
-#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+#[derive(Copy, Clone, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(crate) struct HDpsProfileShort {
     em: rc::AttrVal,
     thermal: rc::AttrVal,
