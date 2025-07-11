@@ -5,7 +5,7 @@ use crate::{
         rels::{Fk, KeyPart, Pk},
     },
     ed,
-    nd::{N_EFFECT_MAP, NEffectCharge},
+    nd::N_EFFECT_MAP,
     util::vec_push_opt,
 };
 
@@ -33,21 +33,12 @@ impl Fk for ed::EEffect {
         vec_push_opt(&mut vec, self.resist_attr_id);
         vec.extend(self.get_fks_from_mod_args("modifyingAttributeID"));
         vec.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
-        // Buffs can reference attributes too
-        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id)
-            && let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source
-        {
-            for buff_custom_src in buff_custom_srcs.iter() {
-                if let ad::AEffectBuffSrcCustom::AffectorVal(_, attr_id) = buff_custom_src {
-                    vec.push(*attr_id);
-                }
-            }
+        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
+            vec.extend(buff_info.extract_a_attr_ids());
         }
         // Hardcoded charge info can reference attributes
-        if let Some(n_effect) = N_EFFECT_MAP.get(&ad::AEffectId::Dogma(self.id))
-            && let Some(NEffectCharge::Autocharge(attr_id)) = n_effect.hc.charge
-        {
-            vec.push(attr_id);
+        if let Some(n_effect) = N_EFFECT_MAP.get(&ad::AEffectId::Dogma(self.id)) {
+            vec.extend(n_effect.extract_a_attr_ids());
         }
         vec
     }
@@ -57,15 +48,8 @@ impl Fk for ed::EEffect {
     }
     fn get_buff_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id)
-            && let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source
-        {
-            for buff_custom_src in buff_custom_srcs.iter() {
-                match buff_custom_src {
-                    ad::AEffectBuffSrcCustom::AffectorVal(buff_id, _) => vec.push(*buff_id),
-                    ad::AEffectBuffSrcCustom::HardcodedVal(buff_id, _) => vec.push(*buff_id),
-                }
-            }
+        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
+            vec.extend(buff_info.extract_a_buff_ids());
         }
         vec
     }

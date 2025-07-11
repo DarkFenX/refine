@@ -13,7 +13,7 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(update_a_effect),
+        adg_update_effect_fn: Some(update_effect),
         hc: NEffectHc {
             calc_custom_fn: Some(calc_add_custom_modifier),
             ..
@@ -22,16 +22,11 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_a_effect(a_data: &mut ad::AData) {
-    match a_data.effects.get_mut(&A_EFFECT_ID) {
-        Some(effect) => {
-            if !effect.mods.is_empty() {
-                tracing::info!("effect {A_EFFECT_ID}: AB effect has modifiers, overwriting them");
-                effect.mods.clear();
-            }
-            effect.mods.push(mk_a_modifier_mass());
-            effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
-        }
-        None => tracing::info!("effect {A_EFFECT_ID}: AB effect is not found for customization"),
+fn update_effect(a_effect: &mut ad::AEffect) {
+    if !a_effect.mods.is_empty() {
+        tracing::info!("effect {A_EFFECT_ID}: AB effect has modifiers, overwriting them");
+        a_effect.mods.clear();
     }
+    a_effect.mods.push(mk_a_modifier_mass());
+    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

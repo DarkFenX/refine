@@ -10,7 +10,7 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(|a_data| update_effect(a_data, A_EFFECT_ID, ac::attrs::THERM_DMG)),
+        adg_update_effect_fn: Some(|a_effect| update_effect(A_EFFECT_ID, a_effect, ac::attrs::THERM_DMG)),
         ..
     }
 }

@@ -13,6 +13,7 @@ use crate::{
         },
     },
     uad::UadItem,
+    util::RMap,
 };
 
 const A_EFFECT_ID: ad::AEffectId = ac::effects::AAR_PASTE_BOOST;
@@ -22,7 +23,8 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(adg_add_custom_effect),
+        adg_make_effect_fn: Some(make_effect),
+        adg_assign_effect_fn: Some(assign_effect),
         hc: NEffectHc {
             calc_custom_fn: Some(calc_add_custom_modifier),
             ..
@@ -32,23 +34,27 @@ pub(super) fn mk_n_effect() -> NEffect {
 }
 
 // ADG customizations
-fn adg_add_custom_effect(a_data: &mut ad::AData) {
-    let effect = ad::AEffect {
+fn make_effect() -> ad::AEffect {
+    ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
         state: ad::AState::Offline,
         mod_build_status: ad::AEffectModBuildStatus::Custom,
         ..
-    };
-    let effect_id = effect.id;
-    a_data.effects.insert(effect.id, effect);
-    for item in a_data.items.values_mut().filter(|v| {
+    }
+}
+
+fn assign_effect(a_items: &mut RMap<ad::AItemId, ad::AItem>) -> bool {
+    let mut assigned = false;
+    for a_item in a_items.values_mut().filter(|v| {
         v.effect_datas.contains_key(&ac::effects::FUELED_ARMOR_REPAIR)
             || v.effect_datas
                 .contains_key(&ac::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
     }) {
-        item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
+        a_item.effect_datas.insert(A_EFFECT_ID, ad::AItemEffectData::default());
+        assigned = true;
     }
+    assigned
 }
 
 // Calc customizations

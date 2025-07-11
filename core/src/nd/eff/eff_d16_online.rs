@@ -7,19 +7,16 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(update_effect),
+        adg_update_effect_fn: Some(update_effect),
         ..
     }
 }
 
-fn update_effect(a_data: &mut ad::AData) {
-    match a_data.effects.get_mut(&A_EFFECT_ID) {
-        Some(effect) => match effect.state {
-            ad::AState::Online => {
-                tracing::info!("effect {A_EFFECT_ID}: \"online\" effect category did not need fixing")
-            }
-            _ => effect.state = ad::AState::Online,
-        },
-        None => tracing::info!("effect {A_EFFECT_ID}: \"online\" effect is not found for fixing"),
+fn update_effect(a_effect: &mut ad::AEffect) {
+    match a_effect.state {
+        ad::AState::Online => {
+            tracing::info!("effect {A_EFFECT_ID}: \"online\" effect category did not need fixing")
+        }
+        _ => a_effect.state = ad::AState::Online,
     }
 }

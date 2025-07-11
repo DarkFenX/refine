@@ -130,23 +130,25 @@ fn add_buff_mods(
     buff_type_a_attr_id: Option<ad::AAttrId>,
     buff_val_a_attr_id: ad::AAttrId,
 ) {
-    if let Some(buff) = ctx.uad.src.get_a_buff(a_buff_id) {
-        for buff_mod in buff.mods.iter() {
-            let rmod = match RawModifier::try_from_a_buff_regular(
-                item_key,
-                item,
-                a_effect,
-                buff,
-                buff_mod,
-                buff_val_a_attr_id,
-                a_buff_scope.into(),
-                buff_type_a_attr_id,
-            ) {
-                Some(rmod) => rmod,
-                None => continue,
-            };
-            rmods.push(rmod);
-        }
+    let a_buff = match ctx.uad.src.get_a_buff(a_buff_id) {
+        Some(a_buff) => a_buff,
+        None => return,
+    };
+    for buff_mod in a_buff.mods.iter() {
+        let rmod = match RawModifier::try_from_a_buff_regular(
+            item_key,
+            item,
+            a_effect,
+            a_buff,
+            buff_mod,
+            buff_val_a_attr_id,
+            a_buff_scope.into(),
+            buff_type_a_attr_id,
+        ) {
+            Some(rmod) => rmod,
+            None => continue,
+        };
+        rmods.push(rmod);
     }
 }
 
@@ -160,21 +162,23 @@ fn add_buff_mods_hardcoded(
     a_buff_scope: &ad::AEffectBuffScope,
     buff_a_val: ad::AAttrVal,
 ) {
-    if let Some(buff) = ctx.uad.src.get_a_buff(a_buff_id) {
-        for buff_mod in buff.mods.iter() {
-            let rmod = match RawModifier::try_from_a_buff_hardcoded(
-                item_key,
-                item,
-                a_effect,
-                buff,
-                buff_mod,
-                buff_a_val,
-                a_buff_scope.into(),
-            ) {
-                Some(rmod) => rmod,
-                None => continue,
-            };
-            rmods.push(rmod);
-        }
+    let a_buff = match ctx.uad.src.get_a_buff(a_buff_id) {
+        Some(a_buff) => a_buff,
+        None => return,
+    };
+    for buff_mod in a_buff.mods.iter() {
+        let rmod = match RawModifier::try_from_a_buff_hardcoded(
+            item_key,
+            item,
+            a_effect,
+            a_buff,
+            buff_mod,
+            buff_a_val,
+            a_buff_scope.into(),
+        ) {
+            Some(rmod) => rmod,
+            None => continue,
+        };
+        rmods.push(rmod);
     }
 }

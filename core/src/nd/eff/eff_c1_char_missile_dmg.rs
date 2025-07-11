@@ -1,4 +1,4 @@
-use crate::{ac, ad, nd::NEffect};
+use crate::{ac, ad, nd::NEffect, util::RMap};
 
 const A_EFFECT_ID: ad::AEffectId = ac::effects::CHAR_MISSILE_DMG;
 
@@ -6,32 +6,35 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(add_custom_effect),
+        adg_make_effect_fn: Some(make_effect),
+        adg_assign_effect_fn: Some(assign_effect),
         ..
     }
 }
 
-fn add_custom_effect(a_data: &mut ad::AData) {
-    let mut effect = ad::AEffect {
+fn make_effect() -> ad::AEffect {
+    ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
         state: ad::AState::Offline,
         mod_build_status: ad::AEffectModBuildStatus::Custom,
+        mods: vec![
+            mk_modifier(ac::attrs::EM_DMG),
+            mk_modifier(ac::attrs::THERM_DMG),
+            mk_modifier(ac::attrs::KIN_DMG),
+            mk_modifier(ac::attrs::EXPL_DMG),
+        ],
         ..
-    };
-    effect.mods.push(mk_modifier(ac::attrs::EM_DMG));
-    effect.mods.push(mk_modifier(ac::attrs::THERM_DMG));
-    effect.mods.push(mk_modifier(ac::attrs::KIN_DMG));
-    effect.mods.push(mk_modifier(ac::attrs::EXPL_DMG));
-    a_data.effects.insert(effect.id, effect);
-    for item in a_data
-        .items
-        .values_mut()
-        .filter(|v| v.grp_id == ac::itemgrps::CHARACTER)
-    {
-        item.effect_datas
-            .insert(ac::effects::CHAR_MISSILE_DMG, ad::AItemEffectData::default());
     }
+}
+
+fn assign_effect(a_items: &mut RMap<ad::AItemId, ad::AItem>) -> bool {
+    let mut assigned = false;
+    for a_item in a_items.values_mut().filter(|v| v.grp_id == ac::itemgrps::CHARACTER) {
+        a_item.effect_datas.insert(A_EFFECT_ID, ad::AItemEffectData::default());
+        assigned = true;
+    }
+    assigned
 }
 
 fn mk_modifier(affectee_attr_id: ad::AAttrId) -> ad::AEffectModifier {

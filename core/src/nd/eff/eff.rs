@@ -9,6 +9,7 @@ use crate::{
         calc::{Calc, RawModifier},
     },
     uad::UadProjRange,
+    util::RMap,
 };
 
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
@@ -24,9 +25,10 @@ pub(crate) struct NEffect {
     pub(crate) aid: ad::AEffectId,
     // Specifies if effect applies any buffs
     pub(crate) adg_buff_info: Option<ad::AEffectBuffInfo> = None,
-    // Data customization function ran during cache generation time. Can change anything, but is
-    // attached to effect, since it mostly operates on effects
-    pub(crate) adg_custom_fn: Option<fn(&mut ad::AData)> = None,
+    // Data customization function ran during cache generation time
+    pub(crate) adg_make_effect_fn: Option<fn() -> ad::AEffect> = None,
+    pub(crate) adg_update_effect_fn: Option<fn(&mut ad::AEffect)> = None,
+    pub(crate) adg_assign_effect_fn: Option<fn(&mut RMap<ad::AItemId, ad::AItem>) -> bool> = None,
     // Getter for attribute IDs which define projection range of effect
     pub(crate) xt_get_proj_attrs: Option<NProjAttrGetter> = None,
     // Effect data hardcoded in the library

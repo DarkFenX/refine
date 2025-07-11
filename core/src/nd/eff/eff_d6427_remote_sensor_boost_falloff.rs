@@ -13,7 +13,7 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(update_effect),
+        adg_update_effect_fn: Some(update_effect),
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NEffectHc {
             get_proj_mult: Some(get_proj_mult_normal_restricted_s2s),
@@ -23,41 +23,36 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_data: &mut ad::AData) {
-    match a_data.effects.get_mut(&A_EFFECT_ID) {
-        Some(effect) => {
-            if !effect.mods.is_empty() {
-                tracing::info!("effect {A_EFFECT_ID}: RSB effect has modifiers, overwriting them");
-                effect.mods.clear();
-            }
-            effect.mods.push(make_rsb_mod(
-                ac::attrs::MAX_TARGET_RANGE_BONUS,
-                ac::attrs::MAX_TARGET_RANGE,
-            ));
-            effect.mods.push(make_rsb_mod(
-                ac::attrs::SCAN_RESOLUTION_BONUS,
-                ac::attrs::SCAN_RESOLUTION,
-            ));
-            effect.mods.push(make_rsb_mod(
-                ac::attrs::SCAN_RADAR_STRENGTH_PERCENT,
-                ac::attrs::SCAN_RADAR_STRENGTH,
-            ));
-            effect.mods.push(make_rsb_mod(
-                ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_PERCENT,
-                ac::attrs::SCAN_GRAVIMETRIC_STRENGTH,
-            ));
-            effect.mods.push(make_rsb_mod(
-                ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_PERCENT,
-                ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH,
-            ));
-            effect.mods.push(make_rsb_mod(
-                ac::attrs::SCAN_LADAR_STRENGTH_PERCENT,
-                ac::attrs::SCAN_LADAR_STRENGTH,
-            ));
-            effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
-        }
-        None => tracing::info!("effect {A_EFFECT_ID}: RSB effect is not found for customization"),
+fn update_effect(a_effect: &mut ad::AEffect) {
+    if !a_effect.mods.is_empty() {
+        tracing::info!("effect {A_EFFECT_ID}: RSB effect has modifiers, overwriting them");
+        a_effect.mods.clear();
     }
+    a_effect.mods.push(make_rsb_mod(
+        ac::attrs::MAX_TARGET_RANGE_BONUS,
+        ac::attrs::MAX_TARGET_RANGE,
+    ));
+    a_effect.mods.push(make_rsb_mod(
+        ac::attrs::SCAN_RESOLUTION_BONUS,
+        ac::attrs::SCAN_RESOLUTION,
+    ));
+    a_effect.mods.push(make_rsb_mod(
+        ac::attrs::SCAN_RADAR_STRENGTH_PERCENT,
+        ac::attrs::SCAN_RADAR_STRENGTH,
+    ));
+    a_effect.mods.push(make_rsb_mod(
+        ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_PERCENT,
+        ac::attrs::SCAN_GRAVIMETRIC_STRENGTH,
+    ));
+    a_effect.mods.push(make_rsb_mod(
+        ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_PERCENT,
+        ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH,
+    ));
+    a_effect.mods.push(make_rsb_mod(
+        ac::attrs::SCAN_LADAR_STRENGTH_PERCENT,
+        ac::attrs::SCAN_LADAR_STRENGTH,
+    ));
+    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }
 
 fn make_rsb_mod(affector_attr_id: ad::AAttrId, affectee_attr_id: ad::AAttrId) -> ad::AEffectModifier {

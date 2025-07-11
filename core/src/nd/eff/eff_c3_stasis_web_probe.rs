@@ -4,6 +4,7 @@ use crate::{
         NEffect, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
+    util::RMap,
 };
 
 const WEB_BUBBLE: ad::AItemId = ac::items::STASIS_WEBIFICATION_PROBE;
@@ -13,7 +14,8 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(add_custom_effect),
+        adg_make_effect_fn: Some(make_effect),
+        adg_assign_effect_fn: Some(assign_effect),
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
             get_proj_mult: Some(get_proj_mult_simple_s2s),
@@ -23,8 +25,8 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn add_custom_effect(a_data: &mut ad::AData) {
-    let effect = ad::AEffect {
+fn make_effect() -> ad::AEffect {
+    ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Active,
@@ -39,14 +41,16 @@ fn add_custom_effect(a_data: &mut ad::AData) {
             scope: ad::AEffectBuffScope::Everything,
         }),
         ..
-    };
-    let effect_id = effect.id;
-    a_data.effects.insert(effect.id, effect);
-    match a_data.items.get_mut(&WEB_BUBBLE) {
+    }
+}
+
+fn assign_effect(a_items: &mut RMap<ad::AItemId, ad::AItem>) -> bool {
+    match a_items.get_mut(&WEB_BUBBLE) {
         Some(a_item) => {
-            a_item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
-            a_item.defeff_id = Some(effect_id);
+            a_item.effect_datas.insert(A_EFFECT_ID, ad::AItemEffectData::default());
+            a_item.defeff_id = Some(A_EFFECT_ID);
+            true
         }
-        None => tracing::info!("item {WEB_BUBBLE}: web bubble is not found for customization"),
+        None => false,
     }
 }

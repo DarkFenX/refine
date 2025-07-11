@@ -13,6 +13,7 @@ use crate::{
         },
     },
     uad::UadItem,
+    util::RMap,
 };
 
 const A_EFFECT_ID: ad::AEffectId = ac::effects::MISSILE_FLIGHT_TIME;
@@ -24,7 +25,8 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
         aid: A_EFFECT_ID,
-        adg_custom_fn: Some(add_custom_effect),
+        adg_make_effect_fn: Some(make_effect),
+        adg_assign_effect_fn: Some(assign_effect),
         hc: NEffectHc {
             calc_custom_fn: Some(calc_add_custom_modifier),
             ..
@@ -34,24 +36,28 @@ pub(super) fn mk_n_effect() -> NEffect {
 }
 
 // ADG customizations
-fn add_custom_effect(a_data: &mut ad::AData) {
-    let effect = ad::AEffect {
+fn make_effect() -> ad::AEffect {
+    ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
         state: ad::AState::Offline,
         mod_build_status: ad::AEffectModBuildStatus::Custom,
         ..
-    };
-    let effect_id = effect.id;
-    a_data.effects.insert(effect.id, effect);
-    for item in a_data.items.values_mut().filter(|v| {
+    }
+}
+
+fn assign_effect(a_items: &mut RMap<ad::AItemId, ad::AItem>) -> bool {
+    let mut assigned = false;
+    for item in a_items.values_mut().filter(|v| {
         v.effect_datas.contains_key(&ac::effects::MISSILE_LAUNCHING)
             || v.effect_datas.contains_key(&ac::effects::DEFENDER_MISSILE_LAUNCHING)
             || v.effect_datas.contains_key(&ac::effects::FOF_MISSILE_LAUNCHING)
             || v.effect_datas.contains_key(&ac::effects::DOT_MISSILE_LAUNCHING)
     }) {
-        item.effect_datas.insert(effect_id, ad::AItemEffectData::default());
+        item.effect_datas.insert(A_EFFECT_ID, ad::AItemEffectData::default());
+        assigned = true;
     }
+    assigned
 }
 
 // Calc customizations
