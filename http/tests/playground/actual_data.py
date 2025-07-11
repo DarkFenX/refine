@@ -8,6 +8,7 @@ from time import time
 
 from tests import approx
 from tests.fw.api import ValOptions
+from tests.fw.api.types.item import Item
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
@@ -188,6 +189,21 @@ def test_stacking(client, consts):  # noqa: ANN001, ANN201
     assert api_male.update().attrs[564].dogma == approx(5264.18055777, accuracy=9)
 
 
+def test_item_attrs(client, consts):  # noqa: ANN001, ANN201
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_fit.add_skill(type_id=eve_skill_id, level=5)
+    api_ship = api_fit.set_ship(type_id=11184)  # Crusader
+    api_ship.update()
+    attrs1 = api_ship.update().attrs
+    api_fit.add_fw_effect(type_id=87949)  # Plasma stability generator
+    attrs2 = api_ship.update().attrs
+    print_attr_diff(attrs1=attrs1, attrs2=attrs2)
+
+
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
     files = [
         'fsd_built/types.json',
@@ -259,3 +275,44 @@ def print_items(*, type_ids: list[int], print_types: bool = False) -> None:
                 continue
             seen_lines.add(line)
             print(line)  # noqa: T201
+
+
+def print_attrs(*, api_item: Item) -> None:
+    item_id_item_name_map = {}
+    with (PHOBOS_BASE_PATH / 'fsd_built' / 'types.json').open() as f:
+        for entry in json.load(f).values():
+            item_id_item_name_map[entry['typeID']] = entry['typeName']
+    attr_id_attr_name_map = {}
+    with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
+        for entry in json.load(f).values():
+            attr_id_attr_name_map[entry['attributeID']] = entry['name']
+    print('---')
+    print(f'{item_id_item_name_map[api_item.type_id]}:')
+    for attr_id in sorted(api_item.attrs, key=lambda i: attr_id_attr_name_map[i]):
+        attr_name = attr_id_attr_name_map[attr_id]
+        attr_val = api_item.attrs[attr_id].extra
+        print(f'  {attr_name}: {attr_val}')
+
+
+def print_attr_diff(*, attrs1: dict, attrs2: dict) -> None:
+    item_id_item_name_map = {}
+    with (PHOBOS_BASE_PATH / 'fsd_built' / 'types.json').open() as f:
+        for entry in json.load(f).values():
+            item_id_item_name_map[entry['typeID']] = entry['typeName']
+    attr_id_attr_name_map = {}
+    with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
+        for entry in json.load(f).values():
+            attr_id_attr_name_map[entry['attributeID']] = entry['name']
+    attr_ids = set(attrs1.keys()) | set(attrs2.keys())
+    for attr_id in sorted(attr_ids, key=lambda i: attr_id_attr_name_map[i]):
+        try:
+            attr1_val = attrs1[attr_id].extra
+        except KeyError:
+            attr1_val = None
+        try:
+            attr2_val = attrs2[attr_id].extra
+        except KeyError:
+            attr2_val = None
+        if attr1_val != attr2_val:
+            attr_name = attr_id_attr_name_map[attr_id]
+            print(f'  {attr_name}: {attr1_val} -> {attr2_val}')
