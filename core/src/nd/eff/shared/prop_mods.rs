@@ -65,7 +65,7 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
     match get_item_fit_ship_key(ctx, item_key) {
         Some(ship_key) => {
             let item_id = ctx.uad.items.id_by_key(item_key);
-            smallvec!(
+            smallvec![
                 AffectorInfo {
                     item_id,
                     attr_id: Some(PROP_BOOST),
@@ -78,7 +78,7 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
                     item_id: ctx.uad.items.id_by_key(ship_key),
                     attr_id: Some(SHIP_MASS),
                 }
-            )
+            ]
         }
         None => SmallVec::new(),
     }

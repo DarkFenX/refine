@@ -97,7 +97,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
 fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
     match get_item_fit_ship_key(ctx, item_key) {
         Some(ship_key) => {
-            smallvec!(
+            smallvec![
                 AffectorInfo {
                     item_id: ctx.uad.items.id_by_key(item_key),
                     attr_id: Some(MISSILE_VELOCITY),
@@ -108,7 +108,7 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
                     item_id: ctx.uad.items.id_by_key(ship_key),
                     attr_id: Some(SHIP_RADIUS),
                 }
-            )
+            ]
         }
         None => SmallVec::new(),
     }

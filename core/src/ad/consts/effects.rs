@@ -94,3 +94,7 @@ pub(crate) const CHAR_MISSILE_DMG: AEffectId = AEffectId::Custom(1);
 pub(crate) const AAR_PASTE_BOOST: AEffectId = AEffectId::Custom(2);
 pub(crate) const STASIS_WEB_PROBE: AEffectId = AEffectId::Custom(3);
 pub(crate) const MISSILE_FLIGHT_TIME: AEffectId = AEffectId::Custom(4);
+pub(crate) const STABILITY_GENERATOR_ELECTRIC: AEffectId = AEffectId::Custom(5);
+pub(crate) const STABILITY_GENERATOR_PLASMA: AEffectId = AEffectId::Custom(6);
+pub(crate) const STABILITY_GENERATOR_EXOTIC: AEffectId = AEffectId::Custom(7);
+pub(crate) const STABILITY_GENERATOR_GAMMA: AEffectId = AEffectId::Custom(8);

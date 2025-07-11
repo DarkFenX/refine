@@ -10,6 +10,10 @@ mod eff_c1_char_missile_dmg;
 mod eff_c2_aar_paste_boost;
 mod eff_c3_stasis_web_probe;
 mod eff_c4_missile_flight_time;
+mod eff_c5_stability_generator_electric;
+mod eff_c6_stability_generator_plasma;
+mod eff_c7_stability_generator_exotic;
+mod eff_c8_stability_generator_gamma;
 mod eff_d101_use_missiles;
 mod eff_d10_tgt_attack;
 mod eff_d11691_debuff_lance;
@@ -75,6 +79,10 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_c2_aar_paste_boost::mk_n_effect(),
         eff_c3_stasis_web_probe::mk_n_effect(),
         eff_c4_missile_flight_time::mk_n_effect(),
+        eff_c5_stability_generator_electric::mk_n_effect(),
+        eff_c6_stability_generator_plasma::mk_n_effect(),
+        eff_c7_stability_generator_exotic::mk_n_effect(),
+        eff_c8_stability_generator_gamma::mk_n_effect(),
         eff_d10_tgt_attack::mk_n_effect(),
         eff_d16_online::mk_n_effect(),
         eff_d34_projectile_fired::mk_n_effect(),
