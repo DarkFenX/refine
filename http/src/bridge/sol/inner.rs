@@ -264,7 +264,7 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         result
     }
-    /// Fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fit-add", level = "trace", skip_all)]
     pub(crate) async fn add_fit(
         &mut self,
@@ -274,28 +274,19 @@ impl HSolarSystemInner {
         item_mode: HItemInfoMode,
     ) -> Result<HFitInfo, HBrError> {
         let mut core_sol = self.take_sol()?;
-        let core_sol_backup = core_sol.clone();
         let sync_span = tracing::trace_span!("sync");
-        match tpool
+        let (core_sol, item_info) = tpool
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let cmd_resp = command.execute(&mut core_sol).map_err(HBrError::from)?;
+                let cmd_resp = command.execute(&mut core_sol);
                 let mut core_fit = core_sol.get_fit_mut(&cmd_resp.id).unwrap();
                 let fit_info = HFitInfo::mk_info(&mut core_fit, fit_mode, item_mode);
-                Ok((core_sol, fit_info))
+                (core_sol, fit_info)
             })
-            .await
-        {
-            Ok((core_sol, item_info)) => {
-                self.put_sol_back(core_sol);
-                Ok(item_info)
-            }
-            Err(br_err) => {
-                self.put_sol_back(core_sol_backup);
-                Err(br_err)
-            }
-        }
+            .await;
+        self.put_sol_back(core_sol);
+        Ok(item_info)
     }
     /// Fallible
     #[tracing::instrument(name = "sol-fit-chg", level = "trace", skip_all)]

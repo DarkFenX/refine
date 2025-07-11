@@ -4,6 +4,8 @@ use crate::{
     misc::BreacherInfo,
 };
 
+const DPS_MIN: AttrVal = OF(0.0);
+
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct DpsProfile {
     em: AttrVal,
@@ -13,6 +15,21 @@ pub struct DpsProfile {
     breacher: Option<BreacherInfo>,
 }
 impl DpsProfile {
+    pub fn new_clamped(
+        em: AttrVal,
+        thermal: AttrVal,
+        kinetic: AttrVal,
+        explosive: AttrVal,
+        breacher: Option<BreacherInfo>,
+    ) -> Self {
+        Self {
+            em: AttrVal::max(em, DPS_MIN),
+            thermal: AttrVal::max(thermal, DPS_MIN),
+            kinetic: AttrVal::max(kinetic, DPS_MIN),
+            explosive: AttrVal::max(explosive, DPS_MIN),
+            breacher,
+        }
+    }
     pub fn try_new(
         em: AttrVal,
         thermal: AttrVal,
@@ -20,16 +37,16 @@ impl DpsProfile {
         explosive: AttrVal,
         breacher: Option<BreacherInfo>,
     ) -> Result<Self, DpsProfileError> {
-        if em < OF(0.0) {
+        if em < DPS_MIN {
             return Err(DmgError::Em(em).into());
         }
-        if thermal < OF(0.0) {
+        if thermal < DPS_MIN {
             return Err(DmgError::Thermal(em).into());
         }
-        if kinetic < OF(0.0) {
+        if kinetic < DPS_MIN {
             return Err(DmgError::Kinetic(em).into());
         }
-        if explosive < OF(0.0) {
+        if explosive < DPS_MIN {
             return Err(DmgError::Explosive(em).into());
         }
         Ok(Self {

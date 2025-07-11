@@ -119,13 +119,13 @@ impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
             // Solar system
-            Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),
             // Fleet
             Self::AddFleet(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Fit
-            Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddFit(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item

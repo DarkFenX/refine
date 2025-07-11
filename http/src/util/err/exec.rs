@@ -47,13 +47,6 @@ pub(crate) enum HExecError {
     ProjectionNotFound(#[source] rc::err::basic::ProjFoundError),
     #[error("{0}")]
     ProjectionAlreadyExists(#[source] rc::err::basic::ProjNotFoundError),
-    // Misc
-    #[error("{0}")]
-    InvalidSecStatus(#[from] rc::err::FitSecStatusError),
-    #[error("{0}")]
-    InvalidDpsProfile(#[source] rc::err::basic::DmgError),
-    #[error("{0}")]
-    InvalidBreacher(#[source] rc::err::basic::BreacherDmgError),
 }
 impl HExecError {
     pub(crate) fn get_code(&self) -> String {
@@ -83,10 +76,6 @@ impl HExecError {
             HExecError::ProjecteeCantTakeProjs(_) => "EXC-021",
             HExecError::ProjectionNotFound(_) => "EXC-022",
             HExecError::ProjectionAlreadyExists(_) => "EXC-023",
-            // Misc
-            HExecError::InvalidSecStatus(_) => "EXC-024-1",
-            HExecError::InvalidDpsProfile(_) => "EXC-024",
-            HExecError::InvalidBreacher(_) => "EXC-029",
         }
         .to_string()
     }

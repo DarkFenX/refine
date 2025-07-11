@@ -10,7 +10,6 @@ use crate::{
     cmd::HAddSolCmd,
     handlers::{HSingleErr, sol::HSolInfoParams},
     state::HAppState,
-    util::HExecError,
 };
 
 #[derive(Default, serde::Deserialize)]
@@ -37,7 +36,7 @@ pub(crate) async fn create_sol(
             return (code, Json(HSingleErr::from(br_err))).into_response();
         }
     };
-    let sol_info = match state
+    let sol_info = state
         .sol_mgr
         .add_sol(
             &state.tpool,
@@ -48,16 +47,6 @@ pub(crate) async fn create_sol(
             params.fit.unwrap_or_default(),
             params.item.unwrap_or_default(),
         )
-        .await
-    {
-        Ok(sol_info) => sol_info,
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::ExecFailed(HExecError::InvalidDpsProfile(_)) => StatusCode::BAD_REQUEST,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            return (code, Json(HSingleErr::from(br_err))).into_response();
-        }
-    };
+        .await;
     (StatusCode::CREATED, Json(sol_info)).into_response()
 }

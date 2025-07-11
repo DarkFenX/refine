@@ -30,29 +30,24 @@ impl HSolMgr {
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Result<HSolInfo, HBrError> {
+    ) -> HSolInfo {
         let id = get_id();
         let id_mv = id.clone();
         let sync_span = tracing::trace_span!("sync");
-        match tpool
+        let (core_sol, sol_info) = tpool
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let mut core_sol = Box::new(command.execute(src).map_err(HBrError::from)?);
+                let mut core_sol = Box::new(command.execute(src));
                 let sol_info = HSolInfo::mk_info(id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
-                Ok((core_sol, sol_info))
+                (core_sol, sol_info)
             })
+            .await;
+        self.id_sol_map
+            .write()
             .await
-        {
-            Ok((core_sol, sol_info)) => {
-                self.id_sol_map
-                    .write()
-                    .await
-                    .insert(id.clone(), HSolarSystem::new(id, core_sol));
-                Ok(sol_info)
-            }
-            Err(br_err) => Err(br_err),
-        }
+            .insert(id.clone(), HSolarSystem::new(id, core_sol));
+        sol_info
     }
     pub(crate) async fn get_sol(&self, id: &str) -> Result<HSolarSystem, HBrError> {
         self.id_sol_map

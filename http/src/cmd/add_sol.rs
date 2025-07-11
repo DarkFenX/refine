@@ -1,7 +1,4 @@
-use crate::{
-    shared::{HDpsProfile, HSecZone, HSpool},
-    util::HExecError,
-};
+use crate::shared::{HDpsProfile, HSecZone, HSpool};
 
 #[derive(Default, serde::Deserialize)]
 pub(crate) struct HAddSolCmd {
@@ -10,7 +7,7 @@ pub(crate) struct HAddSolCmd {
     default_incoming_dps: Option<HDpsProfile>,
 }
 impl HAddSolCmd {
-    pub(crate) fn execute(&self, src: rc::Src) -> Result<rc::SolarSystem, HExecError> {
+    pub(crate) fn execute(&self, src: rc::Src) -> rc::SolarSystem {
         let mut core_sol = rc::SolarSystem::new(src);
         if let Some(sec_zone) = &self.sec_zone {
             core_sol.set_sec_zone(sec_zone.into());
@@ -19,8 +16,8 @@ impl HAddSolCmd {
             core_sol.set_default_spool(spool.into());
         }
         if let Some(default_incoming_dps) = self.default_incoming_dps {
-            core_sol.set_default_incoming_dps(default_incoming_dps.try_into()?);
+            core_sol.set_default_incoming_dps(default_incoming_dps.into());
         }
-        Ok(core_sol)
+        core_sol
     }
 }

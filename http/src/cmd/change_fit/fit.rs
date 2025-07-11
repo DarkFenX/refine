@@ -35,11 +35,11 @@ impl HChangeFitCmd {
             TriStateField::Absent => (),
         }
         if let Some(sec_status) = self.sec_status {
-            let core_sec_status = rc::FitSecStatus::new_checked(sec_status)?;
+            let core_sec_status = rc::FitSecStatus::new_clamped(sec_status);
             core_fit.set_sec_status(core_sec_status);
         }
         match self.rah_incoming_dps {
-            TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps.try_into()?),
+            TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps.into()),
             TriStateField::None => {
                 // Do nothing if profile was not set
                 let _ = core_fit.remove_rah_incoming_dps();

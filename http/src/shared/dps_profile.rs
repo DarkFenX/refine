@@ -1,5 +1,3 @@
-use crate::util::HExecError;
-
 #[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
 pub(crate) enum HDpsProfile {
@@ -51,33 +49,18 @@ impl From<rc::DpsProfile> for HDpsProfile {
         })
     }
 }
-impl TryFrom<HDpsProfile> for rc::DpsProfile {
-    type Error = HExecError;
-
-    fn try_from(h_dps_profile: HDpsProfile) -> Result<Self, Self::Error> {
-        let breacher_info = match h_dps_profile.get_breacher() {
-            Some((br_abs, br_rel)) => match rc::BreacherInfo::try_new(br_abs, br_rel) {
-                Ok(breacher_info) => Some(breacher_info),
-                Err(core_err) => {
-                    return Err(match core_err {
-                        rc::err::BreacherInfoError::InvalidValue(e) => Self::Error::InvalidBreacher(e),
-                    });
-                }
-            },
-            None => None,
-        };
-        match rc::DpsProfile::try_new(
+impl From<HDpsProfile> for rc::DpsProfile {
+    fn from(h_dps_profile: HDpsProfile) -> Self {
+        let breacher_info = h_dps_profile
+            .get_breacher()
+            .map(|(br_abs, br_rel)| rc::BreacherInfo::new_clamped(br_abs, br_rel));
+        rc::DpsProfile::new_clamped(
             h_dps_profile.get_em(),
             h_dps_profile.get_thermal(),
             h_dps_profile.get_kinetic(),
             h_dps_profile.get_explosive(),
             breacher_info,
-        ) {
-            Ok(dps_profile) => Ok(dps_profile),
-            Err(core_err) => Err(match core_err {
-                rc::err::DpsProfileError::InvalidDmg(e) => Self::Error::InvalidDpsProfile(e),
-            }),
-        }
+        )
     }
 }
 
