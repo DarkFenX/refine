@@ -2,7 +2,7 @@ use rc::Lender;
 
 use crate::{
     info::{HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, MkItemInfo},
-    shared::{HDpsProfile, HSecZone},
+    shared::{HDpsProfile, HSecZone, HSpool},
 };
 
 #[derive(serde::Serialize)]
@@ -17,6 +17,7 @@ pub(crate) struct HSolInfoFull {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     proj_effects: Vec<HItemInfo>,
     sec_zone: HSecZone,
+    default_spool: HSpool,
     default_incoming_dps: HDpsProfile,
 }
 impl HSolInfoFull {
@@ -46,6 +47,7 @@ impl HSolInfoFull {
                 .map_into_iter(|mut proj_effect| HItemInfo::mk_info(&mut proj_effect, item_mode))
                 .collect(),
             sec_zone: core_sol.get_sec_zone().into(),
+            default_spool: core_sol.get_default_spool().into(),
             default_incoming_dps: (&core_sol.get_default_incoming_dps()).into(),
         }
     }

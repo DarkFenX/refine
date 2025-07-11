@@ -16,9 +16,9 @@ pub(crate) struct Uad {
     pub(crate) sw_effects: RSet<ItemKey>,
     pub(crate) proj_effects: RSet<ItemKey>,
     pub(crate) items: Items,
-    pub(crate) default_incoming_dps: DpsProfile,
-    pub(crate) default_spool: Spool,
     pub(crate) sec_zone: SecZone,
+    pub(crate) default_spool: Spool,
+    pub(crate) default_incoming_dps: DpsProfile,
 }
 impl Uad {
     pub(crate) fn new(src: Src) -> Self {
@@ -29,9 +29,9 @@ impl Uad {
             sw_effects: RSet::new(),
             proj_effects: RSet::new(),
             items: Items::new(10000),
-            default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
-            default_spool: Spool::SpoolScale(UnitInterval::new_clamped_of64(OF(1.0))),
             sec_zone: SecZone::NullSec,
+            default_spool: Spool::SpoolScale(UnitInterval::new_clamped_of64(OF(1.0))),
+            default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
         }
     }
 }
