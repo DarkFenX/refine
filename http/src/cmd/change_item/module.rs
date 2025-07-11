@@ -6,7 +6,7 @@ use crate::{
             apply_mattrs_on_change,
         },
     },
-    shared::HModuleState,
+    shared::{HModuleState, HSpool},
     util::{HExecError, TriStateField},
 };
 
@@ -21,6 +21,8 @@ pub(crate) struct HChangeModuleCmd {
     mutation: TriStateField<HMutationOnChange>,
     #[serde(default)]
     charge_type_id: TriStateField<rc::ItemTypeId>,
+    #[serde(default)]
+    spool: TriStateField<HSpool>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -89,6 +91,11 @@ impl HChangeModuleCmd {
                 Some(core_charge) => core_charge.remove(),
                 None => return Err(HExecError::ChargeNotSet(*item_id)),
             },
+            TriStateField::Absent => (),
+        }
+        match &self.spool {
+            TriStateField::Value(h_spool) => core_module.set_spool(Some(h_spool.into())),
+            TriStateField::None => core_module.set_spool(None),
             TriStateField::Absent => (),
         }
         for proj_def in self.add_projs.iter() {

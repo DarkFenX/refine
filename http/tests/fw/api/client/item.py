@@ -361,6 +361,7 @@ class ApiClientItem(ApiClientBase):
             state: ApiModuleState,
             mutation: MutaAdd | type[Absent],
             charge_type_id: int | type[Absent],
+            spool: str | type[Absent],
             mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -372,6 +373,7 @@ class ApiClientItem(ApiClientBase):
             'state': state}
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
+        conditional_insert(container=body, path=['spool'], value=spool)
         conditional_insert(container=body, path=['add_mode'], value=mode)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
@@ -390,6 +392,7 @@ class ApiClientItem(ApiClientBase):
             state: ApiModuleState | type[Absent],
             mutation: MutaAdd | MutaChange | None | type[Absent],
             charge_type_id: int | None | type[Absent],
+            spool: str | None | type[Absent],
             add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
             change_projs: list[tuple[str, ProjRange]] | type[Absent],
             rm_projs: list[str] | type[Absent],
@@ -401,6 +404,7 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
+        conditional_insert(container=body, path=['spool'], value=spool)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['change_projs'], value=change_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)

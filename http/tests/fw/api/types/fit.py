@@ -344,6 +344,7 @@ class Fit(AttrDict):
             state: ApiModuleState = ApiModuleState.offline,
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
+            spool: str | type[Absent] = Absent,
             mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
@@ -357,6 +358,7 @@ class Fit(AttrDict):
             state=state,
             mutation=mutation,
             charge_type_id=charge_type_id,
+            spool=spool,
             mode=mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)

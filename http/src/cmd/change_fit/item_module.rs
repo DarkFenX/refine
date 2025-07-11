@@ -3,7 +3,7 @@ use crate::{
         HItemIdsResp, change_item,
         shared::{HAddMode, HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
     },
-    shared::{HModRack, HModuleState},
+    shared::{HModRack, HModuleState, HSpool},
     util::HExecError,
 };
 
@@ -15,6 +15,7 @@ pub(crate) struct HAddModuleCmd {
     state: HModuleState,
     mutation: Option<HMutationOnAdd>,
     charge_type_id: Option<rc::ItemTypeId>,
+    spool: Option<HSpool>,
 }
 impl HAddModuleCmd {
     pub(in crate::cmd) fn execute(
@@ -42,6 +43,9 @@ impl HAddModuleCmd {
         }
         if let Some(charge_type_id) = self.charge_type_id {
             core_module.set_charge_type_id(charge_type_id);
+        }
+        if let Some(h_spool) = &self.spool {
+            core_module.set_spool(Some(h_spool.into()));
         }
         Ok(core_module.into())
     }

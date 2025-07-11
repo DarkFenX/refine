@@ -46,14 +46,17 @@ def test_state(client, consts):
         defeff_id=eve_drone_effect_id)
     eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
-    api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
+    api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module_normal = api_fit.add_module(type_id=eve_module_normal_id, state=consts.ApiModuleState.active)
     api_module_ancil = api_fit.add_module(
         type_id=eve_module_ancil_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_paste_id)
-    api_module_spool = api_fit.add_module(type_id=eve_module_spool_id, state=consts.ApiModuleState.active)
+    api_module_spool = api_fit.add_module(
+        type_id=eve_module_spool_id,
+        state=consts.ApiModuleState.active,
+        spool=Spool.spool_scale_to_api(val=1))
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_armor=True))
