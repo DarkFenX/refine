@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::{AttrVal, ItemKey},
     ed,
-    misc::EffectSpec,
+    misc::{EffectSpec, Spool},
     nd::NEffectCharge,
     svc::{
         SvcCtx,
@@ -14,7 +14,7 @@ use crate::{
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
 pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
-pub(crate) type NRemoteRepGetter = fn(SvcCtx, &mut Calc, EffectSpec, Option<ItemKey>) -> Option<AttrVal>;
+pub(crate) type NRemoteRepGetter = fn(SvcCtx, &mut Calc, EffectSpec, Option<Spool>, Option<ItemKey>) -> Option<AttrVal>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means

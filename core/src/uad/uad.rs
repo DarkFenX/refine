@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, FitKey, ItemKey, OF},
+    def::{ItemKey, OF},
     misc::{DpsProfile, SecZone, Spool, UnitInterval},
     src::Src,
     uad::{fit::Fits, fleet::Fleets, item::Items},
@@ -33,18 +33,5 @@ impl Uad {
             default_spool: Spool::SpoolScale(UnitInterval::new_clamped_of64(OF(1.0))),
             sec_zone: SecZone::NullSec,
         }
-    }
-    pub(crate) fn get_item_radius(&self, item_key: ItemKey) -> AttrVal {
-        match self.items.get(item_key).get_a_xt() {
-            Some(a_xt) => a_xt.radius,
-            None => OF(0.0),
-        }
-    }
-    pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: FitKey) -> AttrVal {
-        let ship_key = match self.fits.get(fit_key).ship {
-            Some(ship_key) => ship_key,
-            None => return OF(0.0),
-        };
-        self.get_item_radius(ship_key)
     }
 }

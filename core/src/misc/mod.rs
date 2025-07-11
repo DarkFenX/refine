@@ -18,6 +18,7 @@ pub use proj_range::ProjRange;
 pub use proj_range_info::ProjRangeInfo;
 pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use skill_level::{SkillLevel, SkillLevelError};
+pub(crate) use spool::ResolvedSpool;
 pub use spool::Spool;
 pub use states::{MinionState, ModuleState, ServiceState};
 pub use unit_interval::{UnitInterval, UnitIntervalError};

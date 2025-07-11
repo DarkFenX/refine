@@ -1,7 +1,7 @@
 use crate::{
     ac, ad,
     def::{AttrVal, ItemKey},
-    misc::EffectSpec,
+    misc::{EffectSpec, Spool},
     svc::{SvcCtx, calc::Calc, get_proj_mult, get_resist_mult},
 };
 
@@ -23,6 +23,7 @@ pub(crate) fn get_remote_shield_rep_amount(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
+    _spool: Option<Spool>,
     projectee_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
     get_remote_rep_amount(
@@ -39,6 +40,7 @@ pub(crate) fn get_remote_armor_rep_amount(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
+    _spool: Option<Spool>,
     projectee_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
     get_remote_rep_amount(
@@ -55,6 +57,7 @@ pub(crate) fn get_remote_hull_rep_amount(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
+    _spool: Option<Spool>,
     projectee_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
     get_remote_rep_amount(
@@ -71,6 +74,7 @@ pub(crate) fn get_remote_cap_rep_amount(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
+    _spool: Option<Spool>,
     projectee_key: Option<ItemKey>,
 ) -> Option<AttrVal> {
     get_remote_rep_amount(

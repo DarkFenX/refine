@@ -5,7 +5,7 @@ use crate::{
     svc::{SvcCtx, calc::Calc},
 };
 
-pub(in crate::svc) fn get_espec_cycle_time(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec) -> Option<AttrVal> {
+pub(crate) fn get_espec_cycle_time(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec) -> Option<AttrVal> {
     let a_effect = ctx.uad.src.get_a_effect(&espec.a_effect_id)?;
     get_effect_cycle_time(ctx, calc, espec.item_key, a_effect)
 }

@@ -57,7 +57,7 @@ impl Vast {
         let mut remote_aar = OF(0.0);
         if let Some(item_limitable_rsbs) = self.irr_shield_limitable.get_l1(&item_key) {
             for (rasb_espec, rep_getter) in item_limitable_rsbs.iter() {
-                if let Some(rasb_hp) = rep_getter(ctx, calc, *rasb_espec, Some(item_key))
+                if let Some(rasb_hp) = rep_getter(ctx, calc, *rasb_espec, None, Some(item_key))
                     && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *rasb_espec)
                 {
                     remote_asb += rasb_hp * AttrVal::from(cycles);
@@ -66,7 +66,7 @@ impl Vast {
         }
         if let Some(item_limitable_rars) = self.irr_armor_limitable.get_l1(&item_key) {
             for (raar_espec, rep_getter) in item_limitable_rars.iter() {
-                if let Some(raar_hp) = rep_getter(ctx, calc, *raar_espec, Some(item_key))
+                if let Some(raar_hp) = rep_getter(ctx, calc, *raar_espec, None, Some(item_key))
                     && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *raar_espec)
                 {
                     remote_aar += raar_hp * AttrVal::from(cycles);

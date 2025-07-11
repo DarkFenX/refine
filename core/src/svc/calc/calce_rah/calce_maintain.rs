@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use super::shared::{
     ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID, HULL_HP_ATTR_ID,
-    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, get_fit_rah_incoming_dps,
+    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID,
 };
 use crate::{
     ad,
@@ -159,8 +159,7 @@ impl Calc {
             SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
                 if let UadItem::Ship(ship) = ctx.uad.items.get(aspec.item_key) {
                     let fit_key = ship.get_fit_key();
-                    let fit = ctx.uad.fits.get(fit_key);
-                    if get_fit_rah_incoming_dps(ctx, fit).deals_breacher_dps() {
+                    if ctx.uad.get_fit_key_rah_incoming_dps(fit_key).deals_breacher_dps() {
                         self.clear_fit_rah_results(ctx, &fit_key);
                     }
                 }

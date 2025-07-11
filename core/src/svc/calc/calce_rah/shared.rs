@@ -1,4 +1,4 @@
-use crate::{ac, ad, def::AttrVal, misc::DpsProfile, svc::SvcCtx, uad::UadFit, util::sig_round};
+use crate::{ac, ad, def::AttrVal, util::sig_round};
 
 pub(super) type TickCount = usize;
 pub(super) const TICK_LIMIT: TickCount = 500;
@@ -16,11 +16,4 @@ pub(super) const HULL_HP_ATTR_ID: ad::AAttrId = ac::attrs::HP;
 
 pub(super) fn rah_round(val: AttrVal) -> AttrVal {
     sig_round(val, 10)
-}
-
-pub(super) fn get_fit_rah_incoming_dps(ctx: SvcCtx, fit: &UadFit) -> DpsProfile {
-    match fit.rah_incoming_dps {
-        Some(dps_profile) => dps_profile,
-        None => ctx.uad.default_incoming_dps,
-    }
 }

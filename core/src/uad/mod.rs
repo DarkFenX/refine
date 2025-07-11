@@ -15,4 +15,5 @@ mod fit;
 mod fleet;
 mod item;
 mod uad;
+mod uade_access;
 mod uade_debug;
