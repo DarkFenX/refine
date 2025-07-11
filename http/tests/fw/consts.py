@@ -27,6 +27,7 @@ class EveItem(IntEnum):
     hecate_sharpshooter_mode = 35688
     stasis_webification_probe = 56748
     capital_micro_jump_drive_operation = 83464
+    electric_stability_generator = 87950
 
 
 @unique
@@ -173,6 +174,7 @@ class EveBuff(IntEnum):
     stasis_webification_burst = 27
     disallow_tether = 57
     remote_repair_impedance = 2201
+    capacitor_recharge_bonus = 2437
 
 
 @unique
