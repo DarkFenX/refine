@@ -55,14 +55,10 @@ impl Spool {
                 let cycles_by_time = floor_unerr(time / cycle_time) as Count;
                 cycles_max.min(cycles_by_time)
             }
-            Spool::SpoolScale(range_value) => {
-                let cycles = ceil_unerr(range_value.get_inner() * max / step) as Count;
-                cycles
-            }
+            Spool::SpoolScale(range_value) => ceil_unerr(range_value.get_inner() * max / step) as Count,
             Spool::CycleScale(range_value) => {
                 let cycles_max = ceil_unerr(max / step) as Count;
-                let cycles = ceil_unerr(range_value.get_inner() * cycles_max as f64) as Count;
-                cycles
+                ceil_unerr(range_value.get_inner() * cycles_max as f64) as Count
             }
         };
         let mult = OF(1.0) + max.min(step * cycles as f64);

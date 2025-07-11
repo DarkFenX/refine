@@ -54,7 +54,7 @@ pub(crate) enum HItemInfo {
     Fighter(HFighterInfo),
     FwEffect(HFwEffectInfo),
     Implant(HImplantInfo),
-    Module(HModuleInfo),
+    Module(Box<HModuleInfo>),
     ProjEffect(HProjEffectInfo),
     Rig(HRigInfo),
     Service(HServiceInfo),
@@ -129,7 +129,7 @@ impl MkItemInfo<&mut rc::ImplantMut<'_>> for HItemInfo {
 }
 impl MkItemInfo<&mut rc::ModuleMut<'_>> for HItemInfo {
     fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
-        Self::Module(HModuleInfo::mk_info(core_module, item_mode))
+        Self::Module(Box::new(HModuleInfo::mk_info(core_module, item_mode)))
     }
 }
 impl MkItemInfo<&mut rc::ProjEffectMut<'_>> for HItemInfo {
