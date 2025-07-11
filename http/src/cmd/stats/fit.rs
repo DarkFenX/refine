@@ -135,11 +135,7 @@ impl HGetFitStatsCmd {
                     .options
                     .iter()
                     .map(|inner_opt| {
-                        let core_incoming_dps = match inner_opt.incoming_dps {
-                            // When conversion error happens, return None as stat result
-                            Some(h_incoming_dps) => Some(h_incoming_dps.try_into().ok()?),
-                            None => None,
-                        };
+                        let core_incoming_dps = inner_opt.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
                         core_fit
                             .get_stat_ehp(core_incoming_dps.as_ref())
                             .map(|core_ehp| core_ehp.into())

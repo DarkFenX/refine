@@ -286,12 +286,12 @@ def print_attrs(*, api_item: Item) -> None:
     with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
         for entry in json.load(f).values():
             attr_id_attr_name_map[entry['attributeID']] = entry['name']
-    print('---')
-    print(f'{item_id_item_name_map[api_item.type_id]}:')
+    print('---')  # noqa: T201
+    print(f'{item_id_item_name_map[api_item.type_id]}:')  # noqa: T201
     for attr_id in sorted(api_item.attrs, key=lambda i: attr_id_attr_name_map[i]):
         attr_name = attr_id_attr_name_map[attr_id]
         attr_val = api_item.attrs[attr_id].extra
-        print(f'  {attr_name}: {attr_val}')
+        print(f'  {attr_name}: {attr_val}')  # noqa: T201
 
 
 def print_attr_diff(*, attrs1: dict, attrs2: dict) -> None:
@@ -315,4 +315,4 @@ def print_attr_diff(*, attrs1: dict, attrs2: dict) -> None:
             attr2_val = None
         if attr1_val != attr2_val:
             attr_name = attr_id_attr_name_map[attr_id]
-            print(f'  {attr_name}: {attr1_val} -> {attr2_val}')
+            print(f'  {attr_name}: {attr1_val} -> {attr2_val}')  # noqa: T201

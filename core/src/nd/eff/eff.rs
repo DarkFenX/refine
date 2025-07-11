@@ -12,6 +12,9 @@ use crate::{
     util::RMap,
 };
 
+pub(crate) type NEffectMaker = fn() -> ad::AEffect;
+pub(crate) type NEffectAssigner = fn(&mut RMap<ad::AItemId, ad::AItem>) -> bool;
+pub(crate) type NEffectUpdater = fn(&mut ad::AEffect);
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
 pub(crate) type NSpoolMultGetter = fn(SvcCtx, &mut Calc, EffectSpec, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
@@ -26,9 +29,9 @@ pub(crate) struct NEffect {
     // Specifies if effect applies any buffs
     pub(crate) adg_buff_info: Option<ad::AEffectBuffInfo> = None,
     // Data customization function ran during cache generation time
-    pub(crate) adg_make_effect_fn: Option<fn() -> ad::AEffect> = None,
-    pub(crate) adg_update_effect_fn: Option<fn(&mut ad::AEffect)> = None,
-    pub(crate) adg_assign_effect_fn: Option<fn(&mut RMap<ad::AItemId, ad::AItem>) -> bool> = None,
+    pub(crate) adg_make_effect_fn: Option<NEffectMaker> = None,
+    pub(crate) adg_assign_effect_fn: Option<NEffectAssigner> = None,
+    pub(crate) adg_update_effect_fn: Option<NEffectUpdater> = None,
     // Getter for attribute IDs which define projection range of effect
     pub(crate) xt_get_proj_attrs: Option<NProjAttrGetter> = None,
     // Effect data hardcoded in the library

@@ -119,6 +119,7 @@ impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
             // Solar system
+            #[allow(clippy::unit_arg)]
             Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),
             // Fleet
             Self::AddFleet(cmd) => Ok(cmd.execute(core_sol).into()),
