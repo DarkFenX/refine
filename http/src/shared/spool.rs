@@ -5,6 +5,7 @@ const TIME_PREFIX: &str = "t";
 const SPOOL_SCALE_PREFIX: &str = "ss";
 const CYCLE_SCALE_PREFIX: &str = "cs";
 
+#[derive(Copy, Clone)]
 pub(crate) enum HSpool {
     Cycles(rc::Count),
     Time(rc::AttrVal),
