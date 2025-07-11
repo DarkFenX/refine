@@ -1,4 +1,4 @@
-from tests import approx, effect_dogma_to_api
+from tests import Effect, approx
 
 
 def test_preassign(client, consts):
@@ -17,7 +17,7 @@ def test_preassign(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -54,7 +54,7 @@ def test_premul(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 1.25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -93,7 +93,7 @@ def test_prediv(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 0.8},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -132,7 +132,7 @@ def test_prediv_zero(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 0},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -169,7 +169,7 @@ def test_add(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -208,7 +208,7 @@ def test_sub(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -247,7 +247,7 @@ def test_postmul(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 1.25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -286,7 +286,7 @@ def test_postdiv(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 0.8},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -325,7 +325,7 @@ def test_postdiv_zero(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 0},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -362,7 +362,7 @@ def test_postperc(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -401,7 +401,7 @@ def test_postassign(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)

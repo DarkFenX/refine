@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, effect_dogma_to_api
+from tests import Effect, approx, check_no_field
 
 
 def test_valid_to_valid_matching(client, consts):
@@ -29,7 +29,7 @@ def test_valid_to_valid_matching(client, consts):
     client.mk_eve_ship(datas=[eve_d1], id_=eve_ship_id, attrs={eve_affectee_attr_id: 100})
     client.mk_eve_ship(datas=[eve_d2], id_=eve_ship_id, attrs={eve_affectee_attr_id: 200})
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -118,7 +118,7 @@ def test_valid_to_valid_different(client, consts):
     client.mk_eve_item(datas=[eve_d1], id_=eve_module_id)
     client.mk_eve_item(datas=[eve_d2], id_=eve_module_id, attrs={eve_d2_affectee_attr_id: 150})
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -202,7 +202,7 @@ def test_regular_effect_toggle(client, consts):
     client.mk_eve_ship(datas=[eve_d1], id_=eve_ship_id, attrs={eve_affectee_attr_id: 100})
     client.mk_eve_ship(datas=[eve_d2], id_=eve_ship_id, attrs={eve_affectee_attr_id: 200})
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)

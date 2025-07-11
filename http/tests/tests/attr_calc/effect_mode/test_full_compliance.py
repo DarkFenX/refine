@@ -1,4 +1,4 @@
-from tests import approx, effect_dogma_to_api
+from tests import Effect, approx
 
 
 def test_state_offline(client, consts):
@@ -31,8 +31,8 @@ def test_state_offline(client, consts):
             eve_affector_attr2_id: 30, eve_affectee_attr_id: 100},
         eff_ids=[eve_effect1_id, eve_effect2_id])
     client.create_sources()
-    api_effect1_id = effect_dogma_to_api(dogma_effect_id=eve_effect1_id)
-    api_effect2_id = effect_dogma_to_api(dogma_effect_id=eve_effect2_id)
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
+    api_effect2_id = Effect.dogma_to_api(dogma_effect_id=eve_effect2_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
@@ -97,8 +97,8 @@ def test_state_online_running(client, consts):
         attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 100},
         eff_ids=[eve_online_effect_id, eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
-    api_online_effect_id = effect_dogma_to_api(dogma_effect_id=eve_online_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_online_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_online_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.offline)
@@ -156,7 +156,7 @@ def test_state_online_absent(client, consts):
         attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 100},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.online)
@@ -198,8 +198,8 @@ def test_state_active_default(client, consts):
         eff_ids=[eve_effect1_id, eve_effect2_id],
         defeff_id=eve_effect1_id)
     client.create_sources()
-    api_effect1_id = effect_dogma_to_api(dogma_effect_id=eve_effect1_id)
-    api_effect2_id = effect_dogma_to_api(dogma_effect_id=eve_effect2_id)
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
+    api_effect2_id = Effect.dogma_to_api(dogma_effect_id=eve_effect2_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.online)
@@ -253,8 +253,8 @@ def test_state_active_absent(client, consts):
         attrs={eve_affector_attr1_id: 20, eve_affector_attr2_id: 30, eve_affectee_attr_id: 100},
         eff_ids=[eve_effect1_id, eve_effect2_id])
     client.create_sources()
-    api_effect1_id = effect_dogma_to_api(dogma_effect_id=eve_effect1_id)
-    api_effect2_id = effect_dogma_to_api(dogma_effect_id=eve_effect2_id)
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
+    api_effect2_id = Effect.dogma_to_api(dogma_effect_id=eve_effect2_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.online)
@@ -300,7 +300,7 @@ def test_state_overload(client, consts):
         attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 100},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.online)

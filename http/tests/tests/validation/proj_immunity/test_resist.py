@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, effect_dogma_to_api, muta_roll_to_api
+from tests import Effect, Muta, approx, check_no_field
 from tests.fw.api import ValOptions
 
 
@@ -147,8 +147,8 @@ def test_multiple_src_effects(client, consts):
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect1_id, eve_src_effect2_id], defeff_id=eve_src_effect1_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_resist_attr_id: 0})
     client.create_sources()
-    api_src_effect1_id = effect_dogma_to_api(dogma_effect_id=eve_src_effect1_id)
-    api_src_effect2_id = effect_dogma_to_api(dogma_effect_id=eve_src_effect2_id)
+    api_src_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_src_effect1_id)
+    api_src_effect2_id = Effect.dogma_to_api(dogma_effect_id=eve_src_effect2_id)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
@@ -342,14 +342,14 @@ def test_tgt_mutation(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_tgt_item.change_drone(mutation={eve_resist_attr_id: muta_roll_to_api(val=0)})
+    api_tgt_item.change_drone(mutation={eve_resist_attr_id: Muta.roll_to_api(val=0)})
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
-    api_tgt_item.change_drone(mutation={eve_resist_attr_id: muta_roll_to_api(val=0.1)})
+    api_tgt_item.change_drone(mutation={eve_resist_attr_id: Muta.roll_to_api(val=0.1)})
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0.2)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
@@ -405,7 +405,7 @@ def test_src_mutation(client, consts):
     api_src_item2 = api_src_fit.add_module(
         type_id=eve_src_base_item2_id,
         state=consts.ApiModuleState.active,
-        mutation=(eve_src_mutator_id, {eve_resist_def_attr_id: muta_roll_to_api(val=0)}))
+        mutation=(eve_src_mutator_id, {eve_resist_def_attr_id: Muta.roll_to_api(val=0)}))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item1.change_module(add_projs=[api_tgt_item.id])

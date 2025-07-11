@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_abs_to_api, muta_roll_to_api
+from tests import Muta, approx, check_no_field
 
 
 def test_to_stage4_different_base_values(client):
@@ -26,9 +26,9 @@ def test_to_stage4_different_base_values(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_lower_attr_id: muta_abs_to_api(val=80),
-        eve_within_attr_id: muta_abs_to_api(val=100),
-        eve_higher_attr_id: muta_abs_to_api(val=120)}))
+        eve_lower_attr_id: Muta.abs_to_api(val=80),
+        eve_within_attr_id: Muta.abs_to_api(val=100),
+        eve_higher_attr_id: Muta.abs_to_api(val=120)}))
     # Verification
     api_item.update()
     assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0)
@@ -81,9 +81,9 @@ def test_to_stage4_different_ranges(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_lower_attr_id: muta_abs_to_api(val=100),
-        eve_within_attr_id: muta_abs_to_api(val=100),
-        eve_higher_attr_id: muta_abs_to_api(val=100)}))
+        eve_lower_attr_id: Muta.abs_to_api(val=100),
+        eve_within_attr_id: Muta.abs_to_api(val=100),
+        eve_higher_attr_id: Muta.abs_to_api(val=100)}))
     # Verification
     api_item.update()
     assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0.5)
@@ -217,8 +217,8 @@ def test_to_stage4_no_base_item(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_attr1_id: muta_roll_to_api(val=0.3),
-        eve_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 2
@@ -294,8 +294,8 @@ def test_to_stage3_different_group(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_affectee_attr1_id: muta_roll_to_api(val=0.3),
-        eve_affectee_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_affectee_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_affectee_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification - first attribute is modified because mutated item group ID is used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -387,8 +387,8 @@ def test_to_stage2_different_group(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_affectee_attr1_id: muta_roll_to_api(val=0.3),
-        eve_affectee_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_affectee_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_affectee_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification - first attribute is modified because mutated item group ID is used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -453,7 +453,7 @@ def test_to_stage2_no_base_item(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -529,8 +529,8 @@ def test_to_stage1_different_group(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_affectee_attr1_id: muta_roll_to_api(val=0.3),
-        eve_affectee_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_affectee_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_affectee_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification - first attribute is modified because mutated item group ID is used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -589,7 +589,7 @@ def test_to_stage1_no_base_item(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -636,7 +636,7 @@ def test_from_stage3(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.8)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -678,7 +678,7 @@ def test_from_stage2(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.8)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -714,7 +714,7 @@ def test_from_stage1(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.8)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -756,8 +756,8 @@ def test_drone(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_drone(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_roll_attr_id: muta_roll_to_api(val=0.2),
-        eve_absolute_attr_id: muta_abs_to_api(val=115)}))
+        eve_roll_attr_id: Muta.roll_to_api(val=0.2),
+        eve_absolute_attr_id: Muta.abs_to_api(val=115)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 2

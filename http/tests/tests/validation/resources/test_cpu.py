@@ -1,4 +1,4 @@
-from tests import check_no_field, muta_roll_to_api
+from tests import Muta, check_no_field
 from tests.fw.api import StatsOptions, ValOptions
 
 
@@ -267,7 +267,7 @@ def test_mutation_use(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(mutation=(eve_mutator_id, {eve_use_attr_id: muta_roll_to_api(val=0.7)}))
+    api_module.change_module(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.7)}))
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 129.6
     api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))
@@ -278,7 +278,7 @@ def test_mutation_use(client, consts):
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 129.6}
     # Action
-    api_module.change_module(mutation={eve_use_attr_id: muta_roll_to_api(val=0.8)})
+    api_module.change_module(mutation={eve_use_attr_id: Muta.roll_to_api(val=0.8)})
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 134.4
     api_stats = api_fit.get_stats(options=StatsOptions(cpu=True))

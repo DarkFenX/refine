@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_roll_to_api, range_s2s_to_api
+from tests import Muta, Range, approx, check_no_field
 from tests.fw.api import ValOptions
 
 
@@ -135,14 +135,14 @@ def test_modified(client, consts):
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, range_s2s_to_api(val=10001))])
+    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=10001))])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, range_s2s_to_api(val=10000))])
+    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=10000))])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
@@ -174,7 +174,7 @@ def test_mutation(client, consts):
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
-    api_module.change_module(mutation={eve_attr_id: muta_roll_to_api(val=0)})
+    api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=0)})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(0)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
@@ -182,7 +182,7 @@ def test_mutation(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_module(mutation={eve_attr_id: muta_roll_to_api(val=1)})
+    api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=1)})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(1)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))

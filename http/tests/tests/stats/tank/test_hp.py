@@ -1,4 +1,4 @@
-from tests import approx, range_s2s_to_api
+from tests import Range, approx
 from tests.fw.api import StatsOptions
 
 
@@ -641,14 +641,14 @@ def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
     assert api_stats.hp.armor == (approx(500), 0, 0)
     assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
-    api_rasb.change_module(add_projs=[(api_ship.id, range_s2s_to_api(val=10000))])
+    api_rasb.change_module(add_projs=[(api_ship.id, Range.s2s_to_api(val=10000))])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(1000), 0, approx(9000))
     assert api_stats.hp.armor == (approx(500), 0, 0)
     assert api_stats.hp.hull == (approx(250), 0, 0)
     # Action
-    api_rasb.change_module(change_projs=[(api_ship.id, range_s2s_to_api(val=15000))])
+    api_rasb.change_module(change_projs=[(api_ship.id, Range.s2s_to_api(val=15000))])
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
     # 1500 (not 1000) * 9 * 0.5 = 6750
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
@@ -898,14 +898,14 @@ def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
     assert api_stats.hp.armor == (approx(1000), 0, 0)
     assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
-    api_raar.change_module(add_projs=[(api_ship.id, range_s2s_to_api(val=10000))])
+    api_raar.change_module(add_projs=[(api_ship.id, Range.s2s_to_api(val=10000))])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))
     assert api_stats.hp.shield == (approx(2000), 0, 0)
     assert api_stats.hp.armor == (approx(1000), 0, approx(8000))
     assert api_stats.hp.hull == (approx(500), 0, 0)
     # Action
-    api_raar.change_module(change_projs=[(api_ship.id, range_s2s_to_api(val=15000))])
+    api_raar.change_module(change_projs=[(api_ship.id, Range.s2s_to_api(val=15000))])
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
     # 1500 (not 1000) * 8 * 0.5 = 6000
     api_stats = api_tgt_fit.get_stats(options=StatsOptions(hp=True))

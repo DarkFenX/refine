@@ -41,44 +41,50 @@ def check_no_field() -> Iterator[None]:
         yield
 
 
-# Projection range converters
-def range_s2s_to_api(*, val: float) -> str:
-    return f's{val}'
+class Range:
+
+    @staticmethod
+    def s2s_to_api(*, val: float) -> str:
+        return f's{val}'
+
+    @staticmethod
+    def c2c_to_api(*, val: float) -> str:
+        return f'c{val}'
 
 
-def range_c2c_to_api(*, val: float) -> str:
-    return f'c{val}'
+class Muta:
+
+    @staticmethod
+    def roll_to_api(*, val: float) -> str:
+        return f'r{val}'
+
+    @staticmethod
+    def abs_to_api(*, val: float) -> str:
+        return f'a{val}'
 
 
-# Mutated attribute value converters
-def muta_roll_to_api(*, val: float) -> str:
-    return f'r{val}'
+class Effect:
 
+    @staticmethod
+    def dogma_to_api(*, dogma_effect_id: int) -> str:
+        return f'd{dogma_effect_id}'
 
-def muta_abs_to_api(*, val: float) -> str:
-    return f'a{val}'
+    @staticmethod
+    def custom_to_api(*, custom_effect_id: int) -> str:
+        return f'c{custom_effect_id}'
 
+    @staticmethod
+    def scse_to_api(*, type_id: int) -> str:
+        return f'scse{type_id}'
 
-# Effect ID converters
-def effect_dogma_to_api(*, dogma_effect_id: int) -> str:
-    return f'd{dogma_effect_id}'
+    @staticmethod
+    def scpe_to_api(*, type_id: int) -> str:
+        return f'scpe{type_id}'
 
+    @staticmethod
+    def scpt_to_api(*, type_id: int) -> str:
+        return f'scpt{type_id}'
 
-def effect_custom_to_api(*, custom_effect_id: int) -> str:
-    return f'c{custom_effect_id}'
-
-
-def effect_scse_to_api(*, type_id: int) -> str:
-    return f'scse{type_id}'
-
-
-def effect_scpe_to_api(*, type_id: int) -> str:
-    return f'scpe{type_id}'
-
-
-def effect_scpt_to_api(*, type_id: int) -> str:
-    return f'scpt{type_id}'
-
-
-def effect_scsl_to_api(*, type_id: int) -> str:
-    return f'scsl{type_id}'
+    @staticmethod
+    def scsl_to_api(*, type_id: int) -> str:
+        return f'scsl{type_id}'

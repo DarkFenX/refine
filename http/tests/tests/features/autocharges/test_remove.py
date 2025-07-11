@@ -1,4 +1,4 @@
-from tests import effect_dogma_to_api
+from tests import Effect
 
 
 def test_remove_item(client, consts):
@@ -9,7 +9,7 @@ def test_remove_item(client, consts):
     eve_charge_id = client.mk_eve_item()
     eve_fighter_id = client.mk_eve_item(attrs={eve_attr_id: eve_charge_id}, eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)

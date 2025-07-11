@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, effect_dogma_to_api
+from tests import Effect, approx, check_no_field
 
 
 def test_no_side_effects(client, consts):
@@ -90,8 +90,8 @@ def test_with_side_effects(client, consts):
             eve_side2_chance_attr_id: 0.2, eve_side2_affector_attr_id: 10},
         eff_ids=[eve_primary_effect_id, eve_side1_effect_id, eve_side2_effect_id])
     client.create_sources()
-    api_side1_effect_id = effect_dogma_to_api(dogma_effect_id=eve_side1_effect_id)
-    api_side2_effect_id = effect_dogma_to_api(dogma_effect_id=eve_side2_effect_id)
+    api_side1_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_side1_effect_id)
+    api_side2_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_side2_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Check default upon addition
@@ -181,7 +181,7 @@ def test_strength_matching(client, consts):
     eve_module1_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_affectee_attr_id: 100})
     eve_module2_id = client.mk_eve_item(grp_id=eve_grp2_id, attrs={eve_affectee_attr_id: 200})
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
@@ -236,7 +236,7 @@ def test_strength_mismatch_op(client, consts):
     eve_module1_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_affectee_attr_id: 100})
     eve_module2_id = client.mk_eve_item(grp_id=eve_grp2_id, attrs={eve_affectee_attr_id: 200})
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
@@ -290,7 +290,7 @@ def test_strength_mismatch_attr(client, consts):
     eve_module1_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_affectee_attr_id: 100})
     eve_module2_id = client.mk_eve_item(grp_id=eve_grp2_id, attrs={eve_affectee_attr_id: 200})
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
@@ -341,7 +341,7 @@ def test_modded_chance(client, consts):
     eve_char_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
-    api_side_effect_id = effect_dogma_to_api(dogma_effect_id=eve_side_effect_id)
+    api_side_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_side_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_character(type_id=eve_char_id)
@@ -385,7 +385,7 @@ def test_modded_strength(client, consts):
     eve_char_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
-    api_side_effect_id = effect_dogma_to_api(dogma_effect_id=eve_side_effect_id)
+    api_side_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_side_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_character(type_id=eve_char_id)

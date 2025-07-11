@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, effect_dogma_to_api
+from tests import Effect, approx, check_no_field
 from tests.fw.api import ValOptions
 
 
@@ -154,8 +154,8 @@ def test_fighter_mwd_mjd_block(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_item(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
-    api_ftr_mwd_effect_id = effect_dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
-    api_ftr_mjd_effect_id = effect_dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
+    api_ftr_mwd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
+    api_ftr_mjd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()

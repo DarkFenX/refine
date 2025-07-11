@@ -1,4 +1,4 @@
-from tests import approx, effect_dogma_to_api
+from tests import Effect, approx
 
 
 def test_influence(client, consts):
@@ -40,8 +40,8 @@ def test_influence(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={
         eve_primary_affectee_attr_id: 10, eve_side1_affectee_attr_id: 250, eve_side2_affectee_attr_id: 100})
     client.create_sources()
-    api_side1_effect_id = effect_dogma_to_api(dogma_effect_id=eve_side1_effect_id)
-    api_side2_effect_id = effect_dogma_to_api(dogma_effect_id=eve_side2_effect_id)
+    api_side1_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_side1_effect_id)
+    api_side2_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_side2_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -185,7 +185,7 @@ def test_booster_state(client, consts):
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)

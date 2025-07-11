@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_roll_to_api
+from tests import Muta, approx, check_no_field
 
 
 def test_basic(client, consts):
@@ -142,7 +142,7 @@ def test_mutation_charge_rate(client, consts):
     assert api_module.attrs[eve_charge_rate_attr_id].extra == approx(2)
     assert api_module.cycles_until_reload == 5
     # Action
-    api_module.change_module(mutation={eve_charge_rate_attr_id: muta_roll_to_api(val=1)})
+    api_module.change_module(mutation={eve_charge_rate_attr_id: Muta.roll_to_api(val=1)})
     # Verification - but attribute mutation is ignored
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].extra == approx(3)

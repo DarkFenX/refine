@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_abs_to_api
+from tests import Muta, approx, check_no_field
 from tests.fw.api import ValOptions
 
 
@@ -156,7 +156,7 @@ def test_mutation_limit_priority(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: muta_abs_to_api(val=2)}))
+    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=2)}))
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
@@ -202,7 +202,7 @@ def test_mutation_limit_inheritance(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: muta_abs_to_api(val=2)}))
+    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=2)}))
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))

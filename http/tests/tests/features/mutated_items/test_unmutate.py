@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_roll_to_api
+from tests import Muta, approx, check_no_field
 
 
 def test_from_stage4(client):
@@ -13,7 +13,7 @@ def test_from_stage4(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.6)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.6)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -53,7 +53,7 @@ def test_from_stage3(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.6)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.6)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -87,7 +87,7 @@ def test_from_stage2(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.6)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.6)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -118,7 +118,7 @@ def test_from_stage1(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.6)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.6)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -241,7 +241,7 @@ def test_drone(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_drone(
         type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.6)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.6)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id

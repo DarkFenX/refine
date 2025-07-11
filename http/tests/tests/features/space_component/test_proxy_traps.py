@@ -5,7 +5,7 @@ normal way of testing it. However, thanks to CCP Kestrel, we know that as of 202
 apply to drones.
 """
 
-from tests import approx, effect_scpt_to_api
+from tests import Effect, approx
 
 
 def test_affectee_filter_item(client, consts):
@@ -170,7 +170,7 @@ def test_effect_mode(client, consts):
     client.mk_eve_space_comp(type_id=eve_beacon_id, pt_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     client.create_sources()
-    api_effect_id = effect_scpt_to_api(type_id=eve_beacon_id)
+    api_effect_id = Effect.scpt_to_api(type_id=eve_beacon_id)
     api_sol = client.create_sol()
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_beacon_id)
     api_fit = api_sol.create_fit()

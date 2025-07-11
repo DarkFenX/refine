@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_roll_to_api
+from tests import Muta, approx, check_no_field
 
 
 def test_flooring(client, consts):
@@ -114,7 +114,7 @@ def test_mutation_capacity(client, consts):
     assert api_module.attrs[eve_capacity_attr_id].extra == approx(0.75)
     assert api_module.charge_count == 15
     # Action
-    api_module.change_module(mutation={eve_capacity_attr_id: muta_roll_to_api(val=1)})
+    api_module.change_module(mutation={eve_capacity_attr_id: Muta.roll_to_api(val=1)})
     # Verification - unmutated capacity attribute value of mutated item is used
     api_module.update()
     assert api_module.attrs[eve_capacity_attr_id].extra == approx(1.125)

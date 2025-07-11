@@ -5,7 +5,7 @@ entities like drones, or just ships. In the library, system buff emitter buffs a
 ships.
 """
 
-from tests import approx, effect_scse_to_api
+from tests import Effect, approx
 
 
 def test_affectee_filter_item(client, consts):
@@ -170,7 +170,7 @@ def test_effect_mode(client, consts):
     client.mk_eve_space_comp(type_id=eve_beacon_id, se_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     client.create_sources()
-    api_effect_id = effect_scse_to_api(type_id=eve_beacon_id)
+    api_effect_id = Effect.scse_to_api(type_id=eve_beacon_id)
     api_sol = client.create_sol()
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_beacon_id)
     api_fit = api_sol.create_fit()

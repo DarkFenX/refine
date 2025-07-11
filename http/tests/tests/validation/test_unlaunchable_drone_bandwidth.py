@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_roll_to_api
+from tests import Muta, approx, check_no_field
 from tests.fw.api import ValOptions
 
 
@@ -220,7 +220,7 @@ def test_mutation_use(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: muta_roll_to_api(val=0.8)}))
+    api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(56)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))

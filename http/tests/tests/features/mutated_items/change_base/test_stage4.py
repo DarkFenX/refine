@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_roll_to_api
+from tests import Muta, approx, check_no_field
 
 
 def test_from_stage2(client):
@@ -14,8 +14,8 @@ def test_from_stage2(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item1_id, mutation=(eve_mutator_id, {
-        eve_attr1_id: muta_roll_to_api(val=0.3),
-        eve_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item1_id
@@ -52,8 +52,8 @@ def test_from_stage3(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item1_id, mutation=(eve_mutator_id, {
-        eve_attr1_id: muta_roll_to_api(val=0.3),
-        eve_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item1_id
@@ -89,7 +89,7 @@ def test_from_stage4_mutated_item_same(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item1_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -123,7 +123,7 @@ def test_from_stage4_mutated_item_same_base_not_loaded(client):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
         type_id=eve_base_item1_id,
-        mutation=(eve_mutator_id, {eve_attr_id: muta_roll_to_api(val=0.3)}))
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -165,8 +165,8 @@ def test_from_stage4_mutated_item_different(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item1_id, mutation=(eve_mutator_id, {
-        eve_attr1_id: muta_roll_to_api(val=0.3),
-        eve_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item1_id
@@ -207,8 +207,8 @@ def test_from_stage4_mutated_item_different_base_not_loaded(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item1_id, mutation=(eve_mutator_id, {
-        eve_attr1_id: muta_roll_to_api(val=0.3),
-        eve_attr2_id: muta_roll_to_api(val=0.3)}))
+        eve_attr1_id: Muta.roll_to_api(val=0.3),
+        eve_attr2_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item1_id

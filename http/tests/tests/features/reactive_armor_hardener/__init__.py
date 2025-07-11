@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass
 from itertools import chain
 
-from tests import effect_dogma_to_api
+from tests import Effect
 from tests.fw.util import Default
 
 if typing.TYPE_CHECKING:
@@ -30,7 +30,7 @@ class RahBasicInfo:
 
     @property
     def api_rah_effect_id(self) -> str:
-        return effect_dogma_to_api(dogma_effect_id=self.rah_effect_id)
+        return Effect.dogma_to_api(dogma_effect_id=self.rah_effect_id)
 
 
 def setup_rah_basics(

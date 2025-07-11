@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, muta_abs_to_api, muta_roll_to_api
+from tests import Muta, approx, check_no_field
 
 
 def test_rolls_range(client):
@@ -31,10 +31,10 @@ def test_rolls_range(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_lower_attr_id: muta_roll_to_api(val=111),
-        eve_change_within_attr_id: muta_roll_to_api(val=0.6),
-        eve_change_higher_attr_id: muta_roll_to_api(val=-8),
-        eve_remove_attr_id: muta_roll_to_api(val=0.8)}))
+        eve_change_lower_attr_id: Muta.roll_to_api(val=111),
+        eve_change_within_attr_id: Muta.roll_to_api(val=0.6),
+        eve_change_higher_attr_id: Muta.roll_to_api(val=-8),
+        eve_remove_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 7
@@ -61,12 +61,12 @@ def test_rolls_range(client):
     assert api_item.attrs[eve_remove_attr_id].base == approx(112)
     # Action
     api_item.change_module(mutation={
-        eve_add_lower_attr_id: muta_roll_to_api(val=-5),
-        eve_add_within_attr_id: muta_roll_to_api(val=0.3),
-        eve_add_higher_attr_id: muta_roll_to_api(val=128),
-        eve_change_lower_attr_id: muta_roll_to_api(val=-60),
-        eve_change_within_attr_id: muta_roll_to_api(val=0.1),
-        eve_change_higher_attr_id: muta_roll_to_api(val=1.1),
+        eve_add_lower_attr_id: Muta.roll_to_api(val=-5),
+        eve_add_within_attr_id: Muta.roll_to_api(val=0.3),
+        eve_add_higher_attr_id: Muta.roll_to_api(val=128),
+        eve_change_lower_attr_id: Muta.roll_to_api(val=-60),
+        eve_change_within_attr_id: Muta.roll_to_api(val=0.1),
+        eve_change_higher_attr_id: Muta.roll_to_api(val=1.1),
         eve_remove_attr_id: None})
     # Verification
     api_item.update()
@@ -133,12 +133,12 @@ def test_absolute_base_attr_value(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_base_attr_id: muta_abs_to_api(val=55),
-        eve_change_overlap_attr_id: muta_abs_to_api(val=85),
-        eve_change_mutated_attr_id: muta_abs_to_api(val=115),
-        eve_remove_base_attr_id: muta_abs_to_api(val=55),
-        eve_remove_overlap_attr_id: muta_abs_to_api(val=75),
-        eve_remove_mutated_attr_id: muta_abs_to_api(val=115)}))
+        eve_change_base_attr_id: Muta.abs_to_api(val=55),
+        eve_change_overlap_attr_id: Muta.abs_to_api(val=85),
+        eve_change_mutated_attr_id: Muta.abs_to_api(val=115),
+        eve_remove_base_attr_id: Muta.abs_to_api(val=55),
+        eve_remove_overlap_attr_id: Muta.abs_to_api(val=75),
+        eve_remove_mutated_attr_id: Muta.abs_to_api(val=115)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 9
@@ -171,12 +171,12 @@ def test_absolute_base_attr_value(client):
     assert api_item.attrs[eve_remove_mutated_attr_id].base == approx(115)
     # Action
     api_item.change_module(mutation={
-        eve_add_base_attr_id: muta_abs_to_api(val=55),
-        eve_add_overlap_attr_id: muta_abs_to_api(val=85),
-        eve_add_mutated_attr_id: muta_abs_to_api(val=115),
-        eve_change_base_attr_id: muta_abs_to_api(val=45),
-        eve_change_overlap_attr_id: muta_abs_to_api(val=75),
-        eve_change_mutated_attr_id: muta_abs_to_api(val=85),
+        eve_add_base_attr_id: Muta.abs_to_api(val=55),
+        eve_add_overlap_attr_id: Muta.abs_to_api(val=85),
+        eve_add_mutated_attr_id: Muta.abs_to_api(val=115),
+        eve_change_base_attr_id: Muta.abs_to_api(val=45),
+        eve_change_overlap_attr_id: Muta.abs_to_api(val=75),
+        eve_change_mutated_attr_id: Muta.abs_to_api(val=85),
         eve_remove_base_attr_id: None,
         eve_remove_overlap_attr_id: None,
         eve_remove_mutated_attr_id: None})
@@ -243,10 +243,10 @@ def test_absolute_value_range(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_lower_attr_id: muta_abs_to_api(val=260),
-        eve_change_within_attr_id: muta_abs_to_api(val=104),
-        eve_change_higher_attr_id: muta_abs_to_api(val=0.5),
-        eve_remove_attr_id: muta_abs_to_api(val=112)}))
+        eve_change_lower_attr_id: Muta.abs_to_api(val=260),
+        eve_change_within_attr_id: Muta.abs_to_api(val=104),
+        eve_change_higher_attr_id: Muta.abs_to_api(val=0.5),
+        eve_remove_attr_id: Muta.abs_to_api(val=112)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 7
@@ -273,12 +273,12 @@ def test_absolute_value_range(client):
     assert api_item.attrs[eve_remove_attr_id].base == approx(112)
     # Action
     api_item.change_module(mutation={
-        eve_add_lower_attr_id: muta_abs_to_api(val=-502),
-        eve_add_within_attr_id: muta_abs_to_api(val=92),
-        eve_add_higher_attr_id: muta_abs_to_api(val=1001),
-        eve_change_lower_attr_id: muta_abs_to_api(val=0),
-        eve_change_within_attr_id: muta_abs_to_api(val=84),
-        eve_change_higher_attr_id: muta_abs_to_api(val=130),
+        eve_add_lower_attr_id: Muta.abs_to_api(val=-502),
+        eve_add_within_attr_id: Muta.abs_to_api(val=92),
+        eve_add_higher_attr_id: Muta.abs_to_api(val=1001),
+        eve_change_lower_attr_id: Muta.abs_to_api(val=0),
+        eve_change_within_attr_id: Muta.abs_to_api(val=84),
+        eve_change_higher_attr_id: Muta.abs_to_api(val=130),
         eve_remove_attr_id: None})
     # Verification
     api_item.update()
@@ -334,10 +334,10 @@ def test_no_base_item(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.7),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=52),
-        eve_remove_roll_attr_id: muta_roll_to_api(val=0.8),
-        eve_remove_absolute_attr_id: muta_abs_to_api(val=55)}))
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.7),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=52),
+        eve_remove_roll_attr_id: Muta.roll_to_api(val=0.8),
+        eve_remove_absolute_attr_id: Muta.abs_to_api(val=55)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 6
@@ -361,10 +361,10 @@ def test_no_base_item(client):
     assert api_item.attrs[eve_remove_absolute_attr_id].base == approx(55)
     # Action
     api_item.change_module(mutation={
-        eve_add_roll_attr_id: muta_roll_to_api(val=0.9),
-        eve_add_absolute_attr_id: muta_abs_to_api(val=59),
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.3),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=48),
+        eve_add_roll_attr_id: Muta.roll_to_api(val=0.9),
+        eve_add_absolute_attr_id: Muta.abs_to_api(val=59),
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.3),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=48),
         eve_remove_roll_attr_id: None,
         eve_remove_absolute_attr_id: None})
     # Verification
@@ -421,9 +421,9 @@ def test_no_base_value(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.3),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=46),
-        eve_remove_attr_id: muta_roll_to_api(val=0.2)}))
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.3),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=46),
+        eve_remove_attr_id: Muta.roll_to_api(val=0.2)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 0
@@ -431,10 +431,10 @@ def test_no_base_value(client):
         api_item.attrs  # noqa: B018
     # Action
     api_item.change_module(mutation={
-        eve_add_roll_attr_id: muta_roll_to_api(val=0.7),
-        eve_add_absolute_attr_id: muta_abs_to_api(val=54),
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.4),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=45),
+        eve_add_roll_attr_id: Muta.roll_to_api(val=0.7),
+        eve_add_absolute_attr_id: Muta.abs_to_api(val=54),
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.4),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=45),
         eve_remove_attr_id: None})
     # Verification
     api_item.update()
@@ -500,9 +500,9 @@ def test_no_mutation_range(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.3),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=46),
-        eve_remove_attr_id: muta_roll_to_api(val=0.2)}))
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.3),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=46),
+        eve_remove_attr_id: Muta.roll_to_api(val=0.2)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 0
@@ -513,10 +513,10 @@ def test_no_mutation_range(client):
     assert api_item.attrs[eve_remove_attr_id].base == approx(50)
     # Action
     api_item.change_module(mutation={
-        eve_add_roll_attr_id: muta_roll_to_api(val=0.7),
-        eve_add_absolute_attr_id: muta_abs_to_api(val=54),
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.4),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=45),
+        eve_add_roll_attr_id: Muta.roll_to_api(val=0.7),
+        eve_add_absolute_attr_id: Muta.abs_to_api(val=54),
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.4),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=45),
         eve_remove_attr_id: None})
     # Verification
     api_item.update()
@@ -619,14 +619,14 @@ def test_zero_mutation_range(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.7),
-        eve_change_absolute_low_attr_id: muta_abs_to_api(val=-54),
-        eve_change_absolute_mid_attr_id: muta_abs_to_api(val=-54),
-        eve_change_absolute_high_attr_id: muta_abs_to_api(val=-54),
-        eve_remove_roll_attr_id: muta_roll_to_api(val=0.4),
-        eve_remove_absolute_low_attr_id: muta_abs_to_api(val=54),
-        eve_remove_absolute_mid_attr_id: muta_abs_to_api(val=54),
-        eve_remove_absolute_high_attr_id: muta_abs_to_api(val=54)}))
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.7),
+        eve_change_absolute_low_attr_id: Muta.abs_to_api(val=-54),
+        eve_change_absolute_mid_attr_id: Muta.abs_to_api(val=-54),
+        eve_change_absolute_high_attr_id: Muta.abs_to_api(val=-54),
+        eve_remove_roll_attr_id: Muta.roll_to_api(val=0.4),
+        eve_remove_absolute_low_attr_id: Muta.abs_to_api(val=54),
+        eve_remove_absolute_mid_attr_id: Muta.abs_to_api(val=54),
+        eve_remove_absolute_high_attr_id: Muta.abs_to_api(val=54)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 12
@@ -668,14 +668,14 @@ def test_zero_mutation_range(client):
     assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(54)
     # Action
     api_item.change_module(mutation={
-        eve_add_roll_attr_id: muta_roll_to_api(val=0.7),
-        eve_add_absolute_low_attr_id: muta_abs_to_api(val=50),
-        eve_add_absolute_mid_attr_id: muta_abs_to_api(val=50),
-        eve_add_absolute_high_attr_id: muta_abs_to_api(val=50),
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.2),
-        eve_change_absolute_low_attr_id: muta_abs_to_api(val=-50),
-        eve_change_absolute_mid_attr_id: muta_abs_to_api(val=-50),
-        eve_change_absolute_high_attr_id: muta_abs_to_api(val=-50),
+        eve_add_roll_attr_id: Muta.roll_to_api(val=0.7),
+        eve_add_absolute_low_attr_id: Muta.abs_to_api(val=50),
+        eve_add_absolute_mid_attr_id: Muta.abs_to_api(val=50),
+        eve_add_absolute_high_attr_id: Muta.abs_to_api(val=50),
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.2),
+        eve_change_absolute_low_attr_id: Muta.abs_to_api(val=-50),
+        eve_change_absolute_mid_attr_id: Muta.abs_to_api(val=-50),
+        eve_change_absolute_high_attr_id: Muta.abs_to_api(val=-50),
         eve_remove_roll_attr_id: None,
         eve_remove_absolute_low_attr_id: None,
         eve_remove_absolute_mid_attr_id: None,
@@ -826,14 +826,14 @@ def test_zero_base_value(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.7),
-        eve_change_absolute_low_attr_id: muta_abs_to_api(val=0),
-        eve_change_absolute_mid_attr_id: muta_abs_to_api(val=0),
-        eve_change_absolute_high_attr_id: muta_abs_to_api(val=0),
-        eve_remove_roll_attr_id: muta_roll_to_api(val=0.4),
-        eve_remove_absolute_low_attr_id: muta_abs_to_api(val=-3),
-        eve_remove_absolute_mid_attr_id: muta_abs_to_api(val=0),
-        eve_remove_absolute_high_attr_id: muta_abs_to_api(val=6)}))
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.7),
+        eve_change_absolute_low_attr_id: Muta.abs_to_api(val=0),
+        eve_change_absolute_mid_attr_id: Muta.abs_to_api(val=0),
+        eve_change_absolute_high_attr_id: Muta.abs_to_api(val=0),
+        eve_remove_roll_attr_id: Muta.roll_to_api(val=0.4),
+        eve_remove_absolute_low_attr_id: Muta.abs_to_api(val=-3),
+        eve_remove_absolute_mid_attr_id: Muta.abs_to_api(val=0),
+        eve_remove_absolute_high_attr_id: Muta.abs_to_api(val=6)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 12
@@ -875,14 +875,14 @@ def test_zero_base_value(client):
     assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(0)
     # Action
     api_item.change_module(mutation={
-        eve_add_roll_attr_id: muta_roll_to_api(val=0.7),
-        eve_add_absolute_low_attr_id: muta_abs_to_api(val=-8),
-        eve_add_absolute_mid_attr_id: muta_abs_to_api(val=0),
-        eve_add_absolute_high_attr_id: muta_abs_to_api(val=2),
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.2),
-        eve_change_absolute_low_attr_id: muta_abs_to_api(val=-3),
-        eve_change_absolute_mid_attr_id: muta_abs_to_api(val=0),
-        eve_change_absolute_high_attr_id: muta_abs_to_api(val=6),
+        eve_add_roll_attr_id: Muta.roll_to_api(val=0.7),
+        eve_add_absolute_low_attr_id: Muta.abs_to_api(val=-8),
+        eve_add_absolute_mid_attr_id: Muta.abs_to_api(val=0),
+        eve_add_absolute_high_attr_id: Muta.abs_to_api(val=2),
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.2),
+        eve_change_absolute_low_attr_id: Muta.abs_to_api(val=-3),
+        eve_change_absolute_mid_attr_id: Muta.abs_to_api(val=0),
+        eve_change_absolute_high_attr_id: Muta.abs_to_api(val=6),
         eve_remove_roll_attr_id: None,
         eve_remove_absolute_low_attr_id: None,
         eve_remove_absolute_mid_attr_id: None,
@@ -995,10 +995,10 @@ def test_base_out_of_range(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_lower_attr_id: muta_roll_to_api(val=0.7),
-        eve_change_higher_attr_id: muta_roll_to_api(val=0.3),
-        eve_remove_lower_attr_id: muta_roll_to_api(val=0.7),
-        eve_remove_higher_attr_id: muta_roll_to_api(val=0.3)}))
+        eve_change_lower_attr_id: Muta.roll_to_api(val=0.7),
+        eve_change_higher_attr_id: Muta.roll_to_api(val=0.3),
+        eve_remove_lower_attr_id: Muta.roll_to_api(val=0.7),
+        eve_remove_higher_attr_id: Muta.roll_to_api(val=0.3)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 6
@@ -1022,10 +1022,10 @@ def test_base_out_of_range(client):
     assert api_item.attrs[eve_remove_higher_attr_id].base == approx(116)
     # Action
     api_item.change_module(mutation={
-        eve_add_lower_attr_id: muta_roll_to_api(val=0.7),
-        eve_add_higher_attr_id: muta_roll_to_api(val=0.3),
-        eve_change_lower_attr_id: muta_roll_to_api(val=0.8),
-        eve_change_higher_attr_id: muta_roll_to_api(val=0.2),
+        eve_add_lower_attr_id: Muta.roll_to_api(val=0.7),
+        eve_add_higher_attr_id: Muta.roll_to_api(val=0.3),
+        eve_change_lower_attr_id: Muta.roll_to_api(val=0.8),
+        eve_change_higher_attr_id: Muta.roll_to_api(val=0.2),
         eve_remove_lower_attr_id: None,
         eve_remove_higher_attr_id: None})
     # Verification
@@ -1090,8 +1090,8 @@ def test_modification_incoming(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_affectee_change_attr_id: muta_roll_to_api(val=0.2),
-        eve_affectee_remove_attr_id: muta_roll_to_api(val=0.8)}))
+        eve_affectee_change_attr_id: Muta.roll_to_api(val=0.2),
+        eve_affectee_remove_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 3
@@ -1111,8 +1111,8 @@ def test_modification_incoming(client, consts):
     assert api_item.attrs[eve_affectee_remove_attr_id].dogma == approx(340.8)
     # Action
     api_item.change_module(mutation={
-        eve_affectee_add_attr_id: muta_roll_to_api(val=0.9),
-        eve_affectee_change_attr_id: muta_roll_to_api(val=0.3),
+        eve_affectee_add_attr_id: Muta.roll_to_api(val=0.9),
+        eve_affectee_change_attr_id: Muta.roll_to_api(val=0.3),
         eve_affectee_remove_attr_id: None})
     # Verification
     api_item.update()
@@ -1176,8 +1176,8 @@ def test_modification_outgoing(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_affector_change_attr_id: muta_roll_to_api(val=0.2),
-        eve_affector_remove_attr_id: muta_roll_to_api(val=0.8)}))
+        eve_affector_change_attr_id: Muta.roll_to_api(val=0.2),
+        eve_affector_remove_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 3
@@ -1201,8 +1201,8 @@ def test_modification_outgoing(client, consts):
     assert api_item.attrs[eve_affectee_remove_attr_id].dogma == approx(256.8)
     # Action
     api_item.change_module(mutation={
-        eve_affector_add_attr_id: muta_roll_to_api(val=0.9),
-        eve_affector_change_attr_id: muta_roll_to_api(val=0.3),
+        eve_affector_add_attr_id: Muta.roll_to_api(val=0.9),
+        eve_affector_change_attr_id: Muta.roll_to_api(val=0.3),
         eve_affector_remove_attr_id: None})
     # Verification
     api_item.update()
@@ -1250,9 +1250,9 @@ def test_drone(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_drone(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.6),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=111),
-        eve_remove_attr_id: muta_roll_to_api(val=0.8)}))
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.6),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=111),
+        eve_remove_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 5
@@ -1273,10 +1273,10 @@ def test_drone(client):
     assert api_item.attrs[eve_remove_attr_id].base == approx(112)
     # Action
     api_item.change_drone(mutation={
-        eve_add_roll_attr_id: muta_roll_to_api(val=0.3),
-        eve_add_absolute_attr_id: muta_abs_to_api(val=105),
-        eve_change_roll_attr_id: muta_roll_to_api(val=0.55),
-        eve_change_absolute_attr_id: muta_abs_to_api(val=109),
+        eve_add_roll_attr_id: Muta.roll_to_api(val=0.3),
+        eve_add_absolute_attr_id: Muta.abs_to_api(val=105),
+        eve_change_roll_attr_id: Muta.roll_to_api(val=0.55),
+        eve_change_absolute_attr_id: Muta.abs_to_api(val=109),
         eve_remove_attr_id: None})
     # Verification
     api_item.update()

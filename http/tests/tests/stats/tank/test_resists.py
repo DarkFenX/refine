@@ -1,4 +1,4 @@
-from tests import approx, muta_roll_to_api
+from tests import Muta, approx
 from tests.fw.api import StatsOptions
 
 
@@ -91,10 +91,10 @@ def test_modified(client, consts):
     assert api_stats.resists.hull == (approx(0.598), approx(0.598), approx(0.598), approx(0.598))
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {
-        eve_struct_em_mod_attr_id: muta_roll_to_api(val=0.22),
-        eve_struct_therm_mod_attr_id: muta_roll_to_api(val=0.87),
-        eve_struct_kin_mod_attr_id: muta_roll_to_api(val=0.64),
-        eve_struct_expl_mod_attr_id: muta_roll_to_api(val=0.43)}))
+        eve_struct_em_mod_attr_id: Muta.roll_to_api(val=0.22),
+        eve_struct_therm_mod_attr_id: Muta.roll_to_api(val=0.87),
+        eve_struct_kin_mod_attr_id: Muta.roll_to_api(val=0.64),
+        eve_struct_expl_mod_attr_id: Muta.roll_to_api(val=0.43)}))
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(resists=True))
     assert api_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))

@@ -1,4 +1,4 @@
-from tests import approx, effect_dogma_to_api
+from tests import Effect, approx
 
 
 def test_force_stop(client, consts):
@@ -15,7 +15,7 @@ def test_force_stop(client, consts):
         attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 100},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.offline)

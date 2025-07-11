@@ -1,4 +1,4 @@
-from tests import approx, check_no_field, effect_dogma_to_api
+from tests import Effect, approx, check_no_field
 
 
 def test_specified_same(client, consts):
@@ -16,7 +16,7 @@ def test_specified_same(client, consts):
         attrs={eve_autocharge_attr_id: eve_autocharge_id},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter1_id)
@@ -49,7 +49,7 @@ def test_specified_different(client, consts):
     eve_fighter1_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
     eve_fighter2_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge2_id}, eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter1_id)
@@ -80,7 +80,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     eve_fighter1_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
     eve_fighter2_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge2_id}, eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter1_id)
@@ -116,7 +116,7 @@ def test_valid_to_no_reference_to_valid(client, consts):
     eve_fighter1_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
     eve_fighter2_id = client.mk_eve_item(eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = effect_dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter1_id)
