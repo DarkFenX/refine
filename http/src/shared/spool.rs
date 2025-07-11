@@ -64,14 +64,6 @@ impl<'de> serde::Deserialize<'de> for HSpool {
             where
                 E: serde::de::Error,
             {
-                if let Some(count_str) = v.strip_prefix(CYCLES_PREFIX) {
-                    let count = rc::Count::from_str(count_str).map_err(|v| serde::de::Error::custom(v))?;
-                    return Ok(Self::Value::Cycles(count));
-                }
-                if let Some(time_str) = v.strip_prefix(TIME_PREFIX) {
-                    let time = rc::AttrVal::from_str(time_str).map_err(|v| serde::de::Error::custom(v))?;
-                    return Ok(Self::Value::Time(time));
-                }
                 if let Some(value_str) = v.strip_prefix(SPOOL_SCALE_PREFIX) {
                     let value = rc::AttrVal::from_str(value_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::SpoolScale(value));
@@ -79,6 +71,14 @@ impl<'de> serde::Deserialize<'de> for HSpool {
                 if let Some(value_str) = v.strip_prefix(CYCLE_SCALE_PREFIX) {
                     let value = rc::AttrVal::from_str(value_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::CycleScale(value));
+                }
+                if let Some(count_str) = v.strip_prefix(CYCLES_PREFIX) {
+                    let count = rc::Count::from_str(count_str).map_err(|v| serde::de::Error::custom(v))?;
+                    return Ok(Self::Value::Cycles(count));
+                }
+                if let Some(time_str) = v.strip_prefix(TIME_PREFIX) {
+                    let time = rc::AttrVal::from_str(time_str).map_err(|v| serde::de::Error::custom(v))?;
+                    return Ok(Self::Value::Time(time));
                 }
                 let msg = format!(
                     "expected a number prefixed by \"{CYCLES_PREFIX}\", \"{TIME_PREFIX}\", \"{SPOOL_SCALE_PREFIX}\", \
