@@ -303,6 +303,7 @@ def print_attr_diff(*, attrs1: dict, attrs2: dict) -> None:
     with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
         for entry in json.load(f).values():
             attr_id_attr_name_map[entry['attributeID']] = entry['name']
+    print('---')  # noqa: T201
     attr_ids = set(attrs1.keys()) | set(attrs2.keys())
     for attr_id in sorted(attr_ids, key=lambda i: attr_id_attr_name_map[i]):
         try:

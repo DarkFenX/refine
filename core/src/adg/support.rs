@@ -56,7 +56,7 @@ impl GSupport {
             for excluded_grp_id in item_list.excluded_grp_ids.iter() {
                 excludes.extend(types_by_grp.get(excluded_grp_id).copied());
             }
-            for excluded_cat_id in item_list.included_cat_ids.iter() {
+            for excluded_cat_id in item_list.excluded_cat_ids.iter() {
                 excludes.extend(types_by_cat.get(excluded_cat_id).copied());
             }
             self.rendered_type_lists
