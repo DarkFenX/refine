@@ -19,6 +19,7 @@ pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed, get_a_ship_xt, ite
 pub use util::MutIter;
 
 mod default_incoming_dps;
+mod default_spool;
 mod dev;
 mod fit;
 mod fleet;
