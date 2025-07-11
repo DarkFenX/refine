@@ -368,6 +368,8 @@ class EveAttr(IntEnum):
     ftr_sq_is_st_support = 2741
     ftr_sq_is_st_heavy = 2742
     can_fit_ship_type11 = 2758
+    repair_mult_bonus_per_cycle = 2796
+    repair_mult_bonus_max = 2797
     disallow_in_hazard = 5561
     allow_in_fully_corrupted_lowsec = 5599
     allow_in_fully_corrupted_hisec = 5600
