@@ -29,6 +29,8 @@ pub(crate) struct HModuleInfoPartial {
     charge_count: TriStateField<rc::Count>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     cycles_until_reload: TriStateField<rc::Count>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    spool_cycles: Option<rc::Count>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -66,6 +68,7 @@ impl HModuleInfoPartial {
             charge: charge_info,
             charge_count,
             cycles_until_reload,
+            spool_cycles: core_module.get_spool_cycle_count(),
             projs: core_module
                 .iter_projs()
                 .map(|core_ranged_proj| core_ranged_proj.into())
