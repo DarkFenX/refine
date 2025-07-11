@@ -28,6 +28,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default],
             sec_zone: ApiSecZone | type[Absent],
+            default_spool: str | type[Absent],
             default_incoming_dps: DpsProfile | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
@@ -45,6 +46,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         conditional_insert(container=body, path=['sec_zone'], value=sec_zone)
+        conditional_insert(container=body, path=['default_spool'], value=default_spool)
         conditional_insert(container=body, path=['default_incoming_dps'], value=default_incoming_dps)
         kwargs = {
             'method': 'POST',
@@ -60,6 +62,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default] = Default,
             sec_zone: ApiSecZone | type[Absent] = Absent,
+            default_spool: str | type[Absent] = Absent,
             default_incoming_dps: DpsProfile | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
@@ -71,6 +74,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         resp = self.create_sol_request(
             data=data,
             sec_zone=sec_zone,
+            default_spool=default_spool,
             default_incoming_dps=default_incoming_dps,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
@@ -165,6 +169,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             sol_id: str,
             sec_zone: ApiSecZone | type[Absent],
+            default_spool: str | type[Absent],
             default_incoming_dps: DpsProfile | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
@@ -173,6 +178,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     ) -> Request:
         command = {'type': 'change_sol'}
         conditional_insert(container=command, path=['sec_zone'], value=sec_zone)
+        conditional_insert(container=command, path=['default_spool'], value=default_spool)
         conditional_insert(container=command, path=['default_incoming_dps'], value=default_incoming_dps)
         params = {}
         conditional_insert(container=params, path=['sol'], value=sol_info_mode)

@@ -83,6 +83,7 @@ class SolarSystem(AttrDict):
     def change(
             self, *,
             sec_zone: ApiSecZone | type[Absent] = Absent,
+            default_spool: str | type[Absent] = Absent,
             default_incoming_dps: DpsProfile | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
@@ -93,6 +94,7 @@ class SolarSystem(AttrDict):
         resp = self._client.change_sol_request(
             sol_id=self.id,
             sec_zone=sec_zone,
+            default_spool=default_spool,
             default_incoming_dps=default_incoming_dps,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,

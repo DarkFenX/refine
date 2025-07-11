@@ -63,6 +63,25 @@ class Muta:
         return f'a{val}'
 
 
+class Spool:
+
+    @staticmethod
+    def cycles_to_api(*, count: int) -> str:
+        return f'c{count}'
+
+    @staticmethod
+    def time_to_api(*, time: float) -> str:
+        return f't{time}'
+
+    @staticmethod
+    def spool_scale_to_api(*, val: float) -> str:
+        return f'ss{val}'
+
+    @staticmethod
+    def cycle_scale_to_api(*, val: float) -> str:
+        return f'cs{val}'
+
+
 class Effect:
 
     @staticmethod

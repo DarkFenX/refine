@@ -1,4 +1,4 @@
-from tests import approx
+from tests import Spool, approx
 from tests.fw.api import StatsOptions
 
 
@@ -46,7 +46,7 @@ def test_state(client, consts):
         defeff_id=eve_drone_effect_id)
     eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
-    api_sol = client.create_sol()
+    api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
     api_fit = api_sol.create_fit()
     api_module_normal = api_fit.add_module(type_id=eve_module_normal_id, state=consts.ApiModuleState.active)
     api_module_ancil = api_fit.add_module(
