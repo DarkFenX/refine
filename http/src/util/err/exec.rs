@@ -38,8 +38,6 @@ pub(crate) enum HExecError {
     #[error("{0}")]
     UnremovableAutocharge(#[source] rc::err::basic::ItemKindRemoveError),
     #[error("{0}")]
-    InvalidSkillLevel(#[from] rc::err::SkillLevelError),
-    #[error("{0}")]
     InvalidFighterCount(#[from] rc::err::FighterCountOverrideError),
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[source] rc::err::basic::ItemReceiveProjError),
@@ -71,7 +69,6 @@ impl HExecError {
             HExecError::MutationNotSet(_) => "MUT-001",
             HExecError::ChargeNotSet(_) => "NCH-001",
             HExecError::UnremovableAutocharge(_) => "ACH-001",
-            HExecError::InvalidSkillLevel(_) => "SKL-018",
             HExecError::InvalidFighterCount(_) => "FTR-019",
             HExecError::ProjecteeCantTakeProjs(_) => "EXC-021",
             HExecError::ProjectionNotFound(_) => "EXC-022",

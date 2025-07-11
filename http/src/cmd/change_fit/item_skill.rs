@@ -17,7 +17,7 @@ impl HAddSkillCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let core_level = rc::SkillLevel::new_checked(self.level)?;
+        let core_level = rc::SkillLevel::new_clamped(self.level);
         let mut core_skill = core_fit
             .add_skill(self.type_id, core_level)
             .map_err(|error| match error {

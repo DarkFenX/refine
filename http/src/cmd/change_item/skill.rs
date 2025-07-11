@@ -35,7 +35,7 @@ impl HChangeSkillCmd {
             })?;
         }
         if let Some(h_level) = self.level {
-            let core_level = rc::SkillLevel::new_checked(h_level)?;
+            let core_level = rc::SkillLevel::new_clamped(h_level);
             core_skill.set_level(core_level);
         }
         if let Some(state) = self.state {
