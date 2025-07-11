@@ -93,7 +93,7 @@ impl HChangeModuleCmd {
             },
             TriStateField::Absent => (),
         }
-        match &self.spool {
+        match self.spool {
             TriStateField::Value(h_spool) => core_module.set_spool(Some(h_spool.into())),
             TriStateField::None => core_module.set_spool(None),
             TriStateField::Absent => (),

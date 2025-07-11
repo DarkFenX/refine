@@ -6,17 +6,17 @@ use crate::{
 };
 
 impl VastFitData {
-    pub(in crate::svc) fn get_stat_orr_shield(&self, ctx: SvcCtx, calc: &mut Calc) -> AttrVal {
-        get_orrps(ctx, calc, None, self.orr_shield.iter())
+    pub(in crate::svc) fn get_stat_orr_shield(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> AttrVal {
+        get_orrps(ctx, calc, spool, self.orr_shield.iter())
     }
     pub(in crate::svc) fn get_stat_orr_armor(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> AttrVal {
         get_orrps(ctx, calc, spool, self.orr_armor.iter())
     }
-    pub(in crate::svc) fn get_stat_orr_hull(&self, ctx: SvcCtx, calc: &mut Calc) -> AttrVal {
-        get_orrps(ctx, calc, None, self.orr_hull.iter())
+    pub(in crate::svc) fn get_stat_orr_hull(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> AttrVal {
+        get_orrps(ctx, calc, spool, self.orr_hull.iter())
     }
-    pub(in crate::svc) fn get_stat_orr_cap(&self, ctx: SvcCtx, calc: &mut Calc) -> AttrVal {
-        get_orrps(ctx, calc, None, self.orr_cap.iter())
+    pub(in crate::svc) fn get_stat_orr_cap(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> AttrVal {
+        get_orrps(ctx, calc, spool, self.orr_cap.iter())
     }
 }
 

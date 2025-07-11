@@ -44,7 +44,7 @@ impl HAddModuleCmd {
         if let Some(charge_type_id) = self.charge_type_id {
             core_module.set_charge_type_id(charge_type_id);
         }
-        if let Some(h_spool) = &self.spool {
+        if let Some(h_spool) = self.spool {
             core_module.set_spool(Some(h_spool.into()));
         }
         Ok(core_module.into())

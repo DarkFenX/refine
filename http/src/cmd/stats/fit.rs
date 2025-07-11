@@ -137,38 +137,75 @@ impl HGetFitStatsCmd {
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
         }
-        if self
-            .rr_shield
-            .as_ref()
-            .map(|h_option| h_option.is_enabled())
-            .unwrap_or(self.default)
-        {
-            stats.rr_shield = core_fit.get_stat_rr_shield().into();
+        let rr_shield_opt = LocalOpt::new(&self.rr_shield, self.default);
+        if rr_shield_opt.enabled {
+            stats.rr_shield = Some(
+                rr_shield_opt
+                    .options
+                    .iter()
+                    .map(|rr_opt| core_fit.get_stat_rr_shield(rr_opt.spool.map(|spool| spool.into())))
+                    .collect(),
+            )
         }
-        if self
-            .rr_armor
-            .as_ref()
-            .map(|h_option| h_option.is_enabled())
-            .unwrap_or(self.default)
-        {
-            stats.rr_armor = core_fit.get_stat_rr_armor(None).into();
+        let rr_armor_opt = LocalOpt::new(&self.rr_armor, self.default);
+        if rr_armor_opt.enabled {
+            stats.rr_armor = Some(
+                rr_armor_opt
+                    .options
+                    .iter()
+                    .map(|rr_opt| core_fit.get_stat_rr_armor(rr_opt.spool.map(|spool| spool.into())))
+                    .collect(),
+            )
         }
-        if self
-            .rr_hull
-            .as_ref()
-            .map(|h_option| h_option.is_enabled())
-            .unwrap_or(self.default)
-        {
-            stats.rr_hull = core_fit.get_stat_rr_hull().into();
+        let rr_hull_opt = LocalOpt::new(&self.rr_hull, self.default);
+        if rr_hull_opt.enabled {
+            stats.rr_hull = Some(
+                rr_hull_opt
+                    .options
+                    .iter()
+                    .map(|rr_opt| core_fit.get_stat_rr_hull(rr_opt.spool.map(|spool| spool.into())))
+                    .collect(),
+            )
         }
-        if self
-            .rr_capacitor
-            .as_ref()
-            .map(|h_option| h_option.is_enabled())
-            .unwrap_or(self.default)
-        {
-            stats.rr_capacitor = core_fit.get_stat_rr_capacitor().into();
+        let rr_capacitor_opt = LocalOpt::new(&self.rr_capacitor, self.default);
+        if rr_capacitor_opt.enabled {
+            stats.rr_capacitor = Some(
+                rr_capacitor_opt
+                    .options
+                    .iter()
+                    .map(|rr_opt| core_fit.get_stat_rr_capacitor(rr_opt.spool.map(|spool| spool.into())))
+                    .collect(),
+            )
         }
         Ok(stats)
+    }
+}
+
+struct LocalOpt<T> {
+    enabled: bool,
+    options: Vec<T>,
+}
+impl<T> LocalOpt<T>
+where
+    T: Copy + Clone + Default,
+{
+    fn new(root_opt: &Option<HStatOption<T>>, default: bool) -> Self {
+        match root_opt {
+            Some(inner_opt) => LocalOpt {
+                enabled: inner_opt.is_enabled(),
+                options: inner_opt.get_extended_options(),
+            },
+            None => match default {
+                true => LocalOpt {
+                    enabled: true,
+                    options: vec![T::default()],
+                },
+                // No need to allocate anything if check is disabled
+                false => LocalOpt {
+                    enabled: false,
+                    options: Vec::new(),
+                },
+            },
+        }
     }
 }

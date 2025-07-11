@@ -22,13 +22,13 @@ impl From<rc::Spool> for HSpool {
         }
     }
 }
-impl From<&HSpool> for rc::Spool {
-    fn from(h_spool: &HSpool) -> Self {
+impl From<HSpool> for rc::Spool {
+    fn from(h_spool: HSpool) -> Self {
         match h_spool {
-            HSpool::Cycles(count) => Self::Cycles(*count),
-            HSpool::Time(count) => Self::Time(*count),
-            HSpool::SpoolScale(value) => Self::SpoolScale(rc::UnitInterval::new_clamped(*value)),
-            HSpool::CycleScale(value) => Self::CycleScale(rc::UnitInterval::new_clamped(*value)),
+            HSpool::Cycles(count) => Self::Cycles(count),
+            HSpool::Time(count) => Self::Time(count),
+            HSpool::SpoolScale(value) => Self::SpoolScale(rc::UnitInterval::new_clamped(value)),
+            HSpool::CycleScale(value) => Self::CycleScale(rc::UnitInterval::new_clamped(value)),
         }
     }
 }
