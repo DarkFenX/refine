@@ -12,7 +12,7 @@ def test_set_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    assert api_fighter.update().count == [12, 12]
+    assert api_fighter.update().count == [12, 12, False]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -28,4 +28,4 @@ def test_set_not_loaded(client, consts):
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_fighter.update().count == [3, 12]
+    assert api_fighter.update().count == [3, 12, True]

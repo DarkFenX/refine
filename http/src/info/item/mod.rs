@@ -18,6 +18,7 @@ use item_sw_effect::HSwEffectInfo;
 
 use crate::info::HItemInfoMode;
 
+mod adj_count;
 mod extended;
 mod item_autocharge;
 mod item_booster;

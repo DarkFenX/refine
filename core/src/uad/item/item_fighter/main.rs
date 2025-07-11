@@ -88,10 +88,12 @@ impl UadFighter {
                 Some(count_override) => Some(AdjustableCount {
                     current: count_override.get_inner(),
                     max: a_xt.max_fighter_count,
+                    overridden: true,
                 }),
                 None => Some(AdjustableCount {
                     current: a_xt.max_fighter_count,
                     max: a_xt.max_fighter_count,
+                    overridden: false,
                 }),
             },
             None => None,

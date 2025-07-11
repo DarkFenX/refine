@@ -4,6 +4,7 @@ import typing
 
 from tests.fw.consts import ApiItemInfoMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
+from .adj_count import AdjustableCount
 from .attr_vals import AttrVals
 from .effect import EffectInfo
 from .mod_info import AttrModInfoMap
@@ -26,6 +27,7 @@ class Item(AttrDict):
             'autocharges': AttrHookDef(func=lambda acs: {
                 k: Item(client=client, data=v, sol_id=sol_id)
                 for k, v in acs.items()}),
+            'count': AttrHookDef(func=lambda c: AdjustableCount(data=c)),
             'side_effects': AttrHookDef(func=lambda ses: {k: SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
             'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(data=v) for k, v in attrs.items()}),
