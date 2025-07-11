@@ -38,7 +38,7 @@ class StatsOptions:
     align_time: StatOptionAlias = Absent
     speed: StatOptionAlias = Absent
     hp: StatOptionAlias = Absent
-    ehp: StatOptionAlias = Absent
+    ehp: StatOptionAliasEhp = Absent
     wc_ehp: StatOptionAlias = Absent
     resists: StatOptionAlias = Absent
     rr_shield: StatOptionAliasRr = Absent

@@ -26,9 +26,9 @@ impl Vast {
         let hp = self.get_stat_item_hp(ctx, calc, item_key)?;
         let resists = Vast::get_stat_item_resists(ctx, calc, item_key)?;
         let incoming_dps = incoming_dps.unwrap_or(&ctx.uad.default_incoming_dps);
-        let shield_mult = Vast::get_tanking_efficiency(&resists.shield, incoming_dps);
-        let armor_mult = Vast::get_tanking_efficiency(&resists.armor, incoming_dps);
-        let hull_mult = Vast::get_tanking_efficiency(&resists.hull, incoming_dps);
+        let shield_mult = Vast::get_tanking_efficiency(&resists.shield, incoming_dps)?;
+        let armor_mult = Vast::get_tanking_efficiency(&resists.armor, incoming_dps)?;
+        let hull_mult = Vast::get_tanking_efficiency(&resists.hull, incoming_dps)?;
         Some(make_ehp(hp, shield_mult, armor_mult, hull_mult))
     }
     pub(in crate::svc) fn get_stat_item_wc_ehp(
@@ -44,14 +44,17 @@ impl Vast {
         let hull_mult = Vast::get_worst_case_tanking_efficiency(&resists.hull);
         Some(make_ehp(hp, shield_mult, armor_mult, hull_mult))
     }
-    fn get_tanking_efficiency(resists: &DmgKinds<AttrVal>, incoming_dps: &DpsProfile) -> AttrVal {
+    fn get_tanking_efficiency(resists: &DmgKinds<AttrVal>, incoming_dps: &DpsProfile) -> Option<AttrVal> {
         let dealt = incoming_dps.get_sum_regular();
         let absorbed = incoming_dps.get_em() * resists.em
             + incoming_dps.get_thermal() * resists.thermal
             + incoming_dps.get_kinetic() * resists.kinetic
             + incoming_dps.get_explosive() * resists.explosive;
         let received = dealt - absorbed;
-        dealt / received
+        match received > OF(0.0) {
+            true => Some(dealt / received),
+            false => None,
+        }
     }
     fn get_worst_case_tanking_efficiency(resists: &DmgKinds<AttrVal>) -> AttrVal {
         let resist = resists.iter().copied().min().unwrap();
