@@ -19,17 +19,17 @@ def test_state(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_capacitor=True))
-    assert api_stats.rr_capacitor == approx(70.2)
+    assert api_stats.rr_capacitor == [approx(70.2)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_capacitor=True))
-    assert api_stats.rr_capacitor == approx(0)
+    assert api_stats.rr_capacitor == [approx(0)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_capacitor=True))
-    assert api_stats.rr_capacitor == approx(70.2)
+    assert api_stats.rr_capacitor == [approx(70.2)]
 
 
 def test_zero_cycle_time(client, consts):
@@ -49,7 +49,7 @@ def test_zero_cycle_time(client, consts):
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_capacitor=True))
-    assert api_stats.rr_capacitor == approx(0)
+    assert api_stats.rr_capacitor == [approx(0)]
 
 
 def test_no_cycle_time(client, consts):
@@ -68,4 +68,4 @@ def test_no_cycle_time(client, consts):
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_stats = api_fit.get_stats(options=StatsOptions(rr_capacitor=True))
-    assert api_stats.rr_capacitor == approx(0)
+    assert api_stats.rr_capacitor == [approx(0)]
