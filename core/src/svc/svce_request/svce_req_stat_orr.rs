@@ -1,7 +1,8 @@
 use crate::{
     def::{AttrVal, FitKey},
     misc::Spool,
-    svc::{Svc, SvcCtx},
+    sol::REffs,
+    svc::{Svc, SvcCtx, vast::Vast},
     uad::Uad,
 };
 
@@ -25,5 +26,22 @@ impl Svc {
         self.vast
             .get_fit_data(&fit_key)
             .get_stat_orr_cap(SvcCtx::new(uad, &self.eprojs), &mut self.calc, spool)
+    }
+    pub(crate) fn get_stat_item_orr_shield(
+        &mut self,
+        uad: &Uad,
+        reffs: &REffs,
+        item_key: FitKey,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Option<AttrVal> {
+        Vast::get_stat_item_orr_shield(
+            SvcCtx::new(uad, &self.eprojs),
+            &mut self.calc,
+            reffs,
+            item_key,
+            spool,
+            ignore_state,
+        )
     }
 }

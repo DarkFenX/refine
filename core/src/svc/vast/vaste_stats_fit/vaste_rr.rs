@@ -30,7 +30,7 @@ fn get_orrps<'a>(
     for (&espec, rep_getter) in data {
         if let Some(rep_amount_per_cycle) = rep_getter(ctx, calc, espec, spool, None) {
             let cycle_time = efuncs::get_espec_cycle_time(ctx, calc, espec).unwrap();
-            if cycle_time != OF(0.0) {
+            if cycle_time > OF(0.0) {
                 rps += rep_amount_per_cycle / cycle_time;
             }
         }
