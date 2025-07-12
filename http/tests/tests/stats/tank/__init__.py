@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 from dataclasses import dataclass
 
@@ -106,7 +108,7 @@ def setup_tank_basics(
     eve_armor_rep_amount_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
     eve_rr_optimal_attr_id = client.mk_eve_attr()
     eve_rr_falloff_attr_id = client.mk_eve_attr()
-    eve_rr_res_attr_id = client.mk_eve_attr()
+    eve_rr_res_attr_id = client.mk_eve_attr(def_val=1)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)

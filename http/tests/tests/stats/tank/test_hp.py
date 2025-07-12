@@ -1,27 +1,29 @@
 from tests import Range, approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from tests.tests.stats.tank import (
+    make_eve_local_aar,
+    make_eve_local_asb,
+    make_eve_remote_aar,
+    make_eve_remote_asb,
+    make_eve_tankable,
+    setup_tank_basics,
+)
 
 
 def test_buffer(client, consts):
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_drone_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1728, eve_armor_attr_id: 672, eve_hull_attr_id: 600})
-    eve_fighter_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2190, eve_hull_attr_id: 100, eve_max_fighter_count_attr_id: 9})
     eve_buff_id = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[
-            client.mk_eve_buff_mod(attr_id=eve_shield_attr_id),
-            client.mk_eve_buff_mod(attr_id=eve_armor_attr_id),
-            client.mk_eve_buff_mod(attr_id=eve_hull_attr_id)])
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.shield_hp_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.armor_hp_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.hull_hp_attr_id)])
     eve_buff_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 25},
@@ -91,31 +93,12 @@ def test_buffer(client, consts):
 
 def test_local_asb_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fueled_shield_boosting,
-        cat_id=consts.EveEffCat.active)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_drone_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1728, eve_armor_attr_id: 672, eve_hull_attr_id: 600})
-    eve_fighter_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2190, eve_hull_attr_id: 100, eve_max_fighter_count_attr_id: 9})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 300,
-            eve_capacity_attr_id: 2.3,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=2.3)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -179,26 +162,10 @@ def test_local_asb_accuracy_and_charge_switch(client, consts):
 
 
 def test_local_asb_state_switch(client, consts):
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fueled_shield_boosting,
-        cat_id=consts.EveEffCat.active)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 300,
-            eve_capacity_attr_id: 3,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=3)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -252,41 +219,25 @@ def test_local_asb_state_switch(client, consts):
 
 
 def test_local_asb_modified_and_rep_hp_limit(client, consts):
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1000, 500, 250), ship=True)
+    eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=1500, capacity=112)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 12})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_shield_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_shield_attr_id)
+        affectee_attr_id=eve_basic_info.shield_hp_attr_id)
     eve_rep_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_rep_amount_attr_id)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fueled_shield_boosting,
-        cat_id=consts.EveEffCat.active)
+        affectee_attr_id=eve_basic_info.shield_rep_amount_attr_id)
     eve_shield_mod_effect_id = client.mk_eve_effect(mod_info=[eve_shield_mod])
     eve_rep_mod_effect_id = client.mk_eve_effect(mod_info=[eve_rep_mod])
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1000, eve_armor_attr_id: 500, eve_hull_attr_id: 250})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 1500,
-            eve_capacity_attr_id: 112,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 12})
     eve_hp_rig = client.mk_eve_item(attrs={eve_mod_attr_id: 70}, eff_ids=[eve_shield_mod_effect_id])
     eve_rep_rig = client.mk_eve_item(attrs={eve_mod_attr_id: 70}, eff_ids=[eve_rep_mod_effect_id])
     client.create_sources()
@@ -332,31 +283,14 @@ def test_local_asb_modified_and_rep_hp_limit(client, consts):
 
 def test_local_aar_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair, cat_id=consts.EveEffCat.active)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_drone_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1728, eve_armor_attr_id: 672, eve_hull_attr_id: 600})
-    eve_fighter_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2190, eve_hull_attr_id: 100, eve_max_fighter_count_attr_id: 9})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_mult_attr_id: 3,
-            eve_rep_amount_attr_id: 100,
-            eve_capacity_attr_id: 2.3,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 0.1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_rep_item_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=2.3, charge_rate=1)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -421,26 +355,12 @@ def test_local_aar_accuracy_and_charge_switch(client, consts):
 
 def test_local_aar_charge_rate_rounding_and_state_switch(client, consts):
     # Rounding in this case means the way lib considers not-fully-charged-cycle
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair, cat_id=consts.EveEffCat.active)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_mult_attr_id: 3,
-            eve_rep_amount_attr_id: 100,
-            eve_capacity_attr_id: 15,
-            eve_charge_rate_attr_id: 4},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_rep_item_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=15, charge_rate=4)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -494,41 +414,27 @@ def test_local_aar_charge_rate_rounding_and_state_switch(client, consts):
 
 
 def test_local_aar_modified_and_rep_hp_limit(client, consts):
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2000, 1000, 500), ship=True)
+    eve_rep_item_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=500, capacity=0.64, charge_rate=8)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.01})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_hp_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_armor_attr_id)
+        affectee_attr_id=eve_basic_info.armor_hp_attr_id)
     eve_rep_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_rep_amount_attr_id)
-    eve_rep_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair, cat_id=consts.EveEffCat.active)
+        affectee_attr_id=eve_basic_info.armor_rep_amount_attr_id)
     eve_hp_mod_effect_id = client.mk_eve_effect(mod_info=[eve_hp_mod])
     eve_rep_mod_effect_id = client.mk_eve_effect(mod_info=[eve_rep_mod])
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2000, eve_armor_attr_id: 1000, eve_hull_attr_id: 500})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_mult_attr_id: 3,
-            eve_rep_amount_attr_id: 500,
-            eve_capacity_attr_id: 0.64,
-            eve_charge_rate_attr_id: 8},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 0.01})
     eve_hp_rig = client.mk_eve_item(attrs={eve_mod_attr_id: 70}, eff_ids=[eve_hp_mod_effect_id])
     eve_rep_rig = client.mk_eve_item(attrs={eve_mod_attr_id: 70}, eff_ids=[eve_rep_mod_effect_id])
     client.create_sources()
@@ -574,31 +480,12 @@ def test_local_aar_modified_and_rep_hp_limit(client, consts):
 
 def test_remote_asb_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
-        cat_id=consts.EveEffCat.target)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_drone_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1728, eve_armor_attr_id: 672, eve_hull_attr_id: 600})
-    eve_fighter_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2190, eve_hull_attr_id: 100, eve_max_fighter_count_attr_id: 9})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 300,
-            eve_capacity_attr_id: 2.3,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=2.3)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -688,26 +575,10 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
 
 
 def test_remote_asb_state_switch(client, consts):
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
-        cat_id=consts.EveEffCat.target)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 300,
-            eve_capacity_attr_id: 3,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=3)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -764,36 +635,19 @@ def test_remote_asb_state_switch(client, consts):
 
 def test_remote_asb_resist_and_rep_hp_limit(client, consts):
     # Also check projection addition/removal
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_resist_attr_id = client.mk_eve_attr()
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(
+        client=client, basic_info=eve_basic_info, hps=(1000, 500, 250), rr_resist=1, ship=True)
+    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=1500, capacity=112)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 12})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_resist_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_resist_attr_id)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
-        cat_id=consts.EveEffCat.target,
-        resist_attr_id=eve_resist_attr_id)
+        affectee_attr_id=eve_basic_info.rr_res_attr_id)
     eve_resist_mod_effect_id = client.mk_eve_effect(mod_info=[eve_resist_mod])
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1000, eve_armor_attr_id: 500, eve_hull_attr_id: 250, eve_resist_attr_id: 1})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 1500,
-            eve_capacity_attr_id: 112,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 12})
     eve_resist_rig = client.mk_eve_item(attrs={eve_mod_attr_id: -70}, eff_ids=[eve_resist_mod_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
@@ -850,32 +704,16 @@ def test_remote_asb_resist_and_rep_hp_limit(client, consts):
 
 
 def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_optimal_attr_id = client.mk_eve_attr()
-    eve_falloff_attr_id = client.mk_eve_attr()
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
-        cat_id=consts.EveEffCat.target,
-        range_attr_id=eve_optimal_attr_id,
-        falloff_attr_id=eve_falloff_attr_id)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1000, eve_armor_attr_id: 500, eve_hull_attr_id: 250})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 1500,
-            eve_capacity_attr_id: 112,
-            eve_charge_rate_attr_id: 1,
-            eve_optimal_attr_id: 10000,
-            eve_falloff_attr_id: 5000},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 12})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1000, 500, 250), ship=True)
+    eve_rep_item_id = make_eve_remote_asb(
+        client=client,
+        basic_info=eve_basic_info,
+        rep_amount=1500,
+        capacity=112,
+        optimal_range=10000,
+        falloff_range=5000)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 12})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -921,33 +759,14 @@ def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
 
 def test_remote_aar_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_drone_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 1728, eve_armor_attr_id: 672, eve_hull_attr_id: 600})
-    eve_fighter_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2190, eve_hull_attr_id: 100, eve_max_fighter_count_attr_id: 9})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_mult_attr_id: 3,
-            eve_rep_amount_attr_id: 100,
-            eve_capacity_attr_id: 2.3,
-            eve_charge_rate_attr_id: 1},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 0.1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_rep_item_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=2.3, charge_rate=1)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -1038,28 +857,12 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
 
 def test_remote_aar_charge_rate_rounding_and_state_switch(client, consts):
     # Rounding in this case means the way lib considers not-fully-charged-cycle
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 3000, eve_armor_attr_id: 2000, eve_hull_attr_id: 1000})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_mult_attr_id: 3,
-            eve_rep_amount_attr_id: 100,
-            eve_capacity_attr_id: 15,
-            eve_charge_rate_attr_id: 4},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 1})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_rep_item_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=15, charge_rate=4)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -1116,38 +919,21 @@ def test_remote_aar_charge_rate_rounding_and_state_switch(client, consts):
 
 def test_remote_aar_resist_and_rep_hp_limit(client, consts):
     # Also check projection addition/removal
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_resist_attr_id = client.mk_eve_attr()
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(
+        client=client, basic_info=eve_basic_info, hps=(2000, 1000, 500), rr_resist=1, ship=True)
+    eve_rep_item_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=500, capacity=0.64, charge_rate=8)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.01})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_resist_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_resist_attr_id)
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        resist_attr_id=eve_resist_attr_id)
+        affectee_attr_id=eve_basic_info.rr_res_attr_id)
     eve_resist_mod_effect_id = client.mk_eve_effect(mod_info=[eve_resist_mod])
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2000, eve_armor_attr_id: 1000, eve_hull_attr_id: 500, eve_resist_attr_id: 1})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_mult_attr_id: 3,
-            eve_rep_amount_attr_id: 500,
-            eve_capacity_attr_id: 0.64,
-            eve_charge_rate_attr_id: 8},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 0.01})
     eve_resist_rig = client.mk_eve_item(attrs={eve_mod_attr_id: -70}, eff_ids=[eve_resist_mod_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
@@ -1204,34 +990,18 @@ def test_remote_aar_resist_and_rep_hp_limit(client, consts):
 
 
 def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
-    eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_optimal_attr_id = client.mk_eve_attr()
-    eve_falloff_attr_id = client.mk_eve_attr()
-    eve_rep_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        range_attr_id=eve_optimal_attr_id,
-        falloff_attr_id=eve_falloff_attr_id)
-    eve_ship_id = client.mk_eve_ship(
-        attrs={eve_shield_attr_id: 2000, eve_armor_attr_id: 1000, eve_hull_attr_id: 500})
-    eve_rep_item_id = client.mk_eve_item(
-        attrs={
-            eve_rep_mult_attr_id: 3,
-            eve_rep_amount_attr_id: 500,
-            eve_capacity_attr_id: 0.64,
-            eve_charge_rate_attr_id: 8,
-            eve_optimal_attr_id: 10000,
-            eve_falloff_attr_id: 5000},
-        eff_ids=[eve_rep_effect_id],
-        defeff_id=eve_rep_effect_id)
-    eve_charge_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste, attrs={eve_volume_attr_id: 0.01})
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2000, 1000, 500), ship=True)
+    eve_rep_item_id = make_eve_remote_aar(
+        client=client,
+        basic_info=eve_basic_info,
+        rep_amount=500,
+        capacity=0.64,
+        charge_rate=8,
+        optimal_range=10000,
+        falloff_range=5000)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
