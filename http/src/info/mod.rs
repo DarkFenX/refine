@@ -11,5 +11,5 @@ mod fleet;
 mod item;
 mod modes;
 mod sol;
-mod stats;
+pub(crate) mod stats;
 mod validation;

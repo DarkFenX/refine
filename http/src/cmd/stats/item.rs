@@ -5,7 +5,10 @@ use crate::{
         shared::get_primary_item,
         stats::options::{HStatOption, HStatOptionEhp, HStatResolvedOption},
     },
-    info::HItemStats,
+    info::{
+        HItemStats,
+        stats::{HStatLayerEhp, HStatTank},
+    },
     util::HExecError,
 };
 
@@ -44,18 +47,7 @@ impl HGetItemStatsCmd {
         }
         let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
-            stats.ehp = Some(
-                ehp_opt
-                    .options
-                    .iter()
-                    .map(|inner_opt| {
-                        let core_incoming_dps = inner_opt.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
-                        core_item
-                            .get_stat_ehp(core_incoming_dps.as_ref())
-                            .map(|core_ehp| core_ehp.into())
-                    })
-                    .collect(),
-            )
+            stats.ehp = Some(get_ehp_stats(&mut core_item, ehp_opt.options))
         }
         if self.wc_ehp.unwrap_or(self.default) {
             stats.wc_ehp = core_item.get_stat_wc_ehp().into();
@@ -65,4 +57,16 @@ impl HGetItemStatsCmd {
         }
         Ok(stats)
     }
+}
+
+fn get_ehp_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionEhp>) -> Vec<Option<HStatTank<HStatLayerEhp>>> {
+    options
+        .into_iter()
+        .map(|inner_opt| {
+            let core_incoming_dps = inner_opt.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
+            core_item
+                .get_stat_ehp(core_incoming_dps.as_ref())
+                .map(|core_ehp| core_ehp.into())
+        })
+        .collect()
 }
