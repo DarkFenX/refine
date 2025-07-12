@@ -14,5 +14,4 @@ mod mutation;
 mod ranged_proj;
 mod shared;
 mod sol_get_module;
-mod stats;
 mod util_add_remove;

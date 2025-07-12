@@ -3,7 +3,7 @@ pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 use crate::{
     def::{AttrId, AttrVal, ItemId, ItemTypeId},
     err::basic::ItemLoadedError,
-    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode},
+    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
     sol::SolarSystem,
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
@@ -152,6 +152,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc.get_stat_item_wc_ehp(&sol.uad, item_key)
+    }
+    // Stats - RR
+
+    fn get_stat_rr_shield(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_orr_shield(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
     }
 }
 

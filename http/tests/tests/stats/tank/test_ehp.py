@@ -369,6 +369,8 @@ def test_item_not_loaded(client, consts):
     api_dps_profiles = [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_dps_profiles)))
     assert api_fit_stats.ehp == [None]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
+    assert api_ship_stats.ehp == [None]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
     assert api_drone_stats.ehp == [None]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))

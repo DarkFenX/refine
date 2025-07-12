@@ -12,11 +12,11 @@ pub(super) const AGILITY_CONST: AttrVal = OF(f64::from_bits(0x3eb74216c502a54f))
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_speed(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
-        check_kind(ctx, item_key)?;
+        item_check(ctx, item_key)?;
         calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_VELOCITY)
     }
     pub(in crate::svc) fn get_stat_item_agility(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
-        check_kind(ctx, item_key)?;
+        item_check(ctx, item_key)?;
         let agility = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::AGILITY)?;
         if agility == OF(0.0) {
             return None;
@@ -32,7 +32,7 @@ impl Vast {
     }
 }
 
-fn check_kind(ctx: SvcCtx, item_key: ItemKey) -> Option<()> {
+fn item_check(ctx: SvcCtx, item_key: ItemKey) -> Option<()> {
     let uad_item = ctx.uad.items.get(item_key);
     match uad_item {
         UadItem::Drone(_) | UadItem::Fighter(_) | UadItem::Ship(_) => Some(()),

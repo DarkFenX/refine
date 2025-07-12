@@ -10,5 +10,4 @@ mod fit_iter_drones;
 mod mutation;
 mod ranged_proj;
 mod sol_get_drone;
-mod stats;
 mod util_add_remove;

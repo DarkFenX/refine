@@ -4,6 +4,7 @@ use crate::{
     misc::{EffectSpec, Spool},
     sol::REffs,
     svc::{SvcCtx, calc::Calc, efuncs, vast::Vast},
+    uad::UadItem,
 };
 
 impl Vast {
@@ -16,9 +17,7 @@ impl Vast {
         ignore_state: bool,
     ) -> Option<AttrVal> {
         let uad_item = ctx.uad.items.get(item_key);
-        if !uad_item.is_loaded() {
-            return None;
-        }
+        item_check(uad_item)?;
         match ignore_state {
             true => {
                 let a_effect_ids = uad_item.get_a_effect_datas().unwrap().keys();
@@ -29,6 +28,15 @@ impl Vast {
                 Some(get_item_orr(ctx, calc, item_key, a_effect_ids, spool))
             }
         }
+    }
+}
+
+fn item_check(uad_item: &UadItem) -> Option<()> {
+    match uad_item {
+        UadItem::Drone(drone) => drone.is_loaded().then_some(()),
+        UadItem::Fighter(fighter) => fighter.is_loaded().then_some(()),
+        UadItem::Module(module) => module.is_loaded().then_some(()),
+        _ => None,
     }
 }
 

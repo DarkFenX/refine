@@ -5,4 +5,3 @@ pub use remove::RemoveItemError;
 mod get;
 mod item;
 mod remove;
-mod stats;
