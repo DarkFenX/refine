@@ -67,5 +67,4 @@ fn update_effect(a_effect: &mut ad::AEffect) {
         affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Other),
         affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
     });
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

@@ -48,11 +48,9 @@ pub(in crate::adg::flow::conv_pre) fn conv_effects(
             track_attr_id: e_effect.tracking_attr_id,
             chance_attr_id: e_effect.usage_chance_attr_id,
             resist_attr_id: e_effect.resist_attr_id,
-            mod_build_status: ad::AEffectModBuildStatus::Unbuilt,
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             ..
         };
-        let mut mod_errs = 0;
         for e_modifier in e_effect.mods.iter() {
             // Process effect stoppers first
             match extract_stopper(e_modifier) {
@@ -65,7 +63,6 @@ pub(in crate::adg::flow::conv_pre) fn conv_effects(
                 Err(e) => {
                     let msg = format!("failed to build stopper for {a_effect}: {e}");
                     tracing::warn!("{msg}");
-                    mod_errs += 1;
                     continue;
                 }
                 _ => (),
@@ -86,17 +83,9 @@ pub(in crate::adg::flow::conv_pre) fn conv_effects(
                 Err(e) => {
                     let msg = format!("failed to build modifier for {a_effect}: {e}");
                     tracing::warn!("{msg}");
-                    mod_errs += 1;
                     continue;
                 }
             }
-        }
-        match mod_errs {
-            0 => a_effect.mod_build_status = ad::AEffectModBuildStatus::Success,
-            _ if !a_effect.mods.is_empty() || !a_effect.stop_ids.is_empty() => {
-                a_effect.mod_build_status = ad::AEffectModBuildStatus::SuccessPartial(mod_errs)
-            }
-            _ => a_effect.mod_build_status = ad::AEffectModBuildStatus::Error(mod_errs),
         }
         a_effects.insert(a_effect.id, a_effect);
     }

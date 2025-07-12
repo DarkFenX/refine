@@ -12,5 +12,4 @@ pub(in crate::nd::eff) fn update_effect(a_effect_id: ad::AEffectId, a_effect: &m
         affectee_attr_id: ac::attrs::MAX_VELOCITY,
     };
     a_effect.mods.push(modifier);
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

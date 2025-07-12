@@ -29,5 +29,4 @@ fn update_effect(a_effect: &mut ad::AEffect) {
     a_effect
         .mods
         .push(mk_modifier(ac::attrs::LOW_SLOT_MODIFIER, ac::attrs::LOW_SLOTS));
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

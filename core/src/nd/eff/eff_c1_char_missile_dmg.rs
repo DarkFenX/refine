@@ -17,7 +17,6 @@ fn make_effect() -> ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
         state: ad::AState::Offline,
-        mod_build_status: ad::AEffectModBuildStatus::Custom,
         mods: vec![
             mk_modifier(ac::attrs::EM_DMG),
             mk_modifier(ac::attrs::THERM_DMG),

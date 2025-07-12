@@ -1,6 +1,4 @@
-use crate::handler_json::data::{
-    CAttrId, CEffectBuffInfo, CEffectCatId, CEffectId, CEffectModifier, CModBuildStatus, CState,
-};
+use crate::handler_json::data::{CAttrId, CEffectBuffInfo, CEffectCatId, CEffectId, CEffectModifier, CState};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
@@ -18,7 +16,6 @@ pub(in crate::handler_json) struct CEffect {
     track_attr_id: Option<CAttrId>,
     chance_attr_id: Option<CAttrId>,
     resist_attr_id: Option<CAttrId>,
-    mod_build_status: CModBuildStatus,
     mods: Vec<CEffectModifier>,
     stop_ids: Vec<CEffectId>,
     buff: Option<CEffectBuffInfo>,
@@ -40,7 +37,6 @@ impl From<&rc::ad::AEffect> for CEffect {
             track_attr_id: a_effect.track_attr_id,
             chance_attr_id: a_effect.chance_attr_id,
             resist_attr_id: a_effect.resist_attr_id,
-            mod_build_status: (&a_effect.mod_build_status).into(),
             mods: a_effect.mods.iter().map(|v| v.into()).collect(),
             stop_ids: a_effect.stop_ids.iter().map(|v| v.into()).collect(),
             buff: a_effect.buff.as_ref().map(|v| v.into()),
@@ -64,7 +60,6 @@ impl From<&CEffect> for rc::ad::AEffect {
             track_attr_id: c_effect.track_attr_id,
             chance_attr_id: c_effect.chance_attr_id,
             resist_attr_id: c_effect.resist_attr_id,
-            mod_build_status: (&c_effect.mod_build_status).into(),
             mods: c_effect.mods.iter().map(|v| v.into()).collect(),
             stop_ids: c_effect.stop_ids.iter().map(|v| v.into()).collect(),
             buff: c_effect.buff.as_ref().map(|v| v.into()),

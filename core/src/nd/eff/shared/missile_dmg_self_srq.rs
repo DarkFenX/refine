@@ -16,5 +16,4 @@ pub(in crate::nd::eff) fn update_effect(
         affectee_attr_id: a_attr_id,
     };
     a_effect.mods.push(modifier);
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

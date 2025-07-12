@@ -32,7 +32,6 @@ fn make_effect() -> ad::AEffect {
         state: ad::AState::Active,
         is_offense: true,
         range_attr_id: Some(ac::attrs::DOOMSDAY_AOE_RANGE),
-        mod_build_status: ad::AEffectModBuildStatus::Custom,
         buff: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![ad::AEffectBuffSrcCustom::AffectorVal(
                 ac::buffs::STASIS_WEBIFICATION_BURST,

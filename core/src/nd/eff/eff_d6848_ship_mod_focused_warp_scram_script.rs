@@ -77,5 +77,4 @@ fn update_effect(a_effect: &mut ad::AEffect) {
     a_effect.stop_ids.push(ac::effects::FTR_ABIL_MJD);
     // Effect range attribute
     a_effect.range_attr_id = Some(ac::attrs::MAX_RANGE_HIDDEN);
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

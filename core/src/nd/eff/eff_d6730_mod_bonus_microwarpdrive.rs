@@ -29,5 +29,4 @@ fn update_effect(a_effect: &mut ad::AEffect) {
     }
     a_effect.mods.push(mk_a_modifier_mass());
     a_effect.mods.push(mk_a_modifier_sig());
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

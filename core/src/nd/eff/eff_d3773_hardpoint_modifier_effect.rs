@@ -28,5 +28,4 @@ fn update_effect(a_effect: &mut ad::AEffect) {
         ac::attrs::LAUNCHER_HARDPOINT_MODIFIER,
         ac::attrs::LAUNCHER_SLOTS_LEFT,
     ));
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

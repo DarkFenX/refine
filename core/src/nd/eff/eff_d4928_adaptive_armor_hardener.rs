@@ -29,7 +29,6 @@ fn update_effect(a_effect: &mut ad::AEffect) {
     a_effect
         .mods
         .push(mk_rah_resonance_mod(ac::attrs::ARMOR_EXPL_DMG_RESONANCE));
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }
 
 fn mk_rah_resonance_mod(attr_id: ad::AAttrId) -> ad::AEffectModifier {

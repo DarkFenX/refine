@@ -24,5 +24,4 @@ fn update_effect(a_effect: &mut ad::AEffect) {
         affectee_attr_id: ac::attrs::SPEED,
     };
     a_effect.mods.push(modifier);
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

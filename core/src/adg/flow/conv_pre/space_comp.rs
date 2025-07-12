@@ -60,7 +60,6 @@ fn process_buffs(
         id: effect_id,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Offline,
-        mod_build_status: ad::AEffectModBuildStatus::Success,
         buff: Some(buff_info),
         ..
     };

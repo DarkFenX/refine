@@ -1,7 +1,5 @@
 use crate::{
-    ad::{
-        AAttrId, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModBuildStatus, AEffectModifier, AEffectXt, AState,
-    },
+    ad::{AAttrId, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AEffectXt, AState},
     nd,
     util::Named,
 };
@@ -41,8 +39,6 @@ pub struct AEffect {
     pub chance_attr_id: Option<AAttrId> = None,
     /// Refers an attribute value which defines resistance strength to the effect.
     pub resist_attr_id: Option<AAttrId> = None,
-    /// Modifier build status.
-    pub mod_build_status: AEffectModBuildStatus = AEffectModBuildStatus::Unbuilt,
     /// Attribute modifiers carried by the effect
     pub mods: Vec<AEffectModifier> = Vec::new(),
     /// Refers effects this effect stops on target.

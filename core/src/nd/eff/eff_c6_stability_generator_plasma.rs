@@ -22,7 +22,6 @@ fn make_effect() -> ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Active,
-        mod_build_status: ad::AEffectModBuildStatus::Custom,
         buff: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
                 ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::ARMOR_HITPOINT_BONUS, OF(5.0)),

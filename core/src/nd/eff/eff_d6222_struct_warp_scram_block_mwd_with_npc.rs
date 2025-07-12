@@ -66,5 +66,4 @@ fn update_effect(a_effect: &mut ad::AEffect) {
     // Fighter MWD and MJD stoppers
     a_effect.stop_ids.push(ac::effects::FTR_ABIL_MWD);
     a_effect.stop_ids.push(ac::effects::FTR_ABIL_MJD);
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }

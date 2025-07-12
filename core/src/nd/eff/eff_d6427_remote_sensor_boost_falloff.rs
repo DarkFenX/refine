@@ -52,7 +52,6 @@ fn update_effect(a_effect: &mut ad::AEffect) {
         ac::attrs::SCAN_LADAR_STRENGTH_PERCENT,
         ac::attrs::SCAN_LADAR_STRENGTH,
     ));
-    a_effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
 }
 
 fn make_rsb_mod(affector_attr_id: ad::AAttrId, affectee_attr_id: ad::AAttrId) -> ad::AEffectModifier {
