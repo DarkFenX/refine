@@ -9,29 +9,47 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn effects_started(&mut self, item_key: ItemKey, item: &UadItem, a_effects: &[ad::ArcEffectRt]) {
         for a_effect in a_effects {
-            if let Some(fit_id) = item.get_fit_key() {
+            if let Some(fit_key) = item.get_fit_key() {
                 // Local reps
-                if let Some(rep_getter) = a_effect.hc.get_local_shield_rep_amount
-                    && a_effect.hc.charge.is_some()
-                {
-                    let fit_data = self.get_fit_data_mut(&fit_id);
-                    fit_data
-                        .lr_shield_limitable
-                        .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
+                if let Some(rep_getter) = a_effect.hc.get_local_shield_rep_amount {
+                    let fit_data = self.get_fit_data_mut(&fit_key);
+                    if efuncs::has_cycle_time(a_effect) {
+                        fit_data
+                            .lr_shield
+                            .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
+                    }
+                    if a_effect.hc.charge.is_some() {
+                        fit_data
+                            .lr_shield_limitable
+                            .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
+                    }
                 }
-                if let Some(rep_getter) = a_effect.hc.get_local_armor_rep_amount
-                    && a_effect.hc.charge.is_some()
+                if let Some(rep_getter) = a_effect.hc.get_local_armor_rep_amount {
+                    let fit_data = self.get_fit_data_mut(&fit_key);
+                    if efuncs::has_cycle_time(a_effect) {
+                        fit_data
+                            .lr_armor
+                            .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
+                    }
+                    if a_effect.hc.charge.is_some() {
+                        fit_data
+                            .lr_armor_limitable
+                            .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
+                    }
+                }
+                if let Some(rep_getter) = a_effect.hc.get_local_hull_rep_amount
+                    && efuncs::has_cycle_time(a_effect)
                 {
-                    let fit_data = self.get_fit_data_mut(&fit_id);
+                    let fit_data = self.get_fit_data_mut(&fit_key);
                     fit_data
-                        .lr_armor_limitable
+                        .lr_hull
                         .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
                 }
                 // Remote reps
                 if let Some(rep_getter) = a_effect.hc.get_remote_shield_rep_amount
                     && efuncs::has_cycle_time(a_effect)
                 {
-                    let fit_data = self.get_fit_data_mut(&fit_id);
+                    let fit_data = self.get_fit_data_mut(&fit_key);
                     fit_data
                         .orr_shield
                         .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
@@ -39,7 +57,7 @@ impl Vast {
                 if let Some(rep_getter) = a_effect.hc.get_remote_armor_rep_amount
                     && efuncs::has_cycle_time(a_effect)
                 {
-                    let fit_data = self.get_fit_data_mut(&fit_id);
+                    let fit_data = self.get_fit_data_mut(&fit_key);
                     fit_data
                         .orr_armor
                         .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
@@ -47,7 +65,7 @@ impl Vast {
                 if let Some(rep_getter) = a_effect.hc.get_remote_hull_rep_amount
                     && efuncs::has_cycle_time(a_effect)
                 {
-                    let fit_data = self.get_fit_data_mut(&fit_id);
+                    let fit_data = self.get_fit_data_mut(&fit_key);
                     fit_data
                         .orr_hull
                         .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
@@ -55,7 +73,7 @@ impl Vast {
                 if let Some(rep_getter) = a_effect.hc.get_remote_cap_rep_amount
                     && efuncs::has_cycle_time(a_effect)
                 {
-                    let fit_data = self.get_fit_data_mut(&fit_id);
+                    let fit_data = self.get_fit_data_mut(&fit_key);
                     fit_data
                         .orr_cap
                         .insert(EffectSpec::new(item_key, a_effect.ae.id), rep_getter);
@@ -67,17 +85,31 @@ impl Vast {
         for a_effect in a_effects {
             if let Some(fit_id) = item.get_fit_key() {
                 // Local reps
-                if a_effect.hc.get_local_shield_rep_amount.is_some() && a_effect.hc.charge.is_some() {
+                if a_effect.hc.get_local_shield_rep_amount.is_some() {
                     let fit_data = self.get_fit_data_mut(&fit_id);
-                    fit_data
-                        .lr_shield_limitable
-                        .remove(&EffectSpec::new(item_key, a_effect.ae.id));
+                    if efuncs::has_cycle_time(a_effect) {
+                        fit_data.lr_shield.remove(&EffectSpec::new(item_key, a_effect.ae.id));
+                    }
+                    if a_effect.hc.charge.is_some() {
+                        fit_data
+                            .lr_shield_limitable
+                            .remove(&EffectSpec::new(item_key, a_effect.ae.id));
+                    }
                 }
-                if a_effect.hc.get_local_armor_rep_amount.is_some() && a_effect.hc.charge.is_some() {
+                if a_effect.hc.get_local_armor_rep_amount.is_some() {
                     let fit_data = self.get_fit_data_mut(&fit_id);
-                    fit_data
-                        .lr_armor_limitable
-                        .remove(&EffectSpec::new(item_key, a_effect.ae.id));
+                    if efuncs::has_cycle_time(a_effect) {
+                        fit_data.lr_armor.remove(&EffectSpec::new(item_key, a_effect.ae.id));
+                    }
+                    if a_effect.hc.charge.is_some() {
+                        fit_data
+                            .lr_armor_limitable
+                            .remove(&EffectSpec::new(item_key, a_effect.ae.id));
+                    }
+                }
+                if a_effect.hc.get_local_hull_rep_amount.is_some() && efuncs::has_cycle_time(a_effect) {
+                    let fit_data = self.get_fit_data_mut(&fit_id);
+                    fit_data.lr_hull.remove(&EffectSpec::new(item_key, a_effect.ae.id));
                 }
                 // Remote reps
                 if a_effect.hc.get_remote_shield_rep_amount.is_some() && efuncs::has_cycle_time(a_effect) {

@@ -251,11 +251,23 @@ impl VastFitData {
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
+        for espec in self.lr_shield.keys() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
         for espec in self.lr_shield_limitable.keys() {
             check_item_key(uad, espec.item_key, true)?;
             check_a_effect_id(uad, &espec.a_effect_id)?;
         }
+        for espec in self.lr_armor.keys() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
         for espec in self.lr_armor_limitable.keys() {
+            check_item_key(uad, espec.item_key, true)?;
+            check_a_effect_id(uad, &espec.a_effect_id)?;
+        }
+        for espec in self.lr_hull.keys() {
             check_item_key(uad, espec.item_key, true)?;
             check_a_effect_id(uad, &espec.a_effect_id)?;
         }

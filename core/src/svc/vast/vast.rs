@@ -99,9 +99,12 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_assistance: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
-    // Stats-related - local ancillary reps
-    pub(in crate::svc::vast) lr_shield_limitable: RMap<EffectSpec, NLocalRepGetter>,
-    pub(in crate::svc::vast) lr_armor_limitable: RMap<EffectSpec, NLocalRepGetter>,
+    // Stats-related - local reps
+    pub(in crate::svc::vast) lr_shield: RMap<EffectSpec, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_shield_limitable: RMap<EffectSpec, NLocalRepGetter>, // Ancils
+    pub(in crate::svc::vast) lr_armor: RMap<EffectSpec, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_armor_limitable: RMap<EffectSpec, NLocalRepGetter>, // Ancils
+    pub(in crate::svc::vast) lr_hull: RMap<EffectSpec, NLocalRepGetter>,
     // Outgoing remote reps
     pub(in crate::svc::vast) orr_shield: RMap<EffectSpec, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_armor: RMap<EffectSpec, NRemoteRepGetter>,
@@ -172,8 +175,11 @@ impl VastFitData {
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
             // Stats-related
+            lr_shield: RMap::new(),
             lr_shield_limitable: RMap::new(),
+            lr_armor: RMap::new(),
             lr_armor_limitable: RMap::new(),
+            lr_hull: RMap::new(),
             orr_shield: RMap::new(),
             orr_armor: RMap::new(),
             orr_hull: RMap::new(),
