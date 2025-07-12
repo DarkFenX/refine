@@ -1,5 +1,5 @@
 from tests import Spool, approx
-from tests.fw.api import FitStatsOptions, StatsOptionRr
+from tests.fw.api import FitStatsOptions, StatsOptionFitRr
 
 
 def test_state(client, consts):
@@ -105,9 +105,9 @@ def test_spool(client, consts):
         spool=Spool.spool_scale_to_api(val=0.5))
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(rr_armor=(True, [
-        StatsOptionRr(spool=Spool.spool_scale_to_api(val=0)),
-        StatsOptionRr(),
-        StatsOptionRr(spool=Spool.spool_scale_to_api(val=1))])))
+        StatsOptionFitRr(spool=Spool.spool_scale_to_api(val=0)),
+        StatsOptionFitRr(),
+        StatsOptionFitRr(spool=Spool.spool_scale_to_api(val=1))])))
     assert api_stats.rr_armor == [approx(85.333333), approx(167.253333), approx(238.933333)]
 
 
