@@ -11,17 +11,18 @@ class SideEffectInfo:
     status: bool
     str: tuple[SideEffectStrInfo] | list[SideEffectStrInfo] | None
 
-    def __init__(self, *, data: tuple) -> None:
-        self.chance = data[0]
-        self.status = data[1]
-        self.str = None if data[2] is None else SideEffectStrInfo(data=data[2])
+    def __init__(self, *, data: list | tuple) -> None:
+        self.chance, self.status, side_str = data
+        self.str = None if side_str is None else SideEffectStrInfo(data=side_str)
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
         return getattr(self, field.name)
 
-    def __eq__(self, other: tuple) -> bool:
-        return (self.chance, self.status, self.str) == (other[0], other[1], other[2])
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.chance, self.status, self.str] == other
 
 
 @dataclasses.dataclass
@@ -30,13 +31,14 @@ class SideEffectStrInfo:
     op: str
     val: float
 
-    def __init__(self, *, data: tuple) -> None:
-        self.op = data[0]
-        self.val = data[1]
+    def __init__(self, *, data: list | tuple) -> None:
+        self.op, self.val = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
         return getattr(self, field.name)
 
-    def __eq__(self, other: tuple) -> bool:
-        return (self.op, self.val) == (other[0], other[1])
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.op, self.val] == other

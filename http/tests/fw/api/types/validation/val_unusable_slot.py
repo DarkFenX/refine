@@ -1,4 +1,5 @@
 import dataclasses
+import typing
 
 
 @dataclasses.dataclass
@@ -7,6 +8,15 @@ class ValUnusableSlotFail:
     max: int | None
     users: list[str]
 
-    def __init__(self, *, data: tuple) -> None:
-        self.max = data[0]
-        self.users = sorted(data[1])
+    def __init__(self, *, data: list | tuple) -> None:
+        self.max, users = data
+        self.users = sorted(users)
+
+    def __getitem__(self, item: int) -> typing.Any:
+        field = dataclasses.fields(self)[item]
+        return getattr(self, field.name)
+
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.max, self.users] == other

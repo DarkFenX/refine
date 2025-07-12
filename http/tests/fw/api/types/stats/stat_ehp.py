@@ -11,17 +11,20 @@ class StatEhp:
     armor: StatLayerEhp
     hull: StatLayerEhp
 
-    def __init__(self, *, data: tuple) -> None:
-        self.shield = StatLayerEhp(data=data[0])
-        self.armor = StatLayerEhp(data=data[1])
-        self.hull = StatLayerEhp(data=data[2])
+    def __init__(self, *, data: list | tuple) -> None:
+        shield, armor, hull = data
+        self.shield = StatLayerEhp(data=shield)
+        self.armor = StatLayerEhp(data=armor)
+        self.hull = StatLayerEhp(data=hull)
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
         return getattr(self, field.name)
 
-    def __eq__(self, other: tuple) -> bool:
-        return (self.shield, self.armor, self.hull) == (other[0], other[1], other[2])
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.shield, self.armor, self.hull] == other
 
 
 @dataclasses.dataclass
@@ -32,15 +35,14 @@ class StatLayerEhp:
     ancil_remote: float
     mult: float
 
-    def __init__(self, *, data: tuple) -> None:
-        self.buffer = data[0]
-        self.ancil_local = data[1]
-        self.ancil_remote = data[2]
-        self.mult = data[3]
+    def __init__(self, *, data: list | tuple) -> None:
+        self.buffer, self.ancil_local, self.ancil_remote, self.mult = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
         return getattr(self, field.name)
 
-    def __eq__(self, other: tuple) -> bool:
-        return (self.buffer, self.ancil_local, self.ancil_remote, self.mult) == (other[0], other[1], other[2], other[3])
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.buffer, self.ancil_local, self.ancil_remote, self.mult] == other

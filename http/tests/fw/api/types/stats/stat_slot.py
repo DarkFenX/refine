@@ -9,13 +9,14 @@ class StatSlot:
     used: int
     total: int | None
 
-    def __init__(self, *, data: tuple) -> None:
-        self.used = data[0]
-        self.total = data[1]
+    def __init__(self, *, data: list | tuple) -> None:
+        self.used, self.total = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
         return getattr(self, field.name)
 
-    def __eq__(self, other: tuple) -> bool:
-        return (self.used, self.total) == (other[0], other[1])
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.used, self.total] == other

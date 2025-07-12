@@ -1,6 +1,6 @@
 use crate::{
     def::{Count, Idx, ItemKey},
-    misc::{CycleCount, ModRack, ModuleState},
+    misc::{AdjustableCount, CycleCount, ModRack, ModuleState},
     sol::{
         SolarSystem,
         api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
@@ -86,7 +86,7 @@ impl<'a> ModuleMut<'a> {
     pub fn get_cycle_count_until_reload(&self) -> Option<Count> {
         get_cycle_count_until_reload(self.sol, self.key)
     }
-    pub fn get_spool_cycle_count(&mut self) -> Option<Count> {
+    pub fn get_spool_cycle_count(&mut self) -> Option<AdjustableCount> {
         self.sol.svc.get_effect_spool_cycle_count(&self.sol.uad, self.key)
     }
 }

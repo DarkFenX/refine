@@ -3,7 +3,9 @@ use rc::ItemCommon;
 use crate::{
     info::{
         HItemInfoMode,
-        item::{item_charge::HChargeInfo, mutation::HItemMutationInfo, proj::HRangedProjInfo},
+        item::{
+            adj_count::HAdjustableCount, item_charge::HChargeInfo, mutation::HItemMutationInfo, proj::HRangedProjInfo,
+        },
     },
     shared::{HModRack, HModuleState},
     util::TriStateField,
@@ -30,7 +32,7 @@ pub(crate) struct HModuleInfoPartial {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     cycles_until_reload: TriStateField<rc::Count>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    spool_cycles: Option<rc::Count>,
+    spool_cycles: Option<HAdjustableCount>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -68,7 +70,7 @@ impl HModuleInfoPartial {
             charge: charge_info,
             charge_count,
             cycles_until_reload,
-            spool_cycles: core_module.get_spool_cycle_count(),
+            spool_cycles: core_module.get_spool_cycle_count().map(|v| v.into()),
             projs: core_module
                 .iter_projs()
                 .map(|core_ranged_proj| core_ranged_proj.into())

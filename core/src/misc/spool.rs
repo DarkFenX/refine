@@ -5,8 +5,9 @@ use crate::{
 };
 
 pub(crate) struct ResolvedSpool {
-    pub(crate) mult: AttrVal,
     pub(crate) cycles: Count,
+    pub(crate) cycles_max: Count,
+    pub(crate) mult: AttrVal,
 }
 
 /// Controls on which spool cycle spoolable modules will be set.
@@ -40,10 +41,10 @@ impl Spool {
         if step == OF(0.0) {
             return None;
         }
+        let cycles_max = ceil_unerr(max / step) as Count;
         let cycles = match self {
             Spool::Cycles(cycles_opt) => {
                 // Limit requested count by max spool cycles
-                let cycles_max = ceil_unerr(max / step) as Count;
                 cycles_max.min(*cycles_opt)
             }
             Spool::Time(time) => {
@@ -51,17 +52,17 @@ impl Spool {
                     return None;
                 }
                 // Choose count of cycles finished by specified time, and limit by max spool cycles
-                let cycles_max = ceil_unerr(max / step) as Count;
                 let cycles_by_time = floor_unerr(time / cycle_time) as Count;
                 cycles_max.min(cycles_by_time)
             }
             Spool::SpoolScale(range_value) => ceil_unerr(range_value.get_inner() * max / step) as Count,
-            Spool::CycleScale(range_value) => {
-                let cycles_max = ceil_unerr(max / step) as Count;
-                ceil_unerr(range_value.get_inner() * cycles_max as f64) as Count
-            }
+            Spool::CycleScale(range_value) => ceil_unerr(range_value.get_inner() * cycles_max as f64) as Count,
         };
         let mult = OF(1.0) + max.min(step * cycles as f64);
-        Some(ResolvedSpool { cycles, mult })
+        Some(ResolvedSpool {
+            cycles,
+            cycles_max,
+            mult,
+        })
     }
 }

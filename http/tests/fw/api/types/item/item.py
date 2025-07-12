@@ -27,6 +27,7 @@ class Item(AttrDict):
             'autocharges': AttrHookDef(func=lambda acs: {
                 k: Item(client=client, data=v, sol_id=sol_id)
                 for k, v in acs.items()}),
+            'spool_cycles': AttrHookDef(func=lambda sc: AdjustableCount(data=sc)),
             'count': AttrHookDef(func=lambda c: AdjustableCount(data=c)),
             'side_effects': AttrHookDef(func=lambda ses: {k: SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),

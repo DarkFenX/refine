@@ -9,14 +9,14 @@ class AttrVals:
     dogma: float
     extra: float
 
-    def __init__(self, *, data: tuple) -> None:
-        self.base = data[0]
-        self.dogma = data[1]
-        self.extra = data[2]
+    def __init__(self, *, data: list | tuple) -> None:
+        self.base, self.dogma, self.extra = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
         return getattr(self, field.name)
 
-    def __eq__(self, other: tuple) -> bool:
-        return (self.base, self.dogma, self.extra) == (other[0], other[1], other[2])
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.base, self.dogma, self.extra] == other

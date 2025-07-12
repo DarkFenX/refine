@@ -26,15 +26,15 @@ def test_cycles_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool=Spool.cycles_to_api(count=0))
     # Verification
-    assert api_module.update().spool_cycles == 0
+    assert api_module.update().spool_cycles == (0, 15, True)
     # Action
     api_module.change_module(spool=Spool.cycles_to_api(count=20))
     # Verification
-    assert api_module.update().spool_cycles == 15
+    assert api_module.update().spool_cycles == (15, 15, True)
     # Action
     api_module.change_module(spool=Spool.cycles_to_api(count=8))
     # Verification
-    assert api_module.update().spool_cycles == 8
+    assert api_module.update().spool_cycles == (8, 15, True)
 
 
 def test_time_basic(client, consts):
@@ -62,27 +62,27 @@ def test_time_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool=Spool.time_to_api(time=0))
     # Verification
-    assert api_module.update().spool_cycles == 0
+    assert api_module.update().spool_cycles == (0, 15, True)
     # Action
     api_module.change_module(spool=Spool.time_to_api(time=5.99))
     # Verification
-    assert api_module.update().spool_cycles == 0
+    assert api_module.update().spool_cycles == (0, 15, True)
     # Action
     api_module.change_module(spool=Spool.time_to_api(time=6))
     # Verification
-    assert api_module.update().spool_cycles == 1
+    assert api_module.update().spool_cycles == (1, 15, True)
     # Action
     api_module.change_module(spool=Spool.time_to_api(time=25))
     # Verification
-    assert api_module.update().spool_cycles == 4
+    assert api_module.update().spool_cycles == (4, 15, True)
     # Action
     api_module.change_module(spool=Spool.time_to_api(time=250))
     # Verification
-    assert api_module.update().spool_cycles == 15
+    assert api_module.update().spool_cycles == (15, 15, True)
     # Action
     api_module.change_module(spool=Spool.time_to_api(time=89.99))
     # Verification
-    assert api_module.update().spool_cycles == 14
+    assert api_module.update().spool_cycles == (14, 15, True)
 
 
 def test_time_cycle_time_zero(client, consts):
@@ -140,15 +140,15 @@ def test_spool_scale_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool=Spool.spool_scale_to_api(val=0))
     # Verification
-    assert api_module.update().spool_cycles == 0
+    assert api_module.update().spool_cycles == (0, 5, True)
     # Action
     api_module.change_module(spool=Spool.spool_scale_to_api(val=0.42))
     # Verification
-    assert api_module.update().spool_cycles == 2
+    assert api_module.update().spool_cycles == (2, 5, True)
     # Action
     api_module.change_module(spool=Spool.spool_scale_to_api(val=1))
     # Verification
-    assert api_module.update().spool_cycles == 5
+    assert api_module.update().spool_cycles == (5, 5, True)
 
 
 def test_cycle_scale_basic(client, consts):
@@ -176,15 +176,15 @@ def test_cycle_scale_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool=Spool.cycle_scale_to_api(val=0))
     # Verification
-    assert api_module.update().spool_cycles == 0
+    assert api_module.update().spool_cycles == (0, 5, True)
     # Action
     api_module.change_module(spool=Spool.cycle_scale_to_api(val=0.42))
     # Verification
-    assert api_module.update().spool_cycles == 3
+    assert api_module.update().spool_cycles == (3, 5, True)
     # Action
     api_module.change_module(spool=Spool.cycle_scale_to_api(val=1))
     # Verification
-    assert api_module.update().spool_cycles == 5
+    assert api_module.update().spool_cycles == (5, 5, True)
 
 
 def test_step_zero(client, consts):
