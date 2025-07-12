@@ -51,12 +51,12 @@ def test_state(client, consts):
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rr_shield=True))
     assert api_fit_stats.rr_shield == [0]
-    api_rr_options = [StatsOptionItemRr(ignore_state=False), StatsOptionItemRr(ignore_state=True)]
-    api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(rr_shield=(True, api_rr_options)))
+    api_stat_options = [StatsOptionItemRr(ignore_state=False), StatsOptionItemRr(ignore_state=True)]
+    api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(rr_shield=(True, api_stat_options)))
     assert api_module_normal_stats.rr_shield == [0, approx(63.5)]
-    api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(rr_shield=(True, api_rr_options)))
+    api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(rr_shield=(True, api_stat_options)))
     assert api_module_ancil_stats.rr_shield == [0, approx(118.75)]
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(rr_shield=(True, api_rr_options)))
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(rr_shield=(True, api_stat_options)))
     assert api_drone_stats.rr_shield == [0, approx(14.4)]
     # Action
     api_module_normal.change_module(state=consts.ApiModuleState.active)
@@ -148,8 +148,8 @@ def test_no_cycle_time(client, consts):
     api_module_ancil = api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=FitStatsOptions(rr_shield=True))
-    assert api_stats.rr_shield == [0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rr_shield=True))
+    assert api_fit_stats.rr_shield == [0]
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(rr_shield=True))
     assert api_module_normal_stats.rr_shield == [0]
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(rr_shield=True))

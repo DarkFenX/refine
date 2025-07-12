@@ -1,6 +1,7 @@
 #[derive(educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HValOptions {
+    #[serde(default)]
     #[educe(Default = true)]
     default: bool,
     // Generic

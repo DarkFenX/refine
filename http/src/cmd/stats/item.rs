@@ -15,6 +15,7 @@ use crate::{
 #[derive(educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(crate) struct HGetItemStatsCmd {
+    #[serde(default)]
     #[educe(Default = true)]
     default: bool,
     agility: Option<bool>,

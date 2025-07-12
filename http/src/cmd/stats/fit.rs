@@ -13,6 +13,7 @@ use crate::{
 #[derive(educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(crate) struct HGetFitStatsCmd {
+    #[serde(default)]
     #[educe(Default = true)]
     default: bool,
     high_slots: Option<bool>,
