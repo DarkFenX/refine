@@ -187,9 +187,19 @@ def test_ship_not_loaded(client, consts):
     assert api_ship_stats.align_time is None
 
 
-def test_drone(client, consts):
+def test_drone_modified_agility(client, consts):
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_buff_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.min,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_agility_attr_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
+    eve_fw_effect_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -50},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_drone_id = client.mk_eve_ship(attrs={eve_agility_attr_id: 100, eve_mass_attr_id: 10000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -199,11 +209,33 @@ def test_drone(client, consts):
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_drone_stats.agility == approx(1.386294)
     assert api_drone_stats.align_time == 2
+    # Action
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
+    assert api_drone_stats.agility == approx(0.6931472)
+    assert api_drone_stats.align_time == 1
+    # Action
+    api_fw_effect.remove()
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
+    assert api_drone_stats.agility == approx(1.386294)
+    assert api_drone_stats.align_time == 2
 
 
-def test_fighter(client, consts):
+def test_fighter_modified_agility(client, consts):
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_buff_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.min,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_agility_attr_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
+    eve_fw_effect_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -50},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_fighter_id = client.mk_eve_ship(attrs={eve_agility_attr_id: 700, eve_mass_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -211,7 +243,19 @@ def test_fighter(client, consts):
     api_fighter = api_fit.add_drone(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_fighter_stats.agility == approx(0.970406)
+    assert api_fighter_stats.agility == approx(0.9704061)
+    assert api_fighter_stats.align_time == 1
+    # Action
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
+    # Verification
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
+    assert api_fighter_stats.agility == approx(0.485203)
+    assert api_fighter_stats.align_time == 1
+    # Action
+    api_fw_effect.remove()
+    # Verification
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
+    assert api_fighter_stats.agility == approx(0.9704061)
     assert api_fighter_stats.align_time == 1
 
 
