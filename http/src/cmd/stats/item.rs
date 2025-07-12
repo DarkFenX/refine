@@ -3,7 +3,7 @@ use rc::ItemMutCommon;
 use crate::{
     cmd::{
         shared::get_primary_item,
-        stats::options::{HStatOption, HStatOptionEhp, HStatResolvedOption},
+        stats::options::{HStatOption, HStatOptionEhp, HStatOptionItemRr, HStatResolvedOption},
     },
     info::{
         HItemStats,
@@ -24,6 +24,10 @@ pub(crate) struct HGetItemStatsCmd {
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
     resists: Option<bool>,
+    rr_shield: Option<HStatOption<HStatOptionItemRr>>,
+    rr_armor: Option<HStatOption<HStatOptionItemRr>>,
+    rr_hull: Option<HStatOption<HStatOptionItemRr>>,
+    rr_capacitor: Option<HStatOption<HStatOptionItemRr>>,
 }
 impl HGetItemStatsCmd {
     pub(crate) fn execute(
@@ -55,6 +59,22 @@ impl HGetItemStatsCmd {
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_item.get_stat_resists().into();
         }
+        let rr_shield_opt = HStatResolvedOption::new(&self.rr_shield, self.default);
+        if rr_shield_opt.enabled {
+            stats.rr_shield = get_shield_rr_stats(&mut core_item, rr_shield_opt.options);
+        }
+        let rr_armor_opt = HStatResolvedOption::new(&self.rr_armor, self.default);
+        if rr_armor_opt.enabled {
+            stats.rr_armor = get_armor_rr_stats(&mut core_item, rr_armor_opt.options);
+        }
+        let rr_hull_opt = HStatResolvedOption::new(&self.rr_hull, self.default);
+        if rr_hull_opt.enabled {
+            stats.rr_hull = get_hull_rr_stats(&mut core_item, rr_hull_opt.options);
+        }
+        let rr_cap_opt = HStatResolvedOption::new(&self.rr_capacitor, self.default);
+        if rr_cap_opt.enabled {
+            stats.rr_capacitor = get_cap_rr_stats(&mut core_item, rr_cap_opt.options);
+        }
         Ok(stats)
     }
 }
@@ -67,6 +87,38 @@ fn get_ehp_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionEhp>) -> V
             core_item
                 .get_stat_ehp(core_incoming_dps.as_ref())
                 .map(|core_ehp| core_ehp.into())
+        })
+        .collect()
+}
+
+fn get_shield_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
+    options
+        .iter()
+        .map(|inner_opt| {
+            core_item.get_stat_rr_shield(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state)
+        })
+        .collect()
+}
+
+fn get_armor_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
+    options
+        .iter()
+        .map(|inner_opt| core_item.get_stat_rr_armor(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state))
+        .collect()
+}
+
+fn get_hull_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
+    options
+        .iter()
+        .map(|inner_opt| core_item.get_stat_rr_hull(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state))
+        .collect()
+}
+
+fn get_cap_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
+    options
+        .iter()
+        .map(|inner_opt| {
+            core_item.get_stat_rr_capacitor(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state)
         })
         .collect()
 }

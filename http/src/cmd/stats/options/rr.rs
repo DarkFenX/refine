@@ -1,6 +1,14 @@
 use crate::shared::HSpool;
 
 #[derive(Copy, Clone, Default, serde::Deserialize)]
-pub(in crate::cmd) struct HStatOptionRr {
+pub(in crate::cmd) struct HStatOptionFitRr {
     pub(in crate::cmd) spool: Option<HSpool>,
+}
+
+#[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
+#[educe(Default)]
+pub(in crate::cmd) struct HStatOptionItemRr {
+    pub(in crate::cmd) spool: Option<HSpool>,
+    #[educe(Default = false)]
+    pub(in crate::cmd) ignore_state: bool,
 }
