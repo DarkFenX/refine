@@ -10,11 +10,9 @@ from tests.tests.stats.tank import (
 )
 
 
-def test_buffer(client, consts):
+def test_buffer_ship(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
-    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
-    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
@@ -32,8 +30,6 @@ def test_buffer(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_fit_stats.hp.shield == (approx(3000), 0, 0)
@@ -43,14 +39,6 @@ def test_buffer(client, consts):
     assert api_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
@@ -62,14 +50,6 @@ def test_buffer(client, consts):
     assert api_ship_stats.hp.shield == (approx(3750), 0, 0)
     assert api_ship_stats.hp.armor == (approx(2500), 0, 0)
     assert api_ship_stats.hp.hull == (approx(1250), 0, 0)
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_drone_stats.hp.shield == (approx(2160), 0, 0)
-    assert api_drone_stats.hp.armor == (approx(840), 0, 0)
-    assert api_drone_stats.hp.hull == (approx(750), 0, 0)
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_fighter_stats.hp.shield == (approx(2737.5), 0, 0)
-    assert api_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_fighter_stats.hp.hull == (approx(125), 0, 0)
     # Action
     api_fw_effect.remove()
     # Verification
@@ -81,35 +61,105 @@ def test_buffer(client, consts):
     assert api_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
+
+
+def test_buffer_drone(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_buff_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.shield_hp_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.armor_hp_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.hull_hp_attr_id)])
+    eve_buff_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
+    eve_fw_effect_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 25},
+        eff_ids=[eve_buff_effect_id], defeff_id=eve_buff_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
     assert api_drone_stats.hp.shield == (approx(1728), 0, 0)
     assert api_drone_stats.hp.armor == (approx(672), 0, 0)
     assert api_drone_stats.hp.hull == (approx(600), 0, 0)
+    # Action
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_drone_stats.hp.shield == (approx(2160), 0, 0)
+    assert api_drone_stats.hp.armor == (approx(840), 0, 0)
+    assert api_drone_stats.hp.hull == (approx(750), 0, 0)
+    # Action
+    api_fw_effect.remove()
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_drone_stats.hp.shield == (approx(1728), 0, 0)
+    assert api_drone_stats.hp.armor == (approx(672), 0, 0)
+    assert api_drone_stats.hp.hull == (approx(600), 0, 0)
+
+
+def test_buffer_fighter(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_buff_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.shield_hp_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.armor_hp_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.hull_hp_attr_id)])
+    eve_buff_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
+    eve_fw_effect_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 25},
+        eff_ids=[eve_buff_effect_id], defeff_id=eve_buff_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_fighter_stats.hp.shield == (approx(2190), 0, 0)
+    assert api_fighter_stats.hp.armor == (0, 0, 0)
+    assert api_fighter_stats.hp.hull == (approx(100), 0, 0)
+    # Action
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
+    # Verification
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_fighter_stats.hp.shield == (approx(2737.5), 0, 0)
+    assert api_fighter_stats.hp.armor == (0, 0, 0)
+    assert api_fighter_stats.hp.hull == (approx(125), 0, 0)
+    # Action
+    api_fw_effect.remove()
+    # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
     assert api_fighter_stats.hp.shield == (approx(2190), 0, 0)
     assert api_fighter_stats.hp.armor == (0, 0, 0)
     assert api_fighter_stats.hp.hull == (approx(100), 0, 0)
 
 
-def test_local_asb_accuracy_and_charge_switch(client, consts):
+def test_local_asb_ship_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
-    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
-    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
     eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=2.3)
     eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     api_asb = api_fit.add_module(
         type_id=eve_rep_item_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
-    # Verification - drone and fighter are not affected by ASB
+    # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_fit_stats.hp.shield == (approx(3000), approx(6900), 0)
     assert api_fit_stats.hp.armor == (approx(2000), 0, 0)
@@ -118,14 +168,6 @@ def test_local_asb_accuracy_and_charge_switch(client, consts):
     assert api_ship_stats.hp.shield == (approx(3000), approx(6900), 0)
     assert api_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_asb.change_module(charge_type_id=None)
     # Verification
@@ -161,7 +203,7 @@ def test_local_asb_accuracy_and_charge_switch(client, consts):
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_local_asb_state_switch(client, consts):
+def test_local_asb_ship_state_switch(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
     eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=3)
@@ -218,7 +260,7 @@ def test_local_asb_state_switch(client, consts):
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_local_asb_modified_and_rep_hp_limit(client, consts):
+def test_local_asb_ship_modified_and_rep_hp_limit(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1000, 500, 250), ship=True)
     eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=1500, capacity=112)
@@ -281,35 +323,22 @@ def test_local_asb_modified_and_rep_hp_limit(client, consts):
     assert api_ship_stats.hp.hull == (approx(250), 0, 0)
 
 
-def test_local_aar_accuracy_and_charge_switch(client, consts):
-    # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
+def test_local_asb_drone_fighter(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
-    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
     eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
     eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
-    eve_rep_item_id = make_eve_local_aar(
-        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=2.3, charge_rate=1)
-    eve_charge_item_id = client.mk_eve_item(
-        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
+    eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=1)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
-    api_aar = api_fit.add_module(
+    api_fit.add_module(
         type_id=eve_rep_item_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
-    # Verification - drone and fighter are not affected by AAR
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
-    assert api_fit_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_fit_stats.hp.armor == (approx(2000), approx(6900), 0)
-    assert api_fit_stats.hp.hull == (approx(1000), 0, 0)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_ship_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_ship_stats.hp.armor == (approx(2000), approx(6900), 0)
-    assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
+    # Verification - drone and fighter are not affected by ASB
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
     assert api_drone_stats.hp.shield == (approx(1728), 0, 0)
     assert api_drone_stats.hp.armor == (approx(672), 0, 0)
@@ -318,6 +347,33 @@ def test_local_aar_accuracy_and_charge_switch(client, consts):
     assert api_fighter_stats.hp.shield == (approx(2190), 0, 0)
     assert api_fighter_stats.hp.armor == (0, 0, 0)
     assert api_fighter_stats.hp.hull == (approx(100), 0, 0)
+
+
+def test_local_aar_ship_accuracy_and_charge_switch(client, consts):
+    # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    eve_rep_item_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=2.3, charge_rate=1)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_aar = api_fit.add_module(
+        type_id=eve_rep_item_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_item_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
+    assert api_fit_stats.hp.shield == (approx(3000), 0, 0)
+    assert api_fit_stats.hp.armor == (approx(2000), approx(6900), 0)
+    assert api_fit_stats.hp.hull == (approx(1000), 0, 0)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_ship_stats.hp.shield == (approx(3000), 0, 0)
+    assert api_ship_stats.hp.armor == (approx(2000), approx(6900), 0)
+    assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.change_module(charge_type_id=None)
     # Verification
@@ -353,7 +409,7 @@ def test_local_aar_accuracy_and_charge_switch(client, consts):
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_local_aar_charge_rate_rounding_and_state_switch(client, consts):
+def test_local_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
     # Rounding in this case means the way lib considers not-fully-charged-cycle
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
@@ -413,7 +469,7 @@ def test_local_aar_charge_rate_rounding_and_state_switch(client, consts):
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_local_aar_modified_and_rep_hp_limit(client, consts):
+def test_local_aar_ship_modified_and_rep_hp_limit(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2000, 1000, 500), ship=True)
     eve_rep_item_id = make_eve_local_aar(
@@ -478,12 +534,38 @@ def test_local_aar_modified_and_rep_hp_limit(client, consts):
     assert api_ship_stats.hp.hull == (approx(500), 0, 0)
 
 
-def test_remote_asb_accuracy_and_charge_switch(client, consts):
+def test_local_aar_drone_fighter(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_rep_item_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=1, charge_rate=1)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    api_fit.add_module(
+        type_id=eve_rep_item_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_item_id)
+    # Verification - drone and fighter are not affected by AAR
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_drone_stats.hp.shield == (approx(1728), 0, 0)
+    assert api_drone_stats.hp.armor == (approx(672), 0, 0)
+    assert api_drone_stats.hp.hull == (approx(600), 0, 0)
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_fighter_stats.hp.shield == (approx(2190), 0, 0)
+    assert api_fighter_stats.hp.armor == (0, 0, 0)
+    assert api_fighter_stats.hp.hull == (approx(100), 0, 0)
+
+
+def test_remote_asb_ship_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
-    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
-    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
     eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=2.3)
     eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
@@ -495,9 +577,7 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_drone_id)
-    api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
-    api_rasb.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
+    api_rasb.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(3000), 0, approx(6900))
@@ -507,14 +587,6 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, approx(6900))
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, approx(6900))
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, approx(6900))
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_rasb.change_module(charge_type_id=None)
     # Verification
@@ -526,14 +598,6 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_rasb.change_module(charge_type_id=eve_charge_item_id)
     # Verification
@@ -545,14 +609,6 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, approx(6900))
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, approx(6900))
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, approx(6900))
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_rasb.remove()
     # Verification
@@ -564,17 +620,9 @@ def test_remote_asb_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
 
 
-def test_remote_asb_state_switch(client, consts):
+def test_remote_asb_ship_state_switch(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
     eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=3)
@@ -633,7 +681,7 @@ def test_remote_asb_state_switch(client, consts):
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_remote_asb_resist_and_rep_hp_limit(client, consts):
+def test_remote_asb_ship_resist_and_rep_hp_limit(client, consts):
     # Also check projection addition/removal
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(
@@ -703,7 +751,7 @@ def test_remote_asb_resist_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.hull == (approx(250), 0, 0)
 
 
-def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
+def test_remote_asb_ship_proj_range_and_rep_hp_limit(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1000, 500, 250), ship=True)
     eve_rep_item_id = make_eve_remote_asb(
@@ -757,12 +805,38 @@ def test_remote_asb_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.hull == (approx(250), 0, 0)
 
 
-def test_remote_aar_accuracy_and_charge_switch(client, consts):
+def test_remote_asb_drone_fighter(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=1)
+    eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_rasb = api_src_fit.add_module(
+        type_id=eve_rep_item_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_item_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_drone_id)
+    api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
+    api_rasb.change_module(add_projs=[api_tgt_drone.id, api_tgt_fighter.id])
+    # Verification
+    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, approx(3000))
+    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, 0)
+    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
+    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, approx(3000))
+    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
+    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
+
+
+def test_remote_aar_ship_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
-    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
-    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
     eve_rep_item_id = make_eve_remote_aar(
         client=client, basic_info=eve_basic_info, rep_amount=100, capacity=2.3, charge_rate=1)
     eve_charge_item_id = client.mk_eve_item(
@@ -776,10 +850,8 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_drone_id)
-    api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
-    api_raar.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
-    # Verification - fighter receives 0 since it has no armor to apply reps to
+    api_raar.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(3000), 0, 0)
     assert api_tgt_fit_stats.hp.armor == (approx(2000), 0, approx(6900))
@@ -788,14 +860,6 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, approx(6900))
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, approx(6900))
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_raar.change_module(charge_type_id=None)
     # Verification
@@ -807,14 +871,6 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_raar.change_module(charge_type_id=eve_charge_item_id)
     # Verification
@@ -826,14 +882,6 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, approx(6900))
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, approx(6900))
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
     # Action
     api_raar.remove()
     # Verification
@@ -845,17 +893,9 @@ def test_remote_aar_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
     assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)
-    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, 0)
-    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, 0)
-    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
-    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
 
 
-def test_remote_aar_charge_rate_rounding_and_state_switch(client, consts):
+def test_remote_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
     # Rounding in this case means the way lib considers not-fully-charged-cycle
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
@@ -917,7 +957,7 @@ def test_remote_aar_charge_rate_rounding_and_state_switch(client, consts):
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_remote_aar_resist_and_rep_hp_limit(client, consts):
+def test_remote_aar_ship_resist_and_rep_hp_limit(client, consts):
     # Also check projection addition/removal
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(
@@ -989,7 +1029,7 @@ def test_remote_aar_resist_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.hull == (approx(500), 0, 0)
 
 
-def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
+def test_remote_aar_ship_proj_range_and_rep_hp_limit(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2000, 1000, 500), ship=True)
     eve_rep_item_id = make_eve_remote_aar(
@@ -1045,6 +1085,37 @@ def test_remote_aar_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.hull == (approx(500), 0, 0)
 
 
+def test_remote_aar_drone_fighter(client, consts):
+    # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
+    eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
+    eve_rep_item_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=1, charge_rate=1)
+    eve_charge_item_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_raar = api_src_fit.add_module(
+        type_id=eve_rep_item_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_item_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_drone_id)
+    api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
+    api_raar.change_module(add_projs=[api_tgt_drone.id, api_tgt_fighter.id])
+    # Verification - fighter receives 0 since it has no armor to apply reps to
+    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)
+    assert api_tgt_drone_stats.hp.armor == (approx(672), 0, approx(3000))
+    assert api_tgt_drone_stats.hp.hull == (approx(600), 0, 0)
+    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_tgt_fighter_stats.hp.shield == (approx(2190), 0, 0)
+    assert api_tgt_fighter_stats.hp.armor == (0, 0, 0)
+    assert api_tgt_fighter_stats.hp.hull == (approx(100), 0, 0)
+
+
 def test_no_ship(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
     client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
@@ -1073,7 +1144,7 @@ def test_item_not_loaded(client, consts):
     assert api_fit_stats.hp is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(hp=True))
     assert api_ship_stats.hp is None
-    api_dronee_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
-    assert api_dronee_stats.hp is None
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
+    assert api_drone_stats.hp is None
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
     assert api_fighter_stats.hp is None
