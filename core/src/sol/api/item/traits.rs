@@ -1,7 +1,7 @@
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
 use crate::{
-    def::{AttrId, ItemId, ItemTypeId},
+    def::{AttrId, AttrVal, ItemId, ItemTypeId},
     err::basic::ItemLoadedError,
     misc::{EffectId, EffectInfo, EffectMode},
     sol::SolarSystem,
@@ -112,6 +112,22 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             uad_item,
             uad_item.get_a_state(),
         );
+    }
+    // Stats - mobility
+    fn get_stat_speed(&mut self) -> Option<AttrVal> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_speed(&sol.uad, item_key)
+    }
+    fn get_stat_agility(&mut self) -> Option<AttrVal> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_agility(&sol.uad, item_key)
+    }
+    fn get_stat_align_time(&mut self) -> Option<AttrVal> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_align_time(&sol.uad, item_key)
     }
 }
 

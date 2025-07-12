@@ -1,4 +1,7 @@
-use crate::{def::AttrVal, sol::api::FitMut};
+use crate::{
+    def::AttrVal,
+    sol::api::{FitMut, ItemMutCommon},
+};
 
 impl<'a> FitMut<'a> {
     pub fn get_stat_speed(&mut self) -> Option<AttrVal> {
