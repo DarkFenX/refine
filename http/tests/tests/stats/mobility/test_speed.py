@@ -75,3 +75,81 @@ def test_ship_not_loaded(client, consts):
     assert api_fit_stats.speed is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(speed=True))
     assert api_ship_stats.speed is None
+
+
+def test_drone_modified(client, consts):
+    eve_skill_id = client.mk_eve_item()
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.own_srq,
+        loc=consts.EveModLoc.char,
+        srq=eve_skill_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_speed_attr_id)
+    eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 25}, eff_ids=[eve_mod_effect_id])
+    eve_drone_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 1350}, srqs={eve_skill_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_drone_stats.speed == approx(1350)
+    # Action
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_drone_stats.speed == approx(1687.5)
+    # Action
+    api_rig.remove()
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_drone_stats.speed == approx(1350)
+
+
+def test_fighter_modified(client, consts):
+    eve_skill_id = client.mk_eve_item()
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.own_srq,
+        loc=consts.EveModLoc.char,
+        srq=eve_skill_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_speed_attr_id)
+    eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 25}, eff_ids=[eve_mod_effect_id])
+    eve_fighter_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 873}, srqs={eve_skill_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_drone(type_id=eve_fighter_id)
+    # Verification
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_fighter_stats.speed == approx(873)
+    # Action
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_fighter_stats.speed == approx(1091.25)
+    # Action
+    api_rig.remove()
+    # Verification
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_fighter_stats.speed == approx(873)
+
+
+def test_other(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_drone_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_drone_id)
+    # Verification
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_module_stats.speed is None
