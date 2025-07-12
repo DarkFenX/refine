@@ -1,7 +1,7 @@
 use crate::{
     def::AttrVal,
     misc::{DmgKinds, DpsProfile},
-    sol::api::FitMut,
+    sol::api::{FitMut, ItemMutCommon},
     svc::vast::{StatLayerEhp, StatLayerHp, StatTank},
 };
 

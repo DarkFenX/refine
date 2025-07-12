@@ -1,3 +1,4 @@
+use super::shared::check_kind;
 use crate::{
     ac,
     def::{AttrVal, ItemKey, OF},
@@ -24,6 +25,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<StatTank<StatLayerHp>> {
+        check_kind(ctx, item_key)?;
         // Buffer - if item is not loaded, fetching those will fail
         let shield_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)?;
         let armor_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::ARMOR_HP)?;

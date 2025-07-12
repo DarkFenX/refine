@@ -3,9 +3,12 @@ pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 use crate::{
     def::{AttrId, AttrVal, ItemId, ItemTypeId},
     err::basic::ItemLoadedError,
-    misc::{EffectId, EffectInfo, EffectMode},
+    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode},
     sol::SolarSystem,
-    svc::calc::{CalcAttrVal, ModificationInfo},
+    svc::{
+        calc::{CalcAttrVal, ModificationInfo},
+        vast::{StatLayerEhp, StatLayerHp, StatTank},
+    },
 };
 
 pub trait ItemCommon: ItemSealed {
@@ -128,6 +131,27 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc.get_stat_item_align_time(&sol.uad, item_key)
+    }
+    // Stats - tank
+    fn get_stat_resists(&mut self) -> Option<StatTank<DmgKinds<AttrVal>>> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_resists(&sol.uad, item_key)
+    }
+    fn get_stat_hp(&mut self) -> Option<StatTank<StatLayerHp>> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_hp(&sol.uad, item_key)
+    }
+    fn get_stat_ehp(&mut self, incoming_dps: Option<&DpsProfile>) -> Option<StatTank<StatLayerEhp>> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_ehp(&sol.uad, item_key, incoming_dps)
+    }
+    fn get_stat_wc_ehp(&mut self) -> Option<StatTank<StatLayerEhp>> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_wc_ehp(&sol.uad, item_key)
     }
 }
 
