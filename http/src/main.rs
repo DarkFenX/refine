@@ -67,7 +67,7 @@ async fn main() {
         .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))
         .route("/sol/{sol_id}/item/{item_id}", patch(handlers::change_item))
         .route("/sol/{sol_id}/item/{item_id}", delete(handlers::delete_item))
-        .route("/sol/{sol_id}/item/{item_id}/stats", get(handlers::get_item_stats))
+        .route("/sol/{sol_id}/item/{item_id}/stats", post(handlers::get_item_stats))
         .route("/sol/{sol_id}/fleet", post(handlers::create_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", get(handlers::get_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", patch(handlers::change_fleet))

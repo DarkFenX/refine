@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from tests.fw.util import AttrDict, AttrHookDef
 from .stat_ehp import StatEhp
 from .stat_hp import StatHp

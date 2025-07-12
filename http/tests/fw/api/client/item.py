@@ -8,6 +8,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
+    from tests.fw.api.types import StatsItemOptions
     from tests.fw.consts import (
         ApiEffMode,
         ApiItemInfoMode,
@@ -50,6 +51,21 @@ class ApiClientItem(ApiClientBase):
         # server receives no content-type header
         if body:
             kwargs['json'] = body
+        return Request(client=self, **kwargs)
+
+    def get_item_stats_request(
+            self, *,
+            sol_id: str,
+            item_id: str,
+            options: StatsItemOptions | type[Absent],
+    ) -> Request:
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/item/{item_id}/stats'}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if options is not Absent:
+            kwargs['json'] = options.to_dict()
         return Request(client=self, **kwargs)
 
     # Autocharge methods

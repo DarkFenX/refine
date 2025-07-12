@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing
 
+from tests.fw.api.types.stats import ItemStats
 from tests.fw.consts import ApiItemInfoMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
 from .adj_count import AdjustableCount
@@ -15,6 +16,7 @@ from .side_effect_info import SideEffectInfo
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
+    from tests.fw.api.types import StatsItemOptions
     from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
 
 
@@ -59,6 +61,19 @@ class Item(AttrDict):
         resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id, mode=mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
+
+    def get_stats(
+            self, *,
+            options: StatsItemOptions | type[Absent],
+            status_code: int = 200,
+    ) -> ItemStats | None:
+        resp = self._client.get_item_stats_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            options=options).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        return ItemStats(data=resp.json())
 
     def change_autocharge(
             self, *,
