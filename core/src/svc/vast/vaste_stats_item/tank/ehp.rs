@@ -39,9 +39,9 @@ impl Vast {
     ) -> Option<StatTank<StatLayerEhp>> {
         let hp = self.get_stat_item_hp(ctx, calc, item_key)?;
         let resists = Vast::get_stat_item_resists(ctx, calc, item_key)?;
-        let shield_mult = Vast::get_worst_case_tanking_efficiency(&resists.shield);
-        let armor_mult = Vast::get_worst_case_tanking_efficiency(&resists.armor);
-        let hull_mult = Vast::get_worst_case_tanking_efficiency(&resists.hull);
+        let shield_mult = Vast::get_worst_case_tanking_efficiency(&resists.shield)?;
+        let armor_mult = Vast::get_worst_case_tanking_efficiency(&resists.armor)?;
+        let hull_mult = Vast::get_worst_case_tanking_efficiency(&resists.hull)?;
         Some(make_ehp(hp, shield_mult, armor_mult, hull_mult))
     }
     fn get_tanking_efficiency(resists: &DmgKinds<AttrVal>, incoming_dps: &DpsProfile) -> Option<AttrVal> {
@@ -56,9 +56,14 @@ impl Vast {
             false => None,
         }
     }
-    fn get_worst_case_tanking_efficiency(resists: &DmgKinds<AttrVal>) -> AttrVal {
-        let resist = resists.iter().copied().min().unwrap();
-        OF(1.0) / (OF(1.0) - resist)
+    fn get_worst_case_tanking_efficiency(resists: &DmgKinds<AttrVal>) -> Option<AttrVal> {
+        let dealt = OF(1.0);
+        let absorbed = resists.iter().copied().min().unwrap();
+        let received = dealt - absorbed;
+        match received > OF(0.0) {
+            true => Some(dealt / received),
+            false => None,
+        }
     }
 }
 

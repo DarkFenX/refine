@@ -4,20 +4,21 @@ from tests.fw.api import FitStatsOptions, ItemStatsOptions
 
 def test_buffer(client, consts):
     eve_shield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_shield_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_em_dmg_resonance)
-    eve_shield_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_therm_dmg_resonance)
-    eve_shield_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_kin_dmg_resonance)
-    eve_shield_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_expl_dmg_resonance)
+    eve_shield_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_em_dmg_resonance, def_val=1)
+    eve_shield_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_therm_dmg_resonance, def_val=1)
+    eve_shield_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_kin_dmg_resonance, def_val=1)
+    eve_shield_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_expl_dmg_resonance, def_val=1)
     eve_armor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_armor_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_em_dmg_resonance)
-    eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
-    eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
-    eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
+    eve_armor_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_em_dmg_resonance, def_val=1)
+    eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance, def_val=1)
+    eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance, def_val=1)
+    eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance, def_val=1)
     eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance, def_val=1)
+    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance, def_val=1)
+    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance, def_val=1)
+    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance, def_val=1)
+    eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
     eve_ship_id = client.mk_eve_ship(attrs={
         eve_shield_attr_id: 225,
         eve_shield_em_attr_id: 1,
@@ -34,10 +35,38 @@ def test_buffer(client, consts):
         eve_hull_therm_attr_id: 0.67,
         eve_hull_kin_attr_id: 0.67,
         eve_hull_expl_attr_id: 0.67})
+    eve_drone_id = client.mk_eve_ship(
+        attrs={
+            eve_shield_attr_id: 1728,
+            eve_shield_em_attr_id: 1,
+            eve_shield_therm_attr_id: 0.8,
+            eve_shield_kin_attr_id: 0.6,
+            eve_shield_expl_attr_id: 0.5,
+            eve_armor_attr_id: 672,
+            eve_armor_em_attr_id: 0.5,
+            eve_armor_therm_attr_id: 0.55,
+            eve_armor_kin_attr_id: 0.75,
+            eve_armor_expl_attr_id: 0.9,
+            eve_hull_attr_id: 600,
+            eve_hull_em_attr_id: 1,
+            eve_hull_therm_attr_id: 1,
+            eve_hull_kin_attr_id: 1,
+            eve_hull_expl_attr_id: 1})
+    eve_fighter_id = client.mk_eve_ship(
+        attrs={
+            eve_shield_attr_id: 2190,
+            eve_shield_em_attr_id: 0.7,
+            eve_shield_therm_attr_id: 0.85,
+            eve_shield_kin_attr_id: 1,
+            eve_shield_expl_attr_id: 1,
+            eve_hull_attr_id: 100,
+            eve_max_fighter_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(wc_ehp=True))
     assert api_fit_stats.wc_ehp.shield == (approx(225), 0, 0, approx(1))
@@ -47,6 +76,14 @@ def test_buffer(client, consts):
     assert api_ship_stats.wc_ehp.shield == (approx(225), 0, 0, approx(1))
     assert api_ship_stats.wc_ehp.armor == (approx(766.666667), 0, 0, approx(1.333333))
     assert api_ship_stats.wc_ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(wc_ehp=True))
+    assert api_drone_stats.wc_ehp.shield == (approx(1728), 0, 0, approx(1))
+    assert api_drone_stats.wc_ehp.armor == (approx(746.666667), 0, 0, approx(1.111111))
+    assert api_drone_stats.wc_ehp.hull == (approx(600), 0, 0, approx(1))
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(wc_ehp=True))
+    assert api_fighter_stats.wc_ehp.shield == (approx(2190), 0, 0, approx(1))
+    assert api_fighter_stats.wc_ehp.armor == (0, 0, 0, approx(1))
+    assert api_fighter_stats.wc_ehp.hull == (approx(100), 0, 0, approx(1))
 
 
 def test_local_asb(client, consts):
