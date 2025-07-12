@@ -1,5 +1,5 @@
 from tests import approx
-from tests.fw.api import StatsOptionEhp, StatsOptions
+from tests.fw.api import StatsFitOptions, StatsOptionEhp
 
 
 def test_dps_profiles(client, consts):
@@ -39,7 +39,7 @@ def test_dps_profiles(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(ehp=(True, [
+    api_stats = api_fit.get_stats(options=StatsFitOptions(ehp=(True, [
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
         StatsOptionEhp(),
         StatsOptionEhp(incoming_dps=(100, 100, -5, -25)),
@@ -121,7 +121,7 @@ def test_local_asb(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(ehp=(True, [
+    api_stats = api_fit.get_stats(options=StatsFitOptions(ehp=(True, [
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
         StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
     api_ehp_uniform, api_ehp_em_therm = api_stats.ehp
@@ -189,7 +189,7 @@ def test_local_aar(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(ehp=(True, [
+    api_stats = api_fit.get_stats(options=StatsFitOptions(ehp=(True, [
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
         StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
     api_ehp_uniform, api_ehp_em_therm = api_stats.ehp
@@ -259,7 +259,7 @@ def test_remote_asb(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_rasb.change_module(add_projs=[api_ship.id])
     # Verification
-    api_stats = api_tgt_fit.get_stats(options=StatsOptions(ehp=(True, [
+    api_stats = api_tgt_fit.get_stats(options=StatsFitOptions(ehp=(True, [
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
         StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
     api_ehp_uniform, api_ehp_em_therm = api_stats.ehp
@@ -331,7 +331,7 @@ def test_remote_aar(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_raar.change_module(add_projs=[api_ship.id])
     # Verification
-    api_stats = api_tgt_fit.get_stats(options=StatsOptions(ehp=(True, [
+    api_stats = api_tgt_fit.get_stats(options=StatsFitOptions(ehp=(True, [
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
         StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
     api_ehp_uniform, api_ehp_em_therm = api_stats.ehp
@@ -363,7 +363,7 @@ def test_no_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(ehp=(True, [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))])))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(ehp=(True, [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))])))
     assert api_stats.ehp == [None]
 
 
@@ -389,5 +389,5 @@ def test_ship_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(ehp=(True, [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))])))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(ehp=(True, [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))])))
     assert api_stats.ehp == [None]

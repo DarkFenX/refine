@@ -1,5 +1,5 @@
 from tests import approx
-from tests.fw.api import StatsOptions
+from tests.fw.api import StatsFitOptions
 
 
 def test_ship_modified(client, consts):
@@ -19,17 +19,17 @@ def test_ship_modified(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(speed=True))
     assert api_stats.speed == approx(100)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(speed=True))
     assert api_stats.speed == approx(125)
     # Action
     api_rig.remove()
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(speed=True))
     assert api_stats.speed == approx(100)
 
 
@@ -41,7 +41,7 @@ def test_ship_no_value(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(speed=True))
     assert api_stats.speed == approx(0)
 
 
@@ -51,7 +51,7 @@ def test_ship_no_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(speed=True))
     assert api_stats.speed is None
 
 
@@ -63,5 +63,5 @@ def test_ship_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(speed=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(speed=True))
     assert api_stats.speed is None

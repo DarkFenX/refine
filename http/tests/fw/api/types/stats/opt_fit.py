@@ -9,7 +9,7 @@ type StatOptionAliasRr = StatOptionAlias | tuple[bool, list[StatsOptionRr]]
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptions:
+class StatsFitOptions:
 
     default: bool = False
     high_slots: StatOptionAlias = Absent

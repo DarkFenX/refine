@@ -1,5 +1,5 @@
 from tests import approx
-from tests.fw.api import StatsOptions
+from tests.fw.api import StatsFitOptions
 
 
 def test_buffer(client, consts):
@@ -39,7 +39,7 @@ def test_buffer(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(wc_ehp=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(wc_ehp=True))
     assert api_stats.wc_ehp.shield == (approx(225), 0, 0, approx(1))
     assert api_stats.wc_ehp.armor == (approx(766.666667), 0, 0, approx(1.333333))
     assert api_stats.wc_ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
@@ -101,7 +101,7 @@ def test_local_asb(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(wc_ehp=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(wc_ehp=True))
     assert api_stats.wc_ehp.shield == (approx(1388.333333), approx(2190), 0, approx(1.666667))
     assert api_stats.wc_ehp.armor == (approx(507.777778), 0, 0, approx(1.111111))
     assert api_stats.wc_ehp.hull == (approx(902.985075), 0, 0, approx(1.492537))
@@ -163,7 +163,7 @@ def test_local_aar(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(wc_ehp=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(wc_ehp=True))
     assert api_stats.wc_ehp.shield == (approx(225), 0, 0, approx(1))
     assert api_stats.wc_ehp.armor == (approx(766.666667), approx(1664), 0, approx(1.333333))
     assert api_stats.wc_ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
@@ -227,7 +227,7 @@ def test_remote_asb(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_rasb.change_module(add_projs=[api_ship.id])
     # Verification
-    api_stats = api_tgt_fit.get_stats(options=StatsOptions(wc_ehp=True))
+    api_stats = api_tgt_fit.get_stats(options=StatsFitOptions(wc_ehp=True))
     assert api_stats.wc_ehp.shield == (approx(1388.333333), 0, approx(7125), approx(1.666667))
     assert api_stats.wc_ehp.armor == (approx(507.777778), 0, 0, approx(1.111111))
     assert api_stats.wc_ehp.hull == (approx(902.985075), 0, 0, approx(1.492537))
@@ -293,7 +293,7 @@ def test_remote_aar(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_raar.change_module(add_projs=[api_ship.id])
     # Verification
-    api_stats = api_tgt_fit.get_stats(options=StatsOptions(wc_ehp=True))
+    api_stats = api_tgt_fit.get_stats(options=StatsFitOptions(wc_ehp=True))
     assert api_stats.wc_ehp.shield == (approx(225), 0, 0, approx(1))
     assert api_stats.wc_ehp.armor == (approx(766.666667), 0, approx(1184), approx(1.333333))
     assert api_stats.wc_ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
@@ -319,7 +319,7 @@ def test_no_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(wc_ehp=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(wc_ehp=True))
     assert api_stats.wc_ehp is None
 
 
@@ -345,5 +345,5 @@ def test_ship_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(wc_ehp=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(wc_ehp=True))
     assert api_stats.wc_ehp is None

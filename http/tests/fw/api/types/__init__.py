@@ -1,3 +1,3 @@
 from .sol import SolarSystem
-from .stats import StatsOptionEhp, StatsOptionRr, StatsOptions
+from .stats import StatsFitOptions, StatsOptionEhp, StatsOptionRr
 from .validation import ValOptions

@@ -1,2 +1,2 @@
 from .client import ApiClient
-from .types import StatsOptionEhp, StatsOptionRr, StatsOptions, ValOptions
+from .types import StatsFitOptions, StatsOptionEhp, StatsOptionRr, ValOptions

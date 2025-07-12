@@ -1,5 +1,5 @@
 from tests import approx
-from tests.fw.api import StatsOptions
+from tests.fw.api import StatsFitOptions
 
 
 def test_state(client, consts):
@@ -36,21 +36,21 @@ def test_state(client, consts):
     api_module_ancil = api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(rr_shield=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_shield=True))
     assert api_stats.rr_shield == [approx(196.65)]
     # Action
     api_module_normal.change_module(state=consts.ApiModuleState.online)
     api_module_ancil.change_module(state=consts.ApiModuleState.online)
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(rr_shield=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_shield=True))
     assert api_stats.rr_shield == [approx(0)]
     # Action
     api_module_normal.change_module(state=consts.ApiModuleState.active)
     api_module_ancil.change_module(state=consts.ApiModuleState.active)
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(rr_shield=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_shield=True))
     assert api_stats.rr_shield == [approx(196.65)]
 
 
@@ -88,7 +88,7 @@ def test_zero_cycle_time(client, consts):
     api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(rr_shield=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_shield=True))
     assert api_stats.rr_shield == [approx(0)]
 
 
@@ -123,5 +123,5 @@ def test_no_cycle_time(client, consts):
     api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsOptions(rr_shield=True))
+    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_shield=True))
     assert api_stats.rr_shield == [approx(0)]
