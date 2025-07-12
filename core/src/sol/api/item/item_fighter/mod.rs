@@ -11,5 +11,6 @@ mod fit_add_fighter;
 mod fit_iter_fighters;
 mod ranged_proj;
 mod sol_get_fighter;
+mod stats;
 mod util_add_remove;
 mod util_autocharges;
