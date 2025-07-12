@@ -154,12 +154,29 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         sol.svc.get_stat_item_wc_ehp(&sol.uad, item_key)
     }
     // Stats - RR
-
     fn get_stat_rr_shield(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_orr_shield(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+    }
+    fn get_stat_rr_armor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_orr_armor(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+    }
+    fn get_stat_rr_hull(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_orr_hull(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+    }
+    fn get_stat_rr_capacitor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_orr_cap(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
     }
 }
 

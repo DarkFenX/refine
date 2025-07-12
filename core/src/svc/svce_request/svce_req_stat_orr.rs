@@ -44,4 +44,55 @@ impl Svc {
             ignore_state,
         )
     }
+    pub(crate) fn get_stat_item_orr_armor(
+        &mut self,
+        uad: &Uad,
+        reffs: &REffs,
+        item_key: FitKey,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Option<AttrVal> {
+        Vast::get_stat_item_orr_armor(
+            SvcCtx::new(uad, &self.eprojs),
+            &mut self.calc,
+            reffs,
+            item_key,
+            spool,
+            ignore_state,
+        )
+    }
+    pub(crate) fn get_stat_item_orr_hull(
+        &mut self,
+        uad: &Uad,
+        reffs: &REffs,
+        item_key: FitKey,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Option<AttrVal> {
+        Vast::get_stat_item_orr_hull(
+            SvcCtx::new(uad, &self.eprojs),
+            &mut self.calc,
+            reffs,
+            item_key,
+            spool,
+            ignore_state,
+        )
+    }
+    pub(crate) fn get_stat_item_orr_cap(
+        &mut self,
+        uad: &Uad,
+        reffs: &REffs,
+        item_key: FitKey,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Option<AttrVal> {
+        Vast::get_stat_item_orr_cap(
+            SvcCtx::new(uad, &self.eprojs),
+            &mut self.calc,
+            reffs,
+            item_key,
+            spool,
+            ignore_state,
+        )
+    }
 }
