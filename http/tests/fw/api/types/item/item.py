@@ -16,7 +16,7 @@ from .side_effect_info import SideEffectInfo
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
-    from tests.fw.api.types import StatsItemOptions
+    from tests.fw.api.types import ItemStatsOptions
     from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
 
 
@@ -64,7 +64,7 @@ class Item(AttrDict):
 
     def get_stats(
             self, *,
-            options: StatsItemOptions | type[Absent],
+            options: ItemStatsOptions | type[Absent],
             status_code: int = 200,
     ) -> ItemStats | None:
         resp = self._client.get_item_stats_request(

@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import StatsFitOptions, ValOptions
+from tests.fw.api import FitStatsOptions, ValOptions
 
 
 def test_fail_single(client, consts):
@@ -12,7 +12,7 @@ def test_fail_single(client, consts):
     api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -32,7 +32,7 @@ def test_fail_multiple(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (2, 1)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -51,7 +51,7 @@ def test_equal(client, consts):
     api_fit.set_character(type_id=eve_char_id)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 1)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is True
@@ -72,7 +72,7 @@ def test_known_failures(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (2, 1)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=(True, [api_drone1.id])))
     assert api_val.passed is False
@@ -115,7 +115,7 @@ def test_modified_max(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_char.update().attrs[eve_max_attr_id].extra == approx(0)
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -126,7 +126,7 @@ def test_modified_max(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_char.update().attrs[eve_max_attr_id].extra == approx(1)
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 1)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is True
@@ -145,7 +145,7 @@ def test_fractional_max(client, consts):
     api_fit.set_character(type_id=eve_char1_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -155,7 +155,7 @@ def test_fractional_max(client, consts):
     # Action
     api_fit.set_character(type_id=eve_char2_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 1)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is True
@@ -171,7 +171,7 @@ def test_no_char(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, None)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -192,7 +192,7 @@ def test_not_loaded_user(client, consts):
     api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -202,7 +202,7 @@ def test_not_loaded_user(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone2_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -212,7 +212,7 @@ def test_not_loaded_user(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone1_id)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -231,7 +231,7 @@ def test_not_loaded_char(client, consts):
     api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, None)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -250,7 +250,7 @@ def test_no_value_max(client, consts):
     api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -269,7 +269,7 @@ def test_criterion_drone_state(client, consts):
     api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is True
@@ -278,7 +278,7 @@ def test_criterion_drone_state(client, consts):
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is False
@@ -288,7 +288,7 @@ def test_criterion_drone_state(client, consts):
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_bay)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is True
@@ -321,7 +321,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_stats = api_fit.get_stats(options=StatsFitOptions(launched_drones=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is True

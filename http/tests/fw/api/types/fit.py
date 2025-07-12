@@ -23,7 +23,7 @@ if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.api.aliases import DpsProfile, MutaAdd
     from tests.fw.response import Response
-    from .stats import StatsFitOptions
+    from .stats import FitStatsOptions
     from .validation import ValOptions
 
 
@@ -61,7 +61,7 @@ class Fit(AttrDict):
 
     def get_stats(
             self, *,
-            options: StatsFitOptions | type[Absent],
+            options: FitStatsOptions | type[Absent],
             status_code: int = 200,
     ) -> FitStats | None:
         resp = self._client.get_fit_stats_request(

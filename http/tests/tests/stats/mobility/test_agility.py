@@ -1,5 +1,5 @@
 from tests import approx
-from tests.fw.api import StatsFitOptions, StatsItemOptions
+from tests.fw.api import FitStatsOptions, ItemStatsOptions
 
 
 def test_ship_modified_mass(client, consts):
@@ -20,28 +20,28 @@ def test_ship_modified_mass(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility == approx(4.657949)
     assert api_fit_stats.align_time == 5
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility == approx(4.657949)
     assert api_ship_stats.align_time == 5
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility == approx(6.87602)
     assert api_fit_stats.align_time == 7
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility == approx(6.87602)
     assert api_ship_stats.align_time == 7
     # Action
     api_rig.remove()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility == approx(4.657949)
     assert api_fit_stats.align_time == 5
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility == approx(4.657949)
     assert api_ship_stats.align_time == 5
 
@@ -64,28 +64,28 @@ def test_ship_modified_agility(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility == approx(4.657949)
     assert api_fit_stats.align_time == 5
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility == approx(4.657949)
     assert api_ship_stats.align_time == 5
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility == approx(3.726359)
     assert api_fit_stats.align_time == 4
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility == approx(3.726359)
     assert api_ship_stats.align_time == 4
     # Action
     api_rig.remove()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility == approx(4.657949)
     assert api_fit_stats.align_time == 5
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility == approx(4.657949)
     assert api_ship_stats.align_time == 5
 
@@ -99,10 +99,10 @@ def test_ship_zero_value_mass(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility is None
     assert api_fit_stats.align_time is None
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility is None
     assert api_ship_stats.align_time is None
 
@@ -116,10 +116,10 @@ def test_ship_zero_value_agility(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility is None
     assert api_fit_stats.align_time is None
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility is None
     assert api_ship_stats.align_time is None
 
@@ -133,10 +133,10 @@ def test_ship_no_value_mass(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility is None
     assert api_fit_stats.align_time is None
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility is None
     assert api_ship_stats.align_time is None
 
@@ -150,10 +150,10 @@ def test_ship_no_value_agility(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility is None
     assert api_fit_stats.align_time is None
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility is None
     assert api_ship_stats.align_time is None
 
@@ -165,7 +165,7 @@ def test_ship_no_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility is None
     assert api_fit_stats.align_time is None
 
@@ -179,9 +179,9 @@ def test_ship_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=StatsFitOptions(agility=True, align_time=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
     assert api_fit_stats.agility is None
     assert api_fit_stats.align_time is None
-    api_ship_stats = api_ship.get_stats(options=StatsItemOptions(agility=True, align_time=True))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_ship_stats.agility is None
     assert api_ship_stats.align_time is None

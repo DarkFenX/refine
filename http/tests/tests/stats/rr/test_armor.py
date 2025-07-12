@@ -1,5 +1,5 @@
 from tests import Spool, approx
-from tests.fw.api import StatsFitOptions, StatsOptionRr
+from tests.fw.api import FitStatsOptions, StatsOptionRr
 
 
 def test_state(client, consts):
@@ -59,7 +59,7 @@ def test_state(client, consts):
         spool=Spool.spool_scale_to_api(val=1))
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_armor=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(rr_armor=True))
     assert api_stats.rr_armor == [approx(388.5)]
     # Action
     api_module_normal.change_module(state=consts.ApiModuleState.online)
@@ -67,7 +67,7 @@ def test_state(client, consts):
     api_module_spool.change_module(state=consts.ApiModuleState.online)
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_armor=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(rr_armor=True))
     assert api_stats.rr_armor == [approx(0)]
     # Action
     api_module_normal.change_module(state=consts.ApiModuleState.active)
@@ -75,7 +75,7 @@ def test_state(client, consts):
     api_module_spool.change_module(state=consts.ApiModuleState.active)
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_armor=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(rr_armor=True))
     assert api_stats.rr_armor == [approx(388.5)]
 
 
@@ -104,7 +104,7 @@ def test_spool(client, consts):
         state=consts.ApiModuleState.active,
         spool=Spool.spool_scale_to_api(val=0.5))
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_armor=(True, [
+    api_stats = api_fit.get_stats(options=FitStatsOptions(rr_armor=(True, [
         StatsOptionRr(spool=Spool.spool_scale_to_api(val=0)),
         StatsOptionRr(),
         StatsOptionRr(spool=Spool.spool_scale_to_api(val=1))])))
@@ -165,7 +165,7 @@ def test_zero_cycle_time(client, consts):
     api_fit.add_module(type_id=eve_module_spool_id, state=consts.ApiModuleState.active)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_armor=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(rr_armor=True))
     assert api_stats.rr_armor == [approx(0)]
 
 
@@ -219,5 +219,5 @@ def test_no_cycle_time(client, consts):
     api_fit.add_module(type_id=eve_module_spool_id, state=consts.ApiModuleState.active)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=StatsFitOptions(rr_armor=True))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(rr_armor=True))
     assert api_stats.rr_armor == [approx(0)]

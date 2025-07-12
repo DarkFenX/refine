@@ -4,7 +4,7 @@ from tests.fw.api.aliases import DpsProfile
 from tests.fw.util import Absent
 
 type StatOptionAlias = bool | type[Absent]
-type StatOptionAliasEhp = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
+type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
 
 
 @dataclasses.dataclass(kw_only=True)

@@ -8,7 +8,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
-    from tests.fw.api.types import StatsItemOptions
+    from tests.fw.api.types import ItemStatsOptions
     from tests.fw.consts import (
         ApiEffMode,
         ApiItemInfoMode,
@@ -57,7 +57,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
-            options: StatsItemOptions | type[Absent],
+            options: ItemStatsOptions | type[Absent],
     ) -> Request:
         kwargs = {
             'method': 'POST',

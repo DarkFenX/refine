@@ -9,7 +9,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
-    from tests.fw.api.types import StatsFitOptions
+    from tests.fw.api.types import FitStatsOptions
     from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
 
 
@@ -35,7 +35,7 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            options: StatsFitOptions | type[Absent],
+            options: FitStatsOptions | type[Absent],
     ) -> Request:
         kwargs = {
             'method': 'POST',
