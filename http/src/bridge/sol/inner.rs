@@ -4,12 +4,12 @@ use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
         HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkTryFitItemsCmd, HChangeFitCommand,
-        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd, HRemoveItemCmd,
-        HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
+        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd, HGetItemStatsCmd,
+        HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
     },
     info::{
         HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode,
-        HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
+        HItemStats, HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
     },
     util::HExecError,
 };
@@ -353,7 +353,7 @@ impl HSolarSystemInner {
         result
     }
     /// Non-fallible
-    #[tracing::instrument(name = "sol-fit-val", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-fit-stat", level = "trace", skip_all)]
     pub(crate) async fn get_fit_stats(
         &mut self,
         tpool: &HThreadPool,
@@ -572,6 +572,28 @@ impl HSolarSystemInner {
                 Err(br_err)
             }
         }
+    }
+    /// Non-fallible
+    #[tracing::instrument(name = "sol-item-stat", level = "trace", skip_all)]
+    pub(crate) async fn get_item_stats(
+        &mut self,
+        tpool: &HThreadPool,
+        item_id: &str,
+        command: HGetItemStatsCmd,
+    ) -> Result<HItemStats, HBrError> {
+        let item_id = self.str_to_item_id(item_id)?;
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                let result = command.execute(&mut core_sol, &item_id);
+                (core_sol, result.map_err(HBrError::from))
+            })
+            .await;
+        self.put_sol_back(core_sol);
+        result
     }
     // Development-related methods
     /// Non-fallible

@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
         shared::get_primary_fit,
-        stats::options::{HStatOption, HStatOptionEhp, HStatOptionRr},
+        stats::options::{HStatOption, HStatOptionEhp, HStatOptionRr, HStatResolvedOption},
     },
     info::HFitStats,
     util::HExecError,
@@ -128,7 +128,7 @@ impl HGetFitStatsCmd {
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();
         }
-        let ehp_opt = LocalOpt::new(&self.ehp, self.default);
+        let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
             stats.ehp = Some(
                 ehp_opt
@@ -149,7 +149,7 @@ impl HGetFitStatsCmd {
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
         }
-        let rr_shield_opt = LocalOpt::new(&self.rr_shield, self.default);
+        let rr_shield_opt = HStatResolvedOption::new(&self.rr_shield, self.default);
         if rr_shield_opt.enabled {
             stats.rr_shield = Some(
                 rr_shield_opt
@@ -159,7 +159,7 @@ impl HGetFitStatsCmd {
                     .collect(),
             )
         }
-        let rr_armor_opt = LocalOpt::new(&self.rr_armor, self.default);
+        let rr_armor_opt = HStatResolvedOption::new(&self.rr_armor, self.default);
         if rr_armor_opt.enabled {
             stats.rr_armor = Some(
                 rr_armor_opt
@@ -169,7 +169,7 @@ impl HGetFitStatsCmd {
                     .collect(),
             )
         }
-        let rr_hull_opt = LocalOpt::new(&self.rr_hull, self.default);
+        let rr_hull_opt = HStatResolvedOption::new(&self.rr_hull, self.default);
         if rr_hull_opt.enabled {
             stats.rr_hull = Some(
                 rr_hull_opt
@@ -179,7 +179,7 @@ impl HGetFitStatsCmd {
                     .collect(),
             )
         }
-        let rr_capacitor_opt = LocalOpt::new(&self.rr_capacitor, self.default);
+        let rr_capacitor_opt = HStatResolvedOption::new(&self.rr_capacitor, self.default);
         if rr_capacitor_opt.enabled {
             stats.rr_capacitor = Some(
                 rr_capacitor_opt
@@ -190,34 +190,5 @@ impl HGetFitStatsCmd {
             )
         }
         Ok(stats)
-    }
-}
-
-struct LocalOpt<T> {
-    enabled: bool,
-    options: Vec<T>,
-}
-impl<T> LocalOpt<T>
-where
-    T: Copy + Clone + Default,
-{
-    fn new(root_opt: &Option<HStatOption<T>>, default: bool) -> Self {
-        match root_opt {
-            Some(inner_opt) => LocalOpt {
-                enabled: inner_opt.is_enabled(),
-                options: inner_opt.get_extended_options(),
-            },
-            None => match default {
-                true => LocalOpt {
-                    enabled: true,
-                    options: vec![T::default()],
-                },
-                // No need to allocate anything if check is disabled
-                false => LocalOpt {
-                    enabled: false,
-                    options: Vec::new(),
-                },
-            },
-        }
     }
 }

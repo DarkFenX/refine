@@ -17,3 +17,12 @@ pub(crate) fn get_primary_fleet<'a>(
         rc::err::GetFleetError::FleetNotFound(e) => HExecError::FleetNotFoundPrimary(e),
     })
 }
+
+pub(crate) fn get_primary_item<'a>(
+    core_sol: &'a mut rc::SolarSystem,
+    item_id: &rc::ItemId,
+) -> Result<rc::ItemMut<'a>, HExecError> {
+    core_sol.get_item_mut(item_id).map_err(|error| match error {
+        rc::err::GetItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+    })
+}
