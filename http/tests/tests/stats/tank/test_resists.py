@@ -5,12 +5,6 @@ from tests.tests.stats.tank import make_eve_tankable, setup_tank_basics
 
 def test_ship_modified(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
-    eve_shield_mod_attr_id = client.mk_eve_attr()
-    eve_armor_mod_attr_id = client.mk_eve_attr()
-    eve_hull_em_mod_attr_id = client.mk_eve_attr()
-    eve_hull_therm_mod_attr_id = client.mk_eve_attr()
-    eve_hull_kin_mod_attr_id = client.mk_eve_attr()
-    eve_hull_expl_mod_attr_id = client.mk_eve_attr()
     eve_ship_id = make_eve_tankable(
         client=client,
         basic_info=eve_basic_info,
@@ -18,6 +12,12 @@ def test_ship_modified(client, consts):
         resos_armor=(0.5, 0.65, 0.75, 0.7),
         resos_hull=(0.67, 0.67, 0.67, 0.67),
         ship=True)
+    eve_shield_mod_attr_id = client.mk_eve_attr()
+    eve_armor_mod_attr_id = client.mk_eve_attr()
+    eve_hull_em_mod_attr_id = client.mk_eve_attr()
+    eve_hull_therm_mod_attr_id = client.mk_eve_attr()
+    eve_hull_kin_mod_attr_id = client.mk_eve_attr()
+    eve_hull_expl_mod_attr_id = client.mk_eve_attr()
     eve_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.item,
@@ -96,30 +96,6 @@ def test_ship_modified(client, consts):
     assert api_ship_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
     assert api_ship_stats.resists.armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
     assert api_ship_stats.resists.hull == (approx(0.624934), approx(0.585739), approx(0.599608), approx(0.612271))
-
-
-def test_no_ship(client, consts):
-    setup_tank_basics(client=client, consts=consts)
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(resists=True))
-    assert api_fit_stats.resists is None
-
-
-def test_not_loaded_ship(client, consts):
-    setup_tank_basics(client=client, consts=consts)
-    eve_ship_id = client.alloc_item_id()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(resists=True))
-    assert api_fit_stats.resists is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_ship_stats.resists is None
 
 
 def test_drone_modified(client, consts):
@@ -211,3 +187,33 @@ def test_fighter_modified(client, consts):
     assert api_fighter_stats.resists.shield == (approx(0.3), approx(0.15), approx(0), approx(0))
     assert api_fighter_stats.resists.armor == (approx(0), approx(0), approx(0), approx(0))
     assert api_fighter_stats.resists.hull == (approx(0), approx(0), approx(0), approx(0))
+
+
+def test_no_ship(client, consts):
+    setup_tank_basics(client=client, consts=consts)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(resists=True))
+    assert api_fit_stats.resists is None
+
+
+def test_not_loaded_item(client, consts):
+    setup_tank_basics(client=client, consts=consts)
+    eve_item_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_item_id)
+    api_drone = api_fit.add_drone(type_id=eve_item_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_item_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(resists=True))
+    assert api_fit_stats.resists is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(resists=True))
+    assert api_ship_stats.resists is None
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(resists=True))
+    assert api_drone_stats.resists is None
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(resists=True))
+    assert api_fighter_stats.resists is None
