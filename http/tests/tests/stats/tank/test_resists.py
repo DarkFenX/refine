@@ -1,39 +1,23 @@
 from tests import Muta, approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from tests.tests.stats.tank import make_eve_tankable, setup_tank_basics
 
 
 def test_ship_modified(client, consts):
-    eve_shield_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_em_dmg_resonance)
-    eve_shield_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_therm_dmg_resonance)
-    eve_shield_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_kin_dmg_resonance)
-    eve_shield_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_expl_dmg_resonance)
-    eve_armor_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_em_dmg_resonance)
-    eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
-    eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
-    eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_shield_mod_attr_id = client.mk_eve_attr()
     eve_armor_mod_attr_id = client.mk_eve_attr()
     eve_hull_em_mod_attr_id = client.mk_eve_attr()
     eve_hull_therm_mod_attr_id = client.mk_eve_attr()
     eve_hull_kin_mod_attr_id = client.mk_eve_attr()
     eve_hull_expl_mod_attr_id = client.mk_eve_attr()
-    eve_ship_id = client.mk_eve_ship(attrs={
-        eve_shield_em_attr_id: 1,
-        eve_shield_therm_attr_id: 0.8,
-        eve_shield_kin_attr_id: 0.6,
-        eve_shield_expl_attr_id: 0.4,
-        eve_armor_em_attr_id: 0.5,
-        eve_armor_therm_attr_id: 0.65,
-        eve_armor_kin_attr_id: 0.75,
-        eve_armor_expl_attr_id: 0.7,
-        eve_hull_em_attr_id: 0.67,
-        eve_hull_therm_attr_id: 0.67,
-        eve_hull_kin_attr_id: 0.67,
-        eve_hull_expl_attr_id: 0.67})
+    eve_ship_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        resos_shield=(1, 0.8, 0.6, 0.4),
+        resos_armor=(0.5, 0.65, 0.75, 0.7),
+        resos_hull=(0.67, 0.67, 0.67, 0.67),
+        ship=True)
     eve_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.item,
@@ -42,18 +26,18 @@ def test_ship_modified(client, consts):
             affector_attr_id=eve_affector_attr_id,
             affectee_attr_id=eve_affectee_attr_id)
         for eve_affector_attr_id, eve_affectee_attr_id in (
-            (eve_shield_mod_attr_id, eve_shield_em_attr_id),
-            (eve_shield_mod_attr_id, eve_shield_therm_attr_id),
-            (eve_shield_mod_attr_id, eve_shield_kin_attr_id),
-            (eve_shield_mod_attr_id, eve_shield_expl_attr_id),
-            (eve_armor_mod_attr_id, eve_armor_em_attr_id),
-            (eve_armor_mod_attr_id, eve_armor_therm_attr_id),
-            (eve_armor_mod_attr_id, eve_armor_kin_attr_id),
-            (eve_armor_mod_attr_id, eve_armor_expl_attr_id),
-            (eve_hull_em_mod_attr_id, eve_hull_em_attr_id),
-            (eve_hull_therm_mod_attr_id, eve_hull_therm_attr_id),
-            (eve_hull_kin_mod_attr_id, eve_hull_kin_attr_id),
-            (eve_hull_expl_mod_attr_id, eve_hull_expl_attr_id))]
+            (eve_shield_mod_attr_id, eve_basic_info.shield_res_em_attr_id),
+            (eve_shield_mod_attr_id, eve_basic_info.shield_res_therm_attr_id),
+            (eve_shield_mod_attr_id, eve_basic_info.shield_res_kin_attr_id),
+            (eve_shield_mod_attr_id, eve_basic_info.shield_res_expl_attr_id),
+            (eve_armor_mod_attr_id, eve_basic_info.armor_res_em_attr_id),
+            (eve_armor_mod_attr_id, eve_basic_info.armor_res_therm_attr_id),
+            (eve_armor_mod_attr_id, eve_basic_info.armor_res_kin_attr_id),
+            (eve_armor_mod_attr_id, eve_basic_info.armor_res_expl_attr_id),
+            (eve_hull_em_mod_attr_id, eve_basic_info.hull_res_em_attr_id),
+            (eve_hull_therm_mod_attr_id, eve_basic_info.hull_res_therm_attr_id),
+            (eve_hull_kin_mod_attr_id, eve_basic_info.hull_res_kin_attr_id),
+            (eve_hull_expl_mod_attr_id, eve_basic_info.hull_res_expl_attr_id))]
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=eve_mods)
     eve_base_module_id = client.mk_eve_item(
         attrs={
@@ -115,18 +99,7 @@ def test_ship_modified(client, consts):
 
 
 def test_no_ship(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.shield_em_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.shield_therm_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.shield_kin_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.shield_expl_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_em_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    setup_tank_basics(client=client, consts=consts)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -136,18 +109,7 @@ def test_no_ship(client, consts):
 
 
 def test_not_loaded_ship(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.shield_em_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.shield_therm_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.shield_kin_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.shield_expl_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_em_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    setup_tank_basics(client=client, consts=consts)
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -161,69 +123,26 @@ def test_not_loaded_ship(client, consts):
 
 
 def test_drone_modified(client, consts):
-    eve_max_attr_id = client.mk_eve_attr(def_val=1)
-    eve_shield_em_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_em_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_shield_therm_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_therm_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_shield_kin_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_kin_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_shield_expl_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_expl_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_armor_em_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.armor_em_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_armor_therm_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.armor_therm_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_armor_kin_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.armor_kin_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_armor_expl_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.armor_expl_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_hull_em_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.em_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_hull_therm_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.therm_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_hull_kin_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.kin_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
-    eve_hull_expl_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.expl_dmg_resonance,
-        max_attr_id=eve_max_attr_id)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_drone_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        resos_shield=(1, 0.8, 0.6, 0.5),
+        resos_armor=(0.5, 0.55, 0.75, 0.9),
+        resos_hull=(1, 1, 1, 1))
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[
-            client.mk_eve_buff_mod(attr_id=eve_shield_therm_attr_id),
-            client.mk_eve_buff_mod(attr_id=eve_armor_therm_attr_id),
-            client.mk_eve_buff_mod(attr_id=eve_hull_therm_attr_id)])
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.shield_res_therm_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.armor_res_therm_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.hull_res_therm_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 70},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_ship(attrs={
-        eve_shield_em_attr_id: 1,
-        eve_shield_therm_attr_id: 0.8,
-        eve_shield_kin_attr_id: 0.6,
-        eve_shield_expl_attr_id: 0.5,
-        eve_armor_em_attr_id: 0.5,
-        eve_armor_therm_attr_id: 0.55,
-        eve_armor_kin_attr_id: 0.75,
-        eve_armor_expl_attr_id: 0.9,
-        eve_hull_em_attr_id: 1,
-        eve_hull_therm_attr_id: 1,
-        eve_hull_kin_attr_id: 1,
-        eve_hull_expl_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -250,57 +169,25 @@ def test_drone_modified(client, consts):
 
 
 def test_fighter_modified(client, consts):
-    eve_max_attr_id = client.mk_eve_attr(def_val=1)
-    eve_shield_em_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_em_dmg_resonance,
-        def_val=1,
-        max_attr_id=eve_max_attr_id)
-    eve_shield_therm_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_therm_dmg_resonance,
-        def_val=1,
-        max_attr_id=eve_max_attr_id)
-    eve_shield_kin_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_kin_dmg_resonance,
-        def_val=1,
-        max_attr_id=eve_max_attr_id)
-    eve_shield_expl_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.shield_expl_dmg_resonance,
-        def_val=1,
-        max_attr_id=eve_max_attr_id)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_em_dmg_resonance, def_val=1, max_attr_id=eve_max_attr_id)
-    eve_armor_therm_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.armor_therm_dmg_resonance,
-        def_val=1,
-        max_attr_id=eve_max_attr_id)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance, def_val=1, max_attr_id=eve_max_attr_id)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance, def_val=1, max_attr_id=eve_max_attr_id)
-    client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance, def_val=1, max_attr_id=eve_max_attr_id)
-    eve_hull_therm_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.therm_dmg_resonance,
-        def_val=1,
-        max_attr_id=eve_max_attr_id)
-    client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance, def_val=1, max_attr_id=eve_max_attr_id)
-    client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance, def_val=1, max_attr_id=eve_max_attr_id)
-    eve_max_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_fighter_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        resos_shield=(0.7, 0.85, 1, 1),
+        fighter_count=9)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[
-            client.mk_eve_buff_mod(attr_id=eve_shield_therm_attr_id),
-            client.mk_eve_buff_mod(attr_id=eve_armor_therm_attr_id),
-            client.mk_eve_buff_mod(attr_id=eve_hull_therm_attr_id)])
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.shield_res_therm_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.armor_res_therm_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_basic_info.hull_res_therm_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 70},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_ship(attrs={
-        eve_shield_em_attr_id: 0.7,
-        eve_shield_therm_attr_id: 0.85,
-        eve_shield_kin_attr_id: 1,
-        eve_shield_expl_attr_id: 1,
-        eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
