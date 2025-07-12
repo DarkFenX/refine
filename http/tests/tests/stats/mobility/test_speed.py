@@ -48,9 +48,9 @@ def test_ship_no_value(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(speed=True))
-    assert api_fit_stats.speed == approx(0)
+    assert api_fit_stats.speed == 0
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_ship_stats.speed == approx(0)
+    assert api_ship_stats.speed == 0
 
 
 def test_ship_no_ship(client, consts):
@@ -111,6 +111,7 @@ def test_drone_modified(client, consts):
 
 def test_fighter_modified(client, consts):
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_max_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
@@ -121,7 +122,7 @@ def test_fighter_modified(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 300},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 873})
+    eve_fighter_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 873, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

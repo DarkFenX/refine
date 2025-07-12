@@ -44,7 +44,7 @@ def test_state(client, consts):
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(rr_shield=True))
-    assert api_stats.rr_shield == [approx(0)]
+    assert api_stats.rr_shield == [0]
     # Action
     api_module_normal.change_module(state=consts.ApiModuleState.active)
     api_module_ancil.change_module(state=consts.ApiModuleState.active)
@@ -89,7 +89,7 @@ def test_zero_cycle_time(client, consts):
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(rr_shield=True))
-    assert api_stats.rr_shield == [approx(0)]
+    assert api_stats.rr_shield == [0]
 
 
 def test_no_cycle_time(client, consts):
@@ -124,4 +124,4 @@ def test_no_cycle_time(client, consts):
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(rr_shield=True))
-    assert api_stats.rr_shield == [approx(0)]
+    assert api_stats.rr_shield == [0]

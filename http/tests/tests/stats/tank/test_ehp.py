@@ -13,11 +13,11 @@ def test_dps_profiles(client, consts):
     eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
     eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
     eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_struct_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    eve_struct_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    eve_struct_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    eve_struct_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
+    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
+    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
+    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
     eve_ship_id = client.mk_eve_ship(attrs={
         eve_shield_attr_id: 225,
         eve_shield_em_attr_id: 1,
@@ -29,11 +29,11 @@ def test_dps_profiles(client, consts):
         eve_armor_therm_attr_id: 0.65,
         eve_armor_kin_attr_id: 0.75,
         eve_armor_expl_attr_id: 0.7,
-        eve_structure_attr_id: 525,
-        eve_struct_em_attr_id: 0.67,
-        eve_struct_therm_attr_id: 0.67,
-        eve_struct_kin_attr_id: 0.67,
-        eve_struct_expl_attr_id: 0.67})
+        eve_hull_attr_id: 525,
+        eve_hull_em_attr_id: 0.67,
+        eve_hull_therm_attr_id: 0.67,
+        eve_hull_kin_attr_id: 0.67,
+        eve_hull_expl_attr_id: 0.67})
     client.create_sources()
     api_sol = client.create_sol(default_incoming_dps=(1, 1, 0, 0))
     api_fit = api_sol.create_fit()
@@ -104,11 +104,11 @@ def test_local_asb(client, consts):
     eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
     eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
     eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_struct_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    eve_struct_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    eve_struct_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    eve_struct_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
+    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
+    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
+    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
     eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
@@ -127,11 +127,11 @@ def test_local_asb(client, consts):
         eve_armor_therm_attr_id: 0.325,
         eve_armor_kin_attr_id: 0.75,
         eve_armor_expl_attr_id: 0.9,
-        eve_structure_attr_id: 605,
-        eve_struct_em_attr_id: 0.67,
-        eve_struct_therm_attr_id: 0.67,
-        eve_struct_kin_attr_id: 0.67,
-        eve_struct_expl_attr_id: 0.67})
+        eve_hull_attr_id: 605,
+        eve_hull_em_attr_id: 0.67,
+        eve_hull_therm_attr_id: 0.67,
+        eve_hull_kin_attr_id: 0.67,
+        eve_hull_expl_attr_id: 0.67})
     eve_rep_item_id = client.mk_eve_item(
         attrs={
             eve_rep_amount_attr_id: 146,
@@ -182,11 +182,11 @@ def test_local_aar(client, consts):
     eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
     eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
     eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_struct_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    eve_struct_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    eve_struct_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    eve_struct_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
+    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
+    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
+    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
     eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
     eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
@@ -204,11 +204,11 @@ def test_local_aar(client, consts):
         eve_armor_therm_attr_id: 0.65,
         eve_armor_kin_attr_id: 0.75,
         eve_armor_expl_attr_id: 0.7,
-        eve_structure_attr_id: 525,
-        eve_struct_em_attr_id: 0.67,
-        eve_struct_therm_attr_id: 0.67,
-        eve_struct_kin_attr_id: 0.67,
-        eve_struct_expl_attr_id: 0.67})
+        eve_hull_attr_id: 525,
+        eve_hull_em_attr_id: 0.67,
+        eve_hull_therm_attr_id: 0.67,
+        eve_hull_kin_attr_id: 0.67,
+        eve_hull_expl_attr_id: 0.67})
     eve_rep_item_id = client.mk_eve_item(
         attrs={
             eve_rep_mult_attr_id: 3,
@@ -260,11 +260,11 @@ def test_remote_asb(client, consts):
     eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
     eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
     eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_struct_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    eve_struct_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    eve_struct_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    eve_struct_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
+    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
+    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
+    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
     eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
@@ -283,11 +283,11 @@ def test_remote_asb(client, consts):
         eve_armor_therm_attr_id: 0.325,
         eve_armor_kin_attr_id: 0.75,
         eve_armor_expl_attr_id: 0.9,
-        eve_structure_attr_id: 605,
-        eve_struct_em_attr_id: 0.67,
-        eve_struct_therm_attr_id: 0.67,
-        eve_struct_kin_attr_id: 0.67,
-        eve_struct_expl_attr_id: 0.67})
+        eve_hull_attr_id: 605,
+        eve_hull_em_attr_id: 0.67,
+        eve_hull_therm_attr_id: 0.67,
+        eve_hull_kin_attr_id: 0.67,
+        eve_hull_expl_attr_id: 0.67})
     eve_rep_item_id = client.mk_eve_item(
         attrs={
             eve_rep_amount_attr_id: 475,
@@ -340,11 +340,11 @@ def test_remote_aar(client, consts):
     eve_armor_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_therm_dmg_resonance)
     eve_armor_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_kin_dmg_resonance)
     eve_armor_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_expl_dmg_resonance)
-    eve_structure_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_struct_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
-    eve_struct_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
-    eve_struct_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
-    eve_struct_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
+    eve_hull_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_hull_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg_resonance)
+    eve_hull_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg_resonance)
+    eve_hull_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg_resonance)
+    eve_hull_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg_resonance)
     eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
     eve_rep_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
@@ -364,11 +364,11 @@ def test_remote_aar(client, consts):
         eve_armor_therm_attr_id: 0.65,
         eve_armor_kin_attr_id: 0.75,
         eve_armor_expl_attr_id: 0.7,
-        eve_structure_attr_id: 525,
-        eve_struct_em_attr_id: 0.67,
-        eve_struct_therm_attr_id: 0.67,
-        eve_struct_kin_attr_id: 0.67,
-        eve_struct_expl_attr_id: 0.67})
+        eve_hull_attr_id: 525,
+        eve_hull_em_attr_id: 0.67,
+        eve_hull_therm_attr_id: 0.67,
+        eve_hull_kin_attr_id: 0.67,
+        eve_hull_expl_attr_id: 0.67})
     eve_rep_item_id = client.mk_eve_item(
         attrs={
             eve_rep_mult_attr_id: 3,

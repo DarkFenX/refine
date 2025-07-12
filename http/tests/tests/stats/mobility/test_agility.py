@@ -226,6 +226,7 @@ def test_drone_modified_agility(client, consts):
 def test_fighter_modified_agility(client, consts):
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_max_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
@@ -236,7 +237,8 @@ def test_fighter_modified_agility(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -50},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_ship(attrs={eve_agility_attr_id: 700, eve_mass_attr_id: 1000})
+    eve_fighter_id = client.mk_eve_ship(
+        attrs={eve_agility_attr_id: 700, eve_mass_attr_id: 1000, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
