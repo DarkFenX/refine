@@ -19,14 +19,14 @@ pub(crate) struct HItemStats {
     pub(crate) wc_ehp: TriStateField<HStatTank<HStatLayerEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rr_shield: Option<Vec<rc::AttrVal>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rr_armor: Option<Vec<rc::AttrVal>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rr_hull: Option<Vec<rc::AttrVal>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rr_capacitor: Option<Vec<rc::AttrVal>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) rr_shield: TriStateField<Vec<rc::AttrVal>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) rr_armor: TriStateField<Vec<rc::AttrVal>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) rr_hull: TriStateField<Vec<rc::AttrVal>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) rr_capacitor: TriStateField<Vec<rc::AttrVal>>,
 }
 impl HItemStats {
     pub fn new() -> Self {
@@ -38,10 +38,10 @@ impl HItemStats {
             ehp: Option::default(),
             wc_ehp: TriStateField::default(),
             resists: TriStateField::default(),
-            rr_shield: Option::default(),
-            rr_armor: Option::default(),
-            rr_hull: Option::default(),
-            rr_capacitor: Option::default(),
+            rr_shield: TriStateField::default(),
+            rr_armor: TriStateField::default(),
+            rr_hull: TriStateField::default(),
+            rr_capacitor: TriStateField::default(),
         }
     }
 }

@@ -1117,9 +1117,7 @@ def test_remote_aar_drone_fighter(client, consts):
 
 
 def test_no_ship(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    client.mk_eve_attr(id_=consts.EveAttr.hp)
+    setup_tank_basics(client=client, consts=consts)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -1129,9 +1127,7 @@ def test_no_ship(client, consts):
 
 
 def test_item_not_loaded(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    client.mk_eve_attr(id_=consts.EveAttr.hp)
+    setup_tank_basics(client=client, consts=consts)
     eve_item_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

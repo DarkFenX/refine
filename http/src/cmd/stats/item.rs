@@ -61,19 +61,19 @@ impl HGetItemStatsCmd {
         }
         let rr_shield_opt = HStatResolvedOption::new(&self.rr_shield, self.default);
         if rr_shield_opt.enabled {
-            stats.rr_shield = get_shield_rr_stats(&mut core_item, rr_shield_opt.options);
+            stats.rr_shield = get_shield_rr_stats(&mut core_item, rr_shield_opt.options).into();
         }
         let rr_armor_opt = HStatResolvedOption::new(&self.rr_armor, self.default);
         if rr_armor_opt.enabled {
-            stats.rr_armor = get_armor_rr_stats(&mut core_item, rr_armor_opt.options);
+            stats.rr_armor = get_armor_rr_stats(&mut core_item, rr_armor_opt.options).into();
         }
         let rr_hull_opt = HStatResolvedOption::new(&self.rr_hull, self.default);
         if rr_hull_opt.enabled {
-            stats.rr_hull = get_hull_rr_stats(&mut core_item, rr_hull_opt.options);
+            stats.rr_hull = get_hull_rr_stats(&mut core_item, rr_hull_opt.options).into();
         }
         let rr_cap_opt = HStatResolvedOption::new(&self.rr_capacitor, self.default);
         if rr_cap_opt.enabled {
-            stats.rr_capacitor = get_cap_rr_stats(&mut core_item, rr_cap_opt.options);
+            stats.rr_capacitor = get_cap_rr_stats(&mut core_item, rr_cap_opt.options).into();
         }
         Ok(stats)
     }
