@@ -1,4 +1,11 @@
-use crate::{def::ItemKey, svc::SvcCtx, uad::UadItem};
+use crate::{
+    def::ItemKey,
+    svc::{
+        SvcCtx,
+        err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+    },
+    uad::UadItem,
+};
 
 pub struct StatTank<T> {
     pub shield: T,
@@ -6,14 +13,20 @@ pub struct StatTank<T> {
     pub hull: T,
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: ItemKey) -> Option<()> {
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), StatItemCheckError> {
     let uad_item = ctx.uad.items.get(item_key);
-    item_check(uad_item)
+    item_check(item_key, uad_item)
 }
 
-pub(super) fn item_check(uad_item: &UadItem) -> Option<()> {
-    match uad_item {
-        UadItem::Drone(_) | UadItem::Fighter(_) | UadItem::Ship(_) => Some(()),
-        _ => None,
+pub(super) fn item_check(item_key: ItemKey, uad_item: &UadItem) -> Result<(), StatItemCheckError> {
+    let is_loaded = match uad_item {
+        UadItem::Drone(uad_drone) => uad_drone.is_loaded(),
+        UadItem::Fighter(uad_fighter) => uad_fighter.is_loaded(),
+        UadItem::Ship(uad_ship) => uad_ship.is_loaded(),
+        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
+    };
+    match is_loaded {
+        true => Ok(()),
+        false => Err(KeyedItemLoadedError { item_key }.into()),
     }
 }

@@ -7,6 +7,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         efuncs,
+        err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
     uad::UadItem,
@@ -20,14 +21,22 @@ pub struct StatLayerReps {
 }
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_reps(
+    pub(in crate::svc) fn get_stat_item_reps_checked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
-    ) -> Option<StatTank<StatLayerReps>> {
+    ) -> Result<StatTank<StatLayerReps>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
-        item_check(uad_item)?;
+        item_check(item_key, uad_item)?;
+        Ok(self.get_stat_item_reps_unchecked(ctx, calc, uad_item))
+    }
+    fn get_stat_item_reps_unchecked(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        uad_item: &UadItem,
+    ) -> StatTank<StatLayerReps> {
         // Local reps
         let (local_shield, local_armor, local_hull) = match uad_item {
             UadItem::Ship(uad_ship) => {
@@ -39,7 +48,7 @@ impl Vast {
             }
             _ => (OF(0.0), OF(0.0), OF(0.0)),
         };
-        Some(StatTank {
+        StatTank {
             shield: StatLayerReps {
                 local: local_shield,
                 remote: OF(0.0),
@@ -55,7 +64,7 @@ impl Vast {
                 remote: OF(0.0),
                 remote_penalized: OF(0.0),
             },
-        })
+        }
     }
 }
 

@@ -16,7 +16,6 @@ pub use vaste_vals::{
     ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };
 
-pub(crate) mod err;
 mod options;
 mod result;
 mod shared;

@@ -34,7 +34,7 @@ impl Calc {
     ) -> Option<AttrVal> {
         Some(self.get_item_attr_val_full(ctx, item_key, a_attr_id).ok()?.extra)
     }
-    pub(crate) fn get_item_attr_val_extra_res(
+    pub(crate) fn get_item_attr_val_extra(
         &mut self,
         ctx: SvcCtx,
         item_key: ItemKey,

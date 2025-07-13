@@ -46,7 +46,7 @@ impl HGetItemStatsCmd {
             stats.align_time = core_item.get_stat_align_time().unwrap_or_default().into();
         }
         if self.speed.unwrap_or(self.default) {
-            stats.speed = core_item.get_stat_speed().ok().into();
+            stats.speed = core_item.get_stat_speed().into();
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_item.get_stat_hp().into();
@@ -56,7 +56,7 @@ impl HGetItemStatsCmd {
             stats.ehp = get_ehp_stats(&mut core_item, ehp_opt.options).into()
         }
         if self.wc_ehp.unwrap_or(self.default) {
-            stats.wc_ehp = core_item.get_stat_wc_ehp().into();
+            stats.wc_ehp = core_item.get_stat_wc_ehp().unwrap_or_default().into();
         }
         let reps_opt = HStatResolvedOption::new(&self.reps, self.default);
         if ehp_opt.enabled {
@@ -89,59 +89,71 @@ fn get_ehp_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionEhp>,
 ) -> Option<Vec<Option<HStatTank<HStatLayerEhp>>>> {
-    Some(
-        options
-            .into_iter()
-            .map(|inner_opt| {
-                let core_incoming_dps = inner_opt.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
-                core_item
-                    .get_stat_ehp(core_incoming_dps.as_ref())
-                    .map(|core_ehp| core_ehp.into())
-            })
-            .collect(),
-    )
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
+        match core_item.get_stat_ehp(core_incoming_dps.as_ref()) {
+            Ok(core_ehp) => results.push(core_ehp.map(|v| v.into())),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
 
 fn get_reps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionReps>,
-) -> Option<Vec<Option<HStatTank<HStatLayerReps>>>> {
-    Some(
-        options
-            .into_iter()
-            .map(|_inner_opt| core_item.get_stat_reps().map(|core_reps| core_reps.into()))
-            .collect(),
-    )
+) -> Option<Vec<HStatTank<HStatLayerReps>>> {
+    let mut results = Vec::with_capacity(options.len());
+    for _option in options {
+        match core_item.get_stat_reps() {
+            Ok(core_reps) => results.push(core_reps.into()),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
 
 fn get_shield_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
-    options
-        .iter()
-        .map(|inner_opt| {
-            core_item.get_stat_rr_shield(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state)
-        })
-        .collect()
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        match core_item.get_stat_rr_shield(option.spool.map(|spool| spool.into()), option.ignore_state) {
+            Ok(result) => results.push(result),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
 
 fn get_armor_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
-    options
-        .iter()
-        .map(|inner_opt| core_item.get_stat_rr_armor(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state))
-        .collect()
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        match core_item.get_stat_rr_armor(option.spool.map(|spool| spool.into()), option.ignore_state) {
+            Ok(result) => results.push(result),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
 
 fn get_hull_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
-    options
-        .iter()
-        .map(|inner_opt| core_item.get_stat_rr_hull(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state))
-        .collect()
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        match core_item.get_stat_rr_hull(option.spool.map(|spool| spool.into()), option.ignore_state) {
+            Ok(result) => results.push(result),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
 
 fn get_cap_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
-    options
-        .iter()
-        .map(|inner_opt| {
-            core_item.get_stat_rr_capacitor(inner_opt.spool.map(|spool| spool.into()), inner_opt.ignore_state)
-        })
-        .collect()
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        match core_item.get_stat_rr_capacitor(option.spool.map(|spool| spool.into()), option.ignore_state) {
+            Ok(result) => results.push(result),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }

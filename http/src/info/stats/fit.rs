@@ -74,7 +74,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) rr_capacitor: Option<Vec<rc::AttrVal>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) reps: TriStateField<Vec<Option<HStatTank<HStatLayerReps>>>>,
+    pub(crate) reps: TriStateField<Vec<HStatTank<HStatLayerReps>>>,
 }
 impl HFitStats {
     pub fn new() -> Self {

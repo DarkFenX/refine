@@ -8,6 +8,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         efuncs,
+        err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
     uad::UadItem,
@@ -21,18 +22,31 @@ pub struct StatLayerHp {
 }
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_hp(
+    pub(in crate::svc) fn get_stat_item_hp_checked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
-    ) -> Option<StatTank<StatLayerHp>> {
+    ) -> Result<StatTank<StatLayerHp>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
-        item_check(uad_item)?;
+        item_check(item_key, uad_item)?;
+        Ok(self.get_stat_item_hp_unchecked(ctx, calc, item_key, uad_item))
+    }
+    pub(super) fn get_stat_item_hp_unchecked(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: ItemKey,
+        uad_item: &UadItem,
+    ) -> StatTank<StatLayerHp> {
         // Buffer - if item is not loaded, fetching those will fail
-        let shield_buffer = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)?;
-        let armor_buffer = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::ARMOR_HP)?;
-        let hull_buffer = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::HP)?;
+        let shield_buffer = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)
+            .unwrap();
+        let armor_buffer = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::ARMOR_HP)
+            .unwrap();
+        let hull_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::HP).unwrap();
         // Local ancillary repairs
         let (local_asb, local_aar) = match uad_item {
             UadItem::Ship(uad_ship) => {
@@ -46,7 +60,7 @@ impl Vast {
         // Incoming remote ancillary repairs
         let remote_asb = get_remote_ancil_hp(ctx, calc, item_key, &self.irr_shield_limitable);
         let remote_aar = get_remote_ancil_hp(ctx, calc, item_key, &self.irr_armor_limitable);
-        Some(StatTank {
+        StatTank {
             shield: StatLayerHp {
                 buffer: shield_buffer,
                 ancil_local: local_asb,
@@ -62,7 +76,7 @@ impl Vast {
                 ancil_local: OF(0.0),
                 ancil_remote: OF(0.0),
             },
-        })
+        }
     }
 }
 

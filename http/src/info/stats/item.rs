@@ -28,7 +28,7 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) rr_capacitor: TriStateField<Vec<rc::AttrVal>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) reps: TriStateField<Vec<Option<HStatTank<HStatLayerReps>>>>,
+    pub(crate) reps: TriStateField<Vec<HStatTank<HStatLayerReps>>>,
 }
 impl HItemStats {
     pub fn new() -> Self {

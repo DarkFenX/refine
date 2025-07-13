@@ -1,24 +1,28 @@
 use crate::{
     def::AttrVal,
+    err::FitShipStatError,
     misc::{DmgKinds, DpsProfile},
     sol::api::{FitMut, ItemMutCommon},
     svc::vast::{StatLayerEhp, StatLayerHp, StatLayerReps, StatTank},
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_hp(&mut self) -> Option<StatTank<StatLayerHp>> {
-        self.get_ship_mut().and_then(|mut v| v.get_stat_hp())
+    pub fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_hp()?)
     }
-    pub fn get_stat_ehp(&mut self, incoming_dps: Option<&DpsProfile>) -> Option<StatTank<StatLayerEhp>> {
-        self.get_ship_mut().and_then(|mut v| v.get_stat_ehp(incoming_dps))
+    pub fn get_stat_ehp(
+        &mut self,
+        incoming_dps: Option<&DpsProfile>,
+    ) -> Result<Option<StatTank<StatLayerEhp>>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_ehp(incoming_dps)?)
     }
-    pub fn get_stat_wc_ehp(&mut self) -> Option<StatTank<StatLayerEhp>> {
-        self.get_ship_mut().and_then(|mut v| v.get_stat_wc_ehp())
+    pub fn get_stat_wc_ehp(&mut self) -> Result<Option<StatTank<StatLayerEhp>>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_wc_ehp()?)
     }
-    pub fn get_stat_reps(&mut self) -> Option<StatTank<StatLayerReps>> {
-        self.get_ship_mut().and_then(|mut v| v.get_stat_reps())
+    pub fn get_stat_reps(&mut self) -> Result<StatTank<StatLayerReps>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_reps()?)
     }
-    pub fn get_stat_resists(&mut self) -> Option<StatTank<DmgKinds<AttrVal>>> {
-        self.get_ship_mut().and_then(|mut v| v.get_stat_resists())
+    pub fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_resists()?)
     }
 }

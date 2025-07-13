@@ -1,6 +1,6 @@
 use crate::{
     err::basic::{ItemLoadedError, SupportedStatError},
-    svc::vast::err::StatItemCheckError,
+    svc::err::StatItemCheckError,
     uad::UadItems,
 };
 

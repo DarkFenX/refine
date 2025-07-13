@@ -1,4 +1,4 @@
-use crate::svc::{err::KeyedItemLoadedError, vast::err::KeyedItemKindVsStatError};
+use crate::svc::err::{KeyedItemKindVsStatError, KeyedItemLoadedError};
 
 #[derive(thiserror::Error, Debug)]
 pub enum StatItemCheckError {

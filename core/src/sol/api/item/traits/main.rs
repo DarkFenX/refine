@@ -140,55 +140,72 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
     // Stats - tank
-    fn get_stat_hp(&mut self) -> Option<StatTank<StatLayerHp>> {
+    fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_hp(&sol.uad, item_key)
+        sol.svc
+            .get_stat_item_hp(&sol.uad, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_ehp(&mut self, incoming_dps: Option<&DpsProfile>) -> Option<StatTank<StatLayerEhp>> {
+    fn get_stat_ehp(
+        &mut self,
+        incoming_dps: Option<&DpsProfile>,
+    ) -> Result<Option<StatTank<StatLayerEhp>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_ehp(&sol.uad, item_key, incoming_dps)
+        sol.svc
+            .get_stat_item_ehp(&sol.uad, item_key, incoming_dps)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_wc_ehp(&mut self) -> Option<StatTank<StatLayerEhp>> {
+    fn get_stat_wc_ehp(&mut self) -> Result<Option<StatTank<StatLayerEhp>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_wc_ehp(&sol.uad, item_key)
+        sol.svc
+            .get_stat_item_wc_ehp(&sol.uad, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_reps(&mut self) -> Option<StatTank<StatLayerReps>> {
+    fn get_stat_reps(&mut self) -> Result<StatTank<StatLayerReps>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_reps(&sol.uad, item_key)
+        sol.svc
+            .get_stat_item_reps(&sol.uad, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_resists(&mut self) -> Option<StatTank<DmgKinds<AttrVal>>> {
+    fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_resists(&sol.uad, item_key)
+        sol.svc
+            .get_stat_item_resists(&sol.uad, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
     // Stats - RR
-    fn get_stat_rr_shield(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+    fn get_stat_rr_shield(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_orr_shield(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_rr_armor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+    fn get_stat_rr_armor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_orr_armor(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_rr_hull(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+    fn get_stat_rr_hull(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_orr_hull(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_rr_capacitor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {
+    fn get_stat_rr_capacitor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_orr_cap(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
 }
 

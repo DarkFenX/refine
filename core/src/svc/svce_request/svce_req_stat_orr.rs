@@ -2,7 +2,7 @@ use crate::{
     def::{AttrVal, FitKey},
     misc::Spool,
     sol::REffs,
-    svc::{Svc, SvcCtx, vast::Vast},
+    svc::{Svc, SvcCtx, err::StatItemCheckError, vast::Vast},
     uad::Uad,
 };
 
@@ -34,8 +34,8 @@ impl Svc {
         item_key: FitKey,
         spool: Option<Spool>,
         ignore_state: bool,
-    ) -> Option<AttrVal> {
-        Vast::get_stat_item_orr_shield(
+    ) -> Result<AttrVal, StatItemCheckError> {
+        Vast::get_stat_item_orr_shield_checked(
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,
             reffs,
@@ -51,8 +51,8 @@ impl Svc {
         item_key: FitKey,
         spool: Option<Spool>,
         ignore_state: bool,
-    ) -> Option<AttrVal> {
-        Vast::get_stat_item_orr_armor(
+    ) -> Result<AttrVal, StatItemCheckError> {
+        Vast::get_stat_item_orr_armor_checked(
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,
             reffs,
@@ -68,8 +68,8 @@ impl Svc {
         item_key: FitKey,
         spool: Option<Spool>,
         ignore_state: bool,
-    ) -> Option<AttrVal> {
-        Vast::get_stat_item_orr_hull(
+    ) -> Result<AttrVal, StatItemCheckError> {
+        Vast::get_stat_item_orr_hull_checked(
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,
             reffs,
@@ -85,8 +85,8 @@ impl Svc {
         item_key: FitKey,
         spool: Option<Spool>,
         ignore_state: bool,
-    ) -> Option<AttrVal> {
-        Vast::get_stat_item_orr_cap(
+    ) -> Result<AttrVal, StatItemCheckError> {
+        Vast::get_stat_item_orr_cap_checked(
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,
             reffs,

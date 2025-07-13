@@ -128,7 +128,7 @@ impl HGetFitStatsCmd {
             stats.align_time = core_fit.get_stat_align_time().unwrap_or_default().into();
         }
         if self.speed.unwrap_or(self.default) {
-            stats.speed = core_fit.get_stat_speed().ok().into();
+            stats.speed = core_fit.get_stat_speed().into();
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();
@@ -138,7 +138,7 @@ impl HGetFitStatsCmd {
             stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options).into();
         }
         if self.wc_ehp.unwrap_or(self.default) {
-            stats.wc_ehp = core_fit.get_stat_wc_ehp().into();
+            stats.wc_ehp = core_fit.get_stat_wc_ehp().unwrap_or_default().into();
         }
         let reps_opt = HStatResolvedOption::new(&self.reps, self.default);
         if ehp_opt.enabled {
@@ -149,19 +149,19 @@ impl HGetFitStatsCmd {
         }
         let rr_shield_opt = HStatResolvedOption::new(&self.rr_shield, self.default);
         if rr_shield_opt.enabled {
-            stats.rr_shield = get_shield_rr_stats(&mut core_fit, rr_shield_opt.options);
+            stats.rr_shield = Some(get_shield_rr_stats(&mut core_fit, rr_shield_opt.options));
         }
         let rr_armor_opt = HStatResolvedOption::new(&self.rr_armor, self.default);
         if rr_armor_opt.enabled {
-            stats.rr_armor = get_armor_rr_stats(&mut core_fit, rr_armor_opt.options);
+            stats.rr_armor = Some(get_armor_rr_stats(&mut core_fit, rr_armor_opt.options));
         }
         let rr_hull_opt = HStatResolvedOption::new(&self.rr_hull, self.default);
         if rr_hull_opt.enabled {
-            stats.rr_hull = get_hull_rr_stats(&mut core_fit, rr_hull_opt.options);
+            stats.rr_hull = Some(get_hull_rr_stats(&mut core_fit, rr_hull_opt.options));
         }
         let rr_cap_opt = HStatResolvedOption::new(&self.rr_capacitor, self.default);
         if rr_cap_opt.enabled {
-            stats.rr_capacitor = get_cap_rr_stats(&mut core_fit, rr_cap_opt.options);
+            stats.rr_capacitor = Some(get_cap_rr_stats(&mut core_fit, rr_cap_opt.options));
         }
         Ok(stats)
     }
@@ -171,63 +171,52 @@ fn get_ehp_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<HStatOptionEhp>,
 ) -> Option<Vec<Option<HStatTank<HStatLayerEhp>>>> {
-    Some(
-        options
-            .into_iter()
-            .map(|inner_opt| {
-                let core_incoming_dps = inner_opt.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
-                core_fit
-                    .get_stat_ehp(core_incoming_dps.as_ref())
-                    .map(|core_ehp| core_ehp.into())
-            })
-            .collect(),
-    )
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
+        match core_fit.get_stat_ehp(core_incoming_dps.as_ref()) {
+            Ok(core_result) => results.push(core_result.map(|v| v.into())),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
 
-fn get_reps_stats(
-    core_fit: &mut rc::FitMut,
-    options: Vec<HStatOptionReps>,
-) -> Option<Vec<Option<HStatTank<HStatLayerReps>>>> {
-    Some(
-        options
-            .into_iter()
-            .map(|_inner_opt| core_fit.get_stat_reps().map(|core_reps| core_reps.into()))
-            .collect(),
-    )
+fn get_reps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionReps>) -> Option<Vec<HStatTank<HStatLayerReps>>> {
+    let mut results = Vec::with_capacity(options.len());
+    for _option in options {
+        match core_fit.get_stat_reps() {
+            Ok(core_result) => results.push(core_result.into()),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
 
-fn get_shield_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Option<Vec<rc::AttrVal>> {
-    Some(
-        options
-            .iter()
-            .map(|inner_opt| core_fit.get_stat_rr_shield(inner_opt.spool.map(|spool| spool.into())))
-            .collect(),
-    )
+fn get_shield_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
+    options
+        .iter()
+        .map(|inner_opt| core_fit.get_stat_rr_shield(inner_opt.spool.map(|spool| spool.into())))
+        .collect()
 }
 
-fn get_armor_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Option<Vec<rc::AttrVal>> {
-    Some(
-        options
-            .iter()
-            .map(|inner_opt| core_fit.get_stat_rr_armor(inner_opt.spool.map(|spool| spool.into())))
-            .collect(),
-    )
+fn get_armor_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
+    options
+        .iter()
+        .map(|inner_opt| core_fit.get_stat_rr_armor(inner_opt.spool.map(|spool| spool.into())))
+        .collect()
 }
 
-fn get_hull_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Option<Vec<rc::AttrVal>> {
-    Some(
-        options
-            .iter()
-            .map(|inner_opt| core_fit.get_stat_rr_hull(inner_opt.spool.map(|spool| spool.into())))
-            .collect(),
-    )
+fn get_hull_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
+    options
+        .iter()
+        .map(|inner_opt| core_fit.get_stat_rr_hull(inner_opt.spool.map(|spool| spool.into())))
+        .collect()
 }
 
-fn get_cap_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Option<Vec<rc::AttrVal>> {
-    Some(
-        options
-            .iter()
-            .map(|inner_opt| core_fit.get_stat_rr_capacitor(inner_opt.spool.map(|spool| spool.into())))
-            .collect(),
-    )
+fn get_cap_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
+    options
+        .iter()
+        .map(|inner_opt| core_fit.get_stat_rr_capacitor(inner_opt.spool.map(|spool| spool.into())))
+        .collect()
 }
