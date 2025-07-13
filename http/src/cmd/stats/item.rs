@@ -59,7 +59,7 @@ impl HGetItemStatsCmd {
             stats.wc_ehp = core_item.get_stat_wc_ehp().unwrap_or_default().into();
         }
         let reps_opt = HStatResolvedOption::new(&self.reps, self.default);
-        if ehp_opt.enabled {
+        if reps_opt.enabled {
             stats.reps = get_reps_stats(&mut core_item, reps_opt.options).into();
         }
         if self.resists.unwrap_or(self.default) {

@@ -7,7 +7,7 @@ from pathlib import Path
 from time import time
 
 from tests import approx
-from tests.fw.api import ValOptions
+from tests.fw.api import FitStatsOptions, ValOptions
 from tests.fw.api.types.item import Item
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
@@ -203,6 +203,36 @@ def test_item_attrs(client, consts):  # noqa: ANN001, ANN201
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     attrs2 = api_tgt_launcher.update().charge.attrs
     print_attr_diff(attrs1=attrs1, attrs2=attrs2)
+
+
+def test_stats(client, consts):  # noqa: ANN001, ANN201
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+    api_sol = client.create_sol()
+    # Fax fit
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_src_fit.add_skill(type_id=eve_skill_id, level=5)
+    api_src_fit.add_implant(type_id=21888)
+    api_src_fit.set_ship(type_id=37605)  # Minokawa
+    api_src_fit.add_module(
+        type_id=4294,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.active)
+    api_src_rrs = [
+        api_src_fit.add_module(
+            type_id=3544,
+            rack=consts.ApiRack.high,
+            state=consts.ApiModuleState.active)
+        for _ in range(8)]
+    api_src_fit.add_module(type_id=43555, rack=consts.ApiRack.high, state=consts.ApiModuleState.active, charge_type_id=42694)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_fit.set_character(type_id=1373)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=23915)  # Chimera
+    for api_src_rr in api_src_rrs:
+        api_src_rr.change_module(add_projs=[api_tgt_ship.id])
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(reps=True))
+    print(api_tgt_fit_stats.reps[0].shield)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
