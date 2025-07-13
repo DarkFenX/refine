@@ -19,6 +19,10 @@ pub(crate) fn get_local_armor_rep_amount(ctx: SvcCtx, calc: &mut Calc, item_key:
     get_local_rep_amount(ctx, calc, item_key, &ac::attrs::ARMOR_DMG_AMOUNT, &ac::attrs::ARMOR_HP)
 }
 
+pub(crate) fn get_local_hull_rep_amount(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+    get_local_rep_amount(ctx, calc, item_key, &ac::attrs::STRUCT_DMG_AMOUNT, &ac::attrs::HP)
+}
+
 pub(crate) fn get_remote_shield_rep_amount(
     ctx: SvcCtx,
     calc: &mut Calc,

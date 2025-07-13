@@ -1,0 +1,16 @@
+use crate::{
+    ac, ec,
+    nd::{NEffect, NEffectHc, eff::shared::rep_amount::get_local_shield_rep_amount},
+};
+
+pub(super) fn mk_n_effect() -> NEffect {
+    NEffect {
+        eid: Some(ec::effects::SHIELD_BOOSTING),
+        aid: ac::effects::SHIELD_BOOSTING,
+        hc: NEffectHc {
+            get_local_shield_rep_amount: Some(get_local_shield_rep_amount),
+            ..
+        },
+        ..
+    }
+}

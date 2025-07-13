@@ -1,11 +1,14 @@
 use crate::ed::EEffectId;
 
+pub(crate) const SHIELD_BOOSTING: EEffectId = 4;
 pub(crate) const MISSILE_LAUNCHING: EEffectId = 9;
 pub(crate) const TGT_ATTACK: EEffectId = 10;
 pub(crate) const LO_POWER: EEffectId = 11;
 pub(crate) const HI_POWER: EEffectId = 12;
 pub(crate) const MED_POWER: EEffectId = 13;
 pub(crate) const ONLINE: EEffectId = 16;
+pub(crate) const STRUCTURE_REPAIR: EEffectId = 26;
+pub(crate) const ARMOR_REPAIR: EEffectId = 27;
 pub(crate) const PROJECTILE_FIRED: EEffectId = 34;
 pub(crate) const LAUNCHER_FITTED: EEffectId = 40;
 pub(crate) const TURRET_FITTED: EEffectId = 42;

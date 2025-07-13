@@ -20,12 +20,15 @@ mod eff_d11691_debuff_lance;
 mod eff_d16_online;
 mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
+mod eff_d26_structure_repair;
+mod eff_d27_armor_repair;
 mod eff_d3380_warp_disrupt_sphere;
 mod eff_d34_projectile_fired;
 mod eff_d3773_hardpoint_modifier_effect;
 mod eff_d3774_slot_modifier;
 mod eff_d4928_adaptive_armor_hardener;
 mod eff_d4936_fueled_shield_boosting;
+mod eff_d4_shield_boosting;
 mod eff_d5275_fueled_armor_repair;
 mod eff_d6184_ship_mod_remote_capacitor_transmitter;
 mod eff_d6185_ship_mod_remote_hull_repairer;
@@ -92,8 +95,11 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_c6_stability_generator_plasma::mk_n_effect(),
         eff_c7_stability_generator_exotic::mk_n_effect(),
         eff_c8_stability_generator_gamma::mk_n_effect(),
+        eff_d4_shield_boosting::mk_n_effect(),
         eff_d10_tgt_attack::mk_n_effect(),
         eff_d16_online::mk_n_effect(),
+        eff_d26_structure_repair::mk_n_effect(),
+        eff_d27_armor_repair::mk_n_effect(),
         eff_d34_projectile_fired::mk_n_effect(),
         eff_d101_use_missiles::mk_n_effect(),
         eff_d660_missile_em_dmg_bonus::mk_n_effect(),

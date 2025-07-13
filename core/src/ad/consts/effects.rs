@@ -3,12 +3,15 @@
 
 use crate::{ad::AEffectId, ed::consts::effects as ece};
 
+pub(crate) const SHIELD_BOOSTING: AEffectId = AEffectId::Dogma(ece::SHIELD_BOOSTING);
 pub(crate) const MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::MISSILE_LAUNCHING);
 pub(crate) const TGT_ATTACK: AEffectId = AEffectId::Dogma(ece::TGT_ATTACK);
 pub(crate) const LO_POWER: AEffectId = AEffectId::Dogma(ece::LO_POWER);
 pub(crate) const HI_POWER: AEffectId = AEffectId::Dogma(ece::HI_POWER);
 pub(crate) const MED_POWER: AEffectId = AEffectId::Dogma(ece::MED_POWER);
 pub(crate) const ONLINE: AEffectId = AEffectId::Dogma(ece::ONLINE);
+pub(crate) const STRUCTURE_REPAIR: AEffectId = AEffectId::Dogma(ece::STRUCTURE_REPAIR);
+pub(crate) const ARMOR_REPAIR: AEffectId = AEffectId::Dogma(ece::ARMOR_REPAIR);
 pub(crate) const PROJECTILE_FIRED: AEffectId = AEffectId::Dogma(ece::PROJECTILE_FIRED);
 pub(crate) const LAUNCHER_FITTED: AEffectId = AEffectId::Dogma(ece::LAUNCHER_FITTED);
 pub(crate) const TURRET_FITTED: AEffectId = AEffectId::Dogma(ece::TURRET_FITTED);
