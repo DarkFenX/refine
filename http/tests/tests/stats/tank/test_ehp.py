@@ -160,6 +160,54 @@ def test_dps_dps_profiles_fighter(client, consts):
     assert api_fighter_ehp_kin_exp.hull == (approx(100), 0, 0, approx(1))
 
 
+def test_immunity(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship1_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        hps=(225, 575, 525),
+        resos_shield=(1, 0.8, 0.6, 0.4),
+        resos_armor=(0, 0, 0, 0),
+        resos_hull=(0.67, 0.67, 0.67, 0.67))
+    eve_ship2_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        hps=(225, 575, 525),
+        resos_shield=(1, 0.8, 0.6, 0.4),
+        resos_armor=(0, 0.65, 0.75, 0.7),
+        resos_hull=(0.67, 0.67, 0.67, 0.67))
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    api_profiles = [StatsOptionEhp(incoming_dps=(1, 0, 0, 0)), StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_profiles)))
+    api_fit_ehp_em, api_fit_ehp_uniform = api_fit_stats.ehp
+    assert api_fit_ehp_em is None
+    assert api_fit_ehp_uniform is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_profiles)))
+    api_ship_ehp_em, api_ship_ehp_uniform = api_ship_stats.ehp
+    assert api_ship_ehp_em is None
+    assert api_ship_ehp_uniform is None
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
+    # Verification
+    api_profiles = [StatsOptionEhp(incoming_dps=(1, 0, 0, 0)), StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_profiles)))
+    api_fit_ehp_em, api_fit_ehp_uniform = api_fit_stats.ehp
+    assert api_fit_ehp_em is None
+    assert api_fit_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
+    assert api_fit_ehp_uniform.armor == (approx(1095.238095), 0, 0, approx(1.904762))
+    assert api_fit_ehp_uniform.hull == (approx(783.58209), 0, 0, approx(1.492537))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_profiles)))
+    api_ship_ehp_em, api_ship_ehp_uniform = api_ship_stats.ehp
+    assert api_ship_ehp_em is None
+    assert api_ship_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
+    assert api_ship_ehp_uniform.armor == (approx(1095.238095), 0, 0, approx(1.904762))
+    assert api_ship_ehp_uniform.hull == (approx(783.58209), 0, 0, approx(1.492537))
+
+
 def test_local_asb(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(
