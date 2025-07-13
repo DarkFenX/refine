@@ -1,3 +1,5 @@
+// TODO: add anti-drone/fighter/npc TD and GD modifiers
+
 use crate::{ac, ad};
 
 pub(in crate::nd::eff) fn update_effect_td(a_effect_id: ad::AEffectId, a_effect: &mut ad::AEffect) {
