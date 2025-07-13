@@ -63,7 +63,8 @@ pub(super) fn diminish_mul(val: AttrVal, proj_mult: Option<AttrVal>, res_mult: O
 }
 
 // Multipliers affect assign operations differently: if any of multipliers is 0.0, then modification
-// is not applied altogether, otherwise it is applied fully.
+// is not applied altogether, otherwise it is applied fully. There are no such modifiers in EVE,
+// but the lib makes it to work this way.
 pub(super) fn preprocess_assign_diminish_mult(mult: Option<AttrVal>) -> Option<Option<AttrVal>> {
     match mult {
         // None means modification shouldn't be added
