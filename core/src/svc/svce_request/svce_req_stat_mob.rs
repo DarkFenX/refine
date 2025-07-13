@@ -15,14 +15,14 @@ impl Svc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_agility(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_align_time(
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_align_time(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
     }
 }

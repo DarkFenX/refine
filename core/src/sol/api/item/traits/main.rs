@@ -125,14 +125,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_speed(&sol.uad, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_agility(&mut self) -> Result<AttrVal, ItemStatError> {
+    fn get_stat_agility(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_agility(&sol.uad, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_align_time(&mut self) -> Result<AttrVal, ItemStatError> {
+    fn get_stat_align_time(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc

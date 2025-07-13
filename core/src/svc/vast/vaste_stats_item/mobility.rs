@@ -30,25 +30,24 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check(ctx, item_key)?;
         let agility = calc.get_item_attr_val_extra_res(ctx, item_key, &ac::attrs::AGILITY)?;
-        //
         if agility == OF(0.0) {
-            return Err(KeyedItemKindVsStatError { item_key }.into());
+            return Ok(None);
         }
         let mass = calc.get_item_attr_val_extra_res(ctx, item_key, &ac::attrs::MASS)?;
-        if mass == OF(0.0) {
-            return Err(KeyedItemKindVsStatError { item_key }.into());
+        if agility == OF(0.0) {
+            return Ok(None);
         }
-        Ok(AGILITY_CONST * agility * mass)
+        Ok(Some(AGILITY_CONST * agility * mass))
     }
     pub(in crate::svc) fn get_stat_item_align_time(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_agility(ctx, calc, item_key).map(|v| v.ceil())
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
+        Ok(Vast::get_stat_item_agility(ctx, calc, item_key)?.map(|v| v.ceil()))
     }
 }
 
