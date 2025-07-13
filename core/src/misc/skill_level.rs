@@ -1,5 +1,8 @@
 use crate::ad;
 
+const LVL_MIN: i32 = 0;
+const LVL_MAX: i32 = 5;
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SkillLevel {
     inner: i32,
@@ -7,14 +10,14 @@ pub struct SkillLevel {
 impl SkillLevel {
     pub fn new_checked(level: impl Into<i32>) -> Result<Self, SkillLevelError> {
         let level = level.into();
-        match (0..=5).contains(&level) {
+        match (LVL_MIN..=LVL_MAX).contains(&level) {
             true => Ok(Self { inner: level }),
             false => Err(SkillLevelError { level }),
         }
     }
     pub fn new_clamped(level: impl Into<i32>) -> Self {
         Self {
-            inner: 0.max(5.min(level.into())),
+            inner: i32::clamp(level.into(), LVL_MIN, LVL_MAX),
         }
     }
     pub fn get_inner(&self) -> i32 {

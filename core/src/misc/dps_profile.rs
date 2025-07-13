@@ -16,27 +16,31 @@ pub struct DpsProfile {
 }
 impl DpsProfile {
     pub fn new_clamped(
-        em: AttrVal,
-        thermal: AttrVal,
-        kinetic: AttrVal,
-        explosive: AttrVal,
+        em: impl Into<f64>,
+        thermal: impl Into<f64>,
+        kinetic: impl Into<f64>,
+        explosive: impl Into<f64>,
         breacher: Option<BreacherInfo>,
     ) -> Self {
         Self {
-            em: AttrVal::max(em, DPS_MIN),
-            thermal: AttrVal::max(thermal, DPS_MIN),
-            kinetic: AttrVal::max(kinetic, DPS_MIN),
-            explosive: AttrVal::max(explosive, DPS_MIN),
+            em: OF(em.into()).max(DPS_MIN),
+            thermal: OF(thermal.into()).max(DPS_MIN),
+            kinetic: OF(kinetic.into()).max(DPS_MIN),
+            explosive: OF(explosive.into()).max(DPS_MIN),
             breacher,
         }
     }
     pub fn try_new(
-        em: AttrVal,
-        thermal: AttrVal,
-        kinetic: AttrVal,
-        explosive: AttrVal,
+        em: impl Into<f64>,
+        thermal: impl Into<f64>,
+        kinetic: impl Into<f64>,
+        explosive: impl Into<f64>,
         breacher: Option<BreacherInfo>,
     ) -> Result<Self, DpsProfileError> {
+        let em = OF(em.into());
+        let thermal = OF(thermal.into());
+        let kinetic = OF(kinetic.into());
+        let explosive = OF(explosive.into());
         if em < DPS_MIN {
             return Err(DmgError::Em(em).into());
         }

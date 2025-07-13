@@ -1,15 +1,20 @@
-use crate::def::OF;
+use crate::def::{AttrVal, OF};
+
+const VAL_MIN: AttrVal = OF(0.0);
+const VAL_MAX: AttrVal = OF(1.0);
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct UnitInterval {
-    inner: OF<f64>,
+    inner: AttrVal,
 }
 impl UnitInterval {
     pub fn new_checked(value: impl Into<f64>) -> Result<Self, UnitIntervalError> {
-        let value: f64 = value.into();
-        match (0.0..=1.0).contains(&value) {
-            true => Ok(Self { inner: OF(value) }),
-            false => Err(UnitIntervalError { value }),
+        let value = OF(value.into());
+        match (VAL_MIN..=VAL_MAX).contains(&value) {
+            true => Ok(Self { inner: value }),
+            false => Err(UnitIntervalError {
+                value: value.into_inner(),
+            }),
         }
     }
     pub fn new_clamped(value: impl Into<f64>) -> Self {
@@ -17,7 +22,7 @@ impl UnitInterval {
     }
     pub(crate) fn new_clamped_of64(value: OF<f64>) -> Self {
         Self {
-            inner: OF(0.0).max(OF(1.0).min(value)),
+            inner: value.clamp(VAL_MIN, VAL_MAX),
         }
     }
     pub fn get_inner(&self) -> OF<f64> {

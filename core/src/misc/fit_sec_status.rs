@@ -1,5 +1,8 @@
 use crate::def::OF;
 
+const SS_MIN: f64 = -10.0;
+const SS_MAX: f64 = 5.0;
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FitSecStatus {
     inner: OF<f64>,
@@ -7,14 +10,14 @@ pub struct FitSecStatus {
 impl FitSecStatus {
     pub fn new_checked(sec_status: impl Into<f64>) -> Result<Self, FitSecStatusError> {
         let sec_status: f64 = sec_status.into();
-        match (-10.0..=5.0).contains(&sec_status) {
+        match (SS_MIN..=SS_MAX).contains(&sec_status) {
             true => Ok(Self { inner: OF(sec_status) }),
             false => Err(FitSecStatusError { sec_status }),
         }
     }
     pub fn new_clamped(sec_status: impl Into<f64>) -> Self {
         Self {
-            inner: OF(-10.0).max(OF(5.0).min(OF(sec_status.into()))),
+            inner: OF(f64::clamp(sec_status.into(), SS_MIN, SS_MAX)),
         }
     }
     pub fn get_inner(&self) -> OF<f64> {
