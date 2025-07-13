@@ -353,7 +353,7 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))])))
-    assert api_fit_stats.ehp == [None]
+    assert api_fit_stats.ehp is None
 
 
 def test_item_not_loaded(client, consts):
@@ -368,10 +368,10 @@ def test_item_not_loaded(client, consts):
     # Verification
     api_dps_profiles = [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_dps_profiles)))
-    assert api_fit_stats.ehp == [None]
+    assert api_fit_stats.ehp is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
-    assert api_ship_stats.ehp == [None]
+    assert api_ship_stats.ehp is None
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
-    assert api_drone_stats.ehp == [None]
+    assert api_drone_stats.ehp is None
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
-    assert api_fighter_stats.ehp == [None]
+    assert api_fighter_stats.ehp is None

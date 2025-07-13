@@ -40,11 +40,11 @@ impl Vast {
         let agility = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::AGILITY)
             .unwrap();
-        if agility == OF(0.0) {
+        if agility <= OF(0.0) {
             return None;
         }
         let mass = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MASS).unwrap();
-        if agility == OF(0.0) {
+        if mass <= OF(0.0) {
             return None;
         }
         Some(AGILITY_CONST * agility * mass)

@@ -33,6 +33,7 @@ class FitStats(AttrDict):
             'drone_bandwidth': AttrHookDef(func=lambda d: StatResource(data=d)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
             'hp': AttrHookDef(func=lambda d: StatHp(data=d) if d is not None else None),
-            'ehp': AttrHookDef(func=lambda d: [StatEhp(data=e) if e is not None else None for e in d]),
+            'ehp': AttrHookDef(
+                func=lambda d: [StatEhp(data=e) if e is not None else None for e in d] if d is not None else None),
             'wc_ehp': AttrHookDef(func=lambda d: StatEhp(data=d) if d is not None else None),
             'resists': AttrHookDef(func=lambda d: StatResists(data=d) if d is not None else None)})
