@@ -184,8 +184,8 @@ fn get_ehp_stats(
 
 fn get_reps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionReps>) -> Option<Vec<HStatTank<HStatLayerReps>>> {
     let mut results = Vec::with_capacity(options.len());
-    for _option in options {
-        match core_fit.get_stat_reps() {
+    for option in options {
+        match core_fit.get_stat_reps(option.spool.map(|v| v.into())) {
             Ok(core_result) => results.push(core_result.into()),
             Err(_) => return None,
         }

@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, ItemKey},
-    misc::{DmgKinds, DpsProfile},
+    misc::{DmgKinds, DpsProfile, Spool},
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
@@ -39,9 +39,10 @@ impl Svc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
+        spool: Option<Spool>,
     ) -> Result<StatTank<StatLayerReps>, StatItemCheckError> {
         self.vast
-            .get_stat_item_reps_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
+            .get_stat_item_reps_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, spool)
     }
     pub(crate) fn get_stat_item_resists(
         &mut self,

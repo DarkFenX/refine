@@ -105,8 +105,8 @@ fn get_reps_stats(
     options: Vec<HStatOptionReps>,
 ) -> Option<Vec<HStatTank<HStatLayerReps>>> {
     let mut results = Vec::with_capacity(options.len());
-    for _option in options {
-        match core_item.get_stat_reps() {
+    for option in options {
+        match core_item.get_stat_reps(option.spool.map(|v| v.into())) {
             Ok(core_reps) => results.push(core_reps.into()),
             Err(_) => return None,
         }

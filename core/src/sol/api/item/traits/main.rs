@@ -164,11 +164,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_wc_ehp(&sol.uad, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_reps(&mut self) -> Result<StatTank<StatLayerReps>, ItemStatError> {
+    fn get_stat_reps(&mut self, spool: Option<Spool>) -> Result<StatTank<StatLayerReps>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_reps(&sol.uad, item_key)
+            .get_stat_item_reps(&sol.uad, item_key, spool)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
     fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, ItemStatError> {

@@ -1,5 +1,5 @@
 use crate::{
-    err::basic::{FitHasShipError, ItemLoadedError, SupportedStatError},
+    err::basic::{FitHasShipError, ItemLoadedError},
     sol::api::ItemStatError,
 };
 
@@ -15,7 +15,7 @@ impl From<ItemStatError> for FitShipStatError {
         match item_err {
             ItemStatError::ItemNotLoaded(e) => e.into(),
             // All stats exposed on fit are supposed to be fetchable from ship
-            ItemStatError::UnsupportedStat(e) => unreachable!(),
+            ItemStatError::UnsupportedStat(_) => unreachable!(),
         }
     }
 }
