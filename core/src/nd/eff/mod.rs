@@ -32,9 +32,11 @@ mod eff_d6185_ship_mod_remote_hull_repairer;
 mod eff_d6186_ship_mod_remote_shield_booster;
 mod eff_d6188_ship_mod_remote_armor_repairer;
 mod eff_d6222_struct_warp_scram_block_mwd_with_npc;
+mod eff_d6422_remote_sensor_damp_falloff;
 mod eff_d6426_remote_webifier_falloff;
 mod eff_d6427_remote_sensor_boost_falloff;
 mod eff_d6476_doomsday_aoe_web;
+mod eff_d6481_doomsday_aoe_damp;
 mod eff_d6485_ftr_abil_bomb;
 mod eff_d660_missile_em_dmg_bonus;
 mod eff_d661_missile_expl_dmg_bonus;
@@ -42,11 +44,13 @@ mod eff_d662_missile_therm_dmg_bonus;
 mod eff_d6651_ship_mod_ancillary_remote_armor_repairer;
 mod eff_d6652_ship_mod_ancillary_shield_booster;
 mod eff_d6682_struct_mod_effect_stasis_webifier;
+mod eff_d6684_struct_mod_effect_remote_sensor_dampener;
 mod eff_d6687_npc_entity_remote_armor_repairer;
 mod eff_d6688_npc_entity_remote_shield_booster;
 mod eff_d6689_npc_entity_remote_hull_repairer;
 mod eff_d668_missile_kin_dmg_bonus;
 mod eff_d6690_remote_webifier_entity;
+mod eff_d6693_remote_sensor_damp_entity;
 mod eff_d6730_mod_bonus_microwarpdrive;
 mod eff_d6731_mod_bonus_afterburner;
 mod eff_d6732_warfare_link_armor;
@@ -104,17 +108,21 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6186_ship_mod_remote_shield_booster::mk_n_effect(),
         eff_d6188_ship_mod_remote_armor_repairer::mk_n_effect(),
         eff_d6222_struct_warp_scram_block_mwd_with_npc::mk_n_effect(),
+        eff_d6422_remote_sensor_damp_falloff::mk_n_effect(),
         eff_d6426_remote_webifier_falloff::mk_n_effect(),
         eff_d6427_remote_sensor_boost_falloff::mk_n_effect(),
         eff_d6476_doomsday_aoe_web::mk_n_effect(),
+        eff_d6481_doomsday_aoe_damp::mk_n_effect(),
         eff_d6485_ftr_abil_bomb::mk_n_effect(),
         eff_d6651_ship_mod_ancillary_remote_armor_repairer::mk_n_effect(),
         eff_d6652_ship_mod_ancillary_shield_booster::mk_n_effect(),
         eff_d6682_struct_mod_effect_stasis_webifier::mk_n_effect(),
+        eff_d6684_struct_mod_effect_remote_sensor_dampener::mk_n_effect(),
         eff_d6687_npc_entity_remote_armor_repairer::mk_n_effect(),
         eff_d6688_npc_entity_remote_shield_booster::mk_n_effect(),
         eff_d6689_npc_entity_remote_hull_repairer::mk_n_effect(),
         eff_d6690_remote_webifier_entity::mk_n_effect(),
+        eff_d6693_remote_sensor_damp_entity::mk_n_effect(),
         eff_d6730_mod_bonus_microwarpdrive::mk_n_effect(),
         eff_d6731_mod_bonus_afterburner::mk_n_effect(),
         eff_d6732_warfare_link_armor::mk_n_effect(),

@@ -36,6 +36,9 @@ pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: AEffectId = AEffectId::Dogma(ec
 pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: AEffectId =
     AEffectId::Dogma(ece::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC);
 pub(crate) const SERVICE_SLOT: AEffectId = AEffectId::Dogma(ece::SERVICE_SLOT);
+pub(crate) const REMOTE_SENSOR_DAMP_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_SENSOR_DAMP_FALLOFF);
+pub(crate) const SHIP_MOD_GUIDANCE_DISRUPTOR: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_GUIDANCE_DISRUPTOR);
+pub(crate) const SHIP_MOD_TRACKING_DISRUPTOR: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_TRACKING_DISRUPTOR);
 pub(crate) const REMOTE_WEBIFIER_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_FALLOFF);
 pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_SENSOR_BOOST_FALLOFF);
 pub(crate) const FTR_ABIL_MISSILES: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_MISSILES);
@@ -50,6 +53,8 @@ pub(crate) const FTR_ABIL_MJD: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_MJD);
 pub(crate) const FTR_ABIL_TACKLE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_TACKLE);
 pub(crate) const FTR_ABIL_ATK_MISSILE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_ATK_MISSILE);
 pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_WEB);
+pub(crate) const DOOMSDAY_AOE_TRACK: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_TRACK);
+pub(crate) const DOOMSDAY_AOE_DAMP: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_DAMP);
 pub(crate) const FTR_ABIL_BOMB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_BOMB);
 pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_KAMIKAZE);
 pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: AEffectId =
@@ -58,9 +63,15 @@ pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: AEffectId =
     AEffectId::Dogma(ece::SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER);
 pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: AEffectId =
     AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
+pub(crate) const STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER: AEffectId =
+    AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER);
+pub(crate) const STRUCT_MOD_EFFECT_WEAPON_DISRUPTION: AEffectId =
+    AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_WEAPON_DISRUPTION);
 pub(crate) const NPC_ENTITY_REMOTE_ARMOR_REPAIRER: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_REMOTE_ARMOR_REPAIRER);
 pub(crate) const NPC_ENTITY_REMOTE_SHIELD_BOOSTER: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_REMOTE_SHIELD_BOOSTER);
 pub(crate) const NPC_ENTITY_REMOTE_HULL_REPAIRER: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_REMOTE_HULL_REPAIRER);
+pub(crate) const REMOTE_SENSOR_DAMP_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_SENSOR_DAMP_ENTITY);
+pub(crate) const NPC_ENTITY_WEAPON_DISRUPTOR: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_WEAPON_DISRUPTOR);
 pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_ENTITY);
 pub(crate) const MOD_BONUS_MICROWARPDRIVE: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_MICROWARPDRIVE);
 pub(crate) const MOD_BONUS_AFTERBURNER: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_AFTERBURNER);

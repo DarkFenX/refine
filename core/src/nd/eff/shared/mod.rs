@@ -1,5 +1,6 @@
 pub(crate) use effect_charge::{NEffectCharge, NEffectChargeDepl};
 
+pub(in crate::nd::eff) mod damp;
 mod effect_charge;
 pub(in crate::nd::eff) mod missile_dmg_self_srq;
 pub(in crate::nd::eff) mod proj_mult;

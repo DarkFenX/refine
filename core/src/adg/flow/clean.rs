@@ -99,7 +99,7 @@ fn restore_attrs(alive: &mut ed::EData, trash: &mut ed::EData) {
 fn restore_hardcoded_buffs(alive: &mut ed::EData, trash: &mut ed::EData) {
     // Used in custom wubble effect
     move_data(&mut trash.buffs, &mut alive.buffs, |v| {
-        v.id == ec::buffs::STASIS_WEBIFICATION_BURST
+        v.id == ec::buffs::STASIS_WEBIFICATION_SPEED_PENALTY
     });
 }
 

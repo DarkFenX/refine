@@ -2,7 +2,9 @@ use crate::ed::EBuffId;
 
 pub(crate) const WARP_PENALTY: EBuffId = 4;
 pub(crate) const DISALLOW_DOCK_JUMP: EBuffId = 6;
-pub(crate) const STASIS_WEBIFICATION_BURST: EBuffId = 27;
+pub(crate) const STASIS_WEBIFICATION_SPEED_PENALTY: EBuffId = 27;
+pub(crate) const SCAN_RESOLUTION_PENALTY: EBuffId = 35;
+pub(crate) const TARGETING_RANGE_PENALTY: EBuffId = 36;
 pub(crate) const DISALLOW_TETHER: EBuffId = 57;
 pub(crate) const REMOTE_REPAIR_IMPEDANCE: EBuffId = 2201;
 pub(crate) const SHIELD_HITPOINT_BONUS: EBuffId = 2433;
