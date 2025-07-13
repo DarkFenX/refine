@@ -101,7 +101,7 @@ fn get_orr_effect_ids<'a>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,
-    a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
+    a_effect_ids: impl ExactSizeIterator<Item = &'a ad::AEffectId>,
     spool: Option<Spool>,
     rep_getter_getter: fn(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter>,
 ) -> AttrVal {

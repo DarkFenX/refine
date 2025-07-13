@@ -1,4 +1,4 @@
-use super::shared::item_check;
+use super::shared::item_key_check;
 use crate::{
     ac, ad,
     def::{AttrVal, ItemKey, OF},
@@ -16,7 +16,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: ItemKey,
     ) -> Option<StatTank<DmgKinds<AttrVal>>> {
-        item_check(ctx, item_key)?;
+        item_key_check(ctx, item_key)?;
         Some(StatTank {
             shield: Vast::get_item_shield_resists(ctx, calc, item_key)?,
             armor: Vast::get_item_armor_resists(ctx, calc, item_key)?,

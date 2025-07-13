@@ -193,16 +193,16 @@ def test_item_attrs(client, consts):  # noqa: ANN001, ANN201
     setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_drone = api_src_fit.add_drone(type_id=23510, state=consts.ApiMinionState.engaging)
+    # api_src_drone = api_src_fit.add_drone(type_id=23510, state=consts.ApiMinionState.engaging)
     api_src_module = api_src_fit.add_module(type_id=37546, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_fit.set_character(type_id=1373)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=47466)  # Praxis
-    api_tgt_turret = api_tgt_fit.add_module(type_id=3057)
+    # api_tgt_turret = api_tgt_fit.add_module(type_id=3057)
     api_tgt_launcher = api_tgt_fit.add_module(type_id=2420, charge_type_id=24523)
     api_tgt_launcher.update()
     attrs1 = api_tgt_launcher.update().charge.attrs
-    #api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    # api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     attrs2 = api_tgt_launcher.update().charge.attrs
     print_attr_diff(attrs1=attrs1, attrs2=attrs2)
