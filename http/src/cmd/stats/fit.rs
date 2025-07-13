@@ -44,12 +44,12 @@ pub(crate) struct HGetFitStatsCmd {
     hp: Option<bool>,
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
+    reps: Option<HStatOption<HStatOptionReps>>,
     resists: Option<bool>,
     rr_shield: Option<HStatOption<HStatOptionFitRr>>,
     rr_armor: Option<HStatOption<HStatOptionFitRr>>,
     rr_hull: Option<HStatOption<HStatOptionFitRr>>,
     rr_capacitor: Option<HStatOption<HStatOptionFitRr>>,
-    reps: Option<HStatOption<HStatOptionReps>>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {

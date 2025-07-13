@@ -24,12 +24,12 @@ pub(crate) struct HGetItemStatsCmd {
     hp: Option<bool>,
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
+    reps: Option<HStatOption<HStatOptionReps>>,
     resists: Option<bool>,
     rr_shield: Option<HStatOption<HStatOptionItemRr>>,
     rr_armor: Option<HStatOption<HStatOptionItemRr>>,
     rr_hull: Option<HStatOption<HStatOptionItemRr>>,
     rr_capacitor: Option<HStatOption<HStatOptionItemRr>>,
-    reps: Option<HStatOption<HStatOptionReps>>,
 }
 impl HGetItemStatsCmd {
     pub(crate) fn execute(

@@ -64,6 +64,8 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) wc_ehp: TriStateField<HStatTank<HStatLayerEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) reps: TriStateField<Vec<HStatTank<HStatLayerReps>>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) rr_shield: Option<Vec<rc::AttrVal>>,
@@ -73,8 +75,6 @@ pub(crate) struct HFitStats {
     pub(crate) rr_hull: Option<Vec<rc::AttrVal>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) rr_capacitor: Option<Vec<rc::AttrVal>>,
-    #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) reps: TriStateField<Vec<HStatTank<HStatLayerReps>>>,
 }
 impl HFitStats {
     pub fn new() -> Self {
@@ -107,12 +107,12 @@ impl HFitStats {
             hp: TriStateField::default(),
             ehp: TriStateField::default(),
             wc_ehp: TriStateField::default(),
+            reps: TriStateField::default(),
             resists: TriStateField::default(),
             rr_shield: Option::default(),
             rr_armor: Option::default(),
             rr_hull: Option::default(),
             rr_capacitor: Option::default(),
-            reps: TriStateField::default(),
         }
     }
 }
