@@ -14,17 +14,23 @@ use crate::{
 pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<ItemKey>,
-    // Remote armor/shield rep effects which can have limited charge amount
+    // Incoming remote reps
+    pub(in crate::svc::vast) irr_shield: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_shield_limitable: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_armor: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_armor_limitable: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_hull: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
         Self {
             fit_datas: RMap::new(),
             not_loaded: RSet::new(),
+            irr_shield: RMapRMap::new(),
             irr_shield_limitable: RMapRMap::new(),
+            irr_armor: RMapRMap::new(),
             irr_armor_limitable: RMapRMap::new(),
+            irr_hull: RMapRMap::new(),
         }
     }
     pub(in crate::svc) fn get_fit_data(&self, fit_key: &FitKey) -> &VastFitData {

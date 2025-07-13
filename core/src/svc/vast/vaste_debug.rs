@@ -13,6 +13,14 @@ impl Vast {
         for &item_key in self.not_loaded.iter() {
             check_item_key(uad, item_key, false)?;
         }
+        for (projectee_key, projector_especs) in self.irr_shield.iter() {
+            // Projectee are not guaranteed to be loaded
+            check_item_key(uad, *projectee_key, false)?;
+            for projector_espec in projector_especs.keys() {
+                check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
+            }
+        }
         for (projectee_key, projector_especs) in self.irr_shield_limitable.iter() {
             // Projectee are not guaranteed to be loaded
             check_item_key(uad, *projectee_key, false)?;
@@ -21,7 +29,23 @@ impl Vast {
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
+        for (projectee_key, projector_especs) in self.irr_armor.iter() {
+            // Projectee are not guaranteed to be loaded
+            check_item_key(uad, *projectee_key, false)?;
+            for projector_espec in projector_especs.keys() {
+                check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
+            }
+        }
         for (projectee_key, projector_especs) in self.irr_armor_limitable.iter() {
+            // Projectee are not guaranteed to be loaded
+            check_item_key(uad, *projectee_key, false)?;
+            for projector_espec in projector_especs.keys() {
+                check_item_key(uad, projector_espec.item_key, true)?;
+                check_a_effect_id(uad, &projector_espec.a_effect_id)?;
+            }
+        }
+        for (projectee_key, projector_especs) in self.irr_hull.iter() {
             // Projectee are not guaranteed to be loaded
             check_item_key(uad, *projectee_key, false)?;
             for projector_espec in projector_especs.keys() {
