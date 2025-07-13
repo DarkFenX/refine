@@ -35,3 +35,7 @@ pub(crate) fn floor_unerr(val: OF<f64>) -> f64 {
 pub(crate) fn ceil_unerr(val: OF<f64>) -> f64 {
     float_unerr(val).ceil().into_inner()
 }
+
+pub(crate) fn trunc_unerr(val: OF<f64>) -> f64 {
+    float_unerr(val).trunc().into_inner()
+}

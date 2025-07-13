@@ -4,7 +4,7 @@ use crate::{
     misc::{CycleCount, EffectSpec},
     nd::{NEffectCharge, NEffectChargeDepl},
     svc::SvcCtx,
-    util::floor_unerr,
+    util::trunc_unerr,
 };
 
 pub(in crate::svc) fn get_espec_cycle_count(ctx: SvcCtx, espec: EffectSpec) -> Option<CycleCount> {
@@ -101,6 +101,6 @@ fn get_crystal_cycle_count(ctx: SvcCtx, item_key: ItemKey) -> CycleCount {
         None => return CycleCount::Infinite,
     };
     let hp = charge_attrs.get(&ac::attrs::HP).copied().unwrap_or(OF(0.0));
-    let cycle_count_per_charge = floor_unerr(hp / (dmg * chance)) as Count;
+    let cycle_count_per_charge = trunc_unerr(hp / (dmg * chance)) as Count;
     CycleCount::Count(charge_count * cycle_count_per_charge)
 }
