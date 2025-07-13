@@ -7,7 +7,7 @@ use crate::{
     sol::SolarSystem,
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
-        vast::{StatLayerEhp, StatLayerHp, StatTank},
+        vast::{StatLayerEhp, StatLayerHp, StatLayerReps, StatTank},
     },
 };
 
@@ -133,11 +133,6 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         sol.svc.get_stat_item_align_time(&sol.uad, item_key)
     }
     // Stats - tank
-    fn get_stat_resists(&mut self) -> Option<StatTank<DmgKinds<AttrVal>>> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_resists(&sol.uad, item_key)
-    }
     fn get_stat_hp(&mut self) -> Option<StatTank<StatLayerHp>> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
@@ -152,6 +147,16 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc.get_stat_item_wc_ehp(&sol.uad, item_key)
+    }
+    fn get_stat_reps(&mut self) -> Option<StatTank<StatLayerReps>> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_reps(&sol.uad, item_key)
+    }
+    fn get_stat_resists(&mut self) -> Option<StatTank<DmgKinds<AttrVal>>> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc.get_stat_item_resists(&sol.uad, item_key)
     }
     // Stats - RR
     fn get_stat_rr_shield(&mut self, spool: Option<Spool>, ignore_state: bool) -> Option<AttrVal> {

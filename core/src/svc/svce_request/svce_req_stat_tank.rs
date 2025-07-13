@@ -3,7 +3,7 @@ use crate::{
     misc::{DmgKinds, DpsProfile},
     svc::{
         Svc, SvcCtx,
-        vast::{StatLayerEhp, StatLayerHp, StatTank, Vast},
+        vast::{StatLayerEhp, StatLayerHp, StatLayerReps, StatTank, Vast},
     },
     uad::Uad,
 };
@@ -25,6 +25,10 @@ impl Svc {
     pub(crate) fn get_stat_item_wc_ehp(&mut self, uad: &Uad, item_key: ItemKey) -> Option<StatTank<StatLayerEhp>> {
         self.vast
             .get_stat_item_wc_ehp(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
+    }
+    pub(crate) fn get_stat_item_reps(&mut self, uad: &Uad, item_key: ItemKey) -> Option<StatTank<StatLayerReps>> {
+        self.vast
+            .get_stat_item_reps(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_resists(
         &mut self,

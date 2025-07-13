@@ -2,7 +2,7 @@ use crate::{
     def::AttrVal,
     misc::{DmgKinds, DpsProfile},
     sol::api::{FitMut, ItemMutCommon},
-    svc::vast::{StatLayerEhp, StatLayerHp, StatTank},
+    svc::vast::{StatLayerEhp, StatLayerHp, StatLayerReps, StatTank},
 };
 
 impl<'a> FitMut<'a> {
@@ -14,6 +14,9 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_stat_wc_ehp(&mut self) -> Option<StatTank<StatLayerEhp>> {
         self.get_ship_mut().and_then(|mut v| v.get_stat_wc_ehp())
+    }
+    pub fn get_stat_reps(&mut self) -> Option<StatTank<StatLayerReps>> {
+        self.get_ship_mut().and_then(|mut v| v.get_stat_reps())
     }
     pub fn get_stat_resists(&mut self) -> Option<StatTank<DmgKinds<AttrVal>>> {
         self.get_ship_mut().and_then(|mut v| v.get_stat_resists())
