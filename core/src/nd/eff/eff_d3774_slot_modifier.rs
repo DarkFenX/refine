@@ -1,6 +1,6 @@
 use crate::{
     ac, ad, ec, ed,
-    nd::{NEffect, eff::shared::subsystem_mods::mk_modifier},
+    nd::{NEffect, eff::shared::subsystem_mods::make_modifier},
 };
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::SLOT_MODIFIER;
@@ -22,11 +22,11 @@ fn update_effect(a_effect: &mut ad::AEffect) {
     }
     a_effect
         .mods
-        .push(mk_modifier(ac::attrs::HI_SLOT_MODIFIER, ac::attrs::HI_SLOTS));
+        .push(make_modifier(ac::attrs::HI_SLOT_MODIFIER, ac::attrs::HI_SLOTS));
     a_effect
         .mods
-        .push(mk_modifier(ac::attrs::MED_SLOT_MODIFIER, ac::attrs::MED_SLOTS));
+        .push(make_modifier(ac::attrs::MED_SLOT_MODIFIER, ac::attrs::MED_SLOTS));
     a_effect
         .mods
-        .push(mk_modifier(ac::attrs::LOW_SLOT_MODIFIER, ac::attrs::LOW_SLOTS));
+        .push(make_modifier(ac::attrs::LOW_SLOT_MODIFIER, ac::attrs::LOW_SLOTS));
 }

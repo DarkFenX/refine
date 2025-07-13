@@ -5,6 +5,7 @@ pub(in crate::nd::eff) fn update_effect(a_effect_id: ad::AEffectId, a_effect: &m
         tracing::info!("effect {a_effect_id}: damp effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
+    a_effect.mods.reserve_exact(2);
     a_effect.mods.push(make_damp_mod(
         ac::attrs::MAX_TARGET_RANGE_BONUS,
         ac::attrs::MAX_TARGET_RANGE,

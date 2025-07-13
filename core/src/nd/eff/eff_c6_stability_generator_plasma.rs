@@ -24,9 +24,9 @@ fn make_effect() -> ad::AEffect {
         state: ad::AState::Active,
         buff: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::ARMOR_HITPOINT_BONUS, OF(5.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::LOCAL_ARMOR_REPAIRER_BONUS, OF(5.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::MODULE_OVERLOAD_BONUS, OF(10.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_ARMOR_HITPOINT_BONUS, OF(5.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_ARMOR_REPAIRER_BONUS, OF(5.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_MODULE_OVERHEAT_BONUS, OF(10.0)),
             ]),
             scope: ad::AEffectBuffScope::Ships,
         }),

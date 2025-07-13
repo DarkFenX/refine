@@ -13,11 +13,11 @@ pub(super) fn mk_n_effect() -> NEffect {
         adg_buff_info: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
                 ad::AEffectBuffSrcCustom::AffectorVal(
-                    ac::buffs::TARGETING_RANGE_PENALTY,
+                    ac::buffs::DAMP_BURST_TARGETING_RANGE_PENALTY,
                     ac::attrs::MAX_TARGET_RANGE_BONUS,
                 ),
                 ad::AEffectBuffSrcCustom::AffectorVal(
-                    ac::buffs::SCAN_RESOLUTION_PENALTY,
+                    ac::buffs::DAMP_BURST_SCAN_RESOLUTION_PENALTY,
                     ac::attrs::SCAN_RESOLUTION_BONUS,
                 ),
             ]),

@@ -24,8 +24,8 @@ fn make_effect() -> ad::AEffect {
         state: ad::AState::Active,
         buff: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::CAPACITOR_RECHARGE_BONUS, OF(-25.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::TARGETING_AND_DSCAN_RANGE_BONUS, OF(25.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_CAPACITOR_RECHARGE_BONUS, OF(-25.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_TARGETING_AND_DSCAN_RANGE_BONUS, OF(25.0)),
             ]),
             scope: ad::AEffectBuffScope::Ships,
         }),

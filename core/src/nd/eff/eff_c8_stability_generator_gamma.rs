@@ -24,9 +24,9 @@ fn make_effect() -> ad::AEffect {
         state: ad::AState::Active,
         buff: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SHIELD_HITPOINT_BONUS, OF(5.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::LOCAL_SHIELD_BOOSTER_BONUS, OF(5.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::CAPACITOR_CAPACITY_BONUS, OF(10.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SHIELD_HITPOINT_BONUS, OF(5.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SHIELD_BOOSTER_BONUS, OF(5.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_CAPACITOR_CAPACITY_BONUS, OF(10.0)),
             ]),
             scope: ad::AEffectBuffScope::Ships,
         }),

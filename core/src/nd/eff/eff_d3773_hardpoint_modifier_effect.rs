@@ -1,6 +1,6 @@
 use crate::{
     ac, ad, ec, ed,
-    nd::{NEffect, eff::shared::subsystem_mods::mk_modifier},
+    nd::{NEffect, eff::shared::subsystem_mods::make_modifier},
 };
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::HARDPOINT_MODIFIER_EFFECT;
@@ -20,11 +20,11 @@ fn update_effect(a_effect: &mut ad::AEffect) {
         tracing::info!("effect {A_EFFECT_ID}: hardpoint modifier effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    a_effect.mods.push(mk_modifier(
+    a_effect.mods.push(make_modifier(
         ac::attrs::TURRET_HARDPOINT_MODIFIER,
         ac::attrs::TURRET_SLOTS_LEFT,
     ));
-    a_effect.mods.push(mk_modifier(
+    a_effect.mods.push(make_modifier(
         ac::attrs::LAUNCHER_HARDPOINT_MODIFIER,
         ac::attrs::LAUNCHER_SLOTS_LEFT,
     ));

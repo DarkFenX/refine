@@ -24,8 +24,8 @@ fn make_effect() -> ad::AEffect {
         state: ad::AState::Active,
         buff: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::ADDITIONAL_BASE_WARP_SPEED, OF(2.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SCAN_RESOLUTION_BONUS, OF(25.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_WARP_SPEED_ADD, OF(2.0)),
+                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SCAN_RESOLUTION_BONUS, OF(25.0)),
             ]),
             scope: ad::AEffectBuffScope::Ships,
         }),

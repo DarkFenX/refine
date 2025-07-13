@@ -12,7 +12,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: ac::effects::DOOMSDAY_AOE_WEB,
         adg_buff_info: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![ad::AEffectBuffSrcCustom::AffectorVal(
-                ac::buffs::STASIS_WEBIFICATION_SPEED_PENALTY,
+                ac::buffs::STASIS_WEBIFICATION_BURST,
                 ac::attrs::SPEED_FACTOR,
             )]),
             scope: ad::AEffectBuffScope::Everything,
