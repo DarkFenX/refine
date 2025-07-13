@@ -1,11 +1,11 @@
 use crate::{
     cmd::{
         shared::get_primary_fit,
-        stats::options::{HStatOption, HStatOptionEhp, HStatOptionFitRr, HStatResolvedOption},
+        stats::options::{HStatOption, HStatOptionEhp, HStatOptionFitRr, HStatOptionReps, HStatResolvedOption},
     },
     info::{
         HFitStats,
-        stats::{HStatLayerEhp, HStatTank},
+        stats::{HStatLayerEhp, HStatLayerReps, HStatTank},
     },
     util::HExecError,
 };
@@ -49,6 +49,7 @@ pub(crate) struct HGetFitStatsCmd {
     rr_armor: Option<HStatOption<HStatOptionFitRr>>,
     rr_hull: Option<HStatOption<HStatOptionFitRr>>,
     rr_capacitor: Option<HStatOption<HStatOptionFitRr>>,
+    reps: Option<HStatOption<HStatOptionReps>>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -134,10 +135,14 @@ impl HGetFitStatsCmd {
         }
         let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
-            stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options);
+            stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options).into();
         }
         if self.wc_ehp.unwrap_or(self.default) {
             stats.wc_ehp = core_fit.get_stat_wc_ehp().into();
+        }
+        let reps_opt = HStatResolvedOption::new(&self.reps, self.default);
+        if ehp_opt.enabled {
+            stats.reps = get_reps_stats(&mut core_fit, reps_opt.options).into();
         }
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
@@ -175,6 +180,18 @@ fn get_ehp_stats(
                     .get_stat_ehp(core_incoming_dps.as_ref())
                     .map(|core_ehp| core_ehp.into())
             })
+            .collect(),
+    )
+}
+
+fn get_reps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<HStatOptionReps>,
+) -> Option<Vec<Option<HStatTank<HStatLayerReps>>>> {
+    Some(
+        options
+            .into_iter()
+            .map(|_inner_opt| core_fit.get_stat_reps().map(|core_reps| core_reps.into()))
             .collect(),
     )
 }

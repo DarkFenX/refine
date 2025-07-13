@@ -3,11 +3,11 @@ use rc::ItemMutCommon;
 use crate::{
     cmd::{
         shared::get_primary_item,
-        stats::options::{HStatOption, HStatOptionEhp, HStatOptionItemRr, HStatResolvedOption},
+        stats::options::{HStatOption, HStatOptionEhp, HStatOptionItemRr, HStatOptionReps, HStatResolvedOption},
     },
     info::{
         HItemStats,
-        stats::{HStatLayerEhp, HStatTank},
+        stats::{HStatLayerEhp, HStatLayerReps, HStatTank},
     },
     util::HExecError,
 };
@@ -29,6 +29,7 @@ pub(crate) struct HGetItemStatsCmd {
     rr_armor: Option<HStatOption<HStatOptionItemRr>>,
     rr_hull: Option<HStatOption<HStatOptionItemRr>>,
     rr_capacitor: Option<HStatOption<HStatOptionItemRr>>,
+    reps: Option<HStatOption<HStatOptionReps>>,
 }
 impl HGetItemStatsCmd {
     pub(crate) fn execute(
@@ -52,10 +53,14 @@ impl HGetItemStatsCmd {
         }
         let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
-            stats.ehp = Some(get_ehp_stats(&mut core_item, ehp_opt.options))
+            stats.ehp = get_ehp_stats(&mut core_item, ehp_opt.options).into()
         }
         if self.wc_ehp.unwrap_or(self.default) {
             stats.wc_ehp = core_item.get_stat_wc_ehp().into();
+        }
+        let reps_opt = HStatResolvedOption::new(&self.reps, self.default);
+        if ehp_opt.enabled {
+            stats.reps = get_reps_stats(&mut core_item, reps_opt.options).into();
         }
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_item.get_stat_resists().into();
@@ -80,16 +85,33 @@ impl HGetItemStatsCmd {
     }
 }
 
-fn get_ehp_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionEhp>) -> Vec<Option<HStatTank<HStatLayerEhp>>> {
-    options
-        .into_iter()
-        .map(|inner_opt| {
-            let core_incoming_dps = inner_opt.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
-            core_item
-                .get_stat_ehp(core_incoming_dps.as_ref())
-                .map(|core_ehp| core_ehp.into())
-        })
-        .collect()
+fn get_ehp_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionEhp>,
+) -> Option<Vec<Option<HStatTank<HStatLayerEhp>>>> {
+    Some(
+        options
+            .into_iter()
+            .map(|inner_opt| {
+                let core_incoming_dps = inner_opt.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
+                core_item
+                    .get_stat_ehp(core_incoming_dps.as_ref())
+                    .map(|core_ehp| core_ehp.into())
+            })
+            .collect(),
+    )
+}
+
+fn get_reps_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionReps>,
+) -> Option<Vec<Option<HStatTank<HStatLayerReps>>>> {
+    Some(
+        options
+            .into_iter()
+            .map(|_inner_opt| core_item.get_stat_reps().map(|core_reps| core_reps.into()))
+            .collect(),
+    )
 }
 
 fn get_shield_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRr>) -> Option<Vec<rc::AttrVal>> {
