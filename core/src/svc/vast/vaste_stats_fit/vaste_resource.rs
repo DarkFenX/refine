@@ -67,9 +67,9 @@ fn get_resource_stats_fitting<'a>(
     use_a_attr_id: &ad::AAttrId,
     output_a_attr_id: &ad::AAttrId,
 ) -> StatRes {
-    let output = calc.get_item_attr_val_extra_opt(ctx, fit.ship, output_a_attr_id);
+    let output = calc.get_item_attr_val_extra_opt_opt(ctx, fit.ship, output_a_attr_id);
     let used = items
-        .filter_map(|item_key| calc.get_item_attr_val_extra(ctx, *item_key, use_a_attr_id))
+        .filter_map(|item_key| calc.get_item_attr_val_extra_opt(ctx, *item_key, use_a_attr_id))
         .sum();
     // Round possible float errors despite individual use values being rounded
     StatRes {
@@ -84,7 +84,7 @@ fn get_resource_stats_other<'a>(
     items_use: impl Iterator<Item = &'a AttrVal>,
     output_a_attr_id: &ad::AAttrId,
 ) -> StatRes {
-    let output = calc.get_item_attr_val_extra_opt(ctx, fit.ship, output_a_attr_id);
+    let output = calc.get_item_attr_val_extra_opt_opt(ctx, fit.ship, output_a_attr_id);
     let used = items_use.sum();
     StatRes { used, output }
 }

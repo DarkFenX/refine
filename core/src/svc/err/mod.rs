@@ -1,3 +1,3 @@
-pub(crate) use keyed_item_loaded::KeyedItemLoadedError;
+pub(crate) use item_loaded::KeyedItemLoadedError;
 
-mod keyed_item_loaded;
+mod item_loaded;

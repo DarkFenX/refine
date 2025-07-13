@@ -2,7 +2,7 @@
 
 pub(crate) use base::{ItemMutationData, get_combined_a_attr_values};
 use base::{UadItemBase, UadItemBaseMutable};
-pub(crate) use container::Items;
+pub(crate) use container::UadItems;
 pub(crate) use item::UadItem;
 pub(crate) use item_autocharge::UadAutocharge;
 pub(crate) use item_booster::UadBooster;

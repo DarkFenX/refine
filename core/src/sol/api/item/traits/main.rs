@@ -1,5 +1,6 @@
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
+use super::err::{GetItemAttrError, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError};
 use crate::{
     def::{AttrId, AttrVal, ItemId, ItemTypeId},
     err::basic::ItemLoadedError,
@@ -117,20 +118,26 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         );
     }
     // Stats - mobility
-    fn get_stat_speed(&mut self) -> Option<AttrVal> {
+    fn get_stat_speed(&mut self) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_speed(&sol.uad, item_key)
+        sol.svc
+            .get_stat_item_speed(&sol.uad, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_agility(&mut self) -> Option<AttrVal> {
+    fn get_stat_agility(&mut self) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_agility(&sol.uad, item_key)
+        sol.svc
+            .get_stat_item_agility(&sol.uad, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_align_time(&mut self) -> Option<AttrVal> {
+    fn get_stat_align_time(&mut self) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.svc.get_stat_item_align_time(&sol.uad, item_key)
+        sol.svc
+            .get_stat_item_align_time(&sol.uad, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
     // Stats - tank
     fn get_stat_hp(&mut self) -> Option<StatTank<StatLayerHp>> {
@@ -196,28 +203,4 @@ mod private {
     pub trait ItemMutSealed: ItemSealed {
         fn get_sol_mut(&mut self) -> &mut SolarSystem;
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemAttrError {
-    #[error("{0}")]
-    ItemNotLoaded(#[from] ItemLoadedError),
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum IterItemAttrsError {
-    #[error("{0}")]
-    ItemNotLoaded(#[from] ItemLoadedError),
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum IterItemEffectsError {
-    #[error("{0}")]
-    ItemNotLoaded(#[from] ItemLoadedError),
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum IterItemModifiersError {
-    #[error("{0}")]
-    ItemNotLoaded(#[from] ItemLoadedError),
 }

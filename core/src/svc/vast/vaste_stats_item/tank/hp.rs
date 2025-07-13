@@ -30,9 +30,9 @@ impl Vast {
         let uad_item = ctx.uad.items.get(item_key);
         item_check(uad_item)?;
         // Buffer - if item is not loaded, fetching those will fail
-        let shield_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)?;
-        let armor_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::ARMOR_HP)?;
-        let hull_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::HP)?;
+        let shield_buffer = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)?;
+        let armor_buffer = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::ARMOR_HP)?;
+        let hull_buffer = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::HP)?;
         // Local ancillary repairs
         let (local_asb, local_aar) = match uad_item {
             UadItem::Ship(uad_ship) => {

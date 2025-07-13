@@ -3,4 +3,4 @@ use crate::{
     uad::{container::EntityContainer, item::UadItem},
 };
 
-pub(crate) type Items = EntityContainer<UadItem, ItemFoundError>;
+pub(crate) type UadItems = EntityContainer<UadItem, ItemFoundError>;

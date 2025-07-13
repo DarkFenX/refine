@@ -3,39 +3,63 @@ use ordered_float::Float;
 use crate::{
     ac,
     def::{AttrVal, ItemKey, OF},
-    svc::{SvcCtx, calc::Calc, vast::Vast},
-    uad::UadItem,
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        vast::{
+            Vast,
+            err::{KeyedItemKindVsStatError, StatItemCheckError},
+        },
+    },
+    uad::{ShipKind, UadItem},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
 pub(super) const AGILITY_CONST: AttrVal = OF(f64::from_bits(0x3eb74216c502a54f));
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_speed(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+    pub(in crate::svc) fn get_stat_item_speed(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: ItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
         item_check(ctx, item_key)?;
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_VELOCITY)
+        Ok(calc.get_item_attr_val_extra_res(ctx, item_key, &ac::attrs::MAX_VELOCITY)?)
     }
-    pub(in crate::svc) fn get_stat_item_agility(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+    pub(in crate::svc) fn get_stat_item_agility(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: ItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
         item_check(ctx, item_key)?;
-        let agility = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::AGILITY)?;
+        let agility = calc.get_item_attr_val_extra_res(ctx, item_key, &ac::attrs::AGILITY)?;
+        //
         if agility == OF(0.0) {
-            return None;
+            return Err(KeyedItemKindVsStatError { item_key }.into());
         }
-        let mass = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MASS)?;
+        let mass = calc.get_item_attr_val_extra_res(ctx, item_key, &ac::attrs::MASS)?;
         if mass == OF(0.0) {
-            return None;
+            return Err(KeyedItemKindVsStatError { item_key }.into());
         }
-        Some(AGILITY_CONST * agility * mass)
+        Ok(AGILITY_CONST * agility * mass)
     }
-    pub(in crate::svc) fn get_stat_item_align_time(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+    pub(in crate::svc) fn get_stat_item_align_time(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: ItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_agility(ctx, calc, item_key).map(|v| v.ceil())
     }
 }
 
-fn item_check(ctx: SvcCtx, item_key: ItemKey) -> Option<()> {
+fn item_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), KeyedItemKindVsStatError> {
     let uad_item = ctx.uad.items.get(item_key);
     match uad_item {
-        UadItem::Drone(_) | UadItem::Fighter(_) | UadItem::Ship(_) => Some(()),
-        _ => None,
+        UadItem::Drone(_) | UadItem::Fighter(_) => Ok(()),
+        UadItem::Ship(uad_ship) => match uad_ship.get_kind() {
+            ShipKind::Ship | ShipKind::Unknown => Ok(()),
+            ShipKind::Structure => Err(KeyedItemKindVsStatError { item_key }),
+        },
+        _ => Err(KeyedItemKindVsStatError { item_key }),
     }
 }

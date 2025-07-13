@@ -2,6 +2,7 @@ pub use fit::{Fit, FitMut};
 pub use fleet::{SetFitFleetError, UnsetFitFleetError};
 pub use rah_incoming_dps::RemoveFitRahIncomingDpsError;
 pub use sol_get_fit::GetFitError;
+pub use stats::FitShipStatError;
 
 mod fit;
 mod fit_remove;

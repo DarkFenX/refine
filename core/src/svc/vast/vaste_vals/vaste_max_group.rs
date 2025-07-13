@@ -162,7 +162,9 @@ fn validate_verbose(
 }
 
 fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Count {
-    calc.get_item_attr_val_extra(ctx, item_key, a_attr_id).unwrap().round() as Count
+    calc.get_item_attr_val_extra_opt(ctx, item_key, a_attr_id)
+        .unwrap()
+        .round() as Count
 }
 fn get_actual_item_count(max_group_all: &RMapRSet<ad::AItemGrpId, ItemKey>, a_item_grp_id: &ad::AItemGrpId) -> Count {
     max_group_all.get(a_item_grp_id).len() as Count

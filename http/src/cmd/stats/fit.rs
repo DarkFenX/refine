@@ -122,13 +122,13 @@ impl HGetFitStatsCmd {
             stats.fighter_bay_volume = Some(core_fit.get_stat_fighter_bay_volume().into());
         }
         if self.agility.unwrap_or(self.default) {
-            stats.agility = core_fit.get_stat_agility().into();
+            stats.agility = core_fit.get_stat_agility().ok().into();
         }
         if self.align_time.unwrap_or(self.default) {
-            stats.align_time = core_fit.get_stat_align_time().into();
+            stats.align_time = core_fit.get_stat_align_time().ok().into();
         }
         if self.speed.unwrap_or(self.default) {
-            stats.speed = core_fit.get_stat_speed().into();
+            stats.speed = core_fit.get_stat_speed().ok().into();
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();

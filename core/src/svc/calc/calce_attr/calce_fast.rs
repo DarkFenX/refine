@@ -18,21 +18,29 @@ use crate::{
 
 impl Calc {
     // Query methods
-    pub(crate) fn get_item_attr_val_extra_opt(
+    pub(crate) fn get_item_attr_val_extra_opt_opt(
         &mut self,
         ctx: SvcCtx,
         item_key: Option<ItemKey>,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
-        item_key.and_then(|item_key| self.get_item_attr_val_extra(ctx, item_key, a_attr_id))
+        item_key.and_then(|item_key| self.get_item_attr_val_extra_opt(ctx, item_key, a_attr_id))
     }
-    pub(crate) fn get_item_attr_val_extra(
+    pub(crate) fn get_item_attr_val_extra_opt(
         &mut self,
         ctx: SvcCtx,
         item_key: ItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
         Some(self.get_item_attr_val_full(ctx, item_key, a_attr_id).ok()?.extra)
+    }
+    pub(crate) fn get_item_attr_val_extra_res(
+        &mut self,
+        ctx: SvcCtx,
+        item_key: ItemKey,
+        a_attr_id: &ad::AAttrId,
+    ) -> Result<AttrVal, KeyedItemLoadedError> {
+        self.get_item_attr_val_full(ctx, item_key, a_attr_id).map(|v| v.extra)
     }
     pub(crate) fn get_item_attr_val_full(
         &mut self,
