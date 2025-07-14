@@ -122,7 +122,7 @@ impl Vast {
                 self.irr_armor_limitable.remove_l2(&projectee_key, &projector_espec);
             }
         }
-        if a_effect.hc.get_remote_armor_rep_amount.is_some() {
+        if a_effect.hc.get_remote_hull_rep_amount.is_some() {
             let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
             self.irr_hull.remove_l2(&projectee_key, &projector_espec);
         }
