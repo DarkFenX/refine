@@ -8,7 +8,7 @@ use crate::{
     sol::SolarSystem,
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
-        vast::{StatLayerEhp, StatLayerHp, StatLayerRps, StatTank},
+        vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
 };
 
@@ -149,7 +149,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn get_stat_ehp(
         &mut self,
-        incoming_dps: Option<&DpsProfile>,
+        incoming_dps: Option<DpsProfile>,
     ) -> Result<Option<StatTank<StatLayerEhp>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
@@ -169,6 +169,17 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_rps(&sol.uad, item_key, spool)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
+    }
+    fn get_stat_erps(
+        &mut self,
+        incoming_dps: Option<DpsProfile>,
+        spool: Option<Spool>,
+    ) -> Result<Option<StatTank<StatLayerErps>>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_erps(&sol.uad, item_key, incoming_dps, spool)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
     fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, ItemStatError> {

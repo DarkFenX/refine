@@ -174,7 +174,7 @@ fn get_ehp_stats(
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
-        match core_fit.get_stat_ehp(core_incoming_dps.as_ref()) {
+        match core_fit.get_stat_ehp(core_incoming_dps) {
             Ok(core_result) => results.push(core_result.map(|v| v.into())),
             Err(_) => return None,
         }

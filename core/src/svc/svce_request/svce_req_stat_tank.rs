@@ -4,7 +4,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatLayerEhp, StatLayerHp, StatLayerRps, StatTank, Vast},
+        vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank, Vast},
     },
     uad::Uad,
 };
@@ -22,7 +22,7 @@ impl Svc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-        incoming_dps: Option<&DpsProfile>,
+        incoming_dps: Option<DpsProfile>,
     ) -> Result<Option<StatTank<StatLayerEhp>>, StatItemCheckError> {
         self.vast
             .get_stat_item_ehp_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, incoming_dps)
@@ -43,6 +43,21 @@ impl Svc {
     ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
         self.vast
             .get_stat_item_rps_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, spool)
+    }
+    pub(crate) fn get_stat_item_erps(
+        &mut self,
+        uad: &Uad,
+        item_key: ItemKey,
+        incoming_dps: Option<DpsProfile>,
+        spool: Option<Spool>,
+    ) -> Result<Option<StatTank<StatLayerErps>>, StatItemCheckError> {
+        self.vast.get_stat_item_erps_checked(
+            SvcCtx::new(uad, &self.eprojs),
+            &mut self.calc,
+            item_key,
+            incoming_dps,
+            spool,
+        )
     }
     pub(crate) fn get_stat_item_resists(
         &mut self,

@@ -4,7 +4,7 @@ pub use result::{ValResultFit, ValResultSol};
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 pub use vaste_stats_fit::{StatRes, StatSlot};
-pub use vaste_stats_item::{StatLayerEhp, StatLayerHp, StatLayerRps, StatTank};
+pub use vaste_stats_item::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank};
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupFail, ValChargeParentGroupInfo, ValChargeSizeChargeInfo, ValChargeSizeFail,

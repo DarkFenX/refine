@@ -32,7 +32,7 @@ impl Vast {
         item_check(item_key, uad_item)?;
         Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, uad_item, spool))
     }
-    fn get_stat_item_rps_unchecked(
+    pub(super) fn get_stat_item_rps_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,

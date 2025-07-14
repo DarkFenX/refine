@@ -1,4 +1,4 @@
-pub use tank::{StatLayerEhp, StatLayerHp, StatLayerRps, StatTank};
+pub use tank::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank};
 
 mod mobility;
 mod rr;

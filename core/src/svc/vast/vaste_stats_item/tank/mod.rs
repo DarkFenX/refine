@@ -1,4 +1,5 @@
 pub use ehp::StatLayerEhp;
+pub use erps::StatLayerErps;
 pub use hp::StatLayerHp;
 pub use rps::StatLayerRps;
 pub use shared::StatTank;
