@@ -1,26 +1,12 @@
 from tests import approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionItemRr
+from tests.tests.stats.tank import make_eve_drone_hull, make_eve_remote_hr, setup_tank_basics
 
 
 def test_state(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.structure_dmg_amount)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_module_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_hull_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_drone_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.npc_entity_remote_hull_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 60, eve_cycle_time_attr_id: 24000},
-        eff_ids=[eve_module_effect_id],
-        defeff_id=eve_module_effect_id)
-    eve_drone_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 36, eve_cycle_time_attr_id: 5000},
-        eff_ids=[eve_drone_effect_id],
-        defeff_id=eve_drone_effect_id)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_module_id = make_eve_remote_hr(client=client, basic_info=eve_basic_info, rep_amount=60, cycle_time=24000)
+    eve_drone_id = make_eve_drone_hull(client=client, basic_info=eve_basic_info, rep_amount=36, cycle_time=5000)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -57,24 +43,9 @@ def test_state(client, consts):
 
 
 def test_zero_cycle_time(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.structure_dmg_amount)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_module_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_hull_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_drone_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.npc_entity_remote_hull_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 60, eve_cycle_time_attr_id: 0},
-        eff_ids=[eve_module_effect_id],
-        defeff_id=eve_module_effect_id)
-    eve_drone_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 36, eve_cycle_time_attr_id: 0},
-        eff_ids=[eve_drone_effect_id],
-        defeff_id=eve_drone_effect_id)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_module_id = make_eve_remote_hr(client=client, basic_info=eve_basic_info, rep_amount=60, cycle_time=0)
+    eve_drone_id = make_eve_drone_hull(client=client, basic_info=eve_basic_info, rep_amount=36, cycle_time=0)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -90,20 +61,9 @@ def test_zero_cycle_time(client, consts):
 
 
 def test_no_cycle_time(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.structure_dmg_amount)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_module_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_hull_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_drone_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.npc_entity_remote_hull_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 60, eve_cycle_time_attr_id: 24000},
-        eff_ids=[eve_module_effect_id])
-    eve_drone_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 36, eve_cycle_time_attr_id: 5000},
-        eff_ids=[eve_drone_effect_id])
+    eve_basic_info = setup_tank_basics(client=client, consts=consts, effect_duration=False)
+    eve_module_id = make_eve_remote_hr(client=client, basic_info=eve_basic_info, rep_amount=60, cycle_time=24000)
+    eve_drone_id = make_eve_drone_hull(client=client, basic_info=eve_basic_info, rep_amount=36, cycle_time=5000)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -119,6 +79,7 @@ def test_no_cycle_time(client, consts):
 
 
 def test_item_not_loaded(client, consts):
+    setup_tank_basics(client=client, consts=consts)
     eve_item_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

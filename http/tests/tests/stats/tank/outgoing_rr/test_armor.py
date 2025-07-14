@@ -1,49 +1,21 @@
 from tests import Spool, approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionFitRr, StatsOptionItemRr
+from tests.tests.stats.tank import (
+    make_eve_drone_armor,
+    make_eve_remote_aar,
+    make_eve_remote_ar,
+    make_eve_remote_sar,
+    setup_tank_basics,
+)
 
 
 def test_state(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_ancil_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_spool_step_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
-    eve_spool_max_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_module_normal_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_ancil_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_spool_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_drone_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.npc_entity_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_normal_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 376, eve_cycle_time_attr_id: 6000},
-        eff_ids=[eve_module_normal_effect_id],
-        defeff_id=eve_module_normal_effect_id)
-    eve_module_ancil_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 145, eve_cycle_time_attr_id: 6000, eve_ancil_mult_attr_id: 3},
-        eff_ids=[eve_module_ancil_effect_id],
-        defeff_id=eve_module_ancil_effect_id)
-    eve_module_spool_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 512,
-            eve_spool_step_id: 0.12,
-            eve_spool_max_id: 1.8,
-            eve_cycle_time_attr_id: 6000},
-        eff_ids=[eve_module_spool_effect_id],
-        defeff_id=eve_module_spool_effect_id)
-    eve_drone_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 72, eve_cycle_time_attr_id: 5000},
-        eff_ids=[eve_drone_effect_id],
-        defeff_id=eve_drone_effect_id)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_module_normal_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
+    eve_module_ancil_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_spool_id = make_eve_remote_sar(
+        client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=6000)
+    eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
     eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
     api_sol = client.create_sol()
@@ -105,22 +77,9 @@ def test_state(client, consts):
 
 
 def test_spool(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_spool_step_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
-    eve_spool_max_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_module_spool_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_spool_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 512,
-            eve_spool_step_id: 0.12,
-            eve_spool_max_id: 1.8,
-            eve_cycle_time_attr_id: 6000},
-        eff_ids=[eve_module_spool_effect_id],
-        defeff_id=eve_module_spool_effect_id)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_module_spool_id = make_eve_remote_sar(
+        client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=6000)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -142,47 +101,12 @@ def test_spool(client, consts):
 
 
 def test_zero_cycle_time(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_ancil_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_spool_step_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
-    eve_spool_max_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_module_normal_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_ancil_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_spool_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_drone_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.npc_entity_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_normal_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 376, eve_cycle_time_attr_id: 0},
-        eff_ids=[eve_module_normal_effect_id],
-        defeff_id=eve_module_normal_effect_id)
-    eve_module_ancil_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 145, eve_cycle_time_attr_id: 0, eve_ancil_mult_attr_id: 3},
-        eff_ids=[eve_module_ancil_effect_id],
-        defeff_id=eve_module_ancil_effect_id)
-    eve_module_spool_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 512,
-            eve_spool_step_id: 0.12,
-            eve_spool_max_id: 1.8,
-            eve_cycle_time_attr_id: 0},
-        eff_ids=[eve_module_spool_effect_id],
-        defeff_id=eve_module_spool_effect_id)
-    eve_drone_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 72, eve_cycle_time_attr_id: 0},
-        eff_ids=[eve_drone_effect_id],
-        defeff_id=eve_drone_effect_id)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_module_normal_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=0)
+    eve_module_ancil_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=0)
+    eve_module_spool_id = make_eve_remote_sar(
+        client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=0)
+    eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=0)
     eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
     api_sol = client.create_sol()
@@ -211,43 +135,12 @@ def test_zero_cycle_time(client, consts):
 
 
 def test_no_cycle_time(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
-    eve_ancil_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
-    eve_spool_step_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
-    eve_spool_max_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_module_normal_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_module_ancil_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_module_spool_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_drone_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.npc_entity_remote_armor_repairer,
-        cat_id=consts.EveEffCat.target)
-    eve_module_normal_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 376, eve_cycle_time_attr_id: 6000},
-        eff_ids=[eve_module_normal_effect_id],
-        defeff_id=eve_module_normal_effect_id)
-    eve_module_ancil_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 145, eve_cycle_time_attr_id: 6000, eve_ancil_mult_attr_id: 3},
-        eff_ids=[eve_module_ancil_effect_id],
-        defeff_id=eve_module_ancil_effect_id)
-    eve_module_spool_id = client.mk_eve_item(
-        attrs={
-            eve_rep_amount_attr_id: 512,
-            eve_spool_step_id: 0.12,
-            eve_spool_max_id: 1.8,
-            eve_cycle_time_attr_id: 6000},
-        eff_ids=[eve_module_spool_effect_id],
-        defeff_id=eve_module_spool_effect_id)
-    eve_drone_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 72, eve_cycle_time_attr_id: 5000},
-        eff_ids=[eve_drone_effect_id],
-        defeff_id=eve_drone_effect_id)
+    eve_basic_info = setup_tank_basics(client=client, consts=consts, effect_duration=False)
+    eve_module_normal_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
+    eve_module_ancil_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_spool_id = make_eve_remote_sar(
+        client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=6000)
+    eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
     eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
     api_sol = client.create_sol()
@@ -276,6 +169,7 @@ def test_no_cycle_time(client, consts):
 
 
 def test_item_not_loaded(client, consts):
+    setup_tank_basics(client=client, consts=consts)
     eve_item_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

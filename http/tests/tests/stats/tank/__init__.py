@@ -3,6 +3,8 @@ from __future__ import annotations
 import typing
 from dataclasses import dataclass
 
+from tests.fw.util import Default
+
 if typing.TYPE_CHECKING:
     from tests.fw.client import TestClient
 
@@ -30,6 +32,10 @@ class TankBasicInfo:
     shield_rep_amount_attr_id: int
     armor_rep_amount_attr_id: int
     armor_rep_amount_mult_attr_id: int
+    armor_spool_step_attr_id: int
+    armor_spool_max_attr_id: int
+    hull_rep_amount_attr_id: int
+    cycle_time_attr_id: int
     rr_optimal_attr_id: int
     rr_falloff_attr_id: int
     rr_res_attr_id: int
@@ -40,16 +46,24 @@ class TankBasicInfo:
     # Effects
     local_asb_effect_id: int
     local_aar_effect_id: int
+    remote_sb_effect_id: int
     remote_asb_effect_id: int
+    remote_dsb_effect_id: int
+    remote_ar_effect_id: int
     remote_aar_effect_id: int
+    remote_sar_effect_id: int
+    remote_dar_effect_id: int
+    remote_hr_effect_id: int
+    remote_dhr_effect_id: int
 
 
 def setup_tank_basics(
         *,
         client: TestClient,
         consts,  # noqa: ANN001
+        effect_duration: bool = True,
 ) -> TankBasicInfo:
-    # Tanking attrs
+    # Attributes - buffer
     eve_res_max_attr_id = client.mk_eve_attr(def_val=1)
     eve_shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
     eve_shield_em_attr_id = client.mk_eve_attr(
@@ -102,10 +116,14 @@ def setup_tank_basics(
         id_=consts.EveAttr.expl_dmg_resonance,
         def_val=1,
         max_attr_id=eve_res_max_attr_id)
-    # Rep attributes
+    # Attributes - reps
     eve_shield_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_bonus)
     eve_armor_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
     eve_armor_rep_amount_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
+    eve_armor_spool_step_attr_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
+    eve_armor_spool_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
+    eve_hull_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.structure_dmg_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_rr_optimal_attr_id = client.mk_eve_attr()
     eve_rr_falloff_attr_id = client.mk_eve_attr()
     eve_rr_res_attr_id = client.mk_eve_attr(def_val=1)
@@ -114,31 +132,90 @@ def setup_tank_basics(
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     # Fighter-specific attribute
     eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    # Effects
+    # Effects - local
     eve_local_asb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fueled_shield_boosting,
-        cat_id=consts.EveEffCat.active)
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_local_aar_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fueled_armor_repair,
-        cat_id=consts.EveEffCat.active)
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    # Effects - remote shield
+    eve_remote_sb_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_shield_booster,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_rr_optimal_attr_id,
+        falloff_attr_id=eve_rr_falloff_attr_id,
+        resist_attr_id=eve_rr_res_attr_id)
     eve_remote_asb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_ancillary_remote_shield_booster,
         cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_rr_optimal_attr_id,
+        falloff_attr_id=eve_rr_falloff_attr_id,
+        resist_attr_id=eve_rr_res_attr_id)
+    eve_remote_dsb_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.npc_entity_remote_shield_booster,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_rr_optimal_attr_id,
+        resist_attr_id=eve_rr_res_attr_id)
+    # Effects - remote armor
+    eve_remote_ar_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_rr_optimal_attr_id,
         falloff_attr_id=eve_rr_falloff_attr_id,
         resist_attr_id=eve_rr_res_attr_id)
     eve_remote_aar_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
         cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_rr_optimal_attr_id,
         falloff_attr_id=eve_rr_falloff_attr_id,
+        resist_attr_id=eve_rr_res_attr_id)
+    eve_remote_sar_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_rr_optimal_attr_id,
+        resist_attr_id=eve_rr_res_attr_id)
+    eve_remote_dar_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.npc_entity_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_rr_optimal_attr_id,
+        resist_attr_id=eve_rr_res_attr_id)
+    # Effects - remote hull
+    eve_remote_hr_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_hull_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_rr_optimal_attr_id,
+        falloff_attr_id=eve_rr_falloff_attr_id,
+        resist_attr_id=eve_rr_res_attr_id)
+    eve_remote_dhr_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.npc_entity_remote_hull_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_rr_optimal_attr_id,
         resist_attr_id=eve_rr_res_attr_id)
     # Ensure effects are not cleaned up
     client.mk_eve_item(eff_ids=[
         eve_local_asb_effect_id,
         eve_local_aar_effect_id,
+        eve_remote_sb_effect_id,
         eve_remote_asb_effect_id,
-        eve_remote_aar_effect_id])
+        eve_remote_dsb_effect_id,
+        eve_remote_ar_effect_id,
+        eve_remote_aar_effect_id,
+        eve_remote_sar_effect_id,
+        eve_remote_dar_effect_id,
+        eve_remote_hr_effect_id,
+        eve_remote_dhr_effect_id])
     return TankBasicInfo(
         res_max_attr_id=eve_res_max_attr_id,
         shield_hp_attr_id=eve_shield_hp_attr_id,
@@ -160,6 +237,10 @@ def setup_tank_basics(
         shield_rep_amount_attr_id=eve_shield_rep_amount_attr_id,
         armor_rep_amount_attr_id=eve_armor_rep_amount_attr_id,
         armor_rep_amount_mult_attr_id=eve_armor_rep_amount_mult_attr_id,
+        armor_spool_step_attr_id=eve_armor_spool_step_attr_id,
+        armor_spool_max_attr_id=eve_armor_spool_max_attr_id,
+        hull_rep_amount_attr_id=eve_hull_rep_amount_attr_id,
+        cycle_time_attr_id=eve_cycle_time_attr_id,
         rr_optimal_attr_id=eve_rr_optimal_attr_id,
         rr_falloff_attr_id=eve_rr_falloff_attr_id,
         rr_res_attr_id=eve_rr_res_attr_id,
@@ -168,8 +249,15 @@ def setup_tank_basics(
         charge_rate_attr_id=eve_charge_rate_attr_id,
         local_asb_effect_id=eve_local_asb_effect_id,
         local_aar_effect_id=eve_local_aar_effect_id,
+        remote_sb_effect_id=eve_remote_sb_effect_id,
         remote_asb_effect_id=eve_remote_asb_effect_id,
-        remote_aar_effect_id=eve_remote_aar_effect_id)
+        remote_dsb_effect_id=eve_remote_dsb_effect_id,
+        remote_ar_effect_id=eve_remote_ar_effect_id,
+        remote_aar_effect_id=eve_remote_aar_effect_id,
+        remote_sar_effect_id=eve_remote_sar_effect_id,
+        remote_dar_effect_id=eve_remote_dar_effect_id,
+        remote_hr_effect_id=eve_remote_hr_effect_id,
+        remote_dhr_effect_id=eve_remote_dhr_effect_id)
 
 
 def make_eve_tankable(
@@ -222,13 +310,13 @@ def make_eve_local_asb(
         client: TestClient,
         basic_info: TankBasicInfo,
         rep_amount: float | None = None,
+        cycle_time: float | None = None,
         capacity: float | None = None,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    if rep_amount is not None:
-        attrs[basic_info.shield_rep_amount_attr_id] = rep_amount
-    if capacity is not None:
-        attrs[basic_info.capacity_attr_id] = capacity
+    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_asb_effect_id],
@@ -240,20 +328,39 @@ def make_eve_local_aar(
         client: TestClient,
         basic_info: TankBasicInfo,
         rep_amount: float | None = None,
+        cycle_time: float | None = None,
         capacity: float | None = None,
         charge_rate: float | None = None,
 ) -> int:
     attrs = {basic_info.armor_rep_amount_mult_attr_id: 3.0}
-    if rep_amount is not None:
-        attrs[basic_info.armor_rep_amount_attr_id] = rep_amount
-    if capacity is not None:
-        attrs[basic_info.capacity_attr_id] = capacity
-    if charge_rate is not None:
-        attrs[basic_info.charge_rate_attr_id] = charge_rate
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    conditional_insert(attrs=attrs, attr_id=basic_info.charge_rate_attr_id, value=charge_rate)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_aar_effect_id],
         defeff_id=basic_info.local_aar_effect_id)
+
+
+def make_eve_remote_sb(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+        optimal_range: float | None = None,
+        falloff_range: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.remote_sb_effect_id],
+        defeff_id=basic_info.remote_sb_effect_id)
 
 
 def make_eve_remote_asb(
@@ -261,23 +368,59 @@ def make_eve_remote_asb(
         client: TestClient,
         basic_info: TankBasicInfo,
         rep_amount: float | None = None,
+        cycle_time: float | None = None,
         capacity: float | None = None,
         optimal_range: float | None = None,
         falloff_range: float | None = None,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    if rep_amount is not None:
-        attrs[basic_info.shield_rep_amount_attr_id] = rep_amount
-    if capacity is not None:
-        attrs[basic_info.capacity_attr_id] = capacity
-    if optimal_range is not None:
-        attrs[basic_info.rr_optimal_attr_id] = optimal_range
-    if falloff_range is not None:
-        attrs[basic_info.rr_falloff_attr_id] = falloff_range
+    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_asb_effect_id],
         defeff_id=basic_info.remote_asb_effect_id)
+
+
+def make_eve_drone_shield(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+        optimal_range: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.remote_dsb_effect_id],
+        defeff_id=basic_info.remote_dsb_effect_id)
+
+
+def make_eve_remote_ar(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+        optimal_range: float | None = None,
+        falloff_range: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.remote_ar_effect_id],
+        defeff_id=basic_info.remote_ar_effect_id)
 
 
 def make_eve_remote_aar(
@@ -285,23 +428,103 @@ def make_eve_remote_aar(
         client: TestClient,
         basic_info: TankBasicInfo,
         rep_amount: float | None = None,
+        cycle_time: float | None = None,
         capacity: float | None = None,
         charge_rate: float | None = None,
         optimal_range: float | None = None,
         falloff_range: float | None = None,
 ) -> int:
     attrs = {basic_info.armor_rep_amount_mult_attr_id: 3.0}
-    if rep_amount is not None:
-        attrs[basic_info.armor_rep_amount_attr_id] = rep_amount
-    if capacity is not None:
-        attrs[basic_info.capacity_attr_id] = capacity
-    if charge_rate is not None:
-        attrs[basic_info.charge_rate_attr_id] = charge_rate
-    if optimal_range is not None:
-        attrs[basic_info.rr_optimal_attr_id] = optimal_range
-    if falloff_range is not None:
-        attrs[basic_info.rr_falloff_attr_id] = falloff_range
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    conditional_insert(attrs=attrs, attr_id=basic_info.charge_rate_attr_id, value=charge_rate)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_aar_effect_id],
         defeff_id=basic_info.remote_aar_effect_id)
+
+
+def make_eve_remote_sar(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        spool_step: float | None = None,
+        spool_max: float | None = None,
+        cycle_time: float | None = None,
+        optimal_range: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_spool_step_attr_id, value=spool_step)
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_spool_max_attr_id, value=spool_max)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.remote_sar_effect_id],
+        defeff_id=basic_info.remote_sar_effect_id)
+
+
+def make_eve_drone_armor(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+        optimal_range: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.remote_dar_effect_id],
+        defeff_id=basic_info.remote_dar_effect_id)
+
+
+def make_eve_remote_hr(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+        optimal_range: float | None = None,
+        falloff_range: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.hull_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.remote_hr_effect_id],
+        defeff_id=basic_info.remote_hr_effect_id)
+
+
+def make_eve_drone_hull(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+        optimal_range: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.hull_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.remote_dhr_effect_id],
+        defeff_id=basic_info.remote_dhr_effect_id)
+
+
+def conditional_insert(*, attrs: dict[int, float], attr_id: int, value: float | None) -> None:
+    if value is not None:
+        attrs[attr_id] = value

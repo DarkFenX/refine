@@ -218,14 +218,18 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
     api_src_fit.add_module(
         type_id=4294,
         rack=consts.ApiRack.high,
-        state=consts.ApiModuleState.active)
+        state=consts.ApiModuleState.active)  # Triage
+    api_src_fit.add_module(
+        type_id=43555,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.active,
+        charge_type_id=42694)  # Command burst with AS charge
     api_src_rrs = [
         api_src_fit.add_module(
             type_id=3544,
             rack=consts.ApiRack.high,
             state=consts.ApiModuleState.active)
         for _ in range(8)]
-    api_src_fit.add_module(type_id=43555, rack=consts.ApiRack.high, state=consts.ApiModuleState.active, charge_type_id=42694)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_fit.set_character(type_id=1373)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=23915)  # Chimera
