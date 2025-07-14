@@ -3,11 +3,13 @@ use rc::ItemMutCommon;
 use crate::{
     cmd::{
         shared::get_primary_item,
-        stats::options::{HStatOption, HStatOptionEhp, HStatOptionItemRr, HStatOptionRps, HStatResolvedOption},
+        stats::options::{
+            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionItemRr, HStatOptionRps, HStatResolvedOption,
+        },
     },
     info::{
         HItemStats,
-        stats::{HStatLayerEhp, HStatLayerRps, HStatTank},
+        stats::{HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
     },
     util::HExecError,
 };
@@ -25,6 +27,7 @@ pub(crate) struct HGetItemStatsCmd {
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
     rps: Option<HStatOption<HStatOptionRps>>,
+    erps: Option<HStatOption<HStatOptionErps>>,
     resists: Option<bool>,
     rr_shield: Option<HStatOption<HStatOptionItemRr>>,
     rr_armor: Option<HStatOption<HStatOptionItemRr>>,
@@ -61,6 +64,10 @@ impl HGetItemStatsCmd {
         let rps_opt = HStatResolvedOption::new(&self.rps, self.default);
         if rps_opt.enabled {
             stats.rps = get_rps_stats(&mut core_item, rps_opt.options).into();
+        }
+        let erps_opt = HStatResolvedOption::new(&self.erps, self.default);
+        if erps_opt.enabled {
+            stats.erps = get_erps_stats(&mut core_item, erps_opt.options).into();
         }
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_item.get_stat_resists().into();
@@ -105,6 +112,22 @@ fn get_rps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionRps>) -> O
     for option in options {
         match core_item.get_stat_rps(option.spool.map(|v| v.into())) {
             Ok(core_result) => results.push(core_result.into()),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
+}
+
+fn get_erps_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionErps>,
+) -> Option<Vec<Option<HStatTank<HStatLayerErps>>>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
+        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        match core_item.get_stat_erps(core_incoming_dps, core_spool) {
+            Ok(core_result) => results.push(core_result.map(|v| v.into())),
             Err(_) => return None,
         }
     }

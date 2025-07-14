@@ -1,11 +1,13 @@
 use crate::{
     cmd::{
         shared::get_primary_fit,
-        stats::options::{HStatOption, HStatOptionEhp, HStatOptionFitRr, HStatOptionRps, HStatResolvedOption},
+        stats::options::{
+            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionFitRr, HStatOptionRps, HStatResolvedOption,
+        },
     },
     info::{
         HFitStats,
-        stats::{HStatLayerEhp, HStatLayerRps, HStatTank},
+        stats::{HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
     },
     util::HExecError,
 };
@@ -45,6 +47,7 @@ pub(crate) struct HGetFitStatsCmd {
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
     rps: Option<HStatOption<HStatOptionRps>>,
+    erps: Option<HStatOption<HStatOptionErps>>,
     resists: Option<bool>,
     rr_shield: Option<HStatOption<HStatOptionFitRr>>,
     rr_armor: Option<HStatOption<HStatOptionFitRr>>,
@@ -144,6 +147,10 @@ impl HGetFitStatsCmd {
         if rps_opt.enabled {
             stats.rps = get_rps_stats(&mut core_fit, rps_opt.options).into();
         }
+        let erps_opt = HStatResolvedOption::new(&self.erps, self.default);
+        if erps_opt.enabled {
+            stats.erps = get_erps_stats(&mut core_fit, erps_opt.options).into();
+        }
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
         }
@@ -187,6 +194,22 @@ fn get_rps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionRps>) -> Opt
     for option in options {
         match core_fit.get_stat_rps(option.spool.map(|v| v.into())) {
             Ok(core_result) => results.push(core_result.into()),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
+}
+
+fn get_erps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<HStatOptionErps>,
+) -> Option<Vec<Option<HStatTank<HStatLayerErps>>>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
+        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        match core_fit.get_stat_erps(core_incoming_dps, core_spool) {
+            Ok(core_result) => results.push(core_result.map(|v| v.into())),
             Err(_) => return None,
         }
     }

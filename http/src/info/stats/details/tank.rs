@@ -72,6 +72,24 @@ impl From<rc::stats::StatLayerRps> for HStatLayerRps {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
+pub(crate) struct HStatLayerErps {
+    local: rc::AttrVal,
+    remote: rc::AttrVal,
+    remote_penalized: rc::AttrVal,
+    mult: rc::AttrVal,
+}
+impl From<rc::stats::StatLayerErps> for HStatLayerErps {
+    fn from(core_stat: rc::stats::StatLayerErps) -> Self {
+        Self {
+            local: core_stat.local,
+            remote: core_stat.remote,
+            remote_penalized: core_stat.remote_penalized,
+            mult: core_stat.mult,
+        }
+    }
+}
+
+#[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HStatLayerResist {
     em: rc::AttrVal,
     thermal: rc::AttrVal,

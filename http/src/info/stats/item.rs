@@ -1,5 +1,5 @@
 use crate::{
-    info::stats::details::{HStatLayerEhp, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatTank},
+    info::stats::details::{HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatTank},
     util::TriStateField,
 };
 
@@ -19,6 +19,8 @@ pub(crate) struct HItemStats {
     pub(crate) wc_ehp: TriStateField<HStatTank<HStatLayerEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) rps: TriStateField<Vec<HStatTank<HStatLayerRps>>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) erps: TriStateField<Vec<Option<HStatTank<HStatLayerErps>>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -40,6 +42,7 @@ impl HItemStats {
             ehp: TriStateField::default(),
             wc_ehp: TriStateField::default(),
             rps: TriStateField::default(),
+            erps: TriStateField::default(),
             resists: TriStateField::default(),
             rr_shield: TriStateField::default(),
             rr_armor: TriStateField::default(),
