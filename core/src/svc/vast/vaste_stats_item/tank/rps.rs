@@ -81,10 +81,7 @@ fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMap<EffectSpec, NLoca
             Some(rep_amount) => rep_amount,
             None => continue,
         };
-        // Can unwrap here because if rep effects is registered, it should have its item loaded and
-        // the effect should have duration attribute specified
-        let cycle_time = efuncs::get_espec_cycle_time(ctx, calc, rep_espec).unwrap();
-        if cycle_time > OF(0.0) {
+        if let Some(cycle_time) = efuncs::get_espec_cycle_time(ctx, calc, rep_espec) {
             total_rps += rep_amount / cycle_time;
         }
     }
@@ -110,13 +107,12 @@ fn get_irr_data(
                 Some(rep_amount) => rep_amount,
                 None => continue,
             };
-            // Can unwrap here because if rep effects is registered, it should have its item loaded
-            // and the effect should have duration attribute specified
-            let cycle_time = efuncs::get_espec_cycle_time(ctx, calc, rep_espec).unwrap();
-            result.push(IrrEntry {
-                amount: rep_amount,
-                cycle_time,
-            });
+            if let Some(cycle_time) = efuncs::get_espec_cycle_time(ctx, calc, rep_espec) {
+                result.push(IrrEntry {
+                    amount: rep_amount,
+                    cycle_time,
+                });
+            }
         }
     }
     result

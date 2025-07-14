@@ -230,9 +230,6 @@ impl Calc {
         }
         // Raw form of cycle time is defined in milliseconds, convert into seconds
         let cycle_s = efuncs::get_espec_cycle_time(ctx, self, EffectSpec::new(item_key, RAH_EFFECT_ID))? / OF(1000.0);
-        if cycle_s <= OF(0.0) {
-            return None;
-        }
         let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
         Some(RahDataSim::new(rah_info))
     }

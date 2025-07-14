@@ -18,9 +18,9 @@ pub(in crate::svc) fn get_effect_cycle_time(
 ) -> Option<AttrVal> {
     let attr_id = a_effect.ae.duration_attr_id?;
     let val = calc.get_item_attr_val_full(ctx, item_key, &attr_id).ok()?;
-    Some(val.dogma / OF(1000.0))
-}
-
-pub(in crate::svc) fn has_cycle_time(a_effect: &ad::AEffectRt) -> bool {
-    a_effect.ae.duration_attr_id.is_some()
+    // Discard negative cycle time as invalid
+    match val.dogma > OF(0.0) {
+        true => Some(val.dogma / OF(1000.0)),
+        false => None,
+    }
 }

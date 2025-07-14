@@ -2,7 +2,7 @@ use crate::{
     ac, ad,
     def::ItemKey,
     misc::{AttrSpec, EffectSpec},
-    svc::{efuncs, get_resist_a_attr_id, vast::Vast},
+    svc::{get_resist_a_attr_id, vast::Vast},
     uad::UadItem,
 };
 
@@ -49,9 +49,7 @@ impl Vast {
         }
         if let Some(rep_getter) = a_effect.hc.get_remote_shield_rep_amount {
             let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
-            if efuncs::has_cycle_time(a_effect) {
-                self.irr_shield.add_value(projectee_key, projector_espec, rep_getter);
-            }
+            self.irr_shield.add_value(projectee_key, projector_espec, rep_getter);
             if a_effect.hc.charge.is_some() {
                 self.irr_shield_limitable
                     .add_value(projectee_key, projector_espec, rep_getter);
@@ -59,17 +57,13 @@ impl Vast {
         }
         if let Some(rep_getter) = a_effect.hc.get_remote_armor_rep_amount {
             let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
-            if efuncs::has_cycle_time(a_effect) {
-                self.irr_armor.add_value(projectee_key, projector_espec, rep_getter);
-            }
+            self.irr_armor.add_value(projectee_key, projector_espec, rep_getter);
             if a_effect.hc.charge.is_some() {
                 self.irr_armor_limitable
                     .add_value(projectee_key, projector_espec, rep_getter);
             }
         }
-        if let Some(rep_getter) = a_effect.hc.get_remote_hull_rep_amount
-            && efuncs::has_cycle_time(a_effect)
-        {
+        if let Some(rep_getter) = a_effect.hc.get_remote_hull_rep_amount {
             let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
             self.irr_hull.add_value(projectee_key, projector_espec, rep_getter);
         }
@@ -116,23 +110,19 @@ impl Vast {
         }
         if a_effect.hc.get_remote_shield_rep_amount.is_some() {
             let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
-            if efuncs::has_cycle_time(a_effect) {
-                self.irr_shield.remove_l2(&projectee_key, &projector_espec);
-            }
+            self.irr_shield.remove_l2(&projectee_key, &projector_espec);
             if a_effect.hc.charge.is_some() {
                 self.irr_shield_limitable.remove_l2(&projectee_key, &projector_espec);
             }
         }
         if a_effect.hc.get_remote_armor_rep_amount.is_some() {
             let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
-            if efuncs::has_cycle_time(a_effect) {
-                self.irr_armor.remove_l2(&projectee_key, &projector_espec);
-            }
+            self.irr_armor.remove_l2(&projectee_key, &projector_espec);
             if a_effect.hc.charge.is_some() {
                 self.irr_armor_limitable.remove_l2(&projectee_key, &projector_espec);
             }
         }
-        if a_effect.hc.get_remote_armor_rep_amount.is_some() && efuncs::has_cycle_time(a_effect) {
+        if a_effect.hc.get_remote_armor_rep_amount.is_some() {
             let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
             self.irr_hull.remove_l2(&projectee_key, &projector_espec);
         }

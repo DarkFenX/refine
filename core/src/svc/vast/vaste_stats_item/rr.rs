@@ -240,9 +240,6 @@ fn get_orr_effect_id(
     let a_effect = ctx.uad.src.get_a_effect(a_effect_id)?;
     let rep_getter = rep_getter_getter(a_effect)?;
     let cycle_time = efuncs::get_effect_cycle_time(ctx, calc, item_key, a_effect)?;
-    if cycle_time <= OF(0.0) {
-        return None;
-    }
     let rep_amount = rep_getter(ctx, calc, EffectSpec::new(item_key, a_effect.ae.id), spool, None)?;
     Some(rep_amount / cycle_time)
 }

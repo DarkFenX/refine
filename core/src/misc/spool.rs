@@ -48,9 +48,6 @@ impl Spool {
                 cycles_max.min(*cycles_opt)
             }
             Spool::Time(time) => {
-                if cycle_time <= OF(0.0) {
-                    return None;
-                }
                 // Choose count of cycles finished by specified time, and limit by max spool cycles
                 let cycles_by_time = floor_unerr((*time).max(OF(0.0)) / cycle_time) as Count;
                 cycles_max.min(cycles_by_time)
