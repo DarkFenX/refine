@@ -122,7 +122,7 @@ fn get_irr_data(
     result
 }
 
-fn irr_data_to_raw(irr_data: &Vec<IrrEntry>) -> AttrVal {
+fn irr_data_to_raw(irr_data: &[IrrEntry]) -> AttrVal {
     irr_data.iter().map(|v| v.amount / v.cycle_time).sum()
 }
 

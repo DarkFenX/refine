@@ -232,16 +232,18 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
         for _ in range(8)]
     api_tgt_fit = api_sol.create_fit()
     api_tgt_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_tgt_fit.add_skill(type_id=eve_skill_id, level=5)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=23915)  # Chimera
     for api_src_rr in api_src_rrs:
         api_src_rr.change_module(add_projs=[api_tgt_ship.id])
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    print(api_tgt_fit_stats.rps[0].shield)  # noqa: T201
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=True))
+    print(api_tgt_fit_stats.erps[0].shield)  # noqa: T201
     api_debuff_fit = api_sol.create_fit()
     api_debuff_module = api_debuff_fit.add_module(type_id=77401, state=consts.ApiModuleState.active)  # Debuff lance
     api_debuff_module.change_module(add_projs=[api_tgt_ship.id])
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    print(api_tgt_fit_stats.rps[0].shield)  # noqa: T201
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=True))
+    print(api_tgt_fit_stats.erps[0].shield)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001

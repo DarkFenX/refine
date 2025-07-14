@@ -5,7 +5,8 @@ from tests.fw.util import Absent
 
 type StatOptionAlias = bool | type[Absent]
 type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
-type StatOptionRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionReps]]
+type StatOptionRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionRps]]
+type StatOptionErpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionErps]]
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -18,8 +19,18 @@ class StatsOptionEhp:
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionReps:
+class StatsOptionRps:
 
+    spool: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionErps:
+
+    incoming_dps: DpsProfile | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:

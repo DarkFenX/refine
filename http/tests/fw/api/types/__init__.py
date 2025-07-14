@@ -5,6 +5,6 @@ from .stats import (
     StatsOptionEhp,
     StatsOptionFitRr,
     StatsOptionItemRr,
-    StatsOptionReps,
+    StatsOptionRps,
 )
 from .validation import ValOptions

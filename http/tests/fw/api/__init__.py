@@ -5,6 +5,6 @@ from .types import (
     StatsOptionEhp,
     StatsOptionFitRr,
     StatsOptionItemRr,
-    StatsOptionReps,
+    StatsOptionRps,
     ValOptions,
 )
