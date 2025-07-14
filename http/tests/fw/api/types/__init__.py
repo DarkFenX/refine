@@ -3,6 +3,7 @@ from .stats import (
     FitStatsOptions,
     ItemStatsOptions,
     StatsOptionEhp,
+    StatsOptionErps,
     StatsOptionFitRemoteRps,
     StatsOptionItemRemoteCps,
     StatsOptionItemRemoteRps,

@@ -8,8 +8,28 @@ from tests.tests.stats.tank import (
     make_eve_remote_asb,
     make_eve_remote_hr,
     make_eve_remote_sb,
+    make_eve_tankable,
     setup_tank_basics,
 )
+
+
+def test_item_other(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_item_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        hps=(1728, 672, 600),
+        resos_shield=(1, 0.8, 0.6, 0.5),
+        resos_armor=(0.5, 0.55, 0.75, 0.9),
+        resos_hull=(1, 1, 1, 1))
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_implant(type_id=eve_item_id)
+    # Verification
+    api_item_stats = api_item.get_stats(options=ItemStatsOptions(rps=True, erps=True))
+    assert api_item_stats.rps is None
+    assert api_item_stats.erps is None
 
 
 def test_item_not_loaded(client, consts):
@@ -45,11 +65,15 @@ def test_item_not_loaded(client, consts):
     api_src_drone_shield.change_drone(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
     api_src_drone_hull.change_drone(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True, erps=True))
     assert api_tgt_fit_stats.rps is None
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_fit_stats.erps is None
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True, erps=True))
     assert api_tgt_ship_stats.rps is None
-    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.erps is None
+    api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(rps=True, erps=True))
     assert api_tgt_drone_stats.rps is None
-    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_drone_stats.erps is None
+    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(rps=True, erps=True))
     assert api_tgt_fighter_stats.rps is None
+    assert api_tgt_fighter_stats.erps is None

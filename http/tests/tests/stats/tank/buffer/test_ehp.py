@@ -118,7 +118,7 @@ def test_dps_profiles_drone(client, consts):
     assert api_drone_ehp_kin_exp.hull == (approx(600), 0, 0, approx(1))
 
 
-def test_dps_dps_profiles_fighter(client, consts):
+def test_dps_profiles_fighter(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_tankable(
         client=client,

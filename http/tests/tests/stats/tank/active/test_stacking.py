@@ -12,7 +12,7 @@ from tests.tests.stats.tank import (
 
 def test_layers(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
-    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(10000, 10000, 10000))
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(100000, 100000, 100000))
     eve_module_rsb_id = make_eve_remote_sb(client=client, basic_info=eve_basic_info, rep_amount=8594, cycle_time=5000)
     eve_module_rar_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=8594, cycle_time=5000)
     eve_module_rhr_id = make_eve_remote_hr(client=client, basic_info=eve_basic_info, rep_amount=8594, cycle_time=5000)
