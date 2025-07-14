@@ -63,12 +63,15 @@ class EveItemList(IntEnum):
 
 @unique
 class EveEffect(IntEnum):
+    shield_boosting = 4
     missile_launching = 9
     tgt_attack = 10
     lo_power = 11
     hi_power = 12
     med_power = 13
     online = 16
+    structure_repair = 26
+    armor_repair = 27
     projectile_fired = 34
     launcher_fitted = 40
     turret_fitted = 42

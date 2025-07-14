@@ -44,8 +44,11 @@ class TankBasicInfo:
     charge_rate_attr_id: int
     max_fighter_count_attr_id: int
     # Effects
+    local_sb_effect_id: int
     local_asb_effect_id: int
+    local_ar_effect_id: int
     local_aar_effect_id: int
+    local_hr_effect_id: int
     remote_sb_effect_id: int
     remote_asb_effect_id: int
     remote_dsb_effect_id: int
@@ -133,12 +136,24 @@ def setup_tank_basics(
     # Fighter-specific attribute
     eve_max_fighter_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
     # Effects - local
+    eve_local_sb_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.shield_boosting,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_local_asb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fueled_shield_boosting,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_local_ar_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.armor_repair,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_local_aar_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fueled_armor_repair,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_local_hr_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.structure_repair,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     # Effects - remote shield
@@ -205,8 +220,11 @@ def setup_tank_basics(
         resist_attr_id=eve_rr_res_attr_id)
     # Ensure effects are not cleaned up
     client.mk_eve_item(eff_ids=[
+        eve_local_sb_effect_id,
         eve_local_asb_effect_id,
+        eve_local_ar_effect_id,
         eve_local_aar_effect_id,
+        eve_local_hr_effect_id,
         eve_remote_sb_effect_id,
         eve_remote_asb_effect_id,
         eve_remote_dsb_effect_id,
@@ -247,8 +265,11 @@ def setup_tank_basics(
         volume_attr_id=eve_volume_attr_id,
         capacity_attr_id=eve_capacity_attr_id,
         charge_rate_attr_id=eve_charge_rate_attr_id,
+        local_sb_effect_id=eve_local_sb_effect_id,
         local_asb_effect_id=eve_local_asb_effect_id,
+        local_ar_effect_id=eve_local_ar_effect_id,
         local_aar_effect_id=eve_local_aar_effect_id,
+        local_hr_effect_id=eve_local_hr_effect_id,
         remote_sb_effect_id=eve_remote_sb_effect_id,
         remote_asb_effect_id=eve_remote_asb_effect_id,
         remote_dsb_effect_id=eve_remote_dsb_effect_id,
@@ -305,6 +326,22 @@ def make_eve_tankable(
     return maker(attrs=attrs)
 
 
+def make_eve_local_sb(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+) -> int:
+    attrs = {basic_info.charge_rate_attr_id: 1.0}
+    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.local_sb_effect_id],
+        defeff_id=basic_info.local_sb_effect_id)
+
+
 def make_eve_local_asb(
         *,
         client: TestClient,
@@ -321,6 +358,22 @@ def make_eve_local_asb(
         attrs=attrs,
         eff_ids=[basic_info.local_asb_effect_id],
         defeff_id=basic_info.local_asb_effect_id)
+
+
+def make_eve_local_ar(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.local_ar_effect_id],
+        defeff_id=basic_info.local_ar_effect_id)
 
 
 def make_eve_local_aar(
@@ -341,6 +394,22 @@ def make_eve_local_aar(
         attrs=attrs,
         eff_ids=[basic_info.local_aar_effect_id],
         defeff_id=basic_info.local_aar_effect_id)
+
+
+def make_eve_local_hr(
+        *,
+        client: TestClient,
+        basic_info: TankBasicInfo,
+        rep_amount: float | None = None,
+        cycle_time: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.hull_rep_amount_attr_id, value=rep_amount)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.local_hr_effect_id],
+        defeff_id=basic_info.local_hr_effect_id)
 
 
 def make_eve_remote_sb(
