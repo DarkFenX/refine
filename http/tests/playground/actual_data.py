@@ -237,6 +237,11 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
         api_src_rr.change_module(add_projs=[api_tgt_ship.id])
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(reps=True))
     print(api_tgt_fit_stats.reps[0].shield)  # noqa: T201
+    api_debuff_fit = api_sol.create_fit()
+    api_debuff_module = api_debuff_fit.add_module(type_id=77401, state=consts.ApiModuleState.active)  # Debuff lance
+    api_debuff_module.change_module(add_projs=[api_tgt_ship.id])
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(reps=True))
+    print(api_tgt_fit_stats.reps[0].shield)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
