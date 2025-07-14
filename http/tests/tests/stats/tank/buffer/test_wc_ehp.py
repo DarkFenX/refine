@@ -87,9 +87,13 @@ def test_immunity(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(wc_ehp=True))
-    assert api_fit_stats.wc_ehp is None
+    assert api_fit_stats.wc_ehp.shield == (approx(225), 0, 0, approx(1))
+    assert api_fit_stats.wc_ehp.armor is None
+    assert api_fit_stats.wc_ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(wc_ehp=True))
-    assert api_ship_stats.wc_ehp is None
+    assert api_ship_stats.wc_ehp.shield == (approx(225), 0, 0, approx(1))
+    assert api_ship_stats.wc_ehp.armor is None
+    assert api_ship_stats.wc_ehp.hull == (approx(783.58209), 0, 0, approx(1.492537))
 
 
 def test_local_asb(client, consts):

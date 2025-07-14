@@ -81,8 +81,12 @@ def test_ship_dps_profiles(client, consts):
     assert api_ship_negative.armor == [approx(6956.521739), approx(2989.217391), approx(2989.217391), approx(1.73913)]
     assert api_ship_negative.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
     # Total damage = 0 means no stats returned
-    assert api_fit_zero is None
-    assert api_ship_zero is None
+    assert api_fit_zero.shield is None
+    assert api_fit_zero.armor is None
+    assert api_fit_zero.hull is None
+    assert api_ship_zero.shield is None
+    assert api_ship_zero.armor is None
+    assert api_ship_zero.hull is None
     # Kin-explosive
     assert api_fit_kin_exp.shield == [approx(8000), approx(3437.6), approx(3437.6), approx(2)]
     assert api_fit_kin_exp.armor == [approx(5517.241379), approx(2370.758621), approx(2370.758621), approx(1.37931)]
@@ -140,7 +144,9 @@ def test_drone_dps_profiles(client, consts):
     assert api_drone_negative.armor == [0, approx(97.906602), approx(97.906602), approx(1.73913)]
     assert api_drone_negative.hull == [0, approx(19.166667), approx(19.166667), approx(1)]
     # Total damage = 0 means no stats returned
-    assert api_drone_zero is None
+    assert api_drone_zero.shield is None
+    assert api_drone_zero.armor is None
+    assert api_drone_zero.hull is None
     # Kin-explosive
     assert api_drone_kin_exp.shield == [0, approx(103.030303), approx(103.030303), approx(1.818182)]
     assert api_drone_kin_exp.armor == [0, approx(72.640382), approx(72.640382), approx(1.290323)]
@@ -187,25 +193,37 @@ def test_immunity(client, consts):
     api_profiles = [StatsOptionErps(incoming_dps=(1, 0, 0, 0)), StatsOptionErps(incoming_dps=(1, 1, 1, 1))]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=(True, api_profiles)))
     api_fit_em, api_fit_uniform = api_tgt_fit_stats.erps
-    assert api_fit_em is None
-    assert api_fit_uniform is None
+    assert api_fit_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(1)]
+    assert api_fit_em.armor is None
+    assert api_fit_em.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
+    assert api_fit_uniform.shield == [approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(1.428571)]
+    assert api_fit_uniform.armor is None
+    assert api_fit_uniform.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=(True, api_profiles)))
     api_ship_em, api_ship_uniform = api_tgt_ship_stats.erps
-    assert api_ship_em is None
-    assert api_ship_uniform is None
+    assert api_ship_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(1)]
+    assert api_ship_em.armor is None
+    assert api_ship_em.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
+    assert api_ship_uniform.shield == [approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(1.428571)]
+    assert api_ship_uniform.armor is None
+    assert api_ship_uniform.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_profiles = [StatsOptionErps(incoming_dps=(1, 0, 0, 0)), StatsOptionErps(incoming_dps=(1, 1, 1, 1))]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=(True, api_profiles)))
     api_fit_em, api_fit_uniform = api_tgt_fit_stats.erps
-    assert api_fit_em is None
+    assert api_fit_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(1)]
+    assert api_fit_em.armor is None
+    assert api_fit_em.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
     assert api_fit_uniform.shield == [approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(1.428571)]
     assert api_fit_uniform.armor == [approx(7619.047619), approx(3273.904761), approx(3273.904761), approx(1.904762)]
     assert api_fit_uniform.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=(True, api_profiles)))
     api_ship_em, api_ship_uniform = api_tgt_ship_stats.erps
-    assert api_ship_em is None
+    assert api_ship_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(1)]
+    assert api_ship_em.armor is None
+    assert api_ship_em.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
     assert api_ship_uniform.shield == [approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(1.428571)]
     assert api_ship_uniform.armor == [approx(7619.047619), approx(3273.904761), approx(3273.904761), approx(1.904762)]
     assert api_ship_uniform.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]

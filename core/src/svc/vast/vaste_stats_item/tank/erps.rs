@@ -26,7 +26,7 @@ impl Vast {
         item_key: ItemKey,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
-    ) -> Result<Option<StatTank<StatLayerErps>>, StatItemCheckError> {
+    ) -> Result<StatTank<Option<StatLayerErps>>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
         item_check(item_key, uad_item)?;
         Ok(self.get_stat_item_erps_unchecked(ctx, calc, item_key, uad_item, incoming_dps, spool))
@@ -39,32 +39,32 @@ impl Vast {
         uad_item: &UadItem,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
-    ) -> Option<StatTank<StatLayerErps>> {
+    ) -> StatTank<Option<StatLayerErps>> {
         let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, uad_item, spool);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
         let incoming_dps = incoming_dps.unwrap_or(ctx.uad.default_incoming_dps);
-        let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps)?;
-        let armor_mult = get_tanking_efficiency(&resists.armor, incoming_dps)?;
-        let hull_mult = get_tanking_efficiency(&resists.hull, incoming_dps)?;
-        Some(StatTank {
-            shield: StatLayerErps {
-                local: rps.shield.local * shield_mult,
-                remote: rps.shield.remote * shield_mult,
-                remote_penalized: rps.shield.remote_penalized * shield_mult,
-                mult: shield_mult,
-            },
-            armor: StatLayerErps {
-                local: rps.armor.local * armor_mult,
-                remote: rps.armor.remote * armor_mult,
-                remote_penalized: rps.armor.remote_penalized * armor_mult,
-                mult: armor_mult,
-            },
-            hull: StatLayerErps {
-                local: rps.hull.local * hull_mult,
-                remote: rps.hull.remote * hull_mult,
-                remote_penalized: rps.hull.remote_penalized * hull_mult,
-                mult: hull_mult,
-            },
-        })
+        let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps);
+        let armor_mult = get_tanking_efficiency(&resists.armor, incoming_dps);
+        let hull_mult = get_tanking_efficiency(&resists.hull, incoming_dps);
+        StatTank {
+            shield: shield_mult.map(|mult| StatLayerErps {
+                local: rps.shield.local * mult,
+                remote: rps.shield.remote * mult,
+                remote_penalized: rps.shield.remote_penalized * mult,
+                mult,
+            }),
+            armor: armor_mult.map(|mult| StatLayerErps {
+                local: rps.armor.local * mult,
+                remote: rps.armor.remote * mult,
+                remote_penalized: rps.armor.remote_penalized * mult,
+                mult,
+            }),
+            hull: hull_mult.map(|mult| StatLayerErps {
+                local: rps.hull.local * mult,
+                remote: rps.hull.remote * mult,
+                remote_penalized: rps.hull.remote_penalized * mult,
+                mult,
+            }),
+        }
     }
 }

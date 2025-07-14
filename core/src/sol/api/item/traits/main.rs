@@ -150,14 +150,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_ehp(
         &mut self,
         incoming_dps: Option<DpsProfile>,
-    ) -> Result<Option<StatTank<StatLayerEhp>>, ItemStatError> {
+    ) -> Result<StatTank<Option<StatLayerEhp>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_ehp(&sol.uad, item_key, incoming_dps)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_wc_ehp(&mut self) -> Result<Option<StatTank<StatLayerEhp>>, ItemStatError> {
+    fn get_stat_wc_ehp(&mut self) -> Result<StatTank<Option<StatLayerEhp>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
@@ -175,7 +175,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
-    ) -> Result<Option<StatTank<StatLayerErps>>, ItemStatError> {
+    ) -> Result<StatTank<Option<StatLayerErps>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc

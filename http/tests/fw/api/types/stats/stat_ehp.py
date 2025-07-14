@@ -7,15 +7,15 @@ import typing
 @dataclasses.dataclass
 class StatEhp:
 
-    shield: StatLayerEhp
-    armor: StatLayerEhp
-    hull: StatLayerEhp
+    shield: StatLayerEhp | None
+    armor: StatLayerEhp | None
+    hull: StatLayerEhp | None
 
     def __init__(self, *, data: list | tuple) -> None:
         shield, armor, hull = data
-        self.shield = StatLayerEhp(data=shield)
-        self.armor = StatLayerEhp(data=armor)
-        self.hull = StatLayerEhp(data=hull)
+        self.shield = StatLayerEhp(data=shield) if shield is not None else None
+        self.armor = StatLayerEhp(data=armor) if armor is not None else None
+        self.hull = StatLayerEhp(data=hull) if hull is not None else None
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]

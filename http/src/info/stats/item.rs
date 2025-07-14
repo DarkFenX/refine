@@ -14,13 +14,13 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) ehp: TriStateField<Vec<Option<HStatTank<HStatLayerEhp>>>>,
+    pub(crate) ehp: TriStateField<Vec<HStatTank<Option<HStatLayerEhp>>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) wc_ehp: TriStateField<HStatTank<HStatLayerEhp>>,
+    pub(crate) wc_ehp: TriStateField<HStatTank<Option<HStatLayerEhp>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) rps: TriStateField<Vec<HStatTank<HStatLayerRps>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) erps: TriStateField<Vec<Option<HStatTank<HStatLayerErps>>>>,
+    pub(crate) erps: TriStateField<Vec<HStatTank<Option<HStatLayerErps>>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

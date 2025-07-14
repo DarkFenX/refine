@@ -139,7 +139,7 @@ impl HGetFitStatsCmd {
             stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options).into();
         }
         if self.wc_ehp.unwrap_or(self.default) {
-            stats.wc_ehp = core_fit.get_stat_wc_ehp().unwrap_or_default().into();
+            stats.wc_ehp = core_fit.get_stat_wc_ehp().ok().map(|v| HStatTank::from_opt(v)).into();
         }
         let rps_opt = HStatResolvedOption::new(&self.rps, self.default);
         if rps_opt.enabled {
@@ -166,12 +166,12 @@ impl HGetFitStatsCmd {
 fn get_ehp_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<HStatOptionEhp>,
-) -> Option<Vec<Option<HStatTank<HStatLayerEhp>>>> {
+) -> Option<Vec<HStatTank<Option<HStatLayerEhp>>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
         match core_fit.get_stat_ehp(core_incoming_dps) {
-            Ok(core_result) => results.push(core_result.map(|v| v.into())),
+            Ok(core_result) => results.push(HStatTank::from_opt(core_result)),
             Err(_) => return None,
         }
     }
@@ -192,13 +192,13 @@ fn get_rps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionRps>) -> Opt
 fn get_erps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<HStatOptionErps>,
-) -> Option<Vec<Option<HStatTank<HStatLayerErps>>>> {
+) -> Option<Vec<HStatTank<Option<HStatLayerErps>>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
         let core_spool = option.spool.map(|h_spool| h_spool.into());
         match core_fit.get_stat_erps(core_incoming_dps, core_spool) {
-            Ok(core_result) => results.push(core_result.map(|v| v.into())),
+            Ok(core_result) => results.push(HStatTank::from_opt(core_result)),
             Err(_) => return None,
         }
     }

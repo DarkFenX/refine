@@ -23,7 +23,7 @@ impl Svc {
         uad: &Uad,
         item_key: ItemKey,
         incoming_dps: Option<DpsProfile>,
-    ) -> Result<Option<StatTank<StatLayerEhp>>, StatItemCheckError> {
+    ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         self.vast
             .get_stat_item_ehp_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, incoming_dps)
     }
@@ -31,7 +31,7 @@ impl Svc {
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
-    ) -> Result<Option<StatTank<StatLayerEhp>>, StatItemCheckError> {
+    ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         self.vast
             .get_stat_item_wc_ehp_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
     }
@@ -50,7 +50,7 @@ impl Svc {
         item_key: ItemKey,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
-    ) -> Result<Option<StatTank<StatLayerErps>>, StatItemCheckError> {
+    ) -> Result<StatTank<Option<StatLayerErps>>, StatItemCheckError> {
         self.vast.get_stat_item_erps_checked(
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,

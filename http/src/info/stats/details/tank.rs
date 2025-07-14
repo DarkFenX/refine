@@ -7,6 +7,21 @@ where
     armor: T,
     hull: T,
 }
+impl<T> HStatTank<Option<T>>
+where
+    T: serde::Serialize,
+{
+    pub(crate) fn from_opt<U>(core_stat: rc::stats::StatTank<Option<U>>) -> Self
+    where
+        U: Into<T>,
+    {
+        Self {
+            shield: core_stat.shield.map(|v| v.into()),
+            armor: core_stat.armor.map(|v| v.into()),
+            hull: core_stat.hull.map(|v| v.into()),
+        }
+    }
+}
 impl<T, U> From<rc::stats::StatTank<U>> for HStatTank<T>
 where
     T: serde::Serialize,
