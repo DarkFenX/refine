@@ -3,8 +3,9 @@ from .types import (
     FitStatsOptions,
     ItemStatsOptions,
     StatsOptionEhp,
-    StatsOptionFitRr,
-    StatsOptionItemRr,
+    StatsOptionFitRemoteRps,
+    StatsOptionItemRemoteCps,
+    StatsOptionItemRemoteRps,
     StatsOptionRps,
     ValOptions,
 )

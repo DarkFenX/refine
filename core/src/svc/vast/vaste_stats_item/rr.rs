@@ -9,23 +9,23 @@ use crate::{
         calc::Calc,
         efuncs,
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
-        vast::Vast,
+        vast::{StatTank, Vast},
     },
     uad::UadItem,
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_orr_shield_checked(
+    pub(in crate::svc) fn get_stat_item_remote_rps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
         reffs: &REffs,
         item_key: ItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
         item_check(item_key, uad_item)?;
-        Ok(Vast::get_stat_item_orr_shield_unchecked(
+        Ok(Vast::get_stat_item_remote_rps_unchecked(
             ctx,
             calc,
             reffs,
@@ -35,7 +35,7 @@ impl Vast {
             ignore_state,
         ))
     }
-    fn get_stat_item_orr_shield_unchecked(
+    fn get_stat_item_remote_rps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         reffs: &REffs,
@@ -43,137 +43,67 @@ impl Vast {
         uad_item: &UadItem,
         spool: Option<Spool>,
         ignore_state: bool,
-    ) -> AttrVal {
-        get_orr_item_key(
-            ctx,
-            calc,
-            reffs,
-            item_key,
-            uad_item,
-            spool,
-            ignore_state,
-            get_getter_shield,
-        )
+    ) -> StatTank<AttrVal> {
+        StatTank {
+            shield: get_orr_item_key(
+                ctx,
+                calc,
+                reffs,
+                item_key,
+                uad_item,
+                spool,
+                ignore_state,
+                get_getter_shield,
+            ),
+            armor: get_orr_item_key(
+                ctx,
+                calc,
+                reffs,
+                item_key,
+                uad_item,
+                spool,
+                ignore_state,
+                get_getter_armor,
+            ),
+            hull: get_orr_item_key(
+                ctx,
+                calc,
+                reffs,
+                item_key,
+                uad_item,
+                spool,
+                ignore_state,
+                get_getter_hull,
+            ),
+        }
     }
-    pub(in crate::svc) fn get_stat_item_orr_armor_checked(
+    pub(in crate::svc) fn get_stat_item_remote_cps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
         reffs: &REffs,
         item_key: ItemKey,
-        spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
         item_check(item_key, uad_item)?;
-        Ok(Vast::get_stat_item_orr_armor_unchecked(
+        Ok(Vast::get_stat_item_remote_cps_unchecked(
             ctx,
             calc,
             reffs,
             item_key,
             uad_item,
-            spool,
             ignore_state,
         ))
     }
-    fn get_stat_item_orr_armor_unchecked(
+    fn get_stat_item_remote_cps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         reffs: &REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
-        spool: Option<Spool>,
         ignore_state: bool,
     ) -> AttrVal {
-        get_orr_item_key(
-            ctx,
-            calc,
-            reffs,
-            item_key,
-            uad_item,
-            spool,
-            ignore_state,
-            get_getter_armor,
-        )
-    }
-    pub(in crate::svc) fn get_stat_item_orr_hull_checked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        reffs: &REffs,
-        item_key: ItemKey,
-        spool: Option<Spool>,
-        ignore_state: bool,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        let uad_item = ctx.uad.items.get(item_key);
-        item_check(item_key, uad_item)?;
-        Ok(Vast::get_stat_item_orr_hull_unchecked(
-            ctx,
-            calc,
-            reffs,
-            item_key,
-            uad_item,
-            spool,
-            ignore_state,
-        ))
-    }
-    fn get_stat_item_orr_hull_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        reffs: &REffs,
-        item_key: ItemKey,
-        uad_item: &UadItem,
-        spool: Option<Spool>,
-        ignore_state: bool,
-    ) -> AttrVal {
-        get_orr_item_key(
-            ctx,
-            calc,
-            reffs,
-            item_key,
-            uad_item,
-            spool,
-            ignore_state,
-            get_getter_hull,
-        )
-    }
-    pub(in crate::svc) fn get_stat_item_orr_cap_checked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        reffs: &REffs,
-        item_key: ItemKey,
-        spool: Option<Spool>,
-        ignore_state: bool,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        let uad_item = ctx.uad.items.get(item_key);
-        item_check(item_key, uad_item)?;
-        Ok(Vast::get_stat_item_orr_cap_unchecked(
-            ctx,
-            calc,
-            reffs,
-            item_key,
-            uad_item,
-            spool,
-            ignore_state,
-        ))
-    }
-    fn get_stat_item_orr_cap_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        reffs: &REffs,
-        item_key: ItemKey,
-        uad_item: &UadItem,
-        spool: Option<Spool>,
-        ignore_state: bool,
-    ) -> AttrVal {
-        get_orr_item_key(
-            ctx,
-            calc,
-            reffs,
-            item_key,
-            uad_item,
-            spool,
-            ignore_state,
-            get_getter_cap,
-        )
+        get_orr_item_key(ctx, calc, reffs, item_key, uad_item, None, ignore_state, get_getter_cap)
     }
 }
 

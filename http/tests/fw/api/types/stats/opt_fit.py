@@ -3,7 +3,7 @@ import dataclasses
 from tests.fw.util import Absent
 from .opt_shared import StatOptionAlias, StatOptionEhpAlias, StatOptionErpsAlias, StatOptionRpsAlias, dc_to_dict
 
-type StatOptionFitRrAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRr]]
+type StatOptionFitRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteRps]]
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -41,17 +41,15 @@ class FitStatsOptions:
     rps: StatOptionRpsAlias = Absent
     erps: StatOptionErpsAlias = Absent
     resists: StatOptionAlias = Absent
-    rr_shield: StatOptionFitRrAlias = Absent
-    rr_armor: StatOptionFitRrAlias = Absent
-    rr_hull: StatOptionFitRrAlias = Absent
-    rr_capacitor: StatOptionFitRrAlias = Absent
+    remote_rps: StatOptionFitRemoteRpsAlias = Absent
+    remote_cps: StatOptionAlias = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionFitRr:
+class StatsOptionFitRemoteRps:
 
     spool: str | type[Absent] = Absent
 

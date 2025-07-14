@@ -3,7 +3,8 @@ import dataclasses
 from tests.fw.util import Absent
 from .opt_shared import StatOptionAlias, StatOptionEhpAlias, StatOptionErpsAlias, StatOptionRpsAlias, dc_to_dict
 
-type StatOptionItemRrAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRr]]
+type StatOptionItemRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteRps]]
+type StatOptionItemRemoteCpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteCps]]
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -19,19 +20,26 @@ class ItemStatsOptions:
     rps: StatOptionRpsAlias = Absent
     erps: StatOptionErpsAlias = Absent
     resists: StatOptionAlias = Absent
-    rr_shield: StatOptionItemRrAlias = Absent
-    rr_armor: StatOptionItemRrAlias = Absent
-    rr_hull: StatOptionItemRrAlias = Absent
-    rr_capacitor: StatOptionItemRrAlias = Absent
+    remote_rps: StatOptionItemRemoteRpsAlias = Absent
+    remote_cps: StatOptionItemRemoteCpsAlias = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionItemRr:
+class StatsOptionItemRemoteRps:
 
     spool: str | type[Absent] = Absent
+    ignore_state: bool | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionItemRemoteCps:
+
     ignore_state: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:

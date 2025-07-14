@@ -15,7 +15,9 @@ pytest.register_assert_rewrite(
     'tests.fw.api.client.sol',
     'tests.fw.api.client.src',
     'tests.fw.api.types.fit',
-    'tests.fw.response')
+    'tests.fw.api.types.sol',
+    'tests.fw.response',
+    'tests.fw.util.ntt_list')
 
 TEST_FOLDER_SPLIT = Path(__file__).resolve().absolute().parent.parts
 

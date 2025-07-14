@@ -190,32 +190,22 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
     // Stats - RR
-    fn get_stat_rr_shield(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
+    fn get_stat_remote_rps(
+        &mut self,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Result<StatTank<AttrVal>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_orr_shield(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+            .get_stat_item_remote_rps(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
-    fn get_stat_rr_armor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
+    fn get_stat_remote_cps(&mut self, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_orr_armor(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
-    }
-    fn get_stat_rr_hull(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_orr_hull(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
-    }
-    fn get_stat_rr_capacitor(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_orr_cap(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+            .get_stat_item_remote_cps(&sol.uad, &sol.reffs, item_key, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
 }

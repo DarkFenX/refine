@@ -24,13 +24,9 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) rr_shield: TriStateField<Vec<rc::AttrVal>>,
+    pub(crate) remote_rps: TriStateField<Vec<HStatTank<rc::AttrVal>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) rr_armor: TriStateField<Vec<rc::AttrVal>>,
-    #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) rr_hull: TriStateField<Vec<rc::AttrVal>>,
-    #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) rr_capacitor: TriStateField<Vec<rc::AttrVal>>,
+    pub(crate) remote_cps: TriStateField<Vec<rc::AttrVal>>,
 }
 impl HItemStats {
     pub fn new() -> Self {
@@ -44,10 +40,8 @@ impl HItemStats {
             rps: TriStateField::default(),
             erps: TriStateField::default(),
             resists: TriStateField::default(),
-            rr_shield: TriStateField::default(),
-            rr_armor: TriStateField::default(),
-            rr_hull: TriStateField::default(),
-            rr_capacitor: TriStateField::default(),
+            remote_rps: TriStateField::default(),
+            remote_cps: TriStateField::default(),
         }
     }
 }

@@ -2,7 +2,7 @@ use crate::{
     cmd::{
         shared::get_primary_fit,
         stats::options::{
-            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionFitRr, HStatOptionRps, HStatResolvedOption,
+            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionFitRemoteRps, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -49,10 +49,8 @@ pub(crate) struct HGetFitStatsCmd {
     rps: Option<HStatOption<HStatOptionRps>>,
     erps: Option<HStatOption<HStatOptionErps>>,
     resists: Option<bool>,
-    rr_shield: Option<HStatOption<HStatOptionFitRr>>,
-    rr_armor: Option<HStatOption<HStatOptionFitRr>>,
-    rr_hull: Option<HStatOption<HStatOptionFitRr>>,
-    rr_capacitor: Option<HStatOption<HStatOptionFitRr>>,
+    remote_rps: Option<HStatOption<HStatOptionFitRemoteRps>>,
+    remote_cps: Option<bool>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -154,21 +152,12 @@ impl HGetFitStatsCmd {
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
         }
-        let rr_shield_opt = HStatResolvedOption::new(&self.rr_shield, self.default);
-        if rr_shield_opt.enabled {
-            stats.rr_shield = Some(get_shield_rr_stats(&mut core_fit, rr_shield_opt.options));
+        let rrps_opt = HStatResolvedOption::new(&self.remote_rps, self.default);
+        if rrps_opt.enabled {
+            stats.remote_rps = Some(get_remote_rps_stats(&mut core_fit, rrps_opt.options));
         }
-        let rr_armor_opt = HStatResolvedOption::new(&self.rr_armor, self.default);
-        if rr_armor_opt.enabled {
-            stats.rr_armor = Some(get_armor_rr_stats(&mut core_fit, rr_armor_opt.options));
-        }
-        let rr_hull_opt = HStatResolvedOption::new(&self.rr_hull, self.default);
-        if rr_hull_opt.enabled {
-            stats.rr_hull = Some(get_hull_rr_stats(&mut core_fit, rr_hull_opt.options));
-        }
-        let rr_cap_opt = HStatResolvedOption::new(&self.rr_capacitor, self.default);
-        if rr_cap_opt.enabled {
-            stats.rr_capacitor = Some(get_cap_rr_stats(&mut core_fit, rr_cap_opt.options));
+        if self.remote_cps.unwrap_or(self.default) {
+            stats.remote_cps = Some(core_fit.get_stat_remote_cps());
         }
         Ok(stats)
     }
@@ -216,30 +205,15 @@ fn get_erps_stats(
     Some(results)
 }
 
-fn get_shield_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
+fn get_remote_rps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<HStatOptionFitRemoteRps>,
+) -> Vec<HStatTank<rc::AttrVal>> {
     options
         .iter()
-        .map(|inner_opt| core_fit.get_stat_rr_shield(inner_opt.spool.map(|spool| spool.into())))
-        .collect()
-}
-
-fn get_armor_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
-    options
-        .iter()
-        .map(|inner_opt| core_fit.get_stat_rr_armor(inner_opt.spool.map(|spool| spool.into())))
-        .collect()
-}
-
-fn get_hull_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
-    options
-        .iter()
-        .map(|inner_opt| core_fit.get_stat_rr_hull(inner_opt.spool.map(|spool| spool.into())))
-        .collect()
-}
-
-fn get_cap_rr_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRr>) -> Vec<rc::AttrVal> {
-    options
-        .iter()
-        .map(|inner_opt| core_fit.get_stat_rr_capacitor(inner_opt.spool.map(|spool| spool.into())))
+        .map(|option| {
+            let core_spool = option.spool.map(|h_spool| h_spool.into());
+            core_fit.get_stat_remote_rps(core_spool).into()
+        })
         .collect()
 }
