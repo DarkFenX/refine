@@ -1,11 +1,11 @@
 use crate::{
     cmd::{
         shared::get_primary_fit,
-        stats::options::{HStatOption, HStatOptionEhp, HStatOptionFitRr, HStatOptionReps, HStatResolvedOption},
+        stats::options::{HStatOption, HStatOptionEhp, HStatOptionFitRr, HStatOptionRps, HStatResolvedOption},
     },
     info::{
         HFitStats,
-        stats::{HStatLayerEhp, HStatLayerReps, HStatTank},
+        stats::{HStatLayerEhp, HStatLayerRps, HStatTank},
     },
     util::HExecError,
 };
@@ -44,7 +44,7 @@ pub(crate) struct HGetFitStatsCmd {
     hp: Option<bool>,
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
-    reps: Option<HStatOption<HStatOptionReps>>,
+    rps: Option<HStatOption<HStatOptionRps>>,
     resists: Option<bool>,
     rr_shield: Option<HStatOption<HStatOptionFitRr>>,
     rr_armor: Option<HStatOption<HStatOptionFitRr>>,
@@ -140,9 +140,9 @@ impl HGetFitStatsCmd {
         if self.wc_ehp.unwrap_or(self.default) {
             stats.wc_ehp = core_fit.get_stat_wc_ehp().unwrap_or_default().into();
         }
-        let reps_opt = HStatResolvedOption::new(&self.reps, self.default);
-        if reps_opt.enabled {
-            stats.reps = get_reps_stats(&mut core_fit, reps_opt.options).into();
+        let rps_opt = HStatResolvedOption::new(&self.rps, self.default);
+        if rps_opt.enabled {
+            stats.rps = get_rps_stats(&mut core_fit, rps_opt.options).into();
         }
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
@@ -182,10 +182,10 @@ fn get_ehp_stats(
     Some(results)
 }
 
-fn get_reps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionReps>) -> Option<Vec<HStatTank<HStatLayerReps>>> {
+fn get_rps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionRps>) -> Option<Vec<HStatTank<HStatLayerRps>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_fit.get_stat_reps(option.spool.map(|v| v.into())) {
+        match core_fit.get_stat_rps(option.spool.map(|v| v.into())) {
             Ok(core_result) => results.push(core_result.into()),
             Err(_) => return None,
         }

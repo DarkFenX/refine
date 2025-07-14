@@ -3,7 +3,7 @@ use crate::{
     err::FitShipStatError,
     misc::{DmgKinds, DpsProfile, Spool},
     sol::api::{FitMut, ItemMutCommon},
-    svc::vast::{StatLayerEhp, StatLayerHp, StatLayerReps, StatTank},
+    svc::vast::{StatLayerEhp, StatLayerHp, StatLayerRps, StatTank},
 };
 
 impl<'a> FitMut<'a> {
@@ -19,8 +19,8 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_wc_ehp(&mut self) -> Result<Option<StatTank<StatLayerEhp>>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_wc_ehp()?)
     }
-    pub fn get_stat_reps(&mut self, spool: Option<Spool>) -> Result<StatTank<StatLayerReps>, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_reps(spool)?)
+    pub fn get_stat_rps(&mut self, spool: Option<Spool>) -> Result<StatTank<StatLayerRps>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_rps(spool)?)
     }
     pub fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_resists()?)

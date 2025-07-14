@@ -14,39 +14,39 @@ use crate::{
     util::{RMap, RMapRMap, trunc_unerr},
 };
 
-pub struct StatLayerReps {
+pub struct StatLayerRps {
     pub local: AttrVal,
     pub remote: AttrVal,
     pub remote_penalized: AttrVal,
 }
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_reps_checked(
+    pub(in crate::svc) fn get_stat_item_rps_checked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
         spool: Option<Spool>,
-    ) -> Result<StatTank<StatLayerReps>, StatItemCheckError> {
+    ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
         item_check(item_key, uad_item)?;
-        Ok(self.get_stat_item_reps_unchecked(ctx, calc, item_key, uad_item, spool))
+        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, uad_item, spool))
     }
-    fn get_stat_item_reps_unchecked(
+    fn get_stat_item_rps_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
         uad_item: &UadItem,
         spool: Option<Spool>,
-    ) -> StatTank<StatLayerReps> {
+    ) -> StatTank<StatLayerRps> {
         // Local reps
         let (local_shield, local_armor, local_hull) = match uad_item {
             UadItem::Ship(uad_ship) => {
                 let fit_data = self.get_fit_data(&uad_ship.get_fit_key());
-                let local_shield = get_local_reps(ctx, calc, &fit_data.lr_shield);
-                let local_armor = get_local_reps(ctx, calc, &fit_data.lr_armor);
-                let local_hull = get_local_reps(ctx, calc, &fit_data.lr_hull);
+                let local_shield = get_local_rps(ctx, calc, &fit_data.lr_shield);
+                let local_armor = get_local_rps(ctx, calc, &fit_data.lr_armor);
+                let local_hull = get_local_rps(ctx, calc, &fit_data.lr_hull);
                 (local_shield, local_armor, local_hull)
             }
             _ => (OF(0.0), OF(0.0), OF(0.0)),
@@ -55,17 +55,17 @@ impl Vast {
         let armor_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_armor);
         let hull_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_hull);
         StatTank {
-            shield: StatLayerReps {
+            shield: StatLayerRps {
                 local: local_shield,
                 remote: irr_data_to_raw(&shield_irr_data),
                 remote_penalized: irr_data_to_penalized(shield_irr_data),
             },
-            armor: StatLayerReps {
+            armor: StatLayerRps {
                 local: local_armor,
                 remote: irr_data_to_raw(&armor_irr_data),
                 remote_penalized: irr_data_to_penalized(armor_irr_data),
             },
-            hull: StatLayerReps {
+            hull: StatLayerRps {
                 local: local_hull,
                 remote: irr_data_to_raw(&hull_irr_data),
                 remote_penalized: irr_data_to_penalized(hull_irr_data),
@@ -74,7 +74,7 @@ impl Vast {
     }
 }
 
-fn get_local_reps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMap<EffectSpec, NLocalRepGetter>) -> AttrVal {
+fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMap<EffectSpec, NLocalRepGetter>) -> AttrVal {
     let mut total_rps = OF(0.0);
     for (&rep_espec, rep_getter) in rep_data.iter() {
         let rep_amount = match rep_getter(ctx, calc, rep_espec.item_key) {
@@ -134,10 +134,9 @@ fn irr_data_to_penalized(irr_data: Vec<IrrEntry>) -> AttrVal {
     let total_adjusted_rps: AttrVal = irr_data.iter().map(|v| v.amount / trunc_unerr(v.cycle_time)).sum();
     let mut result = OF(0.0);
     for entry in irr_data.into_iter() {
-        let rep_adjusted_rps = entry.amount / trunc_unerr(entry.cycle_time);
-        let rep_modified_rps = rep_adjusted_rps.mul_add(RR_PEN_MULTIPLIER, RR_PEN_ADDITION);
-        let mult = OF(1.0)
-            - (((rep_adjusted_rps + rep_modified_rps) / (total_adjusted_rps + rep_modified_rps)) - OF(1.0)).powi(2);
+        let adjusted_rps = entry.amount / trunc_unerr(entry.cycle_time);
+        let modified_rps = adjusted_rps.mul_add(RR_PEN_MULTIPLIER, RR_PEN_ADDITION);
+        let mult = OF(1.0) - (((adjusted_rps + modified_rps) / (total_adjusted_rps + modified_rps)) - OF(1.0)).powi(2);
         // Truncated cycle time is used only for multiplier
         result += mult * entry.amount / entry.cycle_time;
     }

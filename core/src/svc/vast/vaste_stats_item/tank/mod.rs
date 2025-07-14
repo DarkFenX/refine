@@ -1,10 +1,11 @@
 pub use ehp::StatLayerEhp;
 pub use hp::StatLayerHp;
-pub use reps::StatLayerReps;
+pub use rps::StatLayerRps;
 pub use shared::StatTank;
 
 mod ehp;
+mod erps;
 mod hp;
-mod reps;
 mod resists;
+mod rps;
 mod shared;

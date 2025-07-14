@@ -1,6 +1,6 @@
 use crate::{
     info::stats::details::{
-        HStatLayerEhp, HStatLayerHp, HStatLayerReps, HStatLayerResist, HStatRes, HStatSlot, HStatTank,
+        HStatLayerEhp, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatRes, HStatSlot, HStatTank,
     },
     util::TriStateField,
 };
@@ -64,7 +64,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) wc_ehp: TriStateField<HStatTank<HStatLayerEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) reps: TriStateField<Vec<HStatTank<HStatLayerReps>>>,
+    pub(crate) rps: TriStateField<Vec<HStatTank<HStatLayerRps>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -107,7 +107,7 @@ impl HFitStats {
             hp: TriStateField::default(),
             ehp: TriStateField::default(),
             wc_ehp: TriStateField::default(),
-            reps: TriStateField::default(),
+            rps: TriStateField::default(),
             resists: TriStateField::default(),
             rr_shield: Option::default(),
             rr_armor: Option::default(),

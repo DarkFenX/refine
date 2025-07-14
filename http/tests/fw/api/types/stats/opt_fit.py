@@ -1,7 +1,7 @@
 import dataclasses
 
 from tests.fw.util import Absent
-from .opt_shared import StatOptionAlias, StatOptionEhpAlias, StatOptionRepsAlias, dc_to_dict
+from .opt_shared import StatOptionAlias, StatOptionEhpAlias, StatOptionRpsAlias, dc_to_dict
 
 type StatOptionFitRrAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRr]]
 
@@ -38,7 +38,7 @@ class FitStatsOptions:
     hp: StatOptionAlias = Absent
     ehp: StatOptionEhpAlias = Absent
     wc_ehp: StatOptionAlias = Absent
-    reps: StatOptionRepsAlias = Absent
+    rps: StatOptionRpsAlias = Absent
     resists: StatOptionAlias = Absent
     rr_shield: StatOptionFitRrAlias = Absent
     rr_armor: StatOptionFitRrAlias = Absent

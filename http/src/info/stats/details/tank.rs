@@ -56,13 +56,13 @@ impl From<rc::stats::StatLayerEhp> for HStatLayerEhp {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
-pub(crate) struct HStatLayerReps {
+pub(crate) struct HStatLayerRps {
     local: rc::AttrVal,
     remote: rc::AttrVal,
     remote_penalized: rc::AttrVal,
 }
-impl From<rc::stats::StatLayerReps> for HStatLayerReps {
-    fn from(core_stat: rc::stats::StatLayerReps) -> Self {
+impl From<rc::stats::StatLayerRps> for HStatLayerRps {
+    fn from(core_stat: rc::stats::StatLayerRps) -> Self {
         Self {
             local: core_stat.local,
             remote: core_stat.remote,

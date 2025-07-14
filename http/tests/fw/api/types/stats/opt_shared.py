@@ -5,7 +5,7 @@ from tests.fw.util import Absent
 
 type StatOptionAlias = bool | type[Absent]
 type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
-type StatOptionRepsAlias = StatOptionAlias | tuple[bool, list[StatsOptionReps]]
+type StatOptionRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionReps]]
 
 
 @dataclasses.dataclass(kw_only=True)

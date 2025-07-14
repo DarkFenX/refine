@@ -5,17 +5,17 @@ import typing
 
 
 @dataclasses.dataclass
-class StatReps:
+class StatRps:
 
-    shield: StatLayerReps
-    armor: StatLayerReps
-    hull: StatLayerReps
+    shield: StatLayerRps
+    armor: StatLayerRps
+    hull: StatLayerRps
 
     def __init__(self, *, data: list | tuple) -> None:
         shield, armor, hull = data
-        self.shield = StatLayerReps(data=shield)
-        self.armor = StatLayerReps(data=armor)
-        self.hull = StatLayerReps(data=hull)
+        self.shield = StatLayerRps(data=shield)
+        self.armor = StatLayerRps(data=armor)
+        self.hull = StatLayerRps(data=hull)
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -28,7 +28,7 @@ class StatReps:
 
 
 @dataclasses.dataclass
-class StatLayerReps:
+class StatLayerRps:
 
     local: float
     remote: float

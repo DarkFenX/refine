@@ -1,6 +1,6 @@
 pub(crate) use resource::HStatRes;
 pub(crate) use slot::HStatSlot;
-pub(crate) use tank::{HStatLayerEhp, HStatLayerHp, HStatLayerReps, HStatLayerResist, HStatTank};
+pub(crate) use tank::{HStatLayerEhp, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatTank};
 
 mod resource;
 mod slot;

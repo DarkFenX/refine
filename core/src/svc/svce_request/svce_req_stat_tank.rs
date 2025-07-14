@@ -4,7 +4,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatLayerEhp, StatLayerHp, StatLayerReps, StatTank, Vast},
+        vast::{StatLayerEhp, StatLayerHp, StatLayerRps, StatTank, Vast},
     },
     uad::Uad,
 };
@@ -35,14 +35,14 @@ impl Svc {
         self.vast
             .get_stat_item_wc_ehp_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key)
     }
-    pub(crate) fn get_stat_item_reps(
+    pub(crate) fn get_stat_item_rps(
         &mut self,
         uad: &Uad,
         item_key: ItemKey,
         spool: Option<Spool>,
-    ) -> Result<StatTank<StatLayerReps>, StatItemCheckError> {
+    ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
         self.vast
-            .get_stat_item_reps_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, spool)
+            .get_stat_item_rps_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, spool)
     }
     pub(crate) fn get_stat_item_resists(
         &mut self,
