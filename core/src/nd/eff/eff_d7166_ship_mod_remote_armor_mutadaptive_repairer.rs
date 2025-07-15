@@ -33,7 +33,7 @@ fn get_resolved_spool(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec, spool: Op
     let spool_max = calc
         .get_item_attr_val_extra_opt(ctx, espec.item_key, &ac::attrs::REP_MULT_BONUS_MAX)
         .unwrap_or(OF(0.0));
-    let cycle_time = efuncs::get_espec_cycle_time(ctx, calc, espec)?;
+    let cycle_time = efuncs::get_espec_duration_s(ctx, calc, espec)?;
     spool.resolve(spool_max, spool_step, cycle_time)
 }
 

@@ -41,6 +41,7 @@ pub(crate) struct NEffect {
 #[derive(Copy, Clone, Default)]
 pub(crate) struct NEffectHc {
     pub(crate) charge: Option<NEffectCharge> = None,
+    pub(crate) kills_item: bool = false,
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_custom_fn: Option<fn(&mut Vec<RawModifier>, EffectSpec)> = None,
     // Effect strength-related

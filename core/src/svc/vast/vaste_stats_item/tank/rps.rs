@@ -81,7 +81,7 @@ fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMap<EffectSpec, NLoca
             Some(rep_amount) => rep_amount,
             None => continue,
         };
-        if let Some(cycle_time) = efuncs::get_espec_cycle_time(ctx, calc, rep_espec) {
+        if let Some(cycle_time) = efuncs::get_espec_duration_s(ctx, calc, rep_espec) {
             total_rps += rep_amount / cycle_time;
         }
     }
@@ -107,7 +107,7 @@ fn get_irr_data(
                 Some(rep_amount) => rep_amount,
                 None => continue,
             };
-            if let Some(cycle_time) = efuncs::get_espec_cycle_time(ctx, calc, rep_espec) {
+            if let Some(cycle_time) = efuncs::get_espec_duration_s(ctx, calc, rep_espec) {
                 result.push(IrrEntry {
                     amount: rep_amount,
                     cycle_time,

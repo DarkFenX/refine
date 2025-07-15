@@ -1,8 +1,8 @@
 //! Effect-related functions.
 
 pub(in crate::svc) use cycle_count::get_espec_cycle_count;
-pub(in crate::svc) use cycle_time::get_effect_cycle_time;
-pub(crate) use cycle_time::get_espec_cycle_time;
+pub(in crate::svc) use duration::get_effect_duration_s;
+pub(crate) use duration::get_espec_duration_s;
 
 mod cycle_count;
-mod cycle_time;
+mod duration;
