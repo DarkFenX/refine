@@ -20,26 +20,47 @@ pub(super) fn get_drone_cycle_info(
         return None;
     };
     let mut cycle_infos = RMap::new();
-    for a_effect_id in reffs.iter_running(&item_key) {
-        let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
-        if !a_effect.xt.is_active {
-            continue;
+    match ignore_state {
+        true => {
+            for &a_effect_id in uad_drone.get_a_effect_datas().unwrap().keys() {
+                fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
+            }
         }
-        let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect) {
-            Some(duration_s) => duration_s,
-            None => continue,
-        };
-        // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
-        // flags, limited charges & reloads
-        cycle_infos.insert(
-            *a_effect_id,
-            CycleInfo::Simple(CycleSimple {
-                active_time: duration_s,
-                inactive_time: OF(0.0),
-                repeat_count: InfCount::Infinite,
-                reload: false,
-            }),
-        );
+        false => {
+            for &a_effect_id in reffs.iter_running(&item_key) {
+                fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
+            }
+        }
     }
     Some(cycle_infos)
+}
+
+fn fill_drone_effect_info(
+    cycle_infos: &mut RMap<ad::AEffectId, CycleInfo>,
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: ItemKey,
+    a_effect_id: ad::AEffectId,
+) {
+    let a_effect = match ctx.uad.src.get_a_effect(&a_effect_id) {
+        Some(a_effect) => a_effect,
+        None => return,
+    };
+    if !a_effect.xt.is_active {
+        return;
+    }
+    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect) {
+        Some(duration_s) => duration_s,
+        None => return,
+    };
+    // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
+    // flags, limited charges & reloads
+    cycle_infos.insert(
+        a_effect_id,
+        CycleInfo::Simple(CycleSimple {
+            active_time: duration_s,
+            inactive_time: OF(0.0),
+            repeat_count: InfCount::Infinite,
+        }),
+    );
 }

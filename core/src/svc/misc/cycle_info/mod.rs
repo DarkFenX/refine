@@ -1,3 +1,6 @@
+pub(in crate::svc) use info::{CycleInfo, get_item_cycle_info};
+pub(in crate::svc) use info_shared::CycleOptions;
+
 mod info;
 mod info_drone;
 mod info_module;

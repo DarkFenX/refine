@@ -35,9 +35,6 @@ impl<'a> Module<'a> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.key)
     }
-    pub fn get_cycle_count_until_reload(&self) -> Option<Count> {
-        get_cycle_count_until_reload(self.sol, self.key)
-    }
 }
 impl<'a> ItemSealed for Module<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -84,8 +81,15 @@ impl<'a> ModuleMut<'a> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.key)
     }
-    pub fn get_cycle_count_until_reload(&self) -> Option<Count> {
-        get_cycle_count_until_reload(self.sol, self.key)
+    pub fn get_cycle_count_until_reload(&mut self) -> Option<Count> {
+        match self
+            .sol
+            .svc
+            .get_item_cycles_until_reload(&self.sol.uad, &self.sol.reffs, self.key)
+        {
+            Some(InfCount::Count(count)) => Some(count),
+            _ => None,
+        }
     }
     pub fn get_spool_cycle_count(&mut self) -> Option<AdjustableCount> {
         self.sol.svc.get_effect_spool_cycle_count(&self.sol.uad, self.key)
@@ -127,12 +131,6 @@ fn get_charge(sol: &SolarSystem, item_key: ItemKey) -> Option<Charge<'_>> {
 }
 fn get_charge_count(sol: &SolarSystem, item_key: ItemKey) -> Option<Count> {
     get_uad_module(sol, item_key).get_charge_count(&sol.uad)
-}
-fn get_cycle_count_until_reload(sol: &SolarSystem, item_key: ItemKey) -> Option<Count> {
-    match sol.svc.get_effect_cycle_count(&sol.uad, item_key) {
-        Some(InfCount::Count(count)) => Some(count),
-        _ => None,
-    }
 }
 fn get_uad_module(sol: &SolarSystem, item_key: ItemKey) -> &UadModule {
     sol.uad.items.get(item_key).get_module().unwrap()

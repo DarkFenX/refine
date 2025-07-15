@@ -5,10 +5,14 @@ def test_basic(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -23,10 +27,14 @@ def test_rounding_cycles(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.01})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.79, eve_charge_rate_attr_id: 8},
+        attrs={eve_capacity_attr_id: 0.79, eve_charge_rate_attr_id: 8, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -42,14 +50,18 @@ def test_rounding_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
     eve_module1_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1.4},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1.4, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_module2_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1.6},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1.6, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -66,10 +78,14 @@ def test_zero_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 0},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 0, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -84,6 +100,7 @@ def test_modified_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -92,12 +109,15 @@ def test_modified_charge_rate(client, consts):
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_charge_rate_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_mod])
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(
         attrs={eve_volume_attr_id: 0.05, eve_mod_attr_id: 2},
         eff_ids=[eve_mod_effect_id])
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -114,14 +134,18 @@ def test_mutation_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
     eve_base_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_mutated_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 2},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 2, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_mutator_id = client.mk_eve_mutator(
@@ -158,9 +182,13 @@ def test_mutation_charge_rate(client, consts):
 def test_no_charge(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.79, eve_charge_rate_attr_id: 8},
+        attrs={eve_capacity_attr_id: 0.79, eve_charge_rate_attr_id: 8, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -176,10 +204,14 @@ def test_no_charge(client, consts):
 def test_no_charge_rate(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50},
+        attrs={eve_capacity_attr_id: 0.50, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -193,10 +225,14 @@ def test_no_charge_rate(client, consts):
 def test_not_loaded_charge(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.cycle_charge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_charge_rate,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.alloc_item_id()
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -204,4 +240,4 @@ def test_not_loaded_charge(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload == 0
+    assert api_module.update().cycles_until_reload is None

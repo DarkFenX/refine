@@ -1,6 +1,7 @@
 use crate::{ad, def::AttrVal};
 
-pub(super) enum CycleOptions {
+#[derive(Copy, Clone)]
+pub(in crate::svc) enum CycleOptions {
     Burst,
     Sim,
 }

@@ -1,5 +1,5 @@
 use super::{
-    info::{CycleComplex, CycleInfo, CycleInner, CycleSimple},
+    info::{CycleInfo, CycleInner, CycleReload1, CycleReload2, CycleSimple},
     info_shared::{CycleOptions, SelfKillerInfo},
     until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
@@ -28,125 +28,34 @@ pub(super) fn get_module_cycle_info(
     };
     let mut cycle_infos = RMap::new();
     let mut self_killers = Vec::new();
-    for &a_effect_id in reffs.iter_running(&item_key) {
-        let a_effect = ctx.uad.src.get_a_effect(&a_effect_id).unwrap();
-        if !a_effect.xt.is_active {
-            continue;
-        }
-        // No appropriate duration - no info
-        let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect) {
-            Some(duration_s) => duration_s,
-            None => continue,
-        };
-        // Charge count info
-        let cycle_count = match a_effect.hc.charge {
-            Some(n_charge) => match n_charge {
-                NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(uad_item, a_effect),
-                NEffectCharge::Loaded(charge_depletion) => match charge_depletion {
-                    NEffectChargeDepl::ChargeRate => get_charge_rate_cycle_count(ctx, uad_module),
-                    NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, uad_module),
-                    NEffectChargeDepl::None => InfCount::Infinite,
-                },
-            },
-            None => InfCount::Infinite,
-        };
-        // Completely skip effects which can't cycle
-        if cycle_count == InfCount::Count(0) {
-            continue;
-        }
-        // Self-killers are fairly trivial. Record info about them and go to next effect
-        if a_effect.hc.kills_item {
-            self_killers.push(SelfKillerInfo {
-                a_effect_id,
-                duration_s,
-            });
-            cycle_infos.insert(
-                a_effect_id,
-                CycleInfo::Simple(CycleSimple {
-                    active_time: duration_s,
-                    inactive_time: OF(0.0),
-                    repeat_count: InfCount::Count(1),
-                    reload: false,
-                }),
-            );
-            continue;
-        }
-        let reactivation_delay_s = (calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::MOD_REACTIVATION_DELAY)
-            .unwrap()
-            / 1000.0)
-            .max(OF(0.0));
-        match cycle_count {
-            // When we have to handle reload, result is a bit complex
-            InfCount::Count(count_until_reload) => {
-                let reload_time_s = match options {
-                    // When considering burst calculations, just set reload to 0
-                    CycleOptions::Burst => OF(0.0),
-                    CycleOptions::Sim => {
-                        let reload_time_s = calc
-                            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RELOAD_TIME)
-                            .unwrap()
-                            / 1000.0;
-                        match reload_time_s > OF(0.0) {
-                            // If reload time is defined, ensure it is
-                            true => reload_time_s.max(OF(1.0)),
-                            false => OF(0.0),
-                        }
-                    }
-                };
-                // Module can be reloaded during reactivation delay
-                let final_inactive_time = reload_time_s.max(reactivation_delay_s);
-                let final_cycle_count = 1;
-                let early_cycle_count = count_until_reload - final_cycle_count;
-                match early_cycle_count {
-                    // When module can do only one cycle per clip - return simple infinitely
-                    // repeating cycle, with reload on each repeat
-                    0 => {
-                        cycle_infos.insert(
-                            a_effect_id,
-                            CycleInfo::Simple(CycleSimple {
-                                active_time: duration_s,
-                                inactive_time: final_inactive_time,
-                                repeat_count: InfCount::Infinite,
-                                reload: true,
-                            }),
-                        );
-                    }
-                    // When it does more than one cycle per clip - mark final cycle as reload
-                    _ => {
-                        let simple_early = CycleInner {
-                            active_time: duration_s,
-                            inactive_time: reactivation_delay_s,
-                            repeat_count: early_cycle_count,
-                            reload: false,
-                        };
-                        let simple_final = CycleInner {
-                            active_time: duration_s,
-                            inactive_time: final_inactive_time,
-                            repeat_count: final_cycle_count,
-                            reload: true,
-                        };
-                        cycle_infos.insert(
-                            a_effect_id,
-                            CycleInfo::Complex(CycleComplex {
-                                inner1: simple_early,
-                                inner2: simple_final,
-                                repeat_count: InfCount::Infinite,
-                            }),
-                        );
-                    }
-                }
-            }
-            // Infinite charges until reload - return simple infinitely repeating cycle
-            InfCount::Infinite => {
-                cycle_infos.insert(
+    match ignore_state {
+        true => {
+            for &a_effect_id in uad_module.get_a_effect_datas().unwrap().keys() {
+                fill_module_effect_info(
+                    &mut cycle_infos,
+                    &mut self_killers,
+                    ctx,
+                    calc,
+                    item_key,
+                    uad_item,
+                    uad_module,
                     a_effect_id,
-                    CycleInfo::Simple(CycleSimple {
-                        active_time: duration_s,
-                        inactive_time: reactivation_delay_s,
-                        repeat_count: InfCount::Infinite,
-                        reload: false,
-                    }),
+                    options,
+                );
+            }
+        }
+        false => {
+            for &a_effect_id in reffs.iter_running(&item_key) {
+                fill_module_effect_info(
+                    &mut cycle_infos,
+                    &mut self_killers,
+                    ctx,
+                    calc,
+                    item_key,
+                    uad_item,
+                    uad_module,
+                    a_effect_id,
+                    options,
                 );
             }
         }
@@ -161,4 +70,133 @@ pub(super) fn get_module_cycle_info(
         cycle_infos.retain(|&k, _| k == fastest_sk_a_effect_id);
     }
     Some(cycle_infos)
+}
+
+fn fill_module_effect_info(
+    cycle_infos: &mut RMap<ad::AEffectId, CycleInfo>,
+    self_killers: &mut Vec<SelfKillerInfo>,
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: ItemKey,
+    uad_item: &UadItem,
+    uad_module: &UadModule,
+    a_effect_id: ad::AEffectId,
+    options: CycleOptions,
+) {
+    let a_effect = match ctx.uad.src.get_a_effect(&a_effect_id) {
+        Some(a_effect) => a_effect,
+        None => return,
+    };
+    if !a_effect.xt.is_active {
+        return;
+    }
+    // No appropriate duration - no info
+    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect) {
+        Some(duration_s) => duration_s,
+        None => return,
+    };
+    // Charge count info
+    let cycle_count = match a_effect.hc.charge {
+        Some(n_charge) => match n_charge {
+            NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(uad_item, a_effect),
+            NEffectCharge::Loaded(charge_depletion) => match charge_depletion {
+                NEffectChargeDepl::ChargeRate => get_charge_rate_cycle_count(ctx, uad_module),
+                NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, uad_module),
+                NEffectChargeDepl::None => InfCount::Infinite,
+            },
+        },
+        None => InfCount::Infinite,
+    };
+    // Completely skip effects which can't cycle
+    if cycle_count == InfCount::Count(0) {
+        return;
+    }
+    // Self-killers are fairly trivial. Record info about them and go to next effect
+    if a_effect.hc.kills_item {
+        self_killers.push(SelfKillerInfo {
+            a_effect_id,
+            duration_s,
+        });
+        cycle_infos.insert(
+            a_effect_id,
+            CycleInfo::Simple(CycleSimple {
+                active_time: duration_s,
+                inactive_time: OF(0.0),
+                repeat_count: InfCount::Count(1),
+            }),
+        );
+        return;
+    }
+    let reactivation_delay_s = (calc
+        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::MOD_REACTIVATION_DELAY)
+        .unwrap()
+        / 1000.0)
+        .max(OF(0.0));
+    match cycle_count {
+        // When we have to handle reload, result is a bit complex
+        InfCount::Count(count_until_reload) => {
+            let reload_time_s = match options {
+                // When considering burst calculations, just set reload to 0
+                CycleOptions::Burst => OF(0.0),
+                CycleOptions::Sim => {
+                    let reload_time_s = calc
+                        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RELOAD_TIME)
+                        .unwrap()
+                        / 1000.0;
+                    match reload_time_s > OF(0.0) {
+                        // If reload time is defined, ensure it is
+                        true => reload_time_s.max(OF(1.0)),
+                        false => OF(0.0),
+                    }
+                }
+            };
+            // Module can be reloaded during reactivation delay
+            let final_inactive_time = reload_time_s.max(reactivation_delay_s);
+            let final_cycle_count = 1;
+            let early_cycle_count = count_until_reload - final_cycle_count;
+            match early_cycle_count {
+                // When module can do only one cycle per clip - return reloadable cycle, with
+                // inner cycle count of 1
+                0 => {
+                    let inner = CycleInner {
+                        active_time: duration_s,
+                        inactive_time: final_inactive_time,
+                        repeat_count: final_cycle_count,
+                    };
+                    cycle_infos.insert(a_effect_id, CycleInfo::Reload1(CycleReload1 { inner }));
+                }
+                // When it does more than one cycle per clip - mark final cycle as reload
+                _ => {
+                    let inner_early = CycleInner {
+                        active_time: duration_s,
+                        inactive_time: reactivation_delay_s,
+                        repeat_count: early_cycle_count,
+                    };
+                    let inner_final = CycleInner {
+                        active_time: duration_s,
+                        inactive_time: final_inactive_time,
+                        repeat_count: final_cycle_count,
+                    };
+                    cycle_infos.insert(
+                        a_effect_id,
+                        CycleInfo::Reload2(CycleReload2 {
+                            inner_early,
+                            inner_final,
+                        }),
+                    );
+                }
+            }
+        }
+        // Infinitely cycling - return simple infinitely repeating cycle
+        InfCount::Infinite => {
+            cycle_infos.insert(
+                a_effect_id,
+                CycleInfo::Simple(CycleSimple {
+                    active_time: duration_s,
+                    inactive_time: reactivation_delay_s,
+                    repeat_count: InfCount::Infinite,
+                }),
+            );
+        }
+    }
 }
