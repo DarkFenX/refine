@@ -1,12 +1,13 @@
 use crate::{
     def::ItemKey,
-    misc::{AdjustableCount, CycleCount, EffectSpec},
+    misc::{AdjustableCount, EffectSpec},
     svc::{Svc, SvcCtx, efuncs},
     uad::Uad,
+    util::InfCount,
 };
 
 impl Svc {
-    pub(crate) fn get_effect_cycle_count(&self, uad: &Uad, item_key: ItemKey) -> Option<CycleCount> {
+    pub(crate) fn get_effect_cycle_count(&self, uad: &Uad, item_key: ItemKey) -> Option<InfCount> {
         let uad_item = uad.items.get(item_key);
         let defeff_id = uad_item.get_a_defeff_id()??;
         efuncs::get_espec_cycle_count(SvcCtx::new(uad, &self.eprojs), EffectSpec::new(item_key, defeff_id))

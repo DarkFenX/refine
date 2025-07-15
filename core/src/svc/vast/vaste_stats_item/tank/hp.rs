@@ -2,7 +2,7 @@ use super::shared::item_check;
 use crate::{
     ac,
     def::{AttrVal, ItemKey, OF},
-    misc::{CycleCount, EffectSpec},
+    misc::EffectSpec,
     nd::{NLocalRepGetter, NRemoteRepGetter},
     svc::{
         SvcCtx,
@@ -12,7 +12,7 @@ use crate::{
         vast::{StatTank, Vast},
     },
     uad::UadItem,
-    util::{RMap, RMapRMap},
+    util::{InfCount, RMap, RMapRMap},
 };
 
 pub struct StatLayerHp {
@@ -84,7 +84,7 @@ fn get_local_ancil_hp(ctx: SvcCtx, calc: &mut Calc, ancil_data: &RMap<EffectSpec
     let mut total_ancil_hp = OF(0.0);
     for (ancil_espec, rep_getter) in ancil_data.iter() {
         if let Some(ancil_hp) = rep_getter(ctx, calc, ancil_espec.item_key)
-            && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *ancil_espec)
+            && let Some(InfCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *ancil_espec)
         {
             total_ancil_hp += ancil_hp * AttrVal::from(cycles);
         }
@@ -102,7 +102,7 @@ fn get_remote_ancil_hp(
     if let Some(incoming_ancils) = ancil_data.get_l1(&item_key) {
         for (ancil_espec, rep_getter) in incoming_ancils.iter() {
             if let Some(ancil_hp) = rep_getter(ctx, calc, *ancil_espec, None, Some(item_key))
-                && let Some(CycleCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *ancil_espec)
+                && let Some(InfCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *ancil_espec)
             {
                 total_ancil_hp += ancil_hp * AttrVal::from(cycles);
             }

@@ -2,13 +2,13 @@ use crate::{
     ad,
     def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, ItemMutationRequest, UnitInterval},
+    misc::{AttrMutationRequest, ItemMutationRequest},
     src::Src,
     uad::{
         err::ItemMutatedError,
         item::{EffectModes, UadItemBase},
     },
-    util::RMap,
+    util::{RMap, UnitInterval},
 };
 
 // Item mutable base stores all the data every mutable item should have.

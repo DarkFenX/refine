@@ -1,7 +1,6 @@
 use crate::{
     def::{AttrVal, Count, OF},
-    misc::UnitInterval,
-    util::{ceil_unerr, floor_unerr},
+    util::{UnitInterval, ceil_unerr, floor_unerr},
 };
 
 pub(crate) struct ResolvedSpool {

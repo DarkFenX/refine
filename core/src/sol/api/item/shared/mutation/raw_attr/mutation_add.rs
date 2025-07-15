@@ -2,11 +2,11 @@ use crate::{
     ad,
     def::{AttrId, ItemKey},
     err::basic::ItemMAttrNotFoundError,
-    misc::UnitInterval,
     sol::{
         SolarSystem,
         api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut, RawMAttrMut},
     },
+    util::UnitInterval,
 };
 
 impl<'a> MutationMut<'a> {

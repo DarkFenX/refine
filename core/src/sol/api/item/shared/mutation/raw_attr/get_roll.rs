@@ -1,11 +1,11 @@
 use crate::{
     ad,
     def::ItemKey,
-    misc::UnitInterval,
     sol::{
         SolarSystem,
         api::{RawMAttr, RawMAttrMut},
     },
+    util::UnitInterval,
 };
 
 impl<'a> RawMAttr<'a> {

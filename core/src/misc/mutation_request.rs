@@ -1,4 +1,4 @@
-use crate::{ad, misc::UnitInterval};
+use crate::{ad, util::UnitInterval};
 
 pub(crate) struct ItemMutationRequest {
     pub(crate) mutator_id: ad::AItemId,

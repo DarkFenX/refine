@@ -27,7 +27,7 @@ pub use lender::Lender;
 pub use misc::{
     AddMode, AdjustableCount, BreacherInfo, BreacherInfoError, DpsProfile, EffectId, EffectInfo, EffectMode,
     FighterCountOverride, FitSecStatus, MinionState, ModRack, ModuleState, OpInfo, ProjRange, RmMode, SecZone,
-    SecZoneCorruption, ServiceState, SkillLevel, Spool, UnitInterval,
+    SecZoneCorruption, ServiceState, SkillLevel, Spool,
 };
 pub use sol::{
     SolarSystem,
@@ -44,6 +44,7 @@ pub use sol::{
 };
 pub use src::Src;
 pub use svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo};
+pub use util::UnitInterval;
 
 mod ac;
 pub mod ad;

@@ -1,6 +1,6 @@
 use crate::def::Count;
 
-pub(crate) enum CycleCount {
-    Infinite,
+pub(crate) enum InfCount {
     Count(Count),
+    Infinite,
 }

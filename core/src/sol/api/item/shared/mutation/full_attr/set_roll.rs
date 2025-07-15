@@ -1,7 +1,4 @@
-use crate::{
-    misc::{AttrMutationRequest, UnitInterval},
-    sol::api::FullMAttrMut,
-};
+use crate::{misc::AttrMutationRequest, sol::api::FullMAttrMut, util::UnitInterval};
 
 impl<'a> FullMAttrMut<'a> {
     /// Set roll for the attribute.

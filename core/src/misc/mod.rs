@@ -1,7 +1,7 @@
 pub use adj_count::AdjustableCount;
 pub(crate) use attr_spec::AttrSpec;
 pub use breacher_info::{BreacherInfo, BreacherInfoError};
-pub(crate) use cycle_count::CycleCount;
+pub(crate) use cycle_info::{CycleComplex, CycleInfo, CycleInner, CycleSimple};
 pub use dmg_types::DmgKinds;
 pub use dps_profile::{DpsProfile, DpsProfileError};
 pub use effect_id::EffectId;
@@ -21,12 +21,11 @@ pub use skill_level::{SkillLevel, SkillLevelError};
 pub(crate) use spool::ResolvedSpool;
 pub use spool::Spool;
 pub use states::{MinionState, ModuleState, ServiceState};
-pub use unit_interval::{UnitInterval, UnitIntervalError};
 
 mod adj_count;
 mod attr_spec;
 mod breacher_info;
-mod cycle_count;
+mod cycle_info;
 mod dmg_types;
 mod dps_profile;
 mod effect_id;
@@ -45,4 +44,3 @@ mod sec_zone;
 mod skill_level;
 mod spool;
 mod states;
-mod unit_interval;

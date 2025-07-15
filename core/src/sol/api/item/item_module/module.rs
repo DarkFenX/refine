@@ -1,11 +1,12 @@
 use crate::{
     def::{Count, Idx, ItemKey},
-    misc::{AdjustableCount, CycleCount, ModRack, ModuleState},
+    misc::{AdjustableCount, ModRack, ModuleState},
     sol::{
         SolarSystem,
         api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
     uad::UadModule,
+    util::InfCount,
 };
 
 pub struct Module<'a> {
@@ -129,7 +130,7 @@ fn get_charge_count(sol: &SolarSystem, item_key: ItemKey) -> Option<Count> {
 }
 fn get_cycle_count_until_reload(sol: &SolarSystem, item_key: ItemKey) -> Option<Count> {
     match sol.svc.get_effect_cycle_count(&sol.uad, item_key) {
-        Some(CycleCount::Count(count)) => Some(count),
+        Some(InfCount::Count(count)) => Some(count),
         _ => None,
     }
 }
