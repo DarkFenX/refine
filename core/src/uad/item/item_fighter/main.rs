@@ -1,9 +1,9 @@
 use crate::{
     ad,
     def::{FitKey, ItemId},
-    misc::{AdjustableCount, FighterCountOverride, MinionState},
+    misc::{AdjustableCount, EffectMode, FighterCountOverride, MinionState},
     src::Src,
-    uad::item::{Autocharges, EffectModes, Projs, UadItemBase},
+    uad::item::{Autocharges, Projs, UadItemBase},
     util::{Named, RMap},
 };
 
@@ -59,11 +59,11 @@ impl UadFighter {
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
     }
-    pub(crate) fn get_effect_modes(&self) -> &EffectModes {
-        self.base.get_effect_modes()
+    pub(crate) fn get_effect_mode(&self, effect_id: &ad::AEffectId) -> EffectMode {
+        self.base.get_effect_mode(effect_id)
     }
-    pub(crate) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
-        self.base.get_effect_modes_mut()
+    pub(crate) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
+        self.base.set_effect_mode(a_effect_id, effect_mode)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()

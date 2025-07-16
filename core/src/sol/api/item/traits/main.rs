@@ -34,7 +34,7 @@ pub trait ItemCommon: ItemSealed {
         };
         let effect_infos = a_effect_ids.map(move |a_effect_id| {
             let running = sol.reffs.is_running(&item_key, a_effect_id);
-            let mode = *item.get_effect_modes().get(a_effect_id);
+            let mode = item.get_effect_mode(a_effect_id);
             (a_effect_id.into(), EffectInfo { running, mode })
         });
         Ok(effect_infos)
@@ -82,11 +82,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.uad
-            .items
-            .get_mut(item_key)
-            .get_effect_modes_mut()
-            .set(effect_id.into(), mode);
+        sol.uad.items.get_mut(item_key).set_effect_mode(effect_id.into(), mode);
         let uad_item = sol.uad.items.get(item_key);
         SolarSystem::util_process_effects(
             &sol.uad,
@@ -103,9 +99,9 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        let effect_modes = sol.uad.items.get_mut(item_key).get_effect_modes_mut();
+        let uad_item = sol.uad.items.get_mut(item_key);
         for (effect_id, effect_mode) in modes {
-            effect_modes.set(effect_id.into(), effect_mode)
+            uad_item.set_effect_mode(effect_id.into(), effect_mode)
         }
         let uad_item = sol.uad.items.get(item_key);
         SolarSystem::util_process_effects(

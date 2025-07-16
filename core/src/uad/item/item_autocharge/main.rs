@@ -1,8 +1,9 @@
 use crate::{
     ad,
     def::{FitKey, ItemId, ItemKey},
+    misc::EffectMode,
     src::Src,
-    uad::item::{EffectModes, Projs, UadItemBase},
+    uad::item::{Projs, UadItemBase},
     util::{Named, RMap},
 };
 
@@ -72,11 +73,11 @@ impl UadAutocharge {
     pub(crate) fn set_a_state(&mut self, state: ad::AState) {
         self.base.set_a_state(state)
     }
-    pub(crate) fn get_effect_modes(&self) -> &EffectModes {
-        self.base.get_effect_modes()
+    pub(crate) fn get_effect_mode(&self, effect_id: &ad::AEffectId) -> EffectMode {
+        self.base.get_effect_mode(effect_id)
     }
-    pub(crate) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
-        self.base.get_effect_modes_mut()
+    pub(crate) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
+        self.base.set_effect_mode(a_effect_id, effect_mode)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()

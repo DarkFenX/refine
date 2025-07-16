@@ -40,11 +40,11 @@ impl<'a> StubSideEffectMut<'a> {
 
 fn set_state(sol: &mut SolarSystem, item_key: ItemKey, a_effect_id: ad::AEffectId, state: bool) {
     let uad_booster = sol.uad.items.get_mut(item_key).get_booster_mut().unwrap();
-    let effect_state = match state {
+    let effect_mode = match state {
         true => EffectMode::StateCompliance,
         false => EffectMode::FullCompliance,
     };
-    uad_booster.get_effect_modes_mut().set(a_effect_id, effect_state);
+    uad_booster.set_effect_mode(a_effect_id, effect_mode);
     let uad_item = sol.uad.items.get(item_key);
     SolarSystem::util_process_effects(
         &sol.uad,

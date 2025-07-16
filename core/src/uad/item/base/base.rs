@@ -1,4 +1,4 @@
-use crate::{ad, def::ItemId, src::Src, uad::item::EffectModes, util::RMap};
+use crate::{ad, def::ItemId, misc::EffectMode, src::Src, uad::item::misc::EffectModes, util::RMap};
 
 // Item base stores all the data every item should have
 #[derive(Clone)]
@@ -73,11 +73,11 @@ impl UadItemBase {
     pub(in crate::uad::item) fn set_a_state(&mut self, state: ad::AState) {
         self.a_state = state
     }
-    pub(in crate::uad::item) fn get_effect_modes(&self) -> &EffectModes {
-        &self.effect_modes
+    pub(in crate::uad::item) fn get_effect_mode(&self, a_effect_id: &ad::AEffectId) -> EffectMode {
+        self.effect_modes.get(a_effect_id)
     }
-    pub(in crate::uad::item) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
-        &mut self.effect_modes
+    pub(in crate::uad::item) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
+        self.effect_modes.set(a_effect_id, effect_mode);
     }
     pub(in crate::uad::item) fn is_loaded(&self) -> bool {
         self.cache.is_some()

@@ -2,12 +2,9 @@ use crate::{
     ad,
     def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, ItemMutationRequest},
+    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest},
     src::Src,
-    uad::{
-        err::ItemMutatedError,
-        item::{EffectModes, UadItemBase},
-    },
+    uad::{err::ItemMutatedError, item::UadItemBase},
     util::{RMap, UnitInterval},
 };
 
@@ -168,11 +165,11 @@ impl UadItemBaseMutable {
     pub(in crate::uad::item) fn set_a_state(&mut self, state: ad::AState) {
         self.base.set_a_state(state)
     }
-    pub(in crate::uad::item) fn get_effect_modes(&self) -> &EffectModes {
-        self.base.get_effect_modes()
+    pub(in crate::uad::item) fn get_effect_mode(&self, a_effect_id: &ad::AEffectId) -> EffectMode {
+        self.base.get_effect_mode(a_effect_id)
     }
-    pub(in crate::uad::item) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
-        self.base.get_effect_modes_mut()
+    pub(in crate::uad::item) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
+        self.base.set_effect_mode(a_effect_id, effect_mode)
     }
     pub(in crate::uad::item) fn is_loaded(&self) -> bool {
         self.base.is_loaded()

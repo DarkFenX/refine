@@ -14,7 +14,7 @@ pub(in crate::sol::api::util) fn resolve_effect_status(
     if item_a_state == ad::AState::Ghost {
         return false;
     }
-    match item.get_effect_modes().get(&a_effect.ae.id) {
+    match item.get_effect_mode(&a_effect.ae.id) {
         EffectMode::FullCompliance => resolve_effect_status_full(item, item_a_state, a_effect, online_running),
         EffectMode::StateCompliance => item_a_state >= a_effect.ae.state,
         EffectMode::ForceRun => true,
