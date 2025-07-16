@@ -32,8 +32,7 @@ impl SolarSystem {
             .unwrap()
             .set_a_mutator_id(a_mutator_id, reuse_eupdates, &self.uad.src)
             .unwrap();
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, item_key, reuse_eupdates);
         Ok(())
     }
 }

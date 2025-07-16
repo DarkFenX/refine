@@ -174,24 +174,20 @@ impl SolarSystem {
     }
     fn load_items(&mut self, item_keys: &ItemKeys, eupdates_map: RMap<ItemKey, UadEffectUpdates>) {
         for &booster_key in item_keys.boosters.iter() {
-            let uad_item = self.uad.items.get(booster_key);
             let booster_eupdates = eupdates_map.get(&booster_key).unwrap();
-            SolarSystem::util_add_booster(&self.uad, &mut self.svc, booster_key, uad_item, booster_eupdates);
+            SolarSystem::util_add_booster(&self.uad, &mut self.svc, booster_key, booster_eupdates);
         }
         for &character_key in item_keys.characters.iter() {
-            let uad_item = self.uad.items.get(character_key);
             let character_eupdates = eupdates_map.get(&character_key).unwrap();
-            SolarSystem::util_add_character(&self.uad, &mut self.svc, character_key, uad_item, character_eupdates);
+            SolarSystem::util_add_character(&self.uad, &mut self.svc, character_key, character_eupdates);
         }
         for &charge_key in item_keys.charges.iter() {
-            let uad_item = self.uad.items.get(charge_key);
             let charge_eupdates = eupdates_map.get(&charge_key).unwrap();
-            SolarSystem::util_add_charge_with_projs(&self.uad, &mut self.svc, charge_key, uad_item, charge_eupdates);
+            SolarSystem::util_add_charge_with_projs(&self.uad, &mut self.svc, charge_key, charge_eupdates);
         }
         for &drone_key in item_keys.drones.iter() {
-            let uad_item = self.uad.items.get(drone_key);
             let drone_eupdates = eupdates_map.get(&drone_key).unwrap();
-            SolarSystem::util_add_drone_with_projs(&self.uad, &mut self.svc, drone_key, uad_item, drone_eupdates);
+            SolarSystem::util_add_drone_with_projs(&self.uad, &mut self.svc, drone_key, drone_eupdates);
         }
         for &fighter_key in item_keys.fighters.iter() {
             let fighter_eupdates = eupdates_map.get(&fighter_key).unwrap();
@@ -204,65 +200,53 @@ impl SolarSystem {
             );
         }
         for &fw_effect_key in item_keys.fw_effects.iter() {
-            let uad_item = self.uad.items.get(fw_effect_key);
             let fw_effect_eupdates = eupdates_map.get(&fw_effect_key).unwrap();
-            SolarSystem::util_add_fw_effect(&self.uad, &mut self.svc, fw_effect_key, uad_item, fw_effect_eupdates);
+            SolarSystem::util_add_fw_effect(&self.uad, &mut self.svc, fw_effect_key, fw_effect_eupdates);
         }
         for &implant_key in item_keys.implants.iter() {
-            let uad_item = self.uad.items.get(implant_key);
             let implant_eupdates = eupdates_map.get(&implant_key).unwrap();
-            SolarSystem::util_add_implant(&self.uad, &mut self.svc, implant_key, uad_item, implant_eupdates);
+            SolarSystem::util_add_implant(&self.uad, &mut self.svc, implant_key, implant_eupdates);
         }
         for &module_key in item_keys.modules.iter() {
-            let uad_item = self.uad.items.get(module_key);
             let module_eupdates = eupdates_map.get(&module_key).unwrap();
-            SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, module_key, uad_item, module_eupdates);
+            SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, module_key, module_eupdates);
         }
         for &proj_effect_key in item_keys.proj_effects.iter() {
-            let uad_item = self.uad.items.get(proj_effect_key);
             let proj_effect_eupdates = eupdates_map.get(&proj_effect_key).unwrap();
             SolarSystem::util_add_proj_effect_with_projs(
                 &self.uad,
                 &mut self.svc,
                 proj_effect_key,
-                uad_item,
                 proj_effect_eupdates,
             );
         }
         for &service_key in item_keys.services.iter() {
-            let uad_item = self.uad.items.get(service_key);
             let service_eupdates = eupdates_map.get(&service_key).unwrap();
-            SolarSystem::util_add_service(&self.uad, &mut self.svc, service_key, uad_item, service_eupdates);
+            SolarSystem::util_add_service(&self.uad, &mut self.svc, service_key, service_eupdates);
         }
         for &rig_key in item_keys.rigs.iter() {
-            let uad_item = self.uad.items.get(rig_key);
             let rig_eupdates = eupdates_map.get(&rig_key).unwrap();
-            SolarSystem::util_add_rig(&self.uad, &mut self.svc, rig_key, uad_item, rig_eupdates);
+            SolarSystem::util_add_rig(&self.uad, &mut self.svc, rig_key, rig_eupdates);
         }
         for &ship_key in item_keys.ships.iter() {
-            let uad_item = self.uad.items.get(ship_key);
             let ship_eupdates = eupdates_map.get(&ship_key).unwrap();
-            SolarSystem::util_add_ship(&self.uad, &mut self.svc, ship_key, uad_item, ship_eupdates);
+            SolarSystem::util_add_ship(&self.uad, &mut self.svc, ship_key, ship_eupdates);
         }
         for &skill_key in item_keys.skills.iter() {
-            let uad_item = self.uad.items.get(skill_key);
             let skill_eupdates = eupdates_map.get(&skill_key).unwrap();
-            SolarSystem::util_add_skill(&self.uad, &mut self.svc, skill_key, uad_item, skill_eupdates);
+            SolarSystem::util_add_skill(&self.uad, &mut self.svc, skill_key, skill_eupdates);
         }
         for &stance_key in item_keys.stances.iter() {
-            let uad_item = self.uad.items.get(stance_key);
             let stance_eupdates = eupdates_map.get(&stance_key).unwrap();
-            SolarSystem::util_add_stance(&self.uad, &mut self.svc, stance_key, uad_item, stance_eupdates);
+            SolarSystem::util_add_stance(&self.uad, &mut self.svc, stance_key, stance_eupdates);
         }
         for &subsystem_key in item_keys.subsystems.iter() {
-            let uad_item = self.uad.items.get(subsystem_key);
             let subsystem_eupdates = eupdates_map.get(&subsystem_key).unwrap();
-            SolarSystem::util_add_subsystem(&self.uad, &mut self.svc, subsystem_key, uad_item, subsystem_eupdates);
+            SolarSystem::util_add_subsystem(&self.uad, &mut self.svc, subsystem_key, subsystem_eupdates);
         }
         for &sw_effect_key in item_keys.sw_effects.iter() {
-            let uad_item = self.uad.items.get(sw_effect_key);
             let sw_effect_eupdates = eupdates_map.get(&sw_effect_key).unwrap();
-            SolarSystem::util_add_sw_effect(&self.uad, &mut self.svc, sw_effect_key, uad_item, sw_effect_eupdates);
+            SolarSystem::util_add_sw_effect(&self.uad, &mut self.svc, sw_effect_key, sw_effect_eupdates);
         }
     }
     fn update_projections(&mut self) {

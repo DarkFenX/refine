@@ -42,8 +42,7 @@ impl SolarSystem {
         let fit_skill = uad_fit.skills.remove(&old_a_item_id).unwrap();
         uad_fit.skills.insert(a_item_id, fit_skill);
         // Load skill
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_skill(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        SolarSystem::util_add_skill(&self.uad, &mut self.svc, item_key, reuse_eupdates);
         Ok(())
     }
 }

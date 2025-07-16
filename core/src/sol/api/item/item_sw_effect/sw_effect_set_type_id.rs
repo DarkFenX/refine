@@ -23,8 +23,7 @@ impl SolarSystem {
             .get_sw_effect_mut()
             .unwrap()
             .set_a_item_id(a_item_id, reuse_eupdates, &self.uad.src);
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_sw_effect(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        SolarSystem::util_add_sw_effect(&self.uad, &mut self.svc, item_key, reuse_eupdates);
     }
 }
 

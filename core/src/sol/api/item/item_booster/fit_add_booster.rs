@@ -21,8 +21,7 @@ impl SolarSystem {
         let uad_item = UadItem::Booster(uad_booster);
         let item_key = self.uad.items.add(uad_item);
         uad_fit.boosters.insert(item_key);
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_booster(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        SolarSystem::util_add_booster(&self.uad, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }

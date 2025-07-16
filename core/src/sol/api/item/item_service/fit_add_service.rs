@@ -23,8 +23,7 @@ impl SolarSystem {
         let uad_item = UadItem::Service(uad_service);
         let item_key = self.uad.items.add(uad_item);
         uad_fit.services.insert(item_key);
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_service(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        SolarSystem::util_add_service(&self.uad, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }

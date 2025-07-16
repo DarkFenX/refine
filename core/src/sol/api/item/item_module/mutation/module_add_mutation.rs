@@ -26,11 +26,10 @@ impl SolarSystem {
             // restart all effects, refill the effect updates container with effects which are still
             // marked as running on the module
             uad_item.start_all_reffs(reuse_eupdates, &self.uad.src);
-            SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+            SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, item_key, reuse_eupdates);
             return Err(error);
         }
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        SolarSystem::util_add_module_with_projs(&self.uad, &mut self.svc, item_key, reuse_eupdates);
         Ok(())
     }
 }
