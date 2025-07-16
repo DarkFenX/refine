@@ -4,8 +4,11 @@ use crate::{
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest},
     src::Src,
-    uad::{err::ItemMutatedError, item::UadItemBase},
-    util::{RMap, UnitInterval},
+    uad::{
+        err::ItemMutatedError,
+        item::base::{UadEffectUpdates, UadItemBase},
+    },
+    util::{RMap, RSet, UnitInterval},
 };
 
 // Item mutable base stores all the data every mutable item should have.
@@ -20,23 +23,24 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::uad::item) struct UadItemBaseMutable {
     base: UadItemBase,
-    mutation: Option<ItemMutationData>,
+    mutation: MutaOption,
 }
 impl UadItemBaseMutable {
     pub(in crate::uad::item) fn new(
-        src: &Src,
         item_id: ItemId,
         a_item_id: ad::AItemId,
         a_state: ad::AState,
         mutation_request: Option<ItemMutationRequest>,
+        src: &Src,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) -> Self {
         let mutation_request = match mutation_request {
             Some(mutation_request) => mutation_request,
             // No mutation - regular non-mutated item setup
             None => {
                 return Self {
-                    base: UadItemBase::new(src, item_id, a_item_id, a_state),
-                    mutation: None,
+                    base: UadItemBase::new(item_id, a_item_id, a_state, src, reuse_eupdates),
+                    mutation: MutaOption::None,
                 };
             }
         };
@@ -47,8 +51,8 @@ impl UadItemBaseMutable {
             // No mutator - base item with ineffective user-defined mutations
             None => {
                 return Self {
-                    base: UadItemBase::new(src, item_id, a_item_id, a_state),
-                    mutation: Some(item_mutation_data),
+                    base: UadItemBase::new(item_id, a_item_id, a_state, src, reuse_eupdates),
+                    mutation: MutaOption::Some(item_mutation_data),
                 };
             }
         };
@@ -60,13 +64,25 @@ impl UadItemBaseMutable {
                     // If base item is available, return base item, but with ineffective
                     // user-defined mutations
                     Some(base_a_item) => Self {
-                        base: UadItemBase::new_with_a_item(item_id, base_a_item.clone(), a_state),
-                        mutation: Some(item_mutation_data),
+                        base: UadItemBase::base_new_with_a_item(
+                            item_id,
+                            base_a_item.clone(),
+                            a_state,
+                            src,
+                            reuse_eupdates,
+                            None,
+                        ),
+                        mutation: MutaOption::Some(item_mutation_data),
                     },
                     // No base item - unloaded item with ineffective user-defined mutations
                     None => Self {
-                        base: UadItemBase::new_with_a_item_id_not_loaded(item_id, a_item_id, a_state),
-                        mutation: Some(item_mutation_data),
+                        base: UadItemBase::base_new_with_a_item_id_not_loaded(
+                            item_id,
+                            a_item_id,
+                            a_state,
+                            reuse_eupdates,
+                        ),
+                        mutation: MutaOption::Some(item_mutation_data),
                     },
                 };
             }
@@ -75,6 +91,14 @@ impl UadItemBaseMutable {
         let mut a_attrs = get_combined_a_attr_values(src.get_a_item(&a_item_id), mutated_a_item);
         let a_item_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation_data.attr_rolls);
+        let regular_base = UadItemBase::base_new_with_a_item(
+            item_id,
+            mutated_a_item.clone(),
+            a_state,
+            src,
+            reuse_eupdates,
+            Some(&a_item_xt),
+        );
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_a_item_id: a_item_id,
             a_mutator: a_mutator.clone(),
@@ -82,8 +106,8 @@ impl UadItemBaseMutable {
             a_xt: a_item_xt,
         });
         Self {
-            base: UadItemBase::new_with_a_item(item_id, mutated_a_item.clone(), a_state),
-            mutation: Some(item_mutation_data),
+            base: regular_base,
+            mutation: MutaOption::Some(item_mutation_data),
         }
     }
     // Basic data access methods
@@ -93,22 +117,27 @@ impl UadItemBaseMutable {
     pub(in crate::uad::item) fn get_a_item_id(&self) -> ad::AItemId {
         self.base.get_a_item_id()
     }
-    pub(in crate::uad::item) fn set_a_item_id(&mut self, src: &Src, a_item_id: ad::AItemId) {
+    pub(in crate::uad::item) fn set_a_item_id(
+        &mut self,
+        a_item_id: ad::AItemId,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
+    ) {
         // Since this method is supposed to update base item ID for mutated items, location of ID
         // depends on item configuration
         match &mut self.mutation {
-            Some(mutation_data) => match &mut mutation_data.cache {
+            MutaOption::Some(mutation_data) => match &mut mutation_data.cache {
                 Some(mutation_cache) => {
                     mutation_cache.base_a_item_id = a_item_id;
                 }
-                None => self.base.set_a_item_id(a_item_id),
+                None => self.base.base_set_a_item_id_primitive(a_item_id),
             },
-            None => self.base.set_a_item_id(a_item_id),
+            MutaOption::None => self.base.base_set_a_item_id_primitive(a_item_id),
         }
         // Even if mutation is not effective with old base type ID, it might become effective with
         // the new one, so - reload adapted data the mutated way regardless of presence of mutation
         // cache
-        self.update_a_data(src);
+        self.update_a_data(reuse_eupdates, src);
     }
     pub(in crate::uad::item) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_a_group_id()
@@ -118,8 +147,8 @@ impl UadItemBaseMutable {
     }
     pub(in crate::uad::item) fn get_a_attrs(&self) -> Option<&RMap<ad::AAttrId, ad::AAttrVal>> {
         let item_mutation = match &self.mutation {
-            Some(item_mutation) => item_mutation,
-            None => return self.base.get_a_attrs(),
+            MutaOption::Some(item_mutation) => item_mutation,
+            MutaOption::None => return self.base.get_a_attrs(),
         };
         match &item_mutation.cache {
             Some(cache) => Some(&cache.merged_a_attrs),
@@ -138,8 +167,8 @@ impl UadItemBaseMutable {
     // Extra data access methods
     pub(in crate::uad::item) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
         let item_mutation = match &self.mutation {
-            Some(item_mutation) => item_mutation,
-            None => return self.base.get_a_xt(),
+            MutaOption::Some(item_mutation) => item_mutation,
+            MutaOption::None => return self.base.get_a_xt(),
         };
         match &item_mutation.cache {
             Some(cache) => Some(&cache.a_xt),
@@ -159,30 +188,63 @@ impl UadItemBaseMutable {
         self.base.base_get_a_item().and_then(|v| v.ai.val_active_group_id)
     }
     // Misc methods
+    pub(in crate::uad::item) fn get_reffs(&self) -> Option<&RSet<ad::AEffectId>> {
+        self.base.get_reffs()
+    }
+    pub(in crate::uad::item) fn start_all_reffs(&self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+        self.base.start_all_reffs(reuse_eupdates, src);
+    }
+    pub(in crate::uad::item) fn stop_all_reffs(&self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+        self.base.stop_all_reffs(reuse_eupdates, src);
+    }
     pub(in crate::uad::item) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
     }
-    pub(in crate::uad::item) fn set_a_state(&mut self, state: ad::AState) {
-        self.base.set_a_state(state)
+    pub(in crate::uad::item) fn set_a_state(
+        &mut self,
+        state: ad::AState,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
+    ) {
+        self.base
+            .base_set_a_state(state, reuse_eupdates, src, self.mutation.get_mutated_a_xt())
     }
     pub(in crate::uad::item) fn get_effect_mode(&self, a_effect_id: &ad::AEffectId) -> EffectMode {
         self.base.get_effect_mode(a_effect_id)
     }
-    pub(in crate::uad::item) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
-        self.base.set_effect_mode(a_effect_id, effect_mode)
+    pub(in crate::uad::item) fn set_effect_mode(
+        &mut self,
+        a_effect_id: ad::AEffectId,
+        effect_mode: EffectMode,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
+    ) {
+        self.base.base_set_effect_mode(
+            a_effect_id,
+            effect_mode,
+            reuse_eupdates,
+            src,
+            self.mutation.get_mutated_a_xt(),
+        )
     }
-    pub(in crate::uad::item) fn set_effect_modes(&mut self, modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>) {
-        self.base.set_effect_modes(modes)
+    pub(in crate::uad::item) fn set_effect_modes(
+        &mut self,
+        modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
+    ) {
+        self.base
+            .base_set_effect_modes(modes, reuse_eupdates, src, self.mutation.get_mutated_a_xt())
     }
     pub(in crate::uad::item) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::uad::item) fn update_a_data(&mut self, src: &Src) {
+    pub(in crate::uad::item) fn update_a_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
         let item_mutation = match &mut self.mutation {
-            Some(item_mutation) => item_mutation,
+            MutaOption::Some(item_mutation) => item_mutation,
             // No mutation - just update base item
-            None => {
-                self.base.update_a_data(src);
+            MutaOption::None => {
+                self.base.base_update_a_data(reuse_eupdates, src, None);
                 return;
             }
         };
@@ -195,14 +257,13 @@ impl UadItemBaseMutable {
             // No mutator - invalidate mutated cache and use non-mutated item
             None => match src.get_a_item(&base_a_item_id) {
                 Some(base_a_item) => {
-                    self.base.base_set_a_item_id(base_a_item_id);
-                    self.base.base_set_a_item(base_a_item.clone());
+                    self.base
+                        .base_set_a_item(base_a_item.clone(), reuse_eupdates, src, None);
                     item_mutation.cache = None;
                     return;
                 }
                 None => {
-                    self.base.base_set_a_item_id(base_a_item_id);
-                    self.base.base_remove_a_item();
+                    self.base.base_set_a_item_id_not_loaded(base_a_item_id, reuse_eupdates);
                     item_mutation.cache = None;
                     return;
                 }
@@ -214,14 +275,13 @@ impl UadItemBaseMutable {
             // item
             None => match src.get_a_item(&base_a_item_id) {
                 Some(base_a_item) => {
-                    self.base.base_set_a_item_id(base_a_item_id);
-                    self.base.base_set_a_item(base_a_item.clone());
+                    self.base
+                        .base_set_a_item(base_a_item.clone(), reuse_eupdates, src, None);
                     item_mutation.cache = None;
                     return;
                 }
                 None => {
-                    self.base.base_set_a_item_id(base_a_item_id);
-                    self.base.base_remove_a_item();
+                    self.base.base_set_a_item_id_not_loaded(base_a_item_id, reuse_eupdates);
                     item_mutation.cache = None;
                     return;
                 }
@@ -232,8 +292,8 @@ impl UadItemBaseMutable {
         let a_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
-        self.base.base_set_a_item_id(mutated_a_item.ai.id);
-        self.base.base_set_a_item(mutated_a_item.clone());
+        self.base
+            .base_set_a_item(mutated_a_item.clone(), reuse_eupdates, src, Some(&a_xt));
         item_mutation.cache = Some(ItemMutationDataCache {
             base_a_item_id,
             a_mutator: a_mutator.clone(),
@@ -247,10 +307,12 @@ impl UadItemBaseMutable {
     }
     pub(in crate::uad::item) fn mutate(
         &mut self,
-        src: &Src,
         mutation_request: ItemMutationRequest,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
     ) -> Result<(), ItemNotMutatedError> {
         if self.get_mutation_data().is_some() {
+            reuse_eupdates.clear();
             return Err(ItemNotMutatedError {
                 item_id: self.get_item_id(),
             });
@@ -263,7 +325,8 @@ impl UadItemBaseMutable {
             Some(a_mutator) => a_mutator,
             // No mutator - nothing changes, except for user-defined mutations getting stored
             None => {
-                self.mutation = Some(item_mutation_data);
+                self.mutation = MutaOption::Some(item_mutation_data);
+                reuse_eupdates.clear();
                 return Ok(());
             }
         };
@@ -272,7 +335,8 @@ impl UadItemBaseMutable {
             // No mutated aitem ID or no mutated item itself - nothing changes, except for
             // user-defined mutations getting stored
             None => {
-                self.mutation = Some(item_mutation_data);
+                self.mutation = MutaOption::Some(item_mutation_data);
+                reuse_eupdates.clear();
                 return Ok(());
             }
         };
@@ -280,15 +344,15 @@ impl UadItemBaseMutable {
         let mut a_attrs = get_combined_a_attr_values(self.base.base_get_a_item(), mutated_a_item);
         let a_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
         apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation_data.attr_rolls);
+        self.base
+            .base_set_a_item(mutated_a_item.clone(), reuse_eupdates, src, Some(&a_xt));
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_a_item_id,
             a_mutator: a_mutator.clone(),
             merged_a_attrs: a_attrs,
             a_xt,
         });
-        self.base.base_set_a_item_id(mutated_a_item.ai.id);
-        self.base.base_set_a_item(mutated_a_item.clone());
-        self.mutation = Some(item_mutation_data);
+        self.mutation = MutaOption::Some(item_mutation_data);
         Ok(())
     }
     pub(in crate::uad::item) fn change_mutation_attrs(
@@ -297,8 +361,8 @@ impl UadItemBaseMutable {
         attr_mutation_requests: Vec<AttrMutationRequest>,
     ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
-            Some(item_mutation) => item_mutation,
-            None => {
+            MutaOption::Some(item_mutation) => item_mutation,
+            MutaOption::None => {
                 return Err(ItemMutatedError {
                     item_id: self.get_item_id(),
                 });
@@ -402,25 +466,32 @@ impl UadItemBaseMutable {
     }
     pub(in crate::uad::item) fn set_a_mutator_id(
         &mut self,
-        src: &Src,
         a_mutator_id: ad::AItemId,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
     ) -> Result<(), ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
-            Some(item_mutation) => item_mutation,
-            None => {
+            MutaOption::Some(item_mutation) => item_mutation,
+            MutaOption::None => {
+                reuse_eupdates.clear();
                 return Err(ItemMutatedError {
                     item_id: self.get_item_id(),
                 });
             }
         };
         item_mutation.a_mutator_id = a_mutator_id;
-        self.update_a_data(src);
+        self.update_a_data(reuse_eupdates, src);
         Ok(())
     }
-    pub(in crate::uad::item) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
+    pub(in crate::uad::item) fn unmutate(
+        &mut self,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
+    ) -> Result<(), ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
-            Some(item_mutation) => item_mutation,
-            None => {
+            MutaOption::Some(item_mutation) => item_mutation,
+            MutaOption::None => {
+                reuse_eupdates.clear();
                 return Err(ItemMutatedError {
                     item_id: self.get_item_id(),
                 });
@@ -431,14 +502,38 @@ impl UadItemBaseMutable {
             // ID is stored on cache
             Some(cache) => {
                 let a_item_id = cache.base_a_item_id;
-                self.base.set_a_item_id_and_reload(src, a_item_id);
-                self.mutation = None;
+                self.base
+                    .base_set_a_item_id_and_reload(a_item_id, reuse_eupdates, src, None);
+                self.mutation = MutaOption::None;
             }
             // No cache - mutation was not effective, and base item was used already. Just unassign
             // mutation in this case
-            None => self.mutation = None,
+            None => {
+                self.mutation = MutaOption::None;
+                reuse_eupdates.clear();
+            }
         };
         Ok(())
+    }
+}
+
+#[derive(Clone)]
+enum MutaOption {
+    Some(ItemMutationData),
+    None,
+}
+impl MutaOption {
+    fn get_mutated_a_xt(&self) -> Option<&ad::AItemXt> {
+        match self {
+            Self::Some(item_mutation) => item_mutation.cache.as_ref().map(|v| &v.a_xt),
+            Self::None => None,
+        }
+    }
+    fn as_ref(&self) -> Option<&ItemMutationData> {
+        match self {
+            Self::Some(item_mutation) => Some(item_mutation),
+            Self::None => None,
+        }
     }
 }
 

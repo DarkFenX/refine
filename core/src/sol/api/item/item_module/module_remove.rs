@@ -3,10 +3,16 @@ use crate::{
     def::ItemKey,
     misc::RmMode,
     sol::{SolarSystem, api::ModuleMut},
+    uad::UadEffectUpdates,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_remove_module(&mut self, item_key: ItemKey, pos_mode: RmMode) {
+    pub(in crate::sol::api) fn internal_remove_module(
+        &mut self,
+        item_key: ItemKey,
+        pos_mode: RmMode,
+        reuse_eupdates: &mut UadEffectUpdates,
+    ) {
         let uad_item = self.uad.items.get(item_key);
         let uad_module = uad_item.get_module().unwrap();
         let fit_key = uad_module.get_fit_key();
@@ -22,7 +28,6 @@ impl SolarSystem {
                 SolarSystem::util_remove_item_projection(
                     &self.uad,
                     &mut self.svc,
-                    &self.reffs,
                     charge_key,
                     charge_uad_item,
                     projectee_key,
@@ -38,7 +43,6 @@ impl SolarSystem {
             SolarSystem::util_remove_item_projection(
                 &self.uad,
                 &mut self.svc,
-                &self.reffs,
                 item_key,
                 uad_item,
                 projectee_key,
@@ -53,13 +57,13 @@ impl SolarSystem {
             SolarSystem::util_remove_item_without_projs(
                 &self.uad,
                 &mut self.svc,
-                &mut self.reffs,
                 charge_key,
                 charge_uad_item,
+                reuse_eupdates,
             );
         }
         // Remove module from services
-        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
         // Update user data - not updating module<->charge references because both will be removed
         if let Some(charge_key) = charge_key {
             self.uad.items.remove(charge_key);
@@ -88,6 +92,7 @@ impl SolarSystem {
 
 impl<'a> ModuleMut<'a> {
     pub fn remove(self, pos_mode: RmMode) {
-        self.sol.internal_remove_module(self.key, pos_mode);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        self.sol.internal_remove_module(self.key, pos_mode, &mut reuse_eupdates)
     }
 }

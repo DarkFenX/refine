@@ -1,10 +1,15 @@
 use crate::{
     def::ItemKey,
     sol::{SolarSystem, api::ProjEffectMut},
+    uad::UadEffectUpdates,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_remove_proj_effect(&mut self, item_key: ItemKey) {
+    pub(in crate::sol::api) fn internal_remove_proj_effect(
+        &mut self,
+        item_key: ItemKey,
+        reuse_eupdates: &mut UadEffectUpdates,
+    ) {
         // Remove outgoing projections
         let uad_item = self.uad.items.get(item_key);
         let uad_proj_effect = uad_item.get_proj_effect().unwrap();
@@ -13,7 +18,6 @@ impl SolarSystem {
             SolarSystem::util_remove_item_projection(
                 &self.uad,
                 &mut self.svc,
-                &self.reffs,
                 item_key,
                 uad_item,
                 projectee_key,
@@ -22,7 +26,7 @@ impl SolarSystem {
             self.rprojs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove effect from services
-        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
         // Remove effect from user data
         self.uad.proj_effects.remove(&item_key);
         self.uad.items.remove(item_key);
@@ -31,6 +35,7 @@ impl SolarSystem {
 
 impl<'a> ProjEffectMut<'a> {
     pub fn remove(self) {
-        self.sol.internal_remove_proj_effect(self.key);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        self.sol.internal_remove_proj_effect(self.key, &mut reuse_eupdates)
     }
 }

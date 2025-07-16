@@ -4,7 +4,7 @@ use crate::{
     misc::{AddMode, MinionState, ModRack, ModuleState, RmMode, ServiceState},
     sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt},
-    uad::Uad,
+    uad::{Uad, UadEffectUpdates},
 };
 
 impl SolarSystem {
@@ -13,6 +13,7 @@ impl SolarSystem {
         fit_key: FitKey,
         type_ids: &[ItemTypeId],
         val_options: &ValOptionsInt,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) -> Vec<ItemTypeId> {
         let mut valid = Vec::new();
         let chargeable_module_keys = get_chargeable_modules(&self.uad, fit_key);
@@ -27,32 +28,33 @@ impl SolarSystem {
             };
             match item_kind {
                 ad::AItemKind::Booster => {
-                    let booster_key = self.internal_add_booster(fit_key, *type_id);
+                    let booster_key = self.internal_add_booster(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_booster(booster_key);
+                    self.internal_remove_booster(booster_key, reuse_eupdates);
                 }
                 ad::AItemKind::Drone => {
-                    let drone_key = self.internal_add_drone(fit_key, *type_id, MinionState::InBay, None);
+                    let drone_key =
+                        self.internal_add_drone(fit_key, *type_id, MinionState::InBay, None, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_drone(drone_key);
+                    self.internal_remove_drone(drone_key, reuse_eupdates);
                 }
                 ad::AItemKind::Fighter => {
-                    let fighter_key = self.internal_add_fighter(fit_key, *type_id, MinionState::InBay);
+                    let fighter_key = self.internal_add_fighter(fit_key, *type_id, MinionState::InBay, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_fighter(fighter_key);
+                    self.internal_remove_fighter(fighter_key, reuse_eupdates);
                 }
                 ad::AItemKind::Implant => {
-                    let implant_key = self.internal_add_implant(fit_key, *type_id);
+                    let implant_key = self.internal_add_implant(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_implant(implant_key);
+                    self.internal_remove_implant(implant_key, reuse_eupdates);
                 }
                 ad::AItemKind::ModuleHigh => {
                     let module_key = self.internal_add_module(
@@ -63,11 +65,12 @@ impl SolarSystem {
                         conv_state(a_item.ai.max_state),
                         None,
                         None,
+                        reuse_eupdates,
                     );
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_module(module_key, RmMode::Free);
+                    self.internal_remove_module(module_key, RmMode::Free, reuse_eupdates);
                 }
                 ad::AItemKind::ModuleMid => {
                     let module_key = self.internal_add_module(
@@ -78,11 +81,12 @@ impl SolarSystem {
                         conv_state(a_item.ai.max_state),
                         None,
                         None,
+                        reuse_eupdates,
                     );
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_module(module_key, RmMode::Free);
+                    self.internal_remove_module(module_key, RmMode::Free, reuse_eupdates);
                 }
                 ad::AItemKind::ModuleLow => {
                     let module_key = self.internal_add_module(
@@ -93,46 +97,48 @@ impl SolarSystem {
                         conv_state(a_item.ai.max_state),
                         None,
                         None,
+                        reuse_eupdates,
                     );
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_module(module_key, RmMode::Free);
+                    self.internal_remove_module(module_key, RmMode::Free, reuse_eupdates);
                 }
                 // TODO: setting charge is a destructive action (since it removes old charge with
                 // TODO: all its settings), rework it to be non-destructive, unless it is too
                 // TODO: expensive - HTTP module copies solar system before trying to fit anyway
                 ad::AItemKind::Charge => {
                     for &module_key in chargeable_module_keys.iter() {
-                        let charge_key = self.internal_set_module_charge(module_key, *type_id);
+                        let charge_key = self.internal_set_module_charge(module_key, *type_id, reuse_eupdates);
                         if self.internal_validate_fit_fast(fit_key, val_options) {
                             valid.push(*type_id);
-                            self.internal_remove_charge(charge_key);
+                            self.internal_remove_charge(charge_key, reuse_eupdates);
                             break;
                         }
-                        self.internal_remove_charge(charge_key);
+                        self.internal_remove_charge(charge_key, reuse_eupdates);
                     }
                 }
                 ad::AItemKind::Rig => {
-                    let rig_key = self.internal_add_rig(fit_key, *type_id);
+                    let rig_key = self.internal_add_rig(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_rig(rig_key);
+                    self.internal_remove_rig(rig_key, reuse_eupdates);
                 }
                 ad::AItemKind::Service => {
-                    let service_key = self.internal_add_service(fit_key, *type_id, ServiceState::Online);
+                    let service_key =
+                        self.internal_add_service(fit_key, *type_id, ServiceState::Online, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_service(service_key);
+                    self.internal_remove_service(service_key, reuse_eupdates);
                 }
                 ad::AItemKind::Subsystem => {
-                    let subsystem_key = self.internal_add_subsystem(fit_key, *type_id);
+                    let subsystem_key = self.internal_add_subsystem(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
-                    self.internal_remove_subsystem(subsystem_key);
+                    self.internal_remove_subsystem(subsystem_key, reuse_eupdates);
                 }
                 _ => continue,
             }
@@ -144,7 +150,9 @@ impl SolarSystem {
 impl<'a> FitMut<'a> {
     pub fn try_fit_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let int_val_options = ValOptionsInt::from_pub(self.sol, val_options);
-        self.sol.internal_try_fit_items(self.key, type_ids, &int_val_options)
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        self.sol
+            .internal_try_fit_items(self.key, type_ids, &int_val_options, &mut reuse_eupdates)
     }
 }
 

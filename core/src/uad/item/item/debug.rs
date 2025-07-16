@@ -22,7 +22,7 @@ impl UadItem {
             Self::Skill(skill) => skill.consistency_check(uad),
             Self::Stance(stance) => stance.consistency_check(uad),
             Self::Subsystem(subsystem) => subsystem.consistency_check(uad),
-            Self::SwEffect(_) => Ok(()),
+            Self::SwEffect(sw_effect) => sw_effect.consistency_check(uad),
         }
     }
 }

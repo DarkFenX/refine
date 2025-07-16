@@ -1,7 +1,6 @@
 use crate::{
     def::ItemKey,
     misc::{AdjustableCount, EffectSpec},
-    sol::REffs,
     svc::{
         Svc, SvcCtx,
         misc::{CycleOptions, get_item_cycle_info},
@@ -11,17 +10,11 @@ use crate::{
 };
 
 impl Svc {
-    pub(crate) fn get_item_cycles_until_reload(
-        &mut self,
-        uad: &Uad,
-        reffs: &REffs,
-        item_key: ItemKey,
-    ) -> Option<InfCount> {
+    pub(crate) fn get_item_cycles_until_reload(&mut self, uad: &Uad, item_key: ItemKey) -> Option<InfCount> {
         let uad_item = uad.items.get(item_key);
         let defeff_id = uad_item.get_a_defeff_id()??;
         let cycle_info = get_item_cycle_info(
             SvcCtx::new(uad, &self.eprojs),
-            reffs,
             &mut self.calc,
             item_key,
             // Should return the same count of cycles until reload regardless of options, but burst

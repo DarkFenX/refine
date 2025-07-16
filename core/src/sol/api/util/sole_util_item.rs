@@ -1,18 +1,18 @@
 use crate::{
     ad,
     def::ItemKey,
-    sol::{SolarSystem, reffs::REffs},
+    sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadItem},
+    uad::{Uad, UadEffectUpdates, UadItem},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_add_item_without_projs(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
+        eupdates: &UadEffectUpdates,
     ) {
         svc.notify_item_added(uad, item_key, uad_item);
         if uad_item.is_loaded() {
@@ -21,11 +21,11 @@ impl SolarSystem {
         SolarSystem::util_internal_switch_item_state_without_projs(
             uad,
             svc,
-            reffs,
             item_key,
             uad_item,
             ad::AState::Ghost,
             uad_item.get_a_state(),
+            eupdates,
         );
     }
     // When removing even projectable item from solar system, we assume that projections are handled
@@ -35,18 +35,19 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_remove_item_without_projs(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) {
+        uad_item.stop_all_reffs(reuse_eupdates, &uad.src);
         SolarSystem::util_internal_switch_item_state_without_projs(
             uad,
             svc,
-            reffs,
             item_key,
             uad_item,
             uad_item.get_a_state(),
             ad::AState::Ghost,
+            reuse_eupdates,
         );
         if uad_item.is_loaded() {
             svc.notify_item_unloaded(uad, item_key, uad_item)
@@ -59,9 +60,9 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_add_item_with_projs(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
+        eupdates: &UadEffectUpdates,
     ) {
         svc.notify_item_added(uad, item_key, uad_item);
         if uad_item.is_loaded() {
@@ -70,11 +71,11 @@ impl SolarSystem {
         SolarSystem::util_internal_switch_item_state(
             uad,
             svc,
-            reffs,
             item_key,
             uad_item,
             ad::AState::Ghost,
             uad_item.get_a_state(),
+            eupdates,
         );
     }
     // "With projections" in this case means that projections will be handled when stopping effects,
@@ -83,18 +84,19 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_remove_item_with_projs(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) {
+        uad_item.stop_all_reffs(reuse_eupdates, &uad.src);
         SolarSystem::util_internal_switch_item_state(
             uad,
             svc,
-            reffs,
             item_key,
             uad_item,
             uad_item.get_a_state(),
             ad::AState::Ghost,
+            reuse_eupdates,
         );
         if uad_item.is_loaded() {
             svc.notify_item_unloaded(uad, item_key, uad_item)

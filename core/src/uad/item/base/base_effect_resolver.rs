@@ -9,52 +9,51 @@ use crate::{
 const ONLINE_EFFECT_ID: ad::AEffectId = ac::effects::ONLINE;
 
 pub(crate) struct UadEffectUpdates {
-    pub(crate) started: Vec<ad::ArcEffectRt>,
-    pub(crate) stopped: Vec<ad::ArcEffectRt>,
+    pub(crate) to_start: Vec<ad::ArcEffectRt>,
+    pub(crate) to_stop: Vec<ad::ArcEffectRt>,
 }
 impl UadEffectUpdates {
-    fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self {
-            started: Vec::new(),
-            stopped: Vec::new(),
+            to_start: Vec::new(),
+            to_stop: Vec::new(),
         }
     }
-    fn clear(&mut self) {
-        self.started.clear();
-        self.stopped.clear();
+    pub(in crate::uad::item) fn clear(&mut self) {
+        self.to_start.clear();
+        self.to_stop.clear();
     }
 }
 
 pub(super) fn process_effects(
-    reuse_updates: &mut UadEffectUpdates,
+    reuse_eupdates: &mut UadEffectUpdates,
     reffs: &mut RSet<ad::AEffectId>,
     src: &Src,
     item_effect_datas: &RMap<ad::AEffectId, ad::AItemEffectData>,
     item_defeff_id: Option<ad::AEffectId>,
     item_a_state: ad::AState,
     item_effect_modes: &EffectModes,
-    item_has_online_effect: bool,
+    item_xt: &ad::AItemXt,
 ) {
     match item_a_state {
-        ad::AState::Ghost => stop_all_effects(reuse_updates, reffs, src),
+        ad::AState::Ghost => stop_all_effects(reuse_eupdates, reffs, src),
         _ => update_running_effects(
-            reuse_updates,
+            reuse_eupdates,
             reffs,
             src,
             item_effect_datas,
             item_defeff_id,
             item_a_state,
             item_effect_modes,
-            item_has_online_effect,
+            item_xt,
         ),
     }
 }
 
-fn stop_all_effects(reuse_updates: &mut UadEffectUpdates, reffs: &mut RSet<ad::AEffectId>, src: &Src) {
-    reuse_updates.clear();
+fn stop_all_effects(reuse_eupdates: &mut UadEffectUpdates, reffs: &mut RSet<ad::AEffectId>, src: &Src) {
     // We don't want waste time resolving effects when we want them to just stop (which happens
     // before e.g. item removal)
-    reuse_updates.stopped.extend(
+    reuse_eupdates.to_stop.extend(
         reffs
             .drain()
             .map(|a_effect_id| src.get_a_effect(&a_effect_id).unwrap().clone()),
@@ -62,25 +61,24 @@ fn stop_all_effects(reuse_updates: &mut UadEffectUpdates, reffs: &mut RSet<ad::A
 }
 
 fn update_running_effects(
-    reuse_updates: &mut UadEffectUpdates,
+    reuse_eupdates: &mut UadEffectUpdates,
     reffs: &mut RSet<ad::AEffectId>,
     src: &Src,
     item_effect_datas: &RMap<ad::AEffectId, ad::AItemEffectData>,
     item_defeff_id: Option<ad::AEffectId>,
     item_a_state: ad::AState,
     item_effect_modes: &EffectModes,
-    item_has_online_effect: bool,
+    item_xt: &ad::AItemXt,
 ) {
-    reuse_updates.clear();
     // Separate handling for the online effect
-    let online_should_run = resolve_online_effect_status(item_has_online_effect, item_effect_modes, item_a_state);
+    let online_should_run = resolve_online_effect_status(item_xt, item_effect_modes, item_a_state);
     let online_running = reffs.contains(&ONLINE_EFFECT_ID);
     // Whenever online effect status changes, it should be guaranteed that online effect is
     // available on the source level, so can just unwrap here
     if online_running && !online_should_run {
-        reuse_updates.stopped.push(src.get_a_effect_online().unwrap().clone());
+        reuse_eupdates.to_stop.push(src.get_a_effect_online().unwrap().clone());
     } else if !online_running && online_should_run {
-        reuse_updates.started.push(src.get_a_effect_online().unwrap().clone());
+        reuse_eupdates.to_start.push(src.get_a_effect_online().unwrap().clone());
     }
     for &a_effect_id in item_effect_datas.keys() {
         // Online effect has already been handled
@@ -100,23 +98,23 @@ fn update_running_effects(
         );
         let running = reffs.contains(&a_effect.ae.id);
         if running && !should_run {
-            reuse_updates.stopped.push(a_effect.clone());
+            reuse_eupdates.to_stop.push(a_effect.clone());
         } else if !running && should_run {
-            reuse_updates.started.push(a_effect.clone());
+            reuse_eupdates.to_start.push(a_effect.clone());
         };
     }
-    reffs.extend(reuse_updates.started.iter().map(|a_effect| a_effect.ae.id));
-    for a_effect in reuse_updates.stopped.iter() {
+    reffs.extend(reuse_eupdates.to_start.iter().map(|a_effect| a_effect.ae.id));
+    for a_effect in reuse_eupdates.to_stop.iter() {
         reffs.remove(&a_effect.ae.id);
     }
 }
 
 fn resolve_online_effect_status(
-    item_has_online_effect: bool,
+    item_xt: &ad::AItemXt,
     item_effect_modes: &EffectModes,
     item_a_state: ad::AState,
 ) -> bool {
-    if !item_has_online_effect {
+    if !item_xt.has_online_effect {
         return false;
     }
     match item_effect_modes.get(&ONLINE_EFFECT_ID) {

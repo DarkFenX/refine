@@ -7,7 +7,7 @@ use crate::{
         SolarSystem,
         api::{ChargeMut, ModuleMut},
     },
-    uad::{UadCharge, UadItem},
+    uad::{UadCharge, UadEffectUpdates, UadItem},
 };
 
 impl SolarSystem {
@@ -15,6 +15,7 @@ impl SolarSystem {
         &mut self,
         item_key: ItemKey,
         charge_a_item_id: ad::AItemId,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) -> ItemKey {
         let uad_module = self.uad.items.get(item_key).get_module().unwrap();
         let fit_key = uad_module.get_fit_key();
@@ -31,7 +32,6 @@ impl SolarSystem {
                 SolarSystem::util_remove_item_projection(
                     &self.uad,
                     &mut self.svc,
-                    &self.reffs,
                     old_charge_key,
                     old_charge_uad_item,
                     *projectee_key,
@@ -45,9 +45,9 @@ impl SolarSystem {
             SolarSystem::util_remove_item_without_projs(
                 &self.uad,
                 &mut self.svc,
-                &mut self.reffs,
                 old_charge_key,
                 old_charge_uad_item,
+                reuse_eupdates,
             );
             // Update user data for charge - do not update module<->charge references because charge
             // will be removed, and module will be updated later
@@ -57,13 +57,14 @@ impl SolarSystem {
         let charge_item_id = self.uad.items.alloc_id();
         // Update user data
         let mut uad_charge = UadCharge::new(
-            &self.uad.src,
             charge_item_id,
             charge_a_item_id,
             fit_key,
             item_key,
             module_a_state,
             false,
+            &self.uad.src,
+            reuse_eupdates,
         );
         for (projectee_key, range) in module_projs.into_iter() {
             uad_charge.get_projs_mut().add(projectee_key, range);
@@ -77,9 +78,9 @@ impl SolarSystem {
         SolarSystem::util_add_item_without_projs(
             &self.uad,
             &mut self.svc,
-            &mut self.reffs,
             new_charge_key,
             new_charge_uad_item,
+            reuse_eupdates,
         );
         // Reapply module projections to charge
         // Update user data for charge
@@ -90,7 +91,6 @@ impl SolarSystem {
             SolarSystem::util_add_item_projection(
                 &self.uad,
                 &mut self.svc,
-                &self.reffs,
                 new_charge_key,
                 new_charge_uad_item,
                 projectee_key,
@@ -104,7 +104,10 @@ impl SolarSystem {
 
 impl<'a> ModuleMut<'a> {
     pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> ChargeMut<'_> {
-        let charge_key = self.sol.internal_set_module_charge(self.key, charge_type_id);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        let charge_key = self
+            .sol
+            .internal_set_module_charge(self.key, charge_type_id, &mut reuse_eupdates);
         ChargeMut::new(self.sol, charge_key)
     }
 }

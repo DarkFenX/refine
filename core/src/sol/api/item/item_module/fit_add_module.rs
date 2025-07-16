@@ -7,8 +7,13 @@ use crate::{
         SolarSystem,
         api::{FitMut, ModuleMut},
     },
-    uad::{UadCharge, UadItem, UadModule},
+    uad::{UadCharge, UadEffectUpdates, UadItem, UadModule},
 };
+
+struct ChargeData {
+    item_key: ItemKey,
+    eupdates: UadEffectUpdates,
+}
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_module(
@@ -20,12 +25,13 @@ impl SolarSystem {
         state: ModuleState,
         mutation: Option<ItemMutationRequest>,
         charge_a_item_id: Option<ad::AItemId>,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) -> ItemKey {
         let module_item_id = self.uad.items.alloc_id();
         let uad_fit_rack = get_fit_rack_mut(&mut self.uad.fits, fit_key, rack);
-        // Assume some random position for now; it will be overwritten later
+        // Assume some random position for now; it will be overwritten later. Record effects to
+        // start into the effect container
         let uad_module = UadModule::new(
-            &self.uad.src,
             module_item_id,
             a_item_id,
             fit_key,
@@ -34,6 +40,8 @@ impl SolarSystem {
             0,
             mutation,
             None,
+            &self.uad.src,
+            reuse_eupdates,
         );
         let module_uad_item = UadItem::Module(uad_module);
         let module_key = self.uad.items.add(module_uad_item);
@@ -66,7 +74,10 @@ impl SolarSystem {
             AddMode::Replace(pos) => {
                 match uad_fit_rack.get(pos) {
                     Some(old_module_key) => {
-                        self.internal_remove_module(old_module_key, RmMode::Free);
+                        // Create another effect update container for module being removed, since
+                        // primary one is carrying effect info of the primary module being added
+                        let mut replacee_eupdates = UadEffectUpdates::new();
+                        self.internal_remove_module(old_module_key, RmMode::Free, &mut replacee_eupdates);
                         let uad_fit_rack = get_fit_rack_mut(&mut self.uad.fits, fit_key, rack);
                         uad_fit_rack.place(pos, module_key);
                     }
@@ -76,46 +87,48 @@ impl SolarSystem {
             }
         };
         // Create and add charge
-        let charge_key = match charge_a_item_id {
+        let charge_data = match charge_a_item_id {
             Some(charge_type_id) => {
                 let charge_item_id = self.uad.items.alloc_id();
+                // Create new container to carry info about charge effects, external one is carrying
+                // module effects
+                let mut charge_eupdates = UadEffectUpdates::new();
                 // Update user data with new charge info
                 let uad_charge = UadCharge::new(
-                    &self.uad.src,
                     charge_item_id,
                     charge_type_id,
                     fit_key,
                     module_key,
                     state.into(),
                     false,
+                    &self.uad.src,
+                    &mut charge_eupdates,
                 );
                 let charge_uad_item = UadItem::Charge(uad_charge);
                 let charge_key = self.uad.items.add(charge_uad_item);
-                Some(charge_key)
+                Some(ChargeData {
+                    item_key: charge_key,
+                    eupdates: charge_eupdates,
+                })
             }
             None => None,
         };
         // Update on-module data regarding position and charge
         let uad_module = self.uad.items.get_mut(module_key).get_module_mut().unwrap();
         uad_module.set_pos(pos);
-        uad_module.set_charge_key(charge_key);
-        // Add module and charge to services
+        uad_module.set_charge_key(charge_data.as_ref().map(|v| v.item_key));
+        // Add module and charge to services. For module effects, use the container which has been
+        // passed to the method from the caller
         let module_uad_item = self.uad.items.get(module_key);
-        SolarSystem::util_add_item_without_projs(
-            &self.uad,
-            &mut self.svc,
-            &mut self.reffs,
-            module_key,
-            module_uad_item,
-        );
-        if let Some(charge_key) = charge_key {
-            let charge_uad_item = self.uad.items.get(charge_key);
+        SolarSystem::util_add_item_without_projs(&self.uad, &mut self.svc, module_key, module_uad_item, reuse_eupdates);
+        if let Some(charge_data) = charge_data {
+            let charge_uad_item = self.uad.items.get(charge_data.item_key);
             SolarSystem::util_add_item_without_projs(
                 &self.uad,
                 &mut self.svc,
-                &mut self.reffs,
-                charge_key,
+                charge_data.item_key,
                 charge_uad_item,
+                &charge_data.eupdates,
             );
         }
         module_key
@@ -130,9 +143,17 @@ impl<'a> FitMut<'a> {
         type_id: ItemTypeId,
         state: ModuleState,
     ) -> ModuleMut<'_> {
-        let item_key = self
-            .sol
-            .internal_add_module(self.key, rack, pos_mode, type_id, state, None, None);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        let item_key = self.sol.internal_add_module(
+            self.key,
+            rack,
+            pos_mode,
+            type_id,
+            state,
+            None,
+            None,
+            &mut reuse_eupdates,
+        );
         ModuleMut::new(self.sol, item_key)
     }
 }

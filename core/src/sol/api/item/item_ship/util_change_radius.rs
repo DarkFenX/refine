@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, FitKey},
-    sol::{SolarSystem, reffs::REffs},
+    sol::SolarSystem,
     svc::Svc,
     uad::Uad,
 };
@@ -9,7 +9,6 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_update_ship_radius_for_outgoing_projs(
         uad: &mut Uad,
         svc: &mut Svc,
-        reffs: &REffs,
         fit_key: FitKey,
         ship_radius: AttrVal,
     ) {
@@ -31,12 +30,13 @@ impl SolarSystem {
             }
         }
         for (projector_key, projectee_key, prange) in projections_to_update {
+            let projector_uad_item = uad.items.get(projector_key);
             let projectee_uad_item = uad.items.get(projectee_key);
             SolarSystem::util_change_item_proj_range(
                 uad,
                 svc,
-                reffs,
                 projector_key,
+                projector_uad_item,
                 projectee_key,
                 projectee_uad_item,
                 Some(prange),

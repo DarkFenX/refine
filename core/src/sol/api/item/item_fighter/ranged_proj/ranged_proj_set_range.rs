@@ -35,23 +35,25 @@ impl SolarSystem {
             uad_autocharge.get_projs_mut().add(projectee_key, uad_prange);
         }
         // Update services for fighter
+        let uad_item = self.uad.items.get(item_key);
         let projectee_uad_item = self.uad.items.get(projectee_key);
         SolarSystem::util_change_item_proj_range(
             &self.uad,
             &mut self.svc,
-            &self.reffs,
             item_key,
+            uad_item,
             projectee_key,
             projectee_uad_item,
             uad_prange,
         );
         // Update services for autocharges
         for autocharge_key in autocharge_keys.into_iter() {
+            let autocharge_uad_item = self.uad.items.get(autocharge_key);
             SolarSystem::util_change_item_proj_range(
                 &self.uad,
                 &mut self.svc,
-                &self.reffs,
                 autocharge_key,
+                autocharge_uad_item,
                 projectee_key,
                 projectee_uad_item,
                 uad_prange,

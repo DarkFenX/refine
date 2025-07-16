@@ -28,12 +28,13 @@ impl SolarSystem {
         // Update user data
         uad_drone.get_projs_mut().add(projectee_key, uad_prange);
         // Update services
+        let uad_item = self.uad.items.get(item_key);
         let projectee_uad_item = self.uad.items.get(projectee_key);
         SolarSystem::util_change_item_proj_range(
             &self.uad,
             &mut self.svc,
-            &self.reffs,
             item_key,
+            uad_item,
             projectee_key,
             projectee_uad_item,
             uad_prange,

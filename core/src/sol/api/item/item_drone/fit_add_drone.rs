@@ -6,7 +6,7 @@ use crate::{
         SolarSystem,
         api::{DroneMut, FitMut},
     },
-    uad::{UadDrone, UadItem},
+    uad::{UadDrone, UadEffectUpdates, UadItem},
 };
 
 impl SolarSystem {
@@ -16,22 +16,34 @@ impl SolarSystem {
         a_item_id: ad::AItemId,
         state: MinionState,
         mutation: Option<ItemMutationRequest>,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) -> ItemKey {
         let item_id = self.uad.items.alloc_id();
-        let uad_drone = UadDrone::new(&self.uad.src, item_id, a_item_id, fit_key, state, mutation);
+        let uad_drone = UadDrone::new(
+            item_id,
+            a_item_id,
+            fit_key,
+            state,
+            mutation,
+            &self.uad.src,
+            reuse_eupdates,
+        );
         let uad_item = UadItem::Drone(uad_drone);
         let item_key = self.uad.items.add(uad_item);
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.drones.insert(item_key);
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_add_item_without_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
         item_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_drone(&mut self, type_id: ItemTypeId, state: MinionState) -> DroneMut<'_> {
-        let item_key = self.sol.internal_add_drone(self.key, type_id, state, None);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        let item_key = self
+            .sol
+            .internal_add_drone(self.key, type_id, state, None, &mut reuse_eupdates);
         DroneMut::new(self.sol, item_key)
     }
 }

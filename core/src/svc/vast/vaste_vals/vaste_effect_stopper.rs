@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use crate::{
     def::{ItemId, ItemKey, OF},
     misc::{EffectId, EffectSpec},
-    sol::REffs,
     svc::{SvcCtx, calc::Calc, get_proj_mult, vast::VastFitData},
     util::RSet,
 };
@@ -20,10 +19,11 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
     ) -> bool {
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
-            if reffs.is_running(&stopped_espec.item_key, &stopped_espec.a_effect_id)
+            let stopped_uad_item = ctx.uad.items.get(stopped_espec.item_key);
+            if let Some(stopped_reffs) = stopped_uad_item.get_reffs()
+                && stopped_reffs.contains(&stopped_espec.a_effect_id)
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
                 && !kfs.contains(&stopped_espec.item_key)
             {
@@ -38,11 +38,12 @@ impl VastFitData {
         kfs: &RSet<ItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
     ) -> Option<ValEffectStopperFail> {
         let mut items = HashMap::new();
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
-            if reffs.is_running(&stopped_espec.item_key, &stopped_espec.a_effect_id)
+            let stopped_uad_item = ctx.uad.items.get(stopped_espec.item_key);
+            if let Some(stopped_reffs) = stopped_uad_item.get_reffs()
+                && stopped_reffs.contains(&stopped_espec.a_effect_id)
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
                 && !kfs.contains(&stopped_espec.item_key)
             {

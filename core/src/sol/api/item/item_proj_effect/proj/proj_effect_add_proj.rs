@@ -37,7 +37,6 @@ impl SolarSystem {
         SolarSystem::util_add_item_projection(
             &self.uad,
             &mut self.svc,
-            &self.reffs,
             item_key,
             uad_item,
             projectee_key,

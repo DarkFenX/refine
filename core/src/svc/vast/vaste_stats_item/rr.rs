@@ -3,7 +3,6 @@ use crate::{
     def::{AttrVal, ItemKey, OF},
     misc::{EffectSpec, Spool},
     nd::NRemoteRepGetter,
-    sol::REffs,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -18,7 +17,6 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_remote_rps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         item_key: ItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
@@ -28,7 +26,6 @@ impl Vast {
         Ok(Vast::get_stat_item_remote_rps_unchecked(
             ctx,
             calc,
-            reffs,
             item_key,
             uad_item,
             spool,
@@ -38,49 +35,20 @@ impl Vast {
     fn get_stat_item_remote_rps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> StatTank<AttrVal> {
         StatTank {
-            shield: get_orr_item_key(
-                ctx,
-                calc,
-                reffs,
-                item_key,
-                uad_item,
-                spool,
-                ignore_state,
-                get_getter_shield,
-            ),
-            armor: get_orr_item_key(
-                ctx,
-                calc,
-                reffs,
-                item_key,
-                uad_item,
-                spool,
-                ignore_state,
-                get_getter_armor,
-            ),
-            hull: get_orr_item_key(
-                ctx,
-                calc,
-                reffs,
-                item_key,
-                uad_item,
-                spool,
-                ignore_state,
-                get_getter_hull,
-            ),
+            shield: get_orr_item_key(ctx, calc, item_key, uad_item, spool, ignore_state, get_getter_shield),
+            armor: get_orr_item_key(ctx, calc, item_key, uad_item, spool, ignore_state, get_getter_armor),
+            hull: get_orr_item_key(ctx, calc, item_key, uad_item, spool, ignore_state, get_getter_hull),
         }
     }
     pub(in crate::svc) fn get_stat_item_remote_cps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         item_key: ItemKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
@@ -89,7 +57,6 @@ impl Vast {
         Ok(Vast::get_stat_item_remote_cps_unchecked(
             ctx,
             calc,
-            reffs,
             item_key,
             uad_item,
             ignore_state,
@@ -98,12 +65,11 @@ impl Vast {
     fn get_stat_item_remote_cps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         ignore_state: bool,
     ) -> AttrVal {
-        get_orr_item_key(ctx, calc, reffs, item_key, uad_item, None, ignore_state, get_getter_cap)
+        get_orr_item_key(ctx, calc, item_key, uad_item, None, ignore_state, get_getter_cap)
     }
 }
 
@@ -123,7 +89,6 @@ fn item_check(item_key: ItemKey, uad_item: &UadItem) -> Result<(), StatItemCheck
 fn get_orr_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
-    reffs: &REffs,
     item_key: ItemKey,
     uad_item: &UadItem,
     spool: Option<Spool>,
@@ -136,7 +101,7 @@ fn get_orr_item_key(
             get_orr_effect_ids(ctx, calc, item_key, a_effect_ids, spool, rep_getter_getter)
         }
         false => {
-            let a_effect_ids = reffs.iter_running(&item_key);
+            let a_effect_ids = uad_item.get_reffs().unwrap().iter();
             get_orr_effect_ids(ctx, calc, item_key, a_effect_ids, spool, rep_getter_getter)
         }
     }

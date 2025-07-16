@@ -1,9 +1,4 @@
-use crate::{
-    sol::{reffs::REffs, rprojs::RProjs},
-    src::Src,
-    svc::Svc,
-    uad::Uad,
-};
+use crate::{sol::rprojs::RProjs, src::Src, svc::Svc, uad::Uad};
 
 // Solar system glues everything together and is actual "god object" of the lib. It holds all the
 // data and exposes interface to manipulate, process and fetch it.
@@ -11,7 +6,6 @@ use crate::{
 pub struct SolarSystem {
     pub(crate) uad: Uad,
     pub(crate) svc: Svc,
-    pub(crate) reffs: REffs,
     pub(in crate::sol) rprojs: RProjs,
 }
 impl SolarSystem {
@@ -20,7 +14,6 @@ impl SolarSystem {
         Self {
             uad: Uad::new(src),
             svc: svcs,
-            reffs: REffs::new(),
             rprojs: RProjs::new(),
         }
     }

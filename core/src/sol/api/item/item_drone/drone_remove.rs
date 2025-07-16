@@ -1,10 +1,15 @@
 use crate::{
     def::ItemKey,
     sol::{SolarSystem, api::DroneMut},
+    uad::UadEffectUpdates,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_remove_drone(&mut self, item_key: ItemKey) {
+    pub(in crate::sol::api) fn internal_remove_drone(
+        &mut self,
+        item_key: ItemKey,
+        reuse_eupdates: &mut UadEffectUpdates,
+    ) {
         // Remove outgoing projections
         let uad_item = self.uad.items.get(item_key);
         let uad_drone = uad_item.get_drone().unwrap();
@@ -14,7 +19,6 @@ impl SolarSystem {
             SolarSystem::util_remove_item_projection(
                 &self.uad,
                 &mut self.svc,
-                &self.reffs,
                 item_key,
                 uad_item,
                 projectee_key,
@@ -26,7 +30,7 @@ impl SolarSystem {
         self.internal_remove_incoming_projections(item_key);
         // Update services
         let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
         // Update user data
         let uad_fit = self.uad.fits.get_mut(fit_key);
         uad_fit.drones.remove(&item_key);
@@ -36,6 +40,7 @@ impl SolarSystem {
 
 impl<'a> DroneMut<'a> {
     pub fn remove(self) {
-        self.sol.internal_remove_drone(self.key);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        self.sol.internal_remove_drone(self.key, &mut reuse_eupdates);
     }
 }

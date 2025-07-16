@@ -10,6 +10,7 @@ use crate::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
+    uad::UadEffectUpdates,
 };
 
 pub trait ItemCommon: ItemSealed {
@@ -23,9 +24,9 @@ pub trait ItemCommon: ItemSealed {
         let sol = self.get_sol();
         let item_key = self.get_key();
         let item = sol.uad.items.get(item_key);
-        let a_effect_ids = match item.get_a_effect_datas() {
-            Some(a_effect_datas) => a_effect_datas.keys(),
-            None => {
+        let (a_effect_ids, reffs) = match (item.get_a_effect_datas(), item.get_reffs()) {
+            (Some(a_effect_datas), Some(reffs)) => (a_effect_datas.keys(), reffs),
+            _ => {
                 return Err(ItemLoadedError {
                     item_id: sol.uad.items.id_by_key(item_key),
                 }
@@ -33,7 +34,7 @@ pub trait ItemCommon: ItemSealed {
             }
         };
         let effect_infos = a_effect_ids.map(move |a_effect_id| {
-            let running = sol.reffs.is_running(&item_key, a_effect_id);
+            let running = reffs.contains(a_effect_id);
             let mode = item.get_effect_mode(a_effect_id);
             (a_effect_id.into(), EffectInfo { running, mode })
         });
@@ -82,16 +83,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        sol.uad.items.get_mut(item_key).set_effect_mode(effect_id.into(), mode);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        sol.uad
+            .items
+            .get_mut(item_key)
+            .set_effect_mode(effect_id.into(), mode, &mut reuse_eupdates, &sol.uad.src);
         let uad_item = sol.uad.items.get(item_key);
-        SolarSystem::util_process_effects(
-            &sol.uad,
-            &mut sol.svc,
-            &mut sol.reffs,
-            item_key,
-            uad_item,
-            uad_item.get_a_state(),
-        );
+        SolarSystem::util_process_effect_updates(&sol.uad, &mut sol.svc, item_key, uad_item, &reuse_eupdates);
     }
     fn set_effect_modes(&mut self, modes: impl Iterator<Item = (EffectId, EffectMode)>)
     where
@@ -100,16 +98,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         let uad_item = sol.uad.items.get_mut(item_key);
-        uad_item.set_effect_modes(modes.map(|(k, v)| (k.into(), v)));
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        uad_item.set_effect_modes(modes.map(|(k, v)| (k.into(), v)), &mut reuse_eupdates, &sol.uad.src);
         let uad_item = sol.uad.items.get(item_key);
-        SolarSystem::util_process_effects(
-            &sol.uad,
-            &mut sol.svc,
-            &mut sol.reffs,
-            item_key,
-            uad_item,
-            uad_item.get_a_state(),
-        );
+        SolarSystem::util_process_effect_updates(&sol.uad, &mut sol.svc, item_key, uad_item, &reuse_eupdates);
     }
     // Stats - mobility
     fn get_stat_speed(&mut self) -> Result<AttrVal, ItemStatError> {
@@ -192,14 +184,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_remote_rps(&sol.uad, &sol.reffs, item_key, spool, ignore_state)
+            .get_stat_item_remote_rps(&sol.uad, item_key, spool, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
     fn get_stat_remote_cps(&mut self, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_remote_cps(&sol.uad, &sol.reffs, item_key, ignore_state)
+            .get_stat_item_remote_cps(&sol.uad, item_key, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
 }

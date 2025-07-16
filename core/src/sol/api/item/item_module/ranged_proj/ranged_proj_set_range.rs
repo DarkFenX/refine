@@ -41,23 +41,25 @@ impl SolarSystem {
             uad_charge.get_projs_mut().add(projectee_key, uad_prange);
         }
         // Update services for module
+        let uad_item = self.uad.items.get(item_key);
         let projectee_uad_item = self.uad.items.get(projectee_key);
         SolarSystem::util_change_item_proj_range(
             &self.uad,
             &mut self.svc,
-            &self.reffs,
             item_key,
+            uad_item,
             projectee_key,
             projectee_uad_item,
             uad_prange,
         );
         // Update services for charge
         if let Some(charge_key) = charge_key {
+            let charge_uad_item = self.uad.items.get(charge_key);
             SolarSystem::util_change_item_proj_range(
                 &self.uad,
                 &mut self.svc,
-                &self.reffs,
                 charge_key,
+                charge_uad_item,
                 projectee_key,
                 projectee_uad_item,
                 uad_prange,

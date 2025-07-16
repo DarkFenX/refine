@@ -2,7 +2,6 @@ use super::{info_drone::get_drone_cycle_info, info_module::get_module_cycle_info
 use crate::{
     ad,
     def::{AttrVal, Count, ItemKey},
-    sol::REffs,
     svc::{SvcCtx, calc::Calc},
     uad::UadItem,
     util::{InfCount, RMap},
@@ -63,7 +62,6 @@ pub(super) struct CycleInner {
 
 pub(in crate::svc) fn get_item_cycle_info(
     ctx: SvcCtx,
-    reffs: &REffs,
     calc: &mut Calc,
     item_key: ItemKey,
     options: CycleOptions,
@@ -71,7 +69,7 @@ pub(in crate::svc) fn get_item_cycle_info(
 ) -> Option<RMap<ad::AEffectId, CycleInfo>> {
     let uad_item = ctx.uad.items.get(item_key);
     match uad_item {
-        UadItem::Drone(uad_drone) => get_drone_cycle_info(ctx, reffs, calc, item_key, uad_drone, ignore_state),
+        UadItem::Drone(uad_drone) => get_drone_cycle_info(ctx, calc, item_key, uad_drone, ignore_state),
         UadItem::Fighter(uad_fighter) => {
             if !uad_fighter.is_loaded() {
                 return None;
@@ -79,7 +77,7 @@ pub(in crate::svc) fn get_item_cycle_info(
             Some(RMap::new())
         }
         UadItem::Module(uad_module) => {
-            get_module_cycle_info(ctx, reffs, calc, item_key, uad_item, uad_module, options, ignore_state)
+            get_module_cycle_info(ctx, calc, item_key, uad_item, uad_module, options, ignore_state)
         }
         _ => None,
     }

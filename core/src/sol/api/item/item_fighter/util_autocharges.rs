@@ -1,17 +1,23 @@
 use itertools::Itertools;
 
 use crate::{
+    ad,
     def::ItemKey,
-    sol::{SolarSystem, reffs::REffs, rprojs::RProjs},
+    sol::{SolarSystem, rprojs::RProjs},
     svc::Svc,
-    uad::{Uad, UadAutocharge, UadItem},
+    uad::{Uad, UadAutocharge, UadEffectUpdates, UadItem},
 };
+
+struct AutochargeData {
+    a_effect_id: ad::AEffectId,
+    item_key: ItemKey,
+    eupdates: UadEffectUpdates,
+}
 
 impl SolarSystem {
     pub(in crate::sol::api) fn add_fighter_autocharges(
         uad: &mut Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         rprojs: &mut RProjs,
         fighter_key: ItemKey,
     ) {
@@ -37,12 +43,12 @@ impl SolarSystem {
             return;
         }
         let projections = uad_fighter.get_projs().iter().collect_vec();
-        let effects_with_ac_keys = effects_with_ac_a_item_ids
+        let mut ac_datas = effects_with_ac_a_item_ids
             .into_iter()
             .filter_map(|(a_effect_id, ac_a_item_id)| {
                 let ac_item_id = uad.items.alloc_id();
+                let mut ac_eupdates = UadEffectUpdates::new();
                 let mut uad_ac = UadAutocharge::new(
-                    &uad.src,
                     ac_item_id,
                     ac_a_item_id,
                     fit_key,
@@ -50,6 +56,8 @@ impl SolarSystem {
                     a_effect_id,
                     fighter_a_state,
                     false,
+                    &uad.src,
+                    &mut ac_eupdates,
                 );
                 // Don't add an autocharge if it can't be loaded
                 if !uad_ac.is_loaded() {
@@ -63,28 +71,31 @@ impl SolarSystem {
                 // Add autocharge item to user data and fill info vec
                 let ac_uad_item = UadItem::Autocharge(uad_ac);
                 let ac_key = uad.items.add(ac_uad_item);
-                Some((a_effect_id, ac_key))
+                Some(AutochargeData {
+                    item_key: ac_key,
+                    a_effect_id,
+                    eupdates: ac_eupdates,
+                })
             })
             .collect_vec();
-        if effects_with_ac_keys.is_empty() {
+        if ac_datas.is_empty() {
             return;
         }
-        for (_, ac_key) in effects_with_ac_keys.iter() {
-            let ac_uad_item = uad.items.get(*ac_key);
-            SolarSystem::util_add_item_without_projs(uad, svc, reffs, *ac_key, ac_uad_item);
+        for ac_data in ac_datas.iter_mut() {
+            let ac_uad_item = uad.items.get(ac_data.item_key);
+            SolarSystem::util_add_item_without_projs(uad, svc, ac_data.item_key, ac_uad_item, &mut ac_data.eupdates);
             for (projectee_key, range) in projections.iter() {
                 let projectee_uad_item = uad.items.get(*projectee_key);
                 SolarSystem::util_add_item_projection(
                     uad,
                     svc,
-                    reffs,
-                    *ac_key,
+                    ac_data.item_key,
                     ac_uad_item,
                     *projectee_key,
                     projectee_uad_item,
                     *range,
                 );
-                rprojs.reg_projectee(*ac_key, *projectee_key);
+                rprojs.reg_projectee(ac_data.item_key, *projectee_key);
             }
         }
         // Update on-fighter autocharge info
@@ -94,17 +105,17 @@ impl SolarSystem {
             .get_fighter_mut()
             .unwrap()
             .get_autocharges_mut();
-        for (a_effect_id, ac_key) in effects_with_ac_keys.into_iter() {
-            fighter_acs.set(a_effect_id, ac_key);
+        for ac_data in ac_datas.into_iter() {
+            fighter_acs.set(ac_data.a_effect_id, ac_data.item_key);
         }
     }
     pub(in crate::sol::api) fn remove_fighter_autocharges(
         uad: &mut Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         rprojs: &mut RProjs,
         fighter_key: ItemKey,
         clear_fighter_acs: bool,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) {
         let ac_keys = uad
             .items
@@ -127,7 +138,6 @@ impl SolarSystem {
                 SolarSystem::util_remove_item_projection(
                     uad,
                     svc,
-                    reffs,
                     ac_key,
                     ac_uad_item,
                     projectee_key,
@@ -137,7 +147,7 @@ impl SolarSystem {
                 rprojs.unreg_projectee(&ac_key, &projectee_key);
             }
             // Remove from services
-            SolarSystem::util_remove_item_without_projs(uad, svc, reffs, ac_key, ac_uad_item);
+            SolarSystem::util_remove_item_without_projs(uad, svc, ac_key, ac_uad_item, reuse_eupdates);
         }
         // Update items
         if clear_fighter_acs {

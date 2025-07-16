@@ -2,7 +2,6 @@ use super::info::{CycleInfo, CycleSimple};
 use crate::{
     ad,
     def::{ItemKey, OF},
-    sol::REffs,
     svc::{SvcCtx, calc::Calc, efuncs},
     uad::UadDrone,
     util::{InfCount, RMap},
@@ -10,7 +9,6 @@ use crate::{
 
 pub(super) fn get_drone_cycle_info(
     ctx: SvcCtx,
-    reffs: &REffs,
     calc: &mut Calc,
     item_key: ItemKey,
     uad_drone: &UadDrone,
@@ -27,7 +25,7 @@ pub(super) fn get_drone_cycle_info(
             }
         }
         false => {
-            for &a_effect_id in reffs.iter_running(&item_key) {
+            for &a_effect_id in uad_drone.get_reffs().unwrap().iter() {
                 fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
             }
         }

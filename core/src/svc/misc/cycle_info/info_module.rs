@@ -7,7 +7,6 @@ use crate::{
     ac, ad,
     def::{ItemKey, OF},
     nd::{NEffectCharge, NEffectChargeDepl},
-    sol::REffs,
     svc::{SvcCtx, calc::Calc, efuncs},
     uad::{UadItem, UadModule},
     util::{InfCount, RMap},
@@ -15,7 +14,6 @@ use crate::{
 
 pub(super) fn get_module_cycle_info(
     ctx: SvcCtx,
-    reffs: &REffs,
     calc: &mut Calc,
     item_key: ItemKey,
     uad_item: &UadItem,
@@ -45,7 +43,7 @@ pub(super) fn get_module_cycle_info(
             }
         }
         false => {
-            for &a_effect_id in reffs.iter_running(&item_key) {
+            for &a_effect_id in uad_module.get_reffs().unwrap().iter() {
                 fill_module_effect_info(
                     &mut cycle_infos,
                     &mut self_killers,

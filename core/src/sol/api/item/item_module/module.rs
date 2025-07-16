@@ -82,11 +82,7 @@ impl<'a> ModuleMut<'a> {
         get_charge_count(self.sol, self.key)
     }
     pub fn get_cycle_count_until_reload(&mut self) -> Option<Count> {
-        match self
-            .sol
-            .svc
-            .get_item_cycles_until_reload(&self.sol.uad, &self.sol.reffs, self.key)
-        {
+        match self.sol.svc.get_item_cycles_until_reload(&self.sol.uad, self.key) {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
         }

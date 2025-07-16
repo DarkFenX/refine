@@ -1,6 +1,6 @@
 use crate::{
     def::{ItemKey, OF},
-    sol::{REffs, RProjs, SolarSystem},
+    sol::{RProjs, SolarSystem},
     svc::Svc,
     uad::Uad,
 };
@@ -10,7 +10,6 @@ impl SolarSystem {
         uad: &mut Uad,
         rprojs: &RProjs,
         svc: &mut Svc,
-        reffs: &REffs,
         item_key: ItemKey,
     ) {
         let uad_item = uad.items.get_mut(item_key);
@@ -26,12 +25,13 @@ impl SolarSystem {
                 && uad_prange.update_tgt_rad(item_radius)
             {
                 let uad_prange = Some(*uad_prange);
+                let projector_uad_item = uad.items.get(projector_key);
                 let uad_item = uad.items.get(item_key);
                 SolarSystem::util_change_item_proj_range(
                     uad,
                     svc,
-                    reffs,
                     projector_key,
+                    projector_uad_item,
                     item_key,
                     uad_item,
                     uad_prange,

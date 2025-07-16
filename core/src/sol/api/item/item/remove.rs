@@ -3,7 +3,7 @@ use crate::{
     err::basic::ItemKindRemoveError,
     misc::RmMode,
     sol::{SolarSystem, api::ItemMut},
-    uad::{UadAutocharge, UadItem},
+    uad::{UadAutocharge, UadEffectUpdates, UadItem},
     util::Named,
 };
 
@@ -12,6 +12,7 @@ impl SolarSystem {
         &mut self,
         item_key: ItemKey,
         pos_mode: RmMode,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) -> Result<(), ItemKindRemoveError> {
         let uad_item = self.uad.items.get(item_key);
         match uad_item {
@@ -20,22 +21,22 @@ impl SolarSystem {
                     item_kind: UadAutocharge::get_name(),
                 });
             }
-            UadItem::Booster(_) => self.internal_remove_booster(item_key),
-            UadItem::Character(_) => self.internal_remove_character(item_key),
-            UadItem::Charge(_) => self.internal_remove_charge(item_key),
-            UadItem::Drone(_) => self.internal_remove_drone(item_key),
-            UadItem::Fighter(_) => self.internal_remove_fighter(item_key),
-            UadItem::FwEffect(_) => self.internal_remove_fw_effect(item_key),
-            UadItem::Implant(_) => self.internal_remove_implant(item_key),
-            UadItem::Module(_) => self.internal_remove_module(item_key, pos_mode),
-            UadItem::ProjEffect(_) => self.internal_remove_proj_effect(item_key),
-            UadItem::Rig(_) => self.internal_remove_rig(item_key),
-            UadItem::Service(_) => self.internal_remove_service(item_key),
-            UadItem::Ship(_) => self.internal_remove_ship(item_key),
-            UadItem::Skill(_) => self.internal_remove_skill(item_key),
-            UadItem::Stance(_) => self.internal_remove_stance(item_key),
-            UadItem::Subsystem(_) => self.internal_remove_subsystem(item_key),
-            UadItem::SwEffect(_) => self.internal_remove_sw_effect(item_key),
+            UadItem::Booster(_) => self.internal_remove_booster(item_key, reuse_eupdates),
+            UadItem::Character(_) => self.internal_remove_character(item_key, reuse_eupdates),
+            UadItem::Charge(_) => self.internal_remove_charge(item_key, reuse_eupdates),
+            UadItem::Drone(_) => self.internal_remove_drone(item_key, reuse_eupdates),
+            UadItem::Fighter(_) => self.internal_remove_fighter(item_key, reuse_eupdates),
+            UadItem::FwEffect(_) => self.internal_remove_fw_effect(item_key, reuse_eupdates),
+            UadItem::Implant(_) => self.internal_remove_implant(item_key, reuse_eupdates),
+            UadItem::Module(_) => self.internal_remove_module(item_key, pos_mode, reuse_eupdates),
+            UadItem::ProjEffect(_) => self.internal_remove_proj_effect(item_key, reuse_eupdates),
+            UadItem::Rig(_) => self.internal_remove_rig(item_key, reuse_eupdates),
+            UadItem::Service(_) => self.internal_remove_service(item_key, reuse_eupdates),
+            UadItem::Ship(_) => self.internal_remove_ship(item_key, reuse_eupdates),
+            UadItem::Skill(_) => self.internal_remove_skill(item_key, reuse_eupdates),
+            UadItem::Stance(_) => self.internal_remove_stance(item_key, reuse_eupdates),
+            UadItem::Subsystem(_) => self.internal_remove_subsystem(item_key, reuse_eupdates),
+            UadItem::SwEffect(_) => self.internal_remove_sw_effect(item_key, reuse_eupdates),
         }
         Ok(())
     }

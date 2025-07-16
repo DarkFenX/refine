@@ -1,56 +1,56 @@
 use crate::{
     ad,
     def::ItemKey,
-    sol::{SolarSystem, reffs::REffs},
+    sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadItem},
+    uad::{Uad, UadEffectUpdates, UadItem},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_switch_item_state(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         item_key: ItemKey,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
+        eupdates: &UadEffectUpdates,
     ) {
         if new_item_a_state != old_item_a_state {
             let uad_item = uad.items.get(item_key);
             SolarSystem::util_internal_switch_item_state(
                 uad,
                 svc,
-                reffs,
                 item_key,
                 uad_item,
                 old_item_a_state,
                 new_item_a_state,
+                eupdates,
             );
         }
     }
     pub(in crate::sol::api::util) fn util_internal_switch_item_state(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
+        eupdates: &UadEffectUpdates,
     ) {
         switch_item_state(svc, item_key, uad_item, old_item_a_state, new_item_a_state);
-        SolarSystem::util_process_effects(uad, svc, reffs, item_key, uad_item, new_item_a_state);
+        SolarSystem::util_process_effect_updates(uad, svc, item_key, uad_item, eupdates);
     }
     pub(in crate::sol::api::util) fn util_internal_switch_item_state_without_projs(
         uad: &Uad,
         svc: &mut Svc,
-        reffs: &mut REffs,
         item_key: ItemKey,
         uad_item: &UadItem,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
+        eupdates: &UadEffectUpdates,
     ) {
         switch_item_state(svc, item_key, uad_item, old_item_a_state, new_item_a_state);
-        SolarSystem::util_internal_process_effects_without_projs(uad, svc, reffs, item_key, uad_item, new_item_a_state);
+        SolarSystem::util_internal_process_effect_updates_without_projs(uad, svc, item_key, uad_item, eupdates);
     }
 }
 

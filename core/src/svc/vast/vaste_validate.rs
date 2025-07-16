@@ -1,6 +1,5 @@
 use crate::{
     def::FitKey,
-    sol::REffs,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -13,11 +12,10 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         options: &ValOptionsSolInt,
     ) -> bool {
         for &fit_key in options.fit_keys.iter() {
-            if !self.validate_fit_fast(ctx, calc, reffs, fit_key, &options.options) {
+            if !self.validate_fit_fast(ctx, calc, fit_key, &options.options) {
                 return false;
             }
         }
@@ -32,12 +30,11 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         options: &ValOptionsSolInt,
     ) -> ValResultSol {
         let mut sol_result = ValResultSol::new();
         for &fit_key in options.fit_keys.iter() {
-            let fit_result = self.validate_fit_verbose(ctx, calc, reffs, fit_key, &options.options);
+            let fit_result = self.validate_fit_verbose(ctx, calc, fit_key, &options.options);
             if !fit_result.all_passed() {
                 let fit_id = ctx.uad.fits.id_by_key(fit_key);
                 sol_result.fits.insert(fit_id, fit_result);
@@ -53,7 +50,6 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         fit_key: FitKey,
         options: &ValOptionsInt,
     ) -> bool {
@@ -410,7 +406,7 @@ impl Vast {
         // Incoming projection - effect stopper shouldn't fail for tried items, since there are no
         // indirect ways to stop item effects for now.
         if options.effect_stopper.enabled
-            && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, ctx, calc, reffs)
+            && !fit_data.validate_effect_stopper_fast(&options.effect_stopper.kfs, ctx, calc)
         {
             return false;
         }
@@ -480,7 +476,6 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        reffs: &REffs,
         fit_key: FitKey,
         options: &ValOptionsInt,
     ) -> ValResultFit {
@@ -755,8 +750,7 @@ impl Vast {
                 fit_data.validate_activation_blocked_verbose(&options.activation_blocked.kfs, ctx, calc);
         }
         if options.effect_stopper.enabled {
-            result.effect_stopper =
-                fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, ctx, calc, reffs);
+            result.effect_stopper = fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, ctx, calc);
         }
         // Projection, source side
         if options.assist_immunity.enabled {

@@ -1,10 +1,15 @@
 use crate::{
     def::ItemKey,
     sol::{SolarSystem, api::ChargeMut},
+    uad::UadEffectUpdates,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_remove_charge(&mut self, item_key: ItemKey) {
+    pub(in crate::sol::api) fn internal_remove_charge(
+        &mut self,
+        item_key: ItemKey,
+        reuse_eupdates: &mut UadEffectUpdates,
+    ) {
         let uad_item = self.uad.items.get(item_key);
         let uad_charge = uad_item.get_charge().unwrap();
         let module_key = uad_charge.get_cont_key();
@@ -15,7 +20,6 @@ impl SolarSystem {
             SolarSystem::util_remove_item_projection(
                 &self.uad,
                 &mut self.svc,
-                &self.reffs,
                 item_key,
                 uad_item,
                 projectee_key,
@@ -25,7 +29,7 @@ impl SolarSystem {
             self.rprojs.unreg_projectee(&item_key, &projectee_key);
         }
         // Update services
-        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
         // Update user data
         let uad_module = self.uad.items.get_mut(module_key).get_module_mut().unwrap();
         uad_module.set_charge_key(None);
@@ -35,6 +39,7 @@ impl SolarSystem {
 
 impl<'a> ChargeMut<'a> {
     pub fn remove(self) {
-        self.sol.internal_remove_charge(self.key);
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        self.sol.internal_remove_charge(self.key, &mut reuse_eupdates)
     }
 }

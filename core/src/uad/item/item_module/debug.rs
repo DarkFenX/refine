@@ -1,12 +1,17 @@
 use itertools::Itertools;
 
 use crate::{
-    dbg::{DebugError, DebugResult, check_fit_key, check_item_key},
+    dbg::{DebugError, DebugResult, check_a_effect_id, check_fit_key, check_item_key},
     uad::{Uad, UadModule},
 };
 
 impl UadModule {
     pub(in crate::uad::item) fn consistency_check(&self, uad: &Uad) -> DebugResult {
+        if let Some(reffs) = self.get_reffs() {
+            for a_effect_id in reffs.iter() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
+        }
         check_fit_key(uad, self.get_fit_key())?;
         if let Some(charge_key) = self.get_charge_key() {
             check_item_key(uad, charge_key, false)?;

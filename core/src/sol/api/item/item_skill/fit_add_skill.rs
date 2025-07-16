@@ -9,7 +9,7 @@ use crate::{
         SolarSystem,
         api::{FitMut, SkillMut},
     },
-    uad::{UadFitSkill, UadItem, UadSkill},
+    uad::{UadEffectUpdates, UadFitSkill, UadItem, UadSkill},
 };
 
 impl SolarSystem {
@@ -18,17 +18,26 @@ impl SolarSystem {
         fit_key: FitKey,
         a_item_id: ad::AItemId,
         level: SkillLevel,
+        reuse_eupdates: &mut UadEffectUpdates,
     ) -> Result<ItemKey, SkillEveTypeError> {
         let fit = self.uad.fits.get_mut(fit_key);
         match fit.skills.entry(a_item_id) {
             Entry::Vacant(entry) => {
                 let item_id = self.uad.items.alloc_id();
-                let skill = UadSkill::new(&self.uad.src, item_id, a_item_id, fit_key, level.into(), true);
+                let skill = UadSkill::new(
+                    item_id,
+                    a_item_id,
+                    fit_key,
+                    level.into(),
+                    true,
+                    &self.uad.src,
+                    reuse_eupdates,
+                );
                 let item = UadItem::Skill(skill);
                 let item_key = self.uad.items.add(item);
                 entry.insert(UadFitSkill { item_key, level });
                 let uad_item = self.uad.items.get(item_key);
-                SolarSystem::util_add_skill(&self.uad, &mut self.svc, &mut self.reffs, item_key, uad_item);
+                SolarSystem::util_add_skill(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
                 Ok(item_key)
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {
@@ -42,7 +51,10 @@ impl SolarSystem {
 
 impl<'a> FitMut<'a> {
     pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, AddSkillError> {
-        let item_key = self.sol.internal_add_skill(self.key, type_id, level)?;
+        let mut reuse_eupdates = UadEffectUpdates::new();
+        let item_key = self
+            .sol
+            .internal_add_skill(self.key, type_id, level, &mut reuse_eupdates)?;
         Ok(SkillMut::new(self.sol, item_key))
     }
 }

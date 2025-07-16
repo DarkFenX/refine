@@ -1,7 +1,6 @@
 use crate::{
     def::{AttrVal, FitKey},
     misc::Spool,
-    sol::REffs,
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
@@ -29,7 +28,6 @@ impl Svc {
     pub(crate) fn get_stat_item_remote_rps(
         &mut self,
         uad: &Uad,
-        reffs: &REffs,
         item_key: FitKey,
         spool: Option<Spool>,
         ignore_state: bool,
@@ -37,7 +35,6 @@ impl Svc {
         Vast::get_stat_item_remote_rps_checked(
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,
-            reffs,
             item_key,
             spool,
             ignore_state,
@@ -46,16 +43,9 @@ impl Svc {
     pub(crate) fn get_stat_item_remote_cps(
         &mut self,
         uad: &Uad,
-        reffs: &REffs,
         item_key: FitKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_remote_cps_checked(
-            SvcCtx::new(uad, &self.eprojs),
-            &mut self.calc,
-            reffs,
-            item_key,
-            ignore_state,
-        )
+        Vast::get_stat_item_remote_cps_checked(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, ignore_state)
     }
 }

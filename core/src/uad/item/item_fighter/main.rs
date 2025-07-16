@@ -3,8 +3,8 @@ use crate::{
     def::{FitKey, ItemId},
     misc::{AdjustableCount, EffectMode, FighterCountOverride, MinionState},
     src::Src,
-    uad::item::{Autocharges, Projs, UadItemBase},
-    util::{Named, RMap},
+    uad::item::{Autocharges, Projs, UadEffectUpdates, UadItemBase},
+    util::{Named, RMap, RSet},
 };
 
 #[derive(Clone)]
@@ -16,9 +16,16 @@ pub(crate) struct UadFighter {
     projs: Projs,
 }
 impl UadFighter {
-    pub(crate) fn new(src: &Src, item_id: ItemId, a_item_id: ad::AItemId, fit_key: FitKey, state: MinionState) -> Self {
+    pub(crate) fn new(
+        item_id: ItemId,
+        a_item_id: ad::AItemId,
+        fit_key: FitKey,
+        state: MinionState,
+        src: &Src,
+        reuse_eupdates: &mut UadEffectUpdates,
+    ) -> Self {
         Self {
-            base: UadItemBase::new(src, item_id, a_item_id, state.into()),
+            base: UadItemBase::new(item_id, a_item_id, state.into(), src, reuse_eupdates),
             fit_key,
             count_override: None,
             autocharges: Autocharges::new(),
@@ -32,8 +39,8 @@ impl UadFighter {
     pub(crate) fn get_a_item_id(&self) -> ad::AItemId {
         self.base.get_a_item_id()
     }
-    pub(crate) fn set_a_item_id(&mut self, src: &Src, a_item_id: ad::AItemId) {
-        self.base.set_a_item_id_and_reload(src, a_item_id);
+    pub(crate) fn set_a_item_id(&mut self, a_item_id: ad::AItemId, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+        self.base.set_a_item_id(a_item_id, reuse_eupdates, src);
     }
     pub(crate) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_a_group_id()
@@ -59,28 +66,48 @@ impl UadFighter {
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
     }
+    pub(in crate::uad::item) fn get_reffs(&self) -> Option<&RSet<ad::AEffectId>> {
+        self.base.get_reffs()
+    }
+    pub(in crate::uad::item) fn start_all_reffs(&self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+        self.base.start_all_reffs(reuse_eupdates, src);
+    }
+    pub(in crate::uad::item) fn stop_all_reffs(&self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+        self.base.stop_all_reffs(reuse_eupdates, src)
+    }
     pub(in crate::uad::item) fn get_effect_mode(&self, effect_id: &ad::AEffectId) -> EffectMode {
         self.base.get_effect_mode(effect_id)
     }
-    pub(in crate::uad::item) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
-        self.base.set_effect_mode(a_effect_id, effect_mode)
+    pub(in crate::uad::item) fn set_effect_mode(
+        &mut self,
+        a_effect_id: ad::AEffectId,
+        effect_mode: EffectMode,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
+    ) {
+        self.base.set_effect_mode(a_effect_id, effect_mode, reuse_eupdates, src)
     }
-    pub(in crate::uad::item) fn set_effect_modes(&mut self, modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>) {
-        self.base.set_effect_modes(modes)
+    pub(in crate::uad::item) fn set_effect_modes(
+        &mut self,
+        modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>,
+        reuse_eupdates: &mut UadEffectUpdates,
+        src: &Src,
+    ) {
+        self.base.set_effect_modes(modes, reuse_eupdates, src)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::uad::item) fn update_a_data(&mut self, src: &Src) {
-        self.base.update_a_data(src);
-        self.autocharges.clear()
+    pub(in crate::uad::item) fn update_a_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+        self.base.update_a_data(reuse_eupdates, src);
+        self.autocharges.clear();
     }
     // Item-specific methods
     pub(crate) fn get_fighter_state(&self) -> MinionState {
         self.base.get_a_state().into()
     }
-    pub(crate) fn set_fighter_state(&mut self, state: MinionState) {
-        self.base.set_a_state(state.into())
+    pub(crate) fn set_fighter_state(&mut self, state: MinionState, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+        self.base.set_a_state(state.into(), reuse_eupdates, src)
     }
     pub(crate) fn get_fit_key(&self) -> FitKey {
         self.fit_key
