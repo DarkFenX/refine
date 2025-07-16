@@ -17,7 +17,6 @@ mod eff_c8_stability_generator_gamma;
 mod eff_d101_use_missiles;
 mod eff_d10_tgt_attack;
 mod eff_d11691_debuff_lance;
-mod eff_d16_online;
 mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
 mod eff_d26_structure_repair;
@@ -97,7 +96,6 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_c8_stability_generator_gamma::mk_n_effect(),
         eff_d4_shield_boosting::mk_n_effect(),
         eff_d10_tgt_attack::mk_n_effect(),
-        eff_d16_online::mk_n_effect(),
         eff_d26_structure_repair::mk_n_effect(),
         eff_d27_armor_repair::mk_n_effect(),
         eff_d34_projectile_fired::mk_n_effect(),

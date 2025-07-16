@@ -59,6 +59,9 @@ impl UadBooster {
     pub(crate) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
         self.base.set_effect_mode(a_effect_id, effect_mode)
     }
+    pub(in crate::uad::item) fn set_effect_modes(&mut self, modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>) {
+        self.base.set_effect_modes(modes)
+    }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }

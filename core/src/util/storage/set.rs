@@ -64,6 +64,9 @@ where
     pub fn remove(&mut self, val: &V) -> bool {
         self.data.remove(val)
     }
+    pub fn drain(&mut self) -> impl ExactSizeIterator<Item = V> {
+        self.data.drain()
+    }
     pub fn clear(&mut self) {
         self.data.clear()
     }

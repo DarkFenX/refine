@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use super::inner::InnerSrc;
-use crate::{ad, ed, src::SrcInitError};
+use crate::{ac, ad, ed, src::SrcInitError};
 
 /// Data source.
 ///
@@ -10,6 +10,7 @@ use crate::{ad, ed, src::SrcInitError};
 #[derive(Clone)]
 pub struct Src {
     inner: Arc<InnerSrc>,
+    online_effect: Option<ad::ArcEffectRt>,
 }
 impl Src {
     #[tracing::instrument(name = "src-new", level = "trace", skip_all)]
@@ -18,8 +19,10 @@ impl Src {
         a_handler: Box<dyn ad::AdaptedDataHandler>,
     ) -> Result<Self, SrcInitError> {
         let inner_src = InnerSrc::new(e_handler, a_handler)?;
+        let online_effect = inner_src.a_handler.get_effect(&ac::effects::ONLINE).cloned();
         let src = Self {
             inner: Arc::new(inner_src),
+            online_effect,
         };
         Ok(src)
     }
@@ -31,6 +34,9 @@ impl Src {
     }
     pub(crate) fn get_a_effect(&self, id: &ad::AEffectId) -> Option<&ad::ArcEffectRt> {
         self.inner.a_handler.get_effect(id)
+    }
+    pub(crate) fn get_a_effect_online(&self) -> Option<&ad::ArcEffectRt> {
+        self.online_effect.as_ref()
     }
     pub(crate) fn get_a_mutator(&self, id: &ad::AItemId) -> Option<&ad::ArcMuta> {
         self.inner.a_handler.get_mutator(id)

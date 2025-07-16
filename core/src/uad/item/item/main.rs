@@ -159,6 +159,27 @@ impl UadItem {
             Self::SwEffect(sw_effect) => sw_effect.set_effect_mode(a_effect_id, effect_mode),
         }
     }
+    pub(crate) fn set_effect_modes(&mut self, modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>) {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.set_effect_modes(modes),
+            Self::Booster(booster) => booster.set_effect_modes(modes),
+            Self::Character(character) => character.set_effect_modes(modes),
+            Self::Charge(charge) => charge.set_effect_modes(modes),
+            Self::Drone(drone) => drone.set_effect_modes(modes),
+            Self::Fighter(fighter) => fighter.set_effect_modes(modes),
+            Self::FwEffect(fw_effect) => fw_effect.set_effect_modes(modes),
+            Self::Implant(implant) => implant.set_effect_modes(modes),
+            Self::Module(module) => module.set_effect_modes(modes),
+            Self::ProjEffect(proj_effect) => proj_effect.set_effect_modes(modes),
+            Self::Rig(rig) => rig.set_effect_modes(modes),
+            Self::Service(service) => service.set_effect_modes(modes),
+            Self::Ship(ship) => ship.set_effect_modes(modes),
+            Self::Skill(skill) => skill.set_effect_modes(modes),
+            Self::Stance(stance) => stance.set_effect_modes(modes),
+            Self::Subsystem(subsystem) => subsystem.set_effect_modes(modes),
+            Self::SwEffect(sw_effect) => sw_effect.set_effect_modes(modes),
+        }
+    }
     pub(crate) fn get_a_state(&self) -> ad::AState {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_state(),

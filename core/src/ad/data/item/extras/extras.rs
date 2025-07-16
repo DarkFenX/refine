@@ -12,8 +12,8 @@ use super::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
+    has_effect::{has_online_effect, is_launcher, is_turret},
     kind::get_item_kind,
-    module_hardpoint::{is_launcher, is_turret},
     overload_td_lvl::get_overload_td_lvl,
     sec_zone::is_sec_zone_limitable,
     ship_kind::{get_item_ship_kind, get_ship_kind},
@@ -94,6 +94,8 @@ pub(crate) struct AItemXt {
     pub(crate) charge_size: Option<AAttrVal>,
     // Unmutated and unmodified charge rate
     pub(crate) charge_rate: ACount,
+    // Used for fast access during effect status resolution
+    pub(crate) has_online_effect: bool,
 }
 impl AItemXt {
     // Build extras out of item with its original attributes
@@ -130,6 +132,7 @@ impl AItemXt {
             remote_resist_attr_id: get_remote_resist_attr_id(&a_item.attrs),
             charge_size: get_charge_size(&a_item.attrs),
             charge_rate: get_charge_rate(&a_item.attrs),
+            has_online_effect: has_online_effect(&a_item.effect_datas),
         }
     }
     // Build extras out of item with overridden attributes
@@ -166,6 +169,7 @@ impl AItemXt {
             remote_resist_attr_id: get_remote_resist_attr_id(attrs),
             charge_size: get_charge_size(attrs),
             charge_rate: get_charge_rate(attrs),
+            has_online_effect: has_online_effect(&a_item.ai.effect_datas),
         }
     }
 }

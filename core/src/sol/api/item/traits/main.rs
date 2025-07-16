@@ -100,9 +100,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         let uad_item = sol.uad.items.get_mut(item_key);
-        for (effect_id, effect_mode) in modes {
-            uad_item.set_effect_mode(effect_id.into(), effect_mode)
-        }
+        uad_item.set_effect_modes(modes.map(|(k, v)| (k.into(), v)));
         let uad_item = sol.uad.items.get(item_key);
         SolarSystem::util_process_effects(
             &sol.uad,

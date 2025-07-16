@@ -1,4 +1,11 @@
-use crate::{ad, def::ItemId, misc::EffectMode, src::Src, uad::item::misc::EffectModes, util::RMap};
+use crate::{
+    ad,
+    def::ItemId,
+    misc::EffectMode,
+    src::Src,
+    uad::item::misc::EffectModes,
+    util::{RMap, RSet},
+};
 
 // Item base stores all the data every item should have
 #[derive(Clone)]
@@ -18,7 +25,10 @@ impl UadItemBase {
             a_item_id,
             a_state: state,
             effect_modes: EffectModes::new(),
-            cache: src.get_a_item(&a_item_id).map(|v| ItemBaseCache { a_item: v.clone() }),
+            cache: src.get_a_item(&a_item_id).map(|v| ItemBaseCache {
+                a_item: v.clone(),
+                reffs: RSet::new(),
+            }),
         }
     }
     // Basic data access methods
@@ -79,13 +89,21 @@ impl UadItemBase {
     pub(in crate::uad::item) fn set_effect_mode(&mut self, a_effect_id: ad::AEffectId, effect_mode: EffectMode) {
         self.effect_modes.set(a_effect_id, effect_mode);
     }
+    pub(in crate::uad::item) fn set_effect_modes(&mut self, modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>) {
+        for (a_effect_id, effect_mode) in modes {
+            self.effect_modes.set(a_effect_id, effect_mode);
+        }
+    }
     pub(in crate::uad::item) fn is_loaded(&self) -> bool {
         self.cache.is_some()
     }
     pub(in crate::uad::item) fn update_a_data(&mut self, src: &Src) {
-        self.cache = src
-            .get_a_item(&self.a_item_id)
-            .map(|v| ItemBaseCache { a_item: v.clone() });
+        match (&mut self.cache, src.get_a_item(&self.a_item_id)) {
+            (Some(cache), Some(a_item)) => {}
+            (Some(cache), None) => {}
+            (None, Some(a_item)) => {}
+            (None, None) => {}
+        }
     }
     // Non-public methods
     pub(in crate::uad::item::base) fn new_with_a_item_id_not_loaded(
@@ -111,7 +129,10 @@ impl UadItemBase {
             a_item_id: a_item.ai.id,
             a_state,
             effect_modes: EffectModes::new(),
-            cache: Some(ItemBaseCache { a_item }),
+            cache: Some(ItemBaseCache {
+                a_item,
+                reffs: RSet::new(),
+            }),
         }
     }
     pub(in crate::uad::item::base) fn base_set_a_item_id(&mut self, a_item_id: ad::AItemId) {
@@ -119,8 +140,16 @@ impl UadItemBase {
     }
     pub(in crate::uad::item::base) fn base_set_a_item(&mut self, a_item: ad::ArcItemRt) {
         match &mut self.cache {
-            Some(cache) => cache.a_item = a_item,
-            None => self.cache = Some(ItemBaseCache { a_item }),
+            Some(cache) => {
+                cache.a_item = a_item;
+                cache.reffs.clear();
+            }
+            None => {
+                self.cache = Some(ItemBaseCache {
+                    a_item,
+                    reffs: RSet::new(),
+                })
+            }
         }
     }
     pub(in crate::uad::item::base) fn base_remove_a_item(&mut self) {
@@ -134,4 +163,6 @@ impl UadItemBase {
 #[derive(Clone)]
 struct ItemBaseCache {
     a_item: ad::ArcItemRt,
+    // Running effects, are available only when adapted item is set
+    reffs: RSet<ad::AEffectId>,
 }
