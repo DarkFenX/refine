@@ -84,6 +84,9 @@ where
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (Key, &T)> {
         self.id_to_key.values().map(|&key| (key, self.data.get(key).unwrap()))
     }
+    pub(crate) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = (Key, &mut T)> {
+        self.data.iter_mut()
+    }
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = Key> {
         self.id_to_key.values().copied()
     }
