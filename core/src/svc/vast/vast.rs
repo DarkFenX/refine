@@ -106,16 +106,16 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
     // Stats-related - local reps
-    pub(in crate::svc::vast) lr_shield: RMap<EffectSpec, NLocalRepGetter>,
-    pub(in crate::svc::vast) lr_shield_limitable: RMap<EffectSpec, NLocalRepGetter>, // Ancils
-    pub(in crate::svc::vast) lr_armor: RMap<EffectSpec, NLocalRepGetter>,
-    pub(in crate::svc::vast) lr_armor_limitable: RMap<EffectSpec, NLocalRepGetter>, // Ancils
-    pub(in crate::svc::vast) lr_hull: RMap<EffectSpec, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_shield: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_armor: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_hull: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
     // Outgoing remote reps
-    pub(in crate::svc::vast) orr_shield: RMap<EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_armor: RMap<EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_hull: RMap<EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_cap: RMap<EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_shield: RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_cap: RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -181,15 +181,15 @@ impl VastFitData {
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
             // Stats-related
-            lr_shield: RMap::new(),
-            lr_shield_limitable: RMap::new(),
-            lr_armor: RMap::new(),
-            lr_armor_limitable: RMap::new(),
-            lr_hull: RMap::new(),
-            orr_shield: RMap::new(),
-            orr_armor: RMap::new(),
-            orr_hull: RMap::new(),
-            orr_cap: RMap::new(),
+            lr_shield: RMapRMap::new(),
+            lr_shield_limitable: RMapRMap::new(),
+            lr_armor: RMapRMap::new(),
+            lr_armor_limitable: RMapRMap::new(),
+            lr_hull: RMapRMap::new(),
+            orr_shield: RMapRMap::new(),
+            orr_armor: RMapRMap::new(),
+            orr_hull: RMapRMap::new(),
+            orr_cap: RMapRMap::new(),
         }
     }
 }

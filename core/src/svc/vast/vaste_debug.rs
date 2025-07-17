@@ -285,41 +285,59 @@ impl VastFitData {
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
-        for espec in self.lr_shield.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.lr_shield.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.lr_shield_limitable.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.lr_shield_limitable.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.lr_armor.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.lr_armor.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.lr_armor_limitable.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.lr_armor_limitable.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.lr_hull.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.lr_hull.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.orr_shield.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.orr_shield.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.orr_armor.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.orr_armor.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.orr_hull.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.orr_hull.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
-        for espec in self.orr_cap.keys() {
-            check_item_key(uad, espec.item_key, true)?;
-            check_a_effect_id(uad, &espec.a_effect_id)?;
+        for (&item_key, item_data) in self.orr_cap.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
         }
         Ok(())
     }

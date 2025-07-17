@@ -7,13 +7,12 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        efuncs,
         err::StatItemCheckError,
         misc::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         vast::{StatTank, Vast},
     },
     uad::UadItem,
-    util::{RMap, RMapRMapRMap, trunc_unerr},
+    util::{RMapRMap, RMapRMapRMap, trunc_unerr},
 };
 
 pub struct StatLayerRps {
@@ -76,15 +75,33 @@ impl Vast {
     }
 }
 
-fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMap<EffectSpec, NLocalRepGetter>) -> AttrVal {
+const RPS_CYCLE_OPTIONS: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Burst,
+    reload_optionals: false,
+};
+
+fn get_local_rps(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    rep_data: &RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+) -> AttrVal {
     let mut total_rps = OF(0.0);
-    for (&rep_espec, rep_getter) in rep_data.iter() {
-        let rep_amount = match rep_getter(ctx, calc, rep_espec.item_key) {
-            Some(rep_amount) => rep_amount,
+    for (&item_key, item_data) in rep_data.iter() {
+        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, RPS_CYCLE_OPTIONS, false) {
+            Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        if let Some(cycle_time) = efuncs::get_espec_duration_s(ctx, calc, rep_espec) {
-            total_rps += rep_amount / cycle_time;
+        for (&a_effect_id, rep_getter) in item_data.iter() {
+            let hp_per_cycle = match rep_getter(ctx, calc, item_key) {
+                Some(hp_per_cycle) => hp_per_cycle,
+                None => continue,
+            };
+            let effect_cycles = match cycle_map.get(&a_effect_id) {
+                Some(effect_cycles) => effect_cycles,
+                None => continue,
+            };
+            let cycle_time_s = effect_cycles.get_average_cycle_time();
+            total_rps += hp_per_cycle / cycle_time_s;
         }
     }
     total_rps
@@ -108,11 +125,7 @@ fn get_irr_data(
         None => return result,
     };
     for (&projector_item_key, projector_data) in incoming_reps.iter() {
-        let cycle_options = CycleOptions {
-            reload_mode: CycleOptionReload::Burst,
-            reload_optionals: false,
-        };
-        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, cycle_options, false) {
+        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, RPS_CYCLE_OPTIONS, false) {
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };

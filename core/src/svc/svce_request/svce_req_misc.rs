@@ -9,6 +9,14 @@ use crate::{
     util::InfCount,
 };
 
+const CUR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
+    // Should return the same count of cycles until reload regardless of options, but burst is
+    // easier to calculate
+    reload_mode: CycleOptionReload::Burst,
+    // Use this to return cycle count for modules like ancillary reps
+    reload_optionals: true,
+};
+
 impl Svc {
     pub(crate) fn get_item_cycles_until_reload(&mut self, uad: &Uad, item_key: ItemKey) -> Option<InfCount> {
         let uad_item = uad.items.get(item_key);
@@ -17,13 +25,7 @@ impl Svc {
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,
             item_key,
-            CycleOptions {
-                // Should return the same count of cycles until reload regardless of options, but
-                // burst is easier to calculate
-                reload_mode: CycleOptionReload::Burst,
-                // Use this to return cycle count for modules like ancillary reps
-                reload_optionals: true,
-            },
+            CUR_CYCLE_OPTIONS,
             true,
         )?;
         Some(cycle_info.get(&defeff_id)?.get_cycles_until_reload())

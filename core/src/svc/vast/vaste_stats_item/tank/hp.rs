@@ -7,13 +7,12 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        efuncs,
         err::StatItemCheckError,
         misc::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         vast::{StatTank, Vast},
     },
     uad::UadItem,
-    util::{InfCount, RMap, RMapRMapRMap},
+    util::{InfCount, RMapRMap, RMapRMapRMap},
 };
 
 pub struct StatLayerHp {
@@ -81,13 +80,36 @@ impl Vast {
     }
 }
 
-fn get_local_ancil_hp(ctx: SvcCtx, calc: &mut Calc, ancil_data: &RMap<EffectSpec, NLocalRepGetter>) -> AttrVal {
+const ANCIL_CYCLE_OPTIONS: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Burst,
+    reload_optionals: true,
+};
+
+fn get_local_ancil_hp(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    ancil_data: &RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
-    for (ancil_espec, rep_getter) in ancil_data.iter() {
-        if let Some(ancil_hp) = rep_getter(ctx, calc, ancil_espec.item_key)
-            && let Some(InfCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *ancil_espec)
-        {
-            total_ancil_hp += ancil_hp * AttrVal::from(cycles);
+    for (&item_key, item_data) in ancil_data.iter() {
+        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, ANCIL_CYCLE_OPTIONS, false) {
+            Some(cycle_map) => cycle_map,
+            None => continue,
+        };
+        for (&a_effect_id, rep_getter) in item_data.iter() {
+            let hp_per_cycle = match rep_getter(ctx, calc, item_key) {
+                Some(hp_per_cycle) => hp_per_cycle,
+                None => continue,
+            };
+            let effect_cycles = match cycle_map.get(&a_effect_id) {
+                Some(effect_cycles) => effect_cycles,
+                None => continue,
+            };
+            let cycle_count = match effect_cycles.get_cycles_until_reload() {
+                InfCount::Count(cycle_count) => cycle_count,
+                InfCount::Infinite => continue,
+            };
+            total_ancil_hp += hp_per_cycle * AttrVal::from(cycle_count);
         }
     }
     total_ancil_hp
@@ -105,11 +127,7 @@ fn get_remote_ancil_hp(
         None => return total_ancil_hp,
     };
     for (&projector_item_key, projector_data) in incoming_ancils.iter() {
-        let cycle_options = CycleOptions {
-            reload_mode: CycleOptionReload::Burst,
-            reload_optionals: true,
-        };
-        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, cycle_options, false) {
+        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, ANCIL_CYCLE_OPTIONS, false) {
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
