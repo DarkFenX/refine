@@ -1,5 +1,5 @@
 pub(in crate::svc) use info::{Cycle, get_item_cycle_info};
-pub(in crate::svc) use info_shared::CycleOptions;
+pub(in crate::svc) use info_shared::{CycleOptionReload, CycleOptions};
 
 mod info;
 mod info_drone;

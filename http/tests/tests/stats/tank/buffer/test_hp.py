@@ -566,7 +566,8 @@ def test_remote_asb_ship_accuracy_and_charge_switch(client, consts):
     # Accuracy = cases like 2.3 / 0.1 = 22.999999999999996
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
-    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=2.3)
+    eve_rep_item_id = make_eve_remote_asb(
+        client=client, basic_info=eve_basic_info, rep_amount=300, cycle_time=5000, capacity=2.3)
     eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -625,7 +626,8 @@ def test_remote_asb_ship_accuracy_and_charge_switch(client, consts):
 def test_remote_asb_ship_state_switch(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
-    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=3)
+    eve_rep_item_id = make_eve_remote_asb(
+        client=client, basic_info=eve_basic_info, rep_amount=300, cycle_time=5000, capacity=3)
     eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -686,7 +688,8 @@ def test_remote_asb_ship_resist_and_rep_hp_limit(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(
         client=client, basic_info=eve_basic_info, hps=(1000, 500, 250), rr_resist=1, ship=True)
-    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=1500, capacity=112)
+    eve_rep_item_id = make_eve_remote_asb(
+        client=client, basic_info=eve_basic_info, rep_amount=1500, cycle_time=5000, capacity=112)
     eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 12})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_resist_mod = client.mk_eve_effect_mod(
@@ -758,6 +761,7 @@ def test_remote_asb_ship_proj_range_and_rep_hp_limit(client, consts):
         client=client,
         basic_info=eve_basic_info,
         rep_amount=1500,
+        cycle_time=5000,
         capacity=112,
         optimal_range=10000,
         falloff_range=5000)
@@ -809,7 +813,8 @@ def test_remote_asb_drone_fighter(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
     eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
-    eve_rep_item_id = make_eve_remote_asb(client=client, basic_info=eve_basic_info, rep_amount=300, capacity=1)
+    eve_rep_item_id = make_eve_remote_asb(
+        client=client, basic_info=eve_basic_info, rep_amount=300, cycle_time=5000, capacity=1)
     eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -838,7 +843,7 @@ def test_remote_aar_ship_accuracy_and_charge_switch(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
     eve_rep_item_id = make_eve_remote_aar(
-        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=2.3, charge_rate=1)
+        client=client, basic_info=eve_basic_info, rep_amount=100, cycle_time=5000, capacity=2.3, charge_rate=1)
     eve_charge_item_id = client.mk_eve_item(
         id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()
@@ -900,7 +905,7 @@ def test_remote_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
     eve_rep_item_id = make_eve_remote_aar(
-        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=15, charge_rate=4)
+        client=client, basic_info=eve_basic_info, rep_amount=100, cycle_time=5000, capacity=15, charge_rate=4)
     eve_charge_item_id = client.mk_eve_item(
         id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 1})
     client.create_sources()
@@ -963,7 +968,7 @@ def test_remote_aar_ship_resist_and_rep_hp_limit(client, consts):
     eve_ship_id = make_eve_tankable(
         client=client, basic_info=eve_basic_info, hps=(2000, 1000, 500), rr_resist=1, ship=True)
     eve_rep_item_id = make_eve_remote_aar(
-        client=client, basic_info=eve_basic_info, rep_amount=500, capacity=0.64, charge_rate=8)
+        client=client, basic_info=eve_basic_info, rep_amount=500, cycle_time=5000, capacity=0.64, charge_rate=8)
     eve_charge_item_id = client.mk_eve_item(
         id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.01})
     eve_mod_attr_id = client.mk_eve_attr()
@@ -1036,6 +1041,7 @@ def test_remote_aar_ship_proj_range_and_rep_hp_limit(client, consts):
         client=client,
         basic_info=eve_basic_info,
         rep_amount=500,
+        cycle_time=5000,
         capacity=0.64,
         charge_rate=8,
         optimal_range=10000,
@@ -1091,7 +1097,7 @@ def test_remote_aar_drone_fighter(client, consts):
     eve_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(1728, 672, 600))
     eve_fighter_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(2190, None, 100), fighter_count=9)
     eve_rep_item_id = make_eve_remote_aar(
-        client=client, basic_info=eve_basic_info, rep_amount=100, capacity=1, charge_rate=1)
+        client=client, basic_info=eve_basic_info, rep_amount=100, cycle_time=5000, capacity=1, charge_rate=1)
     eve_charge_item_id = client.mk_eve_item(
         id_=consts.EveItem.nanite_repair_paste, attrs={eve_basic_info.volume_attr_id: 0.1})
     client.create_sources()

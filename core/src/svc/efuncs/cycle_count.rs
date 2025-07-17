@@ -17,7 +17,7 @@ pub(in crate::svc) fn get_effect_cycle_count(ctx: SvcCtx, item_key: ItemKey, a_e
         Some(n_charge) => match n_charge {
             NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(ctx, item_key, a_effect),
             NEffectCharge::Loaded(charge_depletion) => match charge_depletion {
-                NEffectChargeDepl::ChargeRate => get_charge_rate_cycle_count(ctx, item_key),
+                NEffectChargeDepl::ChargeRate { can_run_uncharged: _ } => get_charge_rate_cycle_count(ctx, item_key),
                 NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, item_key),
                 NEffectChargeDepl::None => InfCount::Infinite,
             },

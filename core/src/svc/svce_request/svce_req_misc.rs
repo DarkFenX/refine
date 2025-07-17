@@ -3,7 +3,7 @@ use crate::{
     misc::{AdjustableCount, EffectSpec},
     svc::{
         Svc, SvcCtx,
-        misc::{CycleOptions, get_item_cycle_info},
+        misc::{CycleOptionReload, CycleOptions, get_item_cycle_info},
     },
     uad::Uad,
     util::InfCount,
@@ -17,9 +17,13 @@ impl Svc {
             SvcCtx::new(uad, &self.eprojs),
             &mut self.calc,
             item_key,
-            // Should return the same count of cycles until reload regardless of options, but burst
-            // is easier to calculate
-            CycleOptions::Burst,
+            CycleOptions {
+                // Should return the same count of cycles until reload regardless of options, but
+                // burst is easier to calculate
+                reload_mode: CycleOptionReload::Burst,
+                // Use this to return cycle count for modules like ancillary reps
+                reload_optionals: true,
+            },
             true,
         )?;
         Some(cycle_info.get(&defeff_id)?.get_cycles_until_reload())

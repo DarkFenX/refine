@@ -1,6 +1,6 @@
 use super::{
     info::{Cycle, CycleInner, CycleReload1, CycleReload2, CycleSimple},
-    info_shared::{CycleOptions, SelfKillerInfo},
+    info_shared::{CycleOptionReload, CycleOptions, SelfKillerInfo},
     until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
 use crate::{
@@ -98,7 +98,9 @@ fn fill_module_effect_info(
         Some(n_charge) => match n_charge {
             NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(uad_item, a_effect),
             NEffectCharge::Loaded(charge_depletion) => match charge_depletion {
-                NEffectChargeDepl::ChargeRate => get_charge_rate_cycle_count(ctx, uad_module),
+                NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
+                    get_charge_rate_cycle_count(ctx, uad_module, can_run_uncharged, options.reload_optionals)
+                }
                 NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, uad_module),
                 NEffectChargeDepl::None => InfCount::Infinite,
             },
@@ -133,10 +135,10 @@ fn fill_module_effect_info(
     match cycle_count {
         // When we have to handle reload, result is a bit complex
         InfCount::Count(count_until_reload) => {
-            let reload_time_s = match options {
+            let reload_time_s = match options.reload_mode {
                 // When considering burst calculations, just set reload to 0
-                CycleOptions::Burst => OF(0.0),
-                CycleOptions::Sim => {
+                CycleOptionReload::Burst => OF(0.0),
+                CycleOptionReload::Sim => {
                     let reload_time_s = calc
                         .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RELOAD_TIME)
                         .unwrap()

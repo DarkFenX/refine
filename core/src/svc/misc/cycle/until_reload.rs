@@ -27,7 +27,15 @@ pub(super) fn get_autocharge_cycle_count(uad_item: &UadItem, a_effect: &ad::AEff
     }
 }
 
-pub(super) fn get_charge_rate_cycle_count(ctx: SvcCtx, uad_module: &UadModule) -> InfCount {
+pub(super) fn get_charge_rate_cycle_count(
+    ctx: SvcCtx,
+    uad_module: &UadModule,
+    can_run_uncharged: bool,
+    reload_optionals: bool,
+) -> InfCount {
+    if can_run_uncharged && !reload_optionals {
+        return InfCount::Infinite;
+    }
     let charge_count = match uad_module.get_charge_count(ctx.uad) {
         Some(charge_count) => charge_count,
         // When effect wants charge, but doesn't have one / it is not loaded - it can't cycle

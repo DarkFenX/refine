@@ -9,7 +9,7 @@ use crate::{
         calc::Calc,
         efuncs,
         err::StatItemCheckError,
-        misc::{CycleOptions, get_item_cycle_info},
+        misc::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         vast::{StatTank, Vast},
     },
     uad::UadItem,
@@ -105,7 +105,11 @@ fn get_remote_ancil_hp(
         None => return total_ancil_hp,
     };
     for (&projector_item_key, projector_data) in incoming_ancils.iter() {
-        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, CycleOptions::Burst, false) {
+        let cycle_options = CycleOptions {
+            reload_mode: CycleOptionReload::Burst,
+            reload_optionals: true,
+        };
+        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, cycle_options, false) {
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
