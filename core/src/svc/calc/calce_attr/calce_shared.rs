@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, Context, CtxModifier, ModifierKind},
-        get_resist_mult_val_by_projectee_aspec,
+        efuncs,
     },
     uad::UadItem,
 };
@@ -29,7 +29,7 @@ impl Calc {
             _ => return None,
         };
         let resist =
-            get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(projectee_key, resist_a_attr_id))?;
+            efuncs::get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(projectee_key, resist_a_attr_id))?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {

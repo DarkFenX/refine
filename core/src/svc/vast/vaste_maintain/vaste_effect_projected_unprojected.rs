@@ -2,7 +2,7 @@ use crate::{
     ac, ad,
     def::ItemKey,
     misc::{AttrSpec, EffectSpec},
-    svc::{get_resist_a_attr_id, vast::Vast},
+    svc::{efuncs, vast::Vast},
     uad::UadItem,
 };
 
@@ -39,7 +39,7 @@ impl Vast {
                         .blockable_offense
                         .add_entry(projectee_key, projector_espec);
                 }
-                if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
+                if let Some(resist_a_attr_id) = efuncs::get_resist_a_attr_id(projector_item, a_effect) {
                     let projectee_aspec = AttrSpec::new(projectee_key, resist_a_attr_id);
                     projector_fit_data
                         .resist_immunity
@@ -100,7 +100,7 @@ impl Vast {
                         .blockable_offense
                         .remove_entry(&projectee_key, &projector_espec);
                 }
-                if let Some(resist_a_attr_id) = get_resist_a_attr_id(projector_item, a_effect) {
+                if let Some(resist_a_attr_id) = efuncs::get_resist_a_attr_id(projector_item, a_effect) {
                     let projectee_aspec = AttrSpec::new(projectee_key, resist_a_attr_id);
                     projector_fit_data
                         .resist_immunity

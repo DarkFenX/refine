@@ -7,7 +7,7 @@ use crate::{
         NEffect, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
-    svc::{SvcCtx, calc::Calc, efuncs, get_proj_mult, get_resist_mult},
+    svc::{SvcCtx, calc::Calc, efuncs},
 };
 
 pub(super) fn mk_n_effect() -> NEffect {
@@ -50,11 +50,11 @@ fn get_spool_remote_rep_amount(
     }
     if let Some(projectee_key) = projectee_key {
         // Effect resistance reduction
-        if let Some(rr_mult) = get_resist_mult(ctx, calc, &projector_espec, projectee_key) {
+        if let Some(rr_mult) = efuncs::get_resist_mult(ctx, calc, &projector_espec, projectee_key) {
             amount *= rr_mult;
         }
         // Range reduction
-        if let Some(proj_mult) = get_proj_mult(ctx, calc, projector_espec, projectee_key) {
+        if let Some(proj_mult) = efuncs::get_proj_mult(ctx, calc, projector_espec, projectee_key) {
             amount *= proj_mult;
         }
         // Total resource pool limit

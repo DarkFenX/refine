@@ -13,7 +13,7 @@ use crate::{
         calc::{
             AffecteeFilter, AffectorInfo, AggrMode, Calc, ItemAddReviser, ItemRemoveReviser, Location, ModifierKind, Op,
         },
-        get_resist_a_attr_id,
+        efuncs,
     },
     uad::UadItem,
 };
@@ -70,7 +70,7 @@ impl RawModifier {
         let kind = get_mod_kind(a_effect, &affectee_filter)?;
         // Targeted effects are affected resists
         let resist_a_attr_id = match kind {
-            ModifierKind::Targeted => get_resist_a_attr_id(affector_item, a_effect),
+            ModifierKind::Targeted => efuncs::get_resist_a_attr_id(affector_item, a_effect),
             _ => None,
         };
         Some(Self {
@@ -142,7 +142,7 @@ impl RawModifier {
         let affectee_filter = AffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
         let kind = get_mod_kind(a_effect, &affectee_filter)?;
         let resist_a_attr_id = match kind {
-            ModifierKind::Buff => get_resist_a_attr_id(affector_item, a_effect),
+            ModifierKind::Buff => efuncs::get_resist_a_attr_id(affector_item, a_effect),
             _ => None,
         };
         Some(Self {
