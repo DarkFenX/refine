@@ -83,7 +83,7 @@ pub(super) fn item_key_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), StatI
 
 const RR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    reload_optionals: true,
+    reload_optionals: false,
 };
 
 fn get_orr_item_key(
