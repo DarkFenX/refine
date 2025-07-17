@@ -7,12 +7,12 @@ use crate::{
     util::{InfCount, RMap},
 };
 
-pub(in crate::svc) enum CycleInfo {
+pub(in crate::svc) enum Cycle {
     Simple(CycleSimple),
     Reload1(CycleReload1),
     Reload2(CycleReload2),
 }
-impl CycleInfo {
+impl Cycle {
     pub(in crate::svc) fn get_cycles_until_reload(&self) -> InfCount {
         match self {
             Self::Simple(simple) => simple.get_cycles_until_reload(),
@@ -66,7 +66,7 @@ pub(in crate::svc) fn get_item_cycle_info(
     item_key: ItemKey,
     options: CycleOptions,
     ignore_state: bool,
-) -> Option<RMap<ad::AEffectId, CycleInfo>> {
+) -> Option<RMap<ad::AEffectId, Cycle>> {
     let uad_item = ctx.uad.items.get(item_key);
     match uad_item {
         UadItem::Drone(uad_drone) => get_drone_cycle_info(ctx, calc, item_key, uad_drone, ignore_state),

@@ -1,5 +1,5 @@
 use super::{
-    info::{CycleInfo, CycleInner, CycleReload1, CycleReload2, CycleSimple},
+    info::{Cycle, CycleInner, CycleReload1, CycleReload2, CycleSimple},
     info_shared::{CycleOptions, SelfKillerInfo},
     until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
@@ -20,7 +20,7 @@ pub(super) fn get_module_cycle_info(
     uad_module: &UadModule,
     options: CycleOptions,
     ignore_state: bool,
-) -> Option<RMap<ad::AEffectId, CycleInfo>> {
+) -> Option<RMap<ad::AEffectId, Cycle>> {
     if !uad_module.is_loaded() {
         return None;
     };
@@ -71,7 +71,7 @@ pub(super) fn get_module_cycle_info(
 }
 
 fn fill_module_effect_info(
-    cycle_infos: &mut RMap<ad::AEffectId, CycleInfo>,
+    cycle_infos: &mut RMap<ad::AEffectId, Cycle>,
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -117,7 +117,7 @@ fn fill_module_effect_info(
         });
         cycle_infos.insert(
             a_effect_id,
-            CycleInfo::Simple(CycleSimple {
+            Cycle::Simple(CycleSimple {
                 active_time: duration_s,
                 inactive_time: OF(0.0),
                 repeat_count: InfCount::Count(1),
@@ -161,7 +161,7 @@ fn fill_module_effect_info(
                         inactive_time: final_inactive_time,
                         repeat_count: final_cycle_count,
                     };
-                    cycle_infos.insert(a_effect_id, CycleInfo::Reload1(CycleReload1 { inner }));
+                    cycle_infos.insert(a_effect_id, Cycle::Reload1(CycleReload1 { inner }));
                 }
                 // When it does more than one cycle per clip - mark final cycle as reload
                 _ => {
@@ -177,7 +177,7 @@ fn fill_module_effect_info(
                     };
                     cycle_infos.insert(
                         a_effect_id,
-                        CycleInfo::Reload2(CycleReload2 {
+                        Cycle::Reload2(CycleReload2 {
                             inner_early,
                             inner_final,
                         }),
@@ -189,7 +189,7 @@ fn fill_module_effect_info(
         InfCount::Infinite => {
             cycle_infos.insert(
                 a_effect_id,
-                CycleInfo::Simple(CycleSimple {
+                Cycle::Simple(CycleSimple {
                     active_time: duration_s,
                     inactive_time: reactivation_delay_s,
                     repeat_count: InfCount::Infinite,

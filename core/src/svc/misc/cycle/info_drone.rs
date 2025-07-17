@@ -1,4 +1,4 @@
-use super::info::{CycleInfo, CycleSimple};
+use super::info::{Cycle, CycleSimple};
 use crate::{
     ad,
     def::{ItemKey, OF},
@@ -13,7 +13,7 @@ pub(super) fn get_drone_cycle_info(
     item_key: ItemKey,
     uad_drone: &UadDrone,
     ignore_state: bool,
-) -> Option<RMap<ad::AEffectId, CycleInfo>> {
+) -> Option<RMap<ad::AEffectId, Cycle>> {
     if !uad_drone.is_loaded() {
         return None;
     };
@@ -34,7 +34,7 @@ pub(super) fn get_drone_cycle_info(
 }
 
 fn fill_drone_effect_info(
-    cycle_infos: &mut RMap<ad::AEffectId, CycleInfo>,
+    cycle_infos: &mut RMap<ad::AEffectId, Cycle>,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,
@@ -55,7 +55,7 @@ fn fill_drone_effect_info(
     // flags, limited charges & reloads
     cycle_infos.insert(
         a_effect_id,
-        CycleInfo::Simple(CycleSimple {
+        Cycle::Simple(CycleSimple {
             active_time: duration_s,
             inactive_time: OF(0.0),
             repeat_count: InfCount::Infinite,
