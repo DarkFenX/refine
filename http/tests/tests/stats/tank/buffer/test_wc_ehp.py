@@ -105,7 +105,8 @@ def test_local_asb(client, consts):
         resos_shield=(0.25, 0.4, 0.6, 0.5),
         resos_armor=(0.1, 0.325, 0.75, 0.9),
         resos_hull=(0.67, 0.67, 0.67, 0.67))
-    eve_rep_item_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=146, capacity=14)
+    eve_rep_item_id = make_eve_local_asb(
+        client=client, basic_info=eve_basic_info, rep_amount=146, cycle_time=5000, capacity=14)
     eve_charge_item_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 1.5})
     client.create_sources()
     api_sol = client.create_sol()
@@ -139,6 +140,7 @@ def test_local_aar(client, consts):
         client=client,
         basic_info=eve_basic_info,
         rep_amount=52,
+        cycle_time=5000,
         capacity=0.08,
         charge_rate=1)
     eve_charge_item_id = client.mk_eve_item(
