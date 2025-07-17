@@ -33,19 +33,24 @@ where
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &Map<K2, V, H2>> {
         self.data.values()
     }
+    pub(crate) fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
     // Modification methods
-    pub(crate) fn add_value(&mut self, key1: K1, key2: K2, entry: V) {
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, entry: V) {
         let m1l = self.data.entry(key1).or_insert_with(|| Map::new());
         m1l.insert(key2, entry);
     }
-    pub(crate) fn remove_l2(&mut self, key1: &K1, key2: &K2) {
+    pub(crate) fn remove_l2(&mut self, key1: &K1, key2: &K2) -> bool {
+        // Returns true only if key has been removed
         let need_cleanup = match self.data.get_mut(key1) {
-            None => return,
+            None => return false,
             Some(m1l) => m1l.remove(key2).is_some() && m1l.is_empty(),
         };
         if need_cleanup {
             self.data.remove(key1);
         }
+        need_cleanup
     }
     pub(crate) fn remove_l1(&mut self, key: &K1) -> Option<Map<K2, V, H2>> {
         self.data.remove(key)

@@ -6,7 +6,7 @@ use crate::{
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
     },
-    util::{RMap, RMapRMap, RMapRSet, RSet},
+    util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet},
 };
 
 // Vast stands for VAlidation and STats.
@@ -15,22 +15,22 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<FitKey, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<ItemKey>,
     // Incoming remote reps
-    pub(in crate::svc::vast) irr_shield: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_shield_limitable: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_armor: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_armor_limitable: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_hull: RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_shield_limitable: RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
         Self {
             fit_datas: RMap::new(),
             not_loaded: RSet::new(),
-            irr_shield: RMapRMap::new(),
-            irr_shield_limitable: RMapRMap::new(),
-            irr_armor: RMapRMap::new(),
-            irr_armor_limitable: RMapRMap::new(),
-            irr_hull: RMapRMap::new(),
+            irr_shield: RMapRMapRMap::new(),
+            irr_shield_limitable: RMapRMapRMap::new(),
+            irr_armor: RMapRMapRMap::new(),
+            irr_armor_limitable: RMapRMapRMap::new(),
+            irr_hull: RMapRMapRMap::new(),
         }
     }
     pub(in crate::svc) fn get_fit_data(&self, fit_key: &FitKey) -> &VastFitData {

@@ -1,6 +1,6 @@
 use super::shared::item_check;
 use crate::{
-    ac,
+    ac, ad,
     def::{AttrVal, ItemKey, OF},
     misc::EffectSpec,
     nd::{NLocalRepGetter, NRemoteRepGetter},
@@ -9,10 +9,11 @@ use crate::{
         calc::Calc,
         efuncs,
         err::StatItemCheckError,
+        misc::{CycleOptions, get_item_cycle_info},
         vast::{StatTank, Vast},
     },
     uad::UadItem,
-    util::{InfCount, RMap, RMapRMap},
+    util::{InfCount, RMap, RMapRMapRMap},
 };
 
 pub struct StatLayerHp {
@@ -95,17 +96,34 @@ fn get_local_ancil_hp(ctx: SvcCtx, calc: &mut Calc, ancil_data: &RMap<EffectSpec
 fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
-    ancil_data: &RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
+    projectee_item_key: ItemKey,
+    ancil_data: &RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
-    if let Some(incoming_ancils) = ancil_data.get_l1(&item_key) {
-        for (ancil_espec, rep_getter) in incoming_ancils.iter() {
-            if let Some(ancil_hp) = rep_getter(ctx, calc, *ancil_espec, None, Some(item_key))
-                && let Some(InfCount::Count(cycles)) = efuncs::get_espec_cycle_count(ctx, *ancil_espec)
-            {
-                total_ancil_hp += ancil_hp * AttrVal::from(cycles);
-            }
+    let incoming_ancils = match ancil_data.get_l1(&projectee_item_key) {
+        Some(incoming_ancils) => incoming_ancils,
+        None => return total_ancil_hp,
+    };
+    for (&projector_item_key, projector_data) in incoming_ancils.iter() {
+        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, CycleOptions::Burst, false) {
+            Some(projector_cycle_map) => projector_cycle_map,
+            None => continue,
+        };
+        for (&a_effect_id, rep_getter) in projector_data.iter() {
+            let espec = EffectSpec::new(projector_item_key, a_effect_id);
+            let hp_per_cycle = match rep_getter(ctx, calc, espec, None, Some(projectee_item_key)) {
+                Some(hp_per_cycle) => hp_per_cycle,
+                None => continue,
+            };
+            let effect_cycles = match projector_cycle_map.get(&a_effect_id) {
+                Some(effect_cycles) => effect_cycles,
+                None => continue,
+            };
+            let cycle_count = match effect_cycles.get_cycles_until_reload() {
+                InfCount::Count(cycle_count) => cycle_count,
+                InfCount::Infinite => continue,
+            };
+            total_ancil_hp += hp_per_cycle * AttrVal::from(cycle_count);
         }
     }
     total_ancil_hp

@@ -70,13 +70,10 @@ where
             None => return false,
             Some(v) => v.remove(entry) && v.is_empty(),
         };
-        match need_cleanup {
-            true => {
-                self.data.remove(key);
-                true
-            }
-            false => false,
+        if need_cleanup {
+            self.data.remove(key);
         }
+        need_cleanup
     }
     pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V, H1, H2>> {
         self.data.remove(key).map(|v| v.into_iter())

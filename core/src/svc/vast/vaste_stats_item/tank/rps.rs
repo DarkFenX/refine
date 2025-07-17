@@ -1,5 +1,6 @@
 use super::shared::item_check;
 use crate::{
+    ad,
     def::{AttrVal, ItemKey, OF},
     misc::{EffectSpec, Spool},
     nd::{NLocalRepGetter, NRemoteRepGetter},
@@ -8,10 +9,11 @@ use crate::{
         calc::Calc,
         efuncs,
         err::StatItemCheckError,
+        misc::{CycleOptions, get_item_cycle_info},
         vast::{StatTank, Vast},
     },
     uad::UadItem,
-    util::{RMap, RMapRMap, trunc_unerr},
+    util::{RMap, RMapRMapRMap, trunc_unerr},
 };
 
 pub struct StatLayerRps {
@@ -96,23 +98,35 @@ struct IrrEntry {
 fn get_irr_data(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    projectee_item_key: ItemKey,
     spool: Option<Spool>,
-    sol_irrs: &RMapRMap<ItemKey, EffectSpec, NRemoteRepGetter>,
+    sol_irrs: &RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
-    if let Some(item_irrs) = sol_irrs.get_l1(&item_key) {
-        for (&rep_espec, rep_getter) in item_irrs.iter() {
-            let rep_amount = match rep_getter(ctx, calc, rep_espec, spool, Some(item_key)) {
-                Some(rep_amount) => rep_amount,
+    let incoming_reps = match sol_irrs.get_l1(&projectee_item_key) {
+        Some(incoming_reps) => incoming_reps,
+        None => return result,
+    };
+    for (&projector_item_key, projector_data) in incoming_reps.iter() {
+        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, CycleOptions::Burst, false) {
+            Some(projector_cycle_map) => projector_cycle_map,
+            None => continue,
+        };
+        for (&a_effect_id, rep_getter) in projector_data.iter() {
+            let espec = EffectSpec::new(projector_item_key, a_effect_id);
+            let hp_per_cycle = match rep_getter(ctx, calc, espec, spool, Some(projectee_item_key)) {
+                Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
-            if let Some(cycle_time) = efuncs::get_espec_duration_s(ctx, calc, rep_espec) {
-                result.push(IrrEntry {
-                    amount: rep_amount,
-                    cycle_time,
-                });
-            }
+            let effect_cycles = match projector_cycle_map.get(&a_effect_id) {
+                Some(effect_cycles) => effect_cycles,
+                None => continue,
+            };
+            let cycle_time_s = effect_cycles.get_average_cycle_time();
+            result.push(IrrEntry {
+                amount: hp_per_cycle,
+                cycle_time: cycle_time_s,
+            });
         }
     }
     result

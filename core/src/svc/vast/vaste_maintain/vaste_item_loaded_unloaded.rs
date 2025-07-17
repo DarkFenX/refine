@@ -171,7 +171,7 @@ impl Vast {
                 if let Some(max_fitted) = a_item_xt.max_type_fitted {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .add_value(module.get_a_item_id(), item_key, max_fitted);
+                        .add_entry(module.get_a_item_id(), item_key, max_fitted);
                 }
                 if let Some(ad::AShipKind::CapitalShip) = a_item_xt.item_ship_kind {
                     fit_data.mods_capital.insert(item_key, a_item_xt.volume);
@@ -242,7 +242,7 @@ impl Vast {
                 if let Some(max_fitted) = a_item_xt.max_type_fitted {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .add_value(service.get_a_item_id(), item_key, max_fitted);
+                        .add_entry(service.get_a_item_id(), item_key, max_fitted);
                 }
                 if a_item_xt.sec_zone_limitable {
                     fit_data.sec_zone_fitted.insert(item_key);
