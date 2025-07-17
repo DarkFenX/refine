@@ -3,7 +3,7 @@ use crate::{
     misc::{AdjustableCount, EffectSpec},
     svc::{
         Svc, SvcCtx,
-        misc::{CycleOptionReload, CycleOptions, get_item_cycle_info},
+        cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
     },
     uad::Uad,
     util::InfCount,

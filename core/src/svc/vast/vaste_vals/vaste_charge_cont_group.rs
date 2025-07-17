@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     def::{ItemGrpId, ItemId, ItemKey},
-    svc::{misc::SvcCtx, vast::VastFitData},
+    svc::{SvcCtx, vast::VastFitData},
     util::RSet,
 };
 

@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        misc::{CycleOptionReload, CycleOptions, get_item_cycle_info},
+        cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         vast::{StatTank, VastFitData},
     },
     util::RMapRMap,

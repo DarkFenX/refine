@@ -1,13 +1,14 @@
 //! Solar system services - attribute & stats calculations, validation, and so on.
 
-pub(crate) use misc::SvcCtx;
+pub(crate) use ctx::SvcCtx;
 pub(crate) use svc::Svc;
 
 pub(crate) mod calc;
+mod ctx;
+pub(crate) mod cycle;
 pub(crate) mod efuncs;
 pub(crate) mod eprojs;
 pub(crate) mod err;
-mod misc;
 mod svc;
 mod svce_debug;
 mod svce_notify;
