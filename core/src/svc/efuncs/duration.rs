@@ -10,7 +10,7 @@ pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSp
     get_effect_duration_s(ctx, calc, espec.item_key, a_effect)
 }
 
-pub(in crate::svc) fn get_effect_duration_s(
+pub(crate) fn get_effect_duration_s(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,

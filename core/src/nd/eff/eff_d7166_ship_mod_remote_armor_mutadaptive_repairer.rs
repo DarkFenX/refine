@@ -50,11 +50,11 @@ fn get_spool_remote_rep_amount(
     }
     if let Some(projectee_key) = projectee_key {
         // Effect resistance reduction
-        if let Some(rr_mult) = efuncs::get_resist_mult(ctx, calc, &projector_espec, projectee_key) {
+        if let Some(rr_mult) = efuncs::get_espec_resist_mult(ctx, calc, &projector_espec, projectee_key) {
             amount *= rr_mult;
         }
         // Range reduction
-        if let Some(proj_mult) = efuncs::get_proj_mult(ctx, calc, projector_espec, projectee_key) {
+        if let Some(proj_mult) = efuncs::get_espec_proj_mult(ctx, calc, projector_espec, projectee_key) {
             amount *= proj_mult;
         }
         // Total resource pool limit

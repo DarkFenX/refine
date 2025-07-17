@@ -68,7 +68,7 @@ fn is_any_in_effective_range(
     stopped_item_key: ItemKey,
 ) -> bool {
     for stopper_espec in stopper_especs {
-        match efuncs::get_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
+        match efuncs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
             Some(OF(0.0)) => (),
             _ => return true,
         }
