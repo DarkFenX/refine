@@ -7,6 +7,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
+        output::Output,
     },
     uad::UadProjRange,
     util::RMap,
@@ -16,10 +17,12 @@ pub(crate) type NEffectMaker = fn() -> ad::AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<ad::AItemId, ad::AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut ad::AEffect);
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
-pub(crate) type NSpoolMultGetter = fn(SvcCtx, &mut Calc, EffectSpec, Option<Spool>) -> Option<ResolvedSpool>;
+pub(crate) type NSpoolMultGetter =
+    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
-pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey) -> Option<AttrVal>;
-pub(crate) type NRemoteRepGetter = fn(SvcCtx, &mut Calc, EffectSpec, Option<Spool>, Option<ItemKey>) -> Option<AttrVal>;
+pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt) -> Option<Output<AttrVal>>;
+pub(crate) type NRemoteRepGetter =
+    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>, Option<ItemKey>) -> Option<Output<AttrVal>>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -47,12 +50,12 @@ pub(crate) struct NEffectHc {
     // Effect strength-related
     pub(crate) get_proj_mult: Option<NProjMultGetter> = None,
     pub(crate) get_resolved_spool: Option<NSpoolMultGetter> = None,
-    // Functions which fetch various stats
-    pub(crate) get_local_armor_rep_amount: Option<NLocalRepGetter> = None,
-    pub(crate) get_local_shield_rep_amount: Option<NLocalRepGetter> = None,
-    pub(crate) get_local_hull_rep_amount: Option<NLocalRepGetter> = None,
-    pub(crate) get_remote_armor_rep_amount: Option<NRemoteRepGetter> = None,
-    pub(crate) get_remote_shield_rep_amount: Option<NRemoteRepGetter> = None,
-    pub(crate) get_remote_hull_rep_amount: Option<NRemoteRepGetter> = None,
-    pub(crate) get_remote_cap_rep_amount: Option<NRemoteRepGetter> = None,
+    // Functions which fetch output per cycle
+    pub(crate) get_local_armor_rep_opc: Option<NLocalRepGetter> = None,
+    pub(crate) get_local_shield_rep_opc: Option<NLocalRepGetter> = None,
+    pub(crate) get_local_hull_rep_opc: Option<NLocalRepGetter> = None,
+    pub(crate) get_remote_armor_rep_opc: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_shield_rep_opc: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_hull_rep_opc: Option<NRemoteRepGetter> = None,
+    pub(crate) get_remote_cap_rep_opc: Option<NRemoteRepGetter> = None,
 }

@@ -3,8 +3,8 @@ use crate::{
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectHc,
         eff::shared::{
+            opc_rep::get_remote_shield_rep_opc,
             proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_restricted_s2s},
-            rep_amount::get_remote_shield_rep_amount,
         },
     },
 };
@@ -19,7 +19,7 @@ pub(super) fn mk_n_effect() -> NEffect {
                 can_run_uncharged: true,
             })),
             get_proj_mult: Some(get_proj_mult_normal_restricted_s2s),
-            get_remote_shield_rep_amount: Some(get_remote_shield_rep_amount),
+            get_remote_shield_rep_opc: Some(get_remote_shield_rep_opc),
             ..
         },
         ..

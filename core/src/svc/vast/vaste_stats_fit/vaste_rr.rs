@@ -1,7 +1,7 @@
 use crate::{
     ad,
     def::{AttrVal, ItemKey, OF},
-    misc::{EffectSpec, Spool},
+    misc::Spool,
     nd::NRemoteRepGetter,
     svc::{
         SvcCtx,
@@ -47,18 +47,20 @@ fn get_orrps<'a>(
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (&a_effect_id, rep_getter) in item_data.iter() {
-            let espec = EffectSpec::new(item_key, a_effect_id);
-            let hp_per_cycle = match rep_getter(ctx, calc, espec, spool, None) {
+        for (a_effect_id, rep_getter) in item_data.iter() {
+            let a_effect = match ctx.uad.src.get_a_effect(a_effect_id) {
+                Some(a_effect) => a_effect,
+                None => continue,
+            };
+            let output_per_cycle = match rep_getter(ctx, calc, item_key, a_effect, spool, None) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
-            let effect_cycles = match cycle_map.get(&a_effect_id) {
+            let effect_cycles = match cycle_map.get(a_effect_id) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let cycle_time_s = effect_cycles.get_average_cycle_time();
-            rps += hp_per_cycle / cycle_time_s;
+            rps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
         }
     }
     rps

@@ -1,12 +1,12 @@
 use crate::{
     ad,
     def::{AttrVal, ItemKey, OF},
-    misc::{EffectSpec, Spool},
+    misc::Spool,
     nd::NRemoteRepGetter,
     svc::{
         SvcCtx,
         calc::Calc,
-        efuncs,
+        cycle::{Cycle, CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
         vast::{StatTank, Vast},
     },
@@ -21,13 +21,11 @@ impl Vast {
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
-        let uad_item = ctx.uad.items.get(item_key);
-        item_check(item_key, uad_item)?;
+        item_key_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_remote_rps_unchecked(
             ctx,
             calc,
             item_key,
-            uad_item,
             spool,
             ignore_state,
         ))
@@ -36,14 +34,13 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
-        uad_item: &UadItem,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> StatTank<AttrVal> {
         StatTank {
-            shield: get_orr_item_key(ctx, calc, item_key, uad_item, spool, ignore_state, get_getter_shield),
-            armor: get_orr_item_key(ctx, calc, item_key, uad_item, spool, ignore_state, get_getter_armor),
-            hull: get_orr_item_key(ctx, calc, item_key, uad_item, spool, ignore_state, get_getter_hull),
+            shield: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_shield),
+            armor: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_armor),
+            hull: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_hull),
         }
     }
     pub(in crate::svc) fn get_stat_item_remote_cps_checked(
@@ -52,13 +49,11 @@ impl Vast {
         item_key: ItemKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
-        let uad_item = ctx.uad.items.get(item_key);
-        item_check(item_key, uad_item)?;
+        item_key_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_remote_cps_unchecked(
             ctx,
             calc,
             item_key,
-            uad_item,
             ignore_state,
         ))
     }
@@ -66,14 +61,14 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
-        uad_item: &UadItem,
         ignore_state: bool,
     ) -> AttrVal {
-        get_orr_item_key(ctx, calc, item_key, uad_item, None, ignore_state, get_getter_cap)
+        get_orr_item_key(ctx, calc, item_key, None, ignore_state, get_getter_cap)
     }
 }
 
-fn item_check(item_key: ItemKey, uad_item: &UadItem) -> Result<(), StatItemCheckError> {
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), StatItemCheckError> {
+    let uad_item = ctx.uad.items.get(item_key);
     let is_loaded = match uad_item {
         UadItem::Drone(drone) => drone.is_loaded(),
         UadItem::Fighter(fighter) => fighter.is_loaded(),
@@ -86,38 +81,27 @@ fn item_check(item_key: ItemKey, uad_item: &UadItem) -> Result<(), StatItemCheck
     }
 }
 
+const RR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Burst,
+    reload_optionals: true,
+};
+
 fn get_orr_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,
-    uad_item: &UadItem,
     spool: Option<Spool>,
     ignore_state: bool,
     rep_getter_getter: fn(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter>,
 ) -> AttrVal {
-    match ignore_state {
-        true => {
-            let a_effect_ids = uad_item.get_a_effect_datas().unwrap().keys();
-            get_orr_effect_ids(ctx, calc, item_key, a_effect_ids, spool, rep_getter_getter)
-        }
-        false => {
-            let a_effect_ids = uad_item.get_reffs().unwrap().iter();
-            get_orr_effect_ids(ctx, calc, item_key, a_effect_ids, spool, rep_getter_getter)
-        }
-    }
-}
-
-fn get_orr_effect_ids<'a>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: ItemKey,
-    a_effect_ids: impl ExactSizeIterator<Item = &'a ad::AEffectId>,
-    spool: Option<Spool>,
-    rep_getter_getter: fn(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter>,
-) -> AttrVal {
     let mut item_orr = OF(0.0);
-    for a_effect_id in a_effect_ids {
-        if let Some(effect_orr) = get_orr_effect_id(ctx, calc, item_key, a_effect_id, spool, rep_getter_getter) {
+    let cycle_map = match get_item_cycle_info(ctx, calc, item_key, RR_CYCLE_OPTIONS, ignore_state) {
+        Some(cycle_map) => cycle_map,
+        None => return item_orr,
+    };
+    for (a_effect_id, cycle) in cycle_map {
+        let a_effect = ctx.uad.src.get_a_effect(&a_effect_id).unwrap();
+        if let Some(effect_orr) = get_orr_effect_id(ctx, calc, item_key, a_effect, cycle, spool, rep_getter_getter) {
             item_orr += effect_orr;
         }
     }
@@ -128,29 +112,28 @@ fn get_orr_effect_id(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,
-    a_effect_id: &ad::AEffectId,
+    a_effect: &ad::AEffectRt,
+    effect_cycle: Cycle,
     spool: Option<Spool>,
     rep_getter_getter: fn(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter>,
 ) -> Option<AttrVal> {
-    let a_effect = ctx.uad.src.get_a_effect(a_effect_id)?;
     let rep_getter = rep_getter_getter(a_effect)?;
-    let cycle_time = efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect)?;
-    let rep_amount = rep_getter(ctx, calc, EffectSpec::new(item_key, a_effect.ae.id), spool, None)?;
-    Some(rep_amount / cycle_time)
+    let rep_amount = rep_getter(ctx, calc, item_key, a_effect, spool, None)?;
+    Some(rep_amount.get_total() / effect_cycle.get_average_cycle_time())
 }
 
 fn get_getter_shield(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_shield_rep_amount
+    a_effect_id.hc.get_remote_shield_rep_opc
 }
 
 fn get_getter_armor(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_armor_rep_amount
+    a_effect_id.hc.get_remote_armor_rep_opc
 }
 
 fn get_getter_hull(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_hull_rep_amount
+    a_effect_id.hc.get_remote_hull_rep_opc
 }
 
 fn get_getter_cap(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_cap_rep_amount
+    a_effect_id.hc.get_remote_cap_rep_opc
 }

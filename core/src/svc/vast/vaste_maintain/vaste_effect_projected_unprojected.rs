@@ -47,7 +47,7 @@ impl Vast {
                 }
             }
         }
-        if let Some(rep_getter) = a_effect.hc.get_remote_shield_rep_amount {
+        if let Some(rep_getter) = a_effect.hc.get_remote_shield_rep_opc {
             self.irr_shield
                 .add_entry(projectee_key, projector_key, a_effect.ae.id, rep_getter);
             if a_effect.hc.charge.is_some() {
@@ -55,7 +55,7 @@ impl Vast {
                     .add_entry(projectee_key, projector_key, a_effect.ae.id, rep_getter);
             }
         }
-        if let Some(rep_getter) = a_effect.hc.get_remote_armor_rep_amount {
+        if let Some(rep_getter) = a_effect.hc.get_remote_armor_rep_opc {
             self.irr_armor
                 .add_entry(projectee_key, projector_key, a_effect.ae.id, rep_getter);
             if a_effect.hc.charge.is_some() {
@@ -63,7 +63,7 @@ impl Vast {
                     .add_entry(projectee_key, projector_key, a_effect.ae.id, rep_getter);
             }
         }
-        if let Some(rep_getter) = a_effect.hc.get_remote_hull_rep_amount {
+        if let Some(rep_getter) = a_effect.hc.get_remote_hull_rep_opc {
             self.irr_hull
                 .add_entry(projectee_key, projector_key, a_effect.ae.id, rep_getter);
         }
@@ -108,7 +108,7 @@ impl Vast {
                 }
             }
         }
-        if a_effect.hc.get_remote_shield_rep_amount.is_some() {
+        if a_effect.hc.get_remote_shield_rep_opc.is_some() {
             self.irr_shield
                 .remove_l3(&projectee_key, &projector_key, &a_effect.ae.id);
             if a_effect.hc.charge.is_some() {
@@ -116,7 +116,7 @@ impl Vast {
                     .remove_l3(&projectee_key, &projector_key, &a_effect.ae.id);
             }
         }
-        if a_effect.hc.get_remote_armor_rep_amount.is_some() {
+        if a_effect.hc.get_remote_armor_rep_opc.is_some() {
             self.irr_armor
                 .remove_l3(&projectee_key, &projector_key, &a_effect.ae.id);
             if a_effect.hc.charge.is_some() {
@@ -124,7 +124,7 @@ impl Vast {
                     .remove_l3(&projectee_key, &projector_key, &a_effect.ae.id);
             }
         }
-        if a_effect.hc.get_remote_hull_rep_amount.is_some() {
+        if a_effect.hc.get_remote_hull_rep_opc.is_some() {
             self.irr_hull.remove_l3(&projectee_key, &projector_key, &a_effect.ae.id);
         }
     }

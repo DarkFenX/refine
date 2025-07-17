@@ -2,7 +2,7 @@ use super::shared::item_check;
 use crate::{
     ad,
     def::{AttrVal, ItemKey, OF},
-    misc::{EffectSpec, Spool},
+    misc::Spool,
     nd::{NLocalRepGetter, NRemoteRepGetter},
     svc::{
         SvcCtx,
@@ -91,17 +91,17 @@ fn get_local_rps(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        for (&a_effect_id, rep_getter) in item_data.iter() {
-            let hp_per_cycle = match rep_getter(ctx, calc, item_key) {
-                Some(hp_per_cycle) => hp_per_cycle,
-                None => continue,
-            };
+        for (a_effect_id, rep_getter) in item_data.iter() {
             let effect_cycles = match cycle_map.get(&a_effect_id) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let cycle_time_s = effect_cycles.get_average_cycle_time();
-            total_rps += hp_per_cycle / cycle_time_s;
+            let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
+            let output_per_cycle = match rep_getter(ctx, calc, item_key, a_effect) {
+                Some(hp_per_cycle) => hp_per_cycle,
+                None => continue,
+            };
+            total_rps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
         }
     }
     total_rps
@@ -129,19 +129,22 @@ fn get_irr_data(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        for (&a_effect_id, rep_getter) in projector_data.iter() {
-            let espec = EffectSpec::new(projector_item_key, a_effect_id);
-            let hp_per_cycle = match rep_getter(ctx, calc, espec, spool, Some(projectee_item_key)) {
-                Some(hp_per_cycle) => hp_per_cycle,
-                None => continue,
-            };
+        for (a_effect_id, rep_getter) in projector_data.iter() {
             let effect_cycles = match projector_cycle_map.get(&a_effect_id) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
+            let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
+            let output_per_cycle =
+                match rep_getter(ctx, calc, projector_item_key, a_effect, spool, Some(projectee_item_key)) {
+                    Some(hp_per_cycle) => hp_per_cycle,
+                    None => continue,
+                };
             let cycle_time_s = effect_cycles.get_average_cycle_time();
             result.push(IrrEntry {
-                amount: hp_per_cycle,
+                // For now there are no reps which spread effect over multiple cycles, so we just
+                // record total amount for the purposes of RR penalty
+                amount: output_per_cycle.get_total(),
                 cycle_time: cycle_time_s,
             });
         }
