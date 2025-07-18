@@ -2,14 +2,14 @@ use crate::def::{AttrVal, Count};
 
 pub(crate) enum Output<T>
 where
-    T: Copy + Clone + std::ops::Add + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone,
 {
     Simple(OutputSimple<T>),
     Complex(OutputComplex<T>),
 }
 impl<T> Output<T>
 where
-    T: Copy + Clone + std::ops::Add + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone + std::ops::Mul<f64, Output = T>,
 {
     pub(in crate::svc) fn get_total(&self) -> T {
         match self {
@@ -21,14 +21,14 @@ where
 
 pub(crate) struct OutputSimple<T>
 where
-    T: Copy + Clone + std::ops::Add + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone,
 {
     pub(crate) amount: T,
     pub(crate) delay: AttrVal,
 }
 impl<T> OutputSimple<T>
 where
-    T: Copy + Clone + std::ops::Add + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone,
 {
     pub(in crate::svc) fn get_total(&self) -> T {
         self.amount
@@ -37,7 +37,7 @@ where
 
 pub(crate) struct OutputComplex<T>
 where
-    T: Copy + Clone + std::ops::Add + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone,
 {
     pub(crate) amount: T,
     pub(crate) delay: AttrVal,
@@ -46,7 +46,7 @@ where
 }
 impl<T> OutputComplex<T>
 where
-    T: Copy + Clone + std::ops::Add + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone + std::ops::Mul<f64, Output = T>,
 {
     pub(in crate::svc) fn get_total(&self) -> T {
         self.amount * self.repeats as f64
