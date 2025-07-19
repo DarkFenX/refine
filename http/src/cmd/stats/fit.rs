@@ -2,12 +2,13 @@ use crate::{
     cmd::{
         shared::get_primary_fit,
         stats::options::{
-            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionFitRemoteRps, HStatOptionRps, HStatResolvedOption,
+            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps, HStatOptionFitRemoteRps,
+            HStatOptionFitVolley, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
         HFitStats,
-        stats::{HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
+        stats::{HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
     },
     util::HExecError,
 };
@@ -44,6 +45,8 @@ pub(crate) struct HGetFitStatsCmd {
     align_time: Option<bool>,
     speed: Option<bool>,
     hp: Option<bool>,
+    dps: Option<HStatOption<HStatOptionFitDps>>,
+    volley: Option<HStatOption<HStatOptionFitVolley>>,
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
     rps: Option<HStatOption<HStatOptionRps>>,
@@ -134,6 +137,14 @@ impl HGetFitStatsCmd {
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();
         }
+        let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
+        if dps_opt.enabled {
+            stats.dps = get_dps_stats(&mut core_fit, dps_opt.options);
+        }
+        let volley_opt = HStatResolvedOption::new(&self.volley, self.default);
+        if volley_opt.enabled {
+            stats.volley = get_volley_stats(&mut core_fit, volley_opt.options);
+        }
         let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
             stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options).into();
@@ -161,6 +172,26 @@ impl HGetFitStatsCmd {
         }
         Ok(stats)
     }
+}
+
+fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> Option<Vec<HStatDmg>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        let core_stat = core_fit.get_stat_dps(core_spool);
+        results.push(core_stat.into());
+    }
+    Some(results)
+}
+
+fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley>) -> Option<Vec<HStatDmg>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        let core_stat = core_fit.get_stat_volley(core_spool);
+        results.push(core_stat.into());
+    }
+    Some(results)
 }
 
 fn get_ehp_stats(

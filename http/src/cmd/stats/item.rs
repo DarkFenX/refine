@@ -4,13 +4,13 @@ use crate::{
     cmd::{
         shared::get_primary_item,
         stats::options::{
-            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionItemRemoteCps, HStatOptionItemRemoteRps,
-            HStatOptionRps, HStatResolvedOption,
+            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps, HStatOptionItemRemoteCps,
+            HStatOptionItemRemoteRps, HStatOptionItemVolley, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
         HItemStats,
-        stats::{HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
+        stats::{HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
     },
     util::HExecError,
 };
@@ -24,6 +24,8 @@ pub(crate) struct HGetItemStatsCmd {
     agility: Option<bool>,
     align_time: Option<bool>,
     speed: Option<bool>,
+    dps: Option<HStatOption<HStatOptionItemDps>>,
+    volley: Option<HStatOption<HStatOptionItemVolley>>,
     hp: Option<bool>,
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
@@ -49,6 +51,14 @@ impl HGetItemStatsCmd {
         }
         if self.speed.unwrap_or(self.default) {
             stats.speed = core_item.get_stat_speed().into();
+        }
+        let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
+        if dps_opt.enabled {
+            stats.dps = get_dps_stats(&mut core_item, dps_opt.options).into()
+        }
+        let volley_opt = HStatResolvedOption::new(&self.volley, self.default);
+        if volley_opt.enabled {
+            stats.volley = get_volley_stats(&mut core_item, volley_opt.options).into()
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_item.get_stat_hp().into();
@@ -83,6 +93,30 @@ impl HGetItemStatsCmd {
     }
 }
 
+fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<HStatDmg>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        match core_item.get_stat_dps(core_spool, option.ignore_state) {
+            Ok(core_stat) => results.push(core_stat.into()),
+            Err(_) => return None,
+        };
+    }
+    Some(results)
+}
+
+fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVolley>) -> Option<Vec<HStatDmg>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        match core_item.get_stat_volley(core_spool, option.ignore_state) {
+            Ok(core_stat) => results.push(core_stat.into()),
+            Err(_) => return None,
+        };
+    }
+    Some(results)
+}
+
 fn get_ehp_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionEhp>,
@@ -91,7 +125,7 @@ fn get_ehp_stats(
     for option in options {
         let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
         match core_item.get_stat_ehp(core_incoming_dps) {
-            Ok(core_result) => results.push(HStatTank::from_opt(core_result)),
+            Ok(core_stat) => results.push(HStatTank::from_opt(core_stat)),
             Err(_) => return None,
         }
     }
@@ -102,7 +136,7 @@ fn get_rps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionRps>) -> O
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         match core_item.get_stat_rps(option.spool.map(|v| v.into())) {
-            Ok(core_result) => results.push(core_result.into()),
+            Ok(core_stat) => results.push(core_stat.into()),
             Err(_) => return None,
         }
     }
@@ -118,7 +152,7 @@ fn get_erps_stats(
         let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
         let core_spool = option.spool.map(|h_spool| h_spool.into());
         match core_item.get_stat_erps(core_incoming_dps, core_spool) {
-            Ok(core_result) => results.push(HStatTank::from_opt(core_result)),
+            Ok(core_stat) => results.push(HStatTank::from_opt(core_stat)),
             Err(_) => return None,
         }
     }
