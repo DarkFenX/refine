@@ -1,4 +1,5 @@
 from tests.fw.util import AttrDict, AttrHookDef, NttList
+from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps
 from .stat_hp import StatHp
@@ -35,6 +36,8 @@ class FitStats(AttrDict):
             'drone_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
             'drone_bandwidth': AttrHookDef(func=lambda d: StatResource(data=d)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
+            'dps': AttrHookDef(func=lambda d: (NttList(StatDmg(data=e) for e in d))),
+            'volley': AttrHookDef(func=lambda d: (NttList(StatDmg(data=e) for e in d))),
             'hp': AttrHookDef(func=lambda d: StatHp(data=d) if d is not None else None),
             'ehp': AttrHookDef(func=lambda d: (NttList(StatEhp(data=e) for e in d) if d is not None else None)),
             'wc_ehp': AttrHookDef(func=lambda d: StatEhp(data=d) if d is not None else None),
