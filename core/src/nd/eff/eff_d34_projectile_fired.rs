@@ -1,8 +1,8 @@
 use crate::{
-    ac, ad,
+    AttrVal, ac, ad,
     def::{ItemKey, OF},
     ec, ed,
-    misc::Spool,
+    misc::{DmgKinds, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_unrestricted_s2s},
@@ -10,7 +10,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        output::{Output, OutputDmgNormal, OutputSimple},
+        output::{Output, OutputSimple},
     },
 };
 
@@ -41,7 +41,7 @@ fn get_dmg_opc(
     _projector_a_effect: &ad::AEffectRt,
     _spool: Option<Spool>,
     _projectee_key: Option<ItemKey>,
-) -> Option<Output<OutputDmgNormal>> {
+) -> Option<Output<DmgKinds<AttrVal>>> {
     let projector_uad_item = ctx.uad.items.get(projector_key);
     let charge_key = projector_uad_item.get_charge_key()?;
     let dmg_mult = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DMG_MULT)?;
@@ -50,7 +50,7 @@ fn get_dmg_opc(
     let dmg_kin = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::KIN_DMG)?;
     let dmg_expl = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EXPL_DMG)?;
     Some(Output::Simple(OutputSimple {
-        amount: OutputDmgNormal {
+        amount: DmgKinds {
             em: dmg_em * dmg_mult,
             thermal: dmg_therm * dmg_mult,
             kinetic: dmg_kin * dmg_mult,

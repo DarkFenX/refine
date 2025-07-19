@@ -1,5 +1,5 @@
 pub(crate) use output::{Output, OutputComplex, OutputSimple};
-pub(crate) use output_dmg::{OutputDmgBreacher, OutputDmgNormal};
+pub(crate) use output_breacher::OutputDmgBreacher;
 
 mod output;
-mod output_dmg;
+mod output_breacher;

@@ -1,4 +1,4 @@
-use crate::def::{AttrVal, Count};
+use crate::def::{AttrVal, Count, OF};
 
 pub(crate) enum Output<T>
 where
@@ -9,7 +9,7 @@ where
 }
 impl<T> Output<T>
 where
-    T: Copy + Clone + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone + std::ops::Mul<AttrVal, Output = T>,
 {
     pub(in crate::svc) fn get_total(&self) -> T {
         match self {
@@ -46,9 +46,9 @@ where
 }
 impl<T> OutputComplex<T>
 where
-    T: Copy + Clone + std::ops::Mul<f64, Output = T>,
+    T: Copy + Clone + std::ops::Mul<AttrVal, Output = T>,
 {
     pub(in crate::svc) fn get_total(&self) -> T {
-        self.amount * self.repeats as f64
+        self.amount * OF(self.repeats as f64)
     }
 }

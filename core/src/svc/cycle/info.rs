@@ -91,6 +91,10 @@ pub(in crate::svc) fn get_item_cycle_info(
 ) -> Option<RMap<ad::AEffectId, Cycle>> {
     let uad_item = ctx.uad.items.get(item_key);
     match uad_item {
+        UadItem::Charge(uad_autocharge) => {
+            get_item_cycle_info(ctx, calc, uad_autocharge.get_cont_key(), options, ignore_state)
+        }
+        UadItem::Charge(uad_charge) => get_item_cycle_info(ctx, calc, uad_charge.get_cont_key(), options, ignore_state),
         UadItem::Drone(uad_drone) => get_drone_cycle_info(ctx, calc, item_key, uad_drone, ignore_state),
         UadItem::Fighter(uad_fighter) => {
             if !uad_fighter.is_loaded() {

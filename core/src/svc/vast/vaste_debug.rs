@@ -285,6 +285,18 @@ impl VastFitData {
                 check_a_effect_id(uad, &projector_espec.a_effect_id)?;
             }
         }
+        for (&item_key, item_data) in self.dmg_normal.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
+        }
+        for (&item_key, item_data) in self.dmg_breacher.iter() {
+            check_item_key(uad, item_key, true)?;
+            for a_effect_id in item_data.keys() {
+                check_a_effect_id(uad, a_effect_id)?;
+            }
+        }
         for (&item_key, item_data) in self.lr_shield.iter() {
             check_item_key(uad, item_key, true)?;
             for a_effect_id in item_data.keys() {

@@ -101,14 +101,14 @@ fn get_orr_item_key(
     };
     for (a_effect_id, cycle) in cycle_map {
         let a_effect = ctx.uad.src.get_a_effect(&a_effect_id).unwrap();
-        if let Some(effect_orr) = get_orr_effect_id(ctx, calc, item_key, a_effect, cycle, spool, rep_getter_getter) {
+        if let Some(effect_orr) = get_orr_effect(ctx, calc, item_key, a_effect, cycle, spool, rep_getter_getter) {
             item_orr += effect_orr;
         }
     }
     item_orr
 }
 
-fn get_orr_effect_id(
+fn get_orr_effect(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: ItemKey,

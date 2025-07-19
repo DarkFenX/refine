@@ -2,12 +2,12 @@ use crate::{
     ad,
     def::{AttrVal, ItemKey},
     ed,
-    misc::{EffectSpec, ResolvedSpool, Spool},
+    misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
     nd::NEffectCharge,
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
-        output::{Output, OutputDmgBreacher, OutputDmgNormal},
+        output::{Output, OutputDmgBreacher},
     },
     uad::UadProjRange,
     util::RMap,
@@ -21,7 +21,7 @@ pub(crate) type NSpoolMultGetter =
     fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
 pub(crate) type NNormalDmgGetter =
-    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>, Option<ItemKey>) -> Option<Output<OutputDmgNormal>>;
+    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>, Option<ItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<Output<OutputDmgBreacher>>;
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt) -> Option<Output<AttrVal>>;

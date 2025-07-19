@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::{AttrVal, Count, FitKey, ItemKey},
     misc::{AttrSpec, EffectSpec},
-    nd::{NLocalRepGetter, NRemoteRepGetter},
+    nd::{NBreacherDmgGetter, NLocalRepGetter, NNormalDmgGetter, NRemoteRepGetter},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
     },
@@ -105,13 +105,16 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_assistance: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) blockable_offense: RMapRSet<ItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
+    // Stats-related - damage
+    pub(in crate::svc::vast) dmg_normal: RMapRMap<ItemKey, ad::AEffectId, NNormalDmgGetter>,
+    pub(in crate::svc::vast) dmg_breacher: RMapRMap<ItemKey, ad::AEffectId, NBreacherDmgGetter>,
     // Stats-related - local reps
     pub(in crate::svc::vast) lr_shield: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_armor: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_hull: RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
-    // Outgoing remote reps
+    // Stats-related - outgoing remote reps
     pub(in crate::svc::vast) orr_shield: RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_armor: RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_hull: RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
@@ -181,6 +184,8 @@ impl VastFitData {
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
             // Stats-related
+            dmg_normal: RMapRMap::new(),
+            dmg_breacher: RMapRMap::new(),
             lr_shield: RMapRMap::new(),
             lr_shield_limitable: RMapRMap::new(),
             lr_armor: RMapRMap::new(),
