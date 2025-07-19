@@ -6,6 +6,11 @@ use crate::{
 };
 
 impl Svc {
+    pub(crate) fn get_stat_fit_dps(&mut self, uad: &Uad, fit_key: FitKey, spool: Option<Spool>) -> DmgKinds<AttrVal> {
+        self.vast
+            .get_fit_data(&fit_key)
+            .get_stat_dps(SvcCtx::new(uad, &self.eprojs), &mut self.calc, spool)
+    }
     pub(crate) fn get_stat_item_dps(
         &mut self,
         uad: &Uad,
@@ -20,6 +25,16 @@ impl Svc {
             spool,
             ignore_state,
         )
+    }
+    pub(crate) fn get_stat_fit_volley(
+        &mut self,
+        uad: &Uad,
+        fit_key: FitKey,
+        spool: Option<Spool>,
+    ) -> DmgKinds<AttrVal> {
+        self.vast
+            .get_fit_data(&fit_key)
+            .get_stat_volley(SvcCtx::new(uad, &self.eprojs), &mut self.calc, spool)
     }
     pub(crate) fn get_stat_item_volley(
         &mut self,

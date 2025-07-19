@@ -53,7 +53,7 @@ fn get_orrps<'a>(
                 None => continue,
             };
             let output_per_cycle = match rep_getter(ctx, calc, item_key, a_effect, spool, None) {
-                Some(hp_per_cycle) => hp_per_cycle,
+                Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };
             let effect_cycles = match cycle_map.get(a_effect_id) {

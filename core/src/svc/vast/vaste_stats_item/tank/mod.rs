@@ -1,12 +1,12 @@
-pub use ehp::StatLayerEhp;
-pub use erps::StatLayerErps;
-pub use hp::StatLayerHp;
-pub use rps::StatLayerRps;
 pub use shared::StatTank;
+pub use vaste_ehp::StatLayerEhp;
+pub use vaste_erps::StatLayerErps;
+pub use vaste_hp::StatLayerHp;
+pub use vaste_rps::StatLayerRps;
 
-mod ehp;
-mod erps;
-mod hp;
-mod resists;
-mod rps;
 mod shared;
+mod vaste_ehp;
+mod vaste_erps;
+mod vaste_hp;
+mod vaste_resists;
+mod vaste_rps;
