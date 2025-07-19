@@ -91,7 +91,7 @@ pub(in crate::svc) fn get_item_cycle_info(
 ) -> Option<RMap<ad::AEffectId, Cycle>> {
     let uad_item = ctx.uad.items.get(item_key);
     match uad_item {
-        UadItem::Charge(uad_autocharge) => {
+        UadItem::Autocharge(uad_autocharge) => {
             get_item_cycle_info(ctx, calc, uad_autocharge.get_cont_key(), options, ignore_state)
         }
         UadItem::Charge(uad_charge) => get_item_cycle_info(ctx, calc, uad_charge.get_cont_key(), options, ignore_state),

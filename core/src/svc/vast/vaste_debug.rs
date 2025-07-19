@@ -19,7 +19,7 @@ impl Vast {
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(uad, projector_key, true)?;
                 for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(uad, &a_effect_id)?;
+                    check_a_effect_id(uad, a_effect_id)?;
                 }
             }
         }
@@ -29,7 +29,7 @@ impl Vast {
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(uad, projector_key, true)?;
                 for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(uad, &a_effect_id)?;
+                    check_a_effect_id(uad, a_effect_id)?;
                 }
             }
         }
@@ -39,7 +39,7 @@ impl Vast {
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(uad, projector_key, true)?;
                 for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(uad, &a_effect_id)?;
+                    check_a_effect_id(uad, a_effect_id)?;
                 }
             }
         }
@@ -49,7 +49,7 @@ impl Vast {
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(uad, projector_key, true)?;
                 for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(uad, &a_effect_id)?;
+                    check_a_effect_id(uad, a_effect_id)?;
                 }
             }
         }
@@ -59,7 +59,7 @@ impl Vast {
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(uad, projector_key, true)?;
                 for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(uad, &a_effect_id)?;
+                    check_a_effect_id(uad, a_effect_id)?;
                 }
             }
         }

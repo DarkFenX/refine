@@ -35,7 +35,7 @@ const ORR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_optionals: false,
 };
 
-fn get_orrps<'a>(
+fn get_orrps(
     ctx: SvcCtx,
     calc: &mut Calc,
     spool: Option<Spool>,

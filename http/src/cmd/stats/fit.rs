@@ -150,7 +150,7 @@ impl HGetFitStatsCmd {
             stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options).into();
         }
         if self.wc_ehp.unwrap_or(self.default) {
-            stats.wc_ehp = core_fit.get_stat_wc_ehp().ok().map(|v| HStatTank::from_opt(v)).into();
+            stats.wc_ehp = core_fit.get_stat_wc_ehp().ok().map(HStatTank::from_opt).into();
         }
         let rps_opt = HStatResolvedOption::new(&self.rps, self.default);
         if rps_opt.enabled {

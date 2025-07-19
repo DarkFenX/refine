@@ -92,7 +92,7 @@ fn get_local_rps(
             None => continue,
         };
         for (a_effect_id, rep_getter) in item_data.iter() {
-            let effect_cycles = match cycle_map.get(&a_effect_id) {
+            let effect_cycles = match cycle_map.get(a_effect_id) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
@@ -130,7 +130,7 @@ fn get_irr_data(
             None => continue,
         };
         for (a_effect_id, rep_getter) in projector_data.iter() {
-            let effect_cycles = match projector_cycle_map.get(&a_effect_id) {
+            let effect_cycles = match projector_cycle_map.get(a_effect_id) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };

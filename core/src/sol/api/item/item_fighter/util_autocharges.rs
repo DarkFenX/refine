@@ -83,7 +83,7 @@ impl SolarSystem {
         }
         for ac_data in ac_datas.iter_mut() {
             let ac_uad_item = uad.items.get(ac_data.item_key);
-            SolarSystem::util_add_item_without_projs(uad, svc, ac_data.item_key, ac_uad_item, &mut ac_data.eupdates);
+            SolarSystem::util_add_item_without_projs(uad, svc, ac_data.item_key, ac_uad_item, &ac_data.eupdates);
             for (projectee_key, range) in projections.iter() {
                 let projectee_uad_item = uad.items.get(*projectee_key);
                 SolarSystem::util_add_item_projection(

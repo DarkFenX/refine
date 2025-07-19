@@ -47,10 +47,10 @@ impl Vast {
         };
         for (a_effect_id, cycle) in cycle_map {
             let a_effect = ctx.uad.src.get_a_effect(&a_effect_id).unwrap();
-            if let Some(dmg_getter) = a_effect.hc.get_normal_dmg_opc {
-                if let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, a_effect, spool, None) {
-                    item_dps += dmg_opc.get_total() / cycle.get_average_cycle_time();
-                }
+            if let Some(dmg_getter) = a_effect.hc.get_normal_dmg_opc
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, a_effect, spool, None)
+            {
+                item_dps += dmg_opc.get_total() / cycle.get_average_cycle_time();
             }
         }
         item_dps
@@ -85,10 +85,10 @@ impl Vast {
         };
         for (a_effect_id, _cycle) in cycle_map {
             let a_effect = ctx.uad.src.get_a_effect(&a_effect_id).unwrap();
-            if let Some(dmg_getter) = a_effect.hc.get_normal_dmg_opc {
-                if let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, a_effect, spool, None) {
-                    item_volley += dmg_opc.get_max()
-                }
+            if let Some(dmg_getter) = a_effect.hc.get_normal_dmg_opc
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, a_effect, spool, None)
+            {
+                item_volley += dmg_opc.get_max()
             }
         }
         item_volley
