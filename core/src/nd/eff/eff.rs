@@ -7,7 +7,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
-        output::Output,
+        output::{Output, OutputDmgBreacher, OutputDmgNormal},
     },
     uad::UadProjRange,
     util::RMap,
@@ -20,6 +20,10 @@ pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, U
 pub(crate) type NSpoolMultGetter =
     fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
+pub(crate) type NNormalDmgGetter =
+    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<Output<OutputDmgNormal>>;
+pub(crate) type NBreacherDmgGetter =
+    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<Output<OutputDmgBreacher>>;
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt) -> Option<Output<AttrVal>>;
 pub(crate) type NRemoteRepGetter =
     fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>, Option<ItemKey>) -> Option<Output<AttrVal>>;
@@ -51,6 +55,8 @@ pub(crate) struct NEffectHc {
     pub(crate) get_proj_mult: Option<NProjMultGetter> = None,
     pub(crate) get_resolved_spool: Option<NSpoolMultGetter> = None,
     // Functions which fetch output per cycle
+    pub(crate) get_normal_dmg_opc: Option<NNormalDmgGetter> = None,
+    pub(crate) get_breacher_dmg_opc: Option<NBreacherDmgGetter> = None,
     pub(crate) get_local_armor_rep_opc: Option<NLocalRepGetter> = None,
     pub(crate) get_local_shield_rep_opc: Option<NLocalRepGetter> = None,
     pub(crate) get_local_hull_rep_opc: Option<NLocalRepGetter> = None,
