@@ -21,4 +21,19 @@ impl Svc {
             ignore_state,
         )
     }
+    pub(crate) fn get_stat_item_volley(
+        &mut self,
+        uad: &Uad,
+        item_key: FitKey,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
+        Vast::get_stat_item_volley_checked(
+            SvcCtx::new(uad, &self.eprojs),
+            &mut self.calc,
+            item_key,
+            spool,
+            ignore_state,
+        )
+    }
 }

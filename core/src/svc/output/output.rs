@@ -17,6 +17,12 @@ where
             Output::Complex(complex) => complex.get_total(),
         }
     }
+    pub(in crate::svc) fn get_max(&self) -> T {
+        match self {
+            Output::Simple(simple) => simple.get_max(),
+            Output::Complex(complex) => complex.get_max(),
+        }
+    }
 }
 
 pub(crate) struct OutputSimple<T>
@@ -33,6 +39,9 @@ where
     pub(in crate::svc) fn get_total(&self) -> T {
         self.amount
     }
+    pub(in crate::svc) fn get_max(&self) -> T {
+        self.amount
+    }
 }
 
 pub(crate) struct OutputComplex<T>
@@ -43,6 +52,14 @@ where
     pub(crate) delay: AttrVal,
     pub(crate) repeats: Count,
     pub(crate) interval: AttrVal,
+}
+impl<T> OutputComplex<T>
+where
+    T: Copy + Clone,
+{
+    pub(in crate::svc) fn get_max(&self) -> T {
+        self.amount
+    }
 }
 impl<T> OutputComplex<T>
 where

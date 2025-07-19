@@ -125,6 +125,25 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_align_time(&sol.uad, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
     }
+    // Stats - damage
+    fn get_stat_dps(&mut self, spool: Option<Spool>, ignore_state: bool) -> Result<DmgKinds<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_dps(&sol.uad, item_key, spool, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
+    }
+    fn get_stat_volley(
+        &mut self,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Result<DmgKinds<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_volley(&sol.uad, item_key, spool, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.uad.items, e))
+    }
     // Stats - tank
     fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, ItemStatError> {
         let item_key = self.get_key();
