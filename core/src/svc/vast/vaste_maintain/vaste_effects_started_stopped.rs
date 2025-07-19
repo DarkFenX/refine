@@ -25,6 +25,11 @@ impl Vast {
             UadItem::Module(module) => {
                 for a_effect in a_effects {
                     if a_effect.xt.is_active {
+                        // Damaging effects
+                        if let Some(dmg_getter) = a_effect.hc.get_normal_dmg_opc {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_key());
+                            fit_data.dmg_normal.add_entry(item_key, a_effect.ae.id, dmg_getter);
+                        }
                         // Local reps
                         if let Some(rep_getter) = a_effect.hc.get_local_shield_rep_opc {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
@@ -75,6 +80,11 @@ impl Vast {
             UadItem::Module(module) => {
                 for a_effect in a_effects {
                     if a_effect.xt.is_active {
+                        // Damaging effects
+                        if a_effect.hc.get_normal_dmg_opc.is_some() {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_key());
+                            fit_data.dmg_normal.remove_l2(&item_key, &a_effect.ae.id);
+                        }
                         // Local reps
                         if a_effect.hc.get_local_shield_rep_opc.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());

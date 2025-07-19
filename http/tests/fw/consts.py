@@ -311,6 +311,7 @@ class EveAttr(IntEnum):
     rig_size = 1547
     allowed_drone_group1 = 1782
     allowed_drone_group2 = 1783
+    reload_time = 1795
     disallow_vs_ew_immune_tgt = 1798
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
