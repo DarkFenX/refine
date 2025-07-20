@@ -40,6 +40,7 @@ def test_state(client, consts):
     assert api_module_volley_ignored == [0, approx(1035), approx(207), 0]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
+    # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(129.375), approx(25.875), 0]
     assert api_fit_stats.volley.one() == [0, approx(1035), approx(207), 0]

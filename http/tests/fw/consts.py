@@ -335,6 +335,9 @@ class EveAttr(IntEnum):
     ftr_sq_is_support = 2213
     ftr_sq_is_heavy = 2214
     ftr_sq_max_size = 2215
+    doomsday_warning_duration = 2262
+    doomsday_dmg_duration = 2264
+    doomsday_dmg_cycle_time = 2265
     doomsday_aoe_range = 2279
     ftr_abil_launch_bomb_type = 2324
     hisec_modifier = 2355

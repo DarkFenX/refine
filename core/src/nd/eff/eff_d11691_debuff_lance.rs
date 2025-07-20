@@ -53,15 +53,15 @@ fn get_dmg_opc(
     let dmg_therm = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::THERM_DMG)?;
     let dmg_kin = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::KIN_DMG)?;
     let dmg_expl = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EXPL_DMG)?;
-    let delay =
+    let delay_s =
         calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_WARNING_DURATION)? / OF(1000.0);
     Some(
         match calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_CYCLE_TIME)? {
-            interval if interval > OF(0.0) => {
+            interval_ms if interval_ms > OF(0.0) => {
                 let duration =
                     calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_DURATION)?
                         / OF(1000.0);
-                let repeats = floor_unerr(duration / interval) as Count;
+                let repeats = floor_unerr(duration / (interval_ms / OF(1000.0))) as Count;
                 Output::Complex(OutputComplex {
                     amount: DmgKinds {
                         em: dmg_em,
@@ -69,9 +69,9 @@ fn get_dmg_opc(
                         kinetic: dmg_kin,
                         explosive: dmg_expl,
                     },
-                    delay,
+                    delay: delay_s,
                     repeats,
-                    interval,
+                    interval: interval_ms,
                 })
             }
             _ => Output::Simple(OutputSimple {
@@ -81,7 +81,7 @@ fn get_dmg_opc(
                     kinetic: dmg_kin,
                     explosive: dmg_expl,
                 },
-                delay,
+                delay: delay_s,
             }),
         },
     )
