@@ -4,9 +4,13 @@ from .stats import (
     ItemStatsOptions,
     StatsOptionEhp,
     StatsOptionErps,
+    StatsOptionFitDps,
     StatsOptionFitRemoteRps,
+    StatsOptionFitVolley,
+    StatsOptionItemDps,
     StatsOptionItemRemoteCps,
     StatsOptionItemRemoteRps,
+    StatsOptionItemVolley,
     StatsOptionRps,
 )
 from .validation import ValOptions

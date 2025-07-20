@@ -4,9 +4,12 @@ from .types import (
     ItemStatsOptions,
     StatsOptionEhp,
     StatsOptionErps,
+    StatsOptionFitDps,
     StatsOptionFitRemoteRps,
+    StatsOptionFitVolley,
+    StatsOptionItemDps,
     StatsOptionItemRemoteCps,
     StatsOptionItemRemoteRps,
+    StatsOptionItemVolley,
     StatsOptionRps,
-    ValOptions,
 )

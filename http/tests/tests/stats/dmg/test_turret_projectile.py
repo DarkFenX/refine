@@ -1,5 +1,5 @@
 from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionItemDps, StatsOptionItemVolley
 from tests.tests.stats.dmg import make_eve_turret_proj, make_eve_turret_proj_charge, setup_dmg_basics
 
 
@@ -17,6 +17,29 @@ def test_state(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one() == [0, approx(129.375), approx(25.875), 0]
+    assert api_fit_stats.volley.one() == [0, approx(1035), approx(207), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dps=True, volley=True))
+    assert api_module_stats.dps.one() == [0, approx(129.375), approx(25.875), 0]
+    assert api_module_stats.volley.one() == [0, approx(1035), approx(207), 0]
+    # Action
+    api_module.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one() == [0, 0, 0, 0]
+    assert api_fit_stats.volley.one() == [0, 0, 0, 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(ignore_state=True)]),
+        volley=(True, [StatsOptionItemVolley(), StatsOptionItemVolley(ignore_state=True)])))
+    api_module_dps_normal, api_module_dps_ignored = api_module_stats.dps
+    assert api_module_dps_normal == [0, 0, 0, 0]
+    assert api_module_dps_ignored == [0, approx(129.375), approx(25.875), 0]
+    api_module_volley_normal, api_module_volley_ignored = api_module_stats.volley
+    assert api_module_volley_normal == [0, 0, 0, 0]
+    assert api_module_volley_ignored == [0, approx(1035), approx(207), 0]
+    # Action
+    api_module.change_module(state=consts.ApiModuleState.active)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(129.375), approx(25.875), 0]
     assert api_fit_stats.volley.one() == [0, approx(1035), approx(207), 0]
