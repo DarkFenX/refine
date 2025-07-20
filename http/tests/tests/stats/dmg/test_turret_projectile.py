@@ -1,32 +1,14 @@
 from tests import approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from tests.tests.stats.dmg import make_eve_turret_proj, make_eve_turret_proj_charge, setup_dmg_basics
 
 
 def test_state(client, consts):
-    eve_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
-    eve_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg)
-    eve_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg)
-    eve_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg)
-    eve_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_reload_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.projectile_fired,
-        cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id)
-    eve_module_id = client.mk_eve_item(
-        attrs={
-            eve_mult_attr_id: 45,
-            eve_capacity_attr_id: 0.25,
-            eve_charge_rate_attr_id: 1,
-            eve_cycle_time_attr_id: 8000,
-            eve_reload_time_attr_id: 10000},
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
-    eve_charge_id = client.mk_eve_item(attrs={eve_therm_attr_id: 23, eve_kin_attr_id: 4.6, eve_volume_attr_id: 0.0125})
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_turret_proj(
+        client=client, basic_info=eve_basic_info, dmg_mult=45, capacity=0.25, cycle_time=8000, reload_time=10000)
+    eve_charge_id = make_eve_turret_proj_charge(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 23, 4.6, 0), volume=0.0125)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
