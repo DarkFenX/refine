@@ -12,4 +12,5 @@ from .types import (
     StatsOptionItemRemoteRps,
     StatsOptionItemVolley,
     StatsOptionRps,
+    ValOptions,
 )
