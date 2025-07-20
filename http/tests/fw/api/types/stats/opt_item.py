@@ -34,6 +34,7 @@ class ItemStatsOptions:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemDps:
 
+    reload: bool | type[Absent] = Absent
     spool: str | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
 

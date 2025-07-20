@@ -178,7 +178,7 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(|h_spool| h_spool.into());
-        let core_stat = core_fit.get_stat_dps(core_spool);
+        let core_stat = core_fit.get_stat_dps(option.reload, core_spool);
         results.push(core_stat.into());
     }
     Some(results)

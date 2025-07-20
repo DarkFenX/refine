@@ -97,7 +97,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(|h_spool| h_spool.into());
-        match core_item.get_stat_dps(core_spool, option.ignore_state) {
+        match core_item.get_stat_dps(option.reload, core_spool, option.ignore_state) {
             Ok(core_stat) => results.push(core_stat.into()),
             Err(_) => return None,
         };

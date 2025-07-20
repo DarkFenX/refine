@@ -9,16 +9,29 @@ use crate::{
     },
 };
 
-const DPS_CYCLE_OPTIONS: CycleOptions = CycleOptions {
+const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
     reload_optionals: false,
 };
 
 impl VastFitData {
-    pub(in crate::svc) fn get_stat_dps(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> DmgKinds<AttrVal> {
+    pub(in crate::svc) fn get_stat_dps(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        reload: bool,
+        spool: Option<Spool>,
+    ) -> DmgKinds<AttrVal> {
+        let options = CycleOptions {
+            reload_mode: match reload {
+                true => CycleOptionReload::Sim,
+                false => CycleOptionReload::Burst,
+            },
+            reload_optionals: false,
+        };
         let mut dps = DmgKinds::new();
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, DPS_CYCLE_OPTIONS, false) {
+            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, false) {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
@@ -48,7 +61,7 @@ impl VastFitData {
     ) -> DmgKinds<AttrVal> {
         let mut volley = DmgKinds::new();
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, DPS_CYCLE_OPTIONS, false) {
+            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };

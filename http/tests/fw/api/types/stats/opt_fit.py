@@ -55,6 +55,7 @@ class FitStatsOptions:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitDps:
 
+    reload: bool | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:

@@ -11,7 +11,7 @@ use crate::{
     uad::UadItem,
 };
 
-const DPS_CYCLE_OPTIONS: CycleOptions = CycleOptions {
+const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
     reload_optionals: false,
 };
@@ -21,6 +21,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
+        reload: bool,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
@@ -29,6 +30,7 @@ impl Vast {
             ctx,
             calc,
             item_key,
+            reload,
             spool,
             ignore_state,
         ))
@@ -37,11 +39,19 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: ItemKey,
+        reload: bool,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> DmgKinds<AttrVal> {
+        let options = CycleOptions {
+            reload_mode: match reload {
+                true => CycleOptionReload::Sim,
+                false => CycleOptionReload::Burst,
+            },
+            reload_optionals: false,
+        };
         let mut item_dps = DmgKinds::new();
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, DPS_CYCLE_OPTIONS, ignore_state) {
+        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, ignore_state) {
             Some(cycle_map) => cycle_map,
             None => return item_dps,
         };
@@ -79,7 +89,7 @@ impl Vast {
         ignore_state: bool,
     ) -> DmgKinds<AttrVal> {
         let mut item_volley = DmgKinds::new();
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, DPS_CYCLE_OPTIONS, ignore_state) {
+        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
             Some(cycle_map) => cycle_map,
             None => return item_volley,
         };
