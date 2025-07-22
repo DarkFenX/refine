@@ -1,5 +1,6 @@
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
+pub use data::AData;
 pub(crate) use effect::AEffectXt;
 pub use effect::{
     AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId,
@@ -15,32 +16,11 @@ pub use primitives::{
 };
 pub use shared::{AModifierSrq, AOp, AState};
 
-use crate::util::RMap;
-
 mod attr;
 mod buff;
+mod data;
 mod effect;
 mod item;
 mod muta;
 mod primitives;
 mod shared;
-
-/// Adapted data storage.
-pub struct AData {
-    pub items: RMap<AItemId, AItem>,
-    pub attrs: RMap<AAttrId, AAttr>,
-    pub mutas: RMap<AItemId, AMuta>,
-    pub effects: RMap<AEffectId, AEffect>,
-    pub buffs: RMap<ABuffId, ABuff>,
-}
-impl AData {
-    pub(crate) fn new() -> Self {
-        Self {
-            items: RMap::new(),
-            attrs: RMap::new(),
-            mutas: RMap::new(),
-            effects: RMap::new(),
-            buffs: RMap::new(),
-        }
-    }
-}

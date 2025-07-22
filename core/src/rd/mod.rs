@@ -2,7 +2,8 @@
 //!
 //! This module contains all the entities enriched during runtime.
 
-pub(crate) use data::RAttrKey;
+use container::REntityContainer;
+pub(crate) use data::{RAttr, RAttrKey, RData};
 
 mod container;
 mod data;

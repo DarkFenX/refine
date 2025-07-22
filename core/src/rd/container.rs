@@ -5,8 +5,8 @@ use crate::util::{GetId, Named, RMap};
 type Key = usize;
 
 pub(crate) struct REntityContainer<I, T> {
-    pub(super) data: Slab<T>,
-    pub(super) id_to_key: RMap<I, Key>,
+    data: Slab<T>,
+    id_to_key: RMap<I, Key>,
 }
 impl<I, T> REntityContainer<I, T>
 where
