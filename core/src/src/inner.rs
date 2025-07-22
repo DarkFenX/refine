@@ -1,10 +1,10 @@
 use crate::{ad, adg, def::VERSION, ed, src::SrcInitError};
 
-pub(crate) struct InnerSrc {
-    pub(crate) a_handler: Box<dyn ad::AdaptedDataHandler>,
+pub(in crate::src) struct InnerSrc {
+    pub(in crate::src) a_handler: Box<dyn ad::AdaptedDataHandler>,
 }
 impl InnerSrc {
-    pub(crate) fn new(
+    pub(in crate::src) fn new(
         e_handler: Box<dyn ed::EveDataHandler>,
         mut a_handler: Box<dyn ad::AdaptedDataHandler>,
     ) -> Result<Self, SrcInitError> {

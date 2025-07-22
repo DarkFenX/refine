@@ -3,7 +3,7 @@
 //! This module contains all the entities enriched during runtime.
 
 use container::REntityContainer;
-pub(crate) use data::{RAttr, RAttrKey, RBuffKey, RData, REffectKey, RItemKey, RMutaKey};
+pub(crate) use data::{RAttr, RAttrKey, RBuff, RBuffKey, RBuffModifier, RData, REffectKey, RItemKey, RMuta, RMutaKey};
 
 mod container;
 mod data;
