@@ -1,4 +1,4 @@
-use crate::{ad, rd::RAttrKey, util::Named, rd::RData};
+use crate::{ad, rd::RAttrKey, util::Named};
 
 pub(crate) struct RAttr {
     a_attr: ad::AAttr,
@@ -9,7 +9,7 @@ impl RAttr {
     pub(crate) fn new(a_attr: ad::AAttr) -> Self {
         Self { a_attr, .. }
     }
-    pub(crate) fn fill_r_keys(&mut self) {
+    fn fill_r_keys(&mut self) {
         // TODO: add actual contents which fill min/max keys
     }
     pub(crate) fn is_penalizable(&self) -> bool {
