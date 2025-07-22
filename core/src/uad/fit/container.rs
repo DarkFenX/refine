@@ -1,6 +1,6 @@
 use crate::{
     err::basic::FitFoundError,
-    uad::{container::EntityContainer, fit::UadFit},
+    uad::{container::UadEntityContainer, fit::UadFit},
 };
 
-pub(crate) type Fits = EntityContainer<UadFit, FitFoundError>;
+pub(crate) type Fits = UadEntityContainer<UadFit, FitFoundError>;

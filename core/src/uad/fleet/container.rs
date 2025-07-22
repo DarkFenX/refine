@@ -1,6 +1,6 @@
 use crate::{
     err::basic::FleetFoundError,
-    uad::{container::EntityContainer, fleet::UadFleet},
+    uad::{container::UadEntityContainer, fleet::UadFleet},
 };
 
-pub(crate) type Fleets = EntityContainer<UadFleet, FleetFoundError>;
+pub(crate) type Fleets = UadEntityContainer<UadFleet, FleetFoundError>;

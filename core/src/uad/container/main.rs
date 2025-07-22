@@ -7,13 +7,13 @@ use crate::util::{GetId, Named, RMap};
 type Id = u32;
 type Key = usize;
 
-pub(crate) struct EntityContainer<T, E> {
+pub(crate) struct UadEntityContainer<T, E> {
     counter: Wrapping<Id>,
     pub(super) data: Slab<T>,
     pub(super) id_to_key: RMap<Id, Key>,
     phantom_error: PhantomData<E>,
 }
-impl<T, E> EntityContainer<T, E>
+impl<T, E> UadEntityContainer<T, E>
 where
     T: GetId<Id> + Named,
     E: From<Id>,
@@ -100,7 +100,7 @@ where
         self.data.len()
     }
 }
-impl<T, E> Clone for EntityContainer<T, E>
+impl<T, E> Clone for UadEntityContainer<T, E>
 where
     T: Clone,
 {

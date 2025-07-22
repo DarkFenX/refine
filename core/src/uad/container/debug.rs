@@ -1,10 +1,10 @@
 use crate::{
     dbg::{DebugError, DebugResult},
-    uad::container::EntityContainer,
+    uad::container::UadEntityContainer,
     util::RSet,
 };
 
-impl<T, E> EntityContainer<T, E> {
+impl<T, E> UadEntityContainer<T, E> {
     pub(in crate::uad) fn consistency_check(&self) -> DebugResult {
         let seen_data: RSet<_> = self.data.iter().map(|(key, _)| key).collect();
         let seen_map: RSet<_> = self.id_to_key.values().copied().collect();

@@ -56,6 +56,7 @@ pub mod ed;
 pub mod err;
 mod misc;
 mod nd;
+mod rd;
 mod sol;
 mod src;
 pub mod stats;
