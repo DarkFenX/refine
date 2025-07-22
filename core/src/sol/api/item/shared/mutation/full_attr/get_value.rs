@@ -1,10 +1,11 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     sol::{
         SolarSystem,
         api::{FullMAttr, FullMAttrMut},
     },
+    uad::UadItemKey,
 };
 
 impl<'a> FullMAttr<'a> {
@@ -21,6 +22,6 @@ impl<'a> FullMAttrMut<'a> {
     }
 }
 
-fn get_value(sol: &SolarSystem, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> AttrVal {
+fn get_value(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> AttrVal {
     sol.uad.items.get(item_key).get_a_attr(a_attr_id).unwrap()
 }

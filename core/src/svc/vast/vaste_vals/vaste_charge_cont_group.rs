@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemGrpId, ItemId, ItemKey},
+    def::{ItemGrpId, ItemId},
     svc::{SvcCtx, vast::VastFitData},
+    uad::UadItemKey,
     util::RSet,
 };
 
@@ -22,7 +23,7 @@ pub struct ValChargeParentGroupInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_cont_group_fast(&mut self, kfs: &RSet<ItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_cont_group_fast(&mut self, kfs: &RSet<UadItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.charge_cont_group.is_empty(),
             false => self.charge_cont_group.difference(kfs).next().is_none(),
@@ -31,7 +32,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_charge_cont_group_verbose(
         &mut self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValChargeParentGroupFail> {
         let mut charges = HashMap::new();

@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemId, ItemKey},
+    def::{AttrVal, ItemId},
     svc::{SvcCtx, vast::VastFitData},
-    uad::UadShip,
+    uad::{UadItemKey, UadShip},
     util::RSet,
 };
 
@@ -19,7 +19,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_capital_module_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ship: Option<&UadShip>,
     ) -> bool {
         if !is_ship_subcap(ship) {
@@ -33,7 +33,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_capital_module_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValCapitalModFail> {

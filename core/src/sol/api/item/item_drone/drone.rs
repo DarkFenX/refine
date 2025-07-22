@@ -1,19 +1,18 @@
 use crate::{
-    def::ItemKey,
     misc::MinionState,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
-    uad::UadDrone,
+    uad::{UadDrone, UadItemKey},
 };
 
 pub struct Drone<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) key: ItemKey,
+    pub(in crate::sol::api) key: UadItemKey,
 }
 impl<'a> Drone<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UadItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -27,7 +26,7 @@ impl<'a> ItemSealed for Drone<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> ItemKey {
+    fn get_key(&self) -> UadItemKey {
         self.key
     }
 }
@@ -35,10 +34,10 @@ impl<'a> ItemCommon for Drone<'a> {}
 
 pub struct DroneMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) key: ItemKey,
+    pub(in crate::sol::api) key: UadItemKey,
 }
 impl<'a> DroneMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UadItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -56,7 +55,7 @@ impl<'a> ItemSealed for DroneMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> ItemKey {
+    fn get_key(&self) -> UadItemKey {
         self.key
     }
 }
@@ -68,13 +67,13 @@ impl<'a> ItemMutSealed for DroneMut<'a> {
 impl<'a> ItemCommon for DroneMut<'a> {}
 impl<'a> ItemMutCommon for DroneMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, item_key: UadItemKey) -> Fit<'_> {
     let fit_key = get_uad_drone(sol, item_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: ItemKey) -> MinionState {
+fn get_state(sol: &SolarSystem, item_key: UadItemKey) -> MinionState {
     get_uad_drone(sol, item_key).get_drone_state()
 }
-fn get_uad_drone(sol: &SolarSystem, item_key: ItemKey) -> &UadDrone {
+fn get_uad_drone(sol: &SolarSystem, item_key: UadItemKey) -> &UadDrone {
     sol.uad.items.get(item_key).get_drone().unwrap()
 }

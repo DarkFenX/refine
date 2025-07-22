@@ -2,21 +2,21 @@ use lender::{Lender, Lending};
 
 use super::shared::get_fit_rack;
 use crate::{
-    def::{FitKey, ItemKey},
     misc::ModRack,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, Module, ModuleMut},
     },
+    uad::{UadFitKey, UadItemKey},
 };
 
 pub struct ModuleIter<'iter> {
     sol: &'iter mut SolarSystem,
-    module_keys: Vec<Option<ItemKey>>,
+    module_keys: Vec<Option<UadItemKey>>,
     index: usize,
 }
 impl<'iter> ModuleIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, module_keys: Vec<Option<ItemKey>>) -> Self {
+    fn new(sol: &'iter mut SolarSystem, module_keys: Vec<Option<UadItemKey>>) -> Self {
         Self {
             sol,
             module_keys,
@@ -56,7 +56,7 @@ impl<'a> FitMut<'a> {
 
 fn iter_modules(
     sol: &SolarSystem,
-    fit_key: FitKey,
+    fit_key: UadFitKey,
     rack: ModRack,
 ) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
     get_fit_rack(&sol.uad.fits, fit_key, rack)

@@ -1,6 +1,6 @@
 use super::shared::{get_tanking_efficiency, item_check};
 use crate::{
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::{DmgKinds, DpsProfile},
     svc::{
         SvcCtx,
@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatLayerHp, StatTank, Vast},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 pub struct StatLayerEhp {
@@ -23,7 +23,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
@@ -34,7 +34,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         incoming_dps: Option<DpsProfile>,
     ) -> StatTank<Option<StatLayerEhp>> {
@@ -50,7 +50,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
         item_check(item_key, uad_item)?;
@@ -60,7 +60,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
     ) -> StatTank<Option<StatLayerEhp>> {
         let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, uad_item);

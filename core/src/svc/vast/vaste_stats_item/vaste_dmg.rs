@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
@@ -8,7 +8,7 @@ use crate::{
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
         vast::Vast,
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
@@ -20,7 +20,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_dps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reload: bool,
         spool: Option<Spool>,
         ignore_state: bool,
@@ -38,7 +38,7 @@ impl Vast {
     fn get_stat_item_dps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reload: bool,
         spool: Option<Spool>,
         ignore_state: bool,
@@ -68,7 +68,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_volley_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
@@ -84,7 +84,7 @@ impl Vast {
     fn get_stat_item_volley_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> DmgKinds<AttrVal> {
@@ -105,7 +105,7 @@ impl Vast {
     }
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), StatItemCheckError> {
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
     let uad_item = ctx.uad.items.get(item_key);
     let is_loaded = match uad_item {
         UadItem::Autocharge(autocharge) => autocharge.is_loaded(),

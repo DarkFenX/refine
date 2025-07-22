@@ -1,12 +1,15 @@
 use crate::{
-    def::FitKey,
     misc::RmMode,
     sol::{SolarSystem, api::FitMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadFitKey},
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_remove_fit(&mut self, fit_key: FitKey, reuse_eupdates: &mut UadEffectUpdates) {
+    pub(in crate::sol::api) fn internal_remove_fit(
+        &mut self,
+        fit_key: UadFitKey,
+        reuse_eupdates: &mut UadEffectUpdates,
+    ) {
         let uad_fit = self.uad.fits.get(fit_key);
         for item_key in uad_fit.all_direct_items().into_iter() {
             self.internal_remove_item(item_key, RmMode::Free, reuse_eupdates)

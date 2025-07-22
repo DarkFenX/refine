@@ -1,11 +1,12 @@
 use crate::{
     ad,
-    def::{AttrId, ItemKey},
+    def::AttrId,
     err::basic::ItemMAttrNotFoundError,
     sol::{
         SolarSystem,
         api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut, RawMAttrMut},
     },
+    uad::UadItemKey,
     util::UnitInterval,
 };
 
@@ -44,7 +45,7 @@ impl<'a> IncompleteMutationMut<'a> {
 
 fn mutate_raw(
     sol: &mut SolarSystem,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_attr_id: ad::AAttrId,
     roll: UnitInterval,
 ) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {

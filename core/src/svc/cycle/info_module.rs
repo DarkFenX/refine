@@ -5,17 +5,17 @@ use super::{
 };
 use crate::{
     ac, ad,
-    def::{ItemKey, OF},
+    def::OF,
     nd::{NEffectChargeDepl, NEffectChargeLoc},
     svc::{SvcCtx, calc::Calc, efuncs},
-    uad::{UadItem, UadModule},
+    uad::{UadItem, UadItemKey, UadModule},
     util::{InfCount, RMap},
 };
 
 pub(super) fn get_module_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     uad_item: &UadItem,
     uad_module: &UadModule,
     options: CycleOptions,
@@ -75,7 +75,7 @@ fn fill_module_effect_info(
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     uad_item: &UadItem,
     uad_module: &UadModule,
     a_effect_id: ad::AEffectId,

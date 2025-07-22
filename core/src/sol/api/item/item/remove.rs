@@ -1,16 +1,15 @@
 use crate::{
-    def::ItemKey,
     err::basic::ItemKindRemoveError,
     misc::RmMode,
     sol::{SolarSystem, api::ItemMut},
-    uad::{UadAutocharge, UadEffectUpdates, UadItem},
+    uad::{UadAutocharge, UadEffectUpdates, UadItem, UadItemKey},
     util::Named,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_item(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         pos_mode: RmMode,
         reuse_eupdates: &mut UadEffectUpdates,
     ) -> Result<(), ItemKindRemoveError> {

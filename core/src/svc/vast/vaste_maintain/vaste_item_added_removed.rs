@@ -1,14 +1,13 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    def::ItemKey,
     svc::vast::{ValSrqSkillInfo, Vast},
-    uad::{Uad, UadItem},
+    uad::{Uad, UadItem, UadItemKey},
     util::RMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_added(&mut self, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_added(&mut self, item_key: UadItemKey, item: &UadItem) {
         if !item.is_loaded() {
             match item.get_fit_key() {
                 Some(fit_key) => {
@@ -46,7 +45,7 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn item_removed(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_removed(&mut self, uad: &Uad, item_key: UadItemKey, item: &UadItem) {
         if !item.is_loaded() {
             match item.get_fit_key() {
                 Some(fit_key) => {

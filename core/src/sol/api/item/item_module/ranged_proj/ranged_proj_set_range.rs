@@ -1,16 +1,15 @@
 use crate::{
-    def::ItemKey,
     err::basic::ProjFoundError,
     misc::ProjRange,
     sol::{SolarSystem, api::get_a_ship_xt},
-    uad::UadProjRange,
+    uad::{UadItemKey, UadProjRange},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_module_proj_range(
         &mut self,
-        item_key: ItemKey,
-        projectee_key: ItemKey,
+        item_key: UadItemKey,
+        projectee_key: UadItemKey,
         range: ProjRange,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined before changing it

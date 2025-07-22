@@ -1,20 +1,20 @@
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId},
+    def::ItemTypeId,
     sol::{
         SolarSystem,
         api::{FitMut, FwEffectMut},
     },
-    uad::{UadEffectUpdates, UadFwEffect, UadItem},
+    uad::{UadEffectUpdates, UadFitKey, UadFwEffect, UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_fw_effect(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         a_item_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         let item_id = self.uad.items.alloc_id();
         let uad_fw_effect = UadFwEffect::new(item_id, a_item_id, fit_key, true, &self.uad.src, reuse_eupdates);

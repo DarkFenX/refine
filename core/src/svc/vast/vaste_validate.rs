@@ -1,10 +1,10 @@
 use crate::{
-    def::FitKey,
     svc::{
         SvcCtx,
         calc::Calc,
         vast::{ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol, Vast},
     },
+    uad::UadFitKey,
 };
 
 impl Vast {
@@ -50,7 +50,7 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         options: &ValOptionsInt,
     ) -> bool {
         let fit = ctx.uad.fits.get(fit_key);
@@ -476,7 +476,7 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         options: &ValOptionsInt,
     ) -> ValResultFit {
         let fit = ctx.uad.fits.get(fit_key);

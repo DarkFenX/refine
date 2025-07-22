@@ -1,11 +1,10 @@
 use super::{add_cmod, remove_cmod};
 use crate::{
-    def::FitKey,
     svc::{
         SvcCtx,
         calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
     },
-    uad::{UadFleet, UadItem},
+    uad::{UadFitKey, UadFleet, UadItem},
 };
 
 impl StandardRegister {
@@ -75,7 +74,11 @@ impl StandardRegister {
         }
         self.rmods_fleet.remove_entry(&fit_key, &rmod);
     }
-    pub(in crate::svc::calc) fn reg_fleet_for_fit(&mut self, fleet: &UadFleet, fit_key: &FitKey) -> Vec<CtxModifier> {
+    pub(in crate::svc::calc) fn reg_fleet_for_fit(
+        &mut self,
+        fleet: &UadFleet,
+        fit_key: &UadFitKey,
+    ) -> Vec<CtxModifier> {
         let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
@@ -105,7 +108,11 @@ impl StandardRegister {
         }
         cmods
     }
-    pub(in crate::svc::calc) fn unreg_fleet_for_fit(&mut self, fleet: &UadFleet, fit_key: &FitKey) -> Vec<CtxModifier> {
+    pub(in crate::svc::calc) fn unreg_fleet_for_fit(
+        &mut self,
+        fleet: &UadFleet,
+        fit_key: &UadFitKey,
+    ) -> Vec<CtxModifier> {
         let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
@@ -136,7 +143,7 @@ impl StandardRegister {
         cmods
     }
     // Private methods
-    fn apply_fleet_mod(&mut self, rmod: RawModifier, fit_key: FitKey) -> Option<CtxModifier> {
+    fn apply_fleet_mod(&mut self, rmod: RawModifier, fit_key: UadFitKey) -> Option<CtxModifier> {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::Ship) => {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
@@ -181,7 +188,7 @@ impl StandardRegister {
             _ => None,
         }
     }
-    fn unapply_fleet_mod(&mut self, rmod: RawModifier, fit_key: FitKey) -> Option<CtxModifier> {
+    fn unapply_fleet_mod(&mut self, rmod: RawModifier, fit_key: UadFitKey) -> Option<CtxModifier> {
         // We don't check location here, since logic on layers above ensures we receive only
         // modifiers which passed checks when they were added, and location check is part of those
         match rmod.affectee_filter {

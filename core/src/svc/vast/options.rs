@@ -1,8 +1,9 @@
 use itertools::Itertools;
 
 use crate::{
-    def::{FitId, FitKey, ItemId, ItemKey},
+    def::{FitId, ItemId},
     sol::SolarSystem,
+    uad::{UadFitKey, UadItemKey},
     util::RSet,
 };
 
@@ -310,7 +311,7 @@ impl ValOption {
 // Internal variant of validation options, with fit/item keys instead of IDs.
 pub(crate) struct ValOptionsSolInt {
     pub(crate) options: ValOptionsInt,
-    pub(crate) fit_keys: Vec<FitKey>,
+    pub(crate) fit_keys: Vec<UadFitKey>,
 }
 impl ValOptionsSolInt {
     pub(crate) fn from_pub(sol: &SolarSystem, pub_sol_opts: &ValOptionsSol) -> Self {
@@ -491,7 +492,7 @@ impl ValOptionsInt {
 
 pub(in crate::svc::vast) struct ValOptionInt {
     pub(in crate::svc::vast) enabled: bool,
-    pub(in crate::svc::vast) kfs: RSet<ItemKey>,
+    pub(in crate::svc::vast) kfs: RSet<UadItemKey>,
 }
 impl ValOptionInt {
     fn from_pub(sol: &SolarSystem, pub_opt: &ValOption) -> Self {

@@ -1,14 +1,14 @@
 use crate::{
-    def::FitKey,
     misc::DpsProfile,
     sol::{
         SolarSystem,
         api::{Fit, FitMut},
     },
+    uad::UadFitKey,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_get_fit_rah_incoming_dps(&self, fit_key: FitKey) -> Option<DpsProfile> {
+    pub(in crate::sol::api) fn internal_get_fit_rah_incoming_dps(&self, fit_key: UadFitKey) -> Option<DpsProfile> {
         self.uad.fits.get(fit_key).rah_incoming_dps
     }
 }

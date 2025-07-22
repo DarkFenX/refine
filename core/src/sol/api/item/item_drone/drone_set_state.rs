@@ -1,14 +1,13 @@
 use crate::{
-    def::ItemKey,
     misc::MinionState,
     sol::{SolarSystem, api::DroneMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_drone_state(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         state: MinionState,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {

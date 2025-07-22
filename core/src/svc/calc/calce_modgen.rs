@@ -1,12 +1,11 @@
 use crate::{
     ac, ad,
-    def::ItemKey,
     misc::EffectSpec,
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 impl Calc {
@@ -14,7 +13,7 @@ impl Calc {
         &mut self,
         reuse_rmods: &mut Vec<RawModifier>,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
         a_effect: &ad::AEffectRt,
     ) {
@@ -83,7 +82,7 @@ impl Calc {
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
         a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
         buff_type_a_attr_id: ad::AAttrId,
@@ -122,7 +121,7 @@ impl Calc {
 fn add_buff_mods(
     rmods: &mut Vec<RawModifier>,
     ctx: SvcCtx,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     item: &UadItem,
     a_effect: &ad::AEffectRt,
     a_buff_id: &ad::ABuffId,
@@ -155,7 +154,7 @@ fn add_buff_mods(
 fn add_buff_mods_hardcoded(
     rmods: &mut Vec<RawModifier>,
     ctx: SvcCtx,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     item: &UadItem,
     a_effect: &ad::AEffectRt,
     a_buff_id: &ad::ABuffId,

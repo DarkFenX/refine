@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{AttrVal, ItemId, ItemKey},
+    def::{AttrVal, ItemId},
     svc::{SvcCtx, vast::VastFitData},
+    uad::UadItemKey,
     util::RSet,
 };
 
@@ -22,7 +23,7 @@ pub struct ValChargeVolumeChargeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<ItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<UadItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.charge_volume.is_empty(),
             false => self.charge_volume.difference(kfs).next().is_none(),
@@ -31,7 +32,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_charge_volume_verbose(
         &mut self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValChargeVolumeFail> {
         let mut charges = HashMap::new();

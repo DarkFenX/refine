@@ -1,9 +1,9 @@
 use crate::{
-    def::FitKey,
     sol::{
         SolarSystem,
         api::{Character, CharacterMut, Fit, FitMut},
     },
+    uad::UadFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -26,7 +26,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_character(sol: &SolarSystem, fit_key: FitKey) -> Option<Character<'_>> {
+fn get_character(sol: &SolarSystem, fit_key: UadFitKey) -> Option<Character<'_>> {
     sol.uad
         .fits
         .get(fit_key)

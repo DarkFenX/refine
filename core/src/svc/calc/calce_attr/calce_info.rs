@@ -7,14 +7,13 @@ use smallvec::SmallVec;
 use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 use crate::{
     ac, ad,
-    def::ItemKey,
     misc::{OpInfo, SecZone},
     svc::{
         SvcCtx,
         calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
         err::KeyedItemLoadedError,
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
     util::{RMap, RMapVec, RSet, round},
 };
 
@@ -28,7 +27,7 @@ impl Calc {
     pub(in crate::svc) fn iter_item_mods(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for a_attr_id in self.iter_item_a_attr_ids(ctx, item_key)? {
@@ -46,7 +45,7 @@ impl Calc {
     fn iter_item_a_attr_ids(
         &self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, KeyedItemLoadedError> {
         let item_a_attrs = match ctx.uad.items.get(item_key).get_a_attrs() {
             Some(item_a_attrs) => item_a_attrs,
@@ -59,7 +58,7 @@ impl Calc {
     fn iter_affections(
         &mut self,
         ctx: SvcCtx,
-        item_key: &ItemKey,
+        item_key: &UadItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Affection> {
@@ -92,7 +91,7 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
+    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
         let item = ctx.uad.items.get(item_key);
         let a_attr = match ctx.uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,

@@ -1,4 +1,4 @@
-use crate::{def::ItemKey, sol::SolarSystem};
+use crate::{sol::SolarSystem, uad::UadItemKey};
 
 pub enum Mutation<'a> {
     Effective(EffectiveMutation<'a>),
@@ -13,10 +13,10 @@ pub enum MutationMut<'a> {
 /// Mutation which has enough prerequisites met to affect item it mutates.
 pub struct EffectiveMutation<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) item_key: ItemKey,
+    pub(in crate::sol::api) item_key: UadItemKey,
 }
 impl<'a> EffectiveMutation<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, item_key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, item_key: UadItemKey) -> Self {
         Self { sol, item_key }
     }
 }
@@ -24,10 +24,10 @@ impl<'a> EffectiveMutation<'a> {
 /// Mutation which has enough prerequisites met to affect item it mutates.
 pub struct EffectiveMutationMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) item_key: ItemKey,
+    pub(in crate::sol::api) item_key: UadItemKey,
 }
 impl<'a> EffectiveMutationMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, item_key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, item_key: UadItemKey) -> Self {
         Self { sol, item_key }
     }
 }
@@ -36,10 +36,10 @@ impl<'a> EffectiveMutationMut<'a> {
 /// applied to.
 pub struct IncompleteMutation<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) item_key: ItemKey,
+    pub(in crate::sol::api) item_key: UadItemKey,
 }
 impl<'a> IncompleteMutation<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, item_key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, item_key: UadItemKey) -> Self {
         Self { sol, item_key }
     }
 }
@@ -48,10 +48,10 @@ impl<'a> IncompleteMutation<'a> {
 /// applied to.
 pub struct IncompleteMutationMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) item_key: ItemKey,
+    pub(in crate::sol::api) item_key: UadItemKey,
 }
 impl<'a> IncompleteMutationMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, item_key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, item_key: UadItemKey) -> Self {
         Self { sol, item_key }
     }
 }

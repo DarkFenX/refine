@@ -2,7 +2,7 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::EffectSpec,
     nd::{NEffect, NEffectHc, eff::shared::util::get_item_fit_ship_key},
     svc::{
@@ -12,7 +12,7 @@ use crate::{
             Location, ModifierKind, Op, RawModifier,
         },
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
     util::RMap,
 };
 
@@ -99,7 +99,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(val)
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo, 1> {
     match get_item_fit_ship_key(ctx, item_key) {
         Some(ship_key) => {
             smallvec![
@@ -121,8 +121,8 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
 
 fn revise_on_item_add_removal(
     ctx: SvcCtx,
-    affector_key: ItemKey,
-    _changed_key: ItemKey,
+    affector_key: UadItemKey,
+    _changed_key: UadItemKey,
     changed_item: &UadItem,
 ) -> bool {
     match changed_item {

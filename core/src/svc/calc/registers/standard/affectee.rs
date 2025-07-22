@@ -1,11 +1,10 @@
 use super::{PotentialLocations, StandardRegister};
 use crate::{
-    def::{FitKey, ItemKey},
     svc::{
         SvcCtx,
         calc::{AffecteeFilter, Context, CtxModifier, Location, LocationKind, ModifierKind},
     },
-    uad::{ShipKind, UadFit, UadItem},
+    uad::{ShipKind, UadFit, UadFitKey, UadItem, UadItemKey},
     util::extend_vec_from_map_set_l1,
 };
 
@@ -13,7 +12,7 @@ impl StandardRegister {
     // Query methods
     pub(in crate::svc::calc) fn fill_affectees(
         &self,
-        reuse_affectees: &mut Vec<ItemKey>,
+        reuse_affectees: &mut Vec<UadItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
     ) {
@@ -30,7 +29,7 @@ impl StandardRegister {
         }
     }
     // Modification methods
-    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UadItemKey, item: &UadItem) {
         let is_buffable = item.is_buffable();
         if is_buffable {
             self.reg_buffable_for_sw(item_key);
@@ -63,7 +62,7 @@ impl StandardRegister {
             self.reg_buffable_for_fw(item_key, fit_key);
         }
     }
-    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UadItemKey, item: &UadItem) {
         let is_buffable = item.is_buffable();
         if is_buffable {
             self.unreg_buffable_for_sw(item_key);
@@ -100,7 +99,7 @@ impl StandardRegister {
         }
     }
     // Private methods
-    fn fill_affectees_no_context(&self, affectees: &mut Vec<ItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
+    fn fill_affectees_no_context(&self, affectees: &mut Vec<UadItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
         if let AffecteeFilter::Direct(loc) = cmod.raw.affectee_filter {
             match loc {
                 Location::Item => {
@@ -116,7 +115,13 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_affectees_for_fit(&self, affectees: &mut Vec<ItemKey>, ctx: SvcCtx, cmod: &CtxModifier, fit_key: FitKey) {
+    fn fill_affectees_for_fit(
+        &self,
+        affectees: &mut Vec<UadItemKey>,
+        ctx: SvcCtx,
+        cmod: &CtxModifier,
+        fit_key: UadFitKey,
+    ) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => extend_vec_from_map_set_l1(affectees, &self.affectee_buffable, &fit_key),
@@ -197,10 +202,10 @@ impl StandardRegister {
     }
     fn fill_affectees_for_item_system(
         &self,
-        affectees: &mut Vec<ItemKey>,
+        affectees: &mut Vec<UadItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
     ) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
@@ -355,10 +360,10 @@ impl StandardRegister {
     }
     fn fill_affectees_for_item_target(
         &self,
-        affectees: &mut Vec<ItemKey>,
+        affectees: &mut Vec<UadItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
     ) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => {
@@ -440,10 +445,10 @@ impl StandardRegister {
     }
     fn fill_affectees_for_item_buff(
         &self,
-        affectees: &mut Vec<ItemKey>,
+        affectees: &mut Vec<UadItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
     ) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
@@ -558,7 +563,7 @@ fn check_loc_owner(loc: Location, fit: &UadFit) -> bool {
     }
 }
 
-fn is_fit_of_ship_kind(ctx: SvcCtx, fit_key: FitKey) -> bool {
+fn is_fit_of_ship_kind(ctx: SvcCtx, fit_key: UadFitKey) -> bool {
     let fit = ctx.uad.fits.get(fit_key);
     matches!(fit.kind, ShipKind::Ship)
 }

@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemId, ItemKey},
+    def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    uad::{ShipKind, UadFit},
+    uad::{ShipKind, UadFit, UadItemKey},
     util::RSet,
 };
 
@@ -33,7 +33,7 @@ impl From<ShipKind> for ValShipKind {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<ItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UadItemKey>) -> bool {
         if self.mods_rigs_svcs_vs_ship_kind.is_empty() {
             return true;
         }
@@ -42,7 +42,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_item_vs_ship_kind_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         fit: &UadFit,
     ) -> Option<ValItemVsShipKindFail> {

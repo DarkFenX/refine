@@ -1,12 +1,11 @@
 use crate::{
     dbg::{DebugError, DebugResult},
-    def::{FitKey, ItemKey},
     misc::ModRack,
-    uad::{Uad, UadFighter, UadFit, UadItem, UadModule},
+    uad::{Uad, UadFighter, UadFit, UadFitKey, UadItem, UadItemKey, UadModule},
 };
 
 impl UadFit {
-    pub(in crate::uad) fn consistency_check(&self, uad: &Uad, seen_item_keys: &mut Vec<ItemKey>) -> DebugResult {
+    pub(in crate::uad) fn consistency_check(&self, uad: &Uad, seen_item_keys: &mut Vec<UadItemKey>) -> DebugResult {
         let fit_key = match uad.fits.key_by_id(&self.id) {
             Some(fit_key) => fit_key,
             None => return Err(DebugError {}),
@@ -286,10 +285,10 @@ impl UadFit {
 
 fn check_module_charge(
     uad: &Uad,
-    fit_key: FitKey,
-    module_key: ItemKey,
+    fit_key: UadFitKey,
+    module_key: UadItemKey,
     module: &UadModule,
-    seen_items: &mut Vec<ItemKey>,
+    seen_items: &mut Vec<UadItemKey>,
 ) -> DebugResult {
     if let Some(charge_key) = module.get_charge_key() {
         seen_items.push(charge_key);
@@ -314,10 +313,10 @@ fn check_module_charge(
 
 fn check_fighter_autocharges(
     uad: &Uad,
-    fit_key: FitKey,
-    fighter_key: ItemKey,
+    fit_key: UadFitKey,
+    fighter_key: UadItemKey,
     fighter: &UadFighter,
-    seen_items: &mut Vec<ItemKey>,
+    seen_items: &mut Vec<UadItemKey>,
 ) -> DebugResult {
     for &autocharge_key in fighter.get_autocharges().values() {
         seen_items.push(autocharge_key);

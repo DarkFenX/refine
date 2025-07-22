@@ -1,16 +1,16 @@
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId, OF},
+    def::{ItemTypeId, OF},
     misc::{AddMode, MinionState, ModRack, ModuleState, RmMode, ServiceState},
     sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt},
-    uad::{Uad, UadEffectUpdates},
+    uad::{Uad, UadEffectUpdates, UadFitKey, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_try_fit_items(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         type_ids: &[ItemTypeId],
         val_options: &ValOptionsInt,
         reuse_eupdates: &mut UadEffectUpdates,
@@ -156,7 +156,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_chargeable_modules(uad: &Uad, fit_key: FitKey) -> Vec<ItemKey> {
+fn get_chargeable_modules(uad: &Uad, fit_key: UadFitKey) -> Vec<UadItemKey> {
     let mut seen_a_item_ids = Vec::new();
     let mut module_keys = Vec::new();
     for module_key in uad.fits.get(fit_key).iter_module_keys() {

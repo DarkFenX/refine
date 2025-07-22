@@ -1,13 +1,12 @@
 use super::{add_cmod, remove_cmod};
 use crate::{
-    def::{FitKey, ItemKey},
     svc::{
         SvcCtx,
         calc::{
             AffecteeFilter, Location, LocationKind, RawModifier, modifier::CtxModifier, registers::StandardRegister,
         },
     },
-    uad::{ShipKind, UadFwEffect, UadShip},
+    uad::{ShipKind, UadFitKey, UadFwEffect, UadItemKey, UadShip},
 };
 
 impl StandardRegister {
@@ -211,8 +210,8 @@ impl StandardRegister {
     // Is supposed to be called only for buffable items
     pub(in crate::svc::calc::registers::standard) fn reg_buffable_for_fw(
         &mut self,
-        item_key: ItemKey,
-        fit_key: FitKey,
+        item_key: UadItemKey,
+        fit_key: UadFitKey,
     ) {
         for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::Everything) = rmod.affectee_filter {
@@ -224,8 +223,8 @@ impl StandardRegister {
     // Is supposed to be called only for buffable items
     pub(in crate::svc::calc::registers::standard) fn unreg_buffable_for_fw(
         &mut self,
-        item_key: ItemKey,
-        fit_key: FitKey,
+        item_key: UadItemKey,
+        fit_key: UadFitKey,
     ) {
         for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::Everything) = rmod.affectee_filter {
@@ -235,7 +234,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(super) fn reg_loc_root_for_fw_buff(&mut self, ship_key: ItemKey, ship: &UadShip, fit_key: FitKey) {
+    pub(super) fn reg_loc_root_for_fw_buff(&mut self, ship_key: UadItemKey, ship: &UadShip, fit_key: UadFitKey) {
         for rmod in self.rmods_fw_buff_indirect.get(&fit_key) {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(Location::Ship) => {
@@ -287,7 +286,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(super) fn unreg_loc_root_for_fw_buff(&mut self, ship_key: ItemKey, ship: &UadShip, fit_key: FitKey) {
+    pub(super) fn unreg_loc_root_for_fw_buff(&mut self, ship_key: UadItemKey, ship: &UadShip, fit_key: UadFitKey) {
         for rmod in self.rmods_fw_buff_indirect.get(&fit_key) {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(Location::Ship) => {

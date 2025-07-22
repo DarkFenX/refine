@@ -2,14 +2,13 @@ use itertools::Itertools;
 
 use crate::{
     ac, ad,
-    def::{FitKey, ItemKey},
     misc::{AttrSpec, EffectSpec},
     src::Src,
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
     },
-    uad::{UadFleet, UadItem},
+    uad::{UadFitKey, UadFleet, UadItem, UadItemKey},
 };
 
 impl Calc {
@@ -17,30 +16,30 @@ impl Calc {
     pub(in crate::svc) fn src_changed(&mut self, src: &Src) {
         self.rah_src_changed(src);
     }
-    pub(in crate::svc) fn fit_added(&mut self, fit_key: FitKey) {
+    pub(in crate::svc) fn fit_added(&mut self, fit_key: UadFitKey) {
         self.std.reg_fit_for_sw(fit_key)
     }
-    pub(in crate::svc) fn fit_removed(&mut self, fit_key: FitKey) {
+    pub(in crate::svc) fn fit_removed(&mut self, fit_key: UadFitKey) {
         self.std.unreg_fit_for_sw(fit_key)
     }
-    pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: SvcCtx, fleet: &UadFleet, fit_key: &FitKey) {
+    pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: SvcCtx, fleet: &UadFleet, fit_key: &UadFitKey) {
         let cmods = self.std.reg_fleet_for_fit(fleet, fit_key);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: SvcCtx, fleet: &UadFleet, fit_key: &FitKey) {
+    pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: SvcCtx, fleet: &UadFleet, fit_key: &UadFitKey) {
         let cmods = self.std.unreg_fleet_for_fit(fleet, fit_key);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &FitKey) {
+    pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &UadFitKey) {
         self.rah_fit_rah_dps_profile_changed(ctx, fit_key);
     }
-    pub(in crate::svc) fn item_added(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_added(&mut self, ctx: SvcCtx, item_key: UadItemKey, item: &UadItem) {
         // Char/ship switches
         self.handle_location_owner_add(ctx, item_key, item);
         // Custom modifiers
@@ -57,7 +56,7 @@ impl Calc {
             }
         }
     }
-    pub(in crate::svc) fn item_removed(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_removed(&mut self, ctx: SvcCtx, item_key: UadItemKey, item: &UadItem) {
         // Custom modifiers
         let cmods = self
             .revs
@@ -74,14 +73,14 @@ impl Calc {
         // Char/ship switches
         self.handle_location_owner_remove(ctx, item_key, item);
     }
-    pub(in crate::svc) fn item_loaded(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_loaded(&mut self, ctx: SvcCtx, item_key: UadItemKey, item: &UadItem) {
         // Notify core calc services
         self.attrs.item_loaded(item_key, item);
         self.std.reg_affectee(item_key, item);
         // Notify RAH sim
         self.rah_item_loaded(ctx, item);
     }
-    pub(in crate::svc) fn item_unloaded(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_unloaded(&mut self, ctx: SvcCtx, item_key: UadItemKey, item: &UadItem) {
         // Notify RAH sim
         self.rah_item_unloaded(ctx, item);
         // Notify core calc services
@@ -92,7 +91,7 @@ impl Calc {
     pub(in crate::svc) fn effects_started(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
         a_effects: &[ad::ArcEffectRt],
     ) {
@@ -114,7 +113,7 @@ impl Calc {
     pub(in crate::svc) fn effects_stopped(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
         a_effects: &[ad::ArcEffectRt],
     ) {
@@ -141,7 +140,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         projector_espec: EffectSpec,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
         let cmods = self.std.project_effect(&projector_espec, projectee_key, projectee_item);
@@ -154,7 +153,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         projector_espec: EffectSpec,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
         let cmods = self
@@ -169,7 +168,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         projector_espec: EffectSpec,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
         let cmods = self
@@ -262,22 +261,22 @@ impl Calc {
             self.force_attr_value_recalc(ctx, AttrSpec::new(item_key, ac::attrs::SECURITY_MODIFIER))
         }
     }
-    pub(in crate::svc) fn fighter_count_changed(&mut self, ctx: SvcCtx, fighter_key: ItemKey) {
+    pub(in crate::svc) fn fighter_count_changed(&mut self, ctx: SvcCtx, fighter_key: UadItemKey) {
         self.force_attr_postproc_recalc(ctx, AttrSpec::new(fighter_key, FTR_COUNT_ATTR))
     }
-    pub(in crate::svc) fn ship_sec_status_changed(&mut self, ctx: SvcCtx, ship_key: ItemKey) {
+    pub(in crate::svc) fn ship_sec_status_changed(&mut self, ctx: SvcCtx, ship_key: UadItemKey) {
         self.force_attr_postproc_recalc(ctx, AttrSpec::new(ship_key, SEC_STATUS_ATTR))
     }
-    pub(in crate::svc) fn skill_level_changed(&mut self, ctx: SvcCtx, skill_key: ItemKey) {
+    pub(in crate::svc) fn skill_level_changed(&mut self, ctx: SvcCtx, skill_key: UadItemKey) {
         self.force_attr_postproc_recalc(ctx, AttrSpec::new(skill_key, SKILL_LVL_ATTR))
     }
     // Private methods
     fn reg_raw_mod(
         &mut self,
-        reuse_items: &mut Vec<ItemKey>,
+        reuse_items: &mut Vec<UadItemKey>,
         reuse_cmods: &mut Vec<CtxModifier>,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
         rmod: RawModifier,
     ) {
@@ -343,10 +342,10 @@ impl Calc {
     }
     fn unreg_raw_mod(
         &mut self,
-        reuse_items: &mut Vec<ItemKey>,
+        reuse_items: &mut Vec<UadItemKey>,
         reuse_cmods: &mut Vec<CtxModifier>,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
         rmod: &RawModifier,
     ) {
@@ -404,25 +403,30 @@ impl Calc {
             ModifierKind::Targeted => self.std.unreg_proj_mod(rmod),
         }
     }
-    fn reg_raw_mod_for_buff(&mut self, item_key: ItemKey, rmod: RawModifier) {
+    fn reg_raw_mod_for_buff(&mut self, item_key: UadItemKey, rmod: RawModifier) {
         if let Some(buff_type_attr_id) = rmod.buff_type_a_attr_id {
             self.buffs
                 .reg_dependent_mod(AttrSpec::new(item_key, buff_type_attr_id), rmod);
         }
     }
-    fn unreg_raw_mod_for_buff(&mut self, item_key: ItemKey, rmod: &RawModifier) {
+    fn unreg_raw_mod_for_buff(&mut self, item_key: UadItemKey, rmod: &RawModifier) {
         if let Some(buff_type_attr_id) = rmod.buff_type_a_attr_id {
             self.buffs
                 .unreg_dependent_mod(&AttrSpec::new(item_key, buff_type_attr_id), rmod);
         }
     }
-    fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<ItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
+    fn force_mod_affectee_attr_recalc(
+        &mut self,
+        reuse_affectees: &mut Vec<UadItemKey>,
+        ctx: SvcCtx,
+        cmod: &CtxModifier,
+    ) {
         self.std.fill_affectees(reuse_affectees, ctx, cmod);
         for &affectee_key in reuse_affectees.iter() {
             self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_key, cmod.raw.affectee_a_attr_id));
         }
     }
-    fn handle_location_owner_add(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
+    fn handle_location_owner_add(&mut self, ctx: SvcCtx, item_key: UadItemKey, item: &UadItem) {
         if matches!(item, UadItem::Ship(_) | UadItem::Character(_)) {
             let mut reuse_affectees = Vec::new();
             for cmod in self.std.get_mods_for_added_root(item_key, item) {
@@ -430,7 +434,7 @@ impl Calc {
             }
         }
     }
-    fn handle_location_owner_remove(&mut self, ctx: SvcCtx, item_key: ItemKey, item: &UadItem) {
+    fn handle_location_owner_remove(&mut self, ctx: SvcCtx, item_key: UadItemKey, item: &UadItem) {
         if matches!(item, UadItem::Ship(_) | UadItem::Character(_)) {
             let mut reuse_affectees = Vec::new();
             for cmod in self.std.get_mods_for_removed_root(item_key, item) {

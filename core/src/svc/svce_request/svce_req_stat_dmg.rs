@@ -1,15 +1,15 @@
 use crate::{
-    def::{AttrVal, FitKey},
+    def::AttrVal,
     misc::{DmgKinds, Spool},
     svc::{Svc, SvcCtx, err::StatItemCheckError, vast::Vast},
-    uad::Uad,
+    uad::{Uad, UadFitKey},
 };
 
 impl Svc {
     pub(crate) fn get_stat_fit_dps(
         &mut self,
         uad: &Uad,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         reload: bool,
         spool: Option<Spool>,
     ) -> DmgKinds<AttrVal> {
@@ -20,7 +20,7 @@ impl Svc {
     pub(crate) fn get_stat_item_dps(
         &mut self,
         uad: &Uad,
-        item_key: FitKey,
+        item_key: UadFitKey,
         reload: bool,
         spool: Option<Spool>,
         ignore_state: bool,
@@ -37,7 +37,7 @@ impl Svc {
     pub(crate) fn get_stat_fit_volley(
         &mut self,
         uad: &Uad,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         spool: Option<Spool>,
     ) -> DmgKinds<AttrVal> {
         self.vast
@@ -47,7 +47,7 @@ impl Svc {
     pub(crate) fn get_stat_item_volley(
         &mut self,
         uad: &Uad,
-        item_key: FitKey,
+        item_key: UadFitKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {

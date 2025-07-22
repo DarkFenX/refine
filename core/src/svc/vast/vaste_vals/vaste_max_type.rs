@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{Count, ItemId, ItemKey, ItemTypeId},
+    def::{Count, ItemId, ItemTypeId},
     svc::{SvcCtx, vast::VastFitData},
+    uad::UadItemKey,
     util::RSet,
 };
 
@@ -19,7 +20,7 @@ pub struct ValMaxTypeTypeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &RSet<ItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_max_type_fitted_fast(&self, kfs: &RSet<UadItemKey>) -> bool {
         for item_type_data in self.mods_svcs_max_type_fitted.values() {
             let fitted = item_type_data.len() as Count;
             for (item_key, &allowed) in item_type_data.iter() {
@@ -33,7 +34,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_max_type_fitted_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValMaxTypeFail> {
         let mut item_types = HashMap::new();

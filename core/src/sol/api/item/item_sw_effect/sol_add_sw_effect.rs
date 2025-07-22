@@ -1,8 +1,8 @@
 use crate::{
     ad,
-    def::{ItemKey, ItemTypeId},
+    def::ItemTypeId,
     sol::{SolarSystem, api::SwEffectMut},
-    uad::{UadEffectUpdates, UadItem, UadSwEffect},
+    uad::{UadEffectUpdates, UadItem, UadItemKey, UadSwEffect},
 };
 
 impl SolarSystem {
@@ -15,7 +15,7 @@ impl SolarSystem {
         &mut self,
         a_item_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let item_id = self.uad.items.alloc_id();
         let uad_sw_effect = UadSwEffect::new(item_id, a_item_id, true, &self.uad.src, reuse_eupdates);
         let uad_item = UadItem::SwEffect(uad_sw_effect);

@@ -5,7 +5,7 @@ use smallvec::SmallVec;
 use super::AffectorValue;
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     misc::EffectSpec,
     nd::NProjMultGetter,
     svc::{
@@ -15,7 +15,7 @@ use crate::{
         },
         efuncs,
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 #[derive(Copy, Clone)]
@@ -61,7 +61,7 @@ impl Hash for RawModifier {
 }
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_amod(
-        affector_key: ItemKey,
+        affector_key: UadItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         amod: &ad::AEffectModifier,
@@ -89,7 +89,7 @@ impl RawModifier {
         })
     }
     pub(in crate::svc::calc) fn try_from_a_buff_regular(
-        affector_key: ItemKey,
+        affector_key: UadItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         a_buff: &ad::ABuff,
@@ -110,7 +110,7 @@ impl RawModifier {
         )
     }
     pub(in crate::svc::calc) fn try_from_a_buff_hardcoded(
-        affector_key: ItemKey,
+        affector_key: UadItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         a_buff: &ad::ABuff,
@@ -130,7 +130,7 @@ impl RawModifier {
         )
     }
     fn from_a_buff(
-        affector_key: ItemKey,
+        affector_key: UadItemKey,
         affector_item: &UadItem,
         a_effect: &ad::AEffectRt,
         a_buff: &ad::ABuff,

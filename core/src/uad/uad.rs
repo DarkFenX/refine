@@ -1,8 +1,8 @@
 use crate::{
-    def::{ItemKey, OF},
+    def::OF,
     misc::{DpsProfile, SecZone, Spool},
     src::Src,
-    uad::{fit::Fits, fleet::Fleets, item::UadItems},
+    uad::{UadItemKey, fit::UadFits, fleet::UadFleets, item::UadItems},
     util::{RSet, UnitInterval},
 };
 
@@ -11,10 +11,10 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct Uad {
     pub(crate) src: Src,
-    pub(crate) fleets: Fleets,
-    pub(crate) fits: Fits,
-    pub(crate) sw_effects: RSet<ItemKey>,
-    pub(crate) proj_effects: RSet<ItemKey>,
+    pub(crate) fleets: UadFleets,
+    pub(crate) fits: UadFits,
+    pub(crate) sw_effects: RSet<UadItemKey>,
+    pub(crate) proj_effects: RSet<UadItemKey>,
     pub(crate) items: UadItems,
     pub(crate) sec_zone: SecZone,
     pub(crate) default_spool: Spool,
@@ -24,8 +24,8 @@ impl Uad {
     pub(crate) fn new(src: Src) -> Self {
         Self {
             src,
-            fleets: Fleets::new(5),
-            fits: Fits::new(50),
+            fleets: UadFleets::new(5),
+            fits: UadFits::new(50),
             sw_effects: RSet::new(),
             proj_effects: RSet::new(),
             items: UadItems::new(10000),

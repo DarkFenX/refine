@@ -3,9 +3,10 @@ use std::collections::HashMap;
 use super::shared::is_flag_set;
 use crate::{
     ac, ad,
-    def::{ItemId, ItemKey, OF},
+    def::{ItemId, OF},
     misc::EffectSpec,
     svc::{SvcCtx, calc::Calc, efuncs, vast::VastFitData},
+    uad::UadItemKey,
     util::{RMapRSet, RSet},
 };
 
@@ -18,7 +19,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_assist_immunity_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -32,7 +33,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -46,7 +47,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -67,7 +68,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_assist_immunity_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
@@ -81,7 +82,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
@@ -95,7 +96,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
@@ -125,10 +126,10 @@ impl VastFitData {
 }
 
 fn validate_fast(
-    kfs: &RSet<ItemKey>,
+    kfs: &RSet<UadItemKey>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    blockable: &RMapRSet<ItemKey, EffectSpec>,
+    blockable: &RMapRSet<UadItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> bool {
     for (projectee_key, mut projector_especs) in blockable.iter() {
@@ -147,10 +148,10 @@ fn validate_fast(
 }
 
 fn validate_verbose(
-    kfs: &RSet<ItemKey>,
+    kfs: &RSet<UadItemKey>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    blockable: &RMapRSet<ItemKey, EffectSpec>,
+    blockable: &RMapRSet<UadItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> Option<ValProjImmunityFail> {
     let mut items = HashMap::new();

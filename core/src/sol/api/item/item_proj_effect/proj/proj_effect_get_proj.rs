@@ -1,10 +1,11 @@
 use crate::{
-    def::{ItemId, ItemKey},
+    def::ItemId,
     err::basic::{ItemFoundError, ProjFoundError},
     sol::{
         SolarSystem,
         api::{Proj, ProjEffect, ProjEffectMut, ProjMut},
     },
+    uad::UadItemKey,
 };
 
 impl<'a> ProjEffect<'a> {
@@ -27,9 +28,9 @@ impl<'a> ProjEffectMut<'a> {
 
 fn get_projectee_key(
     sol: &SolarSystem,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projectee_item_id: &ItemId,
-) -> Result<ItemKey, GetProjError> {
+) -> Result<UadItemKey, GetProjError> {
     let projectee_key = sol.uad.items.key_by_id_err(projectee_item_id)?;
     match sol
         .uad

@@ -1,7 +1,7 @@
 use super::shared::item_check;
 use crate::{
     ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::Spool,
     nd::{NLocalRepGetter, NRemoteRepGetter},
     svc::{
@@ -11,7 +11,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
     util::{RMapRMap, RMapRMapRMap, trunc_unerr},
 };
 
@@ -26,7 +26,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         spool: Option<Spool>,
     ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
@@ -37,7 +37,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         spool: Option<Spool>,
     ) -> StatTank<StatLayerRps> {
@@ -83,7 +83,7 @@ const RPS_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_local_rps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    rep_data: &RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+    rep_data: &RMapRMap<UadItemKey, ad::AEffectId, NLocalRepGetter>,
 ) -> AttrVal {
     let mut total_rps = OF(0.0);
     for (&item_key, item_data) in rep_data.iter() {
@@ -115,9 +115,9 @@ struct IrrEntry {
 fn get_irr_data(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projectee_item_key: ItemKey,
+    projectee_item_key: UadItemKey,
     spool: Option<Spool>,
-    sol_irrs: &RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    sol_irrs: &RMapRMapRMap<UadItemKey, UadItemKey, ad::AEffectId, NRemoteRepGetter>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match sol_irrs.get_l1(&projectee_item_key) {

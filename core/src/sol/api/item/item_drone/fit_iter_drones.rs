@@ -1,9 +1,9 @@
 use crate::{
-    def::FitKey,
     sol::{
         SolarSystem,
         api::{Drone, DroneMut, Fit, FitMut, MutIter},
     },
+    uad::UadFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_drones(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Drone<'_>> {
+fn iter_drones(sol: &SolarSystem, fit_key: UadFitKey) -> impl ExactSizeIterator<Item = Drone<'_>> {
     sol.uad
         .fits
         .get(fit_key)

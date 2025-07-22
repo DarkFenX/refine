@@ -4,7 +4,6 @@
 use super::shared::get_side_effect_chance_attr_id;
 use crate::{
     ad,
-    def::ItemKey,
     misc::EffectId,
     sol::{
         SolarSystem,
@@ -13,6 +12,7 @@ use crate::{
             StubSideEffectMut,
         },
     },
+    uad::UadItemKey,
 };
 
 impl<'a> Booster<'a> {
@@ -39,7 +39,7 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn get_side_effect<'a>(sol: &'a SolarSystem, item_key: ItemKey, effect_id: &EffectId) -> SideEffect<'a> {
+fn get_side_effect<'a>(sol: &'a SolarSystem, item_key: UadItemKey, effect_id: &EffectId) -> SideEffect<'a> {
     let a_effect_id = ad::AEffectId::from(effect_id);
     match get_side_effect_chance_attr_id(&sol.uad.src, &a_effect_id) {
         Some(chance_a_attr_id) => SideEffect::Full(FullSideEffect::new(sol, item_key, a_effect_id, chance_a_attr_id)),

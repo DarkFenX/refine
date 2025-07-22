@@ -4,13 +4,13 @@ use smallvec::SmallVec;
 
 use crate::{
     ad,
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     misc::EffectSpec,
     svc::{
         SvcCtx,
         calc::{AffectorInfo, Calc},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -20,8 +20,8 @@ pub(crate) enum CustomAffectorValueKind {
     MissileFlightTime,
 }
 
-pub(crate) type ItemAddReviser = fn(SvcCtx, ItemKey, ItemKey, &UadItem) -> bool;
-pub(crate) type ItemRemoveReviser = fn(SvcCtx, ItemKey, ItemKey, &UadItem) -> bool;
+pub(crate) type ItemAddReviser = fn(SvcCtx, UadItemKey, UadItemKey, &UadItem) -> bool;
+pub(crate) type ItemRemoveReviser = fn(SvcCtx, UadItemKey, UadItemKey, &UadItem) -> bool;
 
 #[derive(Copy, Clone)]
 pub(crate) struct CustomAffectorValue {
@@ -37,7 +37,7 @@ pub(crate) struct CustomAffectorValue {
     pub(crate) affector_a_attr_id: Option<ad::AAttrId>,
     // Should return all the affecting attributes. Can be slow, used only when fetching modification
     // info
-    pub(crate) affector_info_getter: fn(SvcCtx, ItemKey) -> SmallVec<AffectorInfo, 1>,
+    pub(crate) affector_info_getter: fn(SvcCtx, UadItemKey) -> SmallVec<AffectorInfo, 1>,
     pub(crate) mod_val_getter: fn(&mut Calc, SvcCtx, EffectSpec) -> Option<AttrVal>,
     // Reviser functions are triggered upon certain events; if they return true, affected attribute
     // values are marked for recalculation.

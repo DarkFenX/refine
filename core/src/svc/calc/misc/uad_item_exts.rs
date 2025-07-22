@@ -1,7 +1,6 @@
 use crate::{
-    def::ItemKey,
     svc::calc::LocationKind,
-    uad::{ShipKind, UadItem},
+    uad::{ShipKind, UadItem, UadItemKey},
 };
 
 impl UadItem {
@@ -45,7 +44,7 @@ impl UadItem {
             _ => false,
         }
     }
-    pub(in crate::svc::calc) fn get_other_key(&self) -> Option<ItemKey> {
+    pub(in crate::svc::calc) fn get_other_key(&self) -> Option<UadItemKey> {
         match self {
             Self::Charge(charge) => Some(charge.get_cont_key()),
             Self::Module(module) => module.get_charge_key(),

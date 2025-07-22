@@ -1,28 +1,28 @@
 use crate::{
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     sol::SolarSystem,
     src::Src,
-    uad::{ShipKind, Uad, UadEffectUpdates, UadItem},
+    uad::{ShipKind, Uad, UadEffectUpdates, UadItem, UadItemKey},
     util::RMap,
 };
 
 struct ItemKeys {
-    boosters: Vec<ItemKey>,
-    characters: Vec<ItemKey>,
-    charges: Vec<ItemKey>,
-    drones: Vec<ItemKey>,
-    fighters: Vec<ItemKey>,
-    fw_effects: Vec<ItemKey>,
-    implants: Vec<ItemKey>,
-    modules: Vec<ItemKey>,
-    proj_effects: Vec<ItemKey>,
-    services: Vec<ItemKey>,
-    rigs: Vec<ItemKey>,
-    ships: Vec<ItemKey>,
-    skills: Vec<ItemKey>,
-    stances: Vec<ItemKey>,
-    subsystems: Vec<ItemKey>,
-    sw_effects: Vec<ItemKey>,
+    boosters: Vec<UadItemKey>,
+    characters: Vec<UadItemKey>,
+    charges: Vec<UadItemKey>,
+    drones: Vec<UadItemKey>,
+    fighters: Vec<UadItemKey>,
+    fw_effects: Vec<UadItemKey>,
+    implants: Vec<UadItemKey>,
+    modules: Vec<UadItemKey>,
+    proj_effects: Vec<UadItemKey>,
+    services: Vec<UadItemKey>,
+    rigs: Vec<UadItemKey>,
+    ships: Vec<UadItemKey>,
+    skills: Vec<UadItemKey>,
+    stances: Vec<UadItemKey>,
+    subsystems: Vec<UadItemKey>,
+    sw_effects: Vec<UadItemKey>,
 }
 impl ItemKeys {
     fn from_uad(uad: &Uad) -> Self {
@@ -172,7 +172,7 @@ impl SolarSystem {
             SolarSystem::util_remove_sw_effect(&self.uad, &mut self.svc, sw_effect_key, uad_item, reuse_eupdates);
         }
     }
-    fn load_items(&mut self, item_keys: &ItemKeys, eupdates_map: RMap<ItemKey, UadEffectUpdates>) {
+    fn load_items(&mut self, item_keys: &ItemKeys, eupdates_map: RMap<UadItemKey, UadEffectUpdates>) {
         for &booster_key in item_keys.boosters.iter() {
             let booster_eupdates = eupdates_map.get(&booster_key).unwrap();
             SolarSystem::util_add_booster(&self.uad, &mut self.svc, booster_key, booster_eupdates);
@@ -282,9 +282,9 @@ impl SolarSystem {
 }
 
 fn record_projection(
-    projection_updates: &mut Vec<(ItemKey, ItemKey, AttrVal, AttrVal)>,
+    projection_updates: &mut Vec<(UadItemKey, UadItemKey, AttrVal, AttrVal)>,
     uad: &Uad,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     src_rad: AttrVal,
 ) {
     let uad_item = uad.items.get(item_key);

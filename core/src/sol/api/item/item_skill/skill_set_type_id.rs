@@ -1,16 +1,16 @@
 use crate::{
     ad,
-    def::{ItemKey, ItemTypeId},
+    def::ItemTypeId,
     err::basic::SkillEveTypeError,
     sol::{SolarSystem, api::SkillMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
     util::GetId,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_skill_a_item_id(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         a_item_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
     ) -> Result<(), SkillEveTypeError> {

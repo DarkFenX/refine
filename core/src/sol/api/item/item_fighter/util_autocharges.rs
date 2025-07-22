@@ -2,15 +2,14 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    def::ItemKey,
     sol::{SolarSystem, rprojs::RProjs},
     svc::Svc,
-    uad::{Uad, UadAutocharge, UadEffectUpdates, UadItem},
+    uad::{Uad, UadAutocharge, UadEffectUpdates, UadItem, UadItemKey},
 };
 
 struct AutochargeData {
     a_effect_id: ad::AEffectId,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     eupdates: UadEffectUpdates,
 }
 
@@ -19,7 +18,7 @@ impl SolarSystem {
         uad: &mut Uad,
         svc: &mut Svc,
         rprojs: &mut RProjs,
-        fighter_key: ItemKey,
+        fighter_key: UadItemKey,
     ) {
         // Process autocharges - start with collecting some data about fighter itself
         let uad_fighter = uad.items.get(fighter_key).get_fighter().unwrap();
@@ -113,7 +112,7 @@ impl SolarSystem {
         uad: &mut Uad,
         svc: &mut Svc,
         rprojs: &mut RProjs,
-        fighter_key: ItemKey,
+        fighter_key: UadItemKey,
         clear_fighter_acs: bool,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {

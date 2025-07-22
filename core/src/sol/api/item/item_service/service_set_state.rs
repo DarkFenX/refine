@@ -1,14 +1,13 @@
 use crate::{
-    def::ItemKey,
     misc::ServiceState,
     sol::{SolarSystem, api::ServiceMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_service_state(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         state: ServiceState,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {

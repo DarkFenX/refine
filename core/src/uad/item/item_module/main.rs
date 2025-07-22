@@ -1,11 +1,11 @@
 use crate::{
     ad,
-    def::{Count, FitKey, Idx, ItemId, ItemKey, OF},
+    def::{Count, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, ModRack, ModuleState, Spool},
     src::Src,
     uad::{
-        Uad,
+        Uad, UadFitKey, UadItemKey,
         err::ItemMutatedError,
         item::{ItemMutationData, Projs, UadEffectUpdates, UadItemBaseMutable},
     },
@@ -15,10 +15,10 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UadModule {
     base: UadItemBaseMutable,
-    fit_key: FitKey,
+    fit_key: UadFitKey,
     rack: ModRack,
     pos: Idx,
-    charge_key: Option<ItemKey>,
+    charge_key: Option<UadItemKey>,
     spool: Option<Spool>,
     projs: Projs,
 }
@@ -26,12 +26,12 @@ impl UadModule {
     pub(crate) fn new(
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         state: ModuleState,
         rack: ModRack,
         pos: Idx,
         mutation: Option<ItemMutationRequest>,
-        charge_key: Option<ItemKey>,
+        charge_key: Option<UadItemKey>,
         src: &Src,
         reuse_eupdates: &mut UadEffectUpdates,
     ) -> Self {
@@ -167,7 +167,7 @@ impl UadModule {
     pub(crate) fn set_module_state(&mut self, state: ModuleState, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
         self.base.set_a_state(state.into(), reuse_eupdates, src)
     }
-    pub(crate) fn get_fit_key(&self) -> FitKey {
+    pub(crate) fn get_fit_key(&self) -> UadFitKey {
         self.fit_key
     }
     pub(crate) fn get_rack(&self) -> ModRack {
@@ -179,10 +179,10 @@ impl UadModule {
     pub(crate) fn set_pos(&mut self, pos: Idx) {
         self.pos = pos
     }
-    pub(crate) fn get_charge_key(&self) -> Option<ItemKey> {
+    pub(crate) fn get_charge_key(&self) -> Option<UadItemKey> {
         self.charge_key
     }
-    pub(crate) fn set_charge_key(&mut self, charge_key: Option<ItemKey>) {
+    pub(crate) fn set_charge_key(&mut self, charge_key: Option<UadItemKey>) {
         self.charge_key = charge_key
     }
     pub(crate) fn get_charge_count(&self, uad: &Uad) -> Option<Count> {

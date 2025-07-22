@@ -1,9 +1,9 @@
 use super::{info_drone::get_drone_cycle_info, info_module::get_module_cycle_info, info_shared::CycleOptions};
 use crate::{
     ad,
-    def::{AttrVal, Count, ItemKey},
+    def::{AttrVal, Count},
     svc::{SvcCtx, calc::Calc},
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
     util::{InfCount, RMap},
 };
 
@@ -85,7 +85,7 @@ impl CycleInner {
 pub(in crate::svc) fn get_item_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     options: CycleOptions,
     ignore_state: bool,
 ) -> Option<RMap<ad::AEffectId, Cycle>> {

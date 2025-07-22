@@ -1,9 +1,9 @@
 use crate::{
-    def::ItemKey,
     sol::{
         SolarSystem,
         api::{Autocharge, AutochargeMut, Fighter, FighterMut, MutIter},
     },
+    uad::UadItemKey,
 };
 
 impl<'a> Fighter<'a> {
@@ -32,7 +32,7 @@ impl<'a> FighterMut<'a> {
     }
 }
 
-fn iter_autocharges(sol: &SolarSystem, fighter_key: ItemKey) -> impl Iterator<Item = Autocharge<'_>> {
+fn iter_autocharges(sol: &SolarSystem, fighter_key: UadItemKey) -> impl Iterator<Item = Autocharge<'_>> {
     sol.uad
         .items
         .get(fighter_key)

@@ -1,8 +1,9 @@
 use super::shared::is_flag_set;
 use crate::{
     ac,
-    def::{ItemId, ItemKey},
+    def::ItemId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
+    uad::UadItemKey,
     util::RSet,
 };
 
@@ -15,7 +16,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_activation_blocked_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -26,7 +27,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {

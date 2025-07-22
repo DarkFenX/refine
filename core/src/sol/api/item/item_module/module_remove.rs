@@ -1,15 +1,14 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    def::ItemKey,
     misc::RmMode,
     sol::{SolarSystem, api::ModuleMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_module(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         pos_mode: RmMode,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {

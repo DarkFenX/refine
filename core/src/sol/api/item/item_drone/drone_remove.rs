@@ -1,13 +1,12 @@
 use crate::{
-    def::ItemKey,
     sol::{SolarSystem, api::DroneMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_drone(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {
         // Remove outgoing projections

@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::Spool,
     nd::NRemoteRepGetter,
     svc::{
@@ -10,14 +10,14 @@ use crate::{
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
         vast::{StatTank, Vast},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_remote_rps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
@@ -33,7 +33,7 @@ impl Vast {
     fn get_stat_item_remote_rps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> StatTank<AttrVal> {
@@ -46,7 +46,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_remote_cps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         item_key_check(ctx, item_key)?;
@@ -60,14 +60,14 @@ impl Vast {
     fn get_stat_item_remote_cps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         ignore_state: bool,
     ) -> AttrVal {
         get_orr_item_key(ctx, calc, item_key, None, ignore_state, get_getter_cap)
     }
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), StatItemCheckError> {
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
     let uad_item = ctx.uad.items.get(item_key);
     let is_loaded = match uad_item {
         UadItem::Drone(drone) => drone.is_loaded(),
@@ -89,7 +89,7 @@ const RR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_orr_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     spool: Option<Spool>,
     ignore_state: bool,
     rep_getter_getter: fn(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter>,
@@ -111,7 +111,7 @@ fn get_orr_item_key(
 fn get_orr_effect(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect: &ad::AEffectRt,
     effect_cycle: Cycle,
     spool: Option<Spool>,

@@ -2,7 +2,7 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::EffectSpec,
     nd::{NEffect, NEffectHc},
     svc::{
@@ -12,7 +12,7 @@ use crate::{
             Location, ModifierKind, Op, RawModifier,
         },
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
     util::RMap,
 };
 
@@ -100,7 +100,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     }
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo, 1> {
     smallvec![AffectorInfo {
         item_id: ctx.uad.items.id_by_key(item_key),
         attr_id: Some(AAR_MULTIPLIER)
@@ -109,8 +109,8 @@ fn get_affector_info(ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1
 
 fn revise_on_item_add_removal(
     ctx: SvcCtx,
-    affector_key: ItemKey,
-    changed_key: ItemKey,
+    affector_key: UadItemKey,
+    changed_key: UadItemKey,
     changed_item: &UadItem,
 ) -> bool {
     match ctx.uad.items.get(affector_key).get_charge_key() {

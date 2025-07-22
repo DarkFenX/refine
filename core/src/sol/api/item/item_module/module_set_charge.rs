@@ -2,21 +2,21 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    def::{ItemKey, ItemTypeId},
+    def::ItemTypeId,
     sol::{
         SolarSystem,
         api::{ChargeMut, ModuleMut},
     },
-    uad::{UadCharge, UadEffectUpdates, UadItem},
+    uad::{UadCharge, UadEffectUpdates, UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_module_charge(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         charge_a_item_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let uad_module = self.uad.items.get(item_key).get_module().unwrap();
         let fit_key = uad_module.get_fit_key();
         let module_a_state = uad_module.get_a_state();

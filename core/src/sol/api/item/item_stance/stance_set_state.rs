@@ -1,13 +1,12 @@
 use crate::{
-    def::ItemKey,
     sol::{SolarSystem, api::StanceMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_stance_state(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         state: bool,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {

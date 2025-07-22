@@ -1,9 +1,9 @@
 use crate::{
-    def::FitKey,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, Implant, ImplantMut, MutIter},
     },
+    uad::UadFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_implants(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Implant<'_>> {
+fn iter_implants(sol: &SolarSystem, fit_key: UadFitKey) -> impl ExactSizeIterator<Item = Implant<'_>> {
     sol.uad
         .fits
         .get(fit_key)

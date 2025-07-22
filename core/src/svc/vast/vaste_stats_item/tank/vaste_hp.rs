@@ -1,7 +1,7 @@
 use super::shared::item_check;
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     nd::{NLocalRepGetter, NRemoteRepGetter},
     svc::{
         SvcCtx,
@@ -10,7 +10,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
     util::{InfCount, RMapRMap, RMapRMapRMap},
 };
 
@@ -25,7 +25,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<StatTank<StatLayerHp>, StatItemCheckError> {
         let uad_item = ctx.uad.items.get(item_key);
         item_check(item_key, uad_item)?;
@@ -35,7 +35,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
     ) -> StatTank<StatLayerHp> {
         // Buffer - if item is not loaded, fetching those will fail
@@ -87,7 +87,7 @@ const ANCIL_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_local_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    ancil_data: &RMapRMap<ItemKey, ad::AEffectId, NLocalRepGetter>,
+    ancil_data: &RMapRMap<UadItemKey, ad::AEffectId, NLocalRepGetter>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     for (&item_key, item_data) in ancil_data.iter() {
@@ -118,8 +118,8 @@ fn get_local_ancil_hp(
 fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projectee_item_key: ItemKey,
-    ancil_data: &RMapRMapRMap<ItemKey, ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    projectee_item_key: UadItemKey,
+    ancil_data: &RMapRMapRMap<UadItemKey, UadItemKey, ad::AEffectId, NRemoteRepGetter>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     let incoming_ancils = match ancil_data.get_l1(&projectee_item_key) {

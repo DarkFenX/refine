@@ -1,17 +1,17 @@
 use super::shared::RAH_EFFECT_ID;
 use crate::{
     ad,
-    def::{FitKey, ItemKey},
     misc::DmgKinds,
     src::Src,
     svc::calc::CalcAttrVal,
+    uad::{UadFitKey, UadItemKey},
     util::{RMap, RMapRSet},
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct RahSim {
-    pub(super) resonances: RMap<ItemKey, Option<DmgKinds<CalcAttrVal>>>,
-    pub(super) by_fit: RMapRSet<FitKey, ItemKey>,
+    pub(super) resonances: RMap<UadItemKey, Option<DmgKinds<CalcAttrVal>>>,
+    pub(super) by_fit: RMapRSet<UadFitKey, UadItemKey>,
     pub(super) cycle_time_a_attr_id: Option<ad::AAttrId>,
     pub(super) sim_running: bool,
 }

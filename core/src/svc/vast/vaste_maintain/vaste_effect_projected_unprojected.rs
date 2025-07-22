@@ -1,18 +1,17 @@
 use crate::{
     ac, ad,
-    def::ItemKey,
     misc::{AttrSpec, EffectSpec},
     svc::{efuncs, vast::Vast},
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 impl Vast {
     pub(in crate::svc) fn effect_projected(
         &mut self,
-        projector_key: ItemKey,
+        projector_key: UadItemKey,
         projector_item: &UadItem,
         a_effect: &ad::AEffectRt,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
         if a_effect.ae.category == ac::effcats::TARGET {
@@ -70,10 +69,10 @@ impl Vast {
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
-        projector_key: ItemKey,
+        projector_key: UadItemKey,
         projector_item: &UadItem,
         a_effect: &ad::AEffectRt,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
         if a_effect.ae.category == ac::effcats::TARGET {

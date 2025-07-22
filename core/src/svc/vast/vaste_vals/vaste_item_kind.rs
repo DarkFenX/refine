@@ -2,8 +2,9 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    def::{ItemId, ItemKey},
+    def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
+    uad::UadItemKey,
     util::RSet,
 };
 
@@ -22,7 +23,7 @@ pub struct ValItemKindItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<ItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<UadItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.item_kind.is_empty(),
             false => self.item_kind.difference(kfs).next().is_none(),
@@ -31,7 +32,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_item_kind_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValItemKindFail> {
         let item_kinds: HashMap<_, _> = self

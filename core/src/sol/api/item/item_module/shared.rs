@@ -1,10 +1,9 @@
 use crate::{
-    def::FitKey,
     misc::ModRack,
-    uad::{Fits, ItemVec},
+    uad::{UadFitKey, UadFits, UadItemVec},
 };
 
-pub(super) fn get_fit_rack(uad_fits: &Fits, fit_key: FitKey, rack: ModRack) -> &ItemVec {
+pub(super) fn get_fit_rack(uad_fits: &UadFits, fit_key: UadFitKey, rack: ModRack) -> &UadItemVec {
     let uad_fit = uad_fits.get(fit_key);
     match rack {
         ModRack::High => &uad_fit.mods_high,
@@ -13,7 +12,7 @@ pub(super) fn get_fit_rack(uad_fits: &Fits, fit_key: FitKey, rack: ModRack) -> &
     }
 }
 
-pub(super) fn get_fit_rack_mut(uad_fits: &mut Fits, fit_key: FitKey, rack: ModRack) -> &mut ItemVec {
+pub(super) fn get_fit_rack_mut(uad_fits: &mut UadFits, fit_key: UadFitKey, rack: ModRack) -> &mut UadItemVec {
     let uad_fit = uad_fits.get_mut(fit_key);
     match rack {
         ModRack::High => &mut uad_fit.mods_high,

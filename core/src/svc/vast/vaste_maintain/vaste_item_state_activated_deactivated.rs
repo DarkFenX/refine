@@ -1,12 +1,12 @@
 use crate::{
     ad,
-    def::{ItemKey, OF},
+    def::OF,
     svc::vast::Vast,
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_state_activated(&mut self, item_key: ItemKey, item: &UadItem, a_state: &ad::AState) {
+    pub(in crate::svc) fn item_state_activated(&mut self, item_key: UadItemKey, item: &UadItem, a_state: &ad::AState) {
         if let ad::AState::Online = a_state {
             match item {
                 UadItem::Drone(drone) => {
@@ -25,7 +25,12 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn item_state_deactivated(&mut self, item_key: &ItemKey, item: &UadItem, a_state: &ad::AState) {
+    pub(in crate::svc) fn item_state_deactivated(
+        &mut self,
+        item_key: &UadItemKey,
+        item: &UadItem,
+        a_state: &ad::AState,
+    ) {
         if let ad::AState::Online = a_state {
             match item {
                 UadItem::Drone(drone) => {

@@ -17,7 +17,3 @@ pub type AttrVal = OF<f64>;
 pub type Count = u32;
 pub type Idx = usize;
 pub type SlotIndex = i32;
-// Internal-only entity IDs
-pub(crate) type ItemKey = usize;
-pub(crate) type FitKey = usize;
-pub(crate) type FleetKey = usize;

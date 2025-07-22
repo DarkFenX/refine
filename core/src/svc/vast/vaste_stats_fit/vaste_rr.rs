@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::Spool,
     nd::NRemoteRepGetter,
     svc::{
@@ -9,6 +9,7 @@ use crate::{
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         vast::{StatTank, VastFitData},
     },
+    uad::UadItemKey,
     util::RMapRMap,
 };
 
@@ -39,7 +40,7 @@ fn get_orrps(
     ctx: SvcCtx,
     calc: &mut Calc,
     spool: Option<Spool>,
-    fit_data: &RMapRMap<ItemKey, ad::AEffectId, NRemoteRepGetter>,
+    fit_data: &RMapRMap<UadItemKey, ad::AEffectId, NRemoteRepGetter>,
 ) -> AttrVal {
     let mut rps = OF(0.0);
     for (&item_key, item_data) in fit_data.iter() {

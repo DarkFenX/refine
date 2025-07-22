@@ -1,13 +1,13 @@
 use crate::{
-    def::FitKey,
     err::basic::FitDpsProfileFoundError,
     sol::{SolarSystem, api::FitMut},
+    uad::UadFitKey,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fit_rah_incoming_dps(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
     ) -> Result<(), FitDpsProfileFoundError> {
         let fit = self.uad.fits.get_mut(fit_key);
         let old_dps_profile = fit.rah_incoming_dps.take();

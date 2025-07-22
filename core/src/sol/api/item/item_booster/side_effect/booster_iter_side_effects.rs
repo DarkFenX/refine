@@ -3,22 +3,26 @@ use lender::{Lender, Lending};
 use super::shared::get_side_effect_chance_attr_id;
 use crate::{
     ad,
-    def::ItemKey,
     sol::{
         SolarSystem,
         api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
     },
+    uad::UadItemKey,
 };
 
 // Lending iterator for side effects
 pub struct SideEffectIter<'iter> {
     sol: &'iter mut SolarSystem,
-    key: ItemKey,
+    key: UadItemKey,
     effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
     index: usize,
 }
 impl<'iter> SideEffectIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, key: ItemKey, effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>) -> Self {
+    fn new(
+        sol: &'iter mut SolarSystem,
+        key: UadItemKey,
+        effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
+    ) -> Self {
         Self {
             sol,
             key,
@@ -67,7 +71,7 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn iter_side_effects(sol: &SolarSystem, item_key: ItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
+fn iter_side_effects(sol: &SolarSystem, item_key: UadItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
     let uad_booster = sol.uad.items.get(item_key).get_booster().unwrap();
     uad_booster
         .get_a_effect_datas()

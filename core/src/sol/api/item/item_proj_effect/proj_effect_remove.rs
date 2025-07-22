@@ -1,13 +1,12 @@
 use crate::{
-    def::ItemKey,
     sol::{SolarSystem, api::ProjEffectMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_proj_effect(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {
         // Remove outgoing projections

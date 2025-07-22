@@ -1,19 +1,19 @@
 use crate::{
-    def::{ItemId, ItemKey},
+    def::ItemId,
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
     misc::ProjRange,
     sol::{
         SolarSystem,
         api::{AddRangedProjError, DroneMut, RangedProjMut},
     },
-    uad::UadProjRange,
+    uad::{UadItemKey, UadProjRange},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_drone_proj(
         &mut self,
-        item_key: ItemKey,
-        projectee_key: ItemKey,
+        item_key: UadItemKey,
+        projectee_key: UadItemKey,
         range: ProjRange,
     ) -> Result<(), AddRangedProjError> {
         // Check projector

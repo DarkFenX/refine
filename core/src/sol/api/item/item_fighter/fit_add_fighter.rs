@@ -1,22 +1,22 @@
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId},
+    def::ItemTypeId,
     misc::MinionState,
     sol::{
         SolarSystem,
         api::{FighterMut, FitMut},
     },
-    uad::{UadEffectUpdates, UadFighter, UadItem},
+    uad::{UadEffectUpdates, UadFighter, UadFitKey, UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_fighter(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         a_item_id: ad::AItemId,
         state: MinionState,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         let item_id = self.uad.items.alloc_id();
         let uad_fighter = UadFighter::new(item_id, a_item_id, fit_key, state, &self.uad.src, reuse_eupdates);

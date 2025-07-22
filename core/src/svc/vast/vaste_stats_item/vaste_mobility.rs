@@ -2,14 +2,14 @@ use ordered_float::Float;
 
 use crate::{
     ac,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     svc::{
         SvcCtx,
         calc::Calc,
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
         vast::Vast,
     },
-    uad::{ShipKind, UadItem},
+    uad::{ShipKind, UadItem, UadItemKey},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -19,24 +19,24 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_speed_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         item_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_speed_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> AttrVal {
+    fn get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> AttrVal {
         calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_VELOCITY)
             .unwrap()
     }
     pub(in crate::svc) fn get_stat_item_agility_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+    fn get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> Option<AttrVal> {
         let agility = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::AGILITY)
             .unwrap();
@@ -52,17 +52,17 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_align_time_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_align_time_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey) -> Option<AttrVal> {
+    fn get_stat_item_align_time_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> Option<AttrVal> {
         Vast::get_stat_item_agility_unchecked(ctx, calc, item_key).map(|v| v.ceil())
     }
 }
 
-fn item_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), StatItemCheckError> {
+fn item_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
     let uad_item = ctx.uad.items.get(item_key);
     let is_loaded = match uad_item {
         UadItem::Drone(uad_drone) => uad_drone.is_loaded(),

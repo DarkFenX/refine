@@ -1,15 +1,14 @@
 use crate::{
     ac, ad,
-    def::ItemKey,
     misc::ModuleState,
     svc::vast::{ValModuleStateModuleInfo, Vast},
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 impl Vast {
     pub(in crate::svc) fn item_state_activated_loaded(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
         a_state: &ad::AState,
     ) {
@@ -164,7 +163,7 @@ impl Vast {
     }
     pub(in crate::svc) fn item_state_deactivated_loaded(
         &mut self,
-        item_key: &ItemKey,
+        item_key: &UadItemKey,
         item: &UadItem,
         a_state: &ad::AState,
     ) {

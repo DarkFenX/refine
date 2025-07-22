@@ -1,20 +1,20 @@
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId},
+    def::ItemTypeId,
     sol::{
         SolarSystem,
         api::{FitMut, ImplantMut},
     },
-    uad::{UadEffectUpdates, UadImplant, UadItem},
+    uad::{UadEffectUpdates, UadFitKey, UadImplant, UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_implant(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         a_item_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         let item_id = self.uad.items.alloc_id();
         let uad_implant = UadImplant::new(item_id, a_item_id, fit_key, true, &self.uad.src, reuse_eupdates);

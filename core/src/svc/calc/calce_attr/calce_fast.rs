@@ -5,14 +5,14 @@ use itertools::Itertools;
 use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     misc::SecZone,
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
         err::KeyedItemLoadedError,
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
     util::{RMap, round},
 };
 
@@ -21,7 +21,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_extra_opt_opt(
         &mut self,
         ctx: SvcCtx,
-        item_key: Option<ItemKey>,
+        item_key: Option<UadItemKey>,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
         item_key.and_then(|item_key| self.get_item_attr_val_extra_opt(ctx, item_key, a_attr_id))
@@ -29,7 +29,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_extra_opt(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
         Some(self.get_item_attr_val_full(ctx, item_key, a_attr_id).ok()?.extra)
@@ -37,7 +37,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_extra(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<AttrVal, KeyedItemLoadedError> {
         self.get_item_attr_val_full(ctx, item_key, a_attr_id).map(|v| v.extra)
@@ -45,7 +45,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_full(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         // Try accessing cached value
@@ -77,7 +77,7 @@ impl Calc {
     pub(in crate::svc::calc) fn get_item_attr_val_no_pp(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         let item_attr_data = match self.attrs.get_item_attr_data(&item_key) {
@@ -100,7 +100,7 @@ impl Calc {
     pub(in crate::svc) fn iter_item_attr_vals(
         &mut self,
         ctx: SvcCtx,
-        item_key: ItemKey,
+        item_key: UadItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, CalcAttrVal)> + use<>, KeyedItemLoadedError> {
         let item = ctx.uad.items.get(item_key);
         // SolItem can have attributes which are not defined on the original EVE item. This happens
@@ -143,7 +143,7 @@ impl Calc {
     fn iter_modifications(
         &mut self,
         ctx: SvcCtx,
-        item_key: &ItemKey,
+        item_key: &UadItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Modification> {
@@ -172,7 +172,7 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
+    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
         let item = ctx.uad.items.get(item_key);
         let a_attr = match ctx.uad.src.get_a_attr(a_attr_id) {
             Some(a_attr) => a_attr,

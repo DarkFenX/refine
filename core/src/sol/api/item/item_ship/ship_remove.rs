@@ -1,13 +1,13 @@
 use crate::{
-    def::{ItemKey, OF},
+    def::OF,
     sol::{SolarSystem, api::ShipMut},
-    uad::{ShipKind, UadEffectUpdates},
+    uad::{ShipKind, UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_ship(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {
         let uad_ship = self.uad.items.get(item_key).get_ship().unwrap();

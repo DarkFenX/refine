@@ -1,9 +1,12 @@
 use crate::{
     ad,
-    def::{FitKey, ItemId, ItemKey},
+    def::ItemId,
     misc::EffectMode,
     src::Src,
-    uad::item::{Projs, UadEffectUpdates, UadItemBase},
+    uad::{
+        UadFitKey, UadItemKey,
+        item::{Projs, UadEffectUpdates, UadItemBase},
+    },
     util::{Named, RMap, RSet},
 };
 
@@ -12,8 +15,8 @@ const DISABLED_STATE: ad::AState = ad::AState::Ghost;
 #[derive(Clone)]
 pub(crate) struct UadCharge {
     base: UadItemBase,
-    fit_key: FitKey,
-    cont_key: ItemKey,
+    fit_key: UadFitKey,
+    cont_key: UadItemKey,
     projs: Projs,
     // Stores container state when charge is force disabled
     stored_cont_a_state: Option<ad::AState>,
@@ -22,8 +25,8 @@ impl UadCharge {
     pub(crate) fn new(
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_key: FitKey,
-        cont_key: ItemKey,
+        fit_key: UadFitKey,
+        cont_key: UadItemKey,
         cont_a_state: ad::AState,
         force_disable: bool,
         src: &Src,
@@ -140,10 +143,10 @@ impl UadCharge {
             }
         }
     }
-    pub(crate) fn get_fit_key(&self) -> FitKey {
+    pub(crate) fn get_fit_key(&self) -> UadFitKey {
         self.fit_key
     }
-    pub(crate) fn get_cont_key(&self) -> ItemKey {
+    pub(crate) fn get_cont_key(&self) -> UadItemKey {
         self.cont_key
     }
     pub(crate) fn get_projs(&self) -> &Projs {

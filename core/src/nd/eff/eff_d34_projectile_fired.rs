@@ -1,6 +1,6 @@
 use crate::{
     AttrVal, ac, ad,
-    def::{ItemKey, OF},
+    def::OF,
     ec, ed,
     misc::{DmgKinds, Spool},
     nd::{
@@ -12,6 +12,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
+    uad::UadItemKey,
 };
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::PROJECTILE_FIRED;
@@ -40,10 +41,10 @@ pub(super) fn mk_n_effect() -> NEffect {
 fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     _projector_a_effect: &ad::AEffectRt,
     _spool: Option<Spool>,
-    _projectee_key: Option<ItemKey>,
+    _projectee_key: Option<UadItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let projector_uad_item = ctx.uad.items.get(projector_key);
     let charge_key = projector_uad_item.get_charge_key()?;

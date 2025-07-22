@@ -2,15 +2,15 @@ use itertools::chain;
 
 use crate::{
     ac, ad,
-    def::{AttrVal, FitKey, ItemKey},
+    def::AttrVal,
     misc::ModRack,
     svc::vast::{ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, ValSrqSkillInfo, Vast, VastFitData},
-    uad::{ShipKind, Uad, UadItem, UadModule},
+    uad::{ShipKind, Uad, UadFitKey, UadItem, UadItemKey, UadModule},
     util::RMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_loaded(&mut self, uad: &Uad, item_key: ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_loaded(&mut self, uad: &Uad, item_key: UadItemKey, item: &UadItem) {
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
             None => return,
@@ -333,7 +333,7 @@ impl Vast {
             _ => (),
         }
     }
-    pub(in crate::svc) fn item_unloaded(&mut self, item_key: &ItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_unloaded(&mut self, item_key: &UadItemKey, item: &UadItem) {
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
             None => return,
@@ -556,7 +556,7 @@ fn get_module_expected_kind(module: &UadModule) -> ad::AItemKind {
 }
 fn item_kind_add(
     fit_data: &mut VastFitData,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     item_kind: Option<ad::AItemKind>,
     expected_kind: ad::AItemKind,
 ) {
@@ -572,7 +572,7 @@ fn item_kind_add(
 }
 fn item_kind_remove(
     fit_data: &mut VastFitData,
-    item_key: &ItemKey,
+    item_key: &UadItemKey,
     item_kind: Option<ad::AItemKind>,
     expected_kind: ad::AItemKind,
 ) {
@@ -583,9 +583,9 @@ fn item_kind_remove(
 fn item_vs_ship_kind_add(
     uad: &Uad,
     fit_data: &mut VastFitData,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     item_cat: ad::AItemCatId,
-    fit_key: FitKey,
+    fit_key: UadFitKey,
 ) {
     let fit = uad.fits.get(fit_key);
     let ship_key = match fit.ship {
@@ -627,9 +627,9 @@ fn item_vs_ship_kind_add(
 
 fn handle_charge_group_add(
     fit_data: &mut VastFitData,
-    cont_key: ItemKey,
+    cont_key: UadItemKey,
     cont_a_item_xt: &ad::AItemXt,
-    charge_key: ItemKey,
+    charge_key: UadItemKey,
     charge_a_group_id: &ad::AItemGrpId,
 ) {
     if let Some(charge_limit) = &cont_a_item_xt.charge_limit
@@ -641,9 +641,9 @@ fn handle_charge_group_add(
 
 fn handle_charge_cont_group_add(
     fit_data: &mut VastFitData,
-    cont_key: ItemKey,
+    cont_key: UadItemKey,
     cont_a_group_id: &ad::AItemGrpId,
-    charge_key: ItemKey,
+    charge_key: UadItemKey,
     charge_a_item_xt: &ad::AItemXt,
 ) {
     if let Some(charge_cont_limit) = &charge_a_item_xt.cont_limit
@@ -655,9 +655,9 @@ fn handle_charge_cont_group_add(
 
 fn handle_charge_size_add(
     fit_data: &mut VastFitData,
-    cont_key: ItemKey,
+    cont_key: UadItemKey,
     cont_a_item_xt: &ad::AItemXt,
-    charge_key: ItemKey,
+    charge_key: UadItemKey,
     charge_a_item_xt: &ad::AItemXt,
 ) {
     // Charge size mismatch happens when parent module requires some charge size
@@ -668,9 +668,9 @@ fn handle_charge_size_add(
 
 fn handle_charge_volume_add(
     fit_data: &mut VastFitData,
-    cont_key: ItemKey,
+    cont_key: UadItemKey,
     cont_a_item_xt: &ad::AItemXt,
-    charge_key: ItemKey,
+    charge_key: UadItemKey,
     charge_a_item_xt: &ad::AItemXt,
 ) {
     if cont_a_item_xt.capacity < charge_a_item_xt.volume {

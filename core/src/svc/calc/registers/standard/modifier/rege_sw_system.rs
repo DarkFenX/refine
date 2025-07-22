@@ -1,10 +1,10 @@
 use super::{add_cmod, remove_cmod};
 use crate::{
-    def::FitKey,
     svc::{
         SvcCtx,
         calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
     },
+    uad::UadFitKey,
 };
 
 impl StandardRegister {
@@ -184,7 +184,7 @@ impl StandardRegister {
         self.rmods_sw_system.remove(&rmod);
     }
     // No need to return any ctx modifiers here, since fits being added have no items
-    pub(in crate::svc::calc) fn reg_fit_for_sw(&mut self, fit_key: FitKey) {
+    pub(in crate::svc::calc) fn reg_fit_for_sw(&mut self, fit_key: UadFitKey) {
         for rmod in self.rmods_sw_system.iter() {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(loc) => {
@@ -239,7 +239,7 @@ impl StandardRegister {
         }
     }
     // No need to return any ctx modifiers here, since fits being removed have no items
-    pub(in crate::svc::calc) fn unreg_fit_for_sw(&mut self, fit_key: FitKey) {
+    pub(in crate::svc::calc) fn unreg_fit_for_sw(&mut self, fit_key: UadFitKey) {
         for rmod in self.rmods_sw_system.iter() {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(loc) => {

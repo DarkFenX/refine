@@ -15,18 +15,19 @@ use super::{
     tick_iter::RahSimTickIter,
 };
 use crate::{
-    def::{AttrVal, FitKey, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::{AttrSpec, DmgKinds, EffectSpec},
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVal},
         efuncs,
     },
+    uad::{UadFitKey, UadItemKey},
     util::{RMap, RSet},
 };
 
 impl Calc {
-    pub(super) fn rah_run_simulation(&mut self, ctx: SvcCtx, fit_key: FitKey) {
+    pub(super) fn rah_run_simulation(&mut self, ctx: SvcCtx, fit_key: UadFitKey) {
         let fit = ctx.uad.fits.get(fit_key);
         let ship_key = match fit.ship {
             Some(ship_key) => ship_key,
@@ -148,7 +149,7 @@ impl Calc {
         let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
         self.set_partial_fit_rahs_result(ctx, avg_resos, &sim_datas);
     }
-    fn get_ship_stats(&mut self, ctx: SvcCtx, ship_key: ItemKey) -> Option<RahShipStats> {
+    fn get_ship_stats(&mut self, ctx: SvcCtx, ship_key: UadItemKey) -> Option<RahShipStats> {
         let em = self
             .get_item_attr_val_full(ctx, ship_key, &ARMOR_EM_ATTR_ID)
             .ok()?
@@ -187,7 +188,7 @@ impl Calc {
             total_hp: shield_hp + armor_hp + hull_hp,
         })
     }
-    fn get_fit_rah_sim_datas(&mut self, ctx: SvcCtx, fit_key: &FitKey) -> BTreeMap<ItemKey, RahDataSim> {
+    fn get_fit_rah_sim_datas(&mut self, ctx: SvcCtx, fit_key: &UadFitKey) -> BTreeMap<UadItemKey, RahDataSim> {
         let mut rah_datas = BTreeMap::new();
         for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
             let rah_attrs = match self.get_rah_sim_data(ctx, item_key) {
@@ -204,7 +205,7 @@ impl Calc {
         }
         rah_datas
     }
-    fn get_rah_sim_data(&mut self, ctx: SvcCtx, item_key: ItemKey) -> Option<RahDataSim> {
+    fn get_rah_sim_data(&mut self, ctx: SvcCtx, item_key: UadItemKey) -> Option<RahDataSim> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
         let res_em = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EM_ATTR_ID).ok()?;
         let res_therm = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_THERM_ATTR_ID).ok()?;
@@ -233,12 +234,12 @@ impl Calc {
         Some(RahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_key: &FitKey, notify: bool) {
+    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_key: &UadFitKey, notify: bool) {
         for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
             self.set_rah_unadapted(ctx, item_key, notify);
         }
     }
-    fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_key: ItemKey, notify: bool) {
+    fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_key: UadItemKey, notify: bool) {
         let em = self
             .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EM_ATTR_ID)
             .unwrap_or(CalcAttrVal {
@@ -276,7 +277,7 @@ impl Calc {
         self.set_rah_result(ctx, item_key, rah_resos, notify);
     }
     // Result application methods
-    fn set_rah_result(&mut self, ctx: SvcCtx, item_key: ItemKey, resos: DmgKinds<CalcAttrVal>, notify: bool) {
+    fn set_rah_result(&mut self, ctx: SvcCtx, item_key: UadItemKey, resos: DmgKinds<CalcAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(&item_key).unwrap().replace(resos);
         if notify {
             self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
@@ -288,8 +289,8 @@ impl Calc {
     fn set_partial_fit_rahs_result(
         &mut self,
         ctx: SvcCtx,
-        resos: RMap<ItemKey, DmgKinds<AttrVal>>,
-        sim_datas: &BTreeMap<ItemKey, RahDataSim>,
+        resos: RMap<UadItemKey, DmgKinds<AttrVal>>,
+        sim_datas: &BTreeMap<UadItemKey, RahDataSim>,
     ) {
         for (&item_key, item_sim_data) in sim_datas.iter() {
             // Average resonance is what passed as resonances for this method; average resonance
@@ -391,7 +392,7 @@ fn get_next_resonances(
     resonances
 }
 
-fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<ItemKey, DmgKinds<AttrVal>> {
+fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<UadItemKey, DmgKinds<AttrVal>> {
     let mut resos_used = RMap::new();
     for sim_history_entry in sim_history {
         for item_history_entry in sim_history_entry {
@@ -428,7 +429,7 @@ fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<ItemK
 }
 
 fn estimate_initial_adaptation_ticks(
-    sim_datas: &BTreeMap<ItemKey, RahDataSim>,
+    sim_datas: &BTreeMap<UadItemKey, RahDataSim>,
     sim_history: &[Vec<RahSimHistoryEntry>],
 ) -> TickCount {
     // Get count of cycles it takes for each RAH to exhaust its highest resistance

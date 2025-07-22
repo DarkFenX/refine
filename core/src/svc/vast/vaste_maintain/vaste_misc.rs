@@ -1,9 +1,9 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
-    uad::{Uad, UadFighter, UadSkill},
+    uad::{Uad, UadFighter, UadItemKey, UadSkill},
     util::RMap,
 };
 
@@ -68,7 +68,7 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_key: ItemKey, fighter: &UadFighter) {
+    pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_key: UadItemKey, fighter: &UadFighter) {
         let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
         let a_fighter_xt = fighter.get_a_xt().unwrap();
         let count = fighter.get_count().unwrap();

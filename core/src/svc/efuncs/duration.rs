@@ -1,8 +1,9 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::EffectSpec,
     svc::{SvcCtx, calc::Calc},
+    uad::UadItemKey,
 };
 
 pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec) -> Option<AttrVal> {
@@ -13,7 +14,7 @@ pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSp
 pub(crate) fn get_effect_duration_s(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect: &ad::AEffectRt,
 ) -> Option<AttrVal> {
     let attr_id = a_effect.ae.duration_attr_id?;

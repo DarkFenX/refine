@@ -1,12 +1,13 @@
 use crate::{
     ad,
-    def::{Count, FitKey, ItemId, ItemKey},
+    def::{Count, ItemId},
     err::basic::ItemKindMatchError,
     misc::{EffectMode, Spool},
     src::Src,
     uad::{
-        Uad, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFwEffect, UadImplant,
-        UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance, UadSubsystem, UadSwEffect,
+        Uad, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFitKey, UadFwEffect,
+        UadImplant, UadItemKey, UadModule, UadProjEffect, UadRig, UadService, UadShip, UadSkill, UadStance,
+        UadSubsystem, UadSwEffect,
         item::{Autocharges, ItemMutationData, Projs, UadEffectUpdates, UadProjRange},
     },
     util::{GetId, Named, RMap, RSet},
@@ -96,7 +97,7 @@ impl UadItem {
             Self::SwEffect(sw_effect) => sw_effect.get_a_item_id(),
         }
     }
-    pub(crate) fn get_fit_key(&self) -> Option<FitKey> {
+    pub(crate) fn get_fit_key(&self) -> Option<UadFitKey> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_fit_key()),
             Self::Booster(booster) => Some(booster.get_fit_key()),
@@ -342,7 +343,7 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (ItemKey, Option<UadProjRange>)>> {
+    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (UadItemKey, Option<UadProjRange>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Charge(charge) => Some(charge.get_projs().iter()),
@@ -353,7 +354,7 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_projectees(&self) -> Option<impl ExactSizeIterator<Item = ItemKey>> {
+    pub(crate) fn iter_projectees(&self) -> Option<impl ExactSizeIterator<Item = UadItemKey>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter_projectees()),
             Self::Charge(charge) => Some(charge.get_projs().iter_projectees()),
@@ -364,7 +365,7 @@ impl UadItem {
             _ => None,
         }
     }
-    pub(crate) fn get_charge_key(&self) -> Option<ItemKey> {
+    pub(crate) fn get_charge_key(&self) -> Option<UadItemKey> {
         match self {
             Self::Module(module) => module.get_charge_key(),
             _ => None,

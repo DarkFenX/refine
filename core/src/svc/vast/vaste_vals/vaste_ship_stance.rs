@@ -1,8 +1,8 @@
 use crate::{
     ac,
-    def::{ItemId, ItemKey},
+    def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    uad::{UadFit, UadShip},
+    uad::{UadFit, UadItemKey, UadShip},
     util::RSet,
 };
 
@@ -16,7 +16,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_ship_stance_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         fit: &UadFit,
         ship: Option<&UadShip>,
     ) -> bool {
@@ -36,7 +36,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_stance_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         fit: &UadFit,
         ship: Option<&UadShip>,

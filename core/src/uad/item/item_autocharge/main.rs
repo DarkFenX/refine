@@ -1,9 +1,12 @@
 use crate::{
     ad,
-    def::{FitKey, ItemId, ItemKey},
+    def::ItemId,
     misc::EffectMode,
     src::Src,
-    uad::item::{Projs, UadEffectUpdates, UadItemBase},
+    uad::{
+        UadFitKey, UadItemKey,
+        item::{Projs, UadEffectUpdates, UadItemBase},
+    },
     util::{Named, RMap, RSet},
 };
 
@@ -12,8 +15,8 @@ const DISABLED_STATE: ad::AState = ad::AState::Ghost;
 #[derive(Clone)]
 pub(crate) struct UadAutocharge {
     base: UadItemBase,
-    fit_key: FitKey,
-    cont_key: ItemKey,
+    fit_key: UadFitKey,
+    cont_key: UadItemKey,
     cont_a_effect_id: ad::AEffectId,
     projs: Projs,
     // Stores container state when autocharge is force disabled
@@ -23,8 +26,8 @@ impl UadAutocharge {
     pub(crate) fn new(
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_key: FitKey,
-        cont_key: ItemKey,
+        fit_key: UadFitKey,
+        cont_key: UadItemKey,
         cont_a_effect_id: ad::AEffectId,
         cont_a_state: ad::AState,
         force_disable: bool,
@@ -143,10 +146,10 @@ impl UadAutocharge {
             }
         }
     }
-    pub(crate) fn get_fit_key(&self) -> FitKey {
+    pub(crate) fn get_fit_key(&self) -> UadFitKey {
         self.fit_key
     }
-    pub(crate) fn get_cont_key(&self) -> ItemKey {
+    pub(crate) fn get_cont_key(&self) -> UadItemKey {
         self.cont_key
     }
     pub(crate) fn get_cont_effect_id(&self) -> ad::AEffectId {

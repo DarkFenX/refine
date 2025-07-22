@@ -1,9 +1,9 @@
 use crate::{
-    def::FitKey,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, MutIter, Service, ServiceMut},
     },
+    uad::UadFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_services(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = Service<'_>> {
+fn iter_services(sol: &SolarSystem, fit_key: UadFitKey) -> impl ExactSizeIterator<Item = Service<'_>> {
     sol.uad
         .fits
         .get(fit_key)

@@ -1,15 +1,15 @@
-use crate::{ad, def::ItemKey, util::RMap};
+use crate::{ad, uad::UadItemKey, util::RMap};
 
 #[derive(Clone)]
 pub(crate) struct Autocharges {
-    data: RMap<ad::AEffectId, ItemKey>,
+    data: RMap<ad::AEffectId, UadItemKey>,
 }
 impl Autocharges {
     pub(in crate::uad::item) fn new() -> Self {
         Self { data: RMap::new() }
     }
     // Query methods
-    pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &ItemKey> {
+    pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &UadItemKey> {
         self.data.values()
     }
     pub(crate) fn is_empty(&self) -> bool {
@@ -19,7 +19,7 @@ impl Autocharges {
         self.data.contains_key(a_effect_id)
     }
     // Modification methods
-    pub(crate) fn set(&mut self, a_effect_id: ad::AEffectId, autocharge_key: ItemKey) {
+    pub(crate) fn set(&mut self, a_effect_id: ad::AEffectId, autocharge_key: UadItemKey) {
         self.data.insert(a_effect_id, autocharge_key);
     }
     pub(crate) fn clear(&mut self) {

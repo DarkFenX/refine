@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    def::{AttrId, ItemKey},
+    def::AttrId,
     err::basic::ItemMAttrFoundError,
     sol::{
         SolarSystem,
@@ -9,6 +9,7 @@ use crate::{
             RawMAttr, RawMAttrMut,
         },
     },
+    uad::UadItemKey,
 };
 
 impl<'a> Mutation<'a> {
@@ -76,7 +77,7 @@ impl<'a> IncompleteMutationMut<'a> {
 
 fn get_raw_mattr(
     sol: &SolarSystem,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_attr_id: ad::AAttrId,
 ) -> Result<RawMAttr<'_>, GetRawMAttrError> {
     match sol
@@ -99,7 +100,7 @@ fn get_raw_mattr(
 
 fn get_raw_mattr_mut(
     sol: &mut SolarSystem,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_attr_id: ad::AAttrId,
 ) -> Result<RawMAttrMut<'_>, GetRawMAttrError> {
     match sol

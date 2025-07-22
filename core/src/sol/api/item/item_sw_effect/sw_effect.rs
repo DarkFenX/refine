@@ -1,18 +1,17 @@
 use crate::{
-    def::ItemKey,
     sol::{
         SolarSystem,
         api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
-    uad::UadSwEffect,
+    uad::{UadItemKey, UadSwEffect},
 };
 
 pub struct SwEffect<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) key: ItemKey,
+    pub(in crate::sol::api) key: UadItemKey,
 }
 impl<'a> SwEffect<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UadItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_state(&self) -> bool {
@@ -23,7 +22,7 @@ impl<'a> ItemSealed for SwEffect<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> ItemKey {
+    fn get_key(&self) -> UadItemKey {
         self.key
     }
 }
@@ -31,10 +30,10 @@ impl<'a> ItemCommon for SwEffect<'a> {}
 
 pub struct SwEffectMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) key: ItemKey,
+    pub(in crate::sol::api) key: UadItemKey,
 }
 impl<'a> SwEffectMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UadItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_state(&self) -> bool {
@@ -45,7 +44,7 @@ impl<'a> ItemSealed for SwEffectMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> ItemKey {
+    fn get_key(&self) -> UadItemKey {
         self.key
     }
 }
@@ -57,9 +56,9 @@ impl<'a> ItemMutSealed for SwEffectMut<'a> {
 impl<'a> ItemCommon for SwEffectMut<'a> {}
 impl<'a> ItemMutCommon for SwEffectMut<'a> {}
 
-fn get_state(sol: &SolarSystem, item_key: ItemKey) -> bool {
+fn get_state(sol: &SolarSystem, item_key: UadItemKey) -> bool {
     get_uad_sw_effect(sol, item_key).get_sw_effect_state()
 }
-fn get_uad_sw_effect(sol: &SolarSystem, item_key: ItemKey) -> &UadSwEffect {
+fn get_uad_sw_effect(sol: &SolarSystem, item_key: UadItemKey) -> &UadSwEffect {
     sol.uad.items.get(item_key).get_sw_effect().unwrap()
 }

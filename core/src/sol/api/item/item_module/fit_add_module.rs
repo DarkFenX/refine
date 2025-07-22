@@ -1,24 +1,24 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId},
+    def::ItemTypeId,
     misc::{AddMode, ItemMutationRequest, ModRack, ModuleState, RmMode},
     sol::{
         SolarSystem,
         api::{FitMut, ModuleMut},
     },
-    uad::{UadCharge, UadEffectUpdates, UadItem, UadModule},
+    uad::{UadCharge, UadEffectUpdates, UadFitKey, UadItem, UadItemKey, UadModule},
 };
 
 struct ChargeData {
-    item_key: ItemKey,
+    item_key: UadItemKey,
     eupdates: UadEffectUpdates,
 }
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_module(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         rack: ModRack,
         pos_mode: AddMode,
         a_item_id: ad::AItemId,
@@ -26,7 +26,7 @@ impl SolarSystem {
         mutation: Option<ItemMutationRequest>,
         charge_a_item_id: Option<ad::AItemId>,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let module_item_id = self.uad.items.alloc_id();
         let uad_fit_rack = get_fit_rack_mut(&mut self.uad.fits, fit_key, rack);
         // Assume some random position for now; it will be overwritten later. Record effects to

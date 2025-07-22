@@ -221,11 +221,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
 }
 
 mod private {
-    use crate::{def::ItemKey, sol::SolarSystem};
+    use crate::{sol::SolarSystem, uad::UadItemKey};
 
     pub trait ItemSealed: Sized {
         fn get_sol(&self) -> &SolarSystem;
-        fn get_key(&self) -> ItemKey;
+        fn get_key(&self) -> UadItemKey;
     }
 
     pub trait ItemMutSealed: ItemSealed {

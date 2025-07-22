@@ -1,6 +1,6 @@
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     ec,
     misc::{ResolvedSpool, Spool},
     nd::{
@@ -13,6 +13,7 @@ use crate::{
         efuncs,
         output::{Output, OutputSimple},
     },
+    uad::UadItemKey,
 };
 
 pub(super) fn mk_n_effect() -> NEffect {
@@ -33,7 +34,7 @@ pub(super) fn mk_n_effect() -> NEffect {
 fn get_resolved_spool(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect: &ad::AEffectRt,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
@@ -51,10 +52,10 @@ fn get_resolved_spool(
 fn get_spool_remote_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projector_a_effect: &ad::AEffectRt,
     spool: Option<Spool>,
-    projectee_key: Option<ItemKey>,
+    projectee_key: Option<UadItemKey>,
 ) -> Option<Output<AttrVal>> {
     let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ARMOR_DMG_AMOUNT)?;
     let delay = efuncs::get_effect_duration_s(ctx, calc, projector_key, projector_a_effect)?;

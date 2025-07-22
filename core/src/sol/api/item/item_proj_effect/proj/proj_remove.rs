@@ -1,14 +1,14 @@
 use crate::{
-    def::ItemKey,
     err::basic::ProjFoundError,
     sol::{SolarSystem, api::ProjMut},
+    uad::UadItemKey,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_proj_effect_proj(
         &mut self,
-        item_key: ItemKey,
-        projectee_key: ItemKey,
+        item_key: UadItemKey,
+        projectee_key: UadItemKey,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
         let uad_item = self.uad.items.get(item_key);

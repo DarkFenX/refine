@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemId, ItemKey, OF},
+    def::{ItemId, OF},
     misc::{EffectId, EffectSpec},
     svc::{SvcCtx, calc::Calc, efuncs, vast::VastFitData},
+    uad::UadItemKey,
     util::RSet,
 };
 
@@ -16,7 +17,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_effect_stopper_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -35,7 +36,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_effect_stopper_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValEffectStopperFail> {
@@ -65,7 +66,7 @@ fn is_any_in_effective_range(
     ctx: SvcCtx,
     calc: &mut Calc,
     stopper_especs: impl Iterator<Item = EffectSpec>,
-    stopped_item_key: ItemKey,
+    stopped_item_key: UadItemKey,
 ) -> bool {
     for stopper_espec in stopper_especs {
         match efuncs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {

@@ -1,7 +1,7 @@
 use crate::{
     ad,
-    def::ItemKey,
     svc::calc::{CtxModifier, Op},
+    uad::UadItemKey,
 };
 
 // This is an auxiliary entity to make sure that overlapping modifications are not applied. We can
@@ -10,7 +10,7 @@ use crate::{
 // test_similar_modifiers.py
 #[derive(Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) struct ModificationKey {
-    pub(in crate::svc::calc) affector_key: ItemKey,
+    pub(in crate::svc::calc) affector_key: UadItemKey,
     pub(in crate::svc::calc) affector_a_attr_id: Option<ad::AAttrId>,
     pub(in crate::svc::calc) op: Op,
 }

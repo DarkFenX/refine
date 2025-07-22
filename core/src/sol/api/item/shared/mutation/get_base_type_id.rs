@@ -1,13 +1,14 @@
 use crate::{
-    def::{ItemKey, ItemTypeId},
+    def::ItemTypeId,
     sol::{
         SolarSystem,
         api::{EffectiveMutation, EffectiveMutationMut},
     },
+    uad::UadItemKey,
 };
 
 impl SolarSystem {
-    fn api_get_base_type_id(&self, item_key: ItemKey) -> ItemTypeId {
+    fn api_get_base_type_id(&self, item_key: UadItemKey) -> ItemTypeId {
         self.uad
             .items
             .get(item_key)

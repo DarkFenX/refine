@@ -3,7 +3,8 @@ use super::{
     shared::{TICK_LIMIT, TickCount, rah_round},
 };
 use crate::{
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
+    uad::UadItemKey,
     util::RMap,
 };
 
@@ -24,16 +25,16 @@ impl RahDataIter {
 
 pub(super) struct RahSimTickData {
     pub(super) time_passed: AttrVal,
-    pub(super) cycled: Vec<ItemKey>,
-    pub(super) cycling_times: RMap<ItemKey, AttrVal>,
+    pub(super) cycled: Vec<UadItemKey>,
+    pub(super) cycling_times: RMap<UadItemKey, AttrVal>,
 }
 
 pub(super) struct RahSimTickIter {
     tick: TickCount,
-    rah_iter_data: RMap<ItemKey, RahDataIter>,
+    rah_iter_data: RMap<UadItemKey, RahDataIter>,
 }
 impl RahSimTickIter {
-    pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a ItemKey, &'a RahDataSim)>) -> Self {
+    pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a UadItemKey, &'a RahDataSim)>) -> Self {
         let mut iter_datas = RMap::with_capacity(sim_datas.len());
         for (&item_key, sim_data) in sim_datas {
             iter_datas.insert(item_key, RahDataIter::new(sim_data.info.cycle_time));

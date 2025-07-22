@@ -1,10 +1,10 @@
 use crate::{
     ad,
-    def::ItemKey,
     sol::{
         SolarSystem,
         api::{FullMAttr, FullMAttrMut},
     },
+    uad::UadItemKey,
     util::UnitInterval,
 };
 
@@ -30,7 +30,7 @@ impl<'a> FullMAttrMut<'a> {
     }
 }
 
-fn get_roll(sol: &SolarSystem, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Option<UnitInterval> {
+fn get_roll(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> Option<UnitInterval> {
     let uad_item = sol.uad.items.get(item_key);
     if let Some(roll) = uad_item.get_mutation_data().unwrap().get_attr_rolls().get(a_attr_id) {
         return Some(*roll);

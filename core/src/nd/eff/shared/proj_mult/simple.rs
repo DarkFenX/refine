@@ -1,9 +1,9 @@
 use super::shared::get_range;
 use crate::{
     ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc},
-    uad::UadProjRange,
+    uad::{UadItemKey, UadProjRange},
 };
 
 pub(crate) fn get_proj_attrs_simple(a_effect: &ad::AEffect) -> [Option<ad::AAttrId>; 2] {
@@ -13,7 +13,7 @@ pub(crate) fn get_proj_attrs_simple(a_effect: &ad::AEffect) -> [Option<ad::AAttr
 pub(crate) fn get_proj_mult_simple_s2s(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: ItemKey,
+    affector_key: UadItemKey,
     a_effect: &ad::AEffect,
     prange: UadProjRange,
 ) -> AttrVal {

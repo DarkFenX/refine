@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use super::shared::get_max_resource;
 use crate::{
     ac,
-    def::{AttrVal, ItemId, ItemKey, OF},
+    def::{AttrVal, ItemId, OF},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    uad::UadFit,
+    uad::{UadFit, UadItemKey},
     util::RSet,
 };
 
@@ -20,7 +20,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_fast(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,
@@ -39,7 +39,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UadFit,

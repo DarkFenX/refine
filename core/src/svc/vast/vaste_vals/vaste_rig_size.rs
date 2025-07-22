@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemId, ItemKey},
+    def::{AttrVal, ItemId},
     svc::{SvcCtx, vast::VastFitData},
-    uad::UadShip,
+    uad::{UadItemKey, UadShip},
     util::RSet,
 };
 
@@ -17,7 +17,7 @@ pub struct ValRigSizeFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_rig_size_fast(&self, kfs: &RSet<ItemKey>, ship: Option<&UadShip>) -> bool {
+    pub(in crate::svc::vast) fn validate_rig_size_fast(&self, kfs: &RSet<UadItemKey>, ship: Option<&UadShip>) -> bool {
         let allowed_size = match get_allowed_size(ship) {
             Some(allowed_size) => allowed_size,
             None => return true,
@@ -32,7 +32,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_rig_size_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValRigSizeFail> {

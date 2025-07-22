@@ -2,12 +2,13 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ad,
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     misc::EffectSpec,
     svc::{
         SvcCtx,
         calc::{AffectorInfo, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
     },
+    uad::UadItemKey,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -28,7 +29,7 @@ impl AffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: ItemKey) -> SmallVec<AffectorInfo, 1> {
+    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo, 1> {
         match self {
             Self::AttrId(attr_id) => smallvec![AffectorInfo {
                 item_id: ctx.uad.items.id_by_key(item_key),

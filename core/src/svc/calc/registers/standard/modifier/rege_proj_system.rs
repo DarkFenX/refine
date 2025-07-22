@@ -1,15 +1,14 @@
 use super::{add_cmod, remove_cmod};
 use crate::{
-    def::ItemKey,
     svc::calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
-    uad::{ShipKind, UadItem},
+    uad::{ShipKind, UadItem, UadItemKey},
 };
 
 impl StandardRegister {
     pub(super) fn proj_system_mod(
         &mut self,
         rmod: RawModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) -> Option<CtxModifier> {
         self.process_system_mod(rmod, projectee_key, projectee_item, true)
@@ -17,7 +16,7 @@ impl StandardRegister {
     pub(super) fn query_system_mod(
         &mut self,
         rmod: RawModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) -> Option<CtxModifier> {
         self.process_system_mod(rmod, projectee_key, projectee_item, false)
@@ -25,7 +24,7 @@ impl StandardRegister {
     fn process_system_mod(
         &mut self,
         rmod: RawModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
         register: bool,
     ) -> Option<CtxModifier> {
@@ -279,7 +278,7 @@ impl StandardRegister {
     pub(super) fn unproj_system_mod(
         &mut self,
         rmod: RawModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) -> Option<CtxModifier> {
         match rmod.affectee_filter {
@@ -506,7 +505,7 @@ impl StandardRegister {
     pub(super) fn reg_loc_root_for_proj_system(
         &mut self,
         rmod: RawModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
         self.process_system_mod(rmod, projectee_key, projectee_item, true);
@@ -514,7 +513,7 @@ impl StandardRegister {
     pub(super) fn unreg_loc_root_for_proj_system(
         &mut self,
         rmod: RawModifier,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
         match rmod.affectee_filter {

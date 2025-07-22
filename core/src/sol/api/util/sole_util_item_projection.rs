@@ -1,18 +1,17 @@
 use super::is_a_effect_projectable;
 use crate::{
-    def::ItemKey,
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadItem, UadProjRange},
+    uad::{Uad, UadItem, UadItemKey, UadProjRange},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_add_item_projection(
         uad: &Uad,
         svc: &mut Svc,
-        projector_key: ItemKey,
+        projector_key: UadItemKey,
         projector_uad_item: &UadItem,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_uad_item: &UadItem,
         range: Option<UadProjRange>,
     ) {
@@ -37,9 +36,9 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_remove_item_projection(
         uad: &Uad,
         svc: &mut Svc,
-        projector_key: ItemKey,
+        projector_key: UadItemKey,
         projector_uad_item: &UadItem,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_uad_item: &UadItem,
     ) {
         if let Some(reffs) = projector_uad_item.get_reffs() {
@@ -62,9 +61,9 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_change_item_proj_range(
         uad: &Uad,
         svc: &mut Svc,
-        projector_key: ItemKey,
+        projector_key: UadItemKey,
         projector_uad_item: &UadItem,
-        projectee_key: ItemKey,
+        projectee_key: UadItemKey,
         projectee_uad_item: &UadItem,
         range: Option<UadProjRange>,
     ) {

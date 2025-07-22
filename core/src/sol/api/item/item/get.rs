@@ -1,5 +1,5 @@
 use crate::{
-    def::{ItemId, ItemKey},
+    def::ItemId,
     err::basic::ItemFoundError,
     sol::{
         SolarSystem,
@@ -10,7 +10,7 @@ use crate::{
             Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
         },
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 impl SolarSystem {
@@ -18,7 +18,7 @@ impl SolarSystem {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         Ok(self.internal_get_item(item_key))
     }
-    pub fn internal_get_item(&self, item_key: ItemKey) -> Item<'_> {
+    pub fn internal_get_item(&self, item_key: UadItemKey) -> Item<'_> {
         let uad_item = self.uad.items.get(item_key);
         match uad_item {
             UadItem::Autocharge(_) => Item::Autocharge(Autocharge::new(self, item_key)),
@@ -44,7 +44,7 @@ impl SolarSystem {
         let item_key = self.uad.items.key_by_id_err(item_id)?;
         Ok(self.internal_get_item_mut(item_key))
     }
-    pub fn internal_get_item_mut(&mut self, item_key: ItemKey) -> ItemMut<'_> {
+    pub fn internal_get_item_mut(&mut self, item_key: UadItemKey) -> ItemMut<'_> {
         let uad_item = self.uad.items.get(item_key);
         match uad_item {
             UadItem::Autocharge(_) => ItemMut::Autocharge(AutochargeMut::new(self, item_key)),

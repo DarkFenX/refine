@@ -1,16 +1,15 @@
 use super::is_a_effect_projectable;
 use crate::{
-    def::ItemKey,
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadEffectUpdates, UadItem},
+    uad::{Uad, UadEffectUpdates, UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_process_effect_updates(
         uad: &Uad,
         svc: &mut Svc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         eupdates: &UadEffectUpdates,
     ) {
@@ -19,7 +18,7 @@ impl SolarSystem {
     pub(in crate::sol::api::util) fn util_internal_process_effect_updates_without_projs(
         uad: &Uad,
         svc: &mut Svc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         eupdates: &UadEffectUpdates,
     ) {
@@ -30,7 +29,7 @@ impl SolarSystem {
 fn process_effect_updates(
     uad: &Uad,
     svc: &mut Svc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     uad_item: &UadItem,
     eupdates: &UadEffectUpdates,
     handle_projs: bool,

@@ -1,10 +1,10 @@
 use crate::{
     ac, ad,
-    def::ItemKey,
     svc::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVal},
     },
+    uad::UadItemKey,
 };
 
 pub(in crate::svc::calc) const SEC_STATUS_ATTR: ad::AAttrId = ac::attrs::PILOT_SECURITY_STATUS;
@@ -12,7 +12,7 @@ pub(in crate::svc::calc) const SEC_STATUS_ATTR: ad::AAttrId = ac::attrs::PILOT_S
 pub(super) fn sec_status_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     mut val: CalcAttrVal,
 ) -> CalcAttrVal {
     let fit_key = ctx.uad.items.get(item_key).get_ship().unwrap().get_fit_key();
@@ -25,7 +25,7 @@ pub(super) fn sec_status_postproc_fast(
 pub(super) fn sec_status_postproc_info(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     _info: AttrValInfo,
 ) -> AttrValInfo {
     let fit_key = ctx.uad.items.get(item_key).get_ship().unwrap().get_fit_key();

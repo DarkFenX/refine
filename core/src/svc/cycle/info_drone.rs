@@ -1,16 +1,16 @@
 use super::info::{Cycle, CycleSimple};
 use crate::{
     ad,
-    def::{ItemKey, OF},
+    def::OF,
     svc::{SvcCtx, calc::Calc, efuncs},
-    uad::UadDrone,
+    uad::{UadDrone, UadItemKey},
     util::{InfCount, RMap},
 };
 
 pub(super) fn get_drone_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     uad_drone: &UadDrone,
     ignore_state: bool,
 ) -> Option<RMap<ad::AEffectId, Cycle>> {
@@ -37,7 +37,7 @@ fn fill_drone_effect_info(
     cycle_infos: &mut RMap<ad::AEffectId, Cycle>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect_id: ad::AEffectId,
 ) {
     let a_effect = match ctx.uad.src.get_a_effect(&a_effect_id) {

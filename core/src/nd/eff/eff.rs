@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     ed,
     misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
     nd::NEffectCharge,
@@ -9,24 +9,30 @@ use crate::{
         calc::{Calc, RawModifier},
         output::{Output, OutputDmgBreacher},
     },
-    uad::UadProjRange,
+    uad::{UadItemKey, UadProjRange},
     util::RMap,
 };
 
 pub(crate) type NEffectMaker = fn() -> ad::AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<ad::AItemId, ad::AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut ad::AEffect);
-pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
+pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UadItemKey, &ad::AEffect, UadProjRange) -> AttrVal;
 pub(crate) type NSpoolMultGetter =
-    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<ResolvedSpool>;
+    fn(SvcCtx, &mut Calc, UadItemKey, &ad::AEffectRt, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
-pub(crate) type NNormalDmgGetter =
-    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>, Option<ItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
+pub(crate) type NNormalDmgGetter = fn(
+    SvcCtx,
+    &mut Calc,
+    UadItemKey,
+    &ad::AEffectRt,
+    Option<Spool>,
+    Option<UadItemKey>,
+) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
-    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>) -> Option<Output<OutputDmgBreacher>>;
-pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt) -> Option<Output<AttrVal>>;
+    fn(SvcCtx, &mut Calc, UadItemKey, &ad::AEffectRt, Option<Spool>) -> Option<Output<OutputDmgBreacher>>;
+pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UadItemKey, &ad::AEffectRt) -> Option<Output<AttrVal>>;
 pub(crate) type NRemoteRepGetter =
-    fn(SvcCtx, &mut Calc, ItemKey, &ad::AEffectRt, Option<Spool>, Option<ItemKey>) -> Option<Output<AttrVal>>;
+    fn(SvcCtx, &mut Calc, UadItemKey, &ad::AEffectRt, Option<Spool>, Option<UadItemKey>) -> Option<Output<AttrVal>>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means

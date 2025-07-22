@@ -1,18 +1,18 @@
 use crate::{
-    def::{ItemKey, ItemTypeId},
+    def::ItemTypeId,
     err::basic::ItemNotMutatedError,
     misc::ItemMutationRequest,
     sol::{
         SolarSystem,
         api::{AddMutationError, ModuleMut, MutationMut},
     },
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_module_mutation(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         mutation: ItemMutationRequest,
         reuse_eupdates: &mut UadEffectUpdates,
     ) -> Result<(), ItemNotMutatedError> {

@@ -1,16 +1,15 @@
 use crate::{
     ad,
-    def::ItemKey,
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadEffectUpdates, UadItem},
+    uad::{Uad, UadEffectUpdates, UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_switch_item_state(
         uad: &Uad,
         svc: &mut Svc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
         eupdates: &UadEffectUpdates,
@@ -31,7 +30,7 @@ impl SolarSystem {
     pub(in crate::sol::api::util) fn util_internal_switch_item_state(
         uad: &Uad,
         svc: &mut Svc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
@@ -43,7 +42,7 @@ impl SolarSystem {
     pub(in crate::sol::api::util) fn util_internal_switch_item_state_without_projs(
         uad: &Uad,
         svc: &mut Svc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
@@ -56,7 +55,7 @@ impl SolarSystem {
 
 fn switch_item_state(
     svc: &mut Svc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     uad_item: &UadItem,
     old_item_a_state: ad::AState,
     new_item_a_state: ad::AState,

@@ -1,15 +1,14 @@
 use crate::{
-    def::ItemKey,
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadEffectUpdates, UadItem},
+    uad::{Uad, UadEffectUpdates, UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_add_implant(
         uad: &Uad,
         svc: &mut Svc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reuse_eupdates: &UadEffectUpdates,
     ) {
         let uad_item = uad.items.get(item_key);
@@ -18,7 +17,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn util_remove_implant(
         uad: &Uad,
         svc: &mut Svc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {

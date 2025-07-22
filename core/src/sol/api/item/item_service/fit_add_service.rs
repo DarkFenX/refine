@@ -1,22 +1,22 @@
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId},
+    def::ItemTypeId,
     misc::ServiceState,
     sol::{
         SolarSystem,
         api::{FitMut, ServiceMut},
     },
-    uad::{UadEffectUpdates, UadItem, UadService},
+    uad::{UadEffectUpdates, UadFitKey, UadItem, UadItemKey, UadService},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_service(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         a_item_id: ad::AItemId,
         state: ServiceState,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let uad_fit = self.uad.fits.get_mut(fit_key);
         let item_id = self.uad.items.alloc_id();
         let uad_service = UadService::new(item_id, a_item_id, fit_key, state, &self.uad.src, reuse_eupdates);

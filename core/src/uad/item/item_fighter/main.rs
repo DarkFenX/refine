@@ -1,16 +1,19 @@
 use crate::{
     ad,
-    def::{FitKey, ItemId},
+    def::ItemId,
     misc::{AdjustableCount, EffectMode, FighterCountOverride, MinionState},
     src::Src,
-    uad::item::{Autocharges, Projs, UadEffectUpdates, UadItemBase},
+    uad::{
+        UadFitKey,
+        item::{Autocharges, Projs, UadEffectUpdates, UadItemBase},
+    },
     util::{Named, RMap, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UadFighter {
     base: UadItemBase,
-    fit_key: FitKey,
+    fit_key: UadFitKey,
     count_override: Option<FighterCountOverride>,
     autocharges: Autocharges,
     projs: Projs,
@@ -19,7 +22,7 @@ impl UadFighter {
     pub(crate) fn new(
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         state: MinionState,
         src: &Src,
         reuse_eupdates: &mut UadEffectUpdates,
@@ -109,7 +112,7 @@ impl UadFighter {
     pub(crate) fn set_fighter_state(&mut self, state: MinionState, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
         self.base.set_a_state(state.into(), reuse_eupdates, src)
     }
-    pub(crate) fn get_fit_key(&self) -> FitKey {
+    pub(crate) fn get_fit_key(&self) -> UadFitKey {
         self.fit_key
     }
     pub(crate) fn get_count(&self) -> Option<AdjustableCount> {

@@ -1,6 +1,6 @@
 use super::shared::{get_tanking_efficiency, item_check};
 use crate::{
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     misc::{DpsProfile, Spool},
     svc::{
         SvcCtx,
@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 pub struct StatLayerErps {
@@ -23,7 +23,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
     ) -> Result<StatTank<Option<StatLayerErps>>, StatItemCheckError> {
@@ -35,7 +35,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         uad_item: &UadItem,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,

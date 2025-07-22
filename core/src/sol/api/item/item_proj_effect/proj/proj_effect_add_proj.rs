@@ -1,17 +1,18 @@
 use crate::{
-    def::{ItemId, ItemKey},
+    def::ItemId,
     err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
     sol::{
         SolarSystem,
         api::{ProjEffectMut, ProjMut},
     },
+    uad::UadItemKey,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_proj_effect_proj(
         &mut self,
-        item_key: ItemKey,
-        projectee_key: ItemKey,
+        item_key: UadItemKey,
+        projectee_key: UadItemKey,
     ) -> Result<(), AddProjError> {
         // Check projector
         let uad_item = self.uad.items.get(item_key);

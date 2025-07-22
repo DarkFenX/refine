@@ -3,20 +3,19 @@ use std::hash::{BuildHasher, Hash};
 use super::ActiveLocations;
 use crate::{
     ad,
-    def::ItemKey,
     misc::{AttrSpec, EffectSpec},
     svc::calc::{CtxModifier, RawModifier, registers::StandardRegister},
-    uad::{Fits, UadItem},
+    uad::{UadFits, UadItem, UadItemKey},
     util::MapSet,
 };
 
 impl StandardRegister {
     pub(in crate::svc::calc) fn get_mods_for_affectee(
         &self,
-        item_key: &ItemKey,
+        item_key: &UadItemKey,
         item: &UadItem,
         a_attr_id: &ad::AAttrId,
-        fits: &Fits,
+        fits: &UadFits,
     ) -> Vec<CtxModifier> {
         let fit_key = item.get_fit_key();
         let root_loc = item.get_root_loc_kind();
@@ -65,7 +64,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn get_mods_for_added_root(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
     ) -> Vec<CtxModifier> {
         if let UadItem::Ship(uad_ship) = item {
@@ -77,7 +76,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn get_mods_for_removed_root(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         item: &UadItem,
     ) -> Vec<CtxModifier> {
         let cmods = self.get_mods_for_changed_root(item);

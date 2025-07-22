@@ -2,24 +2,24 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId},
+    def::ItemTypeId,
     err::basic::SkillEveTypeError,
     misc::SkillLevel,
     sol::{
         SolarSystem,
         api::{FitMut, SkillMut},
     },
-    uad::{UadEffectUpdates, UadFitSkill, UadItem, UadSkill},
+    uad::{UadEffectUpdates, UadFitKey, UadFitSkill, UadItem, UadItemKey, UadSkill},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_skill(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         a_item_id: ad::AItemId,
         level: SkillLevel,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> Result<ItemKey, SkillEveTypeError> {
+    ) -> Result<UadItemKey, SkillEveTypeError> {
         let fit = self.uad.fits.get_mut(fit_key);
         match fit.skills.entry(a_item_id) {
             Entry::Vacant(entry) => {

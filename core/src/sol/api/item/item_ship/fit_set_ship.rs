@@ -1,20 +1,20 @@
 use crate::{
     ad,
-    def::{FitKey, ItemKey, ItemTypeId, OF},
+    def::{ItemTypeId, OF},
     sol::{
         SolarSystem,
         api::{FitMut, ShipMut},
     },
-    uad::{UadEffectUpdates, UadItem, UadShip},
+    uad::{UadEffectUpdates, UadFitKey, UadItem, UadItemKey, UadShip},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fit_ship(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         a_item_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
-    ) -> ItemKey {
+    ) -> UadItemKey {
         let uad_fit = self.uad.fits.get(fit_key);
         // Remove old ship, if it was set
         if let Some(old_item_key) = uad_fit.ship {

@@ -1,14 +1,13 @@
 use crate::{
     ad,
-    def::ItemKey,
     sol::SolarSystem,
-    uad::{UadEffectUpdates, err::ItemMutatedError},
+    uad::{UadEffectUpdates, UadItemKey, err::ItemMutatedError},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_drone_a_mutator_id(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         a_mutator_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
     ) -> Result<(), ItemMutatedError> {

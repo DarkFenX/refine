@@ -1,13 +1,14 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc},
+    uad::UadItemKey,
 };
 
 pub(super) fn get_range(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: ItemKey,
+    affector_key: UadItemKey,
     a_attr_id: Option<ad::AAttrId>,
 ) -> AttrVal {
     match a_attr_id {

@@ -1,12 +1,11 @@
 use crate::{
     ad,
-    def::ItemKey,
     misc::EffectMode,
     sol::{
         SolarSystem,
         api::{FullSideEffectMut, SideEffectMut, StubSideEffectMut},
     },
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl<'a> SideEffectMut<'a> {
@@ -39,7 +38,7 @@ impl<'a> StubSideEffectMut<'a> {
     }
 }
 
-fn set_state(sol: &mut SolarSystem, item_key: ItemKey, a_effect_id: ad::AEffectId, state: bool) {
+fn set_state(sol: &mut SolarSystem, item_key: UadItemKey, a_effect_id: ad::AEffectId, state: bool) {
     let uad_booster = sol.uad.items.get_mut(item_key).get_booster_mut().unwrap();
     let effect_mode = match state {
         true => EffectMode::StateCompliance,

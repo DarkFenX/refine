@@ -1,23 +1,26 @@
 use crate::{
     ac, ad,
-    def::{FitKey, ItemId},
+    def::ItemId,
     misc::EffectMode,
     src::Src,
-    uad::item::{ShipKind, UadEffectUpdates, UadItemBase, bool_to_state_offline, state_to_bool},
+    uad::{
+        UadFitKey,
+        item::{ShipKind, UadEffectUpdates, UadItemBase, bool_to_state_offline, state_to_bool},
+    },
     util::{Named, RMap, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UadShip {
     base: UadItemBase,
-    fit_key: FitKey,
+    fit_key: UadFitKey,
     kind: ShipKind,
 }
 impl UadShip {
     pub(crate) fn new(
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         state: bool,
         src: &Src,
         reuse_eupdates: &mut UadEffectUpdates,
@@ -108,7 +111,7 @@ impl UadShip {
     pub(crate) fn set_ship_state(&mut self, state: bool, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
         self.base.set_a_state(bool_to_state_offline(state), reuse_eupdates, src)
     }
-    pub(crate) fn get_fit_key(&self) -> FitKey {
+    pub(crate) fn get_fit_key(&self) -> UadFitKey {
         self.fit_key
     }
     pub(crate) fn get_kind(&self) -> ShipKind {

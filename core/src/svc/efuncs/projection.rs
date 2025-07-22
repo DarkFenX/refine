@@ -1,15 +1,16 @@
 use crate::{
     ad,
-    def::{AttrVal, ItemKey},
+    def::AttrVal,
     misc::EffectSpec,
     svc::{SvcCtx, calc::Calc},
+    uad::UadItemKey,
 };
 
 pub(crate) fn get_espec_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
-    projectee_key: ItemKey,
+    projectee_key: UadItemKey,
 ) -> Option<AttrVal> {
     let projector_a_effect = ctx.uad.src.get_a_effect(&projector_espec.a_effect_id)?;
     get_effect_proj_mult(ctx, calc, projector_espec.item_key, projector_a_effect, projectee_key)
@@ -18,9 +19,9 @@ pub(crate) fn get_espec_proj_mult(
 pub(crate) fn get_effect_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projector_a_effect: &ad::AEffectRt,
-    projectee_key: ItemKey,
+    projectee_key: UadItemKey,
 ) -> Option<AttrVal> {
     let prange = ctx
         .eprojs

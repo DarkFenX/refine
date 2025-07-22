@@ -1,14 +1,14 @@
 use crate::{
     ad,
-    def::{ItemKey, ItemTypeId},
+    def::ItemTypeId,
     sol::{SolarSystem, api::ChargeMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_charge_a_item_id(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         a_item_id: ad::AItemId,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {

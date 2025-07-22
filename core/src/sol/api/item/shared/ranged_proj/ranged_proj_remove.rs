@@ -1,15 +1,14 @@
 use crate::{
-    def::ItemKey,
     err::basic::ProjFoundError,
     sol::{SolarSystem, api::RangedProjMut},
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_projection(
         &mut self,
-        projector_key: ItemKey,
-        projectee_key: ItemKey,
+        projector_key: UadItemKey,
+        projectee_key: UadItemKey,
     ) -> Result<(), ProjFoundError> {
         let projector_uad_item = self.uad.items.get(projector_key);
         match projector_uad_item {

@@ -1,9 +1,9 @@
 use crate::{
-    def::FitKey,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, FwEffect, FwEffectMut, MutIter},
     },
+    uad::UadFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_fw_effects(sol: &SolarSystem, fit_key: FitKey) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
+fn iter_fw_effects(sol: &SolarSystem, fit_key: UadFitKey) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
     sol.uad
         .fits
         .get(fit_key)

@@ -1,13 +1,12 @@
 use crate::{
-    def::ItemKey,
     sol::{SolarSystem, api::ImplantMut},
-    uad::UadEffectUpdates,
+    uad::{UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_implant(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {
         let uad_item = self.uad.items.get(item_key);

@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemId, ItemKey, ItemTypeId},
+    def::{ItemId, ItemTypeId},
     misc::SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
+    uad::UadItemKey,
     util::RSet,
 };
 
@@ -22,7 +23,7 @@ pub struct ValSrqSkillInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<ItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<UadItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.srqs_missing.is_empty(),
             false => self.srqs_missing.difference(kfs).next().is_none(),
@@ -31,7 +32,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_skill_reqs_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValSrqFail> {
         let items: HashMap<_, _> = self

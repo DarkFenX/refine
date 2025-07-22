@@ -2,10 +2,10 @@ use std::collections::HashMap;
 
 use crate::{
     ac,
-    def::{ItemId, ItemKey},
+    def::ItemId,
     misc::SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
-    uad::UadFit,
+    uad::{UadFit, UadItemKey},
     util::RSet,
 };
 
@@ -19,7 +19,7 @@ pub struct ValOverloadSkillFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<ItemKey>, fit: &UadFit) -> bool {
+    pub(in crate::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<UadItemKey>, fit: &UadFit) -> bool {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
@@ -34,7 +34,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_overload_skill_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         fit: &UadFit,
     ) -> Option<ValOverloadSkillFail> {

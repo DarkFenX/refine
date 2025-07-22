@@ -1,22 +1,25 @@
 use crate::{
     ad,
-    def::{FitKey, ItemId},
+    def::ItemId,
     misc::{EffectMode, ServiceState},
     src::Src,
-    uad::item::{UadEffectUpdates, UadItemBase},
+    uad::{
+        UadFitKey,
+        item::{UadEffectUpdates, UadItemBase},
+    },
     util::{Named, RMap, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UadService {
     base: UadItemBase,
-    fit_key: FitKey,
+    fit_key: UadFitKey,
 }
 impl UadService {
     pub(crate) fn new(
         item_id: ItemId,
         a_item_id: ad::AItemId,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
         state: ServiceState,
         src: &Src,
         reuse_eupdates: &mut UadEffectUpdates,
@@ -108,7 +111,7 @@ impl UadService {
     pub(crate) fn set_service_state(&mut self, state: ServiceState, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
         self.base.set_a_state(state.into(), reuse_eupdates, src)
     }
-    pub(crate) fn get_fit_key(&self) -> FitKey {
+    pub(crate) fn get_fit_key(&self) -> UadFitKey {
         self.fit_key
     }
 }

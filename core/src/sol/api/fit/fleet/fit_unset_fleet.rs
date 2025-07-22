@@ -1,13 +1,13 @@
 use crate::{
-    def::FitKey,
     err::basic::FitFleetAssignedError,
     sol::{SolarSystem, api::FitMut},
+    uad::UadFitKey,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_unset_fit_fleet(
         &mut self,
-        fit_key: FitKey,
+        fit_key: UadFitKey,
     ) -> Result<(), FitFleetAssignedError> {
         let uad_fit = self.uad.fits.get(fit_key);
         let fleet_key = match uad_fit.fleet {

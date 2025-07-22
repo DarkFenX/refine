@@ -1,9 +1,9 @@
 use crate::{
-    def::FitKey,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, Fleet, FleetMut},
     },
+    uad::UadFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_fleet(sol: &SolarSystem, fit_key: FitKey) -> Option<Fleet<'_>> {
+fn get_fleet(sol: &SolarSystem, fit_key: UadFitKey) -> Option<Fleet<'_>> {
     let uad_fleet = sol.uad.fits.get(fit_key);
     uad_fleet.fleet.map(|fleet_key| Fleet::new(sol, fleet_key))
 }

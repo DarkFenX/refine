@@ -3,4 +3,4 @@ use crate::{
     uad::{container::UadEntityContainer, fleet::UadFleet},
 };
 
-pub(crate) type Fleets = UadEntityContainer<UadFleet, FleetFoundError>;
+pub(crate) type UadFleets = UadEntityContainer<UadFleet, FleetFoundError>;

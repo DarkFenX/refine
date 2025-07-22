@@ -1,11 +1,12 @@
 use crate::{
     ad,
-    def::{AttrId, ItemKey},
+    def::AttrId,
     err::basic::{ItemMAttrMutatorError, ItemMAttrValueError},
     sol::{
         SolarSystem,
         api::{EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrMut},
     },
+    uad::UadItemKey,
 };
 
 impl<'a> EffectiveMutation<'a> {
@@ -29,7 +30,7 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-fn check_prereqs(sol: &SolarSystem, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Result<(), GetFullMAttrError> {
+fn check_prereqs(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> Result<(), GetFullMAttrError> {
     let uad_item = sol.uad.items.get(item_key);
     let mutation_cache = uad_item.get_mutation_data().unwrap().get_cache().unwrap();
     if !mutation_cache.get_a_mutator().attr_mods.contains_key(a_attr_id) {

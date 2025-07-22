@@ -1,11 +1,11 @@
 use crate::{
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::{DmgKinds, DpsProfile},
     svc::{
         SvcCtx,
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
     },
-    uad::UadItem,
+    uad::{UadItem, UadItemKey},
 };
 
 pub struct StatTank<T> {
@@ -14,12 +14,12 @@ pub struct StatTank<T> {
     pub hull: T,
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: ItemKey) -> Result<(), StatItemCheckError> {
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
     let uad_item = ctx.uad.items.get(item_key);
     item_check(item_key, uad_item)
 }
 
-pub(super) fn item_check(item_key: ItemKey, uad_item: &UadItem) -> Result<(), StatItemCheckError> {
+pub(super) fn item_check(item_key: UadItemKey, uad_item: &UadItem) -> Result<(), StatItemCheckError> {
     let is_loaded = match uad_item {
         UadItem::Drone(uad_drone) => uad_drone.is_loaded(),
         UadItem::Fighter(uad_fighter) => uad_fighter.is_loaded(),

@@ -1,8 +1,7 @@
 use crate::{
-    def::ItemKey,
     sol::{SolarSystem, rprojs::RProjs},
     svc::Svc,
-    uad::{Uad, UadEffectUpdates},
+    uad::{Uad, UadEffectUpdates, UadItemKey},
 };
 
 impl SolarSystem {
@@ -10,7 +9,7 @@ impl SolarSystem {
         uad: &mut Uad,
         svc: &mut Svc,
         rprojs: &mut RProjs,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reuse_eupdates: &UadEffectUpdates,
     ) {
         // Process fighter itself
@@ -23,7 +22,7 @@ impl SolarSystem {
         uad: &mut Uad,
         svc: &mut Svc,
         rprojs: &mut RProjs,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         reuse_eupdates: &mut UadEffectUpdates,
     ) {
         // Process autocharges

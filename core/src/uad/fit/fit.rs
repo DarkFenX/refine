@@ -2,10 +2,11 @@ use itertools::chain;
 
 use crate::{
     ad,
-    def::{FitId, FleetKey, ItemKey},
+    def::FitId,
     misc::{DpsProfile, FitSecStatus},
     uad::{
-        fit::{ItemVec, UadFitSkill},
+        UadFleetKey, UadItemKey,
+        fit::{UadFitSkill, UadItemVec},
         item::ShipKind,
     },
     util::{GetId, Named, RMap, RSet},
@@ -15,22 +16,22 @@ use crate::{
 pub(crate) struct UadFit {
     pub(crate) id: FitId,
     pub(crate) kind: ShipKind,
-    pub(crate) fleet: Option<FleetKey>,
-    pub(crate) character: Option<ItemKey>,
+    pub(crate) fleet: Option<UadFleetKey>,
+    pub(crate) character: Option<UadItemKey>,
     pub(crate) skills: RMap<ad::AItemId, UadFitSkill>,
-    pub(crate) implants: RSet<ItemKey>,
-    pub(crate) boosters: RSet<ItemKey>,
-    pub(crate) ship: Option<ItemKey>,
-    pub(crate) stance: Option<ItemKey>,
-    pub(crate) subsystems: RSet<ItemKey>,
-    pub(crate) mods_high: ItemVec,
-    pub(crate) mods_mid: ItemVec,
-    pub(crate) mods_low: ItemVec,
-    pub(crate) rigs: RSet<ItemKey>,
-    pub(crate) services: RSet<ItemKey>,
-    pub(crate) drones: RSet<ItemKey>,
-    pub(crate) fighters: RSet<ItemKey>,
-    pub(crate) fw_effects: RSet<ItemKey>,
+    pub(crate) implants: RSet<UadItemKey>,
+    pub(crate) boosters: RSet<UadItemKey>,
+    pub(crate) ship: Option<UadItemKey>,
+    pub(crate) stance: Option<UadItemKey>,
+    pub(crate) subsystems: RSet<UadItemKey>,
+    pub(crate) mods_high: UadItemVec,
+    pub(crate) mods_mid: UadItemVec,
+    pub(crate) mods_low: UadItemVec,
+    pub(crate) rigs: RSet<UadItemKey>,
+    pub(crate) services: RSet<UadItemKey>,
+    pub(crate) drones: RSet<UadItemKey>,
+    pub(crate) fighters: RSet<UadItemKey>,
+    pub(crate) fw_effects: RSet<UadItemKey>,
     pub(crate) sec_status: FitSecStatus,
     pub(crate) rah_incoming_dps: Option<DpsProfile>,
 }
@@ -47,9 +48,9 @@ impl UadFit {
             ship: None,
             stance: None,
             subsystems: RSet::new(),
-            mods_high: ItemVec::new(),
-            mods_mid: ItemVec::new(),
-            mods_low: ItemVec::new(),
+            mods_high: UadItemVec::new(),
+            mods_mid: UadItemVec::new(),
+            mods_low: UadItemVec::new(),
             rigs: RSet::new(),
             services: RSet::new(),
             drones: RSet::new(),
@@ -59,14 +60,14 @@ impl UadFit {
             rah_incoming_dps: None,
         }
     }
-    pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = ItemKey> {
+    pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = UadItemKey> {
         chain!(
             self.mods_high.iter_keys().copied(),
             self.mods_mid.iter_keys().copied(),
             self.mods_low.iter_keys().copied(),
         )
     }
-    pub(crate) fn all_direct_items(&self) -> Vec<ItemKey> {
+    pub(crate) fn all_direct_items(&self) -> Vec<UadItemKey> {
         // Calculate capacity
         let mut capacity = 0;
         if self.character.is_some() {
@@ -121,7 +122,7 @@ impl GetId<FitId> for UadFit {
     }
 }
 
-fn conditional_push(items: &mut Vec<ItemKey>, opt_value: Option<ItemKey>) {
+fn conditional_push(items: &mut Vec<UadItemKey>, opt_value: Option<UadItemKey>) {
     if let Some(value) = opt_value {
         items.push(value)
     }

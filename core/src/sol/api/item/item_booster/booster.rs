@@ -1,18 +1,18 @@
 use crate::{
-    def::{ItemKey, SlotIndex},
+    def::SlotIndex,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
-    uad::UadBooster,
+    uad::{UadBooster, UadItemKey},
 };
 
 pub struct Booster<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) key: ItemKey,
+    pub(in crate::sol::api) key: UadItemKey,
 }
 impl<'a> Booster<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UadItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -29,7 +29,7 @@ impl<'a> ItemSealed for Booster<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> ItemKey {
+    fn get_key(&self) -> UadItemKey {
         self.key
     }
 }
@@ -37,10 +37,10 @@ impl<'a> ItemCommon for Booster<'a> {}
 
 pub struct BoosterMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) key: ItemKey,
+    pub(in crate::sol::api) key: UadItemKey,
 }
 impl<'a> BoosterMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: ItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UadItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -61,7 +61,7 @@ impl<'a> ItemSealed for BoosterMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> ItemKey {
+    fn get_key(&self) -> UadItemKey {
         self.key
     }
 }
@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for BoosterMut<'a> {
 impl<'a> ItemCommon for BoosterMut<'a> {}
 impl<'a> ItemMutCommon for BoosterMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: ItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, item_key: UadItemKey) -> Fit<'_> {
     let fit_key = get_uad_booster(sol, item_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_slot(sol: &SolarSystem, item_key: ItemKey) -> Option<SlotIndex> {
+fn get_slot(sol: &SolarSystem, item_key: UadItemKey) -> Option<SlotIndex> {
     get_uad_booster(sol, item_key).get_a_slot()
 }
-fn get_state(sol: &SolarSystem, item_key: ItemKey) -> bool {
+fn get_state(sol: &SolarSystem, item_key: UadItemKey) -> bool {
     get_uad_booster(sol, item_key).get_booster_state()
 }
-fn get_uad_booster(sol: &SolarSystem, item_key: ItemKey) -> &UadBooster {
+fn get_uad_booster(sol: &SolarSystem, item_key: UadItemKey) -> &UadBooster {
     sol.uad.items.get(item_key).get_booster().unwrap()
 }

@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    def::{ItemGrpId, ItemId, ItemKey, ItemTypeId},
+    def::{ItemGrpId, ItemId, ItemTypeId},
     svc::{SvcCtx, vast::VastFitData},
-    uad::UadShip,
+    uad::{UadItemKey, UadShip},
     util::RSet,
 };
 
@@ -34,7 +34,11 @@ impl From<&ad::AItemShipLimit> for ValShipLimitItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<ItemKey>, ship: Option<&UadShip>) -> bool {
+    pub(in crate::svc::vast) fn validate_ship_limit_fast(
+        &self,
+        kfs: &RSet<UadItemKey>,
+        ship: Option<&UadShip>,
+    ) -> bool {
         let ship = match ship {
             Some(ship) => ship,
             None => {
@@ -65,7 +69,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_limit_verbose(
         &self,
-        kfs: &RSet<ItemKey>,
+        kfs: &RSet<UadItemKey>,
         ctx: SvcCtx,
         ship: Option<&UadShip>,
     ) -> Option<ValShipLimitFail> {

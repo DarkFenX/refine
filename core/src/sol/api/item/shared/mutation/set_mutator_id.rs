@@ -1,16 +1,16 @@
 use crate::{
-    def::{ItemKey, ItemTypeId},
+    def::ItemTypeId,
     sol::{
         SolarSystem,
         api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut},
     },
-    uad::{UadEffectUpdates, UadItem, err::ItemMutatedError},
+    uad::{UadEffectUpdates, UadItem, UadItemKey, err::ItemMutatedError},
 };
 
 impl SolarSystem {
     pub(in crate::sol) fn internal_set_mutator_id(
         &mut self,
-        item_key: ItemKey,
+        item_key: UadItemKey,
         mutator_id: ItemTypeId,
         reuse_eupdates: &mut UadEffectUpdates,
     ) -> Result<(), ItemMutatedError> {

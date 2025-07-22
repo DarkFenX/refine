@@ -1,6 +1,6 @@
 use crate::{
     ac, ad,
-    def::{AttrVal, ItemKey, OF},
+    def::{AttrVal, OF},
     misc::Spool,
     svc::{
         SvcCtx,
@@ -8,12 +8,13 @@ use crate::{
         efuncs,
         output::{Output, OutputSimple},
     },
+    uad::UadItemKey,
 };
 
 pub(crate) fn get_local_shield_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect: &ad::AEffectRt,
 ) -> Option<Output<AttrVal>> {
     get_local_rep_opc(
@@ -30,7 +31,7 @@ pub(crate) fn get_local_shield_rep_opc(
 pub(crate) fn get_local_armor_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect: &ad::AEffectRt,
 ) -> Option<Output<AttrVal>> {
     get_local_rep_opc(
@@ -47,7 +48,7 @@ pub(crate) fn get_local_armor_rep_opc(
 pub(crate) fn get_local_hull_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect: &ad::AEffectRt,
 ) -> Option<Output<AttrVal>> {
     get_local_rep_opc(
@@ -64,10 +65,10 @@ pub(crate) fn get_local_hull_rep_opc(
 pub(crate) fn get_remote_shield_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projector_a_effect: &ad::AEffectRt,
     _spool: Option<Spool>,
-    projectee_key: Option<ItemKey>,
+    projectee_key: Option<UadItemKey>,
 ) -> Option<Output<AttrVal>> {
     get_remote_rep_amount(
         ctx,
@@ -84,10 +85,10 @@ pub(crate) fn get_remote_shield_rep_opc(
 pub(crate) fn get_remote_armor_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projector_a_effect: &ad::AEffectRt,
     _spool: Option<Spool>,
-    projectee_key: Option<ItemKey>,
+    projectee_key: Option<UadItemKey>,
 ) -> Option<Output<AttrVal>> {
     get_remote_rep_amount(
         ctx,
@@ -104,10 +105,10 @@ pub(crate) fn get_remote_armor_rep_opc(
 pub(crate) fn get_remote_hull_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projector_a_effect: &ad::AEffectRt,
     _spool: Option<Spool>,
-    projectee_key: Option<ItemKey>,
+    projectee_key: Option<UadItemKey>,
 ) -> Option<Output<AttrVal>> {
     get_remote_rep_amount(
         ctx,
@@ -124,10 +125,10 @@ pub(crate) fn get_remote_hull_rep_opc(
 pub(crate) fn get_remote_cap_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projector_a_effect: &ad::AEffectRt,
     _spool: Option<Spool>,
-    projectee_key: Option<ItemKey>,
+    projectee_key: Option<UadItemKey>,
 ) -> Option<Output<AttrVal>> {
     get_remote_rep_amount(
         ctx,
@@ -144,7 +145,7 @@ pub(crate) fn get_remote_cap_rep_opc(
 fn get_local_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: ItemKey,
+    item_key: UadItemKey,
     a_effect: &ad::AEffectRt,
     rep_attr_id: &ad::AAttrId,
     limit_attr_id: &ad::AAttrId,
@@ -165,9 +166,9 @@ fn get_local_rep_opc(
 fn get_remote_rep_amount(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: ItemKey,
+    projector_key: UadItemKey,
     projector_a_effect: &ad::AEffectRt,
-    projectee_key: Option<ItemKey>,
+    projectee_key: Option<UadItemKey>,
     rep_attr_id: &ad::AAttrId,
     limit_attr_id: &ad::AAttrId,
     applied_at_start: bool,
@@ -198,7 +199,7 @@ fn get_remote_rep_amount(
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
 
-fn get_ship_attr(ctx: SvcCtx, calc: &mut Calc, item_key: ItemKey, a_attr_id: &ad::AAttrId) -> Option<AttrVal> {
+fn get_ship_attr(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> Option<AttrVal> {
     let fit_key = ctx.uad.items.get(item_key).get_fit_key()?;
     let ship_key = ctx.uad.fits.get(fit_key).ship?;
     calc.get_item_attr_val_extra_opt(ctx, ship_key, a_attr_id)

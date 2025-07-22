@@ -3,4 +3,4 @@ use crate::{
     uad::{container::UadEntityContainer, fit::UadFit},
 };
 
-pub(crate) type Fits = UadEntityContainer<UadFit, FitFoundError>;
+pub(crate) type UadFits = UadEntityContainer<UadFit, FitFoundError>;

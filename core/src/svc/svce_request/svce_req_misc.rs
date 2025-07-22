@@ -1,11 +1,10 @@
 use crate::{
-    def::ItemKey,
     misc::AdjustableCount,
     svc::{
         Svc, SvcCtx,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
     },
-    uad::Uad,
+    uad::{Uad, UadItemKey},
     util::InfCount,
 };
 
@@ -18,7 +17,7 @@ const CUR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 };
 
 impl Svc {
-    pub(crate) fn get_item_cycles_until_reload(&mut self, uad: &Uad, item_key: ItemKey) -> Option<InfCount> {
+    pub(crate) fn get_item_cycles_until_reload(&mut self, uad: &Uad, item_key: UadItemKey) -> Option<InfCount> {
         let uad_item = uad.items.get(item_key);
         let defeff_id = uad_item.get_a_defeff_id()??;
         let cycle_info = get_item_cycle_info(
@@ -30,7 +29,7 @@ impl Svc {
         )?;
         Some(cycle_info.get(&defeff_id)?.get_cycles_until_reload())
     }
-    pub(crate) fn get_effect_spool_cycle_count(&mut self, uad: &Uad, item_key: ItemKey) -> Option<AdjustableCount> {
+    pub(crate) fn get_effect_spool_cycle_count(&mut self, uad: &Uad, item_key: UadItemKey) -> Option<AdjustableCount> {
         let uad_item = uad.items.get(item_key);
         let defeff_id = uad_item.get_a_defeff_id()??;
         let defeff = uad.src.get_a_effect(&defeff_id)?;
