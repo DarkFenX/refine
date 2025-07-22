@@ -4,7 +4,7 @@ use crate::{
     ec, ed,
     misc::{DmgKinds, Spool},
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectHc,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_unrestricted_s2s},
     },
     svc::{
@@ -23,9 +23,12 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NEffectHc {
-            charge: Some(NEffectCharge::Loaded(NEffectChargeDepl::ChargeRate {
-                can_run_uncharged: false,
-            })),
+            charge: Some(NEffectCharge {
+                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                    can_run_uncharged: false,
+                }),
+                activates_charge: false,
+            }),
             get_proj_mult: Some(get_proj_mult_normal_unrestricted_s2s),
             get_normal_dmg_opc: Some(get_dmg_opc),
             ..

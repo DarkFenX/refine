@@ -1,6 +1,6 @@
 use crate::{
     ac, ad, ec,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectHc},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
 };
 
 pub(super) fn mk_n_effect() -> NEffect {
@@ -12,9 +12,12 @@ pub(super) fn mk_n_effect() -> NEffect {
             scope: ad::AEffectBuffScope::FleetShips,
         }),
         hc: NEffectHc {
-            charge: Some(NEffectCharge::Loaded(NEffectChargeDepl::ChargeRate {
-                can_run_uncharged: false,
-            })),
+            charge: Some(NEffectCharge {
+                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                    can_run_uncharged: false,
+                }),
+                activates_charge: false,
+            }),
             ..
         },
         ..

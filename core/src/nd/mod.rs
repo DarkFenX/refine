@@ -4,8 +4,8 @@
 //! entities, and entities derived from them.
 
 pub(crate) use eff::{
-    N_EFFECT_MAP, N_EFFECTS, NBreacherDmgGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectHc, NLocalRepGetter,
-    NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter,
+    N_EFFECT_MAP, N_EFFECTS, NBreacherDmgGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc,
+    NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter,
 };
 
 mod eff;

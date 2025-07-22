@@ -6,7 +6,7 @@ use super::{
 use crate::{
     ac, ad,
     def::{ItemKey, OF},
-    nd::{NEffectCharge, NEffectChargeDepl},
+    nd::{NEffectChargeDepl, NEffectChargeLoc},
     svc::{SvcCtx, calc::Calc, efuncs},
     uad::{UadItem, UadModule},
     util::{InfCount, RMap},
@@ -95,9 +95,9 @@ fn fill_module_effect_info(
     };
     // Charge count info
     let cycle_count = match a_effect.hc.charge {
-        Some(n_charge) => match n_charge {
-            NEffectCharge::Autocharge(_) => get_autocharge_cycle_count(uad_item, a_effect),
-            NEffectCharge::Loaded(charge_depletion) => match charge_depletion {
+        Some(n_charge) => match n_charge.location {
+            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(uad_item, a_effect),
+            NEffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
                 NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
                     get_charge_rate_cycle_count(ctx, uad_module, can_run_uncharged, options.reload_optionals)
                 }

@@ -1,4 +1,4 @@
-pub(crate) use effect_charge::{NEffectCharge, NEffectChargeDepl};
+pub(crate) use effect_charge::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 
 pub(in crate::nd::eff) mod damp;
 mod effect_charge;

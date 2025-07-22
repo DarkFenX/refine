@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::LazyLock};
 pub(crate) use eff::{
     NBreacherDmgGetter, NEffect, NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter,
 };
-pub(crate) use shared::{NEffectCharge, NEffectChargeDepl};
+pub(crate) use shared::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 
 use crate::ad;
 

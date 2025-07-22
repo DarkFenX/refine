@@ -14,7 +14,7 @@
 
 use crate::{
     ac, ad, ec, ed,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectHc},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
 };
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
@@ -26,8 +26,10 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(update_effect),
         hc: NEffectHc {
-            // TODO: add comment that charge needs to be specified to run on-charge effects
-            charge: Some(NEffectCharge::Loaded(NEffectChargeDepl::None)),
+            charge: Some(NEffectCharge {
+                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::None),
+                activates_charge: true,
+            }),
             ..
         },
         ..
