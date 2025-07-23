@@ -5,7 +5,7 @@ pub(crate) struct RAttr {
 }
 impl RAttr {
     pub(crate) fn new(a_attr: ad::AAttr) -> Self {
-        Self { a_attr, .. }
+        Self { a_attr }
     }
     pub(crate) fn is_penalizable(&self) -> bool {
         self.a_attr.penalizable
