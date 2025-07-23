@@ -39,6 +39,7 @@ fn get_ed_version(ed_handler: &Box<dyn ed::EveDataHandler>) -> Option<String> {
     }
 }
 
+#[allow(clippy::borrowed_box)]
 fn get_current_fingerprint(ed_version: String, ad_cacher: &Box<dyn ad::AdaptedDataCacher>) -> String {
     let adc_version = ad_cacher.get_cacher_version();
     format!("ed{ed_version}_adc{adc_version}_core{VERSION}")
@@ -50,10 +51,7 @@ fn get_relevant_a_data(
 ) -> Option<ad::AData> {
     // Failure to read EVE data version is not fatal, we just always generate adapted data in this
     // case
-    let ed_version = match ed_version {
-        Some(version) => version,
-        None => return None,
-    };
+    let ed_version = ed_version?;
     let current_fingeprint = get_current_fingerprint(ed_version, ad_cacher);
     match ad_cacher.get_cache_fingerprint() {
         Some(cache_fingerprint) => {
