@@ -125,7 +125,7 @@ fn create_src(
             HBrError::EdhInitFailed(reason)
         })?,
     );
-    let ch: Box<dyn rc::ad::AdaptedDataHandler> = match cache_folder {
+    let ch: Box<dyn rc::ad::AdaptedDataCacher> = match cache_folder {
         // Use cache handler with persistent storage if cache path is specified
         Some(cf) => Box::new(rdha::RamJsonAdh::new(cf.into(), alias)),
         // Use RAM-only cache handler if path is not specified

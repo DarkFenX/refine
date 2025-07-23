@@ -33,7 +33,7 @@ impl fmt::Debug for RamOnlyAdh {
         write!(f, "RamOnlyAdh()")
     }
 }
-impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
+impl rc::ad::AdaptedDataCacher for RamOnlyAdh {
     fn get_item(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcItemRt> {
         self.storage_items.get(id)
     }
@@ -49,7 +49,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     fn get_buff(&self, id: &rc::ad::ABuffId) -> Option<&rc::ad::ArcBuff> {
         self.storage_buffs.get(id)
     }
-    fn get_data_fingerprint(&self) -> Option<String> {
+    fn get_cache_fingerprint(&self) -> Option<String> {
         // Always return None, since it does not persist data and does not store fingerprint.
         None
     }

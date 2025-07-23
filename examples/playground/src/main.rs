@@ -16,7 +16,7 @@ use rand::{Rng, SeedableRng};
 use rc::{
     AddMode, ItemCommon, ItemMutCommon, Lender, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption,
     SkillLevel, SolarSystem, Src, VERSION,
-    ad::{AItemKind, AState, AdaptedDataHandler},
+    ad::{AItemKind, AState, AdaptedDataCacher},
     ed::EveDataHandler,
     val::ValOptions,
 };

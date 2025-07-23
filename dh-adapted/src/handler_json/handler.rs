@@ -101,7 +101,7 @@ impl fmt::Debug for RamJsonAdh {
         )
     }
 }
-impl rc::ad::AdaptedDataHandler for RamJsonAdh {
+impl rc::ad::AdaptedDataCacher for RamJsonAdh {
     fn get_item(&self, id: &rc::ad::AItemId) -> Option<&rc::ad::ArcItemRt> {
         self.storage_items.get(id)
     }
@@ -117,7 +117,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
     fn get_buff(&self, id: &rc::ad::ABuffId) -> Option<&rc::ad::ArcBuff> {
         self.storage_buffs.get(id)
     }
-    fn get_data_fingerprint(&self) -> Option<String> {
+    fn get_cache_fingerprint(&self) -> Option<String> {
         self.fingerprint.clone()
     }
     fn load_cache(&mut self) -> rc::ad::AResult<()> {

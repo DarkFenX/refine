@@ -4,6 +4,7 @@
 //! for ease of use by various reefast components. Adapted data types are assumed to be read-only by
 //! the components, anything mutable is built on top of them.
 
+pub use cacher::AdaptedDataCacher;
 pub use data::{
     AAttr, AAttrId, AAttrVal, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ACount,
     ACustomEffectId, AData, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope,
@@ -14,10 +15,9 @@ pub use data::{
 pub(crate) use data::{
     AEffectXt, AItemChargeLimit, AItemContLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind, ASlotIndex,
 };
-pub use handler::AdaptedDataHandler;
 pub use result::AResult;
 
+mod cacher;
 pub(crate) mod consts;
 mod data;
-mod handler;
 mod result;
