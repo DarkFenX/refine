@@ -1,8 +1,8 @@
 [workspace]
 members = [
     "core",
-    "dh-adapted",
-    "dh-eve",
+    "data-cacher",
+    "data-handler",
     "http",
     "examples/playground",
 ]

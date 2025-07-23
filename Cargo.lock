@@ -1464,21 +1464,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "reefast-core"
-version = "0.0.1"
-dependencies = [
- "itertools",
- "lender",
- "ordered-float",
- "rustc-hash",
- "slab",
- "smallvec 2.0.0-alpha.11",
- "thiserror 2.0.12",
- "tracing",
-]
-
-[[package]]
-name = "reefast-dh-adapted"
+name = "reefast-adc"
 version = "0.1.0"
 dependencies = [
  "ordered-float",
@@ -1493,7 +1479,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "reefast-dh-eve"
+name = "reefast-core"
+version = "0.0.1"
+dependencies = [
+ "itertools",
+ "lender",
+ "ordered-float",
+ "rustc-hash",
+ "slab",
+ "smallvec 2.0.0-alpha.11",
+ "thiserror 2.0.12",
+ "tracing",
+]
+
+[[package]]
+name = "reefast-edh"
 version = "0.1.0"
 dependencies = [
  "itertools",
@@ -1512,9 +1512,9 @@ dependencies = [
  "chrono",
  "itertools",
  "rand 0.9.1",
+ "reefast-adc",
  "reefast-core",
- "reefast-dh-adapted",
- "reefast-dh-eve",
+ "reefast-edh",
  "time",
  "tracing",
  "tracing-subscriber",
@@ -1529,9 +1529,9 @@ dependencies = [
  "config",
  "educe",
  "parking_lot",
+ "reefast-adc",
  "reefast-core",
- "reefast-dh-adapted",
- "reefast-dh-eve",
+ "reefast-edh",
  "serde",
  "serde_tuple",
  "serde_with",

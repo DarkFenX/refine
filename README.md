@@ -4,10 +4,10 @@ Rust Engine for Eve Fit Analysis, Statistics and Theorycrafting
 # Crate layout
 ### reefast-core
 Core calculation library with Rust interface.
-### reefast-dh-eve
+### reefast-edh
 Data handlers for core library, which provide access to EVE data.
-### reefast-dh-adapted
-Data handlers for core library, which provide access to adapted data. Adapted data is processed EVE data, adapted for needs of the library. One of main roles of those handlers is to persist it. 
+### reefast-adc
+Data cachers for core library, which allow it to cache adapted data. Adapted data is processed EVE data, adapted for needs of the library.
 ### reefast-http
 HTTP interface to the library.
 

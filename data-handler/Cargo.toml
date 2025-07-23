@@ -1,5 +1,5 @@
 [package]
-name = "reefast-dh-eve"
+name = "reefast-edh"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"

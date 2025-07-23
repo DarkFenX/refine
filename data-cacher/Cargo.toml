@@ -1,9 +1,9 @@
 [package]
-name = "reefast-dh-adapted"
+name = "reefast-adc"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
-description = "Adapted data handlers for reefast-core crate"
+description = "Adapted data cachers for reefast-core crate"
 license = "LGPL-3.0-or-later"
 
 [features]
