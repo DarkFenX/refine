@@ -15,7 +15,7 @@ pub(in crate::src) fn prepare_adapted_data(
                     // Cache is updated only if EVE data version is specified
                     if let Some(ed_version) = ed_version {
                         let current_fingerprint = get_current_fingerprint(ed_version, &ad_cacher);
-                        ad_cacher.write_cache(&a_data, current_fingerprint);
+                        ad_cacher.write_cache(&a_data, &current_fingerprint);
                     }
                     Ok(a_data)
                 }
@@ -40,7 +40,7 @@ fn get_ed_version(ed_handler: &Box<dyn ed::EveDataHandler>) -> Option<String> {
 }
 
 fn get_current_fingerprint(ed_version: String, ad_cacher: &Box<dyn ad::AdaptedDataCacher>) -> String {
-    let adc_version = ad_cacher.get_handler_version();
+    let adc_version = ad_cacher.get_cacher_version();
     format!("ed{ed_version}_adc{adc_version}_core{VERSION}")
 }
 

@@ -6,8 +6,8 @@ edition = "2024"
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }
-rdhe = { package = "reefast-edh", path = "../data-handler", features = ["phb-http"] }
-rdha = { package = "reefast-adc", path = "../data-cacher", features = ["json", "ram"] }
+redh = { package = "reefast-edh", path = "../data-handler", features = ["phb-http"] }
+radc = { package = "reefast-adc", path = "../data-cacher", features = ["json-zfile"] }
 axum = { version = ">=0.8.4", features = ["query"] }
 chrono = ">=0.4.41"
 config = { version = ">=0.15.13", features = ["toml"] }

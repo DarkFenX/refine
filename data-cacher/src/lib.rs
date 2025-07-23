@@ -1,25 +1,18 @@
-//! Adapted data handlers for `reefast-core`. They serve adapted data types to the library, and
-//! implement persistent cache when applicable.
+//! Adapted data cachers for `reefast-core`. They implement persistent for adapted data.
 //!
 //! ## Feature flags
 //!
-//! This library provides two different data handlers, with their availability controlled via
-//! feature flags to reduce the size of compiled code.
+//! This library provides only one cacher.
 //!
-//! - `full`: Enables both handlers.
-//! - `json`: Enables handler which stores data in RAM, and writes persistent JSON cache to disk.
-//! - `ram`: Enables handler which stores data in RAM, and does not implement persistent cache.
+//! - `full`: Enables all available cachers.
+//! - `json-zfile`: Enables cacher which writes compressed JSON cache to disk.
 
-#[cfg(feature = "json")]
-pub use handler_json::RamJsonAdh;
-#[cfg(feature = "ram")]
-pub use handler_ram::RamOnlyAdh;
+#[cfg(feature = "json-zfile")]
+pub use cacher_json::JsonZfileAdc;
 pub use util::Error;
 
-#[cfg(feature = "json")]
-mod handler_json;
-#[cfg(feature = "ram")]
-mod handler_ram;
+#[cfg(feature = "json-zfile")]
+mod cacher_json;
 mod util;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");

@@ -7,9 +7,8 @@ description = "Adapted data cachers for reefast-core crate"
 license = "LGPL-3.0-or-later"
 
 [features]
-full = ["json", "ram"]
-json = ["dep:ordered-float", "dep:serde", "dep:serde_repr", "dep:serde_tuple", "dep:serde_json", "dep:tracing", "dep:zstd"]
-ram = []
+full = ["json-zfile"]
+json-zfile = ["dep:ordered-float", "dep:serde", "dep:serde_repr", "dep:serde_tuple", "dep:serde_json", "dep:tracing", "dep:zstd"]
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }

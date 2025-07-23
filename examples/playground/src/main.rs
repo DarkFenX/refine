@@ -48,8 +48,8 @@ fn setup_logger() -> () {
 
 fn main() {
     setup_logger();
-    let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    let ch = Box::new(rdha::RamJsonAdh::new(
+    let dh = Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
+    let ch = Box::new(radc::JsonZfileAdc::new(
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
@@ -58,8 +58,8 @@ fn main() {
     test_nphoon(dh, ch);
 }
 
-fn test_random(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
-    let src = Src::new(dh, ch).unwrap();
+fn test_random(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
+    let src = Src::new(dh, Some(ch)).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let mut fit = sol_sys.add_fit();
     let mut fighter = fit.add_fighter(40562, MinionState::InBay);
@@ -70,9 +70,9 @@ fn test_random(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     println!("{:?}", autocharges);
 }
 
-fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
+fn test_crusader(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     let skill_ids = get_skill_ids(&dh);
-    let src = Src::new(dh, ch).unwrap();
+    let src = Src::new(dh, Some(ch)).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let mut fit = sol_sys.add_fit();
     let ship_id = fit.set_ship(11184).get_item_id();
@@ -129,9 +129,9 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
+fn test_nphoon(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     let skill_ids = get_skill_ids(&dh);
-    let src = Src::new(dh, ch).unwrap();
+    let src = Src::new(dh, Some(ch)).unwrap();
 
     let mut sol_sys = SolarSystem::new(src);
     sol_sys.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
@@ -631,7 +631,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn get_skill_ids(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::ed::EItemId> {
+fn get_skill_ids(dh: &Box<redh::PhbFileEdh>) -> Vec<rc::ed::EItemId> {
     let eve_data = dh.get_data().unwrap();
     let grp_ids = eve_data
         .groups

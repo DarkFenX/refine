@@ -1,14 +1,12 @@
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[error("handler does not support cache")]
-    NoCacheSupport,
-    #[cfg(feature = "json")]
+    #[cfg(feature = "json-zfile")]
     #[error("unable to open cache for reading: {0}")]
     RamJsonReadFailed(String),
-    #[cfg(feature = "json")]
+    #[cfg(feature = "json-zfile")]
     #[error("unable to decompress cache: {0}")]
     RamJsonDecompFailed(String),
-    #[cfg(feature = "json")]
+    #[cfg(feature = "json-zfile")]
     #[error("unable to parse cache data: {0}")]
     RamJsonParseFailed(String),
 }

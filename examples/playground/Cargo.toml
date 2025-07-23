@@ -6,8 +6,8 @@ edition = "2024"
 
 [dependencies]
 rc = { package = "reefast-core", path = "../../core" }
-rdhe = { package = "reefast-edh", path = "../../data-handler", features = ["phb-file"] }
-rdha = { package = "reefast-adc", path = "../../data-cacher", features = ["json"] }
+redh = { package = "reefast-edh", path = "../../data-handler", features = ["phb-file"] }
+radc = { package = "reefast-adc", path = "../../data-cacher", features = ["json-zfile"] }
 chrono = ">=0.4.41"
 itertools = ">=0.14.0"
 time = { version = ">=0.3.41", features = ["macros"] }

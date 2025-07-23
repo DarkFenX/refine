@@ -9,10 +9,10 @@ pub trait AdaptedDataCacher: std::fmt::Debug + Send + Sync {
     /// Load cache from persistent storage.
     fn load_from_cache(&mut self) -> AResult<AData>;
     /// Store passed data in cache.
-    fn write_cache(&mut self, data: &AData, fingerprint: String);
+    fn write_cache(&mut self, data: &AData, fingerprint: &str);
     /// Get adapted data cacher version.
     ///
     /// Change in version triggers adapted data cache rebuild, even if source data and core library
     /// version stayed the same.
-    fn get_handler_version(&self) -> String;
+    fn get_cacher_version(&self) -> String;
 }

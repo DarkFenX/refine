@@ -119,19 +119,17 @@ fn create_src(
     data_version: String,
     cache_folder: Option<String>,
 ) -> Result<rc::Src, HBrError> {
-    let dh = Box::new(
-        rdhe::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
+    let edh = Box::new(
+        redh::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
             let reason = format!("{e}");
             HBrError::EdhInitFailed(reason)
         })?,
     );
-    let ch: Box<dyn rc::ad::AdaptedDataCacher> = match cache_folder {
-        // Use cache handler with persistent storage if cache path is specified
-        Some(cf) => Box::new(rdha::RamJsonAdh::new(cf.into(), alias)),
-        // Use RAM-only cache handler if path is not specified
-        None => Box::new(rdha::RamOnlyAdh::new()),
+    let adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {
+        Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias))),
+        None => None,
     };
-    rc::Src::new(dh, ch).map_err(|e| {
+    rc::Src::new(edh, adc).map_err(|e| {
         let reason = format!("failed to initialize source: {e}");
         HBrError::SrcInitFailed(reason)
     })
