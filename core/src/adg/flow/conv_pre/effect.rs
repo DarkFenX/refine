@@ -48,15 +48,15 @@ pub(in crate::adg::flow::conv_pre) fn conv_effects(
             track_attr_id: e_effect.tracking_attr_id,
             chance_attr_id: e_effect.usage_chance_attr_id,
             resist_attr_id: e_effect.resist_attr_id,
-            buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
+            buff_info: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             ..
         };
         for e_modifier in e_effect.mods.iter() {
             // Process effect stoppers first
             match extract_stopper(e_modifier) {
                 Ok(Some(effect_id)) => {
-                    if !a_effect.stop_ids.contains(&ad::AEffectId::Dogma(effect_id)) {
-                        a_effect.stop_ids.push(ad::AEffectId::Dogma(effect_id))
+                    if !a_effect.stoped_effect_ids.contains(&ad::AEffectId::Dogma(effect_id)) {
+                        a_effect.stoped_effect_ids.push(ad::AEffectId::Dogma(effect_id))
                     };
                     continue;
                 }

@@ -184,7 +184,7 @@ fn get_mod_kind(a_effect: &ad::AEffectRt, a_affectee_filter: &AffecteeFilter) ->
     {
         return Some(ModifierKind::Local);
     }
-    match (a_effect.ae.category, &a_effect.ae.buff) {
+    match (a_effect.ae.category, &a_effect.ae.buff_info) {
         // Local modifications
         (ac::effcats::PASSIVE | ac::effcats::ACTIVE | ac::effcats::ONLINE | ac::effcats::OVERLOAD, None) => {
             Some(ModifierKind::Local)

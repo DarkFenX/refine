@@ -5,12 +5,7 @@ use crate::{
     util::{Named, RMap},
 };
 
-/// Represents an adapted item.
-///
-/// An item carries alot of info needed to calculate fit attributes, for example base attribute
-/// values.
 pub struct AItem {
-    /// Item ID.
     pub id: AItemId,
     /// Item group ID.
     pub grp_id: AItemGrpId,

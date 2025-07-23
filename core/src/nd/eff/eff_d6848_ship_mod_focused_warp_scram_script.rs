@@ -73,8 +73,8 @@ fn update_effect(a_effect: &mut ad::AEffect) {
         affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
     });
     // Fighter MWD and MJD stoppers
-    a_effect.stop_ids.push(ac::effects::FTR_ABIL_MWD);
-    a_effect.stop_ids.push(ac::effects::FTR_ABIL_MJD);
+    a_effect.stoped_effect_ids.push(ac::effects::FTR_ABIL_MWD);
+    a_effect.stoped_effect_ids.push(ac::effects::FTR_ABIL_MJD);
     // Effect range attribute
     a_effect.range_attr_id = Some(ac::attrs::MAX_RANGE_HIDDEN);
 }

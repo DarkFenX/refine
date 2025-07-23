@@ -15,12 +15,12 @@ impl Vast {
         projectee_item: &UadItem,
     ) {
         if a_effect.ae.category == ac::effcats::TARGET {
-            if !a_effect.ae.stop_ids.is_empty()
+            if !a_effect.ae.stoped_effect_ids.is_empty()
                 && let Some(projectee_fit_key) = projectee_item.get_fit_key()
             {
                 let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
                 let stopper = EffectSpec::new(projector_key, a_effect.ae.id);
-                for stop_a_effect_id in a_effect.ae.stop_ids.iter() {
+                for stop_a_effect_id in a_effect.ae.stoped_effect_ids.iter() {
                     let stopped = EffectSpec::new(projectee_key, *stop_a_effect_id);
                     projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
                 }
@@ -76,12 +76,12 @@ impl Vast {
         projectee_item: &UadItem,
     ) {
         if a_effect.ae.category == ac::effcats::TARGET {
-            if !a_effect.ae.stop_ids.is_empty()
+            if !a_effect.ae.stoped_effect_ids.is_empty()
                 && let Some(projectee_fit_key) = projectee_item.get_fit_key()
             {
                 let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
                 let stopper = EffectSpec::new(projector_key, a_effect.ae.id);
-                for stop_a_effect_id in a_effect.ae.stop_ids.iter() {
+                for stop_a_effect_id in a_effect.ae.stoped_effect_ids.iter() {
                     let stopped = EffectSpec::new(projectee_key, *stop_a_effect_id);
                     projectee_fit_data.stopped_effects.remove_entry(&stopped, &stopper);
                 }

@@ -60,7 +60,7 @@ fn process_buffs(
         id: effect_id,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Offline,
-        buff: Some(buff_info),
+        buff_info: Some(buff_info),
         ..
     };
     a_data.effects.insert(effect_id, effect);

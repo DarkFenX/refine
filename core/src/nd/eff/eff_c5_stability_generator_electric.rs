@@ -22,7 +22,7 @@ fn make_effect() -> ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Active,
-        buff: Some(ad::AEffectBuffInfo {
+        buff_info: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
                 ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_CAPACITOR_RECHARGE_BONUS, OF(-25.0)),
                 ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_TARGETING_AND_DSCAN_RANGE_BONUS, OF(25.0)),

@@ -26,7 +26,7 @@ impl Calc {
             };
         }
         // Buffs
-        if let Some(a_buff_info) = a_effect.ae.buff.as_ref() {
+        if let Some(a_buff_info) = a_effect.ae.buff_info.as_ref() {
             match &a_buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
                     for (buff_type_a_attr_id, buff_val_a_attr_id) in ac::extras::BUFF_STDATTRS {
@@ -97,7 +97,7 @@ impl Calc {
         };
         for a_effect_id in a_effect_ids {
             let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
-            if let Some(a_buff_info) = a_effect.ae.buff.as_ref()
+            if let Some(a_buff_info) = a_effect.ae.buff_info.as_ref()
                 && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_a_attr_id)
             {

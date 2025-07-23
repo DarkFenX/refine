@@ -10,5 +10,5 @@ pub(super) fn is_a_effect_projectable(uad_item: &UadItem, a_effect: &ad::AEffect
                 uad_item,
                 UadItem::SwEffect(_) | UadItem::FwEffect(_) | UadItem::ProjEffect(_)
             ))
-        || a_effect.ae.buff.is_some()
+        || a_effect.ae.buff_info.is_some()
 }

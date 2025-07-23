@@ -22,7 +22,7 @@ fn make_effect() -> ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Active,
-        buff: Some(ad::AEffectBuffInfo {
+        buff_info: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
                 ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SHIELD_HITPOINT_BONUS, OF(5.0)),
                 ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SHIELD_BOOSTER_BONUS, OF(5.0)),

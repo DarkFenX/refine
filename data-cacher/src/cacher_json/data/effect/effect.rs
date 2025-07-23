@@ -38,8 +38,8 @@ impl From<&rc::ad::AEffect> for CEffect {
             chance_attr_id: a_effect.chance_attr_id,
             resist_attr_id: a_effect.resist_attr_id,
             mods: a_effect.mods.iter().map(|v| v.into()).collect(),
-            stop_ids: a_effect.stop_ids.iter().map(|v| v.into()).collect(),
-            buff: a_effect.buff.as_ref().map(|v| v.into()),
+            stop_ids: a_effect.stoped_effect_ids.iter().map(|v| v.into()).collect(),
+            buff: a_effect.buff_info.as_ref().map(|v| v.into()),
         }
     }
 }
@@ -61,8 +61,8 @@ impl From<&CEffect> for rc::ad::AEffect {
             chance_attr_id: c_effect.chance_attr_id,
             resist_attr_id: c_effect.resist_attr_id,
             mods: c_effect.mods.iter().map(|v| v.into()).collect(),
-            stop_ids: c_effect.stop_ids.iter().map(|v| v.into()).collect(),
-            buff: c_effect.buff.as_ref().map(|v| v.into()),
+            stoped_effect_ids: c_effect.stop_ids.iter().map(|v| v.into()).collect(),
+            buff_info: c_effect.buff.as_ref().map(|v| v.into()),
         }
     }
 }

@@ -46,7 +46,7 @@ impl BuffRegister {
 }
 
 fn uses_default_attrs(effect: &ad::AEffectRt) -> bool {
-    match &effect.ae.buff {
+    match &effect.ae.buff_info {
         Some(buff_info) => matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs),
         _ => false,
     }

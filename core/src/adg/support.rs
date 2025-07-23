@@ -71,7 +71,7 @@ impl GSupport {
                 self.eff_buff_map.insert(e_effect_id, buff_info.clone());
             }
             if let Some(effect_maker) = n_effect.adg_make_effect_fn
-                && let Some(buff_info) = effect_maker().buff
+                && let Some(buff_info) = effect_maker().buff_info
             {
                 self.standalone_buffs.push(buff_info);
             }

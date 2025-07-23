@@ -22,7 +22,7 @@ fn make_effect() -> ad::AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: ad::AState::Active,
-        buff: Some(ad::AEffectBuffInfo {
+        buff_info: Some(ad::AEffectBuffInfo {
             source: ad::AEffectBuffSrc::Customized(vec![
                 ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_WARP_SPEED_ADD, OF(2.0)),
                 ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SCAN_RESOLUTION_BONUS, OF(25.0)),
