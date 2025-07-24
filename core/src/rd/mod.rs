@@ -9,9 +9,10 @@
 //! - Remapping some IDs to slab keys for faster access for some entities.
 
 use container::REntityContainer;
+pub use data::RItemKind;
 pub(crate) use data::{
     RAttr, RBuff, RBuffKey, RData, REffect, REffectBuffInfo, REffectBuffSrc, REffectBuffSrcCustom, REffectKey, RItem,
-    RMuta,
+    RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RMuta, RShipDroneLimit, RShipKind,
 };
 
 mod container;

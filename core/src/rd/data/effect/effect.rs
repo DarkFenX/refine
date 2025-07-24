@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad, nd,
     rd::{REffectBuffInfo, REffectKey},
     util::Named,
 };
@@ -11,12 +11,28 @@ use crate::{
 // extra effect-wide properties.
 pub(crate) struct REffect {
     a_effect: ad::AEffect,
-    stopped_effect_keys: Vec<REffectKey> = Vec::new(),
-    buff_info: Option<REffectBuffInfo> = None,
+    n_effect_hc: nd::NEffectHc,
+    stopped_effect_keys: Vec<REffectKey>,
+    r_buff_info: Option<REffectBuffInfo>,
+    is_active: bool,
+    proj_a_attr_ids: [Option<ad::AAttrId>; 2],
 }
 impl REffect {
     pub(crate) fn new(a_effect: ad::AEffect) -> Self {
-        Self { a_effect, .. }
+        let n_effect = nd::N_EFFECT_MAP.get(&a_effect.id);
+        let is_active = a_effect.state >= ad::AState::Active && a_effect.duration_attr_id.is_some();
+        let proj_a_attr_ids = n_effect
+            .and_then(|v| v.xt_get_proj_attrs)
+            .map(|get_proj_attrs| get_proj_attrs(&a_effect))
+            .unwrap_or_default();
+        Self {
+            a_effect,
+            n_effect_hc: n_effect.map(|n_effect| n_effect.hc).unwrap_or_default(),
+            stopped_effect_keys: Vec::new(),
+            r_buff_info: None,
+            is_active,
+            proj_a_attr_ids,
+        }
     }
     // Effect category ID, part of definition how effect is applied.
     pub(crate) fn get_category(&self) -> ad::AEffectCatId {
@@ -75,13 +91,21 @@ impl REffect {
     pub(crate) fn get_mods(&self) -> &Vec<ad::AEffectModifier> {
         &self.a_effect.mods
     }
+    // Active effects belong to active/target category and have duration attribute ID specified.
+    pub(crate) fn is_active(&self) -> bool {
+        self.is_active
+    }
+    // Attribute IDs which define projection range for the effect
+    pub(crate) fn get_proj_a_attr_ids(&self) -> [Option<ad::AAttrId>; 2] {
+        self.proj_a_attr_ids
+    }
     // Refers effects this effect stops on target.
     pub(crate) fn get_stopped_effect_keys(&self) -> &Vec<REffectKey> {
         &self.stopped_effect_keys
     }
     // Buff carried by the effect.
     pub(crate) fn get_buff_info(&self) -> Option<&REffectBuffInfo> {
-        self.buff_info.as_ref()
+        self.r_buff_info.as_ref()
     }
 }
 impl Named for REffect {

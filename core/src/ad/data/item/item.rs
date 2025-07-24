@@ -7,27 +7,16 @@ use crate::{
 
 pub struct AItem {
     pub id: AItemId,
-    /// Item group ID.
     pub grp_id: AItemGrpId,
-    /// Item category ID.
     pub cat_id: AItemCatId,
-    /// Attribute values of the item.
     pub attrs: RMap<AAttrId, AAttrVal>,
-    /// Refers effects of the item.
     pub effect_datas: RMap<AEffectId, AItemEffectData>,
-    /// Refers an effect which is default for the item.
     pub defeff_id: Option<AEffectId>,
-    /// Skill requirement map.
     pub srqs: RMap<AItemId, ASkillLevel>,
-    /// Max state item can take.
     pub max_state: AState,
-    /// Item effectively has this group ID for purposes of "max group fitted" validation.
     pub val_fitted_group_id: Option<AItemGrpId>,
-    /// Item effectively has this group ID for purposes of "max group online" validation.
     pub val_online_group_id: Option<AItemGrpId>,
-    /// Item effectively has this group ID for purposes of "max group active" validation.
     pub val_active_group_id: Option<AItemGrpId>,
-    /// Can ship be in wormhole space or not.
     pub disallowed_in_wspace: bool,
 }
 impl Named for AItem {
