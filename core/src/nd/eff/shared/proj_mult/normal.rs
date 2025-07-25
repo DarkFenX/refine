@@ -6,7 +6,7 @@ use crate::{
     def::{AttrVal, OF},
     rd,
     svc::{SvcCtx, calc::Calc},
-    uad::{UadItemKey, UadProjRange},
+    ud::{UItemKey, UProjRange},
 };
 
 pub(crate) fn get_proj_attrs_normal(a_effect: &ad::AEffect) -> [Option<ad::AAttrId>; 2] {
@@ -16,9 +16,9 @@ pub(crate) fn get_proj_attrs_normal(a_effect: &ad::AEffect) -> [Option<ad::AAttr
 pub(crate) fn get_proj_mult_normal_restricted_s2s(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: UadItemKey,
+    affector_key: UItemKey,
     r_effect: &rd::REffect,
-    prange: UadProjRange,
+    prange: UProjRange,
 ) -> AttrVal {
     get_proj_mult_normal(ctx, calc, affector_key, r_effect, prange.get_s2s(), true)
 }
@@ -26,9 +26,9 @@ pub(crate) fn get_proj_mult_normal_restricted_s2s(
 pub(crate) fn get_proj_mult_normal_unrestricted_s2s(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: UadItemKey,
+    affector_key: UItemKey,
     r_effect: &rd::REffect,
-    prange: UadProjRange,
+    prange: UProjRange,
 ) -> AttrVal {
     get_proj_mult_normal(ctx, calc, affector_key, r_effect, prange.get_s2s(), false)
 }
@@ -36,7 +36,7 @@ pub(crate) fn get_proj_mult_normal_unrestricted_s2s(
 fn get_proj_mult_normal(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: UadItemKey,
+    affector_key: UItemKey,
     r_effect: &rd::REffect,
     prange: AttrVal,
     restricted: bool,

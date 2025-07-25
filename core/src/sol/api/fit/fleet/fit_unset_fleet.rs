@@ -1,25 +1,25 @@
 use crate::{
     err::basic::FitFleetAssignedError,
     sol::{SolarSystem, api::FitMut},
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_unset_fit_fleet(
         &mut self,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
     ) -> Result<(), FitFleetAssignedError> {
-        let uad_fit = self.uad.fits.get(fit_key);
-        let fleet_key = match uad_fit.fleet {
+        let u_fit = self.u_data.fits.get(fit_key);
+        let fleet_key = match u_fit.fleet {
             Some(fleet_key) => fleet_key,
-            None => return Err(FitFleetAssignedError { fit_id: uad_fit.id }),
+            None => return Err(FitFleetAssignedError { fit_id: u_fit.id }),
         };
-        let uad_fleet = self.uad.fleets.get(fleet_key);
-        self.svc.notify_fit_removed_from_fleet(&self.uad, uad_fleet, &fit_key);
-        let uad_fleet = self.uad.fleets.get_mut(fleet_key);
-        uad_fleet.remove_fit(&fit_key);
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        uad_fit.fleet = None;
+        let u_fleet = self.u_data.fleets.get(fleet_key);
+        self.svc.notify_fit_removed_from_fleet(&self.u_data, u_fleet, &fit_key);
+        let u_fleet = self.u_data.fleets.get_mut(fleet_key);
+        u_fleet.remove_fit(&fit_key);
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        u_fit.fleet = None;
         Ok(())
     }
 }

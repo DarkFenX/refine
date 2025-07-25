@@ -4,13 +4,13 @@ use crate::{
     def::ItemTypeId,
     sol::api::FitMut,
     svc::vast::{ValOptions, ValOptionsInt},
-    uad::UadEffectUpdates,
+    ud::UEffectUpdates,
 };
 
 impl<'a> FitMut<'a> {
     pub fn benchmark_try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions, iterations: usize) {
         let int_val_options = ValOptionsInt::from_pub(self.sol, val_options);
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         for _ in 0..iterations {
             black_box(
                 self.sol

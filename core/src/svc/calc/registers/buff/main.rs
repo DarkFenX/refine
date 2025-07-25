@@ -1,9 +1,9 @@
-use crate::{ad, misc::AttrSpec, rd, svc::calc::RawModifier, uad::UadItemKey, util::RMapRSet};
+use crate::{ad, misc::AttrSpec, rd, svc::calc::RawModifier, ud::UItemKey, util::RMapRSet};
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 #[derive(Clone)]
 pub(in crate::svc::calc) struct BuffRegister {
-    pub(super) a_effect_ids: RMapRSet<UadItemKey, ad::AEffectId>,
+    pub(super) a_effect_ids: RMapRSet<UItemKey, ad::AEffectId>,
     pub(super) rmods: RMapRSet<AttrSpec, RawModifier>,
 }
 impl BuffRegister {
@@ -16,16 +16,16 @@ impl BuffRegister {
     // Effect methods
     pub(in crate::svc::calc) fn get_effects(
         &self,
-        item_key: &UadItemKey,
+        item_key: &UItemKey,
     ) -> impl ExactSizeIterator<Item = &ad::AEffectId> {
         self.a_effect_ids.get(item_key)
     }
-    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UadItemKey, effect: &rd::REffect) {
+    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemKey, effect: &rd::REffect) {
         if uses_default_attrs(effect) {
             self.a_effect_ids.add_entry(item_key, effect.get_id());
         }
     }
-    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UadItemKey, effect: &rd::REffect) {
+    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemKey, effect: &rd::REffect) {
         if uses_default_attrs(effect) {
             self.a_effect_ids.remove_entry(&item_key, &effect.get_id());
         }

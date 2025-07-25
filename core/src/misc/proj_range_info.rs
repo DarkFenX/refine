@@ -1,4 +1,4 @@
-use crate::{def::AttrVal, uad::UadProjRange};
+use crate::{def::AttrVal, ud::UProjRange};
 
 /// Range between projector and projectee.
 pub struct ProjRangeInfo {
@@ -7,11 +7,11 @@ pub struct ProjRangeInfo {
     /// Surface-to-surface range.
     pub s2s: AttrVal,
 }
-impl From<UadProjRange> for ProjRangeInfo {
-    fn from(uad_prange: UadProjRange) -> Self {
+impl From<UProjRange> for ProjRangeInfo {
+    fn from(u_prange: UProjRange) -> Self {
         Self {
-            c2c: uad_prange.get_c2c(),
-            s2s: uad_prange.get_s2s(),
+            c2c: u_prange.get_c2c(),
+            s2s: u_prange.get_s2s(),
         }
     }
 }

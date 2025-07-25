@@ -5,7 +5,7 @@ use crate::{
     ac,
     def::{AttrVal, ItemId, OF},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    uad::{UadFit, UadItemKey},
+    ud::{UFit, UItemKey},
     util::RSet,
 };
 
@@ -20,10 +20,10 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_fast(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit: &UadFit,
+        fit: &UFit,
     ) -> bool {
         if self.drones_bandwidth.is_empty() {
             return true;
@@ -39,10 +39,10 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit: &UadFit,
+        fit: &UFit,
     ) -> Option<ValUnusableResFail> {
         if self.drones_bandwidth.is_empty() {
             return None;
@@ -53,7 +53,7 @@ impl VastFitData {
             .drones_bandwidth
             .iter()
             .filter(|(item_key, item_use)| **item_use > effective_max && !kfs.contains(item_key))
-            .map(|(item_key, item_use)| (ctx.uad.items.id_by_key(*item_key), *item_use))
+            .map(|(item_key, item_use)| (ctx.u_data.items.id_by_key(*item_key), *item_use))
             .collect();
         match users.is_empty() {
             true => None,

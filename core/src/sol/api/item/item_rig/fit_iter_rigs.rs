@@ -3,7 +3,7 @@ use crate::{
         SolarSystem,
         api::{Fit, FitMut, MutIter, Rig, RigMut},
     },
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -17,13 +17,13 @@ impl<'a> FitMut<'a> {
         iter_rigs(self.sol, self.key)
     }
     pub fn iter_rigs_mut(&mut self) -> MutIter<'_, RigMut<'_>> {
-        let implant_keys = self.sol.uad.fits.get(self.key).rigs.iter().copied().collect();
+        let implant_keys = self.sol.u_data.fits.get(self.key).rigs.iter().copied().collect();
         MutIter::new(self.sol, implant_keys)
     }
 }
 
-fn iter_rigs(sol: &SolarSystem, fit_key: UadFitKey) -> impl ExactSizeIterator<Item = Rig<'_>> {
-    sol.uad
+fn iter_rigs(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Rig<'_>> {
+    sol.u_data
         .fits
         .get(fit_key)
         .rigs

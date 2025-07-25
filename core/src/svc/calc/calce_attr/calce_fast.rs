@@ -12,7 +12,7 @@ use crate::{
         calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
         err::KeyedItemLoadedError,
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
     util::{RMap, round},
 };
 
@@ -21,7 +21,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_extra_opt_opt(
         &mut self,
         ctx: SvcCtx,
-        item_key: Option<UadItemKey>,
+        item_key: Option<UItemKey>,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
         item_key.and_then(|item_key| self.get_item_attr_val_extra_opt(ctx, item_key, a_attr_id))
@@ -29,7 +29,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_extra_opt(
         &mut self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Option<AttrVal> {
         Some(self.get_item_attr_val_full(ctx, item_key, a_attr_id).ok()?.extra)
@@ -37,7 +37,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_extra(
         &mut self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<AttrVal, KeyedItemLoadedError> {
         self.get_item_attr_val_full(ctx, item_key, a_attr_id).map(|v| v.extra)
@@ -45,7 +45,7 @@ impl Calc {
     pub(crate) fn get_item_attr_val_full(
         &mut self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         // Try accessing cached value
@@ -77,7 +77,7 @@ impl Calc {
     pub(in crate::svc::calc) fn get_item_attr_val_no_pp(
         &mut self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         a_attr_id: &ad::AAttrId,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         let item_attr_data = match self.attrs.get_item_attr_data(&item_key) {
@@ -100,9 +100,9 @@ impl Calc {
     pub(in crate::svc) fn iter_item_attr_vals(
         &mut self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, CalcAttrVal)> + use<>, KeyedItemLoadedError> {
-        let item = ctx.uad.items.get(item_key);
+        let item = ctx.u_data.items.get(item_key);
         // SolItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
@@ -143,21 +143,21 @@ impl Calc {
     fn iter_modifications(
         &mut self,
         ctx: SvcCtx,
-        item_key: &UadItemKey,
-        item: &UadItem,
+        item_key: &UItemKey,
+        item: &UItem,
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Modification> {
         let mut mods = RMap::new();
         for cmod in self
             .std
-            .get_mods_for_affectee(item_key, item, a_attr_id, &ctx.uad.fits)
+            .get_mods_for_affectee(item_key, item, a_attr_id, &ctx.u_data.fits)
             .iter()
         {
             let val = match cmod.raw.get_mod_val(self, ctx) {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = ctx.uad.items.get(cmod.raw.affector_espec.item_key);
+            let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
             let mod_key = ModificationKey::from(cmod);
             let modification = Modification {
@@ -172,9 +172,9 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
-        let item = ctx.uad.items.get(item_key);
-        let r_attr = match ctx.uad.src.get_r_attr(a_attr_id) {
+    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
+        let item = ctx.u_data.items.get(item_key);
+        let r_attr = match ctx.u_data.src.get_r_attr(a_attr_id) {
             Some(r_attr) => r_attr,
             None => &get_r_attr(*a_attr_id),
         };
@@ -183,7 +183,7 @@ impl Calc {
             // Security modifier is a special case - it takes modified value of another attribute as
             // its own base
             &ac::attrs::SECURITY_MODIFIER => {
-                let security_a_attr_id = match ctx.uad.sec_zone {
+                let security_a_attr_id = match ctx.u_data.sec_zone {
                     SecZone::HiSec(_) => ac::attrs::HISEC_MODIFIER,
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
                     _ => ac::attrs::NULLSEC_MODIFIER,

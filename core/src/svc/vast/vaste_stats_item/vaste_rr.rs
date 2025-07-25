@@ -10,14 +10,14 @@ use crate::{
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
         vast::{StatTank, Vast},
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_remote_rps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
@@ -33,7 +33,7 @@ impl Vast {
     fn get_stat_item_remote_rps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> StatTank<AttrVal> {
@@ -46,7 +46,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_remote_cps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         item_key_check(ctx, item_key)?;
@@ -60,19 +60,19 @@ impl Vast {
     fn get_stat_item_remote_cps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         ignore_state: bool,
     ) -> AttrVal {
         get_orr_item_key(ctx, calc, item_key, None, ignore_state, get_getter_cap)
     }
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
-    let uad_item = ctx.uad.items.get(item_key);
-    let is_loaded = match uad_item {
-        UadItem::Drone(drone) => drone.is_loaded(),
-        UadItem::Fighter(fighter) => fighter.is_loaded(),
-        UadItem::Module(module) => module.is_loaded(),
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let u_item = ctx.u_data.items.get(item_key);
+    let is_loaded = match u_item {
+        UItem::Drone(drone) => drone.is_loaded(),
+        UItem::Fighter(fighter) => fighter.is_loaded(),
+        UItem::Module(module) => module.is_loaded(),
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
     };
     match is_loaded {
@@ -89,7 +89,7 @@ const RR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_orr_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     spool: Option<Spool>,
     ignore_state: bool,
     rep_getter_getter: fn(&rd::REffect) -> Option<NRemoteRepGetter>,
@@ -100,7 +100,7 @@ fn get_orr_item_key(
         None => return item_orr,
     };
     for (a_effect_id, cycle) in cycle_map {
-        let r_effect = ctx.uad.src.get_r_effect(&a_effect_id).unwrap();
+        let r_effect = ctx.u_data.src.get_r_effect(&a_effect_id).unwrap();
         if let Some(effect_orr) = get_orr_effect(ctx, calc, item_key, r_effect, cycle, spool, rep_getter_getter) {
             item_orr += effect_orr;
         }
@@ -111,7 +111,7 @@ fn get_orr_item_key(
 fn get_orr_effect(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     r_effect: &rd::REffect,
     effect_cycle: Cycle,
     spool: Option<Spool>,

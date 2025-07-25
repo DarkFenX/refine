@@ -3,7 +3,7 @@ use crate::{
         SolarSystem,
         api::{Fit, FitMut, MutIter, Skill, SkillMut},
     },
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -19,7 +19,7 @@ impl<'a> FitMut<'a> {
     pub fn iter_skills_mut(&mut self) -> MutIter<'_, SkillMut<'_>> {
         let skill_keys = self
             .sol
-            .uad
+            .u_data
             .fits
             .get(self.key)
             .skills
@@ -30,8 +30,8 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_skills(sol: &SolarSystem, fit_key: UadFitKey) -> impl ExactSizeIterator<Item = Skill<'_>> {
-    sol.uad
+fn iter_skills(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Skill<'_>> {
+    sol.u_data
         .fits
         .get(fit_key)
         .skills

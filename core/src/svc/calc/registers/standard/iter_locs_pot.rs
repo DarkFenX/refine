@@ -1,12 +1,12 @@
-use crate::{svc::calc::LocationKind, uad::UadItem};
+use crate::{svc::calc::LocationKind, ud::UItem};
 
 // Iterator over item's potential location roots
 pub(super) struct PotentialLocations<'a> {
-    item: &'a UadItem,
+    item: &'a UItem,
     index: usize,
 }
 impl<'a> PotentialLocations<'a> {
-    pub(super) fn new(item: &'a UadItem) -> Self {
+    pub(super) fn new(item: &'a UItem) -> Self {
         Self { item, index: 0 }
     }
 }

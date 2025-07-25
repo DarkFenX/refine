@@ -3,18 +3,18 @@ use crate::{
     misc::EffectSpec,
     rd,
     svc::{SvcCtx, calc::Calc},
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec) -> Option<AttrVal> {
-    let r_effect = ctx.uad.src.get_r_effect(&espec.a_effect_id)?;
+    let r_effect = ctx.u_data.src.get_r_effect(&espec.a_effect_id)?;
     get_effect_duration_s(ctx, calc, espec.item_key, r_effect)
 }
 
 pub(crate) fn get_effect_duration_s(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     r_effect: &rd::REffect,
 ) -> Option<AttrVal> {
     let attr_id = r_effect.get_duration_attr_id()?;

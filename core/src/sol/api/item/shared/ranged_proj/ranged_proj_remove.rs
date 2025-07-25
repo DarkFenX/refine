@@ -1,23 +1,23 @@
 use crate::{
     err::basic::ProjFoundError,
     sol::{SolarSystem, api::RangedProjMut},
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_projection(
         &mut self,
-        projector_key: UadItemKey,
-        projectee_key: UadItemKey,
+        projector_key: UItemKey,
+        projectee_key: UItemKey,
     ) -> Result<(), ProjFoundError> {
-        let projector_uad_item = self.uad.items.get(projector_key);
-        match projector_uad_item {
-            UadItem::Drone(_) => self.internal_remove_drone_proj(projector_key, projectee_key),
-            UadItem::Fighter(_) => self.internal_remove_fighter_proj(projector_key, projectee_key),
-            UadItem::Module(_) => self.internal_remove_module_proj(projector_key, projectee_key),
+        let projector_u_item = self.u_data.items.get(projector_key);
+        match projector_u_item {
+            UItem::Drone(_) => self.internal_remove_drone_proj(projector_key, projectee_key),
+            UItem::Fighter(_) => self.internal_remove_fighter_proj(projector_key, projectee_key),
+            UItem::Module(_) => self.internal_remove_module_proj(projector_key, projectee_key),
             // Still need to handle projected effect, even if projected effect is not using ranged
             // projections - this method is used not just by ranged projection removal
-            UadItem::ProjEffect(_) => self.internal_remove_proj_effect_proj(projector_key, projectee_key),
+            UItem::ProjEffect(_) => self.internal_remove_proj_effect_proj(projector_key, projectee_key),
             _ => unreachable!("unprojectable item kind is used in projection"),
         }
     }

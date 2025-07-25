@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::{Count, ItemId},
     svc::{SvcCtx, vast::VastFitData},
-    uad::UadItemKey,
+    ud::UItemKey,
     util::RSet,
 };
 
@@ -22,7 +22,7 @@ pub struct ValFighterSquadSizeFighterInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_fighter_squad_size_fast(&mut self, kfs: &RSet<UadItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_fighter_squad_size_fast(&mut self, kfs: &RSet<UItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.fighter_squad_size.is_empty(),
             false => self.fighter_squad_size.difference(kfs).next().is_none(),
@@ -31,14 +31,14 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_fighter_squad_size_verbose(
         &mut self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValFighterSquadSizeFail> {
         let fighters: HashMap<_, _> = self
             .fighter_squad_size
             .iter()
             .filter(|(fighter_key, _)| !kfs.contains(fighter_key))
-            .map(|(fighter_key, fighter_info)| (ctx.uad.items.id_by_key(*fighter_key), *fighter_info))
+            .map(|(fighter_key, fighter_info)| (ctx.u_data.items.id_by_key(*fighter_key), *fighter_info))
             .collect();
         match fighters.is_empty() {
             true => None,

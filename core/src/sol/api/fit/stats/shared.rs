@@ -5,11 +5,11 @@ use crate::{
 
 impl<'a> FitMut<'a> {
     pub(super) fn get_ship_for_stats(&mut self) -> Result<ShipMut<'_>, FitHasShipError> {
-        let ship_key = match self.sol.uad.fits.get(self.key).ship {
+        let ship_key = match self.sol.u_data.fits.get(self.key).ship {
             Some(ship_key) => ship_key,
             None => {
                 return Err(FitHasShipError {
-                    fit_id: self.sol.uad.fits.id_by_key(self.key),
+                    fit_id: self.sol.u_data.fits.id_by_key(self.key),
                 });
             }
         };

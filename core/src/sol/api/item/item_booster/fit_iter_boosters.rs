@@ -3,7 +3,7 @@ use crate::{
         SolarSystem,
         api::{Booster, BoosterMut, Fit, FitMut, MutIter},
     },
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -17,13 +17,13 @@ impl<'a> FitMut<'a> {
         iter_boosters(self.sol, self.key)
     }
     pub fn iter_boosters_mut(&mut self) -> MutIter<'_, BoosterMut<'_>> {
-        let booster_keys = self.sol.uad.fits.get(self.key).boosters.iter().copied().collect();
+        let booster_keys = self.sol.u_data.fits.get(self.key).boosters.iter().copied().collect();
         MutIter::new(self.sol, booster_keys)
     }
 }
 
-fn iter_boosters(sol: &SolarSystem, fit_key: UadFitKey) -> impl ExactSizeIterator<Item = Booster<'_>> {
-    sol.uad
+fn iter_boosters(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Booster<'_>> {
+    sol.u_data
         .fits
         .get(fit_key)
         .boosters

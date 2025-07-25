@@ -13,7 +13,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 const E_EFFECT_ID: ed::EEffectId = ec::effects::PROJECTILE_FIRED;
@@ -42,13 +42,13 @@ pub(super) fn mk_n_effect() -> NEffect {
 fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UadItemKey,
+    projector_key: UItemKey,
     _projector_r_effect: &rd::REffect,
     _spool: Option<Spool>,
-    _projectee_key: Option<UadItemKey>,
+    _projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
-    let projector_uad_item = ctx.uad.items.get(projector_key);
-    let charge_key = projector_uad_item.get_charge_key()?;
+    let projector_u_item = ctx.u_data.items.get(projector_key);
+    let charge_key = projector_u_item.get_charge_key()?;
     let dmg_mult = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DMG_MULT)?;
     let dmg_em = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EM_DMG)?;
     let dmg_therm = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::THERM_DMG)?;

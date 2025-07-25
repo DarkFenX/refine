@@ -1,6 +1,6 @@
 use crate::{
     sol::{SolarSystem, api::FitMut},
-    uad::{UadFit, UadFitKey},
+    ud::{UFit, UFitKey},
 };
 
 impl SolarSystem {
@@ -8,10 +8,10 @@ impl SolarSystem {
         let fit_key = self.add_fit_internal();
         FitMut::new(self, fit_key)
     }
-    pub(in crate::sol::api) fn add_fit_internal(&mut self) -> UadFitKey {
-        let fit_id = self.uad.fits.alloc_id();
-        let uad_fit = UadFit::new(fit_id);
-        let fit_key = self.uad.fits.add(uad_fit);
+    pub(in crate::sol::api) fn add_fit_internal(&mut self) -> UFitKey {
+        let fit_id = self.u_data.fits.alloc_id();
+        let u_fit = UFit::new(fit_id);
+        let fit_key = self.u_data.fits.add(u_fit);
         self.svc.notify_fit_added(fit_key);
         fit_key
     }

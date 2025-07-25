@@ -13,7 +13,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputComplex, OutputSimple},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
     util::floor_unerr,
 };
 
@@ -46,10 +46,10 @@ pub(super) fn mk_n_effect() -> NEffect {
 fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UadItemKey,
+    projector_key: UItemKey,
     _projector_r_effect: &rd::REffect,
     _spool: Option<Spool>,
-    _projectee_key: Option<UadItemKey>,
+    _projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let dmg_em = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EM_DMG)?;
     let dmg_therm = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::THERM_DMG)?;

@@ -7,16 +7,16 @@ use crate::{
         SolarSystem,
         api::{Fit, FitMut, Module, ModuleMut},
     },
-    uad::{UadFitKey, UadItemKey},
+    ud::{UFitKey, UItemKey},
 };
 
 pub struct ModuleIter<'iter> {
     sol: &'iter mut SolarSystem,
-    module_keys: Vec<Option<UadItemKey>>,
+    module_keys: Vec<Option<UItemKey>>,
     index: usize,
 }
 impl<'iter> ModuleIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, module_keys: Vec<Option<UadItemKey>>) -> Self {
+    fn new(sol: &'iter mut SolarSystem, module_keys: Vec<Option<UItemKey>>) -> Self {
         Self {
             sol,
             module_keys,
@@ -46,7 +46,7 @@ impl<'a> FitMut<'a> {
         iter_modules(self.sol, self.key, rack)
     }
     pub fn iter_modules_mut(&mut self, rack: ModRack) -> ModuleIter<'_> {
-        let module_keys = get_fit_rack(&self.sol.uad.fits, self.key, rack)
+        let module_keys = get_fit_rack(&self.sol.u_data.fits, self.key, rack)
             .iter_all()
             .copied()
             .collect();
@@ -56,10 +56,10 @@ impl<'a> FitMut<'a> {
 
 fn iter_modules(
     sol: &SolarSystem,
-    fit_key: UadFitKey,
+    fit_key: UFitKey,
     rack: ModRack,
 ) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
-    get_fit_rack(&sol.uad.fits, fit_key, rack)
+    get_fit_rack(&sol.u_data.fits, fit_key, rack)
         .iter_all()
         .map(|item_key_opt| item_key_opt.map(|item_key| Module::new(sol, item_key)))
 }

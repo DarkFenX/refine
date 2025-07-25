@@ -2,7 +2,7 @@ use crate::{
     ac,
     def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    uad::{UadFit, UadItemKey, UadShip},
+    ud::{UFit, UItemKey, UShip},
     util::RSet,
 };
 
@@ -16,9 +16,9 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_ship_stance_fast(
         &self,
-        kfs: &RSet<UadItemKey>,
-        fit: &UadFit,
-        ship: Option<&UadShip>,
+        kfs: &RSet<UItemKey>,
+        fit: &UFit,
+        ship: Option<&UShip>,
     ) -> bool {
         let stance_key = match fit.stance {
             Some(stance_key) => stance_key,
@@ -36,17 +36,17 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_stance_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
-        fit: &UadFit,
-        ship: Option<&UadShip>,
+        fit: &UFit,
+        ship: Option<&UShip>,
     ) -> Option<ValShipStanceFail> {
         let stance_key = fit.stance?;
         let ship = match ship {
             Some(ship) => ship,
             None => {
                 return Some(ValShipStanceFail {
-                    stance_item_id: ctx.uad.items.id_by_key(stance_key),
+                    stance_item_id: ctx.u_data.items.id_by_key(stance_key),
                 });
             }
         };
@@ -60,7 +60,7 @@ impl VastFitData {
             return None;
         }
         Some(ValShipStanceFail {
-            stance_item_id: ctx.uad.items.id_by_key(stance_key),
+            stance_item_id: ctx.u_data.items.id_by_key(stance_key),
         })
     }
 }

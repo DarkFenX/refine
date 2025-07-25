@@ -1,38 +1,38 @@
 use crate::{
     err::basic::ProjFoundError,
     sol::{SolarSystem, api::ProjMut},
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_proj_effect_proj(
         &mut self,
-        item_key: UadItemKey,
-        projectee_key: UadItemKey,
+        item_key: UItemKey,
+        projectee_key: UItemKey,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
-        let uad_item = self.uad.items.get(item_key);
-        let uad_proj_effect = uad_item.get_proj_effect().unwrap();
-        let projectee_uad_item = self.uad.items.get(projectee_key);
-        if !uad_proj_effect.get_projs().contains(&projectee_key) {
+        let u_item = self.u_data.items.get(item_key);
+        let u_proj_effect = u_item.get_proj_effect().unwrap();
+        let projectee_u_item = self.u_data.items.get(projectee_key);
+        if !u_proj_effect.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
-                projector_item_id: uad_proj_effect.get_item_id(),
-                projectee_item_id: projectee_uad_item.get_item_id(),
+                projector_item_id: u_proj_effect.get_item_id(),
+                projectee_item_id: projectee_u_item.get_item_id(),
             });
         };
         // Update services
         SolarSystem::util_remove_item_projection(
-            &self.uad,
+            &self.u_data,
             &mut self.svc,
             item_key,
-            uad_item,
+            u_item,
             projectee_key,
-            projectee_uad_item,
+            projectee_u_item,
         );
         // Update user data
         self.rprojs.unreg_projectee(&item_key, &projectee_key);
-        let uad_proj_effect = self.uad.items.get_mut(item_key).get_proj_effect_mut().unwrap();
-        uad_proj_effect.get_projs_mut().remove(&projectee_key);
+        let u_proj_effect = self.u_data.items.get_mut(item_key).get_proj_effect_mut().unwrap();
+        u_proj_effect.get_projs_mut().remove(&projectee_key);
         Ok(())
     }
 }

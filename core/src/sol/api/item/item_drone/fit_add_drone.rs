@@ -6,41 +6,41 @@ use crate::{
         SolarSystem,
         api::{DroneMut, FitMut},
     },
-    uad::{UadDrone, UadEffectUpdates, UadFitKey, UadItem, UadItemKey},
+    ud::{UDrone, UEffectUpdates, UFitKey, UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_drone(
         &mut self,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         a_item_id: ad::AItemId,
         state: MinionState,
         mutation: Option<ItemMutationRequest>,
-        reuse_eupdates: &mut UadEffectUpdates,
-    ) -> UadItemKey {
-        let item_id = self.uad.items.alloc_id();
-        let uad_drone = UadDrone::new(
+        reuse_eupdates: &mut UEffectUpdates,
+    ) -> UItemKey {
+        let item_id = self.u_data.items.alloc_id();
+        let u_drone = UDrone::new(
             item_id,
             a_item_id,
             fit_key,
             state,
             mutation,
-            &self.uad.src,
+            &self.u_data.src,
             reuse_eupdates,
         );
-        let uad_item = UadItem::Drone(uad_drone);
-        let item_key = self.uad.items.add(uad_item);
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        uad_fit.drones.insert(item_key);
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_add_item_without_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        let u_item = UItem::Drone(u_drone);
+        let item_key = self.u_data.items.add(u_item);
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        u_fit.drones.insert(item_key);
+        let u_item = self.u_data.items.get(item_key);
+        SolarSystem::util_add_item_without_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
         item_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_drone(&mut self, type_id: ItemTypeId, state: MinionState) -> DroneMut<'_> {
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         let item_key = self
             .sol
             .internal_add_drone(self.key, type_id, state, None, &mut reuse_eupdates);

@@ -12,7 +12,7 @@ use crate::{
             Location, ModifierKind, Op, RawModifier,
         },
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 const SHIP_MASS: ad::AAttrId = ac::attrs::MASS;
@@ -62,10 +62,10 @@ pub(in crate::nd::eff) fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>,
     rmods.push(rmod);
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
     match get_item_fit_ship_key(ctx, item_key) {
         Some(ship_key) => {
-            let item_id = ctx.uad.items.id_by_key(item_key);
+            let item_id = ctx.u_data.items.id_by_key(item_key);
             smallvec![
                 AffectorInfo {
                     item_id,
@@ -76,7 +76,7 @@ fn get_affector_info(ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo
                     attr_id: Some(PROP_THRUST),
                 },
                 AffectorInfo {
-                    item_id: ctx.uad.items.id_by_key(ship_key),
+                    item_id: ctx.u_data.items.id_by_key(ship_key),
                     attr_id: Some(SHIP_MASS),
                 }
             ]
@@ -101,7 +101,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(val)
 }
 
-fn reg_dependencies(calc: &mut Calc, ship_key: UadItemKey, prop_espec: EffectSpec) {
+fn reg_dependencies(calc: &mut Calc, ship_key: UItemKey, prop_espec: EffectSpec) {
     // Prop boost attribute is declared the usual way, everything else is declared here
     let affectee_aspec = AttrSpec::new(ship_key, SHIP_SPEED);
     calc.deps.add_with_source(

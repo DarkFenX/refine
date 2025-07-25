@@ -3,7 +3,7 @@ use crate::{
     ac,
     def::ItemId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    uad::UadItemKey,
+    ud::UItemKey,
     util::RSet,
 };
 
@@ -16,7 +16,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_activation_blocked_fast(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -27,7 +27,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
@@ -35,7 +35,7 @@ impl VastFitData {
             .mods_active
             .difference(kfs)
             .filter(|item_key| is_flag_set(ctx, calc, **item_key, &ac::attrs::ACTIVATION_BLOCKED))
-            .map(|item_key| ctx.uad.items.id_by_key(*item_key))
+            .map(|item_key| ctx.u_data.items.id_by_key(*item_key))
             .collect();
         match module_ids.is_empty() {
             true => None,

@@ -1,15 +1,15 @@
 use super::shared::rah_round;
-use crate::{def::AttrVal, misc::DmgKinds, svc::calc::CalcAttrVal, uad::UadItemKey};
+use crate::{def::AttrVal, misc::DmgKinds, svc::calc::CalcAttrVal, ud::UItemKey};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct RahSimHistoryEntry {
-    pub(super) item_key: UadItemKey,
+    pub(super) item_key: UItemKey,
     pub(super) resonances: DmgKinds<AttrVal>,
     pub(super) cycling_time_rounded: AttrVal,
 }
 impl RahSimHistoryEntry {
     pub(super) fn new(
-        item_key: UadItemKey,
+        item_key: UItemKey,
         cycling_time: AttrVal,
         resonances: &DmgKinds<CalcAttrVal>,
         round_resos: bool,

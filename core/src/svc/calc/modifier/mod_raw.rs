@@ -16,7 +16,7 @@ use crate::{
         },
         efuncs,
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 #[derive(Copy, Clone)]
@@ -62,8 +62,8 @@ impl Hash for RawModifier {
 }
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_amod(
-        affector_key: UadItemKey,
-        affector_item: &UadItem,
+        affector_key: UItemKey,
+        affector_item: &UItem,
         r_effect: &rd::REffect,
         amod: &ad::AEffectModifier,
     ) -> Option<Self> {
@@ -90,8 +90,8 @@ impl RawModifier {
         })
     }
     pub(in crate::svc::calc) fn try_from_r_buff_regular(
-        affector_key: UadItemKey,
-        affector_item: &UadItem,
+        affector_key: UItemKey,
+        affector_item: &UItem,
         r_effect: &rd::REffect,
         r_buff: &rd::RBuff,
         a_mod: &ad::ABuffModifier,
@@ -111,8 +111,8 @@ impl RawModifier {
         )
     }
     pub(in crate::svc::calc) fn try_from_r_buff_hardcoded(
-        affector_key: UadItemKey,
-        affector_item: &UadItem,
+        affector_key: UItemKey,
+        affector_item: &UItem,
         r_effect: &rd::REffect,
         r_buff: &rd::RBuff,
         a_mod: &ad::ABuffModifier,
@@ -131,8 +131,8 @@ impl RawModifier {
         )
     }
     fn from_r_buff(
-        affector_key: UadItemKey,
-        affector_item: &UadItem,
+        affector_key: UItemKey,
+        affector_item: &UItem,
         r_effect: &rd::REffect,
         r_buff: &rd::RBuff,
         a_mod: &ad::ABuffModifier,

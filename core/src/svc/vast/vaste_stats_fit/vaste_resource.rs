@@ -2,7 +2,7 @@ use crate::{
     ac, ad,
     def::AttrVal,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    uad::{UadFit, UadItemKey},
+    ud::{UFit, UItemKey},
     util::round,
 };
 
@@ -13,7 +13,7 @@ pub struct StatRes {
 
 impl VastFitData {
     // Public methods
-    pub(in crate::svc) fn get_stat_cpu(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UadFit) -> StatRes {
+    pub(in crate::svc) fn get_stat_cpu(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
         get_resource_stats_fitting(
             ctx,
             calc,
@@ -23,7 +23,7 @@ impl VastFitData {
             &ac::attrs::CPU_OUTPUT,
         )
     }
-    pub(in crate::svc) fn get_stat_powergrid(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UadFit) -> StatRes {
+    pub(in crate::svc) fn get_stat_powergrid(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
         get_resource_stats_fitting(
             ctx,
             calc,
@@ -33,7 +33,7 @@ impl VastFitData {
             &ac::attrs::POWER_OUTPUT,
         )
     }
-    pub(in crate::svc) fn get_stat_calibration(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UadFit) -> StatRes {
+    pub(in crate::svc) fn get_stat_calibration(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
         get_resource_stats_other(
             ctx,
             calc,
@@ -42,10 +42,10 @@ impl VastFitData {
             &ac::attrs::UPGRADE_CAPACITY,
         )
     }
-    pub(in crate::svc) fn get_stat_drone_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UadFit) -> StatRes {
+    pub(in crate::svc) fn get_stat_drone_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
         get_resource_stats_other(ctx, calc, fit, self.drones_volume.values(), &ac::attrs::DRONE_CAPACITY)
     }
-    pub(in crate::svc) fn get_stat_drone_bandwidth(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UadFit) -> StatRes {
+    pub(in crate::svc) fn get_stat_drone_bandwidth(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
         get_resource_stats_other(
             ctx,
             calc,
@@ -54,7 +54,7 @@ impl VastFitData {
             &ac::attrs::DRONE_BANDWIDTH,
         )
     }
-    pub(in crate::svc) fn get_stat_fighter_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UadFit) -> StatRes {
+    pub(in crate::svc) fn get_stat_fighter_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
         get_resource_stats_other(ctx, calc, fit, self.fighters_volume.values(), &ac::attrs::FTR_CAPACITY)
     }
 }
@@ -62,8 +62,8 @@ impl VastFitData {
 fn get_resource_stats_fitting<'a>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    fit: &UadFit,
-    items: impl Iterator<Item = &'a UadItemKey>,
+    fit: &UFit,
+    items: impl Iterator<Item = &'a UItemKey>,
     use_a_attr_id: &ad::AAttrId,
     output_a_attr_id: &ad::AAttrId,
 ) -> StatRes {
@@ -80,7 +80,7 @@ fn get_resource_stats_fitting<'a>(
 fn get_resource_stats_other<'a>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    fit: &UadFit,
+    fit: &UFit,
     items_use: impl Iterator<Item = &'a AttrVal>,
     output_a_attr_id: &ad::AAttrId,
 ) -> StatRes {

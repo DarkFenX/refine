@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    uad::{ShipKind, UadFit, UadItemKey},
+    ud::{UFit, UItemKey, UShipKind},
     util::RSet,
 };
 
@@ -21,19 +21,19 @@ pub enum ValShipKind {
     Structure,
     Unknown,
 }
-impl From<ShipKind> for ValShipKind {
-    fn from(ship_kind: ShipKind) -> Self {
+impl From<UShipKind> for ValShipKind {
+    fn from(ship_kind: UShipKind) -> Self {
         match ship_kind {
-            ShipKind::Ship => Self::Ship,
-            ShipKind::Structure => Self::Structure,
-            ShipKind::Unknown => Self::Unknown,
+            UShipKind::Ship => Self::Ship,
+            UShipKind::Structure => Self::Structure,
+            UShipKind::Unknown => Self::Unknown,
         }
     }
 }
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UadItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UItemKey>) -> bool {
         if self.mods_rigs_svcs_vs_ship_kind.is_empty() {
             return true;
         }
@@ -42,14 +42,14 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_item_vs_ship_kind_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
-        fit: &UadFit,
+        fit: &UFit,
     ) -> Option<ValItemVsShipKindFail> {
         let items: HashMap<_, _> = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(item_key, needed_kind)| (ctx.uad.items.id_by_key(*item_key), *needed_kind))
+            .map(|(item_key, needed_kind)| (ctx.u_data.items.id_by_key(*item_key), *needed_kind))
             .collect();
         match items.is_empty() {
             true => None,

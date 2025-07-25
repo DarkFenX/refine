@@ -14,7 +14,7 @@ use crate::{
         efuncs,
         output::{Output, OutputSimple},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 pub(super) fn mk_n_effect() -> NEffect {
@@ -35,12 +35,12 @@ pub(super) fn mk_n_effect() -> NEffect {
 fn get_resolved_spool(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     r_effect: &rd::REffect,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
     let duration_s = efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
-    let spool = ctx.uad.get_item_key_spool(item_key, spool);
+    let spool = ctx.u_data.get_item_key_spool(item_key, spool);
     let spool_step = calc
         .get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::REP_MULT_BONUS_PER_CYCLE)
         .unwrap_or(OF(0.0));
@@ -53,10 +53,10 @@ fn get_resolved_spool(
 fn get_spool_remote_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UadItemKey,
+    projector_key: UItemKey,
     projector_r_effect: &rd::REffect,
     spool: Option<Spool>,
-    projectee_key: Option<UadItemKey>,
+    projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
     let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ARMOR_DMG_AMOUNT)?;
     let delay = efuncs::get_effect_duration_s(ctx, calc, projector_key, projector_r_effect)?;

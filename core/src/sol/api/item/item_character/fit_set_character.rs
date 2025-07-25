@@ -5,36 +5,36 @@ use crate::{
         SolarSystem,
         api::{CharacterMut, FitMut},
     },
-    uad::{UadCharacter, UadEffectUpdates, UadFitKey, UadItem, UadItemKey},
+    ud::{UCharacter, UEffectUpdates, UFitKey, UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fit_character(
         &mut self,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         a_item_id: ad::AItemId,
-        reuse_eupdates: &mut UadEffectUpdates,
-    ) -> UadItemKey {
-        let uad_fit = self.uad.fits.get(fit_key);
+        reuse_eupdates: &mut UEffectUpdates,
+    ) -> UItemKey {
+        let u_fit = self.u_data.fits.get(fit_key);
         // Remove old character, if it was set
-        if let Some(old_item_key) = uad_fit.character {
+        if let Some(old_item_key) = u_fit.character {
             self.internal_remove_character(old_item_key, reuse_eupdates);
         }
         // Add new character
-        let item_id = self.uad.items.alloc_id();
-        let uad_character = UadCharacter::new(item_id, a_item_id, fit_key, true, &self.uad.src, reuse_eupdates);
-        let uad_item = UadItem::Character(uad_character);
-        let item_key = self.uad.items.add(uad_item);
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        uad_fit.character = Some(item_key);
-        SolarSystem::util_add_character(&self.uad, &mut self.svc, item_key, reuse_eupdates);
+        let item_id = self.u_data.items.alloc_id();
+        let u_character = UCharacter::new(item_id, a_item_id, fit_key, true, &self.u_data.src, reuse_eupdates);
+        let u_item = UItem::Character(u_character);
+        let item_key = self.u_data.items.add(u_item);
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        u_fit.character = Some(item_key);
+        SolarSystem::util_add_character(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn set_character(&mut self, type_id: ItemTypeId) -> CharacterMut<'_> {
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         let item_key = self
             .sol
             .internal_set_fit_character(self.key, type_id, &mut reuse_eupdates);

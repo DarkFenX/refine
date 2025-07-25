@@ -7,20 +7,20 @@ use crate::{
         SolarSystem,
         api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 // Lending iterator for side effects
 pub struct SideEffectIter<'iter> {
     sol: &'iter mut SolarSystem,
-    key: UadItemKey,
+    key: UItemKey,
     effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
     index: usize,
 }
 impl<'iter> SideEffectIter<'iter> {
     fn new(
         sol: &'iter mut SolarSystem,
-        key: UadItemKey,
+        key: UItemKey,
         effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
     ) -> Self {
         Self {
@@ -56,13 +56,13 @@ impl<'a> BoosterMut<'a> {
     }
     /// Iterates over booster's side effects.
     pub fn iter_side_effects_mut(&mut self) -> SideEffectIter<'_> {
-        let uad_booster = self.sol.uad.items.get(self.key).get_booster().unwrap();
-        let effects_with_chances = uad_booster
+        let u_booster = self.sol.u_data.items.get(self.key).get_booster().unwrap();
+        let effects_with_chances = u_booster
             .get_a_effect_datas()
             .into_iter()
             .flat_map(|a_effect_datas| {
                 a_effect_datas.keys().filter_map(|a_effect_id| {
-                    get_side_effect_chance_attr_id(&self.sol.uad.src, a_effect_id)
+                    get_side_effect_chance_attr_id(&self.sol.u_data.src, a_effect_id)
                         .map(|chance_a_attr_id| (*a_effect_id, chance_a_attr_id))
                 })
             })
@@ -71,14 +71,14 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn iter_side_effects(sol: &SolarSystem, item_key: UadItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
-    let uad_booster = sol.uad.items.get(item_key).get_booster().unwrap();
-    uad_booster
+fn iter_side_effects(sol: &SolarSystem, item_key: UItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
+    let u_booster = sol.u_data.items.get(item_key).get_booster().unwrap();
+    u_booster
         .get_a_effect_datas()
         .into_iter()
         .flat_map(move |a_effect_datas| {
             a_effect_datas.keys().filter_map(move |a_effect_id| {
-                get_side_effect_chance_attr_id(&sol.uad.src, a_effect_id)
+                get_side_effect_chance_attr_id(&sol.u_data.src, a_effect_id)
                     .map(|chance_a_attr_id| FullSideEffect::new(sol, item_key, *a_effect_id, chance_a_attr_id))
             })
         })

@@ -12,7 +12,7 @@ use crate::{
             Location, ModifierKind, Op, RawModifier,
         },
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
     util::RMap,
 };
 
@@ -86,7 +86,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     let missile_velocity = calc
         .get_item_attr_val_full(ctx, espec.item_key, &MISSILE_VELOCITY)
         .ok()?;
-    let ship_radius = ctx.uad.get_item_radius(ship_key);
+    let ship_radius = ctx.u_data.get_item_radius(ship_key);
     // Missile flight time is stored in milliseconds, thus have to multiply by 1000
     let val = ship_radius / missile_velocity.dogma * OF(1000.0);
     if val.is_infinite() {
@@ -99,18 +99,18 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(val)
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
     match get_item_fit_ship_key(ctx, item_key) {
         Some(ship_key) => {
             smallvec![
                 AffectorInfo {
-                    item_id: ctx.uad.items.id_by_key(item_key),
+                    item_id: ctx.u_data.items.id_by_key(item_key),
                     attr_id: Some(MISSILE_VELOCITY),
                 },
                 // There is no dependency on modified ship radius, but we add it for informational
                 // purposes nevertheless
                 AffectorInfo {
-                    item_id: ctx.uad.items.id_by_key(ship_key),
+                    item_id: ctx.u_data.items.id_by_key(ship_key),
                     attr_id: Some(SHIP_RADIUS),
                 }
             ]
@@ -121,13 +121,13 @@ fn get_affector_info(ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo
 
 fn revise_on_item_add_removal(
     ctx: SvcCtx,
-    affector_key: UadItemKey,
-    _changed_key: UadItemKey,
-    changed_item: &UadItem,
+    affector_key: UItemKey,
+    _changed_key: UItemKey,
+    changed_item: &UItem,
 ) -> bool {
     match changed_item {
-        UadItem::Ship(changed_ship) => {
-            Some(changed_ship.get_fit_key()) == ctx.uad.items.get(affector_key).get_fit_key()
+        UItem::Ship(changed_ship) => {
+            Some(changed_ship.get_fit_key()) == ctx.u_data.items.get(affector_key).get_fit_key()
         }
         _ => false,
     }

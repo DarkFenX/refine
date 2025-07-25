@@ -1,55 +1,55 @@
 use itertools::Itertools;
 
-use crate::{err::basic::ProjFoundError, sol::SolarSystem, uad::UadItemKey};
+use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemKey};
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fighter_proj(
         &mut self,
-        item_key: UadItemKey,
-        projectee_key: UadItemKey,
+        item_key: UItemKey,
+        projectee_key: UItemKey,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
-        let uad_item = self.uad.items.get(item_key);
-        let uad_fighter = uad_item.get_fighter().unwrap();
-        let projectee_uad_item = self.uad.items.get(projectee_key);
-        if !uad_fighter.get_projs().contains(&projectee_key) {
+        let u_item = self.u_data.items.get(item_key);
+        let u_fighter = u_item.get_fighter().unwrap();
+        let projectee_u_item = self.u_data.items.get(projectee_key);
+        if !u_fighter.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
-                projector_item_id: uad_fighter.get_item_id(),
-                projectee_item_id: projectee_uad_item.get_item_id(),
+                projector_item_id: u_fighter.get_item_id(),
+                projectee_item_id: projectee_u_item.get_item_id(),
             });
         };
-        let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
+        let autocharge_keys = u_fighter.get_autocharges().values().copied().collect_vec();
         // Update services for autocharge
         for &autocharge_key in autocharge_keys.iter() {
-            let autocharge_uad_item = self.uad.items.get(autocharge_key);
+            let autocharge_u_item = self.u_data.items.get(autocharge_key);
             SolarSystem::util_remove_item_projection(
-                &self.uad,
+                &self.u_data,
                 &mut self.svc,
                 autocharge_key,
-                autocharge_uad_item,
+                autocharge_u_item,
                 projectee_key,
-                projectee_uad_item,
+                projectee_u_item,
             );
         }
         // Update services for fighter
         SolarSystem::util_remove_item_projection(
-            &self.uad,
+            &self.u_data,
             &mut self.svc,
             item_key,
-            uad_item,
+            u_item,
             projectee_key,
-            projectee_uad_item,
+            projectee_u_item,
         );
         // Update user data for autocharges
         for autocharge_key in autocharge_keys.into_iter() {
             self.rprojs.unreg_projectee(&autocharge_key, &projectee_key);
-            let uad_autocharge = self.uad.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
-            uad_autocharge.get_projs_mut().remove(&projectee_key);
+            let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
+            u_autocharge.get_projs_mut().remove(&projectee_key);
         }
         // Update user data for fighter
         self.rprojs.unreg_projectee(&item_key, &projectee_key);
-        let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();
-        uad_fighter.get_projs_mut().remove(&projectee_key);
+        let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();
+        u_fighter.get_projs_mut().remove(&projectee_key);
         Ok(())
     }
 }

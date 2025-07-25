@@ -1,4 +1,4 @@
-use crate::{ad, misc::EffectId, sol::SolarSystem, uad::UadItemKey};
+use crate::{ad, misc::EffectId, sol::SolarSystem, ud::UItemKey};
 
 pub enum SideEffect<'a> {
     Full(FullSideEffect<'a>),
@@ -21,14 +21,14 @@ pub enum SideEffectMut<'a> {
 /// Side effect which has full functionality available.
 pub struct FullSideEffect<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
     pub(in crate::sol::api) a_effect_id: ad::AEffectId,
     pub(in crate::sol::api) chance_a_attr_id: ad::AAttrId,
 }
 impl<'a> FullSideEffect<'a> {
     pub(in crate::sol::api) fn new(
         sol: &'a SolarSystem,
-        key: UadItemKey,
+        key: UItemKey,
         a_effect_id: ad::AEffectId,
         chance_a_attr_id: ad::AAttrId,
     ) -> Self {
@@ -47,14 +47,14 @@ impl<'a> FullSideEffect<'a> {
 /// Side effect which has full functionality available.
 pub struct FullSideEffectMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
     pub(in crate::sol::api) a_effect_id: ad::AEffectId,
     pub(in crate::sol::api) chance_a_attr_id: ad::AAttrId,
 }
 impl<'a> FullSideEffectMut<'a> {
     pub(in crate::sol::api) fn new(
         sol: &'a mut SolarSystem,
-        key: UadItemKey,
+        key: UItemKey,
         a_effect_id: ad::AEffectId,
         chance_a_attr_id: ad::AAttrId,
     ) -> Self {
@@ -74,11 +74,11 @@ impl<'a> FullSideEffectMut<'a> {
 /// effect data on data sources which don't have this effect defined as a side effect.
 pub struct StubSideEffect<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
     pub(in crate::sol::api) a_effect_id: ad::AEffectId,
 }
 impl<'a> StubSideEffect<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UadItemKey, a_effect_id: ad::AEffectId) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UItemKey, a_effect_id: ad::AEffectId) -> Self {
         Self { sol, key, a_effect_id }
     }
     pub fn get_effect_id(&self) -> EffectId {
@@ -90,11 +90,11 @@ impl<'a> StubSideEffect<'a> {
 /// effect data on data sources which don't have this effect defined as a side effect.
 pub struct StubSideEffectMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
     pub(in crate::sol::api) a_effect_id: ad::AEffectId,
 }
 impl<'a> StubSideEffectMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UadItemKey, a_effect_id: ad::AEffectId) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UItemKey, a_effect_id: ad::AEffectId) -> Self {
         Self { sol, key, a_effect_id }
     }
     pub fn get_effect_id(&self) -> EffectId {

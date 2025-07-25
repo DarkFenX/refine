@@ -3,7 +3,7 @@ use crate::{
         SolarSystem,
         api::{Autocharge, AutochargeMut, Fighter, FighterMut, MutIter},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl<'a> Fighter<'a> {
@@ -19,7 +19,7 @@ impl<'a> FighterMut<'a> {
     pub fn iter_autocharges_mut(&mut self) -> MutIter<'_, AutochargeMut<'_>> {
         let autocharge_keys = self
             .sol
-            .uad
+            .u_data
             .items
             .get(self.key)
             .get_fighter()
@@ -32,8 +32,8 @@ impl<'a> FighterMut<'a> {
     }
 }
 
-fn iter_autocharges(sol: &SolarSystem, fighter_key: UadItemKey) -> impl Iterator<Item = Autocharge<'_>> {
-    sol.uad
+fn iter_autocharges(sol: &SolarSystem, fighter_key: UItemKey) -> impl Iterator<Item = Autocharge<'_>> {
+    sol.u_data
         .items
         .get(fighter_key)
         .get_fighter()

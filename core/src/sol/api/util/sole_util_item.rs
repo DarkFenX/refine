@@ -2,28 +2,28 @@ use crate::{
     ad,
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadEffectUpdates, UadItem, UadItemKey},
+    ud::{UData, UEffectUpdates, UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_add_item_without_projs(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
-        eupdates: &UadEffectUpdates,
+        item_key: UItemKey,
+        u_item: &UItem,
+        eupdates: &UEffectUpdates,
     ) {
-        svc.notify_item_added(uad, item_key, uad_item);
-        if uad_item.is_loaded() {
-            svc.notify_item_loaded(uad, item_key, uad_item)
+        svc.notify_item_added(u_data, item_key, u_item);
+        if u_item.is_loaded() {
+            svc.notify_item_loaded(u_data, item_key, u_item)
         }
         SolarSystem::util_internal_switch_item_state_without_projs(
-            uad,
+            u_data,
             svc,
             item_key,
-            uad_item,
+            u_item,
             ad::AState::Ghost,
-            uad_item.get_a_state(),
+            u_item.get_a_state(),
             eupdates,
         );
     }
@@ -32,48 +32,48 @@ impl SolarSystem {
     // projection container, which often makes item removal more expensive due to borrow checker
     // rules
     pub(in crate::sol::api) fn util_remove_item_without_projs(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
-        reuse_eupdates: &mut UadEffectUpdates,
+        item_key: UItemKey,
+        u_item: &UItem,
+        reuse_eupdates: &mut UEffectUpdates,
     ) {
-        uad_item.stop_all_reffs(reuse_eupdates, &uad.src);
+        u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
         SolarSystem::util_internal_switch_item_state_without_projs(
-            uad,
+            u_data,
             svc,
             item_key,
-            uad_item,
-            uad_item.get_a_state(),
+            u_item,
+            u_item.get_a_state(),
             ad::AState::Ghost,
             reuse_eupdates,
         );
-        if uad_item.is_loaded() {
-            svc.notify_item_unloaded(uad, item_key, uad_item)
+        if u_item.is_loaded() {
+            svc.notify_item_unloaded(u_data, item_key, u_item)
         }
-        svc.notify_item_removed(uad, item_key, uad_item);
+        svc.notify_item_removed(u_data, item_key, u_item);
     }
     // "With projections" in this case means that projections will be handled when starting effects,
     // to emit effect projected/unprojected notifications. Notifications "projection added" is not
     // part of it
     pub(in crate::sol::api) fn util_add_item_with_projs(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
-        eupdates: &UadEffectUpdates,
+        item_key: UItemKey,
+        u_item: &UItem,
+        eupdates: &UEffectUpdates,
     ) {
-        svc.notify_item_added(uad, item_key, uad_item);
-        if uad_item.is_loaded() {
-            svc.notify_item_loaded(uad, item_key, uad_item);
+        svc.notify_item_added(u_data, item_key, u_item);
+        if u_item.is_loaded() {
+            svc.notify_item_loaded(u_data, item_key, u_item);
         }
         SolarSystem::util_internal_switch_item_state(
-            uad,
+            u_data,
             svc,
             item_key,
-            uad_item,
+            u_item,
             ad::AState::Ghost,
-            uad_item.get_a_state(),
+            u_item.get_a_state(),
             eupdates,
         );
     }
@@ -81,25 +81,25 @@ impl SolarSystem {
     // to emit effect projected/unprojected notifications. Notifications "projection added" is not
     // part of it
     pub(in crate::sol::api) fn util_remove_item_with_projs(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
-        reuse_eupdates: &mut UadEffectUpdates,
+        item_key: UItemKey,
+        u_item: &UItem,
+        reuse_eupdates: &mut UEffectUpdates,
     ) {
-        uad_item.stop_all_reffs(reuse_eupdates, &uad.src);
+        u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
         SolarSystem::util_internal_switch_item_state(
-            uad,
+            u_data,
             svc,
             item_key,
-            uad_item,
-            uad_item.get_a_state(),
+            u_item,
+            u_item.get_a_state(),
             ad::AState::Ghost,
             reuse_eupdates,
         );
-        if uad_item.is_loaded() {
-            svc.notify_item_unloaded(uad, item_key, uad_item)
+        if u_item.is_loaded() {
+            svc.notify_item_unloaded(u_data, item_key, u_item)
         }
-        svc.notify_item_removed(uad, item_key, uad_item);
+        svc.notify_item_removed(u_data, item_key, u_item);
     }
 }

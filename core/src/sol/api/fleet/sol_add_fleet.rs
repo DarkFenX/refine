@@ -1,6 +1,6 @@
 use crate::{
     sol::{SolarSystem, api::FleetMut},
-    uad::{UadFleet, UadFleetKey},
+    ud::{UFleet, UFleetKey},
 };
 
 impl SolarSystem {
@@ -8,9 +8,9 @@ impl SolarSystem {
         let fleet_key = self.add_fleet_internal();
         FleetMut::new(self, fleet_key)
     }
-    pub(in crate::sol::api) fn add_fleet_internal(&mut self) -> UadFleetKey {
-        let fleet_id = self.uad.fleets.alloc_id();
-        let uad_fleet = UadFleet::new(fleet_id);
-        self.uad.fleets.add(uad_fleet)
+    pub(in crate::sol::api) fn add_fleet_internal(&mut self) -> UFleetKey {
+        let fleet_id = self.u_data.fleets.alloc_id();
+        let u_fleet = UFleet::new(fleet_id);
+        self.u_data.fleets.add(u_fleet)
     }
 }

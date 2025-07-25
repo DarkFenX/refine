@@ -12,7 +12,7 @@ use crate::{
             Location, ModifierKind, Op, RawModifier,
         },
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
     util::RMap,
 };
 
@@ -79,10 +79,10 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
 }
 
 fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
-    let item = ctx.uad.items.get(espec.item_key);
+    let item = ctx.u_data.items.get(espec.item_key);
     match item.get_charge_key() {
         Some(charge_key) => {
-            let charge = ctx.uad.items.get(charge_key);
+            let charge = ctx.u_data.items.get(charge_key);
             match charge.get_a_item_id() {
                 ac::items::NANITE_REPAIR_PASTE => {
                     match calc.get_item_attr_val_full(ctx, espec.item_key, &AAR_MULTIPLIER) {
@@ -100,20 +100,20 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     }
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UadItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
     smallvec![AffectorInfo {
-        item_id: ctx.uad.items.id_by_key(item_key),
+        item_id: ctx.u_data.items.id_by_key(item_key),
         attr_id: Some(AAR_MULTIPLIER)
     }]
 }
 
 fn revise_on_item_add_removal(
     ctx: SvcCtx,
-    affector_key: UadItemKey,
-    changed_key: UadItemKey,
-    changed_item: &UadItem,
+    affector_key: UItemKey,
+    changed_key: UItemKey,
+    changed_item: &UItem,
 ) -> bool {
-    match ctx.uad.items.get(affector_key).get_charge_key() {
+    match ctx.u_data.items.get(affector_key).get_charge_key() {
         Some(charge_key) => changed_key == charge_key && changed_item.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE,
         // Not chargeable item, or no charge on AAR -> not changing anything
         None => false,

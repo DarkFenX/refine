@@ -4,7 +4,7 @@ use crate::{
         SvcCtx,
         calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
     },
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl StandardRegister {
@@ -18,8 +18,8 @@ impl StandardRegister {
         let valid = match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         add_cmod(
                             &mut self.cmods_root,
@@ -35,8 +35,8 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(loc) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         add_cmod(&mut self.cmods_loc, (fit_key, loc_kind), cmod, &mut self.cmods_by_aspec);
                         reuse_cmods.push(cmod);
@@ -47,8 +47,8 @@ impl StandardRegister {
             },
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         add_cmod(
                             &mut self.cmods_loc_grp,
@@ -64,8 +64,8 @@ impl StandardRegister {
             },
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
                 Ok(loc_kind) => {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         add_cmod(
                             &mut self.cmods_loc_srq,
@@ -80,8 +80,8 @@ impl StandardRegister {
                 _ => false,
             },
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for fit_key in ctx.uad.fits.keys() {
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for fit_key in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                     add_cmod(
                         &mut self.cmods_own_srq,
@@ -109,8 +109,8 @@ impl StandardRegister {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_root,
@@ -124,8 +124,8 @@ impl StandardRegister {
             }
             AffecteeFilter::Loc(loc) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc,
@@ -139,8 +139,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc_grp,
@@ -154,8 +154,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => {
                 if let Ok(loc_kind) = loc.try_into() {
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for fit_key in ctx.uad.fits.keys() {
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for fit_key in ctx.u_data.fits.keys() {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc_srq,
@@ -168,8 +168,8 @@ impl StandardRegister {
                 }
             }
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for fit_key in ctx.uad.fits.keys() {
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for fit_key in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                     remove_cmod(
                         &mut self.cmods_own_srq,
@@ -184,7 +184,7 @@ impl StandardRegister {
         self.rmods_sw_system.remove(&rmod);
     }
     // No need to return any ctx modifiers here, since fits being added have no items
-    pub(in crate::svc::calc) fn reg_fit_for_sw(&mut self, fit_key: UadFitKey) {
+    pub(in crate::svc::calc) fn reg_fit_for_sw(&mut self, fit_key: UFitKey) {
         for rmod in self.rmods_sw_system.iter() {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(loc) => {
@@ -239,7 +239,7 @@ impl StandardRegister {
         }
     }
     // No need to return any ctx modifiers here, since fits being removed have no items
-    pub(in crate::svc::calc) fn unreg_fit_for_sw(&mut self, fit_key: UadFitKey) {
+    pub(in crate::svc::calc) fn unreg_fit_for_sw(&mut self, fit_key: UFitKey) {
         for rmod in self.rmods_sw_system.iter() {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(loc) => {

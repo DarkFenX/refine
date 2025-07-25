@@ -3,7 +3,7 @@ use crate::{
         SolarSystem,
         api::{Fit, FitMut, Ship, ShipMut},
     },
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -18,7 +18,7 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_ship_mut(&mut self) -> Option<ShipMut<'_>> {
         self.sol
-            .uad
+            .u_data
             .fits
             .get(self.key)
             .ship
@@ -26,6 +26,10 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_ship(sol: &SolarSystem, fit_key: UadFitKey) -> Option<Ship<'_>> {
-    sol.uad.fits.get(fit_key).ship.map(|item_key| Ship::new(sol, item_key))
+fn get_ship(sol: &SolarSystem, fit_key: UFitKey) -> Option<Ship<'_>> {
+    sol.u_data
+        .fits
+        .get(fit_key)
+        .ship
+        .map(|item_key| Ship::new(sol, item_key))
 }

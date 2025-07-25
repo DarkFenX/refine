@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 pub struct StatLayerErps {
@@ -23,26 +23,26 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
     ) -> Result<StatTank<Option<StatLayerErps>>, StatItemCheckError> {
-        let uad_item = ctx.uad.items.get(item_key);
-        item_check(item_key, uad_item)?;
-        Ok(self.get_stat_item_erps_unchecked(ctx, calc, item_key, uad_item, incoming_dps, spool))
+        let u_item = ctx.u_data.items.get(item_key);
+        item_check(item_key, u_item)?;
+        Ok(self.get_stat_item_erps_unchecked(ctx, calc, item_key, u_item, incoming_dps, spool))
     }
     fn get_stat_item_erps_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
+        item_key: UItemKey,
+        u_item: &UItem,
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
     ) -> StatTank<Option<StatLayerErps>> {
-        let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, uad_item, spool);
+        let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, u_item, spool);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
-        let incoming_dps = incoming_dps.unwrap_or(ctx.uad.default_incoming_dps);
+        let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps);
         let armor_mult = get_tanking_efficiency(&resists.armor, incoming_dps);
         let hull_mult = get_tanking_efficiency(&resists.hull, incoming_dps);

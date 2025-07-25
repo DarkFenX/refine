@@ -3,7 +3,7 @@ use crate::{
         SolarSystem,
         api::{Fit, FitMut, Stance, StanceMut},
     },
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl<'a> Fit<'a> {
@@ -18,7 +18,7 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_stance_mut(&mut self) -> Option<StanceMut<'_>> {
         self.sol
-            .uad
+            .u_data
             .fits
             .get(self.key)
             .stance
@@ -26,8 +26,8 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_stance(sol: &SolarSystem, fit_key: UadFitKey) -> Option<Stance<'_>> {
-    sol.uad
+fn get_stance(sol: &SolarSystem, fit_key: UFitKey) -> Option<Stance<'_>> {
+    sol.u_data
         .fits
         .get(fit_key)
         .stance

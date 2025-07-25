@@ -3,29 +3,29 @@ use crate::{
     ad,
     def::OF,
     svc::{SvcCtx, calc::Calc, efuncs},
-    uad::{UadDrone, UadItemKey},
+    ud::{UDrone, UItemKey},
     util::{InfCount, RMap},
 };
 
 pub(super) fn get_drone_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
-    uad_drone: &UadDrone,
+    item_key: UItemKey,
+    u_drone: &UDrone,
     ignore_state: bool,
 ) -> Option<RMap<ad::AEffectId, Cycle>> {
-    if !uad_drone.is_loaded() {
+    if !u_drone.is_loaded() {
         return None;
     };
     let mut cycle_infos = RMap::new();
     match ignore_state {
         true => {
-            for &a_effect_id in uad_drone.get_a_effect_datas().unwrap().keys() {
+            for &a_effect_id in u_drone.get_a_effect_datas().unwrap().keys() {
                 fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
             }
         }
         false => {
-            for &a_effect_id in uad_drone.get_reffs().unwrap().iter() {
+            for &a_effect_id in u_drone.get_reffs().unwrap().iter() {
                 fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
             }
         }
@@ -37,10 +37,10 @@ fn fill_drone_effect_info(
     cycle_infos: &mut RMap<ad::AEffectId, Cycle>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     a_effect_id: ad::AEffectId,
 ) {
-    let r_effect = match ctx.uad.src.get_r_effect(&a_effect_id) {
+    let r_effect = match ctx.u_data.src.get_r_effect(&a_effect_id) {
         Some(r_effect) => r_effect,
         None => return,
     };

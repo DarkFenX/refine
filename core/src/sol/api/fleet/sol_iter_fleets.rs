@@ -5,10 +5,10 @@ use crate::sol::{
 
 impl SolarSystem {
     pub fn iter_fleets(&self) -> impl ExactSizeIterator<Item = Fleet<'_>> {
-        self.uad.fleets.keys().map(|fleet_key| Fleet::new(self, fleet_key))
+        self.u_data.fleets.keys().map(|fleet_key| Fleet::new(self, fleet_key))
     }
     pub fn iter_fleets_mut(&mut self) -> MutIter<'_, FleetMut<'_>> {
-        let fleet_keys = self.uad.fleets.keys().collect();
+        let fleet_keys = self.u_data.fleets.keys().collect();
         MutIter::new(self, fleet_keys)
     }
 }

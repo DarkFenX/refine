@@ -4,7 +4,7 @@ use crate::{
         SvcCtx,
         calc::{AffecteeFilter, Context, CtxModifier, Location, LocationKind, ModifierKind},
     },
-    uad::{ShipKind, UadFit, UadFitKey, UadItem, UadItemKey},
+    ud::{UFit, UFitKey, UItem, UItemKey, UShipKind},
     util::extend_vec_from_map_set_l1,
 };
 
@@ -12,7 +12,7 @@ impl StandardRegister {
     // Query methods
     pub(in crate::svc::calc) fn fill_affectees(
         &self,
-        reuse_affectees: &mut Vec<UadItemKey>,
+        reuse_affectees: &mut Vec<UItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
     ) {
@@ -29,7 +29,7 @@ impl StandardRegister {
         }
     }
     // Modification methods
-    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UadItemKey, item: &UadItem) {
+    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) {
         let is_buffable = item.is_buffable();
         if is_buffable {
             self.reg_buffable_for_sw(item_key);
@@ -62,7 +62,7 @@ impl StandardRegister {
             self.reg_buffable_for_fw(item_key, fit_key);
         }
     }
-    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UadItemKey, item: &UadItem) {
+    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) {
         let is_buffable = item.is_buffable();
         if is_buffable {
             self.unreg_buffable_for_sw(item_key);
@@ -99,14 +99,14 @@ impl StandardRegister {
         }
     }
     // Private methods
-    fn fill_affectees_no_context(&self, affectees: &mut Vec<UadItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
+    fn fill_affectees_no_context(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
         if let AffecteeFilter::Direct(loc) = cmod.raw.affectee_filter {
             match loc {
                 Location::Item => {
                     affectees.push(cmod.raw.affector_espec.item_key);
                 }
                 Location::Other => {
-                    let item = ctx.uad.items.get(cmod.raw.affector_espec.item_key);
+                    let item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
                     if let Some(other_item_key) = item.get_other_key() {
                         affectees.push(other_item_key);
                     }
@@ -115,19 +115,13 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_affectees_for_fit(
-        &self,
-        affectees: &mut Vec<UadItemKey>,
-        ctx: SvcCtx,
-        cmod: &CtxModifier,
-        fit_key: UadFitKey,
-    ) {
+    fn fill_affectees_for_fit(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, cmod: &CtxModifier, fit_key: UFitKey) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => extend_vec_from_map_set_l1(affectees, &self.affectee_buffable, &fit_key),
                 _ => {
                     if let Ok(loc_kind) = loc.try_into() {
-                        let fit = ctx.uad.fits.get(fit_key);
+                        let fit = ctx.u_data.fits.get(fit_key);
                         if check_loc_owner(loc, fit) {
                             extend_vec_from_map_set_l1(affectees, &self.affectee_root, &(fit_key, loc_kind));
                         }
@@ -142,7 +136,7 @@ impl StandardRegister {
                 }
                 _ => {
                     if let Ok(loc_kind) = loc.try_into() {
-                        let fit = ctx.uad.fits.get(fit_key);
+                        let fit = ctx.u_data.fits.get(fit_key);
                         if check_loc_owner(loc, fit) {
                             extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &(fit_key, loc_kind));
                         }
@@ -161,7 +155,7 @@ impl StandardRegister {
                 }
                 _ => {
                     if let Ok(loc_kind) = loc.try_into() {
-                        let fit = ctx.uad.fits.get(fit_key);
+                        let fit = ctx.u_data.fits.get(fit_key);
                         if check_loc_owner(loc, fit) {
                             extend_vec_from_map_set_l1(
                                 affectees,
@@ -184,7 +178,7 @@ impl StandardRegister {
                 }
                 _ => {
                     if let Ok(loc_kind) = loc.try_into() {
-                        let fit = ctx.uad.fits.get(fit_key);
+                        let fit = ctx.u_data.fits.get(fit_key);
                         if check_loc_owner(loc, fit) {
                             extend_vec_from_map_set_l1(
                                 affectees,
@@ -202,33 +196,33 @@ impl StandardRegister {
     }
     fn fill_affectees_for_item_system(
         &self,
-        affectees: &mut Vec<UadItemKey>,
+        affectees: &mut Vec<UItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
-        projectee_key: UadItemKey,
+        projectee_key: UItemKey,
     ) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         affectees.push(projectee_key)
                     }
                 }
                 Location::Structure => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Structure)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Structure)
                     {
                         affectees.push(projectee_key)
                     }
                 }
                 Location::Char => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && let Some(char_key) = ctx.uad.fits.get(projectee_ship.get_fit_key()).character
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && let Some(char_key) = ctx.u_data.fits.get(projectee_ship.get_fit_key()).character
                     {
                         affectees.push(char_key);
                     }
@@ -237,9 +231,9 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(loc) => match loc {
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -249,9 +243,9 @@ impl StandardRegister {
                     }
                 }
                 Location::Structure => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Structure)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Structure)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -261,8 +255,8 @@ impl StandardRegister {
                     }
                 }
                 Location::Char => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item {
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item {
                         extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc,
@@ -274,9 +268,9 @@ impl StandardRegister {
             },
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc {
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -286,9 +280,9 @@ impl StandardRegister {
                     }
                 }
                 Location::Structure => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Structure)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Structure)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -298,8 +292,8 @@ impl StandardRegister {
                     }
                 }
                 Location::Char => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item {
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item {
                         extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_grp,
@@ -311,9 +305,9 @@ impl StandardRegister {
             },
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc {
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -323,9 +317,9 @@ impl StandardRegister {
                     }
                 }
                 Location::Structure => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Structure)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Structure)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -335,8 +329,8 @@ impl StandardRegister {
                     }
                 }
                 Location::Char => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item {
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item {
                         extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_srq,
@@ -347,8 +341,8 @@ impl StandardRegister {
                 _ => (),
             },
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                let projectee_item = ctx.uad.items.get(projectee_key);
-                if let UadItem::Ship(projectee_ship) = projectee_item {
+                let projectee_item = ctx.u_data.items.get(projectee_key);
+                if let UItem::Ship(projectee_ship) = projectee_item {
                     extend_vec_from_map_set_l1(
                         affectees,
                         &self.affectee_own_srq,
@@ -360,10 +354,10 @@ impl StandardRegister {
     }
     fn fill_affectees_for_item_target(
         &self,
-        affectees: &mut Vec<UadItemKey>,
+        affectees: &mut Vec<UItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
-        projectee_key: UadItemKey,
+        projectee_key: UItemKey,
     ) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => {
@@ -373,15 +367,15 @@ impl StandardRegister {
             }
             AffecteeFilter::Loc(loc) => {
                 if matches!(loc, Location::Target) {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item {
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item {
                         match projectee_ship.get_kind() {
-                            ShipKind::Ship => extend_vec_from_map_set_l1(
+                            UShipKind::Ship => extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc,
                                 &(projectee_ship.get_fit_key(), LocationKind::Ship),
                             ),
-                            ShipKind::Structure => extend_vec_from_map_set_l1(
+                            UShipKind::Structure => extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc,
                                 &(projectee_ship.get_fit_key(), LocationKind::Structure),
@@ -393,15 +387,15 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => {
                 if matches!(loc, Location::Target) {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item {
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item {
                         match projectee_ship.get_kind() {
-                            ShipKind::Ship => extend_vec_from_map_set_l1(
+                            UShipKind::Ship => extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc_grp,
                                 &(projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
                             ),
-                            ShipKind::Structure => extend_vec_from_map_set_l1(
+                            UShipKind::Structure => extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc_grp,
                                 &(projectee_ship.get_fit_key(), LocationKind::Structure, a_item_grp_id),
@@ -413,15 +407,15 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => {
                 if matches!(loc, Location::Target) {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item {
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item {
                         match projectee_ship.get_kind() {
-                            ShipKind::Ship => extend_vec_from_map_set_l1(
+                            UShipKind::Ship => extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc_srq,
                                 &(projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
                             ),
-                            ShipKind::Structure => extend_vec_from_map_set_l1(
+                            UShipKind::Structure => extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc_srq,
                                 &(projectee_ship.get_fit_key(), LocationKind::Structure, srq_a_item_id),
@@ -432,8 +426,8 @@ impl StandardRegister {
                 }
             }
             AffecteeFilter::OwnSrq(srq_a_item_id) => {
-                let projectee_item = ctx.uad.items.get(projectee_key);
-                if let UadItem::Ship(projectee_ship) = projectee_item {
+                let projectee_item = ctx.u_data.items.get(projectee_key);
+                if let UItem::Ship(projectee_ship) = projectee_item {
                     extend_vec_from_map_set_l1(
                         affectees,
                         &self.affectee_own_srq,
@@ -445,23 +439,23 @@ impl StandardRegister {
     }
     fn fill_affectees_for_item_buff(
         &self,
-        affectees: &mut Vec<UadItemKey>,
+        affectees: &mut Vec<UItemKey>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
-        projectee_key: UadItemKey,
+        projectee_key: UItemKey,
     ) {
         match cmod.raw.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Everything => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
                     if projectee_item.is_buffable() {
                         affectees.push(projectee_key)
                     }
                 }
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         affectees.push(projectee_key)
                     }
@@ -470,9 +464,9 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(loc) => match loc {
                 Location::Everything => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -482,9 +476,9 @@ impl StandardRegister {
                     }
                 }
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -497,9 +491,9 @@ impl StandardRegister {
             },
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc {
                 Location::Everything => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -509,9 +503,9 @@ impl StandardRegister {
                     }
                 }
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -524,9 +518,9 @@ impl StandardRegister {
             },
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc {
                 Location::Everything => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -536,9 +530,9 @@ impl StandardRegister {
                     }
                 }
                 Location::Ship => {
-                    let projectee_item = ctx.uad.items.get(projectee_key);
-                    if let UadItem::Ship(projectee_ship) = projectee_item
-                        && matches!(projectee_ship.get_kind(), ShipKind::Ship)
+                    let projectee_item = ctx.u_data.items.get(projectee_key);
+                    if let UItem::Ship(projectee_ship) = projectee_item
+                        && matches!(projectee_ship.get_kind(), UShipKind::Ship)
                     {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -554,16 +548,16 @@ impl StandardRegister {
     }
 }
 
-fn check_loc_owner(loc: Location, fit: &UadFit) -> bool {
+fn check_loc_owner(loc: Location, fit: &UFit) -> bool {
     match loc {
         Location::Char => fit.character.is_some(),
-        Location::Ship => matches!(fit.kind, ShipKind::Ship),
-        Location::Structure => matches!(fit.kind, ShipKind::Structure),
+        Location::Ship => matches!(fit.kind, UShipKind::Ship),
+        Location::Structure => matches!(fit.kind, UShipKind::Structure),
         _ => false,
     }
 }
 
-fn is_fit_of_ship_kind(ctx: SvcCtx, fit_key: UadFitKey) -> bool {
-    let fit = ctx.uad.fits.get(fit_key);
-    matches!(fit.kind, ShipKind::Ship)
+fn is_fit_of_ship_kind(ctx: SvcCtx, fit_key: UFitKey) -> bool {
+    let fit = ctx.u_data.fits.get(fit_key);
+    matches!(fit.kind, UShipKind::Ship)
 }

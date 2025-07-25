@@ -4,7 +4,7 @@ use crate::{
         calc::Calc,
         vast::{ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol, Vast},
     },
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl Vast {
@@ -36,7 +36,7 @@ impl Vast {
         for &fit_key in options.fit_keys.iter() {
             let fit_result = self.validate_fit_verbose(ctx, calc, fit_key, &options.options);
             if !fit_result.all_passed() {
-                let fit_id = ctx.uad.fits.id_by_key(fit_key);
+                let fit_id = ctx.u_data.fits.id_by_key(fit_key);
                 sol_result.fits.insert(fit_id, fit_result);
             }
         }
@@ -50,12 +50,12 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         options: &ValOptionsInt,
     ) -> bool {
-        let fit = ctx.uad.fits.get(fit_key);
+        let fit = ctx.u_data.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
-        let ship = fit.ship.map(|v| ctx.uad.items.get(v).get_ship().unwrap());
+        let ship = fit.ship.map(|v| ctx.u_data.items.get(v).get_ship().unwrap());
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be. This order was chosen to optimize for market
         // filtering capabilities, which takes into account following item distribution:
@@ -476,12 +476,12 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         options: &ValOptionsInt,
     ) -> ValResultFit {
-        let fit = ctx.uad.fits.get(fit_key);
+        let fit = ctx.u_data.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
-        let ship = fit.ship.map(|v| ctx.uad.items.get(v).get_ship().unwrap());
+        let ship = fit.ship.map(|v| ctx.u_data.items.get(v).get_ship().unwrap());
         let mut result = ValResultFit::new();
         // Generic
         if options.not_loaded_item.enabled {

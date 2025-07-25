@@ -4,14 +4,14 @@ use crate::{
     misc::DmgKinds,
     src::Src,
     svc::calc::CalcAttrVal,
-    uad::{UadFitKey, UadItemKey},
+    ud::{UFitKey, UItemKey},
     util::{RMap, RMapRSet},
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct RahSim {
-    pub(super) resonances: RMap<UadItemKey, Option<DmgKinds<CalcAttrVal>>>,
-    pub(super) by_fit: RMapRSet<UadFitKey, UadItemKey>,
+    pub(super) resonances: RMap<UItemKey, Option<DmgKinds<CalcAttrVal>>>,
+    pub(super) by_fit: RMapRSet<UFitKey, UItemKey>,
     pub(super) cycle_time_a_attr_id: Option<ad::AAttrId>,
     pub(super) sim_running: bool,
 }

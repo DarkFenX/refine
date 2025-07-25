@@ -1,26 +1,26 @@
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadEffectUpdates, UadItem, UadItemKey},
+    ud::{UData, UEffectUpdates, UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_add_sw_effect(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        reuse_eupdates: &UadEffectUpdates,
+        item_key: UItemKey,
+        reuse_eupdates: &UEffectUpdates,
     ) {
-        let uad_item = uad.items.get(item_key);
-        SolarSystem::util_add_item_without_projs(uad, svc, item_key, uad_item, reuse_eupdates);
+        let u_item = u_data.items.get(item_key);
+        SolarSystem::util_add_item_without_projs(u_data, svc, item_key, u_item, reuse_eupdates);
     }
     pub(in crate::sol::api) fn util_remove_sw_effect(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
-        reuse_eupdates: &mut UadEffectUpdates,
+        item_key: UItemKey,
+        u_item: &UItem,
+        reuse_eupdates: &mut UEffectUpdates,
     ) {
-        SolarSystem::util_remove_item_without_projs(uad, svc, item_key, uad_item, reuse_eupdates);
+        SolarSystem::util_remove_item_without_projs(u_data, svc, item_key, u_item, reuse_eupdates);
     }
 }

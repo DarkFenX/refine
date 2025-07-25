@@ -1,16 +1,16 @@
 use crate::{
     sol::{SolarSystem, api::FighterMut},
-    uad::{UadEffectUpdates, UadItemKey},
+    ud::{UEffectUpdates, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fighter(
         &mut self,
-        item_key: UadItemKey,
-        reuse_eupdates: &mut UadEffectUpdates,
+        item_key: UItemKey,
+        reuse_eupdates: &mut UEffectUpdates,
     ) {
         SolarSystem::remove_fighter_autocharges(
-            &mut self.uad,
+            &mut self.u_data,
             &mut self.svc,
             &mut self.rprojs,
             item_key,
@@ -18,36 +18,36 @@ impl SolarSystem {
             reuse_eupdates,
         );
         // Remove outgoing projections
-        let uad_item = self.uad.items.get(item_key);
-        let uad_fighter = uad_item.get_fighter().unwrap();
-        let fit_key = uad_fighter.get_fit_key();
-        for projectee_key in uad_fighter.get_projs().iter_projectees() {
-            let projectee_uad_item = self.uad.items.get(projectee_key);
+        let u_item = self.u_data.items.get(item_key);
+        let u_fighter = u_item.get_fighter().unwrap();
+        let fit_key = u_fighter.get_fit_key();
+        for projectee_key in u_fighter.get_projs().iter_projectees() {
+            let projectee_u_item = self.u_data.items.get(projectee_key);
             SolarSystem::util_remove_item_projection(
-                &self.uad,
+                &self.u_data,
                 &mut self.svc,
                 item_key,
-                uad_item,
+                u_item,
                 projectee_key,
-                projectee_uad_item,
+                projectee_u_item,
             );
             self.rprojs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);
         // Update services
-        let uad_item = self.uad.items.get(item_key);
-        SolarSystem::util_remove_item_without_projs(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
+        let u_item = self.u_data.items.get(item_key);
+        SolarSystem::util_remove_item_without_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
         // Update user data
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        uad_fit.fighters.remove(&item_key);
-        self.uad.items.remove(item_key);
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        u_fit.fighters.remove(&item_key);
+        self.u_data.items.remove(item_key);
     }
 }
 
 impl<'a> FighterMut<'a> {
     pub fn remove(self) {
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_fighter(self.key, &mut reuse_eupdates);
     }
 }

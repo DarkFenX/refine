@@ -4,7 +4,7 @@ use crate::{
         SvcCtx,
         calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
     },
-    uad::{ShipKind, UadItemKey, UadShip},
+    ud::{UItemKey, UShip, UShipKind},
 };
 
 impl StandardRegister {
@@ -31,9 +31,9 @@ impl StandardRegister {
                 }
                 Location::Ship => {
                     // Assume all fits are of ship type
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for (fit_key, fit) in ctx.uad.fits.iter() {
-                        if matches!(fit.kind, ShipKind::Ship)
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for (fit_key, fit) in ctx.u_data.fits.iter() {
+                        if matches!(fit.kind, UShipKind::Ship)
                             && let Some(ship_key) = fit.ship
                         {
                             let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
@@ -53,9 +53,9 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
                 // Assume all fits are of ship type
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for (fit_key, fit) in ctx.uad.fits.iter() {
-                    if matches!(fit.kind, ShipKind::Ship)
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for (fit_key, fit) in ctx.u_data.fits.iter() {
+                    if matches!(fit.kind, UShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
                         let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
@@ -73,9 +73,9 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
                 // Assume all fits are of ship type
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for (fit_key, fit) in ctx.uad.fits.iter() {
-                    if matches!(fit.kind, ShipKind::Ship)
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for (fit_key, fit) in ctx.u_data.fits.iter() {
+                    if matches!(fit.kind, UShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
                         let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
@@ -93,9 +93,9 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
                 // Assume all fits are of ship type
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for (fit_key, fit) in ctx.uad.fits.iter() {
-                    if matches!(fit.kind, ShipKind::Ship)
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for (fit_key, fit) in ctx.u_data.fits.iter() {
+                    if matches!(fit.kind, UShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
                         let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
@@ -140,9 +140,9 @@ impl StandardRegister {
                 }
                 Location::Ship => {
                     // Assume all fits are of ship type
-                    reuse_cmods.reserve(ctx.uad.fits.len());
-                    for (fit_key, fit) in ctx.uad.fits.iter() {
-                        if matches!(fit.kind, ShipKind::Ship)
+                    reuse_cmods.reserve(ctx.u_data.fits.len());
+                    for (fit_key, fit) in ctx.u_data.fits.iter() {
+                        if matches!(fit.kind, UShipKind::Ship)
                             && let Some(ship_key) = fit.ship
                         {
                             let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
@@ -161,9 +161,9 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
                 // Assume all fits are of ship type
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for (fit_key, fit) in ctx.uad.fits.iter() {
-                    if matches!(fit.kind, ShipKind::Ship)
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for (fit_key, fit) in ctx.u_data.fits.iter() {
+                    if matches!(fit.kind, UShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
@@ -180,9 +180,9 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
                 // Assume all fits are of ship type
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for (fit_key, fit) in ctx.uad.fits.iter() {
-                    if matches!(fit.kind, ShipKind::Ship)
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for (fit_key, fit) in ctx.u_data.fits.iter() {
+                    if matches!(fit.kind, UShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
@@ -199,9 +199,9 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
                 // Assume all fits are of ship type
-                reuse_cmods.reserve(ctx.uad.fits.len());
-                for (fit_key, fit) in ctx.uad.fits.iter() {
-                    if matches!(fit.kind, ShipKind::Ship)
+                reuse_cmods.reserve(ctx.u_data.fits.len());
+                for (fit_key, fit) in ctx.u_data.fits.iter() {
+                    if matches!(fit.kind, UShipKind::Ship)
                         && let Some(ship_key) = fit.ship
                     {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
@@ -220,7 +220,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable items
-    pub(in crate::svc::calc::registers::standard) fn reg_buffable_for_sw(&mut self, item_key: UadItemKey) {
+    pub(in crate::svc::calc::registers::standard) fn reg_buffable_for_sw(&mut self, item_key: UItemKey) {
         for rmod in self.rmods_sw_buff_direct.iter() {
             if let AffecteeFilter::Direct(Location::Everything) = rmod.affectee_filter {
                 let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
@@ -229,7 +229,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable items
-    pub(in crate::svc::calc::registers::standard) fn unreg_buffable_for_sw(&mut self, item_key: UadItemKey) {
+    pub(in crate::svc::calc::registers::standard) fn unreg_buffable_for_sw(&mut self, item_key: UItemKey) {
         for rmod in self.rmods_sw_buff_direct.iter() {
             if let AffecteeFilter::Direct(Location::Everything) = rmod.affectee_filter {
                 let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
@@ -238,11 +238,11 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(super) fn reg_loc_root_for_sw_buff(&mut self, ship_key: UadItemKey, ship: &UadShip) {
+    pub(super) fn reg_loc_root_for_sw_buff(&mut self, ship_key: UItemKey, ship: &UShip) {
         for rmod in self.rmods_sw_buff_indirect.iter() {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(Location::Ship) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         add_cmod(
                             &mut self.cmods_root,
@@ -253,7 +253,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         add_cmod(
                             &mut self.cmods_loc,
@@ -264,7 +264,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         add_cmod(
                             &mut self.cmods_loc_grp,
@@ -275,7 +275,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         add_cmod(
                             &mut self.cmods_loc_srq,
@@ -290,11 +290,11 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(super) fn unreg_loc_root_for_sw_buff(&mut self, ship_key: UadItemKey, ship: &UadShip) {
+    pub(super) fn unreg_loc_root_for_sw_buff(&mut self, ship_key: UItemKey, ship: &UShip) {
         for rmod in self.rmods_sw_buff_indirect.iter() {
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(Location::Ship) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         remove_cmod(
                             &mut self.cmods_root,
@@ -305,7 +305,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::Loc(Location::Everything | Location::Ship) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         remove_cmod(
                             &mut self.cmods_loc,
@@ -316,7 +316,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocGrp(Location::Everything | Location::Ship, a_item_grp_id) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         remove_cmod(
                             &mut self.cmods_loc_grp,
@@ -327,7 +327,7 @@ impl StandardRegister {
                     }
                 }
                 AffecteeFilter::LocSrq(Location::Everything | Location::Ship, srq_a_item_id) => {
-                    if matches!(ship.get_kind(), ShipKind::Ship) {
+                    if matches!(ship.get_kind(), UShipKind::Ship) {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, ship_key);
                         remove_cmod(
                             &mut self.cmods_loc_srq,

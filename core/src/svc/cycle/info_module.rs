@@ -8,50 +8,50 @@ use crate::{
     def::OF,
     nd::{NEffectChargeDepl, NEffectChargeLoc},
     svc::{SvcCtx, calc::Calc, efuncs},
-    uad::{UadItem, UadItemKey, UadModule},
+    ud::{UItem, UItemKey, UModule},
     util::{InfCount, RMap},
 };
 
 pub(super) fn get_module_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
-    uad_item: &UadItem,
-    uad_module: &UadModule,
+    item_key: UItemKey,
+    u_item: &UItem,
+    u_module: &UModule,
     options: CycleOptions,
     ignore_state: bool,
 ) -> Option<RMap<ad::AEffectId, Cycle>> {
-    if !uad_module.is_loaded() {
+    if !u_module.is_loaded() {
         return None;
     };
     let mut cycle_infos = RMap::new();
     let mut self_killers = Vec::new();
     match ignore_state {
         true => {
-            for &a_effect_id in uad_module.get_a_effect_datas().unwrap().keys() {
+            for &a_effect_id in u_module.get_a_effect_datas().unwrap().keys() {
                 fill_module_effect_info(
                     &mut cycle_infos,
                     &mut self_killers,
                     ctx,
                     calc,
                     item_key,
-                    uad_item,
-                    uad_module,
+                    u_item,
+                    u_module,
                     a_effect_id,
                     options,
                 );
             }
         }
         false => {
-            for &a_effect_id in uad_module.get_reffs().unwrap().iter() {
+            for &a_effect_id in u_module.get_reffs().unwrap().iter() {
                 fill_module_effect_info(
                     &mut cycle_infos,
                     &mut self_killers,
                     ctx,
                     calc,
                     item_key,
-                    uad_item,
-                    uad_module,
+                    u_item,
+                    u_module,
                     a_effect_id,
                     options,
                 );
@@ -75,13 +75,13 @@ fn fill_module_effect_info(
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
-    uad_item: &UadItem,
-    uad_module: &UadModule,
+    item_key: UItemKey,
+    u_item: &UItem,
+    u_module: &UModule,
     a_effect_id: ad::AEffectId,
     options: CycleOptions,
 ) {
-    let r_effect = match ctx.uad.src.get_r_effect(&a_effect_id) {
+    let r_effect = match ctx.u_data.src.get_r_effect(&a_effect_id) {
         Some(r_effect) => r_effect,
         None => return,
     };
@@ -96,12 +96,12 @@ fn fill_module_effect_info(
     // Charge count info
     let cycle_count = match r_effect.get_charge_info() {
         Some(n_charge) => match n_charge.location {
-            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(uad_item, r_effect),
+            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(u_item, r_effect),
             NEffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
                 NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
-                    get_charge_rate_cycle_count(ctx, uad_module, can_run_uncharged, options.reload_optionals)
+                    get_charge_rate_cycle_count(ctx, u_module, can_run_uncharged, options.reload_optionals)
                 }
-                NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, uad_module),
+                NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, u_module),
                 NEffectChargeDepl::None => InfCount::Infinite,
             },
         },

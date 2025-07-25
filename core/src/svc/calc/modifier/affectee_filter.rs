@@ -1,4 +1,4 @@
-use crate::{ad, svc::calc::Location, uad::UadItem};
+use crate::{ad, svc::calc::Location, ud::UItem};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum AffecteeFilter {
@@ -9,7 +9,7 @@ pub(crate) enum AffecteeFilter {
     OwnSrq(ad::AItemId),
 }
 impl AffecteeFilter {
-    pub(super) fn from_a_affectee_filter(a_affectee_filter: &ad::AEffectAffecteeFilter, sol_item: &UadItem) -> Self {
+    pub(super) fn from_a_affectee_filter(a_affectee_filter: &ad::AEffectAffecteeFilter, sol_item: &UItem) -> Self {
         match a_affectee_filter {
             ad::AEffectAffecteeFilter::Direct(loc) => Self::Direct(loc.into()),
             ad::AEffectAffecteeFilter::Loc(loc) => Self::Loc(loc.into()),
@@ -23,7 +23,7 @@ impl AffecteeFilter {
     pub(super) fn from_a_buff_affectee_filter(
         a_buff_affectee_filter: &ad::ABuffAffecteeFilter,
         sol_loc: Location,
-        sol_item: &UadItem,
+        sol_item: &UItem,
     ) -> Self {
         match a_buff_affectee_filter {
             ad::ABuffAffecteeFilter::Direct => Self::Direct(sol_loc),
@@ -34,7 +34,7 @@ impl AffecteeFilter {
     }
 }
 
-fn get_srq_a_item_id(a_mod_srq: &ad::AModifierSrq, sol_item: &UadItem) -> ad::AItemId {
+fn get_srq_a_item_id(a_mod_srq: &ad::AModifierSrq, sol_item: &UItem) -> ad::AItemId {
     match a_mod_srq {
         ad::AModifierSrq::SelfRef => sol_item.get_a_item_id(),
         ad::AModifierSrq::ItemId(a_item_id) => *a_item_id,

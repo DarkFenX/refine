@@ -2,25 +2,25 @@ use crate::{
     ad,
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadEffectUpdates, UadItem, UadItemKey},
+    ud::{UData, UEffectUpdates, UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_switch_item_state(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
-        eupdates: &UadEffectUpdates,
+        eupdates: &UEffectUpdates,
     ) {
         if new_item_a_state != old_item_a_state {
-            let uad_item = uad.items.get(item_key);
+            let u_item = u_data.items.get(item_key);
             SolarSystem::util_internal_switch_item_state(
-                uad,
+                u_data,
                 svc,
                 item_key,
-                uad_item,
+                u_item,
                 old_item_a_state,
                 new_item_a_state,
                 eupdates,
@@ -28,59 +28,59 @@ impl SolarSystem {
         }
     }
     pub(in crate::sol::api::util) fn util_internal_switch_item_state(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
+        item_key: UItemKey,
+        u_item: &UItem,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
-        eupdates: &UadEffectUpdates,
+        eupdates: &UEffectUpdates,
     ) {
-        switch_item_state(svc, item_key, uad_item, old_item_a_state, new_item_a_state);
-        SolarSystem::util_process_effect_updates(uad, svc, item_key, uad_item, eupdates);
+        switch_item_state(svc, item_key, u_item, old_item_a_state, new_item_a_state);
+        SolarSystem::util_process_effect_updates(u_data, svc, item_key, u_item, eupdates);
     }
     pub(in crate::sol::api::util) fn util_internal_switch_item_state_without_projs(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
+        item_key: UItemKey,
+        u_item: &UItem,
         old_item_a_state: ad::AState,
         new_item_a_state: ad::AState,
-        eupdates: &UadEffectUpdates,
+        eupdates: &UEffectUpdates,
     ) {
-        switch_item_state(svc, item_key, uad_item, old_item_a_state, new_item_a_state);
-        SolarSystem::util_internal_process_effect_updates_without_projs(uad, svc, item_key, uad_item, eupdates);
+        switch_item_state(svc, item_key, u_item, old_item_a_state, new_item_a_state);
+        SolarSystem::util_internal_process_effect_updates_without_projs(u_data, svc, item_key, u_item, eupdates);
     }
 }
 
 fn switch_item_state(
     svc: &mut Svc,
-    item_key: UadItemKey,
-    uad_item: &UadItem,
+    item_key: UItemKey,
+    u_item: &UItem,
     old_item_a_state: ad::AState,
     new_item_a_state: ad::AState,
 ) {
     match new_item_a_state.cmp(&old_item_a_state) {
         std::cmp::Ordering::Equal => (),
         std::cmp::Ordering::Greater => {
-            let is_item_loaded = uad_item.is_loaded();
+            let is_item_loaded = u_item.is_loaded();
             for a_state in ad::AState::iter().filter(|v| **v > old_item_a_state && **v <= new_item_a_state) {
-                svc.notify_state_activated(item_key, uad_item, a_state);
+                svc.notify_state_activated(item_key, u_item, a_state);
                 if is_item_loaded {
-                    svc.notify_item_state_activated_loaded(item_key, uad_item, a_state);
+                    svc.notify_item_state_activated_loaded(item_key, u_item, a_state);
                 }
             }
         }
         std::cmp::Ordering::Less => {
-            let is_item_loaded = uad_item.is_loaded();
+            let is_item_loaded = u_item.is_loaded();
             for a_state in ad::AState::iter()
                 .rev()
                 .filter(|v| **v > new_item_a_state && **v <= old_item_a_state)
             {
                 if is_item_loaded {
-                    svc.notify_item_state_deactivated_loaded(&item_key, uad_item, a_state);
+                    svc.notify_item_state_deactivated_loaded(&item_key, u_item, a_state);
                 }
-                svc.notify_state_deactivated(&item_key, uad_item, a_state);
+                svc.notify_state_deactivated(&item_key, u_item, a_state);
             }
         }
     }

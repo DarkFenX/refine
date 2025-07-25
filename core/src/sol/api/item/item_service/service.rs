@@ -4,15 +4,15 @@ use crate::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
-    uad::{UadItemKey, UadService},
+    ud::{UItemKey, UService},
 };
 
 pub struct Service<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
 }
 impl<'a> Service<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UadItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -26,7 +26,7 @@ impl<'a> ItemSealed for Service<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UadItemKey {
+    fn get_key(&self) -> UItemKey {
         self.key
     }
 }
@@ -34,17 +34,17 @@ impl<'a> ItemCommon for Service<'a> {}
 
 pub struct ServiceMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
 }
 impl<'a> ServiceMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UadItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_uad_service(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_service(self.sol, self.key).get_fit_key();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_state(&self) -> ServiceState {
@@ -55,7 +55,7 @@ impl<'a> ItemSealed for ServiceMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UadItemKey {
+    fn get_key(&self) -> UItemKey {
         self.key
     }
 }
@@ -67,13 +67,13 @@ impl<'a> ItemMutSealed for ServiceMut<'a> {
 impl<'a> ItemCommon for ServiceMut<'a> {}
 impl<'a> ItemMutCommon for ServiceMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UadItemKey) -> Fit<'_> {
-    let fit_key = get_uad_service(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_service(sol, item_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UadItemKey) -> ServiceState {
-    get_uad_service(sol, item_key).get_service_state()
+fn get_state(sol: &SolarSystem, item_key: UItemKey) -> ServiceState {
+    get_u_service(sol, item_key).get_service_state()
 }
-fn get_uad_service(sol: &SolarSystem, item_key: UadItemKey) -> &UadService {
-    sol.uad.items.get(item_key).get_service().unwrap()
+fn get_u_service(sol: &SolarSystem, item_key: UItemKey) -> &UService {
+    sol.u_data.items.get(item_key).get_service().unwrap()
 }

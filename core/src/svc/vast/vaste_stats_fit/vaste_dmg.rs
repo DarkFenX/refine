@@ -36,7 +36,7 @@ impl VastFitData {
                 None => continue,
             };
             for (a_effect_id, dmg_getter) in item_data.iter() {
-                let r_effect = match ctx.uad.src.get_r_effect(a_effect_id) {
+                let r_effect = match ctx.u_data.src.get_r_effect(a_effect_id) {
                     Some(r_effect) => r_effect,
                     None => continue,
                 };
@@ -66,7 +66,7 @@ impl VastFitData {
                 None => continue,
             };
             for (a_effect_id, dmg_getter) in item_data.iter() {
-                let r_effect = match ctx.uad.src.get_r_effect(a_effect_id) {
+                let r_effect = match ctx.u_data.src.get_r_effect(a_effect_id) {
                     Some(r_effect) => r_effect,
                     None => continue,
                 };

@@ -9,7 +9,7 @@ use crate::{
             RawMAttr, RawMAttrMut,
         },
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl<'a> Mutation<'a> {
@@ -77,11 +77,11 @@ impl<'a> IncompleteMutationMut<'a> {
 
 fn get_raw_mattr(
     sol: &SolarSystem,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     a_attr_id: ad::AAttrId,
 ) -> Result<RawMAttr<'_>, GetRawMAttrError> {
     match sol
-        .uad
+        .u_data
         .items
         .get(item_key)
         .get_mutation_data()
@@ -91,7 +91,7 @@ fn get_raw_mattr(
     {
         Some(_) => Ok(RawMAttr::new(sol, item_key, a_attr_id)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.uad.items.id_by_key(item_key),
+            item_id: sol.u_data.items.id_by_key(item_key),
             attr_id: a_attr_id,
         }
         .into()),
@@ -100,11 +100,11 @@ fn get_raw_mattr(
 
 fn get_raw_mattr_mut(
     sol: &mut SolarSystem,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     a_attr_id: ad::AAttrId,
 ) -> Result<RawMAttrMut<'_>, GetRawMAttrError> {
     match sol
-        .uad
+        .u_data
         .items
         .get(item_key)
         .get_mutation_data()
@@ -114,7 +114,7 @@ fn get_raw_mattr_mut(
     {
         Some(_) => Ok(RawMAttrMut::new(sol, item_key, a_attr_id)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.uad.items.id_by_key(item_key),
+            item_id: sol.u_data.items.id_by_key(item_key),
             attr_id: a_attr_id,
         }
         .into()),

@@ -5,7 +5,7 @@ use crate::{
         SvcCtx,
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 pub struct StatTank<T> {
@@ -14,16 +14,16 @@ pub struct StatTank<T> {
     pub hull: T,
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
-    let uad_item = ctx.uad.items.get(item_key);
-    item_check(item_key, uad_item)
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let u_item = ctx.u_data.items.get(item_key);
+    item_check(item_key, u_item)
 }
 
-pub(super) fn item_check(item_key: UadItemKey, uad_item: &UadItem) -> Result<(), StatItemCheckError> {
-    let is_loaded = match uad_item {
-        UadItem::Drone(uad_drone) => uad_drone.is_loaded(),
-        UadItem::Fighter(uad_fighter) => uad_fighter.is_loaded(),
-        UadItem::Ship(uad_ship) => uad_ship.is_loaded(),
+pub(super) fn item_check(item_key: UItemKey, u_item: &UItem) -> Result<(), StatItemCheckError> {
+    let is_loaded = match u_item {
+        UItem::Drone(u_drone) => u_drone.is_loaded(),
+        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
+        UItem::Ship(u_ship) => u_ship.is_loaded(),
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
     };
     match is_loaded {

@@ -1,11 +1,11 @@
 use super::{add_cmod, remove_cmod};
 use crate::{
     svc::calc::{AffecteeFilter, CtxModifier, Location, RawModifier, registers::StandardRegister},
-    uad::UadItem,
+    ud::UItem,
 };
 
 impl StandardRegister {
-    pub(in crate::svc::calc) fn reg_local_mod(&mut self, item: &UadItem, rmod: RawModifier) -> Option<CtxModifier> {
+    pub(in crate::svc::calc) fn reg_local_mod(&mut self, item: &UItem, rmod: RawModifier) -> Option<CtxModifier> {
         let cmod = match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Item => {
@@ -108,7 +108,7 @@ impl StandardRegister {
         }
         cmod
     }
-    pub(in crate::svc::calc) fn unreg_local_mod(&mut self, item: &UadItem, rmod: RawModifier) -> Option<CtxModifier> {
+    pub(in crate::svc::calc) fn unreg_local_mod(&mut self, item: &UItem, rmod: RawModifier) -> Option<CtxModifier> {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Item => {

@@ -3,12 +3,12 @@ use std::collections::hash_map::Entry;
 use crate::{
     def::AttrVal,
     svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
-    uad::{Uad, UadFighter, UadItemKey, UadSkill},
+    ud::{UData, UFighter, UItemKey, USkill},
     util::RMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn skill_level_changed(&mut self, uad: &Uad, skill: &UadSkill) {
+    pub(in crate::svc) fn skill_level_changed(&mut self, u_data: &UData, skill: &USkill) {
         let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
         for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
             match fit_data.srqs_missing.entry(other_item_key) {
@@ -30,7 +30,7 @@ impl Vast {
                         // Entry for the item and no entry for the skill - create skill entry if new
                         // level fails requirement
                         Entry::Vacant(missing_skill_entry) => {
-                            let other_item = uad.items.get(other_item_key);
+                            let other_item = u_data.items.get(other_item_key);
                             let required_a_lvl = *other_item
                                 .get_effective_a_skill_reqs()
                                 .unwrap()
@@ -47,7 +47,7 @@ impl Vast {
                 }
                 // No entry for item - create one if skill level change fails requirement
                 Entry::Vacant(missing_skills_entry) => {
-                    let other_item = uad.items.get(other_item_key);
+                    let other_item = u_data.items.get(other_item_key);
                     let required_a_lvl = *other_item
                         .get_effective_a_skill_reqs()
                         .unwrap()
@@ -68,7 +68,7 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_key: UadItemKey, fighter: &UadFighter) {
+    pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_key: UItemKey, fighter: &UFighter) {
         let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
         let r_fighter_axt = fighter.get_r_axt().unwrap();
         let count = fighter.get_count().unwrap();

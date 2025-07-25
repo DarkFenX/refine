@@ -9,13 +9,13 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_stance(&self, item_id: &ItemId) -> Result<Stance<'_>, GetStanceError> {
-        let item_key = self.uad.items.key_by_id_err(item_id)?;
-        self.uad.items.get(item_key).get_stance()?;
+        let item_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(item_key).get_stance()?;
         Ok(Stance::new(self, item_key))
     }
     pub fn get_stance_mut(&mut self, item_id: &ItemId) -> Result<StanceMut<'_>, GetStanceError> {
-        let item_key = self.uad.items.key_by_id_err(item_id)?;
-        self.uad.items.get(item_key).get_stance()?;
+        let item_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(item_key).get_stance()?;
         Ok(StanceMut::new(self, item_key))
     }
 }

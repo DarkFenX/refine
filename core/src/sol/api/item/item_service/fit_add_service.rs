@@ -6,31 +6,31 @@ use crate::{
         SolarSystem,
         api::{FitMut, ServiceMut},
     },
-    uad::{UadEffectUpdates, UadFitKey, UadItem, UadItemKey, UadService},
+    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UService},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_service(
         &mut self,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         a_item_id: ad::AItemId,
         state: ServiceState,
-        reuse_eupdates: &mut UadEffectUpdates,
-    ) -> UadItemKey {
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        let item_id = self.uad.items.alloc_id();
-        let uad_service = UadService::new(item_id, a_item_id, fit_key, state, &self.uad.src, reuse_eupdates);
-        let uad_item = UadItem::Service(uad_service);
-        let item_key = self.uad.items.add(uad_item);
-        uad_fit.services.insert(item_key);
-        SolarSystem::util_add_service(&self.uad, &mut self.svc, item_key, reuse_eupdates);
+        reuse_eupdates: &mut UEffectUpdates,
+    ) -> UItemKey {
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        let item_id = self.u_data.items.alloc_id();
+        let u_service = UService::new(item_id, a_item_id, fit_key, state, &self.u_data.src, reuse_eupdates);
+        let u_item = UItem::Service(u_service);
+        let item_key = self.u_data.items.add(u_item);
+        u_fit.services.insert(item_key);
+        SolarSystem::util_add_service(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut<'_> {
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         let item_key = self
             .sol
             .internal_add_service(self.key, type_id, state, &mut reuse_eupdates);

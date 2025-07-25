@@ -8,7 +8,7 @@ use crate::{
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
         vast::Vast,
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
@@ -20,7 +20,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_dps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         reload: bool,
         spool: Option<Spool>,
         ignore_state: bool,
@@ -38,7 +38,7 @@ impl Vast {
     fn get_stat_item_dps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         reload: bool,
         spool: Option<Spool>,
         ignore_state: bool,
@@ -56,7 +56,7 @@ impl Vast {
             None => return item_dps,
         };
         for (a_effect_id, cycle) in cycle_map {
-            let r_effect = ctx.uad.src.get_r_effect(&a_effect_id).unwrap();
+            let r_effect = ctx.u_data.src.get_r_effect(&a_effect_id).unwrap();
             if let Some(dmg_getter) = r_effect.get_normal_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, r_effect, spool, None)
             {
@@ -68,7 +68,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_volley_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
@@ -84,7 +84,7 @@ impl Vast {
     fn get_stat_item_volley_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> DmgKinds<AttrVal> {
@@ -94,7 +94,7 @@ impl Vast {
             None => return item_volley,
         };
         for (a_effect_id, _cycle) in cycle_map {
-            let r_effect = ctx.uad.src.get_r_effect(&a_effect_id).unwrap();
+            let r_effect = ctx.u_data.src.get_r_effect(&a_effect_id).unwrap();
             if let Some(dmg_getter) = r_effect.get_normal_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, r_effect, spool, None)
             {
@@ -105,14 +105,14 @@ impl Vast {
     }
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
-    let uad_item = ctx.uad.items.get(item_key);
-    let is_loaded = match uad_item {
-        UadItem::Autocharge(autocharge) => autocharge.is_loaded(),
-        UadItem::Charge(charge) => charge.is_loaded(),
-        UadItem::Drone(drone) => drone.is_loaded(),
-        UadItem::Fighter(fighter) => fighter.is_loaded(),
-        UadItem::Module(module) => module.is_loaded(),
+pub(super) fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let u_item = ctx.u_data.items.get(item_key);
+    let is_loaded = match u_item {
+        UItem::Autocharge(autocharge) => autocharge.is_loaded(),
+        UItem::Charge(charge) => charge.is_loaded(),
+        UItem::Drone(drone) => drone.is_loaded(),
+        UItem::Fighter(fighter) => fighter.is_loaded(),
+        UItem::Module(module) => module.is_loaded(),
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
     };
     match is_loaded {

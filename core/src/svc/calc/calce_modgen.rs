@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::{Calc, RawModifier},
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 impl Calc {
@@ -14,8 +14,8 @@ impl Calc {
         &mut self,
         reuse_rmods: &mut Vec<RawModifier>,
         ctx: SvcCtx,
-        item_key: UadItemKey,
-        item: &UadItem,
+        item_key: UItemKey,
+        item: &UItem,
         r_effect: &rd::REffect,
     ) {
         reuse_rmods.clear();
@@ -83,8 +83,8 @@ impl Calc {
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
-        item: &UadItem,
+        item_key: UItemKey,
+        item: &UItem,
         a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
         buff_type_a_attr_id: ad::AAttrId,
     ) -> Vec<RawModifier> {
@@ -97,7 +97,7 @@ impl Calc {
             _ => return rmods,
         };
         for a_effect_id in a_effect_ids {
-            let r_effect = ctx.uad.src.get_r_effect(a_effect_id).unwrap();
+            let r_effect = ctx.u_data.src.get_r_effect(a_effect_id).unwrap();
             if let Some(a_buff_info) = r_effect.get_a_buff_info().as_ref()
                 && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_a_attr_id)
@@ -122,15 +122,15 @@ impl Calc {
 fn add_buff_mods(
     rmods: &mut Vec<RawModifier>,
     ctx: SvcCtx,
-    item_key: UadItemKey,
-    item: &UadItem,
+    item_key: UItemKey,
+    item: &UItem,
     r_effect: &rd::REffect,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,
     buff_type_a_attr_id: Option<ad::AAttrId>,
     buff_val_a_attr_id: ad::AAttrId,
 ) {
-    let r_buff = match ctx.uad.src.get_r_buff(a_buff_id) {
+    let r_buff = match ctx.u_data.src.get_r_buff(a_buff_id) {
         Some(r_buff) => r_buff,
         None => return,
     };
@@ -155,14 +155,14 @@ fn add_buff_mods(
 fn add_buff_mods_hardcoded(
     rmods: &mut Vec<RawModifier>,
     ctx: SvcCtx,
-    item_key: UadItemKey,
-    item: &UadItem,
+    item_key: UItemKey,
+    item: &UItem,
     r_effect: &rd::REffect,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,
     buff_a_val: ad::AAttrVal,
 ) {
-    let r_buff = match ctx.uad.src.get_r_buff(a_buff_id) {
+    let r_buff = match ctx.u_data.src.get_r_buff(a_buff_id) {
         Some(r_buff) => r_buff,
         None => return,
     };

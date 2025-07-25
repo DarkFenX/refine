@@ -5,30 +5,30 @@ use crate::{
         SolarSystem,
         api::{BoosterMut, FitMut},
     },
-    uad::{UadBooster, UadEffectUpdates, UadFitKey, UadItem, UadItemKey},
+    ud::{UBooster, UEffectUpdates, UFitKey, UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_booster(
         &mut self,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         a_item_id: ad::AItemId,
-        reuse_eupdates: &mut UadEffectUpdates,
-    ) -> UadItemKey {
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        let item_id = self.uad.items.alloc_id();
-        let uad_booster = UadBooster::new(item_id, a_item_id, fit_key, true, &self.uad.src, reuse_eupdates);
-        let uad_item = UadItem::Booster(uad_booster);
-        let item_key = self.uad.items.add(uad_item);
-        uad_fit.boosters.insert(item_key);
-        SolarSystem::util_add_booster(&self.uad, &mut self.svc, item_key, reuse_eupdates);
+        reuse_eupdates: &mut UEffectUpdates,
+    ) -> UItemKey {
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        let item_id = self.u_data.items.alloc_id();
+        let u_booster = UBooster::new(item_id, a_item_id, fit_key, true, &self.u_data.src, reuse_eupdates);
+        let u_item = UItem::Booster(u_booster);
+        let item_key = self.u_data.items.add(u_item);
+        u_fit.boosters.insert(item_key);
+        SolarSystem::util_add_booster(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_booster(&mut self, type_id: ItemTypeId) -> BoosterMut<'_> {
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         let item_key = self.sol.internal_add_booster(self.key, type_id, &mut reuse_eupdates);
         BoosterMut::new(self.sol, item_key)
     }

@@ -2,39 +2,39 @@ use crate::{
     def::OF,
     sol::{RProjs, SolarSystem},
     svc::Svc,
-    uad::{Uad, UadItemKey},
+    ud::{UData, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_update_item_radius_in_projs(
-        uad: &mut Uad,
+        u_data: &mut UData,
         rprojs: &RProjs,
         svc: &mut Svc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) {
-        let uad_item = uad.items.get_mut(item_key);
+        let u_item = u_data.items.get_mut(item_key);
         // Outgoing projections - service change should be handled in calling method
-        let item_radius = uad_item.get_r_axt().map(|v| v.radius).unwrap_or(OF(0.0));
-        for uad_prange in uad_item.get_projs_mut().unwrap().iter_ranges_mut() {
-            uad_prange.update_src_rad(item_radius);
+        let item_radius = u_item.get_r_axt().map(|v| v.radius).unwrap_or(OF(0.0));
+        for u_prange in u_item.get_projs_mut().unwrap().iter_ranges_mut() {
+            u_prange.update_src_rad(item_radius);
         }
         // Incoming projections
         for &projector_key in rprojs.iter_projectors(&item_key) {
-            let projector_uad_item = uad.items.get_mut(projector_key);
-            if let Some(uad_prange) = projector_uad_item.get_projs_mut().unwrap().get_range_mut(&item_key)
-                && uad_prange.update_tgt_rad(item_radius)
+            let projector_u_item = u_data.items.get_mut(projector_key);
+            if let Some(u_prange) = projector_u_item.get_projs_mut().unwrap().get_range_mut(&item_key)
+                && u_prange.update_tgt_rad(item_radius)
             {
-                let uad_prange = Some(*uad_prange);
-                let projector_uad_item = uad.items.get(projector_key);
-                let uad_item = uad.items.get(item_key);
+                let u_prange = Some(*u_prange);
+                let projector_u_item = u_data.items.get(projector_key);
+                let u_item = u_data.items.get(item_key);
                 SolarSystem::util_change_item_proj_range(
-                    uad,
+                    u_data,
                     svc,
                     projector_key,
-                    projector_uad_item,
+                    projector_u_item,
                     item_key,
-                    uad_item,
-                    uad_prange,
+                    u_item,
+                    u_prange,
                 );
             }
         }

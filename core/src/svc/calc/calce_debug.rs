@@ -1,14 +1,14 @@
 use super::Calc;
-use crate::{dbg::DebugResult, uad::Uad};
+use crate::{dbg::DebugResult, ud::UData};
 
 impl Calc {
-    pub(in crate::svc) fn consistency_check(&self, uad: &Uad) -> DebugResult {
-        self.attrs.consistency_check(uad)?;
-        self.std.consistency_check(uad)?;
-        self.buffs.consistency_check(uad)?;
-        self.deps.consistency_check(uad)?;
-        self.revs.consistency_check(uad)?;
-        self.rah.consistency_check(uad)?;
+    pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        self.attrs.consistency_check(u_data)?;
+        self.std.consistency_check(u_data)?;
+        self.buffs.consistency_check(u_data)?;
+        self.deps.consistency_check(u_data)?;
+        self.revs.consistency_check(u_data)?;
+        self.rah.consistency_check(u_data)?;
         Ok(())
     }
 }

@@ -1,8 +1,8 @@
-use crate::uad::{UadFitKey, UadItemKey};
+use crate::ud::{UFitKey, UItemKey};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) enum Context {
     None,
-    Item(UadItemKey),
-    Fit(UadFitKey),
+    Item(UItemKey),
+    Fit(UFitKey),
 }

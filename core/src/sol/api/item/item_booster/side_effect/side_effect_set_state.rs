@@ -5,7 +5,7 @@ use crate::{
         SolarSystem,
         api::{FullSideEffectMut, SideEffectMut, StubSideEffectMut},
     },
-    uad::{UadEffectUpdates, UadItemKey},
+    ud::{UEffectUpdates, UItemKey},
 };
 
 impl<'a> SideEffectMut<'a> {
@@ -38,14 +38,14 @@ impl<'a> StubSideEffectMut<'a> {
     }
 }
 
-fn set_state(sol: &mut SolarSystem, item_key: UadItemKey, a_effect_id: ad::AEffectId, state: bool) {
-    let uad_booster = sol.uad.items.get_mut(item_key).get_booster_mut().unwrap();
+fn set_state(sol: &mut SolarSystem, item_key: UItemKey, a_effect_id: ad::AEffectId, state: bool) {
+    let u_booster = sol.u_data.items.get_mut(item_key).get_booster_mut().unwrap();
     let effect_mode = match state {
         true => EffectMode::StateCompliance,
         false => EffectMode::FullCompliance,
     };
-    let mut reuse_eupdates = UadEffectUpdates::new();
-    uad_booster.set_effect_mode(a_effect_id, effect_mode, &mut reuse_eupdates, &sol.uad.src);
-    let uad_item = sol.uad.items.get(item_key);
-    SolarSystem::util_process_effect_updates(&sol.uad, &mut sol.svc, item_key, uad_item, &reuse_eupdates);
+    let mut reuse_eupdates = UEffectUpdates::new();
+    u_booster.set_effect_mode(a_effect_id, effect_mode, &mut reuse_eupdates, &sol.u_data.src);
+    let u_item = sol.u_data.items.get(item_key);
+    SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, item_key, u_item, &reuse_eupdates);
 }

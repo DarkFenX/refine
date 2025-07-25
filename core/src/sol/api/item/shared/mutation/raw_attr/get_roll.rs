@@ -4,7 +4,7 @@ use crate::{
         SolarSystem,
         api::{RawMAttr, RawMAttrMut},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
     util::UnitInterval,
 };
 
@@ -22,8 +22,8 @@ impl<'a> RawMAttrMut<'a> {
     }
 }
 
-fn get_roll(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> UnitInterval {
-    sol.uad
+fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> UnitInterval {
+    sol.u_data
         .items
         .get(item_key)
         .get_mutation_data()

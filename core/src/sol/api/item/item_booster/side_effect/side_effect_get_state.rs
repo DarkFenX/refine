@@ -5,7 +5,7 @@ use crate::{
         SolarSystem,
         api::{FullSideEffect, FullSideEffectMut, SideEffect, SideEffectMut, StubSideEffect, StubSideEffectMut},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl<'a> SideEffect<'a> {
@@ -68,9 +68,9 @@ impl<'a> StubSideEffectMut<'a> {
     }
 }
 
-fn get_state(sol: &SolarSystem, item_key: UadItemKey, a_effect_id: &ad::AEffectId) -> bool {
-    let uad_booster = sol.uad.items.get(item_key).get_booster().unwrap();
-    match uad_booster.get_effect_mode(a_effect_id) {
+fn get_state(sol: &SolarSystem, item_key: UItemKey, a_effect_id: &ad::AEffectId) -> bool {
+    let u_booster = sol.u_data.items.get(item_key).get_booster().unwrap();
+    match u_booster.get_effect_mode(a_effect_id) {
         EffectMode::FullCompliance => false,
         EffectMode::StateCompliance => true,
         EffectMode::ForceRun => true,

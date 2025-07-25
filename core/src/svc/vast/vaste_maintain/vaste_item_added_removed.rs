@@ -2,12 +2,12 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     svc::vast::{ValSrqSkillInfo, Vast},
-    uad::{Uad, UadItem, UadItemKey},
+    ud::{UData, UItem, UItemKey},
     util::RMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_added(&mut self, item_key: UadItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_added(&mut self, item_key: UItemKey, item: &UItem) {
         if !item.is_loaded() {
             match item.get_fit_key() {
                 Some(fit_key) => {
@@ -19,7 +19,7 @@ impl Vast {
                 }
             }
         }
-        if let UadItem::Skill(skill) = item {
+        if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
             for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
@@ -45,7 +45,7 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn item_removed(&mut self, uad: &Uad, item_key: UadItemKey, item: &UadItem) {
+    pub(in crate::svc) fn item_removed(&mut self, u_data: &UData, item_key: UItemKey, item: &UItem) {
         if !item.is_loaded() {
             match item.get_fit_key() {
                 Some(fit_key) => {
@@ -57,7 +57,7 @@ impl Vast {
                 }
             }
         }
-        if let UadItem::Skill(skill) = item {
+        if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
             for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
@@ -71,7 +71,7 @@ impl Vast {
                             }
                             // If skill info was missing, add it
                             Entry::Vacant(missing_skill_entry) => {
-                                let other_item = uad.items.get(other_item_key);
+                                let other_item = u_data.items.get(other_item_key);
                                 let required_a_lvl = *other_item
                                     .get_effective_a_skill_reqs()
                                     .unwrap()
@@ -87,7 +87,7 @@ impl Vast {
                     // No missing skills entry for current "other" item - skill being removed will
                     // always lead to appearance of one
                     Entry::Vacant(missing_skills_entry) => {
-                        let other_item = uad.items.get(other_item_key);
+                        let other_item = u_data.items.get(other_item_key);
                         let required_a_lvl = *other_item
                             .get_effective_a_skill_reqs()
                             .unwrap()

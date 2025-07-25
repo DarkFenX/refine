@@ -3,17 +3,17 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     rd,
     svc::{efuncs, vast::Vast},
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 impl Vast {
     pub(in crate::svc) fn effect_projected(
         &mut self,
-        projector_key: UadItemKey,
-        projector_item: &UadItem,
+        projector_key: UItemKey,
+        projector_item: &UItem,
         r_effect: &rd::REffect,
-        projectee_key: UadItemKey,
-        projectee_item: &UadItem,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
     ) {
         if r_effect.get_category() == ac::effcats::TARGET {
             if !r_effect.get_stopped_effect_ids().is_empty()
@@ -70,11 +70,11 @@ impl Vast {
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
-        projector_key: UadItemKey,
-        projector_item: &UadItem,
+        projector_key: UItemKey,
+        projector_item: &UItem,
         r_effect: &rd::REffect,
-        projectee_key: UadItemKey,
-        projectee_item: &UadItem,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
     ) {
         if r_effect.get_category() == ac::effcats::TARGET {
             if !r_effect.get_stopped_effect_ids().is_empty()
@@ -131,7 +131,7 @@ impl Vast {
     }
 }
 
-fn is_offense_blockable(projector_item: &UadItem, r_effect: &rd::REffect) -> bool {
+fn is_offense_blockable(projector_item: &UItem, r_effect: &rd::REffect) -> bool {
     if r_effect.is_offense() && !r_effect.get_mods().is_empty() {
         return true;
     };

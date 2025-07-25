@@ -9,13 +9,13 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_fighter(&self, item_id: &ItemId) -> Result<Fighter<'_>, GetFighterError> {
-        let item_key = self.uad.items.key_by_id_err(item_id)?;
-        self.uad.items.get(item_key).get_fighter()?;
+        let item_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(item_key).get_fighter()?;
         Ok(Fighter::new(self, item_key))
     }
     pub fn get_fighter_mut(&mut self, item_id: &ItemId) -> Result<FighterMut<'_>, GetFighterError> {
-        let item_key = self.uad.items.key_by_id_err(item_id)?;
-        self.uad.items.get(item_key).get_fighter()?;
+        let item_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(item_key).get_fighter()?;
         Ok(FighterMut::new(self, item_key))
     }
 }

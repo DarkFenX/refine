@@ -2,49 +2,49 @@ use super::is_a_effect_projectable;
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadEffectUpdates, UadItem, UadItemKey},
+    ud::{UData, UEffectUpdates, UItem, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_process_effect_updates(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
-        eupdates: &UadEffectUpdates,
+        item_key: UItemKey,
+        u_item: &UItem,
+        eupdates: &UEffectUpdates,
     ) {
-        process_effect_updates(uad, svc, item_key, uad_item, eupdates, true);
+        process_effect_updates(u_data, svc, item_key, u_item, eupdates, true);
     }
     pub(in crate::sol::api::util) fn util_internal_process_effect_updates_without_projs(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
-        eupdates: &UadEffectUpdates,
+        item_key: UItemKey,
+        u_item: &UItem,
+        eupdates: &UEffectUpdates,
     ) {
-        process_effect_updates(uad, svc, item_key, uad_item, eupdates, false);
+        process_effect_updates(u_data, svc, item_key, u_item, eupdates, false);
     }
 }
 
 fn process_effect_updates(
-    uad: &Uad,
+    u_data: &UData,
     svc: &mut Svc,
-    item_key: UadItemKey,
-    uad_item: &UadItem,
-    eupdates: &UadEffectUpdates,
+    item_key: UItemKey,
+    u_item: &UItem,
+    eupdates: &UEffectUpdates,
     handle_projs: bool,
 ) {
     if !eupdates.to_start.is_empty() {
-        svc.notify_effects_started(uad, item_key, uad_item, &eupdates.to_start);
-        if handle_projs && let Some(projs) = uad_item.iter_projs() {
+        svc.notify_effects_started(u_data, item_key, u_item, &eupdates.to_start);
+        if handle_projs && let Some(projs) = u_item.iter_projs() {
             for (projectee_key, range) in projs {
-                let projectee_item = uad.items.get(projectee_key);
+                let projectee_item = u_data.items.get(projectee_key);
                 for r_effect in eupdates.to_start.iter() {
-                    if is_a_effect_projectable(uad_item, r_effect) {
+                    if is_a_effect_projectable(u_item, r_effect) {
                         svc.notify_effect_projected(
-                            uad,
+                            u_data,
                             item_key,
-                            uad_item,
+                            u_item,
                             r_effect,
                             projectee_key,
                             projectee_item,
@@ -56,16 +56,23 @@ fn process_effect_updates(
         }
     }
     if !eupdates.to_stop.is_empty() {
-        if handle_projs && let Some(projectee_keys) = uad_item.iter_projectees() {
+        if handle_projs && let Some(projectee_keys) = u_item.iter_projectees() {
             for projectee_key in projectee_keys {
-                let projectee_item = uad.items.get(projectee_key);
+                let projectee_item = u_data.items.get(projectee_key);
                 for r_effect in eupdates.to_stop.iter() {
-                    if is_a_effect_projectable(uad_item, r_effect) {
-                        svc.notify_effect_unprojected(uad, item_key, uad_item, r_effect, projectee_key, projectee_item);
+                    if is_a_effect_projectable(u_item, r_effect) {
+                        svc.notify_effect_unprojected(
+                            u_data,
+                            item_key,
+                            u_item,
+                            r_effect,
+                            projectee_key,
+                            projectee_item,
+                        );
                     }
                 }
             }
         }
-        svc.notify_effects_stopped(uad, item_key, uad_item, &eupdates.to_stop);
+        svc.notify_effects_stopped(u_data, item_key, u_item, &eupdates.to_stop);
     }
 }

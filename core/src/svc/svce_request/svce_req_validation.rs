@@ -3,29 +3,29 @@ use crate::{
         Svc, SvcCtx,
         vast::{ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol},
     },
-    uad::{Uad, UadFitKey},
+    ud::{UData, UFitKey},
 };
 
 impl Svc {
-    pub(crate) fn validate_sol_fast(&mut self, uad: &Uad, options: &ValOptionsSolInt) -> bool {
+    pub(crate) fn validate_sol_fast(&mut self, u_data: &UData, options: &ValOptionsSolInt) -> bool {
         self.vast
-            .validate_sol_fast(SvcCtx::new(uad, &self.eprojs), &mut self.calc, options)
+            .validate_sol_fast(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, options)
     }
-    pub(crate) fn validate_sol_verbose(&mut self, uad: &Uad, options: &ValOptionsSolInt) -> ValResultSol {
+    pub(crate) fn validate_sol_verbose(&mut self, u_data: &UData, options: &ValOptionsSolInt) -> ValResultSol {
         self.vast
-            .validate_sol_verbose(SvcCtx::new(uad, &self.eprojs), &mut self.calc, options)
+            .validate_sol_verbose(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, options)
     }
-    pub(crate) fn validate_fit_fast(&mut self, uad: &Uad, fit_key: UadFitKey, options: &ValOptionsInt) -> bool {
+    pub(crate) fn validate_fit_fast(&mut self, u_data: &UData, fit_key: UFitKey, options: &ValOptionsInt) -> bool {
         self.vast
-            .validate_fit_fast(SvcCtx::new(uad, &self.eprojs), &mut self.calc, fit_key, options)
+            .validate_fit_fast(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, fit_key, options)
     }
     pub(crate) fn validate_fit_verbose(
         &mut self,
-        uad: &Uad,
-        fit_key: UadFitKey,
+        u_data: &UData,
+        fit_key: UFitKey,
         options: &ValOptionsInt,
     ) -> ValResultFit {
         self.vast
-            .validate_fit_verbose(SvcCtx::new(uad, &self.eprojs), &mut self.calc, fit_key, options)
+            .validate_fit_verbose(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, fit_key, options)
     }
 }

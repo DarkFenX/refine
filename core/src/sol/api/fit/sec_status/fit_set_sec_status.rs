@@ -1,19 +1,19 @@
 use crate::{
     misc::FitSecStatus,
     sol::{SolarSystem, api::FitMut},
-    uad::UadFitKey,
+    ud::UFitKey,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_set_fit_sec_status(&mut self, fit_key: UadFitKey, sec_status: FitSecStatus) {
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        let old_sec_status = uad_fit.sec_status;
+    pub(in crate::sol::api) fn internal_set_fit_sec_status(&mut self, fit_key: UFitKey, sec_status: FitSecStatus) {
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        let old_sec_status = u_fit.sec_status;
         if old_sec_status == sec_status {
             return;
         }
-        uad_fit.sec_status = sec_status;
-        if let Some(ship_key) = uad_fit.ship {
-            self.svc.notify_ship_sec_status_changed(&self.uad, ship_key);
+        u_fit.sec_status = sec_status;
+        if let Some(ship_key) = u_fit.ship {
+            self.svc.notify_ship_sec_status_changed(&self.u_data, ship_key);
         }
     }
 }

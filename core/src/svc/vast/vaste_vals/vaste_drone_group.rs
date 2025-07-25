@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::{ItemGrpId, ItemId},
     svc::{SvcCtx, vast::VastFitData},
-    uad::UadItemKey,
+    ud::UItemKey,
     util::RSet,
 };
 
@@ -16,7 +16,7 @@ pub struct ValDroneGroupFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_drone_group_fast(&mut self, kfs: &RSet<UadItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_drone_group_fast(&mut self, kfs: &RSet<UItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.drone_groups.is_empty(),
             false => self.drone_groups.difference(kfs).next().is_none(),
@@ -25,7 +25,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_drone_group_verbose(
         &mut self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValDroneGroupFail> {
         if self.drone_groups.is_empty() {
@@ -35,7 +35,7 @@ impl VastFitData {
             .drone_groups
             .iter()
             .filter(|(drone_key, _)| !kfs.contains(drone_key))
-            .map(|(drone_key, drone_a_group_id)| (ctx.uad.items.id_by_key(*drone_key), *drone_a_group_id))
+            .map(|(drone_key, drone_a_group_id)| (ctx.u_data.items.id_by_key(*drone_key), *drone_a_group_id))
             .collect();
         match drone_groups.is_empty() {
             true => None,

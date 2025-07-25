@@ -9,7 +9,7 @@ use crate::{
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
         vast::Vast,
     },
-    uad::{ShipKind, UadItem, UadItemKey},
+    ud::{UItem, UItemKey, UShipKind},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -19,24 +19,24 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_speed_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         item_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_speed_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> AttrVal {
+    fn get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
         calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_VELOCITY)
             .unwrap()
     }
     pub(in crate::svc) fn get_stat_item_agility_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> Option<AttrVal> {
+    fn get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
         let agility = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::AGILITY)
             .unwrap();
@@ -52,24 +52,24 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_align_time_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_align_time_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> Option<AttrVal> {
+    fn get_stat_item_align_time_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
         Vast::get_stat_item_agility_unchecked(ctx, calc, item_key).map(|v| v.ceil())
     }
 }
 
-fn item_check(ctx: SvcCtx, item_key: UadItemKey) -> Result<(), StatItemCheckError> {
-    let uad_item = ctx.uad.items.get(item_key);
-    let is_loaded = match uad_item {
-        UadItem::Drone(uad_drone) => uad_drone.is_loaded(),
-        UadItem::Fighter(uad_fighter) => uad_fighter.is_loaded(),
-        UadItem::Ship(uad_ship) => match uad_ship.get_kind() {
-            ShipKind::Ship | ShipKind::Unknown => uad_ship.is_loaded(),
-            ShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
+fn item_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let u_item = ctx.u_data.items.get(item_key);
+    let is_loaded = match u_item {
+        UItem::Drone(u_drone) => u_drone.is_loaded(),
+        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
+        UItem::Ship(u_ship) => match u_ship.get_kind() {
+            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
+            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
         },
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
     };

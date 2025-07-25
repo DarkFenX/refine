@@ -5,17 +5,17 @@ use crate::{
     ad,
     misc::{AttrSpec, EffectSpec},
     svc::calc::{CtxModifier, RawModifier, registers::StandardRegister},
-    uad::{UadFits, UadItem, UadItemKey},
+    ud::{UFits, UItem, UItemKey},
     util::MapSet,
 };
 
 impl StandardRegister {
     pub(in crate::svc::calc) fn get_mods_for_affectee(
         &self,
-        item_key: &UadItemKey,
-        item: &UadItem,
+        item_key: &UItemKey,
+        item: &UItem,
         a_attr_id: &ad::AAttrId,
-        fits: &UadFits,
+        fits: &UFits,
     ) -> Vec<CtxModifier> {
         let fit_key = item.get_fit_key();
         let root_loc = item.get_root_loc_kind();
@@ -64,30 +64,30 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn get_mods_for_added_root(
         &mut self,
-        item_key: UadItemKey,
-        item: &UadItem,
+        item_key: UItemKey,
+        item: &UItem,
     ) -> Vec<CtxModifier> {
-        if let UadItem::Ship(uad_ship) = item {
-            self.reg_loc_root_for_fw_buff(item_key, uad_ship, uad_ship.get_fit_key());
-            self.reg_loc_root_for_sw_buff(item_key, uad_ship);
+        if let UItem::Ship(u_ship) = item {
+            self.reg_loc_root_for_fw_buff(item_key, u_ship, u_ship.get_fit_key());
+            self.reg_loc_root_for_sw_buff(item_key, u_ship);
         }
         self.reg_loc_root_for_proj(item_key, item);
         self.get_mods_for_changed_root(item)
     }
     pub(in crate::svc::calc) fn get_mods_for_removed_root(
         &mut self,
-        item_key: UadItemKey,
-        item: &UadItem,
+        item_key: UItemKey,
+        item: &UItem,
     ) -> Vec<CtxModifier> {
         let cmods = self.get_mods_for_changed_root(item);
-        if let UadItem::Ship(uad_ship) = item {
-            self.unreg_loc_root_for_fw_buff(item_key, uad_ship, uad_ship.get_fit_key());
-            self.unreg_loc_root_for_sw_buff(item_key, uad_ship);
+        if let UItem::Ship(u_ship) = item {
+            self.unreg_loc_root_for_fw_buff(item_key, u_ship, u_ship.get_fit_key());
+            self.unreg_loc_root_for_sw_buff(item_key, u_ship);
         }
         self.unreg_loc_root_for_proj(item_key, item);
         cmods
     }
-    fn get_mods_for_changed_root(&self, item: &UadItem) -> Vec<CtxModifier> {
+    fn get_mods_for_changed_root(&self, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
         if let (Some(fit_key), Some(loc)) = (item.get_fit_key(), item.get_root_loc_kind()) {
             cmods.extend(self.cmods_loc.get(&(fit_key, loc)));

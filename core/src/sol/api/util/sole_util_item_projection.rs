@@ -2,31 +2,31 @@ use super::is_a_effect_projectable;
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    uad::{Uad, UadItem, UadItemKey, UadProjRange},
+    ud::{UData, UItem, UItemKey, UProjRange},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn util_add_item_projection(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        projector_key: UadItemKey,
-        projector_uad_item: &UadItem,
-        projectee_key: UadItemKey,
-        projectee_uad_item: &UadItem,
-        range: Option<UadProjRange>,
+        projector_key: UItemKey,
+        projector_u_item: &UItem,
+        projectee_key: UItemKey,
+        projectee_u_item: &UItem,
+        range: Option<UProjRange>,
     ) {
         svc.notify_item_projected();
-        if let Some(reffs) = projector_uad_item.get_reffs() {
+        if let Some(reffs) = projector_u_item.get_reffs() {
             for a_effect_id in reffs.iter() {
-                let r_effect = uad.src.get_r_effect(a_effect_id).unwrap();
-                if is_a_effect_projectable(projector_uad_item, r_effect) {
+                let r_effect = u_data.src.get_r_effect(a_effect_id).unwrap();
+                if is_a_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_projected(
-                        uad,
+                        u_data,
                         projector_key,
-                        projector_uad_item,
+                        projector_u_item,
                         r_effect,
                         projectee_key,
-                        projectee_uad_item,
+                        projectee_u_item,
                         range,
                     );
                 }
@@ -34,24 +34,24 @@ impl SolarSystem {
         }
     }
     pub(in crate::sol::api) fn util_remove_item_projection(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        projector_key: UadItemKey,
-        projector_uad_item: &UadItem,
-        projectee_key: UadItemKey,
-        projectee_uad_item: &UadItem,
+        projector_key: UItemKey,
+        projector_u_item: &UItem,
+        projectee_key: UItemKey,
+        projectee_u_item: &UItem,
     ) {
-        if let Some(reffs) = projector_uad_item.get_reffs() {
+        if let Some(reffs) = projector_u_item.get_reffs() {
             for a_effect_id in reffs.iter() {
-                let r_effect = uad.src.get_r_effect(a_effect_id).unwrap();
-                if is_a_effect_projectable(projector_uad_item, r_effect) {
+                let r_effect = u_data.src.get_r_effect(a_effect_id).unwrap();
+                if is_a_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_unprojected(
-                        uad,
+                        u_data,
                         projector_key,
-                        projector_uad_item,
+                        projector_u_item,
                         r_effect,
                         projectee_key,
-                        projectee_uad_item,
+                        projectee_u_item,
                     );
                 }
             }
@@ -59,25 +59,25 @@ impl SolarSystem {
         svc.notify_item_unprojected();
     }
     pub(in crate::sol::api) fn util_change_item_proj_range(
-        uad: &Uad,
+        u_data: &UData,
         svc: &mut Svc,
-        projector_key: UadItemKey,
-        projector_uad_item: &UadItem,
-        projectee_key: UadItemKey,
-        projectee_uad_item: &UadItem,
-        range: Option<UadProjRange>,
+        projector_key: UItemKey,
+        projector_u_item: &UItem,
+        projectee_key: UItemKey,
+        projectee_u_item: &UItem,
+        range: Option<UProjRange>,
     ) {
         svc.notify_item_proj_range_changed();
-        if let Some(reffs) = projector_uad_item.get_reffs() {
+        if let Some(reffs) = projector_u_item.get_reffs() {
             for a_effect_id in reffs.iter() {
-                let r_effect = uad.src.get_r_effect(a_effect_id).unwrap();
-                if is_a_effect_projectable(projector_uad_item, r_effect) {
+                let r_effect = u_data.src.get_r_effect(a_effect_id).unwrap();
+                if is_a_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_proj_range_changed(
-                        uad,
+                        u_data,
                         projector_key,
                         r_effect.get_id(),
                         projectee_key,
-                        projectee_uad_item,
+                        projectee_u_item,
                         range,
                     );
                 }

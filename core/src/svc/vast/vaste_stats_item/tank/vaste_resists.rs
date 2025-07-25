@@ -9,14 +9,14 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_resists_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> Result<StatTank<DmgKinds<AttrVal>>, StatItemCheckError> {
         item_key_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_resists_unchecked(ctx, calc, item_key))
@@ -24,7 +24,7 @@ impl Vast {
     pub(super) fn get_stat_item_resists_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> StatTank<DmgKinds<AttrVal>> {
         StatTank {
             shield: Vast::get_item_shield_resists(ctx, calc, item_key),
@@ -32,7 +32,7 @@ impl Vast {
             hull: Vast::get_item_hull_resists(ctx, calc, item_key),
         }
     }
-    fn get_item_shield_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> DmgKinds<AttrVal> {
+    fn get_item_shield_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> DmgKinds<AttrVal> {
         get_item_layer_resists(
             ctx,
             calc,
@@ -43,7 +43,7 @@ impl Vast {
             &ac::attrs::SHIELD_EXPL_DMG_RESONANCE,
         )
     }
-    fn get_item_armor_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> DmgKinds<AttrVal> {
+    fn get_item_armor_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> DmgKinds<AttrVal> {
         get_item_layer_resists(
             ctx,
             calc,
@@ -54,7 +54,7 @@ impl Vast {
             &ac::attrs::ARMOR_EXPL_DMG_RESONANCE,
         )
     }
-    fn get_item_hull_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UadItemKey) -> DmgKinds<AttrVal> {
+    fn get_item_hull_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> DmgKinds<AttrVal> {
         get_item_layer_resists(
             ctx,
             calc,
@@ -70,7 +70,7 @@ impl Vast {
 fn get_item_layer_resists(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     em_a_attr_id: &ad::AAttrId,
     therm_a_attr_id: &ad::AAttrId,
     kin_a_attr_id: &ad::AAttrId,

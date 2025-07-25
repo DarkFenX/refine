@@ -1,13 +1,13 @@
 use super::{add_cmod, remove_cmod};
 use crate::{
     svc::calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
-    uad::UadFwEffect,
+    ud::UFwEffect,
 };
 
 impl StandardRegister {
     pub(in crate::svc::calc) fn reg_fw_system_mod(
         &mut self,
-        fw_effect: &UadFwEffect,
+        fw_effect: &UFwEffect,
         rmod: RawModifier,
     ) -> Option<CtxModifier> {
         let cmod = match rmod.affectee_filter {
@@ -82,7 +82,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn unreg_fw_system_mod(
         &mut self,
-        fw_effect: &UadFwEffect,
+        fw_effect: &UFwEffect,
         rmod: RawModifier,
     ) -> Option<CtxModifier> {
         match rmod.affectee_filter {

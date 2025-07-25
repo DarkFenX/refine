@@ -1,25 +1,25 @@
 use crate::{
     misc::SkillLevel,
     sol::{SolarSystem, api::SkillMut},
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_set_skill_level(&mut self, item_key: UadItemKey, level: SkillLevel) {
-        let uad_skill = self.uad.items.get_mut(item_key).get_skill_mut().unwrap();
-        if uad_skill.get_a_level() == level {
+    pub(in crate::sol::api) fn internal_set_skill_level(&mut self, item_key: UItemKey, level: SkillLevel) {
+        let u_skill = self.u_data.items.get_mut(item_key).get_skill_mut().unwrap();
+        if u_skill.get_a_level() == level {
             return;
         }
-        uad_skill.set_a_level(level.into());
-        self.uad
+        u_skill.set_a_level(level.into());
+        self.u_data
             .fits
-            .get_mut(uad_skill.get_fit_key())
+            .get_mut(u_skill.get_fit_key())
             .skills
-            .get_mut(&uad_skill.get_a_item_id())
+            .get_mut(&u_skill.get_a_item_id())
             .unwrap()
             .level = level;
-        let uad_skill = self.uad.items.get(item_key).get_skill().unwrap();
-        self.svc.notify_skill_level_changed(&self.uad, item_key, uad_skill);
+        let u_skill = self.u_data.items.get(item_key).get_skill().unwrap();
+        self.svc.notify_skill_level_changed(&self.u_data, item_key, u_skill);
     }
 }
 

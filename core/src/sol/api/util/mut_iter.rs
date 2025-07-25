@@ -8,7 +8,7 @@ use crate::{
             RigMut, ServiceMut, SkillMut, SubsystemMut, SwEffectMut,
         },
     },
-    uad::{UadFitKey, UadFleetKey, UadItemKey},
+    ud::{UFitKey, UFleetKey, UItemKey},
 };
 
 pub struct MutIter<'this, T>
@@ -57,14 +57,14 @@ pub trait New {
 }
 // Implementations for non-item entities
 impl New for FleetMut<'_> {
-    type Key = UadFleetKey;
+    type Key = UFleetKey;
     type This<'a> = FleetMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         FleetMut::new(sol, key)
     }
 }
 impl New for FitMut<'_> {
-    type Key = UadFitKey;
+    type Key = UFitKey;
     type This<'a> = FitMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         FitMut::new(sol, key)
@@ -72,84 +72,84 @@ impl New for FitMut<'_> {
 }
 // Implementations for items
 impl New for AutochargeMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = AutochargeMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         AutochargeMut::new(sol, key)
     }
 }
 impl New for BoosterMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = BoosterMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         BoosterMut::new(sol, key)
     }
 }
 impl New for DroneMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = DroneMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         DroneMut::new(sol, key)
     }
 }
 impl New for FighterMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = FighterMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         FighterMut::new(sol, key)
     }
 }
 impl New for FwEffectMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = FwEffectMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         FwEffectMut::new(sol, key)
     }
 }
 impl New for ImplantMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = ImplantMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         ImplantMut::new(sol, key)
     }
 }
 impl New for ProjEffectMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = ProjEffectMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         ProjEffectMut::new(sol, key)
     }
 }
 impl New for RigMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = RigMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         RigMut::new(sol, key)
     }
 }
 impl New for ServiceMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = ServiceMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         ServiceMut::new(sol, key)
     }
 }
 impl New for SkillMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = SkillMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         SkillMut::new(sol, key)
     }
 }
 impl New for SubsystemMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = SubsystemMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         SubsystemMut::new(sol, key)
     }
 }
 impl New for SwEffectMut<'_> {
-    type Key = UadItemKey;
+    type Key = UItemKey;
     type This<'a> = SwEffectMut<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_> {
         SwEffectMut::new(sol, key)

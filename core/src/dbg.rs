@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    uad::{Uad, UadFitKey, UadItemKey},
+    ud::{UData, UFitKey, UItemKey},
 };
 
 #[derive(thiserror::Error, Debug)]
@@ -9,15 +9,15 @@ pub(crate) struct DebugError {}
 
 pub(crate) type DebugResult = Result<(), DebugError>;
 
-pub(crate) fn check_fit_key(uad: &Uad, fit_key: UadFitKey) -> DebugResult {
-    if uad.fits.try_get(fit_key).is_none() {
+pub(crate) fn check_fit_key(u_data: &UData, fit_key: UFitKey) -> DebugResult {
+    if u_data.fits.try_get(fit_key).is_none() {
         return Err(DebugError {});
     }
     Ok(())
 }
 
-pub(crate) fn check_item_key(uad: &Uad, item_key: UadItemKey, check_load: bool) -> DebugResult {
-    let item = match uad.items.try_get(item_key) {
+pub(crate) fn check_item_key(u_data: &UData, item_key: UItemKey, check_load: bool) -> DebugResult {
+    let item = match u_data.items.try_get(item_key) {
         Some(item) => item,
         None => return Err(DebugError {}),
     };
@@ -27,8 +27,8 @@ pub(crate) fn check_item_key(uad: &Uad, item_key: UadItemKey, check_load: bool) 
     Ok(())
 }
 
-pub(crate) fn check_a_effect_id(uad: &Uad, a_effect_id: &ad::AEffectId) -> DebugResult {
-    if uad.src.get_r_effect(a_effect_id).is_none() {
+pub(crate) fn check_a_effect_id(u_data: &UData, a_effect_id: &ad::AEffectId) -> DebugResult {
+    if u_data.src.get_r_effect(a_effect_id).is_none() {
         return Err(DebugError {});
     }
     Ok(())

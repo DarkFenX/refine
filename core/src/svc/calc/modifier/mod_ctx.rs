@@ -1,6 +1,6 @@
 use crate::{
     svc::calc::{Context, RawModifier},
-    uad::{UadFitKey, UadItemKey},
+    ud::{UFitKey, UItemKey},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -15,13 +15,13 @@ impl CtxModifier {
             ctx: Context::None,
         }
     }
-    pub(in crate::svc::calc) fn from_raw_with_item(raw: RawModifier, ctx_item_key: UadItemKey) -> Self {
+    pub(in crate::svc::calc) fn from_raw_with_item(raw: RawModifier, ctx_item_key: UItemKey) -> Self {
         Self {
             raw,
             ctx: Context::Item(ctx_item_key),
         }
     }
-    pub(in crate::svc::calc) fn from_raw_with_fit(raw: RawModifier, ctx_fit_key: UadFitKey) -> Self {
+    pub(in crate::svc::calc) fn from_raw_with_fit(raw: RawModifier, ctx_fit_key: UFitKey) -> Self {
         Self {
             raw,
             ctx: Context::Fit(ctx_fit_key),

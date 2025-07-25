@@ -4,7 +4,7 @@ use crate::{
         SvcCtx,
         calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
     },
-    uad::{UadFitKey, UadFleet, UadItem},
+    ud::{UFitKey, UFleet, UItem},
 };
 
 impl StandardRegister {
@@ -12,7 +12,7 @@ impl StandardRegister {
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
         ctx: SvcCtx,
-        item: &UadItem,
+        item: &UItem,
         rmod: RawModifier,
     ) -> bool {
         reuse_cmods.clear();
@@ -20,10 +20,10 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return false,
         };
-        let affector_fit = ctx.uad.fits.get(fit_key);
+        let affector_fit = ctx.u_data.fits.get(fit_key);
         match affector_fit.fleet {
             Some(fleet_key) => {
-                let fleet = ctx.uad.fleets.get(fleet_key);
+                let fleet = ctx.u_data.fleets.get(fleet_key);
                 for &fleet_fit_key in fleet.iter_fits() {
                     if let Some(cmod) = self.apply_fleet_mod(rmod, fleet_fit_key) {
                         reuse_cmods.push(cmod);
@@ -48,7 +48,7 @@ impl StandardRegister {
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
         ctx: SvcCtx,
-        item: &UadItem,
+        item: &UItem,
         rmod: RawModifier,
     ) {
         reuse_cmods.clear();
@@ -56,10 +56,10 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return,
         };
-        let affector_fit = ctx.uad.fits.get(fit_key);
+        let affector_fit = ctx.u_data.fits.get(fit_key);
         match affector_fit.fleet {
             Some(fleet_key) => {
-                let fleet = ctx.uad.fleets.get(fleet_key);
+                let fleet = ctx.u_data.fleets.get(fleet_key);
                 for &fleet_fit_key in fleet.iter_fits() {
                     if let Some(cmod) = self.unapply_fleet_mod(rmod, fleet_fit_key) {
                         reuse_cmods.push(cmod);
@@ -74,11 +74,7 @@ impl StandardRegister {
         }
         self.rmods_fleet.remove_entry(&fit_key, &rmod);
     }
-    pub(in crate::svc::calc) fn reg_fleet_for_fit(
-        &mut self,
-        fleet: &UadFleet,
-        fit_key: &UadFitKey,
-    ) -> Vec<CtxModifier> {
+    pub(in crate::svc::calc) fn reg_fleet_for_fit(&mut self, fleet: &UFleet, fit_key: &UFitKey) -> Vec<CtxModifier> {
         let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
@@ -108,11 +104,7 @@ impl StandardRegister {
         }
         cmods
     }
-    pub(in crate::svc::calc) fn unreg_fleet_for_fit(
-        &mut self,
-        fleet: &UadFleet,
-        fit_key: &UadFitKey,
-    ) -> Vec<CtxModifier> {
+    pub(in crate::svc::calc) fn unreg_fleet_for_fit(&mut self, fleet: &UFleet, fit_key: &UFitKey) -> Vec<CtxModifier> {
         let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
@@ -143,7 +135,7 @@ impl StandardRegister {
         cmods
     }
     // Private methods
-    fn apply_fleet_mod(&mut self, rmod: RawModifier, fit_key: UadFitKey) -> Option<CtxModifier> {
+    fn apply_fleet_mod(&mut self, rmod: RawModifier, fit_key: UFitKey) -> Option<CtxModifier> {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::Ship) => {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
@@ -188,7 +180,7 @@ impl StandardRegister {
             _ => None,
         }
     }
-    fn unapply_fleet_mod(&mut self, rmod: RawModifier, fit_key: UadFitKey) -> Option<CtxModifier> {
+    fn unapply_fleet_mod(&mut self, rmod: RawModifier, fit_key: UFitKey) -> Option<CtxModifier> {
         // We don't check location here, since logic on layers above ensures we receive only
         // modifiers which passed checks when they were added, and location check is part of those
         match rmod.affectee_filter {

@@ -6,7 +6,7 @@ use crate::{
     def::{ItemId, OF},
     misc::EffectSpec,
     svc::{SvcCtx, calc::Calc, efuncs, vast::VastFitData},
-    uad::UadItemKey,
+    ud::UItemKey,
     util::{RMapRSet, RSet},
 };
 
@@ -19,7 +19,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_assist_immunity_fast(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -33,7 +33,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_fast(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -47,7 +47,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_fast(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -68,7 +68,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_assist_immunity_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
@@ -82,7 +82,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
@@ -96,7 +96,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
@@ -105,12 +105,12 @@ impl VastFitData {
             if efuncs::get_resist_mult_val_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
                 && !projector_especs.is_empty()
             {
-                let projectee_item_id = ctx.uad.items.id_by_key(projectee_aspec.item_key);
+                let projectee_item_id = ctx.u_data.items.id_by_key(projectee_aspec.item_key);
                 for projector_espec in projector_especs {
                     if kfs.contains(&projector_espec.item_key) {
                         continue;
                     }
-                    let projector_item_id = ctx.uad.items.id_by_key(projector_espec.item_key);
+                    let projector_item_id = ctx.u_data.items.id_by_key(projector_espec.item_key);
                     let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
                     if !projectee_item_ids.contains(&projectee_item_id) {
                         projectee_item_ids.push(projectee_item_id)
@@ -126,10 +126,10 @@ impl VastFitData {
 }
 
 fn validate_fast(
-    kfs: &RSet<UadItemKey>,
+    kfs: &RSet<UItemKey>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    blockable: &RMapRSet<UadItemKey, EffectSpec>,
+    blockable: &RMapRSet<UItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> bool {
     for (projectee_key, mut projector_especs) in blockable.iter() {
@@ -148,21 +148,21 @@ fn validate_fast(
 }
 
 fn validate_verbose(
-    kfs: &RSet<UadItemKey>,
+    kfs: &RSet<UItemKey>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    blockable: &RMapRSet<UadItemKey, EffectSpec>,
+    blockable: &RMapRSet<UItemKey, EffectSpec>,
     a_attr_id: &ad::AAttrId,
 ) -> Option<ValProjImmunityFail> {
     let mut items = HashMap::new();
     for (projectee_key, projector_especs) in blockable.iter() {
         if is_flag_set(ctx, calc, *projectee_key, a_attr_id) && !projector_especs.is_empty() {
-            let projectee_item_id = ctx.uad.items.id_by_key(*projectee_key);
+            let projectee_item_id = ctx.u_data.items.id_by_key(*projectee_key);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_key) {
                     continue;
                 }
-                let projector_item_id = ctx.uad.items.id_by_key(projector_espec.item_key);
+                let projector_item_id = ctx.u_data.items.id_by_key(projector_espec.item_key);
                 let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
                 if !projectee_item_ids.contains(&projectee_item_id) {
                     projectee_item_ids.push(projectee_item_id)

@@ -1,16 +1,16 @@
 use crate::{
     svc::calc::LocationKind,
-    uad::{ShipKind, UadFit, UadItem},
+    ud::{UFit, UItem, UShipKind},
 };
 
 // Iterator over item's root location kinds which are actually assigned to a fit
 pub(super) struct ActiveLocations<'a> {
-    item: &'a UadItem,
-    fit: &'a UadFit,
+    item: &'a UItem,
+    fit: &'a UFit,
     index: usize,
 }
 impl<'a> ActiveLocations<'a> {
-    pub(super) fn new(item: &'a UadItem, fit: &'a UadFit) -> Self {
+    pub(super) fn new(item: &'a UItem, fit: &'a UFit) -> Self {
         Self { item, fit, index: 0 }
     }
 }
@@ -28,13 +28,13 @@ impl Iterator for ActiveLocations<'_> {
                 }
                 1 => {
                     self.index += 1;
-                    if self.item.is_on_ship_root() && matches!(self.fit.kind, ShipKind::Ship) {
+                    if self.item.is_on_ship_root() && matches!(self.fit.kind, UShipKind::Ship) {
                         return Some(LocationKind::Ship);
                     }
                 }
                 2 => {
                     self.index += 1;
-                    if self.item.is_on_struct_root() && matches!(self.fit.kind, ShipKind::Structure) {
+                    if self.item.is_on_struct_root() && matches!(self.fit.kind, UShipKind::Structure) {
                         return Some(LocationKind::Structure);
                     }
                 }

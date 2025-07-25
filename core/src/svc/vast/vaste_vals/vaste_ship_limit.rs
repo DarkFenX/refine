@@ -4,7 +4,7 @@ use crate::{
     def::{ItemGrpId, ItemId, ItemTypeId},
     rd,
     svc::{SvcCtx, vast::VastFitData},
-    uad::{UadItemKey, UadShip},
+    ud::{UItemKey, UShip},
     util::RSet,
 };
 
@@ -34,11 +34,7 @@ impl From<&rd::RItemShipLimit> for ValShipLimitItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_ship_limit_fast(
-        &self,
-        kfs: &RSet<UadItemKey>,
-        ship: Option<&UadShip>,
-    ) -> bool {
+    pub(in crate::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<UItemKey>, ship: Option<&UShip>) -> bool {
         let ship = match ship {
             Some(ship) => ship,
             None => {
@@ -69,9 +65,9 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_limit_verbose(
         &self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
-        ship: Option<&UadShip>,
+        ship: Option<&UShip>,
     ) -> Option<ValShipLimitFail> {
         if self.ship_limited_items.is_empty() {
             return None;
@@ -95,7 +91,7 @@ impl VastFitData {
             if kfs.contains(limited_item_key) {
                 continue;
             }
-            mismatches.insert(ctx.uad.items.id_by_key(*limited_item_key), ship_limit.into());
+            mismatches.insert(ctx.u_data.items.id_by_key(*limited_item_key), ship_limit.into());
         }
         match mismatches.is_empty() {
             true => None,

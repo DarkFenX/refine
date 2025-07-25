@@ -4,12 +4,12 @@ use crate::{
         SolarSystem,
         api::{EffectiveMutation, EffectiveMutationMut},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl SolarSystem {
-    fn api_get_base_type_id(&self, item_key: UadItemKey) -> ItemTypeId {
-        self.uad
+    fn api_get_base_type_id(&self, item_key: UItemKey) -> ItemTypeId {
+        self.u_data
             .items
             .get(item_key)
             .get_mutation_data()

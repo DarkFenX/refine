@@ -44,7 +44,7 @@ impl<'a> FullSideEffect<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.uad.src, &self.a_effect_id)
+        get_strength_partial(&self.sol.u_data.src, &self.a_effect_id)
     }
 }
 
@@ -54,7 +54,7 @@ impl<'a> FullSideEffectMut<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.uad.src, &self.a_effect_id)
+        get_strength_partial(&self.sol.u_data.src, &self.a_effect_id)
     }
     /// Get side effect strength as an operator and modification value.
     ///

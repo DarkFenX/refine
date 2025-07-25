@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     misc::EffectSpec,
     svc::calc::{CtxModifier, ModifierKind, RawModifier, registers::StandardRegister},
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
 };
 
 impl StandardRegister {
@@ -20,8 +20,8 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn project_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UadItemKey,
-        projectee_item: &UadItem,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Register projection and get appropriate context modifiers.
         let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
@@ -45,8 +45,8 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn query_projected_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UadItemKey,
-        projectee_item: &UadItem,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Get context modifiers for projection.
         let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
@@ -67,8 +67,8 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unproject_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UadItemKey,
-        projectee_item: &UadItem,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Unregister projection and get appropriate context modifiers.
         let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
@@ -89,7 +89,7 @@ impl StandardRegister {
         }
         cmods
     }
-    pub(super) fn reg_loc_root_for_proj(&mut self, projectee_key: UadItemKey, projectee_item: &UadItem) {
+    pub(super) fn reg_loc_root_for_proj(&mut self, projectee_key: UItemKey, projectee_item: &UItem) {
         // Do necessary changes to projected modifiers after adding location root.
         if let Some(rmods) = self.rmods_proj_inactive.remove_key(&projectee_key) {
             for rmod in rmods {
@@ -106,7 +106,7 @@ impl StandardRegister {
             }
         }
     }
-    pub(super) fn unreg_loc_root_for_proj(&mut self, projectee_key: UadItemKey, projectee_item: &UadItem) {
+    pub(super) fn unreg_loc_root_for_proj(&mut self, projectee_key: UItemKey, projectee_item: &UItem) {
         // Do necessary changes to projected modifiers before removing location root.
         if let Some(rmods) = self.rmods_proj_active.remove_key(&projectee_key) {
             for rmod in rmods {
@@ -127,7 +127,7 @@ impl StandardRegister {
     pub(super) fn reg_inactive_proj_rmod(
         &mut self,
         rmod: RawModifier,
-        projectee_key: UadItemKey,
+        projectee_key: UItemKey,
         register: bool,
     ) -> Option<CtxModifier> {
         if register {
@@ -138,7 +138,7 @@ impl StandardRegister {
     pub(super) fn unreg_inactive_proj_rmod(
         &mut self,
         rmod: &RawModifier,
-        projectee_key: &UadItemKey,
+        projectee_key: &UItemKey,
     ) -> Option<CtxModifier> {
         self.rmods_proj_inactive.remove_entry(projectee_key, rmod);
         None

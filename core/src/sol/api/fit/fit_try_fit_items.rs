@@ -5,21 +5,21 @@ use crate::{
     rd,
     sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt},
-    uad::{Uad, UadEffectUpdates, UadFitKey, UadItemKey},
+    ud::{UData, UEffectUpdates, UFitKey, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_try_fit_items(
         &mut self,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         type_ids: &[ItemTypeId],
         val_options: &ValOptionsInt,
-        reuse_eupdates: &mut UadEffectUpdates,
+        reuse_eupdates: &mut UEffectUpdates,
     ) -> Vec<ItemTypeId> {
         let mut valid = Vec::new();
-        let chargeable_module_keys = get_chargeable_modules(&self.uad, fit_key);
+        let chargeable_module_keys = get_chargeable_modules(&self.u_data, fit_key);
         for type_id in type_ids {
-            let r_item = match self.uad.src.get_r_item(type_id) {
+            let r_item = match self.u_data.src.get_r_item(type_id) {
                 Some(a_item) => a_item,
                 None => continue,
             };
@@ -151,23 +151,23 @@ impl SolarSystem {
 impl<'a> FitMut<'a> {
     pub fn try_fit_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let int_val_options = ValOptionsInt::from_pub(self.sol, val_options);
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
             .internal_try_fit_items(self.key, type_ids, &int_val_options, &mut reuse_eupdates)
     }
 }
 
-fn get_chargeable_modules(uad: &Uad, fit_key: UadFitKey) -> Vec<UadItemKey> {
+fn get_chargeable_modules(u_data: &UData, fit_key: UFitKey) -> Vec<UItemKey> {
     let mut seen_a_item_ids = Vec::new();
     let mut module_keys = Vec::new();
-    for module_key in uad.fits.get(fit_key).iter_module_keys() {
-        let uad_item = uad.items.get(module_key);
-        let a_item_id = uad_item.get_a_item_id();
+    for module_key in u_data.fits.get(fit_key).iter_module_keys() {
+        let u_item = u_data.items.get(module_key);
+        let a_item_id = u_item.get_a_item_id();
         if seen_a_item_ids.contains(&a_item_id) {
             continue;
         }
         seen_a_item_ids.push(a_item_id);
-        let r_item_axt = match uad_item.get_r_axt() {
+        let r_item_axt = match u_item.get_r_axt() {
             Some(r_item_axt) => r_item_axt,
             None => continue,
         };

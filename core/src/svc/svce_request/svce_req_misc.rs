@@ -4,7 +4,7 @@ use crate::{
         Svc, SvcCtx,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
     },
-    uad::{Uad, UadItemKey},
+    ud::{UData, UItemKey},
     util::InfCount,
 };
 
@@ -17,11 +17,11 @@ const CUR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 };
 
 impl Svc {
-    pub(crate) fn get_item_cycles_until_reload(&mut self, uad: &Uad, item_key: UadItemKey) -> Option<InfCount> {
-        let uad_item = uad.items.get(item_key);
-        let defeff_id = uad_item.get_a_defeff_id()??;
+    pub(crate) fn get_item_cycles_until_reload(&mut self, u_data: &UData, item_key: UItemKey) -> Option<InfCount> {
+        let u_item = u_data.items.get(item_key);
+        let defeff_id = u_item.get_a_defeff_id()??;
         let cycle_info = get_item_cycle_info(
-            SvcCtx::new(uad, &self.eprojs),
+            SvcCtx::new(u_data, &self.eprojs),
             &mut self.calc,
             item_key,
             CUR_CYCLE_OPTIONS,
@@ -29,13 +29,23 @@ impl Svc {
         )?;
         Some(cycle_info.get(&defeff_id)?.get_cycles_until_reload())
     }
-    pub(crate) fn get_effect_spool_cycle_count(&mut self, uad: &Uad, item_key: UadItemKey) -> Option<AdjustableCount> {
-        let uad_item = uad.items.get(item_key);
-        let defeff_id = uad_item.get_a_defeff_id()??;
-        let defeff = uad.src.get_r_effect(&defeff_id)?;
+    pub(crate) fn get_effect_spool_cycle_count(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Option<AdjustableCount> {
+        let u_item = u_data.items.get(item_key);
+        let defeff_id = u_item.get_a_defeff_id()??;
+        let defeff = u_data.src.get_r_effect(&defeff_id)?;
         let spool_resolver = defeff.get_spool_resolver()?;
-        let resolved_spool = spool_resolver(SvcCtx::new(uad, &self.eprojs), &mut self.calc, item_key, defeff, None)?;
-        let overridden = uad_item.get_spool().is_some();
+        let resolved_spool = spool_resolver(
+            SvcCtx::new(u_data, &self.eprojs),
+            &mut self.calc,
+            item_key,
+            defeff,
+            None,
+        )?;
+        let overridden = u_item.get_spool().is_some();
         Some(AdjustableCount {
             current: resolved_spool.cycles,
             max: resolved_spool.cycles_max,

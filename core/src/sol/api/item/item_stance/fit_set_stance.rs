@@ -5,36 +5,36 @@ use crate::{
         SolarSystem,
         api::{FitMut, StanceMut},
     },
-    uad::{UadEffectUpdates, UadFitKey, UadItem, UadItemKey, UadStance},
+    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UStance},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fit_stance(
         &mut self,
-        fit_key: UadFitKey,
+        fit_key: UFitKey,
         a_item_id: ad::AItemId,
-        reuse_eupdates: &mut UadEffectUpdates,
-    ) -> UadItemKey {
-        let uad_fit = self.uad.fits.get(fit_key);
+        reuse_eupdates: &mut UEffectUpdates,
+    ) -> UItemKey {
+        let u_fit = self.u_data.fits.get(fit_key);
         // Remove old stance, if it was set
-        if let Some(old_item_key) = uad_fit.stance {
+        if let Some(old_item_key) = u_fit.stance {
             self.internal_remove_stance(old_item_key, reuse_eupdates);
         }
         // Add new stance
-        let item_id = self.uad.items.alloc_id();
-        let uad_stance = UadStance::new(item_id, a_item_id, fit_key, true, &self.uad.src, reuse_eupdates);
-        let uad_item = UadItem::Stance(uad_stance);
-        let item_key = self.uad.items.add(uad_item);
-        let uad_fit = self.uad.fits.get_mut(fit_key);
-        uad_fit.stance = Some(item_key);
-        SolarSystem::util_add_stance(&self.uad, &mut self.svc, item_key, reuse_eupdates);
+        let item_id = self.u_data.items.alloc_id();
+        let u_stance = UStance::new(item_id, a_item_id, fit_key, true, &self.u_data.src, reuse_eupdates);
+        let u_item = UItem::Stance(u_stance);
+        let item_key = self.u_data.items.add(u_item);
+        let u_fit = self.u_data.fits.get_mut(fit_key);
+        u_fit.stance = Some(item_key);
+        SolarSystem::util_add_stance(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn set_stance(&mut self, type_id: ItemTypeId) -> StanceMut<'_> {
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         let item_key = self.sol.internal_set_fit_stance(self.key, type_id, &mut reuse_eupdates);
         StanceMut::new(self.sol, item_key)
     }

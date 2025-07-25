@@ -4,15 +4,15 @@ use crate::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
-    uad::{UadFighter, UadItemKey},
+    ud::{UFighter, UItemKey},
 };
 
 pub struct Fighter<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
 }
 impl<'a> Fighter<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UadItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -29,7 +29,7 @@ impl<'a> ItemSealed for Fighter<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UadItemKey {
+    fn get_key(&self) -> UItemKey {
         self.key
     }
 }
@@ -37,17 +37,17 @@ impl<'a> ItemCommon for Fighter<'a> {}
 
 pub struct FighterMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) key: UadItemKey,
+    pub(in crate::sol::api) key: UItemKey,
 }
 impl<'a> FighterMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UadItemKey) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_uad_fighter(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_fighter(self.sol, self.key).get_fit_key();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_state(&self) -> MinionState {
@@ -61,7 +61,7 @@ impl<'a> ItemSealed for FighterMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UadItemKey {
+    fn get_key(&self) -> UItemKey {
         self.key
     }
 }
@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for FighterMut<'a> {
 impl<'a> ItemCommon for FighterMut<'a> {}
 impl<'a> ItemMutCommon for FighterMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UadItemKey) -> Fit<'_> {
-    let fit_key = get_uad_fighter(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_fighter(sol, item_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UadItemKey) -> MinionState {
-    get_uad_fighter(sol, item_key).get_fighter_state()
+fn get_state(sol: &SolarSystem, item_key: UItemKey) -> MinionState {
+    get_u_fighter(sol, item_key).get_fighter_state()
 }
-fn get_count(sol: &SolarSystem, item_key: UadItemKey) -> Option<AdjustableCount> {
-    get_uad_fighter(sol, item_key).get_count()
+fn get_count(sol: &SolarSystem, item_key: UItemKey) -> Option<AdjustableCount> {
+    get_u_fighter(sol, item_key).get_count()
 }
-fn get_uad_fighter(sol: &SolarSystem, item_key: UadItemKey) -> &UadFighter {
-    sol.uad.items.get(item_key).get_fighter().unwrap()
+fn get_u_fighter(sol: &SolarSystem, item_key: UItemKey) -> &UFighter {
+    sol.u_data.items.get(item_key).get_fighter().unwrap()
 }

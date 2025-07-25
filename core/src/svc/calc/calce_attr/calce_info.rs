@@ -13,7 +13,7 @@ use crate::{
         calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
         err::KeyedItemLoadedError,
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
     util::{RMap, RMapVec, RSet, round},
 };
 
@@ -27,7 +27,7 @@ impl Calc {
     pub(in crate::svc) fn iter_item_mods(
         &mut self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for a_attr_id in self.iter_item_a_attr_ids(ctx, item_key)? {
@@ -45,9 +45,9 @@ impl Calc {
     fn iter_item_a_attr_ids(
         &self,
         ctx: SvcCtx,
-        item_key: UadItemKey,
+        item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, KeyedItemLoadedError> {
-        let item_a_attrs = match ctx.uad.items.get(item_key).get_a_attrs() {
+        let item_a_attrs = match ctx.u_data.items.get(item_key).get_a_attrs() {
             Some(item_a_attrs) => item_a_attrs,
             None => return Err(KeyedItemLoadedError { item_key }),
         };
@@ -58,21 +58,21 @@ impl Calc {
     fn iter_affections(
         &mut self,
         ctx: SvcCtx,
-        item_key: &UadItemKey,
-        item: &UadItem,
+        item_key: &UItemKey,
+        item: &UItem,
         a_attr_id: &ad::AAttrId,
     ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();
         for cmod in self
             .std
-            .get_mods_for_affectee(item_key, item, a_attr_id, &ctx.uad.fits)
+            .get_mods_for_affectee(item_key, item, a_attr_id, &ctx.u_data.fits)
             .iter()
         {
             let val = match cmod.raw.get_mod_val(self, ctx) {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = ctx.uad.items.get(cmod.raw.affector_espec.item_key);
+            let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
             let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
             let mod_key = ModificationKey::from(cmod);
             let modification = Modification {
@@ -91,9 +91,9 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
-        let item = ctx.uad.items.get(item_key);
-        let r_attr = match ctx.uad.src.get_r_attr(a_attr_id) {
+    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
+        let item = ctx.u_data.items.get(item_key);
+        let r_attr = match ctx.u_data.src.get_r_attr(a_attr_id) {
             Some(r_attr) => r_attr,
             None => &get_r_attr(*a_attr_id),
         };
@@ -103,7 +103,7 @@ impl Calc {
             &ac::attrs::SECURITY_MODIFIER => {
                 // Fetch base value for the generic attribute depending on solar system sec zone,
                 // using its base value as a fallback
-                let security_a_attr_id = match ctx.uad.sec_zone {
+                let security_a_attr_id = match ctx.u_data.sec_zone {
                     SecZone::HiSec(_) => ac::attrs::HISEC_MODIFIER,
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
                     _ => ac::attrs::NULLSEC_MODIFIER,
@@ -127,7 +127,7 @@ impl Calc {
                             stacking_mult: None,
                             applied_val: security_full_val.dogma,
                             affectors: vec![AffectorInfo {
-                                item_id: ctx.uad.items.id_by_key(item_key),
+                                item_id: ctx.u_data.items.id_by_key(item_key),
                                 attr_id: Some(security_a_attr_id),
                             }],
                         });
@@ -167,7 +167,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![AffectorInfo {
-                        item_id: ctx.uad.items.id_by_key(item_key),
+                        item_id: ctx.u_data.items.id_by_key(item_key),
                         attr_id: Some(limiter_a_attr_id),
                     }],
                 })
@@ -188,7 +188,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![AffectorInfo {
-                        item_id: ctx.uad.items.id_by_key(item_key),
+                        item_id: ctx.u_data.items.id_by_key(item_key),
                         attr_id: Some(limiter_a_attr_id),
                     }],
                 })

@@ -1,4 +1,4 @@
-use crate::{ad, def::AttrId, sol::SolarSystem, uad::UadItemKey};
+use crate::{ad, def::AttrId, sol::SolarSystem, ud::UItemKey};
 
 /// Raw mutated attribute.
 ///
@@ -10,11 +10,11 @@ use crate::{ad, def::AttrId, sol::SolarSystem, uad::UadItemKey};
 /// source.
 pub struct RawMAttr<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
-    pub(in crate::sol::api) item_key: UadItemKey,
+    pub(in crate::sol::api) item_key: UItemKey,
     pub(in crate::sol::api) a_attr_id: ad::AAttrId,
 }
 impl<'a> RawMAttr<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, item_key: UadItemKey, a_attr_id: ad::AAttrId) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, item_key: UItemKey, a_attr_id: ad::AAttrId) -> Self {
         Self {
             sol,
             item_key,
@@ -37,11 +37,11 @@ impl<'a> RawMAttr<'a> {
 /// source.
 pub struct RawMAttrMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
-    pub(in crate::sol::api) item_key: UadItemKey,
+    pub(in crate::sol::api) item_key: UItemKey,
     pub(in crate::sol::api) a_attr_id: ad::AAttrId,
 }
 impl<'a> RawMAttrMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, item_key: UadItemKey, a_attr_id: ad::AAttrId) -> Self {
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, item_key: UItemKey, a_attr_id: ad::AAttrId) -> Self {
         Self {
             sol,
             item_key,

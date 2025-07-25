@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::{AttrVal, ItemId},
     svc::{SvcCtx, vast::VastFitData},
-    uad::UadItemKey,
+    ud::UItemKey,
     util::RSet,
 };
 
@@ -23,7 +23,7 @@ pub struct ValChargeSizeChargeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_size_fast(&mut self, kfs: &RSet<UadItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_size_fast(&mut self, kfs: &RSet<UItemKey>) -> bool {
         match kfs.is_empty() {
             true => self.charge_size.is_empty(),
             false => self.charge_size.difference(kfs).next().is_none(),
@@ -32,17 +32,17 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_charge_size_verbose(
         &mut self,
-        kfs: &RSet<UadItemKey>,
+        kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
     ) -> Option<ValChargeSizeFail> {
         let mut charges = HashMap::new();
         for (&charge_key, &cont_key) in self.charge_size.difference(kfs) {
             charges.insert(
-                ctx.uad.items.id_by_key(charge_key),
+                ctx.u_data.items.id_by_key(charge_key),
                 ValChargeSizeChargeInfo {
-                    parent_item_id: ctx.uad.items.id_by_key(cont_key),
-                    charge_size: ctx.uad.items.get(charge_key).get_r_axt().unwrap().charge_size,
-                    allowed_size: ctx.uad.items.get(cont_key).get_r_axt().unwrap().charge_size.unwrap(),
+                    parent_item_id: ctx.u_data.items.id_by_key(cont_key),
+                    charge_size: ctx.u_data.items.get(charge_key).get_r_axt().unwrap().charge_size,
+                    allowed_size: ctx.u_data.items.get(cont_key).get_r_axt().unwrap().charge_size.unwrap(),
                 },
             );
         }

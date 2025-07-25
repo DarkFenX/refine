@@ -4,13 +4,13 @@ use crate::{
     def::ItemTypeId,
     misc::{AddMode, ModRack, ModuleState, RmMode},
     sol::api::FitMut,
-    uad::UadEffectUpdates,
+    ud::UEffectUpdates,
 };
 
 impl<'a> FitMut<'a> {
     pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {
-        let mut reuse_eupdates = UadEffectUpdates::new();
-        let ship_key = self.sol.uad.fits.get(self.key).ship.unwrap();
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let ship_key = self.sol.u_data.fits.get(self.key).ship.unwrap();
         for _ in 0..iterations {
             let item_key = self.sol.internal_add_module(
                 self.key,
@@ -26,7 +26,7 @@ impl<'a> FitMut<'a> {
             black_box(
                 self.sol
                     .svc
-                    .iter_item_attr_vals(&self.sol.uad, ship_key)
+                    .iter_item_attr_vals(&self.sol.u_data, ship_key)
                     .unwrap()
                     .for_each(drop),
             );
@@ -36,7 +36,7 @@ impl<'a> FitMut<'a> {
             black_box(
                 self.sol
                     .svc
-                    .iter_item_attr_vals(&self.sol.uad, ship_key)
+                    .iter_item_attr_vals(&self.sol.u_data, ship_key)
                     .unwrap()
                     .for_each(drop),
             );

@@ -1,26 +1,26 @@
 use crate::{
     sol::{SolarSystem, api::ImplantMut},
-    uad::{UadEffectUpdates, UadItemKey},
+    ud::{UEffectUpdates, UItemKey},
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_implant(
         &mut self,
-        item_key: UadItemKey,
-        reuse_eupdates: &mut UadEffectUpdates,
+        item_key: UItemKey,
+        reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let uad_item = self.uad.items.get(item_key);
-        let uad_implant = uad_item.get_implant().unwrap();
-        SolarSystem::util_remove_implant(&self.uad, &mut self.svc, item_key, uad_item, reuse_eupdates);
-        let uad_fit = self.uad.fits.get_mut(uad_implant.get_fit_key());
-        uad_fit.implants.remove(&item_key);
-        self.uad.items.remove(item_key);
+        let u_item = self.u_data.items.get(item_key);
+        let u_implant = u_item.get_implant().unwrap();
+        SolarSystem::util_remove_implant(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
+        let u_fit = self.u_data.fits.get_mut(u_implant.get_fit_key());
+        u_fit.implants.remove(&item_key);
+        self.u_data.items.remove(item_key);
     }
 }
 
 impl<'a> ImplantMut<'a> {
     pub fn remove(self) {
-        let mut reuse_eupdates = UadEffectUpdates::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_implant(self.key, &mut reuse_eupdates);
     }
 }

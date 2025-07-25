@@ -2,19 +2,19 @@ use itertools::Itertools;
 
 use crate::{
     sol::{SolarSystem, api::FleetMut},
-    uad::UadFleetKey,
+    ud::UFleetKey,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_remove_fleet(&mut self, fleet_key: UadFleetKey) {
-        let uad_fleet = self.uad.fleets.get(fleet_key);
-        let fit_keys = uad_fleet.iter_fits().copied().collect_vec();
+    pub(in crate::sol::api) fn internal_remove_fleet(&mut self, fleet_key: UFleetKey) {
+        let u_fleet = self.u_data.fleets.get(fleet_key);
+        let fit_keys = u_fleet.iter_fits().copied().collect_vec();
         for fit_key in fit_keys {
-            self.svc.notify_fit_removed_from_fleet(&self.uad, uad_fleet, &fit_key);
-            let uad_fit = self.uad.fits.get_mut(fit_key);
-            uad_fit.fleet = None;
+            self.svc.notify_fit_removed_from_fleet(&self.u_data, u_fleet, &fit_key);
+            let u_fit = self.u_data.fits.get_mut(fit_key);
+            u_fit.fleet = None;
         }
-        self.uad.fleets.remove(fleet_key);
+        self.u_data.fleets.remove(fleet_key);
     }
 }
 

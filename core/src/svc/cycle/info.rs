@@ -3,7 +3,7 @@ use crate::{
     ad,
     def::{AttrVal, Count},
     svc::{SvcCtx, calc::Calc},
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
     util::{InfCount, RMap},
 };
 
@@ -85,26 +85,24 @@ impl CycleInner {
 pub(in crate::svc) fn get_item_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UadItemKey,
+    item_key: UItemKey,
     options: CycleOptions,
     ignore_state: bool,
 ) -> Option<RMap<ad::AEffectId, Cycle>> {
-    let uad_item = ctx.uad.items.get(item_key);
-    match uad_item {
-        UadItem::Autocharge(uad_autocharge) => {
-            get_item_cycle_info(ctx, calc, uad_autocharge.get_cont_key(), options, ignore_state)
+    let u_item = ctx.u_data.items.get(item_key);
+    match u_item {
+        UItem::Autocharge(u_autocharge) => {
+            get_item_cycle_info(ctx, calc, u_autocharge.get_cont_key(), options, ignore_state)
         }
-        UadItem::Charge(uad_charge) => get_item_cycle_info(ctx, calc, uad_charge.get_cont_key(), options, ignore_state),
-        UadItem::Drone(uad_drone) => get_drone_cycle_info(ctx, calc, item_key, uad_drone, ignore_state),
-        UadItem::Fighter(uad_fighter) => {
-            if !uad_fighter.is_loaded() {
+        UItem::Charge(u_charge) => get_item_cycle_info(ctx, calc, u_charge.get_cont_key(), options, ignore_state),
+        UItem::Drone(u_drone) => get_drone_cycle_info(ctx, calc, item_key, u_drone, ignore_state),
+        UItem::Fighter(u_fighter) => {
+            if !u_fighter.is_loaded() {
                 return None;
             };
             Some(RMap::new())
         }
-        UadItem::Module(uad_module) => {
-            get_module_cycle_info(ctx, calc, item_key, uad_item, uad_module, options, ignore_state)
-        }
+        UItem::Module(u_module) => get_module_cycle_info(ctx, calc, item_key, u_item, u_module, options, ignore_state),
         _ => None,
     }
 }

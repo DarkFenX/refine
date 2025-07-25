@@ -5,7 +5,7 @@ use crate::{
         SolarSystem,
         api::{Proj, ProjEffect, ProjEffectMut, ProjMut},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
 };
 
 impl<'a> ProjEffect<'a> {
@@ -28,12 +28,12 @@ impl<'a> ProjEffectMut<'a> {
 
 fn get_projectee_key(
     sol: &SolarSystem,
-    projector_key: UadItemKey,
+    projector_key: UItemKey,
     projectee_item_id: &ItemId,
-) -> Result<UadItemKey, GetProjError> {
-    let projectee_key = sol.uad.items.key_by_id_err(projectee_item_id)?;
+) -> Result<UItemKey, GetProjError> {
+    let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
     match sol
-        .uad
+        .u_data
         .items
         .get(projector_key)
         .get_projs()
@@ -42,7 +42,7 @@ fn get_projectee_key(
     {
         true => Ok(projectee_key),
         false => Err(ProjFoundError {
-            projector_item_id: sol.uad.items.id_by_key(projector_key),
+            projector_item_id: sol.u_data.items.id_by_key(projector_key),
             projectee_item_id: *projectee_item_id,
         }
         .into()),

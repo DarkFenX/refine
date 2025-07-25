@@ -4,7 +4,7 @@ use crate::{
         SolarSystem,
         api::{FullMAttr, FullMAttrMut},
     },
-    uad::UadItemKey,
+    ud::UItemKey,
     util::UnitInterval,
 };
 
@@ -30,13 +30,13 @@ impl<'a> FullMAttrMut<'a> {
     }
 }
 
-fn get_roll(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> Option<UnitInterval> {
-    let uad_item = sol.uad.items.get(item_key);
-    if let Some(roll) = uad_item.get_mutation_data().unwrap().get_attr_rolls().get(a_attr_id) {
+fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> Option<UnitInterval> {
+    let u_item = sol.u_data.items.get(item_key);
+    if let Some(roll) = u_item.get_mutation_data().unwrap().get_attr_rolls().get(a_attr_id) {
         return Some(*roll);
     }
     // If roll data was not available, calculate it using unmutated attribute value
-    let a_mutation_range = uad_item
+    let a_mutation_range = u_item
         .get_mutation_data()
         .unwrap()
         .get_cache()
@@ -52,7 +52,7 @@ fn get_roll(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) ->
     // - if value was shifted into any direction (e.g. unmutated 10 with range [1.2, 1.4] exposed as
     //   base value 12), it will still lie on appropriate edge of shifted roll (in this case it will be
     //   0.0 relatively [14.4, 16.8] range - range is wrong, result is right).
-    let value = uad_item.get_a_attr(a_attr_id).unwrap();
+    let value = u_item.get_a_attr(a_attr_id).unwrap();
     let min_value = value * a_mutation_range.min_mult;
     let max_value = value * a_mutation_range.max_mult;
     if min_value == max_value {

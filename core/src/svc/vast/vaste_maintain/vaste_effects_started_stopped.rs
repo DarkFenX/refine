@@ -1,27 +1,27 @@
 use crate::{
     rd,
     svc::vast::Vast,
-    uad::{UadFitKey, UadItem, UadItemKey},
+    ud::{UFitKey, UItem, UItemKey},
 };
 
 impl Vast {
-    pub(in crate::svc) fn effects_started(&mut self, item_key: UadItemKey, item: &UadItem, r_effects: &[rd::RcEffect]) {
+    pub(in crate::svc) fn effects_started(&mut self, item_key: UItemKey, item: &UItem, r_effects: &[rd::RcEffect]) {
         match item {
-            UadItem::Drone(drone) => {
+            UItem::Drone(drone) => {
                 for r_effect in r_effects {
                     if r_effect.is_active() {
                         self.handle_orrs_start(r_effect, item_key, &drone.get_fit_key());
                     }
                 }
             }
-            UadItem::Fighter(fighter) => {
+            UItem::Fighter(fighter) => {
                 for r_effect in r_effects {
                     if r_effect.is_active() {
                         self.handle_orrs_start(r_effect, item_key, &fighter.get_fit_key());
                     }
                 }
             }
-            UadItem::Module(module) => {
+            UItem::Module(module) => {
                 for r_effect in r_effects {
                     if r_effect.is_active() {
                         // Damaging effects
@@ -60,23 +60,23 @@ impl Vast {
             _ => (),
         }
     }
-    pub(in crate::svc) fn effects_stopped(&mut self, item_key: UadItemKey, item: &UadItem, r_effects: &[rd::RcEffect]) {
+    pub(in crate::svc) fn effects_stopped(&mut self, item_key: UItemKey, item: &UItem, r_effects: &[rd::RcEffect]) {
         match item {
-            UadItem::Drone(drone) => {
+            UItem::Drone(drone) => {
                 for r_effect in r_effects {
                     if r_effect.is_active() {
                         self.handle_orrs_stop(r_effect, item_key, &drone.get_fit_key());
                     }
                 }
             }
-            UadItem::Fighter(fighter) => {
+            UItem::Fighter(fighter) => {
                 for r_effect in r_effects {
                     if r_effect.is_active() {
                         self.handle_orrs_stop(r_effect, item_key, &fighter.get_fit_key());
                     }
                 }
             }
-            UadItem::Module(module) => {
+            UItem::Module(module) => {
                 for r_effect in r_effects {
                     if r_effect.is_active() {
                         // Damaging effects
@@ -111,7 +111,7 @@ impl Vast {
             _ => (),
         }
     }
-    fn handle_orrs_start(&mut self, r_effect: &rd::RcEffect, item_key: UadItemKey, fit_key: &UadFitKey) {
+    fn handle_orrs_start(&mut self, r_effect: &rd::RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
         if let Some(rep_getter) = r_effect.get_remote_shield_rep_opc_getter() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_shield.add_entry(item_key, r_effect.get_id(), rep_getter);
@@ -129,7 +129,7 @@ impl Vast {
             fit_data.orr_cap.add_entry(item_key, r_effect.get_id(), rep_getter);
         }
     }
-    fn handle_orrs_stop(&mut self, r_effect: &rd::RcEffect, item_key: UadItemKey, fit_key: &UadFitKey) {
+    fn handle_orrs_stop(&mut self, r_effect: &rd::RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
         if r_effect.get_remote_shield_rep_opc_getter().is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_shield.remove_l2(&item_key, &r_effect.get_id());

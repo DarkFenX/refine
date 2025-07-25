@@ -11,7 +11,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
-    uad::{UadItem, UadItemKey},
+    ud::{UItem, UItemKey},
     util::{RMapRMap, RMapRMapRMap, trunc_unerr},
 };
 
@@ -26,25 +26,25 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
     ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
-        let uad_item = ctx.uad.items.get(item_key);
-        item_check(item_key, uad_item)?;
-        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, uad_item, spool))
+        let u_item = ctx.u_data.items.get(item_key);
+        item_check(item_key, u_item)?;
+        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, u_item, spool))
     }
     pub(super) fn get_stat_item_rps_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UadItemKey,
-        uad_item: &UadItem,
+        item_key: UItemKey,
+        u_item: &UItem,
         spool: Option<Spool>,
     ) -> StatTank<StatLayerRps> {
         // Local reps
-        let (local_shield, local_armor, local_hull) = match uad_item {
-            UadItem::Ship(uad_ship) => {
-                let fit_data = self.get_fit_data(&uad_ship.get_fit_key());
+        let (local_shield, local_armor, local_hull) = match u_item {
+            UItem::Ship(u_ship) => {
+                let fit_data = self.get_fit_data(&u_ship.get_fit_key());
                 let local_shield = get_local_rps(ctx, calc, &fit_data.lr_shield);
                 let local_armor = get_local_rps(ctx, calc, &fit_data.lr_armor);
                 let local_hull = get_local_rps(ctx, calc, &fit_data.lr_hull);
@@ -83,7 +83,7 @@ const RPS_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_local_rps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    rep_data: &RMapRMap<UadItemKey, ad::AEffectId, NLocalRepGetter>,
+    rep_data: &RMapRMap<UItemKey, ad::AEffectId, NLocalRepGetter>,
 ) -> AttrVal {
     let mut total_rps = OF(0.0);
     for (&item_key, item_data) in rep_data.iter() {
@@ -96,7 +96,7 @@ fn get_local_rps(
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let r_effect = ctx.uad.src.get_r_effect(a_effect_id).unwrap();
+            let r_effect = ctx.u_data.src.get_r_effect(a_effect_id).unwrap();
             let output_per_cycle = match rep_getter(ctx, calc, item_key, r_effect) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
@@ -115,9 +115,9 @@ struct IrrEntry {
 fn get_irr_data(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projectee_item_key: UadItemKey,
+    projectee_item_key: UItemKey,
     spool: Option<Spool>,
-    sol_irrs: &RMapRMapRMap<UadItemKey, UadItemKey, ad::AEffectId, NRemoteRepGetter>,
+    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, ad::AEffectId, NRemoteRepGetter>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match sol_irrs.get_l1(&projectee_item_key) {
@@ -134,7 +134,7 @@ fn get_irr_data(
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let r_effect = ctx.uad.src.get_r_effect(a_effect_id).unwrap();
+            let r_effect = ctx.u_data.src.get_r_effect(a_effect_id).unwrap();
             let output_per_cycle =
                 match rep_getter(ctx, calc, projector_item_key, r_effect, spool, Some(projectee_item_key)) {
                     Some(hp_per_cycle) => hp_per_cycle,
