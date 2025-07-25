@@ -1,8 +1,8 @@
-use rprojs::RProjs;
+use rev_projs::RevProjs;
 pub use sol::SolarSystem;
 
 pub(crate) mod api;
 mod debug;
-mod rprojs;
+mod rev_projs;
 mod sol;
 mod sole_debug;

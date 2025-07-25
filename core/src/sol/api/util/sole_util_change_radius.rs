@@ -1,6 +1,6 @@
 use crate::{
     def::OF,
-    sol::{RProjs, SolarSystem},
+    sol::{RevProjs, SolarSystem},
     svc::Svc,
     ud::{UData, UItemKey},
 };
@@ -8,7 +8,7 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn util_update_item_radius_in_projs(
         u_data: &mut UData,
-        rprojs: &RProjs,
+        rev_projs: &RevProjs,
         svc: &mut Svc,
         item_key: UItemKey,
     ) {
@@ -19,7 +19,7 @@ impl SolarSystem {
             u_prange.update_src_rad(item_radius);
         }
         // Incoming projections
-        for &projector_key in rprojs.iter_projectors(&item_key) {
+        for &projector_key in rev_projs.iter_projectors(&item_key) {
             let projector_u_item = u_data.items.get_mut(projector_key);
             if let Some(u_prange) = projector_u_item.get_projs_mut().unwrap().get_range_mut(&item_key)
                 && u_prange.update_tgt_rad(item_radius)

@@ -23,7 +23,7 @@ impl SolarSystem {
             .get_drone_mut()
             .unwrap()
             .set_a_item_id(a_item_id, reuse_eupdates, &self.u_data.src);
-        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rprojs, &mut self.svc, item_key);
+        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, item_key);
         SolarSystem::util_add_drone_with_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
     }
 }

@@ -21,7 +21,7 @@ impl Svc {
         let u_item = u_data.items.get(item_key);
         let defeff_id = u_item.get_a_defeff_id()??;
         let cycle_info = get_item_cycle_info(
-            SvcCtx::new(u_data, &self.eprojs),
+            SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             CUR_CYCLE_OPTIONS,
@@ -39,7 +39,7 @@ impl Svc {
         let defeff = u_data.src.get_r_effect(&defeff_id)?;
         let spool_resolver = defeff.get_spool_resolver()?;
         let resolved_spool = spool_resolver(
-            SvcCtx::new(u_data, &self.eprojs),
+            SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             defeff,

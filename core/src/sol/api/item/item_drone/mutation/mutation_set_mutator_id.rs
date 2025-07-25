@@ -31,7 +31,7 @@ impl SolarSystem {
             .unwrap()
             .set_a_mutator_id(a_mutator_id, reuse_eupdates, &self.u_data.src)
             .unwrap();
-        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rprojs, &mut self.svc, item_key);
+        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, item_key);
         SolarSystem::util_add_drone_with_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         Ok(())
     }

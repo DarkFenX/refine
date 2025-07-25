@@ -22,7 +22,7 @@ impl SolarSystem {
                 projectee_key,
                 projectee_u_item,
             );
-            self.rprojs.unreg_projectee(&item_key, &projectee_key);
+            self.rev_projs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove effect from services
         SolarSystem::util_remove_item_without_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);

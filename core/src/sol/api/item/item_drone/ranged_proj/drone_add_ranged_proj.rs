@@ -50,7 +50,7 @@ impl SolarSystem {
         // Update user data
         let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
         u_drone.get_projs_mut().add(projectee_key, u_prange);
-        self.rprojs.reg_projectee(item_key, projectee_key);
+        self.rev_projs.reg_projectee(item_key, projectee_key);
         Ok(())
     }
 }

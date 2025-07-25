@@ -27,7 +27,7 @@ impl SolarSystem {
         let u_item = self.u_data.items.get(item_key);
         SolarSystem::util_add_item_without_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
         // Process autocharges
-        SolarSystem::add_fighter_autocharges(&mut self.u_data, &mut self.svc, &mut self.rprojs, item_key);
+        SolarSystem::add_fighter_autocharges(&mut self.u_data, &mut self.svc, &mut self.rev_projs, item_key);
         item_key
     }
 }

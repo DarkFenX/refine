@@ -10,20 +10,20 @@ impl Svc {
         u_data: &UData,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_speed_checked(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, item_key)
+        Vast::get_stat_item_speed_checked(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_agility(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        Vast::get_stat_item_agility_checked(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, item_key)
+        Vast::get_stat_item_agility_checked(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_align_time(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        Vast::get_stat_item_align_time_checked(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, item_key)
+        Vast::get_stat_item_align_time_checked(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
 }

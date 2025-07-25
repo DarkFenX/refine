@@ -23,7 +23,7 @@ impl SolarSystem {
                 projectee_key,
                 projectee_u_item,
             );
-            self.rprojs.unreg_projectee(&item_key, &projectee_key);
+            self.rev_projs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);

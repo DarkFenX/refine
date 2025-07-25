@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::{ItemId, OF},
     misc::{EffectId, EffectSpec},
-    svc::{SvcCtx, calc::Calc, efuncs, vast::VastFitData},
+    svc::{SvcCtx, calc::Calc, eff_funcs, vast::VastFitData},
     ud::UItemKey,
     util::RSet,
 };
@@ -69,7 +69,7 @@ fn is_any_in_effective_range(
     stopped_item_key: UItemKey,
 ) -> bool {
     for stopper_espec in stopper_especs {
-        match efuncs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
+        match eff_funcs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
             Some(OF(0.0)) => (),
             _ => return true,
         }

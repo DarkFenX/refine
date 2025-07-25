@@ -2,7 +2,7 @@ use super::info::{Cycle, CycleSimple};
 use crate::{
     ad,
     def::OF,
-    svc::{SvcCtx, calc::Calc, efuncs},
+    svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UDrone, UItemKey},
     util::{InfCount, RMap},
 };
@@ -47,7 +47,7 @@ fn fill_drone_effect_info(
     if !r_effect.is_active() {
         return;
     }
-    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
+    let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
         Some(duration_s) => duration_s,
         None => return,
     };

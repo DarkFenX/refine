@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, Context, CtxModifier, ModifierKind},
-        efuncs,
+        eff_funcs,
     },
     ud::UItem,
 };
@@ -29,8 +29,11 @@ impl Calc {
             Context::Item(projectee_key) => projectee_key,
             _ => return None,
         };
-        let resist =
-            efuncs::get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(projectee_key, resist_a_attr_id))?;
+        let resist = eff_funcs::get_resist_mult_val_by_projectee_aspec(
+            ctx,
+            self,
+            &AttrSpec::new(projectee_key, resist_a_attr_id),
+        )?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
@@ -40,7 +43,7 @@ impl Calc {
         };
         let proj_mult_getter = cmod.raw.proj_mult_getter?;
         let r_effect = ctx.u_data.src.get_r_effect(&cmod.raw.affector_espec.a_effect_id)?;
-        let prange = ctx.eprojs.get_range(cmod.raw.affector_espec, projectee_key)?;
+        let prange = ctx.eff_projs.get_range(cmod.raw.affector_espec, projectee_key)?;
         Some(proj_mult_getter(
             ctx,
             self,

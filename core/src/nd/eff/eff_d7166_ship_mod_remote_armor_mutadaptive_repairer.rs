@@ -11,7 +11,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        efuncs,
+        eff_funcs,
         output::{Output, OutputSimple},
     },
     ud::UItemKey,
@@ -39,7 +39,7 @@ fn get_resolved_spool(
     r_effect: &rd::REffect,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
-    let duration_s = efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
+    let duration_s = eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
     let spool = ctx.u_data.get_item_key_spool(item_key, spool);
     let spool_step = calc
         .get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::REP_MULT_BONUS_PER_CYCLE)
@@ -59,20 +59,20 @@ fn get_spool_remote_rep_opc(
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
     let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ARMOR_DMG_AMOUNT)?;
-    let delay = efuncs::get_effect_duration_s(ctx, calc, projector_key, projector_r_effect)?;
+    let delay = eff_funcs::get_effect_duration_s(ctx, calc, projector_key, projector_r_effect)?;
     if let Some(resolved_spool) = get_resolved_spool(ctx, calc, projector_key, projector_r_effect, spool) {
         amount *= resolved_spool.mult;
     }
     if let Some(projectee_key) = projectee_key {
         // Effect resistance reduction
         if let Some(rr_mult) =
-            efuncs::get_effect_resist_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
+            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
         {
             amount *= rr_mult;
         }
         // Range reduction
         if let Some(proj_mult) =
-            efuncs::get_effect_proj_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
+            eff_funcs::get_effect_proj_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
         {
             amount *= proj_mult;
         }

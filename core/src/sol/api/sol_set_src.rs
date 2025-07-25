@@ -116,7 +116,7 @@ impl SolarSystem {
             SolarSystem::util_remove_fighter_with_projs(
                 &mut self.u_data,
                 &mut self.svc,
-                &mut self.rprojs,
+                &mut self.rev_projs,
                 fighter_key,
                 reuse_eupdates,
             );
@@ -194,7 +194,7 @@ impl SolarSystem {
             SolarSystem::util_add_fighter_with_projs(
                 &mut self.u_data,
                 &mut self.svc,
-                &mut self.rprojs,
+                &mut self.rev_projs,
                 fighter_key,
                 fighter_eupdates,
             );

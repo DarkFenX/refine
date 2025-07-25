@@ -19,7 +19,7 @@ impl SolarSystem {
         SolarSystem::util_remove_fighter_with_projs(
             &mut self.u_data,
             &mut self.svc,
-            &mut self.rprojs,
+            &mut self.rev_projs,
             item_key,
             reuse_eupdates,
         );
@@ -30,11 +30,11 @@ impl SolarSystem {
             .unwrap()
             .set_a_item_id(a_item_id, reuse_eupdates, &self.u_data.src);
         // Update just fighter, autocharges will copy updated projection ranges
-        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rprojs, &mut self.svc, item_key);
+        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, item_key);
         SolarSystem::util_add_fighter_with_projs(
             &mut self.u_data,
             &mut self.svc,
-            &mut self.rprojs,
+            &mut self.rev_projs,
             item_key,
             reuse_eupdates,
         );

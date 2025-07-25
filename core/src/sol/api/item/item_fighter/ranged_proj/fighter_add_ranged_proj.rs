@@ -42,7 +42,7 @@ impl SolarSystem {
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();
         u_fighter.get_projs_mut().add(projectee_key, u_prange);
-        self.rprojs.reg_projectee(item_key, projectee_key);
+        self.rev_projs.reg_projectee(item_key, projectee_key);
         // Update services for fighter
         let u_item = self.u_data.items.get(item_key);
         let projectee_u_item = self.u_data.items.get(projectee_key);
@@ -59,7 +59,7 @@ impl SolarSystem {
             // Update user data for autocharge
             let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             u_autocharge.get_projs_mut().add(projectee_key, u_prange);
-            self.rprojs.reg_projectee(autocharge_key, projectee_key);
+            self.rev_projs.reg_projectee(autocharge_key, projectee_key);
             // Update services for autocharge
             let autocharge_u_item = self.u_data.items.get(autocharge_key);
             let projectee_u_item = self.u_data.items.get(projectee_key);

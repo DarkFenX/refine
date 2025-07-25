@@ -3,10 +3,10 @@ use crate::{ud::UItemKey, util::RMapRSet};
 /// Projector-to-projectee relations are tracked on projector items. This tracker is for projectee-
 /// to-projector relations, to allow finding projectors given a projectee.
 #[derive(Clone)]
-pub(in crate::sol) struct RProjs {
+pub(in crate::sol) struct RevProjs {
     pub(super) data: RMapRSet<UItemKey, UItemKey>,
 }
-impl RProjs {
+impl RevProjs {
     pub(in crate::sol) fn new() -> Self {
         Self { data: RMapRSet::new() }
     }

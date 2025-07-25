@@ -25,7 +25,7 @@ impl SolarSystem {
                 projectee_u_item,
             );
             // Reverse projections
-            self.rprojs.unreg_projectee(&item_key, &projectee_key);
+            self.rev_projs.unreg_projectee(&item_key, &projectee_key);
         }
         // Update services
         SolarSystem::util_remove_item_without_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);

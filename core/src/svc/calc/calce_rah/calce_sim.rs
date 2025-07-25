@@ -20,7 +20,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVal},
-        efuncs,
+        eff_funcs,
     },
     ud::{UFitKey, UItemKey},
     util::{RMap, RSet},
@@ -229,7 +229,7 @@ impl Calc {
         if shift_amount <= OF(0.0) {
             return None;
         }
-        let cycle_s = efuncs::get_espec_duration_s(ctx, self, EffectSpec::new(item_key, RAH_EFFECT_ID))?;
+        let cycle_s = eff_funcs::get_espec_duration_s(ctx, self, EffectSpec::new(item_key, RAH_EFFECT_ID))?;
         let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
         Some(RahDataSim::new(rah_info))
     }

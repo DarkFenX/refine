@@ -26,7 +26,7 @@ impl SolarSystem {
             projectee_u_item,
         );
         // Update user data
-        self.rprojs.unreg_projectee(&item_key, &projectee_key);
+        self.rev_projs.unreg_projectee(&item_key, &projectee_key);
         let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
         u_drone.get_projs_mut().remove(&projectee_key);
         Ok(())

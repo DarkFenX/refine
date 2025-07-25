@@ -1,10 +1,10 @@
 use crate::{
     dbg::{DebugError, DebugResult, check_a_effect_id, check_item_key},
-    svc::eprojs::EProjs,
+    svc::eff_projs::EffProjs,
     ud::UData,
 };
 
-impl EProjs {
+impl EffProjs {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for ((projector_espec, projectee_key), svc_range) in self.ranges.iter() {
             check_item_key(u_data, projector_espec.item_key, true)?;

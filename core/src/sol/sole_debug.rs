@@ -7,7 +7,7 @@ impl SolarSystem {
         // Check services
         self.svc.consistency_check(&self.u_data)?;
         // Check solar system helper data containers
-        self.rprojs.consistency_check(&self.u_data)?;
+        self.rev_projs.consistency_check(&self.u_data)?;
         Ok(())
     }
 }

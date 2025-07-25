@@ -6,10 +6,10 @@ use crate::{
 
 // Holds info about effect projections
 #[derive(Clone)]
-pub(crate) struct EProjs {
+pub(crate) struct EffProjs {
     pub(super) ranges: RMap<(EffectSpec, UItemKey), UProjRange>,
 }
-impl EProjs {
+impl EffProjs {
     pub(in crate::svc) fn new() -> Self {
         Self { ranges: RMap::new() }
     }

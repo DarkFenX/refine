@@ -33,7 +33,7 @@ impl SolarSystem {
                     projectee_u_item,
                 );
                 // Remove charge outgoing projections from reverse projection tracker
-                self.rprojs.unreg_projectee(&charge_key, &projectee_key);
+                self.rev_projs.unreg_projectee(&charge_key, &projectee_key);
             }
         }
         for projectee_key in u_module.get_projs().iter_projectees() {
@@ -48,7 +48,7 @@ impl SolarSystem {
                 projectee_u_item,
             );
             // Remove module outgoing projections from reverse projection tracker
-            self.rprojs.unreg_projectee(&item_key, &projectee_key);
+            self.rev_projs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove charge from services
         if let Some(charge_key) = charge_key {

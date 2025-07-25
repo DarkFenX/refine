@@ -68,12 +68,12 @@ impl SolarSystem {
         // Update user data for module
         let u_module = self.u_data.items.get_mut(item_key).get_module_mut().unwrap();
         u_module.get_projs_mut().add(projectee_key, u_prange);
-        self.rprojs.reg_projectee(item_key, projectee_key);
+        self.rev_projs.reg_projectee(item_key, projectee_key);
         // Update user data for charge
         if let Some(charge_key) = charge_key {
             let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
             u_charge.get_projs_mut().add(projectee_key, u_prange);
-            self.rprojs.reg_projectee(charge_key, projectee_key);
+            self.rev_projs.reg_projectee(charge_key, projectee_key);
         }
         Ok(())
     }

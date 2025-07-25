@@ -47,7 +47,7 @@ impl SolarSystem {
         // Update user data
         let u_proj_effect = self.u_data.items.get_mut(item_key).get_proj_effect_mut().unwrap();
         u_proj_effect.get_projs_mut().add(projectee_key, None);
-        self.rprojs.reg_projectee(item_key, projectee_key);
+        self.rev_projs.reg_projectee(item_key, projectee_key);
         Ok(())
     }
 }

@@ -13,9 +13,12 @@ impl Svc {
         reload: bool,
         spool: Option<Spool>,
     ) -> DmgKinds<AttrVal> {
-        self.vast
-            .get_fit_data(&fit_key)
-            .get_stat_dps(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, reload, spool)
+        self.vast.get_fit_data(&fit_key).get_stat_dps(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            reload,
+            spool,
+        )
     }
     pub(crate) fn get_stat_item_dps(
         &mut self,
@@ -26,7 +29,7 @@ impl Svc {
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_dps_checked(
-            SvcCtx::new(u_data, &self.eprojs),
+            SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             reload,
@@ -42,7 +45,7 @@ impl Svc {
     ) -> DmgKinds<AttrVal> {
         self.vast
             .get_fit_data(&fit_key)
-            .get_stat_volley(SvcCtx::new(u_data, &self.eprojs), &mut self.calc, spool)
+            .get_stat_volley(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, spool)
     }
     pub(crate) fn get_stat_item_volley(
         &mut self,
@@ -52,7 +55,7 @@ impl Svc {
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_volley_checked(
-            SvcCtx::new(u_data, &self.eprojs),
+            SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             spool,

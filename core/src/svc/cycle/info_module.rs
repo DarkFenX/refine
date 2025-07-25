@@ -7,7 +7,7 @@ use crate::{
     ac, ad,
     def::OF,
     nd::{NEffectChargeDepl, NEffectChargeLoc},
-    svc::{SvcCtx, calc::Calc, efuncs},
+    svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UItem, UItemKey, UModule},
     util::{InfCount, RMap},
 };
@@ -89,7 +89,7 @@ fn fill_module_effect_info(
         return;
     }
     // No appropriate duration - no info
-    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
+    let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
         Some(duration_s) => duration_s,
         None => return,
     };

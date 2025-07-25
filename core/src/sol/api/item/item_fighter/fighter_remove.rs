@@ -12,7 +12,7 @@ impl SolarSystem {
         SolarSystem::remove_fighter_autocharges(
             &mut self.u_data,
             &mut self.svc,
-            &mut self.rprojs,
+            &mut self.rev_projs,
             item_key,
             false,
             reuse_eupdates,
@@ -31,7 +31,7 @@ impl SolarSystem {
                 projectee_key,
                 projectee_u_item,
             );
-            self.rprojs.unreg_projectee(&item_key, &projectee_key);
+            self.rev_projs.unreg_projectee(&item_key, &projectee_key);
         }
         // Remove incoming projections
         self.internal_remove_incoming_projections(item_key);

@@ -2,11 +2,11 @@ use itertools::Itertools;
 
 use crate::{
     dbg::{DebugError, DebugResult},
-    sol::rprojs::RProjs,
+    sol::rev_projs::RevProjs,
     ud::UData,
 };
 
-impl RProjs {
+impl RevProjs {
     pub(in crate::sol) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for (projectee_key, projector_keys) in self.data.iter() {
             if u_data.items.try_get(*projectee_key).is_none() {

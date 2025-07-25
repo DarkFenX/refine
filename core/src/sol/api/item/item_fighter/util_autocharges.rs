@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    sol::{SolarSystem, rprojs::RProjs},
+    sol::{SolarSystem, rev_projs::RevProjs},
     svc::Svc,
     ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemKey},
 };
@@ -17,7 +17,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn add_fighter_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
-        rprojs: &mut RProjs,
+        rev_projs: &mut RevProjs,
         fighter_key: UItemKey,
     ) {
         // Process autocharges - start with collecting some data about fighter itself
@@ -94,7 +94,7 @@ impl SolarSystem {
                     projectee_u_item,
                     *range,
                 );
-                rprojs.reg_projectee(ac_data.item_key, *projectee_key);
+                rev_projs.reg_projectee(ac_data.item_key, *projectee_key);
             }
         }
         // Update on-fighter autocharge info
@@ -111,7 +111,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn remove_fighter_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
-        rprojs: &mut RProjs,
+        rev_projs: &mut RevProjs,
         fighter_key: UItemKey,
         clear_fighter_acs: bool,
         reuse_eupdates: &mut UEffectUpdates,
@@ -143,7 +143,7 @@ impl SolarSystem {
                     projectee_u_item,
                 );
                 // Update reverse projections (just because it's convenient to do it here)
-                rprojs.unreg_projectee(&ac_key, &projectee_key);
+                rev_projs.unreg_projectee(&ac_key, &projectee_key);
             }
             // Remove from services
             SolarSystem::util_remove_item_without_projs(u_data, svc, ac_key, ac_u_item, reuse_eupdates);

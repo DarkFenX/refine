@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        efuncs,
+        eff_funcs,
         output::{Output, OutputSimple},
     },
     ud::UItemKey,
@@ -155,7 +155,7 @@ fn get_local_rep_opc(
     let mut amount = calc.get_item_attr_val_extra_opt(ctx, item_key, rep_attr_id)?;
     let delay = match applied_at_start {
         true => OF(0.0),
-        false => efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect)?,
+        false => eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect)?,
     };
     // Total resource pool limit
     if let Some(hp) = get_ship_attr(ctx, calc, item_key, limit_attr_id) {
@@ -177,18 +177,18 @@ fn get_remote_rep_amount(
     let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, rep_attr_id)?;
     let delay = match applied_at_start {
         true => OF(0.0),
-        false => efuncs::get_effect_duration_s(ctx, calc, projector_key, projector_r_effect)?,
+        false => eff_funcs::get_effect_duration_s(ctx, calc, projector_key, projector_r_effect)?,
     };
     if let Some(projectee_key) = projectee_key {
         // Effect resistance reduction
         if let Some(rr_mult) =
-            efuncs::get_effect_resist_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
+            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
         {
             amount *= rr_mult;
         }
         // Range reduction
         if let Some(proj_mult) =
-            efuncs::get_effect_proj_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
+            eff_funcs::get_effect_proj_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
         {
             amount *= proj_mult;
         }

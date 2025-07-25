@@ -39,7 +39,7 @@ impl SolarSystem {
                 );
                 // Update user data for charge - do not touch projections container on charge
                 // itself, because we're removing it anyway
-                self.rprojs.unreg_projectee(&old_charge_key, projectee_key);
+                self.rev_projs.unreg_projectee(&old_charge_key, projectee_key);
             }
             // Update services for charge being removed
             SolarSystem::util_remove_item_without_projs(
@@ -85,7 +85,7 @@ impl SolarSystem {
         // Reapply module projections to charge
         // Update user data for charge
         for (projectee_key, range) in new_charge_u_item.get_charge().unwrap().get_projs().iter() {
-            self.rprojs.reg_projectee(new_charge_key, projectee_key);
+            self.rev_projs.reg_projectee(new_charge_key, projectee_key);
             // Update services for charge
             let projectee_u_item = self.u_data.items.get(projectee_key);
             SolarSystem::util_add_item_projection(
