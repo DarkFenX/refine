@@ -4,7 +4,7 @@ use crate::{
     rd,
     svc::SvcCtx,
     ud::{UItem, UModule},
-    util::{InfCount, trunc_unerr},
+    util::{GetId, InfCount, trunc_unerr},
 };
 
 pub(super) fn get_autocharge_cycle_count(u_item: &UItem, r_effect: &rd::REffect) -> InfCount {

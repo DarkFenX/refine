@@ -10,6 +10,7 @@ use crate::{
         calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
     },
     ud::{UFitKey, UFleet, UItem, UItemKey},
+    util::GetId,
 };
 
 impl Calc {

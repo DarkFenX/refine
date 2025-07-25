@@ -3,7 +3,6 @@ use std::sync::Arc;
 use crate::rd::{RAttr, RBuff, REffect, RItem, RMuta};
 
 pub(crate) type REffectKey = usize;
-pub(crate) type RBuffKey = usize;
 // Arcs to entities returned by handler
 pub(crate) type RcAttr = Arc<RAttr>;
 pub(crate) type RcBuff = Arc<RBuff>;

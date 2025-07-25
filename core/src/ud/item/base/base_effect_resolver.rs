@@ -1,4 +1,11 @@
-use crate::{ac, ad, misc::EffectMode, rd, src::Src, ud::item::misc::EffectModes, util::RSet};
+use crate::{
+    ac, ad,
+    misc::EffectMode,
+    rd,
+    src::Src,
+    ud::item::misc::EffectModes,
+    util::{GetId, RSet},
+};
 
 const ONLINE_EFFECT_ID: ad::AEffectId = ac::effects::ONLINE;
 

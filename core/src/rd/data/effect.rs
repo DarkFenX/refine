@@ -1,7 +1,7 @@
 use crate::{
     ad, nd,
-    rd::{REffectBuffInfo, REffectKey},
-    util::Named,
+    rd::REffectKey,
+    util::{GetId, Named},
 };
 
 // Represents an effect.
@@ -13,12 +13,11 @@ pub(crate) struct REffect {
     a_effect: ad::AEffect,
     n_effect_hc: nd::NEffectHc,
     stopped_effect_keys: Vec<REffectKey>,
-    r_buff_info: Option<REffectBuffInfo>,
     is_active_flag: bool,
     proj_a_attr_ids: [Option<ad::AAttrId>; 2],
 }
 impl REffect {
-    pub(crate) fn new(a_effect: ad::AEffect) -> Self {
+    pub(in crate::rd) fn new(a_effect: ad::AEffect) -> Self {
         let n_effect = nd::N_EFFECT_MAP.get(&a_effect.id);
         let is_active_flag = a_effect.state >= ad::AState::Active && a_effect.duration_attr_id.is_some();
         let proj_a_attr_ids = n_effect
@@ -29,7 +28,6 @@ impl REffect {
             a_effect,
             n_effect_hc: n_effect.map(|n_effect| n_effect.hc).unwrap_or_default(),
             stopped_effect_keys: Vec::new(),
-            r_buff_info: None,
             is_active_flag,
             proj_a_attr_ids,
         }
@@ -37,9 +35,6 @@ impl REffect {
     // Methods which expose adapted effect info
     pub(crate) fn get_a_effect(&self) -> &ad::AEffect {
         &self.a_effect
-    }
-    pub(crate) fn get_id(&self) -> ad::AEffectId {
-        self.a_effect.id
     }
     pub(crate) fn get_category(&self) -> ad::AEffectCatId {
         self.a_effect.category
@@ -136,15 +131,17 @@ impl REffect {
     pub(crate) fn get_stopped_effect_keys(&self) -> &Vec<REffectKey> {
         &self.stopped_effect_keys
     }
-    pub(crate) fn get_buff_info(&self) -> Option<&REffectBuffInfo> {
-        self.r_buff_info.as_ref()
-    }
-    // TODO: methods which provide temporary access to legacy info, should be removed later
-    pub(crate) fn get_a_buff_info(&self) -> Option<&ad::AEffectBuffInfo> {
+    pub(crate) fn get_buff_info(&self) -> Option<&ad::AEffectBuffInfo> {
         self.a_effect.buff_info.as_ref()
     }
+    // TODO: methods which provide temporary access to legacy info, should be removed later
     pub(crate) fn get_stopped_effect_ids(&self) -> &Vec<ad::AEffectId> {
         &self.a_effect.stoped_effect_ids
+    }
+}
+impl GetId<ad::AEffectId> for REffect {
+    fn get_id(&self) -> ad::AEffectId {
+        self.a_effect.id
     }
 }
 impl Named for REffect {

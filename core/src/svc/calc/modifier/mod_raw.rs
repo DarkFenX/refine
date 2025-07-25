@@ -17,6 +17,7 @@ use crate::{
         eff_funcs,
     },
     ud::{UItem, UItemKey},
+    util::GetId,
 };
 
 #[derive(Copy, Clone)]
@@ -185,7 +186,7 @@ fn get_mod_kind(r_effect: &rd::REffect, affectee_filter: &AffecteeFilter) -> Opt
     {
         return Some(ModifierKind::Local);
     }
-    match (r_effect.get_category(), &r_effect.get_a_buff_info()) {
+    match (r_effect.get_category(), &r_effect.get_buff_info()) {
         // Local modifications
         (ac::effcats::PASSIVE | ac::effcats::ACTIVE | ac::effcats::ONLINE | ac::effcats::OVERLOAD, None) => {
             Some(ModifierKind::Local)

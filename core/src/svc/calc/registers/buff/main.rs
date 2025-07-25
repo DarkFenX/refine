@@ -1,4 +1,11 @@
-use crate::{ad, misc::AttrSpec, rd, svc::calc::RawModifier, ud::UItemKey, util::RMapRSet};
+use crate::{
+    ad,
+    misc::AttrSpec,
+    rd,
+    svc::calc::RawModifier,
+    ud::UItemKey,
+    util::{GetId, RMapRSet},
+};
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 #[derive(Clone)]
@@ -46,7 +53,7 @@ impl BuffRegister {
 }
 
 fn uses_default_attrs(effect: &rd::REffect) -> bool {
-    match &effect.get_a_buff_info() {
+    match &effect.get_buff_info() {
         Some(buff_info) => matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs),
         _ => false,
     }

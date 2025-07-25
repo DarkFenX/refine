@@ -1,4 +1,7 @@
-use crate::{ad, util::Named};
+use crate::{
+    ad,
+    util::{GetId, Named},
+};
 
 // Represents a dogma attribute.
 //
@@ -10,9 +13,6 @@ pub(crate) struct RAttr {
 impl RAttr {
     pub(crate) fn new(a_attr: ad::AAttr) -> Self {
         Self { a_attr }
-    }
-    pub(crate) fn get_id(&self) -> ad::AAttrId {
-        self.a_attr.id
     }
     // Defines if modifications applied to the attribute's values are immune to stacking penalties
     // or not.
@@ -34,6 +34,11 @@ impl RAttr {
     // Refers another attribute, whose value limits maximum value of this attribute.
     pub(crate) fn get_max_attr_id(&self) -> Option<ad::AAttrId> {
         self.a_attr.max_attr_id
+    }
+}
+impl GetId<ad::AAttrId> for RAttr {
+    fn get_id(&self) -> ad::AAttrId {
+        self.a_attr.id
     }
 }
 impl Named for RAttr {

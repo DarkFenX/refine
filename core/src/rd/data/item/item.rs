@@ -1,7 +1,7 @@
 use crate::{
     ac, ad,
     rd::{REffectKey, RItemAXt, RShipKind},
-    util::{Named, RMap},
+    util::{GetId, Named, RMap},
 };
 
 // Represents an item (or item type, according to EVE terminology).
@@ -19,7 +19,7 @@ pub(crate) struct RItem {
     takes_launcher_hardpoint: bool,
 }
 impl RItem {
-    pub(crate) fn new(a_item: ad::AItem) -> Self {
+    pub(in crate::rd) fn new(a_item: ad::AItem) -> Self {
         let axt = RItemAXt::new_initial(&a_item);
         let ship_kind = get_ship_kind(a_item.cat_id, &a_item.srqs);
         let has_online_effect = has_online_effect(&a_item.effect_datas);
@@ -37,9 +37,6 @@ impl RItem {
         }
     }
     // Methods which expose adapted item info
-    pub(crate) fn get_id(&self) -> ad::AItemId {
-        self.a_item.id
-    }
     pub(crate) fn get_group_id(&self) -> ad::AItemGrpId {
         self.a_item.grp_id
     }
@@ -95,6 +92,11 @@ impl RItem {
     }
     pub(crate) fn get_defeff_id(&self) -> Option<ad::AEffectId> {
         self.a_item.defeff_id
+    }
+}
+impl GetId<ad::AItemId> for RItem {
+    fn get_id(&self) -> ad::AItemId {
+        self.a_item.id
     }
 }
 impl Named for RItem {

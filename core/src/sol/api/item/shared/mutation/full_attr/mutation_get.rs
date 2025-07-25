@@ -7,6 +7,7 @@ use crate::{
         api::{EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrMut},
     },
     ud::UItemKey,
+    util::GetId,
 };
 
 impl<'a> EffectiveMutation<'a> {

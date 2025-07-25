@@ -8,7 +8,7 @@ use crate::{
         base::{UEffectUpdates, process_effects},
         misc::EffectModes,
     },
-    util::{RMap, RSet},
+    util::{GetId, RMap, RSet},
 };
 
 // Item base stores all the data every item should have

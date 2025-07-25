@@ -22,7 +22,7 @@ use super::{
 use crate::{
     ad,
     rd::{RItem, RItemChargeLimit, RItemContLimit, RItemKind, RItemShipLimit, RShipDroneLimit, RShipKind},
-    util::RMap,
+    util::{GetId, RMap},
 };
 
 // On-item container for data derived from item attributes. Has to be stored as a separate entity,

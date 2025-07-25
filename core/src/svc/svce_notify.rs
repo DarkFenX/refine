@@ -5,6 +5,7 @@ use crate::{
     src::Src,
     svc::{Svc, SvcCtx},
     ud::{UData, UFighter, UFitKey, UFleet, UItem, UItemKey, UProjRange, USkill},
+    util::GetId,
 };
 
 impl Svc {

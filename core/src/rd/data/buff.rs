@@ -1,4 +1,7 @@
-use crate::{ad, util::Named};
+use crate::{
+    ad,
+    util::{GetId, Named},
+};
 
 // Represents a dogma buff.
 //
@@ -8,11 +11,8 @@ pub(crate) struct RBuff {
     a_buff: ad::ABuff,
 }
 impl RBuff {
-    pub(crate) fn new(a_buff: ad::ABuff) -> Self {
+    pub(in crate::rd) fn new(a_buff: ad::ABuff) -> Self {
         Self { a_buff }
-    }
-    pub(crate) fn get_id(&self) -> ad::ABuffId {
-        self.a_buff.id
     }
     // Defines how multiple modifications of the same attribute value are aggregated.
     pub(crate) fn get_aggr_mode(&self) -> ad::ABuffAggrMode {
@@ -25,6 +25,11 @@ impl RBuff {
     // Attribute modifiers carried by the buff.
     pub(crate) fn get_mods(&self) -> &Vec<ad::ABuffModifier> {
         &self.a_buff.mods
+    }
+}
+impl GetId<ad::ABuffId> for RBuff {
+    fn get_id(&self) -> ad::ABuffId {
+        self.a_buff.id
     }
 }
 impl Named for RBuff {

@@ -13,6 +13,7 @@ use crate::{
         calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
     },
     ud::{UFitKey, UItem, UItemKey},
+    util::GetId,
 };
 
 impl Calc {

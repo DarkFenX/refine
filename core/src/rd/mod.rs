@@ -8,13 +8,10 @@
 //! - Combining adapted and hardcoded data (as well as derived from both of those) under one roof;
 //! - Remapping some IDs to slab keys for faster access for some entities.
 
-use container::REntityContainer;
 pub use data::RItemKind;
 pub(crate) use data::{
-    RAttr, RBuff, RBuffKey, RData, REffect, REffectBuffInfo, REffectBuffSrc, REffectBuffSrcCustom, REffectKey, RItem,
-    RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RMuta, RShipDroneLimit, RShipKind, RcAttr, RcBuff,
-    RcEffect, RcItem, RcMuta,
+    RAttr, RBuff, RData, REffect, REffectKey, RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RMuta,
+    RShipDroneLimit, RShipKind, RcAttr, RcBuff, RcEffect, RcItem, RcMuta,
 };
 
-mod container;
 mod data;

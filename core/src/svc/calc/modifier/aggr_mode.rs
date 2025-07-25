@@ -1,4 +1,4 @@
-use crate::{ad, rd};
+use crate::{ad, rd, util::GetId};
 
 pub(crate) type AggrKey = ad::ABuffId;
 

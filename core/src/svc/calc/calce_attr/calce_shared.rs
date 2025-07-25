@@ -9,6 +9,7 @@ use crate::{
         eff_funcs,
     },
     ud::UItem,
+    util::GetId,
 };
 
 pub(super) const LIMITED_PRECISION_A_ATTR_IDS: [ad::AAttrId; 4] = [
