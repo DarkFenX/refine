@@ -7,6 +7,7 @@ use crate::{
         NEffect, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
+    rd,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -34,8 +35,8 @@ pub(super) fn mk_n_effect() -> NEffect {
         // TODO: if damage radius is needed to be added to range or not
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
-            get_proj_mult: Some(get_proj_mult_simple_s2s),
-            get_normal_dmg_opc: Some(get_dmg_opc),
+            proj_mult_getter: Some(get_proj_mult_simple_s2s),
+            normal_dmg_opc_getter: Some(get_dmg_opc),
             ..
         },
         ..
@@ -46,7 +47,7 @@ fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UadItemKey,
-    _projector_a_effect: &ad::AEffectRt,
+    _projector_r_effect: &rd::REffect,
     _spool: Option<Spool>,
     _projectee_key: Option<UadItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {

@@ -2,6 +2,7 @@ use crate::{
     ad,
     def::{ItemTypeId, OF},
     misc::{AddMode, MinionState, ModRack, ModuleState, RmMode, ServiceState},
+    rd,
     sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt},
     uad::{Uad, UadEffectUpdates, UadFitKey, UadItemKey},
@@ -18,23 +19,23 @@ impl SolarSystem {
         let mut valid = Vec::new();
         let chargeable_module_keys = get_chargeable_modules(&self.uad, fit_key);
         for type_id in type_ids {
-            let a_item = match self.uad.src.get_a_item(type_id) {
+            let r_item = match self.uad.src.get_r_item(type_id) {
                 Some(a_item) => a_item,
                 None => continue,
             };
-            let item_kind = match a_item.xt.kind {
+            let item_kind = match r_item.get_axt().kind {
                 Some(item_kind) => item_kind,
                 None => continue,
             };
             match item_kind {
-                ad::AItemKind::Booster => {
+                rd::RItemKind::Booster => {
                     let booster_key = self.internal_add_booster(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
                     self.internal_remove_booster(booster_key, reuse_eupdates);
                 }
-                ad::AItemKind::Drone => {
+                rd::RItemKind::Drone => {
                     let drone_key =
                         self.internal_add_drone(fit_key, *type_id, MinionState::InBay, None, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
@@ -42,27 +43,27 @@ impl SolarSystem {
                     }
                     self.internal_remove_drone(drone_key, reuse_eupdates);
                 }
-                ad::AItemKind::Fighter => {
+                rd::RItemKind::Fighter => {
                     let fighter_key = self.internal_add_fighter(fit_key, *type_id, MinionState::InBay, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
                     self.internal_remove_fighter(fighter_key, reuse_eupdates);
                 }
-                ad::AItemKind::Implant => {
+                rd::RItemKind::Implant => {
                     let implant_key = self.internal_add_implant(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
                     self.internal_remove_implant(implant_key, reuse_eupdates);
                 }
-                ad::AItemKind::ModuleHigh => {
+                rd::RItemKind::ModuleHigh => {
                     let module_key = self.internal_add_module(
                         fit_key,
                         ModRack::High,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(a_item.ai.max_state),
+                        conv_state(r_item.get_max_state()),
                         None,
                         None,
                         reuse_eupdates,
@@ -72,13 +73,13 @@ impl SolarSystem {
                     }
                     self.internal_remove_module(module_key, RmMode::Free, reuse_eupdates);
                 }
-                ad::AItemKind::ModuleMid => {
+                rd::RItemKind::ModuleMid => {
                     let module_key = self.internal_add_module(
                         fit_key,
                         ModRack::Mid,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(a_item.ai.max_state),
+                        conv_state(r_item.get_max_state()),
                         None,
                         None,
                         reuse_eupdates,
@@ -88,13 +89,13 @@ impl SolarSystem {
                     }
                     self.internal_remove_module(module_key, RmMode::Free, reuse_eupdates);
                 }
-                ad::AItemKind::ModuleLow => {
+                rd::RItemKind::ModuleLow => {
                     let module_key = self.internal_add_module(
                         fit_key,
                         ModRack::Low,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(a_item.ai.max_state),
+                        conv_state(r_item.get_max_state()),
                         None,
                         None,
                         reuse_eupdates,
@@ -107,7 +108,7 @@ impl SolarSystem {
                 // TODO: setting charge is a destructive action (since it removes old charge with
                 // TODO: all its settings), rework it to be non-destructive, unless it is too
                 // TODO: expensive - HTTP module copies solar system before trying to fit anyway
-                ad::AItemKind::Charge => {
+                rd::RItemKind::Charge => {
                     for &module_key in chargeable_module_keys.iter() {
                         let charge_key = self.internal_set_module_charge(module_key, *type_id, reuse_eupdates);
                         if self.internal_validate_fit_fast(fit_key, val_options) {
@@ -118,14 +119,14 @@ impl SolarSystem {
                         self.internal_remove_charge(charge_key, reuse_eupdates);
                     }
                 }
-                ad::AItemKind::Rig => {
+                rd::RItemKind::Rig => {
                     let rig_key = self.internal_add_rig(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
                     self.internal_remove_rig(rig_key, reuse_eupdates);
                 }
-                ad::AItemKind::Service => {
+                rd::RItemKind::Service => {
                     let service_key =
                         self.internal_add_service(fit_key, *type_id, ServiceState::Online, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
@@ -133,7 +134,7 @@ impl SolarSystem {
                     }
                     self.internal_remove_service(service_key, reuse_eupdates);
                 }
-                ad::AItemKind::Subsystem => {
+                rd::RItemKind::Subsystem => {
                     let subsystem_key = self.internal_add_subsystem(fit_key, *type_id, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
@@ -166,11 +167,11 @@ fn get_chargeable_modules(uad: &Uad, fit_key: UadFitKey) -> Vec<UadItemKey> {
             continue;
         }
         seen_a_item_ids.push(a_item_id);
-        let a_item_xt = match uad_item.get_a_xt() {
-            Some(a_item_xt) => a_item_xt,
+        let r_item_axt = match uad_item.get_r_axt() {
+            Some(r_item_axt) => r_item_axt,
             None => continue,
         };
-        if a_item_xt.capacity > OF(0.0) {
+        if r_item_axt.capacity > OF(0.0) {
             module_keys.push(module_key);
         }
     }

@@ -1,4 +1,4 @@
-use crate::ad;
+use crate::{ad, rd};
 
 pub(crate) type AggrKey = ad::ABuffId;
 
@@ -13,10 +13,10 @@ pub(crate) enum AggrMode {
     Max(AggrKey),
 }
 impl AggrMode {
-    pub(in crate::svc::calc) fn from_a_buff(a_buff: &ad::ABuff) -> Self {
-        match a_buff.aggr_mode {
-            ad::ABuffAggrMode::Min => Self::Min(a_buff.id),
-            ad::ABuffAggrMode::Max => Self::Max(a_buff.id),
+    pub(in crate::svc::calc) fn from_r_buff(r_buff: &rd::RBuff) -> Self {
+        match r_buff.get_aggr_mode() {
+            ad::ABuffAggrMode::Min => Self::Min(r_buff.get_id()),
+            ad::ABuffAggrMode::Max => Self::Max(r_buff.get_id()),
         }
     }
 }

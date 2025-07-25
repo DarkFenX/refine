@@ -2,6 +2,7 @@ use crate::{
     ac, ad,
     def::ItemId,
     misc::EffectMode,
+    rd,
     src::Src,
     uad::{
         UadFitKey,
@@ -62,8 +63,8 @@ impl UadShip {
     pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
-        self.base.get_a_xt()
+    pub(crate) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
+        self.base.get_r_axt()
     }
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
@@ -101,7 +102,7 @@ impl UadShip {
         self.base.is_loaded()
     }
     pub(in crate::uad::item) fn update_a_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
-        self.base.update_a_data(reuse_eupdates, src);
+        self.base.update_r_data(reuse_eupdates, src);
         self.update_ship_kind();
     }
     // Item-specific methods
@@ -119,6 +120,9 @@ impl UadShip {
     }
     pub(crate) fn get_disallowed_in_wspace(&self) -> Option<bool> {
         self.base.get_disallowed_in_wspace()
+    }
+    pub(crate) fn get_r_kind(&self) -> Option<rd::RShipKind> {
+        self.base.get_r_ship_kind()
     }
     fn update_ship_kind(&mut self) {
         self.kind = match self.get_a_category_id() {

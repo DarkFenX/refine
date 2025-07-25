@@ -15,8 +15,8 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: ac::effects::SHIP_MOD_REMOTE_SHIELD_BOOSTER,
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NEffectHc {
-            get_proj_mult: Some(get_proj_mult_normal_restricted_s2s),
-            get_remote_shield_rep_opc: Some(get_remote_shield_rep_opc),
+            proj_mult_getter: Some(get_proj_mult_normal_restricted_s2s),
+            remote_shield_rep_opc_getter: Some(get_remote_shield_rep_opc),
             ..
         },
         ..

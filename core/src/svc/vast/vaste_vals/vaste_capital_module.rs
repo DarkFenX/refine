@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    ac, ad,
+    ac,
     def::{AttrVal, ItemId},
+    rd,
     svc::{SvcCtx, vast::VastFitData},
     uad::{UadItemKey, UadShip},
     util::RSet,
@@ -61,9 +62,5 @@ fn is_ship_subcap(ship: Option<&UadShip>) -> bool {
         Some(ship) => ship,
         None => return false,
     };
-    let a_item_xt = match ship.get_a_xt() {
-        Some(extras) => extras,
-        None => return false,
-    };
-    matches!(a_item_xt.ship_kind, Some(ad::AShipKind::Ship))
+    matches!(ship.get_r_kind(), Some(rd::RShipKind::Ship))
 }

@@ -42,7 +42,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         }),
         xt_get_proj_attrs: Some(get_proj_attrs_aoe_burst),
         hc: NEffectHc {
-            get_proj_mult: Some(get_proj_mult_aoe_burst),
+            proj_mult_getter: Some(get_proj_mult_aoe_burst),
             ..
         },
         ..

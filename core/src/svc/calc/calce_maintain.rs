@@ -1,8 +1,9 @@
 use itertools::Itertools;
 
 use crate::{
-    ac, ad,
+    ac,
     misc::{AttrSpec, EffectSpec},
+    rd,
     src::Src,
     svc::{
         SvcCtx,
@@ -93,44 +94,44 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UadItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffectRt],
+        r_effects: &[rd::RcEffect],
     ) {
         // Notify core calc services
         let mut reuse_rmods = Vec::new();
         let mut reuse_items = Vec::new();
         let mut reuse_cmods = Vec::new();
-        for a_effect in a_effects.iter() {
-            self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_key, item, a_effect);
+        for r_effect in r_effects.iter() {
+            self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_key, item, r_effect);
             for &rmod in reuse_rmods.iter() {
                 self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod);
             }
             // Buff maintenance - add info about effects which use default buff attributes
-            self.buffs.reg_effect(item_key, a_effect);
+            self.buffs.reg_effect(item_key, r_effect);
         }
         // Notify RAH sim
-        self.rah_effects_started(ctx, item_key, item, a_effects);
+        self.rah_effects_started(ctx, item_key, item, r_effects);
     }
     pub(in crate::svc) fn effects_stopped(
         &mut self,
         ctx: SvcCtx,
         item_key: UadItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffectRt],
+        r_effects: &[rd::RcEffect],
     ) {
         // Notify RAH sim
-        self.rah_effects_stopped(ctx, &item_key, item, a_effects);
+        self.rah_effects_stopped(ctx, &item_key, item, r_effects);
         // Notify core calc services
         let mut reuse_rmods = Vec::new();
         let mut reuse_items = Vec::new();
         let mut reuse_cmods = Vec::new();
-        for a_effect in a_effects.iter() {
-            let espec = EffectSpec::new(item_key, a_effect.ae.id);
+        for r_effect in r_effects.iter() {
+            let espec = EffectSpec::new(item_key, r_effect.get_id());
             self.std.extract_raw_mods_for_effect(&mut reuse_rmods, espec);
             for rmod in reuse_rmods.iter() {
                 self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod)
             }
             // Buff maintenance - remove info about effects which use default buff attributes
-            self.buffs.unreg_effect(item_key, a_effect);
+            self.buffs.unreg_effect(item_key, r_effect);
             // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used
             // by e.g. custom propulsion module modifier
             self.deps.remove_by_source(&espec);

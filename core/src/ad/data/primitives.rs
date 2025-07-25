@@ -1,16 +1,5 @@
-use std::sync::Arc;
+use crate::def::OF;
 
-use crate::{
-    ad::{AAttr, ABuff, AEffectRt, AItemRt, AMuta},
-    def::OF,
-};
-
-// Arcs to entities returned by handler
-pub type ArcAttr = Arc<AAttr>;
-pub type ArcBuff = Arc<ABuff>;
-pub type ArcEffectRt = Arc<AEffectRt>;
-pub type ArcItemRt = Arc<AItemRt>;
-pub type ArcMuta = Arc<AMuta>;
 // Entity IDs
 pub type AAttrId = i32;
 pub type ABuffId = i32;

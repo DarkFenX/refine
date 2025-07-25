@@ -2,6 +2,7 @@ use crate::{
     ad,
     def::ItemId,
     misc::{EffectMode, ServiceState},
+    rd,
     src::Src,
     uad::{
         UadFitKey,
@@ -57,8 +58,8 @@ impl UadService {
     pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
-        self.base.get_a_xt()
+    pub(crate) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
+        self.base.get_r_axt()
     }
     pub(crate) fn get_val_fitted_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_val_fitted_a_group_id()
@@ -102,7 +103,7 @@ impl UadService {
         self.base.is_loaded()
     }
     pub(in crate::uad::item) fn update_a_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
-        self.base.update_a_data(reuse_eupdates, src);
+        self.base.update_r_data(reuse_eupdates, src);
     }
     // Item-specific methods
     pub(crate) fn get_service_state(&self) -> ServiceState {

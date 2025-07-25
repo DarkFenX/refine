@@ -28,7 +28,7 @@ pub(crate) fn check_item_key(uad: &Uad, item_key: UadItemKey, check_load: bool) 
 }
 
 pub(crate) fn check_a_effect_id(uad: &Uad, a_effect_id: &ad::AEffectId) -> DebugResult {
-    if uad.src.get_a_effect(a_effect_id).is_none() {
+    if uad.src.get_r_effect(a_effect_id).is_none() {
         return Err(DebugError {});
     }
     Ok(())

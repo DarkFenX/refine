@@ -2,6 +2,7 @@ use crate::{
     ad,
     def::ItemId,
     misc::EffectMode,
+    rd,
     src::Src,
     uad::item::{Projs, UadEffectUpdates, UadItemBase, bool_to_state_active, state_to_bool},
     util::{Named, RMap, RSet},
@@ -53,8 +54,8 @@ impl UadProjEffect {
     pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
-        self.base.get_a_xt()
+    pub(crate) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
+        self.base.get_r_axt()
     }
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
@@ -92,7 +93,7 @@ impl UadProjEffect {
         self.base.is_loaded()
     }
     pub(in crate::uad::item) fn update_a_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
-        self.base.update_a_data(reuse_eupdates, src);
+        self.base.update_r_data(reuse_eupdates, src);
     }
     // Item-specific methods
     pub(crate) fn get_proj_effect_state(&self) -> bool {

@@ -38,7 +38,7 @@ impl SolarSystem {
             .into());
         }
         let uad_prange =
-            UadProjRange::from_prange_with_xt(range, uad_fighter.get_a_xt(), projectee_uad_item.get_a_xt());
+            UadProjRange::from_prange_with_axt(range, uad_fighter.get_r_axt(), projectee_uad_item.get_r_axt());
         let autocharge_keys = uad_fighter.get_autocharges().values().copied().collect_vec();
         // Update user data for fighter
         let uad_fighter = self.uad.items.get_mut(item_key).get_fighter_mut().unwrap();

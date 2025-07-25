@@ -8,6 +8,7 @@ use crate::{
     def::AttrVal,
     misc::EffectSpec,
     nd::NProjMultGetter,
+    rd,
     svc::{
         SvcCtx,
         calc::{
@@ -63,19 +64,19 @@ impl RawModifier {
     pub(in crate::svc::calc) fn try_from_amod(
         affector_key: UadItemKey,
         affector_item: &UadItem,
-        a_effect: &ad::AEffectRt,
+        r_effect: &rd::REffect,
         amod: &ad::AEffectModifier,
     ) -> Option<Self> {
-        let affectee_filter = AffecteeFilter::from_a_effect_affectee_filter(&amod.affectee_filter, affector_item);
-        let kind = get_mod_kind(a_effect, &affectee_filter)?;
+        let affectee_filter = AffecteeFilter::from_a_affectee_filter(&amod.affectee_filter, affector_item);
+        let kind = get_mod_kind(r_effect, &affectee_filter)?;
         // Targeted effects are affected resists
         let resist_a_attr_id = match kind {
-            ModifierKind::Targeted => efuncs::get_resist_a_attr_id(affector_item, a_effect),
+            ModifierKind::Targeted => efuncs::get_resist_a_attr_id(affector_item, r_effect),
             _ => None,
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_key, a_effect.ae.id),
+            affector_espec: EffectSpec::new(affector_key, r_effect.get_id()),
             affector_value: AffectorValue::AttrId(amod.affector_attr_id),
             op: (&amod.op).into(),
             aggr_mode: AggrMode::Stack,
@@ -83,80 +84,80 @@ impl RawModifier {
             affectee_a_attr_id: amod.affectee_attr_id,
             buff_type_a_attr_id: None,
             resist_a_attr_id,
-            proj_mult_getter: a_effect.hc.get_proj_mult,
-            proj_a_attr_ids: a_effect.xt.proj_a_attr_ids,
+            proj_mult_getter: r_effect.get_proj_mult_getter(),
+            proj_a_attr_ids: r_effect.get_proj_a_attr_ids(),
             ..
         })
     }
-    pub(in crate::svc::calc) fn try_from_a_buff_regular(
+    pub(in crate::svc::calc) fn try_from_r_buff_regular(
         affector_key: UadItemKey,
         affector_item: &UadItem,
-        a_effect: &ad::AEffectRt,
-        a_buff: &ad::ABuff,
+        r_effect: &rd::REffect,
+        r_buff: &rd::RBuff,
         a_mod: &ad::ABuffModifier,
         affector_a_attr_id: ad::AAttrId,
         loc: Location,
         buff_type_a_attr_id: Option<ad::AAttrId>,
     ) -> Option<Self> {
-        RawModifier::from_a_buff(
+        RawModifier::from_r_buff(
             affector_key,
             affector_item,
-            a_effect,
-            a_buff,
+            r_effect,
+            r_buff,
             a_mod,
             AffectorValue::AttrId(affector_a_attr_id),
             loc,
             buff_type_a_attr_id,
         )
     }
-    pub(in crate::svc::calc) fn try_from_a_buff_hardcoded(
+    pub(in crate::svc::calc) fn try_from_r_buff_hardcoded(
         affector_key: UadItemKey,
         affector_item: &UadItem,
-        a_effect: &ad::AEffectRt,
-        a_buff: &ad::ABuff,
+        r_effect: &rd::REffect,
+        r_buff: &rd::RBuff,
         a_mod: &ad::ABuffModifier,
         affector_mod_val: AttrVal,
         loc: Location,
     ) -> Option<Self> {
-        RawModifier::from_a_buff(
+        RawModifier::from_r_buff(
             affector_key,
             affector_item,
-            a_effect,
-            a_buff,
+            r_effect,
+            r_buff,
             a_mod,
             AffectorValue::Hardcoded(affector_mod_val),
             loc,
             None,
         )
     }
-    fn from_a_buff(
+    fn from_r_buff(
         affector_key: UadItemKey,
         affector_item: &UadItem,
-        a_effect: &ad::AEffectRt,
-        a_buff: &ad::ABuff,
+        r_effect: &rd::REffect,
+        r_buff: &rd::RBuff,
         a_mod: &ad::ABuffModifier,
         affector_value: AffectorValue,
         loc: Location,
         buff_type_a_attr_id: Option<ad::AAttrId>,
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
-        let kind = get_mod_kind(a_effect, &affectee_filter)?;
+        let kind = get_mod_kind(r_effect, &affectee_filter)?;
         let resist_a_attr_id = match kind {
-            ModifierKind::Buff => efuncs::get_resist_a_attr_id(affector_item, a_effect),
+            ModifierKind::Buff => efuncs::get_resist_a_attr_id(affector_item, r_effect),
             _ => None,
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_key, a_effect.ae.id),
+            affector_espec: EffectSpec::new(affector_key, r_effect.get_id()),
             affector_value,
-            op: (&a_buff.op).into(),
-            aggr_mode: AggrMode::from_a_buff(a_buff),
+            op: (&r_buff.get_op()).into(),
+            aggr_mode: AggrMode::from_r_buff(r_buff),
             affectee_filter,
             affectee_a_attr_id: a_mod.affectee_attr_id,
             buff_type_a_attr_id,
             resist_a_attr_id,
-            proj_mult_getter: a_effect.hc.get_proj_mult,
-            proj_a_attr_ids: a_effect.xt.proj_a_attr_ids,
+            proj_mult_getter: r_effect.get_proj_mult_getter(),
+            proj_a_attr_ids: r_effect.get_proj_a_attr_ids(),
             ..
         })
     }
@@ -178,13 +179,13 @@ impl RawModifier {
     }
 }
 
-fn get_mod_kind(a_effect: &ad::AEffectRt, a_affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
-    if let AffecteeFilter::Direct(loc) = a_affectee_filter
+fn get_mod_kind(r_effect: &rd::REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
+    if let AffecteeFilter::Direct(loc) = affectee_filter
         && matches!(loc, Location::Item | Location::Other)
     {
         return Some(ModifierKind::Local);
     }
-    match (a_effect.ae.category, &a_effect.ae.buff_info) {
+    match (r_effect.get_category(), &r_effect.get_a_buff_info()) {
         // Local modifications
         (ac::effcats::PASSIVE | ac::effcats::ACTIVE | ac::effcats::ONLINE | ac::effcats::OVERLOAD, None) => {
             Some(ModifierKind::Local)

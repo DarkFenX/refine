@@ -15,7 +15,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(update_effect),
         hc: NEffectHc {
-            calc_custom_fn: Some(calc_add_custom_modifier),
+            calc_customizer: Some(calc_add_custom_modifier),
             ..
         },
         ..

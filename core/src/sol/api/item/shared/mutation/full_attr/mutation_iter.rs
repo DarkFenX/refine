@@ -63,8 +63,8 @@ fn full_mutated_a_attr_id_iter(sol: &SolarSystem, item_key: UadItemKey) -> impl 
         .unwrap()
         .get_cache()
         .unwrap()
-        .get_a_mutator()
-        .attr_mods
+        .get_r_mutator()
+        .get_attr_mods()
         .keys()
         .filter(|v| uad_item.get_a_attrs().unwrap().contains_key(v))
         .copied()

@@ -18,13 +18,13 @@ impl SolarSystem {
         svc.notify_item_projected();
         if let Some(reffs) = projector_uad_item.get_reffs() {
             for a_effect_id in reffs.iter() {
-                let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
-                if is_a_effect_projectable(projector_uad_item, a_effect) {
+                let r_effect = uad.src.get_r_effect(a_effect_id).unwrap();
+                if is_a_effect_projectable(projector_uad_item, r_effect) {
                     svc.notify_effect_projected(
                         uad,
                         projector_key,
                         projector_uad_item,
-                        a_effect,
+                        r_effect,
                         projectee_key,
                         projectee_uad_item,
                         range,
@@ -43,13 +43,13 @@ impl SolarSystem {
     ) {
         if let Some(reffs) = projector_uad_item.get_reffs() {
             for a_effect_id in reffs.iter() {
-                let effect = uad.src.get_a_effect(a_effect_id).unwrap();
-                if is_a_effect_projectable(projector_uad_item, effect) {
+                let r_effect = uad.src.get_r_effect(a_effect_id).unwrap();
+                if is_a_effect_projectable(projector_uad_item, r_effect) {
                     svc.notify_effect_unprojected(
                         uad,
                         projector_key,
                         projector_uad_item,
-                        effect,
+                        r_effect,
                         projectee_key,
                         projectee_uad_item,
                     );
@@ -70,12 +70,12 @@ impl SolarSystem {
         svc.notify_item_proj_range_changed();
         if let Some(reffs) = projector_uad_item.get_reffs() {
             for a_effect_id in reffs.iter() {
-                let a_effect = uad.src.get_a_effect(a_effect_id).unwrap();
-                if is_a_effect_projectable(projector_uad_item, a_effect) {
+                let r_effect = uad.src.get_r_effect(a_effect_id).unwrap();
+                if is_a_effect_projectable(projector_uad_item, r_effect) {
                     svc.notify_effect_proj_range_changed(
                         uad,
                         projector_key,
-                        a_effect.ae.id,
+                        r_effect.get_id(),
                         projectee_key,
                         projectee_uad_item,
                         range,

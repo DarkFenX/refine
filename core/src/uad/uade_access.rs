@@ -28,8 +28,8 @@ impl Uad {
         }
     }
     pub(crate) fn get_item_radius(&self, item_key: UadItemKey) -> AttrVal {
-        match self.items.get(item_key).get_a_xt() {
-            Some(a_xt) => a_xt.radius,
+        match self.items.get(item_key).get_r_axt() {
+            Some(r_axt) => r_axt.radius,
             None => OF(0.0),
         }
     }

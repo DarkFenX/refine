@@ -25,7 +25,7 @@ impl SolarSystem {
             })?;
         let projectee_uad_item = self.uad.items.get(projectee_key);
         let uad_prange =
-            UadProjRange::from_prange_with_xt(range, uad_fighter.get_a_xt(), projectee_uad_item.get_a_xt());
+            UadProjRange::from_prange_with_axt(range, uad_fighter.get_r_axt(), projectee_uad_item.get_r_axt());
         // Do nothing if ranges are equal
         if uad_prange == old_uad_prange {
             return Ok(());

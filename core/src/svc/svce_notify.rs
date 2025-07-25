@@ -1,6 +1,7 @@
 use crate::{
     ad,
     misc::{AttrSpec, EffectSpec},
+    rd,
     src::Src,
     svc::{Svc, SvcCtx},
     uad::{Uad, UadFighter, UadFitKey, UadFleet, UadItem, UadItemKey, UadProjRange, UadSkill},
@@ -82,22 +83,22 @@ impl Svc {
         uad: &Uad,
         item_key: UadItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffectRt],
+        r_effects: &[rd::RcEffect],
     ) {
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
-        self.calc.effects_started(svc_ctx, item_key, item, a_effects);
-        self.vast.effects_started(item_key, item, a_effects);
+        self.calc.effects_started(svc_ctx, item_key, item, r_effects);
+        self.vast.effects_started(item_key, item, r_effects);
     }
     pub(crate) fn notify_effects_stopped(
         &mut self,
         uad: &Uad,
         item_key: UadItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffectRt],
+        r_effects: &[rd::RcEffect],
     ) {
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
-        self.calc.effects_stopped(svc_ctx, item_key, item, a_effects);
-        self.vast.effects_stopped(item_key, item, a_effects);
+        self.calc.effects_stopped(svc_ctx, item_key, item, r_effects);
+        self.vast.effects_stopped(item_key, item, r_effects);
     }
     pub(crate) fn notify_item_projected(&mut self) {}
     pub(crate) fn notify_item_unprojected(&mut self) {}
@@ -107,34 +108,34 @@ impl Svc {
         uad: &Uad,
         projector_key: UadItemKey,
         projector_item: &UadItem,
-        a_effect: &ad::AEffectRt,
+        r_effect: &rd::RcEffect,
         projectee_key: UadItemKey,
         projectee_item: &UadItem,
         range: Option<UadProjRange>,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
+        let projector_espec = EffectSpec::new(projector_key, r_effect.get_id());
         self.eprojs.add_range(projector_espec, projectee_key, range);
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
             .effect_projected(svc_ctx, projector_espec, projectee_key, projectee_item);
         self.vast
-            .effect_projected(projector_key, projector_item, a_effect, projectee_key, projectee_item);
+            .effect_projected(projector_key, projector_item, r_effect, projectee_key, projectee_item);
     }
     pub(crate) fn notify_effect_unprojected(
         &mut self,
         uad: &Uad,
         projector_key: UadItemKey,
         projector_item: &UadItem,
-        a_effect: &ad::AEffectRt,
+        r_effect: &rd::RcEffect,
         projectee_key: UadItemKey,
         projectee_item: &UadItem,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, a_effect.ae.id);
+        let projector_espec = EffectSpec::new(projector_key, r_effect.get_id());
         let svc_ctx = SvcCtx::new(uad, &self.eprojs);
         self.calc
             .effect_unprojected(svc_ctx, projector_espec, projectee_key, projectee_item);
         self.vast
-            .effect_unprojected(projector_key, projector_item, a_effect, projectee_key, projectee_item);
+            .effect_unprojected(projector_key, projector_item, r_effect, projectee_key, projectee_item);
         self.eprojs.remove_range(projector_espec, projectee_key);
     }
     pub(crate) fn notify_effect_proj_range_changed(

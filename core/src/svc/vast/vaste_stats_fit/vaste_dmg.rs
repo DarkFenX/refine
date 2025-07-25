@@ -36,11 +36,11 @@ impl VastFitData {
                 None => continue,
             };
             for (a_effect_id, dmg_getter) in item_data.iter() {
-                let a_effect = match ctx.uad.src.get_a_effect(a_effect_id) {
-                    Some(a_effect) => a_effect,
+                let r_effect = match ctx.uad.src.get_r_effect(a_effect_id) {
+                    Some(r_effect) => r_effect,
                     None => continue,
                 };
-                let output_per_cycle = match dmg_getter(ctx, calc, item_key, a_effect, spool, None) {
+                let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, spool, None) {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,
                 };
@@ -66,11 +66,11 @@ impl VastFitData {
                 None => continue,
             };
             for (a_effect_id, dmg_getter) in item_data.iter() {
-                let a_effect = match ctx.uad.src.get_a_effect(a_effect_id) {
-                    Some(a_effect) => a_effect,
+                let r_effect = match ctx.uad.src.get_r_effect(a_effect_id) {
+                    Some(r_effect) => r_effect,
                     None => continue,
                 };
-                let output_per_cycle = match dmg_getter(ctx, calc, item_key, a_effect, spool, None) {
+                let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, spool, None) {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,
                 };

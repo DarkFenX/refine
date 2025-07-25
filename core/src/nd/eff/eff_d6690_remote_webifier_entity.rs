@@ -19,7 +19,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         adg_update_effect_fn: Some(|a_effect| update_effect(A_EFFECT_ID, a_effect)),
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
-            get_proj_mult: Some(get_proj_mult_simple_s2s),
+            proj_mult_getter: Some(get_proj_mult_simple_s2s),
             ..
         },
         ..

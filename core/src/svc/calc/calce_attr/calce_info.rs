@@ -4,7 +4,7 @@
 
 use smallvec::SmallVec;
 
-use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
+use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_base_attr_value, get_r_attr};
 use crate::{
     ac, ad,
     misc::{OpInfo, SecZone},
@@ -93,9 +93,9 @@ impl Calc {
     }
     fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
         let item = ctx.uad.items.get(item_key);
-        let a_attr = match ctx.uad.src.get_a_attr(a_attr_id) {
-            Some(a_attr) => a_attr,
-            None => &get_a_attr(*a_attr_id),
+        let r_attr = match ctx.uad.src.get_r_attr(a_attr_id) {
+            Some(r_attr) => r_attr,
+            None => &get_r_attr(*a_attr_id),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute
         // value.
@@ -133,10 +133,10 @@ impl Calc {
                         });
                         base_attr_info
                     }
-                    Err(_) => AttrValInfo::new(get_base_attr_value(item, a_attr)),
+                    Err(_) => AttrValInfo::new(get_base_attr_value(item, r_attr)),
                 }
             }
-            _ => AttrValInfo::new(get_base_attr_value(item, a_attr)),
+            _ => AttrValInfo::new(get_base_attr_value(item, r_attr)),
         };
         let mut accumulator = ModAccumInfo::new();
         for affection in self.iter_affections(ctx, &item_key, item, a_attr_id) {
@@ -145,15 +145,15 @@ impl Calc {
                 affection.modification.proj_mult,
                 affection.modification.res_mult,
                 &affection.modification.op,
-                a_attr.penalizable,
+                r_attr.is_penalizable(),
                 &affection.modification.affector_a_item_cat_id,
                 &affection.modification.aggr_mode,
                 affection.affectors,
             );
         }
-        let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, a_attr.hig);
+        let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, r_attr.is_hig());
         // Lower value limit
-        if let Some(limiter_a_attr_id) = a_attr.min_attr_id
+        if let Some(limiter_a_attr_id) = r_attr.get_min_attr_id()
             && let Ok(limiter_val) = self.get_item_attr_val_full(ctx, item_key, &limiter_a_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
@@ -174,7 +174,7 @@ impl Calc {
             }
         }
         // Upper value limit
-        if let Some(limiter_a_attr_id) = a_attr.max_attr_id
+        if let Some(limiter_a_attr_id) = r_attr.get_max_attr_id()
             && let Ok(limiter_val) = self.get_item_attr_val_full(ctx, item_key, &limiter_a_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_a_attr_id, *a_attr_id);
@@ -198,7 +198,7 @@ impl Calc {
             dogma_attr_info.value = round(dogma_attr_info.value, 2);
         }
         // Post-dogma calculations
-        let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info, a_attr.hig);
+        let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info, r_attr.is_hig());
         // Custom post-processing functions - since infos are not cached, it's fine to have it here
         match self
             .attrs

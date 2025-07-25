@@ -46,7 +46,7 @@ impl VastFitData {
                         .uad
                         .items
                         .get(charge_key)
-                        .get_a_xt()
+                        .get_r_axt()
                         .unwrap()
                         .cont_limit
                         .as_ref()

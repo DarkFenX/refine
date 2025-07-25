@@ -1,4 +1,4 @@
-use crate::{ad, misc::AttrSpec, svc::calc::RawModifier, uad::UadItemKey, util::RMapRSet};
+use crate::{ad, misc::AttrSpec, rd, svc::calc::RawModifier, uad::UadItemKey, util::RMapRSet};
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 #[derive(Clone)]
@@ -20,14 +20,14 @@ impl BuffRegister {
     ) -> impl ExactSizeIterator<Item = &ad::AEffectId> {
         self.a_effect_ids.get(item_key)
     }
-    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UadItemKey, effect: &ad::AEffectRt) {
+    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UadItemKey, effect: &rd::REffect) {
         if uses_default_attrs(effect) {
-            self.a_effect_ids.add_entry(item_key, effect.ae.id);
+            self.a_effect_ids.add_entry(item_key, effect.get_id());
         }
     }
-    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UadItemKey, effect: &ad::AEffectRt) {
+    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UadItemKey, effect: &rd::REffect) {
         if uses_default_attrs(effect) {
-            self.a_effect_ids.remove_entry(&item_key, &effect.ae.id);
+            self.a_effect_ids.remove_entry(&item_key, &effect.get_id());
         }
     }
     // Modifier methods
@@ -45,8 +45,8 @@ impl BuffRegister {
     }
 }
 
-fn uses_default_attrs(effect: &ad::AEffectRt) -> bool {
-    match &effect.ae.buff_info {
+fn uses_default_attrs(effect: &rd::REffect) -> bool {
+    match &effect.get_a_buff_info() {
         Some(buff_info) => matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs),
         _ => false,
     }

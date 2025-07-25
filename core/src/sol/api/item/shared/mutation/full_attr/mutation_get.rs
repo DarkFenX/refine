@@ -33,11 +33,11 @@ impl<'a> EffectiveMutationMut<'a> {
 fn check_prereqs(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> Result<(), GetFullMAttrError> {
     let uad_item = sol.uad.items.get(item_key);
     let mutation_cache = uad_item.get_mutation_data().unwrap().get_cache().unwrap();
-    if !mutation_cache.get_a_mutator().attr_mods.contains_key(a_attr_id) {
+    if !mutation_cache.get_r_mutator().get_attr_mods().contains_key(a_attr_id) {
         return Err(ItemMAttrMutatorError {
             item_id: sol.uad.items.id_by_key(item_key),
             attr_id: *a_attr_id,
-            mutator_id: mutation_cache.get_a_mutator().id,
+            mutator_id: mutation_cache.get_r_mutator().get_id(),
         }
         .into());
     };

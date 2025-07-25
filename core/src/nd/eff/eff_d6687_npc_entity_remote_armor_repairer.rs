@@ -15,8 +15,8 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: ac::effects::NPC_ENTITY_REMOTE_ARMOR_REPAIRER,
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
-            get_proj_mult: Some(get_proj_mult_simple_s2s),
-            get_remote_armor_rep_opc: Some(get_remote_armor_rep_opc),
+            proj_mult_getter: Some(get_proj_mult_simple_s2s),
+            remote_armor_rep_opc_getter: Some(get_remote_armor_rep_opc),
             ..
         },
         ..

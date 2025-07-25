@@ -1,6 +1,6 @@
 use crate::{
     ac, ad,
-    rd::{REffectKey, RShipKind},
+    rd::{REffectKey, RItemAXt, RShipKind},
     util::{Named, RMap},
 };
 
@@ -12,25 +12,28 @@ pub(crate) struct RItem {
     a_item: ad::AItem,
     effect_datas: RMap<REffectKey, ad::AItemEffectData>,
     defeff_key: Option<REffectKey>,
+    axt: RItemAXt,
+    ship_kind: Option<RShipKind>,
     has_online_effect: bool,
     takes_turret_hardpoint: bool,
     takes_launcher_hardpoint: bool,
-    ship_kind: Option<RShipKind>,
 }
 impl RItem {
     pub(crate) fn new(a_item: ad::AItem) -> Self {
+        let axt = RItemAXt::new_initial(&a_item);
+        let ship_kind = get_ship_kind(a_item.cat_id, &a_item.srqs);
         let has_online_effect = has_online_effect(&a_item.effect_datas);
         let takes_turret_hardpoint = has_turret_effect(&a_item.effect_datas);
         let takes_launcher_hardpoint = has_launcher_effect(&a_item.effect_datas);
-        let ship_kind = get_ship_kind(a_item.cat_id, &a_item.srqs);
         Self {
             a_item,
             effect_datas: RMap::new(),
             defeff_key: None,
+            axt,
+            ship_kind,
             has_online_effect,
             takes_turret_hardpoint,
             takes_launcher_hardpoint,
-            ship_kind,
         }
     }
     // Methods which expose adapted item info
@@ -71,6 +74,12 @@ impl RItem {
         self.a_item.disallowed_in_wspace
     }
     // Methods which expose info generated during runtime
+    pub(crate) fn get_axt(&self) -> &RItemAXt {
+        &self.axt
+    }
+    pub(crate) fn get_ship_kind(&self) -> Option<RShipKind> {
+        self.ship_kind
+    }
     pub(crate) fn has_online_effect(&self) -> bool {
         self.has_online_effect
     }
@@ -80,15 +89,10 @@ impl RItem {
     pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
         self.takes_launcher_hardpoint
     }
-    pub(crate) fn get_ship_kind(&self) -> Option<RShipKind> {
-        self.ship_kind
-    }
     // TODO: remove methods below after the transition is done
-    // Refers effects of the item
     pub(crate) fn get_effect_datas_ids(&self) -> &RMap<ad::AEffectId, ad::AItemEffectData> {
         &self.a_item.effect_datas
     }
-    // Refers an effect which is default for the item
     pub(crate) fn get_defeff_id(&self) -> Option<ad::AEffectId> {
         self.a_item.defeff_id
     }

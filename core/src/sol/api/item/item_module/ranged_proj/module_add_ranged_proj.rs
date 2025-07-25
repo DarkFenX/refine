@@ -4,7 +4,7 @@ use crate::{
     misc::ProjRange,
     sol::{
         SolarSystem,
-        api::{AddRangedProjError, ModuleMut, RangedProjMut, get_a_ship_xt},
+        api::{AddRangedProjError, ModuleMut, RangedProjMut, get_r_ship_axt},
     },
     uad::{UadItemKey, UadProjRange},
 };
@@ -36,10 +36,10 @@ impl SolarSystem {
             }
             .into());
         }
-        let uad_prange = UadProjRange::from_prange_with_xt(
+        let uad_prange = UadProjRange::from_prange_with_axt(
             range,
-            get_a_ship_xt(&self.uad, uad_module.get_fit_key()),
-            projectee_uad_item.get_a_xt(),
+            get_r_ship_axt(&self.uad, uad_module.get_fit_key()),
+            projectee_uad_item.get_r_axt(),
         );
         let charge_key = uad_module.get_charge_key();
         // Update services for module

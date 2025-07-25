@@ -5,15 +5,12 @@
 //! the components, anything mutable is built on top of them.
 
 pub use cacher::AdaptedDataCacher;
+pub(crate) use data::ASlotIndex;
 pub use data::{
     AAttr, AAttrId, AAttrVal, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ACount,
     ACustomEffectId, AData, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope,
-    AEffectBuffSrc, AEffectBuffSrcCustom, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AEffectRt, AItem,
-    AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemKind, AItemRt, AModifierSrq, AMuta, AMutaAttrRange, AOp,
-    ASkillLevel, AState, ArcAttr, ArcBuff, ArcEffectRt, ArcItemRt, ArcMuta,
-};
-pub(crate) use data::{
-    AEffectXt, AItemChargeLimit, AItemContLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind, ASlotIndex,
+    AEffectBuffSrc, AEffectBuffSrcCustom, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItem, AItemCatId,
+    AItemEffectData, AItemGrpId, AItemId, AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState,
 };
 pub use result::AResult;
 

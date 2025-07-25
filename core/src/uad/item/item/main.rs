@@ -3,6 +3,7 @@ use crate::{
     def::{Count, ItemId},
     err::basic::ItemKindMatchError,
     misc::{EffectMode, Spool},
+    rd,
     src::Src,
     uad::{
         Uad, UadAutocharge, UadBooster, UadCharacter, UadCharge, UadDrone, UadFighter, UadFitKey, UadFwEffect,
@@ -893,25 +894,25 @@ impl UadItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
+    pub(crate) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_a_xt(),
-            Self::Booster(booster) => booster.get_a_xt(),
-            Self::Character(character) => character.get_a_xt(),
-            Self::Charge(charge) => charge.get_a_xt(),
-            Self::Drone(drone) => drone.get_a_xt(),
-            Self::Fighter(fighter) => fighter.get_a_xt(),
-            Self::FwEffect(fw_effect) => fw_effect.get_a_xt(),
-            Self::Implant(implant) => implant.get_a_xt(),
-            Self::Module(module) => module.get_a_xt(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_a_xt(),
-            Self::Rig(rig) => rig.get_a_xt(),
-            Self::Service(service) => service.get_a_xt(),
-            Self::Ship(ship) => ship.get_a_xt(),
-            Self::Skill(skill) => skill.get_a_xt(),
-            Self::Stance(stance) => stance.get_a_xt(),
-            Self::Subsystem(subsystem) => subsystem.get_a_xt(),
-            Self::SwEffect(sw_effect) => sw_effect.get_a_xt(),
+            Self::Autocharge(autocharge) => autocharge.get_r_axt(),
+            Self::Booster(booster) => booster.get_r_axt(),
+            Self::Character(character) => character.get_r_axt(),
+            Self::Charge(charge) => charge.get_r_axt(),
+            Self::Drone(drone) => drone.get_r_axt(),
+            Self::Fighter(fighter) => fighter.get_r_axt(),
+            Self::FwEffect(fw_effect) => fw_effect.get_r_axt(),
+            Self::Implant(implant) => implant.get_r_axt(),
+            Self::Module(module) => module.get_r_axt(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_r_axt(),
+            Self::Rig(rig) => rig.get_r_axt(),
+            Self::Service(service) => service.get_r_axt(),
+            Self::Ship(ship) => ship.get_r_axt(),
+            Self::Skill(skill) => skill.get_r_axt(),
+            Self::Stance(stance) => stance.get_r_axt(),
+            Self::Subsystem(subsystem) => subsystem.get_r_axt(),
+            Self::SwEffect(sw_effect) => sw_effect.get_r_axt(),
         }
     }
 }

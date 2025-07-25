@@ -70,11 +70,11 @@ impl Vast {
     }
     pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_key: UadItemKey, fighter: &UadFighter) {
         let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
-        let a_fighter_xt = fighter.get_a_xt().unwrap();
+        let r_fighter_axt = fighter.get_r_axt().unwrap();
         let count = fighter.get_count().unwrap();
         fit_data
             .fighters_volume
-            .insert(fighter_key, a_fighter_xt.volume * AttrVal::from(count.current));
+            .insert(fighter_key, r_fighter_axt.volume * AttrVal::from(count.current));
         match count.current > count.max {
             true => fit_data.fighter_squad_size.insert(
                 fighter_key,

@@ -5,7 +5,7 @@ pub(crate) use effect::{REffect, REffectBuffInfo, REffectBuffSrc, REffectBuffSrc
 pub use item::RItemKind;
 pub(crate) use item::{RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RShipDroneLimit, RShipKind};
 pub(crate) use muta::RMuta;
-pub(crate) use primitives::{RBuffKey, REffectKey};
+pub(crate) use primitives::{RBuffKey, REffectKey, RcAttr, RcBuff, RcEffect, RcItem, RcMuta};
 
 mod attr;
 mod buff;

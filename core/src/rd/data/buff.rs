@@ -11,6 +11,9 @@ impl RBuff {
     pub(crate) fn new(a_buff: ad::ABuff) -> Self {
         Self { a_buff }
     }
+    pub(crate) fn get_id(&self) -> ad::ABuffId {
+        self.a_buff.id
+    }
     // Defines how multiple modifications of the same attribute value are aggregated.
     pub(crate) fn get_aggr_mode(&self) -> ad::ABuffAggrMode {
         self.a_buff.aggr_mode
@@ -20,7 +23,7 @@ impl RBuff {
         self.a_buff.op
     }
     // Attribute modifiers carried by the buff.
-    pub(crate) fn get_modifiers(&self) -> &Vec<ad::ABuffModifier> {
+    pub(crate) fn get_mods(&self) -> &Vec<ad::ABuffModifier> {
         &self.a_buff.mods
     }
 }

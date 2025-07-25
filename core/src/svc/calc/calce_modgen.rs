@@ -1,6 +1,7 @@
 use crate::{
     ac, ad,
     misc::EffectSpec,
+    rd,
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
@@ -15,18 +16,18 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UadItemKey,
         item: &UadItem,
-        a_effect: &ad::AEffectRt,
+        r_effect: &rd::REffect,
     ) {
         reuse_rmods.clear();
         // Regular modifiers
-        for a_mod in a_effect.ae.mods.iter() {
-            match RawModifier::try_from_amod(item_key, item, a_effect, a_mod) {
+        for a_mod in r_effect.get_mods().iter() {
+            match RawModifier::try_from_amod(item_key, item, r_effect, a_mod) {
                 Some(sol_mod) => reuse_rmods.push(sol_mod),
                 None => continue,
             };
         }
         // Buffs
-        if let Some(a_buff_info) = a_effect.ae.buff_info.as_ref() {
+        if let Some(a_buff_info) = r_effect.get_a_buff_info().as_ref() {
             match &a_buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
                     for (buff_type_a_attr_id, buff_val_a_attr_id) in ac::extras::BUFF_STDATTRS {
@@ -36,7 +37,7 @@ impl Calc {
                                 ctx,
                                 item_key,
                                 item,
-                                a_effect,
+                                r_effect,
                                 &(buff_id.extra.round() as ad::ABuffId),
                                 &a_buff_info.scope,
                                 Some(buff_type_a_attr_id),
@@ -53,7 +54,7 @@ impl Calc {
                                 ctx,
                                 item_key,
                                 item,
-                                a_effect,
+                                r_effect,
                                 a_buff_id,
                                 &a_buff_info.scope,
                                 None,
@@ -64,7 +65,7 @@ impl Calc {
                                 ctx,
                                 item_key,
                                 item,
-                                a_effect,
+                                r_effect,
                                 a_buff_id,
                                 &a_buff_info.scope,
                                 *buff_a_val,
@@ -75,8 +76,8 @@ impl Calc {
             }
         }
         // Custom modifiers
-        if let Some(customizer) = a_effect.hc.calc_custom_fn {
-            customizer(reuse_rmods, EffectSpec::new(item_key, a_effect.ae.id));
+        if let Some(customizer) = r_effect.get_calc_customizer() {
+            customizer(reuse_rmods, EffectSpec::new(item_key, r_effect.get_id()));
         }
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
@@ -96,8 +97,8 @@ impl Calc {
             _ => return rmods,
         };
         for a_effect_id in a_effect_ids {
-            let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
-            if let Some(a_buff_info) = a_effect.ae.buff_info.as_ref()
+            let r_effect = ctx.uad.src.get_r_effect(a_effect_id).unwrap();
+            if let Some(a_buff_info) = r_effect.get_a_buff_info().as_ref()
                 && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_a_attr_id)
             {
@@ -106,7 +107,7 @@ impl Calc {
                     ctx,
                     item_key,
                     item,
-                    a_effect,
+                    r_effect,
                     &(buff_id_cval.extra.round() as ad::ABuffId),
                     &a_buff_info.scope,
                     Some(buff_type_a_attr_id),
@@ -123,22 +124,22 @@ fn add_buff_mods(
     ctx: SvcCtx,
     item_key: UadItemKey,
     item: &UadItem,
-    a_effect: &ad::AEffectRt,
+    r_effect: &rd::REffect,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,
     buff_type_a_attr_id: Option<ad::AAttrId>,
     buff_val_a_attr_id: ad::AAttrId,
 ) {
-    let a_buff = match ctx.uad.src.get_a_buff(a_buff_id) {
-        Some(a_buff) => a_buff,
+    let r_buff = match ctx.uad.src.get_r_buff(a_buff_id) {
+        Some(r_buff) => r_buff,
         None => return,
     };
-    for buff_mod in a_buff.mods.iter() {
-        let rmod = match RawModifier::try_from_a_buff_regular(
+    for buff_mod in r_buff.get_mods().iter() {
+        let rmod = match RawModifier::try_from_r_buff_regular(
             item_key,
             item,
-            a_effect,
-            a_buff,
+            r_effect,
+            r_buff,
             buff_mod,
             buff_val_a_attr_id,
             a_buff_scope.into(),
@@ -156,21 +157,21 @@ fn add_buff_mods_hardcoded(
     ctx: SvcCtx,
     item_key: UadItemKey,
     item: &UadItem,
-    a_effect: &ad::AEffectRt,
+    r_effect: &rd::REffect,
     a_buff_id: &ad::ABuffId,
     a_buff_scope: &ad::AEffectBuffScope,
     buff_a_val: ad::AAttrVal,
 ) {
-    let a_buff = match ctx.uad.src.get_a_buff(a_buff_id) {
-        Some(a_buff) => a_buff,
+    let r_buff = match ctx.uad.src.get_r_buff(a_buff_id) {
+        Some(r_buff) => r_buff,
         None => return,
     };
-    for buff_mod in a_buff.mods.iter() {
-        let rmod = match RawModifier::try_from_a_buff_hardcoded(
+    for buff_mod in r_buff.get_mods().iter() {
+        let rmod = match RawModifier::try_from_r_buff_hardcoded(
             item_key,
             item,
-            a_effect,
-            a_buff,
+            r_effect,
+            r_buff,
             buff_mod,
             buff_a_val,
             a_buff_scope.into(),

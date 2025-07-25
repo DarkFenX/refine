@@ -21,7 +21,7 @@ pub(super) fn mk_n_effect() -> NEffect {
                 }),
                 activates_charge: false,
             }),
-            get_proj_mult: Some(get_proj_mult_simple_s2s),
+            proj_mult_getter: Some(get_proj_mult_simple_s2s),
             ..
         },
         ..

@@ -3,6 +3,7 @@ use crate::{
     def::{Count, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, ModRack, ModuleState, Spool},
+    rd,
     src::Src,
     uad::{
         Uad, UadFitKey, UadItemKey,
@@ -73,8 +74,8 @@ impl UadModule {
     pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
-        self.base.get_a_xt()
+    pub(crate) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
+        self.base.get_r_axt()
     }
     pub(crate) fn get_max_a_state(&self) -> Option<ad::AState> {
         self.base.get_max_a_state()
@@ -87,6 +88,12 @@ impl UadModule {
     }
     pub(crate) fn get_val_active_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_val_active_a_group_id()
+    }
+    pub(crate) fn takes_turret_hardpoint(&self) -> bool {
+        self.base.takes_turret_hardpoint()
+    }
+    pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
+        self.base.takes_launcher_hardpoint()
     }
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()
@@ -124,7 +131,7 @@ impl UadModule {
         self.base.is_loaded()
     }
     pub(in crate::uad::item) fn update_a_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
-        self.base.update_a_data(reuse_eupdates, src);
+        self.base.update_r_data(reuse_eupdates, src);
     }
     // Mutation-specific methods
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
@@ -189,15 +196,15 @@ impl UadModule {
         // No charge - no info
         let charge_key = self.get_charge_key()?;
         let charge_item = uad.items.get(charge_key);
-        let module_capacity = match self.get_a_xt() {
-            Some(a_xt) => a_xt.capacity,
+        let module_capacity = match self.get_r_axt() {
+            Some(r_axt) => r_axt.capacity,
             // Module not loaded - no info
             _ => {
                 return None;
             }
         };
-        let charge_volume = match charge_item.get_a_xt() {
-            Some(a_xt) if a_xt.volume != OF(0.0) => a_xt.volume,
+        let charge_volume = match charge_item.get_r_axt() {
+            Some(r_axt) if r_axt.volume != OF(0.0) => r_axt.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;

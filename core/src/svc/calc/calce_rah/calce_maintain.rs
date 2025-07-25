@@ -5,8 +5,8 @@ use super::shared::{
     RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID,
 };
 use crate::{
-    ad,
     misc::{AttrSpec, DmgKinds},
+    rd,
     src::Src,
     svc::{
         SvcCtx,
@@ -37,13 +37,13 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UadItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffectRt],
+        r_effects: &[rd::RcEffect],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UadItem::Module(module) = item
-            && a_effects.iter().any(|v| v.ae.id == RAH_EFFECT_ID)
+            && r_effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
         {
             let fit_key = module.get_fit_key();
             // Clear sim data for other RAHs on the same fit
@@ -88,13 +88,13 @@ impl Calc {
         ctx: SvcCtx,
         item_key: &UadItemKey,
         item: &UadItem,
-        a_effects: &[ad::ArcEffectRt],
+        r_effects: &[rd::RcEffect],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UadItem::Module(module) = item
-            && a_effects.iter().any(|v| v.ae.id == RAH_EFFECT_ID)
+            && r_effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
         {
             let fit_key = module.get_fit_key();
             // Remove postprocessors
@@ -167,7 +167,7 @@ impl Calc {
         }
     }
     pub(in crate::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
-        self.rah.cycle_time_a_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.ae.duration_attr_id);
+        self.rah.cycle_time_a_attr_id = src.get_r_effect(&RAH_EFFECT_ID).and_then(|v| v.get_duration_attr_id());
     }
     pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &UadFitKey) {
         self.clear_fit_rah_results(ctx, fit_key);

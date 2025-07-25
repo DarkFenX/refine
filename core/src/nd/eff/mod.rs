@@ -1,7 +1,8 @@
 use std::{collections::HashMap, sync::LazyLock};
 
 pub(crate) use eff::{
-    NBreacherDmgGetter, NEffect, NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter,
+    NBreacherDmgGetter, NCalcCustomizer, NEffect, NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter,
+    NRemoteRepGetter, NSpoolResolver,
 };
 pub(crate) use shared::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 

@@ -8,7 +8,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(ec::effects::SHIELD_BOOSTING),
         aid: ac::effects::SHIELD_BOOSTING,
         hc: NEffectHc {
-            get_local_shield_rep_opc: Some(get_local_shield_rep_opc),
+            local_shield_rep_opc_getter: Some(get_local_shield_rep_opc),
             ..
         },
         ..

@@ -3,40 +3,40 @@ use std::{
     sync::Arc,
 };
 
-use crate::{ad, util::Map};
+use crate::{ad, rd, util::Map};
 
 pub(in crate::src) trait Key {
     type Item;
     fn get_key(&self) -> Self::Item;
 }
-impl Key for ad::AItemRt {
+impl Key for rd::RItem {
     type Item = ad::AItemId;
     fn get_key(&self) -> Self::Item {
-        self.ai.id
+        self.get_id()
     }
 }
-impl Key for ad::AAttr {
+impl Key for rd::RAttr {
     type Item = ad::AAttrId;
     fn get_key(&self) -> Self::Item {
-        self.id
+        self.get_id()
     }
 }
-impl Key for ad::AEffectRt {
+impl Key for rd::REffect {
     type Item = ad::AEffectId;
     fn get_key(&self) -> Self::Item {
-        self.ae.id
+        self.get_id()
     }
 }
-impl Key for ad::AMuta {
+impl Key for rd::RMuta {
     type Item = ad::AItemId;
     fn get_key(&self) -> Self::Item {
-        self.id
+        self.get_id()
     }
 }
-impl Key for ad::ABuff {
+impl Key for rd::RBuff {
     type Item = ad::ABuffId;
     fn get_key(&self) -> Self::Item {
-        self.id
+        self.get_id()
     }
 }
 

@@ -9,11 +9,8 @@ pub(crate) enum AffecteeFilter {
     OwnSrq(ad::AItemId),
 }
 impl AffecteeFilter {
-    pub(super) fn from_a_effect_affectee_filter(
-        a_effect_affectee_filter: &ad::AEffectAffecteeFilter,
-        sol_item: &UadItem,
-    ) -> Self {
-        match a_effect_affectee_filter {
+    pub(super) fn from_a_affectee_filter(a_affectee_filter: &ad::AEffectAffecteeFilter, sol_item: &UadItem) -> Self {
+        match a_affectee_filter {
             ad::AEffectAffecteeFilter::Direct(loc) => Self::Direct(loc.into()),
             ad::AEffectAffecteeFilter::Loc(loc) => Self::Loc(loc.into()),
             ad::AEffectAffecteeFilter::LocGrp(loc, grp_id) => Self::LocGrp(loc.into(), *grp_id),

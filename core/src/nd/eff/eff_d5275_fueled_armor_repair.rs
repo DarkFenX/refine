@@ -17,7 +17,7 @@ pub(super) fn mk_n_effect() -> NEffect {
                 }),
                 activates_charge: false,
             }),
-            get_local_armor_rep_opc: Some(get_local_armor_rep_opc),
+            local_armor_rep_opc_getter: Some(get_local_armor_rep_opc),
             ..
         },
         ..

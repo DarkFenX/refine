@@ -81,22 +81,22 @@ fn fill_module_effect_info(
     a_effect_id: ad::AEffectId,
     options: CycleOptions,
 ) {
-    let a_effect = match ctx.uad.src.get_a_effect(&a_effect_id) {
-        Some(a_effect) => a_effect,
+    let r_effect = match ctx.uad.src.get_r_effect(&a_effect_id) {
+        Some(r_effect) => r_effect,
         None => return,
     };
-    if !a_effect.xt.is_active {
+    if !r_effect.is_active() {
         return;
     }
     // No appropriate duration - no info
-    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect) {
+    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
         Some(duration_s) => duration_s,
         None => return,
     };
     // Charge count info
-    let cycle_count = match a_effect.hc.charge {
+    let cycle_count = match r_effect.get_charge_info() {
         Some(n_charge) => match n_charge.location {
-            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(uad_item, a_effect),
+            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(uad_item, r_effect),
             NEffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
                 NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
                     get_charge_rate_cycle_count(ctx, uad_module, can_run_uncharged, options.reload_optionals)
@@ -112,7 +112,7 @@ fn fill_module_effect_info(
         return;
     }
     // Self-killers are fairly trivial. Record info about them and go to next effect
-    if a_effect.hc.kills_item {
+    if r_effect.kills_item() {
         self_killers.push(SelfKillerInfo {
             a_effect_id,
             duration_s,

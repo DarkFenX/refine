@@ -1,7 +1,7 @@
 use crate::{
-    ad,
     def::{AttrVal, OF},
     misc::ProjRange,
+    rd,
 };
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -14,12 +14,16 @@ pub(crate) struct UadProjRange {
     pub(super) tgt_rad: AttrVal,
 }
 impl UadProjRange {
-    pub(crate) fn from_prange_with_xt(
+    pub(crate) fn from_prange_with_axt(
         prange: ProjRange,
-        src_a_item_xt: Option<&ad::AItemXt>,
-        tgt_a_item_xt: Option<&ad::AItemXt>,
+        src_r_item_axt: Option<&rd::RItemAXt>,
+        tgt_r_item_axt: Option<&rd::RItemAXt>,
     ) -> Option<Self> {
-        UadProjRange::from_prange_with_radii(prange, src_a_item_xt.map(|v| v.radius), tgt_a_item_xt.map(|v| v.radius))
+        UadProjRange::from_prange_with_radii(
+            prange,
+            src_r_item_axt.map(|v| v.radius),
+            tgt_r_item_axt.map(|v| v.radius),
+        )
     }
     pub(crate) fn from_prange_with_radii(
         prange: ProjRange,

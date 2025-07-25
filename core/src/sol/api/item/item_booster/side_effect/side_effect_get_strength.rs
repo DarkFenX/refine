@@ -77,10 +77,9 @@ impl<'a> FullSideEffectMut<'a> {
 
 fn get_strength_partial(src: &Src, a_effect_id: &ad::AEffectId) -> Option<SideEffectPartialStr> {
     let mut se_strs = src
-        .get_a_effect(a_effect_id)
+        .get_r_effect(a_effect_id)
         .unwrap()
-        .ae
-        .mods
+        .get_mods()
         .iter()
         .map(|a_modifier| (a_modifier.op, a_modifier.affector_attr_id))
         .collect_vec();

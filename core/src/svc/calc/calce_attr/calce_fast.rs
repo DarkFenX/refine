@@ -2,7 +2,7 @@ use std::collections::hash_map::Entry;
 
 use itertools::Itertools;
 
-use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_a_attr, get_base_attr_value};
+use super::calce_shared::{LIMITED_PRECISION_A_ATTR_IDS, get_base_attr_value, get_r_attr};
 use crate::{
     ac, ad,
     def::AttrVal,
@@ -174,9 +174,9 @@ impl Calc {
     }
     fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UadItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
         let item = ctx.uad.items.get(item_key);
-        let a_attr = match ctx.uad.src.get_a_attr(a_attr_id) {
-            Some(a_attr) => a_attr,
-            None => &get_a_attr(*a_attr_id),
+        let r_attr = match ctx.uad.src.get_r_attr(a_attr_id) {
+            Some(r_attr) => r_attr,
+            None => &get_r_attr(*a_attr_id),
         };
         // Get base value
         let base_val = match a_attr_id {
@@ -197,11 +197,11 @@ impl Calc {
                         self.deps.add_anonymous(item_key, security_a_attr_id, *a_attr_id);
                         security_full_val.dogma
                     }
-                    Err(_) => get_base_attr_value(item, a_attr),
+                    Err(_) => get_base_attr_value(item, r_attr),
                 }
             }
             // Normal attributes
-            _ => get_base_attr_value(item, a_attr),
+            _ => get_base_attr_value(item, r_attr),
         };
         // Get base value;
         let mut accumulator = ModAccumFast::new();
@@ -211,21 +211,21 @@ impl Calc {
                 modification.proj_mult,
                 modification.res_mult,
                 &modification.op,
-                a_attr.penalizable,
+                r_attr.is_penalizable(),
                 &modification.affector_a_item_cat_id,
                 &modification.aggr_mode,
             );
         }
-        let mut dogma_val = accumulator.apply_dogma_mods(base_val, a_attr.hig);
+        let mut dogma_val = accumulator.apply_dogma_mods(base_val, r_attr.is_hig());
         // Lower value limit
-        if let Some(limiter_attr_id) = a_attr.min_attr_id
+        if let Some(limiter_attr_id) = r_attr.get_min_attr_id()
             && let Ok(limiter_cval) = self.get_item_attr_val_full(ctx, item_key, &limiter_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
             dogma_val = AttrVal::max(dogma_val, limiter_cval.dogma);
         }
         // Upper value limit
-        if let Some(limiter_attr_id) = a_attr.max_attr_id
+        if let Some(limiter_attr_id) = r_attr.get_max_attr_id()
             && let Ok(limiter_cval) = self.get_item_attr_val_full(ctx, item_key, &limiter_attr_id)
         {
             self.deps.add_anonymous(item_key, limiter_attr_id, *a_attr_id);
@@ -235,7 +235,7 @@ impl Calc {
             dogma_val = round(dogma_val, 2);
         }
         // Post-dogma calculations
-        let extra_val = accumulator.apply_extra_mods(dogma_val, a_attr.hig);
+        let extra_val = accumulator.apply_extra_mods(dogma_val, r_attr.is_hig());
         CalcAttrVal {
             base: base_val,
             dogma: dogma_val,

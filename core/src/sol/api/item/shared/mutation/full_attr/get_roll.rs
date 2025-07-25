@@ -41,8 +41,8 @@ fn get_roll(sol: &SolarSystem, item_key: UadItemKey, a_attr_id: &ad::AAttrId) ->
         .unwrap()
         .get_cache()
         .unwrap()
-        .get_a_mutator()
-        .attr_mods
+        .get_r_mutator()
+        .get_attr_mods()
         .get(a_attr_id)
         .unwrap();
     // In absence of mutation, for purposes of calculating roll, it is fine to use base attribute

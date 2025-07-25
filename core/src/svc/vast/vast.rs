@@ -3,6 +3,7 @@ use crate::{
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
     nd::{NBreacherDmgGetter, NLocalRepGetter, NNormalDmgGetter, NRemoteRepGetter},
+    rd,
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
     },
@@ -72,7 +73,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) slotted_implants: RMapRSet<ad::ASlotIndex, UadItemKey>,
     pub(in crate::svc::vast) slotted_boosters: RMapRSet<ad::ASlotIndex, UadItemKey>,
     pub(in crate::svc::vast) slotted_subsystems: RMapRSet<ad::ASlotIndex, UadItemKey>,
-    pub(in crate::svc::vast) ship_limited_items: RMap<UadItemKey, ad::AItemShipLimit>,
+    pub(in crate::svc::vast) ship_limited_items: RMap<UadItemKey, rd::RItemShipLimit>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<ad::AItemGrpId, UadItemKey>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UadItemKey, ad::AItemGrpId>,
     pub(in crate::svc::vast) mods_svcs_max_group_online_all: RMapRSet<ad::AItemGrpId, UadItemKey>,

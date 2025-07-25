@@ -40,14 +40,14 @@ fn fill_drone_effect_info(
     item_key: UadItemKey,
     a_effect_id: ad::AEffectId,
 ) {
-    let a_effect = match ctx.uad.src.get_a_effect(&a_effect_id) {
-        Some(a_effect) => a_effect,
+    let r_effect = match ctx.uad.src.get_r_effect(&a_effect_id) {
+        Some(r_effect) => r_effect,
         None => return,
     };
-    if !a_effect.xt.is_active {
+    if !r_effect.is_active() {
         return;
     }
-    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect) {
+    let duration_s = match efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
         Some(duration_s) => duration_s,
         None => return,
     };

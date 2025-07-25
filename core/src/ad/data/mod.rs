@@ -1,18 +1,15 @@
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use data::AData;
-pub(crate) use effect::AEffectXt;
 pub use effect::{
     AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId,
-    AEffectLocation, AEffectModifier, AEffectRt,
+    AEffectLocation, AEffectModifier,
 };
-pub use item::{AItem, AItemEffectData, AItemKind, AItemRt, ASkillLevel};
-pub(crate) use item::{AItemChargeLimit, AItemContLimit, AItemShipLimit, AItemXt, AShipDroneLimit, AShipKind};
+pub use item::{AItem, AItemEffectData, ASkillLevel};
 pub use muta::{AMuta, AMutaAttrRange};
 pub(crate) use primitives::ASlotIndex;
 pub use primitives::{
     AAttrId, AAttrVal, ABuffId, ACount, ACustomEffectId, ADogmaEffectId, AEffectCatId, AItemCatId, AItemGrpId, AItemId,
-    ArcAttr, ArcBuff, ArcEffectRt, ArcItemRt, ArcMuta,
 };
 pub use shared::{AModifierSrq, AOp, AState};
 

@@ -1,5 +1,5 @@
 use crate::{
-    ac, ad,
+    ac,
     def::{AttrVal, OF},
     ec,
     misc::{ResolvedSpool, Spool},
@@ -7,6 +7,7 @@ use crate::{
         NEffect, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
+    rd,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -22,9 +23,9 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: ac::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER,
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
-            get_proj_mult: Some(get_proj_mult_simple_s2s),
-            get_resolved_spool: Some(get_resolved_spool),
-            get_remote_armor_rep_opc: Some(get_spool_remote_rep_opc),
+            proj_mult_getter: Some(get_proj_mult_simple_s2s),
+            spool_resolver: Some(get_resolved_spool),
+            remote_armor_rep_opc_getter: Some(get_spool_remote_rep_opc),
             ..
         },
         ..
@@ -35,10 +36,10 @@ fn get_resolved_spool(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UadItemKey,
-    a_effect: &ad::AEffectRt,
+    r_effect: &rd::REffect,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
-    let duration_s = efuncs::get_effect_duration_s(ctx, calc, item_key, a_effect)?;
+    let duration_s = efuncs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
     let spool = ctx.uad.get_item_key_spool(item_key, spool);
     let spool_step = calc
         .get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::REP_MULT_BONUS_PER_CYCLE)
@@ -53,25 +54,25 @@ fn get_spool_remote_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UadItemKey,
-    projector_a_effect: &ad::AEffectRt,
+    projector_r_effect: &rd::REffect,
     spool: Option<Spool>,
     projectee_key: Option<UadItemKey>,
 ) -> Option<Output<AttrVal>> {
     let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ARMOR_DMG_AMOUNT)?;
-    let delay = efuncs::get_effect_duration_s(ctx, calc, projector_key, projector_a_effect)?;
-    if let Some(resolved_spool) = get_resolved_spool(ctx, calc, projector_key, projector_a_effect, spool) {
+    let delay = efuncs::get_effect_duration_s(ctx, calc, projector_key, projector_r_effect)?;
+    if let Some(resolved_spool) = get_resolved_spool(ctx, calc, projector_key, projector_r_effect, spool) {
         amount *= resolved_spool.mult;
     }
     if let Some(projectee_key) = projectee_key {
         // Effect resistance reduction
         if let Some(rr_mult) =
-            efuncs::get_effect_resist_mult(ctx, calc, projector_key, projector_a_effect, projectee_key)
+            efuncs::get_effect_resist_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
         {
             amount *= rr_mult;
         }
         // Range reduction
         if let Some(proj_mult) =
-            efuncs::get_effect_proj_mult(ctx, calc, projector_key, projector_a_effect, projectee_key)
+            efuncs::get_effect_proj_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
         {
             amount *= proj_mult;
         }

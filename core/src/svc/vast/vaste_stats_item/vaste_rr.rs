@@ -1,8 +1,8 @@
 use crate::{
-    ad,
     def::{AttrVal, OF},
     misc::Spool,
     nd::NRemoteRepGetter,
+    rd,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -92,7 +92,7 @@ fn get_orr_item_key(
     item_key: UadItemKey,
     spool: Option<Spool>,
     ignore_state: bool,
-    rep_getter_getter: fn(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter>,
+    rep_getter_getter: fn(&rd::REffect) -> Option<NRemoteRepGetter>,
 ) -> AttrVal {
     let mut item_orr = OF(0.0);
     let cycle_map = match get_item_cycle_info(ctx, calc, item_key, RR_CYCLE_OPTIONS, ignore_state) {
@@ -100,8 +100,8 @@ fn get_orr_item_key(
         None => return item_orr,
     };
     for (a_effect_id, cycle) in cycle_map {
-        let a_effect = ctx.uad.src.get_a_effect(&a_effect_id).unwrap();
-        if let Some(effect_orr) = get_orr_effect(ctx, calc, item_key, a_effect, cycle, spool, rep_getter_getter) {
+        let r_effect = ctx.uad.src.get_r_effect(&a_effect_id).unwrap();
+        if let Some(effect_orr) = get_orr_effect(ctx, calc, item_key, r_effect, cycle, spool, rep_getter_getter) {
             item_orr += effect_orr;
         }
     }
@@ -112,28 +112,28 @@ fn get_orr_effect(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UadItemKey,
-    a_effect: &ad::AEffectRt,
+    r_effect: &rd::REffect,
     effect_cycle: Cycle,
     spool: Option<Spool>,
-    rep_getter_getter: fn(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter>,
+    rep_getter_getter: fn(&rd::REffect) -> Option<NRemoteRepGetter>,
 ) -> Option<AttrVal> {
-    let rep_getter = rep_getter_getter(a_effect)?;
-    let rep_amount = rep_getter(ctx, calc, item_key, a_effect, spool, None)?;
+    let rep_getter = rep_getter_getter(r_effect)?;
+    let rep_amount = rep_getter(ctx, calc, item_key, r_effect, spool, None)?;
     Some(rep_amount.get_total() / effect_cycle.get_average_cycle_time())
 }
 
-fn get_getter_shield(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_shield_rep_opc
+fn get_getter_shield(r_effect: &rd::REffect) -> Option<NRemoteRepGetter> {
+    r_effect.get_remote_shield_rep_opc_getter()
 }
 
-fn get_getter_armor(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_armor_rep_opc
+fn get_getter_armor(r_effect: &rd::REffect) -> Option<NRemoteRepGetter> {
+    r_effect.get_remote_armor_rep_opc_getter()
 }
 
-fn get_getter_hull(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_hull_rep_opc
+fn get_getter_hull(r_effect: &rd::REffect) -> Option<NRemoteRepGetter> {
+    r_effect.get_remote_hull_rep_opc_getter()
 }
 
-fn get_getter_cap(a_effect_id: &ad::AEffectRt) -> Option<NRemoteRepGetter> {
-    a_effect_id.hc.get_remote_cap_rep_opc
+fn get_getter_cap(r_effect_id: &rd::REffect) -> Option<NRemoteRepGetter> {
+    r_effect_id.get_remote_cap_rep_opc_getter()
 }

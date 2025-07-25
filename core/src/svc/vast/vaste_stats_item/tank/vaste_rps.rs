@@ -96,8 +96,8 @@ fn get_local_rps(
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
-            let output_per_cycle = match rep_getter(ctx, calc, item_key, a_effect) {
+            let r_effect = ctx.uad.src.get_r_effect(a_effect_id).unwrap();
+            let output_per_cycle = match rep_getter(ctx, calc, item_key, r_effect) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
@@ -134,9 +134,9 @@ fn get_irr_data(
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let a_effect = ctx.uad.src.get_a_effect(a_effect_id).unwrap();
+            let r_effect = ctx.uad.src.get_r_effect(a_effect_id).unwrap();
             let output_per_cycle =
-                match rep_getter(ctx, calc, projector_item_key, a_effect, spool, Some(projectee_item_key)) {
+                match rep_getter(ctx, calc, projector_item_key, r_effect, spool, Some(projectee_item_key)) {
                     Some(hp_per_cycle) => hp_per_cycle,
                     None => continue,
                 };

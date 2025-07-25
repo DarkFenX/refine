@@ -1,6 +1,6 @@
 //! Solar system item definitions.
 
-pub(crate) use base::{ItemMutationData, UadEffectUpdates, get_combined_a_attr_values};
+pub(crate) use base::{ItemMutationData, UadEffectUpdates, get_combined_attr_values};
 use base::{UadItemBase, UadItemBaseMutable};
 pub(crate) use container::UadItems;
 pub(crate) use item::UadItem;

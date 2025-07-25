@@ -2,6 +2,7 @@ use super::shared::get_range;
 use crate::{
     ac, ad,
     def::{AttrVal, OF},
+    rd,
     svc::{SvcCtx, calc::Calc},
     uad::{UadItemKey, UadProjRange},
 };
@@ -14,11 +15,11 @@ pub(crate) fn get_proj_mult_aoe_burst(
     ctx: SvcCtx,
     calc: &mut Calc,
     affector_key: UadItemKey,
-    a_effect: &ad::AEffect,
+    r_effect: &rd::REffect,
     prange: UadProjRange,
 ) -> AttrVal {
     // Doomsday projectiles are launched from center of the ship, and range is extended by aoe range
-    let affector_optimal = get_range(ctx, calc, affector_key, a_effect.range_attr_id);
+    let affector_optimal = get_range(ctx, calc, affector_key, r_effect.get_range_attr_id());
     let affector_aoe = get_range(ctx, calc, affector_key, Some(ac::attrs::DOOMSDAY_AOE_RANGE));
     match prange.get_c2s() <= affector_optimal + affector_aoe {
         true => OF(1.0),

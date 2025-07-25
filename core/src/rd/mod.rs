@@ -12,7 +12,8 @@ use container::REntityContainer;
 pub use data::RItemKind;
 pub(crate) use data::{
     RAttr, RBuff, RBuffKey, RData, REffect, REffectBuffInfo, REffectBuffSrc, REffectBuffSrcCustom, REffectKey, RItem,
-    RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RMuta, RShipDroneLimit, RShipKind,
+    RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RMuta, RShipDroneLimit, RShipKind, RcAttr, RcBuff,
+    RcEffect, RcItem, RcMuta,
 };
 
 mod container;

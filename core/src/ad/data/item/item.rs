@@ -1,7 +1,5 @@
 use crate::{
-    ad::{
-        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemXt, ASkillLevel, AState,
-    },
+    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
     util::{Named, RMap},
 };
 
@@ -27,30 +25,5 @@ impl Named for AItem {
 impl std::fmt::Display for AItem {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}(id={})", Self::get_name(), self.id)
-    }
-}
-
-/// Adapted item with extra data added to it during runtime.
-pub struct AItemRt {
-    /// Adapted item.
-    pub ai: AItem,
-    /// Extra data, which is generated using data from adapted data during runtime.
-    pub(crate) xt: AItemXt,
-}
-impl AItemRt {
-    /// Construct new adapted item with extra data.
-    pub fn new(a_item: AItem) -> Self {
-        let xt = AItemXt::new_initial(&a_item);
-        Self { ai: a_item, xt }
-    }
-}
-impl Named for AItemRt {
-    fn get_name() -> &'static str {
-        "AItemRt"
-    }
-}
-impl std::fmt::Display for AItemRt {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}(id={})", Self::get_name(), self.ai.id)
     }
 }

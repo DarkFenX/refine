@@ -7,6 +7,7 @@ use crate::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_unrestricted_s2s},
     },
+    rd,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -30,8 +31,8 @@ pub(super) fn mk_n_effect() -> NEffect {
                 }),
                 activates_charge: false,
             }),
-            get_proj_mult: Some(get_proj_mult_normal_unrestricted_s2s),
-            get_normal_dmg_opc: Some(get_dmg_opc),
+            proj_mult_getter: Some(get_proj_mult_normal_unrestricted_s2s),
+            normal_dmg_opc_getter: Some(get_dmg_opc),
             ..
         },
         ..
@@ -42,7 +43,7 @@ fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UadItemKey,
-    _projector_a_effect: &ad::AEffectRt,
+    _projector_r_effect: &rd::REffect,
     _spool: Option<Spool>,
     _projectee_key: Option<UadItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {

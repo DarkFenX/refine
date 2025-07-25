@@ -11,6 +11,9 @@ impl RAttr {
     pub(crate) fn new(a_attr: ad::AAttr) -> Self {
         Self { a_attr }
     }
+    pub(crate) fn get_id(&self) -> ad::AAttrId {
+        self.a_attr.id
+    }
     // Defines if modifications applied to the attribute's values are immune to stacking penalties
     // or not.
     pub(crate) fn is_penalizable(&self) -> bool {

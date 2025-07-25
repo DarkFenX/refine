@@ -2,6 +2,7 @@ use crate::{
     ad,
     def::ItemId,
     misc::EffectMode,
+    rd,
     src::Src,
     uad::{
         UadFitKey, UadItemKey,
@@ -72,8 +73,8 @@ impl UadAutocharge {
     pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
         self.base.get_a_skill_reqs()
     }
-    pub(crate) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
-        self.base.get_a_xt()
+    pub(crate) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
+        self.base.get_r_axt()
     }
     pub(crate) fn get_a_state(&self) -> ad::AState {
         self.base.get_a_state()

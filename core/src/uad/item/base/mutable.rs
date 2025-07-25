@@ -3,6 +3,7 @@ use crate::{
     def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest},
+    rd,
     src::Src,
     uad::{
         err::ItemMutatedError,
@@ -23,7 +24,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::uad::item) struct UadItemBaseMutable {
     base: UadItemBase,
-    mutation: MutaOption,
+    mutation: Option<ItemMutationData>,
 }
 impl UadItemBaseMutable {
     pub(in crate::uad::item) fn new(
@@ -40,39 +41,38 @@ impl UadItemBaseMutable {
             None => {
                 return Self {
                     base: UadItemBase::new(item_id, a_item_id, a_state, src, reuse_eupdates),
-                    mutation: MutaOption::None,
+                    mutation: None,
                 };
             }
         };
         let mutator_id = mutation_request.mutator_id;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
-        let a_mutator = match src.get_a_mutator(&mutator_id) {
-            Some(a_mutator) => a_mutator,
+        let r_mutator = match src.get_r_mutator(&mutator_id) {
+            Some(r_mutator) => r_mutator,
             // No mutator - base item with ineffective user-defined mutations
             None => {
                 return Self {
                     base: UadItemBase::new(item_id, a_item_id, a_state, src, reuse_eupdates),
-                    mutation: MutaOption::Some(item_mutation_data),
+                    mutation: Some(item_mutation_data),
                 };
             }
         };
         // No mutated item ID in mapping or no mutated item itself
-        let mutated_a_item = match a_mutator.item_map.get(&a_item_id).and_then(|v| src.get_a_item(v)) {
-            Some(mutated_a_item) => mutated_a_item,
+        let mutated_r_item = match r_mutator.get_item_map().get(&a_item_id).and_then(|v| src.get_r_item(v)) {
+            Some(mutated_r_item) => mutated_r_item,
             None => {
-                return match src.get_a_item(&a_item_id) {
+                return match src.get_r_item(&a_item_id) {
                     // If base item is available, return base item, but with ineffective
                     // user-defined mutations
-                    Some(base_a_item) => Self {
-                        base: UadItemBase::base_new_with_a_item(
+                    Some(base_r_item) => Self {
+                        base: UadItemBase::base_new_with_r_item(
                             item_id,
-                            base_a_item.clone(),
+                            base_r_item.clone(),
                             a_state,
                             src,
                             reuse_eupdates,
-                            None,
                         ),
-                        mutation: MutaOption::Some(item_mutation_data),
+                        mutation: Some(item_mutation_data),
                     },
                     // No base item - unloaded item with ineffective user-defined mutations
                     None => Self {
@@ -82,32 +82,26 @@ impl UadItemBaseMutable {
                             a_state,
                             reuse_eupdates,
                         ),
-                        mutation: MutaOption::Some(item_mutation_data),
+                        mutation: Some(item_mutation_data),
                     },
                 };
             }
         };
         // Make proper mutated item once we have all the data
-        let mut a_attrs = get_combined_a_attr_values(src.get_a_item(&a_item_id), mutated_a_item);
-        let a_item_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
-        apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation_data.attr_rolls);
-        let regular_base = UadItemBase::base_new_with_a_item(
-            item_id,
-            mutated_a_item.clone(),
-            a_state,
-            src,
-            reuse_eupdates,
-            Some(&a_item_xt),
-        );
+        let mut a_attrs = get_combined_attr_values(src.get_r_item(&a_item_id), mutated_r_item);
+        let r_item_axt = rd::RItemAXt::new_inherited(mutated_r_item, &a_attrs);
+        apply_attr_mutations(&mut a_attrs, r_mutator, &item_mutation_data.attr_rolls);
+        let regular_base =
+            UadItemBase::base_new_with_r_item(item_id, mutated_r_item.clone(), a_state, src, reuse_eupdates);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_a_item_id: a_item_id,
-            a_mutator: a_mutator.clone(),
+            r_mutator: r_mutator.clone(),
             merged_a_attrs: a_attrs,
-            a_xt: a_item_xt,
+            r_axt: r_item_axt,
         });
         Self {
             base: regular_base,
-            mutation: MutaOption::Some(item_mutation_data),
+            mutation: Some(item_mutation_data),
         }
     }
     // Basic data access methods
@@ -126,18 +120,18 @@ impl UadItemBaseMutable {
         // Since this method is supposed to update base item ID for mutated items, location of ID
         // depends on item configuration
         match &mut self.mutation {
-            MutaOption::Some(mutation_data) => match &mut mutation_data.cache {
+            Some(mutation_data) => match &mut mutation_data.cache {
                 Some(mutation_cache) => {
                     mutation_cache.base_a_item_id = a_item_id;
                 }
                 None => self.base.base_set_a_item_id_primitive(a_item_id),
             },
-            MutaOption::None => self.base.base_set_a_item_id_primitive(a_item_id),
+            None => self.base.base_set_a_item_id_primitive(a_item_id),
         }
         // Even if mutation is not effective with old base type ID, it might become effective with
         // the new one, so - reload adapted data the mutated way regardless of presence of mutation
         // cache
-        self.update_a_data(reuse_eupdates, src);
+        self.update_r_data(reuse_eupdates, src);
     }
     pub(in crate::uad::item) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
         self.base.get_a_group_id()
@@ -147,8 +141,8 @@ impl UadItemBaseMutable {
     }
     pub(in crate::uad::item) fn get_a_attrs(&self) -> Option<&RMap<ad::AAttrId, ad::AAttrVal>> {
         let item_mutation = match &self.mutation {
-            MutaOption::Some(item_mutation) => item_mutation,
-            MutaOption::None => return self.base.get_a_attrs(),
+            Some(item_mutation) => item_mutation,
+            None => return self.base.get_a_attrs(),
         };
         match &item_mutation.cache {
             Some(cache) => Some(&cache.merged_a_attrs),
@@ -165,27 +159,33 @@ impl UadItemBaseMutable {
         self.base.get_a_skill_reqs()
     }
     // Extra data access methods
-    pub(in crate::uad::item) fn get_a_xt(&self) -> Option<&ad::AItemXt> {
+    pub(in crate::uad::item) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
         let item_mutation = match &self.mutation {
-            MutaOption::Some(item_mutation) => item_mutation,
-            MutaOption::None => return self.base.get_a_xt(),
+            Some(item_mutation) => item_mutation,
+            None => return self.base.get_r_axt(),
         };
         match &item_mutation.cache {
-            Some(cache) => Some(&cache.a_xt),
-            None => self.base.get_a_xt(),
+            Some(cache) => Some(&cache.r_axt),
+            None => self.base.get_r_axt(),
         }
     }
     pub(in crate::uad::item) fn get_max_a_state(&self) -> Option<ad::AState> {
-        self.base.base_get_a_item().map(|v| v.ai.max_state)
+        self.base.base_get_r_item().map(|v| v.get_max_state())
     }
     pub(in crate::uad::item) fn get_val_fitted_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base.base_get_a_item().and_then(|v| v.ai.val_fitted_group_id)
+        self.base.base_get_r_item().and_then(|v| v.get_val_fitted_group_id())
     }
     pub(in crate::uad::item) fn get_val_online_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base.base_get_a_item().and_then(|v| v.ai.val_online_group_id)
+        self.base.base_get_r_item().and_then(|v| v.get_val_online_group_id())
     }
     pub(in crate::uad::item) fn get_val_active_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base.base_get_a_item().and_then(|v| v.ai.val_active_group_id)
+        self.base.base_get_r_item().and_then(|v| v.get_val_active_group_id())
+    }
+    pub(in crate::uad::item) fn takes_turret_hardpoint(&self) -> bool {
+        self.base.takes_turret_hardpoint()
+    }
+    pub(in crate::uad::item) fn takes_launcher_hardpoint(&self) -> bool {
+        self.base.takes_launcher_hardpoint()
     }
     // Misc methods
     pub(in crate::uad::item) fn get_reffs(&self) -> Option<&RSet<ad::AEffectId>> {
@@ -206,8 +206,7 @@ impl UadItemBaseMutable {
         reuse_eupdates: &mut UadEffectUpdates,
         src: &Src,
     ) {
-        self.base
-            .base_set_a_state(state, reuse_eupdates, src, self.mutation.get_mutated_a_xt())
+        self.base.set_a_state(state, reuse_eupdates, src)
     }
     pub(in crate::uad::item) fn get_effect_mode(&self, a_effect_id: &ad::AEffectId) -> EffectMode {
         self.base.get_effect_mode(a_effect_id)
@@ -219,13 +218,7 @@ impl UadItemBaseMutable {
         reuse_eupdates: &mut UadEffectUpdates,
         src: &Src,
     ) {
-        self.base.base_set_effect_mode(
-            a_effect_id,
-            effect_mode,
-            reuse_eupdates,
-            src,
-            self.mutation.get_mutated_a_xt(),
-        )
+        self.base.set_effect_mode(a_effect_id, effect_mode, reuse_eupdates, src)
     }
     pub(in crate::uad::item) fn set_effect_modes(
         &mut self,
@@ -233,18 +226,17 @@ impl UadItemBaseMutable {
         reuse_eupdates: &mut UadEffectUpdates,
         src: &Src,
     ) {
-        self.base
-            .base_set_effect_modes(modes, reuse_eupdates, src, self.mutation.get_mutated_a_xt())
+        self.base.set_effect_modes(modes, reuse_eupdates, src)
     }
     pub(in crate::uad::item) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::uad::item) fn update_a_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
+    pub(in crate::uad::item) fn update_r_data(&mut self, reuse_eupdates: &mut UadEffectUpdates, src: &Src) {
         let item_mutation = match &mut self.mutation {
-            MutaOption::Some(item_mutation) => item_mutation,
+            Some(item_mutation) => item_mutation,
             // No mutation - just update base item
-            MutaOption::None => {
-                self.base.base_update_a_data(reuse_eupdates, src, None);
+            None => {
+                self.base.update_r_data(reuse_eupdates, src);
                 return;
             }
         };
@@ -252,13 +244,12 @@ impl UadItemBaseMutable {
             Some(cache) => cache.base_a_item_id,
             None => self.base.get_a_item_id(),
         };
-        let a_mutator = match src.get_a_mutator(&item_mutation.a_mutator_id) {
-            Some(a_mutator) => a_mutator,
+        let r_mutator = match src.get_r_mutator(&item_mutation.a_mutator_id) {
+            Some(r_mutator) => r_mutator,
             // No mutator - invalidate mutated cache and use non-mutated item
-            None => match src.get_a_item(&base_a_item_id) {
+            None => match src.get_r_item(&base_a_item_id) {
                 Some(base_a_item) => {
-                    self.base
-                        .base_set_a_item(base_a_item.clone(), reuse_eupdates, src, None);
+                    self.base.base_set_r_item(base_a_item.clone(), reuse_eupdates, src);
                     item_mutation.cache = None;
                     return;
                 }
@@ -269,14 +260,17 @@ impl UadItemBaseMutable {
                 }
             },
         };
-        let mutated_a_item = match a_mutator.item_map.get(&base_a_item_id).and_then(|v| src.get_a_item(v)) {
-            Some(mutated_a_item) => mutated_a_item,
+        let mutated_r_item = match r_mutator
+            .get_item_map()
+            .get(&base_a_item_id)
+            .and_then(|v| src.get_r_item(v))
+        {
+            Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no item itself - invalidate mutated cache and use non-mutated
             // item
-            None => match src.get_a_item(&base_a_item_id) {
-                Some(base_a_item) => {
-                    self.base
-                        .base_set_a_item(base_a_item.clone(), reuse_eupdates, src, None);
+            None => match src.get_r_item(&base_a_item_id) {
+                Some(base_r_item) => {
+                    self.base.base_set_r_item(base_r_item.clone(), reuse_eupdates, src);
                     item_mutation.cache = None;
                     return;
                 }
@@ -288,17 +282,16 @@ impl UadItemBaseMutable {
             },
         };
         // Compose attribute cache
-        let mut a_attrs = get_combined_a_attr_values(src.get_a_item(&base_a_item_id), mutated_a_item);
-        let a_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
-        apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation.attr_rolls);
+        let mut a_attrs = get_combined_attr_values(src.get_r_item(&base_a_item_id), mutated_r_item);
+        let r_axt = rd::RItemAXt::new_inherited(mutated_r_item, &a_attrs);
+        apply_attr_mutations(&mut a_attrs, r_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
-        self.base
-            .base_set_a_item(mutated_a_item.clone(), reuse_eupdates, src, Some(&a_xt));
+        self.base.base_set_r_item(mutated_r_item.clone(), reuse_eupdates, src);
         item_mutation.cache = Some(ItemMutationDataCache {
             base_a_item_id,
-            a_mutator: a_mutator.clone(),
+            r_mutator: r_mutator.clone(),
             merged_a_attrs: a_attrs,
-            a_xt,
+            r_axt,
         })
     }
     // Mutation-specific methods
@@ -321,38 +314,41 @@ impl UadItemBaseMutable {
         let base_a_item_id = self.base.get_a_item_id();
         let mutator_id = mutation_request.mutator_id;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
-        let a_mutator = match src.get_a_mutator(&mutator_id) {
-            Some(a_mutator) => a_mutator,
+        let r_mutator = match src.get_r_mutator(&mutator_id) {
+            Some(r_mutator) => r_mutator,
             // No mutator - nothing changes, except for user-defined mutations getting stored
             None => {
-                self.mutation = MutaOption::Some(item_mutation_data);
+                self.mutation = Some(item_mutation_data);
                 reuse_eupdates.clear();
                 return Ok(());
             }
         };
-        let mutated_a_item = match a_mutator.item_map.get(&base_a_item_id).and_then(|v| src.get_a_item(v)) {
-            Some(mutated_a_item) => mutated_a_item,
+        let mutated_r_item = match r_mutator
+            .get_item_map()
+            .get(&base_a_item_id)
+            .and_then(|v| src.get_r_item(v))
+        {
+            Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no mutated item itself - nothing changes, except for
             // user-defined mutations getting stored
             None => {
-                self.mutation = MutaOption::Some(item_mutation_data);
+                self.mutation = Some(item_mutation_data);
                 reuse_eupdates.clear();
                 return Ok(());
             }
         };
         // Since we have all the data now, apply mutation properly
-        let mut a_attrs = get_combined_a_attr_values(self.base.base_get_a_item(), mutated_a_item);
-        let a_xt = ad::AItemXt::new_inherited(mutated_a_item, &a_attrs);
-        apply_attr_mutations(&mut a_attrs, a_mutator, &item_mutation_data.attr_rolls);
-        self.base
-            .base_set_a_item(mutated_a_item.clone(), reuse_eupdates, src, Some(&a_xt));
+        let mut a_attrs = get_combined_attr_values(self.base.base_get_r_item(), mutated_r_item);
+        let r_axt = rd::RItemAXt::new_inherited(mutated_r_item, &a_attrs);
+        apply_attr_mutations(&mut a_attrs, r_mutator, &item_mutation_data.attr_rolls);
+        self.base.base_set_r_item(mutated_r_item.clone(), reuse_eupdates, src);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_a_item_id,
-            a_mutator: a_mutator.clone(),
+            r_mutator: r_mutator.clone(),
             merged_a_attrs: a_attrs,
-            a_xt,
+            r_axt,
         });
-        self.mutation = MutaOption::Some(item_mutation_data);
+        self.mutation = Some(item_mutation_data);
         Ok(())
     }
     pub(in crate::uad::item) fn change_mutation_attrs(
@@ -361,8 +357,8 @@ impl UadItemBaseMutable {
         attr_mutation_requests: Vec<AttrMutationRequest>,
     ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
-            MutaOption::Some(item_mutation) => item_mutation,
-            MutaOption::None => {
+            Some(item_mutation) => item_mutation,
+            None => {
                 return Err(ItemMutatedError {
                     item_id: self.get_item_id(),
                 });
@@ -392,20 +388,20 @@ impl UadItemBaseMutable {
         // for the source the cache was generated with, and this method is supposed to be called
         // with the same source
         let mutated_a_item_id = mutation_cache
-            .a_mutator
-            .item_map
+            .r_mutator
+            .get_item_map()
             .get(&mutation_cache.base_a_item_id)
             .unwrap();
-        let mutated_a_item = src.get_a_item(mutated_a_item_id).unwrap();
+        let mutated_r_item = src.get_r_item(mutated_a_item_id).unwrap();
         // Process mutation requests, recording attributes whose values were changed for the item
-        let mut base_a_item_cache = None;
+        let mut base_r_item_cache = None;
         let mut changed_a_attr_ids = Vec::new();
         for attr_mutation_request in attr_mutation_requests {
             let unmutated_a_value = get_combined_a_attr_value(
                 src,
                 &mutation_cache.base_a_item_id,
-                &mut base_a_item_cache,
-                mutated_a_item,
+                &mut base_r_item_cache,
+                mutated_r_item,
                 &attr_mutation_request.a_attr_id,
             );
             let new_a_value = match attr_mutation_request.value {
@@ -423,15 +419,18 @@ impl UadItemBaseMutable {
                         // updated user data, so just go to next attribute
                         None => continue,
                     };
-                    let a_mutation_range =
-                        match mutation_cache.a_mutator.attr_mods.get(&attr_mutation_request.a_attr_id) {
-                            Some(a_mutation_range) => a_mutation_range,
-                            // No mutation range now means there couldn't be any mutated value
-                            // earlier as well, regardless of user-defined roll data, thus attribute
-                            // value cannot change. We already updated user data, so just go to next
-                            // attribute
-                            None => continue,
-                        };
+                    let a_mutation_range = match mutation_cache
+                        .r_mutator
+                        .get_attr_mods()
+                        .get(&attr_mutation_request.a_attr_id)
+                    {
+                        Some(a_mutation_range) => a_mutation_range,
+                        // No mutation range now means there couldn't be any mutated value
+                        // earlier as well, regardless of user-defined roll data, thus attribute
+                        // value cannot change. We already updated user data, so just go to next
+                        // attribute
+                        None => continue,
+                    };
                     mutate_a_attr_value(unmutated_a_value, a_mutation_range, attr_roll)
                 }
                 // Mutation removal request
@@ -445,7 +444,11 @@ impl UadItemBaseMutable {
                         None => continue,
                     };
                     // Limit possible values by roll range, if it is available
-                    match mutation_cache.a_mutator.attr_mods.get(&attr_mutation_request.a_attr_id) {
+                    match mutation_cache
+                        .r_mutator
+                        .get_attr_mods()
+                        .get(&attr_mutation_request.a_attr_id)
+                    {
                         Some(a_mutation_range) => limit_a_attr_value(unmutated_a_value, a_mutation_range),
                         None => unmutated_a_value,
                     }
@@ -471,8 +474,8 @@ impl UadItemBaseMutable {
         src: &Src,
     ) -> Result<(), ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
-            MutaOption::Some(item_mutation) => item_mutation,
-            MutaOption::None => {
+            Some(item_mutation) => item_mutation,
+            None => {
                 reuse_eupdates.clear();
                 return Err(ItemMutatedError {
                     item_id: self.get_item_id(),
@@ -480,7 +483,7 @@ impl UadItemBaseMutable {
             }
         };
         item_mutation.a_mutator_id = a_mutator_id;
-        self.update_a_data(reuse_eupdates, src);
+        self.update_r_data(reuse_eupdates, src);
         Ok(())
     }
     pub(in crate::uad::item) fn unmutate(
@@ -489,8 +492,8 @@ impl UadItemBaseMutable {
         src: &Src,
     ) -> Result<(), ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
-            MutaOption::Some(item_mutation) => item_mutation,
-            MutaOption::None => {
+            Some(item_mutation) => item_mutation,
+            None => {
                 reuse_eupdates.clear();
                 return Err(ItemMutatedError {
                     item_id: self.get_item_id(),
@@ -502,38 +505,17 @@ impl UadItemBaseMutable {
             // ID is stored on cache
             Some(cache) => {
                 let a_item_id = cache.base_a_item_id;
-                self.base
-                    .base_set_a_item_id_and_reload(a_item_id, reuse_eupdates, src, None);
-                self.mutation = MutaOption::None;
+                self.base.set_a_item_id(a_item_id, reuse_eupdates, src);
+                self.mutation = None;
             }
             // No cache - mutation was not effective, and base item was used already. Just unassign
             // mutation in this case
             None => {
-                self.mutation = MutaOption::None;
+                self.mutation = None;
                 reuse_eupdates.clear();
             }
         };
         Ok(())
-    }
-}
-
-#[derive(Clone)]
-enum MutaOption {
-    Some(ItemMutationData),
-    None,
-}
-impl MutaOption {
-    fn get_mutated_a_xt(&self) -> Option<&ad::AItemXt> {
-        match self {
-            Self::Some(item_mutation) => item_mutation.cache.as_ref().map(|v| &v.a_xt),
-            Self::None => None,
-        }
-    }
-    fn as_ref(&self) -> Option<&ItemMutationData> {
-        match self {
-            Self::Some(item_mutation) => Some(item_mutation),
-            Self::None => None,
-        }
     }
 }
 
@@ -568,16 +550,16 @@ impl ItemMutationData {
 #[derive(Clone)]
 pub(crate) struct ItemMutationDataCache {
     base_a_item_id: ad::AItemId,
-    a_mutator: ad::ArcMuta,
+    r_mutator: rd::RcMuta,
     merged_a_attrs: RMap<ad::AAttrId, ad::AAttrVal>,
-    a_xt: ad::AItemXt,
+    r_axt: rd::RItemAXt,
 }
 impl ItemMutationDataCache {
     pub(crate) fn get_base_a_item_id(&self) -> ad::AItemId {
         self.base_a_item_id
     }
-    pub(crate) fn get_a_mutator(&self) -> &ad::AMuta {
-        &self.a_mutator
+    pub(crate) fn get_r_mutator(&self) -> &rd::RMuta {
+        &self.r_mutator
     }
 }
 
@@ -595,10 +577,10 @@ fn convert_request_to_data(mutation_request: ItemMutationRequest) -> ItemMutatio
 // Attribute mutations
 fn apply_attr_mutations(
     a_attrs: &mut RMap<ad::AAttrId, ad::AAttrVal>,
-    a_mutator: &ad::AMuta,
+    r_mutator: &rd::RMuta,
     attr_rolls: &RMap<ad::AAttrId, UnitInterval>,
 ) {
-    for (attr_id, attr_mutation_range) in a_mutator.attr_mods.iter() {
+    for (attr_id, attr_mutation_range) in r_mutator.get_attr_mods().iter() {
         let unmutated_value = match a_attrs.get(attr_id) {
             Some(unmutated_value) => *unmutated_value,
             None => continue,
@@ -639,22 +621,22 @@ fn limit_a_attr_value(unmutated_a_value: ad::AAttrVal, roll_range: &ad::AMutaAtt
 fn get_combined_a_attr_value<'a>(
     src: &'a Src,
     base_a_item_id: &ad::AItemId,
-    base_a_item_cache: &mut Option<Option<&'a ad::ArcItemRt>>,
-    mutated_a_item: &ad::AItemRt,
+    base_r_item_cache: &mut Option<Option<&'a rd::RcItem>>,
+    mutated_r_item: &rd::RItem,
     a_attr_id: &ad::AAttrId,
 ) -> Option<ad::AAttrVal> {
-    match mutated_a_item.ai.attrs.get(a_attr_id) {
+    match mutated_r_item.get_attrs().get(a_attr_id) {
         Some(unmutated_value) => Some(*unmutated_value),
-        None => match base_a_item_cache {
-            Some(opt_base_a_item) => match opt_base_a_item {
-                Some(base_a_item) => base_a_item.ai.attrs.get(a_attr_id).copied(),
+        None => match base_r_item_cache {
+            Some(opt_base_r_item) => match opt_base_r_item {
+                Some(base_r_item) => base_r_item.get_attrs().get(a_attr_id).copied(),
                 None => None,
             },
             None => {
-                let opt_base_a_item = src.get_a_item(base_a_item_id);
-                base_a_item_cache.replace(opt_base_a_item);
-                match opt_base_a_item {
-                    Some(base_a_item) => base_a_item.ai.attrs.get(a_attr_id).copied(),
+                let opt_base_r_item = src.get_r_item(base_a_item_id);
+                base_r_item_cache.replace(opt_base_r_item);
+                match opt_base_r_item {
+                    Some(base_r_item) => base_r_item.get_attrs().get(a_attr_id).copied(),
                     None => None,
                 }
             }
@@ -662,19 +644,19 @@ fn get_combined_a_attr_value<'a>(
     }
 }
 
-pub(crate) fn get_combined_a_attr_values(
-    base_a_item: Option<&ad::ArcItemRt>,
-    mutated_a_item: &ad::AItemRt,
+pub(crate) fn get_combined_attr_values(
+    base_r_item: Option<&rd::RcItem>,
+    mutated_r_item: &rd::RItem,
 ) -> RMap<ad::AAttrId, ad::AAttrVal> {
-    match base_a_item {
-        Some(base_a_item) => {
-            let mut attrs = base_a_item.ai.attrs.clone();
+    match base_r_item {
+        Some(base_r_item) => {
+            let mut attrs = base_r_item.get_attrs().clone();
             // Mutated item attributes have priority in case of collisions
-            for (attr_id, attr_val) in mutated_a_item.ai.attrs.iter() {
+            for (attr_id, attr_val) in mutated_r_item.get_attrs().iter() {
                 attrs.insert(*attr_id, *attr_val);
             }
             attrs
         }
-        None => mutated_a_item.ai.attrs.clone(),
+        None => mutated_r_item.get_attrs().clone(),
     }
 }
