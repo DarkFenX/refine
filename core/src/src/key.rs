@@ -3,39 +3,33 @@ use std::{
     sync::Arc,
 };
 
-use crate::{ad, rd, util::Map};
+use crate::{
+    ad, rd,
+    util::{GetId, Map},
+};
 
-pub(in crate::src) trait Key {
-    type Item;
-    fn get_key(&self) -> Self::Item;
-}
-impl Key for rd::RItem {
-    type Item = ad::AItemId;
-    fn get_key(&self) -> Self::Item {
+impl GetId<ad::AItemId> for rd::RItem {
+    fn get_id(&self) -> ad::AItemId {
         self.get_id()
     }
 }
-impl Key for rd::RAttr {
-    type Item = ad::AAttrId;
-    fn get_key(&self) -> Self::Item {
+impl GetId<ad::AAttrId> for rd::RAttr {
+    fn get_id(&self) -> ad::AAttrId {
         self.get_id()
     }
 }
-impl Key for rd::REffect {
-    type Item = ad::AEffectId;
-    fn get_key(&self) -> Self::Item {
+impl GetId<ad::AEffectId> for rd::REffect {
+    fn get_id(&self) -> ad::AEffectId {
         self.get_id()
     }
 }
-impl Key for rd::RMuta {
-    type Item = ad::AItemId;
-    fn get_key(&self) -> Self::Item {
+impl GetId<ad::AItemId> for rd::RMuta {
+    fn get_id(&self) -> ad::AItemId {
         self.get_id()
     }
 }
-impl Key for rd::RBuff {
-    type Item = ad::ABuffId;
-    fn get_key(&self) -> Self::Item {
+impl GetId<ad::ABuffId> for rd::RBuff {
+    fn get_id(&self) -> ad::ABuffId {
         self.get_id()
     }
 }
@@ -43,8 +37,8 @@ impl Key for rd::RBuff {
 pub(in crate::src) fn map_to_arcmap<K, V, H>(map: impl ExactSizeIterator<Item = V>) -> Map<K, Arc<V>, H>
 where
     K: Eq + PartialEq + Hash,
-    V: Key<Item = K>,
+    V: GetId<K>,
     H: BuildHasher + Default,
 {
-    map.map(|v| (v.get_key(), Arc::new(v))).collect()
+    map.map(|v| (v.get_id(), Arc::new(v))).collect()
 }
