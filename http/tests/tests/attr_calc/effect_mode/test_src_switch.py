@@ -2,6 +2,9 @@ from tests import Effect, approx, check_no_field
 
 
 def test_src_switch(client, consts):
+    # Internally, effects are usually tracked by keys, which don't exist unless effect exists in
+    # source data; for effect mode setting to work when effect doesn't exist, there is extra logic,
+    # here we check basics of it
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d2])
