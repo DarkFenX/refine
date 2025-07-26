@@ -41,8 +41,8 @@ impl VastFitData {
                 ctx.u_data.items.id_by_key(charge_key),
                 ValChargeVolumeChargeInfo {
                     parent_item_id: ctx.u_data.items.id_by_key(cont_key),
-                    charge_volume: ctx.u_data.items.get(charge_key).get_r_axt().unwrap().volume,
-                    max_volume: ctx.u_data.items.get(cont_key).get_r_axt().unwrap().capacity,
+                    charge_volume: ctx.u_data.items.get(charge_key).get_axt().unwrap().volume,
+                    max_volume: ctx.u_data.items.get(cont_key).get_axt().unwrap().capacity,
                 },
             );
         }

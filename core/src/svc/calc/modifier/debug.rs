@@ -1,12 +1,12 @@
 use crate::{
-    dbg::{DebugResult, check_a_effect_id, check_fit_key, check_item_key},
+    dbg::{DebugResult, check_effect_key, check_fit_key, check_item_key},
     svc::calc::{Context, CtxModifier, RawModifier},
     ud::UData,
 };
 
 pub(in crate::svc) fn check_rmod(u_data: &UData, rmod: &RawModifier) -> DebugResult {
     check_item_key(u_data, rmod.affector_espec.item_key, true)?;
-    check_a_effect_id(u_data, &rmod.affector_espec.a_effect_id)?;
+    check_effect_key(u_data, rmod.affector_espec.effect_key)?;
     Ok(())
 }
 

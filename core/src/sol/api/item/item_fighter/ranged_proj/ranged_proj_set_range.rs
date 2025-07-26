@@ -24,7 +24,7 @@ impl SolarSystem {
                 projectee_item_id: self.u_data.items.id_by_key(projectee_key),
             })?;
         let projectee_u_item = self.u_data.items.get(projectee_key);
-        let u_prange = UProjRange::from_prange_with_axt(range, u_fighter.get_r_axt(), projectee_u_item.get_r_axt());
+        let u_prange = UProjRange::from_prange_with_axt(range, u_fighter.get_axt(), projectee_u_item.get_axt());
         // Do nothing if ranges are equal
         if u_prange == old_u_prange {
             return Ok(());

@@ -83,7 +83,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     match item.get_charge_key() {
         Some(charge_key) => {
             let charge = ctx.u_data.items.get(charge_key);
-            match charge.get_a_item_id() {
+            match charge.get_type_id() {
                 ac::items::NANITE_REPAIR_PASTE => {
                     match calc.get_item_attr_val_full(ctx, espec.item_key, &AAR_MULTIPLIER) {
                         Ok(sol_attr) => Some(sol_attr.dogma),
@@ -114,7 +114,7 @@ fn revise_on_item_add_removal(
     changed_item: &UItem,
 ) -> bool {
     match ctx.u_data.items.get(affector_key).get_charge_key() {
-        Some(charge_key) => changed_key == charge_key && changed_item.get_a_item_id() == ac::items::NANITE_REPAIR_PASTE,
+        Some(charge_key) => changed_key == charge_key && changed_item.get_type_id() == ac::items::NANITE_REPAIR_PASTE,
         // Not chargeable item, or no charge on AAR -> not changing anything
         None => false,
     }

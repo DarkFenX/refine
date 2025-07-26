@@ -115,7 +115,7 @@ impl Calc {
         let mut cvals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
-        for attr_id in item.get_a_attrs().unwrap().keys() {
+        for attr_id in item.get_attrs().unwrap().keys() {
             if let Entry::Vacant(entry) = cvals.entry(*attr_id) {
                 match self.get_item_attr_val_full(ctx, item_key, attr_id) {
                     Ok(v) => entry.insert(v),
@@ -158,7 +158,7 @@ impl Calc {
                 None => continue,
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
-            let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
+            let affector_a_item_cat_id = affector_item.get_category_id().unwrap();
             let mod_key = ModificationKey::from(cmod);
             let modification = Modification {
                 op: cmod.raw.op,
@@ -174,7 +174,7 @@ impl Calc {
     }
     fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> CalcAttrVal {
         let item = ctx.u_data.items.get(item_key);
-        let r_attr = match ctx.u_data.src.get_r_attr(a_attr_id) {
+        let r_attr = match ctx.u_data.src.get_attr(a_attr_id) {
             Some(r_attr) => r_attr,
             None => &get_r_attr(*a_attr_id),
         };

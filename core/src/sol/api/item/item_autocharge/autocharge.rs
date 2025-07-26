@@ -5,6 +5,7 @@ use crate::{
         api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
     ud::{UAutocharge, UItemKey},
+    util::GetId,
 };
 
 // Autocharges expose no projection info, since it fully matches projections of the parent item
@@ -58,7 +59,7 @@ impl<'a> AutochargeMut<'a> {
         get_cont_item(self.sol, self.key)
     }
     pub fn get_cont_item_mut(&mut self) -> ItemMut<'_> {
-        let cont_key = get_u_autocharge(self.sol, self.key).get_cont_key();
+        let cont_key = get_u_autocharge(self.sol, self.key).get_cont_item_key();
         ItemMut::new(self.sol, cont_key)
     }
     pub fn get_cont_effect_id(&self) -> EffectId {
@@ -89,11 +90,12 @@ fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
     Fit::new(sol, fit_key)
 }
 fn get_cont_item(sol: &SolarSystem, item_key: UItemKey) -> Item<'_> {
-    let cont_key = get_u_autocharge(sol, item_key).get_cont_key();
+    let cont_key = get_u_autocharge(sol, item_key).get_cont_item_key();
     Item::new(sol, cont_key)
 }
 fn get_cont_effect_id(sol: &SolarSystem, item_key: UItemKey) -> EffectId {
-    get_u_autocharge(sol, item_key).get_cont_effect_id().into()
+    let cont_effect_key = get_u_autocharge(sol, item_key).get_cont_effect_key();
+    sol.u_data.src.get_effect(cont_effect_key).get_id().into()
 }
 fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
     !get_u_autocharge(sol, item_key).get_force_disable()

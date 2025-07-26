@@ -1,5 +1,5 @@
 use crate::{
-    dbg::{DebugError, DebugResult, check_a_effect_id, check_item_key},
+    dbg::{DebugError, DebugResult, check_effect_key, check_item_key},
     svc::eff_projs::EffProjs,
     ud::UData,
 };
@@ -8,7 +8,7 @@ impl EffProjs {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for ((projector_espec, projectee_key), svc_range) in self.ranges.iter() {
             check_item_key(u_data, projector_espec.item_key, true)?;
-            check_a_effect_id(u_data, &projector_espec.a_effect_id)?;
+            check_effect_key(u_data, projector_espec.effect_key)?;
             // Projectees are not necesssarily loaded
             check_item_key(u_data, *projectee_key, false)?;
             svc_range.consistency_check()?;

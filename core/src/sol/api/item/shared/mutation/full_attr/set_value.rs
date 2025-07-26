@@ -21,7 +21,7 @@ impl<'a> FullMAttrMut<'a> {
                             .get_cache()
                             .unwrap()
                             .get_base_a_item_id(),
-                        drone.get_mutation_data().unwrap().get_a_mutator_id(),
+                        drone.get_mutation_data().unwrap().get_mutator_id(),
                     ),
                     UItem::Module(module) => (
                         module
@@ -30,7 +30,7 @@ impl<'a> FullMAttrMut<'a> {
                             .get_cache()
                             .unwrap()
                             .get_base_a_item_id(),
-                        module.get_mutation_data().unwrap().get_a_mutator_id(),
+                        module.get_mutation_data().unwrap().get_mutator_id(),
                     ),
                     _ => unreachable!("unmutable item kind is used in mutation"),
                 };

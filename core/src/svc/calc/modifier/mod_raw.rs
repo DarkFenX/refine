@@ -17,7 +17,6 @@ use crate::{
         eff_funcs,
     },
     ud::{UItem, UItemKey},
-    util::GetId,
 };
 
 #[derive(Copy, Clone)]
@@ -77,7 +76,7 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_key, r_effect.get_id()),
+            affector_espec: EffectSpec::new(affector_key, r_effect.get_key()),
             affector_value: AffectorValue::AttrId(amod.affector_attr_id),
             op: (&amod.op).into(),
             aggr_mode: AggrMode::Stack,
@@ -149,7 +148,7 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_key, r_effect.get_id()),
+            affector_espec: EffectSpec::new(affector_key, r_effect.get_key()),
             affector_value,
             op: (&r_buff.get_op()).into(),
             aggr_mode: AggrMode::from_r_buff(r_buff),

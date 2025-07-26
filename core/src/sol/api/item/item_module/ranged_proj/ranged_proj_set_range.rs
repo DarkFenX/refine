@@ -21,7 +21,7 @@ impl SolarSystem {
         let u_prange = UProjRange::from_prange_with_axt(
             range,
             get_r_ship_axt(&self.u_data, u_module.get_fit_key()),
-            self.u_data.items.get(projectee_key).get_r_axt(),
+            self.u_data.items.get(projectee_key).get_axt(),
         );
         // Do nothing if ranges are equal
         if u_prange == old_u_prange {

@@ -52,7 +52,7 @@ fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> O
     // - if value was shifted into any direction (e.g. unmutated 10 with range [1.2, 1.4] exposed as
     //   base value 12), it will still lie on appropriate edge of shifted roll (in this case it will be
     //   0.0 relatively [14.4, 16.8] range - range is wrong, result is right).
-    let value = u_item.get_a_attr(a_attr_id).unwrap();
+    let value = u_item.get_attr(a_attr_id).unwrap();
     let min_value = value * a_mutation_range.min_mult;
     let max_value = value * a_mutation_range.max_mult;
     if min_value == max_value {

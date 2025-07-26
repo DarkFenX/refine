@@ -47,7 +47,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, KeyedItemLoadedError> {
-        let item_a_attrs = match ctx.u_data.items.get(item_key).get_a_attrs() {
+        let item_a_attrs = match ctx.u_data.items.get(item_key).get_attrs() {
             Some(item_a_attrs) => item_a_attrs,
             None => return Err(KeyedItemLoadedError { item_key }),
         };
@@ -73,7 +73,7 @@ impl Calc {
                 None => continue,
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
-            let affector_a_item_cat_id = affector_item.get_a_category_id().unwrap();
+            let affector_a_item_cat_id = affector_item.get_category_id().unwrap();
             let mod_key = ModificationKey::from(cmod);
             let modification = Modification {
                 op: cmod.raw.op,
@@ -93,7 +93,7 @@ impl Calc {
     }
     fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> AttrValInfo {
         let item = ctx.u_data.items.get(item_key);
-        let r_attr = match ctx.u_data.src.get_r_attr(a_attr_id) {
+        let r_attr = match ctx.u_data.src.get_attr(a_attr_id) {
             Some(r_attr) => r_attr,
             None => &get_r_attr(*a_attr_id),
         };

@@ -23,5 +23,5 @@ impl<'a> FullMAttrMut<'a> {
 }
 
 fn get_value(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> AttrVal {
-    sol.u_data.items.get(item_key).get_a_attr(a_attr_id).unwrap()
+    sol.u_data.items.get(item_key).get_attr(a_attr_id).unwrap()
 }

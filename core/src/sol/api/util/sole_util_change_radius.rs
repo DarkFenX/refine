@@ -14,7 +14,7 @@ impl SolarSystem {
     ) {
         let u_item = u_data.items.get_mut(item_key);
         // Outgoing projections - service change should be handled in calling method
-        let item_radius = u_item.get_r_axt().map(|v| v.radius).unwrap_or(OF(0.0));
+        let item_radius = u_item.get_axt().map(|v| v.radius).unwrap_or(OF(0.0));
         for u_prange in u_item.get_projs_mut().unwrap().iter_ranges_mut() {
             u_prange.update_src_rad(item_radius);
         }

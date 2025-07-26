@@ -1,7 +1,7 @@
 use super::{info_drone::get_drone_cycle_info, info_module::get_module_cycle_info, info_shared::CycleOptions};
 use crate::{
-    ad,
     def::{AttrVal, Count},
+    rd::REffectKey,
     svc::{SvcCtx, calc::Calc},
     ud::{UItem, UItemKey},
     util::{InfCount, RMap},
@@ -88,13 +88,13 @@ pub(in crate::svc) fn get_item_cycle_info(
     item_key: UItemKey,
     options: CycleOptions,
     ignore_state: bool,
-) -> Option<RMap<ad::AEffectId, Cycle>> {
+) -> Option<RMap<REffectKey, Cycle>> {
     let u_item = ctx.u_data.items.get(item_key);
     match u_item {
         UItem::Autocharge(u_autocharge) => {
-            get_item_cycle_info(ctx, calc, u_autocharge.get_cont_key(), options, ignore_state)
+            get_item_cycle_info(ctx, calc, u_autocharge.get_cont_item_key(), options, ignore_state)
         }
-        UItem::Charge(u_charge) => get_item_cycle_info(ctx, calc, u_charge.get_cont_key(), options, ignore_state),
+        UItem::Charge(u_charge) => get_item_cycle_info(ctx, calc, u_charge.get_cont_item_key(), options, ignore_state),
         UItem::Drone(u_drone) => get_drone_cycle_info(ctx, calc, item_key, u_drone, ignore_state),
         UItem::Fighter(u_fighter) => {
             if !u_fighter.is_loaded() {

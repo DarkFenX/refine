@@ -7,7 +7,7 @@ use crate::{
 };
 
 pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec) -> Option<AttrVal> {
-    let r_effect = ctx.u_data.src.get_r_effect(&espec.a_effect_id)?;
+    let r_effect = ctx.u_data.src.get_effect(espec.effect_key);
     get_effect_duration_s(ctx, calc, espec.item_key, r_effect)
 }
 

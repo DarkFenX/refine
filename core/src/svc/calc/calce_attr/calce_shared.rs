@@ -43,7 +43,7 @@ impl Calc {
             _ => return None,
         };
         let proj_mult_getter = cmod.raw.proj_mult_getter?;
-        let r_effect = ctx.u_data.src.get_r_effect(&cmod.raw.affector_espec.a_effect_id)?;
+        let r_effect = ctx.u_data.src.get_effect(cmod.raw.affector_espec.effect_key);
         let prange = ctx.eff_projs.get_range(cmod.raw.affector_espec, projectee_key)?;
         Some(proj_mult_getter(
             ctx,
@@ -68,7 +68,7 @@ pub(super) fn get_r_attr(a_attr_id: ad::AAttrId) -> rd::RAttr {
 
 pub(super) fn get_base_attr_value(item: &UItem, r_attr: &rd::RAttr) -> AttrVal {
     // Fetch unmodified on-item attribute value, or use base attribute value if it is not available
-    match item.get_a_attrs().unwrap().get(&r_attr.get_id()) {
+    match item.get_attrs().unwrap().get(&r_attr.get_id()) {
         Some(orig_val) => *orig_val as AttrVal,
         None => r_attr.get_def_val() as AttrVal,
     }

@@ -1,17 +1,12 @@
 use crate::{
     ad,
     misc::{AttrSpec, EffectSpec},
-    rd,
-    src::Src,
+    rd::{REffectKey, RcEffect},
     svc::{Svc, SvcCtx},
     ud::{UData, UFighter, UFitKey, UFleet, UItem, UItemKey, UProjRange, USkill},
-    util::GetId,
 };
 
 impl Svc {
-    pub(crate) fn notify_src_changed(&mut self, src: &Src) {
-        self.calc.src_changed(src);
-    }
     pub(crate) fn notify_fit_added(&mut self, fit_key: UFitKey) {
         self.calc.fit_added(fit_key);
         self.vast.fit_added(fit_key);
@@ -89,22 +84,22 @@ impl Svc {
         u_data: &UData,
         item_key: UItemKey,
         item: &UItem,
-        r_effects: &[rd::RcEffect],
+        effects: &[RcEffect],
     ) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
-        self.calc.effects_started(svc_ctx, item_key, item, r_effects);
-        self.vast.effects_started(item_key, item, r_effects);
+        self.calc.effects_started(svc_ctx, item_key, item, effects);
+        self.vast.effects_started(item_key, item, effects);
     }
     pub(crate) fn notify_effects_stopped(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
         item: &UItem,
-        r_effects: &[rd::RcEffect],
+        effects: &[RcEffect],
     ) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
-        self.calc.effects_stopped(svc_ctx, item_key, item, r_effects);
-        self.vast.effects_stopped(item_key, item, r_effects);
+        self.calc.effects_stopped(svc_ctx, item_key, item, effects);
+        self.vast.effects_stopped(item_key, item, effects);
     }
     pub(crate) fn notify_item_projected(&mut self) {}
     pub(crate) fn notify_item_unprojected(&mut self) {}
@@ -114,46 +109,46 @@ impl Svc {
         u_data: &UData,
         projector_key: UItemKey,
         projector_item: &UItem,
-        r_effect: &rd::RcEffect,
+        effect: &RcEffect,
         projectee_key: UItemKey,
         projectee_item: &UItem,
         range: Option<UProjRange>,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, r_effect.get_id());
+        let projector_espec = EffectSpec::new(projector_key, effect.get_key());
         self.eff_projs.add_range(projector_espec, projectee_key, range);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
             .effect_projected(svc_ctx, projector_espec, projectee_key, projectee_item);
         self.vast
-            .effect_projected(projector_key, projector_item, r_effect, projectee_key, projectee_item);
+            .effect_projected(projector_key, projector_item, effect, projectee_key, projectee_item);
     }
     pub(crate) fn notify_effect_unprojected(
         &mut self,
         u_data: &UData,
         projector_key: UItemKey,
         projector_item: &UItem,
-        r_effect: &rd::RcEffect,
+        effect: &RcEffect,
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, r_effect.get_id());
+        let projector_espec = EffectSpec::new(projector_key, effect.get_key());
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
             .effect_unprojected(svc_ctx, projector_espec, projectee_key, projectee_item);
         self.vast
-            .effect_unprojected(projector_key, projector_item, r_effect, projectee_key, projectee_item);
+            .effect_unprojected(projector_key, projector_item, effect, projectee_key, projectee_item);
         self.eff_projs.remove_range(projector_espec, projectee_key);
     }
     pub(crate) fn notify_effect_proj_range_changed(
         &mut self,
         u_data: &UData,
         projector_key: UItemKey,
-        a_effect_id: ad::AEffectId,
+        effect_key: REffectKey,
         projectee_key: UItemKey,
         projectee_item: &UItem,
         range: Option<UProjRange>,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, a_effect_id);
+        let projector_espec = EffectSpec::new(projector_key, effect_key);
         self.eff_projs.change_range(projector_espec, projectee_key, range);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc

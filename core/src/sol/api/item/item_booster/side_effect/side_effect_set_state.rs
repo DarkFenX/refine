@@ -25,7 +25,7 @@ impl<'a> FullSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn set_state(&mut self, state: bool) {
-        set_state(self.sol, self.key, self.a_effect_id, state)
+        set_state(self.sol, self.key, self.effect_id, state)
     }
 }
 
@@ -34,7 +34,7 @@ impl<'a> StubSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn set_state(&mut self, state: bool) {
-        set_state(self.sol, self.key, self.a_effect_id, state)
+        set_state(self.sol, self.key, self.effect_id, state)
     }
 }
 

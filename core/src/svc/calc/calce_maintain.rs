@@ -4,20 +4,15 @@ use crate::{
     ac,
     misc::{AttrSpec, EffectSpec},
     rd,
-    src::Src,
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
     },
     ud::{UFitKey, UFleet, UItem, UItemKey},
-    util::GetId,
 };
 
 impl Calc {
     // Modification methods
-    pub(in crate::svc) fn src_changed(&mut self, src: &Src) {
-        self.rah_src_changed(src);
-    }
     pub(in crate::svc) fn fit_added(&mut self, fit_key: UFitKey) {
         self.std.reg_fit_for_sw(fit_key)
     }
@@ -126,7 +121,7 @@ impl Calc {
         let mut reuse_items = Vec::new();
         let mut reuse_cmods = Vec::new();
         for r_effect in r_effects.iter() {
-            let espec = EffectSpec::new(item_key, r_effect.get_id());
+            let espec = EffectSpec::new(item_key, r_effect.get_key());
             self.std.extract_raw_mods_for_effect(&mut reuse_rmods, espec);
             for rmod in reuse_rmods.iter() {
                 self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod)
@@ -212,11 +207,11 @@ impl Calc {
                 }
             }
             // Generate new modifiers using new value and apply them
-            let a_effect_ids = self.buffs.get_effects(&aspec.item_key);
-            if !a_effect_ids.is_empty() {
-                let effect_ids = a_effect_ids.copied().collect_vec();
+            let effect_keys = self.buffs.get_effects(&aspec.item_key);
+            if !effect_keys.is_empty() {
+                let effect_keys = effect_keys.collect_vec();
                 let rmods =
-                    self.generate_dependent_buff_mods(ctx, aspec.item_key, item, effect_ids.iter(), aspec.a_attr_id);
+                    self.generate_dependent_buff_mods(ctx, aspec.item_key, item, effect_keys.iter(), aspec.a_attr_id);
                 for rmod in rmods.iter() {
                     self.buffs.reg_dependent_mod(aspec, *rmod);
                 }

@@ -14,9 +14,9 @@ impl SolarSystem {
         // Update user data for module
         let u_module = self.u_data.items.get_mut(item_key).get_module_mut().unwrap();
         let charge_key = u_module.get_charge_key();
-        let old_a_state = u_module.get_a_state();
+        let old_a_state = u_module.get_state();
         u_module.set_module_state(state, reuse_eupdates, &self.u_data.src);
-        let new_a_state = u_module.get_a_state();
+        let new_a_state = u_module.get_state();
         // Update services for module
         SolarSystem::util_switch_item_state(
             &self.u_data,
@@ -29,9 +29,9 @@ impl SolarSystem {
         if let Some(charge_key) = charge_key {
             // Update user data for charge
             let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
-            let old_a_state = u_charge.get_a_state();
-            u_charge.set_a_state(state.into(), reuse_eupdates, &self.u_data.src);
-            let new_a_state = u_charge.get_a_state();
+            let old_a_state = u_charge.get_state();
+            u_charge.set_state(state.into(), reuse_eupdates, &self.u_data.src);
+            let new_a_state = u_charge.get_state();
             // Update services for charge
             SolarSystem::util_switch_item_state(
                 &self.u_data,

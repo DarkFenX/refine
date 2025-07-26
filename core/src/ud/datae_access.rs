@@ -28,7 +28,7 @@ impl UData {
         }
     }
     pub(crate) fn get_item_radius(&self, item_key: UItemKey) -> AttrVal {
-        match self.items.get(item_key).get_r_axt() {
+        match self.items.get(item_key).get_axt() {
             Some(r_axt) => r_axt.radius,
             None => OF(0.0),
         }

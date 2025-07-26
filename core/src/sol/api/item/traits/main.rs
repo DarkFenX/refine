@@ -11,6 +11,7 @@ use crate::{
         vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
     ud::UEffectUpdates,
+    util::GetId,
 };
 
 pub trait ItemCommon: ItemSealed {
@@ -18,14 +19,14 @@ pub trait ItemCommon: ItemSealed {
         self.get_sol().u_data.items.id_by_key(self.get_key())
     }
     fn get_type_id(&self) -> ItemTypeId {
-        self.get_sol().u_data.items.get(self.get_key()).get_a_item_id()
+        self.get_sol().u_data.items.get(self.get_key()).get_type_id()
     }
     fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = (EffectId, EffectInfo)>, IterItemEffectsError> {
         let sol = self.get_sol();
         let item_key = self.get_key();
         let item = sol.u_data.items.get(item_key);
-        let (a_effect_ids, reffs) = match (item.get_a_effect_datas(), item.get_reffs()) {
-            (Some(a_effect_datas), Some(reffs)) => (a_effect_datas.keys(), reffs),
+        let (effect_keys, reffs) = match (item.get_effect_datas(), item.get_reffs()) {
+            (Some(effect_datas), Some(reffs)) => (effect_datas.keys(), reffs),
             _ => {
                 return Err(ItemLoadedError {
                     item_id: sol.u_data.items.id_by_key(item_key),
@@ -33,10 +34,11 @@ pub trait ItemCommon: ItemSealed {
                 .into());
             }
         };
-        let effect_infos = a_effect_ids.map(move |a_effect_id| {
-            let running = reffs.contains(a_effect_id);
-            let mode = item.get_effect_mode(a_effect_id);
-            (a_effect_id.into(), EffectInfo { running, mode })
+        let effect_infos = effect_keys.map(move |&effect_key| {
+            let effect_id = sol.u_data.src.get_effect(effect_key).get_id();
+            let running = reffs.contains(&effect_key);
+            let mode = item.get_effect_key_mode(&effect_key);
+            (effect_id.into(), EffectInfo { running, mode })
         });
         Ok(effect_infos)
     }

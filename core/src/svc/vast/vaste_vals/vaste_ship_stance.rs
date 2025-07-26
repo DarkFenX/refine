@@ -29,7 +29,7 @@ impl VastFitData {
             None => return false,
         };
         matches!(
-            ship.get_a_item_id(),
+            ship.get_type_id(),
             ac::items::CONFESSOR | ac::items::HECATE | ac::items::JACKDAW | ac::items::SVIPUL
         ) || kfs.contains(&stance_key)
     }
@@ -51,7 +51,7 @@ impl VastFitData {
             }
         };
         if matches!(
-            ship.get_a_item_id(),
+            ship.get_type_id(),
             ac::items::CONFESSOR | ac::items::HECATE | ac::items::JACKDAW | ac::items::SVIPUL
         ) {
             return None;

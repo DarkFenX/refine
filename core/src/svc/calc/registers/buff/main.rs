@@ -1,40 +1,37 @@
 use crate::{
     ad,
     misc::AttrSpec,
-    rd,
+    rd::{REffect, REffectKey},
     svc::calc::RawModifier,
     ud::UItemKey,
-    util::{GetId, RMapRSet},
+    util::RMapRSet,
 };
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 #[derive(Clone)]
 pub(in crate::svc::calc) struct BuffRegister {
-    pub(super) a_effect_ids: RMapRSet<UItemKey, ad::AEffectId>,
+    pub(super) effect_keys: RMapRSet<UItemKey, REffectKey>,
     pub(super) rmods: RMapRSet<AttrSpec, RawModifier>,
 }
 impl BuffRegister {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            a_effect_ids: RMapRSet::new(),
+            effect_keys: RMapRSet::new(),
             rmods: RMapRSet::new(),
         }
     }
     // Effect methods
-    pub(in crate::svc::calc) fn get_effects(
-        &self,
-        item_key: &UItemKey,
-    ) -> impl ExactSizeIterator<Item = &ad::AEffectId> {
-        self.a_effect_ids.get(item_key)
+    pub(in crate::svc::calc) fn get_effects(&self, item_key: &UItemKey) -> impl ExactSizeIterator<Item = REffectKey> {
+        self.effect_keys.get(item_key).copied()
     }
-    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemKey, effect: &rd::REffect) {
+    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemKey, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.a_effect_ids.add_entry(item_key, effect.get_id());
+            self.effect_keys.add_entry(item_key, effect.get_key());
         }
     }
-    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemKey, effect: &rd::REffect) {
+    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemKey, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.a_effect_ids.remove_entry(&item_key, &effect.get_id());
+            self.effect_keys.remove_entry(&item_key, &effect.get_key());
         }
     }
     // Modifier methods
@@ -52,7 +49,7 @@ impl BuffRegister {
     }
 }
 
-fn uses_default_attrs(effect: &rd::REffect) -> bool {
+fn uses_default_attrs(effect: &REffect) -> bool {
     match &effect.get_buff_info() {
         Some(buff_info) => matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs),
         _ => false,

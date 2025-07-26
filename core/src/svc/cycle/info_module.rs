@@ -4,9 +4,10 @@ use super::{
     until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
 use crate::{
-    ac, ad,
+    ac,
     def::OF,
     nd::{NEffectChargeDepl, NEffectChargeLoc},
+    rd::REffectKey,
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UItem, UItemKey, UModule},
     util::{InfCount, RMap},
@@ -20,7 +21,7 @@ pub(super) fn get_module_cycle_info(
     u_module: &UModule,
     options: CycleOptions,
     ignore_state: bool,
-) -> Option<RMap<ad::AEffectId, Cycle>> {
+) -> Option<RMap<REffectKey, Cycle>> {
     if !u_module.is_loaded() {
         return None;
     };
@@ -28,7 +29,7 @@ pub(super) fn get_module_cycle_info(
     let mut self_killers = Vec::new();
     match ignore_state {
         true => {
-            for &a_effect_id in u_module.get_a_effect_datas().unwrap().keys() {
+            for &effect_key in u_module.get_effect_datas().unwrap().keys() {
                 fill_module_effect_info(
                     &mut cycle_infos,
                     &mut self_killers,
@@ -37,13 +38,13 @@ pub(super) fn get_module_cycle_info(
                     item_key,
                     u_item,
                     u_module,
-                    a_effect_id,
+                    effect_key,
                     options,
                 );
             }
         }
         false => {
-            for &a_effect_id in u_module.get_reffs().unwrap().iter() {
+            for &effect_key in u_module.get_reffs().unwrap().iter() {
                 fill_module_effect_info(
                     &mut cycle_infos,
                     &mut self_killers,
@@ -52,7 +53,7 @@ pub(super) fn get_module_cycle_info(
                     item_key,
                     u_item,
                     u_module,
-                    a_effect_id,
+                    effect_key,
                     options,
                 );
             }
@@ -60,31 +61,28 @@ pub(super) fn get_module_cycle_info(
     }
     // If there are any self-killer effects, choose the fastest one, and discard all other effects
     if !self_killers.is_empty() {
-        let fastest_sk_a_effect_id = self_killers
+        let fastest_sk_effect_key = self_killers
             .into_iter()
             .min_by_key(|sk_info| sk_info.duration_s)
             .unwrap()
-            .a_effect_id;
-        cycle_infos.retain(|&k, _| k == fastest_sk_a_effect_id);
+            .effect_key;
+        cycle_infos.retain(|&k, _| k == fastest_sk_effect_key);
     }
     Some(cycle_infos)
 }
 
 fn fill_module_effect_info(
-    cycle_infos: &mut RMap<ad::AEffectId, Cycle>,
+    cycle_infos: &mut RMap<REffectKey, Cycle>,
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     u_item: &UItem,
     u_module: &UModule,
-    a_effect_id: ad::AEffectId,
+    effect_key: REffectKey,
     options: CycleOptions,
 ) {
-    let r_effect = match ctx.u_data.src.get_r_effect(&a_effect_id) {
-        Some(r_effect) => r_effect,
-        None => return,
-    };
+    let r_effect = ctx.u_data.src.get_effect(effect_key);
     if !r_effect.is_active() {
         return;
     }
@@ -113,12 +111,9 @@ fn fill_module_effect_info(
     }
     // Self-killers are fairly trivial. Record info about them and go to next effect
     if r_effect.kills_item() {
-        self_killers.push(SelfKillerInfo {
-            a_effect_id,
-            duration_s,
-        });
+        self_killers.push(SelfKillerInfo { effect_key, duration_s });
         cycle_infos.insert(
-            a_effect_id,
+            effect_key,
             Cycle::Simple(CycleSimple {
                 active_time: duration_s,
                 inactive_time: OF(0.0),
@@ -163,7 +158,7 @@ fn fill_module_effect_info(
                         inactive_time: final_inactive_time,
                         repeat_count: final_cycle_count,
                     };
-                    cycle_infos.insert(a_effect_id, Cycle::Reload1(CycleReload1 { inner }));
+                    cycle_infos.insert(effect_key, Cycle::Reload1(CycleReload1 { inner }));
                 }
                 // When it does more than one cycle per clip - mark final cycle as reload
                 _ => {
@@ -178,7 +173,7 @@ fn fill_module_effect_info(
                         repeat_count: final_cycle_count,
                     };
                     cycle_infos.insert(
-                        a_effect_id,
+                        effect_key,
                         Cycle::Reload2(CycleReload2 {
                             inner_early,
                             inner_final,
@@ -190,7 +185,7 @@ fn fill_module_effect_info(
         // Infinitely cycling - return simple infinitely repeating cycle
         InfCount::Infinite => {
             cycle_infos.insert(
-                a_effect_id,
+                effect_key,
                 Cycle::Simple(CycleSimple {
                     active_time: duration_s,
                     inactive_time: reactivation_delay_s,

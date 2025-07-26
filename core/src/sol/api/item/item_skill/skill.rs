@@ -78,7 +78,7 @@ fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
     Fit::new(sol, fit_key)
 }
 fn get_level(sol: &SolarSystem, item_key: UItemKey) -> SkillLevel {
-    get_u_skill(sol, item_key).get_a_level().into()
+    get_u_skill(sol, item_key).get_level().into()
 }
 fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
     get_u_skill(sol, item_key).get_skill_state()

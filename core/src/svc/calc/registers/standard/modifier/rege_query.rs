@@ -19,8 +19,8 @@ impl StandardRegister {
     ) -> Vec<CtxModifier> {
         let fit_key = item.get_fit_key();
         let root_loc = item.get_root_loc_kind();
-        let a_item_grp_id = item.get_a_group_id().unwrap();
-        let a_srqs = item.get_a_skill_reqs().unwrap();
+        let a_item_grp_id = item.get_group_id().unwrap();
+        let a_srqs = item.get_skill_reqs().unwrap();
         let mut mods = Vec::new();
         filter_and_extend(&mut mods, &self.cmods_direct, item_key, a_attr_id);
         if let Some(other_item_key) = item.get_other_key() {

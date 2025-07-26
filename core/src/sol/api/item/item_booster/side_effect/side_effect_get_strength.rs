@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    ad,
+    ad::AEffectId,
     def::{AttrId, AttrVal},
     misc::OpInfo,
     sol::api::{FullSideEffect, FullSideEffectMut},
@@ -44,7 +44,7 @@ impl<'a> FullSideEffect<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.u_data.src, &self.a_effect_id)
+        get_strength_partial(&self.sol.u_data.src, &self.effect_id)
     }
 }
 
@@ -54,7 +54,7 @@ impl<'a> FullSideEffectMut<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.u_data.src, &self.a_effect_id)
+        get_strength_partial(&self.sol.u_data.src, &self.effect_id)
     }
     /// Get side effect strength as an operator and modification value.
     ///
@@ -75,10 +75,10 @@ impl<'a> FullSideEffectMut<'a> {
     }
 }
 
-fn get_strength_partial(src: &Src, a_effect_id: &ad::AEffectId) -> Option<SideEffectPartialStr> {
+fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPartialStr> {
+    let effect_key = src.get_effect_key_by_id(effect_id).unwrap();
     let mut se_strs = src
-        .get_r_effect(a_effect_id)
-        .unwrap()
+        .get_effect(effect_key)
         .get_mods()
         .iter()
         .map(|a_modifier| (a_modifier.op, a_modifier.affector_attr_id))

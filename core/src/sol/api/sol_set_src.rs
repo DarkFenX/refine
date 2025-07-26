@@ -75,13 +75,12 @@ impl SolarSystem {
         let item_keys = ItemKeys::from_u_data(&self.u_data);
         let mut reuse_unload_eupdates = UEffectUpdates::new();
         self.unload_items(&item_keys, &mut reuse_unload_eupdates);
-        // Set new source, update source-dependent data in services and reload items
+        // Set new source
         std::mem::swap(&mut self.u_data.src, &mut src);
-        self.svc.notify_src_changed(&self.u_data.src);
         let mut load_eupdates_map = RMap::new();
         for (item_key, item) in self.u_data.items.iter_mut() {
             let mut item_eupdates = UEffectUpdates::new();
-            item.update_a_data(&mut item_eupdates, &self.u_data.src);
+            item.src_changed(&mut item_eupdates, &self.u_data.src);
             load_eupdates_map.insert(item_key, item_eupdates);
         }
         // Update fit kind

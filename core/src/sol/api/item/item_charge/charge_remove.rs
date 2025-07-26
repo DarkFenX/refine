@@ -11,7 +11,7 @@ impl SolarSystem {
     ) {
         let u_item = self.u_data.items.get(item_key);
         let u_charge = u_item.get_charge().unwrap();
-        let module_key = u_charge.get_cont_key();
+        let module_key = u_charge.get_cont_item_key();
         // Remove outgoing projections
         for projectee_key in u_charge.get_projs().iter_projectees() {
             // Update services

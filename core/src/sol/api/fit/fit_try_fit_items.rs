@@ -19,7 +19,7 @@ impl SolarSystem {
         let mut valid = Vec::new();
         let chargeable_module_keys = get_chargeable_modules(&self.u_data, fit_key);
         for type_id in type_ids {
-            let r_item = match self.u_data.src.get_r_item(type_id) {
+            let r_item = match self.u_data.src.get_item(type_id) {
                 Some(a_item) => a_item,
                 None => continue,
             };
@@ -162,12 +162,12 @@ fn get_chargeable_modules(u_data: &UData, fit_key: UFitKey) -> Vec<UItemKey> {
     let mut module_keys = Vec::new();
     for module_key in u_data.fits.get(fit_key).iter_module_keys() {
         let u_item = u_data.items.get(module_key);
-        let a_item_id = u_item.get_a_item_id();
+        let a_item_id = u_item.get_type_id();
         if seen_a_item_ids.contains(&a_item_id) {
             continue;
         }
         seen_a_item_ids.push(a_item_id);
-        let r_item_axt = match u_item.get_r_axt() {
+        let r_item_axt = match u_item.get_axt() {
             Some(r_item_axt) => r_item_axt,
             None => continue,
         };

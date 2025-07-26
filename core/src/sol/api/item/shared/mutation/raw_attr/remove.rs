@@ -4,7 +4,7 @@ impl<'a> RawMAttrMut<'a> {
     /// Remove user-defined mutation for the attribute.
     pub fn remove(self) {
         let attr_mutations = vec![AttrMutationRequest {
-            a_attr_id: self.a_attr_id,
+            attr_id: self.a_attr_id,
             value: None,
         }];
         self.sol

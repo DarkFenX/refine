@@ -12,9 +12,9 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
-        let old_a_state = drone.get_a_state();
+        let old_a_state = drone.get_state();
         drone.set_drone_state(state, reuse_eupdates, &self.u_data.src);
-        let new_a_state = drone.get_a_state();
+        let new_a_state = drone.get_state();
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

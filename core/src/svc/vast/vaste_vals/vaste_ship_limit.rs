@@ -44,8 +44,8 @@ impl VastFitData {
                 };
             }
         };
-        let ship_type_id = ship.get_a_item_id();
-        let ship_group_id = ship.get_a_group_id();
+        let ship_type_id = ship.get_type_id();
+        let ship_group_id = ship.get_group_id();
         for (limited_item_key, ship_limit) in self.ship_limited_items.iter() {
             if ship_limit.type_ids.contains(&ship_type_id) {
                 continue;
@@ -73,7 +73,7 @@ impl VastFitData {
             return None;
         }
         let (ship_type_id, ship_group_id) = match ship {
-            Some(ship) => (Some(ship.get_a_item_id()), ship.get_a_group_id()),
+            Some(ship) => (Some(ship.get_type_id()), ship.get_group_id()),
             None => (None, None),
         };
         let mut mismatches = HashMap::new();

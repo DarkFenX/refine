@@ -3,7 +3,7 @@ use crate::{
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
     nd::{NBreacherDmgGetter, NLocalRepGetter, NNormalDmgGetter, NRemoteRepGetter},
-    rd,
+    rd::{REffectKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
     },
@@ -17,11 +17,11 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<UFitKey, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemKey>,
     // Incoming remote reps
-    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemKey, UItemKey, ad::AEffectId, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_shield_limitable: RMapRMapRMap<UItemKey, UItemKey, ad::AEffectId, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, ad::AEffectId, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemKey, UItemKey, ad::AEffectId, NRemoteRepGetter>,
-    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_shield_limitable: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
@@ -72,7 +72,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) slotted_implants: RMapRSet<ad::ASlotIndex, UItemKey>,
     pub(in crate::svc::vast) slotted_boosters: RMapRSet<ad::ASlotIndex, UItemKey>,
     pub(in crate::svc::vast) slotted_subsystems: RMapRSet<ad::ASlotIndex, UItemKey>,
-    pub(in crate::svc::vast) ship_limited_items: RMap<UItemKey, rd::RItemShipLimit>,
+    pub(in crate::svc::vast) ship_limited_items: RMap<UItemKey, RItemShipLimit>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<ad::AItemGrpId, UItemKey>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UItemKey, ad::AItemGrpId>,
     pub(in crate::svc::vast) mods_svcs_max_group_online_all: RMapRSet<ad::AItemGrpId, UItemKey>,
@@ -108,19 +108,19 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
     // Stats-related - damage
-    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemKey, ad::AEffectId, NNormalDmgGetter>,
-    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemKey, ad::AEffectId, NBreacherDmgGetter>,
+    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemKey, REffectKey, NNormalDmgGetter>,
+    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemKey, REffectKey, NBreacherDmgGetter>,
     // Stats-related - local reps
-    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemKey, ad::AEffectId, NLocalRepGetter>,
-    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemKey, ad::AEffectId, NLocalRepGetter>,
-    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemKey, ad::AEffectId, NLocalRepGetter>,
-    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemKey, ad::AEffectId, NLocalRepGetter>,
-    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, ad::AEffectId, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
+    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     // Stats-related - outgoing remote reps
-    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, ad::AEffectId, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, ad::AEffectId, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, ad::AEffectId, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_cap: RMapRMap<UItemKey, ad::AEffectId, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) orr_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {

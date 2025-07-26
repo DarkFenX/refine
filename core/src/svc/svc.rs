@@ -1,5 +1,4 @@
 use super::{calc::Calc, eff_projs::EffProjs, vast::Vast};
-use crate::src::Src;
 
 #[derive(Clone)]
 pub(crate) struct Svc {
@@ -8,9 +7,9 @@ pub(crate) struct Svc {
     pub(in crate::svc) eff_projs: EffProjs,
 }
 impl Svc {
-    pub(crate) fn new(src: &Src) -> Self {
+    pub(crate) fn new() -> Self {
         Self {
-            calc: Calc::new(src),
+            calc: Calc::new(),
             vast: Vast::new(),
             eff_projs: EffProjs::new(),
         }

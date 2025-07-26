@@ -10,13 +10,15 @@ use crate::{
 // values.
 pub(crate) struct RItem {
     a_item: ad::AItem,
-    effect_datas: RMap<REffectKey, ad::AItemEffectData>,
-    defeff_key: Option<REffectKey>,
+    // Extra data extracted from adapted item
     axt: RItemAXt,
     ship_kind: Option<RShipKind>,
     has_online_effect: bool,
     takes_turret_hardpoint: bool,
     takes_launcher_hardpoint: bool,
+    // Fields which need slab keys to be filled
+    effect_datas: RMap<REffectKey, ad::AItemEffectData>,
+    defeff_key: Option<REffectKey>,
 }
 impl RItem {
     pub(in crate::rd) fn new(a_item: ad::AItem) -> Self {
@@ -27,14 +29,22 @@ impl RItem {
         let takes_launcher_hardpoint = has_launcher_effect(&a_item.effect_datas);
         Self {
             a_item,
-            effect_datas: RMap::new(),
-            defeff_key: None,
             axt,
             ship_kind,
             has_online_effect,
             takes_turret_hardpoint,
             takes_launcher_hardpoint,
+            effect_datas: RMap::new(),
+            defeff_key: None,
         }
+    }
+    pub(in crate::rd) fn fill_key_dependents(&mut self, effect_id_key_map: &RMap<ad::AEffectId, REffectKey>) {
+        for (a_effect_id, a_effect_data) in self.a_item.effect_datas.iter() {
+            if let Some(&effect_key) = effect_id_key_map.get(a_effect_id) {
+                self.effect_datas.insert(effect_key, *a_effect_data);
+            }
+        }
+        self.defeff_key = self.a_item.defeff_id.and_then(|v| effect_id_key_map.get(&v).copied());
     }
     // Methods which expose adapted item info
     pub(crate) fn get_group_id(&self) -> ad::AItemGrpId {
@@ -85,13 +95,6 @@ impl RItem {
     }
     pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
         self.takes_launcher_hardpoint
-    }
-    // TODO: remove methods below after the transition is done
-    pub(crate) fn get_effect_datas_ids(&self) -> &RMap<ad::AEffectId, ad::AItemEffectData> {
-        &self.a_item.effect_datas
-    }
-    pub(crate) fn get_defeff_id(&self) -> Option<ad::AEffectId> {
-        self.a_item.defeff_id
     }
 }
 impl GetId<ad::AItemId> for RItem {

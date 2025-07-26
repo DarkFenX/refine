@@ -39,8 +39,8 @@ impl StandardRegister {
             None => return,
         };
         let root_loc = item.get_root_loc_kind();
-        let a_item_grp_id = item.get_a_group_id().unwrap();
-        let a_srqs = item.get_a_skill_reqs().unwrap();
+        let a_item_grp_id = item.get_group_id().unwrap();
+        let a_srqs = item.get_skill_reqs().unwrap();
         if let Some(root_loc) = root_loc {
             self.affectee_root.add_entry((fit_key, root_loc), item_key);
         }
@@ -72,8 +72,8 @@ impl StandardRegister {
             None => return,
         };
         let root_loc = item.get_root_loc_kind();
-        let a_item_grp_id = item.get_a_group_id().unwrap();
-        let a_srqs = item.get_a_skill_reqs().unwrap();
+        let a_item_grp_id = item.get_group_id().unwrap();
+        let a_srqs = item.get_skill_reqs().unwrap();
 
         if let Some(root_loc) = root_loc {
             self.affectee_root.remove_entry(&(fit_key, root_loc), &item_key);

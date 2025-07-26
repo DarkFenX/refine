@@ -10,10 +10,9 @@ pub struct SolarSystem {
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
-        let svcs = Svc::new(&src);
         Self {
             u_data: UData::new(src),
-            svc: svcs,
+            svc: Svc::new(),
             rev_projs: RevProjs::new(),
         }
     }

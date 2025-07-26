@@ -1,6 +1,6 @@
 use super::DependencyRegister;
 use crate::{
-    dbg::{DebugResult, check_a_effect_id, check_item_key},
+    dbg::{DebugResult, check_effect_key, check_item_key},
     ud::UData,
 };
 
@@ -17,7 +17,7 @@ impl DependencyRegister {
         }
         for (source, specs) in self.by_source.iter() {
             check_item_key(u_data, source.item_key, true)?;
-            check_a_effect_id(u_data, &source.a_effect_id)?;
+            check_effect_key(u_data, source.effect_key)?;
             for (affector_spec, affectee_spec) in specs {
                 check_item_key(u_data, affector_spec.item_key, true)?;
                 check_item_key(u_data, affectee_spec.item_key, true)?;
@@ -27,7 +27,7 @@ impl DependencyRegister {
             check_item_key(u_data, item_key, true)?;
             for source in sources {
                 check_item_key(u_data, source.item_key, true)?;
-                check_a_effect_id(u_data, &source.a_effect_id)?;
+                check_effect_key(u_data, source.effect_key)?;
             }
         }
         Ok(())

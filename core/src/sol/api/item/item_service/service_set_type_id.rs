@@ -13,7 +13,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = self.u_data.items.get(item_key);
-        if u_item.get_a_item_id() == a_item_id {
+        if u_item.get_type_id() == a_item_id {
             return;
         }
         SolarSystem::util_remove_service(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
@@ -22,7 +22,7 @@ impl SolarSystem {
             .get_mut(item_key)
             .get_service_mut()
             .unwrap()
-            .set_a_item_id(a_item_id, reuse_eupdates, &self.u_data.src);
+            .set_type_id(a_item_id, reuse_eupdates, &self.u_data.src);
         SolarSystem::util_add_service(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
     }
 }

@@ -36,7 +36,7 @@ impl SolarSystem {
             }
             .into());
         }
-        let u_prange = UProjRange::from_prange_with_axt(range, u_drone.get_r_axt(), projectee_u_item.get_r_axt());
+        let u_prange = UProjRange::from_prange_with_axt(range, u_drone.get_axt(), projectee_u_item.get_axt());
         // Update services
         SolarSystem::util_add_item_projection(
             &self.u_data,

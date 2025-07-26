@@ -15,7 +15,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), SkillEveTypeError> {
         let u_item = self.u_data.items.get(item_key);
-        let old_a_item_id = u_item.get_a_item_id();
+        let old_a_item_id = u_item.get_type_id();
         if old_a_item_id == a_item_id {
             return Ok(());
         }
@@ -37,7 +37,7 @@ impl SolarSystem {
             .get_mut(item_key)
             .get_skill_mut()
             .unwrap()
-            .set_a_item_id(a_item_id, reuse_eupdates, &self.u_data.src);
+            .set_type_id(a_item_id, reuse_eupdates, &self.u_data.src);
         // Update fit skill map
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let fit_skill = u_fit.skills.remove(&old_a_item_id).unwrap();

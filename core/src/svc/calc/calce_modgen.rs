@@ -7,7 +7,6 @@ use crate::{
         calc::{Calc, RawModifier},
     },
     ud::{UItem, UItemKey},
-    util::GetId,
 };
 
 impl Calc {
@@ -78,7 +77,7 @@ impl Calc {
         }
         // Custom modifiers
         if let Some(customizer) = r_effect.get_calc_customizer() {
-            customizer(reuse_rmods, EffectSpec::new(item_key, r_effect.get_id()));
+            customizer(reuse_rmods, EffectSpec::new(item_key, r_effect.get_key()));
         }
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
@@ -86,7 +85,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
         item: &UItem,
-        a_effect_ids: impl Iterator<Item = &'a ad::AEffectId>,
+        effect_keys: impl Iterator<Item = &'a rd::REffectKey>,
         buff_type_a_attr_id: ad::AAttrId,
     ) -> Vec<RawModifier> {
         let mut rmods = Vec::new();
@@ -97,8 +96,8 @@ impl Calc {
             ac::attrs::WARFARE_BUFF4_ID => ac::attrs::WARFARE_BUFF4_VAL,
             _ => return rmods,
         };
-        for a_effect_id in a_effect_ids {
-            let r_effect = ctx.u_data.src.get_r_effect(a_effect_id).unwrap();
+        for &effect_key in effect_keys {
+            let r_effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(a_buff_info) = r_effect.get_buff_info().as_ref()
                 && matches!(a_buff_info.source, ad::AEffectBuffSrc::DefaultAttrs)
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_a_attr_id)
@@ -131,7 +130,7 @@ fn add_buff_mods(
     buff_type_a_attr_id: Option<ad::AAttrId>,
     buff_val_a_attr_id: ad::AAttrId,
 ) {
-    let r_buff = match ctx.u_data.src.get_r_buff(a_buff_id) {
+    let r_buff = match ctx.u_data.src.get_buff(a_buff_id) {
         Some(r_buff) => r_buff,
         None => return,
     };
@@ -163,7 +162,7 @@ fn add_buff_mods_hardcoded(
     a_buff_scope: &ad::AEffectBuffScope,
     buff_a_val: ad::AAttrVal,
 ) {
-    let r_buff = match ctx.u_data.src.get_r_buff(a_buff_id) {
+    let r_buff = match ctx.u_data.src.get_buff(a_buff_id) {
         Some(r_buff) => r_buff,
         None => return,
     };

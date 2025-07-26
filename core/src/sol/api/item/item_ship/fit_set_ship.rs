@@ -24,7 +24,7 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_ship = UShip::new(item_id, a_item_id, fit_key, true, &self.u_data.src, reuse_eupdates);
         let ship_kind = u_ship.get_kind();
-        let ship_radius = u_ship.get_r_axt().map(|v| v.radius).unwrap_or(OF(0.0));
+        let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(OF(0.0));
         let u_item = UItem::Ship(u_ship);
         let item_key = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_key);

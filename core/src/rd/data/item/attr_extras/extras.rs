@@ -12,7 +12,7 @@ use super::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
-    kind::get_item_kind,
+    kind::{get_item_kind_inherited, get_item_kind_initial},
     overload_td_lvl::get_overload_td_lvl,
     sec_zone::is_sec_zone_limitable,
     ship_kind::get_item_ship_kind,
@@ -20,8 +20,9 @@ use super::{
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
-    ad,
+    ad::{AAttrId, AAttrVal, ACount, AItem, ASkillLevel, ASlotIndex},
     rd::{RItem, RItemChargeLimit, RItemContLimit, RItemKind, RItemShipLimit, RShipDroneLimit, RShipKind},
+    src::Src,
     util::{GetId, RMap},
 };
 
@@ -33,11 +34,11 @@ pub(crate) struct RItemAXt {
     // Item type
     pub(crate) kind: Option<RItemKind>,
     // Unmutated and unmodified item volume
-    pub(crate) volume: ad::AAttrVal,
+    pub(crate) volume: AAttrVal,
     // Unmutated and unmodified item capacity
-    pub(crate) capacity: ad::AAttrVal,
+    pub(crate) capacity: AAttrVal,
     // Unmutated and unmodified item radius
-    pub(crate) radius: ad::AAttrVal,
+    pub(crate) radius: AAttrVal,
     // If set, item can be fit to a ship which fits into the limit
     pub(crate) ship_limit: Option<RItemShipLimit>,
     // If set, item can load only charges which fit into limit
@@ -45,11 +46,11 @@ pub(crate) struct RItemAXt {
     // If set, item can be loaded as charge into other items which fits this limit
     pub(crate) cont_limit: Option<RItemContLimit>,
     // Slot index an implant takes
-    pub(crate) implant_slot: Option<ad::ASlotIndex>,
+    pub(crate) implant_slot: Option<ASlotIndex>,
     // Slot index a booster takes
-    pub(crate) booster_slot: Option<ad::ASlotIndex>,
+    pub(crate) booster_slot: Option<ASlotIndex>,
     // Slot index a subsystem takes
-    pub(crate) subsystem_slot: Option<ad::ASlotIndex>,
+    pub(crate) subsystem_slot: Option<ASlotIndex>,
     // Defines if a fighter takes a light fighter slot or not
     pub(crate) is_light_fighter: bool,
     // Defines if a fighter takes a heavy fighter slot or not
@@ -67,32 +68,32 @@ pub(crate) struct RItemAXt {
     // If set, ship can use drones which fit into the limit
     pub(crate) drone_limit: Option<RShipDroneLimit>,
     // By default, a fighter squad will have this count of fighters
-    pub(crate) max_fighter_count: ad::ACount,
+    pub(crate) max_fighter_count: ACount,
     // Drone bandwidth consumption
-    pub(crate) bandwidth_use: Option<ad::AAttrVal>,
+    pub(crate) bandwidth_use: Option<AAttrVal>,
     // Required thermodynamics skill level
-    pub(crate) overload_td_lvl: Option<ad::ASkillLevel>,
+    pub(crate) overload_td_lvl: Option<ASkillLevel>,
     // Max amount of items with this type ID a fit can have
-    pub(crate) max_type_fitted: Option<ad::ACount>,
+    pub(crate) max_type_fitted: Option<ACount>,
     // Max security class this module can be online in (2 hisec, 1 lowsec, 0 the rest)
-    pub(crate) online_max_sec_class: Option<ad::AAttrVal>,
+    pub(crate) online_max_sec_class: Option<AAttrVal>,
     // Can be limited to specific security zones if some of the limit attributes are defined
     pub(crate) sec_zone_limitable: bool,
     // True if assistive item projected to targets immune to offensive modifiers should break the
     // offense immunity validation
     pub(crate) disallow_vs_ew_immune_tgt: bool,
     // Attribute ID which defines how affectee resists effect
-    pub(crate) remote_resist_attr_id: Option<ad::AAttrId>,
+    pub(crate) remote_resist_attr_id: Option<AAttrId>,
     // Unmutated and unmodified charge size
-    pub(crate) charge_size: Option<ad::AAttrVal>,
+    pub(crate) charge_size: Option<AAttrVal>,
     // Unmutated and unmodified charge rate
-    pub(crate) charge_rate: ad::ACount,
+    pub(crate) charge_rate: ACount,
 }
 impl RItemAXt {
     // Build extras out of item with its original attributes
-    pub(crate) fn new_initial(a_item: &ad::AItem) -> Self {
+    pub(crate) fn new_initial(a_item: &AItem) -> Self {
         Self {
-            kind: get_item_kind(a_item.grp_id, a_item.cat_id, &a_item.attrs, &a_item.effect_datas),
+            kind: get_item_kind_initial(a_item.grp_id, a_item.cat_id, &a_item.attrs, &a_item.effect_datas),
             volume: get_volume(&a_item.attrs),
             capacity: get_capacity(&a_item.attrs),
             radius: get_radius(&a_item.attrs),
@@ -123,13 +124,14 @@ impl RItemAXt {
         }
     }
     // Build extras out of item with overridden attributes
-    pub(crate) fn new_inherited(r_item: &RItem, attrs: &RMap<ad::AAttrId, ad::AAttrVal>) -> Self {
+    pub(crate) fn new_inherited(r_item: &RItem, attrs: &RMap<AAttrId, AAttrVal>, src: &Src) -> Self {
         Self {
-            kind: get_item_kind(
+            kind: get_item_kind_inherited(
                 r_item.get_group_id(),
                 r_item.get_category_id(),
                 attrs,
-                r_item.get_effect_datas_ids(),
+                r_item.get_effect_datas(),
+                src,
             ),
             volume: get_volume(attrs),
             capacity: get_capacity(attrs),

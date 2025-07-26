@@ -1,6 +1,6 @@
 use super::StandardRegister;
 use crate::{
-    dbg::{DebugResult, check_a_effect_id, check_fit_key, check_item_key},
+    dbg::{DebugResult, check_effect_key, check_fit_key, check_item_key},
     svc::calc::debug::{check_cmod, check_rmod},
     ud::UData,
 };
@@ -45,14 +45,14 @@ impl StandardRegister {
         }
         for (espec, rmods) in self.rmods_all.iter() {
             check_item_key(u_data, espec.item_key, true)?;
-            check_a_effect_id(u_data, &espec.a_effect_id)?;
+            check_effect_key(u_data, espec.effect_key)?;
             for rmod in rmods {
                 check_rmod(u_data, rmod)?;
             }
         }
         for (espec, rmods) in self.rmods_proj.iter() {
             check_item_key(u_data, espec.item_key, true)?;
-            check_a_effect_id(u_data, &espec.a_effect_id)?;
+            check_effect_key(u_data, espec.effect_key)?;
             for rmod in rmods {
                 check_rmod(u_data, rmod)?;
             }

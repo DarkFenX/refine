@@ -1,9 +1,9 @@
 use crate::{
-    ad,
+    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
     def::{Count, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, ModRack, ModuleState, Spool},
-    rd,
+    rd::{REffectKey, RItemAXt},
     src::Src,
     ud::{
         UData, UFitKey, UItemKey,
@@ -26,9 +26,9 @@ pub(crate) struct UModule {
 impl UModule {
     pub(crate) fn new(
         item_id: ItemId,
-        a_item_id: ad::AItemId,
+        type_id: AItemId,
         fit_key: UFitKey,
-        state: ModuleState,
+        module_state: ModuleState,
         rack: ModRack,
         pos: Idx,
         mutation: Option<ItemMutationRequest>,
@@ -37,7 +37,7 @@ impl UModule {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Self {
         Self {
-            base: UItemBaseMutable::new(item_id, a_item_id, state.into(), mutation, src, reuse_eupdates),
+            base: UItemBaseMutable::new(item_id, type_id, module_state.into(), mutation, src, reuse_eupdates),
             fit_key,
             rack,
             pos,
@@ -50,44 +50,44 @@ impl UModule {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
-    pub(crate) fn get_a_item_id(&self) -> ad::AItemId {
-        self.base.get_a_item_id()
+    pub(crate) fn get_type_id(&self) -> AItemId {
+        self.base.get_type_id()
     }
-    pub(crate) fn set_a_item_id(&mut self, a_item_id: ad::AItemId, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.set_a_item_id(a_item_id, reuse_eupdates, src);
+    pub(crate) fn set_type_id(&mut self, type_id: AItemId, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+        self.base.set_type_id(type_id, reuse_eupdates, src);
     }
-    pub(crate) fn get_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base.get_a_group_id()
+    pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
+        self.base.get_group_id()
     }
-    pub(crate) fn get_a_category_id(&self) -> Option<ad::AItemCatId> {
-        self.base.get_a_category_id()
+    pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
+        self.base.get_category_id()
     }
-    pub(crate) fn get_a_attrs(&self) -> Option<&RMap<ad::AAttrId, ad::AAttrVal>> {
-        self.base.get_a_attrs()
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<AAttrId, AAttrVal>> {
+        self.base.get_attrs()
     }
-    pub(crate) fn get_a_effect_datas(&self) -> Option<&RMap<ad::AEffectId, ad::AItemEffectData>> {
-        self.base.get_a_effect_datas()
+    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, AItemEffectData>> {
+        self.base.get_effect_datas()
     }
-    pub(crate) fn get_a_defeff_id(&self) -> Option<Option<ad::AEffectId>> {
-        self.base.get_a_defeff_id()
+    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
+        self.base.get_defeff_key()
     }
-    pub(crate) fn get_a_skill_reqs(&self) -> Option<&RMap<ad::AItemId, ad::ASkillLevel>> {
-        self.base.get_a_skill_reqs()
+    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
+        self.base.get_skill_reqs()
     }
-    pub(crate) fn get_r_axt(&self) -> Option<&rd::RItemAXt> {
-        self.base.get_r_axt()
+    pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
+        self.base.get_axt()
     }
-    pub(crate) fn get_max_a_state(&self) -> Option<ad::AState> {
-        self.base.get_max_a_state()
+    pub(crate) fn get_max_state(&self) -> Option<AState> {
+        self.base.get_max_state()
     }
-    pub(crate) fn get_val_fitted_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base.get_val_fitted_a_group_id()
+    pub(crate) fn get_val_fitted_group_id(&self) -> Option<AItemGrpId> {
+        self.base.get_val_fitted_group_id()
     }
-    pub(crate) fn get_val_online_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base.get_val_online_a_group_id()
+    pub(crate) fn get_val_online_group_id(&self) -> Option<AItemGrpId> {
+        self.base.get_val_online_group_id()
     }
-    pub(crate) fn get_val_active_a_group_id(&self) -> Option<ad::AItemGrpId> {
-        self.base.get_val_active_a_group_id()
+    pub(crate) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
+        self.base.get_val_active_group_id()
     }
     pub(crate) fn takes_turret_hardpoint(&self) -> bool {
         self.base.takes_turret_hardpoint()
@@ -95,10 +95,10 @@ impl UModule {
     pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
         self.base.takes_launcher_hardpoint()
     }
-    pub(crate) fn get_a_state(&self) -> ad::AState {
-        self.base.get_a_state()
+    pub(crate) fn get_state(&self) -> AState {
+        self.base.get_state()
     }
-    pub(crate) fn get_reffs(&self) -> Option<&RSet<ad::AEffectId>> {
+    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
     }
     pub(in crate::ud::item) fn start_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
@@ -107,31 +107,31 @@ impl UModule {
     pub(in crate::ud::item) fn stop_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_mode(&self, effect_id: &ad::AEffectId) -> EffectMode {
-        self.base.get_effect_mode(effect_id)
+    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
+        self.base.get_effect_key_mode(effect_key)
     }
     pub(in crate::ud::item) fn set_effect_mode(
         &mut self,
-        a_effect_id: ad::AEffectId,
+        effect_id: AEffectId,
         effect_mode: EffectMode,
         reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
     ) {
-        self.base.set_effect_mode(a_effect_id, effect_mode, reuse_eupdates, src)
+        self.base.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
-        modes: impl Iterator<Item = (ad::AEffectId, EffectMode)>,
+        effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
     ) {
-        self.base.set_effect_modes(modes, reuse_eupdates, src)
+        self.base.set_effect_modes(effect_modes, reuse_eupdates, src)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::ud::item) fn update_a_data(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.update_r_data(reuse_eupdates, src);
+    pub(in crate::ud::item) fn src_changed(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+        self.base.src_changed(reuse_eupdates, src);
     }
     // Mutation-specific methods
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
@@ -149,26 +149,26 @@ impl UModule {
         &mut self,
         src: &Src,
         attr_mutations: Vec<AttrMutationRequest>,
-    ) -> Result<Vec<ad::AAttrId>, ItemMutatedError> {
+    ) -> Result<Vec<AAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
-    pub(crate) fn set_a_mutator_id(
+    pub(crate) fn set_mutator_id(
         &mut self,
-        a_mutator_id: ad::AItemId,
+        mutator_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
     ) -> Result<(), ItemMutatedError> {
-        self.base.set_a_mutator_id(a_mutator_id, reuse_eupdates, src)
+        self.base.set_mutator_id(mutator_id, reuse_eupdates, src)
     }
     pub(crate) fn unmutate(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) -> Result<(), ItemMutatedError> {
         self.base.unmutate(reuse_eupdates, src)
     }
     // Item-specific methods
     pub(crate) fn get_module_state(&self) -> ModuleState {
-        self.base.get_a_state().into()
+        self.base.get_state().into()
     }
     pub(crate) fn set_module_state(&mut self, state: ModuleState, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.set_a_state(state.into(), reuse_eupdates, src)
+        self.base.set_state(state.into(), reuse_eupdates, src)
     }
     pub(crate) fn get_fit_key(&self) -> UFitKey {
         self.fit_key
@@ -192,14 +192,14 @@ impl UModule {
         // No charge - no info
         let charge_key = self.get_charge_key()?;
         let charge_item = u_data.items.get(charge_key);
-        let module_capacity = match self.get_r_axt() {
+        let module_capacity = match self.get_axt() {
             Some(r_axt) => r_axt.capacity,
             // Module not loaded - no info
             _ => {
                 return None;
             }
         };
-        let charge_volume = match charge_item.get_r_axt() {
+        let charge_volume = match charge_item.get_axt() {
             Some(r_axt) if r_axt.volume != OF(0.0) => r_axt.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
@@ -231,10 +231,10 @@ impl std::fmt::Display for UModule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}(item_id={}, a_item_id={})",
+            "{}(item_id={}, type_id={})",
             Self::get_name(),
             self.get_item_id(),
-            self.get_a_item_id(),
+            self.get_type_id(),
         )
     }
 }

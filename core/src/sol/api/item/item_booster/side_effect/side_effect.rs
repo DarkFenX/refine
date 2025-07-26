@@ -22,25 +22,25 @@ pub enum SideEffectMut<'a> {
 pub struct FullSideEffect<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
     pub(in crate::sol::api) key: UItemKey,
-    pub(in crate::sol::api) a_effect_id: ad::AEffectId,
-    pub(in crate::sol::api) chance_a_attr_id: ad::AAttrId,
+    pub(in crate::sol::api) effect_id: ad::AEffectId,
+    pub(in crate::sol::api) chance_attr_id: ad::AAttrId,
 }
 impl<'a> FullSideEffect<'a> {
     pub(in crate::sol::api) fn new(
         sol: &'a SolarSystem,
         key: UItemKey,
-        a_effect_id: ad::AEffectId,
-        chance_a_attr_id: ad::AAttrId,
+        effect_id: ad::AEffectId,
+        chance_attr_id: ad::AAttrId,
     ) -> Self {
         Self {
             sol,
             key,
-            a_effect_id,
-            chance_a_attr_id,
+            effect_id,
+            chance_attr_id,
         }
     }
     pub fn get_effect_id(&self) -> EffectId {
-        self.a_effect_id.into()
+        self.effect_id.into()
     }
 }
 
@@ -48,25 +48,25 @@ impl<'a> FullSideEffect<'a> {
 pub struct FullSideEffectMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
     pub(in crate::sol::api) key: UItemKey,
-    pub(in crate::sol::api) a_effect_id: ad::AEffectId,
-    pub(in crate::sol::api) chance_a_attr_id: ad::AAttrId,
+    pub(in crate::sol::api) effect_id: ad::AEffectId,
+    pub(in crate::sol::api) chance_attr_id: ad::AAttrId,
 }
 impl<'a> FullSideEffectMut<'a> {
     pub(in crate::sol::api) fn new(
         sol: &'a mut SolarSystem,
         key: UItemKey,
-        a_effect_id: ad::AEffectId,
-        chance_a_attr_id: ad::AAttrId,
+        effect_id: ad::AEffectId,
+        chance_attr_id: ad::AAttrId,
     ) -> Self {
         Self {
             sol,
             key,
-            a_effect_id,
-            chance_a_attr_id,
+            effect_id,
+            chance_attr_id,
         }
     }
     pub fn get_effect_id(&self) -> EffectId {
-        self.a_effect_id.into()
+        self.effect_id.into()
     }
 }
 
@@ -75,14 +75,14 @@ impl<'a> FullSideEffectMut<'a> {
 pub struct StubSideEffect<'a> {
     pub(in crate::sol::api) sol: &'a SolarSystem,
     pub(in crate::sol::api) key: UItemKey,
-    pub(in crate::sol::api) a_effect_id: ad::AEffectId,
+    pub(in crate::sol::api) effect_id: ad::AEffectId,
 }
 impl<'a> StubSideEffect<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UItemKey, a_effect_id: ad::AEffectId) -> Self {
-        Self { sol, key, a_effect_id }
+    pub(in crate::sol::api) fn new(sol: &'a SolarSystem, key: UItemKey, effect_id: ad::AEffectId) -> Self {
+        Self { sol, key, effect_id }
     }
     pub fn get_effect_id(&self) -> EffectId {
-        self.a_effect_id.into()
+        self.effect_id.into()
     }
 }
 
@@ -91,13 +91,13 @@ impl<'a> StubSideEffect<'a> {
 pub struct StubSideEffectMut<'a> {
     pub(in crate::sol::api) sol: &'a mut SolarSystem,
     pub(in crate::sol::api) key: UItemKey,
-    pub(in crate::sol::api) a_effect_id: ad::AEffectId,
+    pub(in crate::sol::api) effect_id: ad::AEffectId,
 }
 impl<'a> StubSideEffectMut<'a> {
-    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UItemKey, a_effect_id: ad::AEffectId) -> Self {
-        Self { sol, key, a_effect_id }
+    pub(in crate::sol::api) fn new(sol: &'a mut SolarSystem, key: UItemKey, effect_id: ad::AEffectId) -> Self {
+        Self { sol, key, effect_id }
     }
     pub fn get_effect_id(&self) -> EffectId {
-        self.a_effect_id.into()
+        self.effect_id.into()
     }
 }

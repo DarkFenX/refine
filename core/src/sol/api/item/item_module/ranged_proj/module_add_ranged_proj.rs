@@ -39,7 +39,7 @@ impl SolarSystem {
         let u_prange = UProjRange::from_prange_with_axt(
             range,
             get_r_ship_axt(&self.u_data, u_module.get_fit_key()),
-            projectee_u_item.get_r_axt(),
+            projectee_u_item.get_axt(),
         );
         let charge_key = u_module.get_charge_key();
         // Update services for module

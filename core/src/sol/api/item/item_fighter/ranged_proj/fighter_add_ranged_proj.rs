@@ -37,7 +37,7 @@ impl SolarSystem {
             }
             .into());
         }
-        let u_prange = UProjRange::from_prange_with_axt(range, u_fighter.get_r_axt(), projectee_u_item.get_r_axt());
+        let u_prange = UProjRange::from_prange_with_axt(range, u_fighter.get_axt(), projectee_u_item.get_axt());
         let autocharge_keys = u_fighter.get_autocharges().values().copied().collect_vec();
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();

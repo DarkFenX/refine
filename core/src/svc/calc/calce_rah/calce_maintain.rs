@@ -7,7 +7,6 @@ use super::shared::{
 use crate::{
     misc::{AttrSpec, DmgKinds},
     rd,
-    src::Src,
     svc::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
@@ -143,7 +142,7 @@ impl Calc {
                 }
             }
             // RAH cycle time
-            a_attr_id if Some(a_attr_id) == self.rah.cycle_time_a_attr_id => {
+            a_attr_id if Some(a_attr_id) == ctx.u_data.src.get_rah_duration_attr_id() => {
                 if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
@@ -166,9 +165,6 @@ impl Calc {
             }
             _ => (),
         }
-    }
-    pub(in crate::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
-        self.rah.cycle_time_a_attr_id = src.get_r_effect(&RAH_EFFECT_ID).and_then(|v| v.get_duration_attr_id());
     }
     pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &UFitKey) {
         self.clear_fit_rah_results(ctx, fit_key);

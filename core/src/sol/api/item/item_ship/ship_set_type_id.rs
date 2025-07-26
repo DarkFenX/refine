@@ -13,13 +13,13 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = self.u_data.items.get(item_key);
-        if u_item.get_a_item_id() == a_item_id {
+        if u_item.get_type_id() == a_item_id {
             return;
         }
         SolarSystem::util_remove_ship(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
         let u_ship = self.u_data.items.get_mut(item_key).get_ship_mut().unwrap();
         let fit_key = u_ship.get_fit_key();
-        u_ship.set_a_item_id(a_item_id, reuse_eupdates, &self.u_data.src);
+        u_ship.set_type_id(a_item_id, reuse_eupdates, &self.u_data.src);
         // Update on-fit ship kind
         let ship_kind = u_ship.get_kind();
         let u_fit = self.u_data.fits.get_mut(fit_key);

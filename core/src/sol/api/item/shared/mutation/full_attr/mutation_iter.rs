@@ -66,7 +66,7 @@ fn full_mutated_a_attr_id_iter(sol: &SolarSystem, item_key: UItemKey) -> impl It
         .get_r_mutator()
         .get_attr_mods()
         .keys()
-        .filter(|v| u_item.get_a_attrs().unwrap().contains_key(v))
+        .filter(|v| u_item.get_attrs().unwrap().contains_key(v))
         .copied()
 }
 

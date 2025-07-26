@@ -1,12 +1,12 @@
-use crate::{ad, ud::UItemKey};
+use crate::{rd, ud::UItemKey};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) struct EffectSpec {
     pub(crate) item_key: UItemKey,
-    pub(crate) a_effect_id: ad::AEffectId,
+    pub(crate) effect_key: rd::REffectKey,
 }
 impl EffectSpec {
-    pub(crate) fn new(item_key: UItemKey, a_effect_id: ad::AEffectId) -> Self {
-        Self { item_key, a_effect_id }
+    pub(crate) fn new(item_key: UItemKey, effect_key: rd::REffectKey) -> Self {
+        Self { item_key, effect_key }
     }
 }

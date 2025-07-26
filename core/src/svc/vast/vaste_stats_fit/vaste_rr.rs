@@ -1,8 +1,8 @@
 use crate::{
-    ad,
     def::{AttrVal, OF},
     misc::Spool,
     nd::NRemoteRepGetter,
+    rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -40,7 +40,7 @@ fn get_orrps(
     ctx: SvcCtx,
     calc: &mut Calc,
     spool: Option<Spool>,
-    fit_data: &RMapRMap<UItemKey, ad::AEffectId, NRemoteRepGetter>,
+    fit_data: &RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
 ) -> AttrVal {
     let mut rps = OF(0.0);
     for (&item_key, item_data) in fit_data.iter() {
@@ -48,16 +48,13 @@ fn get_orrps(
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (a_effect_id, rep_getter) in item_data.iter() {
-            let r_effect = match ctx.u_data.src.get_r_effect(a_effect_id) {
-                Some(r_effect) => r_effect,
-                None => continue,
-            };
+        for (&effect_key, rep_getter) in item_data.iter() {
+            let r_effect = ctx.u_data.src.get_effect(effect_key);
             let output_per_cycle = match rep_getter(ctx, calc, item_key, r_effect, spool, None) {
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };
-            let effect_cycles = match cycle_map.get(a_effect_id) {
+            let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };

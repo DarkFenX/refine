@@ -23,7 +23,7 @@ impl SolarSystem {
             item_key,
             u_item,
             ad::AState::Ghost,
-            u_item.get_a_state(),
+            u_item.get_state(),
             eupdates,
         );
     }
@@ -44,7 +44,7 @@ impl SolarSystem {
             svc,
             item_key,
             u_item,
-            u_item.get_a_state(),
+            u_item.get_state(),
             ad::AState::Ghost,
             reuse_eupdates,
         );
@@ -73,7 +73,7 @@ impl SolarSystem {
             item_key,
             u_item,
             ad::AState::Ghost,
-            u_item.get_a_state(),
+            u_item.get_state(),
             eupdates,
         );
     }
@@ -93,7 +93,7 @@ impl SolarSystem {
             svc,
             item_key,
             u_item,
-            u_item.get_a_state(),
+            u_item.get_state(),
             ad::AState::Ghost,
             reuse_eupdates,
         );

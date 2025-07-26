@@ -9,7 +9,7 @@ use super::{
     rah_info::RahInfo,
     shared::{
         ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID,
-        HULL_HP_ATTR_ID, RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, TickCount, rah_round,
+        HULL_HP_ATTR_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, TickCount, rah_round,
     },
     ship_stats::RahShipStats,
     tick_iter::RahSimTickIter,
@@ -229,7 +229,11 @@ impl Calc {
         if shift_amount <= OF(0.0) {
             return None;
         }
-        let cycle_s = eff_funcs::get_espec_duration_s(ctx, self, EffectSpec::new(item_key, RAH_EFFECT_ID))?;
+        let cycle_s = eff_funcs::get_espec_duration_s(
+            ctx,
+            self,
+            EffectSpec::new(item_key, ctx.u_data.src.get_rah_effect_key()?),
+        )?;
         let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
         Some(RahDataSim::new(rah_info))
     }

@@ -6,7 +6,7 @@ impl<'a> FullMAttrMut<'a> {
     /// None as value removes user-defined mutation.
     pub fn set_roll(&mut self, roll: Option<UnitInterval>) {
         let attr_mutation_request = vec![AttrMutationRequest {
-            a_attr_id: self.a_attr_id,
+            attr_id: self.a_attr_id,
             value: roll,
         }];
         self.sol

@@ -13,7 +13,7 @@ impl SolarSystem {
         let u_skill = u_item.get_skill().unwrap();
         SolarSystem::util_remove_skill(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
         let u_fit = self.u_data.fits.get_mut(u_skill.get_fit_key());
-        u_fit.skills.remove(&u_skill.get_a_item_id());
+        u_fit.skills.remove(&u_skill.get_type_id());
         self.u_data.items.remove(item_key);
     }
 }

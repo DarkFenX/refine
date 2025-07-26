@@ -46,7 +46,7 @@ impl UItem {
     }
     pub(in crate::svc::calc) fn get_other_key(&self) -> Option<UItemKey> {
         match self {
-            Self::Charge(charge) => Some(charge.get_cont_key()),
+            Self::Charge(charge) => Some(charge.get_cont_item_key()),
             Self::Module(module) => module.get_charge_key(),
             _ => None,
         }

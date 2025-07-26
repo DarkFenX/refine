@@ -1,7 +1,7 @@
 use super::info::{Cycle, CycleSimple};
 use crate::{
-    ad,
     def::OF,
+    rd::REffectKey,
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UDrone, UItemKey},
     util::{InfCount, RMap},
@@ -13,14 +13,14 @@ pub(super) fn get_drone_cycle_info(
     item_key: UItemKey,
     u_drone: &UDrone,
     ignore_state: bool,
-) -> Option<RMap<ad::AEffectId, Cycle>> {
+) -> Option<RMap<REffectKey, Cycle>> {
     if !u_drone.is_loaded() {
         return None;
     };
     let mut cycle_infos = RMap::new();
     match ignore_state {
         true => {
-            for &a_effect_id in u_drone.get_a_effect_datas().unwrap().keys() {
+            for &a_effect_id in u_drone.get_effect_datas().unwrap().keys() {
                 fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
             }
         }
@@ -34,16 +34,13 @@ pub(super) fn get_drone_cycle_info(
 }
 
 fn fill_drone_effect_info(
-    cycle_infos: &mut RMap<ad::AEffectId, Cycle>,
+    cycle_infos: &mut RMap<REffectKey, Cycle>,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    a_effect_id: ad::AEffectId,
+    effect_key: REffectKey,
 ) {
-    let r_effect = match ctx.u_data.src.get_r_effect(&a_effect_id) {
-        Some(r_effect) => r_effect,
-        None => return,
-    };
+    let r_effect = ctx.u_data.src.get_effect(effect_key);
     if !r_effect.is_active() {
         return;
     }
@@ -54,7 +51,7 @@ fn fill_drone_effect_info(
     // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
     // flags, limited charges & reloads
     cycle_infos.insert(
-        a_effect_id,
+        effect_key,
         Cycle::Simple(CycleSimple {
             active_time: duration_s,
             inactive_time: OF(0.0),

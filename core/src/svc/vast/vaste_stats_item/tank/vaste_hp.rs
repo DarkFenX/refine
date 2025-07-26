@@ -1,8 +1,9 @@
 use super::shared::item_check;
 use crate::{
-    ac, ad,
+    ac,
     def::{AttrVal, OF},
     nd::{NLocalRepGetter, NRemoteRepGetter},
+    rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -87,7 +88,7 @@ const ANCIL_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_local_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    ancil_data: &RMapRMap<UItemKey, ad::AEffectId, NLocalRepGetter>,
+    ancil_data: &RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     for (&item_key, item_data) in ancil_data.iter() {
@@ -95,13 +96,13 @@ fn get_local_ancil_hp(
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (a_effect_id, rep_getter) in item_data.iter() {
-            let effect_cycles = match cycle_map.get(a_effect_id) {
+        for (&effect_key, rep_getter) in item_data.iter() {
+            let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let r_effect = ctx.u_data.src.get_r_effect(a_effect_id).unwrap();
-            let output_per_cycle = match rep_getter(ctx, calc, item_key, r_effect) {
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            let output_per_cycle = match rep_getter(ctx, calc, item_key, effect) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
@@ -119,7 +120,7 @@ fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_item_key: UItemKey,
-    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, ad::AEffectId, NRemoteRepGetter>,
+    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     let incoming_ancils = match ancil_data.get_l1(&projectee_item_key) {
@@ -131,14 +132,14 @@ fn get_remote_ancil_hp(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        for (a_effect_id, rep_getter) in projector_data.iter() {
-            let effect_cycles = match projector_cycle_map.get(a_effect_id) {
+        for (&effect_key, rep_getter) in projector_data.iter() {
+            let effect_cycles = match projector_cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            let r_effect = ctx.u_data.src.get_r_effect(a_effect_id).unwrap();
+            let effect = ctx.u_data.src.get_effect(effect_key);
             let output_per_cycle =
-                match rep_getter(ctx, calc, projector_item_key, r_effect, None, Some(projectee_item_key)) {
+                match rep_getter(ctx, calc, projector_item_key, effect, None, Some(projectee_item_key)) {
                     Some(hp_per_cycle) => hp_per_cycle,
                     None => continue,
                 };

@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AEffectId,
     misc::EffectMode,
     sol::{
         SolarSystem,
@@ -37,7 +37,7 @@ impl<'a> FullSideEffect<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.a_effect_id)
+        get_state(self.sol, self.key, &self.effect_id)
     }
 }
 
@@ -46,7 +46,7 @@ impl<'a> FullSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.a_effect_id)
+        get_state(self.sol, self.key, &self.effect_id)
     }
 }
 
@@ -55,7 +55,7 @@ impl<'a> StubSideEffect<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.a_effect_id)
+        get_state(self.sol, self.key, &self.effect_id)
     }
 }
 
@@ -64,13 +64,13 @@ impl<'a> StubSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.a_effect_id)
+        get_state(self.sol, self.key, &self.effect_id)
     }
 }
 
-fn get_state(sol: &SolarSystem, item_key: UItemKey, a_effect_id: &ad::AEffectId) -> bool {
+fn get_state(sol: &SolarSystem, item_key: UItemKey, effect_id: &AEffectId) -> bool {
     let u_booster = sol.u_data.items.get(item_key).get_booster().unwrap();
-    match u_booster.get_effect_mode(a_effect_id) {
+    match u_booster.get_effect_id_mode(effect_id) {
         EffectMode::FullCompliance => false,
         EffectMode::StateCompliance => true,
         EffectMode::ForceRun => true,

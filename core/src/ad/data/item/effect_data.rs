@@ -1,7 +1,7 @@
 use crate::ad::{AAttrVal, ACount, AItemId};
 
 /// Stores item-specific effect data.
-#[derive(Default)]
+#[derive(Copy, Clone, Default)]
 pub struct AItemEffectData {
     /// Type ID of autocharge this effect loads.
     pub autocharge: Option<AItemId> = None,

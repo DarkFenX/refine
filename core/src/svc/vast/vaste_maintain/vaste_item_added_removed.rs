@@ -22,18 +22,18 @@ impl Vast {
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
-            for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
+            for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
                 // If a skill is being added, then all items are in skill-to-item map should have a
                 // missing entry
                 if let Entry::Occupied(mut missing_skills_entry) = fit_data.srqs_missing.entry(other_item_key) {
                     if let Entry::Occupied(mut missing_skill_entry) =
-                        missing_skills_entry.get_mut().entry(skill.get_a_item_id())
+                        missing_skills_entry.get_mut().entry(skill.get_type_id())
                     {
-                        match skill.get_a_level() >= missing_skill_entry.get().required_lvl {
+                        match skill.get_level() >= missing_skill_entry.get().required_lvl {
                             true => {
                                 missing_skill_entry.remove();
                             }
-                            false => missing_skill_entry.get_mut().current_lvl = Some(skill.get_a_level().into()),
+                            false => missing_skill_entry.get_mut().current_lvl = Some(skill.get_level().into()),
                         }
                     }
                     // Keep root container clean if there are no missing skills for current "other"
@@ -60,10 +60,10 @@ impl Vast {
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
-            for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_a_item_id()) {
+            for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
                 match fit_data.srqs_missing.entry(other_item_key) {
                     Entry::Occupied(mut missing_skills_entry) => {
-                        match missing_skills_entry.get_mut().entry(skill.get_a_item_id()) {
+                        match missing_skills_entry.get_mut().entry(skill.get_type_id()) {
                             // If skill being removed already was of insufficient level, just update
                             // info
                             Entry::Occupied(mut missing_skill_entry) => {
@@ -73,9 +73,9 @@ impl Vast {
                             Entry::Vacant(missing_skill_entry) => {
                                 let other_item = u_data.items.get(other_item_key);
                                 let required_a_lvl = *other_item
-                                    .get_effective_a_skill_reqs()
+                                    .get_effective_skill_reqs()
                                     .unwrap()
-                                    .get(&skill.get_a_item_id())
+                                    .get(&skill.get_type_id())
                                     .unwrap();
                                 missing_skill_entry.insert(ValSrqSkillInfo {
                                     current_lvl: None,
@@ -89,13 +89,13 @@ impl Vast {
                     Entry::Vacant(missing_skills_entry) => {
                         let other_item = u_data.items.get(other_item_key);
                         let required_a_lvl = *other_item
-                            .get_effective_a_skill_reqs()
+                            .get_effective_skill_reqs()
                             .unwrap()
-                            .get(&skill.get_a_item_id())
+                            .get(&skill.get_type_id())
                             .unwrap();
                         let mut missing_skills = RMap::new();
                         missing_skills.insert(
-                            skill.get_a_item_id(),
+                            skill.get_type_id(),
                             ValSrqSkillInfo {
                                 current_lvl: None,
                                 required_lvl: required_a_lvl.into(),

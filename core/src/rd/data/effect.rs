@@ -1,7 +1,7 @@
 use crate::{
     ad, nd,
     rd::REffectKey,
-    util::{GetId, Named},
+    util::{GetId, Named, RMap},
 };
 
 // Represents an effect.
@@ -10,14 +10,17 @@ use crate::{
 // lower-level. An effect can contain any number of modifiers under a single roof, accompanied by
 // extra effect-wide properties.
 pub(crate) struct REffect {
+    effect_key: REffectKey,
     a_effect: ad::AEffect,
     n_effect_hc: nd::NEffectHc,
-    stopped_effect_keys: Vec<REffectKey>,
-    is_active_flag: bool,
+    // Extra data extracted from adapted effect and hardcoded data
+    is_active: bool,
     proj_a_attr_ids: [Option<ad::AAttrId>; 2],
+    // Fields which need slab keys to be filled
+    stopped_effect_keys: Vec<REffectKey>,
 }
 impl REffect {
-    pub(in crate::rd) fn new(a_effect: ad::AEffect) -> Self {
+    pub(in crate::rd) fn new(effect_key: REffectKey, a_effect: ad::AEffect) -> Self {
         let n_effect = nd::N_EFFECT_MAP.get(&a_effect.id);
         let is_active_flag = a_effect.state >= ad::AState::Active && a_effect.duration_attr_id.is_some();
         let proj_a_attr_ids = n_effect
@@ -25,12 +28,21 @@ impl REffect {
             .map(|get_proj_attrs| get_proj_attrs(&a_effect))
             .unwrap_or_default();
         Self {
+            effect_key: effect_key,
             a_effect,
             n_effect_hc: n_effect.map(|n_effect| n_effect.hc).unwrap_or_default(),
-            stopped_effect_keys: Vec::new(),
-            is_active_flag,
+            is_active: is_active_flag,
             proj_a_attr_ids,
+            stopped_effect_keys: Vec::new(),
         }
+    }
+    pub(in crate::rd) fn fill_key_dependents(&mut self, effect_id_key_map: &RMap<ad::AEffectId, REffectKey>) {
+        self.stopped_effect_keys.extend(
+            self.a_effect
+                .stoped_effect_ids
+                .iter()
+                .filter_map(|v| effect_id_key_map.get(v)),
+        );
     }
     // Methods which expose adapted effect info
     pub(crate) fn get_a_effect(&self) -> &ad::AEffect {
@@ -122,8 +134,11 @@ impl REffect {
         self.n_effect_hc.remote_cap_rep_opc_getter
     }
     // Methods which expose info generated during runtime
+    pub(crate) fn get_key(&self) -> REffectKey {
+        self.effect_key
+    }
     pub(crate) fn is_active(&self) -> bool {
-        self.is_active_flag
+        self.is_active
     }
     pub(crate) fn get_proj_a_attr_ids(&self) -> [Option<ad::AAttrId>; 2] {
         self.proj_a_attr_ids
@@ -133,10 +148,6 @@ impl REffect {
     }
     pub(crate) fn get_buff_info(&self) -> Option<&ad::AEffectBuffInfo> {
         self.a_effect.buff_info.as_ref()
-    }
-    // TODO: methods which provide temporary access to legacy info, should be removed later
-    pub(crate) fn get_stopped_effect_ids(&self) -> &Vec<ad::AEffectId> {
-        &self.a_effect.stoped_effect_ids
     }
 }
 impl GetId<ad::AEffectId> for REffect {

@@ -1,14 +1,14 @@
 use itertools::Itertools;
 
 use crate::{
-    ad,
+    rd::REffectKey,
     sol::{SolarSystem, rev_projs::RevProjs},
     svc::Svc,
     ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemKey},
 };
 
 struct AutochargeData {
-    a_effect_id: ad::AEffectId,
+    effect_key: REffectKey,
     item_key: UItemKey,
     eupdates: UEffectUpdates,
 }
@@ -27,9 +27,9 @@ impl SolarSystem {
             return;
         }
         let fit_key = u_fighter.get_fit_key();
-        let fighter_a_state = u_fighter.get_a_state();
+        let fighter_a_state = u_fighter.get_state();
         let effects_with_ac_a_item_ids = u_fighter
-            .get_a_effect_datas()
+            .get_effect_datas()
             .unwrap()
             .iter()
             .filter_map(|(a_effect_id, a_effect_data)| {
@@ -44,15 +44,15 @@ impl SolarSystem {
         let projections = u_fighter.get_projs().iter().collect_vec();
         let mut ac_datas = effects_with_ac_a_item_ids
             .into_iter()
-            .filter_map(|(a_effect_id, ac_a_item_id)| {
+            .filter_map(|(effect_key, ac_type_id)| {
                 let ac_item_id = u_data.items.alloc_id();
                 let mut ac_eupdates = UEffectUpdates::new();
                 let mut u_ac = UAutocharge::new(
                     ac_item_id,
-                    ac_a_item_id,
+                    ac_type_id,
                     fit_key,
                     fighter_key,
-                    a_effect_id,
+                    effect_key,
                     fighter_a_state,
                     false,
                     &u_data.src,
@@ -72,7 +72,7 @@ impl SolarSystem {
                 let ac_key = u_data.items.add(ac_u_item);
                 Some(AutochargeData {
                     item_key: ac_key,
-                    a_effect_id,
+                    effect_key,
                     eupdates: ac_eupdates,
                 })
             })
@@ -105,7 +105,7 @@ impl SolarSystem {
             .unwrap()
             .get_autocharges_mut();
         for ac_data in ac_datas.into_iter() {
-            fighter_acs.set(ac_data.a_effect_id, ac_data.item_key);
+            fighter_acs.set(ac_data.effect_key, ac_data.item_key);
         }
     }
     pub(in crate::sol::api) fn remove_fighter_autocharges(

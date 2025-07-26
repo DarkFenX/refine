@@ -1,6 +1,6 @@
 use super::{Vast, VastFitData};
 use crate::{
-    dbg::{DebugResult, check_a_effect_id, check_fit_key, check_item_key},
+    dbg::{DebugResult, check_effect_key, check_fit_key, check_item_key},
     ud::UData,
 };
 
@@ -18,8 +18,8 @@ impl Vast {
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
-                for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(u_data, a_effect_id)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
                 }
             }
         }
@@ -28,8 +28,8 @@ impl Vast {
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
-                for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(u_data, a_effect_id)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
                 }
             }
         }
@@ -38,8 +38,8 @@ impl Vast {
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
-                for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(u_data, a_effect_id)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
                 }
             }
         }
@@ -48,8 +48,8 @@ impl Vast {
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
-                for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(u_data, a_effect_id)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
                 }
             }
         }
@@ -58,8 +58,8 @@ impl Vast {
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
-                for a_effect_id in projector_data.keys() {
-                    check_a_effect_id(u_data, a_effect_id)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
                 }
             }
         }
@@ -266,7 +266,7 @@ impl VastFitData {
             check_item_key(u_data, *projectee_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(u_data, projector_espec.item_key, true)?;
-                check_a_effect_id(u_data, &projector_espec.a_effect_id)?;
+                check_effect_key(u_data, projector_espec.effect_key)?;
             }
         }
         for (projectee_key, projector_especs) in self.blockable_offense.iter() {
@@ -274,7 +274,7 @@ impl VastFitData {
             check_item_key(u_data, *projectee_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(u_data, projector_espec.item_key, true)?;
-                check_a_effect_id(u_data, &projector_espec.a_effect_id)?;
+                check_effect_key(u_data, projector_espec.effect_key)?;
             }
         }
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
@@ -282,73 +282,73 @@ impl VastFitData {
             check_item_key(u_data, projectee_aspec.item_key, false)?;
             for projector_espec in projector_especs {
                 check_item_key(u_data, projector_espec.item_key, true)?;
-                check_a_effect_id(u_data, &projector_espec.a_effect_id)?;
+                check_effect_key(u_data, projector_espec.effect_key)?;
             }
         }
         for (&item_key, item_data) in self.dmg_normal.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.lr_shield.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.lr_shield_limitable.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.lr_armor.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.lr_armor_limitable.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.lr_hull.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.orr_shield.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.orr_armor.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.orr_hull.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         for (&item_key, item_data) in self.orr_cap.iter() {
             check_item_key(u_data, item_key, true)?;
-            for a_effect_id in item_data.keys() {
-                check_a_effect_id(u_data, a_effect_id)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
             }
         }
         Ok(())

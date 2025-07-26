@@ -13,7 +13,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = self.u_data.items.get(item_key);
-        if u_item.get_a_item_id() == a_item_id {
+        if u_item.get_type_id() == a_item_id {
             return;
         }
         SolarSystem::util_remove_fighter_with_projs(
@@ -28,7 +28,7 @@ impl SolarSystem {
             .get_mut(item_key)
             .get_fighter_mut()
             .unwrap()
-            .set_a_item_id(a_item_id, reuse_eupdates, &self.u_data.src);
+            .set_type_id(a_item_id, reuse_eupdates, &self.u_data.src);
         // Update just fighter, autocharges will copy updated projection ranges
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, item_key);
         SolarSystem::util_add_fighter_with_projs(

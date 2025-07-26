@@ -54,7 +54,7 @@ impl<'a> ChargeMut<'a> {
         get_cont_item(self.sol, self.key)
     }
     pub fn get_cont_item_mut(&mut self) -> ItemMut<'_> {
-        let cont_key = get_u_charge(self.sol, self.key).get_cont_key();
+        let cont_key = get_u_charge(self.sol, self.key).get_cont_item_key();
         ItemMut::new(self.sol, cont_key)
     }
     pub fn get_state(&self) -> bool {
@@ -82,7 +82,7 @@ fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
     Fit::new(sol, fit_key)
 }
 fn get_cont_item(sol: &SolarSystem, item_key: UItemKey) -> Item<'_> {
-    let cont_key = get_u_charge(sol, item_key).get_cont_key();
+    let cont_key = get_u_charge(sol, item_key).get_cont_item_key();
     Item::new(sol, cont_key)
 }
 fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {

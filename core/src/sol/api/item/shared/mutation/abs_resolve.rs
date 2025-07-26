@@ -14,7 +14,7 @@ pub(in crate::sol::api::item::shared::mutation) fn resolve_absolutes_into_rolls_
     a_mutator_id: &ad::AItemId,
     values: &[(ad::AAttrId, AttrVal)],
 ) -> Vec<AttrMutationRequest> {
-    let r_mutator = match src.get_r_mutator(a_mutator_id) {
+    let r_mutator = match src.get_mutator(a_mutator_id) {
         Some(a_mutator) => a_mutator,
         None => return Vec::new(),
     };
@@ -22,8 +22,8 @@ pub(in crate::sol::api::item::shared::mutation) fn resolve_absolutes_into_rolls_
         Some(mutated_a_item_id) => *mutated_a_item_id,
         None => return Vec::new(),
     };
-    let base_r_item = src.get_r_item(base_a_item_id);
-    let mutated_r_item = src.get_r_item(&mutated_a_item_id);
+    let base_r_item = src.get_item(base_a_item_id);
+    let mutated_r_item = src.get_item(&mutated_a_item_id);
     resolve_absolutes_into_rolls_with_items(base_r_item, mutated_r_item, r_mutator, values)
 }
 
@@ -65,7 +65,7 @@ pub(in crate::sol::api::item::shared::mutation) fn resolve_absolutes_into_rolls_
         };
         if let Some(roll) = resolve_absolute_into_roll(*absolute_value, *unmutated_a_value, a_mutation_range) {
             result.push(AttrMutationRequest {
-                a_attr_id: *a_attr_id,
+                attr_id: *a_attr_id,
                 value: Some(roll),
             })
         }

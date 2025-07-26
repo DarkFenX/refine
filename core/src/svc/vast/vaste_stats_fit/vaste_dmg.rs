@@ -35,16 +35,13 @@ impl VastFitData {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
-            for (a_effect_id, dmg_getter) in item_data.iter() {
-                let r_effect = match ctx.u_data.src.get_r_effect(a_effect_id) {
-                    Some(r_effect) => r_effect,
-                    None => continue,
-                };
+            for (&effect_key, dmg_getter) in item_data.iter() {
+                let r_effect = ctx.u_data.src.get_effect(effect_key);
                 let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, spool, None) {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,
                 };
-                let effect_cycles = match cycle_map.get(a_effect_id) {
+                let effect_cycles = match cycle_map.get(&effect_key) {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
@@ -65,16 +62,13 @@ impl VastFitData {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
-            for (a_effect_id, dmg_getter) in item_data.iter() {
-                let r_effect = match ctx.u_data.src.get_r_effect(a_effect_id) {
-                    Some(r_effect) => r_effect,
-                    None => continue,
-                };
+            for (&effect_key, dmg_getter) in item_data.iter() {
+                let r_effect = ctx.u_data.src.get_effect(effect_key);
                 let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, spool, None) {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,
                 };
-                if !cycle_map.contains_key(a_effect_id) {
+                if !cycle_map.contains_key(&effect_key) {
                     continue;
                 };
                 volley += output_per_cycle.get_max();

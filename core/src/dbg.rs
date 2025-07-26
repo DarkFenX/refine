@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    rd::REffectKey,
     ud::{UData, UFitKey, UItemKey},
 };
 
@@ -27,9 +27,8 @@ pub(crate) fn check_item_key(u_data: &UData, item_key: UItemKey, check_load: boo
     Ok(())
 }
 
-pub(crate) fn check_a_effect_id(u_data: &UData, a_effect_id: &ad::AEffectId) -> DebugResult {
-    if u_data.src.get_r_effect(a_effect_id).is_none() {
-        return Err(DebugError {});
-    }
+pub(crate) fn check_effect_key(u_data: &UData, effect_key: REffectKey) -> DebugResult {
+    // Will crash if effect key is not valid
+    u_data.src.get_effect(effect_key);
     Ok(())
 }

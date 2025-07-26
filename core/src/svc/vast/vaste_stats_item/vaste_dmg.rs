@@ -55,10 +55,10 @@ impl Vast {
             Some(cycle_map) => cycle_map,
             None => return item_dps,
         };
-        for (a_effect_id, cycle) in cycle_map {
-            let r_effect = ctx.u_data.src.get_r_effect(&a_effect_id).unwrap();
-            if let Some(dmg_getter) = r_effect.get_normal_dmg_opc_getter()
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, r_effect, spool, None)
+        for (effect_key, cycle) in cycle_map {
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
             {
                 item_dps += dmg_opc.get_total() / cycle.get_average_cycle_time();
             }
@@ -93,10 +93,10 @@ impl Vast {
             Some(cycle_map) => cycle_map,
             None => return item_volley,
         };
-        for (a_effect_id, _cycle) in cycle_map {
-            let r_effect = ctx.u_data.src.get_r_effect(&a_effect_id).unwrap();
-            if let Some(dmg_getter) = r_effect.get_normal_dmg_opc_getter()
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, r_effect, spool, None)
+        for (effect_key, _cycle) in cycle_map {
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
             {
                 item_volley += dmg_opc.get_max()
             }

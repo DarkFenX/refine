@@ -19,7 +19,7 @@ impl SolarSystem {
     ) -> UItemKey {
         let u_module = self.u_data.items.get(item_key).get_module().unwrap();
         let fit_key = u_module.get_fit_key();
-        let module_a_state = u_module.get_a_state();
+        let module_a_state = u_module.get_state();
         let module_projs = u_module.get_projs().iter().collect_vec();
         // Remove old charge, if it was set
         if let Some(old_charge_key) = u_module.get_charge_key() {

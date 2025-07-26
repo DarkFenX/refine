@@ -1,28 +1,25 @@
 use lender::{Lender, Lending};
 
-use super::shared::get_side_effect_chance_attr_id;
+use super::shared::get_se_chance_attr_id_by_effect_key;
 use crate::{
-    ad,
+    ad::{AAttrId, AEffectId},
     sol::{
         SolarSystem,
         api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
     },
     ud::UItemKey,
+    util::GetId,
 };
 
 // Lending iterator for side effects
 pub struct SideEffectIter<'iter> {
     sol: &'iter mut SolarSystem,
     key: UItemKey,
-    effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
+    effects_with_chances: Vec<(AEffectId, AAttrId)>,
     index: usize,
 }
 impl<'iter> SideEffectIter<'iter> {
-    fn new(
-        sol: &'iter mut SolarSystem,
-        key: UItemKey,
-        effects_with_chances: Vec<(ad::AEffectId, ad::AAttrId)>,
-    ) -> Self {
+    fn new(sol: &'iter mut SolarSystem, key: UItemKey, effects_with_chances: Vec<(AEffectId, AAttrId)>) -> Self {
         Self {
             sol,
             key,
@@ -36,9 +33,9 @@ impl<'iter, 'lend> Lending<'lend> for SideEffectIter<'iter> {
 }
 impl<'iter> Lender for SideEffectIter<'iter> {
     fn next(&mut self) -> Option<FullSideEffectMut<'_>> {
-        let (a_effect_id, a_attr_id) = *self.effects_with_chances.get(self.index)?;
+        let (effect_id, attr_id) = *self.effects_with_chances.get(self.index)?;
         self.index += 1;
-        Some(FullSideEffectMut::new(self.sol, self.key, a_effect_id, a_attr_id))
+        Some(FullSideEffectMut::new(self.sol, self.key, effect_id, attr_id))
     }
 }
 
@@ -58,12 +55,13 @@ impl<'a> BoosterMut<'a> {
     pub fn iter_side_effects_mut(&mut self) -> SideEffectIter<'_> {
         let u_booster = self.sol.u_data.items.get(self.key).get_booster().unwrap();
         let effects_with_chances = u_booster
-            .get_a_effect_datas()
+            .get_effect_datas()
             .into_iter()
-            .flat_map(|a_effect_datas| {
-                a_effect_datas.keys().filter_map(|a_effect_id| {
-                    get_side_effect_chance_attr_id(&self.sol.u_data.src, a_effect_id)
-                        .map(|chance_a_attr_id| (*a_effect_id, chance_a_attr_id))
+            .flat_map(|effect_datas| {
+                effect_datas.keys().filter_map(|&effect_key| {
+                    let effect_id = self.sol.u_data.src.get_effect(effect_key).get_id();
+                    get_se_chance_attr_id_by_effect_key(&self.sol.u_data.src, effect_key)
+                        .map(|chance_attr_id| (effect_id, chance_attr_id))
                 })
             })
             .collect();
@@ -73,13 +71,16 @@ impl<'a> BoosterMut<'a> {
 
 fn iter_side_effects(sol: &SolarSystem, item_key: UItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
     let u_booster = sol.u_data.items.get(item_key).get_booster().unwrap();
-    u_booster
-        .get_a_effect_datas()
-        .into_iter()
-        .flat_map(move |a_effect_datas| {
-            a_effect_datas.keys().filter_map(move |a_effect_id| {
-                get_side_effect_chance_attr_id(&sol.u_data.src, a_effect_id)
-                    .map(|chance_a_attr_id| FullSideEffect::new(sol, item_key, *a_effect_id, chance_a_attr_id))
+    u_booster.get_effect_datas().into_iter().flat_map(move |effect_datas| {
+        effect_datas.keys().filter_map(move |&effect_key| {
+            get_se_chance_attr_id_by_effect_key(&sol.u_data.src, effect_key).map(|chance_a_attr_id| {
+                FullSideEffect::new(
+                    sol,
+                    item_key,
+                    sol.u_data.src.get_effect(effect_key).get_id(),
+                    chance_a_attr_id,
+                )
             })
         })
+    })
 }

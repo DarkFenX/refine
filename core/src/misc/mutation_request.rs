@@ -6,6 +6,6 @@ pub(crate) struct ItemMutationRequest {
 }
 
 pub(crate) struct AttrMutationRequest {
-    pub(crate) a_attr_id: ad::AAttrId,
+    pub(crate) attr_id: ad::AAttrId,
     pub(crate) value: Option<UnitInterval>,
 }

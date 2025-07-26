@@ -16,7 +16,7 @@ impl SolarSystem {
             .get(item_key)
             .get_mutation_data()
             .unwrap()
-            .get_a_mutator_id()
+            .get_mutator_id()
     }
 }
 

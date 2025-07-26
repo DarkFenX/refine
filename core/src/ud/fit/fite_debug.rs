@@ -50,7 +50,7 @@ impl UFit {
             if skill.get_fit_key() != fit_key {
                 return Err(DebugError {});
             }
-            if skill.get_a_level() != fit_skill.level {
+            if skill.get_level() != fit_skill.level {
                 return Err(DebugError {});
             }
             item.consistency_check(u_data)?;
@@ -303,7 +303,7 @@ fn check_module_charge(
             UItem::Charge(charge) => charge,
             _ => return Err(DebugError {}),
         };
-        if charge.get_cont_key() != module_key {
+        if charge.get_cont_item_key() != module_key {
             return Err(DebugError {});
         }
         item.consistency_check(u_data)?;
@@ -331,7 +331,7 @@ fn check_fighter_autocharges(
             UItem::Autocharge(autocharge) => autocharge,
             _ => return Err(DebugError {}),
         };
-        if autocharge.get_cont_key() != fighter_key {
+        if autocharge.get_cont_item_key() != fighter_key {
             return Err(DebugError {});
         }
         item.consistency_check(u_data)?;

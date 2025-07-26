@@ -11,9 +11,9 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_skill = self.u_data.items.get_mut(item_key).get_skill_mut().unwrap();
-        let old_a_state = u_skill.get_a_state();
+        let old_a_state = u_skill.get_state();
         u_skill.set_skill_state(state, reuse_eupdates, &self.u_data.src);
-        let new_a_state = u_skill.get_a_state();
+        let new_a_state = u_skill.get_state();
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

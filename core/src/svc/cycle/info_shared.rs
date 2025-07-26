@@ -1,4 +1,4 @@
-use crate::{ad, def::AttrVal};
+use crate::{def::AttrVal, rd::REffectKey};
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleOptions {
@@ -17,6 +17,6 @@ pub(in crate::svc) enum CycleOptionReload {
 }
 
 pub(super) struct SelfKillerInfo {
-    pub(super) a_effect_id: ad::AEffectId,
+    pub(super) effect_key: REffectKey,
     pub(super) duration_s: AttrVal,
 }

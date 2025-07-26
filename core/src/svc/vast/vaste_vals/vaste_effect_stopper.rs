@@ -5,7 +5,7 @@ use crate::{
     misc::{EffectId, EffectSpec},
     svc::{SvcCtx, calc::Calc, eff_funcs, vast::VastFitData},
     ud::UItemKey,
-    util::RSet,
+    util::{GetId, RSet},
 };
 
 pub struct ValEffectStopperFail {
@@ -24,7 +24,7 @@ impl VastFitData {
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
             let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_key);
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
-                && stopped_reffs.contains(&stopped_espec.a_effect_id)
+                && stopped_reffs.contains(&stopped_espec.effect_key)
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
                 && !kfs.contains(&stopped_espec.item_key)
             {
@@ -44,14 +44,13 @@ impl VastFitData {
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
             let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_key);
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
-                && stopped_reffs.contains(&stopped_espec.a_effect_id)
+                && stopped_reffs.contains(&stopped_espec.effect_key)
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
                 && !kfs.contains(&stopped_espec.item_key)
             {
-                items
-                    .entry(ctx.u_data.items.id_by_key(stopped_espec.item_key))
-                    .or_insert_with(Vec::new)
-                    .push(stopped_espec.a_effect_id.into());
+                let item_id = ctx.u_data.items.id_by_key(stopped_espec.item_key);
+                let effect_id = ctx.u_data.src.get_effect(stopped_espec.effect_key).get_id();
+                items.entry(item_id).or_insert_with(Vec::new).push(effect_id.into());
             }
         }
         match items.is_empty() {

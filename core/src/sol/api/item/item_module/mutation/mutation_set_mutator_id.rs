@@ -20,7 +20,7 @@ impl SolarSystem {
                 });
             }
         };
-        if mutation_data.get_a_mutator_id() == a_mutator_id {
+        if mutation_data.get_mutator_id() == a_mutator_id {
             return Ok(());
         }
         SolarSystem::util_remove_module_with_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
@@ -29,7 +29,7 @@ impl SolarSystem {
             .get_mut(item_key)
             .get_module_mut()
             .unwrap()
-            .set_a_mutator_id(a_mutator_id, reuse_eupdates, &self.u_data.src)
+            .set_mutator_id(a_mutator_id, reuse_eupdates, &self.u_data.src)
             .unwrap();
         SolarSystem::util_add_module_with_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         Ok(())
