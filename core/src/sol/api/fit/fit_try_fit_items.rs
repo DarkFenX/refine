@@ -167,11 +167,11 @@ fn get_chargeable_modules(u_data: &UData, fit_key: UFitKey) -> Vec<UItemKey> {
             continue;
         }
         seen_a_item_ids.push(a_item_id);
-        let r_item_axt = match u_item.get_axt() {
-            Some(r_item_axt) => r_item_axt,
+        let item_axt = match u_item.get_axt() {
+            Some(item_axt) => item_axt,
             None => continue,
         };
-        if r_item_axt.capacity > OF(0.0) {
+        if item_axt.capacity > OF(0.0) {
             module_keys.push(module_key);
         }
     }

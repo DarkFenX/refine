@@ -193,14 +193,14 @@ impl UModule {
         let charge_key = self.get_charge_key()?;
         let charge_item = u_data.items.get(charge_key);
         let module_capacity = match self.get_axt() {
-            Some(r_axt) => r_axt.capacity,
+            Some(axt) => axt.capacity,
             // Module not loaded - no info
             _ => {
                 return None;
             }
         };
         let charge_volume = match charge_item.get_axt() {
-            Some(r_axt) if r_axt.volume != OF(0.0) => r_axt.volume,
+            Some(axt) if axt.volume != OF(0.0) => axt.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;

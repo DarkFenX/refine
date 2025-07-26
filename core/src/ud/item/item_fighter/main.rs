@@ -118,15 +118,15 @@ impl UFighter {
     }
     pub(crate) fn get_count(&self) -> Option<AdjustableCount> {
         match self.get_axt() {
-            Some(r_axt) => match self.count_override {
+            Some(axt) => match self.count_override {
                 Some(count_override) => Some(AdjustableCount {
                     current: count_override.get_inner(),
-                    max: r_axt.max_fighter_count,
+                    max: axt.max_fighter_count,
                     overridden: true,
                 }),
                 None => Some(AdjustableCount {
-                    current: r_axt.max_fighter_count,
-                    max: r_axt.max_fighter_count,
+                    current: axt.max_fighter_count,
+                    max: axt.max_fighter_count,
                     overridden: false,
                 }),
             },

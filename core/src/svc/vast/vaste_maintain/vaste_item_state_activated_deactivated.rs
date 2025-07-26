@@ -12,7 +12,7 @@ impl Vast {
                 UItem::Drone(drone) => {
                     let fit_data = self.get_fit_data_mut(&drone.get_fit_key());
                     let val = match drone.get_axt() {
-                        Some(r_item_axt) => r_item_axt.bandwidth_use.unwrap_or(OF(0.0)),
+                        Some(item_axt) => item_axt.bandwidth_use.unwrap_or(OF(0.0)),
                         None => OF(0.0),
                     };
                     fit_data.drones_online_bandwidth.insert(item_key, val);

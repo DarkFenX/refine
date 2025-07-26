@@ -11,7 +11,7 @@ pub(in crate::svc) fn get_resist_a_attr_id(item: &UItem, effect: &REffect) -> Op
     match effect.get_resist_attr_id() {
         Some(resist_a_attr_id) => Some(resist_a_attr_id),
         None => match item.get_axt() {
-            Some(r_item_axt) => r_item_axt.remote_resist_attr_id,
+            Some(item_axt) => item_axt.remote_resist_attr_id,
             None => None,
         },
     }
