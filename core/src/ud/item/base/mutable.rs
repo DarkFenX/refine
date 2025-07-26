@@ -218,8 +218,9 @@ impl UItemBaseMutable {
         self.base.is_loaded()
     }
     pub(in crate::ud::item) fn src_changed(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.update_r_data(reuse_eupdates, src);
+        // Effect modes have to be refreshed first, since effect updates depend on effect modes
         self.base.base_update_effect_modes(src);
+        self.update_r_data(reuse_eupdates, src);
     }
     fn update_r_data(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         let item_mutation = match &mut self.mutation {

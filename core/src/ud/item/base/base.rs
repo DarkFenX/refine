@@ -185,8 +185,9 @@ impl UItemBase {
         self.cache.is_some()
     }
     pub(in crate::ud::item) fn src_changed(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base_update_r_data(reuse_eupdates, src);
+        // Effect modes have to be refreshed first, since effect updates depend on effect modes
         self.base_update_effect_modes(src);
+        self.base_update_r_data(reuse_eupdates, src);
     }
     pub(in crate::ud::item::base) fn base_update_r_data(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         // Operations which replace r_item are assumed to handle effect stopping before the call. In
