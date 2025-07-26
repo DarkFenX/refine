@@ -28,7 +28,7 @@ impl REffect {
             .map(|get_proj_attrs| get_proj_attrs(&a_effect))
             .unwrap_or_default();
         Self {
-            effect_key: effect_key,
+            effect_key,
             a_effect,
             n_effect_hc: n_effect.map(|n_effect| n_effect.hc).unwrap_or_default(),
             is_active: is_active_flag,
