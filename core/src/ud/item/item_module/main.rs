@@ -15,7 +15,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct UModule {
-    base: UItemBaseMutable,
+    pub(super) base: UItemBaseMutable,
     fit_key: UFitKey,
     rack: ModRack,
     pos: Idx,

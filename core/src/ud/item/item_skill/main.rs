@@ -13,7 +13,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct USkill {
-    base: UItemBase,
+    pub(super) base: UItemBase,
     fit_key: UFitKey,
     level: ASkillLevel,
 }

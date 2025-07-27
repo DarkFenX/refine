@@ -14,7 +14,7 @@ use crate::{
 };
 #[derive(Clone)]
 pub(crate) struct UDrone {
-    base: UItemBaseMutable,
+    pub(super) base: UItemBaseMutable,
     fit_key: UFitKey,
     projs: Projs,
 }

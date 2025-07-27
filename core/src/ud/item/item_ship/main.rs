@@ -14,7 +14,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct UShip {
-    base: UItemBase,
+    pub(super) base: UItemBase,
     fit_key: UFitKey,
     kind: UShipKind,
 }

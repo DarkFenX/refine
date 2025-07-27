@@ -18,7 +18,7 @@ pub(in crate::ud::item) struct UItemBase {
     item_id: ItemId,
     type_id: AItemId,
     state: AState,
-    effect_modes: EffectModes,
+    pub(super) effect_modes: EffectModes,
     // Source-dependent data
     cache: Option<ItemBaseCache>,
 }

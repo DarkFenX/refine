@@ -15,7 +15,7 @@ const DISABLED_STATE: AState = AState::Ghost;
 
 #[derive(Clone)]
 pub(crate) struct UAutocharge {
-    base: UItemBase,
+    pub(super) base: UItemBase,
     fit_key: UFitKey,
     cont_item_key: UItemKey,
     cont_effect_key: REffectKey,

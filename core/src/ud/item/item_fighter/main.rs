@@ -13,7 +13,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct UFighter {
-    base: UItemBase,
+    pub(super) base: UItemBase,
     fit_key: UFitKey,
     count_override: Option<FighterCountOverride>,
     autocharges: Autocharges,

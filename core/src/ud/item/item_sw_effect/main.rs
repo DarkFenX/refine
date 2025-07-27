@@ -10,7 +10,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct USwEffect {
-    base: UItemBase,
+    pub(super) base: UItemBase,
 }
 impl USwEffect {
     pub(crate) fn new(

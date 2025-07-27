@@ -13,7 +13,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct UStance {
-    base: UItemBase,
+    pub(super) base: UItemBase,
     fit_key: UFitKey,
 }
 impl UStance {

@@ -1,17 +1,13 @@
 use itertools::Itertools;
 
 use crate::{
-    dbg::{DebugError, DebugResult, check_effect_key, check_fit_key},
+    dbg::{DebugError, DebugResult, check_fit_key},
     ud::{UData, UFighter},
 };
 
 impl UFighter {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        if let Some(reffs) = self.get_reffs() {
-            for &effect_key in reffs.iter() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
+        self.base.consistency_check(u_data)?;
         check_fit_key(u_data, self.get_fit_key())?;
         self.get_autocharges().consistency_check(u_data)?;
         self.get_projs().consistency_check(u_data)?;

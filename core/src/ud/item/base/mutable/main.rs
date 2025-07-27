@@ -26,7 +26,7 @@ use crate::{
 // attribute mutations, and mutation cache isn't set.
 #[derive(Clone)]
 pub(in crate::ud::item) struct UItemBaseMutable {
-    base: UItemBase,
+    pub(super) base: UItemBase,
     mutation: Option<ItemMutationData>,
 }
 impl UItemBaseMutable {

@@ -15,7 +15,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct UBooster {
-    base: UItemBase,
+    pub(super) base: UItemBase,
     fit_key: UFitKey,
 }
 impl UBooster {
