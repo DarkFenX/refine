@@ -90,7 +90,7 @@ impl UAutocharge {
             None => self.base.set_state(state, reuse_eupdates, src),
         }
     }
-    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
+    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
     }
     pub(in crate::ud::item) fn start_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {

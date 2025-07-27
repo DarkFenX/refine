@@ -17,42 +17,42 @@ pub(super) fn get_module_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    u_item: &UItem,
-    u_module: &UModule,
+    item: &UItem,
+    module: &UModule,
     options: CycleOptions,
     ignore_state: bool,
 ) -> Option<RMap<REffectKey, Cycle>> {
-    if !u_module.is_loaded() {
+    if !module.is_loaded() {
         return None;
     };
     let mut cycle_infos = RMap::new();
     let mut self_killers = Vec::new();
     match ignore_state {
         true => {
-            for &effect_key in u_module.get_effect_datas().unwrap().keys() {
+            for &effect_key in module.get_effect_datas().unwrap().keys() {
                 fill_module_effect_info(
                     &mut cycle_infos,
                     &mut self_killers,
                     ctx,
                     calc,
                     item_key,
-                    u_item,
-                    u_module,
+                    item,
+                    module,
                     effect_key,
                     options,
                 );
             }
         }
         false => {
-            for &effect_key in u_module.get_reffs().unwrap().iter() {
+            for &effect_key in module.get_reffs().unwrap().iter() {
                 fill_module_effect_info(
                     &mut cycle_infos,
                     &mut self_killers,
                     ctx,
                     calc,
                     item_key,
-                    u_item,
-                    u_module,
+                    item,
+                    module,
                     effect_key,
                     options,
                 );
@@ -77,29 +77,29 @@ fn fill_module_effect_info(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    u_item: &UItem,
-    u_module: &UModule,
+    item: &UItem,
+    module: &UModule,
     effect_key: REffectKey,
     options: CycleOptions,
 ) {
-    let r_effect = ctx.u_data.src.get_effect(effect_key);
-    if !r_effect.is_active() {
+    let effect = ctx.u_data.src.get_effect(effect_key);
+    if !effect.is_active() {
         return;
     }
     // No appropriate duration - no info
-    let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
+    let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
         Some(duration_s) => duration_s,
         None => return,
     };
     // Charge count info
-    let cycle_count = match r_effect.get_charge_info() {
-        Some(n_charge) => match n_charge.location {
-            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(u_item, r_effect),
+    let cycle_count = match effect.get_charge_info() {
+        Some(charge_info) => match charge_info.location {
+            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(item, effect),
             NEffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
                 NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
-                    get_charge_rate_cycle_count(ctx, u_module, can_run_uncharged, options.reload_optionals)
+                    get_charge_rate_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
                 }
-                NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, u_module),
+                NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, module),
                 NEffectChargeDepl::None => InfCount::Infinite,
             },
         },
@@ -110,7 +110,7 @@ fn fill_module_effect_info(
         return;
     }
     // Self-killers are fairly trivial. Record info about them and go to next effect
-    if r_effect.kills_item() {
+    if effect.kills_item() {
         self_killers.push(SelfKillerInfo { effect_key, duration_s });
         cycle_infos.insert(
             effect_key,

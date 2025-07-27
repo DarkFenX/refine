@@ -1,4 +1,7 @@
-use super::{info_drone::get_drone_cycle_info, info_module::get_module_cycle_info, info_shared::CycleOptions};
+use super::{
+    info_autocharge::get_autocharge_cycle_info, info_drone::get_drone_cycle_info, info_module::get_module_cycle_info,
+    info_shared::CycleOptions,
+};
 use crate::{
     def::{AttrVal, Count},
     rd::REffectKey,
@@ -7,6 +10,7 @@ use crate::{
     util::{InfCount, RMap},
 };
 
+#[derive(Copy, Clone)]
 pub(in crate::svc) enum Cycle {
     Simple(CycleSimple),
     Reload1(CycleReload1),
@@ -29,6 +33,7 @@ impl Cycle {
     }
 }
 
+#[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSimple {
     pub(super) active_time: AttrVal,
     pub(super) inactive_time: AttrVal,
@@ -45,6 +50,7 @@ impl CycleSimple {
     }
 }
 
+#[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleReload1 {
     pub(super) inner: CycleInner,
 }
@@ -57,6 +63,7 @@ impl CycleReload1 {
     }
 }
 
+#[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleReload2 {
     pub(super) inner_early: CycleInner,
     pub(super) inner_final: CycleInner,
@@ -71,6 +78,7 @@ impl CycleReload2 {
     }
 }
 
+#[derive(Copy, Clone)]
 pub(super) struct CycleInner {
     pub(super) active_time: AttrVal,
     pub(super) inactive_time: AttrVal,
@@ -89,20 +97,18 @@ pub(in crate::svc) fn get_item_cycle_info(
     options: CycleOptions,
     ignore_state: bool,
 ) -> Option<RMap<REffectKey, Cycle>> {
-    let u_item = ctx.u_data.items.get(item_key);
-    match u_item {
-        UItem::Autocharge(u_autocharge) => {
-            get_item_cycle_info(ctx, calc, u_autocharge.get_cont_item_key(), options, ignore_state)
-        }
-        UItem::Charge(u_charge) => get_item_cycle_info(ctx, calc, u_charge.get_cont_item_key(), options, ignore_state),
-        UItem::Drone(u_drone) => get_drone_cycle_info(ctx, calc, item_key, u_drone, ignore_state),
-        UItem::Fighter(u_fighter) => {
-            if !u_fighter.is_loaded() {
+    let item = ctx.u_data.items.get(item_key);
+    match item {
+        UItem::Autocharge(autocharge) => get_autocharge_cycle_info(ctx, calc, autocharge, options, ignore_state),
+        UItem::Charge(charge) => get_item_cycle_info(ctx, calc, charge.get_cont_item_key(), options, ignore_state),
+        UItem::Drone(drone) => get_drone_cycle_info(ctx, calc, item_key, drone, ignore_state),
+        UItem::Fighter(fighter) => {
+            if !fighter.is_loaded() {
                 return None;
             };
             Some(RMap::new())
         }
-        UItem::Module(u_module) => get_module_cycle_info(ctx, calc, item_key, u_item, u_module, options, ignore_state),
+        UItem::Module(module) => get_module_cycle_info(ctx, calc, item_key, item, module, options, ignore_state),
         _ => None,
     }
 }

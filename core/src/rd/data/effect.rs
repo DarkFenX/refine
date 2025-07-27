@@ -22,7 +22,7 @@ pub(crate) struct REffect {
 impl REffect {
     pub(in crate::rd) fn new(effect_key: REffectKey, a_effect: ad::AEffect) -> Self {
         let n_effect = nd::N_EFFECT_MAP.get(&a_effect.id);
-        let is_active_flag = a_effect.state >= ad::AState::Active && a_effect.duration_attr_id.is_some();
+        let is_active_flag = a_effect.state == ad::AState::Active && a_effect.duration_attr_id.is_some();
         let proj_a_attr_ids = n_effect
             .and_then(|v| v.xt_get_proj_attrs)
             .map(|get_proj_attrs| get_proj_attrs(&a_effect))

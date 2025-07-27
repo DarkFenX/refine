@@ -11,22 +11,22 @@ pub(super) fn get_drone_cycle_info(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    u_drone: &UDrone,
+    drone: &UDrone,
     ignore_state: bool,
 ) -> Option<RMap<REffectKey, Cycle>> {
-    if !u_drone.is_loaded() {
+    if !drone.is_loaded() {
         return None;
     };
     let mut cycle_infos = RMap::new();
     match ignore_state {
         true => {
-            for &a_effect_id in u_drone.get_effect_datas().unwrap().keys() {
-                fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
+            for &effect_key in drone.get_effect_datas().unwrap().keys() {
+                fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, effect_key);
             }
         }
         false => {
-            for &a_effect_id in u_drone.get_reffs().unwrap().iter() {
-                fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, a_effect_id);
+            for &effect_key in drone.get_reffs().unwrap().iter() {
+                fill_drone_effect_info(&mut cycle_infos, ctx, calc, item_key, effect_key);
             }
         }
     }
@@ -40,11 +40,11 @@ fn fill_drone_effect_info(
     item_key: UItemKey,
     effect_key: REffectKey,
 ) {
-    let r_effect = ctx.u_data.src.get_effect(effect_key);
-    if !r_effect.is_active() {
+    let effect = ctx.u_data.src.get_effect(effect_key);
+    if !effect.is_active() {
         return;
     }
-    let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect) {
+    let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
         Some(duration_s) => duration_s,
         None => return,
     };
