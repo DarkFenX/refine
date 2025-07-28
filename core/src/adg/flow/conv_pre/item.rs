@@ -31,6 +31,7 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSuppo
             attrs: RMap::new(),
             effect_datas: RMap::new(),
             defeff_id: defeff_id.map(AEffectId::Dogma),
+            abil_ids: RSet::new(),
             srqs: RMap::new(),
             disallowed_in_wspace: is_disallowed_in_wspace(&e_item.id, &g_supp.rendered_type_lists),
             // Following fields are set to some default values, actual values will be set after
@@ -50,10 +51,11 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSuppo
     }
     // Item effects & extended effect data from abilities
     for e_item_effect in e_data.item_effects.data.iter() {
-        a_items.get_mut(&e_item_effect.item_id).and_then(|v| {
-            v.effect_datas
-                .insert(AEffectId::Dogma(e_item_effect.effect_id), AItemEffectData::default())
-        });
+        if let Some(a_item) = a_items.get_mut(&e_item_effect.item_id) {
+            a_item
+                .effect_datas
+                .insert(AEffectId::Dogma(e_item_effect.effect_id), AItemEffectData::default());
+        }
     }
     for e_item_abil in e_data.item_abils.data.iter() {
         match a_items.get_mut(&e_item_abil.item_id) {
@@ -71,6 +73,13 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSuppo
             },
         }
     }
+    // Item abilities
+    for e_item_abil in e_data.item_abils.data.iter() {
+        if let Some(a_item) = a_items.get_mut(&e_item_abil.item_id) {
+            a_item.abil_ids.insert(e_item_abil.abil_id);
+        }
+    }
+
     // Item skill requirements
     for e_item_srq in e_data.item_srqs.data.iter() {
         a_items

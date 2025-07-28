@@ -1,7 +1,7 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use crate::cacher_json::data::{
-    CAttrId, CAttrVal, CEffectId, CItemCatId, CItemEffectData, CItemGrpId, CItemId, CSkillLevel, CState,
+    CAbilId, CAttrId, CAttrVal, CEffectId, CItemCatId, CItemEffectData, CItemGrpId, CItemId, CSkillLevel, CState,
 };
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -12,6 +12,7 @@ pub(in crate::cacher_json) struct CItem {
     attrs: HashMap<CAttrId, CAttrVal>,
     effect_datas: HashMap<CEffectId, CItemEffectData>,
     defeff_id: Option<CEffectId>,
+    abil_ids: HashSet<CAbilId>,
     srqs: HashMap<CItemId, CSkillLevel>,
     max_state: CState,
     val_fitted_group_id: Option<CItemGrpId>,
@@ -28,6 +29,7 @@ impl From<&rc::ad::AItem> for CItem {
             attrs: (&a_item.attrs).into(),
             effect_datas: a_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: a_item.defeff_id.as_ref().map(|v| v.into()),
+            abil_ids: a_item.abil_ids.iter().copied().collect(),
             srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.get_inner())).collect(),
             max_state: (&a_item.max_state).into(),
             val_fitted_group_id: a_item.val_fitted_group_id,
@@ -46,6 +48,7 @@ impl From<&CItem> for rc::ad::AItem {
             attrs: (&c_item.attrs).into(),
             effect_datas: c_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: c_item.defeff_id.as_ref().map(|v| v.into()),
+            abil_ids: c_item.abil_ids.iter().copied().collect(),
             srqs: c_item
                 .srqs
                 .iter()
