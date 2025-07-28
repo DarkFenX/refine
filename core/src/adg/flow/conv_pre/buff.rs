@@ -1,9 +1,10 @@
 use crate::{
-    ad, ed,
+    ad::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, AModifierSrq, AOp},
+    ed::EData,
     util::{RMap, StrMsgError},
 };
 
-pub(in crate::adg::flow::conv_pre) fn conv_buffs(e_data: &ed::EData) -> RMap<ad::ABuffId, ad::ABuff> {
+pub(in crate::adg::flow::conv_pre) fn conv_buffs(e_data: &EData) -> RMap<ABuffId, ABuff> {
     let mut a_buffs = RMap::new();
     for e_buff in e_data.buffs.data.iter() {
         let op = match conv_buff_op(&e_buff.operation) {
@@ -24,30 +25,30 @@ pub(in crate::adg::flow::conv_pre) fn conv_buffs(e_data: &ed::EData) -> RMap<ad:
         };
         let mut a_mods = Vec::new();
         for e_item_mod in e_buff.item_mods.iter() {
-            a_mods.push(ad::ABuffModifier {
-                affectee_filter: ad::ABuffAffecteeFilter::Direct,
+            a_mods.push(ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::Direct,
                 affectee_attr_id: e_item_mod.attr_id,
             });
         }
         for e_loc_mod in e_buff.loc_mods.iter() {
-            a_mods.push(ad::ABuffModifier {
-                affectee_filter: ad::ABuffAffecteeFilter::Loc,
+            a_mods.push(ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::Loc,
                 affectee_attr_id: e_loc_mod.attr_id,
             });
         }
         for e_locgroup_mod in e_buff.locgroup_mods.iter() {
-            a_mods.push(ad::ABuffModifier {
-                affectee_filter: ad::ABuffAffecteeFilter::LocGrp(e_locgroup_mod.group_id),
+            a_mods.push(ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::LocGrp(e_locgroup_mod.group_id),
                 affectee_attr_id: e_locgroup_mod.attr_id,
             });
         }
         for e_locsrq_mod in e_buff.locsrq_mods.iter() {
-            a_mods.push(ad::ABuffModifier {
-                affectee_filter: ad::ABuffAffecteeFilter::LocSrq(ad::AModifierSrq::ItemId(e_locsrq_mod.skill_id)),
+            a_mods.push(ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::ItemId(e_locsrq_mod.skill_id)),
                 affectee_attr_id: e_locsrq_mod.attr_id,
             });
         }
-        let a_buff = ad::ABuff {
+        let a_buff = ABuff {
             id: e_buff.id,
             aggr_mode,
             op,
@@ -58,27 +59,27 @@ pub(in crate::adg::flow::conv_pre) fn conv_buffs(e_data: &ed::EData) -> RMap<ad:
     a_buffs
 }
 
-fn conv_buff_aggr_mode(aggr_mode: &str) -> Result<ad::ABuffAggrMode, StrMsgError> {
+fn conv_buff_aggr_mode(aggr_mode: &str) -> Result<ABuffAggrMode, StrMsgError> {
     match aggr_mode {
-        "Minimum" => Ok(ad::ABuffAggrMode::Min),
-        "Maximum" => Ok(ad::ABuffAggrMode::Max),
+        "Minimum" => Ok(ABuffAggrMode::Min),
+        "Maximum" => Ok(ABuffAggrMode::Max),
         _ => Err(StrMsgError {
             msg: format!("unexpected aggregate mode \"{aggr_mode}\""),
         }),
     }
 }
 
-fn conv_buff_op(operation: &str) -> Result<ad::AOp, StrMsgError> {
+fn conv_buff_op(operation: &str) -> Result<AOp, StrMsgError> {
     match operation {
-        "PreAssignment" => Ok(ad::AOp::PreAssign),
-        "PreMul" => Ok(ad::AOp::PreMul),
-        "PreDiv" => Ok(ad::AOp::PreDiv),
-        "ModAdd" => Ok(ad::AOp::Add),
-        "ModSub" => Ok(ad::AOp::Sub),
-        "PostMul" => Ok(ad::AOp::PostMul),
-        "PostDiv" => Ok(ad::AOp::PostDiv),
-        "PostPercent" => Ok(ad::AOp::PostPerc),
-        "PostAssignment" => Ok(ad::AOp::PostAssign),
+        "PreAssignment" => Ok(AOp::PreAssign),
+        "PreMul" => Ok(AOp::PreMul),
+        "PreDiv" => Ok(AOp::PreDiv),
+        "ModAdd" => Ok(AOp::Add),
+        "ModSub" => Ok(AOp::Sub),
+        "PostMul" => Ok(AOp::PostMul),
+        "PostDiv" => Ok(AOp::PostDiv),
+        "PostPercent" => Ok(AOp::PostPerc),
+        "PostAssignment" => Ok(AOp::PostAssign),
         _ => Err(StrMsgError {
             msg: format!("unexpected operation \"{operation}\""),
         }),

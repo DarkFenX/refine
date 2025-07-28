@@ -1,15 +1,13 @@
 use crate::{
-    ad,
+    ad::{AEffectId, AItem, AItemEffectData, AItemId, ASkillLevel, AState},
     adg::{GSupport, get_abil_effect},
     def::OF,
-    ec, ed,
+    ec,
+    ed::{EData, EEffectId, EItemId, EItemListId},
     util::{RMap, RSet},
 };
 
-pub(in crate::adg::flow::conv_pre) fn conv_items(
-    e_data: &ed::EData,
-    g_supp: &GSupport,
-) -> RMap<ad::AItemId, ad::AItem> {
+pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSupport) -> RMap<AItemId, AItem> {
     // Auxiliary maps
     let defeff_map = make_item_defeff_map(e_data);
     let mut a_items = RMap::new();
@@ -26,18 +24,18 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(
         // Item default effect
         let defeff_id = defeff_map.get(&e_item.id).copied();
         // Item construction
-        let a_item = ad::AItem {
+        let a_item = AItem {
             id: e_item.id,
             grp_id: e_item.group_id,
             cat_id,
             attrs: RMap::new(),
             effect_datas: RMap::new(),
-            defeff_id: defeff_id.map(ad::AEffectId::Dogma),
+            defeff_id: defeff_id.map(AEffectId::Dogma),
             srqs: RMap::new(),
             disallowed_in_wspace: is_disallowed_in_wspace(&e_item.id, &g_supp.rendered_type_lists),
             // Following fields are set to some default values, actual values will be set after
             // customization
-            max_state: ad::AState::Offline,
+            max_state: AState::Offline,
             val_fitted_group_id: None,
             val_online_group_id: None,
             val_active_group_id: None,
@@ -53,10 +51,8 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(
     // Item effects & extended effect data from abilities
     for e_item_effect in e_data.item_effects.data.iter() {
         a_items.get_mut(&e_item_effect.item_id).and_then(|v| {
-            v.effect_datas.insert(
-                ad::AEffectId::Dogma(e_item_effect.effect_id),
-                ad::AItemEffectData::default(),
-            )
+            v.effect_datas
+                .insert(AEffectId::Dogma(e_item_effect.effect_id), AItemEffectData::default())
         });
     }
     for e_item_abil in e_data.item_abils.data.iter() {
@@ -64,7 +60,7 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(
             None => continue,
             Some(a_item) => match get_abil_effect(e_item_abil.abil_id) {
                 None => continue,
-                Some(e_effect_id) => match a_item.effect_datas.get_mut(&ad::AEffectId::Dogma(e_effect_id)) {
+                Some(e_effect_id) => match a_item.effect_datas.get_mut(&AEffectId::Dogma(e_effect_id)) {
                     None => continue,
                     Some(a_item_eff_data) => {
                         a_item_eff_data.cd = e_item_abil.cooldown.map(OF);
@@ -77,15 +73,14 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(
     }
     // Item skill requirements
     for e_item_srq in e_data.item_srqs.data.iter() {
-        a_items.get_mut(&e_item_srq.item_id).and_then(|v| {
-            v.srqs
-                .insert(e_item_srq.skill_id, ad::ASkillLevel::new(e_item_srq.level))
-        });
+        a_items
+            .get_mut(&e_item_srq.item_id)
+            .and_then(|v| v.srqs.insert(e_item_srq.skill_id, ASkillLevel::new(e_item_srq.level)));
     }
     a_items
 }
 
-fn make_item_defeff_map(e_data: &ed::EData) -> RMap<ed::EItemId, ed::EEffectId> {
+fn make_item_defeff_map(e_data: &EData) -> RMap<EItemId, EEffectId> {
     e_data
         .item_effects
         .data
@@ -95,7 +90,7 @@ fn make_item_defeff_map(e_data: &ed::EData) -> RMap<ed::EItemId, ed::EEffectId> 
         .collect()
 }
 
-fn is_disallowed_in_wspace(e_item_id: &ed::EItemId, type_lists: &RMap<ed::EItemListId, RSet<ed::EItemId>>) -> bool {
+fn is_disallowed_in_wspace(e_item_id: &EItemId, type_lists: &RMap<EItemListId, RSet<EItemId>>) -> bool {
     let type_list = match type_lists.get(&ec::itemlists::WORMHOLE_JUMP_BLACK_LIST) {
         Some(type_list) => type_list,
         None => return false,

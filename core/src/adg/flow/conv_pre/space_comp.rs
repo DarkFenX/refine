@@ -1,8 +1,15 @@
 use itertools::Itertools;
 
-use crate::{ac, ad, ed};
+use crate::{
+    ac,
+    ad::{
+        AAttrVal, AData, AEffect, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId,
+        AItemEffectData, AItemId, AState,
+    },
+    ed::{EData, EItemSpaceCompBuff},
+};
 
-pub(in crate::adg::flow::conv_pre) fn apply_space_comps(e_data: &ed::EData, a_data: &mut ad::AData) {
+pub(in crate::adg::flow::conv_pre) fn apply_space_comps(e_data: &EData, a_data: &mut AData) {
     for e_space_comp in e_data.space_comps.data.iter() {
         if !a_data.items.contains_key(&e_space_comp.item_id) {
             continue;
@@ -11,35 +18,30 @@ pub(in crate::adg::flow::conv_pre) fn apply_space_comps(e_data: &ed::EData, a_da
             &e_space_comp.system_emitter_buffs,
             a_data,
             e_space_comp.item_id,
-            ad::AEffectId::ScSystemEmitter(e_space_comp.item_id),
+            AEffectId::ScSystemEmitter(e_space_comp.item_id),
         );
         process_buffs(
             &e_space_comp.proxy_effect_buffs,
             a_data,
             e_space_comp.item_id,
-            ad::AEffectId::ScProxyEffect(e_space_comp.item_id),
+            AEffectId::ScProxyEffect(e_space_comp.item_id),
         );
         process_buffs(
             &e_space_comp.proxy_trigger_buffs,
             a_data,
             e_space_comp.item_id,
-            ad::AEffectId::ScProxyTrap(e_space_comp.item_id),
+            AEffectId::ScProxyTrap(e_space_comp.item_id),
         );
         process_buffs(
             &e_space_comp.ship_link_buffs,
             a_data,
             e_space_comp.item_id,
-            ad::AEffectId::ScShipLink(e_space_comp.item_id),
+            AEffectId::ScShipLink(e_space_comp.item_id),
         );
     }
 }
 
-fn process_buffs(
-    e_sc_buffs: &[ed::EItemSpaceCompBuff],
-    a_data: &mut ad::AData,
-    item_id: ad::AItemId,
-    effect_id: ad::AEffectId,
-) {
+fn process_buffs(e_sc_buffs: &[EItemSpaceCompBuff], a_data: &mut AData, item_id: AItemId, effect_id: AEffectId) {
     let valid_buffs = e_sc_buffs
         .iter()
         .filter(|v| a_data.buffs.contains_key(&v.id))
@@ -47,19 +49,19 @@ fn process_buffs(
     if valid_buffs.is_empty() {
         return;
     }
-    let buff_info = ad::AEffectBuffInfo {
-        source: ad::AEffectBuffSrc::Customized(
+    let buff_info = AEffectBuffInfo {
+        source: AEffectBuffSrc::Customized(
             valid_buffs
                 .iter()
-                .map(|v| ad::AEffectBuffSrcCustom::HardcodedVal(v.id, ad::AAttrVal::from(v.value)))
+                .map(|v| AEffectBuffSrcCustom::HardcodedVal(v.id, AAttrVal::from(v.value)))
                 .collect(),
         ),
-        scope: ad::AEffectBuffScope::Ships,
+        scope: AEffectBuffScope::Ships,
     };
-    let effect = ad::AEffect {
+    let effect = AEffect {
         id: effect_id,
         category: ac::effcats::ACTIVE,
-        state: ad::AState::Offline,
+        state: AState::Offline,
         buff_info: Some(buff_info),
         ..
     };
@@ -69,5 +71,5 @@ fn process_buffs(
         .get_mut(&item_id)
         .unwrap()
         .effect_datas
-        .insert(effect_id, ad::AItemEffectData::default());
+        .insert(effect_id, AItemEffectData::default());
 }
