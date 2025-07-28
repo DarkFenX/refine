@@ -1,3 +1,4 @@
+use itertools::Itertools;
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
 use super::err::{GetItemAttrError, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError};
@@ -10,9 +11,22 @@ use crate::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
-    ud::UEffectUpdates,
+    ud::{UEffectUpdates, UItemKey},
     util::GetId,
 };
+
+mod private {
+    use crate::{sol::SolarSystem, ud::UItemKey};
+
+    pub trait ItemSealed: Sized {
+        fn get_sol(&self) -> &SolarSystem;
+        fn get_key(&self) -> UItemKey;
+    }
+
+    pub trait ItemMutSealed: ItemSealed {
+        fn get_sol_mut(&mut self) -> &mut SolarSystem;
+    }
+}
 
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {
@@ -92,8 +106,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             &mut reuse_eupdates,
             &sol.u_data.src,
         );
-        let u_item = sol.u_data.items.get(item_key);
-        SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, item_key, u_item, &reuse_eupdates);
+        effect_mode_update_postprocess(sol, item_key, &mut reuse_eupdates);
     }
     fn set_effect_modes(&mut self, modes: impl Iterator<Item = (EffectId, EffectMode)>)
     where
@@ -104,8 +117,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let u_item = sol.u_data.items.get_mut(item_key);
         let mut reuse_eupdates = UEffectUpdates::new();
         u_item.set_effect_modes(modes.map(|(k, v)| (k.into(), v)), &mut reuse_eupdates, &sol.u_data.src);
-        let u_item = sol.u_data.items.get(item_key);
-        SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, item_key, u_item, &reuse_eupdates);
+        effect_mode_update_postprocess(sol, item_key, &mut reuse_eupdates);
     }
     // Stats - mobility
     fn get_stat_speed(&mut self) -> Result<AttrVal, ItemStatError> {
@@ -224,15 +236,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
 }
 
-mod private {
-    use crate::{sol::SolarSystem, ud::UItemKey};
-
-    pub trait ItemSealed: Sized {
-        fn get_sol(&self) -> &SolarSystem;
-        fn get_key(&self) -> UItemKey;
-    }
-
-    pub trait ItemMutSealed: ItemSealed {
-        fn get_sol_mut(&mut self) -> &mut SolarSystem;
+fn effect_mode_update_postprocess(sol: &mut SolarSystem, item_key: UItemKey, reuse_eupdates: &mut UEffectUpdates) {
+    let u_item = sol.u_data.items.get(item_key);
+    SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, item_key, u_item, reuse_eupdates);
+    if !reuse_eupdates.autocharges.is_empty()
+        && let Some(autocharges) = u_item.get_autocharges()
+    {
+        let ac_activations = reuse_eupdates
+            .autocharges
+            .iter()
+            .filter_map(|ac_act| {
+                autocharges
+                    .get_ac_key(&ac_act.effect_key)
+                    .map(|ac_key| (ac_key, ac_act.active))
+            })
+            .collect_vec();
+        SolarSystem::util_process_autocharge_activations(&mut sol.u_data, &mut sol.svc, ac_activations, reuse_eupdates);
     }
 }

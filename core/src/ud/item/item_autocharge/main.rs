@@ -11,8 +11,6 @@ use crate::{
     util::{Named, RMap, RSet},
 };
 
-const DISABLED_STATE: AState = AState::Ghost;
-
 #[derive(Clone)]
 pub(crate) struct UAutocharge {
     pub(super) base: UItemBase,
@@ -20,8 +18,8 @@ pub(crate) struct UAutocharge {
     cont_item_key: UItemKey,
     cont_effect_key: REffectKey,
     projs: Projs,
-    // Stores container state when autocharge is force disabled
-    stored_cont_base_state: Option<AState>,
+    activated: bool,
+    force_disabled: bool,
 }
 impl UAutocharge {
     pub(crate) fn new(
@@ -30,22 +28,25 @@ impl UAutocharge {
         fit_key: UFitKey,
         cont_item_key: UItemKey,
         cont_effect_key: REffectKey,
-        cont_base_state: AState,
-        force_disable: bool,
+        activated: bool,
+        force_disabled: bool,
         src: &Src,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Self {
-        let (base_state, stored_cont_base_state) = match force_disable {
-            true => (DISABLED_STATE, Some(cont_base_state)),
-            false => (cont_base_state, None),
-        };
         Self {
-            base: UItemBase::new(item_id, type_id, base_state, src, reuse_eupdates),
+            base: UItemBase::new(
+                item_id,
+                type_id,
+                get_state(activated, force_disabled),
+                src,
+                reuse_eupdates,
+            ),
             fit_key,
             cont_item_key,
             cont_effect_key,
             projs: Projs::new(),
-            stored_cont_base_state,
+            activated,
+            force_disabled,
         }
     }
     // Item base methods
@@ -78,17 +79,6 @@ impl UAutocharge {
     }
     pub(crate) fn get_state(&self) -> AState {
         self.base.get_state()
-    }
-    pub(crate) fn set_state(&mut self, state: AState, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        match self.stored_cont_base_state {
-            // Stored state set means autocharge is disabled
-            Some(_) => {
-                self.stored_cont_base_state = Some(state);
-                reuse_eupdates.clear();
-            }
-            // Not disabled - proceed like with any other item
-            None => self.base.set_state(state, reuse_eupdates, src),
-        }
     }
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
@@ -128,24 +118,31 @@ impl UAutocharge {
         unreachable!("autocharges should be removed/added outside of autocharge item handler");
     }
     // Item-specific methods
-    pub(crate) fn get_force_disable(&self) -> bool {
-        self.stored_cont_base_state.is_some()
+    pub(crate) fn get_activated(&self) -> bool {
+        self.force_disabled
     }
-    pub(crate) fn set_force_disable(&mut self, force_disable: bool, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        match (force_disable, self.stored_cont_base_state) {
-            // Attempt to enable when it's already enabled, or disable when it's disabled
-            (true, Some(_)) | (false, None) => reuse_eupdates.clear(),
-            // Turning force disable on
-            (true, None) => {
-                self.stored_cont_base_state = Some(self.get_state());
-                self.base.set_state(DISABLED_STATE, reuse_eupdates, src);
-            }
-            // Turning force disable off
-            (false, Some(stored_cont_base_state)) => {
-                self.stored_cont_base_state = None;
-                self.base.set_state(stored_cont_base_state, reuse_eupdates, src);
-            }
+    pub(crate) fn set_activated(&mut self, activated: bool, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+        // No changes to state - nothing to do but clear reusable data
+        if self.activated == activated {
+            reuse_eupdates.clear();
+            return;
         }
+        self.activated = activated;
+        self.base
+            .set_state(get_state(self.activated, self.force_disabled), reuse_eupdates, src);
+    }
+    pub(crate) fn get_force_disabled(&self) -> bool {
+        self.force_disabled
+    }
+    pub(crate) fn set_force_disabled(&mut self, force_disabled: bool, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+        // No changes to state - nothing to do but clear reusable data
+        if self.force_disabled == force_disabled {
+            reuse_eupdates.clear();
+            return;
+        }
+        self.force_disabled = force_disabled;
+        self.base
+            .set_state(get_state(self.activated, self.force_disabled), reuse_eupdates, src);
     }
     pub(crate) fn get_fit_key(&self) -> UFitKey {
         self.fit_key
@@ -177,5 +174,15 @@ impl std::fmt::Display for UAutocharge {
             self.get_item_id(),
             self.get_type_id(),
         )
+    }
+}
+
+fn get_state(active: bool, force_disable: bool) -> AState {
+    match force_disable {
+        true => AState::Ghost,
+        false => match active {
+            true => AState::Active,
+            false => AState::Offline,
+        },
     }
 }

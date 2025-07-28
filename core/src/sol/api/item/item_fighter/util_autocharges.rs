@@ -27,25 +27,21 @@ impl SolarSystem {
             return;
         }
         let fit_key = u_fighter.get_fit_key();
-        let fighter_a_state = u_fighter.get_state();
-        let effects_with_ac_a_item_ids = u_fighter
+        let effects_with_ac_type_ids = u_fighter
             .get_effect_datas()
             .unwrap()
             .iter()
-            .filter_map(|(a_effect_id, a_effect_data)| {
-                a_effect_data
-                    .autocharge
-                    .map(|ac_a_item_id| (*a_effect_id, ac_a_item_id))
-            })
+            .filter_map(|(effect_key, effect_data)| effect_data.autocharge.map(|ac_type_id| (*effect_key, ac_type_id)))
             .collect_vec();
-        if effects_with_ac_a_item_ids.is_empty() {
+        if effects_with_ac_type_ids.is_empty() {
             return;
         }
         let projections = u_fighter.get_projs().iter().collect_vec();
-        let mut ac_datas = effects_with_ac_a_item_ids
+        let mut ac_datas = effects_with_ac_type_ids
             .into_iter()
             .filter_map(|(effect_key, ac_type_id)| {
                 let ac_item_id = u_data.items.alloc_id();
+                let activated = u_data.src.get_effect(effect_key).activates_autocharge();
                 let mut ac_eupdates = UEffectUpdates::new();
                 let mut u_ac = UAutocharge::new(
                     ac_item_id,
@@ -53,7 +49,7 @@ impl SolarSystem {
                     fit_key,
                     fighter_key,
                     effect_key,
-                    fighter_a_state,
+                    activated,
                     false,
                     &u_data.src,
                     &mut ac_eupdates,
@@ -160,6 +156,20 @@ impl SolarSystem {
         }
         for ac_key in ac_keys.into_iter() {
             u_data.items.remove(ac_key);
+        }
+    }
+    pub(in crate::sol::api) fn util_process_autocharge_activations(
+        u_data: &mut UData,
+        svc: &mut Svc,
+        ac_activations: Vec<(UItemKey, bool)>,
+        reuse_eupdates: &mut UEffectUpdates,
+    ) {
+        for (ac_key, ac_activated) in ac_activations {
+            let u_autocharge = u_data.items.get_mut(ac_key).get_autocharge_mut().unwrap();
+            let old_state = u_autocharge.get_state();
+            u_autocharge.set_activated(ac_activated, reuse_eupdates, &u_data.src);
+            let new_state = u_autocharge.get_state();
+            SolarSystem::util_switch_item_state(u_data, svc, ac_key, old_state, new_state, reuse_eupdates);
         }
     }
 }

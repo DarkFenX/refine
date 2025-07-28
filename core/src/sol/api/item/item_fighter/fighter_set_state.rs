@@ -15,35 +15,35 @@ impl SolarSystem {
     ) {
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();
-        let autocharge_keys = u_fighter.get_autocharges().values().copied().collect_vec();
-        let old_a_state = u_fighter.get_state();
+        let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state, reuse_eupdates, &self.u_data.src);
-        let new_a_state = u_fighter.get_state();
+        let new_state = u_fighter.get_state();
+        // Filter out autocharges which couldn't be loaded, and fill autocharge key data
+        let ac_activations = reuse_eupdates
+            .autocharges
+            .iter()
+            .filter_map(|ac_act| {
+                u_fighter
+                    .get_autocharges()
+                    .get_ac_key(&ac_act.effect_key)
+                    .map(|ac_key| (ac_key, ac_act.active))
+            })
+            .collect_vec();
         // Update services for fighter
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             item_key,
-            old_a_state,
-            new_a_state,
+            old_state,
+            new_state,
             reuse_eupdates,
         );
-        for autocharge_key in autocharge_keys {
-            // Update user data for autocharge
-            let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
-            let old_a_state = u_autocharge.get_state();
-            u_autocharge.set_state(state.into(), reuse_eupdates, &self.u_data.src);
-            // Update services for autocharge
-            let new_a_state = u_autocharge.get_state();
-            SolarSystem::util_switch_item_state(
-                &self.u_data,
-                &mut self.svc,
-                autocharge_key,
-                old_a_state,
-                new_a_state,
-                reuse_eupdates,
-            );
-        }
+        SolarSystem::util_process_autocharge_activations(
+            &mut self.u_data,
+            &mut self.svc,
+            ac_activations,
+            reuse_eupdates,
+        );
     }
 }
 

@@ -2,7 +2,6 @@ use crate::{
     ac,
     ad::{AEffectId, AState},
     misc::EffectMode,
-    nd::NEffectChargeLoc,
     rd::{REffect, REffectKey, RItem, RcEffect},
     src::Src,
     ud::item::misc::EffectModes,
@@ -99,10 +98,10 @@ fn update_running_effects(
         let running = reffs.contains(&effect_key);
         if running && !should_run {
             reuse_eupdates.to_stop.push(effect.clone());
-            if activates_charge(item, effect) {
+            if effect.activates_charge(item) {
                 reuse_eupdates.charge = Some(false);
             }
-            if activates_autocharge(effect) {
+            if effect.activates_autocharge() {
                 reuse_eupdates.autocharges.push(UAutochargeActivation {
                     effect_key,
                     active: false,
@@ -110,10 +109,10 @@ fn update_running_effects(
             }
         } else if !running && should_run {
             reuse_eupdates.to_start.push(effect.clone());
-            if activates_charge(item, effect) {
+            if effect.activates_charge(item) {
                 reuse_eupdates.charge = Some(true);
             }
-            if activates_autocharge(effect) {
+            if effect.activates_autocharge() {
                 reuse_eupdates.autocharges.push(UAutochargeActivation {
                     effect_key,
                     active: true,
@@ -187,34 +186,4 @@ fn resolve_regular_effect_status_full(
         // No additional restrictions for overload effects except for item being overloaded
         AState::Overload => item_state >= effect.get_state(),
     }
-}
-
-fn activates_charge(item: &RItem, effect: &REffect) -> bool {
-    let charge_info = match effect.get_charge_info() {
-        Some(charge_info) => charge_info,
-        None => return false,
-    };
-    if !charge_info.activates_charge {
-        return false;
-    }
-    if !matches!(charge_info.location, NEffectChargeLoc::Loaded(_)) {
-        return false;
-    }
-    // Only default effects can activate regular charge
-    let defeff_key = match item.get_defeff_key() {
-        Some(defeff_key) => defeff_key,
-        None => return false,
-    };
-    defeff_key == effect.get_key()
-}
-
-fn activates_autocharge(effect: &REffect) -> bool {
-    let charge_info = match effect.get_charge_info() {
-        Some(charge_info) => charge_info,
-        None => return false,
-    };
-    if !charge_info.activates_charge {
-        return false;
-    }
-    matches!(charge_info.location, NEffectChargeLoc::Autocharge(_))
 }

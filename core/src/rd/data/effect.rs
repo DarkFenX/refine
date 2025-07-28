@@ -1,6 +1,7 @@
 use crate::{
     ad, nd,
-    rd::REffectKey,
+    nd::NEffectChargeLoc,
+    rd::{REffectKey, RItem},
     util::{GetId, Named, RMap},
 };
 
@@ -148,6 +149,35 @@ impl REffect {
     }
     pub(crate) fn get_buff_info(&self) -> Option<&ad::AEffectBuffInfo> {
         self.a_effect.buff_info.as_ref()
+    }
+    // Misc methods
+    pub(crate) fn activates_charge(&self, item: &RItem) -> bool {
+        let charge_info = match self.n_effect_hc.charge {
+            Some(charge_info) => charge_info,
+            None => return false,
+        };
+        if !charge_info.activates_charge {
+            return false;
+        }
+        if !matches!(charge_info.location, NEffectChargeLoc::Loaded(_)) {
+            return false;
+        }
+        // Only default effects can activate regular charge
+        let defeff_key = match item.get_defeff_key() {
+            Some(defeff_key) => defeff_key,
+            None => return false,
+        };
+        defeff_key == self.effect_key
+    }
+    pub(crate) fn activates_autocharge(&self) -> bool {
+        let charge_info = match self.n_effect_hc.charge {
+            Some(charge_info) => charge_info,
+            None => return false,
+        };
+        if !charge_info.activates_charge {
+            return false;
+        }
+        matches!(charge_info.location, NEffectChargeLoc::Autocharge(_))
     }
 }
 impl GetId<ad::AEffectId> for REffect {
