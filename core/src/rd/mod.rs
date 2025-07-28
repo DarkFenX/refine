@@ -10,8 +10,8 @@
 
 pub use data::RItemKind;
 pub(crate) use data::{
-    RAttr, RBuff, RData, REffect, REffectKey, RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RMuta,
-    RShipDroneLimit, RShipKind, RcAttr, RcBuff, RcEffect, RcItem, RcMuta,
+    RAbil, RAttr, RBuff, RData, REffect, REffectKey, RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit,
+    RMuta, RShipDroneLimit, RShipKind, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcMuta,
 };
 
 mod data;

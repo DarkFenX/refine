@@ -1,10 +1,8 @@
-use std::sync::Arc;
-
 use crate::{
     ac,
-    ad::{AAttrId, ABuffId, AEffectId, AItemId, AdaptedDataCacher},
+    ad::{AAbilId, AAttrId, ABuffId, AEffectId, AItemId, AdaptedDataCacher},
     ed::EveDataHandler,
-    rd::{RAttr, RBuff, RData, REffect, REffectKey, RItem, RMuta},
+    rd::{RData, REffectKey, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcMuta},
     src::{SrcInitError, prepare::prepare_adapted_data},
     util::{GetId, RMap},
 };
@@ -18,7 +16,7 @@ pub struct Src {
     r_data: RData,
     effect_id_key_map: RMap<AEffectId, REffectKey>,
     online_effect_key: Option<REffectKey>,
-    online_effect: Option<Arc<REffect>>,
+    online_effect: Option<RcEffect>,
     rah_effect_key: Option<REffectKey>,
     rah_duration_attr_id: Option<AAttrId>,
     hi_slot_effect_key: Option<REffectKey>,
@@ -63,20 +61,23 @@ impl Src {
             svc_slot_effect_key,
         })
     }
-    pub(crate) fn get_item(&self, id: &AItemId) -> Option<&Arc<RItem>> {
+    pub(crate) fn get_item(&self, id: &AItemId) -> Option<&RcItem> {
         self.r_data.items.get(id)
     }
-    pub(crate) fn get_attr(&self, id: &AAttrId) -> Option<&Arc<RAttr>> {
+    pub(crate) fn get_attr(&self, id: &AAttrId) -> Option<&RcAttr> {
         self.r_data.attrs.get(id)
     }
-    pub(crate) fn get_effect(&self, key: REffectKey) -> &Arc<REffect> {
+    pub(crate) fn get_effect(&self, key: REffectKey) -> &RcEffect {
         self.r_data.effects.get(key).unwrap()
     }
-    pub(crate) fn get_buff(&self, id: &ABuffId) -> Option<&Arc<RBuff>> {
+    pub(crate) fn get_buff(&self, id: &ABuffId) -> Option<&RcBuff> {
         self.r_data.buffs.get(id)
     }
-    pub(crate) fn get_mutator(&self, id: &AItemId) -> Option<&Arc<RMuta>> {
+    pub(crate) fn get_mutator(&self, id: &AItemId) -> Option<&RcMuta> {
         self.r_data.mutas.get(id)
+    }
+    pub(crate) fn get_ability(&self, id: &AAbilId) -> Option<&RcAbil> {
+        self.r_data.abils.get(id)
     }
     // Misc getters
     pub(crate) fn get_effect_key_by_id(&self, id: &AEffectId) -> Option<REffectKey> {
@@ -85,7 +86,7 @@ impl Src {
     pub(crate) fn get_online_effect_key(&self) -> Option<REffectKey> {
         self.online_effect_key
     }
-    pub(crate) fn get_online_effect(&self) -> Option<&Arc<REffect>> {
+    pub(crate) fn get_online_effect(&self) -> Option<&RcEffect> {
         self.online_effect.as_ref()
     }
     pub(crate) fn get_rah_effect_key(&self) -> Option<REffectKey> {

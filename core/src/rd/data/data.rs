@@ -6,25 +6,27 @@ use std::{
 use slab::Slab;
 
 use crate::{
-    ad,
-    rd::{RAttr, RBuff, REffect, RItem, RMuta},
+    ad::{AAbilId, AAttrId, ABuffId, AData, AItemId},
+    rd::{RAbil, RAttr, RBuff, REffect, RItem, RMuta, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcMuta},
     util::{GetId, Map, RMap},
 };
 
 #[derive(Clone)]
 pub(crate) struct RData {
-    pub(crate) items: RMap<ad::AItemId, Arc<RItem>>,
-    pub(crate) attrs: RMap<ad::AAttrId, Arc<RAttr>>,
-    pub(crate) effects: Slab<Arc<REffect>>,
-    pub(crate) buffs: RMap<ad::ABuffId, Arc<RBuff>>,
-    pub(crate) mutas: RMap<ad::AItemId, Arc<RMuta>>,
+    pub(crate) items: RMap<AItemId, RcItem>,
+    pub(crate) attrs: RMap<AAttrId, RcAttr>,
+    pub(crate) effects: Slab<RcEffect>,
+    pub(crate) buffs: RMap<ABuffId, RcBuff>,
+    pub(crate) mutas: RMap<AItemId, RcMuta>,
+    pub(crate) abils: RMap<AAbilId, RcAbil>,
 }
-impl From<ad::AData> for RData {
-    fn from(a_data: ad::AData) -> Self {
+impl From<AData> for RData {
+    fn from(a_data: AData) -> Self {
         let mut items = move_to_arcmap(a_data.items.into_values().map(RItem::new));
         let attrs = move_to_arcmap(a_data.attrs.into_values().map(RAttr::new));
         let buffs = move_to_arcmap(a_data.buffs.into_values().map(RBuff::new));
         let mutas = move_to_arcmap(a_data.mutas.into_values().map(RMuta::new));
+        let mut abils = move_to_arcmap(a_data.abils.into_values().map(RAbil::new));
         // Put effects into slab
         let mut effect_id_key_map = RMap::with_capacity(a_data.effects.len());
         let mut effects = Slab::with_capacity(a_data.effects.len());
@@ -42,12 +44,16 @@ impl From<ad::AData> for RData {
         for (_, r_effect) in effects.iter_mut() {
             Arc::get_mut(r_effect).unwrap().fill_key_dependents(&effect_id_key_map);
         }
+        for r_abil in abils.values_mut() {
+            Arc::get_mut(r_abil).unwrap().fill_key_dependents(&effect_id_key_map);
+        }
         Self {
             items,
             attrs,
             effects,
             buffs,
             mutas,
+            abils,
         }
     }
 }

@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub(in crate::adg::flow::conv_pre) fn conv_abils(e_data: &EData) -> RMap<AAbilId, AAbil> {
-    // Abilities not known to the getter have been cleaned up by now, so we just unwrap
+    // Abilities not known to the getter should've been removed during validation, so we just unwrap
     e_data
         .abils
         .data
