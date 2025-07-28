@@ -1,3 +1,4 @@
+pub use abil::AAbil;
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use data::AData;
@@ -9,10 +10,12 @@ pub use item::{AItem, AItemEffectData, ASkillLevel};
 pub use muta::{AMuta, AMutaAttrRange};
 pub(crate) use primitives::ASlotIndex;
 pub use primitives::{
-    AAttrId, AAttrVal, ABuffId, ACount, ACustomEffectId, ADogmaEffectId, AEffectCatId, AItemCatId, AItemGrpId, AItemId,
+    AAbilId, AAttrId, AAttrVal, ABuffId, ACount, ACustomEffectId, ADogmaEffectId, AEffectCatId, AItemCatId, AItemGrpId,
+    AItemId,
 };
 pub use shared::{AModifierSrq, AOp, AState};
 
+mod abil;
 mod attr;
 mod buff;
 mod data;
