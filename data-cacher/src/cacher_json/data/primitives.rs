@@ -1,4 +1,5 @@
 // Entity IDs
+pub(in crate::cacher_json) type CAbilId = rc::ad::AAbilId;
 pub(in crate::cacher_json) type CAttrId = rc::ad::AAttrId;
 pub(in crate::cacher_json) type CBuffId = rc::ad::ABuffId;
 pub(in crate::cacher_json) type CDogmaEffectId = rc::ad::ADogmaEffectId;
