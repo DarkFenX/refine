@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttr, AAttrId, ABuff, ABuffId, AEffect, AEffectId, AItem, AItemId, AMuta},
+    ad::{AAbil, AAbilId, AAttr, AAttrId, ABuff, ABuffId, AEffect, AEffectId, AItem, AItemId, AMuta},
     util::RMap,
 };
 
@@ -10,6 +10,7 @@ pub struct AData {
     pub mutas: RMap<AItemId, AMuta>,
     pub effects: RMap<AEffectId, AEffect>,
     pub buffs: RMap<ABuffId, ABuff>,
+    pub abils: RMap<AAbilId, AAbil>,
 }
 impl AData {
     pub(crate) fn new() -> Self {
@@ -19,6 +20,7 @@ impl AData {
             mutas: RMap::new(),
             effects: RMap::new(),
             buffs: RMap::new(),
+            abils: RMap::new(),
         }
     }
 }
