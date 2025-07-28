@@ -109,7 +109,7 @@ fn known_fighter_abilities(e_data: &mut ed::EData) {
         .abils
         .data
         .extract_if(.., |v| get_abil_effect(v.id).is_none())
-        .update(|v| {
+        .inspect(|v| {
             unknown_ids.insert(v.id);
         })
         .count();
@@ -117,24 +117,26 @@ fn known_fighter_abilities(e_data: &mut ed::EData) {
         .item_abils
         .data
         .extract_if(.., |v| get_abil_effect(v.abil_id).is_none())
-        .update(|v| {
+        .inspect(|v| {
             unknown_ids.insert(v.abil_id);
         })
         .count();
     if abils > 0 || item_abils > 0 {
+        let max_logged = 5;
         let msg = format!(
-            "removed {} {} and {} {} with unknown fighter ability IDs: {}",
+            "removed {} {} and {} {} with unknown fighter ability IDs, showing up to {}: {}",
             abils,
             ed::EFighterAbil::get_name(),
             item_abils,
             ed::EItemFighterAbil::get_name(),
-            unknown_ids.iter().sorted_unstable().join(", ")
+            max_logged,
+            unknown_ids.iter().sorted_unstable().take(max_logged).join(", ")
         );
         tracing::warn!("{msg}");
     }
 }
 
-/// Remove item abilities which have no effects to handle them.
+/// Remove item abilities which have no effect on item to handle them.
 fn fighter_ability_effect(e_data: &mut ed::EData) {
     let mut item_eff_map = RMap::new();
     for item_eff in e_data.item_effects.data.iter() {
