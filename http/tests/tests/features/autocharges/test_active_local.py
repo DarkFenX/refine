@@ -62,7 +62,8 @@ def test_states(client, consts):
         defeff_id=eve_effect_id)
     eve_fighter_id = client.mk_eve_item(
         attrs={eve_autocharge_attr_id: eve_charge_id},
-        eff_ids=[eve_autocharge_effect_id])
+        eff_ids=[eve_autocharge_effect_id],
+        defeff_id=eve_autocharge_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_autocharge_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_autocharge_effect_id)

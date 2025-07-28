@@ -41,7 +41,16 @@ impl SolarSystem {
             .into_iter()
             .filter_map(|(effect_key, ac_type_id)| {
                 let ac_item_id = u_data.items.alloc_id();
-                let activated = u_data.src.get_effect(effect_key).activates_autocharge();
+                // Autocharge is activated only if effect controlling it is running, and activates
+                // charges
+                let activated = u_data.src.get_effect(effect_key).activates_autocharge()
+                    && u_data
+                        .items
+                        .get(fighter_key)
+                        .get_fighter()
+                        .unwrap()
+                        .get_reffs()
+                        .map_or(false, |v| v.contains(&effect_key));
                 let mut ac_eupdates = UEffectUpdates::new();
                 let mut u_ac = UAutocharge::new(
                     ac_item_id,

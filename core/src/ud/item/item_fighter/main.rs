@@ -70,7 +70,7 @@ impl UFighter {
     pub(crate) fn get_state(&self) -> AState {
         self.base.get_state()
     }
-    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
+    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
     }
     pub(in crate::ud::item) fn start_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
