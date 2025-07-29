@@ -4,6 +4,7 @@ use partial::HFighterInfoPartial;
 
 use crate::info::HItemInfoMode;
 
+mod ability;
 mod full;
 mod id;
 mod partial;

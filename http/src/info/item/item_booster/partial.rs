@@ -2,8 +2,7 @@ use std::collections::HashMap;
 
 use rc::{ItemCommon, Lender};
 
-use super::side_effect::HSideEffectInfo;
-use crate::shared::HEffectId;
+use crate::{info::item::item_booster::side_effect::HSideEffectInfo, shared::HEffectId};
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]

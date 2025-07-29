@@ -5,7 +5,10 @@ use rc::{ItemCommon, Lender};
 use crate::{
     info::{
         HItemInfoMode,
-        item::{adj_count::HAdjustableCount, item_autocharge::HAutochargeInfo, proj::HRangedProjInfo},
+        item::{
+            adj_count::HAdjustableCount, item_autocharge::HAutochargeInfo, item_fighter::ability::HAbilityInfo,
+            proj::HRangedProjInfo,
+        },
     },
     shared::{HEffectId, HMinionState},
 };
@@ -23,6 +26,8 @@ pub(crate) struct HFighterInfoPartial {
     #[serde(skip_serializing_if = "Option::is_none")]
     count: Option<HAdjustableCount>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
+    abilities: HashMap<rc::AbilId, HAbilityInfo>,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     autocharges: HashMap<HEffectId, HAutochargeInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
@@ -36,6 +41,7 @@ impl HFighterInfoPartial {
             fit_id: core_fighter.get_fit().get_fit_id(),
             state: (&core_fighter.get_state()).into(),
             count: core_fighter.get_count().map(|v| v.into()),
+            abilities: core_fighter.iter_abilities().map(|v| (v.get_id(), v.into())).collect(),
             autocharges: core_fighter
                 .iter_autocharges_mut()
                 .map_into_iter(|mut autocharge| {

@@ -19,7 +19,7 @@ In no particular order:
   - attribute mutations are stored as rolls internally, so will properly update on base attribute/roll range changes between data sources
 - environmental effects: system-wide (applied to all items in a system), fit-wide (applied to all items of a fit) and projected (applied only to selected items)
 - booster side effects
-- (TODO) fighter abilities
+- fighter abilities
 - fleet buffs
 - automatically loaded charges by some effects (e.g. LR fighter bombs)
   - auto-charges are exposed as regular items so that it's possible to check their attributes and effects (but there are some limits, e.g. you cannot remove them)
