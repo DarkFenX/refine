@@ -3,16 +3,16 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::EItemSkillReq,
 };
 
-impl Pk for ed::EItemSkillReq {
+impl Pk for EItemSkillReq {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.item_id, self.skill_id]
     }
 }
 
-impl Fk for ed::EItemSkillReq {
+impl Fk for EItemSkillReq {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         vec![self.item_id, self.skill_id]
     }

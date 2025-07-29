@@ -3,16 +3,16 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::EBuff,
 };
 
-impl Pk for ed::EBuff {
+impl Pk for EBuff {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }
 }
 
-impl Fk for ed::EBuff {
+impl Fk for EBuff {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         self.locsrq_mods.iter().map(|v| v.skill_id).collect()
     }

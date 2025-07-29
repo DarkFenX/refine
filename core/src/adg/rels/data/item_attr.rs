@@ -3,16 +3,17 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk, attr_val_to_fk},
     },
-    ec, ed,
+    ec,
+    ed::{EAttrUnitId, EItemAttr},
 };
 
-impl Pk for ed::EItemAttr {
+impl Pk for EItemAttr {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.item_id, self.attr_id]
     }
 }
 
-impl Fk for ed::EItemAttr {
+impl Fk for EItemAttr {
     fn get_item_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         vec.push(self.item_id);
@@ -47,9 +48,9 @@ impl Fk for ed::EItemAttr {
         vec
     }
 }
-impl ed::EItemAttr {
+impl EItemAttr {
     /// Receive unit ID, and if the attribute has such unit ID - return attribute value.
-    fn get_fk_from_val(&self, unit: ed::EAttrUnitId, g_supp: &GSupport) -> Option<KeyPart> {
+    fn get_fk_from_val(&self, unit: EAttrUnitId, g_supp: &GSupport) -> Option<KeyPart> {
         match (g_supp.attr_unit_map.get(&self.attr_id), attr_val_to_fk(self.value)) {
             (Some(&u), Some(v_fk)) if u == unit => Some(v_fk),
             _ => None,

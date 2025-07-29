@@ -3,16 +3,16 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::EItemEffect,
 };
 
-impl Pk for ed::EItemEffect {
+impl Pk for EItemEffect {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.item_id, self.effect_id]
     }
 }
 
-impl Fk for ed::EItemEffect {
+impl Fk for EItemEffect {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         vec![self.item_id]
     }

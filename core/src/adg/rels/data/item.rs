@@ -3,16 +3,16 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::EItem,
 };
 
-impl Pk for ed::EItem {
+impl Pk for EItem {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }
 }
 
-impl Fk for ed::EItem {
+impl Fk for EItem {
     fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         vec![self.group_id]
     }

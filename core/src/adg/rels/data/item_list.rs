@@ -1,9 +1,9 @@
 use crate::{
     adg::rels::{KeyPart, Pk},
-    ed,
+    ed::EItemList,
 };
 
-impl Pk for ed::EItemList {
+impl Pk for EItemList {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }

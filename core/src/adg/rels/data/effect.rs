@@ -1,21 +1,21 @@
 use crate::{
-    ad,
+    ad::AEffectId,
     adg::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::{EEffect, EPrimitive},
     nd::N_EFFECT_MAP,
     util::vec_push_opt,
 };
 
-impl Pk for ed::EEffect {
+impl Pk for EEffect {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }
 }
 
-impl Fk for ed::EEffect {
+impl Fk for EEffect {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         self.get_fks_from_mod_args("skillTypeID")
     }
@@ -37,7 +37,7 @@ impl Fk for ed::EEffect {
             vec.extend(buff_info.extract_a_attr_ids());
         }
         // Hardcoded charge info can reference attributes
-        if let Some(n_effect) = N_EFFECT_MAP.get(&ad::AEffectId::Dogma(self.id)) {
+        if let Some(n_effect) = N_EFFECT_MAP.get(&AEffectId::Dogma(self.id)) {
             vec.extend(n_effect.extract_a_attr_ids());
         }
         vec
@@ -54,12 +54,12 @@ impl Fk for ed::EEffect {
         vec
     }
 }
-impl ed::EEffect {
+impl EEffect {
     fn get_fks_from_mod_args(&self, field: &'static str) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         for e_modifier in self.mods.iter() {
             for (k, v) in e_modifier.args.iter() {
-                if let (true, &ed::EPrimitive::Int(fk)) = (k == field, v) {
+                if let (true, &EPrimitive::Int(fk)) = (k == field, v) {
                     vec.push(fk);
                 }
             }

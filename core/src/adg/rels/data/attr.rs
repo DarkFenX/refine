@@ -3,17 +3,18 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk, attr_val_to_fk},
     },
-    ec, ed,
+    ec,
+    ed::{EAttr, EAttrUnitId},
     util::vec_push_opt,
 };
 
-impl Pk for ed::EAttr {
+impl Pk for EAttr {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }
 }
 
-impl Fk for ed::EAttr {
+impl Fk for EAttr {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let Some(v) = self.get_fk_from_defval(ec::units::ITEM_ID) {
@@ -48,10 +49,10 @@ impl Fk for ed::EAttr {
         vec
     }
 }
-impl ed::EAttr {
+impl EAttr {
     /// Receive unit ID, and if the attribute has such unit ID - push its default value to the
     /// vector.
-    fn get_fk_from_defval(&self, unit: ed::EAttrUnitId) -> Option<KeyPart> {
+    fn get_fk_from_defval(&self, unit: EAttrUnitId) -> Option<KeyPart> {
         match (self.unit_id, attr_val_to_fk(self.default_value)) {
             (Some(u), Some(dv_fk)) if u == unit => Some(dv_fk),
             _ => None,

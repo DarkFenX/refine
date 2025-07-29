@@ -3,16 +3,16 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::EItemSpaceComp,
 };
 
-impl Pk for ed::EItemSpaceComp {
+impl Pk for EItemSpaceComp {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.item_id]
     }
 }
 
-impl Fk for ed::EItemSpaceComp {
+impl Fk for EItemSpaceComp {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         vec![self.item_id]
     }

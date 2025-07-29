@@ -3,16 +3,16 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::EMutaAttrMod,
 };
 
-impl Pk for ed::EMutaAttrMod {
+impl Pk for EMutaAttrMod {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.muta_id, self.attr_id]
     }
 }
 
-impl Fk for ed::EMutaAttrMod {
+impl Fk for EMutaAttrMod {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         vec![self.muta_id]
     }

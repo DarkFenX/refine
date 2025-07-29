@@ -1,12 +1,23 @@
 use crate::{
-    adg::rels::{Fk, KeyPart, Pk},
-    ed,
+    adg::{
+        GSupport, get_abil_effect,
+        rels::{Fk, KeyPart, Pk},
+    },
+    ed::EFighterAbil,
 };
 
-impl Pk for ed::EFighterAbil {
+impl Pk for EFighterAbil {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }
 }
 
-impl Fk for ed::EFighterAbil {}
+impl Fk for EFighterAbil {
+    fn get_effect_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+        let mut vec = Vec::new();
+        if let Some(v) = get_abil_effect(self.id) {
+            vec.push(v);
+        }
+        vec
+    }
+}

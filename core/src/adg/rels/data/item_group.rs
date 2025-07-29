@@ -1,12 +1,12 @@
 use crate::{
     adg::rels::{Fk, KeyPart, Pk},
-    ed,
+    ed::EItemGroup,
 };
 
-impl Pk for ed::EItemGroup {
+impl Pk for EItemGroup {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }
 }
 
-impl Fk for ed::EItemGroup {}
+impl Fk for EItemGroup {}
