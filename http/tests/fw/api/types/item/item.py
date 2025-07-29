@@ -5,6 +5,7 @@ import typing
 from tests.fw.api.types.stats import ItemStats
 from tests.fw.consts import ApiItemInfoMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
+from .ability_info import AbilityInfo
 from .adj_count import AdjustableCount
 from .attr_vals import AttrVals
 from .effect import EffectInfo
@@ -31,6 +32,7 @@ class Item(AttrDict):
                 for k, v in acs.items()}),
             'spool_cycles': AttrHookDef(func=lambda sc: AdjustableCount(data=sc)),
             'count': AttrHookDef(func=lambda c: AdjustableCount(data=c)),
+            'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {k: SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
             'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(data=v) for k, v in attrs.items()}),
@@ -197,6 +199,7 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             count: int | None | type[Absent] = Absent,
+            abilities: dict[int, bool] | type[Absent],
             add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
@@ -210,6 +213,7 @@ class Item(AttrDict):
             type_id=type_id,
             state=state,
             count=count,
+            abilities=abilities,
             add_projs=add_projs,
             change_projs=change_projs,
             rm_projs=rm_projs,

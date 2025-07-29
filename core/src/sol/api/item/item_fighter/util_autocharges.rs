@@ -50,7 +50,7 @@ impl SolarSystem {
                         .get_fighter()
                         .unwrap()
                         .get_reffs()
-                        .map_or(false, |v| v.contains(&effect_key));
+                        .is_some_and(|v| v.contains(&effect_key));
                 let mut ac_eupdates = UEffectUpdates::new();
                 let mut u_ac = UAutocharge::new(
                     ac_item_id,

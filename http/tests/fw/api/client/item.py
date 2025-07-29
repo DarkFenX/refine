@@ -250,6 +250,7 @@ class ApiClientItem(ApiClientBase):
             type_id: int,
             state: ApiMinionState,
             count: int | None | type[Absent],
+            abilities: dict[int, bool] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
@@ -258,6 +259,7 @@ class ApiClientItem(ApiClientBase):
             'type_id': type_id,
             'state': state}
         conditional_insert(container=body, path=['count'], value=count)
+        conditional_insert(container=body, path=['abilities'], value=abilities)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -274,6 +276,7 @@ class ApiClientItem(ApiClientBase):
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             count: int | None | type[Absent],
+            abilities: dict[int, bool] | type[Absent],
             add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
             change_projs: list[tuple[str, ProjRange]] | type[Absent],
             rm_projs: list[str] | type[Absent],
@@ -284,6 +287,7 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['count'], value=count)
+        conditional_insert(container=body, path=['abilities'], value=abilities)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['change_projs'], value=change_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
