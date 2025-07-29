@@ -3,7 +3,18 @@ from __future__ import annotations
 import typing
 
 from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.eve.types import Ability, Attribute, Buff, Effect, Group, Item, ItemList, Mutator, SpaceComponent
+from tests.fw.eve.types import (
+    Ability,
+    Attribute,
+    Buff,
+    Effect,
+    Group,
+    Item,
+    ItemAbilityData,
+    ItemList,
+    Mutator,
+    SpaceComponent,
+)
 from .primitives import EvePrimitives
 
 if typing.TYPE_CHECKING:
@@ -127,6 +138,7 @@ class EveObjects:
             attrs: dict[int, float] | type[Absent],
             eff_ids: list[int] | type[Absent],
             defeff_id: int | None | type[Absent],
+            abils: list[ItemAbilityData] | type[Absent],
             srqs: dict[int, int] | type[Absent],
             capacity: float | type[Absent],
             mass: float | type[Absent],
@@ -139,6 +151,7 @@ class EveObjects:
             attributes=attrs,
             effect_ids=eff_ids,
             default_effect_id=defeff_id,
+            ability_data=abils,
             skill_reqs=srqs,
             capacity=capacity,
             mass=mass,

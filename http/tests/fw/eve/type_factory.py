@@ -5,7 +5,7 @@ import typing
 from tests.fw.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
 from tests.fw.util import Absent, Default
 from .data_manager import EveDataManager
-from .types import BuffModifier, EffectModifier
+from .types import BuffModifier, EffectModifier, ItemAbilityData
 
 if typing.TYPE_CHECKING:
     from .containers import EveObjects
@@ -92,6 +92,7 @@ class EveTypeFactory(EveDataManager):
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
             defeff_id: int | None | type[Absent | Default] = Default,
+            abils: list[ItemAbilityData] | type[Absent] = Absent,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
             mass: float | type[Absent | Default] = Default,
@@ -126,6 +127,7 @@ class EveTypeFactory(EveDataManager):
                 attrs={} if attrs is Default else attrs,
                 eff_ids=[] if eff_ids is Default else eff_ids,
                 defeff_id=None if defeff_id is Default else defeff_id,
+                abils=abils,
                 srqs={} if srqs is Default else srqs,
                 capacity=0.0 if capacity is Default else capacity,
                 mass=0.0 if mass is Default else mass,
@@ -422,6 +424,20 @@ class EveTypeFactory(EveDataManager):
                 banned_hisec=False if banned_hisec is Default else banned_hisec,
                 banned_lowsec=False if banned_lowsec is Default else banned_lowsec)
         return id_
+
+    @staticmethod
+    def mk_eve_item_abil(
+            *,
+            id_: int,
+            cooldown: float | None | type[Absent] = Absent,
+            charge_count: int | None | type[Absent] = Absent,
+            charge_rearm_time: float | None | type[Absent] = Absent,
+    ) -> ItemAbilityData:
+        return ItemAbilityData(
+            id=id_,
+            cooldown=cooldown,
+            charge_count=charge_count,
+            charge_rearm_time=charge_rearm_time)
 
     def mk_eve_mutator(
             self, *,

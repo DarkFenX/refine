@@ -200,6 +200,11 @@ class EveBuffOp(StrEnum):
 
 
 @unique
+class EveAbil(IntEnum):
+    launch_bomb = 7
+
+
+@unique
 class EveAttr(IntEnum):
     mass = 4
     hp = 9

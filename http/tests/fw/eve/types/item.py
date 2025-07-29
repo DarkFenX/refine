@@ -8,6 +8,7 @@ from tests.fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
+    from .item_ability import ItemAbilityData
 
 
 @dataclass(kw_only=True)
@@ -18,6 +19,7 @@ class Item:
     attributes: dict[int, float] | type[Absent]
     effect_ids: list[int] | type[Absent]
     default_effect_id: int | None
+    ability_data: list[ItemAbilityData] | type[Absent]
     skill_reqs: dict[int, int] | type[Absent]
     capacity: float | type[Absent]
     mass: float | type[Absent]
@@ -29,6 +31,7 @@ class Item:
         conditional_insert(container=item_entry, path=['groupID'], value=self.group_id)
         self.__add_primitive_item_attributes(primitive_data=primitive_data)
         self.__add_primitive_item_effects(primitive_data=primitive_data)
+        self.__add_primitive_item_abilities(primitive_data=primitive_data)
         conditional_insert(container=primitive_data.requiredskillsfortypes, path=[self.id], value=self.skill_reqs)
         conditional_insert(container=item_entry, path=['capacity'], value=self.capacity)
         conditional_insert(container=item_entry, path=['mass'], value=self.mass)
@@ -60,3 +63,14 @@ class Item:
                 for e in self.effect_ids]
         else:
             item_entry['dogmaEffects'] = self.effect_ids
+
+    def __add_primitive_item_abilities(self, *, primitive_data: EvePrimitives) -> None:
+        if self.ability_data is Absent:
+            return
+        item_entry = primitive_data.fighterabilitiesbytype.setdefault(self.id, {})
+        for (i, ability_data) in enumerate(self.ability_data):
+            ability_entry = {'abilityID': ability_data.id}
+            conditional_insert(container=ability_entry, path=['chargeCount'], value=ability_data.charge_count)
+            conditional_insert(container=ability_entry, path=['cooldownSeconds'], value=ability_data.cooldown)
+            conditional_insert(container=ability_entry, path=['rearmTimeSeconds'], value=ability_data.charge_rearm_time)
+            item_entry[f'abilitySlot{i}'] = ability_entry
