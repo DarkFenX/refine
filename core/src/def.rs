@@ -4,6 +4,7 @@ pub(crate) use ordered_float::OrderedFloat as OF;
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Entity IDs
+pub type AbilId = i32;
 pub type AttrId = i32;
 pub type ItemId = u32;
 pub type ItemTypeId = i32;

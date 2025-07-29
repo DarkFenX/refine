@@ -1,6 +1,8 @@
+pub use abil::{Ability, AbilityIter, AbilityMut};
 pub use fighter::{Fighter, FighterMut};
 pub use sol_get_fighter::GetFighterError;
 
+mod abil;
 mod fighter;
 mod fighter_iter_autocharges;
 mod fighter_remove;

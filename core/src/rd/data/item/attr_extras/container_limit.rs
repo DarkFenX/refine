@@ -1,8 +1,12 @@
 use itertools::Itertools;
 
-use crate::{ac, ad, util::RMap};
+use crate::{
+    ac,
+    ad::{AAttrId, AAttrVal, AItemGrpId},
+    util::RMap,
+};
 
-const GROUP_ATTRS: [ad::AAttrId; 6] = [
+const GROUP_ATTRS: [AAttrId; 6] = [
     ac::attrs::LAUNCHER_GROUP,
     ac::attrs::LAUNCHER_GROUP2,
     ac::attrs::LAUNCHER_GROUP3,
@@ -13,14 +17,14 @@ const GROUP_ATTRS: [ad::AAttrId; 6] = [
 
 #[derive(Clone)]
 pub(crate) struct RItemContLimit {
-    pub(crate) group_ids: Vec<ad::AItemGrpId>,
+    pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_item_container_limit(item_attrs: &RMap<ad::AAttrId, ad::AAttrVal>) -> Option<RItemContLimit> {
+pub(super) fn get_item_container_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<RItemContLimit> {
     let group_ids = GROUP_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
-        .map(|v| v.round() as ad::AItemGrpId)
+        .map(|v| v.round() as AItemGrpId)
         .unique()
         .collect_vec();
     if group_ids.is_empty() {

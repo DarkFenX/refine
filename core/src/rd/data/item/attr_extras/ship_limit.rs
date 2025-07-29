@@ -1,8 +1,12 @@
 use itertools::Itertools;
 
-use crate::{ac, ad, util::RMap};
+use crate::{
+    ac,
+    ad::{AAttrId, AAttrVal, AItemGrpId, AItemId},
+    util::RMap,
+};
 
-const TYPE_ATTRS: [ad::AAttrId; 12] = [
+const TYPE_ATTRS: [AAttrId; 12] = [
     ac::attrs::CAN_FIT_SHIP_TYPE1,
     ac::attrs::CAN_FIT_SHIP_TYPE2,
     ac::attrs::CAN_FIT_SHIP_TYPE3,
@@ -17,7 +21,7 @@ const TYPE_ATTRS: [ad::AAttrId; 12] = [
     ac::attrs::FITS_TO_SHIP_TYPE,
 ];
 
-const GROUP_ATTRS: [ad::AAttrId; 20] = [
+const GROUP_ATTRS: [AAttrId; 20] = [
     ac::attrs::CAN_FIT_SHIP_GROUP1,
     ac::attrs::CAN_FIT_SHIP_GROUP2,
     ac::attrs::CAN_FIT_SHIP_GROUP3,
@@ -42,24 +46,21 @@ const GROUP_ATTRS: [ad::AAttrId; 20] = [
 
 #[derive(Clone)]
 pub(crate) struct RItemShipLimit {
-    pub(crate) type_ids: Vec<ad::AItemId>,
-    pub(crate) group_ids: Vec<ad::AItemGrpId>,
+    pub(crate) type_ids: Vec<AItemId>,
+    pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_item_ship_limit(
-    a_item_id: ad::AItemId,
-    item_attrs: &RMap<ad::AAttrId, ad::AAttrVal>,
-) -> Option<RItemShipLimit> {
+pub(super) fn get_item_ship_limit(a_item_id: AItemId, item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<RItemShipLimit> {
     let mut limit_type_ids = TYPE_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
-        .map(|v| v.round() as ad::AItemId)
+        .map(|v| v.round() as AItemId)
         .unique()
         .collect_vec();
     let limit_group_ids = GROUP_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
-        .map(|v| v.round() as ad::AItemGrpId)
+        .map(|v| v.round() as AItemGrpId)
         .unique()
         .collect_vec();
     match a_item_id {

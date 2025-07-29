@@ -1,5 +1,7 @@
 use crate::{
-    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
+    ad::{
+        AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState,
+    },
     def::ItemId,
     misc::EffectMode,
     rd::{REffectKey, RItemAXt, RShipKind, RcItem},
@@ -111,6 +113,9 @@ impl UItemBase {
     }
     pub(in crate::ud::item) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
         self.base_get_r_item().map(|v| v.get_defeff_key())
+    }
+    pub(in crate::ud::item) fn get_abils(&self) -> Option<&RSet<AAbilId>> {
+        self.base_get_r_item().map(|v| v.get_abils())
     }
     pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base_get_r_item().map(|v| v.get_srqs())

@@ -20,7 +20,7 @@
 //!   items, and fetch data and stats
 
 pub use def::{
-    AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
+    AbilId, AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
     SlotIndex, VERSION,
 };
 pub use lender::Lender;

@@ -3,19 +3,20 @@ pub use fit::{
 };
 pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, GetFleetError};
 pub use item::{
-    AddMutationError, AddProjError, AddRangedProjError, AddSkillError, AttrMutateRawError, Autocharge, AutochargeMut,
-    Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut, EffectiveMutation,
-    EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FullSideEffect,
-    FullSideEffectMut, FwEffect, FwEffectMut, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError,
-    GetDroneError, GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError,
-    GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError,
-    GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant, ImplantMut, IncompleteMutation,
-    IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemStatError, IterItemAttrsError,
-    IterItemEffectsError, IterItemModifiersError, Module, ModuleIter, ModuleMut, Mutation, MutationMut, Proj,
-    ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter,
-    RawMAttrMut, RemoveItemError, Rig, RigMut, Service, ServiceMut, SetSkillTypeIdError, Ship, ShipMut, SideEffect,
-    SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut,
-    StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+    Ability, AbilityIter, AbilityMut, AddMutationError, AddProjError, AddRangedProjError, AddSkillError,
+    AttrMutateRawError, Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut,
+    Drone, DroneMut, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter,
+    FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut, GetAutochargeError, GetBoosterError,
+    GetCharacterError, GetChargeError, GetDroneError, GetFighterError, GetFwEffectError, GetImplantError,
+    GetItemAttrError, GetItemError, GetModuleError, GetProjEffectError, GetProjError, GetRangedProjError,
+    GetRawMAttrError, GetRigError, GetServiceError, GetShipError, GetSkillError, GetStanceError, GetSubsystemError,
+    GetSwEffectError, Implant, ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut,
+    ItemMutCommon, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, Module, ModuleIter,
+    ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj, RangedProjIter,
+    RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError, Rig, RigMut, Service, ServiceMut,
+    SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
+    Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect,
+    SwEffectMut,
 };
 pub(in crate::sol::api) use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_keys, iter_ranged_projs};
 pub use util::MutIter;
