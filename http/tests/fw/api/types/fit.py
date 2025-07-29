@@ -283,7 +283,7 @@ class Fit(AttrDict):
             type_id: int,
             state: ApiMinionState = ApiMinionState.in_bay,
             count: int | None | type[Absent] = Absent,
-            abilities: dict[int, bool] | type[Absent],
+            abilities: dict[int, bool] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:

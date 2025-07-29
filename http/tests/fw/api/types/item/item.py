@@ -199,7 +199,7 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             count: int | None | type[Absent] = Absent,
-            abilities: dict[int, bool] | type[Absent],
+            abilities: dict[int, bool] | type[Absent] = Absent,
             add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
