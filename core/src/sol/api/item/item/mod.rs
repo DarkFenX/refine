@@ -1,7 +1,8 @@
-pub use get::GetItemError;
 pub use item::{Item, ItemMut};
-pub use remove::RemoveItemError;
+pub use item_get::GetItemError;
+pub use item_remove::RemoveItemError;
 
-mod get;
 mod item;
-mod remove;
+mod item_get;
+mod item_remove;
+mod item_set_effect_mode;

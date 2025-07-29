@@ -18,7 +18,7 @@ impl SolarSystem {
         let item_key = self.u_data.items.key_by_id_err(item_id)?;
         Ok(self.internal_get_item(item_key))
     }
-    pub fn internal_get_item(&self, item_key: UItemKey) -> Item<'_> {
+    pub(in crate::sol::api) fn internal_get_item(&self, item_key: UItemKey) -> Item<'_> {
         let u_item = self.u_data.items.get(item_key);
         match u_item {
             UItem::Autocharge(_) => Item::Autocharge(Autocharge::new(self, item_key)),
@@ -44,7 +44,7 @@ impl SolarSystem {
         let item_key = self.u_data.items.key_by_id_err(item_id)?;
         Ok(self.internal_get_item_mut(item_key))
     }
-    pub fn internal_get_item_mut(&mut self, item_key: UItemKey) -> ItemMut<'_> {
+    pub(in crate::sol::api) fn internal_get_item_mut(&mut self, item_key: UItemKey) -> ItemMut<'_> {
         let u_item = self.u_data.items.get(item_key);
         match u_item {
             UItem::Autocharge(_) => ItemMut::Autocharge(AutochargeMut::new(self, item_key)),
