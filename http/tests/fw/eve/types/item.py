@@ -70,7 +70,16 @@ class Item:
         item_entry = primitive_data.fighterabilitiesbytype.setdefault(self.id, {})
         for (i, ability_data) in enumerate(self.ability_data):
             ability_entry = {'abilityID': ability_data.id}
-            conditional_insert(container=ability_entry, path=['chargeCount'], value=ability_data.charge_count)
-            conditional_insert(container=ability_entry, path=['cooldownSeconds'], value=ability_data.cooldown)
-            conditional_insert(container=ability_entry, path=['rearmTimeSeconds'], value=ability_data.charge_rearm_time)
+            conditional_insert(
+                container=ability_entry,
+                path=['cooldownSeconds'],
+                value=ability_data.cooldown)
+            conditional_insert(
+                container=ability_entry,
+                path=['charges', 'chargeCount'],
+                value=ability_data.charge_count)
+            conditional_insert(
+                container=ability_entry,
+                path=['charges', 'rearmTimeSeconds'],
+                value=ability_data.charge_rearm_time)
             item_entry[f'abilitySlot{i}'] = ability_entry
