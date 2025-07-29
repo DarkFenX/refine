@@ -63,7 +63,7 @@ impl UFighter {
     pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
         self.base.get_defeff_key()
     }
-    pub(crate) fn get_abils(&self) -> Option<&RSet<AAbilId>> {
+    pub(crate) fn get_abils(&self) -> Option<&Vec<AAbilId>> {
         self.base.get_abils()
     }
     pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {

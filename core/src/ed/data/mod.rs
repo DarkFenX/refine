@@ -14,7 +14,7 @@ pub use muta_attr_mod::EMutaAttrMod;
 pub use muta_item_conv::EMutaItemConv;
 pub use primitives::{
     EAbilId, EAttrId, EAttrUnitId, EAttrVal, EBuffId, ECount, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    EItemListId, EPrimitive, ESkillLevel,
+    EItemListId, EPrimitive, ESkillLevel, ESlot,
 };
 
 mod abil;

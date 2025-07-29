@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     ad::{AEffectId, AItem, AItemEffectData, AItemId, ASkillLevel, AState},
     adg::{GSupport, get_abil_effect},
@@ -31,7 +33,7 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSuppo
             attrs: RMap::new(),
             effect_datas: RMap::new(),
             defeff_id: defeff_id.map(AEffectId::Dogma),
-            abil_ids: RSet::new(),
+            abil_ids: Vec::new(),
             srqs: RMap::new(),
             disallowed_in_wspace: is_disallowed_in_wspace(&e_item.id, &g_supp.rendered_type_lists),
             // Following fields are set to some default values, actual values will be set after
@@ -74,9 +76,9 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSuppo
         }
     }
     // Item abilities
-    for e_item_abil in e_data.item_abils.data.iter() {
+    for e_item_abil in e_data.item_abils.data.iter().sorted_unstable_by_key(|v| v.slot) {
         if let Some(a_item) = a_items.get_mut(&e_item_abil.item_id) {
-            a_item.abil_ids.insert(e_item_abil.abil_id);
+            a_item.abil_ids.push(e_item_abil.abil_id);
         }
     }
 

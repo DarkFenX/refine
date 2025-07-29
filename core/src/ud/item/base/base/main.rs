@@ -114,7 +114,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
         self.base_get_r_item().map(|v| v.get_defeff_key())
     }
-    pub(in crate::ud::item) fn get_abils(&self) -> Option<&RSet<AAbilId>> {
+    pub(in crate::ud::item) fn get_abils(&self) -> Option<&Vec<AAbilId>> {
         self.base_get_r_item().map(|v| v.get_abils())
     }
     pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {

@@ -1,5 +1,5 @@
 use crate::{
-    ed::{EAbilId, EAttrVal, ECount, EItemId},
+    ed::{EAbilId, EAttrVal, ECount, EItemId, ESlot},
     util::Named,
 };
 
@@ -9,6 +9,8 @@ pub struct EItemFighterAbil {
     pub item_id: EItemId,
     /// Refers a fighter ability involved in the relation.
     pub abil_id: EAbilId,
+    /// Slot index this ability takes on the item.
+    pub slot: ESlot,
     /// Defines cooldown of the ability in seconds.
     pub cooldown: Option<EAttrVal>,
     /// Defines how many times the ability can be used before the fighter has to rearm.

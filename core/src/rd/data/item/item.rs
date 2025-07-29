@@ -5,7 +5,7 @@ use crate::{
         AState,
     },
     rd::{REffectKey, RItemAXt, RShipKind},
-    util::{GetId, Named, RMap, RSet},
+    util::{GetId, Named, RMap},
 };
 
 // Represents an item (or item type, according to EVE terminology).
@@ -66,7 +66,7 @@ impl RItem {
     pub(crate) fn get_defeff_key(&self) -> Option<REffectKey> {
         self.defeff_key
     }
-    pub(crate) fn get_abils(&self) -> &RSet<AAbilId> {
+    pub(crate) fn get_abils(&self) -> &Vec<AAbilId> {
         &self.a_item.abil_ids
     }
     pub(crate) fn get_srqs(&self) -> &RMap<AItemId, ASkillLevel> {

@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use crate::cacher_json::data::{
     CAbilId, CAttrId, CAttrVal, CEffectId, CItemCatId, CItemEffectData, CItemGrpId, CItemId, CSkillLevel, CState,
@@ -12,7 +12,7 @@ pub(in crate::cacher_json) struct CItem {
     attrs: HashMap<CAttrId, CAttrVal>,
     effect_datas: HashMap<CEffectId, CItemEffectData>,
     defeff_id: Option<CEffectId>,
-    abil_ids: HashSet<CAbilId>,
+    abil_ids: Vec<CAbilId>,
     srqs: HashMap<CItemId, CSkillLevel>,
     max_state: CState,
     val_fitted_group_id: Option<CItemGrpId>,
@@ -29,7 +29,7 @@ impl From<&rc::ad::AItem> for CItem {
             attrs: (&a_item.attrs).into(),
             effect_datas: a_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: a_item.defeff_id.as_ref().map(|v| v.into()),
-            abil_ids: a_item.abil_ids.iter().copied().collect(),
+            abil_ids: a_item.abil_ids.clone(),
             srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.get_inner())).collect(),
             max_state: (&a_item.max_state).into(),
             val_fitted_group_id: a_item.val_fitted_group_id,
@@ -48,7 +48,7 @@ impl From<&CItem> for rc::ad::AItem {
             attrs: (&c_item.attrs).into(),
             effect_datas: c_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: c_item.defeff_id.as_ref().map(|v| v.into()),
-            abil_ids: c_item.abil_ids.iter().copied().collect(),
+            abil_ids: c_item.abil_ids.clone(),
             srqs: c_item
                 .srqs
                 .iter()

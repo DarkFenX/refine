@@ -13,6 +13,7 @@ pub type EItemListId = i32;
 pub type EAttrVal = f64;
 pub type ECount = u32;
 pub type ESkillLevel = i8;
+pub type ESlot = u32;
 
 /// Auxiliary entity for "primitive" data.
 #[derive(Clone)]

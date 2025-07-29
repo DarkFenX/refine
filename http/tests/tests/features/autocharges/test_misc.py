@@ -1,7 +1,7 @@
-from tests import Effect, check_no_field
+from tests import Effect
 
 
-def test_invalid_reference_switches(client, consts):
+def test_switch_state_invalid_reference(client, consts):
     # Just check that nothing crashes when switching fighter state / effect mode for fighters which
     # attempted to load an autocharge, but failed
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
@@ -28,7 +28,7 @@ def test_invalid_reference_switches(client, consts):
     api_fighter.change_fighter(effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
 
 
-def test_no_reference_switches(client, consts):
+def test_switch_state_no_reference(client, consts):
     # Just check that nothing crashes when switching fighter state / effect mode for fighters which
     # attempted to load an autocharge, but failed
     eve_effect_id = client.mk_eve_effect(
