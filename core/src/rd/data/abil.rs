@@ -20,8 +20,9 @@ impl RAbil {
         self.effect_key = effect_id_key_map.get(&self.a_abil.effect_id).copied()
     }
     // Methods which expose info generated during runtime
-    pub(crate) fn get_effect_key(&self) -> Option<REffectKey> {
-        self.effect_key
+    pub(crate) fn get_effect_key(&self) -> REffectKey {
+        // Adapted data guarantees that all abilities will have a backing effect
+        self.effect_key.unwrap()
     }
 }
 impl GetId<AAbilId> for RAbil {

@@ -13,8 +13,8 @@ use crate::{
 pub(in crate::adg) fn validate(e_data: &mut ed::EData, g_supp: &GSupport) {
     fk_check(e_data, g_supp);
     default_effects(e_data);
-    known_fighter_abilities(e_data);
-    fighter_ability_effect(e_data);
+    unmapped_fighter_abilities(e_data);
+    item_ability_effect(e_data);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
@@ -102,13 +102,17 @@ fn default_effects(e_data: &mut ed::EData) {
     }
 }
 
-/// Remove unknown fighter abilities.
-fn known_fighter_abilities(e_data: &mut ed::EData) {
+/// Remove fighter abilities which cannot be mapped to existing effect.
+fn unmapped_fighter_abilities(e_data: &mut ed::EData) {
+    let effect_ids: RSet<_> = e_data.effects.data.iter().map(|v| v.id).collect();
     let mut unknown_ids = RSet::new();
     let abils = e_data
         .abils
         .data
-        .extract_if(.., |v| get_abil_effect(v.id).is_none())
+        .extract_if(.., |v| match get_abil_effect(v.id) {
+            Some(effect_id) => !effect_ids.contains(&effect_id),
+            None => true,
+        })
         .inspect(|v| {
             unknown_ids.insert(v.id);
         })
@@ -116,7 +120,10 @@ fn known_fighter_abilities(e_data: &mut ed::EData) {
     let item_abils = e_data
         .item_abils
         .data
-        .extract_if(.., |v| get_abil_effect(v.abil_id).is_none())
+        .extract_if(.., |v| match get_abil_effect(v.abil_id) {
+            Some(effect_id) => !effect_ids.contains(&effect_id),
+            None => true,
+        })
         .inspect(|v| {
             unknown_ids.insert(v.abil_id);
         })
@@ -124,7 +131,7 @@ fn known_fighter_abilities(e_data: &mut ed::EData) {
     if abils > 0 || item_abils > 0 {
         let max_logged = 5;
         let msg = format!(
-            "removed {} {} and {} {} with unknown fighter ability IDs, showing up to {}: {}",
+            "removed {} {} and {} {} with unmappable fighter ability IDs, showing up to {}: {}",
             abils,
             ed::EFighterAbil::get_name(),
             item_abils,
@@ -137,7 +144,7 @@ fn known_fighter_abilities(e_data: &mut ed::EData) {
 }
 
 /// Remove item abilities which have no effect on item to handle them.
-fn fighter_ability_effect(e_data: &mut ed::EData) {
+fn item_ability_effect(e_data: &mut ed::EData) {
     let mut item_eff_map = RMap::new();
     for item_eff in e_data.item_effects.data.iter() {
         item_eff_map
@@ -162,7 +169,7 @@ fn fighter_ability_effect(e_data: &mut ed::EData) {
     if !invalids.is_empty() {
         let max_logged = 5;
         let msg = format!(
-            "removed {} {} with references to missing effects, showing up to {}: {}",
+            "removed {} {} with references to missing on-item effects, showing up to {}: {}",
             invalids.len(),
             ed::EItemFighterAbil::get_name(),
             max_logged,
