@@ -34,7 +34,7 @@ def test_proj_add_change_outgoing(client, consts):
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     # Autocharge radius should be ignored
@@ -188,7 +188,7 @@ def test_switch_type_id_outgoing(client, consts):
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_autocharge_id = client.mk_eve_item(
@@ -362,7 +362,7 @@ def test_switch_src_outgoing(client, consts):
         mod_info=[eve_mod2])
     eve_autocharge_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2, eve_d3],
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2, eve_d3], id_=consts.EveAbil.launch_bomb)
     eve_d1_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2, eve_d3])
@@ -576,7 +576,7 @@ def test_modified_radius_outgoing(client, consts):
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_autocharge_id = client.mk_eve_item(

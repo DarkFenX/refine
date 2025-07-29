@@ -100,10 +100,12 @@ class EveEffect(IntEnum):
     ship_mod_remote_armor_repairer = 6188
     structure_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
-    fighter_ability_mwd = 6441
-    fighter_ability_mjd = 6442
+    ftr_abil_missiles = 6431
+    ftr_abil_mwd = 6441
+    ftr_abil_mjd = 6442
+    ftr_abil_attack_m = 6465
     doomsday_aoe_web = 6476
-    fighter_ability_launch_bomb = 6485
+    ftr_abil_launch_bomb = 6485
     ship_mod_ancillary_remote_armor_repairer = 6651
     ship_mod_ancillary_remote_shield_booster = 6652
     npc_entity_remote_armor_repairer = 6687
@@ -202,6 +204,8 @@ class EveBuffOp(StrEnum):
 @unique
 class EveAbil(IntEnum):
     launch_bomb = 7
+    pulse_cannon = 22
+    heavy_rocket_salvo = 33
 
 
 @unique

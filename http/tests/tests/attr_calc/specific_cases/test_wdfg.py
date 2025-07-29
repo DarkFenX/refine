@@ -408,10 +408,10 @@ def test_fighter_mwd_mjd_block_dscript(client, consts):
         cat_id=consts.EveEffCat.target)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
     eve_ftr_mwd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_mwd,
+        id_=consts.EveEffect.ftr_abil_mwd,
         cat_id=consts.EveEffCat.active)
     eve_ftr_mjd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_mjd,
+        id_=consts.EveEffect.ftr_abil_mjd,
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_item(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
@@ -447,10 +447,10 @@ def test_fighter_mwd_mjd_block_sscript(client, consts):
         cat_id=consts.EveEffCat.target)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
     eve_ftr_mwd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_mwd,
+        id_=consts.EveEffect.ftr_abil_mwd,
         cat_id=consts.EveEffCat.active)
     eve_ftr_mjd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_mjd,
+        id_=consts.EveEffect.ftr_abil_mjd,
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_item(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()

@@ -12,7 +12,7 @@ def test_proj_unproj(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -53,7 +53,7 @@ def test_add_remove(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -100,7 +100,7 @@ def test_states(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -200,7 +200,7 @@ def test_range(client, consts):
     eve_optimal_attr_id = client.mk_eve_attr()
     eve_falloff_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -259,7 +259,7 @@ def test_switch_src(client, consts):
     # The same on-fighter autocharge effect ID
     eve_autocharge_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     # Different on-autocharge effect IDs
     eve_mod1 = client.mk_eve_effect_mod(

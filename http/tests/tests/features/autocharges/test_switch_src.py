@@ -14,7 +14,7 @@ def test_specified_same(client, consts):
     client.mk_eve_attr(datas=[eve_d2], id_=eve_d2_attr_id)
     eve_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_autocharge_id, attrs={eve_d1_attr_id: 50})
@@ -57,7 +57,7 @@ def test_specified_different(client, consts):
     client.mk_eve_attr(datas=[eve_d2], id_=eve_d2_attr_id)
     eve_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_d1_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_d1_autocharge_id, attrs={eve_d1_attr_id: 50})
@@ -107,7 +107,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     client.mk_eve_attr(datas=[eve_d2], id_=eve_d2_attr_id)
     eve_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_d1d2_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_d1d2_autocharge_id, attrs={eve_d1_attr_id: 50})
@@ -162,7 +162,7 @@ def test_valid_to_no_reference_to_valid(client, consts):
     client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_attr_id)
     eve_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_d1_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_d1_autocharge_id, attrs={eve_d1_attr_id: 50})

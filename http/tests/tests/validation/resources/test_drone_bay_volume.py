@@ -451,7 +451,7 @@ def test_criterion_item_kind(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125, eve_use_attr_id: 150})
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_item(
         attrs={eve_autocharge_attr_id: eve_item_id, eve_use_attr_id: 150},

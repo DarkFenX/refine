@@ -461,7 +461,7 @@ def test_criterion_item_kind(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
     eve_booster_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})

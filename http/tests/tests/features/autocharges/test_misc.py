@@ -6,7 +6,7 @@ def test_switch_state_invalid_reference(client, consts):
     # attempted to load an autocharge, but failed
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_charge_id = client.alloc_item_id()
@@ -32,7 +32,7 @@ def test_switch_state_no_reference(client, consts):
     # Just check that nothing crashes when switching fighter state / effect mode for fighters which
     # attempted to load an autocharge, but failed
     eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_fighter_id = client.mk_eve_item(
