@@ -36,6 +36,7 @@ def test_proj_add_change_outgoing(client, consts):
     eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)
+    eve_autocharge_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     # Autocharge radius should be ignored
     eve_autocharge_id = client.mk_eve_item(
         attrs={
@@ -53,7 +54,8 @@ def test_proj_add_change_outgoing(client, consts):
             eve_falloff_attr_id: 10000,
             eve_autocharge_attr_id: eve_autocharge_id},
         eff_ids=[eve_effect1_id, eve_autocharge_effect_id],
-        defeff_id=eve_effect1_id)
+        defeff_id=eve_effect1_id,
+        abils=[client.mk_eve_item_abil(id_=eve_autocharge_abil_id)])
     # Affector ship radius should be ignored
     eve_affector_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
@@ -63,10 +65,12 @@ def test_proj_add_change_outgoing(client, consts):
     api_affector_fit.set_ship(type_id=eve_affector_ship_id)
     api_affector_fighter1 = api_affector_fit.add_fighter(
         type_id=eve_affector_fighter_id,
-        state=consts.ApiMinionState.engaging)
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_autocharge_abil_id: True})
     api_affector_fighter2 = api_affector_fit.add_fighter(
         type_id=eve_affector_fighter_id,
-        state=consts.ApiMinionState.engaging)
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_autocharge_abil_id: True})
     api_affectee_fit1 = api_sol.create_fit()
     api_affectee_ship1 = api_affectee_fit1.set_ship(type_id=eve_affectee_ship_id)
     api_affectee_fit2 = api_sol.create_fit()
@@ -186,6 +190,7 @@ def test_switch_type_id_outgoing(client, consts):
     eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)
+    eve_autocharge_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_autocharge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect2_id],
@@ -202,7 +207,8 @@ def test_switch_type_id_outgoing(client, consts):
         return client.mk_eve_item(
             attrs=attrs,
             eff_ids=[eve_effect1_id, eve_autocharge_effect_id],
-            defeff_id=eve_effect1_id)
+            defeff_id=eve_effect1_id,
+            abils=[client.mk_eve_item_abil(id_=eve_autocharge_abil_id)])
 
     eve_affector_fighter1_id = make_eve_fighter(radius=25)
     eve_affector_fighter2_id = make_eve_fighter(radius=500)
@@ -214,7 +220,8 @@ def test_switch_type_id_outgoing(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affector_fighter = api_affector_fit.add_fighter(
         type_id=eve_affector_fighter1_id,
-        state=consts.ApiMinionState.engaging)
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_autocharge_abil_id: True})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affector_fighter.change_fighter(add_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=11000))])
@@ -357,6 +364,7 @@ def test_switch_src_outgoing(client, consts):
         datas=[eve_d1, eve_d2, eve_d3],
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)
+    eve_autocharge_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2, eve_d3], id_=consts.EveAbil.launch_bomb)
     eve_d1_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2, eve_d3])
     client.mk_eve_item(
         datas=[eve_d1],
@@ -389,7 +397,8 @@ def test_switch_src_outgoing(client, consts):
             eve_falloff_attr_id: 10000,
             eve_autocharge_attr_id: eve_d1_autocharge_id},
         eff_ids=[eve_effect1_id, eve_autocharge_effect_id],
-        defeff_id=eve_effect1_id)
+        defeff_id=eve_effect1_id,
+        abils=[client.mk_eve_item_abil(id_=eve_autocharge_abil_id)])
     client.mk_eve_item(
         datas=[eve_d2],
         id_=eve_affector_fighter_id,
@@ -400,7 +409,8 @@ def test_switch_src_outgoing(client, consts):
             eve_falloff_attr_id: 10000,
             eve_autocharge_attr_id: eve_d2_autocharge_id},
         eff_ids=[eve_effect1_id, eve_autocharge_effect_id],
-        defeff_id=eve_effect1_id)
+        defeff_id=eve_effect1_id,
+        abils=[client.mk_eve_item_abil(id_=eve_autocharge_abil_id)])
     client.mk_eve_item(
         datas=[eve_d3],
         id_=eve_affector_fighter_id,
@@ -410,7 +420,8 @@ def test_switch_src_outgoing(client, consts):
             eve_falloff_attr_id: 10000,
             eve_autocharge_attr_id: eve_d3_autocharge_id},
         eff_ids=[eve_effect1_id, eve_autocharge_effect_id],
-        defeff_id=eve_effect1_id)
+        defeff_id=eve_effect1_id,
+        abils=[client.mk_eve_item_abil(id_=eve_autocharge_abil_id)])
     eve_affectee_ship_id = client.mk_eve_ship(
         datas=[eve_d1, eve_d2, eve_d3, eve_d4],
         attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
@@ -419,7 +430,8 @@ def test_switch_src_outgoing(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affector_fighter = api_affector_fit.add_fighter(
         type_id=eve_affector_fighter_id,
-        state=consts.ApiMinionState.engaging)
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_autocharge_abil_id: True})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affector_fighter.change_fighter(add_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=11000))])
@@ -566,6 +578,7 @@ def test_modified_radius_outgoing(client, consts):
     eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)
+    eve_autocharge_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_autocharge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect2_id],
@@ -579,6 +592,7 @@ def test_modified_radius_outgoing(client, consts):
             eve_autocharge_attr_id: eve_autocharge_id},
         eff_ids=[eve_effect1_id, eve_autocharge_effect_id],
         defeff_id=eve_effect1_id,
+        abils=[client.mk_eve_item_abil(id_=eve_autocharge_abil_id)],
         srqs={eve_skill_id: 1})
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
     eve_radius_mod = client.mk_eve_effect_mod(
@@ -596,7 +610,8 @@ def test_modified_radius_outgoing(client, consts):
     api_rig = api_affector_fit.add_rig(type_id=eve_rig_id)
     api_affector_fighter = api_affector_fit.add_fighter(
         type_id=eve_affector_fighter_id,
-        state=consts.ApiMinionState.engaging)
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_autocharge_abil_id: True})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affector_fighter.change_fighter(add_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=11000))])
