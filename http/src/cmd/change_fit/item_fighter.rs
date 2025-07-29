@@ -1,5 +1,8 @@
 use crate::{
-    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
+    cmd::{
+        HItemIdsResp, change_item,
+        shared::{HAbilityMap, apply_abilities, get_primary_fit},
+    },
     shared::HMinionState,
     util::HExecError,
 };
@@ -9,6 +12,7 @@ pub(crate) struct HAddFighterCmd {
     type_id: rc::ItemTypeId,
     state: HMinionState,
     count: Option<rc::Count>,
+    abilities: Option<HAbilityMap>,
 }
 impl HAddFighterCmd {
     pub(in crate::cmd) fn execute(
@@ -22,6 +26,7 @@ impl HAddFighterCmd {
             let fighter_count_override = rc::FighterCountOverride::new_checked(count)?;
             core_fighter.set_count_override(Some(fighter_count_override));
         }
+        apply_abilities(&mut core_fighter, &self.abilities);
         Ok(core_fighter.into())
     }
 }

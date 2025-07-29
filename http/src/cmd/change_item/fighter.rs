@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HEffectModeMap, HProjDef, HProjDefFull, apply_effect_modes},
+        shared::{HAbilityMap, HEffectModeMap, HProjDef, HProjDefFull, apply_abilities, apply_effect_modes},
     },
     shared::HMinionState,
     util::{HExecError, TriStateField},
@@ -16,6 +16,8 @@ pub(crate) struct HChangeFighterCmd {
     state: Option<HMinionState>,
     #[serde(default)]
     count: TriStateField<rc::Count>,
+    #[serde(default)]
+    abilities: Option<HAbilityMap>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -52,6 +54,7 @@ impl HChangeFighterCmd {
             }
             TriStateField::Absent => (),
         }
+        apply_abilities(&mut core_fighter, &self.abilities);
         for proj_def in self.add_projs.iter() {
             core_fighter
                 .add_proj(&proj_def.get_item_id(), proj_def.get_range().into())

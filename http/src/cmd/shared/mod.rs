@@ -1,3 +1,4 @@
+pub(in crate::cmd) use ability::{HAbilityMap, apply_abilities};
 pub(in crate::cmd) use add_mode::HAddMode;
 pub(in crate::cmd) use effect_mode::{HEffectModeMap, apply_effect_modes};
 pub(crate) use getters::{get_primary_fit, get_primary_fleet, get_primary_item};
@@ -11,6 +12,7 @@ pub(in crate::cmd) use side_effect::{HSideEffectMap, apply_side_effects};
 pub(in crate::cmd) use sol_cloner::HSolCloner;
 pub(in crate::cmd) use val_options::HValOptions;
 
+mod ability;
 mod add_mode;
 mod effect_mode;
 mod getters;
