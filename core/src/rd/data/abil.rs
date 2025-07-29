@@ -23,6 +23,9 @@ impl RAbil {
         // Adapted data guarantees that all abilities will have a backing effect
         self.effect_key.unwrap()
     }
+    pub(crate) fn get_effect_id(&self) -> AEffectId {
+        self.a_abil.effect_id
+    }
 }
 impl GetId<AAbilId> for RAbil {
     fn get_id(&self) -> AAbilId {

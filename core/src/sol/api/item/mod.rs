@@ -7,7 +7,7 @@ pub use item_booster::{
 pub use item_character::{Character, CharacterMut, GetCharacterError};
 pub use item_charge::{Charge, ChargeMut, GetChargeError};
 pub use item_drone::{Drone, DroneMut, GetDroneError};
-pub use item_fighter::{Ability, AbilityIter, AbilityMut, Fighter, FighterMut, GetFighterError};
+pub use item_fighter::{Ability, AbilityIter, AbilityMut, Fighter, FighterMut, GetAbilityError, GetFighterError};
 pub use item_fw_effect::{FwEffect, FwEffectMut, GetFwEffectError};
 pub use item_implant::{GetImplantError, Implant, ImplantMut};
 pub use item_module::{GetModuleError, Module, ModuleIter, ModuleMut};

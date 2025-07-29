@@ -1,4 +1,4 @@
-pub use abil::{Ability, AbilityIter, AbilityMut};
+pub use abil::{Ability, AbilityIter, AbilityMut, GetAbilityError};
 pub use fighter::{Fighter, FighterMut};
 pub use sol_get_fighter::GetFighterError;
 

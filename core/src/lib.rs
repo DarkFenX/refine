@@ -32,14 +32,15 @@ pub use misc::{
 pub use sol::{
     SolarSystem,
     api::{
-        Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
-        EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr,
-        FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut, Implant, ImplantMut,
-        IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, Module, ModuleIter,
-        ModuleMut, MutIter, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj,
-        RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, Rig, RigMut, Service, ServiceMut, Ship,
-        ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut,
-        Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+        Ability, AbilityIter, AbilityMut, Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut,
+        Charge, ChargeMut, Drone, DroneMut, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut,
+        Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect,
+        FwEffectMut, Implant, ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut,
+        ItemMutCommon, Module, ModuleIter, ModuleMut, MutIter, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut,
+        ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, Rig, RigMut,
+        Service, ServiceMut, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr,
+        SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut,
+        SwEffect, SwEffectMut,
     },
 };
 pub use src::Src;
