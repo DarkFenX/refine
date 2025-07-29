@@ -1,3 +1,4 @@
+from .abil import Ability
 from .attr import Attribute
 from .buff import Buff
 from .buff_modifier import BuffModifier

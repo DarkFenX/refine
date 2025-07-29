@@ -73,6 +73,16 @@ class EveTypeFactory(EveDataManager):
             data.alloc_buff_id(id_=id_)
         return id_
 
+    def alloc_abil_id(self, *, datas: list[EveObjects] | type[Default] = Default) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        id_ = max(d.prealloc_abil_id() for d in datas)
+        while any(id_ in d.abilities for d in datas):
+            id_ += 1
+        for data in datas:
+            data.alloc_abil_id(id_=id_)
+        return id_
+
     def mk_eve_item(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -394,6 +404,24 @@ class EveTypeFactory(EveDataManager):
                 pe_buffs=Absent if pe_buffs is Default else pe_buffs,
                 pt_buffs=Absent if pt_buffs is Default else pt_buffs,
                 sl_buffs=Absent if sl_buffs is Default else sl_buffs)
+
+    def mk_eve_abil(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            banned_hisec: int | bool | type[Absent | Default] = Default,
+            banned_lowsec: int | bool | type[Absent | Default] = Default,
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if id_ is Default:
+            id_ = self.alloc_abil_id(datas=datas)
+        for data in datas:
+            data.mk_abil(
+                id_=id_,
+                banned_hisec=False if banned_hisec is Default else banned_hisec,
+                banned_lowsec=False if banned_lowsec is Default else banned_lowsec)
+        return id_
 
     def mk_eve_mutator(
             self, *,

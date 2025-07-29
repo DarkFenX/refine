@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.eve.types import Attribute, Buff, Effect, Group, Item, ItemList, Mutator, SpaceComponent
+from tests.fw.eve.types import Ability, Attribute, Buff, Effect, Group, Item, ItemList, Mutator, SpaceComponent
 from .primitives import EvePrimitives
 
 if typing.TYPE_CHECKING:
@@ -24,6 +24,7 @@ class EveObjects:
         self.attributes: dict[int, list[Attribute]] = {}
         self.effects: dict[int, list[Effect]] = {}
         self.buffs: dict[int, list[Buff]] = {}
+        self.abilities: dict[int, list[Ability]] = {}
         self.space_comps: dict[int, list[SpaceComponent]] = {}
         self.mutators: dict[int, list[Mutator]] = {}
         # Variables point at next ID to allocate
@@ -33,6 +34,7 @@ class EveObjects:
         self.attr_id: int = 4000000
         self.effect_id: int = 5000000
         self.buff_id: int = 6000000
+        self.abil_id: int = 7000000
 
     def prealloc_item_id(self) -> int:
         id_ = self.item_id
@@ -105,6 +107,18 @@ class EveObjects:
             self.buffs[id_] = []
         if id_ >= self.buff_id:
             self.buff_id = id_ + 1
+
+    def prealloc_abil_id(self) -> int:
+        id_ = self.abil_id
+        while id_ in self.abilities:
+            id_ += 1
+        return id_
+
+    def alloc_abil_id(self, *, id_: int) -> None:
+        if id_ not in self.abilities:
+            self.abilities[id_] = []
+        if id_ >= self.abil_id:
+            self.abil_id = id_ + 1
 
     def mk_item(
             self, *,
@@ -236,6 +250,19 @@ class EveObjects:
         self.buffs.setdefault(id_, []).append(buff)
         return buff
 
+    def mk_abil(
+            self, *,
+            id_: int,
+            banned_hisec: int | bool | type[Absent],
+            banned_lowsec: int | bool | type[Absent],
+    ) -> Ability:
+        abil = Ability(
+            id=id_,
+            banned_hisec=banned_hisec,
+            banned_lowsec=banned_lowsec)
+        self.abilities.setdefault(id_, []).append(abil)
+        return abil
+
     def mk_space_comp(
             self, *,
             type_id: int,
@@ -277,6 +304,7 @@ class EveObjects:
         self.__handle_container(primitive_data=primitive_data, container=self.attributes, entity_class=Attribute)
         self.__handle_container(primitive_data=primitive_data, container=self.effects, entity_class=Effect)
         self.__handle_container(primitive_data=primitive_data, container=self.buffs, entity_class=Buff)
+        self.__handle_container(primitive_data=primitive_data, container=self.abilities, entity_class=Ability)
         self.__handle_container(primitive_data=primitive_data, container=self.space_comps, entity_class=SpaceComponent)
         self.__handle_container(primitive_data=primitive_data, container=self.mutators, entity_class=Mutator)
         return primitive_data
