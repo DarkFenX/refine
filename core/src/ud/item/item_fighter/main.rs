@@ -84,7 +84,7 @@ impl UFighter {
     pub(in crate::ud::item) fn stop_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
+    pub(crate) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
         self.base.get_effect_key_mode(effect_key)
     }
     pub(in crate::ud::item) fn set_effect_mode(
