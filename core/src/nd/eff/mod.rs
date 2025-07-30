@@ -69,6 +69,7 @@ mod eff_d6734_warfare_link_skirmish;
 mod eff_d6735_warfare_link_info;
 mod eff_d6736_warfare_link_mining;
 mod eff_d6753_mod_titan_effect_generator;
+mod eff_d67_mining_laser;
 mod eff_d6848_ship_mod_focused_warp_scram_script;
 mod eff_d6849_ship_mod_focused_warp_disrupt_script;
 mod eff_d6995_tgt_disintegrator_attack;
@@ -102,6 +103,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d26_structure_repair::mk_n_effect(),
         eff_d27_armor_repair::mk_n_effect(),
         eff_d34_projectile_fired::mk_n_effect(),
+        eff_d67_mining_laser::mk_n_effect(),
         eff_d101_use_missiles::mk_n_effect(),
         eff_d660_missile_em_dmg_bonus::mk_n_effect(),
         eff_d661_missile_expl_dmg_bonus::mk_n_effect(),

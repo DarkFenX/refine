@@ -37,5 +37,5 @@ pub(crate) enum NEffectChargeDepl {
     // Each module cycle removes chargeRate attr value count from count of loaded charges
     ChargeRate { can_run_uncharged: bool },
     // Only 1 charge is loaded, and used until it is destroyed
-    Crystal,
+    Crystal { can_run_uncharged: bool },
 }

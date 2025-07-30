@@ -99,7 +99,9 @@ fn fill_module_effect_info(
                 NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
                     get_charge_rate_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
                 }
-                NEffectChargeDepl::Crystal => get_crystal_cycle_count(ctx, module),
+                NEffectChargeDepl::Crystal { can_run_uncharged } => {
+                    get_crystal_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
+                }
                 NEffectChargeDepl::None => InfCount::Infinite,
             },
             // targetAttack effect has 2 distinct options for modules:
@@ -107,8 +109,10 @@ fn fill_module_effect_info(
             // - civilian guns: infinite cycles with autocharge loaded into them
             // Here, we rely on autocharge ID being present to see a difference between those
             NEffectChargeLoc::TargetAttack(_) => match module.has_tgt_attack_autocharge() {
+                // Use autocharge if there's one defined on the module
                 true => get_autocharge_cycle_count(item, effect),
-                false => get_crystal_cycle_count(ctx, module),
+                // If autocharge is not defined, charge is needed for the effect to work
+                false => get_crystal_cycle_count(ctx, module, false, options.reload_optionals),
             },
         },
         None => InfCount::Infinite,
@@ -147,7 +151,7 @@ fn fill_module_effect_info(
                         .unwrap()
                         / 1000.0;
                     match reload_time_s > OF(0.0) {
-                        // If reload time is defined, ensure it is
+                        // If reload time is defined and positive, ensure it is minimum 1 second
                         true => reload_time_s.max(OF(1.0)),
                         false => OF(0.0),
                     }

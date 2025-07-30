@@ -12,6 +12,7 @@ pub(crate) const ARMOR_REPAIR: EEffectId = 27;
 pub(crate) const PROJECTILE_FIRED: EEffectId = 34;
 pub(crate) const LAUNCHER_FITTED: EEffectId = 40;
 pub(crate) const TURRET_FITTED: EEffectId = 42;
+pub(crate) const MINING_LASER: EEffectId = 67;
 pub(crate) const USE_MISSILES: EEffectId = 101;
 pub(crate) const DEFENDER_MISSILE_LAUNCHING: EEffectId = 103;
 pub(crate) const FOF_MISSILE_LAUNCHING: EEffectId = 104;
