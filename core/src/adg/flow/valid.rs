@@ -13,8 +13,9 @@ use crate::{
 pub(in crate::adg) fn validate(e_data: &mut ed::EData, g_supp: &GSupport) {
     fk_check(e_data, g_supp);
     default_effects(e_data);
-    unmapped_fighter_abilities(e_data);
-    item_ability_effect(e_data);
+    unmapped_abilities(e_data);
+    broken_ability_links(e_data);
+    item_ability_handler_effect(e_data);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
@@ -103,7 +104,7 @@ fn default_effects(e_data: &mut ed::EData) {
 }
 
 /// Remove fighter abilities which cannot be mapped to existing effect.
-fn unmapped_fighter_abilities(e_data: &mut ed::EData) {
+fn unmapped_abilities(e_data: &mut ed::EData) {
     let effect_ids: RSet<_> = e_data.effects.data.iter().map(|v| v.id).collect();
     let mut unknown_ids = RSet::new();
     let abils = e_data
@@ -143,8 +144,34 @@ fn unmapped_fighter_abilities(e_data: &mut ed::EData) {
     }
 }
 
+/// Remove fighter abilities which do not have corresponding ability entry.
+fn broken_ability_links(e_data: &mut ed::EData) {
+    let abil_ids: RSet<_> = e_data.abils.data.iter().map(|v| v.id).collect();
+    let mut broken_ids = RSet::new();
+    let item_abils = e_data
+        .item_abils
+        .data
+        .extract_if(.., |v| !abil_ids.contains(&v.abil_id))
+        .inspect(|v| {
+            broken_ids.insert(v.abil_id);
+        })
+        .count();
+    if !broken_ids.is_empty() {
+        let max_logged = 5;
+        let msg = format!(
+            "removed {} {} with invalid target {}, showing up to {}: {}",
+            item_abils,
+            ed::EItemFighterAbil::get_name(),
+            ed::EFighterAbil::get_name(),
+            max_logged,
+            broken_ids.iter().sorted_unstable().take(max_logged).join(", ")
+        );
+        tracing::warn!("{msg}");
+    }
+}
+
 /// Remove item abilities which have no effect on item to handle them.
-fn item_ability_effect(e_data: &mut ed::EData) {
+fn item_ability_handler_effect(e_data: &mut ed::EData) {
     let mut item_eff_map = RMap::new();
     for item_eff in e_data.item_effects.data.iter() {
         item_eff_map
