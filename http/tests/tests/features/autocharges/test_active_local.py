@@ -144,6 +144,14 @@ def test_states(client, consts):
     api_fighter.change_fighter(abilities={eve_autocharge_abil_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    # Action
+    api_fighter.change_fighter(effect_modes={api_autocharge_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Action
+    api_autocharge.change_autocharge(effect_modes={api_effect_id: consts.ApiEffMode.force_run})
+    # Verification
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
 
 
 def test_switch_src(client, consts):
