@@ -55,12 +55,12 @@ def test_influence(client, consts):
     api_booster.update()
     api_side1 = api_booster.side_effects[api_side1_effect_id]
     assert api_side1.chance == approx(0.4)
-    assert api_side1.status is False
+    assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[api_side2_effect_id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is False
+    assert api_side2.state is False
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     # Action
@@ -81,12 +81,12 @@ def test_influence(client, consts):
     api_booster.update()
     api_side1 = api_booster.side_effects[api_side1_effect_id]
     assert api_side1.chance == approx(0.4)
-    assert api_side1.status is True
+    assert api_side1.state is True
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[api_side2_effect_id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is False
+    assert api_side2.state is False
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     # Action
@@ -114,12 +114,12 @@ def test_influence(client, consts):
     api_booster.update()
     api_side1 = api_booster.side_effects[api_side1_effect_id]
     assert api_side1.chance == approx(0.4)
-    assert api_side1.status is True
+    assert api_side1.state is True
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[api_side2_effect_id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is True
+    assert api_side2.state is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     # Action
@@ -140,12 +140,12 @@ def test_influence(client, consts):
     api_booster.update()
     api_side1 = api_booster.side_effects[api_side1_effect_id]
     assert api_side1.chance == approx(0.4)
-    assert api_side1.status is False
+    assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[api_side2_effect_id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is True
+    assert api_side2.state is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     # Action
@@ -159,12 +159,12 @@ def test_influence(client, consts):
     api_booster.update()
     api_side1 = api_booster.side_effects[api_side1_effect_id]
     assert api_side1.chance == approx(0.4)
-    assert api_side1.status is False
+    assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[api_side2_effect_id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is False
+    assert api_side2.state is False
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
 
@@ -194,7 +194,7 @@ def test_booster_state(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
@@ -205,6 +205,6 @@ def test_booster_state(client, consts):
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     # Side effect status is reported regardless of if effect is running or not
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)

@@ -26,7 +26,7 @@ def test_preassign(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str is None
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
@@ -34,7 +34,7 @@ def test_preassign(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(25)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str is None
 
 
@@ -63,7 +63,7 @@ def test_premul(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
@@ -72,7 +72,7 @@ def test_premul(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
 
@@ -102,7 +102,7 @@ def test_prediv(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
@@ -111,7 +111,7 @@ def test_prediv(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
 
@@ -141,7 +141,7 @@ def test_prediv_zero(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str is None
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
@@ -149,7 +149,7 @@ def test_prediv_zero(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str is None
 
 
@@ -178,7 +178,7 @@ def test_add(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.add
     assert api_side.str.val == approx(25)
     # Action
@@ -187,7 +187,7 @@ def test_add(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(225)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.add
     assert api_side.str.val == approx(25)
 
@@ -217,7 +217,7 @@ def test_sub(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.add
     assert api_side.str.val == approx(-25)
     # Action
@@ -226,7 +226,7 @@ def test_sub(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(175)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.add
     assert api_side.str.val == approx(-25)
 
@@ -256,7 +256,7 @@ def test_postmul(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
@@ -265,7 +265,7 @@ def test_postmul(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
 
@@ -295,7 +295,7 @@ def test_postdiv(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
@@ -304,7 +304,7 @@ def test_postdiv(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
 
@@ -334,7 +334,7 @@ def test_postdiv_zero(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str is None
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
@@ -342,7 +342,7 @@ def test_postdiv_zero(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str is None
 
 
@@ -371,7 +371,7 @@ def test_postperc(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
@@ -380,7 +380,7 @@ def test_postperc(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
 
@@ -410,7 +410,7 @@ def test_postassign(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str is None
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
@@ -418,5 +418,5 @@ def test_postassign(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(25)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str is None

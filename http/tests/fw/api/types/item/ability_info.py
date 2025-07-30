@@ -7,11 +7,11 @@ import typing
 @dataclasses.dataclass
 class AbilityInfo:
 
-    status: bool
+    state: bool
     charge_count: int | None
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.status, self.charge_count = data
+        self.state, self.charge_count = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -20,4 +20,4 @@ class AbilityInfo:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.status, self.charge_count] == other
+        return [self.state, self.charge_count] == other

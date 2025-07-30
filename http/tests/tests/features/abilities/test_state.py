@@ -44,8 +44,8 @@ def test_switch_state(client, consts):
     # Verification
     api_affector_fighter.update()
     assert len(api_affector_fighter.abilities) == 2
-    assert api_affector_fighter.abilities[eve_primary_abil_id].status is True
-    assert api_affector_fighter.abilities[eve_secondary_abil_id].status is False
+    assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_affector_fighter.abilities[eve_secondary_abil_id].state is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(120)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)
@@ -54,8 +54,8 @@ def test_switch_state(client, consts):
     # Verification
     api_affector_fighter.update()
     assert len(api_affector_fighter.abilities) == 2
-    assert api_affector_fighter.abilities[eve_primary_abil_id].status is True
-    assert api_affector_fighter.abilities[eve_secondary_abil_id].status is False
+    assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_affector_fighter.abilities[eve_secondary_abil_id].state is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)
@@ -64,8 +64,8 @@ def test_switch_state(client, consts):
     # Verification
     api_affector_fighter.update()
     assert len(api_affector_fighter.abilities) == 2
-    assert api_affector_fighter.abilities[eve_primary_abil_id].status is True
-    assert api_affector_fighter.abilities[eve_secondary_abil_id].status is True
+    assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_affector_fighter.abilities[eve_secondary_abil_id].state is True
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)
@@ -74,8 +74,8 @@ def test_switch_state(client, consts):
     # Verification
     api_affector_fighter.update()
     assert len(api_affector_fighter.abilities) == 2
-    assert api_affector_fighter.abilities[eve_primary_abil_id].status is True
-    assert api_affector_fighter.abilities[eve_secondary_abil_id].status is True
+    assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_affector_fighter.abilities[eve_secondary_abil_id].state is True
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(120)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(130)
@@ -84,8 +84,8 @@ def test_switch_state(client, consts):
     # Verification
     api_affector_fighter.update()
     assert len(api_affector_fighter.abilities) == 2
-    assert api_affector_fighter.abilities[eve_primary_abil_id].status is False
-    assert api_affector_fighter.abilities[eve_secondary_abil_id].status is True
+    assert api_affector_fighter.abilities[eve_primary_abil_id].state is False
+    assert api_affector_fighter.abilities[eve_secondary_abil_id].state is True
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(130)
@@ -94,8 +94,8 @@ def test_switch_state(client, consts):
     # Verification
     api_affector_fighter.update()
     assert len(api_affector_fighter.abilities) == 2
-    assert api_affector_fighter.abilities[eve_primary_abil_id].status is False
-    assert api_affector_fighter.abilities[eve_secondary_abil_id].status is False
+    assert api_affector_fighter.abilities[eve_primary_abil_id].state is False
+    assert api_affector_fighter.abilities[eve_secondary_abil_id].state is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)

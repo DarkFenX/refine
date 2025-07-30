@@ -26,7 +26,7 @@ def test_no_effect(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - status hasn't been changed, since ability wasn't valid on 1st source
-    assert api_fighter.update().abilities[eve_abil_id].status is True
+    assert api_fighter.update().abilities[eve_abil_id].state is True
 
 
 def test_no_ability(client, consts):
@@ -54,7 +54,7 @@ def test_no_ability(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - status hasn't been changed, since ability wasn't valid on 1st source
-    assert api_fighter.update().abilities[eve_abil_id].status is True
+    assert api_fighter.update().abilities[eve_abil_id].state is True
 
 
 def test_no_item_ability_data(client, consts):
@@ -92,4 +92,4 @@ def test_no_item_ability_data(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - status hasn't been changed, since ability wasn't valid on 1st source
-    assert api_fighter.update().abilities[eve_abil_id].status is True
+    assert api_fighter.update().abilities[eve_abil_id].state is True

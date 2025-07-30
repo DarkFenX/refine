@@ -8,11 +8,11 @@ import typing
 class SideEffectInfo:
 
     chance: float
-    status: bool
+    state: bool
     str: tuple[SideEffectStrInfo] | list[SideEffectStrInfo] | None
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.chance, self.status, side_str = data
+        self.chance, self.state, side_str = data
         self.str = None if side_str is None else SideEffectStrInfo(data=side_str)
 
     def __getitem__(self, item: int) -> typing.Any:
@@ -22,7 +22,7 @@ class SideEffectInfo:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.chance, self.status, self.str] == other
+        return [self.chance, self.state, self.str] == other
 
 
 @dataclasses.dataclass

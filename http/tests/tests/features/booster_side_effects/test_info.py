@@ -120,12 +120,12 @@ def test_with_side_effects(client, consts):
     assert len(api_booster.side_effects) == 2
     api_side1 = api_booster.side_effects[api_side1_effect_id]
     assert api_side1.chance == approx(0.4)
-    assert api_side1.status is False
+    assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[api_side2_effect_id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is True
+    assert api_side2.state is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     with check_no_field():
@@ -137,12 +137,12 @@ def test_with_side_effects(client, consts):
     assert len(api_booster.side_effects) == 2
     api_side1 = api_booster.side_effects[api_side1_effect_id]
     assert api_side1.chance == approx(0.4)
-    assert api_side1.status is False
+    assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[api_side2_effect_id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is True
+    assert api_side2.state is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     assert len(api_booster.attrs) == 5
@@ -193,7 +193,7 @@ def test_strength_matching(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
@@ -203,7 +203,7 @@ def test_strength_matching(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
 
@@ -248,7 +248,7 @@ def test_strength_mismatch_op(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str is None
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
@@ -257,7 +257,7 @@ def test_strength_mismatch_op(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str is None
 
 
@@ -302,7 +302,7 @@ def test_strength_mismatch_attr(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is False
+    assert api_side.state is False
     assert api_side.str is None
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
@@ -311,7 +311,7 @@ def test_strength_mismatch_attr(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
-    assert api_side.status is True
+    assert api_side.state is True
     assert api_side.str is None
 
 
