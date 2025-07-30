@@ -1,4 +1,4 @@
-use crate::ad;
+use crate::ad::AAttrId;
 
 // Specifies where effect should look for charge
 #[derive(Copy, Clone)]
@@ -15,7 +15,18 @@ pub(crate) enum NEffectChargeLoc {
     Loaded(NEffectChargeDepl),
     // Effect uses charge referenced by an attribute on effect item, which is automatically loaded
     // into containing item
-    Autocharge(ad::AAttrId),
+    Autocharge(AAttrId),
+    // Special case for targetAttack effect
+    TargetAttack(AAttrId),
+}
+impl NEffectChargeLoc {
+    pub(crate) fn get_autocharge_attr_id(&self) -> Option<AAttrId> {
+        match self {
+            Self::Loaded(_) => None,
+            Self::Autocharge(attr_id) => Some(*attr_id),
+            Self::TargetAttack(attr_id) => Some(*attr_id),
+        }
+    }
 }
 
 // Charge depletion mode

@@ -20,6 +20,7 @@ pub(crate) struct RItem {
     has_online_effect: bool,
     takes_turret_hardpoint: bool,
     takes_launcher_hardpoint: bool,
+    has_tgt_attack_autocharge: bool,
     // Fields which need slab keys to be filled
     effect_datas: RMap<REffectKey, AItemEffectData>,
     defeff_key: Option<REffectKey>,
@@ -31,6 +32,7 @@ impl RItem {
         let has_online_effect = has_online_effect(&a_item.effect_datas);
         let takes_turret_hardpoint = has_turret_effect(&a_item.effect_datas);
         let takes_launcher_hardpoint = has_launcher_effect(&a_item.effect_datas);
+        let has_tgt_attack_autocharge = has_tgt_attack_autocharge(&a_item.effect_datas);
         Self {
             a_item,
             axt,
@@ -38,6 +40,7 @@ impl RItem {
             has_online_effect,
             takes_turret_hardpoint,
             takes_launcher_hardpoint,
+            has_tgt_attack_autocharge,
             effect_datas: RMap::new(),
             defeff_key: None,
         }
@@ -103,6 +106,9 @@ impl RItem {
     pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
         self.takes_launcher_hardpoint
     }
+    pub(crate) fn has_tgt_attack_autocharge(&self) -> bool {
+        self.has_tgt_attack_autocharge
+    }
 }
 impl GetId<AItemId> for RItem {
     fn get_id(&self) -> AItemId {
@@ -123,6 +129,14 @@ pub(super) fn has_turret_effect(item_effects: &RMap<AEffectId, AItemEffectData>)
 }
 pub(super) fn has_launcher_effect(item_effects: &RMap<AEffectId, AItemEffectData>) -> bool {
     item_effects.contains_key(&ac::effects::LAUNCHER_FITTED)
+}
+
+fn has_tgt_attack_autocharge(item_effects: &RMap<AEffectId, AItemEffectData>) -> bool {
+    // Here we assume that autocharge defined this way
+    match item_effects.get(&ac::effects::TGT_ATTACK) {
+        Some(effect_data) => effect_data.autocharge.is_some(),
+        None => false,
+    }
 }
 
 fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &RMap<AItemId, ASkillLevel>) -> Option<RShipKind> {

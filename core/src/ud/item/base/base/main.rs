@@ -148,6 +148,12 @@ impl UItemBase {
             None => false,
         }
     }
+    pub(in crate::ud::item) fn has_tgt_attack_autocharge(&self) -> bool {
+        match self.base_get_r_item() {
+            Some(r_item) => r_item.has_tgt_attack_autocharge(),
+            None => false,
+        }
+    }
     // Misc methods
     pub(in crate::ud::item) fn get_state(&self) -> AState {
         self.state

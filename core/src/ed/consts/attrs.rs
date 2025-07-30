@@ -34,6 +34,7 @@ pub(crate) const EM_DMG: EAttrId = 114;
 pub(crate) const EXPL_DMG: EAttrId = 116;
 pub(crate) const KIN_DMG: EAttrId = 117;
 pub(crate) const THERM_DMG: EAttrId = 118;
+pub(crate) const AMMO_LOADED: EAttrId = 127;
 pub(crate) const CHARGE_SIZE: EAttrId = 128;
 pub(crate) const LAUNCHER_GROUP: EAttrId = 137;
 pub(crate) const FALLOFF: EAttrId = 158;
