@@ -19,11 +19,13 @@ pub(super) fn get_charge_cycle_info(
     if !charge.is_loaded() {
         return None;
     };
-    // Charge cycles rely on parent item cycles
+    // Default effect of parent item is assumed to control the charge. If there is none, charge is
+    // not cycling
+    let cont_effect_key = ctx.u_data.items.get(charge.get_cont_item_key()).get_defeff_key()??;
+    // If cycle info for parent item is not available, charge is not cycling
     let mut cycle_info = get_item_cycle_info(ctx, calc, charge.get_cont_item_key(), options, ignore_state)?;
-    // If no effect controls charge, or effect controlling the charge doesn't cycle, charge doesn't
-    // cycle either
-    let cont_effect_cycle = cycle_info.remove(&charge.get_cont_effect_key()?)?;
+    // If controlling effect is not cycling, charge is not cycling either
+    let cont_effect_cycle = cycle_info.remove(&cont_effect_key)?;
     cycle_info.clear();
     match ignore_state {
         true => {

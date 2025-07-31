@@ -18,7 +18,6 @@ pub(crate) struct UCharge {
     pub(super) base: UItemBase,
     fit_key: UFitKey,
     cont_item_key: UItemKey,
-    cont_effect_key: Option<REffectKey>,
     projs: Projs,
     // Stores container state when charge is force disabled
     stored_cont_base_state: Option<AState>,
@@ -42,7 +41,6 @@ impl UCharge {
             base: UItemBase::new(item_id, type_id, base_state, src, reuse_eupdates),
             fit_key,
             cont_item_key,
-            cont_effect_key: None,
             projs: Projs::new(),
             stored_cont_base_state,
         }
@@ -151,9 +149,6 @@ impl UCharge {
     }
     pub(crate) fn get_cont_item_key(&self) -> UItemKey {
         self.cont_item_key
-    }
-    pub(crate) fn get_cont_effect_key(&self) -> Option<REffectKey> {
-        self.cont_effect_key
     }
     pub(crate) fn get_projs(&self) -> &Projs {
         &self.projs
