@@ -48,14 +48,28 @@ pub(super) fn process_effects(
     item_effect_modes: &EffectModes,
 ) {
     match item_state {
-        AState::Ghost => stop_all_effects(reuse_eupdates, reffs, src),
+        AState::Ghost => stop_all_effects(reuse_eupdates, reffs, src, item),
         _ => update_running_effects(reuse_eupdates, reffs, src, item, item_state, item_effect_modes),
     }
 }
 
-fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectKey>, src: &Src) {
+fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectKey>, src: &Src, item: &RItem) {
     // We don't want waste time resolving effects when we want them to just stop (which happens
     // before e.g. item removal)
+    reuse_eupdates.to_stop.reserve(reffs.len());
+    for effect_key in reffs.drain() {
+        let effect = src.get_effect(effect_key).clone();
+        if effect.activates_charge(item) {
+            reuse_eupdates.charge = Some(false);
+        }
+        if effect.activates_autocharge() {
+            reuse_eupdates.autocharges.push(UAutochargeActivation {
+                effect_key,
+                active: false,
+            });
+        }
+        reuse_eupdates.to_stop.push(effect);
+    }
     reuse_eupdates
         .to_stop
         .extend(reffs.drain().map(|effect_key| src.get_effect(effect_key).clone()));
