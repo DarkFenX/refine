@@ -3,7 +3,7 @@ There are no charges with active effects which affect fit-local items, but it is
 the lib, so we check it nevertheless.
 """
 
-from tests import approx
+from tests import Effect, approx
 
 
 def test_bundled_remove(client, consts):
@@ -105,6 +105,8 @@ def test_states(client, consts):
         eff_ids=[eve_act_effect_id],
         defeff_id=eve_act_effect_id)
     client.create_sources()
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_act_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_act_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(
@@ -144,6 +146,34 @@ def test_states(client, consts):
     # Verification - re-enabling module does not enable charge, since it was not enabled after
     # getting disabled
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_charge.change_charge(state=True)
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_charge.change_charge(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_charge.change_charge(effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.full_compliance})
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_module.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.force_run})
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
 def test_switch_src(client, consts):

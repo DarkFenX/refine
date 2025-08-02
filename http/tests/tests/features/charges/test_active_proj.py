@@ -3,7 +3,7 @@ Some charges have active projectable effects (e.g. wubbles, HIC rays), here we c
 effects are applied/removed in different circumstances.
 """
 
-from tests import approx
+from tests import Effect, approx
 
 
 def test_bundled_proj_unproj(client, consts):
@@ -150,6 +150,8 @@ def test_states(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
+    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_act_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_act_effect_id)
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
@@ -191,6 +193,34 @@ def test_states(client, consts):
     # Verification - re-enabling module does not enable charge, since it was not enabled after
     # getting disabled
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Action
+    api_affector_charge.change_charge(state=True)
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    # Action
+    api_affector_charge.change_charge(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Action
+    api_affector_charge.change_charge(effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    # Action
+    api_affector_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Action
+    api_affector_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.full_compliance})
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    # Action
+    api_affector_module.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Action
+    api_affector_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.force_run})
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
 
 
 def test_range(client, consts):

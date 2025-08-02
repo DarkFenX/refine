@@ -198,6 +198,10 @@ def test_states(client, consts):
     api_autocharge.change_autocharge(effect_modes={api_effect_id: consts.ApiEffMode.force_run})
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    # Action
+    api_affector_fighter.change_fighter(state=consts.ApiMinionState.in_space)
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
 
 
 def test_range(client, consts):
