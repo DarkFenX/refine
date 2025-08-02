@@ -1,4 +1,4 @@
-from tests import Range, approx, check_no_field
+from tests import Effect, Range, approx, check_no_field
 
 
 def test_proj_add_change_outgoing(client, consts):
@@ -32,6 +32,7 @@ def test_proj_add_change_outgoing(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_affector_module_id = client.mk_eve_item(
         attrs={
             # Affector module radius should be ignored
@@ -39,8 +40,8 @@ def test_proj_add_change_outgoing(client, consts):
             eve_affector_attr_id: -85,
             eve_optimal_attr_id: 1000,
             eve_falloff_attr_id: 10000},
-        eff_ids=[eve_effect1_id],
-        defeff_id=eve_effect1_id)
+        eff_ids=[eve_act_effect_id, eve_effect1_id],
+        defeff_id=eve_act_effect_id)
     eve_affector_charge_id = client.mk_eve_item(
         attrs={
             # Affector charge radius should be ignored
@@ -53,6 +54,7 @@ def test_proj_add_change_outgoing(client, consts):
     eve_affector_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
     client.create_sources()
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affector_fit.set_ship(type_id=eve_affector_ship_id)
@@ -61,11 +63,13 @@ def test_proj_add_change_outgoing(client, consts):
         rack=consts.ApiRack.high,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
+    api_affector_module1.change_module(effect_modes={api_effect1_id: consts.ApiEffMode.state_compliance})
     api_affector_module2 = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
+    api_affector_module2.change_module(effect_modes={api_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit1 = api_sol.create_fit()
     api_affectee_ship1 = api_affectee_fit1.set_ship(type_id=eve_affectee_ship_id)
     api_affectee_fit2 = api_sol.create_fit()
@@ -180,10 +184,11 @@ def test_switch_ship_outgoing(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_affector_module_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
-        eff_ids=[eve_effect1_id],
-        defeff_id=eve_effect1_id)
+        eff_ids=[eve_act_effect_id, eve_effect1_id],
+        defeff_id=eve_act_effect_id)
     eve_affector_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect2_id],
@@ -194,6 +199,7 @@ def test_switch_ship_outgoing(client, consts):
     eve_affector_ship4_id = client.alloc_item_id()
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
     client.create_sources()
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affector_module = api_affector_fit.add_module(
@@ -201,6 +207,7 @@ def test_switch_ship_outgoing(client, consts):
         rack=consts.ApiRack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
+    api_affector_module.change_module(effect_modes={api_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affector_module.change_module(add_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=11000))])
@@ -277,10 +284,11 @@ def test_switch_type_id_outgoing(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_affector_module_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
-        eff_ids=[eve_effect1_id],
-        defeff_id=eve_effect1_id)
+        eff_ids=[eve_act_effect_id, eve_effect1_id],
+        defeff_id=eve_act_effect_id)
     eve_affector_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect2_id],
@@ -291,6 +299,7 @@ def test_switch_type_id_outgoing(client, consts):
     eve_affector_ship4_id = client.alloc_item_id()
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
     client.create_sources()
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affector_ship = api_affector_fit.set_ship(type_id=eve_affector_ship1_id)
@@ -299,6 +308,7 @@ def test_switch_type_id_outgoing(client, consts):
         rack=consts.ApiRack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
+    api_affector_module.change_module(effect_modes={api_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affector_module.change_module(add_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=11000))])
@@ -431,11 +441,15 @@ def test_switch_src_outgoing(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
+    eve_act_effect_id = client.mk_eve_effect(
+        datas=[eve_d1, eve_d2, eve_d3, eve_d4],
+        id_=consts.UtilEffect.activates_charge,
+        cat_id=consts.EveEffCat.active)
     eve_affector_module_id = client.mk_eve_item(
         datas=[eve_d1, eve_d2, eve_d3, eve_d4],
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
-        eff_ids=[eve_effect1_id],
-        defeff_id=eve_effect1_id)
+        eff_ids=[eve_act_effect_id, eve_effect1_id],
+        defeff_id=eve_act_effect_id)
     eve_affector_charge_id = client.mk_eve_item(
         datas=[eve_d1, eve_d2, eve_d3, eve_d4],
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
@@ -449,6 +463,7 @@ def test_switch_src_outgoing(client, consts):
         datas=[eve_d1, eve_d2, eve_d3, eve_d4],
         attrs={eve_affectee_attr1_id: 500, eve_affectee_attr2_id: 500})
     client.create_sources()
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
     api_sol = client.create_sol(data=eve_d1)
     api_affector_fit = api_sol.create_fit()
     api_affector_fit.set_ship(type_id=eve_affector_ship_id)
@@ -457,6 +472,7 @@ def test_switch_src_outgoing(client, consts):
         rack=consts.ApiRack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
+    api_affector_module.change_module(effect_modes={api_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affector_module.change_module(add_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=11000))])
@@ -595,10 +611,11 @@ def test_modified_radius_outgoing(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod2])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_affector_module_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
-        eff_ids=[eve_effect1_id],
-        defeff_id=eve_effect1_id)
+        eff_ids=[eve_act_effect_id, eve_effect1_id],
+        defeff_id=eve_act_effect_id)
     eve_affector_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect2_id],
@@ -614,6 +631,7 @@ def test_modified_radius_outgoing(client, consts):
     eve_radius_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_radius_mod])
     eve_rig_id = client.mk_eve_item(attrs={eve_affector_attr_id: 10000}, eff_ids=[eve_radius_effect_id])
     client.create_sources()
+    api_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_effect1_id)
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_rig = api_affector_fit.add_rig(type_id=eve_rig_id)
@@ -623,6 +641,7 @@ def test_modified_radius_outgoing(client, consts):
         rack=consts.ApiRack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
+    api_affector_module.change_module(effect_modes={api_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affector_module.change_module(add_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=11000))])
