@@ -23,10 +23,6 @@ impl<'a> FitMut<'a> {
 }
 
 fn iter_boosters(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Booster<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_key)
-        .boosters
-        .iter()
-        .map(|item_key| Booster::new(sol, *item_key))
+    let booster_keys = sol.u_data.fits.get(fit_key).boosters.iter();
+    booster_keys.map(|booster_key| Booster::new(sol, *booster_key))
 }

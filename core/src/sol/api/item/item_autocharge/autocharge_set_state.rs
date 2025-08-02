@@ -12,8 +12,9 @@ impl SolarSystem {
     ) {
         let u_autocharge = self.u_data.items.get_mut(item_key).get_autocharge_mut().unwrap();
         let old_a_state = u_autocharge.get_state();
-        u_autocharge.set_force_disabled(!state, reuse_eupdates, &self.u_data.src);
+        u_autocharge.set_force_disabled(!state);
         let new_a_state = u_autocharge.get_state();
+        u_autocharge.update_reffs(reuse_eupdates, &self.u_data.src);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

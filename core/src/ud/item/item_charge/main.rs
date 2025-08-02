@@ -19,8 +19,8 @@ pub(crate) struct UCharge {
     fit_key: UFitKey,
     cont_item_key: UItemKey,
     projs: Projs,
-    // Stores container state when charge is force disabled
-    stored_cont_base_state: Option<AState>,
+    activated: bool,
+    force_disabled: bool,
 }
 impl UCharge {
     pub(crate) fn new(
@@ -28,21 +28,17 @@ impl UCharge {
         type_id: AItemId,
         fit_key: UFitKey,
         cont_item_key: UItemKey,
-        cont_base_state: AState,
-        force_disable: bool,
+        activated: bool,
+        force_disabled: bool,
         src: &Src,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Self {
-        let (base_state, stored_cont_base_state) = match force_disable {
-            true => (DISABLED_STATE, Some(cont_base_state)),
-            false => (cont_base_state, None),
-        };
         Self {
-            base: UItemBase::new(item_id, type_id, base_state, src, reuse_eupdates),
+            base: UItemBase::new(item_id, type_id, get_state(activated, force_disabled), src),
             fit_key,
             cont_item_key,
             projs: Projs::new(),
-            stored_cont_base_state,
+            activated,
+            force_disabled,
         }
     }
     // Item base methods
@@ -52,8 +48,8 @@ impl UCharge {
     pub(crate) fn get_type_id(&self) -> AItemId {
         self.base.get_type_id()
     }
-    pub(crate) fn set_type_id(&mut self, type_id: AItemId, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.set_type_id(type_id, reuse_eupdates, src);
+    pub(crate) fn set_type_id(&mut self, type_id: AItemId, src: &Src) {
+        self.base.set_type_id(type_id, src);
     }
     pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_group_id()
@@ -79,70 +75,56 @@ impl UCharge {
     pub(crate) fn get_state(&self) -> AState {
         self.base.get_state()
     }
-    pub(crate) fn set_state(&mut self, state: AState, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        match self.stored_cont_base_state {
-            // Stored state set means charge is disabled
-            Some(_) => {
-                self.stored_cont_base_state = Some(state);
-                reuse_eupdates.clear();
-            }
-            // Not disabled - proceed like with any other item
-            None => self.base.set_state(state, reuse_eupdates, src),
-        }
-    }
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
     }
-    pub(in crate::ud::item) fn start_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.start_all_reffs(reuse_eupdates, src);
+    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+        self.base.update_reffs(reuse_eupdates, src);
     }
-    pub(in crate::ud::item) fn stop_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
     pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
         self.base.get_effect_key_mode(effect_key)
     }
-    pub(in crate::ud::item) fn set_effect_mode(
-        &mut self,
-        effect_id: AEffectId,
-        effect_mode: EffectMode,
-        reuse_eupdates: &mut UEffectUpdates,
-        src: &Src,
-    ) {
-        self.base.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src)
+    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
+        self.base.set_effect_mode(effect_id, effect_mode, src)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
-        reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
     ) {
-        self.base.set_effect_modes(effect_modes, reuse_eupdates, src)
+        self.base.set_effect_modes(effect_modes, src)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::ud::item) fn src_changed(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.src_changed(reuse_eupdates, src);
+    pub(in crate::ud::item) fn src_changed(&mut self, src: &Src) {
+        self.base.src_changed(src);
     }
-    pub(crate) fn get_force_disable(&self) -> bool {
-        self.stored_cont_base_state.is_some()
+    // Item-specific methods
+    pub(crate) fn get_activated(&self) -> bool {
+        self.force_disabled
     }
-    pub(crate) fn set_force_disable(&mut self, force_disable: bool, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        match (force_disable, self.stored_cont_base_state) {
-            // Attempt to enable when it's already enabled, or disable when it's disabled
-            (true, Some(_)) | (false, None) => reuse_eupdates.clear(),
-            // Turning force disable on
-            (true, None) => {
-                self.stored_cont_base_state = Some(self.get_state());
-                self.base.set_state(DISABLED_STATE, reuse_eupdates, src);
-            }
-            // Turning force disable off
-            (false, Some(stored_cont_base_state)) => {
-                self.stored_cont_base_state = None;
-                self.base.set_state(stored_cont_base_state, reuse_eupdates, src);
-            }
+    pub(crate) fn set_activated(&mut self, activated: bool) {
+        // No changes to state - nothing to do
+        if self.activated == activated {
+            return;
         }
+        self.activated = activated;
+        self.base.set_state(get_state(self.activated, self.force_disabled));
+    }
+    pub(crate) fn get_force_disabled(&self) -> bool {
+        self.force_disabled
+    }
+    pub(crate) fn set_force_disabled(&mut self, force_disabled: bool) {
+        // No changes to state - nothing to do but clear reusable data
+        if self.force_disabled == force_disabled {
+            return;
+        }
+        self.force_disabled = force_disabled;
+        self.base.set_state(get_state(self.activated, self.force_disabled));
     }
     pub(crate) fn get_fit_key(&self) -> UFitKey {
         self.fit_key
@@ -171,5 +153,15 @@ impl std::fmt::Display for UCharge {
             self.get_item_id(),
             self.get_type_id(),
         )
+    }
+}
+
+fn get_state(activated: bool, force_disabled: bool) -> AState {
+    match force_disabled {
+        true => AState::Ghost,
+        false => match activated {
+            true => AState::Active,
+            false => AState::Offline,
+        },
     }
 }

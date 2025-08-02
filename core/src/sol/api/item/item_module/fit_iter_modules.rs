@@ -46,10 +46,8 @@ impl<'a> FitMut<'a> {
         iter_modules(self.sol, self.key, rack)
     }
     pub fn iter_modules_mut(&mut self, rack: ModRack) -> ModuleIter<'_> {
-        let module_keys = get_fit_rack(&self.sol.u_data.fits, self.key, rack)
-            .iter_all()
-            .copied()
-            .collect();
+        let u_module_vec = get_fit_rack(&self.sol.u_data.fits, self.key, rack);
+        let module_keys = u_module_vec.iter_all().copied().collect();
         ModuleIter::new(self.sol, module_keys)
     }
 }
@@ -59,7 +57,8 @@ fn iter_modules(
     fit_key: UFitKey,
     rack: ModRack,
 ) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
-    get_fit_rack(&sol.u_data.fits, fit_key, rack)
+    let u_module_vec = get_fit_rack(&sol.u_data.fits, fit_key, rack);
+    u_module_vec
         .iter_all()
         .map(|item_key_opt| item_key_opt.map(|item_key| Module::new(sol, item_key)))
 }

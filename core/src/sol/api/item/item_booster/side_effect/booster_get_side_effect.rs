@@ -3,7 +3,7 @@
 
 use super::shared::get_se_chance_attr_id_by_effect_id;
 use crate::{
-    ad,
+    ad::AEffectId,
     misc::EffectId,
     sol::{
         SolarSystem,
@@ -26,7 +26,7 @@ impl<'a> BoosterMut<'a> {
         get_side_effect(self.sol, self.key, effect_id)
     }
     pub fn get_side_effect_mut(&mut self, effect_id: &EffectId) -> SideEffectMut<'_> {
-        let a_effect_id = ad::AEffectId::from(effect_id);
+        let a_effect_id = AEffectId::from(effect_id);
         match get_se_chance_attr_id_by_effect_id(&self.sol.u_data.src, &a_effect_id) {
             Some(chance_a_attr_id) => SideEffectMut::Full(FullSideEffectMut::new(
                 self.sol,
@@ -40,7 +40,7 @@ impl<'a> BoosterMut<'a> {
 }
 
 fn get_side_effect<'a>(sol: &'a SolarSystem, item_key: UItemKey, effect_id: &EffectId) -> SideEffect<'a> {
-    let a_effect_id = ad::AEffectId::from(effect_id);
+    let a_effect_id = AEffectId::from(effect_id);
     match get_se_chance_attr_id_by_effect_id(&sol.u_data.src, &a_effect_id) {
         Some(chance_a_attr_id) => SideEffect::Full(FullSideEffect::new(sol, item_key, a_effect_id, chance_a_attr_id)),
         None => SideEffect::Stub(StubSideEffect::new(sol, item_key, a_effect_id)),

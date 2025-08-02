@@ -17,16 +17,12 @@ impl<'a> FitMut<'a> {
         iter_fighters(self.sol, self.key)
     }
     pub fn iter_fighters_mut(&mut self) -> MutIter<'_, FighterMut<'_>> {
-        let implant_keys = self.sol.u_data.fits.get(self.key).fighters.iter().copied().collect();
-        MutIter::new(self.sol, implant_keys)
+        let fighter_keys = self.sol.u_data.fits.get(self.key).fighters.iter().copied().collect();
+        MutIter::new(self.sol, fighter_keys)
     }
 }
 
 fn iter_fighters(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Fighter<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_key)
-        .fighters
-        .iter()
-        .map(|item_key| Fighter::new(sol, *item_key))
+    let fighter_keys = sol.u_data.fits.get(fit_key).fighters.iter();
+    fighter_keys.map(|item_key| Fighter::new(sol, *item_key))
 }

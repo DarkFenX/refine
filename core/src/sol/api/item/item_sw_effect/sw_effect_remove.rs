@@ -9,8 +9,7 @@ impl SolarSystem {
         item_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(item_key);
-        SolarSystem::util_remove_sw_effect(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
+        SolarSystem::util_remove_sw_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         self.u_data.sw_effects.remove(&item_key);
         self.u_data.items.remove(item_key);
     }

@@ -139,28 +139,28 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_reffs(),
         }
     }
-    pub(crate) fn start_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         match self {
-            Self::Autocharge(autocharge) => autocharge.start_all_reffs(reuse_eupdates, src),
-            Self::Booster(booster) => booster.start_all_reffs(reuse_eupdates, src),
-            Self::Character(character) => character.start_all_reffs(reuse_eupdates, src),
-            Self::Charge(charge) => charge.start_all_reffs(reuse_eupdates, src),
-            Self::Drone(drone) => drone.start_all_reffs(reuse_eupdates, src),
-            Self::Fighter(fighter) => fighter.start_all_reffs(reuse_eupdates, src),
-            Self::FwEffect(fw_effect) => fw_effect.start_all_reffs(reuse_eupdates, src),
-            Self::Implant(implant) => implant.start_all_reffs(reuse_eupdates, src),
-            Self::Module(module) => module.start_all_reffs(reuse_eupdates, src),
-            Self::ProjEffect(proj_effect) => proj_effect.start_all_reffs(reuse_eupdates, src),
-            Self::Rig(rig) => rig.start_all_reffs(reuse_eupdates, src),
-            Self::Service(service) => service.start_all_reffs(reuse_eupdates, src),
-            Self::Ship(ship) => ship.start_all_reffs(reuse_eupdates, src),
-            Self::Skill(skill) => skill.start_all_reffs(reuse_eupdates, src),
-            Self::Stance(stance) => stance.start_all_reffs(reuse_eupdates, src),
-            Self::Subsystem(subsystem) => subsystem.start_all_reffs(reuse_eupdates, src),
-            Self::SwEffect(sw_effect) => sw_effect.start_all_reffs(reuse_eupdates, src),
+            Self::Autocharge(autocharge) => autocharge.update_reffs(reuse_eupdates, src),
+            Self::Booster(booster) => booster.update_reffs(reuse_eupdates, src),
+            Self::Character(character) => character.update_reffs(reuse_eupdates, src),
+            Self::Charge(charge) => charge.update_reffs(reuse_eupdates, src),
+            Self::Drone(drone) => drone.update_reffs(reuse_eupdates, src),
+            Self::Fighter(fighter) => fighter.update_reffs(reuse_eupdates, src),
+            Self::FwEffect(fw_effect) => fw_effect.update_reffs(reuse_eupdates, src),
+            Self::Implant(implant) => implant.update_reffs(reuse_eupdates, src),
+            Self::Module(module) => module.update_reffs(reuse_eupdates, src),
+            Self::ProjEffect(proj_effect) => proj_effect.update_reffs(reuse_eupdates, src),
+            Self::Rig(rig) => rig.update_reffs(reuse_eupdates, src),
+            Self::Service(service) => service.update_reffs(reuse_eupdates, src),
+            Self::Ship(ship) => ship.update_reffs(reuse_eupdates, src),
+            Self::Skill(skill) => skill.update_reffs(reuse_eupdates, src),
+            Self::Stance(stance) => stance.update_reffs(reuse_eupdates, src),
+            Self::Subsystem(subsystem) => subsystem.update_reffs(reuse_eupdates, src),
+            Self::SwEffect(sw_effect) => sw_effect.update_reffs(reuse_eupdates, src),
         }
     }
-    pub(crate) fn stop_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(crate) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         match self {
             Self::Autocharge(autocharge) => autocharge.stop_all_reffs(reuse_eupdates, src),
             Self::Booster(booster) => booster.stop_all_reffs(reuse_eupdates, src),
@@ -202,57 +202,46 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_effect_key_mode(effect_key),
         }
     }
-    pub(crate) fn set_effect_mode(
-        &mut self,
-        effect_id: AEffectId,
-        effect_mode: EffectMode,
-        reuse_eupdates: &mut UEffectUpdates,
-        src: &Src,
-    ) {
+    pub(crate) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
         match self {
-            Self::Autocharge(autocharge) => autocharge.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Booster(booster) => booster.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Character(character) => character.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Charge(charge) => charge.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Drone(drone) => drone.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Fighter(fighter) => fighter.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::FwEffect(fw_effect) => fw_effect.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Implant(implant) => implant.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Module(module) => module.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::ProjEffect(proj_effect) => proj_effect.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Rig(rig) => rig.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Service(service) => service.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Ship(ship) => ship.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Skill(skill) => skill.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Stance(stance) => stance.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::Subsystem(subsystem) => subsystem.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
-            Self::SwEffect(sw_effect) => sw_effect.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src),
+            Self::Autocharge(autocharge) => autocharge.set_effect_mode(effect_id, effect_mode, src),
+            Self::Booster(booster) => booster.set_effect_mode(effect_id, effect_mode, src),
+            Self::Character(character) => character.set_effect_mode(effect_id, effect_mode, src),
+            Self::Charge(charge) => charge.set_effect_mode(effect_id, effect_mode, src),
+            Self::Drone(drone) => drone.set_effect_mode(effect_id, effect_mode, src),
+            Self::Fighter(fighter) => fighter.set_effect_mode(effect_id, effect_mode, src),
+            Self::FwEffect(fw_effect) => fw_effect.set_effect_mode(effect_id, effect_mode, src),
+            Self::Implant(implant) => implant.set_effect_mode(effect_id, effect_mode, src),
+            Self::Module(module) => module.set_effect_mode(effect_id, effect_mode, src),
+            Self::ProjEffect(proj_effect) => proj_effect.set_effect_mode(effect_id, effect_mode, src),
+            Self::Rig(rig) => rig.set_effect_mode(effect_id, effect_mode, src),
+            Self::Service(service) => service.set_effect_mode(effect_id, effect_mode, src),
+            Self::Ship(ship) => ship.set_effect_mode(effect_id, effect_mode, src),
+            Self::Skill(skill) => skill.set_effect_mode(effect_id, effect_mode, src),
+            Self::Stance(stance) => stance.set_effect_mode(effect_id, effect_mode, src),
+            Self::Subsystem(subsystem) => subsystem.set_effect_mode(effect_id, effect_mode, src),
+            Self::SwEffect(sw_effect) => sw_effect.set_effect_mode(effect_id, effect_mode, src),
         }
     }
-    pub(crate) fn set_effect_modes(
-        &mut self,
-        effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
-        reuse_eupdates: &mut UEffectUpdates,
-        src: &Src,
-    ) {
+    pub(crate) fn set_effect_modes(&mut self, effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>, src: &Src) {
         match self {
-            Self::Autocharge(autocharge) => autocharge.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Booster(booster) => booster.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Character(character) => character.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Charge(charge) => charge.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Drone(drone) => drone.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Fighter(fighter) => fighter.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::FwEffect(fw_effect) => fw_effect.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Implant(implant) => implant.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Module(module) => module.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::ProjEffect(proj_effect) => proj_effect.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Rig(rig) => rig.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Service(service) => service.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Ship(ship) => ship.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Skill(skill) => skill.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Stance(stance) => stance.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::Subsystem(subsystem) => subsystem.set_effect_modes(effect_modes, reuse_eupdates, src),
-            Self::SwEffect(sw_effect) => sw_effect.set_effect_modes(effect_modes, reuse_eupdates, src),
+            Self::Autocharge(autocharge) => autocharge.set_effect_modes(effect_modes, src),
+            Self::Booster(booster) => booster.set_effect_modes(effect_modes, src),
+            Self::Character(character) => character.set_effect_modes(effect_modes, src),
+            Self::Charge(charge) => charge.set_effect_modes(effect_modes, src),
+            Self::Drone(drone) => drone.set_effect_modes(effect_modes, src),
+            Self::Fighter(fighter) => fighter.set_effect_modes(effect_modes, src),
+            Self::FwEffect(fw_effect) => fw_effect.set_effect_modes(effect_modes, src),
+            Self::Implant(implant) => implant.set_effect_modes(effect_modes, src),
+            Self::Module(module) => module.set_effect_modes(effect_modes, src),
+            Self::ProjEffect(proj_effect) => proj_effect.set_effect_modes(effect_modes, src),
+            Self::Rig(rig) => rig.set_effect_modes(effect_modes, src),
+            Self::Service(service) => service.set_effect_modes(effect_modes, src),
+            Self::Ship(ship) => ship.set_effect_modes(effect_modes, src),
+            Self::Skill(skill) => skill.set_effect_modes(effect_modes, src),
+            Self::Stance(stance) => stance.set_effect_modes(effect_modes, src),
+            Self::Subsystem(subsystem) => subsystem.set_effect_modes(effect_modes, src),
+            Self::SwEffect(sw_effect) => sw_effect.set_effect_modes(effect_modes, src),
         }
     }
     pub(crate) fn get_state(&self) -> AState {
@@ -276,25 +265,25 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_state(),
         }
     }
-    pub(crate) fn src_changed(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(crate) fn src_changed(&mut self, src: &Src) {
         match self {
-            Self::Autocharge(autocharge) => autocharge.src_changed(reuse_eupdates, src),
-            Self::Booster(booster) => booster.src_changed(reuse_eupdates, src),
-            Self::Character(character) => character.src_changed(reuse_eupdates, src),
-            Self::Charge(charge) => charge.src_changed(reuse_eupdates, src),
-            Self::Drone(drone) => drone.src_changed(reuse_eupdates, src),
-            Self::Fighter(fighter) => fighter.src_changed(reuse_eupdates, src),
-            Self::FwEffect(fw_effect) => fw_effect.src_changed(reuse_eupdates, src),
-            Self::Implant(implant) => implant.src_changed(reuse_eupdates, src),
-            Self::Module(module) => module.src_changed(reuse_eupdates, src),
-            Self::ProjEffect(proj_effect) => proj_effect.src_changed(reuse_eupdates, src),
-            Self::Rig(rig) => rig.src_changed(reuse_eupdates, src),
-            Self::Service(service) => service.src_changed(reuse_eupdates, src),
-            Self::Ship(ship) => ship.src_changed(reuse_eupdates, src),
-            Self::Skill(skill) => skill.src_changed(reuse_eupdates, src),
-            Self::Stance(stance) => stance.src_changed(reuse_eupdates, src),
-            Self::Subsystem(subsystem) => subsystem.update_a_data(reuse_eupdates, src),
-            Self::SwEffect(sw_effect) => sw_effect.src_changed(reuse_eupdates, src),
+            Self::Autocharge(autocharge) => autocharge.src_changed(src),
+            Self::Booster(booster) => booster.src_changed(src),
+            Self::Character(character) => character.src_changed(src),
+            Self::Charge(charge) => charge.src_changed(src),
+            Self::Drone(drone) => drone.src_changed(src),
+            Self::Fighter(fighter) => fighter.src_changed(src),
+            Self::FwEffect(fw_effect) => fw_effect.src_changed(src),
+            Self::Implant(implant) => implant.src_changed(src),
+            Self::Module(module) => module.src_changed(src),
+            Self::ProjEffect(proj_effect) => proj_effect.src_changed(src),
+            Self::Rig(rig) => rig.src_changed(src),
+            Self::Service(service) => service.src_changed(src),
+            Self::Ship(ship) => ship.src_changed(src),
+            Self::Skill(skill) => skill.src_changed(src),
+            Self::Stance(stance) => stance.src_changed(src),
+            Self::Subsystem(subsystem) => subsystem.update_a_data(src),
+            Self::SwEffect(sw_effect) => sw_effect.src_changed(src),
         }
     }
     pub(crate) fn is_loaded(&self) -> bool {
@@ -383,10 +372,15 @@ impl UItem {
             _ => None,
         }
     }
-
     pub(crate) fn get_autocharges(&self) -> Option<&Autocharges> {
         match self {
             Self::Fighter(fighter) => Some(fighter.get_autocharges()),
+            _ => None,
+        }
+    }
+    pub(crate) fn get_autocharges_mut(&mut self) -> Option<&mut Autocharges> {
+        match self {
+            Self::Fighter(fighter) => Some(fighter.get_autocharges_mut()),
             _ => None,
         }
     }

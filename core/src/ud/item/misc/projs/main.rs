@@ -48,4 +48,10 @@ impl Projs {
             .iter_mut()
             .filter_map(|(projectee_key, prange)| prange.as_mut().map(|prange| (*projectee_key, prange)))
     }
+    pub(crate) fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
+    pub(crate) fn clear(&mut self) {
+        self.data.clear();
+    }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AItemId,
     def::ItemTypeId,
     sol::{
         SolarSystem,
@@ -12,7 +12,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fit_character(
         &mut self,
         fit_key: UFitKey,
-        a_item_id: ad::AItemId,
+        type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get(fit_key);
@@ -22,12 +22,12 @@ impl SolarSystem {
         }
         // Add new character
         let item_id = self.u_data.items.alloc_id();
-        let u_character = UCharacter::new(item_id, a_item_id, fit_key, true, &self.u_data.src, reuse_eupdates);
+        let u_character = UCharacter::new(item_id, type_id, fit_key, true, &self.u_data.src);
         let u_item = UItem::Character(u_character);
         let item_key = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_key);
         u_fit.character = Some(item_key);
-        SolarSystem::util_add_character(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }

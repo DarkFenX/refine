@@ -23,10 +23,6 @@ impl<'a> FitMut<'a> {
 }
 
 fn iter_implants(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Implant<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_key)
-        .implants
-        .iter()
-        .map(|item_key| Implant::new(sol, *item_key))
+    let implant_keys = sol.u_data.fits.get(fit_key).implants.iter();
+    implant_keys.map(|implant_key| Implant::new(sol, *implant_key))
 }

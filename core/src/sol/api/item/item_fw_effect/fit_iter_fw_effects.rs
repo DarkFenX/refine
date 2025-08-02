@@ -23,10 +23,6 @@ impl<'a> FitMut<'a> {
 }
 
 fn iter_fw_effects(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_key)
-        .fw_effects
-        .iter()
-        .map(|item_key| FwEffect::new(sol, *item_key))
+    let fw_effect_keys = sol.u_data.fits.get(fit_key).fw_effects.iter();
+    fw_effect_keys.map(|fw_effect_key| FwEffect::new(sol, *fw_effect_key))
 }

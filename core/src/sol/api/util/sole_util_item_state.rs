@@ -37,7 +37,7 @@ impl SolarSystem {
         eupdates: &UEffectUpdates,
     ) {
         switch_item_state(svc, item_key, u_item, old_item_a_state, new_item_a_state);
-        SolarSystem::util_process_effect_updates(u_data, svc, item_key, u_item, eupdates);
+        SolarSystem::util_internal_process_effect_updates(u_data, svc, item_key, u_item, eupdates);
     }
     pub(in crate::sol::api::util) fn util_internal_switch_item_state_without_projs(
         u_data: &UData,

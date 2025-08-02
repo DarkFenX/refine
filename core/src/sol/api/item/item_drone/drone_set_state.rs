@@ -11,10 +11,11 @@ impl SolarSystem {
         state: MinionState,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
-        let old_a_state = drone.get_state();
-        drone.set_drone_state(state, reuse_eupdates, &self.u_data.src);
-        let new_a_state = drone.get_state();
+        let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
+        let old_a_state = u_drone.get_state();
+        u_drone.set_drone_state(state);
+        let new_a_state = u_drone.get_state();
+        u_drone.update_reffs(reuse_eupdates, &self.u_data.src);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

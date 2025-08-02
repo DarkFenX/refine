@@ -9,6 +9,7 @@ use crate::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
+    ud::UEffectUpdates,
     util::GetId,
 };
 
@@ -95,16 +96,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         Self: Sized,
     {
         let item_key = self.get_key();
+        let mut reuse_eupdates = UEffectUpdates::new();
         self.get_sol_mut()
-            .internal_set_effect_id_mode(item_key, effect_id.into(), effect_mode);
+            .internal_set_effect_id_mode(item_key, effect_id.into(), effect_mode, &mut reuse_eupdates);
     }
     fn set_effect_modes(&mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>)
     where
         Self: Sized,
     {
         let item_key = self.get_key();
-        self.get_sol_mut()
-            .internal_set_effect_id_modes(item_key, effect_modes.map(|(k, v)| (k.into(), v)));
+        let mut reuse_eupdates = UEffectUpdates::new();
+        self.get_sol_mut().internal_set_effect_id_modes(
+            item_key,
+            effect_modes.map(|(k, v)| (k.into(), v)),
+            &mut reuse_eupdates,
+        );
     }
     // Stats - mobility
     fn get_stat_speed(&mut self) -> Result<AttrVal, ItemStatError> {

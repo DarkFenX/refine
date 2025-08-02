@@ -23,10 +23,6 @@ impl<'a> FitMut<'a> {
 }
 
 fn iter_subsystems(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Subsystem<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_key)
-        .subsystems
-        .iter()
-        .map(|item_key| Subsystem::new(sol, *item_key))
+    let subsystem_keys = sol.u_data.fits.get(fit_key).subsystems.iter();
+    subsystem_keys.map(|subsystem_key| Subsystem::new(sol, *subsystem_key))
 }

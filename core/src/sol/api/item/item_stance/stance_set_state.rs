@@ -12,8 +12,9 @@ impl SolarSystem {
     ) {
         let u_stance = self.u_data.items.get_mut(item_key).get_stance_mut().unwrap();
         let old_a_state = u_stance.get_state();
-        u_stance.set_stance_state(state, reuse_eupdates, &self.u_data.src);
+        u_stance.set_stance_state(state);
         let new_a_state = u_stance.get_state();
+        u_stance.update_reffs(reuse_eupdates, &self.u_data.src);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

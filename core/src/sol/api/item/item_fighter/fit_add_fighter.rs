@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AItemId,
     def::ItemTypeId,
     misc::MinionState,
     sol::{
@@ -13,21 +13,24 @@ impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_fighter(
         &mut self,
         fit_key: UFitKey,
-        a_item_id: ad::AItemId,
+        type_id: AItemId,
         state: MinionState,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let item_id = self.u_data.items.alloc_id();
-        let u_fighter = UFighter::new(item_id, a_item_id, fit_key, state, &self.u_data.src, reuse_eupdates);
+        let u_fighter = UFighter::new(item_id, type_id, fit_key, state, &self.u_data.src);
         let u_item = UItem::Fighter(u_fighter);
         let item_key = self.u_data.items.add(u_item);
         u_fit.fighters.insert(item_key);
         // Add fighter and autocharges to services
-        let u_item = self.u_data.items.get(item_key);
-        SolarSystem::util_add_item_without_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
-        // Process autocharges
-        SolarSystem::add_fighter_autocharges(&mut self.u_data, &mut self.svc, &mut self.rev_projs, item_key);
+        SolarSystem::util_add_fighter_with_acs(
+            &mut self.u_data,
+            &mut self.svc,
+            &mut self.rev_projs,
+            item_key,
+            reuse_eupdates,
+        );
         item_key
     }
 }

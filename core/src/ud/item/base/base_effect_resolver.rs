@@ -59,7 +59,7 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
     reuse_eupdates.to_stop.reserve(reffs.len());
     for effect_key in reffs.drain() {
         let effect = src.get_effect(effect_key).clone();
-        if effect.activates_charge(item) {
+        if effect.activates_charge_for_item(item) {
             reuse_eupdates.charge = Some(false);
         }
         if effect.activates_autocharge() {
@@ -112,7 +112,7 @@ fn update_running_effects(
         let running = reffs.contains(&effect_key);
         if running && !should_run {
             reuse_eupdates.to_stop.push(effect.clone());
-            if effect.activates_charge(item) {
+            if effect.activates_charge_for_item(item) {
                 reuse_eupdates.charge = Some(false);
             }
             if effect.activates_autocharge() {
@@ -123,7 +123,7 @@ fn update_running_effects(
             }
         } else if !running && should_run {
             reuse_eupdates.to_start.push(effect.clone());
-            if effect.activates_charge(item) {
+            if effect.activates_charge_for_item(item) {
                 reuse_eupdates.charge = Some(true);
             }
             if effect.activates_autocharge() {

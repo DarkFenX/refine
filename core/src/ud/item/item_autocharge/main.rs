@@ -31,16 +31,9 @@ impl UAutocharge {
         activated: bool,
         force_disabled: bool,
         src: &Src,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Self {
         Self {
-            base: UItemBase::new(
-                item_id,
-                type_id,
-                get_state(activated, force_disabled),
-                src,
-                reuse_eupdates,
-            ),
+            base: UItemBase::new(item_id, type_id, get_state(activated, force_disabled), src),
             fit_key,
             cont_item_key,
             cont_effect_key,
@@ -83,36 +76,29 @@ impl UAutocharge {
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
     }
-    pub(in crate::ud::item) fn start_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.start_all_reffs(reuse_eupdates, src);
+    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+        self.base.update_reffs(reuse_eupdates, src);
     }
-    pub(in crate::ud::item) fn stop_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
     pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
         self.base.get_effect_key_mode(effect_key)
     }
-    pub(in crate::ud::item) fn set_effect_mode(
-        &mut self,
-        effect_id: AEffectId,
-        effect_mode: EffectMode,
-        reuse_eupdates: &mut UEffectUpdates,
-        src: &Src,
-    ) {
-        self.base.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src)
+    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
+        self.base.set_effect_mode(effect_id, effect_mode, src)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
-        reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
     ) {
-        self.base.set_effect_modes(effect_modes, reuse_eupdates, src)
+        self.base.set_effect_modes(effect_modes, src)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::ud::item) fn src_changed(&mut self, _reuse_eupdates: &mut UEffectUpdates, _src: &Src) {
+    pub(in crate::ud::item) fn src_changed(&mut self, _src: &Src) {
         // Just panic to expose attempts to reload it, since autocharges should never be reloaded.
         // Instead, they are removed and re-added when parent item changes.
         unreachable!("autocharges should be removed/added outside of autocharge item handler");
@@ -121,28 +107,24 @@ impl UAutocharge {
     pub(crate) fn get_activated(&self) -> bool {
         self.force_disabled
     }
-    pub(crate) fn set_activated(&mut self, activated: bool, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        // No changes to state - nothing to do but clear reusable data
+    pub(crate) fn set_activated(&mut self, activated: bool) {
+        // No changes to state - nothing to do
         if self.activated == activated {
-            reuse_eupdates.clear();
             return;
         }
         self.activated = activated;
-        self.base
-            .set_state(get_state(self.activated, self.force_disabled), reuse_eupdates, src);
+        self.base.set_state(get_state(self.activated, self.force_disabled));
     }
     pub(crate) fn get_force_disabled(&self) -> bool {
         self.force_disabled
     }
-    pub(crate) fn set_force_disabled(&mut self, force_disabled: bool, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        // No changes to state - nothing to do but clear reusable data
+    pub(crate) fn set_force_disabled(&mut self, force_disabled: bool) {
+        // No changes to state - nothing to do
         if self.force_disabled == force_disabled {
-            reuse_eupdates.clear();
             return;
         }
         self.force_disabled = force_disabled;
-        self.base
-            .set_state(get_state(self.activated, self.force_disabled), reuse_eupdates, src);
+        self.base.set_state(get_state(self.activated, self.force_disabled));
     }
     pub(crate) fn get_fit_key(&self) -> UFitKey {
         self.fit_key
@@ -177,10 +159,10 @@ impl std::fmt::Display for UAutocharge {
     }
 }
 
-fn get_state(active: bool, force_disable: bool) -> AState {
-    match force_disable {
+fn get_state(activated: bool, force_disabled: bool) -> AState {
+    match force_disabled {
         true => AState::Ghost,
-        false => match active {
+        false => match activated {
             true => AState::Active,
             false => AState::Offline,
         },

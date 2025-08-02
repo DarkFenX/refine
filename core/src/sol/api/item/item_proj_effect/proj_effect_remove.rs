@@ -12,20 +12,24 @@ impl SolarSystem {
         // Remove outgoing projections
         let u_item = self.u_data.items.get(item_key);
         let u_proj_effect = u_item.get_proj_effect().unwrap();
-        for projectee_key in u_proj_effect.get_projs().iter_projectees() {
-            let projectee_u_item = self.u_data.items.get(projectee_key);
-            SolarSystem::util_remove_item_projection(
-                &self.u_data,
-                &mut self.svc,
-                item_key,
-                u_item,
-                projectee_key,
-                projectee_u_item,
-            );
-            self.rev_projs.unreg_projectee(&item_key, &projectee_key);
+        if !u_proj_effect.get_projs().is_empty() {
+            for projectee_key in u_proj_effect.get_projs().iter_projectees() {
+                let projectee_u_item = self.u_data.items.get(projectee_key);
+                SolarSystem::util_remove_item_projection(
+                    &self.u_data,
+                    &mut self.svc,
+                    item_key,
+                    u_item,
+                    projectee_key,
+                    projectee_u_item,
+                );
+                self.rev_projs.unreg_projectee(&item_key, &projectee_key);
+            }
+            let u_proj_effect = self.u_data.items.get_mut(item_key).get_proj_effect_mut().unwrap();
+            u_proj_effect.get_projs_mut().clear();
         }
         // Remove effect from services
-        SolarSystem::util_remove_item_without_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
+        SolarSystem::util_remove_proj_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         // Remove effect from user data
         self.u_data.proj_effects.remove(&item_key);
         self.u_data.items.remove(item_key);

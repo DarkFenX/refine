@@ -23,10 +23,6 @@ impl<'a> FitMut<'a> {
 }
 
 fn iter_drones(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Drone<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_key)
-        .drones
-        .iter()
-        .map(|item_key| Drone::new(sol, *item_key))
+    let drone_keys = sol.u_data.fits.get(fit_key).drones.iter();
+    drone_keys.map(|drone_key| Drone::new(sol, *drone_key))
 }

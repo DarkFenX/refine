@@ -1,4 +1,4 @@
-use crate::{misc::EffectMode, sol::api::AbilityMut};
+use crate::{misc::EffectMode, sol::api::AbilityMut, ud::UEffectUpdates};
 
 impl<'a> AbilityMut<'a> {
     pub fn set_state(&mut self, state: bool) {
@@ -9,7 +9,8 @@ impl<'a> AbilityMut<'a> {
             true => EffectMode::StateCompliance,
             false => EffectMode::ForceStop,
         };
+        let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_effect_id_mode(self.item_key, effect_id, effect_mode);
+            .internal_set_effect_id_mode(self.item_key, effect_id, effect_mode, &mut reuse_eupdates);
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AItemId,
     def::ItemTypeId,
     sol::{SolarSystem, api::SwEffectMut},
     ud::{UEffectUpdates, UItem, UItemKey, USwEffect},
@@ -13,15 +13,15 @@ impl SolarSystem {
     }
     pub(in crate::sol::api) fn internal_add_sw_effect(
         &mut self,
-        a_item_id: ad::AItemId,
+        type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let item_id = self.u_data.items.alloc_id();
-        let u_sw_effect = USwEffect::new(item_id, a_item_id, true, &self.u_data.src, reuse_eupdates);
+        let u_sw_effect = USwEffect::new(item_id, type_id, true, &self.u_data.src);
         let u_item = UItem::SwEffect(u_sw_effect);
         let item_key = self.u_data.items.add(u_item);
         self.u_data.sw_effects.insert(item_key);
-        SolarSystem::util_add_sw_effect(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_sw_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }

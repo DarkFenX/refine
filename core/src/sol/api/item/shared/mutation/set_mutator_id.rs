@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<(), ItemMutatedError> {
         let u_item = self.u_data.items.get_mut(item_key);
         match u_item {
-            UItem::Drone(_) => self.internal_set_drone_a_mutator_id(item_key, mutator_id, reuse_eupdates),
+            UItem::Drone(_) => self.internal_set_drone_mutator_id(item_key, mutator_id, reuse_eupdates),
             UItem::Module(_) => self.internal_set_module_a_mutator_id(item_key, mutator_id, reuse_eupdates),
             _ => unreachable!("unmutable item kind is used to change mutator ID"),
         }

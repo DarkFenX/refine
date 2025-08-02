@@ -10,6 +10,15 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         item_key: UItemKey,
+        eupdates: &UEffectUpdates,
+    ) {
+        let u_item = u_data.items.get(item_key);
+        process_effect_updates(u_data, svc, item_key, u_item, eupdates, true);
+    }
+    pub(in crate::sol::api::util) fn util_internal_process_effect_updates(
+        u_data: &UData,
+        svc: &mut Svc,
+        item_key: UItemKey,
         u_item: &UItem,
         eupdates: &UEffectUpdates,
     ) {

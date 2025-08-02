@@ -2,7 +2,7 @@ use crate::{
     ad,
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItem, UItemKey},
+    ud::{UData, UEffectUpdates, UItemKey},
 };
 
 impl SolarSystem {
@@ -10,9 +10,9 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         item_key: UItemKey,
-        u_item: &UItem,
         eupdates: &UEffectUpdates,
     ) {
+        let u_item = u_data.items.get(item_key);
         svc.notify_item_added(u_data, item_key, u_item);
         if u_item.is_loaded() {
             svc.notify_item_loaded(u_data, item_key, u_item)
@@ -35,10 +35,9 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         item_key: UItemKey,
-        u_item: &UItem,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
+        let u_item = u_data.items.get(item_key);
         SolarSystem::util_internal_switch_item_state_without_projs(
             u_data,
             svc,
@@ -60,9 +59,9 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         item_key: UItemKey,
-        u_item: &UItem,
         eupdates: &UEffectUpdates,
     ) {
+        let u_item = u_data.items.get(item_key);
         svc.notify_item_added(u_data, item_key, u_item);
         if u_item.is_loaded() {
             svc.notify_item_loaded(u_data, item_key, u_item);
@@ -84,10 +83,9 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         item_key: UItemKey,
-        u_item: &UItem,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
+        let u_item = u_data.items.get(item_key);
         SolarSystem::util_internal_switch_item_state(
             u_data,
             svc,

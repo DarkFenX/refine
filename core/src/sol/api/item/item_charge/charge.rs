@@ -86,7 +86,7 @@ fn get_cont_item(sol: &SolarSystem, item_key: UItemKey) -> Item<'_> {
     Item::new(sol, cont_key)
 }
 fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    !get_u_charge(sol, item_key).get_force_disable()
+    !get_u_charge(sol, item_key).get_force_disabled()
 }
 fn get_u_charge(sol: &SolarSystem, item_key: UItemKey) -> &UCharge {
     sol.u_data.items.get(item_key).get_charge().unwrap()

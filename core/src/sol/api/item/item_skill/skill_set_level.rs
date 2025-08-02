@@ -11,13 +11,14 @@ impl SolarSystem {
             return;
         }
         u_skill.set_level(level.into());
-        self.u_data
+        let fit_skill = self
+            .u_data
             .fits
             .get_mut(u_skill.get_fit_key())
             .skills
             .get_mut(&u_skill.get_type_id())
-            .unwrap()
-            .level = level;
+            .unwrap();
+        fit_skill.level = level;
         let u_skill = self.u_data.items.get(item_key).get_skill().unwrap();
         self.svc.notify_skill_level_changed(&self.u_data, item_key, u_skill);
     }

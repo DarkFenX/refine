@@ -154,7 +154,7 @@ impl REffect {
         self.a_effect.buff_info.as_ref()
     }
     // Misc methods
-    pub(crate) fn activates_charge(&self, item: &RItem) -> bool {
+    pub(crate) fn activates_charge(&self) -> bool {
         let charge_info = match self.n_effect_hc.charge {
             Some(charge_info) => charge_info,
             None => return false,
@@ -162,7 +162,10 @@ impl REffect {
         if !charge_info.activates_charge {
             return false;
         }
-        if !matches!(charge_info.location, NEffectChargeLoc::Loaded(_)) {
+        matches!(charge_info.location, NEffectChargeLoc::Loaded(_))
+    }
+    pub(crate) fn activates_charge_for_item(&self, item: &RItem) -> bool {
+        if !self.activates_charge() {
             return false;
         }
         // Only default effects can activate regular charge

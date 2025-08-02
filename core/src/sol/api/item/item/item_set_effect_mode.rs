@@ -13,35 +13,33 @@ impl SolarSystem {
         item_key: UItemKey,
         effect_id: AEffectId,
         effect_mode: EffectMode,
+        reuse_eupdates: &mut UEffectUpdates,
     ) where
         Self: Sized,
     {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.u_data.items.get_mut(item_key).set_effect_mode(
-            effect_id,
-            effect_mode,
-            &mut reuse_eupdates,
-            &self.u_data.src,
-        );
-        self.effect_mode_update_postprocess(item_key, &mut reuse_eupdates);
+        let u_item = self.u_data.items.get_mut(item_key);
+        u_item.set_effect_mode(effect_id, effect_mode, &self.u_data.src);
+        u_item.update_reffs(reuse_eupdates, &self.u_data.src);
+        self.effect_mode_update_postprocess(item_key, reuse_eupdates);
     }
     pub(in crate::sol::api) fn internal_set_effect_id_modes(
         &mut self,
         item_key: UItemKey,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
+        reuse_eupdates: &mut UEffectUpdates,
     ) where
         Self: Sized,
     {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.u_data
-            .items
-            .get_mut(item_key)
-            .set_effect_modes(effect_modes, &mut reuse_eupdates, &self.u_data.src);
-        self.effect_mode_update_postprocess(item_key, &mut reuse_eupdates);
+        let u_item = self.u_data.items.get_mut(item_key);
+        u_item.set_effect_modes(effect_modes, &self.u_data.src);
+        u_item.update_reffs(reuse_eupdates, &self.u_data.src);
+        self.effect_mode_update_postprocess(item_key, reuse_eupdates);
     }
     fn effect_mode_update_postprocess(&mut self, item_key: UItemKey, reuse_eupdates: &mut UEffectUpdates) {
+        SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         let u_item = self.u_data.items.get(item_key);
-        SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
+        let charge_key = u_item.get_charge_key();
+        // Autocharges
         if !reuse_eupdates.autocharges.is_empty()
             && let Some(autocharges) = u_item.get_autocharges()
         {
@@ -58,6 +56,18 @@ impl SolarSystem {
                 &mut self.u_data,
                 &mut self.svc,
                 ac_activations,
+                reuse_eupdates,
+            );
+        }
+        // Charge
+        if let Some(charge_activated) = reuse_eupdates.charge
+            && let Some(charge_key) = charge_key
+        {
+            SolarSystem::util_process_charge_activation(
+                &mut self.u_data,
+                &mut self.svc,
+                charge_key,
+                charge_activated,
                 reuse_eupdates,
             );
         }

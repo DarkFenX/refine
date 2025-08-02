@@ -19,22 +19,9 @@ pub(crate) struct USubsystem {
     fit_key: UFitKey,
 }
 impl USubsystem {
-    pub(crate) fn new(
-        item_id: ItemId,
-        type_id: AItemId,
-        fit_key: UFitKey,
-        subsystem_state: bool,
-        src: &Src,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) -> Self {
+    pub(crate) fn new(item_id: ItemId, type_id: AItemId, fit_key: UFitKey, subsystem_state: bool, src: &Src) -> Self {
         Self {
-            base: UItemBase::new(
-                item_id,
-                type_id,
-                bool_to_state_offline(subsystem_state),
-                src,
-                reuse_eupdates,
-            ),
+            base: UItemBase::new(item_id, type_id, bool_to_state_offline(subsystem_state), src),
             fit_key,
         }
     }
@@ -45,8 +32,8 @@ impl USubsystem {
     pub(crate) fn get_type_id(&self) -> AItemId {
         self.base.get_type_id()
     }
-    pub(crate) fn set_type_id(&mut self, type_id: AItemId, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.set_type_id(type_id, reuse_eupdates, src);
+    pub(crate) fn set_type_id(&mut self, type_id: AItemId, src: &Src) {
+        self.base.set_type_id(type_id, src);
     }
     pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_group_id()
@@ -75,44 +62,37 @@ impl USubsystem {
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
     }
-    pub(in crate::ud::item) fn start_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.start_all_reffs(reuse_eupdates, src);
+    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+        self.base.update_reffs(reuse_eupdates, src);
     }
-    pub(in crate::ud::item) fn stop_all_reffs(&self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
     pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
         self.base.get_effect_key_mode(effect_key)
     }
-    pub(in crate::ud::item) fn set_effect_mode(
-        &mut self,
-        effect_id: AEffectId,
-        effect_mode: EffectMode,
-        reuse_eupdates: &mut UEffectUpdates,
-        src: &Src,
-    ) {
-        self.base.set_effect_mode(effect_id, effect_mode, reuse_eupdates, src)
+    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
+        self.base.set_effect_mode(effect_id, effect_mode, src)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
-        reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
     ) {
-        self.base.set_effect_modes(effect_modes, reuse_eupdates, src)
+        self.base.set_effect_modes(effect_modes, src)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::ud::item) fn update_a_data(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.src_changed(reuse_eupdates, src);
+    pub(in crate::ud::item) fn update_a_data(&mut self, src: &Src) {
+        self.base.src_changed(src);
     }
     // Item-specific methods
     pub(crate) fn get_subsystem_state(&self) -> bool {
         state_to_bool(self.base.get_state())
     }
-    pub(crate) fn set_subsystem_state(&mut self, state: bool, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.set_state(bool_to_state_offline(state), reuse_eupdates, src)
+    pub(crate) fn set_subsystem_state(&mut self, state: bool) {
+        self.base.set_state(bool_to_state_offline(state))
     }
     pub(crate) fn get_fit_key(&self) -> UFitKey {
         self.fit_key

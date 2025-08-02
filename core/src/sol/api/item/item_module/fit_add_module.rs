@@ -1,6 +1,6 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    ad,
+    ad::AItemId,
     def::ItemTypeId,
     misc::{AddMode, ItemMutationRequest, ModRack, ModuleState, RmMode},
     sol::{
@@ -10,21 +10,16 @@ use crate::{
     ud::{UCharge, UEffectUpdates, UFitKey, UItem, UItemKey, UModule},
 };
 
-struct ChargeData {
-    item_key: UItemKey,
-    eupdates: UEffectUpdates,
-}
-
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_module(
         &mut self,
         fit_key: UFitKey,
         rack: ModRack,
         pos_mode: AddMode,
-        a_item_id: ad::AItemId,
+        type_id: AItemId,
         state: ModuleState,
         mutation: Option<ItemMutationRequest>,
-        charge_a_item_id: Option<ad::AItemId>,
+        charge_type_id: Option<AItemId>,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let module_item_id = self.u_data.items.alloc_id();
@@ -33,7 +28,7 @@ impl SolarSystem {
         // start into the effect container
         let u_module = UModule::new(
             module_item_id,
-            a_item_id,
+            type_id,
             fit_key,
             state,
             rack,
@@ -41,7 +36,6 @@ impl SolarSystem {
             mutation,
             None,
             &self.u_data.src,
-            reuse_eupdates,
         );
         let module_u_item = UItem::Module(u_module);
         let module_key = self.u_data.items.add(module_u_item);
@@ -74,10 +68,7 @@ impl SolarSystem {
             AddMode::Replace(pos) => {
                 match u_fit_rack.get(pos) {
                     Some(old_module_key) => {
-                        // Create another effect update container for module being removed, since
-                        // primary one is carrying effect info of the primary module being added
-                        let mut replacee_eupdates = UEffectUpdates::new();
-                        self.internal_remove_module(old_module_key, RmMode::Free, &mut replacee_eupdates);
+                        self.internal_remove_module(old_module_key, RmMode::Free, reuse_eupdates);
                         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_key, rack);
                         u_fit_rack.place(pos, module_key);
                     }
@@ -87,55 +78,38 @@ impl SolarSystem {
             }
         };
         // Create and add charge
-        let charge_data = match charge_a_item_id {
+        let charge_key = match charge_type_id {
             Some(charge_type_id) => {
                 let charge_item_id = self.u_data.items.alloc_id();
-                // Create new container to carry info about charge effects, external one is carrying
-                // module effects
-                let mut charge_eupdates = UEffectUpdates::new();
                 // Update user data with new charge info
                 let u_charge = UCharge::new(
                     charge_item_id,
                     charge_type_id,
                     fit_key,
                     module_key,
-                    state.into(),
+                    false,
                     false,
                     &self.u_data.src,
-                    &mut charge_eupdates,
                 );
                 let charge_u_item = UItem::Charge(u_charge);
                 let charge_key = self.u_data.items.add(charge_u_item);
-                Some(ChargeData {
-                    item_key: charge_key,
-                    eupdates: charge_eupdates,
-                })
+                Some(charge_key)
             }
             None => None,
         };
         // Update on-module data regarding position and charge
         let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
         u_module.set_pos(pos);
-        u_module.set_charge_key(charge_data.as_ref().map(|v| v.item_key));
-        // Add module and charge to services. For module effects, use the container which has been
-        // passed to the method from the caller
-        let module_u_item = self.u_data.items.get(module_key);
-        SolarSystem::util_add_item_without_projs(
-            &self.u_data,
-            &mut self.svc,
-            module_key,
-            module_u_item,
-            reuse_eupdates,
-        );
-        if let Some(charge_data) = charge_data {
-            let charge_u_item = self.u_data.items.get(charge_data.item_key);
-            SolarSystem::util_add_item_without_projs(
-                &self.u_data,
-                &mut self.svc,
-                charge_data.item_key,
-                charge_u_item,
-                &charge_data.eupdates,
-            );
+        u_module.set_charge_key(charge_key);
+        // Add module to services. While adding module, effect updates structure records if charge
+        // needs to be activated
+        SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_key, reuse_eupdates);
+        if let Some(charge_key) = charge_key {
+            if reuse_eupdates.charge.unwrap_or(false) {
+                let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
+                u_charge.set_activated(true);
+            }
+            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_key, reuse_eupdates);
         }
         module_key
     }

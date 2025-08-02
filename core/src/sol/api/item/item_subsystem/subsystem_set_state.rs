@@ -12,8 +12,9 @@ impl SolarSystem {
     ) {
         let u_subsystem = self.u_data.items.get_mut(item_key).get_subsystem_mut().unwrap();
         let old_a_state = u_subsystem.get_state();
-        u_subsystem.set_subsystem_state(state, reuse_eupdates, &self.u_data.src);
+        u_subsystem.set_subsystem_state(state);
         let new_a_state = u_subsystem.get_state();
+        u_subsystem.update_reffs(reuse_eupdates, &self.u_data.src);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

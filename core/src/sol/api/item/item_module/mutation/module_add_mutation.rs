@@ -16,20 +16,13 @@ impl SolarSystem {
         mutation: ItemMutationRequest,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemNotMutatedError> {
-        let u_item = self.u_data.items.get(item_key);
-        SolarSystem::util_remove_module_with_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
+        SolarSystem::util_remove_module_with_charge_act(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         let u_module = self.u_data.items.get_mut(item_key).get_module_mut().unwrap();
-        if let Err(error) = u_module.mutate(mutation, reuse_eupdates, &self.u_data.src) {
-            let u_item = self.u_data.items.get(item_key);
-            // When util remove function was called, module was removed from services, but its
-            // running effects container stayed as-is, since the request to mutate failed; to
-            // restart all effects, refill the effect updates container with effects which are still
-            // marked as running on the module
-            u_item.start_all_reffs(reuse_eupdates, &self.u_data.src);
-            SolarSystem::util_add_module_with_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        if let Err(error) = u_module.mutate(mutation, &self.u_data.src) {
+            SolarSystem::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
             return Err(error);
         }
-        SolarSystem::util_add_module_with_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         Ok(())
     }
 }

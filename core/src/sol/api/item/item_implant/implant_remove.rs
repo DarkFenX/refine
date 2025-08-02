@@ -9,9 +9,8 @@ impl SolarSystem {
         item_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(item_key);
-        let u_implant = u_item.get_implant().unwrap();
-        SolarSystem::util_remove_implant(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
+        SolarSystem::util_remove_implant(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        let u_implant = self.u_data.items.get(item_key).get_implant().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_implant.get_fit_key());
         u_fit.implants.remove(&item_key);
         self.u_data.items.remove(item_key);

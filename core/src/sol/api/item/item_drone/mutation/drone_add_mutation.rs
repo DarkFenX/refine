@@ -16,24 +16,14 @@ impl SolarSystem {
         mutation: ItemMutationRequest,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemNotMutatedError> {
-        let u_item = self.u_data.items.get(item_key);
-        SolarSystem::util_remove_drone_with_projs(&self.u_data, &mut self.svc, item_key, u_item, reuse_eupdates);
-        if let Err(error) = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap().mutate(
-            mutation,
-            reuse_eupdates,
-            &self.u_data.src,
-        ) {
-            let u_item = self.u_data.items.get(item_key);
-            // When util remove function was called, drone was removed from services, but its
-            // running effects container stayed as-is, since the request to mutate failed; to
-            // restart all effects, refill the effect updates container with effects which are still
-            // marked as running on the drone
-            u_item.start_all_reffs(reuse_eupdates, &self.u_data.src);
-            SolarSystem::util_add_drone_with_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
+        if let Err(error) = u_drone.mutate(mutation, &self.u_data.src) {
+            SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
             return Err(error);
         }
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, item_key);
-        SolarSystem::util_add_drone_with_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         Ok(())
     }
 }

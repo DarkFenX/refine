@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AItemId,
     def::{ItemTypeId, OF},
     sol::{
         SolarSystem,
@@ -12,7 +12,7 @@ impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fit_ship(
         &mut self,
         fit_key: UFitKey,
-        a_item_id: ad::AItemId,
+        type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get(fit_key);
@@ -22,7 +22,7 @@ impl SolarSystem {
         }
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
-        let u_ship = UShip::new(item_id, a_item_id, fit_key, true, &self.u_data.src, reuse_eupdates);
+        let u_ship = UShip::new(item_id, type_id, fit_key, true, &self.u_data.src);
         let ship_kind = u_ship.get_kind();
         let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(OF(0.0));
         let u_item = UItem::Ship(u_ship);
@@ -30,7 +30,7 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         u_fit.ship = Some(item_key);
         u_fit.kind = ship_kind;
-        SolarSystem::util_add_ship(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_key, ship_radius);
         item_key
