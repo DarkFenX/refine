@@ -47,5 +47,5 @@ fn set_state(sol: &mut SolarSystem, item_key: UItemKey, a_effect_id: AEffectId, 
     let mut reuse_eupdates = UEffectUpdates::new();
     u_booster.set_effect_mode(a_effect_id, effect_mode, &sol.u_data.src);
     u_booster.update_reffs(&mut reuse_eupdates, &sol.u_data.src);
-    SolarSystem::util_process_effect_updates(&mut sol.u_data, &mut sol.svc, item_key, &reuse_eupdates);
+    SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, item_key, &reuse_eupdates);
 }

@@ -594,3 +594,5 @@ class UtilEffect(IntEnum):
     cycle_charge_rate = EveEffect.projectile_fired
     cycle_crystal = EveEffect.tgt_attack
     cycle_none = EveEffect.warp_disrupt_sphere
+    activates_charge = EveEffect.use_missiles
+    activates_autocharge = EveEffect.ftr_abil_launch_bomb

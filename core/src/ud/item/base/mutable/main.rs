@@ -264,7 +264,7 @@ impl UItemBaseMutable {
         // Everything needed is at hand, update item
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation.cache = Some(ItemMutationDataCache {
-            base_type_id: base_type_id,
+            base_type_id,
             mutator: mutator.clone(),
             merged_attrs: attrs,
             axt: item_axt,
@@ -311,7 +311,7 @@ impl UItemBaseMutable {
         apply_attr_mutations(&mut attrs, mutator, &item_mutation_data.attr_rolls);
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {
-            base_type_id: base_type_id,
+            base_type_id,
             mutator: mutator.clone(),
             merged_attrs: attrs,
             axt: item_axt,

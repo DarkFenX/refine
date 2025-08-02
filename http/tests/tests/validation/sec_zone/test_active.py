@@ -408,8 +408,9 @@ def test_main_module(client, consts):
 
 def test_charge(client, consts):
     eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_charge_id = client.mk_eve_item(attrs={eve_ban_empire_attr_id: 1})
-    eve_module_id = client.mk_eve_item()
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()

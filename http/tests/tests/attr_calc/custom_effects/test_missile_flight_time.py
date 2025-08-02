@@ -137,22 +137,25 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        state=consts.ApiModuleState.ghost,
-        charge_type_id=eve_missile_id)
-    # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
-    # Action
-    api_module.change_module(state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
     api_module.update()
     assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
     assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
     # Action
-    api_module.change_module(state=consts.ApiModuleState.ghost)
+    api_module.charge.change_charge(state=False)
+    # Verification
+    api_module.update()
+    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    # Action
+    api_module.charge.change_charge(state=True)
+    # Verification
+    api_module.update()
+    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    # Action
+    api_module.charge.change_charge(state=False)
     # Verification
     api_module.update()
     assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
