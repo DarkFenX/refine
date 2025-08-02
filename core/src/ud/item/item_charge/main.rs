@@ -105,7 +105,7 @@ impl UCharge {
     }
     // Item-specific methods
     pub(crate) fn get_activated(&self) -> bool {
-        self.force_disabled
+        self.activated
     }
     pub(crate) fn set_activated(&mut self, activated: bool) {
         // No changes to state - nothing to do

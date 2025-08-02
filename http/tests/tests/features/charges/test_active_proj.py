@@ -16,11 +16,12 @@ def test_bundled_proj_unproj(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item()
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -53,11 +54,12 @@ def test_bundled_remove(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item()
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -103,7 +105,8 @@ def test_charge_charge_uncharge(client, consts):
         attrs={eve_affector_attr2_id: 1.5},
         eff_ids=[eve_effect2_id],
         defeff_id=eve_effect2_id)
-    eve_module_id = client.mk_eve_item()
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -142,7 +145,8 @@ def test_states(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item()
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -211,7 +215,8 @@ def test_range(client, consts):
         attrs={eve_affector_attr_id: 20, eve_optimal_attr_id: 10000, eve_falloff_attr_id: 5000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item()
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -277,7 +282,11 @@ def test_switch_src(client, consts):
         eff_ids=[eve_d2_effect_id],
         defeff_id=eve_d2_effect_id)
     # The same module ID
-    eve_module_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_act_effect_id = client.mk_eve_effect(
+        datas=[eve_d1, eve_d2],
+        id_=consts.UtilEffect.activates_charge,
+        cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(datas=[eve_d1, eve_d2], eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     # The same ship ID
     eve_ship_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
