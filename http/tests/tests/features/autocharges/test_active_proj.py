@@ -8,11 +8,11 @@ from tests import Effect, approx
 
 
 def test_proj_unproj(client, consts):
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.UtilEffect.activates_autocharge)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
+        id_=consts.UtilEffect.activates_autocharge,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -49,11 +49,11 @@ def test_proj_unproj(client, consts):
 
 
 def test_add_remove(client, consts):
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.UtilEffect.activates_autocharge)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
+        id_=consts.UtilEffect.activates_autocharge,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -96,11 +96,11 @@ def test_add_remove(client, consts):
 
 
 def test_states(client, consts):
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.UtilEffect.activates_autocharge)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
+        id_=consts.UtilEffect.activates_autocharge,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -202,13 +202,13 @@ def test_states(client, consts):
 
 def test_range(client, consts):
     # Check that module range change affects charge as well
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.UtilEffect.activates_autocharge)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_optimal_attr_id = client.mk_eve_attr()
     eve_falloff_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
+        id_=consts.UtilEffect.activates_autocharge,
         cat_id=consts.EveEffCat.active)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -256,7 +256,7 @@ def test_switch_src(client, consts):
     # The same autocharge attr ID
     eve_autocharge_attr_id = client.mk_eve_attr(
         datas=[eve_d1, eve_d2],
-        id_=consts.UtilEffect.activates_autocharge)
+        id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     # Different affector attrs IDs
     eve_d1_affector_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
     client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_affector_attr_id)
@@ -267,7 +267,7 @@ def test_switch_src(client, consts):
     # The same on-fighter autocharge effect ID
     eve_autocharge_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
+        id_=consts.UtilEffect.activates_autocharge,
         cat_id=consts.EveEffCat.active)
     # Different on-autocharge effect IDs
     eve_mod1 = client.mk_eve_effect_mod(
