@@ -60,7 +60,10 @@ impl SolarSystem {
                 let module_u_item = self.u_data.items.get(item_key);
                 let u_module = module_u_item.get_module().unwrap();
                 match u_module.get_defeff_key() {
-                    Some(Some(defeff_key)) => self.u_data.src.get_effect(defeff_key).activates_charge(),
+                    Some(Some(defeff_key)) => {
+                        self.u_data.src.get_effect(defeff_key).activates_charge()
+                            && u_module.get_reffs().is_some_and(|v| v.contains(&defeff_key))
+                    }
                     _ => false,
                 }
             }

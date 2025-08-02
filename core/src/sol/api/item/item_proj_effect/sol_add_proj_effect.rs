@@ -21,7 +21,7 @@ impl SolarSystem {
         let u_item = UItem::ProjEffect(u_proj_effect);
         let item_key = self.u_data.items.add(u_item);
         self.u_data.proj_effects.insert(item_key);
-        SolarSystem::util_add_item_without_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_proj_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }

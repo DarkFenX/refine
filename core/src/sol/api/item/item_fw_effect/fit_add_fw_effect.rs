@@ -21,7 +21,7 @@ impl SolarSystem {
         let u_item = UItem::FwEffect(u_fw_effect);
         let item_key = self.u_data.items.add(u_item);
         u_fit.fw_effects.insert(item_key);
-        SolarSystem::util_add_item_without_projs(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_fw_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
         item_key
     }
 }
