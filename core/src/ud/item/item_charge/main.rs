@@ -11,8 +11,6 @@ use crate::{
     util::{Named, RMap, RSet},
 };
 
-const DISABLED_STATE: AState = AState::Ghost;
-
 #[derive(Clone)]
 pub(crate) struct UCharge {
     pub(super) base: UItemBase,
