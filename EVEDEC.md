@@ -9,6 +9,6 @@ Some knowledge used to write the library came from EVE common sense, my work on 
 - attribute 2358 securityModifier taking values of security-zone-specific attributes for its base value:
   - library: attribute calculation functions
   - client: dogma/attributes/securityModifierAttribute.py
-- some of custom effects, which have no modifiers in static data (e.g. bastion):
-  - library: spread between several locations (adapted data generator custom effects, attribute calculator custom effects)
+- some of custom effects, which have no modifiers in static data (e.g. basic modifiers for propulsion modules):
+  - library: nd::eff::* definitions
   - client: eve/common/script/dogma/pythonEffects/*.py
