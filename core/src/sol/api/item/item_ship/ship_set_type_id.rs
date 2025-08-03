@@ -34,15 +34,11 @@ impl SolarSystem {
                 && u_prange.update_tgt_rad(ship_radius)
             {
                 let u_prange = Some(*u_prange);
-                let u_item = self.u_data.items.get(item_key);
-                let projector_u_item = self.u_data.items.get(projector_key);
                 SolarSystem::util_change_item_proj_range(
                     &self.u_data,
                     &mut self.svc,
                     projector_key,
-                    projector_u_item,
                     item_key,
-                    u_item,
                     u_prange,
                 );
             }

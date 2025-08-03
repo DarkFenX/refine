@@ -34,20 +34,12 @@ impl SolarSystem {
             }
             .into());
         }
-        // Update services
-        SolarSystem::util_add_item_projection(
-            &self.u_data,
-            &mut self.svc,
-            item_key,
-            u_item,
-            projectee_key,
-            projectee_u_item,
-            None,
-        );
         // Update user data
         let u_proj_effect = self.u_data.items.get_mut(item_key).get_proj_effect_mut().unwrap();
         u_proj_effect.get_projs_mut().add(projectee_key, None);
         self.rev_projs.reg_projectee(item_key, projectee_key);
+        // Update services
+        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key, None);
         Ok(())
     }
 }

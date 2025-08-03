@@ -17,8 +17,7 @@ impl SolarSystem {
         range: ProjRange,
     ) -> Result<(), AddRangedProjError> {
         // Check projector
-        let u_item = self.u_data.items.get(item_key);
-        let u_drone = u_item.get_drone().unwrap();
+        let u_drone = self.u_data.items.get(item_key).get_drone().unwrap();
         // Check if projection has already been defined
         let projectee_u_item = self.u_data.items.get(projectee_key);
         if u_drone.get_projs().contains(&projectee_key) {
@@ -37,20 +36,12 @@ impl SolarSystem {
             .into());
         }
         let u_prange = UProjRange::from_prange_with_axt(range, u_drone.get_axt(), projectee_u_item.get_axt());
-        // Update services
-        SolarSystem::util_add_item_projection(
-            &self.u_data,
-            &mut self.svc,
-            item_key,
-            u_item,
-            projectee_key,
-            projectee_u_item,
-            u_prange,
-        );
         // Update user data
         let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
         u_drone.get_projs_mut().add(projectee_key, u_prange);
         self.rev_projs.reg_projectee(item_key, projectee_key);
+        // Update services
+        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key, u_prange);
         Ok(())
     }
 }

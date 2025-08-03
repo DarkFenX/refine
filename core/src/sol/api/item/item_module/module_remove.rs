@@ -19,18 +19,9 @@ impl SolarSystem {
         // Remove outgoing projections for both module and charge
         if !u_module.get_projs().is_empty() {
             // Remove outgoing projections for module
-            let u_item = self.u_data.items.get(item_key);
             for projectee_key in u_module.get_projs().iter_projectees() {
                 // Remove module outgoing projections from services
-                let projectee_u_item = self.u_data.items.get(projectee_key);
-                SolarSystem::util_remove_item_projection(
-                    &self.u_data,
-                    &mut self.svc,
-                    item_key,
-                    u_item,
-                    projectee_key,
-                    projectee_u_item,
-                );
+                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key);
                 // Remove module outgoing projections from reverse projection tracker
                 self.rev_projs.unreg_projectee(&item_key, &projectee_key);
             }
@@ -38,19 +29,10 @@ impl SolarSystem {
             u_module.get_projs_mut().clear();
             // Remove outgoing projections for charge
             if let Some(charge_key) = charge_key {
-                let charge_u_item = self.u_data.items.get(charge_key);
-                let u_charge = charge_u_item.get_charge().unwrap();
+                let u_charge = self.u_data.items.get(charge_key).get_charge().unwrap();
                 for projectee_key in u_charge.get_projs().iter_projectees() {
-                    let projectee_u_item = self.u_data.items.get(projectee_key);
                     // Remove charge outgoing projections from services
-                    SolarSystem::util_remove_item_projection(
-                        &self.u_data,
-                        &mut self.svc,
-                        charge_key,
-                        charge_u_item,
-                        projectee_key,
-                        projectee_u_item,
-                    );
+                    SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, charge_key, projectee_key);
                     // Remove charge outgoing projections from reverse projection tracker
                     self.rev_projs.unreg_projectee(&charge_key, &projectee_key);
                 }

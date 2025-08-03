@@ -2,7 +2,7 @@ use super::is_a_effect_projectable;
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UItem, UItemKey, UProjRange},
+    ud::{UData, UItemKey, UProjRange},
 };
 
 impl SolarSystem {
@@ -10,11 +10,11 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         projector_key: UItemKey,
-        projector_u_item: &UItem,
         projectee_key: UItemKey,
-        projectee_u_item: &UItem,
         range: Option<UProjRange>,
     ) {
+        let projector_u_item = u_data.items.get(projector_key);
+        let projectee_u_item = u_data.items.get(projectee_key);
         svc.notify_item_projected();
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_key in reffs.iter() {
@@ -37,10 +37,10 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         projector_key: UItemKey,
-        projector_u_item: &UItem,
         projectee_key: UItemKey,
-        projectee_u_item: &UItem,
     ) {
+        let projector_u_item = u_data.items.get(projector_key);
+        let projectee_u_item = u_data.items.get(projectee_key);
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_key in reffs.iter() {
                 let r_effect = u_data.src.get_effect(effect_key);
@@ -62,11 +62,11 @@ impl SolarSystem {
         u_data: &UData,
         svc: &mut Svc,
         projector_key: UItemKey,
-        projector_u_item: &UItem,
         projectee_key: UItemKey,
-        projectee_u_item: &UItem,
         range: Option<UProjRange>,
     ) {
+        let projector_u_item = u_data.items.get(projector_key);
+        let projectee_u_item = u_data.items.get(projectee_key);
         svc.notify_item_proj_range_changed();
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_key in reffs.iter() {

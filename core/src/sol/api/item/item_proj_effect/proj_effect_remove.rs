@@ -10,19 +10,10 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Remove outgoing projections
-        let u_item = self.u_data.items.get(item_key);
-        let u_proj_effect = u_item.get_proj_effect().unwrap();
+        let u_proj_effect = self.u_data.items.get(item_key).get_proj_effect().unwrap();
         if !u_proj_effect.get_projs().is_empty() {
             for projectee_key in u_proj_effect.get_projs().iter_projectees() {
-                let projectee_u_item = self.u_data.items.get(projectee_key);
-                SolarSystem::util_remove_item_projection(
-                    &self.u_data,
-                    &mut self.svc,
-                    item_key,
-                    u_item,
-                    projectee_key,
-                    projectee_u_item,
-                );
+                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key);
                 self.rev_projs.unreg_projectee(&item_key, &projectee_key);
             }
             let u_proj_effect = self.u_data.items.get_mut(item_key).get_proj_effect_mut().unwrap();

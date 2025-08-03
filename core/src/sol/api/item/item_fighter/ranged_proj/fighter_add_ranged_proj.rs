@@ -43,35 +43,15 @@ impl SolarSystem {
         let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();
         u_fighter.get_projs_mut().add(projectee_key, u_prange);
         self.rev_projs.reg_projectee(item_key, projectee_key);
-        // Update services for fighter
-        let u_item = self.u_data.items.get(item_key);
-        let projectee_u_item = self.u_data.items.get(projectee_key);
-        SolarSystem::util_add_item_projection(
-            &self.u_data,
-            &mut self.svc,
-            item_key,
-            u_item,
-            projectee_key,
-            projectee_u_item,
-            u_prange,
-        );
+        // Update services for fighte
+        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key, u_prange);
         for autocharge_key in autocharge_keys {
             // Update user data for autocharge
             let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             u_autocharge.get_projs_mut().add(projectee_key, u_prange);
             self.rev_projs.reg_projectee(autocharge_key, projectee_key);
             // Update services for autocharge
-            let autocharge_u_item = self.u_data.items.get(autocharge_key);
-            let projectee_u_item = self.u_data.items.get(projectee_key);
-            SolarSystem::util_add_item_projection(
-                &self.u_data,
-                &mut self.svc,
-                autocharge_key,
-                autocharge_u_item,
-                projectee_key,
-                projectee_u_item,
-                u_prange,
-            );
+            SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, autocharge_key, projectee_key, u_prange);
         }
         Ok(())
     }

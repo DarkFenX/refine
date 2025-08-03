@@ -24,20 +24,16 @@ impl SolarSystem {
         // Remove old charge, if it was set
         if let Some(old_charge_key) = u_module.get_charge_key() {
             // Remove outgoing projections
-            let old_charge_u_item = self.u_data.items.get(old_charge_key);
-            let old_u_charge = old_charge_u_item.get_charge().unwrap();
+            let old_u_charge = self.u_data.items.get(old_charge_key).get_charge().unwrap();
             activated = Some(old_u_charge.get_activated());
             if !old_u_charge.get_projs().is_empty() {
                 for (projectee_key, _) in old_u_charge.get_projs().iter() {
                     // Update services for charge being removed
-                    let projectee_u_item = self.u_data.items.get(projectee_key);
                     SolarSystem::util_remove_item_projection(
                         &self.u_data,
                         &mut self.svc,
                         old_charge_key,
-                        old_charge_u_item,
                         projectee_key,
-                        projectee_u_item,
                     );
                     // Update user data for charge - do not touch projections container on charge
                     // itself, because we're removing it anyway
@@ -91,19 +87,16 @@ impl SolarSystem {
             let u_charge = self.u_data.items.get_mut(new_charge_key).get_charge_mut().unwrap();
             for (projectee_key, range) in module_projs.into_iter() {
                 u_charge.get_projs_mut().add(projectee_key, range);
-            }
-            let new_charge_u_item = self.u_data.items.get(new_charge_key);
-            for (projectee_key, range) in new_charge_u_item.get_charge().unwrap().get_projs().iter() {
                 self.rev_projs.reg_projectee(new_charge_key, projectee_key);
+            }
+            let new_u_charge = self.u_data.items.get(new_charge_key).get_charge().unwrap();
+            for (projectee_key, range) in new_u_charge.get_projs().iter() {
                 // Update services for charge
-                let projectee_u_item = self.u_data.items.get(projectee_key);
                 SolarSystem::util_add_item_projection(
                     &self.u_data,
                     &mut self.svc,
                     new_charge_key,
-                    new_charge_u_item,
                     projectee_key,
-                    projectee_u_item,
                     range,
                 );
             }

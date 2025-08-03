@@ -9,22 +9,13 @@ impl SolarSystem {
         item_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(item_key);
-        let u_charge = u_item.get_charge().unwrap();
+        let u_charge = self.u_data.items.get(item_key).get_charge().unwrap();
         let module_key = u_charge.get_cont_item_key();
         // Remove outgoing projections
         if !u_charge.get_projs().is_empty() {
             for projectee_key in u_charge.get_projs().iter_projectees() {
                 // Update services
-                let projectee_u_item = self.u_data.items.get(projectee_key);
-                SolarSystem::util_remove_item_projection(
-                    &self.u_data,
-                    &mut self.svc,
-                    item_key,
-                    u_item,
-                    projectee_key,
-                    projectee_u_item,
-                );
+                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key);
                 // Reverse projections
                 self.rev_projs.unreg_projectee(&item_key, &projectee_key);
             }

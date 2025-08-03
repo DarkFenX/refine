@@ -30,17 +30,7 @@ impl SolarSystem {
             }
         }
         for (projector_key, projectee_key, prange) in projections_to_update {
-            let projector_u_item = u_data.items.get(projector_key);
-            let projectee_u_item = u_data.items.get(projectee_key);
-            SolarSystem::util_change_item_proj_range(
-                u_data,
-                svc,
-                projector_key,
-                projector_u_item,
-                projectee_key,
-                projectee_u_item,
-                Some(prange),
-            );
+            SolarSystem::util_change_item_proj_range(u_data, svc, projector_key, projectee_key, Some(prange));
         }
     }
 }

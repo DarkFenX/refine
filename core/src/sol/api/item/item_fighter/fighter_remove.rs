@@ -9,6 +9,8 @@ impl SolarSystem {
         item_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
+        // Remove incoming projections
+        self.internal_remove_incoming_projections(item_key);
         // Remove autocharges with all the associated relations
         SolarSystem::remove_item_autocharges(
             &mut self.u_data,
@@ -17,23 +19,12 @@ impl SolarSystem {
             item_key,
             reuse_eupdates,
         );
-        // Remove incoming projections
-        self.internal_remove_incoming_projections(item_key);
         // Remove outgoing projections
-        let u_item = self.u_data.items.get(item_key);
-        let u_fighter = u_item.get_fighter().unwrap();
+        let u_fighter = self.u_data.items.get(item_key).get_fighter().unwrap();
         let fit_key = u_fighter.get_fit_key();
         if !u_fighter.get_projs().is_empty() {
             for projectee_key in u_fighter.get_projs().iter_projectees() {
-                let projectee_u_item = self.u_data.items.get(projectee_key);
-                SolarSystem::util_remove_item_projection(
-                    &self.u_data,
-                    &mut self.svc,
-                    item_key,
-                    u_item,
-                    projectee_key,
-                    projectee_u_item,
-                );
+                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key);
                 self.rev_projs.unreg_projectee(&item_key, &projectee_key);
             }
             let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();

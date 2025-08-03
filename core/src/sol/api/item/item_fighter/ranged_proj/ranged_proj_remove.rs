@@ -9,37 +9,20 @@ impl SolarSystem {
         projectee_key: UItemKey,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
-        let u_item = self.u_data.items.get(item_key);
-        let u_fighter = u_item.get_fighter().unwrap();
-        let projectee_u_item = self.u_data.items.get(projectee_key);
+        let u_fighter = self.u_data.items.get(item_key).get_fighter().unwrap();
         if !u_fighter.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
                 projector_item_id: u_fighter.get_item_id(),
-                projectee_item_id: projectee_u_item.get_item_id(),
+                projectee_item_id: self.u_data.items.id_by_key(projectee_key),
             });
         };
         let autocharge_keys = u_fighter.get_autocharges().values().copied().collect_vec();
         // Update services for autocharge
         for &autocharge_key in autocharge_keys.iter() {
-            let autocharge_u_item = self.u_data.items.get(autocharge_key);
-            SolarSystem::util_remove_item_projection(
-                &self.u_data,
-                &mut self.svc,
-                autocharge_key,
-                autocharge_u_item,
-                projectee_key,
-                projectee_u_item,
-            );
+            SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, autocharge_key, projectee_key);
         }
         // Update services for fighter
-        SolarSystem::util_remove_item_projection(
-            &self.u_data,
-            &mut self.svc,
-            item_key,
-            u_item,
-            projectee_key,
-            projectee_u_item,
-        );
+        SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key);
         // Update user data for autocharges
         for autocharge_key in autocharge_keys.into_iter() {
             self.rev_projs.unreg_projectee(&autocharge_key, &projectee_key);
