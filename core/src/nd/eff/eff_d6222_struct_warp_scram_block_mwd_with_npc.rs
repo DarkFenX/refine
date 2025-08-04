@@ -1,13 +1,16 @@
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp},
+    ec,
+    ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
+const E_EFFECT_ID: EEffectId = ec::effects::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
+const A_EFFECT_ID: AEffectId = ac::effects::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -23,43 +26,43 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut ad::AEffect) {
+fn update_effect(a_effect: &mut AEffect) {
     // Effect is expected to have some modifiers, so we're silently clearing them up
     a_effect.mods.clear();
     // Warp scrambling
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,
-        op: ad::AOp::Add,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
+        op: AOp::Add,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
         affectee_attr_id: ac::attrs::WARP_SCRAMBLE_STATUS,
     });
     // MWD blocker
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
-        op: ad::AOp::Add,
-        affectee_filter: ad::AEffectAffecteeFilter::LocSrq(
-            ad::AEffectLocation::Target,
-            ad::AModifierSrq::ItemId(ac::items::HIGH_SPEED_MANEUVERING),
+        op: AOp::Add,
+        affectee_filter: AEffectAffecteeFilter::LocSrq(
+            AEffectLocation::Target,
+            AModifierSrq::ItemId(ac::items::HIGH_SPEED_MANEUVERING),
         ),
         affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
     });
     // MJD/subcap MJFG blocker
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
-        op: ad::AOp::Add,
-        affectee_filter: ad::AEffectAffecteeFilter::LocSrq(
-            ad::AEffectLocation::Target,
-            ad::AModifierSrq::ItemId(ac::items::MICRO_JUMP_DRIVE_OPERATION),
+        op: AOp::Add,
+        affectee_filter: AEffectAffecteeFilter::LocSrq(
+            AEffectLocation::Target,
+            AModifierSrq::ItemId(ac::items::MICRO_JUMP_DRIVE_OPERATION),
         ),
         affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
     });
     // Capital MJFG blocker
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
-        op: ad::AOp::Add,
-        affectee_filter: ad::AEffectAffecteeFilter::LocSrq(
-            ad::AEffectLocation::Target,
-            ad::AModifierSrq::ItemId(ac::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
+        op: AOp::Add,
+        affectee_filter: AEffectAffecteeFilter::LocSrq(
+            AEffectLocation::Target,
+            AModifierSrq::ItemId(ac::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
         ),
         affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
     });

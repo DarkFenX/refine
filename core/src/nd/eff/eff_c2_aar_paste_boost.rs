@@ -1,7 +1,8 @@
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
-    ac, ad,
+    ac,
+    ad::{AAttrId, AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
     def::{AttrVal, OF},
     misc::EffectSpec,
     nd::{NEffect, NEffectHc},
@@ -16,8 +17,8 @@ use crate::{
     util::RMap,
 };
 
-const A_EFFECT_ID: ad::AEffectId = ac::effects::AAR_PASTE_BOOST;
-const AAR_MULTIPLIER: ad::AAttrId = ac::attrs::CHARGED_ARMOR_DMG_MULT;
+const A_EFFECT_ID: AEffectId = ac::effects::AAR_PASTE_BOOST;
+const AAR_MULTIPLIER: AAttrId = ac::attrs::CHARGED_ARMOR_DMG_MULT;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -34,23 +35,23 @@ pub(super) fn mk_n_effect() -> NEffect {
 }
 
 // ADG customizations
-fn make_effect() -> ad::AEffect {
-    ad::AEffect {
+fn make_effect() -> AEffect {
+    AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
-        state: ad::AState::Offline,
+        state: AState::Offline,
         ..
     }
 }
 
-fn assign_effect(a_items: &mut RMap<ad::AItemId, ad::AItem>) -> bool {
+fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items.values_mut().filter(|v| {
         v.effect_datas.contains_key(&ac::effects::FUELED_ARMOR_REPAIR)
             || v.effect_datas
                 .contains_key(&ac::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
     }) {
-        a_item.effect_datas.insert(A_EFFECT_ID, ad::AItemEffectData::default());
+        a_item.effect_datas.insert(A_EFFECT_ID, AItemEffectData::default());
         assigned = true;
     }
     assigned

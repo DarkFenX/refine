@@ -1,15 +1,21 @@
 use crate::{
-    ac, ad, ec,
+    ac,
+    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectId},
+    ec,
+    ed::EEffectId,
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
 };
 
+const E_EFFECT_ID: EEffectId = ec::effects::MOD_BONUS_WARFARE_LINK_SHIELD;
+const A_EFFECT_ID: AEffectId = ac::effects::MOD_BONUS_WARFARE_LINK_SHIELD;
+
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(ec::effects::MOD_BONUS_WARFARE_LINK_SHIELD),
-        aid: ac::effects::MOD_BONUS_WARFARE_LINK_SHIELD,
-        adg_buff_info: Some(ad::AEffectBuffInfo {
-            source: ad::AEffectBuffSrc::DefaultAttrs,
-            scope: ad::AEffectBuffScope::FleetShips,
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        adg_buff_info: Some(AEffectBuffInfo {
+            source: AEffectBuffSrc::DefaultAttrs,
+            scope: AEffectBuffScope::FleetShips,
         }),
         hc: NEffectHc {
             charge: Some(NEffectCharge {

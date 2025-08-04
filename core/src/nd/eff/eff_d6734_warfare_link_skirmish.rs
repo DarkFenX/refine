@@ -1,15 +1,21 @@
 use crate::{
-    ac, ad, ec,
+    ac,
+    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectId},
+    ec,
+    ed::EEffectId,
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
 };
 
+const E_EFFECT_ID: EEffectId = ec::effects::MOD_BONUS_WARFARE_LINK_SKIRMISH;
+const A_EFFECT_ID: AEffectId = ac::effects::MOD_BONUS_WARFARE_LINK_SKIRMISH;
+
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(ec::effects::MOD_BONUS_WARFARE_LINK_SKIRMISH),
-        aid: ac::effects::MOD_BONUS_WARFARE_LINK_SKIRMISH,
-        adg_buff_info: Some(ad::AEffectBuffInfo {
-            source: ad::AEffectBuffSrc::DefaultAttrs,
-            scope: ad::AEffectBuffScope::FleetShips,
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        adg_buff_info: Some(AEffectBuffInfo {
+            source: AEffectBuffSrc::DefaultAttrs,
+            scope: AEffectBuffScope::FleetShips,
         }),
         hc: NEffectHc {
             charge: Some(NEffectCharge {

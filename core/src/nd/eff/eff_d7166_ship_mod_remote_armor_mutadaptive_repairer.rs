@@ -1,13 +1,15 @@
 use crate::{
     ac,
+    ad::AEffectId,
     def::{AttrVal, OF},
     ec,
+    ed::EEffectId,
     misc::{ResolvedSpool, Spool},
     nd::{
         NEffect, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
-    rd,
+    rd::REffect,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -17,10 +19,13 @@ use crate::{
     ud::UItemKey,
 };
 
+const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
+const A_EFFECT_ID: AEffectId = ac::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
+
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(ec::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER),
-        aid: ac::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER,
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
             proj_mult_getter: Some(get_proj_mult_simple_s2s),
@@ -36,7 +41,7 @@ fn get_resolved_spool(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    r_effect: &rd::REffect,
+    r_effect: &REffect,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
     let duration_s = eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
@@ -54,7 +59,7 @@ fn get_spool_remote_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &rd::REffect,
+    projector_r_effect: &REffect,
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {

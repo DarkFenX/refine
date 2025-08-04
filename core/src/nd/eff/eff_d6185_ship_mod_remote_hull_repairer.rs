@@ -1,5 +1,8 @@
 use crate::{
-    ac, ec,
+    ac,
+    ad::AEffectId,
+    ec,
+    ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
         eff::shared::{
@@ -9,10 +12,13 @@ use crate::{
     },
 };
 
+const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_REMOTE_HULL_REPAIRER;
+const A_EFFECT_ID: AEffectId = ac::effects::SHIP_MOD_REMOTE_HULL_REPAIRER;
+
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(ec::effects::SHIP_MOD_REMOTE_HULL_REPAIRER),
-        aid: ac::effects::SHIP_MOD_REMOTE_HULL_REPAIRER,
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NEffectHc {
             proj_mult_getter: Some(get_proj_mult_normal_restricted_s2s),

@@ -1,13 +1,16 @@
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::AEffectId,
+    ec,
+    ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::TGT_DISINTEGRATOR_ATTACK;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::TGT_DISINTEGRATOR_ATTACK;
+const E_EFFECT_ID: EEffectId = ec::effects::TGT_DISINTEGRATOR_ATTACK;
+const A_EFFECT_ID: AEffectId = ac::effects::TGT_DISINTEGRATOR_ATTACK;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {

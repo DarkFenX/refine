@@ -1,11 +1,14 @@
 use crate::{
-    ac, ad,
+    ac,
+    ad::{
+        AEffect, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId, AItemId, AState,
+    },
     def::OF,
     nd::{NEffect, eff::shared::sov_stability_generators::assign_effect},
 };
 
-const A_ITEM_ID: ad::AItemId = ac::items::PLASMA_STABILITY_GENERATOR;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::STABILITY_GENERATOR_PLASMA;
+const A_ITEM_ID: AItemId = ac::items::PLASMA_STABILITY_GENERATOR;
+const A_EFFECT_ID: AEffectId = ac::effects::STABILITY_GENERATOR_PLASMA;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -17,18 +20,18 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn make_effect() -> ad::AEffect {
-    ad::AEffect {
+fn make_effect() -> AEffect {
+    AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
-        state: ad::AState::Active,
-        buff_info: Some(ad::AEffectBuffInfo {
-            source: ad::AEffectBuffSrc::Customized(vec![
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_ARMOR_HITPOINT_BONUS, OF(5.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_ARMOR_REPAIRER_BONUS, OF(5.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_MODULE_OVERHEAT_BONUS, OF(10.0)),
+        state: AState::Active,
+        buff_info: Some(AEffectBuffInfo {
+            source: AEffectBuffSrc::Customized(vec![
+                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_ARMOR_HITPOINT_BONUS, OF(5.0)),
+                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_ARMOR_REPAIRER_BONUS, OF(5.0)),
+                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_MODULE_OVERHEAT_BONUS, OF(10.0)),
             ]),
-            scope: ad::AEffectBuffScope::Ships,
+            scope: AEffectBuffScope::Ships,
         }),
         ..
     }

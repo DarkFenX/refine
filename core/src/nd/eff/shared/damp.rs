@@ -1,6 +1,9 @@
-use crate::{ac, ad};
+use crate::{
+    ac,
+    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+};
 
-pub(in crate::nd::eff) fn update_effect(a_effect_id: ad::AEffectId, a_effect: &mut ad::AEffect) {
+pub(in crate::nd::eff) fn update_effect(a_effect_id: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {a_effect_id}: damp effect has modifiers, overwriting them");
         a_effect.mods.clear();
@@ -16,11 +19,11 @@ pub(in crate::nd::eff) fn update_effect(a_effect_id: ad::AEffectId, a_effect: &m
     ));
 }
 
-fn make_damp_mod(affector_attr_id: ad::AAttrId, affectee_attr_id: ad::AAttrId) -> ad::AEffectModifier {
-    ad::AEffectModifier {
+fn make_damp_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+    AEffectModifier {
         affector_attr_id,
-        op: ad::AOp::PostPerc,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
+        op: AOp::PostPerc,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
         affectee_attr_id,
     }
 }

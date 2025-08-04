@@ -1,13 +1,16 @@
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ec,
+    ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_restricted_s2s},
     },
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::REMOTE_SENSOR_BOOST_FALLOFF;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::REMOTE_SENSOR_BOOST_FALLOFF;
+const E_EFFECT_ID: EEffectId = ec::effects::REMOTE_SENSOR_BOOST_FALLOFF;
+const A_EFFECT_ID: AEffectId = ac::effects::REMOTE_SENSOR_BOOST_FALLOFF;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -23,7 +26,7 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut ad::AEffect) {
+fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: RSB effect has modifiers, overwriting them");
         a_effect.mods.clear();
@@ -54,11 +57,11 @@ fn update_effect(a_effect: &mut ad::AEffect) {
     ));
 }
 
-fn make_rsb_mod(affector_attr_id: ad::AAttrId, affectee_attr_id: ad::AAttrId) -> ad::AEffectModifier {
-    ad::AEffectModifier {
+fn make_rsb_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+    AEffectModifier {
         affector_attr_id,
-        op: ad::AOp::PostPerc,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
+        op: AOp::PostPerc,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
         affectee_attr_id,
     }
 }

@@ -1,7 +1,8 @@
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
-    ac, ad,
+    ac,
+    ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModifier, AOp},
     def::{AttrVal, OF},
     misc::{AttrSpec, EffectSpec},
     nd::eff::shared::util::get_item_fit_ship_key,
@@ -15,26 +16,26 @@ use crate::{
     ud::UItemKey,
 };
 
-const SHIP_MASS: ad::AAttrId = ac::attrs::MASS;
-const SHIP_SPEED: ad::AAttrId = ac::attrs::MAX_VELOCITY;
-const PROP_THRUST: ad::AAttrId = ac::attrs::SPEED_BOOST_FACTOR;
-const PROP_BOOST: ad::AAttrId = ac::attrs::SPEED_FACTOR;
+const SHIP_MASS: AAttrId = ac::attrs::MASS;
+const SHIP_SPEED: AAttrId = ac::attrs::MAX_VELOCITY;
+const PROP_THRUST: AAttrId = ac::attrs::SPEED_BOOST_FACTOR;
+const PROP_BOOST: AAttrId = ac::attrs::SPEED_FACTOR;
 
 // ADG customizations
-pub(in crate::nd::eff) fn mk_a_modifier_mass() -> ad::AEffectModifier {
-    ad::AEffectModifier {
+pub(in crate::nd::eff) fn mk_a_modifier_mass() -> AEffectModifier {
+    AEffectModifier {
         affector_attr_id: ac::attrs::MASS_ADDITION,
-        op: ad::AOp::Add,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
+        op: AOp::Add,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: ac::attrs::MASS,
     }
 }
 
-pub(in crate::nd::eff) fn mk_a_modifier_sig() -> ad::AEffectModifier {
-    ad::AEffectModifier {
+pub(in crate::nd::eff) fn mk_a_modifier_sig() -> AEffectModifier {
+    AEffectModifier {
         affector_attr_id: ac::attrs::SIG_RADIUS_BONUS,
-        op: ad::AOp::PostPerc,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
+        op: AOp::PostPerc,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: ac::attrs::SIG_RADIUS,
     }
 }

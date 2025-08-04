@@ -13,12 +13,15 @@
 // Script effects are defined in other files.
 
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ec,
+    ed::EEffectId,
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::WARP_DISRUPT_SPHERE;
+const E_EFFECT_ID: EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
+const A_EFFECT_ID: AEffectId = ac::effects::WARP_DISRUPT_SPHERE;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -36,37 +39,37 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut ad::AEffect) {
+fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: WDFG bubble effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
     // Signature radius
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::SIG_RADIUS_BONUS,
-        op: ad::AOp::PostPerc,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
+        op: AOp::PostPerc,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: ac::attrs::SIG_RADIUS,
     });
     // Disallow assistance
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
-        op: ad::AOp::PostAssign,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
+        op: AOp::PostAssign,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
     });
     // Transfer warp core scram strength to script
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,
-        op: ad::AOp::PreAssign,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Other),
+        op: AOp::PreAssign,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
         affectee_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,
     });
     // Transfer activation block strength to script
-    a_effect.mods.push(ad::AEffectModifier {
+    a_effect.mods.push(AEffectModifier {
         affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
-        op: ad::AOp::PreAssign,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Other),
+        op: AOp::PreAssign,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
         affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
     });
 }

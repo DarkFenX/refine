@@ -1,12 +1,18 @@
 use crate::{
-    ac, ec,
+    ac,
+    ad::AEffectId,
+    ec,
+    ed::EEffectId,
     nd::{NEffect, NEffectHc, eff::shared::opc_rep::get_local_armor_rep_opc},
 };
 
+const E_EFFECT_ID: EEffectId = ec::effects::ARMOR_REPAIR;
+const A_EFFECT_ID: AEffectId = ac::effects::ARMOR_REPAIR;
+
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(ec::effects::ARMOR_REPAIR),
-        aid: ac::effects::ARMOR_REPAIR,
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
         hc: NEffectHc {
             local_armor_rep_opc_getter: Some(get_local_armor_rep_opc),
             ..

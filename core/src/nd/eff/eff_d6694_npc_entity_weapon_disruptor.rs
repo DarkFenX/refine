@@ -1,5 +1,8 @@
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::AEffectId,
+    ec,
+    ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
         eff::shared::{
@@ -9,8 +12,8 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::NPC_ENTITY_WEAPON_DISRUPTOR;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::NPC_ENTITY_WEAPON_DISRUPTOR;
+const E_EFFECT_ID: EEffectId = ec::effects::NPC_ENTITY_WEAPON_DISRUPTOR;
+const A_EFFECT_ID: AEffectId = ac::effects::NPC_ENTITY_WEAPON_DISRUPTOR;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {

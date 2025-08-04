@@ -1,5 +1,8 @@
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::AEffectId,
+    ec,
+    ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
         eff::shared::{
@@ -9,8 +12,8 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::REMOTE_SENSOR_DAMP_ENTITY;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::REMOTE_SENSOR_DAMP_ENTITY;
+const E_EFFECT_ID: EEffectId = ec::effects::REMOTE_SENSOR_DAMP_ENTITY;
+const A_EFFECT_ID: AEffectId = ac::effects::REMOTE_SENSOR_DAMP_ENTITY;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {

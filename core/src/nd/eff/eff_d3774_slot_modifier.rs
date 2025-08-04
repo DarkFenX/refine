@@ -1,10 +1,13 @@
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::{AEffect, AEffectId},
+    ec,
+    ed::EEffectId,
     nd::{NEffect, eff::shared::subsystem_mods::make_modifier},
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::SLOT_MODIFIER;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::SLOT_MODIFIER;
+const E_EFFECT_ID: EEffectId = ec::effects::SLOT_MODIFIER;
+const A_EFFECT_ID: AEffectId = ac::effects::SLOT_MODIFIER;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -15,7 +18,7 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut ad::AEffect) {
+fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: slot modifier effect has modifiers, overwriting them");
         a_effect.mods.clear();

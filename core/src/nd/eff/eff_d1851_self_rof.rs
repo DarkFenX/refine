@@ -1,7 +1,13 @@
-use crate::{ac, ad, ec, ed, nd::NEffect};
+use crate::{
+    ac,
+    ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp},
+    ec,
+    ed::EEffectId,
+    nd::NEffect,
+};
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::SELF_ROF;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::SELF_ROF;
+const E_EFFECT_ID: EEffectId = ec::effects::SELF_ROF;
+const A_EFFECT_ID: AEffectId = ac::effects::SELF_ROF;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -12,15 +18,15 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut ad::AEffect) {
+fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: self-skillreq missile rof effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    let modifier = ad::AEffectModifier {
+    let modifier = AEffectModifier {
         affector_attr_id: ac::attrs::ROF_BONUS,
-        op: ad::AOp::PostPerc,
-        affectee_filter: ad::AEffectAffecteeFilter::LocSrq(ad::AEffectLocation::Ship, ad::AModifierSrq::SelfRef),
+        op: AOp::PostPerc,
+        affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Ship, AModifierSrq::SelfRef),
         affectee_attr_id: ac::attrs::SPEED,
     };
     a_effect.mods.push(modifier);

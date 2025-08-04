@@ -1,13 +1,10 @@
-use crate::ad;
+use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModifier, AOp};
 
-pub(in crate::nd::eff) fn make_modifier(
-    src_attr_id: ad::AAttrId,
-    affectee_attr_id: ad::AAttrId,
-) -> ad::AEffectModifier {
-    ad::AEffectModifier {
+pub(in crate::nd::eff) fn make_modifier(src_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+    AEffectModifier {
         affector_attr_id: src_attr_id,
-        op: ad::AOp::Add,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
+        op: AOp::Add,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id,
     }
 }

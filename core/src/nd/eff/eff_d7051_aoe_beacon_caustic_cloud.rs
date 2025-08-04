@@ -1,13 +1,23 @@
-use crate::{ac, ad, ec, nd::NEffect};
+// Abyssal red cloud
+
+use crate::{
+    ac,
+    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectId},
+    ec,
+    ed::EEffectId,
+    nd::NEffect,
+};
+
+const E_EFFECT_ID: EEffectId = ec::effects::AOE_BEACON_CAUSTIC_CLOUD;
+const A_EFFECT_ID: AEffectId = ac::effects::AOE_BEACON_CAUSTIC_CLOUD;
 
 pub(super) fn mk_n_effect() -> NEffect {
-    // Abyssal red cloud
     NEffect {
-        eid: Some(ec::effects::AOE_BEACON_CAUSTIC_CLOUD),
-        aid: ac::effects::AOE_BEACON_CAUSTIC_CLOUD,
-        adg_buff_info: Some(ad::AEffectBuffInfo {
-            source: ad::AEffectBuffSrc::DefaultAttrs,
-            scope: ad::AEffectBuffScope::Everything,
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        adg_buff_info: Some(AEffectBuffInfo {
+            source: AEffectBuffSrc::DefaultAttrs,
+            scope: AEffectBuffScope::Everything,
         }),
         ..
     }

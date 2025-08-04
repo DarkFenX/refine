@@ -1,7 +1,13 @@
-use crate::{ac, ad, ec, ed, nd::NEffect};
+use crate::{
+    ac,
+    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ec,
+    ed::EEffectId,
+    nd::NEffect,
+};
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::ADAPTIVE_ARMOR_HARDENER;
+const E_EFFECT_ID: EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
+const A_EFFECT_ID: AEffectId = ac::effects::ADAPTIVE_ARMOR_HARDENER;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -12,7 +18,7 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut ad::AEffect) {
+fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: RAH effect has modifiers, overwriting them");
         a_effect.mods.clear();
@@ -31,11 +37,11 @@ fn update_effect(a_effect: &mut ad::AEffect) {
         .push(mk_rah_resonance_mod(ac::attrs::ARMOR_EXPL_DMG_RESONANCE));
 }
 
-fn mk_rah_resonance_mod(attr_id: ad::AAttrId) -> ad::AEffectModifier {
-    ad::AEffectModifier {
+fn mk_rah_resonance_mod(attr_id: AAttrId) -> AEffectModifier {
+    AEffectModifier {
         affector_attr_id: attr_id,
-        op: ad::AOp::PreMul,
-        affectee_filter: ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
+        op: AOp::PreMul,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: attr_id,
     }
 }

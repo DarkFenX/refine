@@ -1,7 +1,9 @@
 use crate::{
-    ac, ad,
+    ac,
+    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId},
     def::{AttrVal, Count, OF},
     ec,
+    ed::EEffectId,
     misc::{DmgKinds, Spool},
     nd::{
         NEffect, NEffectHc,
@@ -17,19 +19,22 @@ use crate::{
     util::floor_unerr,
 };
 
+const E_EFFECT_ID: EEffectId = ec::effects::DEBUFF_LANCE;
+const A_EFFECT_ID: AEffectId = ac::effects::DEBUFF_LANCE;
+
 pub(super) fn mk_n_effect() -> NEffect {
     // Dreadnought lance
     NEffect {
-        eid: Some(ec::effects::DEBUFF_LANCE),
-        aid: ac::effects::DEBUFF_LANCE,
-        adg_buff_info: Some(ad::AEffectBuffInfo {
-            source: ad::AEffectBuffSrc::Customized(vec![
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::REMOTE_REPAIR_IMPEDANCE, OF(-50.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::WARP_PENALTY, OF(100.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_DOCK_JUMP, OF(1.0)),
-                ad::AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_TETHER, OF(1.0)),
+        eid: Some(E_EFFECT_ID),
+        aid: A_EFFECT_ID,
+        adg_buff_info: Some(AEffectBuffInfo {
+            source: AEffectBuffSrc::Customized(vec![
+                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::REMOTE_REPAIR_IMPEDANCE, OF(-50.0)),
+                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::WARP_PENALTY, OF(100.0)),
+                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_DOCK_JUMP, OF(1.0)),
+                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_TETHER, OF(1.0)),
             ]),
-            scope: ad::AEffectBuffScope::Everything,
+            scope: AEffectBuffScope::Everything,
         }),
         // TODO: test if it uses surface-to-surface range (might use center-to-surface), and check
         // TODO: if damage radius is needed to be added to range or not

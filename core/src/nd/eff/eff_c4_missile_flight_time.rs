@@ -1,7 +1,8 @@
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
-    ac, ad,
+    ac,
+    ad::{AAttrId, AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
     def::{AttrVal, OF},
     misc::EffectSpec,
     nd::{NEffect, NEffectHc, eff::shared::util::get_item_fit_ship_key},
@@ -16,10 +17,10 @@ use crate::{
     util::RMap,
 };
 
-const A_EFFECT_ID: ad::AEffectId = ac::effects::MISSILE_FLIGHT_TIME;
-const SHIP_RADIUS: ad::AAttrId = ac::attrs::RADIUS;
-const MISSILE_VELOCITY: ad::AAttrId = ac::attrs::MAX_VELOCITY;
-const MISSILE_FLIGHT_TIME: ad::AAttrId = ac::attrs::EXPLOSION_DELAY;
+const A_EFFECT_ID: AEffectId = ac::effects::MISSILE_FLIGHT_TIME;
+const SHIP_RADIUS: AAttrId = ac::attrs::RADIUS;
+const MISSILE_VELOCITY: AAttrId = ac::attrs::MAX_VELOCITY;
+const MISSILE_FLIGHT_TIME: AAttrId = ac::attrs::EXPLOSION_DELAY;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -36,16 +37,16 @@ pub(super) fn mk_n_effect() -> NEffect {
 }
 
 // ADG customizations
-fn make_effect() -> ad::AEffect {
-    ad::AEffect {
+fn make_effect() -> AEffect {
+    AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
-        state: ad::AState::Offline,
+        state: AState::Offline,
         ..
     }
 }
 
-fn assign_effect(a_items: &mut RMap<ad::AItemId, ad::AItem>) -> bool {
+fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for item in a_items.values_mut().filter(|v| {
         v.effect_datas.contains_key(&ac::effects::MISSILE_LAUNCHING)
@@ -53,7 +54,7 @@ fn assign_effect(a_items: &mut RMap<ad::AItemId, ad::AItem>) -> bool {
             || v.effect_datas.contains_key(&ac::effects::FOF_MISSILE_LAUNCHING)
             || v.effect_datas.contains_key(&ac::effects::DOT_MISSILE_LAUNCHING)
     }) {
-        item.effect_datas.insert(A_EFFECT_ID, ad::AItemEffectData::default());
+        item.effect_datas.insert(A_EFFECT_ID, AItemEffectData::default());
         assigned = true;
     }
     assigned

@@ -1,10 +1,13 @@
 use crate::{
-    ac, ad, ec, ed,
+    ac,
+    ad::AEffectId,
+    ec,
+    ed::EEffectId,
     nd::{NEffect, eff::shared::missile_dmg_self_srq::update_effect},
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::MISSILE_EXPL_DMG_BONUS;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::MISSILE_EXPL_DMG_BONUS;
+const E_EFFECT_ID: EEffectId = ec::effects::MISSILE_EXPL_DMG_BONUS;
+const A_EFFECT_ID: AEffectId = ac::effects::MISSILE_EXPL_DMG_BONUS;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
