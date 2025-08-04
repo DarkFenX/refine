@@ -106,13 +106,11 @@ fn fill_module_effect_info(
             },
             // targetAttack effect has 2 distinct options for modules:
             // - lasers: regular crystal cycle getter
-            // - civilian guns: infinite cycles with autocharge loaded into them
-            // Here, we rely on autocharge ID being present to see a difference between those
-            NEffectChargeLoc::TargetAttack(_) => match module.has_tgt_attack_autocharge() {
-                // Use autocharge if there's one defined on the module
-                true => get_autocharge_cycle_count(item, effect),
-                // If autocharge is not defined, charge is needed for the effect to work
-                false => get_crystal_cycle_count(ctx, module, false, options.reload_optionals),
+            // - civilian guns: infinite cycles
+            // Here, we rely on module capacity to differentiate between those
+            NEffectChargeLoc::TargetAttack(_) => match module.get_axt().unwrap().capacity > OF(0.0) {
+                true => get_crystal_cycle_count(ctx, module, false, options.reload_optionals),
+                false => InfCount::Infinite,
             },
         },
         None => InfCount::Infinite,

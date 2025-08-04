@@ -94,9 +94,6 @@ impl UModule {
     pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
         self.base.takes_launcher_hardpoint()
     }
-    pub(crate) fn has_tgt_attack_autocharge(&self) -> bool {
-        self.base.has_tgt_attack_autocharge()
-    }
     pub(crate) fn get_state(&self) -> AState {
         self.base.get_state()
     }

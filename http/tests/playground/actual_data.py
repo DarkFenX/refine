@@ -228,13 +228,13 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
             rack=consts.ApiRack.high,
             state=consts.ApiModuleState.overload,
             charge_type_id=12779)
-    # T2 torpedo launchers with thermal rages
+    # T2 torpedo launchers with EM rages
     for _ in range(4):
         api_fit.add_module(
             type_id=2420,
             rack=consts.ApiRack.high,
             state=consts.ApiModuleState.overload,
-            charge_type_id=2811)
+            charge_type_id=24523)
     api_fit.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
     # T2 med cap booster with navy 800
     api_fit.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
@@ -259,8 +259,9 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
     for _ in range(3):
         api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
 
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     print(api_fit_stats.dps)  # noqa: T201
+    print(api_fit_stats.volley)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001

@@ -172,9 +172,6 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn takes_launcher_hardpoint(&self) -> bool {
         self.base.takes_launcher_hardpoint()
     }
-    pub(in crate::ud::item) fn has_tgt_attack_autocharge(&self) -> bool {
-        self.base.has_tgt_attack_autocharge()
-    }
     // Misc methods
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
