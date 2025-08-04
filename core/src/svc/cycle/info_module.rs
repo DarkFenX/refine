@@ -83,7 +83,7 @@ fn fill_module_effect_info(
     options: CycleOptions,
 ) {
     let effect = ctx.u_data.src.get_effect(effect_key);
-    if !effect.is_active() {
+    if !effect.is_active_with_duration() {
         return;
     }
     // No appropriate duration - no info

@@ -41,7 +41,7 @@ fn fill_drone_effect_info(
     effect_key: REffectKey,
 ) {
     let effect = ctx.u_data.src.get_effect(effect_key);
-    if !effect.is_active() {
+    if !effect.is_active_with_duration() {
         return;
     }
     let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {

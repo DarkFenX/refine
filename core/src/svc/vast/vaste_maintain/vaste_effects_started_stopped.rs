@@ -7,28 +7,40 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn effects_started(&mut self, item_key: UItemKey, item: &UItem, effects: &[RcEffect]) {
         match item {
-            UItem::Drone(drone) => {
+            UItem::Autocharge(autocharge) => {
                 for effect in effects {
                     if effect.is_active() {
+                        self.handle_dmg_start(effect, item_key, &autocharge.get_fit_key());
+                    }
+                }
+            }
+            UItem::Charge(charge) => {
+                for effect in effects {
+                    if effect.is_active() {
+                        self.handle_dmg_start(effect, item_key, &charge.get_fit_key());
+                    }
+                }
+            }
+            UItem::Drone(drone) => {
+                for effect in effects {
+                    if effect.is_active_with_duration() {
+                        self.handle_dmg_start(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &drone.get_fit_key());
                     }
                 }
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
-                    if effect.is_active() {
+                    if effect.is_active_with_duration() {
+                        self.handle_dmg_start(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &fighter.get_fit_key());
                     }
                 }
             }
             UItem::Module(module) => {
                 for effect in effects {
-                    if effect.is_active() {
-                        // Damaging effects
-                        if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter() {
-                            let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.dmg_normal.add_entry(item_key, effect.get_key(), dmg_getter);
-                        }
+                    if effect.is_active_with_duration() {
+                        self.handle_dmg_start(effect, item_key, &module.get_fit_key());
                         // Local reps
                         if let Some(rep_getter) = effect.get_local_shield_rep_opc_getter() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
@@ -62,28 +74,40 @@ impl Vast {
     }
     pub(in crate::svc) fn effects_stopped(&mut self, item_key: UItemKey, item: &UItem, effects: &[RcEffect]) {
         match item {
-            UItem::Drone(drone) => {
+            UItem::Autocharge(autocharge) => {
                 for effect in effects {
                     if effect.is_active() {
+                        self.handle_dmg_stop(effect, item_key, &autocharge.get_fit_key());
+                    }
+                }
+            }
+            UItem::Charge(charge) => {
+                for effect in effects {
+                    if effect.is_active() {
+                        self.handle_dmg_stop(effect, item_key, &charge.get_fit_key());
+                    }
+                }
+            }
+            UItem::Drone(drone) => {
+                for effect in effects {
+                    if effect.is_active_with_duration() {
+                        self.handle_dmg_stop(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &drone.get_fit_key());
                     }
                 }
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
-                    if effect.is_active() {
+                    if effect.is_active_with_duration() {
+                        self.handle_dmg_stop(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &fighter.get_fit_key());
                     }
                 }
             }
             UItem::Module(module) => {
                 for effect in effects {
-                    if effect.is_active() {
-                        // Damaging effects
-                        if effect.get_normal_dmg_opc_getter().is_some() {
-                            let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.dmg_normal.remove_l2(&item_key, &effect.get_key());
-                        }
+                    if effect.is_active_with_duration() {
+                        self.handle_dmg_stop(effect, item_key, &module.get_fit_key());
                         // Local reps
                         if effect.get_local_shield_rep_opc_getter().is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
@@ -109,6 +133,18 @@ impl Vast {
                 }
             }
             _ => (),
+        }
+    }
+    fn handle_dmg_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.dmg_normal.add_entry(item_key, effect.get_key(), dmg_getter);
+        }
+    }
+    fn handle_dmg_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if effect.get_normal_dmg_opc_getter().is_some() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.dmg_normal.remove_l2(&item_key, &effect.get_key());
         }
     }
     fn handle_orrs_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {

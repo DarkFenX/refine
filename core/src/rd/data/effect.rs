@@ -18,7 +18,7 @@ pub(crate) struct REffect {
     a_effect: AEffect,
     n_effect_hc: NEffectHc,
     // Extra data extracted from adapted effect and hardcoded data
-    is_active: bool,
+    is_active_with_duration: bool,
     proj_a_attr_ids: [Option<AAttrId>; 2],
     // Fields which need slab keys to be filled
     stopped_effect_keys: Vec<REffectKey>,
@@ -26,7 +26,7 @@ pub(crate) struct REffect {
 impl REffect {
     pub(in crate::rd) fn new(effect_key: REffectKey, a_effect: AEffect) -> Self {
         let n_effect = N_EFFECT_MAP.get(&a_effect.id);
-        let is_active_flag = a_effect.state == AState::Active && a_effect.duration_attr_id.is_some();
+        let is_active_with_duration = a_effect.state == AState::Active && a_effect.duration_attr_id.is_some();
         let proj_a_attr_ids = n_effect
             .and_then(|v| v.xt_get_proj_attrs)
             .map(|get_proj_attrs| get_proj_attrs(&a_effect))
@@ -35,7 +35,7 @@ impl REffect {
             effect_key,
             a_effect,
             n_effect_hc: n_effect.map(|n_effect| n_effect.hc).unwrap_or_default(),
-            is_active: is_active_flag,
+            is_active_with_duration,
             proj_a_attr_ids,
             stopped_effect_keys: Vec::new(),
         }
@@ -142,7 +142,10 @@ impl REffect {
         self.effect_key
     }
     pub(crate) fn is_active(&self) -> bool {
-        self.is_active
+        self.a_effect.state == AState::Active
+    }
+    pub(crate) fn is_active_with_duration(&self) -> bool {
+        self.is_active_with_duration
     }
     pub(crate) fn get_proj_a_attr_ids(&self) -> [Option<AAttrId>; 2] {
         self.proj_a_attr_ids
