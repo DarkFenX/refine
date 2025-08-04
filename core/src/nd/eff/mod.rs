@@ -83,6 +83,7 @@ mod eff_d7061_weather_electric_storm;
 mod eff_d7062_weather_infernal;
 mod eff_d7063_weather_xenon_gas;
 mod eff_d7166_ship_mod_remote_armor_mutadaptive_repairer;
+mod eff_d9_missile_launching;
 mod shared;
 
 pub(crate) static N_EFFECTS: LazyLock<Vec<NEffect>> = LazyLock::new(get_n_effects);
@@ -99,6 +100,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_c7_stability_generator_exotic::mk_n_effect(),
         eff_c8_stability_generator_gamma::mk_n_effect(),
         eff_d4_shield_boosting::mk_n_effect(),
+        eff_d9_missile_launching::mk_n_effect(),
         eff_d10_tgt_attack::mk_n_effect(),
         eff_d26_structure_repair::mk_n_effect(),
         eff_d27_armor_repair::mk_n_effect(),

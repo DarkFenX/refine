@@ -1,13 +1,15 @@
 use crate::{
-    AttrVal, ac, ad,
-    def::OF,
-    ec, ed,
+    ac,
+    ad::AEffectId,
+    def::{AttrVal, OF},
+    ec,
+    ed::EEffectId,
     misc::{DmgKinds, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_unrestricted_s2s},
     },
-    rd,
+    rd::REffect,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -16,8 +18,8 @@ use crate::{
     ud::UItemKey,
 };
 
-const E_EFFECT_ID: ed::EEffectId = ec::effects::PROJECTILE_FIRED;
-const A_EFFECT_ID: ad::AEffectId = ac::effects::PROJECTILE_FIRED;
+const E_EFFECT_ID: EEffectId = ec::effects::PROJECTILE_FIRED;
+const A_EFFECT_ID: AEffectId = ac::effects::PROJECTILE_FIRED;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -43,7 +45,7 @@ fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    _projector_r_effect: &rd::REffect,
+    _projector_r_effect: &REffect,
     _spool: Option<Spool>,
     _projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
