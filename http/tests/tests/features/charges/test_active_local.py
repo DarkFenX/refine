@@ -244,3 +244,29 @@ def test_switch_src(client, consts):
     api_sol.change_src(data=eve_d1)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+
+
+def test_non_activating(client, consts):
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.not_activates_charge, cat_id=consts.EveEffCat.active)
+    eve_charge_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affectee_attr_id: 100}, eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    # Verification
+    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)

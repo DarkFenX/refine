@@ -599,3 +599,4 @@ class UtilEffect(IntEnum):
     cycle_none = EveEffect.warp_disrupt_sphere
     activates_charge = EveEffect.use_missiles
     activates_autocharge = EveEffect.ftr_abil_launch_bomb
+    not_activates_charge = EveEffect.projectile_fired
