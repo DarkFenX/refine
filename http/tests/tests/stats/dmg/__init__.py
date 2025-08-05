@@ -24,6 +24,10 @@ class DmgBasicInfo:
     charge_rate_attr_id: int
     cycle_time_attr_id: int
     reload_time_attr_id: int
+    crystal_get_dmg_attr_id: int
+    crystal_volatility_chance_attr_id: int
+    crystal_volatility_dmg_attr_id: int
+    crystal_hp_attr_id: int
     turret_proj_effect_id: int
     tgt_attack_effect_id: int
     dd_lance_debuff_effect_id: int
@@ -48,6 +52,10 @@ def setup_dmg_basics(
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_reload_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
+    eve_crystal_get_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
+    eve_crystal_volatility_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_chance)
+    eve_crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
+    eve_crystal_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
@@ -76,6 +84,10 @@ def setup_dmg_basics(
         capacity_attr_id=eve_capacity_attr_id,
         charge_rate_attr_id=eve_charge_rate_attr_id,
         reload_time_attr_id=eve_reload_time_attr_id,
+        crystal_get_dmg_attr_id=eve_crystal_get_dmg_attr_id,
+        crystal_volatility_chance_attr_id=eve_crystal_volatility_chance_attr_id,
+        crystal_volatility_dmg_attr_id=eve_crystal_volatility_dmg_attr_id,
+        crystal_hp_attr_id=eve_crystal_hp_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
@@ -117,6 +129,53 @@ def make_eve_turret_proj_charge(
             basic_info.dmg_expl_attr_id)
         attrs.update({k: v for k, v in zip(dmg_attr_ids, dmgs, strict=True) if v is not None})
     conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    return client.mk_eve_item(attrs=attrs)
+
+
+def make_eve_turret_laser(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmg_mult: float | None = None,
+        cycle_time: float | None = None,
+        capacity: float | None = None,
+        reload_time: float | None = None,
+) -> int:
+    attrs = {}
+    conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.tgt_attack_effect_id],
+        defeff_id=basic_info.tgt_attack_effect_id)
+
+
+def make_eve_turret_laser_charge(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        volume: float | None = None,
+        get_damaged: float | None = None,
+        hp: float | None = None,
+        vol_dmg: float | None = None,
+        vol_chance: float | None = None,
+) -> int:
+    attrs = {}
+    if dmgs is not None:
+        dmg_attr_ids = (
+            basic_info.dmg_em_attr_id,
+            basic_info.dmg_therm_attr_id,
+            basic_info.dmg_kin_attr_id,
+            basic_info.dmg_expl_attr_id)
+        attrs.update({k: v for k, v in zip(dmg_attr_ids, dmgs, strict=True) if v is not None})
+    conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    conditional_insert(attrs=attrs, attr_id=basic_info.crystal_get_dmg_attr_id, value=get_damaged)
+    conditional_insert(attrs=attrs, attr_id=basic_info.crystal_hp_attr_id, value=hp)
+    conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_dmg_attr_id, value=vol_dmg)
+    conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_chance_attr_id, value=vol_chance)
     return client.mk_eve_item(attrs=attrs)
 
 
