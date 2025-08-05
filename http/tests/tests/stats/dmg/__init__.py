@@ -31,6 +31,8 @@ class DmgBasicInfo:
     ammo_loaded_attr_id: int
     turret_proj_effect_id: int
     tgt_attack_effect_id: int
+    launcher_effect_id: int
+    missile_effect_id: int
     dd_lance_debuff_effect_id: int
 
 
@@ -66,12 +68,22 @@ def setup_dmg_basics(
         id_=consts.EveEffect.tgt_attack,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_launcher_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.use_missiles,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     # Ensure effects are not cleaned up
-    client.mk_eve_item(eff_ids=[eve_turret_proj_effect_id, eve_tgt_attack_effect_id, eve_dd_lance_debuff_effect_id])
+    client.mk_eve_item(eff_ids=[
+        eve_turret_proj_effect_id,
+        eve_tgt_attack_effect_id,
+        eve_launcher_effect_id,
+        eve_missile_effect_id,
+        eve_dd_lance_debuff_effect_id])
     return DmgBasicInfo(
         dmg_em_attr_id=eve_dmg_em_attr_id,
         dmg_therm_attr_id=eve_dmg_therm_attr_id,
@@ -93,6 +105,8 @@ def setup_dmg_basics(
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
+        launcher_effect_id=eve_launcher_effect_id,
+        missile_effect_id=eve_missile_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
 
 
@@ -192,6 +206,40 @@ def make_eve_turret_charge_crystal(
     _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_dmg_attr_id, value=vol_dmg)
     _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_chance_attr_id, value=vol_chance)
     return client.mk_eve_item(attrs=attrs)
+
+
+def make_eve_launcher(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        cycle_time: float | None = None,
+        capacity: float | None = None,
+        reload_time: float | None = None,
+) -> int:
+    attrs = {basic_info.charge_rate_attr_id: 1.0}
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.launcher_effect_id],
+        defeff_id=basic_info.launcher_effect_id)
+
+
+def make_eve_missile(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        volume: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.missile_effect_id],
+        defeff_id=basic_info.missile_effect_id)
 
 
 def make_eve_drone(
