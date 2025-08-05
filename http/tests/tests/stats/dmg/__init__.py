@@ -36,6 +36,7 @@ class DmgBasicInfo:
     tgt_attack_effect_id: int
     launcher_effect_id: int
     missile_effect_id: int
+    smartbomb_effect_id: int
     dd_lance_debuff_effect_id: int
 
 
@@ -82,6 +83,10 @@ def setup_dmg_basics(
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
+    eve_smartbomb_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.emp_wave,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
@@ -93,6 +98,7 @@ def setup_dmg_basics(
         eve_tgt_attack_effect_id,
         eve_launcher_effect_id,
         eve_missile_effect_id,
+        eve_smartbomb_effect_id,
         eve_dd_lance_debuff_effect_id])
     return DmgBasicInfo(
         dmg_em_attr_id=eve_dmg_em_attr_id,
@@ -120,6 +126,7 @@ def setup_dmg_basics(
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
         launcher_effect_id=eve_launcher_effect_id,
         missile_effect_id=eve_missile_effect_id,
+        smartbomb_effect_id=eve_smartbomb_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
 
 
@@ -295,6 +302,22 @@ def make_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
         defeff_id=basic_info.tgt_attack_effect_id)
+
+
+def make_eve_smartbomb(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        cycle_time: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.smartbomb_effect_id],
+        defeff_id=basic_info.smartbomb_effect_id)
 
 
 def make_eve_dd_lance_debuff(

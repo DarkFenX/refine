@@ -73,6 +73,7 @@ class EveEffect(IntEnum):
     structure_repair = 26
     armor_repair = 27
     projectile_fired = 34
+    emp_wave = 38
     launcher_fitted = 40
     turret_fitted = 42
     use_missiles = 101

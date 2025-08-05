@@ -10,6 +10,7 @@ pub(crate) const ONLINE: EEffectId = 16;
 pub(crate) const STRUCTURE_REPAIR: EEffectId = 26;
 pub(crate) const ARMOR_REPAIR: EEffectId = 27;
 pub(crate) const PROJECTILE_FIRED: EEffectId = 34;
+pub(crate) const EMP_WAVE: EEffectId = 38;
 pub(crate) const LAUNCHER_FITTED: EEffectId = 40;
 pub(crate) const TURRET_FITTED: EEffectId = 42;
 pub(crate) const MINING_LASER: EEffectId = 67;

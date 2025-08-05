@@ -13,6 +13,7 @@ pub(crate) const ONLINE: AEffectId = AEffectId::Dogma(ece::ONLINE);
 pub(crate) const STRUCTURE_REPAIR: AEffectId = AEffectId::Dogma(ece::STRUCTURE_REPAIR);
 pub(crate) const ARMOR_REPAIR: AEffectId = AEffectId::Dogma(ece::ARMOR_REPAIR);
 pub(crate) const PROJECTILE_FIRED: AEffectId = AEffectId::Dogma(ece::PROJECTILE_FIRED);
+pub(crate) const EMP_WAVE: AEffectId = AEffectId::Dogma(ece::EMP_WAVE);
 pub(crate) const LAUNCHER_FITTED: AEffectId = AEffectId::Dogma(ece::LAUNCHER_FITTED);
 pub(crate) const TURRET_FITTED: AEffectId = AEffectId::Dogma(ece::TURRET_FITTED);
 pub(crate) const MINING_LASER: AEffectId = AEffectId::Dogma(ece::MINING_LASER);

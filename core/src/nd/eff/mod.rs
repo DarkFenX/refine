@@ -28,6 +28,7 @@ mod eff_d3380_warp_disrupt_sphere;
 mod eff_d34_projectile_fired;
 mod eff_d3773_hardpoint_modifier_effect;
 mod eff_d3774_slot_modifier;
+mod eff_d38_emp_wave;
 mod eff_d4928_adaptive_armor_hardener;
 mod eff_d4936_fueled_shield_boosting;
 mod eff_d4_shield_boosting;
@@ -105,6 +106,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d26_structure_repair::mk_n_effect(),
         eff_d27_armor_repair::mk_n_effect(),
         eff_d34_projectile_fired::mk_n_effect(),
+        eff_d38_emp_wave::mk_n_effect(),
         eff_d67_mining_laser::mk_n_effect(),
         eff_d101_use_missiles::mk_n_effect(),
         eff_d660_missile_em_dmg_bonus::mk_n_effect(),
