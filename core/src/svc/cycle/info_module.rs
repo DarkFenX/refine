@@ -1,3 +1,5 @@
+use either::Either;
+
 use super::{
     info::{Cycle, CycleInner, CycleReload1, CycleReload2, CycleSimple},
     info_shared::{CycleOptionReload, CycleOptions, SelfKillerInfo},
@@ -27,37 +29,22 @@ pub(super) fn get_module_cycle_info(
     };
     let mut cycle_infos = RMap::new();
     let mut self_killers = Vec::new();
-    match ignore_state {
-        true => {
-            for &effect_key in module.get_effect_datas().unwrap().keys() {
-                fill_module_effect_info(
-                    &mut cycle_infos,
-                    &mut self_killers,
-                    ctx,
-                    calc,
-                    item_key,
-                    item,
-                    module,
-                    effect_key,
-                    options,
-                );
-            }
-        }
-        false => {
-            for &effect_key in module.get_reffs().unwrap().iter() {
-                fill_module_effect_info(
-                    &mut cycle_infos,
-                    &mut self_killers,
-                    ctx,
-                    calc,
-                    item_key,
-                    item,
-                    module,
-                    effect_key,
-                    options,
-                );
-            }
-        }
+    let effect_keys = match ignore_state {
+        true => Either::Left(module.get_effect_datas().unwrap().keys().copied()),
+        false => Either::Right(module.get_reffs().unwrap().iter().copied()),
+    };
+    for effect_key in effect_keys {
+        fill_module_effect_info(
+            &mut cycle_infos,
+            &mut self_killers,
+            ctx,
+            calc,
+            item_key,
+            item,
+            module,
+            effect_key,
+            options,
+        );
     }
     // If there are any self-killer effects, choose the fastest one, and discard all other effects
     if !self_killers.is_empty() {

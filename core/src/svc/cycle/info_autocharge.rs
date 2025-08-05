@@ -1,3 +1,5 @@
+use either::Either;
+
 use super::{
     info::{Cycle, get_item_cycle_info},
     info_shared::CycleOptions,
@@ -24,21 +26,13 @@ pub(super) fn get_autocharge_cycle_info(
     // If effect controlling the autocharge doesn't cycle, autocharge doesn't cycle either
     let cont_effect_cycle = cycle_info.remove(&autocharge.get_cont_effect_key())?;
     cycle_info.clear();
-    match ignore_state {
-        true => {
-            let effect_keys = autocharge.get_effect_datas().unwrap().keys();
-            cycle_info.reserve(effect_keys.len());
-            for &effect_key in effect_keys {
-                cycle_info.insert(effect_key, cont_effect_cycle);
-            }
-        }
-        false => {
-            let effect_keys = autocharge.get_reffs().unwrap().iter();
-            cycle_info.reserve(effect_keys.len());
-            for &effect_key in effect_keys {
-                cycle_info.insert(effect_key, cont_effect_cycle);
-            }
-        }
+    let effect_keys = match ignore_state {
+        true => Either::Left(autocharge.get_effect_datas().unwrap().keys().copied()),
+        false => Either::Right(autocharge.get_reffs().unwrap().iter().copied()),
+    };
+    cycle_info.reserve(effect_keys.len());
+    for effect_key in effect_keys {
+        cycle_info.insert(effect_key, cont_effect_cycle);
     }
     Some(cycle_info)
 }
