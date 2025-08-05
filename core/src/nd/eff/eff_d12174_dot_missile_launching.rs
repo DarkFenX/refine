@@ -52,7 +52,6 @@ fn get_dmg_opc(
             relative_max: rel_max,
             instance_count: trunc_unerr(duration_s) as Count,
         },
-        // TODO: test if breachers have 1s delay relatively other missiles with the same speed
-        delay: OF(1.0),
+        delay: OF(0.0),
     }))
 }
