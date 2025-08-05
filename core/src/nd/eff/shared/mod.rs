@@ -7,6 +7,7 @@ pub(in crate::nd::eff) mod opc_rep;
 pub(in crate::nd::eff) mod proj_mult;
 pub(in crate::nd::eff) mod prop_mods;
 pub(in crate::nd::eff) mod sov_stability_generators;
+pub(in crate::nd::eff) mod spool;
 pub(in crate::nd::eff) mod subsystem_mods;
 pub(in crate::nd::eff) mod util;
 pub(in crate::nd::eff) mod wd;
