@@ -25,6 +25,7 @@ class DmgBasicInfo:
     cycle_time_attr_id: int
     reload_time_attr_id: int
     turret_proj_effect_id: int
+    tgt_attack_effect_id: int
     dd_lance_debuff_effect_id: int
 
 
@@ -51,6 +52,10 @@ def setup_dmg_basics(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_tgt_attack_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.tgt_attack,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
@@ -72,6 +77,7 @@ def setup_dmg_basics(
         charge_rate_attr_id=eve_charge_rate_attr_id,
         reload_time_attr_id=eve_reload_time_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
+        tgt_attack_effect_id=eve_tgt_attack_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
 
 
@@ -112,6 +118,30 @@ def make_eve_turret_proj_charge(
         attrs.update({k: v for k, v in zip(dmg_attr_ids, dmgs, strict=True) if v is not None})
     conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
     return client.mk_eve_item(attrs=attrs)
+
+
+def make_eve_drone(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        dmg_mult: float | None = None,
+        cycle_time: float | None = None,
+) -> int:
+    attrs = {}
+    if dmgs is not None:
+        dmg_attr_ids = (
+            basic_info.dmg_em_attr_id,
+            basic_info.dmg_therm_attr_id,
+            basic_info.dmg_kin_attr_id,
+            basic_info.dmg_expl_attr_id)
+        attrs.update({k: v for k, v in zip(dmg_attr_ids, dmgs, strict=True) if v is not None})
+    conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
+    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.tgt_attack_effect_id],
+        defeff_id=basic_info.tgt_attack_effect_id)
 
 
 def make_eve_dd_lance_debuff(
