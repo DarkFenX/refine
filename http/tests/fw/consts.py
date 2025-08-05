@@ -122,6 +122,7 @@ class EveEffect(IntEnum):
     script_st_warp_scram = 7026
     weather_darkness = 7060
     ship_mod_remote_armor_mutadaptive_repairer = 7166
+    chain_lightning = 8037
     debuff_lance = 11691
     dot_missile_launching = 12174
 

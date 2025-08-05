@@ -102,6 +102,7 @@ pub(crate) const WEATHER_INFERNAL: AEffectId = AEffectId::Dogma(ece::WEATHER_INF
 pub(crate) const WEATHER_XENON_GAS: AEffectId = AEffectId::Dogma(ece::WEATHER_XENON_GAS);
 pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: AEffectId =
     AEffectId::Dogma(ece::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER);
+pub(crate) const CHAIN_LIGHTNING: AEffectId = AEffectId::Dogma(ece::CHAIN_LIGHTNING);
 pub(crate) const DEBUFF_LANCE: AEffectId = AEffectId::Dogma(ece::DEBUFF_LANCE);
 pub(crate) const DOT_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::DOT_MISSILE_LAUNCHING);
 

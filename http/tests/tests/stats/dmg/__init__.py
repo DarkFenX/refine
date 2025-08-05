@@ -34,6 +34,7 @@ class DmgBasicInfo:
     turret_proj_effect_id: int
     turret_spool_effect_id: int
     tgt_attack_effect_id: int
+    vorton_effect_id: int
     launcher_effect_id: int
     missile_effect_id: int
     smartbomb_effect_id: int
@@ -78,6 +79,10 @@ def setup_dmg_basics(
         id_=consts.EveEffect.tgt_attack,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_vorton_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.chain_lightning,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.use_missiles,
         cat_id=consts.EveEffCat.active,
@@ -96,6 +101,7 @@ def setup_dmg_basics(
         eve_turret_proj_effect_id,
         eve_turret_spool_effect_id,
         eve_tgt_attack_effect_id,
+        eve_vorton_effect_id,
         eve_launcher_effect_id,
         eve_missile_effect_id,
         eve_smartbomb_effect_id,
@@ -124,6 +130,7 @@ def setup_dmg_basics(
         turret_proj_effect_id=eve_turret_proj_effect_id,
         turret_spool_effect_id=eve_turret_spool_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
+        vorton_effect_id=eve_vorton_effect_id,
         launcher_effect_id=eve_launcher_effect_id,
         missile_effect_id=eve_missile_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
@@ -216,6 +223,26 @@ def make_eve_turret_civilian(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
         defeff_id=basic_info.tgt_attack_effect_id)
+
+
+def make_eve_vorton(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmg_mult: float | None = None,
+        cycle_time: float | None = None,
+        capacity: float | None = None,
+        reload_time: float | None = None,
+) -> int:
+    attrs = {basic_info.charge_rate_attr_id: 1.0}
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.vorton_effect_id],
+        defeff_id=basic_info.vorton_effect_id)
 
 
 def make_eve_turret_charge_normal(

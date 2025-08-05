@@ -89,5 +89,6 @@ pub(crate) const WEATHER_ELECTRIC_STORM: EEffectId = 7061;
 pub(crate) const WEATHER_INFERNAL: EEffectId = 7062;
 pub(crate) const WEATHER_XENON_GAS: EEffectId = 7063;
 pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: EEffectId = 7166;
+pub(crate) const CHAIN_LIGHTNING: EEffectId = 8037;
 pub(crate) const DEBUFF_LANCE: EEffectId = 11691;
 pub(crate) const DOT_MISSILE_LAUNCHING: EEffectId = 12174;

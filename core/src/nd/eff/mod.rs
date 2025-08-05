@@ -84,6 +84,7 @@ mod eff_d7061_weather_electric_storm;
 mod eff_d7062_weather_infernal;
 mod eff_d7063_weather_xenon_gas;
 mod eff_d7166_ship_mod_remote_armor_mutadaptive_repairer;
+mod eff_d8037_chain_lightning;
 mod eff_d9_missile_launching;
 mod shared;
 
@@ -167,6 +168,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d7062_weather_infernal::mk_n_effect(),
         eff_d7063_weather_xenon_gas::mk_n_effect(),
         eff_d7166_ship_mod_remote_armor_mutadaptive_repairer::mk_n_effect(),
+        eff_d8037_chain_lightning::mk_n_effect(),
         eff_d11691_debuff_lance::mk_n_effect(),
     ]
 }
