@@ -1,6 +1,6 @@
 from tests import approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionFitDps, StatsOptionItemDps, StatsOptionItemVolley
-from tests.tests.stats.dmg import make_eve_turret_civilian, make_eve_turret_charge_crystal, setup_dmg_basics
+from tests.tests.stats.dmg import make_eve_turret_charge_crystal, make_eve_turret_civilian, setup_dmg_basics
 
 
 def test_state(client, consts):

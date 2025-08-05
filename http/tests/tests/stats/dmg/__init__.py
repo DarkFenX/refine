@@ -239,7 +239,7 @@ def _add_dmgs(
         basic_info: DmgBasicInfo,
         attrs: dict[int, float],
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-):
+) -> None:
     if dmgs is not None:
         dmg_attr_ids = (
             basic_info.dmg_em_attr_id,
