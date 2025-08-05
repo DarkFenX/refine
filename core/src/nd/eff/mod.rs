@@ -20,6 +20,7 @@ mod eff_c8_stability_generator_gamma;
 mod eff_d101_use_missiles;
 mod eff_d10_tgt_attack;
 mod eff_d11691_debuff_lance;
+mod eff_d12174_dot_missile_launching;
 mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
 mod eff_d26_structure_repair;
@@ -170,6 +171,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d7166_ship_mod_remote_armor_mutadaptive_repairer::mk_n_effect(),
         eff_d8037_chain_lightning::mk_n_effect(),
         eff_d11691_debuff_lance::mk_n_effect(),
+        eff_d12174_dot_missile_launching::mk_n_effect(),
     ]
 }
 
