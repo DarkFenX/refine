@@ -352,12 +352,15 @@ def test_non_activating(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
-    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.not_activates_charge, cat_id=consts.EveEffCat.active)
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
+    eve_nonact_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.not_activates_charge, cat_id=consts.EveEffCat.active)
     eve_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
+    eve_module1_id = client.mk_eve_item(eff_ids=[eve_nonact_effect_id], defeff_id=eve_nonact_effect_id)
+    eve_module2_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
@@ -365,10 +368,18 @@ def test_non_activating(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
     api_affector_module = api_affector_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Action
+    api_affector_module.change_module(type_id=eve_module2_id)
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    # Action
+    api_affector_module.change_module(type_id=eve_module1_id)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
 
@@ -389,7 +400,8 @@ def test_non_default_effect(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id])
+    eve_module1_id = client.mk_eve_item(eff_ids=[eve_act_effect_id])
+    eve_module2_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_act_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_act_effect_id)
@@ -398,11 +410,19 @@ def test_non_default_effect(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
     api_affector_module = api_affector_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_affector_module.change_module(
         effect_modes={api_act_effect_id: consts.ApiEffMode.force_run},
         add_projs=[api_affectee_ship.id])
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Action
+    api_affector_module.change_module(type_id=eve_module2_id)
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    # Action
+    api_affector_module.change_module(type_id=eve_module1_id)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)

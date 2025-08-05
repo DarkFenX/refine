@@ -252,25 +252,39 @@ def test_non_activating(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        loc=consts.EveModLoc.other,
+        loc=consts.EveModLoc.char,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
-    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.not_activates_charge, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
+    eve_nonact_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.not_activates_charge, cat_id=consts.EveEffCat.active)
     eve_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_affectee_attr_id: 100}, eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
+    eve_module1_id = client.mk_eve_item(eff_ids=[eve_nonact_effect_id], defeff_id=eve_nonact_effect_id)
+    eve_module2_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
+    eve_character_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
+    api_nonact_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_nonact_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_character = api_fit.set_character(type_id=eve_character_id)
     api_module = api_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
+    api_module.change_module(effect_modes={api_nonact_effect_id: consts.ApiEffMode.force_run})
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_character.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    assert api_character.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_module.change_module(type_id=eve_module1_id)
+    # Verification
+    assert api_character.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 
 def test_non_default_effect(client, consts):
@@ -279,23 +293,34 @@ def test_non_default_effect(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        loc=consts.EveModLoc.other,
+        loc=consts.EveModLoc.char,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod])
     eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100}, eff_ids=[eve_act_effect_id])
+    eve_module1_id = client.mk_eve_item(eff_ids=[eve_act_effect_id])
+    eve_module2_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
+    eve_character_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_act_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_act_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_character = api_fit.set_character(type_id=eve_character_id)
     api_module = api_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.force_run})
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_character.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    assert api_character.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_module.change_module(type_id=eve_module1_id)
+    # Verification
+    assert api_character.update().attrs[eve_affectee_attr_id].dogma == approx(100)
