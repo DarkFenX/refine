@@ -36,6 +36,7 @@ class StatsOptionItemDps:
 
     reload: bool | type[Absent] = Absent
     spool: str | type[Absent] = Absent
+    include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:
@@ -46,6 +47,7 @@ class StatsOptionItemDps:
 class StatsOptionItemVolley:
 
     spool: str | type[Absent] = Absent
+    include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:
