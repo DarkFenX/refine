@@ -19,10 +19,10 @@ pub(in crate::nd::eff) fn get_resolved_spool(
     let duration_s = eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
     let spool = ctx.u_data.get_item_key_spool(item_key, spool);
     let spool_step = calc
-        .get_item_attr_val_extra_opt(ctx, item_key, &step_attr_id)
+        .get_item_attr_val_extra_opt(ctx, item_key, step_attr_id)
         .unwrap_or(OF(0.0));
     let spool_max = calc
-        .get_item_attr_val_extra_opt(ctx, item_key, &max_attr_id)
+        .get_item_attr_val_extra_opt(ctx, item_key, max_attr_id)
         .unwrap_or(OF(0.0));
     spool.resolve(spool_max, spool_step, duration_s)
 }
