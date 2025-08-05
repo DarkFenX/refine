@@ -15,8 +15,8 @@ impl Autocharges {
     pub(crate) fn contains_ac_for_effect(&self, effect_key: &REffectKey) -> bool {
         self.data.contains_key(effect_key)
     }
-    pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &UItemKey> {
-        self.data.values()
+    pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = UItemKey> {
+        self.data.values().copied()
     }
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()

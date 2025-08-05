@@ -1,3 +1,5 @@
+use either::Either;
+
 use crate::{
     ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
     def::{Count, ItemId},
@@ -566,6 +568,14 @@ impl UItem {
             Self::ProjEffect(proj_effect) => Some(proj_effect.get_projs().iter_projectees()),
             _ => None,
         }
+    }
+    pub(crate) fn iter_charges(&self) -> impl Iterator<Item = UItemKey> {
+        let charge_key = self.get_charge_key();
+        match self.get_autocharges() {
+            Some(autocharges) => Either::Left(charge_key.into_iter().chain(autocharges.values())),
+            None => Either::Right(charge_key.into_iter()),
+        }
+        .into_iter()
     }
 }
 impl Named for UItem {

@@ -1482,6 +1482,7 @@ dependencies = [
 name = "reefast-core"
 version = "0.0.1"
 dependencies = [
+ "either",
  "itertools",
  "lender",
  "ordered-float",

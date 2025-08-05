@@ -16,7 +16,7 @@ impl SolarSystem {
                 projectee_item_id: self.u_data.items.id_by_key(projectee_key),
             });
         };
-        let autocharge_keys = u_fighter.get_autocharges().values().copied().collect_vec();
+        let autocharge_keys = u_fighter.get_autocharges().values().collect_vec();
         // Update services for autocharge
         for &autocharge_key in autocharge_keys.iter() {
             SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, autocharge_key, projectee_key);

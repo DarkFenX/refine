@@ -112,7 +112,7 @@ impl SolarSystem {
     ) {
         let cont_u_item = u_data.items.get(item_key);
         let autocharge_keys = match cont_u_item.get_autocharges() {
-            Some(cont_acs) => cont_acs.values().copied().collect_vec(),
+            Some(cont_acs) => cont_acs.values().collect_vec(),
             None => return,
         };
         if autocharge_keys.is_empty() {

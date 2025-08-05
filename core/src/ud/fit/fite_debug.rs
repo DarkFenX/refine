@@ -318,7 +318,7 @@ fn check_fighter_autocharges(
     fighter: &UFighter,
     seen_items: &mut Vec<UItemKey>,
 ) -> DebugResult {
-    for &autocharge_key in fighter.get_autocharges().values() {
+    for autocharge_key in fighter.get_autocharges().values() {
         seen_items.push(autocharge_key);
         let item = match u_data.items.try_get(autocharge_key) {
             Some(item) => item,

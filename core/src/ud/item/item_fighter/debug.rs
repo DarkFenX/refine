@@ -27,7 +27,7 @@ impl UFighter {
         // If fighter has autocharges, make sure projections on them match
         if !self.get_autocharges().is_empty() {
             let fighter_projs = self.get_projs().iter().sorted().collect_vec();
-            for &autocharge_key in self.get_autocharges().values() {
+            for autocharge_key in self.get_autocharges().values() {
                 let autocharge_projs = u_data
                     .items
                     .get(autocharge_key)

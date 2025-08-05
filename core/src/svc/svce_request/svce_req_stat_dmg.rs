@@ -26,6 +26,7 @@ impl Svc {
         item_key: UFitKey,
         reload: bool,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_dps_checked(
@@ -34,6 +35,7 @@ impl Svc {
             item_key,
             reload,
             spool,
+            include_charges,
             ignore_state,
         )
     }
@@ -52,6 +54,7 @@ impl Svc {
         u_data: &UData,
         item_key: UFitKey,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_volley_checked(
@@ -59,6 +62,7 @@ impl Svc {
             &mut self.calc,
             item_key,
             spool,
+            include_charges,
             ignore_state,
         )
     }

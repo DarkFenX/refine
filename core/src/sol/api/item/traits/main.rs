@@ -139,23 +139,25 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         reload: bool,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_dps(&sol.u_data, item_key, reload, spool, ignore_state)
+            .get_stat_item_dps(&sol.u_data, item_key, reload, spool, include_charges, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_volley(
         &mut self,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_volley(&sol.u_data, item_key, spool, ignore_state)
+            .get_stat_item_volley(&sol.u_data, item_key, spool, include_charges, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - tank

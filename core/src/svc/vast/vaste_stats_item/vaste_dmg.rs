@@ -23,6 +23,7 @@ impl Vast {
         item_key: UItemKey,
         reload: bool,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
         item_key_check(ctx, item_key)?;
@@ -32,6 +33,7 @@ impl Vast {
             item_key,
             reload,
             spool,
+            include_charges,
             ignore_state,
         ))
     }
@@ -41,6 +43,7 @@ impl Vast {
         item_key: UItemKey,
         reload: bool,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> DmgKinds<AttrVal> {
         let options = CycleOptions {
@@ -63,6 +66,15 @@ impl Vast {
                 item_dps += dmg_opc.get_total() / cycle.get_average_cycle_time();
             }
         }
+        if include_charges {
+            for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
+                if let Ok(charge_dps) =
+                    Vast::get_stat_item_dps_checked(ctx, calc, charge_key, reload, spool, false, ignore_state)
+                {
+                    item_dps += charge_dps;
+                }
+            }
+        }
         item_dps
     }
     pub(in crate::svc) fn get_stat_item_volley_checked(
@@ -70,6 +82,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
         item_key_check(ctx, item_key)?;
@@ -78,6 +91,7 @@ impl Vast {
             calc,
             item_key,
             spool,
+            include_charges,
             ignore_state,
         ))
     }
@@ -86,6 +100,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         spool: Option<Spool>,
+        include_charges: bool,
         ignore_state: bool,
     ) -> DmgKinds<AttrVal> {
         let mut item_volley = DmgKinds::new();
@@ -99,6 +114,15 @@ impl Vast {
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
             {
                 item_volley += dmg_opc.get_max()
+            }
+        }
+        if include_charges {
+            for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
+                if let Ok(charge_volley) =
+                    Vast::get_stat_item_volley_checked(ctx, calc, charge_key, spool, false, ignore_state)
+                {
+                    item_volley += charge_volley;
+                }
             }
         }
         item_volley

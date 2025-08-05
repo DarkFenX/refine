@@ -29,7 +29,7 @@ impl SolarSystem {
         if u_prange == old_u_prange {
             return Ok(());
         }
-        let autocharge_keys = u_fighter.get_autocharges().values().copied().collect_vec();
+        let autocharge_keys = u_fighter.get_autocharges().values().collect_vec();
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();
         u_fighter.get_projs_mut().add(projectee_key, u_prange);
