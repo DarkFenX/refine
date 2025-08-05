@@ -16,6 +16,8 @@ class DmgBasicInfo:
     dmg_kin_attr_id: int
     dmg_expl_attr_id: int
     dmg_mult_attr_id: int
+    dmg_mult_spool_step_attr_id: int
+    dmg_mult_spool_max_attr_id: int
     dd_delay_attr_id: int
     dd_dmg_interval_attr_id: int
     dd_dmg_duration_attr_id: int
@@ -30,6 +32,7 @@ class DmgBasicInfo:
     crystal_hp_attr_id: int
     ammo_loaded_attr_id: int
     turret_proj_effect_id: int
+    turret_spool_effect_id: int
     tgt_attack_effect_id: int
     launcher_effect_id: int
     missile_effect_id: int
@@ -47,6 +50,8 @@ def setup_dmg_basics(
     eve_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg)
     eve_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg)
     eve_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult)
+    eve_dmg_mult_spool_step_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_per_cycle)
+    eve_dmg_mult_spool_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_max)
     eve_dd_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
     eve_dd_dmg_interval_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_cycle_time)
     eve_dd_dmg_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_duration)
@@ -64,6 +69,10 @@ def setup_dmg_basics(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_turret_spool_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.tgt_disintegrator_attack,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_tgt_attack_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.tgt_attack,
         cat_id=consts.EveEffCat.target,
@@ -77,9 +86,10 @@ def setup_dmg_basics(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    # Ensure effects are not cleaned up
+    # Ensure effects are not cleaned up even if not all of them are used in a test
     client.mk_eve_item(eff_ids=[
         eve_turret_proj_effect_id,
+        eve_turret_spool_effect_id,
         eve_tgt_attack_effect_id,
         eve_launcher_effect_id,
         eve_missile_effect_id,
@@ -90,6 +100,8 @@ def setup_dmg_basics(
         dmg_kin_attr_id=eve_dmg_kin_attr_id,
         dmg_expl_attr_id=eve_dmg_expl_attr_id,
         dmg_mult_attr_id=eve_dmg_mult_attr_id,
+        dmg_mult_spool_step_attr_id=eve_dmg_mult_spool_step_attr_id,
+        dmg_mult_spool_max_attr_id=eve_dmg_mult_spool_max_attr_id,
         dd_delay_attr_id=eve_dd_delay_attr_id,
         dd_dmg_interval_attr_id=eve_dd_dmg_interval_attr_id,
         dd_dmg_duration_attr_id=eve_dd_dmg_duration_attr_id,
@@ -104,6 +116,7 @@ def setup_dmg_basics(
         crystal_hp_attr_id=eve_crystal_hp_attr_id,
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
+        turret_spool_effect_id=eve_turret_spool_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
         launcher_effect_id=eve_launcher_effect_id,
         missile_effect_id=eve_missile_effect_id,
@@ -148,6 +161,30 @@ def make_eve_turret_laser(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
         defeff_id=basic_info.tgt_attack_effect_id)
+
+
+def make_eve_turret_spool(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmg_mult: float | None = None,
+        spool_step: float | None = None,
+        spool_max: float | None = None,
+        cycle_time: float | None = None,
+        capacity: float | None = None,
+        reload_time: float | None = None,
+) -> int:
+    attrs = {}
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_spool_step_attr_id, value=spool_step)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_spool_max_attr_id, value=spool_max)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.turret_spool_effect_id],
+        defeff_id=basic_info.turret_spool_effect_id)
 
 
 def make_eve_turret_civilian(
