@@ -1,21 +1,15 @@
 from tests import approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionFitDps, StatsOptionItemDps, StatsOptionItemVolley
-from tests.tests.stats.dmg import make_eve_turret_laser, make_eve_turret_laser_charge, setup_dmg_basics
+from tests.tests.stats.dmg import make_eve_turret_laser, make_eve_turret_charge_crystal, setup_dmg_basics
 
 
 def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=15, capacity=1, cycle_time=2050, reload_time=0.01)
-    eve_charge_id = make_eve_turret_laser_charge(
-        client=client,
-        basic_info=eve_basic_info,
-        dmgs=(9, 2, 0, 0),
-        volume=1,
-        get_damaged=1,
-        hp=1,
-        vol_dmg=0.01,
-        vol_chance=0.1)
+    eve_charge_id = make_eve_turret_charge_crystal(
+        client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
+        get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -60,10 +54,10 @@ def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=15, capacity=1, cycle_time=2050, reload_time=0.01)
-    eve_charge1_id = make_eve_turret_laser_charge(
+    eve_charge1_id = make_eve_turret_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
-    eve_charge2_id = make_eve_turret_laser_charge(
+    eve_charge2_id = make_eve_turret_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
         get_damaged=0, hp=1, vol_dmg=0.01, vol_chance=0.1)
     client.create_sources()

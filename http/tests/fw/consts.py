@@ -245,6 +245,7 @@ class EveAttr(IntEnum):
     expl_dmg = 116
     kin_dmg = 117
     therm_dmg = 118
+    ammo_loaded = 127
     charge_size = 128
     launcher_group = 137
     falloff = 158
