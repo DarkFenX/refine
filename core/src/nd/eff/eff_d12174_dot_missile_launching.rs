@@ -1,7 +1,7 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::{Count, OF},
+    def::{Count, OF, SERVER_TICK_S},
     ec,
     ed::EEffectId,
     nd::{
@@ -50,7 +50,8 @@ fn get_dmg_opc(
         amount: OutputDmgBreacher {
             absolute_max: abs_max,
             relative_max: rel_max,
-            instance_count: trunc_unerr(duration_s) as Count,
+            // Breachers deal damage every tick, so count of instances depends on tick rate
+            instance_count: trunc_unerr(duration_s / SERVER_TICK_S) as Count,
         },
         delay: OF(0.0),
     }))

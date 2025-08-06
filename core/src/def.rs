@@ -2,6 +2,8 @@ pub(crate) use ordered_float::OrderedFloat as OF;
 
 /// Full version of the library as a string.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+pub(crate) const SERVER_TICK_HZ: u8 = 1;
+pub(crate) const SERVER_TICK_S: AttrVal = OF(1.0 / SERVER_TICK_HZ as f64);
 
 // Entity IDs
 pub type AbilId = i32;
