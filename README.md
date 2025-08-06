@@ -11,6 +11,9 @@ Data cachers for core library, which allow it to cache adapted data. Adapted dat
 ### reefast-http
 HTTP interface to the library.
 
+# Documentation
+HTTP is considered as main interface, and it will be documented later. Until then, the easiest way to see how it works is to check tests and test framework client. 
+
 # Features
 In no particular order:
 - separation between user data and game data. This allows switches between different data sources (e.g. Tranquility and Singularity), and leads to very few checks done when an item is added/changed, with most checks postponed till fit validation happens
