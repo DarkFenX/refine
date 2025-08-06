@@ -82,7 +82,7 @@ impl Vast {
 
 const ANCIL_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    reload_optionals: true,
+    charged_optionals: true,
 };
 
 fn get_local_ancil_hp(

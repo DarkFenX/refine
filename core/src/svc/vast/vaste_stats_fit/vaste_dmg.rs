@@ -11,7 +11,7 @@ use crate::{
 
 const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    reload_optionals: false,
+    charged_optionals: false,
 };
 
 impl VastFitData {
@@ -27,7 +27,7 @@ impl VastFitData {
                 true => CycleOptionReload::Sim,
                 false => CycleOptionReload::Burst,
             },
-            reload_optionals: false,
+            charged_optionals: false,
         };
         let mut dps = DmgKinds::new();
         for (&item_key, item_data) in self.dmg_normal.iter() {

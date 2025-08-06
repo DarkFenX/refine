@@ -3,8 +3,9 @@ use crate::{def::AttrVal, rd::REffectKey};
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleOptions {
     pub(in crate::svc) reload_mode: CycleOptionReload,
-    // Controls if optional reloads are executed, or item keeps running without reloading
-    pub(in crate::svc) reload_optionals: bool,
+    // Controls if effects which can run with/without charges (e.g. ancillary reps) are forced to
+    // have charges to run, and can't run otherwise
+    pub(in crate::svc) charged_optionals: bool,
 }
 
 #[derive(Copy, Clone)]

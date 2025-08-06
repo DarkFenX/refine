@@ -13,7 +13,7 @@ const CUR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     // easier to calculate
     reload_mode: CycleOptionReload::Burst,
     // Use this to return cycle count for modules like ancillary reps
-    reload_optionals: true,
+    charged_optionals: true,
 };
 
 impl Svc {

@@ -33,7 +33,7 @@ impl VastFitData {
 
 const ORR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    reload_optionals: false,
+    charged_optionals: false,
 };
 
 fn get_orrps(

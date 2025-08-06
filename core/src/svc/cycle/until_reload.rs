@@ -32,9 +32,9 @@ pub(super) fn get_charge_rate_cycle_count(
     ctx: SvcCtx,
     module: &UModule,
     can_run_uncharged: bool,
-    reload_optionals: bool,
+    charged_optionals: bool,
 ) -> InfCount {
-    if can_run_uncharged && !reload_optionals {
+    if can_run_uncharged && !charged_optionals {
         return InfCount::Infinite;
     }
     let charge_count = match module.get_charge_count(ctx.u_data) {
@@ -57,9 +57,9 @@ pub(super) fn get_crystal_cycle_count(
     ctx: SvcCtx,
     module: &UModule,
     can_run_uncharged: bool,
-    reload_optionals: bool,
+    charged_optionals: bool,
 ) -> InfCount {
-    if can_run_uncharged && !reload_optionals {
+    if can_run_uncharged && !charged_optionals {
         return InfCount::Infinite;
     }
     let charge_count = match module.get_charge_count(ctx.u_data) {

@@ -13,7 +13,7 @@ use crate::{
 
 const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    reload_optionals: false,
+    charged_optionals: false,
 };
 
 impl Vast {
@@ -51,7 +51,7 @@ impl Vast {
                 true => CycleOptionReload::Sim,
                 false => CycleOptionReload::Burst,
             },
-            reload_optionals: false,
+            charged_optionals: false,
         };
         let mut item_dps = DmgKinds::new();
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, ignore_state) {
