@@ -67,7 +67,7 @@ impl Vast {
     }
 }
 
-pub(super) fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
     let u_item = ctx.u_data.items.get(item_key);
     let is_loaded = match u_item {
         UItem::Drone(drone) => drone.is_loaded(),

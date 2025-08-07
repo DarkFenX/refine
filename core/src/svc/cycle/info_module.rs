@@ -7,7 +7,7 @@ use super::{
 };
 use crate::{
     ac,
-    def::OF,
+    def::{OF, SERVER_TICK_S},
     nd::{NEffectChargeDepl, NEffectChargeLoc},
     rd::REffectKey,
     svc::{SvcCtx, calc::Calc, eff_funcs},
@@ -136,8 +136,8 @@ fn fill_module_effect_info(
                         .unwrap()
                         / 1000.0;
                     match reload_time_s > OF(0.0) {
-                        // If reload time is defined and positive, ensure it is minimum 1 second
-                        true => reload_time_s.max(OF(1.0)),
+                        // If reload time is defined and positive, ensure it takes at least 1 tick
+                        true => reload_time_s.max(SERVER_TICK_S),
                         false => OF(0.0),
                     }
                 }
