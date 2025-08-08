@@ -35,9 +35,9 @@ impl Cycle {
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSimple {
-    pub(super) active_time: AttrVal,
-    pub(super) inactive_time: AttrVal,
-    pub(super) repeat_count: InfCount,
+    pub(in crate::svc) active_time: AttrVal,
+    pub(in crate::svc) inactive_time: AttrVal,
+    pub(in crate::svc) repeat_count: InfCount,
 }
 impl CycleSimple {
     fn get_cycles_until_reload(&self) -> InfCount {
@@ -52,7 +52,7 @@ impl CycleSimple {
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleReload1 {
-    pub(super) inner: CycleInner,
+    pub(in crate::svc) inner: CycleInner,
 }
 impl CycleReload1 {
     fn get_cycles_until_reload(&self) -> InfCount {
@@ -65,8 +65,8 @@ impl CycleReload1 {
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleReload2 {
-    pub(super) inner_early: CycleInner,
-    pub(super) inner_final: CycleInner,
+    pub(in crate::svc) inner_early: CycleInner,
+    pub(in crate::svc) inner_final: CycleInner,
 }
 impl CycleReload2 {
     fn get_cycles_until_reload(&self) -> InfCount {
@@ -79,10 +79,10 @@ impl CycleReload2 {
 }
 
 #[derive(Copy, Clone)]
-pub(super) struct CycleInner {
-    pub(super) active_time: AttrVal,
-    pub(super) inactive_time: AttrVal,
-    pub(super) repeat_count: Count,
+pub(in crate::svc) struct CycleInner {
+    pub(in crate::svc) active_time: AttrVal,
+    pub(in crate::svc) inactive_time: AttrVal,
+    pub(in crate::svc) repeat_count: Count,
 }
 impl CycleInner {
     fn get_total_time(&self) -> AttrVal {

@@ -4,5 +4,5 @@ use crate::def::{AttrVal, Count};
 pub(crate) struct OutputDmgBreacher {
     pub(crate) absolute_max: AttrVal,
     pub(crate) relative_max: AttrVal,
-    pub(crate) instance_count: Count,
+    pub(crate) tick_count: Count,
 }
