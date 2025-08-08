@@ -17,11 +17,11 @@ pub(in crate::svc) enum Cycle {
     Reload2(CycleReload2),
 }
 impl Cycle {
-    pub(in crate::svc) fn get_cycles_until_reload(&self) -> InfCount {
+    pub(in crate::svc) fn get_cycles_until_empty(&self) -> InfCount {
         match self {
-            Self::Simple(simple) => simple.get_cycles_until_reload(),
-            Self::Reload1(reload1) => reload1.get_cycles_until_reload(),
-            Self::Reload2(reload2) => reload2.get_cycles_until_reload(),
+            Self::Simple(simple) => simple.get_cycles_until_empty(),
+            Self::Reload1(reload1) => reload1.get_cycles_until_empty(),
+            Self::Reload2(reload2) => reload2.get_cycles_until_empty(),
         }
     }
     pub(in crate::svc) fn get_average_cycle_time(&self) -> AttrVal {
@@ -40,9 +40,7 @@ pub(in crate::svc) struct CycleSimple {
     pub(in crate::svc) repeat_count: InfCount,
 }
 impl CycleSimple {
-    fn get_cycles_until_reload(&self) -> InfCount {
-        // Even if charges are depletable, consider moment of depletion as a "reload" for the
-        // purpose of this method
+    fn get_cycles_until_empty(&self) -> InfCount {
         self.repeat_count
     }
     fn get_average_cycle_time(&self) -> AttrVal {
@@ -55,7 +53,7 @@ pub(in crate::svc) struct CycleReload1 {
     pub(in crate::svc) inner: CycleInner,
 }
 impl CycleReload1 {
-    fn get_cycles_until_reload(&self) -> InfCount {
+    fn get_cycles_until_empty(&self) -> InfCount {
         InfCount::Count(self.inner.repeat_count)
     }
     fn get_average_cycle_time(&self) -> AttrVal {
@@ -69,7 +67,7 @@ pub(in crate::svc) struct CycleReload2 {
     pub(in crate::svc) inner_final: CycleInner,
 }
 impl CycleReload2 {
-    fn get_cycles_until_reload(&self) -> InfCount {
+    fn get_cycles_until_empty(&self) -> InfCount {
         InfCount::Count(self.inner_early.repeat_count + self.inner_final.repeat_count)
     }
     fn get_average_cycle_time(&self) -> AttrVal {

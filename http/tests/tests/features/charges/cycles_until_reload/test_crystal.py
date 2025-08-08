@@ -28,7 +28,7 @@ def test_basic_not_damaged(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
 
 
 def test_basic_damaged(client, consts):
@@ -58,7 +58,7 @@ def test_basic_damaged(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload == 1000
+    assert api_module.update().cycles_until_empty == 1000
 
 
 def test_damage_flag_values(client, consts):
@@ -98,10 +98,10 @@ def test_damage_flag_values(client, consts):
     api_module3 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge3_id)
     api_module4 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge4_id)
     # Verification
-    assert api_module1.update().cycles_until_reload == 1000
-    assert api_module2.update().cycles_until_reload == 1000
-    assert api_module3.update().cycles_until_reload == 1000
-    assert api_module4.update().cycles_until_reload == 1000
+    assert api_module1.update().cycles_until_empty == 1000
+    assert api_module2.update().cycles_until_empty == 1000
+    assert api_module3.update().cycles_until_empty == 1000
+    assert api_module4.update().cycles_until_empty == 1000
 
 
 def test_zero_chance(client, consts):
@@ -131,7 +131,7 @@ def test_zero_chance(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
 
 
 def test_zero_damage(client, consts):
@@ -161,7 +161,7 @@ def test_zero_damage(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
 
 
 def test_no_attr_damage_flag(client, consts):
@@ -189,7 +189,7 @@ def test_no_attr_damage_flag(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
 
 
 def test_no_attr_chance(client, consts):
@@ -217,7 +217,7 @@ def test_no_attr_chance(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
 
 
 def test_no_attr_damage(client, consts):
@@ -245,7 +245,7 @@ def test_no_attr_damage(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
 
 
 def test_modified(client, consts):
@@ -317,7 +317,7 @@ def test_modified(client, consts):
     assert api_module.charge.attrs[eve_hp_attr_id].extra == approx(2)
     assert api_module.charge.attrs[eve_chance_attr_id].extra == approx(0.05)
     assert api_module.charge.attrs[eve_dmg_attr_id].extra == approx(0.005)
-    assert api_module.cycles_until_reload == 1000
+    assert api_module.cycles_until_empty == 1000
 
 
 def test_multiple_charges(client, consts):
@@ -349,7 +349,7 @@ def test_multiple_charges(client, consts):
     # Verification - cycles until reload increases proportionally with loaded charge count
     api_module.update()
     assert api_module.charge_count == 2
-    assert api_module.cycles_until_reload == 2000
+    assert api_module.cycles_until_empty == 2000
 
 
 def test_no_charge(client, consts):
@@ -370,7 +370,7 @@ def test_no_charge(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.cycles_until_reload  # noqa: B018
+        api_module.cycles_until_empty  # noqa: B018
 
 
 def test_charge_not_loaded(client, consts):
@@ -390,4 +390,4 @@ def test_charge_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None

@@ -30,7 +30,7 @@ pub(crate) struct HModuleInfoPartial {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     charge_count: TriStateField<rc::Count>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    cycles_until_reload: TriStateField<rc::Count>,
+    cycles_until_empty: TriStateField<rc::Count>,
     #[serde(skip_serializing_if = "Option::is_none")]
     spool_cycles: Option<HAdjustableCount>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -48,9 +48,9 @@ impl HModuleInfoPartial {
             },
             false => TriStateField::Absent,
         };
-        let cycles_until_reload = match charge_info.is_some() {
+        let cycles_until_empty = match charge_info.is_some() {
             true => match core_module.get_cycle_count_until_reload() {
-                Some(cycles_until_reload) => TriStateField::Value(cycles_until_reload),
+                Some(cycles_until_empty) => TriStateField::Value(cycles_until_empty),
                 None => TriStateField::None,
             },
             false => TriStateField::Absent,
@@ -69,7 +69,7 @@ impl HModuleInfoPartial {
             },
             charge: charge_info,
             charge_count,
-            cycles_until_reload,
+            cycles_until_empty,
             spool_cycles: core_module.get_spool_cycle_count().map(|v| v.into()),
             projs: core_module
                 .iter_projs()

@@ -13,7 +13,7 @@ def test_no_default_effect(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
 
 
 def test_module_not_loaded(client, consts):
@@ -25,4 +25,4 @@ def test_module_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_reload is None
+    assert api_module.update().cycles_until_empty is None
