@@ -44,7 +44,7 @@ impl VastFitData {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                dps.add_normal_div(output_per_cycle.get_total(), effect_cycles.get_average_cycle_time());
+                dps.stack_normal_div(output_per_cycle.get_total(), effect_cycles.get_average_cycle_time());
             }
         }
         dps
@@ -65,7 +65,7 @@ impl VastFitData {
                 if !cycle_map.contains_key(&effect_key) {
                     continue;
                 };
-                volley.add_normal(output_per_cycle.get_max());
+                volley.stack_normal(output_per_cycle.get_max());
             }
         }
         volley

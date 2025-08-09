@@ -62,7 +62,7 @@ impl Vast {
             if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
             {
-                item_dps.add_normal_div(dmg_opc.get_total(), cycle.get_average_cycle_time());
+                item_dps.stack_normal_div(dmg_opc.get_total(), cycle.get_average_cycle_time());
             }
         }
         if include_charges {
@@ -70,7 +70,7 @@ impl Vast {
                 if let Ok(charge_dps) =
                     Vast::get_stat_item_dps_checked(ctx, calc, charge_key, reload, spool, false, ignore_state)
                 {
-                    item_dps.add_self(charge_dps);
+                    item_dps.stack_self(charge_dps);
                 }
             }
         }
@@ -112,7 +112,7 @@ impl Vast {
             if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
             {
-                item_volley.add_normal(dmg_opc.get_max())
+                item_volley.stack_normal(dmg_opc.get_max())
             }
         }
         if include_charges {
@@ -120,7 +120,7 @@ impl Vast {
                 if let Ok(charge_volley) =
                     Vast::get_stat_item_volley_checked(ctx, calc, charge_key, spool, false, ignore_state)
                 {
-                    item_volley.add_self(charge_volley);
+                    item_volley.stack_self(charge_volley);
                 }
             }
         }
