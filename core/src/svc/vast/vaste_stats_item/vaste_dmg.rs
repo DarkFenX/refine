@@ -1,12 +1,11 @@
 use crate::{
-    def::AttrVal,
-    misc::{DmgKinds, Spool},
+    misc::Spool,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
-        vast::Vast,
+        vast::{StatDmg, Vast},
     },
     ud::{UItem, UItemKey},
 };
@@ -25,7 +24,7 @@ impl Vast {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
+    ) -> Result<StatDmg, StatItemCheckError> {
         item_key_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_dps_unchecked(
             ctx,
@@ -45,7 +44,7 @@ impl Vast {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> DmgKinds<AttrVal> {
+    ) -> StatDmg {
         let options = CycleOptions {
             reload_mode: match reload {
                 true => CycleOptionReload::Sim,
@@ -53,7 +52,7 @@ impl Vast {
             },
             charged_optionals: false,
         };
-        let mut item_dps = DmgKinds::new();
+        let mut item_dps = StatDmg::new();
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, ignore_state) {
             Some(cycle_map) => cycle_map,
             None => return item_dps,
@@ -63,7 +62,7 @@ impl Vast {
             if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
             {
-                item_dps += dmg_opc.get_total() / cycle.get_average_cycle_time();
+                item_dps.add_normal_div(dmg_opc.get_total(), cycle.get_average_cycle_time());
             }
         }
         if include_charges {
@@ -71,7 +70,7 @@ impl Vast {
                 if let Ok(charge_dps) =
                     Vast::get_stat_item_dps_checked(ctx, calc, charge_key, reload, spool, false, ignore_state)
                 {
-                    item_dps += charge_dps;
+                    item_dps.add_self(charge_dps);
                 }
             }
         }
@@ -84,7 +83,7 @@ impl Vast {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
+    ) -> Result<StatDmg, StatItemCheckError> {
         item_key_check(ctx, item_key)?;
         Ok(Vast::get_stat_item_volley_unchecked(
             ctx,
@@ -102,8 +101,8 @@ impl Vast {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> DmgKinds<AttrVal> {
-        let mut item_volley = DmgKinds::new();
+    ) -> StatDmg {
+        let mut item_volley = StatDmg::new();
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
             Some(cycle_map) => cycle_map,
             None => return item_volley,
@@ -113,7 +112,7 @@ impl Vast {
             if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
             {
-                item_volley += dmg_opc.get_max()
+                item_volley.add_normal(dmg_opc.get_max())
             }
         }
         if include_charges {
@@ -121,7 +120,7 @@ impl Vast {
                 if let Ok(charge_volley) =
                     Vast::get_stat_item_volley_checked(ctx, calc, charge_key, spool, false, ignore_state)
                 {
-                    item_volley += charge_volley;
+                    item_volley.add_self(charge_volley);
                 }
             }
         }

@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
-        vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
+        vast::{StatDmg, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
     ud::UEffectUpdates,
     util::GetId,
@@ -141,7 +141,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<DmgKinds<AttrVal>, ItemStatError> {
+    ) -> Result<StatDmg, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
@@ -153,7 +153,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<DmgKinds<AttrVal>, ItemStatError> {
+    ) -> Result<StatDmg, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc

@@ -5,8 +5,8 @@ pub(crate) struct HStatDmg {
     kinetic: rc::AttrVal,
     explosive: rc::AttrVal,
 }
-impl From<rc::stats::DmgKinds<rc::AttrVal>> for HStatDmg {
-    fn from(core_stat: rc::stats::DmgKinds<rc::AttrVal>) -> Self {
+impl From<rc::stats::StatDmg> for HStatDmg {
+    fn from(core_stat: rc::stats::StatDmg) -> Self {
         Self {
             em: core_stat.em,
             thermal: core_stat.thermal,

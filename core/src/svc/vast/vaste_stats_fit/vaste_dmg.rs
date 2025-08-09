@@ -1,11 +1,10 @@
 use crate::{
-    def::AttrVal,
-    misc::{DmgKinds, Spool},
+    misc::Spool,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::VastFitData,
+        vast::{StatDmg, VastFitData},
     },
 };
 
@@ -21,7 +20,7 @@ impl VastFitData {
         calc: &mut Calc,
         reload: bool,
         spool: Option<Spool>,
-    ) -> DmgKinds<AttrVal> {
+    ) -> StatDmg {
         let options = CycleOptions {
             reload_mode: match reload {
                 true => CycleOptionReload::Sim,
@@ -29,7 +28,7 @@ impl VastFitData {
             },
             charged_optionals: false,
         };
-        let mut dps = DmgKinds::new();
+        let mut dps = StatDmg::new();
         for (&item_key, item_data) in self.dmg_normal.iter() {
             let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, false) {
                 Some(cycle_map) => cycle_map,
@@ -45,18 +44,13 @@ impl VastFitData {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                dps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
+                dps.add_normal_div(output_per_cycle.get_total(), effect_cycles.get_average_cycle_time());
             }
         }
         dps
     }
-    pub(in crate::svc) fn get_stat_volley(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        spool: Option<Spool>,
-    ) -> DmgKinds<AttrVal> {
-        let mut volley = DmgKinds::new();
+    pub(in crate::svc) fn get_stat_volley(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> StatDmg {
+        let mut volley = StatDmg::new();
         for (&item_key, item_data) in self.dmg_normal.iter() {
             let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
                 Some(cycle_map) => cycle_map,
@@ -71,7 +65,7 @@ impl VastFitData {
                 if !cycle_map.contains_key(&effect_key) {
                     continue;
                 };
-                volley += output_per_cycle.get_max();
+                volley.add_normal(output_per_cycle.get_max());
             }
         }
         volley
