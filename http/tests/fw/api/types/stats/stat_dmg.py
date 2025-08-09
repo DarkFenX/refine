@@ -26,7 +26,7 @@ class StatDmg:
             other = list(other)
         # Assume breacher is None if no 5th element is specified
         if isinstance(other, list) and len(other) == 4:
-            other = other + [None]
+            other = [*other, None]
         return [self.em, self.thermal, self.kinetic, self.explosive, self.breacher] == other
 
 
