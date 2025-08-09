@@ -1,4 +1,3 @@
-pub use shared::StatTank;
 pub use vaste_ehp::StatLayerEhp;
 pub use vaste_erps::StatLayerErps;
 pub use vaste_hp::StatLayerHp;

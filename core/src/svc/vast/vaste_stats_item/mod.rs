@@ -1,4 +1,4 @@
-pub use tank::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank};
+pub use tank::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps};
 
 mod tank;
 mod vaste_dmg;

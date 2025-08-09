@@ -8,12 +8,6 @@ use crate::{
     ud::{UItem, UItemKey},
 };
 
-pub struct StatTank<T> {
-    pub shield: T,
-    pub armor: T,
-    pub hull: T,
-}
-
 pub(super) fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
     let u_item = ctx.u_data.items.get(item_key);
     item_check(item_key, u_item)
