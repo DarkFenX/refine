@@ -18,6 +18,9 @@ class DmgBasicInfo:
     dmg_mult_attr_id: int
     dmg_mult_spool_step_attr_id: int
     dmg_mult_spool_max_attr_id: int
+    dmg_breach_abs_attr_id: int
+    dmg_breach_rel_attr_id: int
+    dmg_breach_duration_attr_id: int
     dd_delay_attr_id: int
     dd_dmg_interval_attr_id: int
     dd_dmg_duration_attr_id: int
@@ -37,6 +40,7 @@ class DmgBasicInfo:
     vorton_effect_id: int
     launcher_effect_id: int
     missile_effect_id: int
+    breacher_effect_id: int
     smartbomb_effect_id: int
     dd_lance_debuff_effect_id: int
 
@@ -54,6 +58,9 @@ def setup_dmg_basics(
     eve_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult)
     eve_dmg_mult_spool_step_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_per_cycle)
     eve_dmg_mult_spool_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_max)
+    eve_dmg_breach_abs_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_dmg_per_tick)
+    eve_dmg_breach_rel_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_hp_perc_per_tick)
+    eve_dmg_breach_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_duration)
     eve_dd_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
     eve_dd_dmg_interval_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_cycle_time)
     eve_dd_dmg_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_duration)
@@ -88,6 +95,9 @@ def setup_dmg_basics(
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
+    eve_breacher_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.dot_missile_launching,
+        cat_id=consts.EveEffCat.target)
     eve_smartbomb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.emp_wave,
         cat_id=consts.EveEffCat.active,
@@ -104,6 +114,7 @@ def setup_dmg_basics(
         eve_vorton_effect_id,
         eve_launcher_effect_id,
         eve_missile_effect_id,
+        eve_breacher_effect_id,
         eve_smartbomb_effect_id,
         eve_dd_lance_debuff_effect_id])
     return DmgBasicInfo(
@@ -114,6 +125,9 @@ def setup_dmg_basics(
         dmg_mult_attr_id=eve_dmg_mult_attr_id,
         dmg_mult_spool_step_attr_id=eve_dmg_mult_spool_step_attr_id,
         dmg_mult_spool_max_attr_id=eve_dmg_mult_spool_max_attr_id,
+        dmg_breach_abs_attr_id=eve_dmg_breach_abs_attr_id,
+        dmg_breach_rel_attr_id=eve_dmg_breach_rel_attr_id,
+        dmg_breach_duration_attr_id=eve_dmg_breach_duration_attr_id,
         dd_delay_attr_id=eve_dd_delay_attr_id,
         dd_dmg_interval_attr_id=eve_dd_dmg_interval_attr_id,
         dd_dmg_duration_attr_id=eve_dd_dmg_duration_attr_id,
@@ -133,6 +147,7 @@ def setup_dmg_basics(
         vorton_effect_id=eve_vorton_effect_id,
         launcher_effect_id=eve_launcher_effect_id,
         missile_effect_id=eve_missile_effect_id,
+        breacher_effect_id=eve_breacher_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
 
@@ -311,6 +326,26 @@ def make_eve_missile(
         attrs=attrs,
         eff_ids=[basic_info.missile_effect_id],
         defeff_id=basic_info.missile_effect_id)
+
+
+def make_eve_breacher(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmg_abs: float | None = None,
+        dmg_rel: float | None = None,
+        dmg_duration: float | None = None,
+        volume: float | None = None,
+) -> int:
+    attrs = {}
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_abs_attr_id, value=dmg_abs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_rel_attr_id, value=dmg_rel)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_duration_attr_id, value=dmg_duration)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.breacher_effect_id],
+        defeff_id=basic_info.breacher_effect_id)
 
 
 def make_eve_drone(

@@ -396,6 +396,9 @@ class EveAttr(IntEnum):
     disallow_in_hazard = 5561
     allow_in_fully_corrupted_lowsec = 5599
     allow_in_fully_corrupted_hisec = 5600
+    dot_duration = 5735
+    dot_max_dmg_per_tick = 5736
+    dot_max_hp_perc_per_tick = 5737
 
 
 @unique
