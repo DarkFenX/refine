@@ -114,6 +114,11 @@ impl Vast {
             {
                 item_volley.stack_normal(dmg_opc.get_max())
             }
+            if let Some(dmg_getter) = effect.get_breacher_dmg_opc_getter()
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, None)
+            {
+                item_volley.stack_breacher_output(dmg_opc)
+            }
         }
         if include_charges {
             for charge_key in ctx.u_data.items.get(item_key).iter_charges() {

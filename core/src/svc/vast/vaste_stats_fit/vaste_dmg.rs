@@ -68,6 +68,23 @@ impl VastFitData {
                 volley.stack_normal(output_per_cycle.get_max());
             }
         }
+        for (&item_key, item_data) in self.dmg_breacher.iter() {
+            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
+                Some(cycle_map) => cycle_map,
+                None => continue,
+            };
+            for (&effect_key, dmg_getter) in item_data.iter() {
+                let r_effect = ctx.u_data.src.get_effect(effect_key);
+                let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, None) {
+                    Some(output_per_cycle) => output_per_cycle,
+                    None => continue,
+                };
+                if !cycle_map.contains_key(&effect_key) {
+                    continue;
+                };
+                volley.stack_breacher_output(output_per_cycle);
+            }
+        }
         volley
     }
 }

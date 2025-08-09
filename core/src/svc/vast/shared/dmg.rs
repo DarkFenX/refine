@@ -1,6 +1,7 @@
 use crate::{
     def::{AttrVal, OF},
     misc::DmgKinds,
+    svc::output::OutputDmgBreacher,
 };
 
 pub struct StatDmg {
@@ -26,7 +27,7 @@ impl StatDmg {
         self.kinetic += other.kinetic;
         self.explosive += other.explosive;
         if let Some(other_breacher) = other.breacher {
-            self.stack_breacher(other_breacher);
+            self.stack_breacher_stat(other_breacher);
         }
     }
     pub(in crate::svc::vast) fn stack_normal(&mut self, other: DmgKinds<AttrVal>) {
@@ -41,10 +42,16 @@ impl StatDmg {
         self.kinetic += other.kinetic / div;
         self.explosive += other.explosive / div;
     }
-    pub(in crate::svc::vast) fn stack_breacher(&mut self, other: StatDmgBreacher) {
+    pub(in crate::svc::vast) fn stack_breacher_stat(&mut self, other: StatDmgBreacher) {
         match &mut self.breacher {
-            Some(breacher) => breacher.stack(other),
+            Some(breacher) => breacher.stack_self(other),
             None => self.breacher = Some(other),
+        }
+    }
+    pub(in crate::svc::vast) fn stack_breacher_output(&mut self, other: OutputDmgBreacher) {
+        match &mut self.breacher {
+            Some(breacher) => breacher.stack_output(other),
+            None => self.breacher = Some(other.into()),
         }
     }
 }
@@ -54,8 +61,20 @@ pub struct StatDmgBreacher {
     pub relative_max: AttrVal,
 }
 impl StatDmgBreacher {
-    pub(in crate::svc::vast) fn stack(&mut self, other: Self) {
+    pub(in crate::svc::vast) fn stack_self(&mut self, other: Self) {
         self.absolute_max = self.absolute_max.max(other.absolute_max);
         self.relative_max = self.relative_max.max(other.relative_max);
+    }
+    pub(in crate::svc::vast) fn stack_output(&mut self, other: OutputDmgBreacher) {
+        self.absolute_max = self.absolute_max.max(other.absolute_max);
+        self.relative_max = self.relative_max.max(other.relative_max);
+    }
+}
+impl From<OutputDmgBreacher> for StatDmgBreacher {
+    fn from(output: OutputDmgBreacher) -> Self {
+        Self {
+            absolute_max: output.absolute_max,
+            relative_max: output.relative_max,
+        }
     }
 }
