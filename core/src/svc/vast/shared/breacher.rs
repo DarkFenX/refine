@@ -263,7 +263,8 @@ impl BreacherAccum {
             }
         }
         // General solution is go tick-to-tick until items are looped, pick max for each tick, and
-        // then calculate average. Total ticks we consider is limited by 1 day
+        // then calculate average. Total count of ticks we consider is limited by 1 day to avoid
+        // excessively cpu-heavy configurations
         let total_ticks = self
             .data
             .values()
