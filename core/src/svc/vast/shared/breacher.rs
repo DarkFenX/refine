@@ -1,8 +1,12 @@
+use std::collections::hash_map::Entry;
+
 use crate::{
-    def::{AttrVal, Count, SERVER_TICK_S},
+    def::{AttrVal, Count, OF, SERVER_TICK_HZ, SERVER_TICK_S},
     svc::{cycle::Cycle, output::OutputDmgBreacher, vast::StatDmgBreacher},
     util::{InfCount, RMap, ceil_unerr},
 };
+
+const DAY_TICKS: Count = 24 * 60 * 60 * SERVER_TICK_HZ as Count;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 struct AggrBreacher {
@@ -26,11 +30,21 @@ impl AggrBreacherTicks {
             Self::Complex2(_) => true,
         }
     }
-    fn get_cycle_ticks(&self) -> Count {
+    fn get_ticks_per_cycle(&self) -> Count {
         match &self {
             Self::Simple(_) => 1,
-            Self::Complex1(complex1) => complex1.get_cycle_ticks(),
-            Self::Complex2(complex2) => complex2.get_cycle_ticks(),
+            Self::Complex1(complex1) => complex1.get_ticks_per_cycle(),
+            Self::Complex2(complex2) => complex2.get_ticks_per_cycle(),
+        }
+    }
+    fn is_applied_on_tick(&self, tick: Count) -> bool {
+        match self {
+            Self::Simple(count) => match count {
+                InfCount::Count(count) => tick < *count,
+                InfCount::Infinite => true,
+            },
+            Self::Complex1(complex1) => complex1.is_applied_on_tick(tick),
+            Self::Complex2(complex2) => complex2.is_applied_on_tick(tick),
         }
     }
 }
@@ -42,8 +56,18 @@ struct AggrBreacherTicksComplex1 {
     repeat_count: InfCount,
 }
 impl AggrBreacherTicksComplex1 {
-    fn get_cycle_ticks(&self) -> Count {
+    fn get_ticks_per_cycle(&self) -> Count {
         self.dmg_tick_count + self.inactive_tick_count
+    }
+    fn is_applied_on_tick(&self, tick: Count) -> bool {
+        let ticks_per_cycle = self.dmg_tick_count + self.inactive_tick_count;
+        if let InfCount::Count(repeat_count) = self.repeat_count
+            && tick / ticks_per_cycle >= repeat_count
+        {
+            return false;
+        };
+        let in_cycle_tick = tick % ticks_per_cycle;
+        in_cycle_tick < self.dmg_tick_count
     }
 }
 
@@ -54,8 +78,14 @@ struct AggrBreacherTicksInner {
     repeat_count: Count,
 }
 impl AggrBreacherTicksInner {
-    fn get_cycle_ticks(&self) -> Count {
-        self.dmg_tick_count + self.inactive_tick_count
+    fn get_ticks_per_cycle(&self) -> Count {
+        (self.dmg_tick_count + self.inactive_tick_count) * self.repeat_count
+    }
+    fn is_applied_on_tick(&self, inner_tick: Count) -> bool {
+        // Caller should guarantee that requested tick is within total cycle bound
+        let ticks_per_inner_cycle = self.dmg_tick_count + self.inactive_tick_count;
+        let in_cycle_tick = inner_tick % ticks_per_inner_cycle;
+        in_cycle_tick < self.dmg_tick_count
     }
 }
 
@@ -66,8 +96,18 @@ struct AggrBreacherTicksComplex2 {
     inner_final: AggrBreacherTicksInner,
 }
 impl AggrBreacherTicksComplex2 {
-    fn get_cycle_ticks(&self) -> Count {
-        self.inner_early.get_cycle_ticks() + self.inner_final.get_cycle_ticks()
+    fn get_ticks_per_cycle(&self) -> Count {
+        self.inner_early.get_ticks_per_cycle() + self.inner_final.get_ticks_per_cycle()
+    }
+    fn is_applied_on_tick(&self, tick: Count) -> bool {
+        let early_ticks = self.inner_early.get_ticks_per_cycle();
+        let final_ticks = self.inner_early.get_ticks_per_cycle();
+        let ticks_per_full_cycle = early_ticks + final_ticks;
+        let in_full_cycle_tick = tick % ticks_per_full_cycle;
+        if in_full_cycle_tick < early_ticks {
+            return self.inner_early.is_applied_on_tick(in_full_cycle_tick);
+        }
+        self.inner_final.is_applied_on_tick(in_full_cycle_tick - early_ticks)
     }
 }
 
@@ -200,7 +240,7 @@ impl BreacherAccum {
         if !aggr.ticks.is_infinite() {
             return;
         }
-        let cycle_ticks = aggr.ticks.get_cycle_ticks();
+        let cycle_ticks = aggr.ticks.get_ticks_per_cycle();
         self.data.insert(aggr, cycle_ticks);
     }
     pub(in crate::svc::vast) fn get_dps(&mut self) -> Option<StatDmgBreacher> {
@@ -219,8 +259,39 @@ impl BreacherAccum {
             }
         }
         // General solution is go tick-to-tick until items are looped, pick max for each tick, and
-        // then calculate average
-        let total_ticks = self.data.values().copied().reduce(num_integer::lcm).unwrap();
-        None
+        // then calculate average. Total ticks we consider is limited by 1 day
+        let total_ticks = self
+            .data
+            .values()
+            .copied()
+            .reduce(num_integer::lcm)
+            .unwrap()
+            .min(DAY_TICKS);
+        let mut dmg_data = RMap::new();
+        for tick in 0..total_ticks {
+            let mut tick_max_abs = OF(0.0);
+            let mut tick_max_rel = OF(0.0);
+            for breacher in self.data.keys() {
+                if breacher.ticks.is_applied_on_tick(tick) {
+                    tick_max_abs = tick_max_abs.max(breacher.absolute_max);
+                    tick_max_rel = tick_max_rel.max(breacher.relative_max);
+                }
+            }
+            match dmg_data.entry((tick_max_abs, tick_max_rel)) {
+                Entry::Occupied(mut entry) => *entry.get_mut() += 1,
+                Entry::Vacant(entry) => {
+                    entry.insert(1);
+                }
+            }
+        }
+        let (total_abs, total_rel) = dmg_data
+            .into_iter()
+            .map(|((abs, rel), mul)| (abs * mul as f64, rel * mul as f64))
+            .reduce(|(l_abs, l_rel), (r_abs, r_rel)| (l_abs + r_abs, l_rel + r_rel))
+            .unwrap();
+        Some(StatDmgBreacher {
+            absolute_max: total_abs / total_ticks as f64 / SERVER_TICK_S,
+            relative_max: total_rel / total_ticks as f64 / SERVER_TICK_S,
+        })
     }
 }
