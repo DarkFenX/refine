@@ -48,6 +48,25 @@ def test_state(client, consts):
     assert api_module_stats.volley.one() == [0, 0, approx(4.8), approx(7.2)]
 
 
+def test_stacking(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_charge_id = make_eve_turret_charge_crystal(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 2, 3), volume=1,
+        get_damaged=0, hp=1, vol_dmg=0.00025, vol_chance=1)
+    eve_module_id = make_eve_turret_civilian(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 2, 3), dmg_mult=2.4,
+        cycle_time=1200, reload_time=0.01, charge_type_id=eve_charge_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one() == [0, 0, approx(8), approx(12)]
+    assert api_fit_stats.volley.one() == [0, 0, approx(9.6), approx(14.4)]
+
+
 def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_charge_id = make_eve_turret_charge_crystal(

@@ -5,12 +5,12 @@ from tests.tests.stats.dmg import make_eve_drone, setup_dmg_basics
 
 def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_module_id = make_eve_drone(
+    eve_drone_id = make_eve_drone(
         client=client, basic_info=eve_basic_info, dmgs=(0, 13, 19, 0), dmg_mult=41, cycle_time=4000)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_drone = api_fit.add_drone(type_id=eve_module_id, state=consts.ApiMinionState.engaging)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
@@ -42,3 +42,20 @@ def test_state(client, consts):
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(dps=True, volley=True))
     assert api_drone_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
     assert api_drone_stats.volley.one() == [0, approx(533), approx(779), 0]
+
+
+def test_stacking(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_drone1_id = make_eve_drone(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 13, 19, 0), dmg_mult=41, cycle_time=4000)
+    eve_drone2_id = make_eve_drone(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 13, 19), dmg_mult=36, cycle_time=4000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.engaging)
+    api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.engaging)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one() == [0, approx(133.25), approx(311.75), approx(171)]
+    assert api_fit_stats.volley.one() == [0, approx(533), approx(1247), approx(684)]

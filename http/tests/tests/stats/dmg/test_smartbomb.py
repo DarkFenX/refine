@@ -41,3 +41,17 @@ def test_state(client, consts):
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(dps=True, volley=True))
     assert api_module_stats.dps.one() == [approx(6), approx(6), approx(6), approx(6)]
     assert api_module_stats.volley.one() == [approx(45), approx(45), approx(45), approx(45)]
+
+
+def test_stacking(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_smartbomb(client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one() == [approx(12), approx(12), approx(12), approx(12)]
+    assert api_fit_stats.volley.one() == [approx(90), approx(90), approx(90), approx(90)]

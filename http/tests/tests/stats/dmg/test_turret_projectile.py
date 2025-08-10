@@ -49,6 +49,25 @@ def test_state(client, consts):
     assert api_module_stats.volley.one() == [0, approx(1035), approx(207), 0]
 
 
+def test_stacking(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_turret_proj(
+        client=client, basic_info=eve_basic_info, dmg_mult=45, capacity=0.25, cycle_time=8000, reload_time=10000)
+    eve_charge1_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 23, 4.6, 0), volume=0.0125)
+    eve_charge2_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(20.7, 0, 2.3, 4.6), volume=0.0125)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one() == [approx(116.4375), approx(129.375), approx(38.8125), approx(25.875)]
+    assert api_fit_stats.volley.one() == [approx(931.5), approx(1035), approx(310.5), approx(207)]
+
+
 def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_proj(

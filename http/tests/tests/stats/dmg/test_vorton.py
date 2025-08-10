@@ -49,6 +49,25 @@ def test_state(client, consts):
     assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
 
 
+def test_stacking(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_vorton(
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
+    eve_charge1_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
+    eve_charge2_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(218, 0, 212, 0), volume=0.0125)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one() == [approx(270.733333), 0, approx(258.07), 0]
+    assert api_fit_stats.volley.one() == [approx(1624.4), 0, approx(1548.42), 0]
+
+
 def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
