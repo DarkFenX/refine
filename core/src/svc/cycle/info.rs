@@ -17,6 +17,13 @@ pub(in crate::svc) enum Cycle {
     Reload2(CycleReload2),
 }
 impl Cycle {
+    pub(in crate::svc) fn is_infinite(&self) -> bool {
+        match &self {
+            Self::Simple(simple) => matches!(simple.repeat_count, InfCount::Infinite),
+            Self::Reload1(_) => true,
+            Self::Reload2(_) => true,
+        }
+    }
     pub(in crate::svc) fn get_cycles_until_empty(&self) -> InfCount {
         match self {
             Self::Simple(simple) => simple.get_cycles_until_empty(),

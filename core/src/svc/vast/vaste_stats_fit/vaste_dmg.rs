@@ -1,10 +1,10 @@
 use crate::{
-    misc::Spool,
+    misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatDmg, VastFitData},
+        vast::{StatDmg, VastFitData, shared::BreacherAccum},
     },
 };
 
@@ -21,16 +21,17 @@ impl VastFitData {
         reload: bool,
         spool: Option<Spool>,
     ) -> StatDmg {
-        let options = CycleOptions {
+        let cycle_options = CycleOptions {
             reload_mode: match reload {
                 true => CycleOptionReload::Sim,
                 false => CycleOptionReload::Burst,
             },
             charged_optionals: false,
         };
-        let mut dps = StatDmg::new();
+        let mut dps_normal = DmgKinds::new();
+        let mut breacher_accum = BreacherAccum::new();
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, false) {
+            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
@@ -44,9 +45,35 @@ impl VastFitData {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                dps.stack_normal_div(output_per_cycle.get_total(), effect_cycles.get_average_cycle_time());
+                if !effect_cycles.is_infinite() {
+                    continue;
+                }
+                dps_normal += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
             }
         }
+        for (&item_key, item_data) in self.dmg_breacher.iter() {
+            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
+                Some(cycle_map) => cycle_map,
+                None => continue,
+            };
+            for (&effect_key, dmg_getter) in item_data.iter() {
+                let r_effect = ctx.u_data.src.get_effect(effect_key);
+                let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, None) {
+                    Some(output_per_cycle) => output_per_cycle,
+                    None => continue,
+                };
+                let effect_cycles = match cycle_map.get(&effect_key) {
+                    Some(effect_cycles) => effect_cycles,
+                    None => continue,
+                };
+                if !effect_cycles.is_infinite() {
+                    continue;
+                }
+                breacher_accum.add(output_per_cycle, *effect_cycles);
+            }
+        }
+        let mut dps = StatDmg::from(dps_normal);
+        dps.breacher = breacher_accum.get_dps();
         dps
     }
     pub(in crate::svc) fn get_stat_volley(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> StatDmg {
@@ -65,7 +92,7 @@ impl VastFitData {
                 if !cycle_map.contains_key(&effect_key) {
                     continue;
                 };
-                volley.stack_normal(output_per_cycle.get_max());
+                volley.stack_instance_normal(output_per_cycle.get_max());
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
@@ -82,7 +109,7 @@ impl VastFitData {
                 if !cycle_map.contains_key(&effect_key) {
                     continue;
                 };
-                volley.stack_breacher_output(output_per_cycle);
+                volley.stack_instance_breacher_output(output_per_cycle);
             }
         }
         volley

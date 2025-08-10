@@ -58,6 +58,9 @@ fn get_orrps(
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
+            if !effect_cycles.is_infinite() {
+                continue;
+            }
             rps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
         }
     }

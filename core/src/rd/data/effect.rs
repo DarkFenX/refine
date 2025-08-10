@@ -49,9 +49,6 @@ impl REffect {
         );
     }
     // Methods which expose adapted effect info
-    pub(crate) fn get_a_effect(&self) -> &AEffect {
-        &self.a_effect
-    }
     pub(crate) fn get_category(&self) -> AEffectCatId {
         self.a_effect.category
     }

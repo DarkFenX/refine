@@ -18,10 +18,10 @@ def test_state(client, consts):
         charge_type_id=eve_charge_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one().breacher is None
+    assert api_fit_stats.dps.one().breacher == [approx(1000), approx(0.01)]
     assert api_fit_stats.volley.one().breacher == [approx(1000), approx(0.01)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=True, volley=True))
-    assert api_charge_stats.dps.one().breacher is None
+    assert api_charge_stats.dps.one().breacher == [approx(1000), approx(0.01)]
     assert api_charge_stats.volley.one().breacher == [approx(1000), approx(0.01)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
@@ -34,7 +34,7 @@ def test_state(client, consts):
         volley=(True, [StatsOptionItemVolley(), StatsOptionItemVolley(ignore_state=True)])))
     api_charge_dps_normal, api_charge_dps_ignored = api_charge_stats.dps
     assert api_charge_dps_normal.breacher is None
-    assert api_charge_dps_ignored.breacher is None
+    assert api_charge_dps_ignored.breacher == [approx(1000), approx(0.01)]
     api_charge_volley_normal, api_charge_volley_ignored = api_charge_stats.volley
     assert api_charge_volley_normal.breacher is None
     assert api_charge_volley_ignored.breacher == [approx(1000), approx(0.01)]
@@ -42,8 +42,8 @@ def test_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one().breacher is None
+    assert api_fit_stats.dps.one().breacher == [approx(1000), approx(0.01)]
     assert api_fit_stats.volley.one().breacher == [approx(1000), approx(0.01)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=True, volley=True))
-    assert api_charge_stats.dps.one().breacher is None
+    assert api_charge_stats.dps.one().breacher == [approx(1000), approx(0.01)]
     assert api_charge_stats.volley.one().breacher == [approx(1000), approx(0.01)]
