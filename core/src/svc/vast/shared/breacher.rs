@@ -207,19 +207,19 @@ impl BreacherAccum {
         if self.data.is_empty() {
             return None;
         };
-        // When all the breachers are permanently applied, just pick max for both parameters
-        if self
-            .data
-            .keys()
-            .all(|v| matches!(v.ticks, AggrBreacherTicks::Simple(_)))
-        {
-            return Some(StatDmgBreacher {
-                absolute_max: self.data.keys().map(|v| v.absolute_max).max().unwrap() / SERVER_TICK_S,
-                relative_max: self.data.keys().map(|v| v.relative_max).max().unwrap() / SERVER_TICK_S,
-            });
+        // If breachers with max damage are infinitely cycling, no complex calcs needed
+        let best_breacher_abs = self.data.keys().max_by_key(|v| v.absolute_max).unwrap();
+        if matches!(best_breacher_abs.ticks, AggrBreacherTicks::Simple(_)) {
+            let best_breacher_rel = self.data.keys().max_by_key(|v| v.relative_max).unwrap();
+            if matches!(best_breacher_rel.ticks, AggrBreacherTicks::Simple(_)) {
+                return Some(StatDmgBreacher {
+                    absolute_max: best_breacher_abs.absolute_max / SERVER_TICK_S,
+                    relative_max: best_breacher_abs.relative_max / SERVER_TICK_S,
+                });
+            }
         }
-        // General solution is go tick-to-tick until all modules are restarted, pick max for each
-        // tick, and then calculate average
+        // General solution is go tick-to-tick until items are looped, pick max for each tick, and
+        // then calculate average
         let total_ticks = self.data.values().copied().reduce(num_integer::lcm).unwrap();
         None
     }
