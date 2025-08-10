@@ -240,8 +240,12 @@ impl BreacherAccum {
         if !aggr.ticks.is_infinite() {
             return;
         }
-        let cycle_ticks = aggr.ticks.get_ticks_per_cycle();
-        self.data.insert(aggr, cycle_ticks);
+        match self.data.entry(aggr) {
+            Entry::Occupied(_) => (),
+            Entry::Vacant(entry) => {
+                entry.insert(aggr.ticks.get_ticks_per_cycle());
+            }
+        }
     }
     pub(in crate::svc::vast) fn get_dps(&mut self) -> Option<StatDmgBreacher> {
         if self.data.is_empty() {
