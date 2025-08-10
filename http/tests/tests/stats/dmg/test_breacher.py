@@ -47,3 +47,24 @@ def test_state(client, consts):
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=True, volley=True))
     assert api_charge_stats.dps.one().breacher == [approx(1000), approx(0.01)]
     assert api_charge_stats.volley.one().breacher == [approx(1000), approx(0.01)]
+
+
+def test_stacking_simple(client, consts):
+    # Simple scenario is when best relative/absolute breachers are infinitely cycling; in this case,
+    # breacher "sim" is not used
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_launcher(
+        client=client, basic_info=eve_basic_info, capacity=25, cycle_time=10000, reload_time=30000)
+    eve_charge1_id = make_eve_breacher(
+        client=client, basic_info=eve_basic_info, dmg_abs=1000, dmg_rel=0.8, dmg_duration=75000, volume=0.5)
+    eve_charge2_id = make_eve_breacher(
+        client=client, basic_info=eve_basic_info, dmg_abs=800, dmg_rel=1, dmg_duration=75000, volume=0.5)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit_stats.dps.one().breacher == [approx(1000), approx(0.01)]
+    assert api_fit_stats.volley.one().breacher == [approx(1000), approx(0.01)]

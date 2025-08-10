@@ -254,7 +254,7 @@ impl BreacherAccum {
             if matches!(best_breacher_rel.ticks, AggrBreacherTicks::Simple(_)) {
                 return Some(StatDmgBreacher {
                     absolute_max: best_breacher_abs.absolute_max / SERVER_TICK_S,
-                    relative_max: best_breacher_abs.relative_max / SERVER_TICK_S,
+                    relative_max: best_breacher_rel.relative_max / SERVER_TICK_S,
                 });
             }
         }
