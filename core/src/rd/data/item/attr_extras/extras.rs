@@ -13,6 +13,7 @@ use super::{
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
     kind::{get_item_kind_inherited, get_item_kind_initial},
+    mobility::is_mobile,
     overload_td_lvl::get_overload_td_lvl,
     sec_zone::is_sec_zone_limitable,
     ship_kind::get_item_ship_kind,
@@ -88,6 +89,8 @@ pub(crate) struct RItemAXt {
     pub(crate) charge_size: Option<AAttrVal>,
     // Unmutated and unmodified charge rate
     pub(crate) charge_rate: ACount,
+    // True if item has some speed
+    pub(crate) is_mobile: bool,
 }
 impl RItemAXt {
     // Build extras out of item with its original attributes
@@ -121,6 +124,7 @@ impl RItemAXt {
             remote_resist_attr_id: get_remote_resist_attr_id(&a_item.attrs),
             charge_size: get_charge_size(&a_item.attrs),
             charge_rate: get_charge_rate(&a_item.attrs),
+            is_mobile: is_mobile(&a_item.attrs),
         }
     }
     // Build extras out of item with overridden attributes
@@ -160,6 +164,7 @@ impl RItemAXt {
             remote_resist_attr_id: get_remote_resist_attr_id(attrs),
             charge_size: get_charge_size(attrs),
             charge_rate: get_charge_rate(attrs),
+            is_mobile: is_mobile(attrs),
         }
     }
 }

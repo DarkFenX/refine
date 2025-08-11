@@ -15,6 +15,7 @@ mod extras;
 mod fighter_count;
 mod fighter_kind;
 mod kind;
+mod mobility;
 mod overload_td_lvl;
 mod sec_zone;
 mod ship_kind;

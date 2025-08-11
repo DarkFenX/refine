@@ -1,3 +1,5 @@
+use crate::{rd::REffect, svc::SvcCtx, ud::UItem};
+
 /// Items which will be included in damage stats.
 #[derive(Clone)]
 pub struct StatDmgItemKinds {
@@ -39,5 +41,29 @@ impl StatDmgItemKinds {
             minion_mobile: false,
             minion_static: false,
         }
+    }
+    pub(in crate::svc::vast) fn resolve(&self, ctx: SvcCtx, u_item: &UItem, r_effect: &REffect) -> bool {
+        match u_item {
+            // Here we assume that autocharges always belong to fighters, and fighters are always
+            // mobile
+            UItem::Autocharge(autocharge) => {
+                let cont_u_item = ctx.u_data.items.get(autocharge.get_cont_item_key());
+                return self.resolve(ctx, cont_u_item, r_effect);
+            }
+            UItem::Drone(drone) => {
+                return match drone.get_axt().unwrap().is_mobile {
+                    true => self.minion_mobile,
+                    false => self.minion_static,
+                };
+            }
+            UItem::Fighter(fighter) => {
+                return match fighter.get_axt().unwrap().is_mobile {
+                    true => self.minion_mobile,
+                    false => self.minion_static,
+                };
+            }
+            _ => (),
+        };
+        true
     }
 }
