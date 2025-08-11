@@ -4,7 +4,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatDmg, VastFitData, shared::BreacherAccum},
+        vast::{StatDmg, StatDmgItemKinds, VastFitData, shared::BreacherAccum},
     },
 };
 
@@ -18,6 +18,7 @@ impl VastFitData {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
+        item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
     ) -> StatDmg {
@@ -76,7 +77,13 @@ impl VastFitData {
         dps.breacher = breacher_accum.get_dps();
         dps
     }
-    pub(in crate::svc) fn get_stat_volley(&self, ctx: SvcCtx, calc: &mut Calc, spool: Option<Spool>) -> StatDmg {
+    pub(in crate::svc) fn get_stat_volley(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_kinds: StatDmgItemKinds,
+        spool: Option<Spool>,
+    ) -> StatDmg {
         let mut volley = StatDmg::new();
         for (&item_key, item_data) in self.dmg_normal.iter() {
             let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {

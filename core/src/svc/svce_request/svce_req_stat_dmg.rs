@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatDmg, Vast},
+        vast::{StatDmg, StatDmgItemKinds, Vast},
     },
     ud::{UData, UFitKey},
 };
@@ -13,12 +13,14 @@ impl Svc {
         &mut self,
         u_data: &UData,
         fit_key: UFitKey,
+        item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
     ) -> StatDmg {
         self.vast.get_fit_data(&fit_key).get_stat_dps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
+            item_kinds,
             reload,
             spool,
         )
@@ -42,10 +44,19 @@ impl Svc {
             ignore_state,
         )
     }
-    pub(crate) fn get_stat_fit_volley(&mut self, u_data: &UData, fit_key: UFitKey, spool: Option<Spool>) -> StatDmg {
-        self.vast
-            .get_fit_data(&fit_key)
-            .get_stat_volley(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, spool)
+    pub(crate) fn get_stat_fit_volley(
+        &mut self,
+        u_data: &UData,
+        fit_key: UFitKey,
+        item_kinds: StatDmgItemKinds,
+        spool: Option<Spool>,
+    ) -> StatDmg {
+        self.vast.get_fit_data(&fit_key).get_stat_volley(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            item_kinds,
+            spool,
+        )
     }
     pub(crate) fn get_stat_item_volley(
         &mut self,
