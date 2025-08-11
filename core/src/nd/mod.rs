@@ -5,7 +5,8 @@
 
 pub(crate) use eff::{
     N_EFFECT_MAP, N_EFFECTS, NBreacherDmgGetter, NCalcCustomizer, NEffect, NEffectCharge, NEffectChargeDepl,
-    NEffectChargeLoc, NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
+    NEffectChargeLoc, NEffectDmgKind, NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter,
+    NSpoolResolver,
 };
 
 mod eff;

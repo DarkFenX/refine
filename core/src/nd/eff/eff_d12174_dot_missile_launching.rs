@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectHc,
+        NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_missile, get_proj_mult_missile},
     },
     rd::REffect,
@@ -23,6 +23,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         xt_get_proj_attrs: Some(get_proj_attrs_missile),
         hc: NEffectHc {
+            dmg_kind: Some(NEffectDmgKind::Breacher),
             proj_mult_getter: Some(get_proj_mult_missile),
             breacher_dmg_opc_getter: Some(get_dmg_opc),
             ..

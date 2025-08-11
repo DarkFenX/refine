@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::{DmgKinds, Spool},
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
     },
     rd::REffect,
@@ -27,6 +27,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
+            dmg_kind: Some(NEffectDmgKind::Vorton),
             charge: Some(NEffectCharge {
                 location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
                     can_run_uncharged: false,

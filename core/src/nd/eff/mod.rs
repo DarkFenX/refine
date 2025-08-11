@@ -4,7 +4,7 @@ pub(crate) use eff::{
     NBreacherDmgGetter, NCalcCustomizer, NEffect, NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter,
     NRemoteRepGetter, NSpoolResolver,
 };
-pub(crate) use shared::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
+pub(crate) use shared::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind};
 
 use crate::ad;
 

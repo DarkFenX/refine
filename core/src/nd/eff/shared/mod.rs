@@ -1,6 +1,8 @@
+pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect_charge::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 
 pub(in crate::nd::eff) mod damp;
+mod dmg_kind;
 mod effect_charge;
 pub(in crate::nd::eff) mod missile_dmg_self_srq;
 pub(in crate::nd::eff) mod opc_rep;

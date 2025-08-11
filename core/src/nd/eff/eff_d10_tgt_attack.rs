@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::{DmgKinds, Spool},
     nd::{
-        NEffect, NEffectCharge, NEffectChargeLoc, NEffectHc,
+        NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
         eff::shared::proj_mult::{get_proj_attrs_normal, get_proj_mult_normal_unrestricted_s2s},
     },
     rd::REffect,
@@ -27,6 +27,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         xt_get_proj_attrs: Some(get_proj_attrs_normal),
         hc: NEffectHc {
+            dmg_kind: Some(NEffectDmgKind::Turret),
             charge: Some(NEffectCharge {
                 // Autocharge attribute ID is defined just for completeness of data. CCP Kestrel
                 // confirmed civilian guns use on-gun damage attributes, and ammo is possibly loaded

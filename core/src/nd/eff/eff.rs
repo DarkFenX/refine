@@ -3,7 +3,7 @@ use crate::{
     def::AttrVal,
     ed,
     misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
-    nd::NEffectCharge,
+    nd::{NEffectCharge, NEffectDmgKind},
     rd,
     svc::{
         SvcCtx,
@@ -48,6 +48,7 @@ pub(crate) struct NEffect {
 
 #[derive(Copy, Clone, Default)]
 pub(crate) struct NEffectHc {
+    pub(crate) dmg_kind: Option<NEffectDmgKind> = None,
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) kills_item: bool = false,
     // Effect modifier customization function ran during runtime in calculator service

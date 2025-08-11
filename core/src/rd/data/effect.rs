@@ -1,8 +1,8 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AState},
     nd::{
-        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NEffectCharge, NEffectChargeLoc, NEffectHc, NLocalRepGetter,
-        NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
+        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
+        NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
     },
     rd::{REffectKey, RItem},
     util::{GetId, Named, RMap},
@@ -97,6 +97,9 @@ impl REffect {
     }
     pub(crate) fn kills_item(&self) -> bool {
         self.n_effect_hc.kills_item
+    }
+    pub(crate) fn get_dmg_kind(&self) -> Option<NEffectDmgKind> {
+        self.n_effect_hc.dmg_kind
     }
     pub(crate) fn get_calc_customizer(&self) -> Option<NCalcCustomizer> {
         self.n_effect_hc.calc_customizer

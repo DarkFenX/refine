@@ -1,4 +1,4 @@
-use crate::{rd::REffect, svc::SvcCtx, ud::UItem};
+use crate::{nd::NEffectDmgKind, rd::REffect, svc::SvcCtx, ud::UItem};
 
 /// Items which will be included in damage stats.
 #[derive(Clone)]
@@ -64,6 +64,18 @@ impl StatDmgItemKinds {
             }
             _ => (),
         };
-        true
+        let dmg_kind = match r_effect.get_dmg_kind() {
+            Some(dmg_kind) => dmg_kind,
+            None => return false,
+        };
+        match dmg_kind {
+            NEffectDmgKind::Turret => self.turret,
+            NEffectDmgKind::Missile => self.missile,
+            NEffectDmgKind::Breacher => self.breacher,
+            NEffectDmgKind::Vorton => self.vorton,
+            NEffectDmgKind::Bomb => self.bomb,
+            NEffectDmgKind::Smartbomb => self.smartbomb,
+            NEffectDmgKind::Superweapon => self.superweapon,
+        }
     }
 }
