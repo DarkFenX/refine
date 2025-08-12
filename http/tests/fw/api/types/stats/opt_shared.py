@@ -2,11 +2,16 @@ import dataclasses
 
 from tests.fw.api.aliases import DpsProfile
 from tests.fw.util import Absent
+from .opt_dmg import StatDmgItemKinds
+from .opt_remote_rps import StatRemoteRpsItemKinds
 
 type StatOptionAlias = bool | type[Absent]
 type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
 type StatOptionRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionRps]]
 type StatOptionErpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionErps]]
+type StatOptionFitDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitDps]]
+type StatOptionFitVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitVolley]]
+type StatOptionFitRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteRps]]
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -31,6 +36,37 @@ class StatsOptionRps:
 class StatsOptionErps:
 
     incoming_dps: DpsProfile | type[Absent] = Absent
+    spool: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionFitDps:
+
+    item_kinds: StatDmgItemKinds | type[Absent] = Absent
+    reload: bool | type[Absent] = Absent
+    spool: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionFitVolley:
+
+    item_kinds: StatDmgItemKinds | type[Absent] = Absent
+    spool: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionFitRemoteRps:
+
+    item_kinds: StatRemoteRpsItemKinds | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:

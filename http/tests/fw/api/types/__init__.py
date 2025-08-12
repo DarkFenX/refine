@@ -1,6 +1,7 @@
 from .sol import SolarSystem
 from .stats import (
     FitStatsOptions,
+    FleetStatsOptions,
     ItemStatsOptions,
     StatDmgItemKinds,
     StatRemoteRpsItemKinds,

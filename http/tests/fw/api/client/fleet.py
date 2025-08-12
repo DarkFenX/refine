@@ -3,12 +3,12 @@ from __future__ import annotations
 import typing
 
 from tests.fw.request import Request
-from tests.fw.util import conditional_insert
+from tests.fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
+    from tests.fw.api.types import FleetStatsOptions
     from tests.fw.consts import ApiFleetInfoMode
-    from tests.fw.util import Absent
 
 
 class ApiClientFleet(ApiClientBase):
@@ -26,6 +26,21 @@ class ApiClientFleet(ApiClientBase):
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}/fleet/{fleet_id}',
             params=params)
+
+    def get_fleet_stats_request(
+            self, *,
+            sol_id: str,
+            fleet_id: str,
+            options: FleetStatsOptions | type[Absent],
+    ) -> Request:
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/fleet/{fleet_id}/stats'}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if options is not Absent:
+            kwargs['json'] = options.to_dict()
+        return Request(client=self, **kwargs)
 
     def create_fleet_request(
             self, *,

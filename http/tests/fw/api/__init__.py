@@ -1,6 +1,7 @@
 from .client import ApiClient
 from .types import (
     FitStatsOptions,
+    FleetStatsOptions,
     ItemStatsOptions,
     StatDmgItemKinds,
     StatRemoteRpsItemKinds,

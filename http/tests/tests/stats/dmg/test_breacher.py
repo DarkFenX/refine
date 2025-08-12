@@ -1,6 +1,7 @@
 from tests import approx
 from tests.fw.api import (
     FitStatsOptions,
+    FleetStatsOptions,
     ItemStatsOptions,
     StatDmgItemKinds,
     StatsOptionFitDps,
@@ -9,9 +10,6 @@ from tests.fw.api import (
     StatsOptionItemVolley,
 )
 from tests.tests.stats.dmg import make_eve_breacher, make_eve_launcher, setup_dmg_basics
-
-# TODO: most of tests with 2+ different breachers should be rewritten into different fits + fleet
-# TODO: stats when they are implemented
 
 
 def test_state(client, consts):
@@ -83,8 +81,7 @@ def test_stacking_simple(client, consts):
 
 def test_stacking_complex_realistic(client, consts):
     # Realistic case of 2 Tholoses - one with higher DPS and bad reload/duration skills, and another
-    # with permanently applied breacher with worse DPS (but in this case, both breachers are on one
-    # fit due to the lib not having fleet-wide stats yet)
+    # with permanently applied breacher with worse DPS
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module1_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=4, cycle_time=24000, reload_time=30000)
@@ -96,11 +93,14 @@ def test_stacking_complex_realistic(client, consts):
         client=client, basic_info=eve_basic_info, dmg_abs=160, dmg_rel=0.6, dmg_duration=75000, volume=0.1)
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
-    api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
+    api_fit1 = api_sol.create_fit()
+    api_fit1.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
+    api_fit2 = api_sol.create_fit()
+    api_fit2.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [StatsOptionFitDps(reload=True)])))
+    api_fit_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [StatsOptionFitDps(reload=True)])))
     assert api_fit_stats.dps.one().breacher == [approx(199.838384), approx(0.007493939)]
 
 

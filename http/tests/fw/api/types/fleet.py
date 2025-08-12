@@ -4,10 +4,12 @@ import typing
 
 from tests.fw.consts import ApiFleetInfoMode
 from tests.fw.util import AttrDict, AttrHookDef
+from .stats import FleetStats
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.util import Absent
+    from .stats import FleetStatsOptions
 
 
 class Fleet(AttrDict):
@@ -57,3 +59,16 @@ class Fleet(AttrDict):
         resp = self._client.remove_fleet_request(sol_id=self._sol_id, fleet_id=self.id).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
+
+    def get_stats(
+            self, *,
+            options: FleetStatsOptions | type[Absent],
+            status_code: int = 200,
+    ) -> FleetStats | None:
+        resp = self._client.get_fleet_stats_request(
+            sol_id=self._sol_id,
+            fleet_id=self.id,
+            options=options).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        return FleetStats(data=resp.json())
