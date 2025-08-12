@@ -4,12 +4,13 @@ use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
         HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkTryFitItemsCmd, HChangeFitCommand,
-        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd, HGetItemStatsCmd,
-        HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
+        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd, HGetFleetStatsCmd,
+        HGetItemStatsCmd, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd, get_primary_fit,
+        get_primary_fleet,
     },
     info::{
-        HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode,
-        HItemStats, HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
+        HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HFleetStats, HItemInfo,
+        HItemInfoMode, HItemStats, HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
     },
     util::HExecError,
 };
@@ -232,6 +233,28 @@ impl HSolarSystemInner {
                     Err(exec_error) => Err(exec_error.into()),
                 };
                 (core_sol, result)
+            })
+            .await;
+        self.put_sol_back(core_sol);
+        result
+    }
+    /// Non-fallible
+    #[tracing::instrument(name = "sol-fleet-stat", level = "trace", skip_all)]
+    pub(crate) async fn get_fleet_stats(
+        &mut self,
+        tpool: &HThreadPool,
+        fleet_id: &str,
+        command: HGetFleetStatsCmd,
+    ) -> Result<HFleetStats, HBrError> {
+        let fleet_id = self.str_to_fleet_id(fleet_id)?;
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                let result = command.execute(&mut core_sol, &fleet_id);
+                (core_sol, result.map_err(HBrError::from))
             })
             .await;
         self.put_sol_back(core_sol);
