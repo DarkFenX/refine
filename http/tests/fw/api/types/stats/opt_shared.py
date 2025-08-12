@@ -38,4 +38,9 @@ class StatsOptionErps:
 
 
 def dc_to_dict(data: dataclasses.dataclass) -> dict:
-    return dataclasses.asdict(data, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
+    return dataclasses.asdict(
+        data, dict_factory=lambda d: {k: dc_to_dict(v) if _is_dc_instance(v) else v for k, v in d if v is not Absent})
+
+
+def _is_dc_instance(obj):
+    return dataclasses.is_dataclass(obj) and not isinstance(obj, type)
