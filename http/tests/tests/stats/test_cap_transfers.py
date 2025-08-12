@@ -1,5 +1,5 @@
 from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionItemRemoteCps
+from tests.fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionItemRemoteCps
 
 
 def test_state(client, consts):
@@ -17,7 +17,11 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
+    assert api_fleet_stats.remote_cps == approx(70.2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
     assert api_fit_stats.remote_cps == approx(70.2)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
@@ -25,6 +29,8 @@ def test_state(client, consts):
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
+    assert api_fleet_stats.remote_cps == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
     assert api_fit_stats.remote_cps == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=(True, [
@@ -34,6 +40,8 @@ def test_state(client, consts):
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
+    assert api_fleet_stats.remote_cps == approx(70.2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
     assert api_fit_stats.remote_cps == approx(70.2)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
@@ -55,7 +63,11 @@ def test_zero_cycle_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
+    assert api_fleet_stats.remote_cps == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
     assert api_fit_stats.remote_cps == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
@@ -76,7 +88,11 @@ def test_no_cycle_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
+    assert api_fleet_stats.remote_cps == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
     assert api_fit_stats.remote_cps == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
@@ -89,8 +105,12 @@ def test_item_not_loaded(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
-    assert api_stats.remote_cps == 0
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
+    assert api_fleet_stats.remote_cps == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
+    assert api_fit_stats.remote_cps == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
     assert api_module_stats.remote_cps is None

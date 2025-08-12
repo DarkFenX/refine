@@ -1,6 +1,7 @@
 from tests import approx
 from tests.fw.api import (
     FitStatsOptions,
+    FleetStatsOptions,
     ItemStatsOptions,
     StatRemoteRpsItemKinds,
     StatsOptionFitRemoteRps,
@@ -18,7 +19,11 @@ def test_state(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=True))
+    assert api_fleet_stats.remote_rps.one().hull == approx(9.7)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=True))
     assert api_fit_stats.remote_rps.one().hull == approx(9.7)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_rps=True))
@@ -29,6 +34,8 @@ def test_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.online)
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=True))
+    assert api_fleet_stats.remote_rps.one().hull == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=True))
     assert api_fit_stats.remote_rps.one().hull == 0
     api_stat_options = [StatsOptionItemRemoteRps(ignore_state=False), StatsOptionItemRemoteRps(ignore_state=True)]
@@ -40,6 +47,8 @@ def test_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.active)
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=True))
+    assert api_fleet_stats.remote_rps.one().hull == approx(9.7)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=True))
     assert api_fit_stats.remote_rps.one().hull == approx(9.7)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_rps=True))
@@ -57,7 +66,17 @@ def test_item_kind(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=(True, [
+        StatsOptionFitRemoteRps(),
+        StatsOptionFitRemoteRps(item_kinds=StatRemoteRpsItemKinds(default=False, module=True)),
+        StatsOptionFitRemoteRps(item_kinds=StatRemoteRpsItemKinds(default=False, minion=True))])))
+    api_fleet_rrps_default, api_fleet_rrps_module, api_fleet_rrps_minion = api_fleet_stats.remote_rps
+    assert api_fleet_rrps_default.hull == approx(9.7)
+    assert api_fleet_rrps_module.hull == approx(2.5)
+    assert api_fleet_rrps_minion.hull == approx(7.2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=(True, [
         StatsOptionFitRemoteRps(),
         StatsOptionFitRemoteRps(item_kinds=StatRemoteRpsItemKinds(default=False, module=True)),
@@ -77,7 +96,11 @@ def test_zero_cycle_time(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=True))
+    assert api_fleet_stats.remote_rps.one().hull == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=True))
     assert api_fit_stats.remote_rps.one().hull == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_rps=True))
@@ -95,7 +118,11 @@ def test_no_cycle_time(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=True))
+    assert api_fleet_stats.remote_rps.one().hull == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=True))
     assert api_fit_stats.remote_rps.one().hull == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_rps=True))
@@ -112,7 +139,11 @@ def test_item_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_item_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=True))
+    assert api_fleet_stats.remote_rps.one().hull == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=True))
     assert api_fit_stats.remote_rps.one().hull == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_rps=True))
