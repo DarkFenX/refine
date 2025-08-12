@@ -18,6 +18,7 @@ mod eff_c6_stability_generator_plasma;
 mod eff_c7_stability_generator_exotic;
 mod eff_c8_stability_generator_gamma;
 mod eff_d101_use_missiles;
+mod eff_d104_fof_missile_launching;
 mod eff_d10_tgt_attack;
 mod eff_d11691_debuff_lance;
 mod eff_d12174_dot_missile_launching;
@@ -111,6 +112,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d38_emp_wave::mk_n_effect(),
         eff_d67_mining_laser::mk_n_effect(),
         eff_d101_use_missiles::mk_n_effect(),
+        eff_d104_fof_missile_launching::mk_n_effect(),
         eff_d660_missile_em_dmg_bonus::mk_n_effect(),
         eff_d661_missile_expl_dmg_bonus::mk_n_effect(),
         eff_d662_missile_therm_dmg_bonus::mk_n_effect(),

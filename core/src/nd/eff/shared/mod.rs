@@ -3,6 +3,7 @@ pub(crate) use effect_charge::{NEffectCharge, NEffectChargeDepl, NEffectChargeLo
 
 pub(in crate::nd::eff) mod damp;
 mod dmg_kind;
+pub(in crate::nd::eff) mod dmg_opc;
 mod effect_charge;
 pub(in crate::nd::eff) mod missile_dmg_self_srq;
 pub(in crate::nd::eff) mod opc_rep;

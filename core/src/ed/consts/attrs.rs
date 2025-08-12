@@ -194,6 +194,7 @@ pub(crate) const WARFARE_BUFF4_ID: EAttrId = 2536;
 pub(crate) const WARFARE_BUFF4_VAL: EAttrId = 2537;
 pub(crate) const ONLINE_MAX_SECURITY_CLASS: EAttrId = 2581;
 pub(crate) const PILOT_SECURITY_STATUS: EAttrId = 2610;
+pub(crate) const MAX_FOF_TGT_RANGE: EAttrId = 2700;
 pub(crate) const DMG_MULT_BONUS_PER_CYCLE: EAttrId = 2733;
 pub(crate) const DMG_MULT_BONUS_MAX: EAttrId = 2734;
 pub(crate) const FTR_ST_LIGHT_SLOTS: EAttrId = 2737;
