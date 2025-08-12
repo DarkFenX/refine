@@ -2,7 +2,6 @@ from tests import approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionFitDps, StatsOptionItemDps, StatsOptionItemVolley
 from tests.tests.stats.dmg import make_eve_breacher, make_eve_launcher, setup_dmg_basics
 
-
 # TODO: most of tests with 2+ different breachers should be rewritten into different fits + fleet
 # TODO: stats when they are implemented
 
