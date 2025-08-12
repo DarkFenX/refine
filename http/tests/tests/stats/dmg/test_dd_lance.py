@@ -1,6 +1,7 @@
 from tests import approx
 from tests.fw.api import (
     FitStatsOptions,
+    FleetStatsOptions,
     ItemStatsOptions,
     StatDmgItemKinds,
     StatsOptionFitDps,
@@ -25,7 +26,12 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, approx(1275), 0, 0]
+    assert api_fleet_stats.volley.one() == [0, approx(25500), 0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(1275), 0, 0]
     assert api_fit_stats.volley.one() == [0, approx(25500), 0, 0]
@@ -70,13 +76,23 @@ def test_stacking(client, consts):
         dmg_duration=15000)
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit1 = api_sol.create_fit()
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit2 = api_sol.create_fit()
+    api_fit2.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one() == [0, approx(2550), 0, 0]
-    assert api_fit_stats.volley.one() == [0, approx(51000), 0, 0]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, approx(3825), 0, 0]
+    assert api_fleet_stats.volley.one() == [0, approx(76500), 0, 0]
+    api_fit1_stats = api_fit1.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit1_stats.dps.one() == [0, approx(2550), 0, 0]
+    assert api_fit1_stats.volley.one() == [0, approx(51000), 0, 0]
+    api_fit2_stats = api_fit2.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit2_stats.dps.one() == [0, approx(1275), 0, 0]
+    assert api_fit2_stats.volley.one() == [0, approx(25500), 0, 0]
 
 
 def test_item_kind(client, consts):
@@ -93,7 +109,26 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=True, superweapon=False)),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, superweapon=True))]),
+        volley=(True, [
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=True, superweapon=False)),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, superweapon=True))])))
+    api_fleet_dps_default, api_fleet_dps_disabled, api_fleet_dps_enabled = api_fleet_stats.dps
+    assert api_fleet_dps_default == [0, approx(1275), 0, 0]
+    assert api_fleet_dps_disabled == [0, 0, 0, 0]
+    assert api_fleet_dps_enabled == [0, approx(1275), 0, 0]
+    api_fleet_volley_default, api_fleet_volley_disabled, api_fleet_volley_enabled = api_fleet_stats.volley
+    assert api_fleet_volley_default == [0, approx(25500), 0, 0]
+    assert api_fleet_volley_disabled == [0, 0, 0, 0]
+    assert api_fleet_volley_enabled == [0, approx(25500), 0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
             StatsOptionFitDps(),

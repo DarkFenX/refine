@@ -1,6 +1,7 @@
 from tests import Spool, approx
 from tests.fw.api import (
     FitStatsOptions,
+    FleetStatsOptions,
     ItemStatsOptions,
     StatDmgItemKinds,
     StatsOptionFitDps,
@@ -26,7 +27,12 @@ def test_state(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, approx(386.525229), 0, approx(202.465596)]
+    assert api_fleet_stats.volley.one() == [0, approx(842.625), 0, approx(441.375)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(386.525229), 0, approx(202.465596)]
     assert api_fit_stats.volley.one() == [0, approx(842.625), 0, approx(441.375)]
@@ -36,6 +42,9 @@ def test_state(client, consts):
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [0, 0, 0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, 0, 0, 0]
     assert api_fit_stats.volley.one() == [0, 0, 0, 0]
@@ -51,6 +60,9 @@ def test_state(client, consts):
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, approx(386.525229), 0, approx(202.465596)]
+    assert api_fleet_stats.volley.one() == [0, approx(842.625), 0, approx(441.375)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(386.525229), 0, approx(202.465596)]
     assert api_fit_stats.volley.one() == [0, approx(842.625), 0, approx(441.375)]
@@ -71,13 +83,23 @@ def test_stacking(client, consts):
         client=client, basic_info=eve_basic_info, dmgs=(0, 72, 0, 63), volume=0.01)
     client.create_sources()
     api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
-    api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
+    api_fit1 = api_sol.create_fit()
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
+    api_fit2 = api_sol.create_fit()
+    api_fit2.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one() == [0, approx(828.268349), 0, approx(588.990826)]
-    assert api_fit_stats.volley.one() == [0, approx(1805.625), 0, approx(1284)]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, approx(1214.793578), 0, approx(791.456422)]
+    assert api_fleet_stats.volley.one() == [0, approx(2648.25), 0, approx(1725.375)]
+    api_fit1_stats = api_fit1.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit1_stats.dps.one() == [0, approx(828.268349), 0, approx(588.990826)]
+    assert api_fit1_stats.volley.one() == [0, approx(1805.625), 0, approx(1284)]
+    api_fit2_stats = api_fit2.get_stats(options=FitStatsOptions(dps=True, volley=True))
+    assert api_fit2_stats.dps.one() == [0, approx(386.525229), 0, approx(202.465596)]
+    assert api_fit2_stats.volley.one() == [0, approx(842.625), 0, approx(441.375)]
 
 
 def test_item_kind(client, consts):
@@ -92,7 +114,26 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=True, turret=False)),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, turret=True))]),
+        volley=(True, [
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=True, turret=False)),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, turret=True))])))
+    api_fleet_dps_default, api_fleet_dps_disabled, api_fleet_dps_enabled = api_fleet_stats.dps
+    assert api_fleet_dps_default == [0, approx(386.525229), 0, approx(202.465596)]
+    assert api_fleet_dps_disabled == [0, 0, 0, 0]
+    assert api_fleet_dps_enabled == [0, approx(386.525229), 0, approx(202.465596)]
+    api_fleet_volley_default, api_fleet_volley_disabled, api_fleet_volley_enabled = api_fleet_stats.volley
+    assert api_fleet_volley_default == [0, approx(842.625), 0, approx(441.375)]
+    assert api_fleet_volley_disabled == [0, 0, 0, 0]
+    assert api_fleet_volley_enabled == [0, approx(842.625), 0, approx(441.375)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
             StatsOptionFitDps(),
@@ -127,7 +168,26 @@ def test_spool(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
+            StatsOptionFitDps(),
+            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=1))]),
+        volley=(True, [
+            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=0)),
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=1))])))
+    api_fleet_dps_pre, api_fleet_dps_default, api_fleet_dps_full = api_fleet_stats.dps
+    assert api_fleet_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
+    assert api_fleet_dps_default == [0, approx(262.218716), 0, approx(137.352661)]
+    assert api_fleet_dps_full == [0, approx(386.525229), 0, approx(202.465596)]
+    api_fleet_volley_pre, api_fleet_volley_default, api_fleet_volley_full = api_fleet_stats.volley
+    assert api_fleet_volley_pre == [0, approx(269.64), 0, approx(141.24)]
+    assert api_fleet_volley_default == [0, approx(571.6368), 0, approx(299.4288)]
+    assert api_fleet_volley_full == [0, approx(842.625), 0, approx(441.375)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
             StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
@@ -165,6 +225,23 @@ def test_spool(client, consts):
     # Action
     api_module.change_module(spool=Spool.spool_scale_to_api(val=0.7))
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
+            StatsOptionFitDps(),
+            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=1))]),
+        volley=(True, [
+            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=0)),
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=1))])))
+    api_fleet_dps_pre, api_fleet_dps_default, api_fleet_dps_full = api_fleet_stats.dps
+    assert api_fleet_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
+    assert api_fleet_dps_default == [0, approx(314.167706), 0, approx(164.564037)]
+    assert api_fleet_dps_full == [0, approx(386.525229), 0, approx(202.465596)]
+    api_fleet_volley_pre, api_fleet_volley_default, api_fleet_volley_full = api_fleet_stats.volley
+    assert api_fleet_volley_pre == [0, approx(269.64), 0, approx(141.24)]
+    assert api_fleet_volley_default == [0, approx(684.8856), 0, approx(358.7496)]
+    assert api_fleet_volley_full == [0, approx(842.625), 0, approx(441.375)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
             StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
@@ -216,7 +293,14 @@ def test_reload(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
+    assert api_fleet_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
+    assert api_fleet_dps_reload == [0, approx(386.170944), 0, approx(202.280018)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
@@ -239,7 +323,12 @@ def test_charge_absent(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [0, 0, 0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, 0, 0, 0]
     assert api_fit_stats.volley.one() == [0, 0, 0, 0]
@@ -262,7 +351,12 @@ def test_charge_not_loaded(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
+    assert api_fleet_stats.dps.one() == [0, 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [0, 0, 0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, 0, 0, 0]
     assert api_fit_stats.volley.one() == [0, 0, 0, 0]
