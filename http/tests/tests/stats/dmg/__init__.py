@@ -41,6 +41,7 @@ class DmgBasicInfo:
     vorton_effect_id: int
     launcher_effect_id: int
     missile_effect_id: int
+    missile_fof_effect_id: int
     breacher_effect_id: int
     smartbomb_effect_id: int
     dd_lance_debuff_effect_id: int
@@ -97,6 +98,9 @@ def setup_dmg_basics(
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
+    eve_missile_fof_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fof_missile_launching,
+        cat_id=consts.EveEffCat.active)
     eve_breacher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.dot_missile_launching,
         cat_id=consts.EveEffCat.target)
@@ -116,6 +120,7 @@ def setup_dmg_basics(
         eve_vorton_effect_id,
         eve_launcher_effect_id,
         eve_missile_effect_id,
+        eve_missile_fof_effect_id,
         eve_breacher_effect_id,
         eve_smartbomb_effect_id,
         eve_dd_lance_debuff_effect_id])
@@ -150,6 +155,7 @@ def setup_dmg_basics(
         vorton_effect_id=eve_vorton_effect_id,
         launcher_effect_id=eve_launcher_effect_id,
         missile_effect_id=eve_missile_effect_id,
+        missile_fof_effect_id=eve_missile_fof_effect_id,
         breacher_effect_id=eve_breacher_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
@@ -329,6 +335,22 @@ def make_eve_missile(
         attrs=attrs,
         eff_ids=[basic_info.missile_effect_id],
         defeff_id=basic_info.missile_effect_id)
+
+
+def make_eve_missile_fof(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        volume: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.missile_fof_effect_id],
+        defeff_id=basic_info.missile_fof_effect_id)
 
 
 def make_eve_breacher(
