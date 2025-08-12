@@ -1,5 +1,13 @@
 from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionItemDps, StatsOptionItemVolley
+from tests.fw.api import (
+    FitStatsOptions,
+    ItemStatsOptions,
+    StatDmgItemKinds,
+    StatsOptionFitDps,
+    StatsOptionFitVolley,
+    StatsOptionItemDps,
+    StatsOptionItemVolley,
+)
 from tests.tests.stats.dmg import make_eve_drone, setup_dmg_basics
 
 
@@ -59,3 +67,34 @@ def test_stacking(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(133.25), approx(311.75), approx(171)]
     assert api_fit_stats.volley.one() == [0, approx(533), approx(1247), approx(684)]
+
+
+def test_item_kind(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_drone1_id = make_eve_drone(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 13, 19, 0), dmg_mult=41, cycle_time=4000, velocity=2500)
+    eve_drone2_id = make_eve_drone(
+        client=client, basic_info=eve_basic_info, dmgs=(64, 0, 0, 0), dmg_mult=6.2, cycle_time=4000, velocity=0.00001)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.engaging)
+    api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.engaging)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, minion_mobile=True)),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, minion_static=True))]),
+        volley=(True, [
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, minion_mobile=True)),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, minion_static=True))])))
+    api_fit_dps_default, api_fit_dps_mobile, api_fit_dps_sentry = api_fit_stats.dps
+    assert api_fit_dps_default == [approx(99.2), approx(133.25), approx(194.75), 0]
+    assert api_fit_dps_mobile == [0, approx(133.25), approx(194.75), 0]
+    assert api_fit_dps_sentry == [approx(99.2), 0, 0, 0]
+    api_fit_volley_default, api_fit_volley_mobile, api_fit_volley_sentry = api_fit_stats.volley
+    assert api_fit_volley_default == [approx(396.8), approx(533), approx(779), 0]
+    assert api_fit_volley_mobile == [0, approx(533), approx(779), 0]
+    assert api_fit_volley_sentry == [approx(396.8), 0, 0, 0]

@@ -61,8 +61,12 @@ impl VastFitData {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
+            let u_item = ctx.u_data.items.get(item_key);
             for (&effect_key, dmg_getter) in item_data.iter() {
                 let r_effect = ctx.u_data.src.get_effect(effect_key);
+                if !item_kinds.resolve(ctx, u_item, r_effect) {
+                    continue;
+                }
                 let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, None) {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,
@@ -115,8 +119,12 @@ impl VastFitData {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
+            let u_item = ctx.u_data.items.get(item_key);
             for (&effect_key, dmg_getter) in item_data.iter() {
                 let r_effect = ctx.u_data.src.get_effect(effect_key);
+                if !item_kinds.resolve(ctx, u_item, r_effect) {
+                    continue;
+                }
                 let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, None) {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,

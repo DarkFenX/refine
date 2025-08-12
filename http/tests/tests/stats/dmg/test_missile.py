@@ -1,5 +1,13 @@
 from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionFitDps, StatsOptionItemDps, StatsOptionItemVolley
+from tests.fw.api import (
+    FitStatsOptions,
+    ItemStatsOptions,
+    StatDmgItemKinds,
+    StatsOptionFitDps,
+    StatsOptionFitVolley,
+    StatsOptionItemDps,
+    StatsOptionItemVolley,
+)
 from tests.tests.stats.dmg import make_eve_launcher, make_eve_missile, setup_dmg_basics
 
 
@@ -64,6 +72,36 @@ def test_stacking(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [approx(620.253165), 0, 0, 0]
     assert api_fit_stats.volley.one() == [approx(4900), 0, 0, 0]
+
+
+def test_item_kind(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_launcher(
+        client=client, basic_info=eve_basic_info, capacity=2, cycle_time=7900, reload_time=10000)
+    eve_charge_id = make_eve_missile(
+        client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=True, missile=False)),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, missile=True))]),
+        volley=(True, [
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=True, missile=False)),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, missile=True))])))
+    api_fit_dps_default, api_fit_dps_disabled, api_fit_dps_enabled = api_fit_stats.dps
+    assert api_fit_dps_default == [approx(310.126582), 0, 0, 0]
+    assert api_fit_dps_disabled == [0, 0, 0, 0]
+    assert api_fit_dps_enabled == [approx(310.126582), 0, 0, 0]
+    api_fit_volley_default, api_fit_volley_disabled, api_fit_volley_enabled = api_fit_stats.volley
+    assert api_fit_volley_default == [approx(2450), 0, 0, 0]
+    assert api_fit_volley_disabled == [0, 0, 0, 0]
+    assert api_fit_volley_enabled == [approx(2450), 0, 0, 0]
 
 
 def test_include_charges(client, consts):

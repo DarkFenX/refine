@@ -1,5 +1,13 @@
 from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionFitDps, StatsOptionItemDps, StatsOptionItemVolley
+from tests.fw.api import (
+    FitStatsOptions,
+    ItemStatsOptions,
+    StatDmgItemKinds,
+    StatsOptionFitDps,
+    StatsOptionFitVolley,
+    StatsOptionItemDps,
+    StatsOptionItemVolley,
+)
 from tests.tests.stats.dmg import make_eve_breacher, make_eve_launcher, setup_dmg_basics
 
 # TODO: most of tests with 2+ different breachers should be rewritten into different fits + fleet
@@ -138,6 +146,36 @@ def test_stacking_complex_different_multiple_downtimes(client, consts):
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst.breacher == [approx(250), approx(0.005)]
     assert api_fit_dps_reload.breacher == [approx(238.095238), approx(0.004761905)]
+
+
+def test_item_kind(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_launcher(
+        client=client, basic_info=eve_basic_info, capacity=25, cycle_time=10000, reload_time=30000)
+    eve_charge_id = make_eve_breacher(
+        client=client, basic_info=eve_basic_info, dmg_abs=1000, dmg_rel=1, dmg_duration=75000, volume=0.5)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, breacher=True))]),
+        volley=(True, [
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, breacher=True))])))
+    api_fit_dps_default, api_fit_dps_disabled, api_fit_dps_enabled = api_fit_stats.dps
+    assert api_fit_dps_default.breacher == [approx(1000), approx(0.01)]
+    assert api_fit_dps_disabled.breacher is None
+    assert api_fit_dps_enabled.breacher == [approx(1000), approx(0.01)]
+    api_fit_volley_default, api_fit_volley_disabled, api_fit_volley_enabled = api_fit_stats.volley
+    assert api_fit_volley_default.breacher == [approx(1000), approx(0.01)]
+    assert api_fit_volley_disabled.breacher is None
+    assert api_fit_volley_enabled.breacher == [approx(1000), approx(0.01)]
 
 
 def test_include_charges(client, consts):

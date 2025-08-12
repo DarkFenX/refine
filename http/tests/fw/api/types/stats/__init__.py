@@ -1,3 +1,4 @@
+from .opt_dmg import StatDmgItemKinds
 from .opt_fit import FitStatsOptions, StatsOptionFitDps, StatsOptionFitRemoteRps, StatsOptionFitVolley
 from .opt_item import (
     ItemStatsOptions,

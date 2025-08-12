@@ -1,5 +1,13 @@
 from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionItemDps, StatsOptionItemVolley
+from tests.fw.api import (
+    FitStatsOptions,
+    ItemStatsOptions,
+    StatDmgItemKinds,
+    StatsOptionFitDps,
+    StatsOptionFitVolley,
+    StatsOptionItemDps,
+    StatsOptionItemVolley,
+)
 from tests.tests.stats.dmg import make_eve_dd_lance_debuff, setup_dmg_basics
 
 
@@ -69,3 +77,37 @@ def test_stacking(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
     assert api_fit_stats.dps.one() == [0, approx(2550), 0, 0]
     assert api_fit_stats.volley.one() == [0, approx(51000), 0, 0]
+
+
+def test_item_kind(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_dd_lance_debuff(
+        client=client,
+        basic_info=eve_basic_info,
+        dmgs=(0, 25500, 0, 0),
+        cycle_time=300000,
+        delay=15000,
+        dmg_interval=1000,
+        dmg_duration=15000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=True, superweapon=False)),
+            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, superweapon=True))]),
+        volley=(True, [
+            StatsOptionFitVolley(),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=True, superweapon=False)),
+            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, superweapon=True))])))
+    api_fit_dps_default, api_fit_dps_disabled, api_fit_dps_enabled = api_fit_stats.dps
+    assert api_fit_dps_default == [0, approx(1275), 0, 0]
+    assert api_fit_dps_disabled == [0, 0, 0, 0]
+    assert api_fit_dps_enabled == [0, approx(1275), 0, 0]
+    api_fit_volley_default, api_fit_volley_disabled, api_fit_volley_enabled = api_fit_stats.volley
+    assert api_fit_volley_default == [0, approx(25500), 0, 0]
+    assert api_fit_volley_disabled == [0, 0, 0, 0]
+    assert api_fit_volley_enabled == [0, approx(25500), 0, 0]

@@ -2,6 +2,7 @@ from .sol import SolarSystem
 from .stats import (
     FitStatsOptions,
     ItemStatsOptions,
+    StatDmgItemKinds,
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDps,

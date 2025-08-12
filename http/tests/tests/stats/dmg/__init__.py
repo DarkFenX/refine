@@ -34,6 +34,7 @@ class DmgBasicInfo:
     crystal_volatility_dmg_attr_id: int
     crystal_hp_attr_id: int
     ammo_loaded_attr_id: int
+    max_velocity_attr_id: int
     turret_proj_effect_id: int
     turret_spool_effect_id: int
     tgt_attack_effect_id: int
@@ -74,6 +75,7 @@ def setup_dmg_basics(
     eve_crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
     eve_crystal_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
+    eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
@@ -141,6 +143,7 @@ def setup_dmg_basics(
         crystal_volatility_dmg_attr_id=eve_crystal_volatility_dmg_attr_id,
         crystal_hp_attr_id=eve_crystal_hp_attr_id,
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
+        max_velocity_attr_id=eve_max_velocity_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
         turret_spool_effect_id=eve_turret_spool_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
@@ -355,11 +358,13 @@ def make_eve_drone(
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
         dmg_mult: float | None = None,
         cycle_time: float | None = None,
+        velocity: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=velocity)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
