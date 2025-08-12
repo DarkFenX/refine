@@ -45,8 +45,10 @@ pub(crate) fn get_proj_mult_fof_missile(
         .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_FOF_TGT_RANGE)
         .unwrap()
         .extra;
-    // TODO: test if FoF range limit is calculated s2s
-    if prange.get_s2s() > range_limit {
+    // FoF missile is limited by c2s range. Tested on 2025-08-12 on Thunderdome, using civilian LML
+    // Minokawa (3k radius) with HG hydra + MGCs + hydraulics vs chremoas and dagon at 96900 and
+    // 97100 overview range
+    if prange.get_c2s() > range_limit {
         return OF(0.0);
     };
     get_proj_mult_missile(ctx, calc, affector_key, r_effect, prange)
