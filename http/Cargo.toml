@@ -16,7 +16,7 @@ parking_lot = { version = ">=0.12.4", features = ["nightly"] }
 serde = { version = ">=1.0.219", features = ["derive"] }
 serde_tuple = ">=1.1.2"
 serde_with = ">=3.14.0"
-thiserror = ">=2.0.12"
+thiserror = ">=2.0.14"
 tokio = { version = ">=1.47.1", features = ["full"] }
 tokio-rayon = ">=2.1.0"
 tower = ">=0.5.2"
@@ -26,4 +26,4 @@ time = { version = ">=0.3.41", features = ["macros"] }
 tracing = ">=0.1.41"
 tracing-subscriber = { version = ">=0.3.19", features = ["time"] }
 tracing-appender = ">=0.2.3"
-uuid = { version = ">=1.17.0", features = ["v4", "fast-rng"] }
+uuid = { version = ">=1.18.0", features = ["v4", "fast-rng"] }
