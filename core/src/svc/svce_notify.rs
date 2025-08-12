@@ -15,15 +15,15 @@ impl Svc {
         self.calc.fit_removed(fit_key);
         self.vast.fit_removed(&fit_key);
     }
-    pub(crate) fn notify_fit_added_to_fleet(&mut self, u_data: &UData, fleet: &UFleet, fit_key: &UFitKey) {
+    pub(crate) fn notify_fit_added_to_fleet(&mut self, u_data: &UData, fleet: &UFleet, fit_key: UFitKey) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc.fit_added_to_fleet(svc_ctx, fleet, fit_key);
     }
-    pub(crate) fn notify_fit_removed_from_fleet(&mut self, u_data: &UData, fleet: &UFleet, fit_key: &UFitKey) {
+    pub(crate) fn notify_fit_removed_from_fleet(&mut self, u_data: &UData, fleet: &UFleet, fit_key: UFitKey) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc.fit_removed_from_fleet(svc_ctx, fleet, fit_key);
     }
-    pub(crate) fn notify_fit_rah_dps_profile_changed(&mut self, u_data: &UData, fit_key: &UFitKey) {
+    pub(crate) fn notify_fit_rah_dps_profile_changed(&mut self, u_data: &UData, fit_key: UFitKey) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc.fit_rah_dps_profile_changed(svc_ctx, fit_key);
     }

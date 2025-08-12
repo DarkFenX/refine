@@ -24,7 +24,7 @@ impl StandardRegister {
         match affector_fit.fleet {
             Some(fleet_key) => {
                 let fleet = ctx.u_data.fleets.get(fleet_key);
-                for &fleet_fit_key in fleet.iter_fits() {
+                for fleet_fit_key in fleet.iter_fits() {
                     if let Some(cmod) = self.apply_fleet_mod(rmod, fleet_fit_key) {
                         reuse_cmods.push(cmod);
                     }
@@ -60,7 +60,7 @@ impl StandardRegister {
         match affector_fit.fleet {
             Some(fleet_key) => {
                 let fleet = ctx.u_data.fleets.get(fleet_key);
-                for &fleet_fit_key in fleet.iter_fits() {
+                for fleet_fit_key in fleet.iter_fits() {
                     if let Some(cmod) = self.unapply_fleet_mod(rmod, fleet_fit_key) {
                         reuse_cmods.push(cmod);
                     }
@@ -74,17 +74,17 @@ impl StandardRegister {
         }
         self.rmods_fleet.remove_entry(&fit_key, &rmod);
     }
-    pub(in crate::svc::calc) fn reg_fleet_for_fit(&mut self, fleet: &UFleet, fit_key: &UFitKey) -> Vec<CtxModifier> {
+    pub(in crate::svc::calc) fn reg_fleet_for_fit(&mut self, fleet: &UFleet, fit_key: UFitKey) -> Vec<CtxModifier> {
         let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
-        rmods.extend(self.rmods_fleet.get(fit_key).copied());
+        rmods.extend(self.rmods_fleet.get(&fit_key).copied());
         for rmod in rmods.iter() {
             for fleet_fit_key in fleet.iter_fits() {
                 if fleet_fit_key == fit_key {
                     continue;
                 }
-                if let Some(cmod) = self.apply_fleet_mod(*rmod, *fleet_fit_key) {
+                if let Some(cmod) = self.apply_fleet_mod(*rmod, fleet_fit_key) {
                     cmods.push(cmod);
                 }
             }
@@ -95,26 +95,26 @@ impl StandardRegister {
                 continue;
             }
             rmods.clear();
-            rmods.extend(self.rmods_fleet.get(fleet_fit_key).copied());
+            rmods.extend(self.rmods_fleet.get(&fleet_fit_key).copied());
             for rmod in rmods.iter() {
-                if let Some(cmod) = self.apply_fleet_mod(*rmod, *fit_key) {
+                if let Some(cmod) = self.apply_fleet_mod(*rmod, fit_key) {
                     cmods.push(cmod);
                 }
             }
         }
         cmods
     }
-    pub(in crate::svc::calc) fn unreg_fleet_for_fit(&mut self, fleet: &UFleet, fit_key: &UFitKey) -> Vec<CtxModifier> {
+    pub(in crate::svc::calc) fn unreg_fleet_for_fit(&mut self, fleet: &UFleet, fit_key: UFitKey) -> Vec<CtxModifier> {
         let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
-        rmods.extend(self.rmods_fleet.get(fit_key).copied());
+        rmods.extend(self.rmods_fleet.get(&fit_key).copied());
         for rmod in rmods.iter() {
             for fleet_fit_key in fleet.iter_fits() {
                 if fleet_fit_key == fit_key {
                     continue;
                 }
-                if let Some(cmod) = self.unapply_fleet_mod(*rmod, *fleet_fit_key) {
+                if let Some(cmod) = self.unapply_fleet_mod(*rmod, fleet_fit_key) {
                     cmods.push(cmod);
                 }
             }
@@ -125,9 +125,9 @@ impl StandardRegister {
                 continue;
             }
             rmods.clear();
-            rmods.extend(self.rmods_fleet.get(fleet_fit_key).copied());
+            rmods.extend(self.rmods_fleet.get(&fleet_fit_key).copied());
             for rmod in rmods.iter() {
-                if let Some(cmod) = self.unapply_fleet_mod(*rmod, *fit_key) {
+                if let Some(cmod) = self.unapply_fleet_mod(*rmod, fit_key) {
                     cmods.push(cmod);
                 }
             }

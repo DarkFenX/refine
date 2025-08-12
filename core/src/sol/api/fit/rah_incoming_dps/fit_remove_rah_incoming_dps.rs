@@ -16,7 +16,7 @@ impl SolarSystem {
                 // Do not trigger anything in services if effectively RAH profile is not changed -
                 // RAH sim uses default incoming dps if RAH profile is not set
                 if self.u_data.default_incoming_dps != old_dps_profile {
-                    self.svc.notify_fit_rah_dps_profile_changed(&self.u_data, &fit_key);
+                    self.svc.notify_fit_rah_dps_profile_changed(&self.u_data, fit_key);
                 }
             }
             None => return Err(FitDpsProfileFoundError { fit_id: fit.id }),

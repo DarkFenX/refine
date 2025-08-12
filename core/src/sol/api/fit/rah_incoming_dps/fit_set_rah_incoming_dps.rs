@@ -16,7 +16,7 @@ impl SolarSystem {
         if old_dps_profile.is_none() && self.u_data.default_incoming_dps == dps_profile {
             return;
         }
-        self.svc.notify_fit_rah_dps_profile_changed(&self.u_data, &fit_key);
+        self.svc.notify_fit_rah_dps_profile_changed(&self.u_data, fit_key);
     }
 }
 

@@ -10,6 +10,21 @@ use crate::{
 };
 
 impl Svc {
+    pub(crate) fn get_stat_fits_remote_rps(
+        &mut self,
+        u_data: &UData,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatRemoteRpsItemKinds,
+        spool: Option<Spool>,
+    ) -> StatTank<AttrVal> {
+        self.vast.get_stat_fits_remote_rps(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            fit_keys,
+            item_kinds,
+            spool,
+        )
+    }
     pub(crate) fn get_stat_fit_remote_rps(
         &mut self,
         u_data: &UData,
@@ -25,10 +40,6 @@ impl Svc {
             spool,
         )
     }
-    pub(crate) fn get_stat_fit_remote_cps(&mut self, u_data: &UData, fit_key: UFitKey) -> AttrVal {
-        self.vast
-            .get_stat_fit_remote_cps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_key)
-    }
     pub(crate) fn get_stat_item_remote_rps(
         &mut self,
         u_data: &UData,
@@ -43,6 +54,18 @@ impl Svc {
             spool,
             ignore_state,
         )
+    }
+    pub(crate) fn get_stat_fits_remote_cps(
+        &mut self,
+        u_data: &UData,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+    ) -> AttrVal {
+        self.vast
+            .get_stat_fits_remote_cps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_keys)
+    }
+    pub(crate) fn get_stat_fit_remote_cps(&mut self, u_data: &UData, fit_key: UFitKey) -> AttrVal {
+        self.vast
+            .get_stat_fit_remote_cps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_key)
     }
     pub(crate) fn get_stat_item_remote_cps(
         &mut self,

@@ -9,6 +9,23 @@ use crate::{
 };
 
 impl Svc {
+    pub(crate) fn get_stat_fits_dps(
+        &mut self,
+        u_data: &UData,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatDmgItemKinds,
+        reload: bool,
+        spool: Option<Spool>,
+    ) -> StatDmg {
+        self.vast.get_stat_fits_dps(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            fit_keys,
+            item_kinds,
+            reload,
+            spool,
+        )
+    }
     pub(crate) fn get_stat_fit_dps(
         &mut self,
         u_data: &UData,
@@ -43,6 +60,21 @@ impl Svc {
             spool,
             include_charges,
             ignore_state,
+        )
+    }
+    pub(crate) fn get_stat_fits_volley(
+        &mut self,
+        u_data: &UData,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatDmgItemKinds,
+        spool: Option<Spool>,
+    ) -> StatDmg {
+        self.vast.get_stat_fits_volley(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            fit_keys,
+            item_kinds,
+            spool,
         )
     }
     pub(crate) fn get_stat_fit_volley(

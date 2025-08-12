@@ -10,7 +10,7 @@ impl UFleet {
             None => return Err(DebugError {}),
         };
         // Every fit referenced by the fleet should exist, and refer back to the fleet
-        for &fit_key in self.iter_fits() {
+        for fit_key in self.iter_fits() {
             let fit = match u_data.fits.try_get(fit_key) {
                 Some(fit) => fit,
                 _ => return Err(DebugError {}),

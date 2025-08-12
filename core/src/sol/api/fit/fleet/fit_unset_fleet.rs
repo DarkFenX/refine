@@ -15,7 +15,7 @@ impl SolarSystem {
             None => return Err(FitFleetAssignedError { fit_id: u_fit.id }),
         };
         let u_fleet = self.u_data.fleets.get(fleet_key);
-        self.svc.notify_fit_removed_from_fleet(&self.u_data, u_fleet, &fit_key);
+        self.svc.notify_fit_removed_from_fleet(&self.u_data, u_fleet, fit_key);
         let u_fleet = self.u_data.fleets.get_mut(fleet_key);
         u_fleet.remove_fit(&fit_key);
         let u_fit = self.u_data.fits.get_mut(fit_key);

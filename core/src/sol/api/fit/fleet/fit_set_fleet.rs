@@ -16,7 +16,7 @@ impl SolarSystem {
             }
             let old_u_fleet = self.u_data.fleets.get(old_fleet_key);
             self.svc
-                .notify_fit_removed_from_fleet(&self.u_data, old_u_fleet, &fit_key);
+                .notify_fit_removed_from_fleet(&self.u_data, old_u_fleet, fit_key);
             let old_u_fleet = self.u_data.fleets.get_mut(old_fleet_key);
             old_u_fleet.remove_fit(&fit_key);
         }
@@ -26,7 +26,7 @@ impl SolarSystem {
         let u_fleet = self.u_data.fleets.get_mut(fleet_key);
         u_fleet.add_fit(fit_key);
         let u_fleet = self.u_data.fleets.get(fleet_key);
-        self.svc.notify_fit_added_to_fleet(&self.u_data, u_fleet, &fit_key);
+        self.svc.notify_fit_added_to_fleet(&self.u_data, u_fleet, fit_key);
     }
 }
 

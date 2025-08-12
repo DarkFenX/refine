@@ -21,7 +21,7 @@ impl Calc {
             return;
         }
         if let UItem::Ship(ship) = item {
-            self.clear_fit_rah_results(ctx, &ship.get_fit_key());
+            self.clear_fit_rah_results(ctx, ship.get_fit_key());
         }
     }
     pub(in crate::svc::calc) fn rah_item_unloaded(&mut self, ctx: SvcCtx, item: &UItem) {
@@ -29,7 +29,7 @@ impl Calc {
             return;
         }
         if let UItem::Ship(ship) = item {
-            self.clear_fit_rah_results(ctx, &ship.get_fit_key());
+            self.clear_fit_rah_results(ctx, ship.get_fit_key());
         }
     }
     pub(in crate::svc::calc) fn rah_effects_started(
@@ -47,7 +47,7 @@ impl Calc {
         {
             let fit_key = module.get_fit_key();
             // Clear sim data for other RAHs on the same fit
-            self.clear_fit_rah_results(ctx, &fit_key);
+            self.clear_fit_rah_results(ctx, fit_key);
             // Add sim data for RAH being started
             self.rah.resonances.insert(item_key, None);
             self.rah.by_fit.add_entry(fit_key, item_key);
@@ -107,7 +107,7 @@ impl Calc {
             self.rah.resonances.remove(item_key);
             self.rah.by_fit.remove_entry(&fit_key, item_key);
             // Clear sim data for other RAHs on the same fit
-            self.clear_fit_rah_results(ctx, &fit_key);
+            self.clear_fit_rah_results(ctx, fit_key);
         }
     }
     pub(in crate::svc::calc) fn rah_attr_value_changed(&mut self, ctx: SvcCtx, aspec: &AttrSpec) {
@@ -123,10 +123,10 @@ impl Calc {
             // Ship armor resonances and RAH resonances
             ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
                 match ctx.u_data.items.get(aspec.item_key) {
-                    UItem::Ship(ship) => self.clear_fit_rah_results(ctx, &ship.get_fit_key()),
+                    UItem::Ship(ship) => self.clear_fit_rah_results(ctx, ship.get_fit_key()),
                     UItem::Module(module) => {
                         if self.rah.resonances.contains_key(&aspec.item_key) {
-                            self.clear_fit_rah_results(ctx, &module.get_fit_key());
+                            self.clear_fit_rah_results(ctx, module.get_fit_key());
                         }
                     }
                     _ => (),
@@ -138,7 +138,7 @@ impl Calc {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
                     let fit_key = ctx.u_data.items.get(aspec.item_key).get_fit_key().unwrap();
-                    self.clear_fit_rah_results(ctx, &fit_key);
+                    self.clear_fit_rah_results(ctx, fit_key);
                 }
             }
             // RAH cycle time
@@ -150,7 +150,7 @@ impl Calc {
                     // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
                     // change sim results
                     if self.rah.by_fit.get(&fit_key).len() >= 2 {
-                        self.clear_fit_rah_results(ctx, &fit_key);
+                        self.clear_fit_rah_results(ctx, fit_key);
                     }
                 }
             }
@@ -159,19 +159,19 @@ impl Calc {
                 if let UItem::Ship(ship) = ctx.u_data.items.get(aspec.item_key) {
                     let fit_key = ship.get_fit_key();
                     if ctx.u_data.get_fit_key_rah_incoming_dps(fit_key).deals_breacher_dps() {
-                        self.clear_fit_rah_results(ctx, &fit_key);
+                        self.clear_fit_rah_results(ctx, fit_key);
                     }
                 }
             }
             _ => (),
         }
     }
-    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &UFitKey) {
+    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: UFitKey) {
         self.clear_fit_rah_results(ctx, fit_key);
     }
     // Private methods
-    fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_key: &UFitKey) {
-        let rah_keys = self.rah.by_fit.get(fit_key).copied().collect_vec();
+    fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_key: UFitKey) {
+        let rah_keys = self.rah.by_fit.get(&fit_key).copied().collect_vec();
         for rah_key in rah_keys {
             self.clear_rah_result(ctx, rah_key);
         }

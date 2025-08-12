@@ -19,21 +19,21 @@ impl Calc {
     pub(in crate::svc) fn fit_removed(&mut self, fit_key: UFitKey) {
         self.std.unreg_fit_for_sw(fit_key)
     }
-    pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: SvcCtx, fleet: &UFleet, fit_key: &UFitKey) {
+    pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: SvcCtx, fleet: &UFleet, fit_key: UFitKey) {
         let cmods = self.std.reg_fleet_for_fit(fleet, fit_key);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: SvcCtx, fleet: &UFleet, fit_key: &UFitKey) {
+    pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: SvcCtx, fleet: &UFleet, fit_key: UFitKey) {
         let cmods = self.std.unreg_fleet_for_fit(fleet, fit_key);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: &UFitKey) {
+    pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: UFitKey) {
         self.rah_fit_rah_dps_profile_changed(ctx, fit_key);
     }
     pub(in crate::svc) fn item_added(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {

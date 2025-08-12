@@ -14,6 +14,27 @@ use crate::{
 };
 
 impl Vast {
+    pub(in crate::svc) fn get_stat_fits_remote_rps(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatRemoteRpsItemKinds,
+        spool: Option<Spool>,
+    ) -> StatTank<AttrVal> {
+        let mut rps = StatTank {
+            shield: OF(0.0),
+            armor: OF(0.0),
+            hull: OF(0.0),
+        };
+        for fit_key in fit_keys {
+            let fit_data = self.get_fit_data(&fit_key);
+            rps.shield += get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_shield);
+            rps.armor += get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_armor);
+            rps.hull += get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_hull);
+        }
+        rps
+    }
     pub(in crate::svc) fn get_stat_fit_remote_rps(
         &self,
         ctx: SvcCtx,
@@ -28,6 +49,24 @@ impl Vast {
             armor: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_armor),
             hull: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_hull),
         }
+    }
+    pub(in crate::svc) fn get_stat_fits_remote_cps(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+    ) -> AttrVal {
+        fit_keys
+            .map(|fit_key| {
+                get_orrps(
+                    ctx,
+                    calc,
+                    StatRemoteRpsItemKinds::all_enabled(),
+                    None,
+                    &self.get_fit_data(&fit_key).orr_cap,
+                )
+            })
+            .sum()
     }
     pub(in crate::svc) fn get_stat_fit_remote_cps(&self, ctx: SvcCtx, calc: &mut Calc, fit_key: UFitKey) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);

@@ -16,6 +16,39 @@ const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 };
 
 impl Vast {
+    pub(in crate::svc) fn get_stat_fits_dps(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatDmgItemKinds,
+        reload: bool,
+        spool: Option<Spool>,
+    ) -> StatDmg {
+        let mut dps_normal = DmgKinds::new();
+        let mut breacher_accum = BreacherAccum::new();
+        let cycle_options = CycleOptions {
+            reload_mode: match reload {
+                true => CycleOptionReload::Sim,
+                false => CycleOptionReload::Burst,
+            },
+            charged_optionals: false,
+        };
+        for fit_key in fit_keys {
+            self.get_fit_data(&fit_key).fill_stat_dps(
+                ctx,
+                calc,
+                &mut dps_normal,
+                &mut breacher_accum,
+                item_kinds,
+                cycle_options,
+                spool,
+            );
+        }
+        let mut dps = StatDmg::from(dps_normal);
+        dps.breacher = breacher_accum.get_dps();
+        dps
+    }
     pub(in crate::svc) fn get_stat_fit_dps(
         &self,
         ctx: SvcCtx,
@@ -46,6 +79,21 @@ impl Vast {
         let mut dps = StatDmg::from(dps_normal);
         dps.breacher = breacher_accum.get_dps();
         dps
+    }
+    pub(in crate::svc) fn get_stat_fits_volley(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatDmgItemKinds,
+        spool: Option<Spool>,
+    ) -> StatDmg {
+        let mut volley = StatDmg::new();
+        for fit_key in fit_keys {
+            self.get_fit_data(&fit_key)
+                .fill_stat_volley(ctx, calc, &mut volley, item_kinds, spool);
+        }
+        volley
     }
     pub(in crate::svc) fn get_stat_fit_volley(
         &self,

@@ -13,8 +13,8 @@ impl UFleet {
     pub(crate) fn new(id: FleetId) -> Self {
         Self { id, fits: RSet::new() }
     }
-    pub(crate) fn iter_fits(&self) -> impl ExactSizeIterator<Item = &UFitKey> {
-        self.fits.iter()
+    pub(crate) fn iter_fits(&self) -> impl ExactSizeIterator<Item = UFitKey> {
+        self.fits.iter().copied()
     }
     pub(crate) fn contains_fit(&self, fit: &UFitKey) -> bool {
         self.fits.contains(fit)
