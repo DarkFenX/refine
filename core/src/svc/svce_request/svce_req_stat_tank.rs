@@ -16,7 +16,7 @@ impl Svc {
         item_key: UItemKey,
     ) -> Result<StatTank<StatLayerHp>, StatItemCheckError> {
         self.vast
-            .get_stat_item_hp_checked(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+            .get_stat_item_hp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_ehp(
         &mut self,
@@ -24,7 +24,7 @@ impl Svc {
         item_key: UItemKey,
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
-        self.vast.get_stat_item_ehp_checked(
+        self.vast.get_stat_item_ehp(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
@@ -37,7 +37,7 @@ impl Svc {
         item_key: UItemKey,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         self.vast
-            .get_stat_item_wc_ehp_checked(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+            .get_stat_item_wc_ehp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_rps(
         &mut self,
@@ -46,7 +46,7 @@ impl Svc {
         spool: Option<Spool>,
     ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
         self.vast
-            .get_stat_item_rps_checked(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key, spool)
+            .get_stat_item_rps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key, spool)
     }
     pub(crate) fn get_stat_item_erps(
         &mut self,
@@ -55,7 +55,7 @@ impl Svc {
         incoming_dps: Option<DpsProfile>,
         spool: Option<Spool>,
     ) -> Result<StatTank<Option<StatLayerErps>>, StatItemCheckError> {
-        self.vast.get_stat_item_erps_checked(
+        self.vast.get_stat_item_erps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
@@ -68,6 +68,6 @@ impl Svc {
         u_data: &UData,
         item_key: UItemKey,
     ) -> Result<StatTank<DmgKinds<AttrVal>>, StatItemCheckError> {
-        Vast::get_stat_item_resists_checked(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+        Vast::get_stat_item_resists(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
 }

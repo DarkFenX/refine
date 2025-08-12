@@ -22,7 +22,7 @@ pub struct StatLayerHp {
 }
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_hp_checked(
+    pub(in crate::svc) fn get_stat_item_hp(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,

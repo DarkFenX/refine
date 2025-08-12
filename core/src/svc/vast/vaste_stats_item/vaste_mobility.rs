@@ -16,7 +16,7 @@ use crate::{
 pub(super) const AGILITY_CONST: AttrVal = OF(f64::from_bits(0x3eb74216c502a54f));
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_speed_checked(
+    pub(in crate::svc) fn get_stat_item_speed(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -28,7 +28,7 @@ impl Vast {
         calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_VELOCITY)
             .unwrap()
     }
-    pub(in crate::svc) fn get_stat_item_agility_checked(
+    pub(in crate::svc) fn get_stat_item_agility(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -49,7 +49,7 @@ impl Vast {
         }
         Some(AGILITY_CONST * agility * mass)
     }
-    pub(in crate::svc) fn get_stat_item_align_time_checked(
+    pub(in crate::svc) fn get_stat_item_align_time(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,

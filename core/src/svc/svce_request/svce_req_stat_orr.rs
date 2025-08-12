@@ -17,17 +17,17 @@ impl Svc {
         item_kinds: StatRemoteRpsItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
-        self.vast.get_fit_data(&fit_key).get_stat_remote_rps(
+        self.vast.get_stat_fit_remote_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
+            fit_key,
             item_kinds,
             spool,
         )
     }
     pub(crate) fn get_stat_fit_remote_cps(&mut self, u_data: &UData, fit_key: UFitKey) -> AttrVal {
         self.vast
-            .get_fit_data(&fit_key)
-            .get_stat_remote_cps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc)
+            .get_stat_fit_remote_cps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_key)
     }
     pub(crate) fn get_stat_item_remote_rps(
         &mut self,
@@ -36,7 +36,7 @@ impl Svc {
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
-        Vast::get_stat_item_remote_rps_checked(
+        Vast::get_stat_item_remote_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
@@ -50,7 +50,7 @@ impl Svc {
         item_key: UFitKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_remote_cps_checked(
+        Vast::get_stat_item_remote_cps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,

@@ -17,7 +17,7 @@ const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_dps_checked(
+    pub(in crate::svc) fn get_stat_item_dps(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -27,7 +27,7 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
         let mut breacher_accum = BreacherAccum::new();
-        let dps_normal = Vast::internal_get_stat_item_dps_checked(
+        let dps_normal = Vast::internal_get_stat_item_dps(
             ctx,
             calc,
             item_key,
@@ -41,7 +41,7 @@ impl Vast {
         dps.breacher = breacher_accum.get_dps();
         Ok(dps)
     }
-    fn internal_get_stat_item_dps_checked(
+    fn internal_get_stat_item_dps(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -103,7 +103,7 @@ impl Vast {
         }
         if include_charges {
             for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
-                if let Ok(charge_dps_normal) = Vast::internal_get_stat_item_dps_checked(
+                if let Ok(charge_dps_normal) = Vast::internal_get_stat_item_dps(
                     ctx,
                     calc,
                     charge_key,
@@ -119,7 +119,7 @@ impl Vast {
         }
         item_dps_normal
     }
-    pub(in crate::svc) fn get_stat_item_volley_checked(
+    pub(in crate::svc) fn get_stat_item_volley(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -165,8 +165,7 @@ impl Vast {
         }
         if include_charges {
             for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
-                if let Ok(charge_volley) =
-                    Vast::get_stat_item_volley_checked(ctx, calc, charge_key, spool, false, ignore_state)
+                if let Ok(charge_volley) = Vast::get_stat_item_volley(ctx, calc, charge_key, spool, false, ignore_state)
                 {
                     item_volley.stack_instance_self(charge_volley);
                 }

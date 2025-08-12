@@ -19,7 +19,7 @@ pub struct StatLayerEhp {
 }
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_ehp_checked(
+    pub(in crate::svc) fn get_stat_item_ehp(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -46,7 +46,7 @@ impl Vast {
         let hull_mult = get_tanking_efficiency(&resists.hull, incoming_dps);
         make_ehp(hp, shield_mult, armor_mult, hull_mult)
     }
-    pub(in crate::svc) fn get_stat_item_wc_ehp_checked(
+    pub(in crate::svc) fn get_stat_item_wc_ehp(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,

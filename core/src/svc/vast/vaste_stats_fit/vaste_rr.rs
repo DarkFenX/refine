@@ -7,28 +7,37 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatRemoteRpsItemKinds, StatTank, VastFitData},
+        vast::{StatRemoteRpsItemKinds, StatTank, Vast},
     },
-    ud::UItemKey,
+    ud::{UFitKey, UItemKey},
     util::RMapRMap,
 };
 
-impl VastFitData {
-    pub(in crate::svc) fn get_stat_remote_rps(
+impl Vast {
+    pub(in crate::svc) fn get_stat_fit_remote_rps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
+        fit_key: UFitKey,
         item_kinds: StatRemoteRpsItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
+        let fit_data = self.get_fit_data(&fit_key);
         StatTank {
-            shield: get_orrps(ctx, calc, item_kinds, spool, &self.orr_shield),
-            armor: get_orrps(ctx, calc, item_kinds, spool, &self.orr_armor),
-            hull: get_orrps(ctx, calc, item_kinds, spool, &self.orr_hull),
+            shield: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_shield),
+            armor: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_armor),
+            hull: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_hull),
         }
     }
-    pub(in crate::svc) fn get_stat_remote_cps(&self, ctx: SvcCtx, calc: &mut Calc) -> AttrVal {
-        get_orrps(ctx, calc, StatRemoteRpsItemKinds::all_enabled(), None, &self.orr_cap)
+    pub(in crate::svc) fn get_stat_fit_remote_cps(&self, ctx: SvcCtx, calc: &mut Calc, fit_key: UFitKey) -> AttrVal {
+        let fit_data = self.get_fit_data(&fit_key);
+        get_orrps(
+            ctx,
+            calc,
+            StatRemoteRpsItemKinds::all_enabled(),
+            None,
+            &fit_data.orr_cap,
+        )
     }
 }
 

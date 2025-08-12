@@ -13,7 +13,7 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_resists_checked(
+    pub(in crate::svc) fn get_stat_item_resists(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,

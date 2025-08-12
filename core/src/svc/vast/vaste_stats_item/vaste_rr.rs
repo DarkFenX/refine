@@ -14,7 +14,7 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_remote_rps_checked(
+    pub(in crate::svc) fn get_stat_item_remote_rps(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -43,7 +43,7 @@ impl Vast {
             hull: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_hull),
         }
     }
-    pub(in crate::svc) fn get_stat_item_remote_cps_checked(
+    pub(in crate::svc) fn get_stat_item_remote_cps(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,

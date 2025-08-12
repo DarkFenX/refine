@@ -22,7 +22,7 @@ pub struct StatLayerRps {
 }
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_rps_checked(
+    pub(in crate::svc) fn get_stat_item_rps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,

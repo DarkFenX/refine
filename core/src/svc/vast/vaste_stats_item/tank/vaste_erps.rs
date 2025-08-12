@@ -19,7 +19,7 @@ pub struct StatLayerErps {
 }
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_erps_checked(
+    pub(in crate::svc) fn get_stat_item_erps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
