@@ -2,6 +2,7 @@ import dataclasses
 
 from tests.fw.util import Absent
 from .opt_dmg import StatDmgItemKinds
+from .opt_remote_rps import StatRemoteRpsItemKinds
 from .opt_shared import StatOptionAlias, StatOptionEhpAlias, StatOptionErpsAlias, StatOptionRpsAlias, dc_to_dict
 
 type StatOptionFitDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitDps]]
@@ -77,6 +78,7 @@ class StatsOptionFitVolley:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitRemoteRps:
 
+    item_kinds: StatRemoteRpsItemKinds | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:

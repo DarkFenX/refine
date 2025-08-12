@@ -3,6 +3,7 @@ from .types import (
     FitStatsOptions,
     ItemStatsOptions,
     StatDmgItemKinds,
+    StatRemoteRpsItemKinds,
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDps,
