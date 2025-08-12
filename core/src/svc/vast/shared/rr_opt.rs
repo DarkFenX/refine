@@ -1,7 +1,7 @@
 use crate::ud::UItem;
 
 /// Items which will be included in remote rep stats.
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct StatRrItemKinds {
     pub modules: bool,
     pub minions: bool,

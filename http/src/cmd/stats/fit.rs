@@ -245,8 +245,9 @@ fn get_remote_rps_stats(
     options
         .iter()
         .map(|option| {
+            let core_item_kinds = rc::stats::StatRrItemKinds::all_enabled();
             let core_spool = option.spool.map(|h_spool| h_spool.into());
-            core_fit.get_stat_remote_rps(core_spool).into()
+            core_fit.get_stat_remote_rps(core_item_kinds, core_spool).into()
         })
         .collect()
 }

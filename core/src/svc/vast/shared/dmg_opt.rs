@@ -1,7 +1,7 @@
 use crate::{nd::NEffectDmgKind, rd::REffect, svc::SvcCtx, ud::UItem};
 
 /// Items which will be included in damage stats.
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct StatDmgItemKinds {
     pub turret: bool,
     pub missile: bool,

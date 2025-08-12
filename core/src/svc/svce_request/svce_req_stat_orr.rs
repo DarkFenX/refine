@@ -4,7 +4,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatTank, Vast},
+        vast::{StatRrItemKinds, StatTank, Vast},
     },
     ud::{UData, UFitKey},
 };
@@ -14,11 +14,13 @@ impl Svc {
         &mut self,
         u_data: &UData,
         fit_key: UFitKey,
+        item_kinds: StatRrItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
         self.vast.get_fit_data(&fit_key).get_stat_remote_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
+            item_kinds,
             spool,
         )
     }
