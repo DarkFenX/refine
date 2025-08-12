@@ -9,6 +9,7 @@ pub(in crate::cmd::stats) use tank_erps::HStatOptionErps;
 pub(in crate::cmd::stats) use tank_rps::HStatOptionRps;
 
 mod dmg_dps;
+mod dmg_item_kind;
 mod dmg_volley;
 mod option;
 mod option_resolved;
