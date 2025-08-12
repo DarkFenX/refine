@@ -281,6 +281,7 @@ class EveAttr(IntEnum):
     charge_group3 = 606
     charge_group4 = 609
     charge_group5 = 610
+    module_reactivation_delay = 669
     max_group_active = 763
     crystal_volatility_chance = 783
     crystal_volatility_damage = 784

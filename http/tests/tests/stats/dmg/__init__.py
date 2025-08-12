@@ -28,6 +28,7 @@ class DmgBasicInfo:
     volume_attr_id: int
     charge_rate_attr_id: int
     cycle_time_attr_id: int
+    reactivation_delay_attr_id: int
     reload_time_attr_id: int
     crystal_get_dmg_attr_id: int
     crystal_volatility_chance_attr_id: int
@@ -42,6 +43,7 @@ class DmgBasicInfo:
     launcher_effect_id: int
     missile_effect_id: int
     missile_fof_effect_id: int
+    missile_defender_effect_id: int
     breacher_effect_id: int
     smartbomb_effect_id: int
     dd_lance_debuff_effect_id: int
@@ -70,6 +72,7 @@ def setup_dmg_basics(
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_reactivation_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
     eve_reload_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
     eve_crystal_get_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
     eve_crystal_volatility_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_chance)
@@ -101,6 +104,9 @@ def setup_dmg_basics(
     eve_missile_fof_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fof_missile_launching,
         cat_id=consts.EveEffCat.active)
+    eve_missile_defender_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.defender_missile_launching,
+        cat_id=consts.EveEffCat.active)
     eve_breacher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.dot_missile_launching,
         cat_id=consts.EveEffCat.target)
@@ -121,6 +127,7 @@ def setup_dmg_basics(
         eve_launcher_effect_id,
         eve_missile_effect_id,
         eve_missile_fof_effect_id,
+        eve_missile_defender_effect_id,
         eve_breacher_effect_id,
         eve_smartbomb_effect_id,
         eve_dd_lance_debuff_effect_id])
@@ -139,6 +146,7 @@ def setup_dmg_basics(
         dd_dmg_interval_attr_id=eve_dd_dmg_interval_attr_id,
         dd_dmg_duration_attr_id=eve_dd_dmg_duration_attr_id,
         cycle_time_attr_id=eve_cycle_time_attr_id,
+        reactivation_delay_attr_id=eve_reactivation_delay_attr_id,
         volume_attr_id=eve_volume_attr_id,
         capacity_attr_id=eve_capacity_attr_id,
         charge_rate_attr_id=eve_charge_rate_attr_id,
@@ -156,6 +164,7 @@ def setup_dmg_basics(
         launcher_effect_id=eve_launcher_effect_id,
         missile_effect_id=eve_missile_effect_id,
         missile_fof_effect_id=eve_missile_fof_effect_id,
+        missile_defender_effect_id=eve_missile_defender_effect_id,
         breacher_effect_id=eve_breacher_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
@@ -309,11 +318,13 @@ def make_eve_launcher(
         basic_info: DmgBasicInfo,
         cycle_time: float | None = None,
         capacity: float | None = None,
+        reactivation_delay: float | None = None,
         reload_time: float | None = None,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.reactivation_delay_attr_id, value=reactivation_delay)
     _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
     return client.mk_eve_item(
         attrs=attrs,
@@ -351,6 +362,22 @@ def make_eve_missile_fof(
         attrs=attrs,
         eff_ids=[basic_info.missile_fof_effect_id],
         defeff_id=basic_info.missile_fof_effect_id)
+
+
+def make_eve_missile_defender(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        volume: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.missile_defender_effect_id],
+        defeff_id=basic_info.missile_defender_effect_id)
 
 
 def make_eve_breacher(
