@@ -2,11 +2,11 @@ use crate::ud::UItem;
 
 /// Items which will be included in remote rep stats.
 #[derive(Copy, Clone)]
-pub struct StatRrItemKinds {
+pub struct StatRemoteRpsItemKinds {
     pub modules: bool,
     pub minions: bool,
 }
-impl StatRrItemKinds {
+impl StatRemoteRpsItemKinds {
     /// Include all item types in remote rep stats.
     pub fn all_enabled() -> Self {
         Self {

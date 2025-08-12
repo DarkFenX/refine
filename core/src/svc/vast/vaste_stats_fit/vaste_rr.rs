@@ -7,7 +7,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatRrItemKinds, StatTank, VastFitData},
+        vast::{StatRemoteRpsItemKinds, StatTank, VastFitData},
     },
     ud::UItemKey,
     util::RMapRMap,
@@ -18,7 +18,7 @@ impl VastFitData {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_kinds: StatRrItemKinds,
+        item_kinds: StatRemoteRpsItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
         StatTank {
@@ -28,7 +28,7 @@ impl VastFitData {
         }
     }
     pub(in crate::svc) fn get_stat_remote_cps(&self, ctx: SvcCtx, calc: &mut Calc) -> AttrVal {
-        get_orrps(ctx, calc, StatRrItemKinds::all_enabled(), None, &self.orr_cap)
+        get_orrps(ctx, calc, StatRemoteRpsItemKinds::all_enabled(), None, &self.orr_cap)
     }
 }
 
@@ -40,7 +40,7 @@ const ORR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_orrps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_kinds: StatRrItemKinds,
+    item_kinds: StatRemoteRpsItemKinds,
     spool: Option<Spool>,
     fit_data: &RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
 ) -> AttrVal {

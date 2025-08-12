@@ -2,11 +2,15 @@ use crate::{
     def::AttrVal,
     misc::Spool,
     sol::api::FitMut,
-    svc::vast::{StatRrItemKinds, StatTank},
+    svc::vast::{StatRemoteRpsItemKinds, StatTank},
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_remote_rps(&mut self, item_kinds: StatRrItemKinds, spool: Option<Spool>) -> StatTank<AttrVal> {
+    pub fn get_stat_remote_rps(
+        &mut self,
+        item_kinds: StatRemoteRpsItemKinds,
+        spool: Option<Spool>,
+    ) -> StatTank<AttrVal> {
         self.sol
             .svc
             .get_stat_fit_remote_rps(&self.sol.u_data, self.key, item_kinds, spool)
