@@ -146,128 +146,137 @@ pub(in crate::cmd) struct HValOptions {
     #[serde(default)]
     sec_zone_unactivable: Option<HValOption>,
 }
-impl HValOptions {
-    pub(in crate::cmd) fn to_core(&self) -> rc::val::ValOptions {
-        let mut core_options = match self.default {
+impl From<&HValOptions> for rc::val::ValOptions {
+    fn from(h_options: &HValOptions) -> Self {
+        let mut core_options = match h_options.default {
             true => rc::val::ValOptions::all_enabled(),
             false => rc::val::ValOptions::all_disabled(),
         };
         // Generic
-        process_option(&self.not_loaded_item, &mut core_options.not_loaded_item);
-        process_option(&self.item_kind, &mut core_options.item_kind);
-        process_option(&self.skill_reqs, &mut core_options.skill_reqs);
+        process_option(&h_options.not_loaded_item, &mut core_options.not_loaded_item);
+        process_option(&h_options.item_kind, &mut core_options.item_kind);
+        process_option(&h_options.skill_reqs, &mut core_options.skill_reqs);
         // Implants/boosters
-        process_option(&self.implant_slot_index, &mut core_options.implant_slot_index);
-        process_option(&self.booster_slot_index, &mut core_options.booster_slot_index);
+        process_option(&h_options.implant_slot_index, &mut core_options.implant_slot_index);
+        process_option(&h_options.booster_slot_index, &mut core_options.booster_slot_index);
         // Shared between mod-alike items
-        process_option(&self.cpu, &mut core_options.cpu);
-        process_option(&self.powergrid, &mut core_options.powergrid);
-        process_option(&self.ship_limit, &mut core_options.ship_limit);
-        process_option(&self.max_group_fitted, &mut core_options.max_group_fitted);
-        process_option(&self.max_group_online, &mut core_options.max_group_online);
-        process_option(&self.max_group_active, &mut core_options.max_group_active);
-        process_option(&self.max_type_fitted, &mut core_options.max_type_fitted);
-        process_option(&self.item_vs_ship_kind, &mut core_options.item_vs_ship_kind);
+        process_option(&h_options.cpu, &mut core_options.cpu);
+        process_option(&h_options.powergrid, &mut core_options.powergrid);
+        process_option(&h_options.ship_limit, &mut core_options.ship_limit);
+        process_option(&h_options.max_group_fitted, &mut core_options.max_group_fitted);
+        process_option(&h_options.max_group_online, &mut core_options.max_group_online);
+        process_option(&h_options.max_group_active, &mut core_options.max_group_active);
+        process_option(&h_options.max_type_fitted, &mut core_options.max_type_fitted);
+        process_option(&h_options.item_vs_ship_kind, &mut core_options.item_vs_ship_kind);
         // Modules
-        process_option(&self.high_slot_count, &mut core_options.high_slot_count);
-        process_option(&self.mid_slot_count, &mut core_options.mid_slot_count);
-        process_option(&self.low_slot_count, &mut core_options.low_slot_count);
-        process_option(&self.turret_slot_count, &mut core_options.turret_slot_count);
-        process_option(&self.launcher_slot_count, &mut core_options.launcher_slot_count);
-        process_option(&self.module_state, &mut core_options.module_state);
-        process_option(&self.capital_module, &mut core_options.capital_module);
-        process_option(&self.overload_skill, &mut core_options.overload_skill);
+        process_option(&h_options.high_slot_count, &mut core_options.high_slot_count);
+        process_option(&h_options.mid_slot_count, &mut core_options.mid_slot_count);
+        process_option(&h_options.low_slot_count, &mut core_options.low_slot_count);
+        process_option(&h_options.turret_slot_count, &mut core_options.turret_slot_count);
+        process_option(&h_options.launcher_slot_count, &mut core_options.launcher_slot_count);
+        process_option(&h_options.module_state, &mut core_options.module_state);
+        process_option(&h_options.capital_module, &mut core_options.capital_module);
+        process_option(&h_options.overload_skill, &mut core_options.overload_skill);
         // Charges
-        process_option(&self.charge_group, &mut core_options.charge_group);
-        process_option(&self.charge_parent_group, &mut core_options.charge_parent_group);
-        process_option(&self.charge_size, &mut core_options.charge_size);
-        process_option(&self.charge_volume, &mut core_options.charge_volume);
+        process_option(&h_options.charge_group, &mut core_options.charge_group);
+        process_option(&h_options.charge_parent_group, &mut core_options.charge_parent_group);
+        process_option(&h_options.charge_size, &mut core_options.charge_size);
+        process_option(&h_options.charge_volume, &mut core_options.charge_volume);
         // Rigs
-        process_option(&self.rig_slot_count, &mut core_options.rig_slot_count);
-        process_option(&self.calibration, &mut core_options.calibration);
-        process_option(&self.rig_size, &mut core_options.rig_size);
+        process_option(&h_options.rig_slot_count, &mut core_options.rig_slot_count);
+        process_option(&h_options.calibration, &mut core_options.calibration);
+        process_option(&h_options.rig_size, &mut core_options.rig_size);
         // Services
-        process_option(&self.service_slot_count, &mut core_options.service_slot_count);
+        process_option(&h_options.service_slot_count, &mut core_options.service_slot_count);
         // T3 subsystems/stances
-        process_option(&self.subsystem_slot_count, &mut core_options.subsystem_slot_count);
-        process_option(&self.subsystem_slot_index, &mut core_options.subsystem_slot_index);
-        process_option(&self.ship_stance, &mut core_options.ship_stance);
+        process_option(&h_options.subsystem_slot_count, &mut core_options.subsystem_slot_count);
+        process_option(&h_options.subsystem_slot_index, &mut core_options.subsystem_slot_index);
+        process_option(&h_options.ship_stance, &mut core_options.ship_stance);
         // Drones
-        process_option(&self.drone_bay_volume, &mut core_options.drone_bay_volume);
-        process_option(&self.launched_drone_count, &mut core_options.launched_drone_count);
-        process_option(&self.drone_bandwidth, &mut core_options.drone_bandwidth);
-        process_option(&self.unlaunchable_drone_slot, &mut core_options.unlaunchable_drone_slot);
+        process_option(&h_options.drone_bay_volume, &mut core_options.drone_bay_volume);
+        process_option(&h_options.launched_drone_count, &mut core_options.launched_drone_count);
+        process_option(&h_options.drone_bandwidth, &mut core_options.drone_bandwidth);
         process_option(
-            &self.unlaunchable_drone_bandwidth,
+            &h_options.unlaunchable_drone_slot,
+            &mut core_options.unlaunchable_drone_slot,
+        );
+        process_option(
+            &h_options.unlaunchable_drone_bandwidth,
             &mut core_options.unlaunchable_drone_bandwidth,
         );
-        process_option(&self.drone_group, &mut core_options.drone_group);
+        process_option(&h_options.drone_group, &mut core_options.drone_group);
         // Fighters
-        process_option(&self.fighter_bay_volume, &mut core_options.fighter_bay_volume);
-        process_option(&self.launched_fighter_count, &mut core_options.launched_fighter_count);
+        process_option(&h_options.fighter_bay_volume, &mut core_options.fighter_bay_volume);
         process_option(
-            &self.launched_light_fighter_count,
+            &h_options.launched_fighter_count,
+            &mut core_options.launched_fighter_count,
+        );
+        process_option(
+            &h_options.launched_light_fighter_count,
             &mut core_options.launched_light_fighter_count,
         );
         process_option(
-            &self.launched_heavy_fighter_count,
+            &h_options.launched_heavy_fighter_count,
             &mut core_options.launched_heavy_fighter_count,
         );
         process_option(
-            &self.launched_support_fighter_count,
+            &h_options.launched_support_fighter_count,
             &mut core_options.launched_support_fighter_count,
         );
         process_option(
-            &self.launched_st_light_fighter_count,
+            &h_options.launched_st_light_fighter_count,
             &mut core_options.launched_st_light_fighter_count,
         );
         process_option(
-            &self.launched_st_heavy_fighter_count,
+            &h_options.launched_st_heavy_fighter_count,
             &mut core_options.launched_st_heavy_fighter_count,
         );
         process_option(
-            &self.launched_st_support_fighter_count,
+            &h_options.launched_st_support_fighter_count,
             &mut core_options.launched_st_support_fighter_count,
         );
-        process_option(&self.unlaunchable_fighter, &mut core_options.unlaunchable_fighter);
+        process_option(&h_options.unlaunchable_fighter, &mut core_options.unlaunchable_fighter);
         process_option(
-            &self.unlaunchable_light_fighter,
+            &h_options.unlaunchable_light_fighter,
             &mut core_options.unlaunchable_light_fighter,
         );
         process_option(
-            &self.unlaunchable_heavy_fighter,
+            &h_options.unlaunchable_heavy_fighter,
             &mut core_options.unlaunchable_heavy_fighter,
         );
         process_option(
-            &self.unlaunchable_support_fighter,
+            &h_options.unlaunchable_support_fighter,
             &mut core_options.unlaunchable_support_fighter,
         );
         process_option(
-            &self.unlaunchable_st_light_fighter,
+            &h_options.unlaunchable_st_light_fighter,
             &mut core_options.unlaunchable_st_light_fighter,
         );
         process_option(
-            &self.unlaunchable_st_heavy_fighter,
+            &h_options.unlaunchable_st_heavy_fighter,
             &mut core_options.unlaunchable_st_heavy_fighter,
         );
         process_option(
-            &self.unlaunchable_st_support_fighter,
+            &h_options.unlaunchable_st_support_fighter,
             &mut core_options.unlaunchable_st_support_fighter,
         );
-        process_option(&self.fighter_squad_size, &mut core_options.fighter_squad_size);
+        process_option(&h_options.fighter_squad_size, &mut core_options.fighter_squad_size);
         // Projection, destination side
-        process_option(&self.activation_blocked, &mut core_options.activation_blocked);
-        process_option(&self.effect_stopper, &mut core_options.effect_stopper);
+        process_option(&h_options.activation_blocked, &mut core_options.activation_blocked);
+        process_option(&h_options.effect_stopper, &mut core_options.effect_stopper);
         // Projection, source side
-        process_option(&self.assist_immunity, &mut core_options.assist_immunity);
-        process_option(&self.offense_immunity, &mut core_options.offense_immunity);
-        process_option(&self.resist_immunity, &mut core_options.resist_immunity);
+        process_option(&h_options.assist_immunity, &mut core_options.assist_immunity);
+        process_option(&h_options.offense_immunity, &mut core_options.offense_immunity);
+        process_option(&h_options.resist_immunity, &mut core_options.resist_immunity);
         // Sec zone
-        process_option(&self.sec_zone_fitted, &mut core_options.sec_zone_fitted);
-        process_option(&self.sec_zone_online, &mut core_options.sec_zone_online);
-        process_option(&self.sec_zone_active, &mut core_options.sec_zone_active);
-        process_option(&self.sec_zone_unonlineable, &mut core_options.sec_zone_unonlineable);
-        process_option(&self.sec_zone_unactivable, &mut core_options.sec_zone_unactivable);
+        process_option(&h_options.sec_zone_fitted, &mut core_options.sec_zone_fitted);
+        process_option(&h_options.sec_zone_online, &mut core_options.sec_zone_online);
+        process_option(&h_options.sec_zone_active, &mut core_options.sec_zone_active);
+        process_option(
+            &h_options.sec_zone_unonlineable,
+            &mut core_options.sec_zone_unonlineable,
+        );
+        process_option(&h_options.sec_zone_unactivable, &mut core_options.sec_zone_unactivable);
         core_options
     }
 }

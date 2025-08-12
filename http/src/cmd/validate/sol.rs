@@ -15,7 +15,7 @@ impl HValidateSolCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, valid_mode: HValidInfoMode) -> HSolValResult {
         let core_options = rc::val::ValOptionsSol {
             fit_ids: self.fit_ids.clone(),
-            options: self.options.to_core(),
+            options: (&self.options).into(),
         };
         match valid_mode {
             HValidInfoMode::Simple => core_sol.validate_fast(&core_options).into(),

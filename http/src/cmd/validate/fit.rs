@@ -16,7 +16,7 @@ impl HValidateFitCmd {
         fit_id: &rc::FitId,
         valid_mode: HValidInfoMode,
     ) -> Result<HFitValResult, HExecError> {
-        let core_options = self.validation_options.to_core();
+        let core_options = (&self.validation_options).into();
         let mut primary_fit = get_primary_fit(core_sol, fit_id)?;
         Ok(match valid_mode {
             HValidInfoMode::Simple => primary_fit.validate_fast(&core_options).into(),

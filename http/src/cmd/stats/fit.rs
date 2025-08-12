@@ -177,7 +177,7 @@ impl HGetFitStatsCmd {
 fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> Option<Vec<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_item_kinds = option.item_kinds.to_core();
+        let core_item_kinds = (&option.item_kinds).into();
         let core_spool = option.spool.map(|h_spool| h_spool.into());
         let core_stat = core_fit.get_stat_dps(core_item_kinds, option.reload, core_spool);
         results.push(core_stat.into());
@@ -188,7 +188,7 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
 fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley>) -> Option<Vec<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_item_kinds = option.item_kinds.to_core();
+        let core_item_kinds = (&option.item_kinds).into();
         let core_spool = option.spool.map(|h_spool| h_spool.into());
         let core_stat = core_fit.get_stat_volley(core_item_kinds, core_spool);
         results.push(core_stat.into());

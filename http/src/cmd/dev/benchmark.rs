@@ -35,7 +35,7 @@ pub(crate) struct HBenchmarkTryFitItemsCmd {
 }
 impl HBenchmarkTryFitItemsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
-        let core_options = self.validation_options.to_core();
+        let core_options = (&self.validation_options).into();
         let cloner = HSolCloner::new(core_sol);
         let chunk_size = usize::max(
             400,
