@@ -116,8 +116,8 @@ def test_stacking_complex_realistic(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
-    api_fit_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [StatsOptionFitDps(reload=True)])))
-    assert api_fit_stats.dps.one().breacher == [approx(199.838384), approx(0.007493939)]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [StatsOptionFitDps(reload=True)])))
+    assert api_fleet_stats.dps.one().breacher == [approx(199.838384), approx(0.007493939)]
 
 
 def test_stacking_complex_different_multiple_downtimes(client, consts):
