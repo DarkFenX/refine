@@ -1,7 +1,7 @@
 pub use options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
 pub use result::{ValResultFit, ValResultSol};
-pub use shared::{StatDmg, StatDmgBreacher, StatDmgItemKinds, StatTank};
+pub use shared::{StatDmg, StatDmgBreacher, StatDmgItemKinds, StatRrItemKinds, StatTank};
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 pub use vaste_stats_fit::{StatRes, StatSlot};

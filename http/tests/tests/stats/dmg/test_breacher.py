@@ -193,8 +193,6 @@ def test_include_charges(client, consts):
         charge_type_id=eve_charge_id)
     # Verification - need to include charges for module to show dps, since it's on-charge effect
     # which deals damage. For charges, this option doesn't do anything
-    # Verification - need to include charges for module to show dps, since it's on-charge effect
-    # which deals damage. For charges, this option doesn't do anything
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(include_charges=False), StatsOptionItemDps(include_charges=True)]),
         volley=(True, [StatsOptionItemVolley(include_charges=False), StatsOptionItemVolley(include_charges=True)])))
