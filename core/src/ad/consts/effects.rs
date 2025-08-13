@@ -24,6 +24,7 @@ pub(crate) const MISSILE_EM_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSILE
 pub(crate) const MISSILE_EXPL_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSILE_EXPL_DMG_BONUS);
 pub(crate) const MISSILE_THERM_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSILE_THERM_DMG_BONUS);
 pub(crate) const MISSILE_KIN_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSILE_KIN_DMG_BONUS);
+pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: AEffectId = AEffectId::Dogma(ece::CLOAKING_TARGETING_DELAY_BONUS);
 pub(crate) const DRONE_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::DRONE_DMG_BONUS);
 pub(crate) const SELF_ROF: AEffectId = AEffectId::Dogma(ece::SELF_ROF);
 pub(crate) const RIG_SLOT: AEffectId = AEffectId::Dogma(ece::RIG_SLOT);

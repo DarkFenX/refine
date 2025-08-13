@@ -89,6 +89,7 @@ mod eff_d7062_weather_infernal;
 mod eff_d7063_weather_xenon_gas;
 mod eff_d7166_ship_mod_remote_armor_mutadaptive_repairer;
 mod eff_d8037_chain_lightning;
+mod eff_d848_cloaking_targeting_delay_bonus;
 mod eff_d9_missile_launching;
 mod shared;
 
@@ -120,6 +121,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d661_missile_expl_dmg_bonus::mk_n_effect(),
         eff_d662_missile_therm_dmg_bonus::mk_n_effect(),
         eff_d668_missile_kin_dmg_bonus::mk_n_effect(),
+        eff_d848_cloaking_targeting_delay_bonus::mk_n_effect(),
         eff_d1730_drone_dmg_bonus::mk_n_effect(),
         eff_d1851_self_rof::mk_n_effect(),
         eff_d2971_bomb_launching::mk_n_effect(),
