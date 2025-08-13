@@ -188,7 +188,7 @@ impl UModule {
                 return None;
             }
         };
-        let charge_count = trunc_unerr(module_capacity / charge_volume) as Count;
+        let charge_count = trunc_unerr(module_capacity / charge_volume).into_inner() as Count;
         Some(charge_count)
     }
     pub(crate) fn get_spool(&self) -> Option<Spool> {

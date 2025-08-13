@@ -43,5 +43,9 @@ fn get_dmg_opc(
     let rel_max =
         calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_MAX_HP_PERC_PER_TICK)? / OF(100.0);
     let duration_s = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_DURATION)? / OF(1000.0);
-    OutputDmgBreacher::new(abs_max, rel_max, trunc_unerr(duration_s / SERVER_TICK_S) as Count)
+    OutputDmgBreacher::new(
+        abs_max,
+        rel_max,
+        trunc_unerr(duration_s / SERVER_TICK_S).into_inner() as Count,
+    )
 }

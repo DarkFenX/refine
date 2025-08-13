@@ -1,10 +1,11 @@
 use crate::{
     ac,
     ad::{AAttrId, AEffect},
-    def::{AttrVal, OF},
+    def::{AttrVal, OF, SERVER_TICK_HZ},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
     ud::{UItemKey, UProjRange},
+    util::{ceil_tick, floor_tick},
 };
 
 pub(crate) fn get_proj_attrs_missile(_a_effect: &AEffect) -> [Option<AAttrId>; 2] {
@@ -42,7 +43,7 @@ pub(crate) fn get_proj_mult_missile(
         .unwrap()
         .extra
         .max(OF(0.0));
-    let flight_time_lower = OF(flight_time.trunc());
+    let flight_time_lower = floor_tick(flight_time);
     // Missiles appear in center of attacking ship and explode on surface of target ship
     let proj_range = prange.get_c2s();
     match flight_time_lower == flight_time {
@@ -62,11 +63,11 @@ pub(crate) fn get_proj_mult_missile(
             match proj_range <= range_lower {
                 true => OF(1.0),
                 false => {
-                    let flight_time_higher = OF(flight_time.ceil());
+                    let flight_time_higher = ceil_tick(flight_time);
                     let range_higher = calc_range(max_velocity, flight_time_higher, mass, agility);
                     match proj_range > range_higher {
                         true => OF(0.0),
-                        false => OF(flight_time.fract()),
+                        false => OF((flight_time * SERVER_TICK_HZ as f64).fract()),
                     }
                 }
             }

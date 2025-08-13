@@ -27,6 +27,7 @@ mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
 mod eff_d26_structure_repair;
 mod eff_d27_armor_repair;
+mod eff_d2971_bomb_launching;
 mod eff_d3380_warp_disrupt_sphere;
 mod eff_d34_projectile_fired;
 mod eff_d3773_hardpoint_modifier_effect;
@@ -121,6 +122,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d668_missile_kin_dmg_bonus::mk_n_effect(),
         eff_d1730_drone_dmg_bonus::mk_n_effect(),
         eff_d1851_self_rof::mk_n_effect(),
+        eff_d2971_bomb_launching::mk_n_effect(),
         eff_d3380_warp_disrupt_sphere::mk_n_effect(),
         eff_d3773_hardpoint_modifier_effect::mk_n_effect(),
         eff_d3774_slot_modifier::mk_n_effect(),

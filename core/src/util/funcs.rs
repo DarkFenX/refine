@@ -1,6 +1,6 @@
 use ordered_float::Float;
 
-use crate::def::OF;
+use crate::def::{OF, SERVER_TICK_HZ};
 
 pub(crate) fn vec_push_opt<T>(vec: &mut Vec<T>, opt: Option<T>) {
     if let Some(v) = opt {
@@ -28,14 +28,22 @@ fn float_unerr(val: OF<f64>) -> OF<f64> {
     round(val, 10)
 }
 
-pub(crate) fn floor_unerr(val: OF<f64>) -> f64 {
-    float_unerr(val).floor().into_inner()
+pub(crate) fn floor_unerr(val: OF<f64>) -> OF<f64> {
+    float_unerr(val).floor()
 }
 
-pub(crate) fn ceil_unerr(val: OF<f64>) -> f64 {
-    float_unerr(val).ceil().into_inner()
+pub(crate) fn ceil_unerr(val: OF<f64>) -> OF<f64> {
+    float_unerr(val).ceil()
 }
 
-pub(crate) fn trunc_unerr(val: OF<f64>) -> f64 {
-    float_unerr(val).trunc().into_inner()
+pub(crate) fn trunc_unerr(val: OF<f64>) -> OF<f64> {
+    float_unerr(val).trunc()
+}
+
+pub(crate) fn floor_tick(val: OF<f64>) -> OF<f64> {
+    (val * SERVER_TICK_HZ as f64).floor() / SERVER_TICK_HZ as f64
+}
+
+pub(crate) fn ceil_tick(val: OF<f64>) -> OF<f64> {
+    (val * SERVER_TICK_HZ as f64).ceil() / SERVER_TICK_HZ as f64
 }

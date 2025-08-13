@@ -120,7 +120,8 @@ fn aggregate_breacher(opc: OutputDmgBreacher, cycle: Cycle) -> Option<AggrBreach
             if let InfCount::Count(0) = simple.repeat_count {
                 return None;
             }
-            let full_cycle_ticks = ceil_unerr((simple.active_time + simple.inactive_time) / SERVER_TICK_S) as Count;
+            let full_cycle_ticks =
+                ceil_unerr((simple.active_time + simple.inactive_time) / SERVER_TICK_S).into_inner() as Count;
             match opc.tick_count >= full_cycle_ticks {
                 // Case when breacher damage is enough to reach beginning of next cycle
                 true => match simple.repeat_count {
@@ -153,8 +154,8 @@ fn aggregate_breacher(opc: OutputDmgBreacher, cycle: Cycle) -> Option<AggrBreach
             }
         }
         Cycle::Reload1(reload1) => {
-            let full_cycle_ticks =
-                ceil_unerr((reload1.inner.active_time + reload1.inner.inactive_time) / SERVER_TICK_S) as Count;
+            let full_cycle_ticks = ceil_unerr((reload1.inner.active_time + reload1.inner.inactive_time) / SERVER_TICK_S)
+                .into_inner() as Count;
             match opc.tick_count >= full_cycle_ticks {
                 // Case when breacher damage is enough to reach beginning of next cycle
                 true => Some(AggrBreacher {
@@ -177,10 +178,10 @@ fn aggregate_breacher(opc: OutputDmgBreacher, cycle: Cycle) -> Option<AggrBreach
         Cycle::Reload2(reload2) => {
             let early_full_cycle_ticks =
                 ceil_unerr((reload2.inner_early.active_time + reload2.inner_early.inactive_time) / SERVER_TICK_S)
-                    as Count;
+                    .into_inner() as Count;
             let final_full_cycle_ticks =
                 ceil_unerr((reload2.inner_final.active_time + reload2.inner_final.inactive_time) / SERVER_TICK_S)
-                    as Count;
+                    .into_inner() as Count;
             if opc.tick_count >= early_full_cycle_ticks {
                 // Breacher duration covers all possible gaps
                 if opc.tick_count >= final_full_cycle_ticks {

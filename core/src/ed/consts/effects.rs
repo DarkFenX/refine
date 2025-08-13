@@ -24,6 +24,7 @@ pub(crate) const MISSILE_KIN_DMG_BONUS: EEffectId = 668;
 pub(crate) const DRONE_DMG_BONUS: EEffectId = 1730;
 pub(crate) const SELF_ROF: EEffectId = 1851;
 pub(crate) const RIG_SLOT: EEffectId = 2663;
+pub(crate) const BOMB_LAUNCHING: EEffectId = 2971;
 pub(crate) const HARDPOINT_MODIFIER_EFFECT: EEffectId = 3773;
 pub(crate) const SLOT_MODIFIER: EEffectId = 3774;
 pub(crate) const WARP_DISRUPT_SPHERE: EEffectId = 3380;

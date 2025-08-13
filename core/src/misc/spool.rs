@@ -40,7 +40,7 @@ impl Spool {
         if step == OF(0.0) {
             return None;
         }
-        let cycles_max = ceil_unerr(max / step) as Count;
+        let cycles_max = ceil_unerr(max / step).into_inner() as Count;
         let cycles = match self {
             Spool::Cycles(cycles_opt) => {
                 // Limit requested count by max spool cycles
@@ -48,11 +48,13 @@ impl Spool {
             }
             Spool::Time(time) => {
                 // Choose count of cycles finished by specified time, and limit by max spool cycles
-                let cycles_by_time = floor_unerr((*time).max(OF(0.0)) / cycle_time) as Count;
+                let cycles_by_time = floor_unerr((*time).max(OF(0.0)) / cycle_time).into_inner() as Count;
                 cycles_max.min(cycles_by_time)
             }
-            Spool::SpoolScale(range_value) => ceil_unerr(range_value.get_inner() * max / step) as Count,
-            Spool::CycleScale(range_value) => ceil_unerr(range_value.get_inner() * cycles_max as f64) as Count,
+            Spool::SpoolScale(range_value) => ceil_unerr(range_value.get_inner() * max / step).into_inner() as Count,
+            Spool::CycleScale(range_value) => {
+                ceil_unerr(range_value.get_inner() * cycles_max as f64).into_inner() as Count
+            }
         };
         let mult = OF(1.0) + max.min(step * cycles as f64);
         Some(ResolvedSpool {

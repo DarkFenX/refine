@@ -27,6 +27,7 @@ pub(crate) const MISSILE_KIN_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::MISSIL
 pub(crate) const DRONE_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::DRONE_DMG_BONUS);
 pub(crate) const SELF_ROF: AEffectId = AEffectId::Dogma(ece::SELF_ROF);
 pub(crate) const RIG_SLOT: AEffectId = AEffectId::Dogma(ece::RIG_SLOT);
+pub(crate) const BOMB_LAUNCHING: AEffectId = AEffectId::Dogma(ece::BOMB_LAUNCHING);
 pub(crate) const HARDPOINT_MODIFIER_EFFECT: AEffectId = AEffectId::Dogma(ece::HARDPOINT_MODIFIER_EFFECT);
 pub(crate) const SLOT_MODIFIER: AEffectId = AEffectId::Dogma(ece::SLOT_MODIFIER);
 pub(crate) const WARP_DISRUPT_SPHERE: AEffectId = AEffectId::Dogma(ece::WARP_DISRUPT_SPHERE);

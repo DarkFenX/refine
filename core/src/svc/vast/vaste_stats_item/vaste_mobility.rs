@@ -1,8 +1,6 @@
-use ordered_float::Float;
-
 use crate::{
     ac,
-    def::{AttrVal, OF, SERVER_TICK_HZ},
+    def::{AttrVal, OF},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -10,6 +8,7 @@ use crate::{
         vast::Vast,
     },
     ud::{UItem, UItemKey, UShipKind},
+    util::ceil_tick,
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -58,8 +57,7 @@ impl Vast {
         Ok(Vast::get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
     fn get_stat_item_align_time_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
-        Vast::get_stat_item_agility_unchecked(ctx, calc, item_key)
-            .map(|v| (v * SERVER_TICK_HZ as f64).ceil() / SERVER_TICK_HZ as f64)
+        Vast::get_stat_item_agility_unchecked(ctx, calc, item_key).map(|v| ceil_tick(v))
     }
 }
 
