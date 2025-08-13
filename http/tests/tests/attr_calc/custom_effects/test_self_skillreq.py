@@ -203,3 +203,39 @@ def test_drone_dmg(client, consts):
     assert api_drone2.attrs[eve_affectee_attr_id].dogma == approx(5)
     with check_no_field():
         api_drone2.mods  # noqa: B018
+
+
+def test_cloak_recalibration(client, consts):
+    # Since there is only one cloaking skill, this could've been expressed as a normal modifier
+    # info, but CCP didn't put any modifiers into effect which provides bonus to sensor
+    # recalibration, so it was hardcoded into the lib as self-requirement
+    eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cloaking_targeting_delay_bonus)
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cloaking_targeting_delay)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking_targeting_delay_bonus)
+    eve_skill1_id = client.mk_eve_item(attrs={eve_affector_attr_id: -50}, eff_ids=[eve_effect_id])
+    eve_skill2_id = client.mk_eve_item()
+    eve_module1_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 10000}, srqs={eve_skill1_id: 5})
+    eve_module2_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 10000}, srqs={eve_skill2_id: 5})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_skill1 = api_fit.add_skill(type_id=eve_skill1_id, level=5)
+    api_fit.add_skill(type_id=eve_skill2_id, level=5)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
+    # Verification
+    api_module1 = api_module1.update()
+    assert api_module1.attrs[eve_affectee_attr_id].dogma == approx(5000)
+    api_mod = api_module1.mods.find_by_affector_item(
+        affectee_attr_id=eve_affectee_attr_id,
+        affector_item_id=api_skill1.id).one()
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(-50)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(-50)
+    api_module2 = api_module2.update()
+    assert api_module2.attrs[eve_affectee_attr_id].dogma == approx(10000)
+    with check_no_field():
+        api_module2.mods  # noqa: B018

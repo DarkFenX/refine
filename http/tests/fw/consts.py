@@ -83,6 +83,7 @@ class EveEffect(IntEnum):
     missile_expl_dmg_bonus = 661
     missile_therm_dmg_bonus = 662
     missile_kin_dmg_bonus = 668
+    cloaking_targeting_delay_bonus = 848
     drone_dmg_bonus = 1730
     self_rof = 1851
     rig_slot = 2663
@@ -274,6 +275,7 @@ class EveAttr(IntEnum):
     max_active_drones = 352
     sig_radius = 552
     sig_radius_bonus = 554
+    cloaking_targeting_delay = 560
     speed_boost_factor = 567
     launcher_group2 = 602
     launcher_group3 = 603
@@ -282,6 +284,7 @@ class EveAttr(IntEnum):
     charge_group3 = 606
     charge_group4 = 609
     charge_group5 = 610
+    cloaking_targeting_delay_bonus = 619
     module_reactivation_delay = 669
     max_group_active = 763
     crystal_volatility_chance = 783
