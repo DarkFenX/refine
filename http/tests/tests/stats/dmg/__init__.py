@@ -133,6 +133,7 @@ def setup_dmg_basics(
         eve_missile_fof_effect_id,
         eve_missile_defender_effect_id,
         eve_breacher_effect_id,
+        eve_bomb_effect_id,
         eve_smartbomb_effect_id,
         eve_dd_lance_debuff_effect_id])
     return DmgBasicInfo(
