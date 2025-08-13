@@ -86,6 +86,7 @@ class EveEffect(IntEnum):
     drone_dmg_bonus = 1730
     self_rof = 1851
     rig_slot = 2663
+    bomb_launching = 2971
     overload_self_duration_bonus = 3002
     warp_disrupt_sphere = 3380
     script_warp_scramble_range_bonus = 3648

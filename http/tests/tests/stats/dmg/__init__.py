@@ -45,6 +45,7 @@ class DmgBasicInfo:
     missile_fof_effect_id: int
     missile_defender_effect_id: int
     breacher_effect_id: int
+    bomb_effect_id: int
     smartbomb_effect_id: int
     dd_lance_debuff_effect_id: int
 
@@ -110,6 +111,9 @@ def setup_dmg_basics(
     eve_breacher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.dot_missile_launching,
         cat_id=consts.EveEffCat.target)
+    eve_bomb_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.bomb_launching,
+        cat_id=consts.EveEffCat.active)
     eve_smartbomb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.emp_wave,
         cat_id=consts.EveEffCat.active,
@@ -166,6 +170,7 @@ def setup_dmg_basics(
         missile_fof_effect_id=eve_missile_fof_effect_id,
         missile_defender_effect_id=eve_missile_defender_effect_id,
         breacher_effect_id=eve_breacher_effect_id,
+        bomb_effect_id=eve_bomb_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
 
@@ -398,6 +403,22 @@ def make_eve_breacher(
         attrs=attrs,
         eff_ids=[basic_info.breacher_effect_id],
         defeff_id=basic_info.breacher_effect_id)
+
+
+def make_eve_bomb(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        volume: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.bomb_effect_id],
+        defeff_id=basic_info.bomb_effect_id)
 
 
 def make_eve_drone(
