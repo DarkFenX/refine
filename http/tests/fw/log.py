@@ -109,7 +109,8 @@ class LogReader:
             while self.__execute_flag:
                 try:
                     line = f.readline()
-                # Can sometimes happen if multibyte symbol got read mid-write
+                # Can sometimes happen if multibyte symbol got read mid-write, or if seek() put
+                # read position mid-multibyte-symbol
                 except UnicodeDecodeError:
                     time.sleep(0.1)
                     continue
