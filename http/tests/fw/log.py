@@ -107,7 +107,12 @@ class LogReader:
         with self.__path.open() as f:
             f.seek(0, os.SEEK_END)
             while self.__execute_flag:
-                line = f.readline()
+                try:
+                    line = f.readline()
+                # Can sometimes happen if multibyte symbol got read mid-write
+                except UnicodeDecodeError:
+                    time.sleep(0.1)
+                    continue
                 if not line:
                     time.sleep(0.1)
                     continue
