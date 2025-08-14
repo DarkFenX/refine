@@ -14,14 +14,16 @@ impl UFighter {
         // Radius of projector should match radius of drone, radius of projectee should match
         // projectee items
         let fighter_radius = u_data.get_item_radius(u_data.items.key_by_id(&self.get_item_id()).unwrap());
-        for (projectee_key, prange) in self.get_projs().iter() {
-            if let Some(prange) = prange {
-                if prange.get_src_rad() != fighter_radius {
-                    return Err(DebugError {});
-                }
-                if prange.get_tgt_rad() != u_data.get_item_radius(projectee_key) {
-                    return Err(DebugError {});
-                }
+        for (projectee_key, proj_data) in self.get_projs().iter() {
+            let proj_data = match proj_data {
+                Some(proj_data) => proj_data,
+                None => return Err(DebugError {}),
+            };
+            if proj_data.get_src_rad() != fighter_radius {
+                return Err(DebugError {});
+            }
+            if proj_data.get_tgt_rad() != u_data.get_item_radius(projectee_key) {
+                return Err(DebugError {});
             }
         }
         // If fighter has autocharges, make sure projections on them match

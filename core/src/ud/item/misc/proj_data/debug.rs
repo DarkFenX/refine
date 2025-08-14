@@ -1,11 +1,11 @@
 use crate::{
     dbg::{DebugError, DebugResult},
-    ud::UProjRange,
+    ud::UProjData,
 };
 
-impl UProjRange {
+impl UProjData {
     pub(crate) fn consistency_check(&self) -> DebugResult {
-        if self.s2s + self.src_rad + self.tgt_rad != self.c2c {
+        if self.range_s2s + self.src_rad + self.tgt_rad != self.range_c2c {
             return Err(DebugError {});
         }
         Ok(())

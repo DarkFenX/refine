@@ -36,7 +36,7 @@ fn process_effect_updates(
     if !eupdates.to_start.is_empty() {
         svc.notify_effects_started(u_data, item_key, u_item, &eupdates.to_start);
         if let Some(projs) = u_item.iter_projs() {
-            for (projectee_key, range) in projs {
+            for (projectee_key, proj_data) in projs {
                 let projectee_item = u_data.items.get(projectee_key);
                 for r_effect in eupdates.to_start.iter() {
                     if is_a_effect_projectable(u_item, r_effect) {
@@ -47,7 +47,7 @@ fn process_effect_updates(
                             r_effect,
                             projectee_key,
                             projectee_item,
-                            range,
+                            proj_data,
                         );
                     }
                 }

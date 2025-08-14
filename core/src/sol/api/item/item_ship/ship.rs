@@ -1,4 +1,5 @@
 use crate::{
+    misc::Coordinates,
     sol::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
@@ -19,6 +20,9 @@ impl<'a> Ship<'a> {
     }
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.key)
+    }
+    pub fn get_coordinates(&self) -> Coordinates {
+        get_coordinates(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for Ship<'a> {
@@ -49,6 +53,9 @@ impl<'a> ShipMut<'a> {
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.key)
     }
+    pub fn get_coordinates(&self) -> Coordinates {
+        get_coordinates(self.sol, self.key)
+    }
 }
 impl<'a> ItemSealed for ShipMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -72,6 +79,9 @@ fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
 }
 fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
     get_u_ship(sol, item_key).get_ship_state()
+}
+fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
+    get_u_ship(sol, item_key).get_pos().coordinates.into()
 }
 fn get_u_ship(sol: &SolarSystem, item_key: UItemKey) -> &UShip {
     sol.u_data.items.get(item_key).get_ship().unwrap()

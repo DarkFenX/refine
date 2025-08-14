@@ -1,45 +1,47 @@
 use crate::{
     misc::EffectSpec,
-    ud::{UItemKey, UProjRange},
+    ud::{UItemKey, UProjData},
     util::RMap,
 };
 
 // Holds info about effect projections
 #[derive(Clone)]
 pub(crate) struct EffProjs {
-    pub(super) ranges: RMap<(EffectSpec, UItemKey), UProjRange>,
+    pub(super) proj_datas: RMap<(EffectSpec, UItemKey), UProjData>,
 }
 impl EffProjs {
     pub(in crate::svc) fn new() -> Self {
-        Self { ranges: RMap::new() }
-    }
-    // Query methods
-    pub(crate) fn get_range(&self, projector_espec: EffectSpec, projectee_key: UItemKey) -> Option<UProjRange> {
-        self.ranges.get(&(projector_espec, projectee_key)).copied()
-    }
-    // Modification methods
-    pub(in crate::svc) fn add_range(
-        &mut self,
-        projector_espec: EffectSpec,
-        projectee_key: UItemKey,
-        range: Option<UProjRange>,
-    ) {
-        if let Some(range) = range {
-            self.ranges.insert((projector_espec, projectee_key), range);
+        Self {
+            proj_datas: RMap::new(),
         }
     }
-    pub(in crate::svc) fn change_range(
+    // Query methods
+    pub(crate) fn get_proj_data(&self, projector_espec: EffectSpec, projectee_key: UItemKey) -> Option<UProjData> {
+        self.proj_datas.get(&(projector_espec, projectee_key)).copied()
+    }
+    // Modification methods
+    pub(in crate::svc) fn add_proj_data(
         &mut self,
         projector_espec: EffectSpec,
         projectee_key: UItemKey,
-        range: Option<UProjRange>,
+        proj_data: Option<UProjData>,
     ) {
-        match range {
-            Some(range) => self.ranges.insert((projector_espec, projectee_key), range),
-            None => self.ranges.remove(&(projector_espec, projectee_key)),
+        if let Some(proj_data) = proj_data {
+            self.proj_datas.insert((projector_espec, projectee_key), proj_data);
+        }
+    }
+    pub(in crate::svc) fn change_proj_data(
+        &mut self,
+        projector_espec: EffectSpec,
+        projectee_key: UItemKey,
+        proj_data: Option<UProjData>,
+    ) {
+        match proj_data {
+            Some(proj_data) => self.proj_datas.insert((projector_espec, projectee_key), proj_data),
+            None => self.proj_datas.remove(&(projector_espec, projectee_key)),
         };
     }
-    pub(in crate::svc) fn remove_range(&mut self, affector_espec: EffectSpec, affectee_key: UItemKey) {
-        self.ranges.remove(&(affector_espec, affectee_key));
+    pub(in crate::svc) fn remove_proj_data(&mut self, affector_espec: EffectSpec, affectee_key: UItemKey) {
+        self.proj_datas.remove(&(affector_espec, affectee_key));
     }
 }

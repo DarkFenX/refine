@@ -1,9 +1,9 @@
 use crate::{
     def::ItemId,
-    err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
+    err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::{
         SolarSystem,
-        api::{ProjEffectMut, ProjMut},
+        api::{AddProjError, ProjEffectMut, ProjMut},
     },
     ud::UItemKey,
 };
@@ -26,8 +26,8 @@ impl SolarSystem {
             }
             .into());
         }
-        // Check if projectee can receive projections
-        if !projectee_u_item.can_receive_projs() {
+        // Check if projectee can receive projections by checking if item type supports positions
+        if projectee_u_item.get_pos().is_none() {
             return Err(ItemReceiveProjError {
                 item_id: projectee_u_item.get_item_id(),
                 item_kind: projectee_u_item.get_name(),
@@ -50,14 +50,4 @@ impl<'a> ProjEffectMut<'a> {
         self.sol.internal_add_proj_effect_proj(self.key, projectee_key)?;
         Ok(ProjMut::new(self.sol, self.key, projectee_key))
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum AddProjError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
-    #[error("{0}")]
-    ProjectionAlreadyExists(#[from] ProjNotFoundError),
 }

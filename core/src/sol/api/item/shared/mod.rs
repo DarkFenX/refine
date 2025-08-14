@@ -5,7 +5,7 @@ pub use mutation::{
     RawMAttrIter, RawMAttrMut,
 };
 pub(in crate::sol::api) use ranged_proj::iter_ranged_projs;
-pub use ranged_proj::{AddRangedProjError, GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
+pub use ranged_proj::{AddProjError, GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
 pub(in crate::sol::api) use ship_axt::get_ship_axt;
 
 mod iter_proj;

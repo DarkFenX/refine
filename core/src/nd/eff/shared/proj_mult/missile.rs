@@ -4,7 +4,7 @@ use crate::{
     def::{AttrVal, OF, SERVER_TICK_HZ},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
-    ud::{UItemKey, UProjRange},
+    ud::{UItemKey, UProjData},
     util::{ceil_tick, floor_tick},
 };
 
@@ -20,7 +20,7 @@ pub(crate) fn get_proj_mult_missile(
     calc: &mut Calc,
     affector_key: UItemKey,
     _r_effect: &REffect,
-    prange: UProjRange,
+    u_proj_data: UProjData,
 ) -> AttrVal {
     let max_velocity = calc
         .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_VELOCITY)
@@ -45,7 +45,7 @@ pub(crate) fn get_proj_mult_missile(
         .max(OF(0.0));
     let flight_time_lower = floor_tick(flight_time);
     // Missiles appear in center of attacking ship and explode on surface of target ship
-    let proj_range = prange.get_c2s();
+    let proj_range = u_proj_data.get_range_c2s();
     match flight_time_lower == flight_time {
         // When flight time is aligned to ticks, need to do fewer calculations
         true => {
@@ -81,7 +81,7 @@ pub(crate) fn get_proj_mult_bomb(
     calc: &mut Calc,
     affector_key: UItemKey,
     _r_effect: &REffect,
-    prange: UProjRange,
+    u_proj_data: UProjData,
 ) -> AttrVal {
     let max_velocity = calc
         .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_VELOCITY)
@@ -111,13 +111,13 @@ pub(crate) fn get_proj_mult_bomb(
         .max(OF(0.0));
     let flight_time_lower = floor_tick(flight_time);
     // Bombs appear in center of attacking ship
-    let proj_range = prange.get_c2c();
+    let proj_range = u_proj_data.get_range_c2c();
     match flight_time_lower == flight_time {
         // When flight time is aligned to ticks, need to do fewer calculations
         true => {
             let flight_range = calc_range(max_velocity, flight_time, mass, agility);
-            let short_range = flight_range - aoe_range - prange.get_tgt_rad();
-            let long_range = flight_range + aoe_range + prange.get_tgt_rad();
+            let short_range = flight_range - aoe_range - u_proj_data.get_tgt_rad();
+            let long_range = flight_range + aoe_range + u_proj_data.get_tgt_rad();
             match proj_range >= short_range && proj_range <= long_range {
                 true => OF(1.0),
                 false => OF(0.0),
@@ -131,10 +131,10 @@ pub(crate) fn get_proj_mult_bomb(
             let flight_range_higher = calc_range(max_velocity, flight_time_higher, mass, agility);
             let chance_higher = OF((flight_time * SERVER_TICK_HZ as f64).fract());
             let chance_lower = OF(1.0) - chance_higher;
-            let lower_short_range = flight_range_lower - aoe_range - prange.get_tgt_rad();
-            let lower_long_range = flight_range_lower + aoe_range + prange.get_tgt_rad();
-            let higher_short_range = flight_range_higher - aoe_range - prange.get_tgt_rad();
-            let higher_long_range = flight_range_higher + aoe_range + prange.get_tgt_rad();
+            let lower_short_range = flight_range_lower - aoe_range - u_proj_data.get_tgt_rad();
+            let lower_long_range = flight_range_lower + aoe_range + u_proj_data.get_tgt_rad();
+            let higher_short_range = flight_range_higher - aoe_range - u_proj_data.get_tgt_rad();
+            let higher_long_range = flight_range_higher + aoe_range + u_proj_data.get_tgt_rad();
             let mut mult = OF(0.0);
             if proj_range >= lower_short_range && proj_range <= lower_long_range {
                 mult += chance_lower;

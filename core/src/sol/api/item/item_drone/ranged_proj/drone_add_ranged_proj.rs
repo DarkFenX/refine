@@ -1,12 +1,11 @@
 use crate::{
     def::ItemId,
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
-    misc::ProjRange,
     sol::{
         SolarSystem,
-        api::{AddRangedProjError, DroneMut, RangedProjMut},
+        api::{AddProjError, DroneMut, RangedProjMut},
     },
-    ud::{UItemKey, UProjRange},
+    ud::{UItemKey, UProjData},
 };
 
 impl SolarSystem {
@@ -14,8 +13,7 @@ impl SolarSystem {
         &mut self,
         item_key: UItemKey,
         projectee_key: UItemKey,
-        range: ProjRange,
-    ) -> Result<(), AddRangedProjError> {
+    ) -> Result<(), AddProjError> {
         // Check projector
         let u_drone = self.u_data.items.get(item_key).get_drone().unwrap();
         // Check if projection has already been defined
@@ -27,33 +25,38 @@ impl SolarSystem {
             }
             .into());
         }
-        // Check if projectee can receive projections
-        if !projectee_u_item.can_receive_projs() {
-            return Err(ItemReceiveProjError {
-                item_id: projectee_u_item.get_item_id(),
-                item_kind: projectee_u_item.get_name(),
+        // Check if projectee can receive projections by getting its position in space
+        let projectee_pos = match projectee_u_item.get_pos() {
+            Some(projectee_pos) => *projectee_pos,
+            None => {
+                return Err(ItemReceiveProjError {
+                    item_id: projectee_u_item.get_item_id(),
+                    item_kind: projectee_u_item.get_name(),
+                }
+                .into());
             }
-            .into());
-        }
-        let u_prange = UProjRange::from_prange_with_axt(range, u_drone.get_axt(), projectee_u_item.get_axt());
+        };
+        let drone_pos = *u_drone.get_pos();
+        let u_proj_data = Some(UProjData::from_positions_with_axt(
+            drone_pos,
+            projectee_pos,
+            u_drone.get_axt(),
+            projectee_u_item.get_axt(),
+        ));
         // Update user data
         let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
-        u_drone.get_projs_mut().add(projectee_key, u_prange);
+        u_drone.get_projs_mut().add(projectee_key, u_proj_data);
         self.rev_projs.reg_projectee(item_key, projectee_key);
         // Update services
-        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key, u_prange);
+        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key, u_proj_data);
         Ok(())
     }
 }
 
 impl<'a> DroneMut<'a> {
-    pub fn add_proj(
-        &mut self,
-        projectee_item_id: &ItemId,
-        range: ProjRange,
-    ) -> Result<RangedProjMut<'_>, AddRangedProjError> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProjMut<'_>, AddProjError> {
         let projectee_key = self.sol.u_data.items.key_by_id_err(projectee_item_id)?;
-        self.sol.internal_add_drone_proj(self.key, projectee_key, range)?;
+        self.sol.internal_add_drone_proj(self.key, projectee_key)?;
         Ok(RangedProjMut::new(self.sol, self.key, projectee_key))
     }
 }

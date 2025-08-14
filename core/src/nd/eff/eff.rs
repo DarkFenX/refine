@@ -10,7 +10,7 @@ use crate::{
         calc::{Calc, RawModifier},
         output::{Output, OutputDmgBreacher},
     },
-    ud::{UItemKey, UProjRange},
+    ud::{UItemKey, UProjData},
     util::RMap,
 };
 
@@ -18,7 +18,7 @@ pub(crate) type NEffectMaker = fn() -> ad::AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<ad::AItemId, ad::AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut ad::AEffect);
 pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, EffectSpec);
-pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, UProjRange) -> AttrVal;
+pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, UProjData) -> AttrVal;
 pub(crate) type NSpoolResolver = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
 pub(crate) type NNormalDmgGetter =

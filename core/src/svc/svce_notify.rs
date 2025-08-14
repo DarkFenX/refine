@@ -3,7 +3,7 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     rd::{REffectKey, RcEffect},
     svc::{Svc, SvcCtx},
-    ud::{UData, UFighter, UFitKey, UFleet, UItem, UItemKey, UProjRange, USkill},
+    ud::{UData, UFighter, UFitKey, UFleet, UItem, UItemKey, UProjData, USkill},
 };
 
 impl Svc {
@@ -103,7 +103,7 @@ impl Svc {
     }
     pub(crate) fn notify_item_projected(&mut self) {}
     pub(crate) fn notify_item_unprojected(&mut self) {}
-    pub(crate) fn notify_item_proj_range_changed(&mut self) {}
+    pub(crate) fn notify_item_proj_data_changed(&mut self) {}
     pub(crate) fn notify_effect_projected(
         &mut self,
         u_data: &UData,
@@ -112,10 +112,10 @@ impl Svc {
         effect: &RcEffect,
         projectee_key: UItemKey,
         projectee_item: &UItem,
-        range: Option<UProjRange>,
+        proj_data: Option<UProjData>,
     ) {
         let projector_espec = EffectSpec::new(projector_key, effect.get_key());
-        self.eff_projs.add_range(projector_espec, projectee_key, range);
+        self.eff_projs.add_proj_data(projector_espec, projectee_key, proj_data);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
             .effect_projected(svc_ctx, projector_espec, projectee_key, projectee_item);
@@ -137,22 +137,23 @@ impl Svc {
             .effect_unprojected(svc_ctx, projector_espec, projectee_key, projectee_item);
         self.vast
             .effect_unprojected(projector_key, projector_item, effect, projectee_key, projectee_item);
-        self.eff_projs.remove_range(projector_espec, projectee_key);
+        self.eff_projs.remove_proj_data(projector_espec, projectee_key);
     }
-    pub(crate) fn notify_effect_proj_range_changed(
+    pub(crate) fn notify_effect_proj_data_changed(
         &mut self,
         u_data: &UData,
         projector_key: UItemKey,
         effect_key: REffectKey,
         projectee_key: UItemKey,
         projectee_item: &UItem,
-        range: Option<UProjRange>,
+        proj_data: Option<UProjData>,
     ) {
         let projector_espec = EffectSpec::new(projector_key, effect_key);
-        self.eff_projs.change_range(projector_espec, projectee_key, range);
+        self.eff_projs
+            .change_proj_data(projector_espec, projectee_key, proj_data);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
-            .effect_proj_range_changed(svc_ctx, projector_espec, projectee_key, projectee_item);
+            .effect_proj_data_changed(svc_ctx, projector_espec, projectee_key, projectee_item);
     }
     pub(crate) fn notify_sol_sec_zone_changed(&mut self, u_data: &UData) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);

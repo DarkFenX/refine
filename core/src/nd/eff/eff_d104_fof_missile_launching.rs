@@ -13,7 +13,7 @@ use crate::{
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
-    ud::{UItemKey, UProjRange},
+    ud::{UItemKey, UProjData},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::FOF_MISSILE_LAUNCHING;
@@ -39,7 +39,7 @@ pub(crate) fn get_proj_mult_fof_missile(
     calc: &mut Calc,
     affector_key: UItemKey,
     r_effect: &REffect,
-    prange: UProjRange,
+    u_proj_data: UProjData,
 ) -> AttrVal {
     let range_limit = calc
         .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_FOF_TGT_RANGE)
@@ -48,8 +48,8 @@ pub(crate) fn get_proj_mult_fof_missile(
     // FoF missile is limited by c2s range. Tested on 2025-08-12 on Thunderdome, using civilian LML
     // Minokawa (3k radius) with HG hydra + MGCs + hydraulics vs chremoas and dagon at 96900 and
     // 97100 overview range
-    if prange.get_c2s() > range_limit {
+    if u_proj_data.get_range_c2s() > range_limit {
         return OF(0.0);
     };
-    get_proj_mult_missile(ctx, calc, affector_key, r_effect, prange)
+    get_proj_mult_missile(ctx, calc, affector_key, r_effect, u_proj_data)
 }

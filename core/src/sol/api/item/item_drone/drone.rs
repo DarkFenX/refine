@@ -1,5 +1,5 @@
 use crate::{
-    misc::MinionState,
+    misc::{Coordinates, MinionState},
     sol::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
@@ -20,6 +20,9 @@ impl<'a> Drone<'a> {
     }
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.key)
+    }
+    pub fn get_coordinates(&self) -> Coordinates {
+        get_coordinates(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for Drone<'a> {
@@ -50,6 +53,9 @@ impl<'a> DroneMut<'a> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.key)
     }
+    pub fn get_coordinates(&self) -> Coordinates {
+        get_coordinates(self.sol, self.key)
+    }
 }
 impl<'a> ItemSealed for DroneMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -73,6 +79,9 @@ fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
 }
 fn get_state(sol: &SolarSystem, item_key: UItemKey) -> MinionState {
     get_u_drone(sol, item_key).get_drone_state()
+}
+fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
+    get_u_drone(sol, item_key).get_pos().coordinates.into()
 }
 fn get_u_drone(sol: &SolarSystem, item_key: UItemKey) -> &UDrone {
     sol.u_data.items.get(item_key).get_drone().unwrap()

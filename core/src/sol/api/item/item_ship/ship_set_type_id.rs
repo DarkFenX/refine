@@ -28,18 +28,18 @@ impl SolarSystem {
         let ship_radius = self.u_data.get_ship_radius_by_fit_key(fit_key);
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_key, ship_radius);
         // Update incoming projections
-        for &projector_key in self.rev_projs.iter_projectors(&item_key) {
+        for projector_key in self.rev_projs.iter_projectors(&item_key) {
             let projector_u_item = self.u_data.items.get_mut(projector_key);
-            if let Some(u_prange) = projector_u_item.get_projs_mut().unwrap().get_range_mut(&item_key)
-                && u_prange.update_tgt_rad(ship_radius)
+            if let Some(u_proj_data) = projector_u_item.get_projs_mut().unwrap().get_proj_data_mut(&item_key)
+                && u_proj_data.update_tgt_rad(ship_radius)
             {
-                let u_prange = Some(*u_prange);
-                SolarSystem::util_change_item_proj_range(
+                let u_proj_data = Some(*u_proj_data);
+                SolarSystem::util_change_item_proj_data(
                     &self.u_data,
                     &mut self.svc,
                     projector_key,
                     item_key,
-                    u_prange,
+                    u_proj_data,
                 );
             }
         }

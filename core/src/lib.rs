@@ -25,9 +25,9 @@ pub use def::{
 };
 pub use lender::Lender;
 pub use misc::{
-    AddMode, AdjustableCount, BreacherInfo, BreacherInfoError, DpsProfile, EffectId, EffectInfo, EffectMode,
-    FighterCountOverride, FitSecStatus, MinionState, ModRack, ModuleState, OpInfo, ProjRange, RmMode, SecZone,
-    SecZoneCorruption, ServiceState, SkillLevel, Spool,
+    AddMode, AdjustableCount, BreacherInfo, BreacherInfoError, Coordinates, DpsProfile, EffectId, EffectInfo,
+    EffectMode, FighterCountOverride, FitSecStatus, MinionState, ModRack, ModuleState, OpInfo, ProjRange, RmMode,
+    SecZone, SecZoneCorruption, ServiceState, SkillLevel, Spool,
 };
 pub use sol::{
     SolarSystem,

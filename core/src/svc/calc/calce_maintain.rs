@@ -146,7 +146,7 @@ impl Calc {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn effect_proj_range_changed(
+    pub(in crate::svc) fn effect_proj_data_changed(
         &mut self,
         ctx: SvcCtx,
         projector_espec: EffectSpec,

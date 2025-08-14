@@ -16,14 +16,16 @@ impl UModule {
         // Radius of projector should match radius of ship, radius of projectee should match
         // projectee items
         let ship_radius = u_data.get_ship_radius_by_fit_key(self.get_fit_key());
-        for (projectee_key, prange) in self.get_projs().iter() {
-            if let Some(prange) = prange {
-                if prange.get_src_rad() != ship_radius {
-                    return Err(DebugError {});
-                }
-                if prange.get_tgt_rad() != u_data.get_item_radius(projectee_key) {
-                    return Err(DebugError {});
-                }
+        for (projectee_key, proj_data) in self.get_projs().iter() {
+            let proj_data = match proj_data {
+                Some(proj_data) => proj_data,
+                None => return Err(DebugError {}),
+            };
+            if proj_data.get_src_rad() != ship_radius {
+                return Err(DebugError {});
+            }
+            if proj_data.get_tgt_rad() != u_data.get_item_radius(projectee_key) {
+                return Err(DebugError {});
             }
         }
         // If module has a charge, make sure projections on them match

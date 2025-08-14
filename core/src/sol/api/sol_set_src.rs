@@ -232,7 +232,7 @@ impl SolarSystem {
             projector_u_item
                 .get_projs_mut()
                 .unwrap()
-                .get_range_mut(&projectee_key)
+                .get_proj_data_mut(&projectee_key)
                 .unwrap()
                 .update_radii(src_rad, tgt_rag);
         }
@@ -246,7 +246,7 @@ fn record_projection(
     src_rad: AttrVal,
 ) {
     let u_item = u_data.items.get(item_key);
-    for (projectee_key, _u_prange) in u_item.get_projs().unwrap().iter_projectees_and_ranges() {
+    for (projectee_key, _u_proj_data) in u_item.get_projs().unwrap().iter_projectees_and_datas() {
         let projectee_rad = u_data.get_item_radius(projectee_key);
         projection_updates.push((item_key, projectee_key, src_rad, projectee_rad));
     }

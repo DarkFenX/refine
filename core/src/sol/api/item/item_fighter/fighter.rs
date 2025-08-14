@@ -1,5 +1,5 @@
 use crate::{
-    misc::{AdjustableCount, MinionState},
+    misc::{AdjustableCount, Coordinates, MinionState},
     sol::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
@@ -23,6 +23,9 @@ impl<'a> Fighter<'a> {
     }
     pub fn get_count(&self) -> Option<AdjustableCount> {
         get_count(self.sol, self.key)
+    }
+    pub fn get_coordinates(&self) -> Coordinates {
+        get_coordinates(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for Fighter<'a> {
@@ -56,6 +59,9 @@ impl<'a> FighterMut<'a> {
     pub fn get_count(&self) -> Option<AdjustableCount> {
         get_count(self.sol, self.key)
     }
+    pub fn get_coordinates(&self) -> Coordinates {
+        get_coordinates(self.sol, self.key)
+    }
 }
 impl<'a> ItemSealed for FighterMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -82,6 +88,9 @@ fn get_state(sol: &SolarSystem, item_key: UItemKey) -> MinionState {
 }
 fn get_count(sol: &SolarSystem, item_key: UItemKey) -> Option<AdjustableCount> {
     get_u_fighter(sol, item_key).get_count()
+}
+fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
+    get_u_fighter(sol, item_key).get_pos().coordinates.into()
 }
 fn get_u_fighter(sol: &SolarSystem, item_key: UItemKey) -> &UFighter {
     sol.u_data.items.get(item_key).get_fighter().unwrap()

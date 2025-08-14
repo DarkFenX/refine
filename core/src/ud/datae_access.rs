@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, OF},
     misc::{DpsProfile, Spool},
-    ud::{UData, UFit, UFitKey, UItemKey},
+    ud::{UData, UFit, UFitKey, UItemKey, UPosition},
 };
 
 impl UData {
@@ -39,5 +39,12 @@ impl UData {
             None => return OF(0.0),
         };
         self.get_item_radius(ship_key)
+    }
+    pub(crate) fn get_ship_pos_by_fit_key(&self, fit_key: UFitKey) -> UPosition {
+        let fit = self.fits.get(fit_key);
+        match fit.ship {
+            Some(ship_key) => *self.items.get(ship_key).get_ship().unwrap().get_pos(),
+            None => UPosition::default(),
+        }
     }
 }

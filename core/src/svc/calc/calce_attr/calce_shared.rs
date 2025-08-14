@@ -44,13 +44,13 @@ impl Calc {
         };
         let proj_mult_getter = cmod.raw.proj_mult_getter?;
         let r_effect = ctx.u_data.src.get_effect(cmod.raw.affector_espec.effect_key);
-        let prange = ctx.eff_projs.get_range(cmod.raw.affector_espec, projectee_key)?;
+        let proj_data = ctx.eff_projs.get_proj_data(cmod.raw.affector_espec, projectee_key)?;
         Some(proj_mult_getter(
             ctx,
             self,
             cmod.raw.affector_espec.item_key,
             r_effect,
-            prange,
+            proj_data,
         ))
     }
 }

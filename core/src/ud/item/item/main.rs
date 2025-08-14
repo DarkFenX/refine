@@ -8,8 +8,8 @@ use crate::{
     src::Src,
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitKey, UFwEffect, UImplant, UItemKey,
-        UModule, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
-        item::{Autocharges, ItemMutationData, Projs, UEffectUpdates, UProjRange},
+        UModule, UPosition, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
+        item::{Autocharges, ItemMutationData, Projs, UEffectUpdates, UProjData},
     },
     util::{GetId, Named, RMap, RSet},
 };
@@ -457,6 +457,14 @@ impl UItem {
             Self::SwEffect(_) => None,
         }
     }
+    pub(crate) fn get_pos(&self) -> Option<&UPosition> {
+        match self {
+            Self::Drone(drone) => Some(drone.get_pos()),
+            Self::Fighter(fighter) => Some(fighter.get_pos()),
+            Self::Ship(module) => Some(module.get_pos()),
+            _ => None,
+        }
+    }
     pub(crate) fn get_projs(&self) -> Option<&Projs> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs()),
@@ -544,10 +552,7 @@ impl UItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(crate) fn can_receive_projs(&self) -> bool {
-        matches!(self, Self::Drone(_) | Self::Fighter(_) | Self::Ship(_))
-    }
-    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (UItemKey, Option<UProjRange>)>> {
+    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (UItemKey, Option<UProjData>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Charge(charge) => Some(charge.get_projs().iter()),

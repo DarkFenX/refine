@@ -6,7 +6,7 @@ use crate::{
     def::{AttrVal, OF},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
-    ud::{UItemKey, UProjRange},
+    ud::{UItemKey, UProjData},
 };
 
 pub(crate) fn get_proj_attrs_normal(a_effect: &AEffect) -> [Option<AAttrId>; 2] {
@@ -18,9 +18,9 @@ pub(crate) fn get_proj_mult_normal_restricted_s2s(
     calc: &mut Calc,
     affector_key: UItemKey,
     r_effect: &REffect,
-    prange: UProjRange,
+    u_proj_data: UProjData,
 ) -> AttrVal {
-    get_proj_mult_normal(ctx, calc, affector_key, r_effect, prange.get_s2s(), true)
+    get_proj_mult_normal(ctx, calc, affector_key, r_effect, u_proj_data.get_range_s2s(), true)
 }
 
 pub(crate) fn get_proj_mult_normal_unrestricted_s2s(
@@ -28,9 +28,9 @@ pub(crate) fn get_proj_mult_normal_unrestricted_s2s(
     calc: &mut Calc,
     affector_key: UItemKey,
     r_effect: &REffect,
-    prange: UProjRange,
+    u_proj_data: UProjData,
 ) -> AttrVal {
-    get_proj_mult_normal(ctx, calc, affector_key, r_effect, prange.get_s2s(), false)
+    get_proj_mult_normal(ctx, calc, affector_key, r_effect, u_proj_data.get_range_s2s(), false)
 }
 
 fn get_proj_mult_normal(
@@ -38,21 +38,21 @@ fn get_proj_mult_normal(
     calc: &mut Calc,
     affector_key: UItemKey,
     r_effect: &REffect,
-    prange: AttrVal,
+    proj_range: AttrVal,
     restricted: bool,
 ) -> AttrVal {
     let affector_optimal = get_range(ctx, calc, affector_key, r_effect.get_range_attr_id());
     let affector_falloff = get_range(ctx, calc, affector_key, r_effect.get_falloff_attr_id());
     // Calculate actual range multiplier after collecting all the data
     match affector_falloff > OF(0.0) {
-        true => match restricted && prange > affector_optimal + OF(3.0) * affector_falloff {
+        true => match restricted && proj_range > affector_optimal + OF(3.0) * affector_falloff {
             true => OF(0.0),
             false => Float::powf(
                 OF(0.5),
-                (Float::max(OF(0.0), prange - affector_optimal) / affector_falloff).powi(2),
+                (Float::max(OF(0.0), proj_range - affector_optimal) / affector_falloff).powi(2),
             ),
         },
-        false => match prange <= affector_optimal {
+        false => match proj_range <= affector_optimal {
             true => OF(1.0),
             false => OF(0.0),
         },

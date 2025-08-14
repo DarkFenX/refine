@@ -1,4 +1,4 @@
-use crate::{def::ItemId, misc::ProjRangeInfo, sol::SolarSystem, ud::UItemKey};
+use crate::{def::ItemId, misc::ProjRange, sol::SolarSystem, ud::UItemKey};
 
 /// Projection which allows to set range.
 pub struct RangedProj<'a> {
@@ -17,7 +17,7 @@ impl<'a> RangedProj<'a> {
     pub fn get_projectee_item_id(&self) -> ItemId {
         self.sol.u_data.items.id_by_key(self.projectee_key)
     }
-    pub fn get_range(&self) -> Option<ProjRangeInfo> {
+    pub fn get_range(&self) -> Option<ProjRange> {
         get_range(self.sol, self.projector_key, &self.projectee_key)
     }
 }
@@ -39,12 +39,12 @@ impl<'a> RangedProjMut<'a> {
     pub fn get_projectee_item_id(&self) -> ItemId {
         self.sol.u_data.items.id_by_key(self.projectee_key)
     }
-    pub fn get_range(&self) -> Option<ProjRangeInfo> {
+    pub fn get_range(&self) -> Option<ProjRange> {
         get_range(self.sol, self.projector_key, &self.projectee_key)
     }
 }
 
-fn get_range(sol: &SolarSystem, projector_key: UItemKey, projectee_key: &UItemKey) -> Option<ProjRangeInfo> {
+fn get_range(sol: &SolarSystem, projector_key: UItemKey, projectee_key: &UItemKey) -> Option<ProjRange> {
     sol.u_data
         .items
         .get(projector_key)

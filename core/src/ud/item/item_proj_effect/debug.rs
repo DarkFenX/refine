@@ -8,8 +8,8 @@ impl UProjEffect {
         self.base.consistency_check(u_data)?;
         self.get_projs().consistency_check(u_data)?;
         // All projections are supposed to be without range on projected effect
-        for (_projectee_key, prange) in self.get_projs().iter() {
-            if prange.is_some() {
+        for (_projectee_key, proj_data) in self.get_projs().iter() {
+            if proj_data.is_some() {
                 return Err(DebugError {});
             }
         }
