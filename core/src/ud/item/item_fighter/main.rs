@@ -142,6 +142,12 @@ impl UFighter {
     pub(crate) fn get_autocharges_mut(&mut self) -> &mut Autocharges {
         &mut self.autocharges
     }
+    pub(crate) fn get_pos(&self) -> &UPosition {
+        &self.position
+    }
+    pub(crate) fn get_pos_mut(&mut self) -> &mut UPosition {
+        &mut self.position
+    }
     pub(crate) fn get_projs(&self) -> &Projs {
         &self.projs
     }

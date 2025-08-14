@@ -6,6 +6,7 @@ mod abil;
 mod fighter;
 mod fighter_iter_autocharges;
 mod fighter_remove;
+mod fighter_set_coordinates;
 mod fighter_set_count_override;
 mod fighter_set_state;
 mod fighter_set_type_id;

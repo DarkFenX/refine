@@ -10,3 +10,4 @@ mod ship_set_type_id;
 mod sol_get_ship;
 mod util_add_remove;
 mod util_change_radius;
+mod ship_set_coordinates;

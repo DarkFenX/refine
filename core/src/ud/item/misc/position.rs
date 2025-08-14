@@ -13,6 +13,11 @@ pub(crate) struct UCoordinate {
     pub(crate) y: AttrVal,
     pub(crate) z: AttrVal,
 }
+impl UCoordinate {
+    pub(crate) fn new(x: AttrVal, y: AttrVal, z: AttrVal) -> Self {
+        Self { x, y, z }
+    }
+}
 
 #[derive(Copy, Clone, Default)]
 pub(crate) struct UDirection {

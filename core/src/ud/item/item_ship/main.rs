@@ -114,6 +114,12 @@ impl UShip {
     pub(crate) fn get_kind(&self) -> UShipKind {
         self.kind
     }
+    pub(crate) fn get_pos(&self) -> &UPosition {
+        &self.position
+    }
+    pub(crate) fn get_pos_mut(&mut self) -> &mut UPosition {
+        &mut self.position
+    }
     pub(crate) fn get_disallowed_in_wspace(&self) -> Option<bool> {
         self.base.get_disallowed_in_wspace()
     }

@@ -129,6 +129,12 @@ impl UDrone {
     pub(crate) fn get_fit_key(&self) -> UFitKey {
         self.fit_key
     }
+    pub(crate) fn get_pos(&self) -> &UPosition {
+        &self.position
+    }
+    pub(crate) fn get_pos_mut(&mut self) -> &mut UPosition {
+        &mut self.position
+    }
     pub(crate) fn get_projs(&self) -> &Projs {
         &self.projs
     }
