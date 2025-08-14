@@ -6,7 +6,7 @@ use crate::{
     rd::{REffectKey, RItemAXt, RShipKind},
     src::Src,
     ud::{
-        UFitKey,
+        UFitKey, UPosition,
         item::{UEffectUpdates, UItemBase, UShipKind, bool_to_state_offline, state_to_bool},
     },
     util::{Named, RMap, RSet},
@@ -17,13 +17,22 @@ pub(crate) struct UShip {
     pub(super) base: UItemBase,
     fit_key: UFitKey,
     kind: UShipKind,
+    position: UPosition,
 }
 impl UShip {
-    pub(crate) fn new(item_id: ItemId, type_id: AItemId, fit_key: UFitKey, ship_state: bool, src: &Src) -> Self {
+    pub(crate) fn new(
+        item_id: ItemId,
+        type_id: AItemId,
+        fit_key: UFitKey,
+        ship_state: bool,
+        position: UPosition,
+        src: &Src,
+    ) -> Self {
         let mut ship = Self {
             base: UItemBase::new(item_id, type_id, bool_to_state_offline(ship_state), src),
             fit_key,
             kind: UShipKind::Unknown,
+            position,
         };
         ship.update_ship_kind();
         ship

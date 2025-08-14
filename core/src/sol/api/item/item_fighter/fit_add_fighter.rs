@@ -6,7 +6,7 @@ use crate::{
         SolarSystem,
         api::{FighterMut, FitMut},
     },
-    ud::{UEffectUpdates, UFighter, UFitKey, UItem, UItemKey},
+    ud::{UEffectUpdates, UFighter, UFitKey, UItem, UItemKey, UPosition},
 };
 
 impl SolarSystem {
@@ -19,7 +19,7 @@ impl SolarSystem {
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let item_id = self.u_data.items.alloc_id();
-        let u_fighter = UFighter::new(item_id, type_id, fit_key, state, &self.u_data.src);
+        let u_fighter = UFighter::new(item_id, type_id, fit_key, state, UPosition::default(), &self.u_data.src);
         let u_item = UItem::Fighter(u_fighter);
         let item_key = self.u_data.items.add(u_item);
         u_fit.fighters.insert(item_key);

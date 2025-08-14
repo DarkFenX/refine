@@ -5,7 +5,7 @@ use crate::{
         SolarSystem,
         api::{FitMut, ShipMut},
     },
-    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UShip},
+    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UPosition, UShip},
 };
 
 impl SolarSystem {
@@ -22,7 +22,7 @@ impl SolarSystem {
         }
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
-        let u_ship = UShip::new(item_id, type_id, fit_key, true, &self.u_data.src);
+        let u_ship = UShip::new(item_id, type_id, fit_key, true, UPosition::default(), &self.u_data.src);
         let ship_kind = u_ship.get_kind();
         let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(OF(0.0));
         let u_item = UItem::Ship(u_ship);

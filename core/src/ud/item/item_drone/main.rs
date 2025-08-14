@@ -6,16 +6,18 @@ use crate::{
     rd::{REffectKey, RItemAXt},
     src::Src,
     ud::{
-        UFitKey,
+        UFitKey, UPosition,
         err::ItemMutatedError,
         item::{ItemMutationData, Projs, UEffectUpdates, UItemBaseMutable},
     },
     util::{Named, RMap, RSet},
 };
+
 #[derive(Clone)]
 pub(crate) struct UDrone {
     pub(super) base: UItemBaseMutable,
     fit_key: UFitKey,
+    position: UPosition,
     projs: Projs,
 }
 impl UDrone {
@@ -25,11 +27,13 @@ impl UDrone {
         fit_key: UFitKey,
         drone_state: MinionState,
         mutation: Option<ItemMutationRequest>,
+        position: UPosition,
         src: &Src,
     ) -> Self {
         Self {
             base: UItemBaseMutable::new(item_id, type_id, drone_state.into(), mutation, src),
             fit_key,
+            position,
             projs: Projs::new(),
         }
     }

@@ -7,7 +7,7 @@ use crate::{
     rd::{REffectKey, RItemAXt},
     src::Src,
     ud::{
-        UFitKey,
+        UFitKey, UPosition,
         item::{Autocharges, Projs, UEffectUpdates, UItemBase},
     },
     util::{Named, RMap, RSet},
@@ -19,6 +19,7 @@ pub(crate) struct UFighter {
     fit_key: UFitKey,
     count_override: Option<FighterCountOverride>,
     autocharges: Autocharges,
+    position: UPosition,
     projs: Projs,
 }
 impl UFighter {
@@ -27,6 +28,7 @@ impl UFighter {
         type_id: AItemId,
         fit_key: UFitKey,
         fighter_state: MinionState,
+        position: UPosition,
         src: &Src,
     ) -> Self {
         Self {
@@ -34,6 +36,7 @@ impl UFighter {
             fit_key,
             count_override: None,
             autocharges: Autocharges::new(),
+            position,
             projs: Projs::new(),
         }
     }
