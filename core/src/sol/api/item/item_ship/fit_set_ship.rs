@@ -1,6 +1,7 @@
 use crate::{
     ad::AItemId,
     def::{ItemTypeId, OF},
+    misc::Coordinates,
     sol::{
         SolarSystem,
         api::{FitMut, ShipMut},
@@ -13,6 +14,7 @@ impl SolarSystem {
         &mut self,
         fit_key: UFitKey,
         type_id: AItemId,
+        position: UPosition,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get(fit_key);
@@ -22,7 +24,7 @@ impl SolarSystem {
         }
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
-        let u_ship = UShip::new(item_id, type_id, fit_key, true, UPosition::default(), &self.u_data.src);
+        let u_ship = UShip::new(item_id, type_id, fit_key, true, position, &self.u_data.src);
         let ship_kind = u_ship.get_kind();
         let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(OF(0.0));
         let u_item = UItem::Ship(u_ship);
@@ -38,9 +40,15 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn set_ship(&mut self, type_id: ItemTypeId) -> ShipMut<'_> {
+    pub fn set_ship(&mut self, type_id: ItemTypeId, coordinates: Option<Coordinates>) -> ShipMut<'_> {
+        let mut u_position = UPosition::default();
+        if let Some(coordinates) = coordinates {
+            u_position.coordinates = coordinates.into();
+        }
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self.sol.internal_set_fit_ship(self.key, type_id, &mut reuse_eupdates);
+        let item_key = self
+            .sol
+            .internal_set_fit_ship(self.key, type_id, u_position, &mut reuse_eupdates);
         ShipMut::new(self.sol, item_key)
     }
 }
