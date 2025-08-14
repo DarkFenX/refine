@@ -57,7 +57,7 @@ impl Vast {
         Ok(Vast::get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
     fn get_stat_item_align_time_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
-        Vast::get_stat_item_agility_unchecked(ctx, calc, item_key).map(|v| ceil_tick(v))
+        Vast::get_stat_item_agility_unchecked(ctx, calc, item_key).map(ceil_tick)
     }
 }
 

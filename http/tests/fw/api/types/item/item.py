@@ -8,6 +8,7 @@ from tests.fw.util import Absent, AttrDict, AttrHookDef
 from .ability_info import AbilityInfo
 from .adj_count import AdjustableCount
 from .attr_vals import AttrVals
+from .coordinates import Coordinates
 from .effect import EffectInfo
 from .mod_info import AttrModInfoMap
 from .mutation import ItemMutation
@@ -35,6 +36,7 @@ class Item(AttrDict):
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {k: SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
+            'coordinates': AttrHookDef(func=lambda c: Coordinates(data=c)),
             'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(data=v) for k, v in attrs.items()}),
             'effects': AttrHookDef(func=lambda effects: {k: EffectInfo(data=v) for k, v in effects.items()}),
             'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
@@ -169,9 +171,9 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
-            add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
-            change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
+            add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -183,8 +185,8 @@ class Item(AttrDict):
             state=state,
             mutation=mutation,
             add_projs=add_projs,
-            change_projs=change_projs,
             rm_projs=rm_projs,
+            coordinates=coordinates,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -200,9 +202,9 @@ class Item(AttrDict):
             state: ApiMinionState | type[Absent] = Absent,
             count: int | None | type[Absent] = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
-            add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
-            change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
+            add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -215,8 +217,8 @@ class Item(AttrDict):
             count=count,
             abilities=abilities,
             add_projs=add_projs,
-            change_projs=change_projs,
             rm_projs=rm_projs,
+            coordinates=coordinates,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -277,8 +279,7 @@ class Item(AttrDict):
             mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
             charge_type_id: int | None | type[Absent] = Absent,
             spool: str | None | type[Absent] = Absent,
-            add_projs: list[tuple[str, ProjRange] | str] | type[Absent] = Absent,
-            change_projs: list[tuple[str, ProjRange]] | type[Absent] = Absent,
+            add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -294,7 +295,6 @@ class Item(AttrDict):
             charge_type_id=charge_type_id,
             spool=spool,
             add_projs=add_projs,
-            change_projs=change_projs,
             rm_projs=rm_projs,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
@@ -377,6 +377,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -386,6 +387,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
+            coordinates=coordinates,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)

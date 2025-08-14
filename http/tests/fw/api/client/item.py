@@ -7,7 +7,7 @@ from tests.fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
+    from tests.fw.api.aliases import MutaAdd, MutaChange
     from tests.fw.api.types import ItemStatsOptions
     from tests.fw.consts import (
         ApiEffMode,
@@ -195,6 +195,7 @@ class ApiClientItem(ApiClientBase):
             type_id: int,
             state: ApiMinionState,
             mutation: MutaAdd | type[Absent],
+            coordinates: tuple[float, float, float] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
@@ -203,6 +204,7 @@ class ApiClientItem(ApiClientBase):
             'type_id': type_id,
             'state': state}
         conditional_insert(container=body, path=['mutation'], value=mutation)
+        conditional_insert(container=body, path=['coordinates'], value=coordinates)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -219,9 +221,9 @@ class ApiClientItem(ApiClientBase):
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             mutation: MutaAdd | MutaChange | None | type[Absent],
-            add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
-            change_projs: list[tuple[str, ProjRange]] | type[Absent],
+            add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
+            coordinates: tuple[float, float, float] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -230,8 +232,8 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
-        conditional_insert(container=body, path=['change_projs'], value=change_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
+        conditional_insert(container=body, path=['coordinates'], value=coordinates)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
@@ -251,6 +253,7 @@ class ApiClientItem(ApiClientBase):
             state: ApiMinionState,
             count: int | None | type[Absent],
             abilities: dict[int, bool] | type[Absent],
+            coordinates: tuple[float, float, float] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
@@ -260,6 +263,7 @@ class ApiClientItem(ApiClientBase):
             'state': state}
         conditional_insert(container=body, path=['count'], value=count)
         conditional_insert(container=body, path=['abilities'], value=abilities)
+        conditional_insert(container=body, path=['coordinates'], value=coordinates)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -277,9 +281,9 @@ class ApiClientItem(ApiClientBase):
             state: ApiMinionState | type[Absent],
             count: int | None | type[Absent],
             abilities: dict[int, bool] | type[Absent],
-            add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
-            change_projs: list[tuple[str, ProjRange]] | type[Absent],
+            add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
+            coordinates: tuple[float, float, float] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -289,8 +293,8 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['count'], value=count)
         conditional_insert(container=body, path=['abilities'], value=abilities)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
-        conditional_insert(container=body, path=['change_projs'], value=change_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
+        conditional_insert(container=body, path=['coordinates'], value=coordinates)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
@@ -413,8 +417,7 @@ class ApiClientItem(ApiClientBase):
             mutation: MutaAdd | MutaChange | None | type[Absent],
             charge_type_id: int | None | type[Absent],
             spool: str | None | type[Absent],
-            add_projs: list[tuple[str, ProjRange] | str] | type[Absent],
-            change_projs: list[tuple[str, ProjRange]] | type[Absent],
+            add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -426,7 +429,6 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
         conditional_insert(container=body, path=['spool'], value=spool)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
-        conditional_insert(container=body, path=['change_projs'], value=change_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
@@ -558,15 +560,23 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: bool | type[Absent],
+            coordinates: tuple[float, float, float] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='ship',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
+        body = {
+            'type': 'ship',
+            'fit_id': fit_id,
+            'type_id': type_id}
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['coordinates'], value=coordinates)
+        params = {}
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
 
     def change_ship_request(
             self, *,
@@ -574,17 +584,23 @@ class ApiClientItem(ApiClientBase):
             item_id: int,
             type_id: int | type[Absent],
             state: bool | type[Absent],
+            coordinates: tuple[float, float, float] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='ship',
-            sol_id=sol_id,
-            item_id=item_id,
-            type_id=type_id,
-            state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
+        body = {'type': 'ship'}
+        conditional_insert(container=body, path=['type_id'], value=type_id)
+        conditional_insert(container=body, path=['state'], value=state)
+        conditional_insert(container=body, path=['coordinates'], value=coordinates)
+        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
+        params = {}
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
+            params=params,
+            json=body)
 
     # Skill methods
     def add_skill_request(
