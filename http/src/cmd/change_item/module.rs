@@ -1,10 +1,7 @@
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{
-            HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes, apply_mattrs_on_add,
-            apply_mattrs_on_change,
-        },
+        shared::{HEffectModeMap, HMutationOnChange, apply_effect_modes, apply_mattrs_on_add, apply_mattrs_on_change},
     },
     shared::{HModuleState, HSpool},
     util::{HExecError, TriStateField},
@@ -23,10 +20,9 @@ pub(crate) struct HChangeModuleCmd {
     charge_type_id: TriStateField<rc::ItemTypeId>,
     #[serde(default)]
     spool: TriStateField<HSpool>,
+    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    add_projs: Vec<HProjDef>,
-    #[serde(default)]
-    change_projs: Vec<HProjDefFull>,
+    add_projs: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
@@ -98,23 +94,12 @@ impl HChangeModuleCmd {
             TriStateField::None => core_module.set_spool(None),
             TriStateField::Absent => (),
         }
-        for proj_def in self.add_projs.iter() {
-            core_module
-                .add_proj(&proj_def.get_item_id(), proj_def.get_range().into())
-                .map_err(|error| match error {
-                    rc::err::AddRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::AddRangedProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
-                    rc::err::AddRangedProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
-                })?;
-        }
-        for proj_def in self.change_projs.iter() {
-            core_module
-                .get_proj_mut(&proj_def.get_item_id())
-                .map_err(|error| match error {
-                    rc::err::GetRangedProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::GetRangedProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                })?
-                .set_range(proj_def.get_range().into());
+        for projectee_item_id in self.add_projs.iter() {
+            core_module.add_proj(projectee_item_id).map_err(|error| match error {
+                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+            })?;
         }
         for projectee_item_id in self.rm_projs.iter() {
             core_module
