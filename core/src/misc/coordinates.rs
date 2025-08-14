@@ -2,9 +2,9 @@ use crate::{def::AttrVal, ud::UCoordinates};
 
 #[derive(Copy, Clone)]
 pub struct Coordinates {
-    x: AttrVal,
-    y: AttrVal,
-    z: AttrVal,
+    pub x: AttrVal,
+    pub y: AttrVal,
+    pub z: AttrVal,
 }
 impl Coordinates {
     pub fn new(x: AttrVal, y: AttrVal, z: AttrVal) -> Self {

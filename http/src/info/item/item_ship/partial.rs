@@ -1,5 +1,7 @@
 use rc::ItemCommon;
 
+use crate::shared::HCoordinates;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HShipInfoPartial {
@@ -10,6 +12,7 @@ pub(crate) struct HShipInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     fit_id: rc::FitId,
     enabled: bool,
+    coordinates: HCoordinates,
 }
 impl From<&mut rc::ShipMut<'_>> for HShipInfoPartial {
     fn from(core_ship: &mut rc::ShipMut) -> Self {
@@ -19,6 +22,7 @@ impl From<&mut rc::ShipMut<'_>> for HShipInfoPartial {
             type_id: core_ship.get_type_id(),
             fit_id: core_ship.get_fit().get_fit_id(),
             enabled: core_ship.get_state(),
+            coordinates: core_ship.get_coordinates().into(),
         }
     }
 }

@@ -24,7 +24,9 @@ impl From<rc::RangedProj<'_>> for HRangedProjInfo {
     fn from(core_ranged_proj: rc::RangedProj) -> Self {
         Self {
             projectee_item_id: core_ranged_proj.get_projectee_item_id(),
-            range: core_ranged_proj.get_range().map(|prange| (prange.c2c, prange.s2s)),
+            range: core_ranged_proj
+                .get_range()
+                .map(|proj_range| (proj_range.c2c, proj_range.s2s)),
         }
     }
 }
