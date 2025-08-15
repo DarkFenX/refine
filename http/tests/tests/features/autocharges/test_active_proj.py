@@ -238,18 +238,21 @@ def test_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(10000, 0, 0))
     api_affector_fit = api_sol.create_fit()
-    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_affector_fighter.change_fighter(add_projs=[(api_affectee_ship.id, 10000)])
+    api_affector_fighter = api_affector_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        coordinates=(0, 0, 0))
+    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
-    api_affector_fighter.change_fighter(change_projs=[(api_affectee_ship.id, 15000)])
+    api_affectee_ship.change_ship(coordinates=(15000, 0, 0))
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1100)
     # Action
-    api_affector_fighter.change_fighter(change_projs=[(api_affectee_ship.id, None)])
+    api_affectee_ship.change_ship(coordinates=(0, 0, 0))
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
 
