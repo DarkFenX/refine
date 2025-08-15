@@ -26,20 +26,23 @@ def test_stacking(client, consts):
         attrs={eve_affector_attr_id: -30, eve_optimal_attr_id: 12000, eve_falloff_attr_id: 2000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 500})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
-    api_affector_module1 = api_affector_fit.add_module(
+    api_affector_fit1 = api_sol.create_fit()
+    api_affector_fit1.set_ship(type_id=eve_ship_id, coordinates=(18000, 0, 0))
+    api_affector_module1 = api_affector_fit1.add_module(
         type_id=eve_affector_module1_id,
         state=consts.ApiModuleState.active)
-    api_affector_module1.change_module(add_projs=[(api_affectee_ship.id, 18000)])
-    api_affector_module2 = api_affector_fit.add_module(
+    api_affector_fit2 = api_sol.create_fit()
+    api_affector_fit2.set_ship(type_id=eve_ship_id, coordinates=(13000, 0, 0))
+    api_affector_module2 = api_affector_fit2.add_module(
         type_id=eve_affector_module2_id,
         state=consts.ApiModuleState.active)
-    api_affector_module2.change_module(add_projs=[(api_affectee_ship.id, 13000)])
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Second module has stronger effect after range factored in, and thus is penalized less. If it
     # was the other way around, the value would've been ~348.2
     api_affectee_ship.update()
