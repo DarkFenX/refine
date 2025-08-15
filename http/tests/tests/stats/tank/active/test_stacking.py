@@ -116,8 +116,9 @@ def test_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_mods = [api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active) for _ in range(20)]
     for api_mod in api_mods:
         api_mod.change_module(add_projs=[api_tgt_ship.id])
@@ -127,8 +128,7 @@ def test_range(client, consts):
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
     assert api_tgt_ship_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516)]
     # Action
-    for api_mod in api_mods:
-        api_mod.change_module(change_projs=[(api_tgt_ship.id, Range.s2s_to_api(val=79500))])
+    api_tgt_ship.change_ship(coordinates=(79500, 0, 0))
     # Verification - raw reps are cut in half, penalized are cut less
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313)]

@@ -133,13 +133,14 @@ def test_hp_limit_and_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_module_rhr = api_src_fit.add_module(type_id=eve_module_rhr_id, state=consts.ApiModuleState.active)
     api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(15000, 0, 0))
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rhr.change_module(add_projs=[(api_tgt_ship.id, Range.s2s_to_api(val=15000))])
-    api_drone.change_drone(add_projs=[(api_tgt_ship.id, Range.s2s_to_api(val=10001))])
+    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
+    api_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification - local hull rep is limited, remote hull rep is reduced and limited, hull bot is
     # reduced to 0 by range, so not limited
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))

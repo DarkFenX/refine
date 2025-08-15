@@ -773,12 +773,13 @@ def test_remote_asb_ship_proj_range_and_rep_hp_limit(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_rasb = api_src_fit.add_module(
         type_id=eve_rep_item_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(1000), 0, 0)
@@ -789,7 +790,7 @@ def test_remote_asb_ship_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(500), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(250), 0, 0)
     # Action
-    api_rasb.change_module(add_projs=[(api_tgt_ship.id, Range.s2s_to_api(val=10000))])
+    api_rasb.change_module(add_projs=[api_tgt_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(1000), 0, approx(9000))
@@ -800,7 +801,7 @@ def test_remote_asb_ship_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(500), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(250), 0, 0)
     # Action
-    api_rasb.change_module(change_projs=[(api_tgt_ship.id, Range.s2s_to_api(val=15000))])
+    api_tgt_ship.change_ship(coordinates=(15000, 0, 0))
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
     # 1500 (not 1000) * 9 * 0.5 = 6750
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
@@ -1055,12 +1056,13 @@ def test_remote_aar_ship_proj_range_and_rep_hp_limit(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_raar = api_src_fit.add_module(
         type_id=eve_rep_item_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(2000), 0, 0)
@@ -1071,7 +1073,7 @@ def test_remote_aar_ship_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(1000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(500), 0, 0)
     # Action
-    api_raar.change_module(add_projs=[(api_tgt_ship.id, Range.s2s_to_api(val=10000))])
+    api_raar.change_module(add_projs=[api_tgt_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(2000), 0, 0)
@@ -1082,7 +1084,7 @@ def test_remote_aar_ship_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(1000), 0, approx(8000))
     assert api_tgt_ship_stats.hp.hull == (approx(500), 0, 0)
     # Action
-    api_raar.change_module(change_projs=[(api_tgt_ship.id, Range.s2s_to_api(val=15000))])
+    api_tgt_ship.change_ship(coordinates=(15000, 0, 0))
     # Verification - reps are reduced by RR resistance, and are no longer limited by HP:
     # 1500 (not 1000) * 8 * 0.5 = 6000
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
