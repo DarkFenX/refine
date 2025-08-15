@@ -22,21 +22,28 @@ def test_range(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_affectee_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
-    eve_affectee_ship_id = client.mk_eve_ship()
+    eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
-    api_affectee_module = api_affectee_fit.add_module(type_id=eve_affectee_module_id)
+    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(9000, 0, 0))
+    api_affectee_module = api_affectee_fit.add_module(type_id=eve_affectee_module_id)
+    # Verification
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(200)
-    api_affector_module.change_module(add_projs=[(api_affectee_ship.id, 9000)])
+    # Action
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    # Verification
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(90)
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, 11000)])
-    # Falloff attribute is ignored for buffs
+    # Action
+    api_affectee_ship.change_ship(coordinates=(11000, 0, 0))
+    # Verification - falloff attribute is ignored for buffs
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    # Action
     api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
+    # Verification
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(200)

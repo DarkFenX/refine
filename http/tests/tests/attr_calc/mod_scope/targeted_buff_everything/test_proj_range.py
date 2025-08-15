@@ -18,21 +18,27 @@ def test_optimal_unavailable(client, consts):
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
-    api_affector_module.change_module(add_projs=[(api_affectee_ship.id, None)])
+    # Action
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, 0)])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, 1)])
+    # Action
+    api_affectee_ship.change_ship(coordinates=(1, 0, 0))
+    # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    # Action
     api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
+    # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
