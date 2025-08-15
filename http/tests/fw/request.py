@@ -1,12 +1,10 @@
-from __future__ import annotations
-
 import json
 import typing
 
 import requests
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.client import ApiClientBase
+    from tests.fw.api.client.base import ApiClientBase
     from tests.fw.response import Response
 
 

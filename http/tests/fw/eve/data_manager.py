@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing
 
 from tests.fw.util import get_test_key

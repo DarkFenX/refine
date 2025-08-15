@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing
 
 from tests.fw.api.types.stats import ItemStats

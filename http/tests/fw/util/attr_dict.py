@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing
 
 # Rename it just to avoid confusion, as it's used to mean no value in this module

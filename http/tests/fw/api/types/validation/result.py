@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from tests.fw.util import AttrDict, AttrHookDef
 from .val_activation_blocked import ValActivationBlockedFail
 from .val_capital_module import ValCapModuleFail
