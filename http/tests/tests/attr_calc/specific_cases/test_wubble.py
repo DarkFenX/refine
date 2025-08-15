@@ -109,21 +109,22 @@ def test_module_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(16000, 0, 0))
     api_affector_fit = api_sol.create_fit()
+    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_module(add_projs=[(api_affectee_ship.id, 16000)])
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, 15000)])
+    api_affectee_ship.change_ship(coordinates=(15000, 0, 0))
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(600)
     # Action
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, 16000)])
+    api_affectee_ship.change_ship(coordinates=(16000, 0, 0))
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
 

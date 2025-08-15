@@ -189,7 +189,7 @@ def test_stacking(client, consts):  # noqa: ANN001, ANN201
     assert api_male.update().attrs[564].dogma == approx(5264.18055777, accuracy=9)
 
 
-def test_item_attrs(client, consts):  # noqa: ANN001, ANN201
+def test_item_attrs(client):  # noqa: ANN001, ANN201
     setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

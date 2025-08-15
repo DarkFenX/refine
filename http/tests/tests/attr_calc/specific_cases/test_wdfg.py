@@ -524,19 +524,20 @@ def test_range_dscript(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
+    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_wdfg = api_affector_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[(api_ship.id, 30000)])
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(30000, 0, 0))
+    api_wdfg.change_module(add_projs=[api_affectee_ship.id])
     # Verification - range should be 30k (20k base from module +50% from script)
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
     # Action
-    api_wdfg.change_module(change_projs=[(api_ship.id, 30001)])
+    api_affectee_ship.change_ship(coordinates=(30001, 0, 0))
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
 
 def test_range_sscript(client, consts):
@@ -585,19 +586,20 @@ def test_range_sscript(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
+    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_wdfg = api_affector_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[(api_ship.id, 16000)])
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(16000, 0, 0))
+    api_wdfg.change_module(add_projs=[api_affectee_ship.id])
     # Verification - range should be 16k (20k base from module -20% from script)
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
     # Action
-    api_wdfg.change_module(change_projs=[(api_ship.id, 16001)])
+    api_affectee_ship.change_ship(coordinates=(16001, 0, 0))
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
 
 def test_assist_dscript(client, consts):
