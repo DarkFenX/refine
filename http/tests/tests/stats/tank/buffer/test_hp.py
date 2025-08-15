@@ -1,4 +1,4 @@
-from tests import Range, approx
+from tests import approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 from tests.tests.stats.tank import (
     make_eve_local_aar,

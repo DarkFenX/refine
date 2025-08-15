@@ -1,4 +1,4 @@
-from tests import ANY_VALUE, Range, approx
+from tests import ANY_VALUE, approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 from tests.tests.stats.tank import (
     make_eve_drone_shield,

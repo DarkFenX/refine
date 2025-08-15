@@ -44,17 +44,6 @@ def check_no_field() -> Iterator[None]:
         yield
 
 
-class Range:
-
-    @staticmethod
-    def s2s_to_api(*, val: float) -> str:
-        return f's{val}'
-
-    @staticmethod
-    def c2c_to_api(*, val: float) -> str:
-        return f'c{val}'
-
-
 class Muta:
 
     @staticmethod

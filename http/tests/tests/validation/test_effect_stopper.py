@@ -1,4 +1,4 @@
-from tests import Effect, Range, check_no_field
+from tests import Effect, check_no_field
 from tests.fw.api import ValOptions
 
 
@@ -130,15 +130,22 @@ def test_range(client, consts):
         attrs={eve_optimal_attr_id: 1000, eve_falloff_attr_id: 500},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
+    eve_src_ship_id = client.mk_eve_ship()
     eve_tgt_item_id = client.mk_eve_item(eff_ids=[eve_tgt_effect_id], defeff_id=eve_tgt_effect_id)
     client.create_sources()
     api_tgt_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_tgt_effect_id)
     api_sol = client.create_sol()
-    api_src_fit = api_sol.create_fit()
-    api_src_item1 = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
-    api_src_item2 = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_src_fit1 = api_sol.create_fit()
+    api_src_ship1 = api_src_fit1.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_item1 = api_src_fit1.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_src_fit2 = api_sol.create_fit()
+    api_src_ship2 = api_src_fit2.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_item2 = api_src_fit2.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
+    api_tgt_item = api_tgt_fit.add_fighter(
+        type_id=eve_tgt_item_id,
+        state=consts.ApiMinionState.engaging,
+        coordinates=(0, 0, 0))
     api_src_item1.change_module(add_projs=[api_tgt_item.id])
     api_src_item2.change_module(add_projs=[api_tgt_item.id])
     # Verification
@@ -146,34 +153,34 @@ def test_range(client, consts):
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
-    api_src_item1.change_module(change_projs=[(api_tgt_item.id, Range.s2s_to_api(val=1000))])
-    api_src_item2.change_module(change_projs=[(api_tgt_item.id, Range.s2s_to_api(val=1000))])
+    api_src_ship1.change_ship(coordinates=(1000, 0, 0))
+    api_src_ship2.change_ship(coordinates=(1000, 0, 0))
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
-    api_src_item1.change_module(change_projs=[(api_tgt_item.id, Range.s2s_to_api(val=1500))])
-    api_src_item2.change_module(change_projs=[(api_tgt_item.id, Range.s2s_to_api(val=1500))])
+    api_src_ship1.change_ship(coordinates=(1500, 0, 0))
+    api_src_ship2.change_ship(coordinates=(1500, 0, 0))
     # Verification - still fails in falloff
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
-    api_src_item1.change_module(change_projs=[(api_tgt_item.id, Range.s2s_to_api(val=300000))])
+    api_src_ship1.change_ship(coordinates=(300000, 0, 0))
     # Verification - once range multiplier reaches 0, validation passes, but here only 1/2 have it
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [api_tgt_effect_id]}
     # Action
-    api_src_item2.change_module(change_projs=[(api_tgt_item.id, Range.s2s_to_api(val=300000))])
+    api_src_ship2.change_ship(coordinates=(300000, 0, 0))
     # Verification - both projectors have multipliers of 0
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item1.change_module(change_projs=[(api_tgt_item.id, Range.s2s_to_api(val=1500))])
+    api_src_ship1.change_ship(coordinates=(1500, 0, 0))
     # Verification - back to 1/2
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False

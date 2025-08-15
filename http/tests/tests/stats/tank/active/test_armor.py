@@ -1,4 +1,4 @@
-from tests import ANY_VALUE, Range, Spool, approx
+from tests import ANY_VALUE, Spool, approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
 from tests.tests.stats.tank import (
     make_eve_drone_armor,

@@ -1,4 +1,4 @@
-from tests import Muta, Range, approx, check_no_field
+from tests import Muta, approx, check_no_field
 from tests.fw.api import ValOptions
 
 
@@ -113,15 +113,16 @@ def test_modified(client, consts):
         eff_ids=[eve_affector_effect_id],
         defeff_id=eve_affector_effect_id)
     eve_affectee_module_id = client.mk_eve_item()
-    eve_affectee_ship_id = client.mk_eve_ship()
+    eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
+    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_module = api_affectee_fit.add_module(type_id=eve_affectee_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
@@ -135,14 +136,14 @@ def test_modified(client, consts):
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=10001))])
+    api_affectee_ship.change_ship(coordinates=(10001, 0, 0))
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, Range.s2s_to_api(val=10000))])
+    api_affectee_ship.change_ship(coordinates=(10000, 0, 0))
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
