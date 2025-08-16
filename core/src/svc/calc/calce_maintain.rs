@@ -189,7 +189,7 @@ impl Calc {
             for cmod in cmods.iter() {
                 self.std.fill_affectees(&mut reuse_affectees, ctx, cmod);
                 for &affectee_key in reuse_affectees.iter() {
-                    let projectee_aspec = AttrSpec::new(affectee_key, cmod.raw.affectee_a_attr_id);
+                    let projectee_aspec = AttrSpec::new(affectee_key, cmod.raw.affectee_attr_id);
                     self.force_attr_value_recalc(ctx, projectee_aspec);
                 }
             }
@@ -401,13 +401,13 @@ impl Calc {
         }
     }
     fn reg_raw_mod_for_buff(&mut self, item_key: UItemKey, rmod: RawModifier) {
-        if let Some(buff_type_attr_id) = rmod.buff_type_a_attr_id {
+        if let Some(buff_type_attr_id) = rmod.buff_type_attr_id {
             self.buffs
                 .reg_dependent_mod(AttrSpec::new(item_key, buff_type_attr_id), rmod);
         }
     }
     fn unreg_raw_mod_for_buff(&mut self, item_key: UItemKey, rmod: &RawModifier) {
-        if let Some(buff_type_attr_id) = rmod.buff_type_a_attr_id {
+        if let Some(buff_type_attr_id) = rmod.buff_type_attr_id {
             self.buffs
                 .unreg_dependent_mod(&AttrSpec::new(item_key, buff_type_attr_id), rmod);
         }
@@ -415,7 +415,7 @@ impl Calc {
     fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<UItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {
         self.std.fill_affectees(reuse_affectees, ctx, cmod);
         for &affectee_key in reuse_affectees.iter() {
-            self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_key, cmod.raw.affectee_a_attr_id));
+            self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_key, cmod.raw.affectee_attr_id));
         }
     }
     fn handle_location_owner_add(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {

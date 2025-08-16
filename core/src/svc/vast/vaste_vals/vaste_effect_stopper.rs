@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemId, OF},
+    def::{AttrVal, ItemId, OF},
     misc::{EffectId, EffectSpec},
-    svc::{SvcCtx, calc::Calc, eff_funcs, vast::VastFitData},
+    svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::UItemKey,
     util::{GetId, RSet},
 };
@@ -68,10 +68,28 @@ fn is_any_in_effective_range(
     stopped_item_key: UItemKey,
 ) -> bool {
     for stopper_espec in stopper_especs {
-        match eff_funcs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
+        match get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
             Some(OF(0.0)) => (),
             _ => return true,
         }
     }
     false
+}
+
+fn get_espec_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_espec: EffectSpec,
+    projectee_key: UItemKey,
+) -> Option<AttrVal> {
+    let projector_effect = ctx.u_data.src.get_effect(projector_espec.effect_key);
+    let proj_mult_getter = projector_effect.get_modifier_proj_mult_getter()?;
+    let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_key)?;
+    Some(proj_mult_getter(
+        ctx,
+        calc,
+        projector_espec.item_key,
+        projector_effect,
+        proj_data,
+    ))
 }

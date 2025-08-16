@@ -1,6 +1,5 @@
 use crate::{
     ac,
-    ad::{AAttrId, AEffect},
     def::{AttrVal, OF, SERVER_TICK_HZ},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
@@ -8,38 +7,31 @@ use crate::{
     util::{ceil_tick, floor_tick},
 };
 
-pub(crate) fn get_proj_attrs_missile(_a_effect: &AEffect) -> [Option<AAttrId>; 2] {
-    // Technically mass and agility are also part of attributes which define missile projection, but
-    // this is used only in calculator to process modifiers, and there are no missiles which apply
-    // any, so array is not extended to 4 attributes just because of this
-    [Some(ac::attrs::MAX_VELOCITY), Some(ac::attrs::EXPLOSION_DELAY)]
-}
-
 pub(crate) fn get_proj_mult_missile(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: UItemKey,
+    projector_key: UItemKey,
     _r_effect: &REffect,
     u_proj_data: UProjData,
 ) -> AttrVal {
     let max_velocity = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_VELOCITY)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MAX_VELOCITY)
         .unwrap()
         .extra
         .max(OF(0.0));
     let flight_time = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::EXPLOSION_DELAY)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::EXPLOSION_DELAY)
         .unwrap()
         .extra
         .max(OF(0.0))
         / OF(1000.0);
     let mass = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MASS)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MASS)
         .unwrap()
         .extra
         .max(OF(0.0));
     let agility = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::AGILITY)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AGILITY)
         .unwrap()
         .extra
         .max(OF(0.0));

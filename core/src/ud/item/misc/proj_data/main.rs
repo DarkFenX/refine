@@ -49,7 +49,7 @@ impl UProjData {
         self.range_s2s
     }
     pub(crate) fn get_range_c2s(&self) -> AttrVal {
-        AttrVal::max(OF(0.0), self.range_c2c - self.tgt_rad)
+        calc_range_c2s(self.range_c2c, self.tgt_rad)
     }
     pub(crate) fn get_src_rad(&self) -> AttrVal {
         self.src_rad
@@ -100,6 +100,10 @@ fn calc_range_c2c(src_coords: UCoordinates, tgt_coords: UCoordinates) -> AttrVal
     .sqrt())
 }
 
-fn calc_range_s2s(c2c_range: AttrVal, src_rad: AttrVal, tgt_rad: AttrVal) -> AttrVal {
-    AttrVal::max(OF(0.0), c2c_range - src_rad - tgt_rad)
+fn calc_range_c2s(range_c2c: AttrVal, tgt_rad: AttrVal) -> AttrVal {
+    AttrVal::max(OF(0.0), range_c2c - tgt_rad)
+}
+
+fn calc_range_s2s(range_c2c: AttrVal, src_rad: AttrVal, tgt_rad: AttrVal) -> AttrVal {
+    AttrVal::max(OF(0.0), range_c2c - src_rad - tgt_rad)
 }

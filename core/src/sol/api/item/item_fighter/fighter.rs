@@ -90,7 +90,7 @@ fn get_count(sol: &SolarSystem, item_key: UItemKey) -> Option<AdjustableCount> {
     get_u_fighter(sol, item_key).get_count()
 }
 fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
-    get_u_fighter(sol, item_key).get_pos().coordinates.into()
+    get_u_fighter(sol, item_key).get_position().coordinates.into()
 }
 fn get_u_fighter(sol: &SolarSystem, item_key: UItemKey) -> &UFighter {
     sol.u_data.items.get(item_key).get_fighter().unwrap()

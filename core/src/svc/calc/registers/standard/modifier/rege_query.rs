@@ -129,7 +129,7 @@ fn filter_and_extend<K, H1, H2>(
     vec.extend(
         storage
             .get(key)
-            .filter(|v| &v.raw.affectee_a_attr_id == a_attr_id)
+            .filter(|v| &v.raw.affectee_attr_id == a_attr_id)
             .copied(),
     )
 }

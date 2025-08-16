@@ -19,7 +19,7 @@ pub(crate) struct REffect {
     n_effect_hc: NEffectHc,
     // Extra data extracted from adapted effect and hardcoded data
     is_active_with_duration: bool,
-    proj_a_attr_ids: [Option<AAttrId>; 2],
+    modifier_proj_attr_ids: [Option<AAttrId>; 2],
     // Fields which need slab keys to be filled
     stopped_effect_keys: Vec<REffectKey>,
 }
@@ -27,8 +27,8 @@ impl REffect {
     pub(in crate::rd) fn new(effect_key: REffectKey, a_effect: AEffect) -> Self {
         let n_effect = N_EFFECT_MAP.get(&a_effect.id);
         let is_active_with_duration = a_effect.state == AState::Active && a_effect.duration_attr_id.is_some();
-        let proj_a_attr_ids = n_effect
-            .and_then(|v| v.xt_get_proj_attrs)
+        let modifier_proj_attr_ids = n_effect
+            .and_then(|v| v.modifier_proj_attrs_getter)
             .map(|get_proj_attrs| get_proj_attrs(&a_effect))
             .unwrap_or_default();
         Self {
@@ -36,7 +36,7 @@ impl REffect {
             a_effect,
             n_effect_hc: n_effect.map(|n_effect| n_effect.hc).unwrap_or_default(),
             is_active_with_duration,
-            proj_a_attr_ids,
+            modifier_proj_attr_ids,
             stopped_effect_keys: Vec::new(),
         }
     }
@@ -104,17 +104,11 @@ impl REffect {
     pub(crate) fn get_calc_customizer(&self) -> Option<NCalcCustomizer> {
         self.n_effect_hc.calc_customizer
     }
-    pub(crate) fn get_proj_mult_getter(&self) -> Option<NProjMultGetter> {
-        self.n_effect_hc.proj_mult_getter
-    }
     pub(crate) fn get_spool_resolver(&self) -> Option<NSpoolResolver> {
         self.n_effect_hc.spool_resolver
     }
-    pub(crate) fn get_normal_dmg_opc_getter(&self) -> Option<NNormalDmgGetter> {
-        self.n_effect_hc.normal_dmg_opc_getter
-    }
-    pub(crate) fn get_breacher_dmg_opc_getter(&self) -> Option<NBreacherDmgGetter> {
-        self.n_effect_hc.breacher_dmg_opc_getter
+    pub(crate) fn get_modifier_proj_mult_getter(&self) -> Option<NProjMultGetter> {
+        self.n_effect_hc.modifier_proj_mult_getter
     }
     pub(crate) fn get_local_shield_rep_opc_getter(&self) -> Option<NLocalRepGetter> {
         self.n_effect_hc.local_shield_rep_opc_getter
@@ -124,6 +118,12 @@ impl REffect {
     }
     pub(crate) fn get_local_hull_rep_opc_getter(&self) -> Option<NLocalRepGetter> {
         self.n_effect_hc.local_hull_rep_opc_getter
+    }
+    pub(crate) fn get_normal_dmg_opc_getter(&self) -> Option<NNormalDmgGetter> {
+        self.n_effect_hc.normal_dmg_opc_getter
+    }
+    pub(crate) fn get_breacher_dmg_opc_getter(&self) -> Option<NBreacherDmgGetter> {
+        self.n_effect_hc.breacher_dmg_opc_getter
     }
     pub(crate) fn get_remote_shield_rep_opc_getter(&self) -> Option<NRemoteRepGetter> {
         self.n_effect_hc.remote_shield_rep_opc_getter
@@ -147,8 +147,8 @@ impl REffect {
     pub(crate) fn is_active_with_duration(&self) -> bool {
         self.is_active_with_duration
     }
-    pub(crate) fn get_proj_a_attr_ids(&self) -> [Option<AAttrId>; 2] {
-        self.proj_a_attr_ids
+    pub(crate) fn get_modifier_proj_attr_ids(&self) -> [Option<AAttrId>; 2] {
+        self.modifier_proj_attr_ids
     }
     pub(crate) fn get_stopped_effect_keys(&self) -> &Vec<REffectKey> {
         &self.stopped_effect_keys

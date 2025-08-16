@@ -13,11 +13,11 @@ impl SolarSystem {
         u_coordinates: UCoordinates,
     ) {
         let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();
-        if u_fighter.get_pos().coordinates == u_coordinates {
+        if u_fighter.get_position().coordinates == u_coordinates {
             return;
         }
         u_fighter.get_pos_mut().coordinates = u_coordinates;
-        let u_fighter_pos = *u_fighter.get_pos();
+        let u_fighter_pos = *u_fighter.get_position();
         if !u_fighter.get_projs_mut().is_empty() {
             // Handle outgoing projections for fighter itself
             for u_proj_data in u_fighter.get_projs_mut().iter_datas_mut() {

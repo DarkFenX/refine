@@ -25,7 +25,7 @@ impl Calc {
         if !matches!(cmod.raw.kind, ModifierKind::Buff | ModifierKind::Targeted) {
             return None;
         }
-        let resist_a_attr_id = cmod.raw.resist_a_attr_id?;
+        let resist_attr_id = cmod.raw.resist_attr_id?;
         let projectee_key = match cmod.ctx {
             Context::Item(projectee_key) => projectee_key,
             _ => return None,
@@ -33,7 +33,7 @@ impl Calc {
         let resist = eff_funcs::get_resist_mult_val_by_projectee_aspec(
             ctx,
             self,
-            &AttrSpec::new(projectee_key, resist_a_attr_id),
+            &AttrSpec::new(projectee_key, resist_attr_id),
         )?;
         Some(resist)
     }

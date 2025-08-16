@@ -57,7 +57,7 @@ pub(in crate::nd::eff) fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>,
         op: Op::PostMul,
         aggr_mode: AggrMode::Stack,
         affectee_filter: AffecteeFilter::Direct(Location::Ship),
-        affectee_a_attr_id: SHIP_SPEED,
+        affectee_attr_id: SHIP_SPEED,
         ..
     };
     rmods.push(rmod);

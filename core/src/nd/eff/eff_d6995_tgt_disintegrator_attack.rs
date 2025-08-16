@@ -4,13 +4,10 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, ResolvedSpool, Spool},
+    misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
-        eff::shared::{
-            proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
-            spool::get_resolved_spool,
-        },
+        eff::shared::{proj_mult::get_proj_mult_simple_s2s, spool::get_resolved_spool},
     },
     rd::REffect,
     svc::{
@@ -28,7 +25,6 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
             dmg_kind: Some(NEffectDmgKind::Turret),
             charge: Some(NEffectCharge {
@@ -37,7 +33,6 @@ pub(super) fn mk_n_effect() -> NEffect {
                 }),
                 activates_charge: false,
             }),
-            proj_mult_getter: Some(get_proj_mult_simple_s2s),
             spool_resolver: Some(internal_get_resolved_spool),
             normal_dmg_opc_getter: Some(get_dmg_opc),
             ..
@@ -70,20 +65,26 @@ fn get_dmg_opc(
     projector_key: UItemKey,
     projector_r_effect: &REffect,
     spool: Option<Spool>,
-    _projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let projector_u_item = ctx.u_data.items.get(projector_key);
     let charge_key = projector_u_item.get_charge_key()?;
-    let dmg_mult = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DMG_MULT)?;
-    let mut dmg_em = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EM_DMG)?;
-    let mut dmg_therm = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::THERM_DMG)?;
-    let mut dmg_kin = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::KIN_DMG)?;
-    let mut dmg_expl = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EXPL_DMG)?;
+    let mut dmg_mult = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DMG_MULT)?;
+    let dmg_em = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EM_DMG)?;
+    let dmg_therm = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::THERM_DMG)?;
+    let dmg_kin = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::KIN_DMG)?;
+    let dmg_expl = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EXPL_DMG)?;
     if let Some(resolved_spool) = internal_get_resolved_spool(ctx, calc, projector_key, projector_r_effect, spool) {
-        dmg_em *= resolved_spool.mult;
-        dmg_therm *= resolved_spool.mult;
-        dmg_kin *= resolved_spool.mult;
-        dmg_expl *= resolved_spool.mult;
+        dmg_mult *= resolved_spool.mult;
+    }
+    if let Some(projectee_key) = projectee_key {
+        // Projection reduction
+        if let Some(u_proj_data) = ctx.eff_projs.get_proj_data(
+            EffectSpec::new(projector_key, projector_r_effect.get_key()),
+            projectee_key,
+        ) {
+            dmg_mult *= get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+        }
     }
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {

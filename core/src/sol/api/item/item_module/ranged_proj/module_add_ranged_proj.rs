@@ -27,7 +27,7 @@ impl SolarSystem {
             .into());
         }
         // Check if projectee can receive projections by getting its position in space
-        let projectee_pos = match projectee_u_item.get_pos() {
+        let projectee_pos = match projectee_u_item.get_position() {
             Some(projectee_pos) => *projectee_pos,
             None => {
                 return Err(ItemReceiveProjError {

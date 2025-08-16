@@ -219,11 +219,11 @@ impl SolarSystem {
                 }
             }
             for &drone_key in u_fit.drones.iter() {
-                let drone_radius = self.u_data.get_item_radius(drone_key);
+                let drone_radius = self.u_data.items.get(drone_key).get_radius();
                 record_projection(&mut projection_updates, &self.u_data, drone_key, drone_radius);
             }
             for &fighter_key in u_fit.fighters.iter() {
-                let fighter_radius = self.u_data.get_item_radius(fighter_key);
+                let fighter_radius = self.u_data.items.get(fighter_key).get_radius();
                 record_projection(&mut projection_updates, &self.u_data, fighter_key, fighter_radius);
             }
         }
@@ -247,7 +247,7 @@ fn record_projection(
 ) {
     let u_item = u_data.items.get(item_key);
     for (projectee_key, _u_proj_data) in u_item.get_projs().unwrap().iter_projectees_and_datas() {
-        let projectee_rad = u_data.get_item_radius(projectee_key);
-        projection_updates.push((item_key, projectee_key, src_rad, projectee_rad));
+        let projectee_radius = u_data.items.get(projectee_key).get_radius();
+        projection_updates.push((item_key, projectee_key, src_rad, projectee_radius));
     }
 }

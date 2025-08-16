@@ -11,11 +11,11 @@ impl SolarSystem {
         u_coordinates: UCoordinates,
     ) {
         let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
-        if u_ship.get_pos().coordinates == u_coordinates {
+        if u_ship.get_position().coordinates == u_coordinates {
             return;
         }
         u_ship.get_pos_mut().coordinates = u_coordinates;
-        let u_ship_pos = *u_ship.get_pos();
+        let u_ship_pos = *u_ship.get_position();
         // Handle outgoing projections
         let mut projections_to_update = Vec::new();
         for module_key in self.u_data.fits.get(u_ship.get_fit_key()).iter_module_keys() {

@@ -24,7 +24,7 @@ impl UModule {
             if proj_data.get_src_rad() != ship_radius {
                 return Err(DebugError {});
             }
-            if proj_data.get_tgt_rad() != u_data.get_item_radius(projectee_key) {
+            if proj_data.get_tgt_rad() != u_data.items.get(projectee_key).get_radius() {
                 return Err(DebugError {});
             }
         }

@@ -76,7 +76,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
         op: Op::ExtraAdd,
         aggr_mode: AggrMode::Stack,
         affectee_filter: AffecteeFilter::Direct(Location::Item),
-        affectee_a_attr_id: MISSILE_FLIGHT_TIME,
+        affectee_attr_id: MISSILE_FLIGHT_TIME,
         ..
     };
     rmods.push(rmod);
@@ -87,7 +87,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     let missile_velocity = calc
         .get_item_attr_val_full(ctx, espec.item_key, &MISSILE_VELOCITY)
         .ok()?;
-    let ship_radius = ctx.u_data.get_item_radius(ship_key);
+    let ship_radius = ctx.u_data.items.get(ship_key).get_radius();
     // Missile flight time is stored in milliseconds, thus have to multiply by 1000
     let val = ship_radius / missile_velocity.dogma * OF(1000.0);
     if val.is_infinite() {

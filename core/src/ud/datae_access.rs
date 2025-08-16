@@ -27,23 +27,18 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_radius(&self, item_key: UItemKey) -> AttrVal {
-        match self.items.get(item_key).get_axt() {
-            Some(axt) => axt.radius,
-            None => OF(0.0),
-        }
-    }
+    // Projection-related
     pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: UFitKey) -> AttrVal {
         let ship_key = match self.fits.get(fit_key).ship {
             Some(ship_key) => ship_key,
             None => return OF(0.0),
         };
-        self.get_item_radius(ship_key)
+        self.items.get(ship_key).get_radius()
     }
     pub(crate) fn get_ship_pos_by_fit_key(&self, fit_key: UFitKey) -> UPosition {
         let fit = self.fits.get(fit_key);
         match fit.ship {
-            Some(ship_key) => *self.items.get(ship_key).get_ship().unwrap().get_pos(),
+            Some(ship_key) => *self.items.get(ship_key).get_ship().unwrap().get_position(),
             None => UPosition::default(),
         }
     }

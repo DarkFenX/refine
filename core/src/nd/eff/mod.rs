@@ -55,7 +55,7 @@ mod eff_d660_missile_em_dmg_bonus;
 mod eff_d661_missile_expl_dmg_bonus;
 mod eff_d662_missile_therm_dmg_bonus;
 mod eff_d6651_ship_mod_ancillary_remote_armor_repairer;
-mod eff_d6652_ship_mod_ancillary_shield_booster;
+mod eff_d6652_ship_mod_ancillary_remote_shield_booster;
 mod eff_d6682_struct_mod_effect_stasis_webifier;
 mod eff_d6684_struct_mod_effect_remote_sensor_dampener;
 mod eff_d6686_struct_mod_effect_weapon_disruption;
@@ -146,7 +146,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6481_doomsday_aoe_damp::mk_n_effect(),
         eff_d6485_ftr_abil_bomb::mk_n_effect(),
         eff_d6651_ship_mod_ancillary_remote_armor_repairer::mk_n_effect(),
-        eff_d6652_ship_mod_ancillary_shield_booster::mk_n_effect(),
+        eff_d6652_ship_mod_ancillary_remote_shield_booster::mk_n_effect(),
         eff_d6682_struct_mod_effect_stasis_webifier::mk_n_effect(),
         eff_d6684_struct_mod_effect_remote_sensor_dampener::mk_n_effect(),
         eff_d6686_struct_mod_effect_weapon_disruption::mk_n_effect(),

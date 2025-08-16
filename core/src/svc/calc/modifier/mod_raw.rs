@@ -27,13 +27,13 @@ pub(crate) struct RawModifier {
     pub(crate) op: Op,
     pub(crate) aggr_mode: AggrMode,
     pub(crate) affectee_filter: AffecteeFilter,
-    pub(crate) affectee_a_attr_id: ad::AAttrId,
+    pub(crate) affectee_attr_id: ad::AAttrId,
     // Buff-related
-    pub(crate) buff_type_a_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) buff_type_attr_id: Option<ad::AAttrId> = None,
     // Projection-related
-    pub(crate) resist_a_attr_id: Option<ad::AAttrId> = None,
     pub(crate) proj_mult_getter: Option<NProjMultGetter> = None,
-    pub(crate) proj_a_attr_ids: [Option<ad::AAttrId>; 2] = [None, None],
+    pub(crate) proj_attr_ids: [Option<ad::AAttrId>; 2] = [None, None],
+    pub(crate) resist_attr_id: Option<ad::AAttrId> = None,
 }
 impl PartialEq for RawModifier {
     fn eq(&self, other: &Self) -> bool {
@@ -43,8 +43,8 @@ impl PartialEq for RawModifier {
             && self.op.eq(&other.op)
             && self.aggr_mode.eq(&other.aggr_mode)
             && self.affectee_filter.eq(&other.affectee_filter)
-            && self.affectee_a_attr_id.eq(&other.affectee_a_attr_id)
-            && self.buff_type_a_attr_id.eq(&other.buff_type_a_attr_id)
+            && self.affectee_attr_id.eq(&other.affectee_attr_id)
+            && self.buff_type_attr_id.eq(&other.buff_type_attr_id)
     }
 }
 impl Eq for RawModifier {}
@@ -56,8 +56,8 @@ impl Hash for RawModifier {
         self.op.hash(state);
         self.aggr_mode.hash(state);
         self.affectee_filter.hash(state);
-        self.affectee_a_attr_id.hash(state);
-        self.buff_type_a_attr_id.hash(state);
+        self.affectee_attr_id.hash(state);
+        self.buff_type_attr_id.hash(state);
     }
 }
 impl RawModifier {
@@ -81,11 +81,11 @@ impl RawModifier {
             op: (&amod.op).into(),
             aggr_mode: AggrMode::Stack,
             affectee_filter,
-            affectee_a_attr_id: amod.affectee_attr_id,
-            buff_type_a_attr_id: None,
-            resist_a_attr_id,
-            proj_mult_getter: r_effect.get_proj_mult_getter(),
-            proj_a_attr_ids: r_effect.get_proj_a_attr_ids(),
+            affectee_attr_id: amod.affectee_attr_id,
+            buff_type_attr_id: None,
+            proj_mult_getter: r_effect.get_modifier_proj_mult_getter(),
+            proj_attr_ids: r_effect.get_modifier_proj_attr_ids(),
+            resist_attr_id: resist_a_attr_id,
             ..
         })
     }
@@ -153,11 +153,11 @@ impl RawModifier {
             op: (&r_buff.get_op()).into(),
             aggr_mode: AggrMode::from_r_buff(r_buff),
             affectee_filter,
-            affectee_a_attr_id: a_mod.affectee_attr_id,
-            buff_type_a_attr_id,
-            resist_a_attr_id,
-            proj_mult_getter: r_effect.get_proj_mult_getter(),
-            proj_a_attr_ids: r_effect.get_proj_a_attr_ids(),
+            affectee_attr_id: a_mod.affectee_attr_id,
+            buff_type_attr_id: buff_type_a_attr_id,
+            proj_mult_getter: r_effect.get_modifier_proj_mult_getter(),
+            proj_attr_ids: r_effect.get_modifier_proj_attr_ids(),
+            resist_attr_id: resist_a_attr_id,
             ..
         })
     }

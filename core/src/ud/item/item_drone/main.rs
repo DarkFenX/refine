@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
-    def::ItemId,
+    def::{AttrVal, ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, MinionState},
     rd::{REffectKey, RItemAXt},
@@ -129,7 +129,13 @@ impl UDrone {
     pub(crate) fn get_fit_key(&self) -> UFitKey {
         self.fit_key
     }
-    pub(crate) fn get_pos(&self) -> &UPosition {
+    pub(in crate::ud::item) fn get_radius(&self) -> AttrVal {
+        match self.get_axt() {
+            Some(axt) => axt.radius,
+            None => OF(0.0),
+        }
+    }
+    pub(crate) fn get_position(&self) -> &UPosition {
         &self.position
     }
     pub(crate) fn get_pos_mut(&mut self) -> &mut UPosition {

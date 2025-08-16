@@ -29,9 +29,9 @@ pub(super) fn mk_n_effect() -> NEffect {
             ]),
             scope: AEffectBuffScope::Everything,
         }),
-        xt_get_proj_attrs: Some(get_proj_attrs_aoe_burst),
+        modifier_proj_attrs_getter: Some(get_proj_attrs_aoe_burst),
         hc: NEffectHc {
-            proj_mult_getter: Some(get_proj_mult_aoe_burst),
+            modifier_proj_mult_getter: Some(get_proj_mult_aoe_burst),
             ..
         },
         ..

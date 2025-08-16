@@ -11,11 +11,11 @@ impl SolarSystem {
         u_coordinates: UCoordinates,
     ) {
         let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
-        if u_drone.get_pos().coordinates == u_coordinates {
+        if u_drone.get_position().coordinates == u_coordinates {
             return;
         }
         u_drone.get_pos_mut().coordinates = u_coordinates;
-        let u_drone_pos = *u_drone.get_pos();
+        let u_drone_pos = *u_drone.get_position();
         // Handle outgoing projections
         if !u_drone.get_projs_mut().is_empty() {
             for u_proj_data in u_drone.get_projs_mut().iter_datas_mut() {

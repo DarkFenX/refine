@@ -81,7 +81,7 @@ fn get_state(sol: &SolarSystem, item_key: UItemKey) -> MinionState {
     get_u_drone(sol, item_key).get_drone_state()
 }
 fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
-    get_u_drone(sol, item_key).get_pos().coordinates.into()
+    get_u_drone(sol, item_key).get_position().coordinates.into()
 }
 fn get_u_drone(sol: &SolarSystem, item_key: UItemKey) -> &UDrone {
     sol.u_data.items.get(item_key).get_drone().unwrap()

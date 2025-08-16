@@ -1,15 +1,17 @@
 use crate::{
     ac,
     ad::AEffectId,
+    def::AttrVal,
     ec,
     ed::EEffectId,
+    misc::Spool,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::{
-            opc_rep::get_remote_shield_rep_opc,
-            proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
-        },
+        eff::shared::{proj_mult::get_proj_mult_simple_s2s, rep_opc::get_remote_shield_rep_opc},
     },
+    rd::REffect,
+    svc::{SvcCtx, calc::Calc, output::Output},
+    ud::UItemKey,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::NPC_ENTITY_REMOTE_SHIELD_BOOSTER;
@@ -19,12 +21,30 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        xt_get_proj_attrs: Some(get_proj_attrs_simple),
         hc: NEffectHc {
-            proj_mult_getter: Some(get_proj_mult_simple_s2s),
-            remote_shield_rep_opc_getter: Some(get_remote_shield_rep_opc),
+            remote_shield_rep_opc_getter: Some(internal_get_remote_rep_opc),
             ..
         },
         ..
     }
+}
+
+fn internal_get_remote_rep_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_r_effect: &REffect,
+    spool: Option<Spool>,
+    projectee_key: Option<UItemKey>,
+) -> Option<Output<AttrVal>> {
+    get_remote_shield_rep_opc(
+        ctx,
+        calc,
+        projector_key,
+        projector_r_effect,
+        spool,
+        None,
+        projectee_key,
+        get_proj_mult_simple_s2s,
+    )
 }

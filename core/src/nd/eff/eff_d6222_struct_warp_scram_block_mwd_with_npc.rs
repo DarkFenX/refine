@@ -17,9 +17,9 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(update_effect),
-        xt_get_proj_attrs: Some(get_proj_attrs_simple),
+        modifier_proj_attrs_getter: Some(get_proj_attrs_simple),
         hc: NEffectHc {
-            proj_mult_getter: Some(get_proj_mult_simple_s2s),
+            modifier_proj_mult_getter: Some(get_proj_mult_simple_s2s),
             ..
         },
         ..

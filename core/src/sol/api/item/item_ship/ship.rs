@@ -81,7 +81,7 @@ fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
     get_u_ship(sol, item_key).get_ship_state()
 }
 fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
-    get_u_ship(sol, item_key).get_pos().coordinates.into()
+    get_u_ship(sol, item_key).get_position().coordinates.into()
 }
 fn get_u_ship(sol: &SolarSystem, item_key: UItemKey) -> &UShip {
     sol.u_data.items.get(item_key).get_ship().unwrap()

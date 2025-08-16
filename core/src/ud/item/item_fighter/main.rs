@@ -2,7 +2,7 @@ use crate::{
     ad::{
         AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState,
     },
-    def::ItemId,
+    def::{AttrVal, ItemId, OF},
     misc::{AdjustableCount, EffectMode, FighterCountOverride, MinionState},
     rd::{REffectKey, RItemAXt},
     src::Src,
@@ -142,8 +142,14 @@ impl UFighter {
     pub(crate) fn get_autocharges_mut(&mut self) -> &mut Autocharges {
         &mut self.autocharges
     }
-    pub(crate) fn get_pos(&self) -> &UPosition {
+    pub(crate) fn get_position(&self) -> &UPosition {
         &self.position
+    }
+    pub(in crate::ud::item) fn get_radius(&self) -> AttrVal {
+        match self.get_axt() {
+            Some(axt) => axt.radius,
+            None => OF(0.0),
+        }
     }
     pub(crate) fn get_pos_mut(&mut self) -> &mut UPosition {
         &mut self.position

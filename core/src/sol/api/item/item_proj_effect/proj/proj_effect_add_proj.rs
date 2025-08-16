@@ -27,7 +27,7 @@ impl SolarSystem {
             .into());
         }
         // Check if projectee can receive projections by checking if item type supports positions
-        if projectee_u_item.get_pos().is_none() {
+        if projectee_u_item.get_position().is_none() {
             return Err(ItemReceiveProjError {
                 item_id: projectee_u_item.get_item_id(),
                 item_kind: projectee_u_item.get_name(),

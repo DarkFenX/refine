@@ -73,7 +73,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
         op: Op::ExtraMul,
         aggr_mode: AggrMode::Stack,
         affectee_filter: AffecteeFilter::Direct(Location::Item),
-        affectee_a_attr_id: ac::attrs::ARMOR_DMG_AMOUNT,
+        affectee_attr_id: ac::attrs::ARMOR_DMG_AMOUNT,
         ..
     };
     rmods.push(rmod);

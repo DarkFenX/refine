@@ -52,6 +52,7 @@ impl Vast {
             }
             _ => (OF(0.0), OF(0.0), OF(0.0)),
         };
+        // Incoming remote reps
         let shield_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_shield);
         let armor_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_armor);
         let hull_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_hull);

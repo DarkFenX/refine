@@ -4,10 +4,8 @@ use crate::{
     def::{Count, OF, SERVER_TICK_S},
     ec,
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::proj_mult::{get_proj_attrs_missile, get_proj_mult_missile},
-    },
+    misc::EffectSpec,
+    nd::{NEffect, NEffectDmgKind, NEffectHc, eff::shared::proj_mult::get_proj_mult_missile},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::OutputDmgBreacher},
     ud::UItemKey,
@@ -21,10 +19,8 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        xt_get_proj_attrs: Some(get_proj_attrs_missile),
         hc: NEffectHc {
             dmg_kind: Some(NEffectDmgKind::Breacher),
-            proj_mult_getter: Some(get_proj_mult_missile),
             breacher_dmg_opc_getter: Some(get_dmg_opc),
             ..
         },
@@ -36,13 +32,24 @@ fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    _projector_r_effect: &REffect,
-    _projectee_key: Option<UItemKey>,
+    projector_r_effect: &REffect,
+    projectee_key: Option<UItemKey>,
 ) -> Option<OutputDmgBreacher> {
-    let abs_max = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_MAX_DMG_PER_TICK)?;
-    let rel_max =
+    let mut abs_max = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_MAX_DMG_PER_TICK)?;
+    let mut rel_max =
         calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_MAX_HP_PERC_PER_TICK)? / OF(100.0);
     let duration_s = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_DURATION)? / OF(1000.0);
+    if let Some(projectee_key) = projectee_key {
+        // Projection reduction
+        if let Some(u_proj_data) = ctx.eff_projs.get_proj_data(
+            EffectSpec::new(projector_key, projector_r_effect.get_key()),
+            projectee_key,
+        ) {
+            let mult = get_proj_mult_missile(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+            abs_max *= mult;
+            rel_max *= mult;
+        }
+    }
     OutputDmgBreacher::new(
         abs_max,
         rel_max,

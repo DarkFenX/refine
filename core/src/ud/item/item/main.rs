@@ -2,7 +2,7 @@ use either::Either;
 
 use crate::{
     ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
-    def::{Count, ItemId},
+    def::{AttrVal, Count, ItemId, OF},
     misc::{EffectMode, Spool},
     rd::{REffectKey, RItemAXt},
     src::Src,
@@ -457,12 +457,71 @@ impl UItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(crate) fn get_pos(&self) -> Option<&UPosition> {
+    pub(crate) fn get_position(&self) -> Option<&UPosition> {
         match self {
-            Self::Drone(drone) => Some(drone.get_pos()),
-            Self::Fighter(fighter) => Some(fighter.get_pos()),
-            Self::Ship(module) => Some(module.get_pos()),
+            Self::Drone(drone) => Some(drone.get_position()),
+            Self::Fighter(fighter) => Some(fighter.get_position()),
+            Self::Ship(module) => Some(module.get_position()),
             _ => None,
+        }
+    }
+    pub(crate) fn get_position_indirect(&self, u_data: &UData) -> UPosition {
+        match self {
+            Self::Autocharge(autocharge) => u_data
+                .items
+                .get(autocharge.get_cont_item_key())
+                .get_position_indirect(u_data),
+            Self::Booster(booster) => u_data.get_ship_pos_by_fit_key(booster.get_fit_key()),
+            Self::Character(character) => u_data.get_ship_pos_by_fit_key(character.get_fit_key()),
+            Self::Charge(charge) => u_data
+                .items
+                .get(charge.get_cont_item_key())
+                .get_position_indirect(u_data),
+            Self::Drone(drone) => *drone.get_position(),
+            Self::Fighter(fighter) => *fighter.get_position(),
+            Self::FwEffect(_) => UPosition::default(),
+            Self::Implant(implant) => u_data.get_ship_pos_by_fit_key(implant.get_fit_key()),
+            Self::Module(module) => u_data.get_ship_pos_by_fit_key(module.get_fit_key()),
+            Self::ProjEffect(_) => UPosition::default(),
+            Self::Service(service) => u_data.get_ship_pos_by_fit_key(service.get_fit_key()),
+            Self::Rig(rig) => u_data.get_ship_pos_by_fit_key(rig.get_fit_key()),
+            Self::Ship(ship) => *ship.get_position(),
+            Self::Skill(skill) => u_data.get_ship_pos_by_fit_key(skill.get_fit_key()),
+            Self::Stance(stance) => u_data.get_ship_pos_by_fit_key(stance.get_fit_key()),
+            Self::Subsystem(subsystem) => u_data.get_ship_pos_by_fit_key(subsystem.get_fit_key()),
+            Self::SwEffect(_) => UPosition::default(),
+        }
+    }
+    pub(crate) fn get_radius(&self) -> AttrVal {
+        match self {
+            Self::Drone(drone) => drone.get_radius(),
+            Self::Fighter(fighter) => fighter.get_radius(),
+            Self::Ship(ship) => ship.get_radius(),
+            _ => OF(0.0),
+        }
+    }
+    pub(crate) fn get_radius_indirect(&self, u_data: &UData) -> AttrVal {
+        match self {
+            Self::Autocharge(autocharge) => u_data
+                .items
+                .get(autocharge.get_cont_item_key())
+                .get_radius_indirect(u_data),
+            Self::Booster(booster) => u_data.get_ship_radius_by_fit_key(booster.get_fit_key()),
+            Self::Character(character) => u_data.get_ship_radius_by_fit_key(character.get_fit_key()),
+            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_key()).get_radius_indirect(u_data),
+            Self::Drone(drone) => drone.get_radius(),
+            Self::Fighter(fighter) => fighter.get_radius(),
+            Self::FwEffect(_) => AttrVal::default(),
+            Self::Implant(implant) => u_data.get_ship_radius_by_fit_key(implant.get_fit_key()),
+            Self::Module(module) => u_data.get_ship_radius_by_fit_key(module.get_fit_key()),
+            Self::ProjEffect(_) => AttrVal::default(),
+            Self::Service(service) => u_data.get_ship_radius_by_fit_key(service.get_fit_key()),
+            Self::Rig(rig) => u_data.get_ship_radius_by_fit_key(rig.get_fit_key()),
+            Self::Ship(ship) => ship.get_radius(),
+            Self::Skill(skill) => u_data.get_ship_radius_by_fit_key(skill.get_fit_key()),
+            Self::Stance(stance) => u_data.get_ship_radius_by_fit_key(stance.get_fit_key()),
+            Self::Subsystem(subsystem) => u_data.get_ship_radius_by_fit_key(subsystem.get_fit_key()),
+            Self::SwEffect(_) => AttrVal::default(),
         }
     }
     pub(crate) fn get_projs(&self) -> Option<&Projs> {
