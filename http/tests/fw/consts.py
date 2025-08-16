@@ -599,11 +599,11 @@ class UtilEffect(IntEnum):
     buff_fleet_ships = EveEffect.mod_bonus_warfare_link_armor
     # Use targetAttack/projectileFired effects, since they bring no extra modifiers and define
     # optimal/falloff as range-defining attributes
-    tgt_normal1 = EveEffect.tgt_attack
-    tgt_normal2 = EveEffect.projectile_fired
+    tgt_normal1 = 10_000_001
+    tgt_normal2 = 10_000_002
     # Use targetDisintegratorAttack effect, since it brings no extra modifiers and defines optimal
     # as a range-defining attribute
-    tgt_simple = EveEffect.tgt_disintegrator_attack
+    tgt_simple = 10_000_000
     cycle_charge_rate = EveEffect.projectile_fired
     cycle_crystal = EveEffect.tgt_attack
     cycle_none = EveEffect.warp_disrupt_sphere

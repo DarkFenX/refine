@@ -92,6 +92,7 @@ mod eff_d8037_chain_lightning;
 mod eff_d848_cloaking_targeting_delay_bonus;
 mod eff_d9_missile_launching;
 mod shared;
+mod test;
 
 pub(crate) static N_EFFECTS: LazyLock<Vec<NEffect>> = LazyLock::new(get_n_effects);
 pub(crate) static N_EFFECT_MAP: LazyLock<HashMap<ad::AEffectId, NEffect>> = LazyLock::new(get_n_effect_map);
@@ -180,6 +181,9 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d8037_chain_lightning::mk_n_effect(),
         eff_d11691_debuff_lance::mk_n_effect(),
         eff_d12174_dot_missile_launching::mk_n_effect(),
+        test::eff_d10000000_mod_proj_simple::mk_n_effect(),
+        test::eff_d10000001_mod_proj_normal1::mk_n_effect(),
+        test::eff_d10000002_mod_proj_normal2::mk_n_effect(),
     ]
 }
 
