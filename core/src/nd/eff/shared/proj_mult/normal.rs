@@ -9,11 +9,11 @@ use crate::{
     ud::{UItemKey, UProjData},
 };
 
-pub(crate) fn get_mod_proj_attrs_normal(a_effect: &AEffect) -> [Option<AAttrId>; 2] {
+pub(in crate::nd::eff) fn get_mod_proj_attrs_normal(a_effect: &AEffect) -> [Option<AAttrId>; 2] {
     [a_effect.range_attr_id, a_effect.falloff_attr_id]
 }
 
-pub(crate) fn get_proj_mult_normal_restricted_s2s(
+pub(in crate::nd::eff) fn get_proj_mult_normal_restricted_s2s(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -23,7 +23,7 @@ pub(crate) fn get_proj_mult_normal_restricted_s2s(
     get_proj_mult_normal(ctx, calc, projector_key, r_effect, u_proj_data.get_range_s2s(), true)
 }
 
-pub(crate) fn get_proj_mult_normal_unrestricted_s2s(
+pub(in crate::nd::eff) fn get_proj_mult_normal_unrestricted_s2s(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

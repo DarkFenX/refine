@@ -7,7 +7,7 @@ use crate::{
     util::{ceil_tick, floor_tick},
 };
 
-pub(crate) fn get_proj_mult_missile(
+pub(in crate::nd::eff) fn get_proj_mult_missile(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -68,7 +68,7 @@ pub(crate) fn get_proj_mult_missile(
 }
 
 // Bomb is similar to missile, but they have fixed flight range and AoE effect
-pub(crate) fn get_proj_mult_bomb(
+pub(in crate::nd::eff) fn get_proj_mult_bomb(
     ctx: SvcCtx,
     calc: &mut Calc,
     affector_key: UItemKey,
