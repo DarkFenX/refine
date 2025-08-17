@@ -1,9 +1,12 @@
 import dataclasses
+import typing
 
-from tests.fw.api.aliases import DpsProfile
 from tests.fw.util import Absent
-from .opt_dmg import StatDmgItemKinds
-from .opt_remote_rps import StatRemoteRpsItemKinds
+
+if typing.TYPE_CHECKING:
+    from tests.fw.api.aliases import DpsProfile
+    from .opt_dmg import StatDmgItemKinds
+    from .opt_remote_rps import StatRemoteRpsItemKinds
 
 type StatOptionAlias = bool | type[Absent]
 type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]

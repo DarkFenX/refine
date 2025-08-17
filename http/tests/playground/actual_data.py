@@ -3,12 +3,15 @@ Just collection of methods to test with real data from time to time.
 """
 
 import json
+import typing
 from pathlib import Path
 from time import time
 
 from tests import approx
 from tests.fw.api import FitStatsOptions, ValOptions
-from tests.fw.api.types.item import Item
+
+if typing.TYPE_CHECKING:
+    from tests.fw.api.types.item import Item
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
