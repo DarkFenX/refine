@@ -5,6 +5,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+        item_funcs,
         vast::Vast,
     },
     ud::{UItem, UItemKey, UShipKind},
@@ -21,11 +22,10 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         item_check(ctx, item_key)?;
-        Ok(Vast::get_stat_item_speed_unchecked(ctx, calc, item_key))
+        Ok(Vast::internal_get_stat_item_speed_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_VELOCITY)
-            .unwrap()
+    fn internal_get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+        item_funcs::get_speed(ctx, calc, item_key).unwrap()
     }
     pub(in crate::svc) fn get_stat_item_agility(
         ctx: SvcCtx,
@@ -33,9 +33,9 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check(ctx, item_key)?;
-        Ok(Vast::get_stat_item_agility_unchecked(ctx, calc, item_key))
+        Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
+    fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
         let agility = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::AGILITY)
             .unwrap();
@@ -54,10 +54,14 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check(ctx, item_key)?;
-        Ok(Vast::get_stat_item_align_time_unchecked(ctx, calc, item_key))
+        Ok(Vast::internal_get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
-    fn get_stat_item_align_time_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
-        Vast::get_stat_item_agility_unchecked(ctx, calc, item_key).map(ceil_tick)
+    fn internal_get_stat_item_align_time_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Option<AttrVal> {
+        Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key).map(ceil_tick)
     }
 }
 

@@ -9,6 +9,7 @@ pub(crate) mod cycle;
 pub(crate) mod eff_funcs;
 pub(crate) mod eff_projs;
 pub(crate) mod err;
+pub(crate) mod item_funcs;
 pub(crate) mod output;
 mod svc;
 mod svce_debug;
