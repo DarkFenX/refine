@@ -3,7 +3,7 @@ use crate::{
         HItemIdsResp, change_item,
         shared::{HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
     },
-    shared::{HCoordinates, HMinionState},
+    shared::{HCoordinates, HMinionState, HMovement},
     util::HExecError,
 };
 

@@ -2,7 +2,7 @@ use rc::ItemCommon;
 
 use crate::{
     info::item::{mutation::HItemMutationInfo, proj::HRangedProjInfo},
-    shared::{HCoordinates, HMinionState},
+    shared::{HCoordinates, HMinionState, HMovement},
 };
 
 #[serde_with::serde_as]
@@ -18,6 +18,7 @@ pub(crate) struct HDroneInfoPartial {
     #[serde(skip_serializing_if = "Option::is_none")]
     mutation: Option<HItemMutationInfo>,
     coordinates: HCoordinates,
+    movement: HMovement,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -34,6 +35,7 @@ impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
                 _ => None,
             },
             coordinates: core_drone.get_coordinates().into(),
+            movement: core_drone.get_movement().into(),
             projs: core_drone
                 .iter_projs()
                 .map(|core_ranged_proj| core_ranged_proj.into())

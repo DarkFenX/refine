@@ -1,4 +1,7 @@
-use crate::{def::AttrVal, ud::UDirection};
+use crate::{
+    def::AttrVal,
+    ud::{UDirection, UPosition},
+};
 
 #[derive(Copy, Clone)]
 pub struct Movement {
@@ -6,6 +9,14 @@ pub struct Movement {
     pub direction: Direction,
     /// Portion of speed item moves with, relatively its max speed.
     pub speed: AttrVal,
+}
+impl From<&UPosition> for Movement {
+    fn from(u_position: &UPosition) -> Self {
+        Self {
+            direction: u_position.direction.into(),
+            speed: u_position.speed,
+        }
+    }
 }
 
 #[derive(Copy, Clone)]

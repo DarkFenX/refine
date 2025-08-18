@@ -10,7 +10,7 @@ use crate::{
             proj::HRangedProjInfo,
         },
     },
-    shared::{HCoordinates, HEffectId, HMinionState},
+    shared::{HCoordinates, HEffectId, HMinionState, HMovement},
 };
 
 #[serde_with::serde_as]
@@ -30,6 +30,7 @@ pub(crate) struct HFighterInfoPartial {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     autocharges: HashMap<HEffectId, HAutochargeInfo>,
     coordinates: HCoordinates,
+    movement: HMovement,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -53,6 +54,7 @@ impl HFighterInfoPartial {
                 })
                 .collect(),
             coordinates: core_fighter.get_coordinates().into(),
+            movement: core_fighter.get_movement().into(),
             projs: core_fighter
                 .iter_projs()
                 .map(|core_ranged_proj| core_ranged_proj.into())
