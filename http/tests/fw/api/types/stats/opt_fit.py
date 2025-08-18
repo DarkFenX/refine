@@ -39,9 +39,10 @@ class FitStatsOptions:
     drone_bay_volume: StatOptionAlias = Absent
     drone_bandwidth: StatOptionAlias = Absent
     fighter_bay_volume: StatOptionAlias = Absent
+    speed: StatOptionAlias = Absent
     agility: StatOptionAlias = Absent
     align_time: StatOptionAlias = Absent
-    speed: StatOptionAlias = Absent
+    sig_radius: StatOptionAlias = Absent
     dps: StatOptionFitDpsAlias = Absent
     volley: StatOptionFitVolleyAlias = Absent
     hp: StatOptionAlias = Absent

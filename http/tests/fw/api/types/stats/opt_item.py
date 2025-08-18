@@ -13,9 +13,10 @@ type StatOptionItemRemoteCpsAlias = StatOptionAlias | tuple[bool, list[StatsOpti
 class ItemStatsOptions:
 
     default: bool = False
+    speed: StatOptionAlias = Absent
     agility: StatOptionAlias = Absent
     align_time: StatOptionAlias = Absent
-    speed: StatOptionAlias = Absent
+    sig_radius: StatOptionAlias = Absent
     dps: StatOptionItemDpsAlias = Absent
     volley: StatOptionItemVolleyAlias = Absent
     hp: StatOptionAlias = Absent
