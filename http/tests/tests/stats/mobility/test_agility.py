@@ -187,6 +187,23 @@ def test_ship_not_loaded(client, consts):
     assert api_ship_stats.align_time is None
 
 
+def test_struct(client, consts):
+    eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_struct_id = client.mk_eve_struct(attrs={eve_agility_attr_id: 3.2, eve_mass_attr_id: 1050000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_struct_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
+    assert api_fit_stats.agility is None
+    assert api_fit_stats.align_time is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
+    assert api_ship_stats.agility is None
+    assert api_ship_stats.align_time is None
+
+
 def test_drone_modified_agility(client, consts):
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)

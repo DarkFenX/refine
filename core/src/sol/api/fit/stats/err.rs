@@ -1,5 +1,5 @@
 use crate::{
-    err::basic::{FitHasShipError, ItemLoadedError},
+    err::basic::{FitHasShipError, ItemLoadedError, SupportedStatError},
     sol::api::ItemStatError,
 };
 
@@ -9,13 +9,14 @@ pub enum FitShipStatError {
     NoShip(#[from] FitHasShipError),
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
+    #[error("{0}")]
+    UnsupportedStat(#[from] SupportedStatError),
 }
 impl From<ItemStatError> for FitShipStatError {
     fn from(item_err: ItemStatError) -> Self {
         match item_err {
             ItemStatError::ItemNotLoaded(e) => e.into(),
-            // All stats exposed on fit are supposed to be fetchable from ship
-            ItemStatError::UnsupportedStat(_) => unreachable!(),
+            ItemStatError::UnsupportedStat(e) => e.into(),
         }
     }
 }

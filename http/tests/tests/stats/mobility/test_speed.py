@@ -77,6 +77,20 @@ def test_ship_not_loaded(client, consts):
     assert api_ship_stats.speed is None
 
 
+def test_struct(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_struct_id = client.mk_eve_struct(attrs={eve_speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_struct_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_fit_stats.speed is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_ship_stats.speed is None
+
+
 def test_drone_modified(client, consts):
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
