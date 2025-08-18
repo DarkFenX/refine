@@ -21,7 +21,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check(ctx, item_key)?;
+        item_check_movable(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_speed_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -32,7 +32,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check(ctx, item_key)?;
+        item_check_movable(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
@@ -53,7 +53,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check(ctx, item_key)?;
+        item_check_movable(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_align_time_unchecked(
@@ -63,9 +63,20 @@ impl Vast {
     ) -> Option<AttrVal> {
         Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key).map(ceil_tick)
     }
+    pub(in crate::svc) fn get_stat_item_sig_radius(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
+        item_check_other(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key))
+    }
+    fn internal_get_stat_item_sig_radius_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+        item_funcs::get_sig_radius(ctx, calc, item_key).unwrap()
+    }
 }
 
-fn item_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+fn item_check_movable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
     let u_item = ctx.u_data.items.get(item_key);
     let is_loaded = match u_item {
         UItem::Drone(u_drone) => u_drone.is_loaded(),
@@ -74,6 +85,20 @@ fn item_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError>
             UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
             UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
         },
+        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
+    };
+    match is_loaded {
+        true => Ok(()),
+        false => Err(KeyedItemLoadedError { item_key }.into()),
+    }
+}
+
+fn item_check_other(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let u_item = ctx.u_data.items.get(item_key);
+    let is_loaded = match u_item {
+        UItem::Drone(u_drone) => u_drone.is_loaded(),
+        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
+        UItem::Ship(u_ship) => u_ship.is_loaded(),
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
     };
     match is_loaded {

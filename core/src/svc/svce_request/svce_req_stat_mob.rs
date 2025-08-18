@@ -26,4 +26,11 @@ impl Svc {
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_align_time(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
+    pub(crate) fn get_stat_item_sig_radius(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
+        Vast::get_stat_item_sig_radius(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
 }
