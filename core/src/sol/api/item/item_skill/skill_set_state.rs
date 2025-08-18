@@ -6,11 +6,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_skill_state(
         &mut self,
-        item_key: UItemKey,
+        skill_key: UItemKey,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_skill = self.u_data.items.get_mut(item_key).get_skill_mut().unwrap();
+        let u_skill = self.u_data.items.get_mut(skill_key).get_skill_mut().unwrap();
         let old_a_state = u_skill.get_state();
         u_skill.set_skill_state(state);
         let new_a_state = u_skill.get_state();
@@ -18,7 +18,7 @@ impl SolarSystem {
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
-            item_key,
+            skill_key,
             old_a_state,
             new_a_state,
             reuse_eupdates,

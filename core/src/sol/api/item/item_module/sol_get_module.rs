@@ -9,14 +9,14 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_module(&self, item_id: &ItemId) -> Result<Module<'_>, GetModuleError> {
-        let item_key = self.u_data.items.key_by_id_err(item_id)?;
-        self.u_data.items.get(item_key).get_module()?;
-        Ok(Module::new(self, item_key))
+        let module_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(module_key).get_module()?;
+        Ok(Module::new(self, module_key))
     }
     pub fn get_module_mut(&mut self, item_id: &ItemId) -> Result<ModuleMut<'_>, GetModuleError> {
-        let item_key = self.u_data.items.key_by_id_err(item_id)?;
-        self.u_data.items.get(item_key).get_module()?;
-        Ok(ModuleMut::new(self, item_key))
+        let module_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(module_key).get_module()?;
+        Ok(ModuleMut::new(self, module_key))
     }
 }
 

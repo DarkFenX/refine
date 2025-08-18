@@ -26,15 +26,15 @@ impl SolarSystem {
                 let item_id = self.u_data.items.alloc_id();
                 let skill = USkill::new(item_id, type_id, fit_key, level.into(), true, &self.u_data.src);
                 let item = UItem::Skill(skill);
-                let item_key = self.u_data.items.add(item);
-                entry.insert(UFitSkill { item_key, level });
-                SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-                Ok(item_key)
+                let skill_key = self.u_data.items.add(item);
+                entry.insert(UFitSkill { skill_key, level });
+                SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
+                Ok(skill_key)
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {
                 type_id,
                 fit_id: fit.id,
-                item_id: self.u_data.items.id_by_key(entry.get().item_key),
+                item_id: self.u_data.items.id_by_key(entry.get().skill_key),
             }),
         }
     }
@@ -43,10 +43,10 @@ impl SolarSystem {
 impl<'a> FitMut<'a> {
     pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, AddSkillError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self
+        let skill_key = self
             .sol
             .internal_add_skill(self.key, type_id, level, &mut reuse_eupdates)?;
-        Ok(SkillMut::new(self.sol, item_key))
+        Ok(SkillMut::new(self.sol, skill_key))
     }
 }
 

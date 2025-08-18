@@ -11,11 +11,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_proj_effect_proj(
         &mut self,
-        item_key: UItemKey,
+        proj_effect_key: UItemKey,
         projectee_key: UItemKey,
     ) -> Result<(), AddProjError> {
         // Check projector
-        let u_item = self.u_data.items.get(item_key);
+        let u_item = self.u_data.items.get(proj_effect_key);
         let u_proj_effect = u_item.get_proj_effect().unwrap();
         // Check if projection has already been defined
         let projectee_u_item = self.u_data.items.get(projectee_key);
@@ -35,11 +35,16 @@ impl SolarSystem {
             .into());
         }
         // Update user data
-        let u_proj_effect = self.u_data.items.get_mut(item_key).get_proj_effect_mut().unwrap();
+        let u_proj_effect = self
+            .u_data
+            .items
+            .get_mut(proj_effect_key)
+            .get_proj_effect_mut()
+            .unwrap();
         u_proj_effect.get_projs_mut().add(projectee_key, None);
-        self.rev_projs.reg_projectee(item_key, projectee_key);
+        self.rev_projs.reg_projectee(proj_effect_key, projectee_key);
         // Update services
-        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key, None);
+        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, proj_effect_key, projectee_key, None);
         Ok(())
     }
 }

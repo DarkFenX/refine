@@ -6,14 +6,14 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_fw_effect(
         &mut self,
-        item_key: UItemKey,
+        fw_effect_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        SolarSystem::util_remove_fw_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        let u_fw_effect = self.u_data.items.get(item_key).get_fw_effect().unwrap();
+        SolarSystem::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_key, reuse_eupdates);
+        let u_fw_effect = self.u_data.items.get(fw_effect_key).get_fw_effect().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_fw_effect.get_fit_key());
-        u_fit.fw_effects.remove(&item_key);
-        self.u_data.items.remove(item_key);
+        u_fit.fw_effects.remove(&fw_effect_key);
+        self.u_data.items.remove(fw_effect_key);
     }
 }
 

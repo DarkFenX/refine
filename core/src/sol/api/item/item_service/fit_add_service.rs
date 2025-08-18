@@ -21,19 +21,19 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_service = UService::new(item_id, type_id, fit_key, state, &self.u_data.src);
         let u_item = UItem::Service(u_service);
-        let item_key = self.u_data.items.add(u_item);
-        u_fit.services.insert(item_key);
-        SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        item_key
+        let service_key = self.u_data.items.add(u_item);
+        u_fit.services.insert(service_key);
+        SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_key, reuse_eupdates);
+        service_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self
+        let service_key = self
             .sol
             .internal_add_service(self.key, type_id, state, &mut reuse_eupdates);
-        ServiceMut::new(self.sol, item_key)
+        ServiceMut::new(self.sol, service_key)
     }
 }

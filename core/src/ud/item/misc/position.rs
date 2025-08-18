@@ -16,8 +16,8 @@ pub(crate) struct UCoordinates {
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub(crate) struct UDirection {
-    // Degrees relatively X axis counter-clockwise
+    // Radians relatively X axis counter-clockwise
     pub(crate) plane: AttrVal,
-    // Degrees of elevation
+    // Radians of elevation
     pub(crate) elevation: AttrVal,
 }

@@ -9,14 +9,14 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_implant(&self, item_id: &ItemId) -> Result<Implant<'_>, GetImplantError> {
-        let item_key = self.u_data.items.key_by_id_err(item_id)?;
-        self.u_data.items.get(item_key).get_implant()?;
-        Ok(Implant::new(self, item_key))
+        let implant_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(implant_key).get_implant()?;
+        Ok(Implant::new(self, implant_key))
     }
     pub fn get_implant_mut(&mut self, item_id: &ItemId) -> Result<ImplantMut<'_>, GetImplantError> {
-        let item_key = self.u_data.items.key_by_id_err(item_id)?;
-        self.u_data.items.get(item_key).get_implant()?;
-        Ok(ImplantMut::new(self, item_key))
+        let implant_key = self.u_data.items.key_by_id_err(item_id)?;
+        self.u_data.items.get(implant_key).get_implant()?;
+        Ok(ImplantMut::new(self, implant_key))
     }
 }
 

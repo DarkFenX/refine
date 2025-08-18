@@ -94,7 +94,7 @@ impl UFit {
         // Fill the data
         let mut items = Vec::with_capacity(capacity);
         conditional_push(&mut items, self.character);
-        items.extend(self.skills.values().map(|v| v.item_key));
+        items.extend(self.skills.values().map(|v| v.skill_key));
         items.extend(self.implants.iter());
         items.extend(self.boosters.iter());
         conditional_push(&mut items, self.ship);

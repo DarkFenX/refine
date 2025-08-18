@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for SkillMut<'a> {
 impl<'a> ItemCommon for SkillMut<'a> {}
 impl<'a> ItemMutCommon for SkillMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_skill(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, skill_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_skill(sol, skill_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_level(sol: &SolarSystem, item_key: UItemKey) -> SkillLevel {
-    get_u_skill(sol, item_key).get_level().into()
+fn get_level(sol: &SolarSystem, skill_key: UItemKey) -> SkillLevel {
+    get_u_skill(sol, skill_key).get_level().into()
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_skill(sol, item_key).get_skill_state()
+fn get_state(sol: &SolarSystem, skill_key: UItemKey) -> bool {
+    get_u_skill(sol, skill_key).get_skill_state()
 }
-fn get_u_skill(sol: &SolarSystem, item_key: UItemKey) -> &USkill {
-    sol.u_data.items.get(item_key).get_skill().unwrap()
+fn get_u_skill(sol: &SolarSystem, skill_key: UItemKey) -> &USkill {
+    sol.u_data.items.get(skill_key).get_skill().unwrap()
 }

@@ -60,5 +60,5 @@ fn iter_modules(
     let u_module_vec = get_fit_rack(&sol.u_data.fits, fit_key, rack);
     u_module_vec
         .iter_all()
-        .map(|item_key_opt| item_key_opt.map(|item_key| Module::new(sol, item_key)))
+        .map(|module_key_opt| module_key_opt.map(|module_key| Module::new(sol, module_key)))
 }

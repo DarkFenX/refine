@@ -77,17 +77,17 @@ impl<'a> ItemMutSealed for ChargeMut<'a> {
 impl<'a> ItemCommon for ChargeMut<'a> {}
 impl<'a> ItemMutCommon for ChargeMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_charge(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, charge_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_charge(sol, charge_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_cont_item(sol: &SolarSystem, item_key: UItemKey) -> Item<'_> {
-    let cont_key = get_u_charge(sol, item_key).get_cont_item_key();
+fn get_cont_item(sol: &SolarSystem, charge_key: UItemKey) -> Item<'_> {
+    let cont_key = get_u_charge(sol, charge_key).get_cont_item_key();
     Item::new(sol, cont_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    !get_u_charge(sol, item_key).get_force_disabled()
+fn get_state(sol: &SolarSystem, charge_key: UItemKey) -> bool {
+    !get_u_charge(sol, charge_key).get_force_disabled()
 }
-fn get_u_charge(sol: &SolarSystem, item_key: UItemKey) -> &UCharge {
-    sol.u_data.items.get(item_key).get_charge().unwrap()
+fn get_u_charge(sol: &SolarSystem, charge_key: UItemKey) -> &UCharge {
+    sol.u_data.items.get(charge_key).get_charge().unwrap()
 }

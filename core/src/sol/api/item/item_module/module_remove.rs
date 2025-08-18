@@ -8,11 +8,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_remove_module(
         &mut self,
-        item_key: UItemKey,
+        module_key: UItemKey,
         pos_mode: RmMode,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_module = self.u_data.items.get(item_key).get_module().unwrap();
+        let u_module = self.u_data.items.get(module_key).get_module().unwrap();
         let fit_key = u_module.get_fit_key();
         let rack = u_module.get_rack();
         let charge_key = u_module.get_charge_key();
@@ -21,11 +21,11 @@ impl SolarSystem {
             // Remove outgoing projections for module
             for projectee_key in u_module.get_projs().iter_projectees() {
                 // Remove module outgoing projections from services
-                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key);
+                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, module_key, projectee_key);
                 // Remove module outgoing projections from reverse projection tracker
-                self.rev_projs.unreg_projectee(&item_key, &projectee_key);
+                self.rev_projs.unreg_projectee(&module_key, &projectee_key);
             }
-            let u_module = self.u_data.items.get_mut(item_key).get_module_mut().unwrap();
+            let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
             u_module.get_projs_mut().clear();
             // Remove outgoing projections for charge
             if let Some(charge_key) = charge_key {
@@ -45,16 +45,16 @@ impl SolarSystem {
             SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_key, reuse_eupdates);
         }
         // Remove module from services
-        SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, module_key, reuse_eupdates);
         // Update user data - not updating module<->charge references because both will be removed
         if let Some(charge_key) = charge_key {
             self.u_data.items.remove(charge_key);
         }
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_key, rack);
         match pos_mode {
-            RmMode::Free => u_fit_rack.free(&item_key),
+            RmMode::Free => u_fit_rack.free(&module_key),
             RmMode::Remove => {
-                if let Some(pos) = u_fit_rack.remove(&item_key) {
+                if let Some(pos) = u_fit_rack.remove(&module_key) {
                     for (i, rack_module_key) in u_fit_rack.inner()[pos..].iter().enumerate() {
                         if let Some(rack_module_key) = rack_module_key {
                             self.u_data
@@ -68,7 +68,7 @@ impl SolarSystem {
                 }
             }
         }
-        self.u_data.items.remove(item_key);
+        self.u_data.items.remove(module_key);
     }
 }
 

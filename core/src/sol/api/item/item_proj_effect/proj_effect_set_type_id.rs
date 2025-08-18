@@ -8,18 +8,23 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_proj_effect_type_id(
         &mut self,
-        item_key: UItemKey,
+        proj_effect_key: UItemKey,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(item_key);
+        let u_item = self.u_data.items.get(proj_effect_key);
         if u_item.get_type_id() == type_id {
             return;
         }
-        SolarSystem::util_remove_proj_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        let u_proj_effect = self.u_data.items.get_mut(item_key).get_proj_effect_mut().unwrap();
+        SolarSystem::util_remove_proj_effect(&mut self.u_data, &mut self.svc, proj_effect_key, reuse_eupdates);
+        let u_proj_effect = self
+            .u_data
+            .items
+            .get_mut(proj_effect_key)
+            .get_proj_effect_mut()
+            .unwrap();
         u_proj_effect.set_type_id(type_id, &self.u_data.src);
-        SolarSystem::util_add_proj_effect(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_proj_effect(&mut self.u_data, &mut self.svc, proj_effect_key, reuse_eupdates);
     }
 }
 

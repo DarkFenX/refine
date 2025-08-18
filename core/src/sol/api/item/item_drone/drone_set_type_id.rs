@@ -8,23 +8,23 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_drone_type_id(
         &mut self,
-        item_key: UItemKey,
+        drone_key: UItemKey,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(item_key);
+        let u_item = self.u_data.items.get(drone_key);
         if u_item.get_type_id() == type_id {
             return;
         }
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
         self.u_data
             .items
-            .get_mut(item_key)
+            .get_mut(drone_key)
             .get_drone_mut()
             .unwrap()
             .set_type_id(type_id, &self.u_data.src);
-        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, item_key);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
     }
 }
 

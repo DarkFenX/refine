@@ -6,11 +6,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fw_effect_state(
         &mut self,
-        item_key: UItemKey,
+        fw_effect_key: UItemKey,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_fw_effect = self.u_data.items.get_mut(item_key).get_fw_effect_mut().unwrap();
+        let u_fw_effect = self.u_data.items.get_mut(fw_effect_key).get_fw_effect_mut().unwrap();
         let old_a_state = u_fw_effect.get_state();
         u_fw_effect.set_fw_effect_state(state);
         let new_a_state = u_fw_effect.get_state();
@@ -18,7 +18,7 @@ impl SolarSystem {
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
-            item_key,
+            fw_effect_key,
             old_a_state,
             new_a_state,
             reuse_eupdates,

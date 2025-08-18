@@ -24,5 +24,5 @@ impl<'a> FitMut<'a> {
 
 fn iter_fighters(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Fighter<'_>> {
     let fighter_keys = sol.u_data.fits.get(fit_key).fighters.iter();
-    fighter_keys.map(|item_key| Fighter::new(sol, *item_key))
+    fighter_keys.map(|fighter_key| Fighter::new(sol, *fighter_key))
 }

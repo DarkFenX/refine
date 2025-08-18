@@ -66,13 +66,13 @@ impl<'a> ItemMutSealed for CharacterMut<'a> {
 impl<'a> ItemCommon for CharacterMut<'a> {}
 impl<'a> ItemMutCommon for CharacterMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_character(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, character_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_character(sol, character_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_character(sol, item_key).get_character_state()
+fn get_state(sol: &SolarSystem, character_key: UItemKey) -> bool {
+    get_u_character(sol, character_key).get_character_state()
 }
-fn get_u_character(sol: &SolarSystem, item_key: UItemKey) -> &UCharacter {
-    sol.u_data.items.get(item_key).get_character().unwrap()
+fn get_u_character(sol: &SolarSystem, character_key: UItemKey) -> &UCharacter {
+    sol.u_data.items.get(character_key).get_character().unwrap()
 }

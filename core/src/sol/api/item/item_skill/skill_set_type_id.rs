@@ -10,11 +10,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_skill_type_id(
         &mut self,
-        item_key: UItemKey,
+        skill_key: UItemKey,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), SkillEveTypeError> {
-        let u_item = self.u_data.items.get(item_key);
+        let u_item = self.u_data.items.get(skill_key);
         let old_type_id = u_item.get_type_id();
         if old_type_id == type_id {
             return Ok(());
@@ -26,20 +26,20 @@ impl SolarSystem {
             return Err(SkillEveTypeError {
                 type_id,
                 fit_id: u_fit.get_id(),
-                item_id: self.u_data.items.id_by_key(fit_skill.item_key),
+                item_id: self.u_data.items.id_by_key(fit_skill.skill_key),
             });
         }
         // Unload skill
-        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
         // Update type ID and reload adapted data
-        let u_skill = self.u_data.items.get_mut(item_key).get_skill_mut().unwrap();
+        let u_skill = self.u_data.items.get_mut(skill_key).get_skill_mut().unwrap();
         u_skill.set_type_id(type_id, &self.u_data.src);
         // Update fit skill map
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let fit_skill = u_fit.skills.remove(&old_type_id).unwrap();
         u_fit.skills.insert(type_id, fit_skill);
         // Load skill
-        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
         Ok(())
     }
 }

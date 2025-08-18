@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for ShipMut<'a> {
 impl<'a> ItemCommon for ShipMut<'a> {}
 impl<'a> ItemMutCommon for ShipMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_ship(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, ship_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_ship(sol, ship_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_ship(sol, item_key).get_ship_state()
+fn get_state(sol: &SolarSystem, ship_key: UItemKey) -> bool {
+    get_u_ship(sol, ship_key).get_ship_state()
 }
-fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
-    get_u_ship(sol, item_key).get_position().coordinates.into()
+fn get_coordinates(sol: &SolarSystem, ship_key: UItemKey) -> Coordinates {
+    get_u_ship(sol, ship_key).get_position().coordinates.into()
 }
-fn get_u_ship(sol: &SolarSystem, item_key: UItemKey) -> &UShip {
-    sol.u_data.items.get(item_key).get_ship().unwrap()
+fn get_u_ship(sol: &SolarSystem, ship_key: UItemKey) -> &UShip {
+    sol.u_data.items.get(ship_key).get_ship().unwrap()
 }

@@ -39,10 +39,12 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn get_side_effect<'a>(sol: &'a SolarSystem, item_key: UItemKey, effect_id: &EffectId) -> SideEffect<'a> {
+fn get_side_effect<'a>(sol: &'a SolarSystem, booster_key: UItemKey, effect_id: &EffectId) -> SideEffect<'a> {
     let a_effect_id = AEffectId::from(effect_id);
     match get_se_chance_attr_id_by_effect_id(&sol.u_data.src, &a_effect_id) {
-        Some(chance_a_attr_id) => SideEffect::Full(FullSideEffect::new(sol, item_key, a_effect_id, chance_a_attr_id)),
-        None => SideEffect::Stub(StubSideEffect::new(sol, item_key, a_effect_id)),
+        Some(chance_a_attr_id) => {
+            SideEffect::Full(FullSideEffect::new(sol, booster_key, a_effect_id, chance_a_attr_id))
+        }
+        None => SideEffect::Stub(StubSideEffect::new(sol, booster_key, a_effect_id)),
     }
 }

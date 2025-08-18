@@ -56,9 +56,9 @@ impl<'a> ItemMutSealed for SwEffectMut<'a> {
 impl<'a> ItemCommon for SwEffectMut<'a> {}
 impl<'a> ItemMutCommon for SwEffectMut<'a> {}
 
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_sw_effect(sol, item_key).get_sw_effect_state()
+fn get_state(sol: &SolarSystem, sw_effect_key: UItemKey) -> bool {
+    get_u_sw_effect(sol, sw_effect_key).get_sw_effect_state()
 }
-fn get_u_sw_effect(sol: &SolarSystem, item_key: UItemKey) -> &USwEffect {
-    sol.u_data.items.get(item_key).get_sw_effect().unwrap()
+fn get_u_sw_effect(sol: &SolarSystem, sw_effect_key: UItemKey) -> &USwEffect {
+    sol.u_data.items.get(sw_effect_key).get_sw_effect().unwrap()
 }

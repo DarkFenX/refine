@@ -9,12 +9,12 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fighter_state(
         &mut self,
-        item_key: UItemKey,
+        fighter_key: UItemKey,
         state: MinionState,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Update user data for fighter
-        let u_fighter = self.u_data.items.get_mut(item_key).get_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
         let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();
@@ -34,7 +34,7 @@ impl SolarSystem {
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
-            item_key,
+            fighter_key,
             old_state,
             new_state,
             reuse_eupdates,

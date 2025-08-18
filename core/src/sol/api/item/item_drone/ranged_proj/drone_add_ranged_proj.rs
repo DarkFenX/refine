@@ -11,11 +11,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_add_drone_proj(
         &mut self,
-        item_key: UItemKey,
+        drone_key: UItemKey,
         projectee_key: UItemKey,
     ) -> Result<(), AddProjError> {
         // Check projector
-        let u_drone = self.u_data.items.get(item_key).get_drone().unwrap();
+        let u_drone = self.u_data.items.get(drone_key).get_drone().unwrap();
         // Check if projection has already been defined
         let projectee_u_item = self.u_data.items.get(projectee_key);
         if u_drone.get_projs().contains(&projectee_key) {
@@ -44,11 +44,11 @@ impl SolarSystem {
             projectee_u_item.get_axt(),
         ));
         // Update user data
-        let u_drone = self.u_data.items.get_mut(item_key).get_drone_mut().unwrap();
+        let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
         u_drone.get_projs_mut().add(projectee_key, u_proj_data);
-        self.rev_projs.reg_projectee(item_key, projectee_key);
+        self.rev_projs.reg_projectee(drone_key, projectee_key);
         // Update services
-        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, item_key, projectee_key, u_proj_data);
+        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, drone_key, projectee_key, u_proj_data);
         Ok(())
     }
 }

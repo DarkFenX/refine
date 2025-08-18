@@ -19,17 +19,17 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_implant = UImplant::new(item_id, type_id, fit_key, true, &self.u_data.src);
         let u_item = UItem::Implant(u_implant);
-        let item_key = self.u_data.items.add(u_item);
-        u_fit.implants.insert(item_key);
-        SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        item_key
+        let implant_key = self.u_data.items.add(u_item);
+        u_fit.implants.insert(implant_key);
+        SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_key, reuse_eupdates);
+        implant_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_implant(&mut self, type_id: ItemTypeId) -> ImplantMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self.sol.internal_add_implant(self.key, type_id, &mut reuse_eupdates);
-        ImplantMut::new(self.sol, item_key)
+        let implant_key = self.sol.internal_add_implant(self.key, type_id, &mut reuse_eupdates);
+        ImplantMut::new(self.sol, implant_key)
     }
 }

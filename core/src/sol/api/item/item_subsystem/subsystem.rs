@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for SubsystemMut<'a> {
 impl<'a> ItemCommon for SubsystemMut<'a> {}
 impl<'a> ItemMutCommon for SubsystemMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_subsystem(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, subsystem_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_subsystem(sol, subsystem_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_slot(sol: &SolarSystem, item_key: UItemKey) -> Option<SlotIndex> {
-    get_u_subsystem(sol, item_key).get_slot()
+fn get_slot(sol: &SolarSystem, subsystem_key: UItemKey) -> Option<SlotIndex> {
+    get_u_subsystem(sol, subsystem_key).get_slot()
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_subsystem(sol, item_key).get_subsystem_state()
+fn get_state(sol: &SolarSystem, subsystem_key: UItemKey) -> bool {
+    get_u_subsystem(sol, subsystem_key).get_subsystem_state()
 }
-fn get_u_subsystem(sol: &SolarSystem, item_key: UItemKey) -> &USubsystem {
-    sol.u_data.items.get(item_key).get_subsystem().unwrap()
+fn get_u_subsystem(sol: &SolarSystem, subsystem_key: UItemKey) -> &USubsystem {
+    sol.u_data.items.get(subsystem_key).get_subsystem().unwrap()
 }

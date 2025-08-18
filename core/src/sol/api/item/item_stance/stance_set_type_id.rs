@@ -8,18 +8,18 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_stance_type_id(
         &mut self,
-        item_key: UItemKey,
+        stance_key: UItemKey,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(item_key);
+        let u_item = self.u_data.items.get(stance_key);
         if u_item.get_type_id() == type_id {
             return;
         }
-        SolarSystem::util_remove_stance(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        let u_stance = self.u_data.items.get_mut(item_key).get_stance_mut().unwrap();
+        SolarSystem::util_remove_stance(&mut self.u_data, &mut self.svc, stance_key, reuse_eupdates);
+        let u_stance = self.u_data.items.get_mut(stance_key).get_stance_mut().unwrap();
         u_stance.set_type_id(type_id, &self.u_data.src);
-        SolarSystem::util_add_stance(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_stance(&mut self.u_data, &mut self.svc, stance_key, reuse_eupdates);
     }
 }
 

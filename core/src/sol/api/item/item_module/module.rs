@@ -107,27 +107,27 @@ impl<'a> ItemMutSealed for ModuleMut<'a> {
 impl<'a> ItemCommon for ModuleMut<'a> {}
 impl<'a> ItemMutCommon for ModuleMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_module(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, module_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_module(sol, module_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> ModuleState {
-    get_u_module(sol, item_key).get_module_state()
+fn get_state(sol: &SolarSystem, module_key: UItemKey) -> ModuleState {
+    get_u_module(sol, module_key).get_module_state()
 }
-fn get_rack(sol: &SolarSystem, item_key: UItemKey) -> ModRack {
-    get_u_module(sol, item_key).get_rack()
+fn get_rack(sol: &SolarSystem, module_key: UItemKey) -> ModRack {
+    get_u_module(sol, module_key).get_rack()
 }
-fn get_pos(sol: &SolarSystem, item_key: UItemKey) -> Idx {
-    get_u_module(sol, item_key).get_pos()
+fn get_pos(sol: &SolarSystem, module_key: UItemKey) -> Idx {
+    get_u_module(sol, module_key).get_pos()
 }
-fn get_charge(sol: &SolarSystem, item_key: UItemKey) -> Option<Charge<'_>> {
-    get_u_module(sol, item_key)
+fn get_charge(sol: &SolarSystem, module_key: UItemKey) -> Option<Charge<'_>> {
+    get_u_module(sol, module_key)
         .get_charge_key()
         .map(|charge_key| Charge::new(sol, charge_key))
 }
-fn get_charge_count(sol: &SolarSystem, item_key: UItemKey) -> Option<Count> {
-    get_u_module(sol, item_key).get_charge_count(&sol.u_data)
+fn get_charge_count(sol: &SolarSystem, module_key: UItemKey) -> Option<Count> {
+    get_u_module(sol, module_key).get_charge_count(&sol.u_data)
 }
-fn get_u_module(sol: &SolarSystem, item_key: UItemKey) -> &UModule {
-    sol.u_data.items.get(item_key).get_module().unwrap()
+fn get_u_module(sol: &SolarSystem, module_key: UItemKey) -> &UModule {
+    sol.u_data.items.get(module_key).get_module().unwrap()
 }

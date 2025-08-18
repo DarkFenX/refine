@@ -79,19 +79,19 @@ impl<'a> ItemMutSealed for FighterMut<'a> {
 impl<'a> ItemCommon for FighterMut<'a> {}
 impl<'a> ItemMutCommon for FighterMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_fighter(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, fighter_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_fighter(sol, fighter_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> MinionState {
-    get_u_fighter(sol, item_key).get_fighter_state()
+fn get_state(sol: &SolarSystem, fighter_key: UItemKey) -> MinionState {
+    get_u_fighter(sol, fighter_key).get_fighter_state()
 }
-fn get_count(sol: &SolarSystem, item_key: UItemKey) -> Option<AdjustableCount> {
-    get_u_fighter(sol, item_key).get_count()
+fn get_count(sol: &SolarSystem, fighter_key: UItemKey) -> Option<AdjustableCount> {
+    get_u_fighter(sol, fighter_key).get_count()
 }
-fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
-    get_u_fighter(sol, item_key).get_position().coordinates.into()
+fn get_coordinates(sol: &SolarSystem, fighter_key: UItemKey) -> Coordinates {
+    get_u_fighter(sol, fighter_key).get_position().coordinates.into()
 }
-fn get_u_fighter(sol: &SolarSystem, item_key: UItemKey) -> &UFighter {
-    sol.u_data.items.get(item_key).get_fighter().unwrap()
+fn get_u_fighter(sol: &SolarSystem, fighter_key: UItemKey) -> &UFighter {
+    sol.u_data.items.get(fighter_key).get_fighter().unwrap()
 }

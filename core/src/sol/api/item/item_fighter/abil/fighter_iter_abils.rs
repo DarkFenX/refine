@@ -12,15 +12,15 @@ use crate::{
 // Lending iterator for fighter abilities
 pub struct AbilityIter<'iter> {
     sol: &'iter mut SolarSystem,
-    item_key: UItemKey,
+    fighter_key: UItemKey,
     abil_ids: Vec<AAbilId>,
     index: usize,
 }
 impl<'iter> AbilityIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, item_key: UItemKey, abil_ids: Vec<AAbilId>) -> Self {
+    fn new(sol: &'iter mut SolarSystem, fighter_key: UItemKey, abil_ids: Vec<AAbilId>) -> Self {
         Self {
             sol,
-            item_key,
+            fighter_key,
             abil_ids,
             index: 0,
         }
@@ -33,7 +33,7 @@ impl<'iter> Lender for AbilityIter<'iter> {
     fn next(&mut self) -> Option<AbilityMut<'_>> {
         let abil_id = *self.abil_ids.get(self.index)?;
         self.index += 1;
-        Some(AbilityMut::new(self.sol, self.item_key, abil_id))
+        Some(AbilityMut::new(self.sol, self.fighter_key, abil_id))
     }
 }
 

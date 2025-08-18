@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for BoosterMut<'a> {
 impl<'a> ItemCommon for BoosterMut<'a> {}
 impl<'a> ItemMutCommon for BoosterMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_booster(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, booster_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_booster(sol, booster_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_slot(sol: &SolarSystem, item_key: UItemKey) -> Option<SlotIndex> {
-    get_u_booster(sol, item_key).get_slot()
+fn get_slot(sol: &SolarSystem, booster_key: UItemKey) -> Option<SlotIndex> {
+    get_u_booster(sol, booster_key).get_slot()
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_booster(sol, item_key).get_booster_state()
+fn get_state(sol: &SolarSystem, booster_key: UItemKey) -> bool {
+    get_u_booster(sol, booster_key).get_booster_state()
 }
-fn get_u_booster(sol: &SolarSystem, item_key: UItemKey) -> &UBooster {
-    sol.u_data.items.get(item_key).get_booster().unwrap()
+fn get_u_booster(sol: &SolarSystem, booster_key: UItemKey) -> &UBooster {
+    sol.u_data.items.get(booster_key).get_booster().unwrap()
 }

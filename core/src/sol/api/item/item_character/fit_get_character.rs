@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
             .fits
             .get(self.key)
             .character
-            .map(|item_key| CharacterMut::new(self.sol, item_key))
+            .map(|character_key| CharacterMut::new(self.sol, character_key))
     }
 }
 
@@ -31,5 +31,5 @@ fn get_character(sol: &SolarSystem, fit_key: UFitKey) -> Option<Character<'_>> {
         .fits
         .get(fit_key)
         .character
-        .map(|item_key| Character::new(sol, item_key))
+        .map(|character_key| Character::new(sol, character_key))
 }

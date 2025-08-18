@@ -11,6 +11,6 @@ impl<'a> AbilityMut<'a> {
         };
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_effect_id_mode(self.item_key, effect_id, effect_mode, &mut reuse_eupdates);
+            .internal_set_effect_id_mode(self.fighter_key, effect_id, effect_mode, &mut reuse_eupdates);
     }
 }

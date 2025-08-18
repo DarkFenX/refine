@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
             .fits
             .get(self.key)
             .ship
-            .map(|item_key| ShipMut::new(self.sol, item_key))
+            .map(|ship_key| ShipMut::new(self.sol, ship_key))
     }
 }
 
@@ -31,5 +31,5 @@ fn get_ship(sol: &SolarSystem, fit_key: UFitKey) -> Option<Ship<'_>> {
         .fits
         .get(fit_key)
         .ship
-        .map(|item_key| Ship::new(sol, item_key))
+        .map(|ship_key| Ship::new(sol, ship_key))
 }

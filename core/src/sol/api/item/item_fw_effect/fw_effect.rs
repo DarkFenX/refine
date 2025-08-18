@@ -66,13 +66,13 @@ impl<'a> ItemMutSealed for FwEffectMut<'a> {
 impl<'a> ItemCommon for FwEffectMut<'a> {}
 impl<'a> ItemMutCommon for FwEffectMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_fw_effect(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, fw_effect_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_fw_effect(sol, fw_effect_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_fw_effect(sol, item_key).get_fw_effect_state()
+fn get_state(sol: &SolarSystem, fw_effect_key: UItemKey) -> bool {
+    get_u_fw_effect(sol, fw_effect_key).get_fw_effect_state()
 }
-fn get_u_fw_effect(sol: &SolarSystem, item_key: UItemKey) -> &UFwEffect {
-    sol.u_data.items.get(item_key).get_fw_effect().unwrap()
+fn get_u_fw_effect(sol: &SolarSystem, fw_effect_key: UItemKey) -> &UFwEffect {
+    sol.u_data.items.get(fw_effect_key).get_fw_effect().unwrap()
 }

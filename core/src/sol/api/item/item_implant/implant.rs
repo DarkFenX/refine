@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for ImplantMut<'a> {
 impl<'a> ItemCommon for ImplantMut<'a> {}
 impl<'a> ItemMutCommon for ImplantMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_implant(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, implant_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_implant(sol, implant_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_slot(sol: &SolarSystem, item_key: UItemKey) -> Option<SlotIndex> {
-    get_u_implant(sol, item_key).get_slot()
+fn get_slot(sol: &SolarSystem, implant_key: UItemKey) -> Option<SlotIndex> {
+    get_u_implant(sol, implant_key).get_slot()
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_implant(sol, item_key).get_implant_state()
+fn get_state(sol: &SolarSystem, implant_key: UItemKey) -> bool {
+    get_u_implant(sol, implant_key).get_implant_state()
 }
-fn get_u_implant(sol: &SolarSystem, item_key: UItemKey) -> &UImplant {
-    sol.u_data.items.get(item_key).get_implant().unwrap()
+fn get_u_implant(sol: &SolarSystem, implant_key: UItemKey) -> &UImplant {
+    sol.u_data.items.get(implant_key).get_implant().unwrap()
 }

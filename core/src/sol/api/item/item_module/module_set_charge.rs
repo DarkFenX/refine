@@ -13,11 +13,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_module_charge(
         &mut self,
-        item_key: UItemKey,
+        module_key: UItemKey,
         charge_type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
-        let u_module = self.u_data.items.get(item_key).get_module().unwrap();
+        let u_module = self.u_data.items.get(module_key).get_module().unwrap();
         let fit_key = u_module.get_fit_key();
         let module_projs = u_module.get_projs().iter().collect_vec();
         let mut activated = None;
@@ -53,7 +53,7 @@ impl SolarSystem {
             Some(activated) => activated,
             // Otherwise calculate from scratch
             None => {
-                let module_u_item = self.u_data.items.get(item_key);
+                let module_u_item = self.u_data.items.get(module_key);
                 let u_module = module_u_item.get_module().unwrap();
                 match u_module.get_defeff_key() {
                     Some(Some(defeff_key)) => {
@@ -71,14 +71,14 @@ impl SolarSystem {
             charge_item_id,
             charge_type_id,
             fit_key,
-            item_key,
+            module_key,
             activated,
             false,
             &self.u_data.src,
         );
         let charge_u_item = UItem::Charge(u_charge);
         let new_charge_key = self.u_data.items.add(charge_u_item);
-        let u_module = self.u_data.items.get_mut(item_key).get_module_mut().unwrap();
+        let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
         u_module.set_charge_key(Some(new_charge_key));
         // Update services
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, new_charge_key, reuse_eupdates);

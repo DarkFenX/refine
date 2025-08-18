@@ -66,13 +66,13 @@ impl<'a> ItemMutSealed for RigMut<'a> {
 impl<'a> ItemCommon for RigMut<'a> {}
 impl<'a> ItemMutCommon for RigMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_rig(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, rig_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_rig(sol, rig_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_rig(sol, item_key).get_rig_state()
+fn get_state(sol: &SolarSystem, rig_key: UItemKey) -> bool {
+    get_u_rig(sol, rig_key).get_rig_state()
 }
-fn get_u_rig(sol: &SolarSystem, item_key: UItemKey) -> &URig {
-    sol.u_data.items.get(item_key).get_rig().unwrap()
+fn get_u_rig(sol: &SolarSystem, rig_key: UItemKey) -> &URig {
+    sol.u_data.items.get(rig_key).get_rig().unwrap()
 }

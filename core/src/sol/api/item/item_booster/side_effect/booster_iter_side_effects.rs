@@ -69,14 +69,14 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn iter_side_effects(sol: &SolarSystem, item_key: UItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
-    let u_booster = sol.u_data.items.get(item_key).get_booster().unwrap();
+fn iter_side_effects(sol: &SolarSystem, booster_key: UItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
+    let u_booster = sol.u_data.items.get(booster_key).get_booster().unwrap();
     u_booster.get_effect_datas().into_iter().flat_map(move |effect_datas| {
         effect_datas.keys().filter_map(move |&effect_key| {
             get_se_chance_attr_id_by_effect_key(&sol.u_data.src, effect_key).map(|chance_a_attr_id| {
                 FullSideEffect::new(
                     sol,
-                    item_key,
+                    booster_key,
                     sol.u_data.src.get_effect(effect_key).get_id(),
                     chance_a_attr_id,
                 )

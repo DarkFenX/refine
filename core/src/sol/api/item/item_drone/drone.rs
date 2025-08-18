@@ -73,16 +73,16 @@ impl<'a> ItemMutSealed for DroneMut<'a> {
 impl<'a> ItemCommon for DroneMut<'a> {}
 impl<'a> ItemMutCommon for DroneMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_drone(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, drone_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_drone(sol, drone_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> MinionState {
-    get_u_drone(sol, item_key).get_drone_state()
+fn get_state(sol: &SolarSystem, drone_key: UItemKey) -> MinionState {
+    get_u_drone(sol, drone_key).get_drone_state()
 }
-fn get_coordinates(sol: &SolarSystem, item_key: UItemKey) -> Coordinates {
-    get_u_drone(sol, item_key).get_position().coordinates.into()
+fn get_coordinates(sol: &SolarSystem, drone_key: UItemKey) -> Coordinates {
+    get_u_drone(sol, drone_key).get_position().coordinates.into()
 }
-fn get_u_drone(sol: &SolarSystem, item_key: UItemKey) -> &UDrone {
-    sol.u_data.items.get(item_key).get_drone().unwrap()
+fn get_u_drone(sol: &SolarSystem, drone_key: UItemKey) -> &UDrone {
+    sol.u_data.items.get(drone_key).get_drone().unwrap()
 }

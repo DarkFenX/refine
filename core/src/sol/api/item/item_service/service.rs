@@ -67,13 +67,13 @@ impl<'a> ItemMutSealed for ServiceMut<'a> {
 impl<'a> ItemCommon for ServiceMut<'a> {}
 impl<'a> ItemMutCommon for ServiceMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_service(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, service_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_service(sol, service_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> ServiceState {
-    get_u_service(sol, item_key).get_service_state()
+fn get_state(sol: &SolarSystem, service_key: UItemKey) -> ServiceState {
+    get_u_service(sol, service_key).get_service_state()
 }
-fn get_u_service(sol: &SolarSystem, item_key: UItemKey) -> &UService {
-    sol.u_data.items.get(item_key).get_service().unwrap()
+fn get_u_service(sol: &SolarSystem, service_key: UItemKey) -> &UService {
+    sol.u_data.items.get(service_key).get_service().unwrap()
 }

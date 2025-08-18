@@ -22,17 +22,17 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_fighter = UFighter::new(item_id, type_id, fit_key, state, position, &self.u_data.src);
         let u_item = UItem::Fighter(u_fighter);
-        let item_key = self.u_data.items.add(u_item);
-        u_fit.fighters.insert(item_key);
+        let fighter_key = self.u_data.items.add(u_item);
+        u_fit.fighters.insert(fighter_key);
         // Add fighter and autocharges to services
         SolarSystem::util_add_fighter_with_acs(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
-            item_key,
+            fighter_key,
             reuse_eupdates,
         );
-        item_key
+        fighter_key
     }
 }
 
@@ -48,9 +48,9 @@ impl<'a> FitMut<'a> {
             u_position.coordinates = coordinates.into();
         }
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self
+        let fighter_key = self
             .sol
             .internal_add_fighter(self.key, type_id, state, u_position, &mut reuse_eupdates);
-        FighterMut::new(self.sol, item_key)
+        FighterMut::new(self.sol, fighter_key)
     }
 }

@@ -66,13 +66,13 @@ impl<'a> ItemMutSealed for StanceMut<'a> {
 impl<'a> ItemCommon for StanceMut<'a> {}
 impl<'a> ItemMutCommon for StanceMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_stance(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, stance_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_stance(sol, stance_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    get_u_stance(sol, item_key).get_stance_state()
+fn get_state(sol: &SolarSystem, stance_key: UItemKey) -> bool {
+    get_u_stance(sol, stance_key).get_stance_state()
 }
-fn get_u_stance(sol: &SolarSystem, item_key: UItemKey) -> &UStance {
-    sol.u_data.items.get(item_key).get_stance().unwrap()
+fn get_u_stance(sol: &SolarSystem, stance_key: UItemKey) -> &UStance {
+    sol.u_data.items.get(stance_key).get_stance().unwrap()
 }

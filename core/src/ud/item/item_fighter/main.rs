@@ -151,7 +151,7 @@ impl UFighter {
             None => OF(0.0),
         }
     }
-    pub(crate) fn get_pos_mut(&mut self) -> &mut UPosition {
+    pub(crate) fn get_position_mut(&mut self) -> &mut UPosition {
         &mut self.position
     }
     pub(crate) fn get_projs(&self) -> &Projs {

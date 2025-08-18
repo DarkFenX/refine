@@ -19,17 +19,17 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_subsystem = USubsystem::new(item_id, type_id, fit_key, true, &self.u_data.src);
         let u_item = UItem::Subsystem(u_subsystem);
-        let item_key = self.u_data.items.add(u_item);
-        u_fit.subsystems.insert(item_key);
-        SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        item_key
+        let subsystem_key = self.u_data.items.add(u_item);
+        u_fit.subsystems.insert(subsystem_key);
+        SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_key, reuse_eupdates);
+        subsystem_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> SubsystemMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self.sol.internal_add_subsystem(self.key, type_id, &mut reuse_eupdates);
-        SubsystemMut::new(self.sol, item_key)
+        let subsystem_key = self.sol.internal_add_subsystem(self.key, type_id, &mut reuse_eupdates);
+        SubsystemMut::new(self.sol, subsystem_key)
     }
 }

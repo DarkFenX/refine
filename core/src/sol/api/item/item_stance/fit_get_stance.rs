@@ -22,7 +22,7 @@ impl<'a> FitMut<'a> {
             .fits
             .get(self.key)
             .stance
-            .map(|item_key| StanceMut::new(self.sol, item_key))
+            .map(|stance_key| StanceMut::new(self.sol, stance_key))
     }
 }
 
@@ -31,5 +31,5 @@ fn get_stance(sol: &SolarSystem, fit_key: UFitKey) -> Option<Stance<'_>> {
         .fits
         .get(fit_key)
         .stance
-        .map(|item_key| Stance::new(sol, item_key))
+        .map(|stance_key| Stance::new(sol, stance_key))
 }

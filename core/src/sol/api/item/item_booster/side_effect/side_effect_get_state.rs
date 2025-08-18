@@ -68,8 +68,8 @@ impl<'a> StubSideEffectMut<'a> {
     }
 }
 
-fn get_state(sol: &SolarSystem, item_key: UItemKey, effect_id: &AEffectId) -> bool {
-    let u_booster = sol.u_data.items.get(item_key).get_booster().unwrap();
+fn get_state(sol: &SolarSystem, booster_key: UItemKey, effect_id: &AEffectId) -> bool {
+    let u_booster = sol.u_data.items.get(booster_key).get_booster().unwrap();
     match u_booster.get_effect_id_mode(effect_id) {
         EffectMode::FullCompliance => false,
         EffectMode::StateCompliance => true,

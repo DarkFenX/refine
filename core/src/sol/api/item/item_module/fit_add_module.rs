@@ -124,7 +124,7 @@ impl<'a> FitMut<'a> {
         state: ModuleState,
     ) -> ModuleMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self.sol.internal_add_module(
+        let module_key = self.sol.internal_add_module(
             self.key,
             rack,
             pos_mode,
@@ -134,6 +134,6 @@ impl<'a> FitMut<'a> {
             None,
             &mut reuse_eupdates,
         );
-        ModuleMut::new(self.sol, item_key)
+        ModuleMut::new(self.sol, module_key)
     }
 }

@@ -7,11 +7,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_service_state(
         &mut self,
-        item_key: UItemKey,
+        service_key: UItemKey,
         state: ServiceState,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_service = self.u_data.items.get_mut(item_key).get_service_mut().unwrap();
+        let u_service = self.u_data.items.get_mut(service_key).get_service_mut().unwrap();
         let old_a_state = u_service.get_state();
         u_service.set_service_state(state);
         let new_a_state = u_service.get_state();
@@ -19,7 +19,7 @@ impl SolarSystem {
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
-            item_key,
+            service_key,
             old_a_state,
             new_a_state,
             reuse_eupdates,

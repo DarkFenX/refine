@@ -19,17 +19,17 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_booster = UBooster::new(item_id, type_id, fit_key, true, &self.u_data.src);
         let u_item = UItem::Booster(u_booster);
-        let item_key = self.u_data.items.add(u_item);
-        u_fit.boosters.insert(item_key);
-        SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        item_key
+        let booster_key = self.u_data.items.add(u_item);
+        u_fit.boosters.insert(booster_key);
+        SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_key, reuse_eupdates);
+        booster_key
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn add_booster(&mut self, type_id: ItemTypeId) -> BoosterMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self.sol.internal_add_booster(self.key, type_id, &mut reuse_eupdates);
-        BoosterMut::new(self.sol, item_key)
+        let booster_key = self.sol.internal_add_booster(self.key, type_id, &mut reuse_eupdates);
+        BoosterMut::new(self.sol, booster_key)
     }
 }

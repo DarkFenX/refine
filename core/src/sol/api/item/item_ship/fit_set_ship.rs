@@ -19,8 +19,8 @@ impl SolarSystem {
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get(fit_key);
         // Remove old ship, if it was set
-        if let Some(old_item_key) = u_fit.ship {
-            self.internal_remove_ship(old_item_key, reuse_eupdates);
+        if let Some(old_ship_key) = u_fit.ship {
+            self.internal_remove_ship(old_ship_key, reuse_eupdates);
         }
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
@@ -28,14 +28,14 @@ impl SolarSystem {
         let ship_kind = u_ship.get_kind();
         let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(OF(0.0));
         let u_item = UItem::Ship(u_ship);
-        let item_key = self.u_data.items.add(u_item);
+        let ship_key = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_key);
-        u_fit.ship = Some(item_key);
+        u_fit.ship = Some(ship_key);
         u_fit.kind = ship_kind;
-        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
+        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_key, reuse_eupdates);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_key, ship_radius);
-        item_key
+        ship_key
     }
 }
 
@@ -46,9 +46,9 @@ impl<'a> FitMut<'a> {
             u_position.coordinates = coordinates.into();
         }
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self
+        let ship_key = self
             .sol
             .internal_set_fit_ship(self.key, type_id, u_position, &mut reuse_eupdates);
-        ShipMut::new(self.sol, item_key)
+        ShipMut::new(self.sol, ship_key)
     }
 }

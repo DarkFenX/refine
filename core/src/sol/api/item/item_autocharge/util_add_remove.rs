@@ -9,7 +9,7 @@ use crate::{
 
 struct AutochargeData {
     effect_key: REffectKey,
-    item_key: UItemKey,
+    autocharge_key: UItemKey,
 }
 
 impl SolarSystem {
@@ -72,8 +72,8 @@ impl SolarSystem {
                 let autocharge_u_item = UItem::Autocharge(u_autocharge);
                 let autocharge_key = u_data.items.add(autocharge_u_item);
                 Some(AutochargeData {
-                    item_key: autocharge_key,
                     effect_key,
+                    autocharge_key,
                 })
             })
             .collect_vec();
@@ -81,18 +81,22 @@ impl SolarSystem {
             return;
         }
         for ac_data in ac_datas.iter() {
-            let autocharge_u_item = u_data.items.get_mut(ac_data.item_key);
+            let autocharge_u_item = u_data.items.get_mut(ac_data.autocharge_key);
             autocharge_u_item.update_reffs(reuse_eupdates, &u_data.src);
-            SolarSystem::util_add_item(u_data, svc, ac_data.item_key, reuse_eupdates);
+            SolarSystem::util_add_item(u_data, svc, ac_data.autocharge_key, reuse_eupdates);
             if !projections.is_empty() {
-                let u_autocharge = u_data.items.get_mut(ac_data.item_key).get_autocharge_mut().unwrap();
+                let u_autocharge = u_data
+                    .items
+                    .get_mut(ac_data.autocharge_key)
+                    .get_autocharge_mut()
+                    .unwrap();
                 for (projectee_key, range) in projections.iter() {
                     u_autocharge.get_projs_mut().add(*projectee_key, *range);
-                    rev_projs.reg_projectee(ac_data.item_key, *projectee_key);
+                    rev_projs.reg_projectee(ac_data.autocharge_key, *projectee_key);
                 }
-                let u_autocharge = u_data.items.get(ac_data.item_key).get_autocharge().unwrap();
+                let u_autocharge = u_data.items.get(ac_data.autocharge_key).get_autocharge().unwrap();
                 for (projectee_key, range) in u_autocharge.get_projs().iter() {
-                    SolarSystem::util_add_item_projection(u_data, svc, ac_data.item_key, projectee_key, range);
+                    SolarSystem::util_add_item_projection(u_data, svc, ac_data.autocharge_key, projectee_key, range);
                 }
             }
         }
@@ -100,7 +104,7 @@ impl SolarSystem {
         let cont_u_item = u_data.items.get_mut(item_key);
         let cont_acs = cont_u_item.get_autocharges_mut().unwrap();
         for ac_data in ac_datas.into_iter() {
-            cont_acs.set(ac_data.effect_key, ac_data.item_key);
+            cont_acs.set(ac_data.effect_key, ac_data.autocharge_key);
         }
     }
     pub(in crate::sol::api) fn remove_item_autocharges(

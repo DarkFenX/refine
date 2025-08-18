@@ -85,21 +85,21 @@ impl<'a> ItemMutSealed for AutochargeMut<'a> {
 impl<'a> ItemCommon for AutochargeMut<'a> {}
 impl<'a> ItemMutCommon for AutochargeMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, item_key: UItemKey) -> Fit<'_> {
-    let fit_key = get_u_autocharge(sol, item_key).get_fit_key();
+fn get_fit(sol: &SolarSystem, autocharge_key: UItemKey) -> Fit<'_> {
+    let fit_key = get_u_autocharge(sol, autocharge_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_cont_item(sol: &SolarSystem, item_key: UItemKey) -> Item<'_> {
-    let cont_key = get_u_autocharge(sol, item_key).get_cont_item_key();
+fn get_cont_item(sol: &SolarSystem, autocharge_key: UItemKey) -> Item<'_> {
+    let cont_key = get_u_autocharge(sol, autocharge_key).get_cont_item_key();
     Item::new(sol, cont_key)
 }
-fn get_cont_effect_id(sol: &SolarSystem, item_key: UItemKey) -> EffectId {
-    let cont_effect_key = get_u_autocharge(sol, item_key).get_cont_effect_key();
+fn get_cont_effect_id(sol: &SolarSystem, autocharge_key: UItemKey) -> EffectId {
+    let cont_effect_key = get_u_autocharge(sol, autocharge_key).get_cont_effect_key();
     sol.u_data.src.get_effect(cont_effect_key).get_id().into()
 }
-fn get_state(sol: &SolarSystem, item_key: UItemKey) -> bool {
-    !get_u_autocharge(sol, item_key).get_force_disabled()
+fn get_state(sol: &SolarSystem, autocharge_key: UItemKey) -> bool {
+    !get_u_autocharge(sol, autocharge_key).get_force_disabled()
 }
-fn get_u_autocharge(sol: &SolarSystem, item_key: UItemKey) -> &UAutocharge {
-    sol.u_data.items.get(item_key).get_autocharge().unwrap()
+fn get_u_autocharge(sol: &SolarSystem, autocharge_key: UItemKey) -> &UAutocharge {
+    sol.u_data.items.get(autocharge_key).get_autocharge().unwrap()
 }

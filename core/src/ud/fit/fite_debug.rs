@@ -38,8 +38,8 @@ impl UFit {
         }
         // Skills
         for fit_skill in self.skills.values() {
-            seen_item_keys.push(fit_skill.item_key);
-            let item = match u_data.items.try_get(fit_skill.item_key) {
+            seen_item_keys.push(fit_skill.skill_key);
+            let item = match u_data.items.try_get(fit_skill.skill_key) {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };

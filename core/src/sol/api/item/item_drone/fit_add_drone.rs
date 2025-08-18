@@ -22,11 +22,11 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_drone = UDrone::new(item_id, type_id, fit_key, state, mutation, position, &self.u_data.src);
         let u_item = UItem::Drone(u_drone);
-        let item_key = self.u_data.items.add(u_item);
+        let drone_key = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_key);
-        u_fit.drones.insert(item_key);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, item_key, reuse_eupdates);
-        item_key
+        u_fit.drones.insert(drone_key);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
+        drone_key
     }
 }
 
@@ -42,9 +42,9 @@ impl<'a> FitMut<'a> {
             u_position.coordinates = coordinates.into();
         }
         let mut reuse_eupdates = UEffectUpdates::new();
-        let item_key = self
+        let drone_key = self
             .sol
             .internal_add_drone(self.key, type_id, state, None, u_position, &mut reuse_eupdates);
-        DroneMut::new(self.sol, item_key)
+        DroneMut::new(self.sol, drone_key)
     }
 }

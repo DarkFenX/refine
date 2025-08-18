@@ -138,7 +138,7 @@ impl UDrone {
     pub(crate) fn get_position(&self) -> &UPosition {
         &self.position
     }
-    pub(crate) fn get_pos_mut(&mut self) -> &mut UPosition {
+    pub(crate) fn get_position_mut(&mut self) -> &mut UPosition {
         &mut self.position
     }
     pub(crate) fn get_projs(&self) -> &Projs {

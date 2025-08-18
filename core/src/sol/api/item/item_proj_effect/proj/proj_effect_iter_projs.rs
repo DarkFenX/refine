@@ -55,6 +55,6 @@ impl<'a> ProjEffectMut<'a> {
     }
 }
 
-fn iter_projs(sol: &SolarSystem, item_key: UItemKey) -> impl ExactSizeIterator<Item = Proj<'_>> {
-    iter_projectee_keys(sol, item_key).map(move |projectee_key| Proj::new(sol, projectee_key))
+fn iter_projs(sol: &SolarSystem, proj_effect_key: UItemKey) -> impl ExactSizeIterator<Item = Proj<'_>> {
+    iter_projectee_keys(sol, proj_effect_key).map(move |projectee_key| Proj::new(sol, projectee_key))
 }
