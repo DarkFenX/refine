@@ -21,9 +21,10 @@ pub(crate) struct HGetItemStatsCmd {
     #[serde(default)]
     #[educe(Default = true)]
     default: bool,
+    speed: Option<bool>,
     agility: Option<bool>,
     align_time: Option<bool>,
-    speed: Option<bool>,
+    sig_radius: Option<bool>,
     dps: Option<HStatOption<HStatOptionItemDps>>,
     volley: Option<HStatOption<HStatOptionItemVolley>>,
     hp: Option<bool>,
@@ -43,14 +44,17 @@ impl HGetItemStatsCmd {
     ) -> Result<HItemStats, HExecError> {
         let mut core_item = get_primary_item(core_sol, item_id)?;
         let mut stats = HItemStats::new();
+        if self.speed.unwrap_or(self.default) {
+            stats.speed = core_item.get_stat_speed().into();
+        }
         if self.agility.unwrap_or(self.default) {
             stats.agility = core_item.get_stat_agility().unwrap_or_default().into();
         }
         if self.align_time.unwrap_or(self.default) {
             stats.align_time = core_item.get_stat_align_time().unwrap_or_default().into();
         }
-        if self.speed.unwrap_or(self.default) {
-            stats.speed = core_item.get_stat_speed().into();
+        if self.sig_radius.unwrap_or(self.default) {
+            stats.sig_radius = core_item.get_stat_sig_radius().into();
         }
         let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
         if dps_opt.enabled {
