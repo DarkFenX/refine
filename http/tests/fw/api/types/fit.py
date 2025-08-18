@@ -261,6 +261,7 @@ class Fit(AttrDict):
             state: ApiMinionState = ApiMinionState.in_bay,
             mutation: MutaAdd | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -271,6 +272,7 @@ class Fit(AttrDict):
             state=state,
             mutation=mutation,
             coordinates=coordinates,
+            movement=movement,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -285,6 +287,7 @@ class Fit(AttrDict):
             count: int | None | type[Absent] = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -296,6 +299,7 @@ class Fit(AttrDict):
             count=count,
             abilities=abilities,
             coordinates=coordinates,
+            movement=movement,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -414,6 +418,7 @@ class Fit(AttrDict):
             type_id: int,
             state: bool | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -423,6 +428,7 @@ class Fit(AttrDict):
             type_id=type_id,
             state=state,
             coordinates=coordinates,
+            movement=movement,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

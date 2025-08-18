@@ -9,6 +9,7 @@ from .attr_vals import AttrVals
 from .coordinates import Coordinates
 from .effect import EffectInfo
 from .mod_info import AttrModInfoMap
+from .movement import Movement
 from .mutation import ItemMutation
 from .proj_range import ProjRangeInfo
 from .side_effect_info import SideEffectInfo
@@ -35,6 +36,7 @@ class Item(AttrDict):
             'side_effects': AttrHookDef(func=lambda ses: {k: SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
             'coordinates': AttrHookDef(func=lambda c: Coordinates(data=c)),
+            'movement': AttrHookDef(func=lambda m: Movement(data=m)),
             'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(data=v) for k, v in attrs.items()}),
             'effects': AttrHookDef(func=lambda effects: {k: EffectInfo(data=v) for k, v in effects.items()}),
             'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
@@ -172,6 +174,7 @@ class Item(AttrDict):
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -185,6 +188,7 @@ class Item(AttrDict):
             add_projs=add_projs,
             rm_projs=rm_projs,
             coordinates=coordinates,
+            movement=movement,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -203,6 +207,7 @@ class Item(AttrDict):
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -217,6 +222,7 @@ class Item(AttrDict):
             add_projs=add_projs,
             rm_projs=rm_projs,
             coordinates=coordinates,
+            movement=movement,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -376,6 +382,7 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -386,6 +393,7 @@ class Item(AttrDict):
             type_id=type_id,
             state=state,
             coordinates=coordinates,
+            movement=movement,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
