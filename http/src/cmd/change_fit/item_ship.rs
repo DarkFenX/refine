@@ -2,7 +2,7 @@ use rc::ItemCommon;
 
 use crate::{
     cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
-    shared::HCoordinates,
+    shared::{HCoordinates, HMovement},
     util::HExecError,
 };
 
@@ -11,6 +11,7 @@ pub(crate) struct HSetShipCmd {
     type_id: rc::ItemTypeId,
     state: Option<bool>,
     coordinates: Option<HCoordinates>,
+    movement: Option<HMovement>,
 }
 impl HSetShipCmd {
     pub(in crate::cmd) fn execute(
@@ -19,7 +20,11 @@ impl HSetShipCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_ship = core_fit.set_ship(self.type_id, self.coordinates.map(|v| v.into()));
+        let mut core_ship = core_fit.set_ship(
+            self.type_id,
+            self.coordinates.map(|v| v.into()),
+            self.movement.map(|v| v.into()),
+        );
         if let Some(state) = self.state {
             core_ship.set_state(state);
         }

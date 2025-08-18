@@ -1,7 +1,7 @@
 use crate::{
     ad::AItemId,
     def::ItemTypeId,
-    misc::{Coordinates, ItemMutationRequest, MinionState},
+    misc::{Coordinates, ItemMutationRequest, MinionState, Movement},
     sol::{
         SolarSystem,
         api::{DroneMut, FitMut},
@@ -36,10 +36,15 @@ impl<'a> FitMut<'a> {
         type_id: ItemTypeId,
         state: MinionState,
         coordinates: Option<Coordinates>,
+        movement: Option<Movement>,
     ) -> DroneMut<'_> {
         let mut u_position = UPosition::default();
         if let Some(coordinates) = coordinates {
             u_position.coordinates = coordinates.into();
+        }
+        if let Some(movement) = movement {
+            u_position.direction = movement.direction.into();
+            u_position.speed = movement.speed;
         }
         let mut reuse_eupdates = UEffectUpdates::new();
         let drone_key = self

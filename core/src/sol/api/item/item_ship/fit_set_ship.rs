@@ -1,7 +1,7 @@
 use crate::{
     ad::AItemId,
     def::{ItemTypeId, OF},
-    misc::Coordinates,
+    misc::{Coordinates, Movement},
     sol::{
         SolarSystem,
         api::{FitMut, ShipMut},
@@ -40,10 +40,19 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn set_ship(&mut self, type_id: ItemTypeId, coordinates: Option<Coordinates>) -> ShipMut<'_> {
+    pub fn set_ship(
+        &mut self,
+        type_id: ItemTypeId,
+        coordinates: Option<Coordinates>,
+        movement: Option<Movement>,
+    ) -> ShipMut<'_> {
         let mut u_position = UPosition::default();
         if let Some(coordinates) = coordinates {
             u_position.coordinates = coordinates.into();
+        }
+        if let Some(movement) = movement {
+            u_position.direction = movement.direction.into();
+            u_position.speed = movement.speed;
         }
         let mut reuse_eupdates = UEffectUpdates::new();
         let ship_key = self

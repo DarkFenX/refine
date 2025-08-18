@@ -3,7 +3,7 @@ use crate::{
         HItemIdsResp,
         shared::{HEffectModeMap, HMutationOnChange, apply_effect_modes, apply_mattrs_on_add, apply_mattrs_on_change},
     },
-    shared::{HCoordinates, HMinionState},
+    shared::{HCoordinates, HMinionState, HMovement},
     util::{HExecError, TriStateField},
 };
 
@@ -24,6 +24,8 @@ pub(crate) struct HChangeDroneCmd {
     rm_projs: Vec<rc::ItemId>,
     #[serde(default)]
     coordinates: Option<HCoordinates>,
+    #[serde(default)]
+    movement: Option<HMovement>,
     #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
@@ -88,6 +90,9 @@ impl HChangeDroneCmd {
         }
         if let Some(coordinates) = self.coordinates {
             core_drone.set_coordinates(coordinates.into());
+        }
+        if let Some(movement) = self.movement {
+            core_drone.set_movement(movement.into());
         }
         for projectee_item_id in self.add_projs.iter() {
             core_drone.add_proj(projectee_item_id).map_err(|error| match error {

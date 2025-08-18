@@ -3,7 +3,7 @@ use crate::{
         HItemIdsResp,
         shared::{HAbilityMap, HEffectModeMap, apply_abilities, apply_effect_modes},
     },
-    shared::{HCoordinates, HMinionState},
+    shared::{HCoordinates, HMinionState, HMovement},
     util::{HExecError, TriStateField},
 };
 
@@ -26,6 +26,8 @@ pub(crate) struct HChangeFighterCmd {
     rm_projs: Vec<rc::ItemId>,
     #[serde(default)]
     coordinates: Option<HCoordinates>,
+    #[serde(default)]
+    movement: Option<HMovement>,
     #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
@@ -67,6 +69,9 @@ impl HChangeFighterCmd {
         }
         if let Some(coordinates) = self.coordinates {
             core_fighter.set_coordinates(coordinates.into());
+        }
+        if let Some(movement) = self.movement {
+            core_fighter.set_movement(movement.into());
         }
         for projectee_item_id in self.add_projs.iter() {
             core_fighter.add_proj(projectee_item_id).map_err(|error| match error {

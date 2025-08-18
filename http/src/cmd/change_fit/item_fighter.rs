@@ -3,7 +3,7 @@ use crate::{
         HItemIdsResp, change_item,
         shared::{HAbilityMap, apply_abilities, get_primary_fit},
     },
-    shared::{HCoordinates, HMinionState},
+    shared::{HCoordinates, HMinionState, HMovement},
     util::HExecError,
 };
 
@@ -14,6 +14,7 @@ pub(crate) struct HAddFighterCmd {
     count: Option<rc::Count>,
     abilities: Option<HAbilityMap>,
     coordinates: Option<HCoordinates>,
+    movement: Option<HMovement>,
 }
 impl HAddFighterCmd {
     pub(in crate::cmd) fn execute(
@@ -22,8 +23,12 @@ impl HAddFighterCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_fighter =
-            core_fit.add_fighter(self.type_id, (&self.state).into(), self.coordinates.map(|v| v.into()));
+        let mut core_fighter = core_fit.add_fighter(
+            self.type_id,
+            (&self.state).into(),
+            self.coordinates.map(|v| v.into()),
+            self.movement.map(|v| v.into()),
+        );
         if let Some(count) = self.count {
             let fighter_count_override = rc::FighterCountOverride::new_checked(count)?;
             core_fighter.set_count_override(Some(fighter_count_override));

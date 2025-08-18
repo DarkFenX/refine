@@ -3,7 +3,7 @@ use crate::{
         HItemIdsResp,
         shared::{HEffectModeMap, apply_effect_modes},
     },
-    shared::HCoordinates,
+    shared::{HCoordinates, HMovement},
     util::HExecError,
 };
 
@@ -16,6 +16,8 @@ pub(crate) struct HChangeShipCmd {
     state: Option<bool>,
     #[serde(default)]
     coordinates: Option<HCoordinates>,
+    #[serde(default)]
+    movement: Option<HMovement>,
     #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
@@ -37,6 +39,9 @@ impl HChangeShipCmd {
         }
         if let Some(coordinates) = self.coordinates {
             core_ship.set_coordinates(coordinates.into());
+        }
+        if let Some(movement) = self.movement {
+            core_ship.set_movement(movement.into());
         }
         apply_effect_modes(&mut core_ship, &self.effect_modes);
         Ok(core_ship.into())

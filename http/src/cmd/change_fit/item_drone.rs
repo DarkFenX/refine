@@ -13,6 +13,7 @@ pub(crate) struct HAddDroneCmd {
     state: HMinionState,
     mutation: Option<HMutationOnAdd>,
     coordinates: Option<HCoordinates>,
+    movement: Option<HMovement>,
 }
 impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(
@@ -21,7 +22,12 @@ impl HAddDroneCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_drone = core_fit.add_drone(self.type_id, (&self.state).into(), self.coordinates.map(|v| v.into()));
+        let mut core_drone = core_fit.add_drone(
+            self.type_id,
+            (&self.state).into(),
+            self.coordinates.map(|v| v.into()),
+            self.movement.map(|v| v.into()),
+        );
         if let Some(h_mutation) = self.mutation.as_ref() {
             match h_mutation {
                 HMutationOnAdd::Short(mutator_id) => {
