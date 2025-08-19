@@ -26,16 +26,16 @@ pub(in crate::nd::eff) fn get_dmg_opc_missile(
     let mut dmg_expl = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EXPL_DMG)?;
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
-        if let Some(u_proj_data) = ctx.eff_projs.get_proj_data(
+        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+            ctx.u_data,
             EffectSpec::new(projector_key, projector_r_effect.get_key()),
             projectee_key,
-        ) {
-            let mult = proj_mult_getter(ctx, calc, projector_key, projector_r_effect, u_proj_data);
-            dmg_em *= mult;
-            dmg_therm *= mult;
-            dmg_kin *= mult;
-            dmg_expl *= mult;
-        }
+        );
+        let mult = proj_mult_getter(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+        dmg_em *= mult;
+        dmg_therm *= mult;
+        dmg_kin *= mult;
+        dmg_expl *= mult;
     }
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {

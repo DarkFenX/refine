@@ -217,12 +217,12 @@ fn get_remote_rep_opc(
             amount *= rr_mult;
         }
         // Projection reduction
-        if let Some(u_proj_data) = ctx.eff_projs.get_proj_data(
+        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+            ctx.u_data,
             EffectSpec::new(projector_key, projector_r_effect.get_key()),
             projectee_key,
-        ) {
-            amount *= proj_mult_getter(ctx, calc, projector_key, projector_r_effect, u_proj_data);
-        }
+        );
+        amount *= proj_mult_getter(ctx, calc, projector_key, projector_r_effect, u_proj_data);
         // Total resource pool limit
         if let Some(hp) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, limit_attr_id) {
             amount = amount.min(hp);

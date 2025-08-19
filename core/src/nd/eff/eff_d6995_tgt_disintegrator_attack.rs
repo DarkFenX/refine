@@ -79,12 +79,12 @@ fn get_dmg_opc(
     }
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
-        if let Some(u_proj_data) = ctx.eff_projs.get_proj_data(
+        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+            ctx.u_data,
             EffectSpec::new(projector_key, projector_r_effect.get_key()),
             projectee_key,
-        ) {
-            dmg_mult *= get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_r_effect, u_proj_data);
-        }
+        );
+        dmg_mult *= get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_r_effect, u_proj_data);
     }
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {

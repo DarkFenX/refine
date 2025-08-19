@@ -66,16 +66,16 @@ fn get_dmg_opc(
         calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_WARNING_DURATION)? / OF(1000.0);
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
-        if let Some(u_proj_data) = ctx.eff_projs.get_proj_data(
+        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+            ctx.u_data,
             EffectSpec::new(projector_key, projector_r_effect.get_key()),
             projectee_key,
-        ) {
-            let mult = get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_r_effect, u_proj_data);
-            dmg_em *= mult;
-            dmg_therm *= mult;
-            dmg_kin *= mult;
-            dmg_expl *= mult;
-        }
+        );
+        let mult = get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+        dmg_em *= mult;
+        dmg_therm *= mult;
+        dmg_kin *= mult;
+        dmg_expl *= mult;
     }
     Some(
         match calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_CYCLE_TIME)? {
