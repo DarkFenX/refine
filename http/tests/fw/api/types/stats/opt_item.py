@@ -39,6 +39,7 @@ class StatsOptionItemDps:
     spool: str | type[Absent] = Absent
     include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
@@ -50,6 +51,7 @@ class StatsOptionItemVolley:
     spool: str | type[Absent] = Absent
     include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

@@ -9,11 +9,11 @@ class StatDmg:
     thermal: float
     kinetic: float
     explosive: float
-    breacher: StatDmgBreacher | None
+    breacher: StatDmgBreacher | float | None
 
     def __init__(self, *, data: list | tuple) -> None:
         self.em, self.thermal, self.kinetic, self.explosive, breacher = data
-        self.breacher = StatDmgBreacher(data=breacher) if breacher is not None else None
+        self.breacher = StatDmgBreacher(data=breacher) if isinstance(breacher, list | tuple) else breacher
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]

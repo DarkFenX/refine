@@ -51,6 +51,7 @@ class StatsOptionFitDps:
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
     reload: bool | type[Absent] = Absent
     spool: str | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
@@ -61,6 +62,7 @@ class StatsOptionFitVolley:
 
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
     spool: str | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

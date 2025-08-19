@@ -12,8 +12,12 @@ class ItemStats(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
-            'dps': AttrHookDef(func=lambda d: (NttList(StatDmg(data=e) for e in d) if d is not None else None)),
-            'volley': AttrHookDef(func=lambda d: (NttList(StatDmg(data=e) for e in d) if d is not None else None)),
+            'dps': AttrHookDef(func=lambda d: (
+                NttList(StatDmg(data=e) if e is not None else None for e in d )
+                if d is not None else None)),
+            'volley': AttrHookDef(func=lambda d: (
+                NttList(StatDmg(data=e) if e is not None else None for e in d)
+                if d is not None else None)),
             'hp': AttrHookDef(func=lambda d: StatHp(data=d) if d is not None else None),
             'ehp': AttrHookDef(func=lambda d: (NttList(StatEhp(data=e) for e in d) if d is not None else None)),
             'wc_ehp': AttrHookDef(func=lambda d: StatEhp(data=d) if d is not None else None),

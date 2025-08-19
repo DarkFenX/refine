@@ -36,8 +36,12 @@ class FitStats(AttrDict):
             'drone_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
             'drone_bandwidth': AttrHookDef(func=lambda d: StatResource(data=d)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
-            'dps': AttrHookDef(func=lambda d: (NttList(StatDmg(data=e) for e in d))),
-            'volley': AttrHookDef(func=lambda d: (NttList(StatDmg(data=e) for e in d))),
+            'dps': AttrHookDef(func=lambda d: (
+                NttList(StatDmg(data=e) if e is not None else None for e in d)
+                if d is not None else None)),
+            'volley': AttrHookDef(func=lambda d: (
+                NttList(StatDmg(data=e) if e is not None else None for e in d)
+                if d is not None else None)),
             'hp': AttrHookDef(func=lambda d: StatHp(data=d) if d is not None else None),
             'ehp': AttrHookDef(func=lambda d: (NttList(StatEhp(data=e) for e in d) if d is not None else None)),
             'wc_ehp': AttrHookDef(func=lambda d: StatEhp(data=d) if d is not None else None),
