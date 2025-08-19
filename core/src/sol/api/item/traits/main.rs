@@ -1,13 +1,16 @@
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
-use super::err::{GetItemAttrError, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError};
+use super::err::{
+    GetItemAttrError, ItemStatDmgAppliedError, ItemStatError, IterItemAttrsError, IterItemEffectsError,
+    IterItemModifiersError,
+};
 use crate::{
     def::{AttrId, AttrVal, ItemId, ItemTypeId},
     err::basic::ItemLoadedError,
     misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
-        vast::{StatDmg, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
+        vast::{StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
     ud::UEffectUpdates,
     util::GetId,
@@ -155,6 +158,29 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_dps_raw(&sol.u_data, item_key, reload, spool, include_charges, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+    fn get_stat_dps_applied(
+        &mut self,
+        reload: bool,
+        spool: Option<Spool>,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_item_id: &ItemId,
+    ) -> Result<StatDmgApplied, ItemStatDmgAppliedError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
+        sol.svc
+            .get_stat_item_dps_applied(
+                &sol.u_data,
+                item_key,
+                reload,
+                spool,
+                include_charges,
+                ignore_state,
+                projectee_key,
+            )
+            .map_err(|e| ItemStatDmgAppliedError::from_svc_err(&sol.u_data.items, e))
+    }
     fn get_stat_volley(
         &mut self,
         spool: Option<Spool>,
@@ -166,6 +192,27 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         sol.svc
             .get_stat_item_volley_raw(&sol.u_data, item_key, spool, include_charges, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_volley_applied(
+        &mut self,
+        spool: Option<Spool>,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_item_id: &ItemId,
+    ) -> Result<StatDmgApplied, ItemStatDmgAppliedError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
+        sol.svc
+            .get_stat_item_volley_applied(
+                &sol.u_data,
+                item_key,
+                spool,
+                include_charges,
+                ignore_state,
+                projectee_key,
+            )
+            .map_err(|e| ItemStatDmgAppliedError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - tank
     fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, ItemStatError> {

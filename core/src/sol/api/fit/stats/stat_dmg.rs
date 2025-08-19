@@ -1,7 +1,9 @@
 use crate::{
+    def::ItemId,
+    err::basic::ItemFoundError,
     misc::Spool,
     sol::api::FitMut,
-    svc::vast::{StatDmg, StatDmgItemKinds},
+    svc::vast::{StatDmg, StatDmgApplied, StatDmgItemKinds},
 };
 
 impl<'a> FitMut<'a> {
@@ -10,9 +12,40 @@ impl<'a> FitMut<'a> {
             .svc
             .get_stat_fit_dps_raw(&self.sol.u_data, self.key, item_kinds, reload, spool)
     }
+    pub fn get_stat_dps_applied(
+        &mut self,
+        item_kinds: StatDmgItemKinds,
+        reload: bool,
+        spool: Option<Spool>,
+        projectee_item_id: &ItemId,
+    ) -> Result<StatDmgApplied, FitStatDmgAppliedError> {
+        let projectee_key = self.sol.u_data.items.key_by_id_err(projectee_item_id)?;
+        Ok(self
+            .sol
+            .svc
+            .get_stat_fit_dps_applied(&self.sol.u_data, self.key, item_kinds, reload, spool, projectee_key))
+    }
     pub fn get_stat_volley(&mut self, item_kinds: StatDmgItemKinds, spool: Option<Spool>) -> StatDmg {
         self.sol
             .svc
             .get_stat_fit_volley_raw(&self.sol.u_data, self.key, item_kinds, spool)
     }
+    pub fn get_stat_volley_applied(
+        &mut self,
+        item_kinds: StatDmgItemKinds,
+        spool: Option<Spool>,
+        projectee_item_id: &ItemId,
+    ) -> Result<StatDmgApplied, FitStatDmgAppliedError> {
+        let projectee_key = self.sol.u_data.items.key_by_id_err(projectee_item_id)?;
+        Ok(self
+            .sol
+            .svc
+            .get_stat_fit_volley_applied(&self.sol.u_data, self.key, item_kinds, spool, projectee_key))
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum FitStatDmgAppliedError {
+    #[error("projectee item error: {0}")]
+    ProjecteeNotFound(#[from] ItemFoundError),
 }

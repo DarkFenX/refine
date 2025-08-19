@@ -1,4 +1,5 @@
 pub use err::FitShipStatError;
+pub use stat_dmg::FitStatDmgAppliedError;
 
 mod err;
 mod shared;
