@@ -1,6 +1,6 @@
 pub(in crate::svc::vast) use breacher::BreacherAccum;
 pub use dmg_opt::StatDmgItemKinds;
-pub use dmg_stat::{StatDmg, StatDmgBreacher};
+pub use dmg_stat::{StatDmg, StatDmgApplied, StatDmgBreacher};
 pub use remote_rps_opt::StatRemoteRpsItemKinds;
 pub(in crate::svc::vast) use slot::get_attr_as_count;
 pub use tank::StatTank;

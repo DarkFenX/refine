@@ -17,7 +17,7 @@ impl Svc {
         reload: bool,
         spool: Option<Spool>,
     ) -> StatDmg {
-        self.vast.get_stat_fits_dps(
+        self.vast.get_stat_fits_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_keys,
@@ -34,7 +34,7 @@ impl Svc {
         reload: bool,
         spool: Option<Spool>,
     ) -> StatDmg {
-        self.vast.get_stat_fit_dps(
+        self.vast.get_stat_fit_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_key,
@@ -52,7 +52,7 @@ impl Svc {
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
-        Vast::get_stat_item_dps(
+        Vast::get_stat_item_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
@@ -69,7 +69,7 @@ impl Svc {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
     ) -> StatDmg {
-        self.vast.get_stat_fits_volley(
+        self.vast.get_stat_fits_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_keys,
@@ -84,7 +84,7 @@ impl Svc {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
     ) -> StatDmg {
-        self.vast.get_stat_fit_volley(
+        self.vast.get_stat_fit_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_key,
@@ -100,7 +100,7 @@ impl Svc {
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
-        Vast::get_stat_item_volley(
+        Vast::get_stat_item_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,

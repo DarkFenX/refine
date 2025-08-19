@@ -6,7 +6,7 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
-        vast::{StatDmg, Vast, shared::BreacherAccum},
+        vast::{StatDmg, StatDmgBreacher, Vast, shared::BreacherAccum},
     },
     ud::{UItem, UItemKey},
 };
@@ -17,7 +17,7 @@ const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_dps(
+    pub(in crate::svc) fn get_stat_item_dps_raw(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -26,20 +26,9 @@ impl Vast {
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
-        let mut breacher_accum = BreacherAccum::new();
-        let dps_normal = Vast::internal_get_stat_item_dps(
-            ctx,
-            calc,
-            item_key,
-            reload,
-            spool,
-            include_charges,
-            ignore_state,
-            &mut breacher_accum,
-        )?;
-        let mut dps = StatDmg::from(dps_normal);
-        dps.breacher = breacher_accum.get_dps();
-        Ok(dps)
+        let (dps_normal, breacher_accum) =
+            Vast::internal_get_stat_item_dps(ctx, calc, item_key, reload, spool, include_charges, ignore_state, None)?;
+        Ok(StatDmg::from((dps_normal, breacher_accum.get_dps())))
     }
     fn internal_get_stat_item_dps(
         ctx: SvcCtx,
@@ -49,30 +38,62 @@ impl Vast {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        breacher_accum: &mut BreacherAccum,
-    ) -> Result<DmgKinds<AttrVal>, StatItemCheckError> {
-        item_key_check(ctx, item_key)?;
-        Ok(Vast::internal_get_stat_item_dps_unchecked(
+        projectee_key: Option<UItemKey>,
+    ) -> Result<(DmgKinds<AttrVal>, BreacherAccum), StatItemCheckError> {
+        let mut dps_normal = DmgKinds::new();
+        let mut breacher_accum = BreacherAccum::new();
+        Vast::internal_get_stat_item_dps_checked(
             ctx,
             calc,
+            &mut dps_normal,
+            &mut breacher_accum,
             item_key,
             reload,
             spool,
             include_charges,
             ignore_state,
-            breacher_accum,
-        ))
+            projectee_key,
+        )?;
+        Ok((dps_normal, breacher_accum))
     }
-    fn internal_get_stat_item_dps_unchecked(
+    fn internal_get_stat_item_dps_checked(
         ctx: SvcCtx,
         calc: &mut Calc,
+        dps_normal: &mut DmgKinds<AttrVal>,
+        breacher_accum: &mut BreacherAccum,
         item_key: UItemKey,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
+        projectee_key: Option<UItemKey>,
+    ) -> Result<(), StatItemCheckError> {
+        item_key_check(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_dps_unchecked(
+            ctx,
+            calc,
+            dps_normal,
+            breacher_accum,
+            item_key,
+            reload,
+            spool,
+            include_charges,
+            ignore_state,
+            projectee_key,
+        ))
+    }
+    fn internal_get_stat_item_dps_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        dps_normal: &mut DmgKinds<AttrVal>,
         breacher_accum: &mut BreacherAccum,
-    ) -> DmgKinds<AttrVal> {
+        item_key: UItemKey,
+        reload: bool,
+        spool: Option<Spool>,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_key: Option<UItemKey>,
+    ) {
         let options = CycleOptions {
             reload_mode: match reload {
                 true => CycleOptionReload::Sim,
@@ -80,10 +101,9 @@ impl Vast {
             },
             charged_optionals: false,
         };
-        let mut item_dps_normal = DmgKinds::new();
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, ignore_state) {
             Some(cycle_map) => cycle_map,
-            None => return item_dps_normal,
+            None => return,
         };
         for (effect_key, cycle) in cycle_map {
             if !cycle.is_infinite() {
@@ -91,35 +111,34 @@ impl Vast {
             }
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
-                item_dps_normal += dmg_opc.get_total() / cycle.get_average_cycle_time();
+                *dps_normal += dmg_opc.get_total() / cycle.get_average_cycle_time();
             }
             if let Some(dmg_getter) = effect.get_breacher_dmg_opc_getter()
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, None)
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
             {
                 breacher_accum.add(dmg_opc, cycle);
             }
         }
         if include_charges {
             for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
-                if let Ok(charge_dps_normal) = Vast::internal_get_stat_item_dps(
+                let _ = Vast::internal_get_stat_item_dps_checked(
                     ctx,
                     calc,
+                    dps_normal,
+                    breacher_accum,
                     charge_key,
                     reload,
                     spool,
                     false,
                     ignore_state,
-                    breacher_accum,
-                ) {
-                    item_dps_normal += charge_dps_normal;
-                }
+                    projectee_key,
+                );
             }
         }
-        item_dps_normal
     }
-    pub(in crate::svc) fn get_stat_item_volley(
+    pub(in crate::svc) fn get_stat_item_volley_raw(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -127,51 +146,101 @@ impl Vast {
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
-        item_key_check(ctx, item_key)?;
-        Ok(Vast::internal_get_stat_item_volley_unchecked(
-            ctx,
-            calc,
-            item_key,
-            spool,
-            include_charges,
-            ignore_state,
-        ))
+        let (volley_normal, volley_breacher) =
+            Vast::internal_get_stat_item_volley(ctx, calc, item_key, spool, include_charges, ignore_state, None)?;
+        Ok(StatDmg::from((volley_normal, Some(volley_breacher))))
     }
-    fn internal_get_stat_item_volley_unchecked(
+    fn internal_get_stat_item_volley(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> StatDmg {
-        let mut item_volley = StatDmg::new();
+        projectee_key: Option<UItemKey>,
+    ) -> Result<(DmgKinds<AttrVal>, StatDmgBreacher), StatItemCheckError> {
+        let mut volley_normal = DmgKinds::new();
+        let mut volley_breacher = StatDmgBreacher::new();
+        Vast::internal_get_stat_item_volley_checked(
+            ctx,
+            calc,
+            &mut volley_normal,
+            &mut volley_breacher,
+            item_key,
+            spool,
+            include_charges,
+            ignore_state,
+            projectee_key,
+        )?;
+        Ok((volley_normal, volley_breacher))
+    }
+    fn internal_get_stat_item_volley_checked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        volley_normal: &mut DmgKinds<AttrVal>,
+        volley_breacher: &mut StatDmgBreacher,
+        item_key: UItemKey,
+        spool: Option<Spool>,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_key: Option<UItemKey>,
+    ) -> Result<(), StatItemCheckError> {
+        item_key_check(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_volley_unchecked(
+            ctx,
+            calc,
+            volley_normal,
+            volley_breacher,
+            item_key,
+            spool,
+            include_charges,
+            ignore_state,
+            projectee_key,
+        ))
+    }
+    fn internal_get_stat_item_volley_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        volley_normal: &mut DmgKinds<AttrVal>,
+        volley_breacher: &mut StatDmgBreacher,
+        item_key: UItemKey,
+        spool: Option<Spool>,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_key: Option<UItemKey>,
+    ) {
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
             Some(cycle_map) => cycle_map,
-            None => return item_volley,
+            None => return,
         };
         for (effect_key, _cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, None)
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
-                item_volley.stack_instance_normal(dmg_opc.get_max())
+                *volley_normal += dmg_opc.get_max();
             }
             if let Some(dmg_getter) = effect.get_breacher_dmg_opc_getter()
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, None)
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
             {
-                item_volley.stack_instance_breacher_output(dmg_opc)
+                volley_breacher.stack_instance_output(dmg_opc);
             }
         }
         if include_charges {
             for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
-                if let Ok(charge_volley) = Vast::get_stat_item_volley(ctx, calc, charge_key, spool, false, ignore_state)
-                {
-                    item_volley.stack_instance_self(charge_volley);
-                }
+                let _ = Vast::internal_get_stat_item_volley_checked(
+                    ctx,
+                    calc,
+                    volley_normal,
+                    volley_breacher,
+                    charge_key,
+                    spool,
+                    false,
+                    ignore_state,
+                    projectee_key,
+                );
             }
         }
-        item_volley
     }
 }
 

@@ -248,7 +248,7 @@ impl BreacherAccum {
             }
         }
     }
-    pub(in crate::svc::vast) fn get_dps(&mut self) -> Option<StatDmgBreacher> {
+    pub(in crate::svc::vast) fn get_dps(&self) -> Option<StatDmgBreacher> {
         if self.data.is_empty() {
             return None;
         };
