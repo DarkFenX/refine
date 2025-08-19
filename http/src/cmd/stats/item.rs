@@ -113,9 +113,10 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(core_err) => {
                         match core_err {
-                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_) => return None,
-                            rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
-                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_) => results.push(None),
+                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_)
+                            | rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
+                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_)
+                            | rc::err::ItemStatDmgAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
                         };
                     }
                 };
@@ -125,8 +126,9 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(core_err) => {
                         return match core_err {
-                            rc::err::ItemStatError::ItemNotLoaded(_) => None,
-                            rc::err::ItemStatError::UnsupportedStat(_) => None,
+                            rc::err::ItemStatError::ItemNotLoaded(_) | rc::err::ItemStatError::UnsupportedStat(_) => {
+                                None
+                            }
                         };
                     }
                 };
@@ -151,9 +153,10 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(core_err) => {
                         match core_err {
-                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_) => return None,
-                            rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
-                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_) => results.push(None),
+                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_)
+                            | rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
+                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_)
+                            | rc::err::ItemStatDmgAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
                         };
                     }
                 };
@@ -163,8 +166,9 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(core_err) => {
                         return match core_err {
-                            rc::err::ItemStatError::ItemNotLoaded(_) => None,
-                            rc::err::ItemStatError::UnsupportedStat(_) => None,
+                            rc::err::ItemStatError::ItemNotLoaded(_) | rc::err::ItemStatError::UnsupportedStat(_) => {
+                                None
+                            }
                         };
                     }
                 };
