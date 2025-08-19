@@ -35,6 +35,8 @@ class DmgBasicInfo:
     crystal_volatility_dmg_attr_id: int
     crystal_hp_attr_id: int
     ammo_loaded_attr_id: int
+    radius_attr_id: int
+    smartbomb_range_attr_id: int
     max_velocity_attr_id: int
     turret_proj_effect_id: int
     turret_spool_effect_id: int
@@ -80,6 +82,8 @@ def setup_dmg_basics(
     eve_crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
     eve_crystal_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_smartbomb_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
     eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
@@ -117,7 +121,8 @@ def setup_dmg_basics(
     eve_smartbomb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.emp_wave,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_smartbomb_range_attr_id)
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
@@ -161,6 +166,8 @@ def setup_dmg_basics(
         crystal_volatility_dmg_attr_id=eve_crystal_volatility_dmg_attr_id,
         crystal_hp_attr_id=eve_crystal_hp_attr_id,
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
+        radius_attr_id=eve_radius_attr_id,
+        smartbomb_range_attr_id=eve_smartbomb_range_attr_id,
         max_velocity_attr_id=eve_max_velocity_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
         turret_spool_effect_id=eve_turret_spool_effect_id,
@@ -174,6 +181,17 @@ def setup_dmg_basics(
         bomb_effect_id=eve_bomb_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
+
+
+def make_eve_ship(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        radius: float | None = None,
+) -> int:
+    attrs = {basic_info.charge_rate_attr_id: 1.0}
+    _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
+    return client.mk_eve_ship(attrs=attrs)
 
 
 def make_eve_turret_proj(
@@ -448,10 +466,12 @@ def make_eve_smartbomb(
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
         cycle_time: float | None = None,
+        range_optimal: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.smartbomb_range_attr_id, value=range_optimal)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.smartbomb_effect_id],

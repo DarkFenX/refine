@@ -236,6 +236,7 @@ class EveAttr(IntEnum):
     structure_dmg_amount = 83
     armor_dmg_amount = 84
     power_transfer_amount = 90
+    emp_field_range = 99
     launcher_slots_left = 101
     turret_slots_left = 102
     warp_scramble_range = 103
