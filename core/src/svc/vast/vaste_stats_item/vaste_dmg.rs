@@ -69,7 +69,7 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
         item_key_check(ctx, item_key)?;
-        Ok(Vast::internal_get_stat_item_dps_unchecked(
+        Vast::internal_get_stat_item_dps_unchecked(
             ctx,
             calc,
             dps_normal,
@@ -80,7 +80,8 @@ impl Vast {
             include_charges,
             ignore_state,
             projectee_key,
-        ))
+        );
+        Ok(())
     }
     fn internal_get_stat_item_dps_unchecked(
         ctx: SvcCtx,
@@ -186,7 +187,7 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
         item_key_check(ctx, item_key)?;
-        Ok(Vast::internal_get_stat_item_volley_unchecked(
+        Vast::internal_get_stat_item_volley_unchecked(
             ctx,
             calc,
             volley_normal,
@@ -196,7 +197,8 @@ impl Vast {
             include_charges,
             ignore_state,
             projectee_key,
-        ))
+        );
+        Ok(())
     }
     fn internal_get_stat_item_volley_unchecked(
         ctx: SvcCtx,
