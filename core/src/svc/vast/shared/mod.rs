@@ -1,4 +1,4 @@
-pub(in crate::svc::vast) use breacher::BreacherAccum;
+pub(in crate::svc::vast) use breacher::{BreacherAccum, apply_breacher};
 pub use dmg_opt::StatDmgItemKinds;
 pub use dmg_stat::{StatDmg, StatDmgApplied, StatDmgBreacher};
 pub use remote_rps_opt::StatRemoteRpsItemKinds;

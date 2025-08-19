@@ -5,7 +5,10 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatDmg, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData, shared::BreacherAccum},
+        vast::{
+            StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
+            shared::{BreacherAccum, apply_breacher},
+        },
     },
     ud::{UFitKey, UItemKey},
 };
@@ -28,6 +31,25 @@ impl Vast {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fits_dps(ctx, calc, fit_keys, item_kinds, reload, spool, None);
         StatDmg::from((dps_normal, breacher_accum.get_dps()))
+    }
+    pub(in crate::svc) fn get_stat_fits_dps_applied(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatDmgItemKinds,
+        reload: bool,
+        spool: Option<Spool>,
+        projectee_key: UItemKey,
+    ) -> StatDmgApplied {
+        let (dps_normal, breacher_accum) =
+            self.internal_get_stat_fits_dps(ctx, calc, fit_keys, item_kinds, reload, spool, Some(projectee_key));
+        StatDmgApplied::from((
+            dps_normal,
+            breacher_accum
+                .get_dps()
+                .map(|breacher_raw| apply_breacher(ctx, calc, breacher_raw, projectee_key)),
+        ))
     }
     fn internal_get_stat_fits_dps(
         &self,
@@ -75,6 +97,25 @@ impl Vast {
             self.internal_get_stat_fit_dps(ctx, calc, fit_key, item_kinds, reload, spool, None);
         StatDmg::from((dps_normal, breacher_accum.get_dps()))
     }
+    pub(in crate::svc) fn get_stat_fit_dps_applied(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_key: UFitKey,
+        item_kinds: StatDmgItemKinds,
+        reload: bool,
+        spool: Option<Spool>,
+        projectee_key: UItemKey,
+    ) -> StatDmgApplied {
+        let (dps_normal, breacher_accum) =
+            self.internal_get_stat_fit_dps(ctx, calc, fit_key, item_kinds, reload, spool, Some(projectee_key));
+        StatDmgApplied::from((
+            dps_normal,
+            breacher_accum
+                .get_dps()
+                .map(|breacher_raw| apply_breacher(ctx, calc, breacher_raw, projectee_key)),
+        ))
+    }
     fn internal_get_stat_fit_dps(
         &self,
         ctx: SvcCtx,
@@ -118,6 +159,24 @@ impl Vast {
             self.internal_get_stat_fits_volley(ctx, calc, fit_keys, item_kinds, spool, None);
         StatDmg::from((volley_normal, Some(volley_breacher)))
     }
+    pub(in crate::svc) fn get_stat_fits_volley_applied(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        item_kinds: StatDmgItemKinds,
+        spool: Option<Spool>,
+        projectee_key: UItemKey,
+    ) -> StatDmgApplied {
+        let (volley_normal, volley_breacher) =
+            self.internal_get_stat_fits_volley(ctx, calc, fit_keys, item_kinds, spool, Some(projectee_key));
+        StatDmgApplied::from((
+            volley_normal,
+            volley_breacher
+                .nullify()
+                .map(|breacher_raw| apply_breacher(ctx, calc, breacher_raw, projectee_key)),
+        ))
+    }
     fn internal_get_stat_fits_volley(
         &self,
         ctx: SvcCtx,
@@ -153,6 +212,24 @@ impl Vast {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fit_volley(ctx, calc, fit_key, item_kinds, spool, None);
         StatDmg::from((volley_normal, Some(volley_breacher)))
+    }
+    pub(in crate::svc) fn get_stat_fit_volley_applied(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_key: UFitKey,
+        item_kinds: StatDmgItemKinds,
+        spool: Option<Spool>,
+        projectee_key: UItemKey,
+    ) -> StatDmgApplied {
+        let (volley_normal, volley_breacher) =
+            self.internal_get_stat_fit_volley(ctx, calc, fit_key, item_kinds, spool, Some(projectee_key));
+        StatDmgApplied::from((
+            volley_normal,
+            volley_breacher
+                .nullify()
+                .map(|breacher_raw| apply_breacher(ctx, calc, breacher_raw, projectee_key)),
+        ))
     }
     fn internal_get_stat_fit_volley(
         &self,

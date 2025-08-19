@@ -1,8 +1,10 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
+    ac,
     def::{AttrVal, Count, OF, SERVER_TICK_HZ, SERVER_TICK_S},
-    svc::{cycle::Cycle, output::OutputDmgBreacher, vast::StatDmgBreacher},
+    svc::{SvcCtx, calc::Calc, cycle::Cycle, output::OutputDmgBreacher, vast::StatDmgBreacher},
+    ud::UItemKey,
     util::{InfCount, RMap, ceil_unerr},
 };
 
@@ -257,10 +259,11 @@ impl BreacherAccum {
         if matches!(best_breacher_abs.ticks, AggrBreacherTicks::Simple(_)) {
             let best_breacher_rel = self.data.keys().max_by_key(|v| v.relative_max).unwrap();
             if matches!(best_breacher_rel.ticks, AggrBreacherTicks::Simple(_)) {
-                return Some(StatDmgBreacher {
+                return StatDmgBreacher {
                     absolute_max: best_breacher_abs.absolute_max / SERVER_TICK_S,
                     relative_max: best_breacher_rel.relative_max / SERVER_TICK_S,
-                });
+                }
+                .nullify();
             }
         }
         // General solution is go tick-to-tick until items are looped, pick max for each tick, and
@@ -295,9 +298,30 @@ impl BreacherAccum {
             .map(|((abs, rel), mul)| (abs * mul as f64, rel * mul as f64))
             .reduce(|(l_abs, l_rel), (r_abs, r_rel)| (l_abs + r_abs, l_rel + r_rel))
             .unwrap();
-        Some(StatDmgBreacher {
+        StatDmgBreacher {
             absolute_max: total_abs / total_ticks as f64 / SERVER_TICK_S,
             relative_max: total_rel / total_ticks as f64 / SERVER_TICK_S,
-        })
+        }
+        .nullify()
     }
+}
+
+pub(in crate::svc::vast) fn apply_breacher(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    breacher_raw: StatDmgBreacher,
+    projectee_key: UItemKey,
+) -> AttrVal {
+    let hp_shield = calc
+        .get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::SHIELD_CAPACITY)
+        .unwrap_or(OF(0.0));
+    let hp_armor = calc
+        .get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::ARMOR_HP)
+        .unwrap_or(OF(0.0));
+    let hp_hull = calc
+        .get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::HP)
+        .unwrap_or(OF(0.0));
+    breacher_raw
+        .absolute_max
+        .min(breacher_raw.relative_max * (hp_shield + hp_armor + hp_hull))
 }

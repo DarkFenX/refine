@@ -8,11 +8,11 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_dps(&mut self, item_kinds: StatDmgItemKinds, reload: bool, spool: Option<Spool>) -> StatDmg {
         self.sol
             .svc
-            .get_stat_fit_dps(&self.sol.u_data, self.key, item_kinds, reload, spool)
+            .get_stat_fit_dps_raw(&self.sol.u_data, self.key, item_kinds, reload, spool)
     }
     pub fn get_stat_volley(&mut self, item_kinds: StatDmgItemKinds, spool: Option<Spool>) -> StatDmg {
         self.sol
             .svc
-            .get_stat_fit_volley(&self.sol.u_data, self.key, item_kinds, spool)
+            .get_stat_fit_volley_raw(&self.sol.u_data, self.key, item_kinds, spool)
     }
 }

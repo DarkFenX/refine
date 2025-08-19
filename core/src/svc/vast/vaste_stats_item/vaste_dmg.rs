@@ -6,7 +6,10 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
-        vast::{StatDmg, StatDmgBreacher, Vast, shared::BreacherAccum},
+        vast::{
+            StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
+            shared::{BreacherAccum, apply_breacher},
+        },
     },
     ud::{UItem, UItemKey},
 };
@@ -29,6 +32,33 @@ impl Vast {
         let (dps_normal, breacher_accum) =
             Vast::internal_get_stat_item_dps(ctx, calc, item_key, reload, spool, include_charges, ignore_state, None)?;
         Ok(StatDmg::from((dps_normal, breacher_accum.get_dps())))
+    }
+    pub(in crate::svc) fn get_stat_item_dps_applied(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+        reload: bool,
+        spool: Option<Spool>,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_key: UItemKey,
+    ) -> Result<StatDmgApplied, StatItemCheckError> {
+        let (dps_normal, breacher_accum) = Vast::internal_get_stat_item_dps(
+            ctx,
+            calc,
+            item_key,
+            reload,
+            spool,
+            include_charges,
+            ignore_state,
+            Some(projectee_key),
+        )?;
+        Ok(StatDmgApplied::from((
+            dps_normal,
+            breacher_accum
+                .get_dps()
+                .map(|breacher_raw| apply_breacher(ctx, calc, breacher_raw, projectee_key)),
+        )))
     }
     fn internal_get_stat_item_dps(
         ctx: SvcCtx,
@@ -150,6 +180,31 @@ impl Vast {
         let (volley_normal, volley_breacher) =
             Vast::internal_get_stat_item_volley(ctx, calc, item_key, spool, include_charges, ignore_state, None)?;
         Ok(StatDmg::from((volley_normal, Some(volley_breacher))))
+    }
+    pub(in crate::svc) fn get_stat_item_volley_applied(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+        spool: Option<Spool>,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_key: UItemKey,
+    ) -> Result<StatDmgApplied, StatItemCheckError> {
+        let (volley_normal, volley_breacher) = Vast::internal_get_stat_item_volley(
+            ctx,
+            calc,
+            item_key,
+            spool,
+            include_charges,
+            ignore_state,
+            Some(projectee_key),
+        )?;
+        Ok(StatDmgApplied::from((
+            volley_normal,
+            volley_breacher
+                .nullify()
+                .map(|breacher_raw| apply_breacher(ctx, calc, breacher_raw, projectee_key)),
+        )))
     }
     fn internal_get_stat_item_volley(
         ctx: SvcCtx,

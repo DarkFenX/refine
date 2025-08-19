@@ -19,7 +19,7 @@ impl From<(DmgKinds<AttrVal>, Option<StatDmgBreacher>)> for StatDmg {
             kinetic: dmg_kinds.kinetic,
             explosive: dmg_kinds.explosive,
             breacher: match breacher {
-                Some(breacher) if breacher.absolute_max > OF(0.0) && breacher.relative_max > OF(0.0) => Some(breacher),
+                Some(breacher) => breacher.nullify(),
                 _ => None,
             },
         }
@@ -32,6 +32,17 @@ pub struct StatDmgApplied {
     pub kinetic: AttrVal,
     pub explosive: AttrVal,
     pub breacher: Option<AttrVal>,
+}
+impl From<(DmgKinds<AttrVal>, Option<AttrVal>)> for StatDmgApplied {
+    fn from((dmg_kinds, breacher): (DmgKinds<AttrVal>, Option<AttrVal>)) -> Self {
+        Self {
+            em: dmg_kinds.em,
+            thermal: dmg_kinds.thermal,
+            kinetic: dmg_kinds.kinetic,
+            explosive: dmg_kinds.explosive,
+            breacher,
+        }
+    }
 }
 
 pub struct StatDmgBreacher {
@@ -48,6 +59,12 @@ impl StatDmgBreacher {
     pub(in crate::svc::vast) fn stack_instance_output(&mut self, other: OutputDmgBreacher) {
         self.absolute_max = self.absolute_max.max(other.absolute_max);
         self.relative_max = self.relative_max.max(other.relative_max);
+    }
+    pub(in crate::svc::vast) fn nullify(self) -> Option<Self> {
+        match self.absolute_max > OF(0.0) && self.relative_max > OF(0.0) {
+            true => Some(self),
+            false => None,
+        }
     }
 }
 impl From<OutputDmgBreacher> for StatDmgBreacher {
