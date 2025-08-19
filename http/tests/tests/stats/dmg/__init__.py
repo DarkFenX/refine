@@ -35,6 +35,7 @@ class DmgBasicInfo:
     crystal_volatility_dmg_attr_id: int
     crystal_hp_attr_id: int
     ammo_loaded_attr_id: int
+    sig_radius_attr_id: int
     radius_attr_id: int
     smartbomb_range_attr_id: int
     max_velocity_attr_id: int
@@ -82,6 +83,7 @@ def setup_dmg_basics(
     eve_crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
     eve_crystal_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_smartbomb_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
     eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
@@ -166,6 +168,7 @@ def setup_dmg_basics(
         crystal_volatility_dmg_attr_id=eve_crystal_volatility_dmg_attr_id,
         crystal_hp_attr_id=eve_crystal_hp_attr_id,
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
+        sig_radius_attr_id=eve_sig_radius_attr_id,
         radius_attr_id=eve_radius_attr_id,
         smartbomb_range_attr_id=eve_smartbomb_range_attr_id,
         max_velocity_attr_id=eve_max_velocity_attr_id,
@@ -187,9 +190,13 @@ def make_eve_ship(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
+        speed: float | None = None,
+        sig_radius: float | None = None,
         radius: float | None = None,
 ) -> int:
-    attrs = {basic_info.charge_rate_attr_id: 1.0}
+    attrs = {}
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=sig_radius)
     _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
     return client.mk_eve_ship(attrs=attrs)
 
