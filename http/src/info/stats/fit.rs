@@ -61,9 +61,9 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) sig_radius: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) dps: Option<Vec<HStatDmg>>,
+    pub(crate) dps: Option<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) volley: Option<Vec<HStatDmg>>,
+    pub(crate) volley: Option<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

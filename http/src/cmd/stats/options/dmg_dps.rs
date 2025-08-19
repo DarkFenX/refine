@@ -9,6 +9,7 @@ pub(in crate::cmd) struct HStatOptionFitDps {
     #[educe(Default = false)]
     pub(in crate::cmd) reload: bool,
     pub(in crate::cmd) spool: Option<HSpool>,
+    pub(in crate::cmd) projectee_item_id: Option<rc::ItemId>,
 }
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
@@ -24,4 +25,5 @@ pub(in crate::cmd) struct HStatOptionItemDps {
     #[serde(default)]
     #[educe(Default = false)]
     pub(in crate::cmd) ignore_state: bool,
+    pub(in crate::cmd) projectee_item_id: Option<rc::ItemId>,
 }

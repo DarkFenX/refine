@@ -3,9 +3,9 @@ use crate::info::stats::details::{HStatDmg, HStatTank};
 #[derive(serde::Serialize)]
 pub(crate) struct HFleetStats {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) dps: Option<Vec<HStatDmg>>,
+    pub(crate) dps: Option<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) volley: Option<Vec<HStatDmg>>,
+    pub(crate) volley: Option<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) remote_rps: Option<Vec<HStatTank<rc::AttrVal>>>,
     #[serde(skip_serializing_if = "Option::is_none")]

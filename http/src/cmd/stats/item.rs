@@ -97,26 +97,79 @@ impl HGetItemStatsCmd {
     }
 }
 
-fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<HStatDmg>> {
+fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<Option<HStatDmg>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(|h_spool| h_spool.into());
-        match core_item.get_stat_dps(option.reload, core_spool, option.include_charges, option.ignore_state) {
-            Ok(core_stat) => results.push(core_stat.into()),
-            Err(_) => return None,
-        };
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_dps_applied(
+                    option.reload,
+                    core_spool,
+                    option.include_charges,
+                    option.ignore_state,
+                    &projectee_item_id,
+                ) {
+                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Err(core_err) => {
+                        match core_err {
+                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_) => return None,
+                            rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
+                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_) => results.push(None),
+                        };
+                    }
+                };
+            }
+            None => {
+                match core_item.get_stat_dps(option.reload, core_spool, option.include_charges, option.ignore_state) {
+                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Err(core_err) => {
+                        return match core_err {
+                            rc::err::ItemStatError::ItemNotLoaded(_) => None,
+                            rc::err::ItemStatError::UnsupportedStat(_) => None,
+                        };
+                    }
+                };
+            }
+        }
     }
     Some(results)
 }
 
-fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVolley>) -> Option<Vec<HStatDmg>> {
+fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVolley>) -> Option<Vec<Option<HStatDmg>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(|h_spool| h_spool.into());
-        match core_item.get_stat_volley(core_spool, option.include_charges, option.ignore_state) {
-            Ok(core_stat) => results.push(core_stat.into()),
-            Err(_) => return None,
-        };
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_volley_applied(
+                    core_spool,
+                    option.include_charges,
+                    option.ignore_state,
+                    &projectee_item_id,
+                ) {
+                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Err(core_err) => {
+                        match core_err {
+                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_) => return None,
+                            rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
+                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_) => results.push(None),
+                        };
+                    }
+                };
+            }
+            None => {
+                match core_item.get_stat_volley(core_spool, option.include_charges, option.ignore_state) {
+                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Err(core_err) => {
+                        return match core_err {
+                            rc::err::ItemStatError::ItemNotLoaded(_) => None,
+                            rc::err::ItemStatError::UnsupportedStat(_) => None,
+                        };
+                    }
+                };
+            }
+        }
     }
     Some(results)
 }

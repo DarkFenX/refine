@@ -16,9 +16,9 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) sig_radius: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) dps: TriStateField<Vec<HStatDmg>>,
+    pub(crate) dps: TriStateField<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) volley: TriStateField<Vec<HStatDmg>>,
+    pub(crate) volley: TriStateField<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

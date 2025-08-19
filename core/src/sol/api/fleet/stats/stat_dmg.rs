@@ -37,7 +37,7 @@ impl<'a> FleetMut<'a> {
             .svc
             .get_stat_fits_volley_raw(&self.sol.u_data, u_fleet.iter_fits(), item_kinds, spool)
     }
-    pub fn get_stat_applied(
+    pub fn get_stat_volley_applied(
         &mut self,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,

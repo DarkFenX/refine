@@ -50,24 +50,47 @@ impl HGetFleetStatsCmd {
     }
 }
 
-fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>) -> Option<Vec<HStatDmg>> {
+fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>) -> Option<Vec<Option<HStatDmg>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
         let core_spool = option.spool.map(|h_spool| h_spool.into());
-        let core_stat = core_fleet.get_stat_dps(core_item_kinds, option.reload, core_spool);
-        results.push(core_stat.into());
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fleet.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, &projectee_item_id) {
+                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Err(_) => results.push(None),
+                };
+            }
+            None => {
+                let core_stat = core_fleet.get_stat_dps(core_item_kinds, option.reload, core_spool);
+                results.push(Some(core_stat.into()));
+            }
+        }
     }
     Some(results)
 }
 
-fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVolley>) -> Option<Vec<HStatDmg>> {
+fn get_volley_stats(
+    core_fleet: &mut rc::FleetMut,
+    options: Vec<HStatOptionFitVolley>,
+) -> Option<Vec<Option<HStatDmg>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
         let core_spool = option.spool.map(|h_spool| h_spool.into());
-        let core_stat = core_fleet.get_stat_volley(core_item_kinds, core_spool);
-        results.push(core_stat.into());
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fleet.get_stat_volley_applied(core_item_kinds, core_spool, &projectee_item_id) {
+                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Err(_) => results.push(None),
+                };
+            }
+            None => {
+                let core_stat = core_fleet.get_stat_volley(core_item_kinds, core_spool);
+                results.push(Some(core_stat.into()));
+            }
+        }
     }
     Some(results)
 }
