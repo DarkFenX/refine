@@ -6,13 +6,14 @@ use super::err::{
 };
 use crate::{
     def::{AttrId, AttrVal, ItemId, ItemTypeId},
-    err::basic::ItemLoadedError,
+    err::basic::{ItemLoadedError, ItemReceiveProjError},
     misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
+    sol::SolarSystem,
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
-    ud::UEffectUpdates,
+    ud::{UEffectUpdates, UItemKey},
     util::GetId,
 };
 
@@ -168,7 +169,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     ) -> Result<StatDmgApplied, ItemStatDmgAppliedError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
+        let projectee_key = get_stat_dmg_projectee_key(sol, projectee_item_id)?;
         sol.svc
             .get_stat_item_dps_applied(
                 &sol.u_data,
@@ -202,7 +203,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     ) -> Result<StatDmgApplied, ItemStatDmgAppliedError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
+        let projectee_key = get_stat_dmg_projectee_key(sol, projectee_item_id)?;
         sol.svc
             .get_stat_item_volley_applied(
                 &sol.u_data,
@@ -283,4 +284,20 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_remote_cps(&sol.u_data, item_key, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+}
+
+fn get_stat_dmg_projectee_key(
+    sol: &SolarSystem,
+    projectee_item_id: &ItemId,
+) -> Result<UItemKey, ItemStatDmgAppliedError> {
+    let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
+    let projectee_u_item = sol.u_data.items.get(projectee_key);
+    if !projectee_u_item.can_receive_projs() {
+        return Err(ItemReceiveProjError {
+            item_id: projectee_u_item.get_item_id(),
+            item_kind: projectee_u_item.get_name(),
+        }
+        .into());
+    }
+    Ok(projectee_key)
 }

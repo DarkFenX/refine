@@ -457,6 +457,9 @@ impl UItem {
             Self::SwEffect(_) => None,
         }
     }
+    pub(crate) fn can_receive_projs(&self) -> bool {
+        matches!(self, Self::Drone(_) | Self::Fighter(_) | Self::Ship(_))
+    }
     pub(crate) fn get_position(&self) -> Option<&UPosition> {
         match self {
             Self::Drone(drone) => Some(drone.get_position()),

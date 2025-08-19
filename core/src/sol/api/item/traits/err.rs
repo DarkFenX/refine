@@ -1,5 +1,5 @@
 use crate::{
-    err::basic::{ItemFoundError, ItemLoadedError, SupportedStatError},
+    err::basic::{ItemFoundError, ItemLoadedError, ItemReceiveProjError, SupportedStatError},
     svc::err::StatItemCheckError,
     ud::UItems,
 };
@@ -50,8 +50,10 @@ pub enum ItemStatDmgAppliedError {
     ItemNotLoaded(#[from] ItemLoadedError),
     #[error("{0}")]
     UnsupportedStat(#[from] SupportedStatError),
-    #[error("projectee item error: {0}")]
+    #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 impl ItemStatDmgAppliedError {
     pub(crate) fn from_svc_err(u_items: &UItems, svc_err: StatItemCheckError) -> Self {
