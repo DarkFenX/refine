@@ -1,6 +1,6 @@
 use crate::{
     misc::EffectSpec,
-    ud::{UItemKey, UProjData},
+    ud::{UData, UItemKey, UProjData},
     util::RMap,
 };
 
@@ -18,6 +18,26 @@ impl EffProjs {
     // Query methods
     pub(crate) fn get_proj_data(&self, projector_espec: EffectSpec, projectee_key: UItemKey) -> Option<UProjData> {
         self.proj_datas.get(&(projector_espec, projectee_key)).copied()
+    }
+    pub(crate) fn get_or_make_proj_data(
+        &self,
+        u_data: &UData,
+        projector_espec: EffectSpec,
+        projectee_key: UItemKey,
+    ) -> UProjData {
+        match self.proj_datas.get(&(projector_espec, projectee_key)) {
+            Some(u_proj_data) => *u_proj_data,
+            None => {
+                let projector_u_item = u_data.items.get(projector_espec.item_key);
+                let projectee_u_item = u_data.items.get(projectee_key);
+                UProjData::from_positions_with_radii(
+                    projector_u_item.get_position_indirect(u_data),
+                    projectee_u_item.get_position_indirect(u_data),
+                    Some(projector_u_item.get_radius_indirect(u_data)),
+                    Some(projectee_u_item.get_radius_indirect(u_data)),
+                )
+            }
+        }
     }
     // Modification methods
     pub(in crate::svc) fn add_proj_data(
