@@ -156,11 +156,11 @@ def test_projection(client, consts):
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
     assert api_fleet_stats.dps.one() == [approx(12), approx(12), approx(12), approx(12)]
     assert api_fleet_stats.volley.one() == [approx(90), approx(90), approx(90), approx(90)]
-    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [approx(12), approx(12), approx(12), approx(12)]
-    assert api_fit_stats.volley.one() == [approx(90), approx(90), approx(90), approx(90)]
+    assert api_src_fit_stats.dps.one() == [approx(12), approx(12), approx(12), approx(12)]
+    assert api_src_fit_stats.volley.one() == [approx(90), approx(90), approx(90), approx(90)]
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
@@ -179,11 +179,11 @@ def test_projection(client, consts):
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
     assert api_fleet_stats.dps.one() == [0, 0, 0, 0]
     assert api_fleet_stats.volley.one() == [0, 0, 0, 0]
-    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [0, 0, 0, 0]
-    assert api_fit_stats.volley.one() == [0, 0, 0, 0]
+    assert api_src_fit_stats.dps.one() == [0, 0, 0, 0]
+    assert api_src_fit_stats.volley.one() == [0, 0, 0, 0]
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))

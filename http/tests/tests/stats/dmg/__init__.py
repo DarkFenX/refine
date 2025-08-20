@@ -33,12 +33,17 @@ class DmgBasicInfo:
     crystal_get_dmg_attr_id: int
     crystal_volatility_chance_attr_id: int
     crystal_volatility_dmg_attr_id: int
-    crystal_hp_attr_id: int
     ammo_loaded_attr_id: int
     sig_radius_attr_id: int
     radius_attr_id: int
     smartbomb_range_attr_id: int
     max_velocity_attr_id: int
+    flight_time_attr_id: int
+    mass_attr_id: int
+    agility_attr_id: int
+    shield_hp_attr_id: int
+    armor_hp_attr_id: int
+    hull_hp_attr_id: int
     turret_proj_effect_id: int
     turret_spool_effect_id: int
     tgt_attack_effect_id: int
@@ -81,12 +86,17 @@ def setup_dmg_basics(
     eve_crystal_get_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
     eve_crystal_volatility_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_chance)
     eve_crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
-    eve_crystal_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_smartbomb_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
     eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
+    eve_shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
+    eve_armor_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
+    eve_hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
@@ -166,12 +176,17 @@ def setup_dmg_basics(
         crystal_get_dmg_attr_id=eve_crystal_get_dmg_attr_id,
         crystal_volatility_chance_attr_id=eve_crystal_volatility_chance_attr_id,
         crystal_volatility_dmg_attr_id=eve_crystal_volatility_dmg_attr_id,
-        crystal_hp_attr_id=eve_crystal_hp_attr_id,
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
         sig_radius_attr_id=eve_sig_radius_attr_id,
         radius_attr_id=eve_radius_attr_id,
         smartbomb_range_attr_id=eve_smartbomb_range_attr_id,
         max_velocity_attr_id=eve_max_velocity_attr_id,
+        flight_time_attr_id=eve_flight_time_attr_id,
+        mass_attr_id=eve_mass_attr_id,
+        agility_attr_id=eve_agility_attr_id,
+        shield_hp_attr_id=eve_shield_hp_attr_id,
+        armor_hp_attr_id=eve_armor_hp_attr_id,
+        hull_hp_attr_id=eve_hull_hp_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
         turret_spool_effect_id=eve_turret_spool_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
@@ -190,11 +205,18 @@ def make_eve_ship(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
+        hps: tuple[float | None, float | None, float | None] | None = None,
         speed: float | None = None,
         sig_radius: float | None = None,
         radius: float | None = None,
 ) -> int:
     attrs = {}
+    if hps is not None:
+        hp_attr_ids = (
+            basic_info.shield_hp_attr_id,
+            basic_info.armor_hp_attr_id,
+            basic_info.hull_hp_attr_id)
+        attrs.update({k: v for k, v in zip(hp_attr_ids, hps, strict=True) if v is not None})
     _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
     _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=sig_radius)
     _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
@@ -337,7 +359,7 @@ def make_eve_turret_charge_crystal(
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
     _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_get_dmg_attr_id, value=get_damaged)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_hp_attr_id, value=hp)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.hull_hp_attr_id, value=hp)
     _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_dmg_attr_id, value=vol_dmg)
     _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_chance_attr_id, value=vol_chance)
     return client.mk_eve_item(attrs=attrs)
@@ -419,12 +441,20 @@ def make_eve_breacher(
         dmg_rel: float | None = None,
         dmg_duration: float | None = None,
         volume: float | None = None,
+        speed: float | None = None,
+        flight_time: float | None = None,
+        mass: float | None = None,
+        agility: float | None = None,
 ) -> int:
     attrs = {}
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_abs_attr_id, value=dmg_abs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_rel_attr_id, value=dmg_rel)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_duration_attr_id, value=dmg_duration)
     _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.breacher_effect_id],
