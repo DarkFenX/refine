@@ -121,6 +121,7 @@ pub(crate) const CAN_FIT_SHIP_TYPE4: EAttrId = 1305;
 pub(crate) const MAX_RANGE_HIDDEN: EAttrId = 1317;
 pub(crate) const ACTIVATION_BLOCKED: EAttrId = 1349;
 pub(crate) const ACTIVATION_BLOCKED_STRENGTH: EAttrId = 1350;
+pub(crate) const AOE_DAMAGE_REDUCTION_FACTOR: EAttrId = 1353;
 pub(crate) const SUBSYSTEM_SLOT: EAttrId = 1366;
 pub(crate) const MAX_SUBSYSTEMS: EAttrId = 1367;
 pub(crate) const TURRET_HARDPOINT_MODIFIER: EAttrId = 1368;

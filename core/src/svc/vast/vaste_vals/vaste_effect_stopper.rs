@@ -90,6 +90,7 @@ fn get_espec_proj_mult(
         calc,
         projector_espec.item_key,
         projector_effect,
+        projectee_key,
         proj_data,
     ))
 }

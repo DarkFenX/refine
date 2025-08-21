@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::{dmg_opc::get_dmg_opc_missile, proj_mult::get_proj_mult_missile},
+        eff::shared::{dmg_opc::get_dmg_opc_missile, proj_mult::get_missile_proj_mult},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -34,7 +34,7 @@ fn internal_get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
@@ -42,7 +42,7 @@ fn internal_get_dmg_opc(
         ctx,
         calc,
         projector_key,
-        projector_r_effect,
+        projector_effect,
         projectee_key,
         get_dmg_proj_mult_fof_missile,
     )
@@ -51,19 +51,20 @@ fn internal_get_dmg_opc(
 fn get_dmg_proj_mult_fof_missile(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: UItemKey,
-    r_effect: &REffect,
-    u_proj_data: UProjData,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
 ) -> AttrVal {
     let range_limit = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_FOF_TGT_RANGE)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MAX_FOF_TGT_RANGE)
         .unwrap()
         .extra;
     // FoF missile is limited by c2s range. Tested on 2025-08-12 on Thunderdome, using civilian LML
     // Minokawa (3k radius) with HG hydra + MGCs + hydraulics vs chremoas and dagon at 96900 and
     // 97100 overview range
-    if u_proj_data.get_range_c2s() > range_limit {
+    if proj_data.get_range_c2s() > range_limit {
         return OF(0.0);
     };
-    get_proj_mult_missile(ctx, calc, affector_key, r_effect, u_proj_data)
+    get_missile_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data)
 }

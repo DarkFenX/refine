@@ -13,36 +13,52 @@ pub(in crate::nd::eff) fn get_mod_proj_attrs_normal(a_effect: &AEffect) -> [Opti
     [a_effect.range_attr_id, a_effect.falloff_attr_id]
 }
 
-pub(in crate::nd::eff) fn get_proj_mult_normal_restricted_s2s(
+pub(in crate::nd::eff) fn get_proj_mult_normal_restricted(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    r_effect: &REffect,
-    u_proj_data: UProjData,
+    projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
 ) -> AttrVal {
-    get_proj_mult_normal(ctx, calc, projector_key, r_effect, u_proj_data.get_range_s2s(), true)
+    get_proj_mult_normal(
+        ctx,
+        calc,
+        projector_key,
+        projector_effect,
+        proj_data.get_range_s2s(),
+        true,
+    )
 }
 
-pub(in crate::nd::eff) fn get_proj_mult_normal_unrestricted_s2s(
+pub(in crate::nd::eff) fn get_proj_mult_normal_unrestricted(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    r_effect: &REffect,
-    u_proj_data: UProjData,
+    projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
 ) -> AttrVal {
-    get_proj_mult_normal(ctx, calc, projector_key, r_effect, u_proj_data.get_range_s2s(), false)
+    get_proj_mult_normal(
+        ctx,
+        calc,
+        projector_key,
+        projector_effect,
+        proj_data.get_range_s2s(),
+        false,
+    )
 }
 
 fn get_proj_mult_normal(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    r_effect: &REffect,
+    projector_effect: &REffect,
     proj_range: AttrVal,
     restricted: bool,
 ) -> AttrVal {
-    let affector_optimal = get_range(ctx, calc, projector_key, r_effect.get_range_attr_id());
-    let affector_falloff = get_range(ctx, calc, projector_key, r_effect.get_falloff_attr_id());
+    let affector_optimal = get_range(ctx, calc, projector_key, projector_effect.get_range_attr_id());
+    let affector_falloff = get_range(ctx, calc, projector_key, projector_effect.get_falloff_attr_id());
     // Calculate actual range multiplier after collecting all the data
     match affector_falloff > OF(0.0) {
         true => match restricted && proj_range > affector_optimal + OF(3.0) * affector_falloff {

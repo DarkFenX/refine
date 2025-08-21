@@ -54,7 +54,7 @@ fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &rd::REffect,
+    projector_effect: &rd::REffect,
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
@@ -66,12 +66,12 @@ fn get_dmg_opc(
         calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_WARNING_DURATION)? / OF(1000.0);
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
-        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+        let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_r_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        let mult = get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+        let mult = get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         dmg_em *= mult;
         dmg_therm *= mult;
         dmg_kin *= mult;

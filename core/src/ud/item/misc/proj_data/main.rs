@@ -57,6 +57,9 @@ impl UProjData {
     pub(crate) fn get_tgt_rad(&self) -> AttrVal {
         self.tgt_rad
     }
+    pub(crate) fn get_tgt_speed(&self) -> AttrVal {
+        self.tgt_pos.speed
+    }
     pub(crate) fn update_src_pos(&mut self, src_pos: UPosition) {
         self.src_pos = src_pos;
         self.range_c2c = calc_range_c2c(self.src_pos.coordinates, self.tgt_pos.coordinates);

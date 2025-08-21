@@ -16,7 +16,7 @@ pub(in crate::nd::eff) fn get_dmg_opc_missile(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
     proj_mult_getter: NProjMultGetter,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
@@ -26,12 +26,12 @@ pub(in crate::nd::eff) fn get_dmg_opc_missile(
     let mut dmg_expl = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EXPL_DMG)?;
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
-        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+        let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_r_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        let mult = proj_mult_getter(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+        let mult = proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         dmg_em *= mult;
         dmg_therm *= mult;
         dmg_kin *= mult;

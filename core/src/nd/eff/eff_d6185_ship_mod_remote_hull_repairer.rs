@@ -7,7 +7,7 @@ use crate::{
     misc::Spool,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::{proj_mult::get_proj_mult_normal_restricted_s2s, rep_opc::get_remote_hull_rep_opc},
+        eff::shared::{proj_mult::get_proj_mult_normal_restricted, rep_opc::get_remote_hull_rep_opc},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -33,7 +33,7 @@ fn internal_get_remote_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
@@ -41,10 +41,10 @@ fn internal_get_remote_rep_opc(
         ctx,
         calc,
         projector_key,
-        projector_r_effect,
+        projector_effect,
         spool,
         None,
         projectee_key,
-        get_proj_mult_normal_restricted_s2s,
+        get_proj_mult_normal_restricted,
     )
 }

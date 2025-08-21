@@ -20,7 +20,7 @@ pub(crate) type NEffectUpdater = fn(&mut ad::AEffect);
 pub(crate) type NModProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
 pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, EffectSpec);
 pub(crate) type NSpoolResolver = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>) -> Option<ResolvedSpool>;
-pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, UProjData) -> AttrVal;
+pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, UItemKey, UProjData) -> AttrVal;
 pub(crate) type NNormalDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =

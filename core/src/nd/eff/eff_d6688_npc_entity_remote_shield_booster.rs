@@ -33,7 +33,7 @@ fn internal_get_remote_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
@@ -41,7 +41,7 @@ fn internal_get_remote_rep_opc(
         ctx,
         calc,
         projector_key,
-        projector_r_effect,
+        projector_effect,
         spool,
         None,
         projectee_key,

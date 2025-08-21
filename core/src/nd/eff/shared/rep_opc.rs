@@ -90,7 +90,7 @@ pub(crate) fn get_remote_shield_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     spool: Option<Spool>,
     spool_resolver: Option<NSpoolResolver>,
     projectee_key: Option<UItemKey>,
@@ -100,7 +100,7 @@ pub(crate) fn get_remote_shield_rep_opc(
         ctx,
         calc,
         projector_key,
-        projector_r_effect,
+        projector_effect,
         spool,
         spool_resolver,
         projectee_key,
@@ -115,7 +115,7 @@ pub(crate) fn get_remote_armor_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     spool: Option<Spool>,
     spool_resolver: Option<NSpoolResolver>,
     projectee_key: Option<UItemKey>,
@@ -125,7 +125,7 @@ pub(crate) fn get_remote_armor_rep_opc(
         ctx,
         calc,
         projector_key,
-        projector_r_effect,
+        projector_effect,
         spool,
         spool_resolver,
         projectee_key,
@@ -140,7 +140,7 @@ pub(crate) fn get_remote_hull_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     spool: Option<Spool>,
     spool_resolver: Option<NSpoolResolver>,
     projectee_key: Option<UItemKey>,
@@ -150,7 +150,7 @@ pub(crate) fn get_remote_hull_rep_opc(
         ctx,
         calc,
         projector_key,
-        projector_r_effect,
+        projector_effect,
         spool,
         spool_resolver,
         projectee_key,
@@ -165,7 +165,7 @@ pub(crate) fn get_remote_cap_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     spool: Option<Spool>,
     spool_resolver: Option<NSpoolResolver>,
     projectee_key: Option<UItemKey>,
@@ -175,7 +175,7 @@ pub(crate) fn get_remote_cap_rep_opc(
         ctx,
         calc,
         projector_key,
-        projector_r_effect,
+        projector_effect,
         spool,
         spool_resolver,
         projectee_key,
@@ -190,7 +190,7 @@ fn get_remote_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     spool: Option<Spool>,
     spool_resolver: Option<NSpoolResolver>,
     projectee_key: Option<UItemKey>,
@@ -201,28 +201,28 @@ fn get_remote_rep_opc(
 ) -> Option<Output<AttrVal>> {
     let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, rep_attr_id)?;
     if let Some(spool_resolver) = spool_resolver
-        && let Some(resolved_spool) = spool_resolver(ctx, calc, projector_key, projector_r_effect, spool)
+        && let Some(resolved_spool) = spool_resolver(ctx, calc, projector_key, projector_effect, spool)
     {
         amount *= resolved_spool.mult;
     }
     let delay = match applied_at_start {
         true => OF(0.0),
-        false => eff_funcs::get_effect_duration_s(ctx, calc, projector_key, projector_r_effect)?,
+        false => eff_funcs::get_effect_duration_s(ctx, calc, projector_key, projector_effect)?,
     };
     if let Some(projectee_key) = projectee_key {
         // Effect resistance reduction
         if let Some(rr_mult) =
-            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_r_effect, projectee_key)
+            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
         {
             amount *= rr_mult;
         }
         // Projection reduction
-        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+        let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_r_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        amount *= proj_mult_getter(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+        amount *= proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Total resource pool limit
         if let Some(hp) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, limit_attr_id) {
             amount = amount.min(hp);

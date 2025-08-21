@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
-        eff::shared::proj_mult::get_proj_mult_normal_unrestricted_s2s,
+        eff::shared::proj_mult::get_proj_mult_normal_unrestricted,
     },
     rd::REffect,
     svc::{
@@ -47,7 +47,7 @@ fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_r_effect: &REffect,
+    projector_effect: &REffect,
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
@@ -64,12 +64,13 @@ fn get_dmg_opc(
     let dmg_expl = calc.get_item_attr_val_extra_opt(ctx, dmg_item_key, &ac::attrs::EXPL_DMG)?;
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
-        let u_proj_data = ctx.eff_projs.get_or_make_proj_data(
+        let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_r_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        dmg_mult *= get_proj_mult_normal_unrestricted_s2s(ctx, calc, projector_key, projector_r_effect, u_proj_data);
+        dmg_mult *=
+            get_proj_mult_normal_unrestricted(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
     }
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
