@@ -112,17 +112,6 @@ pub(in crate::nd::eff) fn get_bubble_proj_mult(
     get_range_mult_simple_c2s(ctx, calc, projector_key, projector_effect, proj_data)
 }
 
-pub(in crate::nd::eff) fn get_smartbomb_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    get_range_mult_simple_s2s(ctx, calc, projector_key, projector_effect, proj_data)
-}
-
 pub(in crate::nd::eff) fn get_aoe_burst_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
