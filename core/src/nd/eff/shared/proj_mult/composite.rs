@@ -61,10 +61,11 @@ pub(in crate::nd::eff) fn get_vorton_proj_mult(
     calc: &mut Calc,
     projector_key: UItemKey,
     projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
     get_range_mult_simple_s2s(ctx, calc, projector_key, projector_effect, proj_data)
+        * get_application_mult_missile(ctx, calc, projector_key, projectee_key, proj_data)
 }
 
 pub(in crate::nd::eff) fn get_missile_proj_mult(
