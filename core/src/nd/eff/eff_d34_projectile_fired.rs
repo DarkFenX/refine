@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
-        eff::shared::proj_mult::get_proj_mult_normal_unrestricted,
+        eff::shared::proj_mult::get_turret_proj_mult,
     },
     rd::REffect,
     svc::{
@@ -62,8 +62,7 @@ fn get_dmg_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        dmg_mult *=
-            get_proj_mult_normal_unrestricted(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        dmg_mult *= get_turret_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
     }
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {

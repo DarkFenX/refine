@@ -1,5 +1,6 @@
 use crate::{
     ac,
+    ad::AAttrId,
     def::{AttrVal, OF, SERVER_TICK_HZ},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
@@ -7,19 +8,102 @@ use crate::{
     util::{ceil_tick, floor_tick},
 };
 
-pub(in crate::nd::eff) fn get_missile_proj_mult(
+// Regular optimal/falloff range calculation
+pub(super) fn get_range_mult_simple_c2s(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    _projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_missile_range_mult(ctx, calc, projector_key, proj_data)
-        * get_missile_application_mult(ctx, calc, projector_key, projectee_key, proj_data)
+    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.get_range_attr_id());
+    match proj_data.get_range_c2s() <= affector_optimal {
+        true => OF(1.0),
+        false => OF(0.0),
+    }
 }
 
-fn get_missile_range_mult(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey, proj_data: UProjData) -> AttrVal {
+pub(super) fn get_range_mult_simple_s2s(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    proj_data: UProjData,
+) -> AttrVal {
+    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.get_range_attr_id());
+    match proj_data.get_range_s2s() <= affector_optimal {
+        true => OF(1.0),
+        false => OF(0.0),
+    }
+}
+
+pub(super) fn get_range_mult_full_restricted(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_full(
+        ctx,
+        calc,
+        projector_key,
+        projector_effect,
+        proj_data.get_range_s2s(),
+        true,
+    )
+}
+
+pub(super) fn get_range_mult_full_unrestricted(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_full(
+        ctx,
+        calc,
+        projector_key,
+        projector_effect,
+        proj_data.get_range_s2s(),
+        false,
+    )
+}
+
+fn get_range_mult_full(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    proj_range: AttrVal,
+    restricted: bool,
+) -> AttrVal {
+    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.get_range_attr_id());
+    let affector_falloff = get_effect_range(ctx, calc, projector_key, projector_effect.get_falloff_attr_id());
+    // Calculate actual range multiplier after collecting all the data
+    match affector_falloff > OF(0.0) {
+        true => match restricted && proj_range > affector_optimal + OF(3.0) * affector_falloff {
+            true => OF(0.0),
+            false => ordered_float::Float::powf(
+                OF(0.5),
+                OF((ordered_float::Float::max(OF(0.0), proj_range - affector_optimal) / affector_falloff).powi(2)),
+            ),
+        },
+        false => match proj_range <= affector_optimal {
+            true => OF(1.0),
+            false => OF(0.0),
+        },
+    }
+}
+
+// Missile-alike effect range calculation
+pub(super) fn get_range_mult_missile(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
     let max_velocity = calc
         .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MAX_VELOCITY)
         .unwrap()
@@ -47,7 +131,7 @@ fn get_missile_range_mult(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey,
     match flight_time_lower == flight_time {
         // When flight time is aligned to ticks, need to do fewer calculations
         true => {
-            let flight_range = calc_range(max_velocity, flight_time, mass, agility);
+            let flight_range = calc_flight_range(max_velocity, flight_time, mass, agility);
             match proj_range <= flight_range {
                 true => OF(1.0),
                 false => OF(0.0),
@@ -57,12 +141,12 @@ fn get_missile_range_mult(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey,
         // receives full effect, any range past higher flight time receives no effect, and anything
         // in-between receives partial effect corresponding to flight time fraction part
         false => {
-            let flight_range_lower = calc_range(max_velocity, flight_time_lower, mass, agility);
+            let flight_range_lower = calc_flight_range(max_velocity, flight_time_lower, mass, agility);
             match proj_range <= flight_range_lower {
                 true => OF(1.0),
                 false => {
                     let flight_time_higher = ceil_tick(flight_time);
-                    let flight_range_higher = calc_range(max_velocity, flight_time_higher, mass, agility);
+                    let flight_range_higher = calc_flight_range(max_velocity, flight_time_higher, mass, agility);
                     match proj_range > flight_range_higher {
                         true => OF(0.0),
                         false => OF((flight_time * SERVER_TICK_HZ as f64).fract()),
@@ -73,64 +157,13 @@ fn get_missile_range_mult(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey,
     }
 }
 
-fn get_missile_application_mult(
+pub(super) fn get_range_mult_bomb(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
-    projectee_key: UItemKey,
+    affector_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    let src_er = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AOE_CLOUD_SIZE)
-        .unwrap()
-        .extra
-        .max(OF(0.0));
-    let src_ev = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AOE_VELOCITY)
-        .unwrap()
-        .extra
-        .max(OF(0.0));
-    let src_drf = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AOE_DAMAGE_REDUCTION_FACTOR)
-        .unwrap()
-        .extra
-        .max(OF(0.0));
-    let tgt_sig_radius = calc
-        .get_item_attr_val_full(ctx, projectee_key, &ac::attrs::MAX_VELOCITY)
-        .unwrap()
-        .extra
-        .max(OF(0.0));
-    let tgt_speed = proj_data.get_tgt_speed()
-        * calc
-            .get_item_attr_val_full(ctx, projectee_key, &ac::attrs::SIG_RADIUS)
-            .unwrap()
-            .extra
-            .max(OF(0.0));
-    // "Static" part
-    let radius_ratio = tgt_sig_radius / src_er;
-    // "Mobile" part
-    let mobile_mult = OF((radius_ratio * src_ev / tgt_speed).powf(src_drf.into_inner()));
-    let mult = radius_ratio.min(mobile_mult);
-    match mult.is_nan() {
-        true => OF(1.0),
-        // Value also cannot get higher than 1
-        false => mult.clamp(OF(0.0), OF(1.0)),
-    }
-}
-
-pub(in crate::nd::eff) fn get_bomb_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    _projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    get_bomb_proj_range_mult(ctx, calc, projector_key, proj_data)
-}
-
-// Bomb is similar to missile, but they have fixed flight range and AoE effect
-fn get_bomb_proj_range_mult(ctx: SvcCtx, calc: &mut Calc, affector_key: UItemKey, proj_data: UProjData) -> AttrVal {
+    // Bomb is similar to missile, but they have fixed flight range and AoE effect
     let max_velocity = calc
         .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_VELOCITY)
         .unwrap()
@@ -163,7 +196,7 @@ fn get_bomb_proj_range_mult(ctx: SvcCtx, calc: &mut Calc, affector_key: UItemKey
     match flight_time_lower == flight_time {
         // When flight time is aligned to ticks, need to do fewer calculations
         true => {
-            let flight_range = calc_range(max_velocity, flight_time, mass, agility);
+            let flight_range = calc_flight_range(max_velocity, flight_time, mass, agility);
             let short_range = flight_range - aoe_range - proj_data.get_tgt_rad();
             let long_range = flight_range + aoe_range + proj_data.get_tgt_rad();
             match proj_range >= short_range && proj_range <= long_range {
@@ -175,8 +208,8 @@ fn get_bomb_proj_range_mult(ctx: SvcCtx, calc: &mut Calc, affector_key: UItemKey
         // results up
         false => {
             let flight_time_higher = ceil_tick(flight_time);
-            let flight_range_lower = calc_range(max_velocity, flight_time_lower, mass, agility);
-            let flight_range_higher = calc_range(max_velocity, flight_time_higher, mass, agility);
+            let flight_range_lower = calc_flight_range(max_velocity, flight_time_lower, mass, agility);
+            let flight_range_higher = calc_flight_range(max_velocity, flight_time_higher, mass, agility);
             let chance_higher = OF((flight_time * SERVER_TICK_HZ as f64).fract());
             let chance_lower = OF(1.0) - chance_higher;
             let lower_short_range = flight_range_lower - aoe_range - proj_data.get_tgt_rad();
@@ -195,7 +228,7 @@ fn get_bomb_proj_range_mult(ctx: SvcCtx, calc: &mut Calc, affector_key: UItemKey
     }
 }
 
-fn calc_range(max_velocity: AttrVal, flight_time: AttrVal, mass: AttrVal, agility: AttrVal) -> AttrVal {
+fn calc_flight_range(max_velocity: AttrVal, flight_time: AttrVal, mass: AttrVal, agility: AttrVal) -> AttrVal {
     // Source: http://www.eveonline.com/ingameboard.asp?a=topic&threadID=1307419&page=1#15
     // Link is broken for ages
     // D_m = V_m * (T_m + T_0*[exp(- T_m/T_0)-1])
@@ -205,4 +238,32 @@ fn calc_range(max_velocity: AttrVal, flight_time: AttrVal, mass: AttrVal, agilit
     // full speed distance = max velocity * (flight time - acceleration time)
     // total distance = acceleration distance + full speed distance
     max_velocity * (flight_time - accel_time / OF(2.0))
+}
+
+// Misc effects
+pub(super) fn get_range_mult_aoe_burst(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    proj_data: UProjData,
+) -> AttrVal {
+    // Doomsday projectiles are launched from center of the ship, and range is extended by aoe range
+    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.get_range_attr_id());
+    let affector_aoe = get_effect_range(ctx, calc, projector_key, Some(ac::attrs::DOOMSDAY_AOE_RANGE));
+    match proj_data.get_range_c2s() <= affector_optimal + affector_aoe {
+        true => OF(1.0),
+        false => OF(0.0),
+    }
+}
+
+// Utility
+fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey, attr_id: Option<AAttrId>) -> AttrVal {
+    match attr_id {
+        Some(attr_id) => match calc.get_item_attr_val_full(ctx, projector_key, &attr_id) {
+            Ok(val) => val.extra,
+            _ => OF(0.0),
+        },
+        None => OF(0.0),
+    }
 }

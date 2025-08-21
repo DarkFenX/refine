@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::proj_mult::{get_proj_attrs_aoe_burst, get_proj_mult_aoe_burst},
+        eff::shared::proj_mult::{get_aoe_burst_mod_proj_attrs, get_aoe_burst_proj_mult},
     },
 };
 
@@ -29,9 +29,9 @@ pub(super) fn mk_n_effect() -> NEffect {
             ]),
             scope: AEffectBuffScope::Everything,
         }),
-        modifier_proj_attrs_getter: Some(get_proj_attrs_aoe_burst),
+        modifier_proj_attrs_getter: Some(get_aoe_burst_mod_proj_attrs),
         hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_proj_mult_aoe_burst),
+            modifier_proj_mult_getter: Some(get_aoe_burst_proj_mult),
             ..
         },
         ..

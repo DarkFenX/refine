@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
-        eff::shared::{proj_mult::get_proj_mult_simple_s2s, spool::get_resolved_spool},
+        eff::shared::{proj_mult::get_disintegrator_proj_mult, spool::get_resolved_spool},
     },
     rd::REffect,
     svc::{
@@ -84,7 +84,7 @@ fn get_dmg_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        dmg_mult *= get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        dmg_mult *= get_disintegrator_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
     }
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {

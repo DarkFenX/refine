@@ -7,7 +7,7 @@ use crate::{
     misc::Spool,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
-        eff::shared::{proj_mult::get_proj_mult_normal_restricted, rep_opc::get_remote_shield_rep_opc},
+        eff::shared::{proj_mult::get_noapp_full_proj_mult, rep_opc::get_remote_shield_rep_opc},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -51,6 +51,6 @@ fn internal_get_remote_rep_opc(
         spool,
         None,
         projectee_key,
-        get_proj_mult_normal_restricted,
+        get_noapp_full_proj_mult,
     )
 }

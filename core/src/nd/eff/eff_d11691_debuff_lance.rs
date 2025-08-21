@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::proj_mult::{get_proj_attrs_simple, get_proj_mult_simple_s2s},
+        eff::shared::proj_mult::{get_noapp_simple_proj_mult, get_simple_mod_proj_attrs},
     },
     rd,
     svc::{
@@ -39,10 +39,10 @@ pub(super) fn mk_n_effect() -> NEffect {
             ]),
             scope: AEffectBuffScope::Everything,
         }),
-        modifier_proj_attrs_getter: Some(get_proj_attrs_simple),
+        modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
             dmg_kind: Some(NEffectDmgKind::Superweapon),
-            modifier_proj_mult_getter: Some(get_proj_mult_simple_s2s),
+            modifier_proj_mult_getter: Some(get_noapp_simple_proj_mult),
             normal_dmg_opc_getter: Some(get_dmg_opc),
             ..
         },
@@ -71,7 +71,7 @@ fn get_dmg_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        let mult = get_proj_mult_simple_s2s(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mult = get_noapp_simple_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         dmg_em *= mult;
         dmg_therm *= mult;
         dmg_kin *= mult;
