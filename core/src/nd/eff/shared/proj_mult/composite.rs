@@ -79,6 +79,17 @@ pub(in crate::nd::eff) fn get_missile_proj_mult(
         * get_application_mult_missile(ctx, calc, projector_key, projectee_key, proj_data)
 }
 
+pub(in crate::nd::eff) fn get_breacher_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    _projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_missile(ctx, calc, projector_key, proj_data)
+}
+
 pub(in crate::nd::eff) fn get_bomb_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
