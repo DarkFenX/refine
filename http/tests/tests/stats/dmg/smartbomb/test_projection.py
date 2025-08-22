@@ -11,7 +11,7 @@ from tests.fw.api import (
 from tests.tests.stats.dmg import make_eve_ship, make_eve_smartbomb, setup_dmg_basics
 
 
-def test_projection(client, consts):
+def test_range(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_smartbomb(
         client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500, range_optimal=7200)
