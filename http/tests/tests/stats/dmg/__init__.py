@@ -63,6 +63,7 @@ def setup_dmg_basics(
         client: TestClient,
         consts,  # noqa: ANN001
         effect_duration: bool = True,
+        effect_range: bool = True,
 ) -> DmgBasicInfo:
     eve_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
     eve_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg)
@@ -134,7 +135,7 @@ def setup_dmg_basics(
         id_=consts.EveEffect.emp_wave,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_smartbomb_range_attr_id)
+        range_attr_id=eve_smartbomb_range_attr_id if effect_range else Default)
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
