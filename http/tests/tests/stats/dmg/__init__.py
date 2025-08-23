@@ -447,10 +447,24 @@ def make_eve_missile_defender(
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
         volume: float | None = None,
+        speed: float | None = None,
+        flight_time: float | None = None,
+        mass: float | None = None,
+        agility: float | None = None,
+        exp_radius: float | None = None,
+        exp_speed: float | None = None,
+        drf: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.missile_defender_effect_id],

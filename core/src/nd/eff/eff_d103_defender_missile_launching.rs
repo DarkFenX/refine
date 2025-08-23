@@ -37,6 +37,8 @@ fn internal_get_dmg_opc(
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
+    // Defenders cannot be used vs targets allowed by the lib, so always return 0 if target is
+    // specified
     get_dmg_opc_missile(
         ctx,
         calc,
