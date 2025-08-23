@@ -60,9 +60,7 @@ fn get_dmg_proj_mult_fof_missile(
         .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MAX_FOF_TGT_RANGE)
         .unwrap()
         .extra;
-    // FoF missile is limited by c2s range. Tested on 2025-08-12 on Thunderdome, using civilian LML
-    // Minokawa (3k radius) with HG hydra + MGCs + hydraulics vs chremoas and dagon at 96900 and
-    // 97100 overview range
+    // FoF missiles are limited by c2s range
     if proj_data.get_range_c2s() > range_limit {
         return OF(0.0);
     };

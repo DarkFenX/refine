@@ -11,7 +11,8 @@ from tests.tests.stats.dmg import make_eve_launcher, make_eve_missile_defender, 
 
 
 def test_ship(client, consts):
-    # Defenders return 0 damage applied to a ship
+    # Defenders are supposed to shoot down only bombs, which are not legal targets for projection.
+    # So, when target is specified, they just return 0 damage applied.
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.15,

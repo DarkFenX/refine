@@ -390,7 +390,8 @@ class EveAttr(IntEnum):
     warfare_buff_4_id = 2536
     warfare_buff_4_value = 2537
     online_max_security_class = 2581
-    pilot_security_status= 2610
+    pilot_security_status = 2610
+    max_fof_target_range = 2700
     dmg_mult_bonus_per_cycle = 2733
     dmg_mult_bonus_max = 2734
     ftr_st_light_slots = 2737
