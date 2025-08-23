@@ -28,24 +28,25 @@ pub(super) fn get_application_mult_missile(
         .extra
         .max(OF(0.0));
     let tgt_sig_radius = calc
-        .get_item_attr_val_full(ctx, projectee_key, &ac::attrs::MAX_VELOCITY)
+        .get_item_attr_val_full(ctx, projectee_key, &ac::attrs::SIG_RADIUS)
         .unwrap()
         .extra
         .max(OF(0.0));
     let tgt_speed = proj_data.get_tgt_speed()
         * calc
-            .get_item_attr_val_full(ctx, projectee_key, &ac::attrs::SIG_RADIUS)
+            .get_item_attr_val_full(ctx, projectee_key, &ac::attrs::MAX_VELOCITY)
             .unwrap()
             .extra
             .max(OF(0.0));
     // "Static" part
     let radius_ratio = tgt_sig_radius / src_er;
+    if radius_ratio.is_nan() {
+        return OF(0.0);
+    }
     // "Mobile" part
     let mobile_mult = OF((radius_ratio * src_ev / tgt_speed).powf(src_drf.into_inner()));
-    let mult = radius_ratio.min(mobile_mult);
-    match mult.is_nan() {
-        true => OF(1.0),
-        // Value also cannot get higher than 1
-        false => mult.clamp(OF(0.0), OF(1.0)),
+    if mobile_mult.is_nan() {
+        return OF(0.0);
     }
+    radius_ratio.min(mobile_mult).clamp(OF(0.0), OF(1.0))
 }

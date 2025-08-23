@@ -74,7 +74,7 @@ def test_range(client, consts):
     assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
 
 
-def test_attr_absent_range(client, consts):
+def test_attr_range_absent(client, consts):
     # No range attr is considered as 0 range
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_smartbomb(

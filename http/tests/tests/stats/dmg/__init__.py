@@ -41,6 +41,9 @@ class DmgBasicInfo:
     flight_time_attr_id: int
     mass_attr_id: int
     agility_attr_id: int
+    aoe_cloud_size_attr_id: int
+    aoe_velocity_attr_id: int
+    aoe_drf_attr_id: int
     shield_hp_attr_id: int
     armor_hp_attr_id: int
     hull_hp_attr_id: int
@@ -95,6 +98,9 @@ def setup_dmg_basics(
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
+    eve_aoe_cloud_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_cloud_size)
+    eve_aoe_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_velocity)
+    eve_aoe_drf_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_damage_reduction_factor)
     eve_shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
     eve_armor_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
     eve_hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
@@ -185,6 +191,9 @@ def setup_dmg_basics(
         flight_time_attr_id=eve_flight_time_attr_id,
         mass_attr_id=eve_mass_attr_id,
         agility_attr_id=eve_agility_attr_id,
+        aoe_cloud_size_attr_id=eve_aoe_cloud_size_attr_id,
+        aoe_velocity_attr_id=eve_aoe_velocity_attr_id,
+        aoe_drf_attr_id=eve_aoe_drf_attr_id,
         shield_hp_attr_id=eve_shield_hp_attr_id,
         armor_hp_attr_id=eve_armor_hp_attr_id,
         hull_hp_attr_id=eve_hull_hp_attr_id,
@@ -392,10 +401,24 @@ def make_eve_missile(
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
         volume: float | None = None,
+        speed: float | None = None,
+        flight_time: float | None = None,
+        mass: float | None = None,
+        agility: float | None = None,
+        exp_radius: float | None = None,
+        exp_speed: float | None = None,
+        drf: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.missile_effect_id],

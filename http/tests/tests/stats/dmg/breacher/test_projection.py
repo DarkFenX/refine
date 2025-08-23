@@ -175,7 +175,7 @@ def test_range(client, consts):
     assert api_charge_nonproj_stats.volley.one().breacher is None
 
 
-def test_attr_absent_hp(client, consts):
+def test_attr_hp_absent(client, consts):
     # No HP attributes is considered to be 0 HP
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
@@ -209,7 +209,7 @@ def test_attr_absent_hp(client, consts):
     assert api_charge_nonproj_stats.volley.one().breacher == 0
 
 
-def test_attr_absent_velocity(client, consts):
+def test_attr_speed_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=25, cycle_time=10000, reload_time=30000)
@@ -256,7 +256,7 @@ def test_attr_absent_velocity(client, consts):
     assert api_charge_nonproj_stats.volley.one().breacher is None
 
 
-def test_attr_absent_flight_time(client, consts):
+def test_attr_flight_time_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=25, cycle_time=10000, reload_time=30000)
@@ -316,7 +316,7 @@ def test_attr_absent_flight_time(client, consts):
     assert api_charge_nonproj_stats.volley.one().breacher is None
 
 
-def test_attr_absent_mass(client, consts):
+def test_attr_mass_absent(client, consts):
     # No mass attribute = 0 mass = instant pod acceleration
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
@@ -377,7 +377,7 @@ def test_attr_absent_mass(client, consts):
     assert api_charge_nonproj_stats.volley.one().breacher is None
 
 
-def test_attr_absent_agility(client, consts):
+def test_attr_agility_absent(client, consts):
     # No agility attribute = 0 agility = instant pod acceleration
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(

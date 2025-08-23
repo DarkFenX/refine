@@ -286,6 +286,8 @@ class EveAttr(IntEnum):
     charge_group4 = 609
     charge_group5 = 610
     cloaking_targeting_delay_bonus = 619
+    aoe_velocity = 653
+    aoe_cloud_size = 654
     module_reactivation_delay = 669
     max_group_active = 763
     crystal_volatility_chance = 783
@@ -316,6 +318,7 @@ class EveAttr(IntEnum):
     warp_scramble_range_bonus = 1327
     activation_blocked = 1349
     activation_blocked_strength = 1350
+    aoe_damage_reduction_factor = 1353
     subsystem_slot = 1366
     max_subsystems = 1367
     turret_hardpoint_modifier = 1368
