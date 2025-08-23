@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, Spool},
     nd::{
         NEffect, NEffectHc,
-        eff::shared::{dmg_opc::get_dmg_opc_missile, proj_mult::get_missile_proj_mult},
+        eff::shared::{dmg_opc::get_dmg_opc_missile, proj_mult::get_null_proj_mult},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -43,6 +43,6 @@ fn internal_get_dmg_opc(
         projector_key,
         projector_effect,
         projectee_key,
-        get_missile_proj_mult,
+        get_null_proj_mult,
     )
 }

@@ -6,11 +6,22 @@ use super::{
     },
 };
 use crate::{
-    def::AttrVal,
+    def::{AttrVal, OF},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
     ud::{UItemKey, UProjData},
 };
+
+pub(in crate::nd::eff) fn get_null_proj_mult(
+    _ctx: SvcCtx,
+    _calc: &mut Calc,
+    _projector_key: UItemKey,
+    _projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    _proj_data: UProjData,
+) -> AttrVal {
+    OF(0.0)
+}
 
 pub(in crate::nd::eff) fn get_noapp_simple_proj_mult(
     ctx: SvcCtx,
