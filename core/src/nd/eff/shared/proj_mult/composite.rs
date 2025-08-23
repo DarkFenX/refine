@@ -1,5 +1,5 @@
 use super::{
-    application::get_application_mult_missile,
+    application::{get_application_mult_bomb, get_application_mult_missile},
     range::{
         get_range_mult_aoe_burst, get_range_mult_bomb, get_range_mult_full_restricted,
         get_range_mult_full_unrestricted, get_range_mult_missile, get_range_mult_simple_c2s, get_range_mult_simple_s2s,
@@ -107,10 +107,11 @@ pub(in crate::nd::eff) fn get_bomb_proj_mult(
     calc: &mut Calc,
     projector_key: UItemKey,
     _projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
     get_range_mult_bomb(ctx, calc, projector_key, proj_data)
+        * get_application_mult_bomb(ctx, calc, projector_key, projectee_key)
 }
 
 pub(in crate::nd::eff) fn get_bubble_proj_mult(

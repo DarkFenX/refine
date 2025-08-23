@@ -36,7 +36,7 @@ class DmgBasicInfo:
     ammo_loaded_attr_id: int
     sig_radius_attr_id: int
     radius_attr_id: int
-    smartbomb_range_attr_id: int
+    emp_field_range_attr_id: int
     max_velocity_attr_id: int
     flight_time_attr_id: int
     mass_attr_id: int
@@ -94,7 +94,7 @@ def setup_dmg_basics(
     eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_smartbomb_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
+    eve_emp_field_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
     eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
@@ -143,7 +143,7 @@ def setup_dmg_basics(
         id_=consts.EveEffect.emp_wave,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_smartbomb_range_attr_id if effect_range else Default)
+        range_attr_id=eve_emp_field_range_attr_id if effect_range else Default)
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
@@ -188,7 +188,7 @@ def setup_dmg_basics(
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
         sig_radius_attr_id=eve_sig_radius_attr_id,
         radius_attr_id=eve_radius_attr_id,
-        smartbomb_range_attr_id=eve_smartbomb_range_attr_id,
+        emp_field_range_attr_id=eve_emp_field_range_attr_id,
         max_velocity_attr_id=eve_max_velocity_attr_id,
         flight_time_attr_id=eve_flight_time_attr_id,
         mass_attr_id=eve_mass_attr_id,
@@ -524,10 +524,22 @@ def make_eve_bomb(
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
         volume: float | None = None,
+        speed: float | None = None,
+        flight_time: float | None = None,
+        mass: float | None = None,
+        agility: float | None = None,
+        exp_range: float | None = None,
+        exp_radius: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=exp_range)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.bomb_effect_id],
@@ -565,7 +577,7 @@ def make_eve_smartbomb(
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.smartbomb_range_attr_id, value=range_optimal)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=range_optimal)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.smartbomb_effect_id],
