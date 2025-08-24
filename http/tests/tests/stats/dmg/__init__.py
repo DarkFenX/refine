@@ -36,6 +36,7 @@ class DmgBasicInfo:
     ammo_loaded_attr_id: int
     sig_radius_attr_id: int
     radius_attr_id: int
+    max_range_attr_id: int
     emp_field_range_attr_id: int
     max_velocity_attr_id: int
     flight_time_attr_id: int
@@ -94,6 +95,7 @@ def setup_dmg_basics(
     eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_max_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
     eve_emp_field_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
     eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
@@ -121,7 +123,8 @@ def setup_dmg_basics(
     eve_vorton_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.chain_lightning,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_max_range_attr_id if effect_range else Default)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.use_missiles,
         cat_id=consts.EveEffCat.active,
@@ -188,6 +191,7 @@ def setup_dmg_basics(
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
         sig_radius_attr_id=eve_sig_radius_attr_id,
         radius_attr_id=eve_radius_attr_id,
+        max_range_attr_id=eve_max_range_attr_id,
         emp_field_range_attr_id=eve_emp_field_range_attr_id,
         max_velocity_attr_id=eve_max_velocity_attr_id,
         flight_time_attr_id=eve_flight_time_attr_id,
@@ -332,12 +336,20 @@ def make_eve_vorton(
         cycle_time: float | None = None,
         capacity: float | None = None,
         reload_time: float | None = None,
+        range_optimal: float | None = None,
+        exp_radius: float | None = None,
+        exp_speed: float | None = None,
+        drf: float | None = None,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
     _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.vorton_effect_id],
