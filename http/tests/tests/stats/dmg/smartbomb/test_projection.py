@@ -74,11 +74,11 @@ def test_range(client, consts):
     assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
 
 
-def test_attr_range_absent(client, consts):
-    # No range attr is considered as 0 range
-    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+def test_effect_range_absent(client, consts):
+    # No range reference on effect is considered as 0 range
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_range=False)
     eve_module_id = make_eve_smartbomb(
-        client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500)
+        client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500, range_optimal=7200)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
@@ -116,11 +116,11 @@ def test_attr_range_absent(client, consts):
     assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
 
 
-def test_effect_range_absent(client, consts):
-    # No range reference on effect is considered as 0 range
-    eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_range=False)
+def test_attr_range_absent(client, consts):
+    # No range attr is considered as 0 range
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_smartbomb(
-        client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500, range_optimal=7200)
+        client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=40)
     client.create_sources()

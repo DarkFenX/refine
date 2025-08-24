@@ -176,3 +176,303 @@ def test_application(client, consts):
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
     assert api_module_nonproj_stats.dps.one() == [approx(58.257032), 0, approx(54.923918), 0]
     assert api_module_nonproj_stats.volley.one() == [approx(349.542191), 0, approx(329.543509), 0]
+
+
+def test_effect_range_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_range=False)
+    eve_module_id = make_eve_vorton(
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
+    eve_charge_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=1000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 3165, 0), movement=(0, 0, 0))
+    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_proj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 3167, 0))
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_proj_stats.volley.one() == [0, 0, 0, 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
+
+
+def test_attr_range_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_vorton(
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        exp_radius=107.25, exp_speed=118.125, drf=0.5)
+    eve_charge_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=1000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 3165, 0), movement=(0, 0, 0))
+    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_proj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 3167, 0))
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_proj_stats.volley.one() == [0, 0, 0, 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
+
+
+def test_vorton_attr_exp_radius_zero(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_vorton(
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        range_optimal=36300, exp_radius=0, exp_speed=118.125, drf=0.5)
+    eve_charge_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_proj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 1))
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_proj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+
+
+def test_vorton_attr_exp_radius_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_vorton(
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        range_optimal=36300, exp_speed=118.125, drf=0.5)
+    eve_charge_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_proj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 1))
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_proj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+
+
+def test_missile_attr_exp_speed_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_vorton(
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        range_optimal=36300, exp_radius=107.25, drf=0.5)
+    eve_charge_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_proj_stats.volley.one() == [0, 0, 0, 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 1))
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_proj_stats.volley.one() == [0, 0, 0, 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [0, 0, 0, 0]
+    assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
+
+
+def test_missile_attr_drf_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_vorton(
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        range_optimal=36300, exp_radius=107.25, exp_speed=118.125)
+    eve_charge_id = make_eve_turret_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(163.673659), 0, approx(154.309246), 0]
+    assert api_module_proj_stats.volley.one() == [approx(982.041958), 0, approx(925.855478), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(163.673659), 0, approx(154.309246), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(982.041958), 0, approx(925.855478), 0]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 1))
+    # Verification
+    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.dps.one() == [approx(163.673659), 0, approx(154.309246), 0]
+    assert api_module_proj_stats.volley.one() == [approx(982.041958), 0, approx(925.855478), 0]
+    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.dps.one() == [approx(163.673659), 0, approx(154.309246), 0]
+    assert api_module_nonproj_stats.volley.one() == [approx(982.041958), 0, approx(925.855478), 0]
