@@ -14,10 +14,10 @@ pub(crate) struct UCoordinates {
     pub(crate) z: AttrVal,
 }
 
+// Direction as a unit vector relatively center
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub(crate) struct UDirection {
-    // Radians relatively X axis counter-clockwise
-    pub(crate) azimuth: AttrVal,
-    // Radians of elevation
-    pub(crate) elevation: AttrVal,
+    pub(crate) x: AttrVal,
+    pub(crate) y: AttrVal,
+    pub(crate) z: AttrVal,
 }
