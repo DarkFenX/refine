@@ -7,7 +7,7 @@ use crate::{
     rd::{REffectKey, RItemAXt},
     src::Src,
     ud::{
-        UFitKey, UPosition,
+        UFitKey, UPhysics,
         item::{Autocharges, Projs, UEffectUpdates, UItemBase},
     },
     util::{Named, RMap, RSet},
@@ -19,7 +19,7 @@ pub(crate) struct UFighter {
     fit_key: UFitKey,
     count_override: Option<FighterCountOverride>,
     autocharges: Autocharges,
-    position: UPosition,
+    physics: UPhysics,
     projs: Projs,
 }
 impl UFighter {
@@ -28,7 +28,7 @@ impl UFighter {
         type_id: AItemId,
         fit_key: UFitKey,
         fighter_state: MinionState,
-        position: UPosition,
+        physics: UPhysics,
         src: &Src,
     ) -> Self {
         Self {
@@ -36,7 +36,7 @@ impl UFighter {
             fit_key,
             count_override: None,
             autocharges: Autocharges::new(),
-            position,
+            physics,
             projs: Projs::new(),
         }
     }
@@ -142,8 +142,8 @@ impl UFighter {
     pub(crate) fn get_autocharges_mut(&mut self) -> &mut Autocharges {
         &mut self.autocharges
     }
-    pub(crate) fn get_position(&self) -> &UPosition {
-        &self.position
+    pub(crate) fn get_physics(&self) -> &UPhysics {
+        &self.physics
     }
     pub(in crate::ud::item) fn get_radius(&self) -> AttrVal {
         match self.get_axt() {
@@ -151,8 +151,8 @@ impl UFighter {
             None => OF(0.0),
         }
     }
-    pub(crate) fn get_position_mut(&mut self) -> &mut UPosition {
-        &mut self.position
+    pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
+        &mut self.physics
     }
     pub(crate) fn get_projs(&self) -> &Projs {
         &self.projs

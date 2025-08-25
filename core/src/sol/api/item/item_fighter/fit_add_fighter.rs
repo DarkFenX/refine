@@ -6,7 +6,7 @@ use crate::{
         SolarSystem,
         api::{FighterMut, FitMut},
     },
-    ud::{UEffectUpdates, UFighter, UFitKey, UItem, UItemKey, UPosition},
+    ud::{UEffectUpdates, UFighter, UFitKey, UItem, UItemKey, UPhysics},
 };
 
 impl SolarSystem {
@@ -15,12 +15,12 @@ impl SolarSystem {
         fit_key: UFitKey,
         type_id: AItemId,
         state: MinionState,
-        position: UPosition,
+        physics: UPhysics,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let item_id = self.u_data.items.alloc_id();
-        let u_fighter = UFighter::new(item_id, type_id, fit_key, state, position, &self.u_data.src);
+        let u_fighter = UFighter::new(item_id, type_id, fit_key, state, physics, &self.u_data.src);
         let u_item = UItem::Fighter(u_fighter);
         let fighter_key = self.u_data.items.add(u_item);
         u_fit.fighters.insert(fighter_key);
@@ -44,18 +44,18 @@ impl<'a> FitMut<'a> {
         coordinates: Option<Coordinates>,
         movement: Option<Movement>,
     ) -> FighterMut<'_> {
-        let mut u_position = UPosition::default();
+        let mut u_physics = UPhysics::default();
         if let Some(coordinates) = coordinates {
-            u_position.coordinates = coordinates.into();
+            u_physics.coordinates = coordinates.into();
         }
         if let Some(movement) = movement {
-            u_position.direction = movement.direction.into();
-            u_position.speed = movement.speed;
+            u_physics.direction = movement.direction.into();
+            u_physics.speed = movement.speed;
         }
         let mut reuse_eupdates = UEffectUpdates::new();
         let fighter_key = self
             .sol
-            .internal_add_fighter(self.key, type_id, state, u_position, &mut reuse_eupdates);
+            .internal_add_fighter(self.key, type_id, state, u_physics, &mut reuse_eupdates);
         FighterMut::new(self.sol, fighter_key)
     }
 }

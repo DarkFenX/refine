@@ -6,7 +6,7 @@ use crate::{
     rd::{REffectKey, RItemAXt},
     src::Src,
     ud::{
-        UFitKey, UPosition,
+        UFitKey, UPhysics,
         err::ItemMutatedError,
         item::{ItemMutationData, Projs, UEffectUpdates, UItemBaseMutable},
     },
@@ -17,7 +17,7 @@ use crate::{
 pub(crate) struct UDrone {
     pub(super) base: UItemBaseMutable,
     fit_key: UFitKey,
-    position: UPosition,
+    physics: UPhysics,
     projs: Projs,
 }
 impl UDrone {
@@ -27,13 +27,13 @@ impl UDrone {
         fit_key: UFitKey,
         drone_state: MinionState,
         mutation: Option<ItemMutationRequest>,
-        position: UPosition,
+        physics: UPhysics,
         src: &Src,
     ) -> Self {
         Self {
             base: UItemBaseMutable::new(item_id, type_id, drone_state.into(), mutation, src),
             fit_key,
-            position,
+            physics,
             projs: Projs::new(),
         }
     }
@@ -135,11 +135,11 @@ impl UDrone {
             None => OF(0.0),
         }
     }
-    pub(crate) fn get_position(&self) -> &UPosition {
-        &self.position
+    pub(crate) fn get_physics(&self) -> &UPhysics {
+        &self.physics
     }
-    pub(crate) fn get_position_mut(&mut self) -> &mut UPosition {
-        &mut self.position
+    pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
+        &mut self.physics
     }
     pub(crate) fn get_projs(&self) -> &Projs {
         &self.projs

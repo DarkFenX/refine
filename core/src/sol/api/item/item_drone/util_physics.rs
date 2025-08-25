@@ -5,18 +5,18 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn util_update_drone_position(
+    pub(in crate::sol::api) fn util_update_drone_physics(
         u_data: &mut UData,
         rev_projs: &RevProjs,
         svc: &mut Svc,
         drone_key: UItemKey,
     ) {
         let u_drone = u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
-        let u_position = *u_drone.get_position();
+        let u_physics = *u_drone.get_physics();
         // Handle outgoing projections
         if !u_drone.get_projs_mut().is_empty() {
             for u_proj_data in u_drone.get_projs_mut().iter_datas_mut() {
-                u_proj_data.update_src_pos(u_position);
+                u_proj_data.update_src_physics(u_physics);
             }
             let u_drone = u_data.items.get(drone_key).get_drone().unwrap();
             for (projectee_key, u_proj_data) in u_drone.get_projs().iter_projectees_and_datas() {
@@ -24,6 +24,6 @@ impl SolarSystem {
             }
         }
         // Handle incoming projections
-        SolarSystem::util_update_position_for_incoming(u_data, rev_projs, svc, drone_key, u_position);
+        SolarSystem::util_update_physics_for_incoming(u_data, rev_projs, svc, drone_key, u_physics);
     }
 }

@@ -6,7 +6,7 @@ use crate::{
         SolarSystem,
         api::{FitMut, ShipMut},
     },
-    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UPosition, UShip},
+    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UPhysics, UShip},
 };
 
 impl SolarSystem {
@@ -14,7 +14,7 @@ impl SolarSystem {
         &mut self,
         fit_key: UFitKey,
         type_id: AItemId,
-        position: UPosition,
+        physics: UPhysics,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let u_fit = self.u_data.fits.get(fit_key);
@@ -24,7 +24,7 @@ impl SolarSystem {
         }
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
-        let u_ship = UShip::new(item_id, type_id, fit_key, true, position, &self.u_data.src);
+        let u_ship = UShip::new(item_id, type_id, fit_key, true, physics, &self.u_data.src);
         let ship_kind = u_ship.get_kind();
         let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(OF(0.0));
         let u_item = UItem::Ship(u_ship);
@@ -46,18 +46,18 @@ impl<'a> FitMut<'a> {
         coordinates: Option<Coordinates>,
         movement: Option<Movement>,
     ) -> ShipMut<'_> {
-        let mut u_position = UPosition::default();
+        let mut u_physics = UPhysics::default();
         if let Some(coordinates) = coordinates {
-            u_position.coordinates = coordinates.into();
+            u_physics.coordinates = coordinates.into();
         }
         if let Some(movement) = movement {
-            u_position.direction = movement.direction.into();
-            u_position.speed = movement.speed;
+            u_physics.direction = movement.direction.into();
+            u_physics.speed = movement.speed;
         }
         let mut reuse_eupdates = UEffectUpdates::new();
         let ship_key = self
             .sol
-            .internal_set_fit_ship(self.key, type_id, u_position, &mut reuse_eupdates);
+            .internal_set_fit_ship(self.key, type_id, u_physics, &mut reuse_eupdates);
         ShipMut::new(self.sol, ship_key)
     }
 }

@@ -11,11 +11,11 @@ impl SolarSystem {
         u_coordinates: UCoordinates,
     ) {
         let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
-        if u_drone.get_position().coordinates == u_coordinates {
+        if u_drone.get_physics().coordinates == u_coordinates {
             return;
         }
-        u_drone.get_position_mut().coordinates = u_coordinates;
-        SolarSystem::util_update_drone_position(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);
+        u_drone.get_physics_mut().coordinates = u_coordinates;
+        SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);
     }
 }
 

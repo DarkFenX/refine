@@ -8,7 +8,7 @@ use crate::{
     src::Src,
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitKey, UFwEffect, UImplant, UItemKey,
-        UModule, UPosition, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
+        UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
         item::{Autocharges, ItemMutationData, Projs, UEffectUpdates, UProjData},
     },
     util::{GetId, Named, RMap, RSet},
@@ -460,39 +460,39 @@ impl UItem {
     pub(crate) fn can_receive_projs(&self) -> bool {
         matches!(self, Self::Drone(_) | Self::Fighter(_) | Self::Ship(_))
     }
-    pub(crate) fn get_position(&self) -> Option<&UPosition> {
+    pub(crate) fn get_physics(&self) -> Option<&UPhysics> {
         match self {
-            Self::Drone(drone) => Some(drone.get_position()),
-            Self::Fighter(fighter) => Some(fighter.get_position()),
-            Self::Ship(module) => Some(module.get_position()),
+            Self::Drone(drone) => Some(drone.get_physics()),
+            Self::Fighter(fighter) => Some(fighter.get_physics()),
+            Self::Ship(module) => Some(module.get_physics()),
             _ => None,
         }
     }
-    pub(crate) fn get_position_indirect(&self, u_data: &UData) -> UPosition {
+    pub(crate) fn get_physics_indirect(&self, u_data: &UData) -> UPhysics {
         match self {
             Self::Autocharge(autocharge) => u_data
                 .items
                 .get(autocharge.get_cont_item_key())
-                .get_position_indirect(u_data),
-            Self::Booster(booster) => u_data.get_ship_pos_by_fit_key(booster.get_fit_key()),
-            Self::Character(character) => u_data.get_ship_pos_by_fit_key(character.get_fit_key()),
+                .get_physics_indirect(u_data),
+            Self::Booster(booster) => u_data.get_ship_physics_by_fit_key(booster.get_fit_key()),
+            Self::Character(character) => u_data.get_ship_physics_by_fit_key(character.get_fit_key()),
             Self::Charge(charge) => u_data
                 .items
                 .get(charge.get_cont_item_key())
-                .get_position_indirect(u_data),
-            Self::Drone(drone) => *drone.get_position(),
-            Self::Fighter(fighter) => *fighter.get_position(),
-            Self::FwEffect(_) => UPosition::default(),
-            Self::Implant(implant) => u_data.get_ship_pos_by_fit_key(implant.get_fit_key()),
-            Self::Module(module) => u_data.get_ship_pos_by_fit_key(module.get_fit_key()),
-            Self::ProjEffect(_) => UPosition::default(),
-            Self::Service(service) => u_data.get_ship_pos_by_fit_key(service.get_fit_key()),
-            Self::Rig(rig) => u_data.get_ship_pos_by_fit_key(rig.get_fit_key()),
-            Self::Ship(ship) => *ship.get_position(),
-            Self::Skill(skill) => u_data.get_ship_pos_by_fit_key(skill.get_fit_key()),
-            Self::Stance(stance) => u_data.get_ship_pos_by_fit_key(stance.get_fit_key()),
-            Self::Subsystem(subsystem) => u_data.get_ship_pos_by_fit_key(subsystem.get_fit_key()),
-            Self::SwEffect(_) => UPosition::default(),
+                .get_physics_indirect(u_data),
+            Self::Drone(drone) => *drone.get_physics(),
+            Self::Fighter(fighter) => *fighter.get_physics(),
+            Self::FwEffect(_) => UPhysics::default(),
+            Self::Implant(implant) => u_data.get_ship_physics_by_fit_key(implant.get_fit_key()),
+            Self::Module(module) => u_data.get_ship_physics_by_fit_key(module.get_fit_key()),
+            Self::ProjEffect(_) => UPhysics::default(),
+            Self::Service(service) => u_data.get_ship_physics_by_fit_key(service.get_fit_key()),
+            Self::Rig(rig) => u_data.get_ship_physics_by_fit_key(rig.get_fit_key()),
+            Self::Ship(ship) => *ship.get_physics(),
+            Self::Skill(skill) => u_data.get_ship_physics_by_fit_key(skill.get_fit_key()),
+            Self::Stance(stance) => u_data.get_ship_physics_by_fit_key(stance.get_fit_key()),
+            Self::Subsystem(subsystem) => u_data.get_ship_physics_by_fit_key(subsystem.get_fit_key()),
+            Self::SwEffect(_) => UPhysics::default(),
         }
     }
     pub(crate) fn get_radius(&self) -> AttrVal {

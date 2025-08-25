@@ -13,13 +13,13 @@ impl SolarSystem {
         speed: AttrVal,
     ) {
         let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
-        let fighter_u_position = u_fighter.get_position_mut();
-        if fighter_u_position.direction == u_direction && fighter_u_position.speed == speed {
+        let fighter_u_physics = u_fighter.get_physics_mut();
+        if fighter_u_physics.direction == u_direction && fighter_u_physics.speed == speed {
             return;
         }
-        fighter_u_position.direction = u_direction;
-        fighter_u_position.speed = speed;
-        SolarSystem::util_update_fighter_position(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_key);
+        fighter_u_physics.direction = u_direction;
+        fighter_u_physics.speed = speed;
+        SolarSystem::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_key);
     }
 }
 

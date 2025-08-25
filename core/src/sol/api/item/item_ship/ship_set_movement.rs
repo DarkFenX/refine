@@ -13,13 +13,13 @@ impl SolarSystem {
         speed: AttrVal,
     ) {
         let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
-        let ship_u_position = u_ship.get_position_mut();
-        if ship_u_position.direction == u_direction && ship_u_position.speed == speed {
+        let ship_u_physics = u_ship.get_physics_mut();
+        if ship_u_physics.direction == u_direction && ship_u_physics.speed == speed {
             return;
         }
-        ship_u_position.direction = u_direction;
-        ship_u_position.speed = speed;
-        SolarSystem::util_update_ship_position(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_key);
+        ship_u_physics.direction = u_direction;
+        ship_u_physics.speed = speed;
+        SolarSystem::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_key);
     }
 }
 

@@ -5,12 +5,12 @@ import typing
 @dataclasses.dataclass(kw_only=True)
 class Movement:
 
-    plane: float
+    azimuth: float
     elevation: float
     speed: float
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.plane, self.elevation, self.speed = data
+        self.azimuth, self.elevation, self.speed = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -19,4 +19,4 @@ class Movement:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.plane, self.elevation, self.speed] == other
+        return [self.azimuth, self.elevation, self.speed] == other

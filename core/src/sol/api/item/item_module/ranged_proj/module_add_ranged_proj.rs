@@ -26,9 +26,9 @@ impl SolarSystem {
             }
             .into());
         }
-        // Check if projectee can receive projections by getting its position in space
-        let projectee_pos = match projectee_u_item.get_position() {
-            Some(projectee_pos) => *projectee_pos,
+        // Check if projectee can receive projections by getting its user physics
+        let projectee_physics = match projectee_u_item.get_physics() {
+            Some(projectee_physics) => *projectee_physics,
             None => {
                 return Err(ItemReceiveProjError {
                     item_id: projectee_u_item.get_item_id(),
@@ -37,10 +37,10 @@ impl SolarSystem {
                 .into());
             }
         };
-        let ship_pos = self.u_data.get_ship_pos_by_fit_key(u_module.get_fit_key());
-        let u_proj_data = Some(UProjData::from_positions_with_axt(
-            ship_pos,
-            projectee_pos,
+        let ship_physics = self.u_data.get_ship_physics_by_fit_key(u_module.get_fit_key());
+        let u_proj_data = Some(UProjData::from_physics_with_axt(
+            ship_physics,
+            projectee_physics,
             get_ship_axt(&self.u_data, u_module.get_fit_key()),
             projectee_u_item.get_axt(),
         ));

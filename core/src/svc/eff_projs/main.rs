@@ -30,9 +30,9 @@ impl EffProjs {
             None => {
                 let projector_u_item = u_data.items.get(projector_espec.item_key);
                 let projectee_u_item = u_data.items.get(projectee_key);
-                UProjData::from_positions_with_radii(
-                    projector_u_item.get_position_indirect(u_data),
-                    projectee_u_item.get_position_indirect(u_data),
+                UProjData::from_physics_with_radii(
+                    projector_u_item.get_physics_indirect(u_data),
+                    projectee_u_item.get_physics_indirect(u_data),
                     Some(projector_u_item.get_radius_indirect(u_data)),
                     Some(projectee_u_item.get_radius_indirect(u_data)),
                 )

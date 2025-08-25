@@ -96,10 +96,10 @@ fn get_count(sol: &SolarSystem, fighter_key: UItemKey) -> Option<AdjustableCount
     get_u_fighter(sol, fighter_key).get_count()
 }
 fn get_coordinates(sol: &SolarSystem, fighter_key: UItemKey) -> Coordinates {
-    get_u_fighter(sol, fighter_key).get_position().coordinates.into()
+    get_u_fighter(sol, fighter_key).get_physics().coordinates.into()
 }
 fn get_movement(sol: &SolarSystem, fighter_key: UItemKey) -> Movement {
-    get_u_fighter(sol, fighter_key).get_position().into()
+    get_u_fighter(sol, fighter_key).get_physics().into()
 }
 fn get_u_fighter(sol: &SolarSystem, fighter_key: UItemKey) -> &UFighter {
     sol.u_data.items.get(fighter_key).get_fighter().unwrap()

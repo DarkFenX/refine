@@ -1,7 +1,7 @@
 use crate::def::AttrVal;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub(crate) struct UPosition {
+pub(crate) struct UPhysics {
     pub(crate) coordinates: UCoordinates,
     pub(crate) direction: UDirection,
     pub(crate) speed: AttrVal,
@@ -17,7 +17,7 @@ pub(crate) struct UCoordinates {
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub(crate) struct UDirection {
     // Radians relatively X axis counter-clockwise
-    pub(crate) plane: AttrVal,
+    pub(crate) azimuth: AttrVal,
     // Radians of elevation
     pub(crate) elevation: AttrVal,
 }

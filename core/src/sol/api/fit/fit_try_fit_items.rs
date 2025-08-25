@@ -5,7 +5,7 @@ use crate::{
     rd,
     sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt},
-    ud::{UData, UEffectUpdates, UFitKey, UItemKey, UPosition},
+    ud::{UData, UEffectUpdates, UFitKey, UItemKey, UPhysics},
 };
 
 impl SolarSystem {
@@ -17,7 +17,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Vec<ItemTypeId> {
         let mut valid = Vec::new();
-        let u_position = UPosition::default();
+        let u_physics = UPhysics::default();
         let chargeable_module_keys = get_chargeable_modules(&self.u_data, fit_key);
         for type_id in type_ids {
             let r_item = match self.u_data.src.get_item(type_id) {
@@ -37,14 +37,8 @@ impl SolarSystem {
                     self.internal_remove_booster(booster_key, reuse_eupdates);
                 }
                 rd::RItemKind::Drone => {
-                    let drone_key = self.internal_add_drone(
-                        fit_key,
-                        *type_id,
-                        MinionState::InBay,
-                        None,
-                        u_position,
-                        reuse_eupdates,
-                    );
+                    let drone_key =
+                        self.internal_add_drone(fit_key, *type_id, MinionState::InBay, None, u_physics, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }
@@ -52,7 +46,7 @@ impl SolarSystem {
                 }
                 rd::RItemKind::Fighter => {
                     let fighter_key =
-                        self.internal_add_fighter(fit_key, *type_id, MinionState::InBay, u_position, reuse_eupdates);
+                        self.internal_add_fighter(fit_key, *type_id, MinionState::InBay, u_physics, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }

@@ -11,11 +11,11 @@ impl SolarSystem {
         u_coordinates: UCoordinates,
     ) {
         let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
-        if u_ship.get_position().coordinates == u_coordinates {
+        if u_ship.get_physics().coordinates == u_coordinates {
             return;
         }
-        u_ship.get_position_mut().coordinates = u_coordinates;
-        SolarSystem::util_update_ship_position(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_key);
+        u_ship.get_physics_mut().coordinates = u_coordinates;
+        SolarSystem::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_key);
     }
 }
 

@@ -13,13 +13,13 @@ impl SolarSystem {
         speed: AttrVal,
     ) {
         let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
-        let drone_u_position = u_drone.get_position_mut();
-        if drone_u_position.direction == u_direction && drone_u_position.speed == speed {
+        let drone_u_physics = u_drone.get_physics_mut();
+        if drone_u_physics.direction == u_direction && drone_u_physics.speed == speed {
             return;
         }
-        drone_u_position.direction = u_direction;
-        drone_u_position.speed = speed;
-        SolarSystem::util_update_drone_position(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);
+        drone_u_physics.direction = u_direction;
+        drone_u_physics.speed = speed;
+        SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);
     }
 }
 

@@ -87,10 +87,10 @@ fn get_state(sol: &SolarSystem, ship_key: UItemKey) -> bool {
     get_u_ship(sol, ship_key).get_ship_state()
 }
 fn get_coordinates(sol: &SolarSystem, ship_key: UItemKey) -> Coordinates {
-    get_u_ship(sol, ship_key).get_position().coordinates.into()
+    get_u_ship(sol, ship_key).get_physics().coordinates.into()
 }
 fn get_movement(sol: &SolarSystem, ship_key: UItemKey) -> Movement {
-    get_u_ship(sol, ship_key).get_position().into()
+    get_u_ship(sol, ship_key).get_physics().into()
 }
 fn get_u_ship(sol: &SolarSystem, ship_key: UItemKey) -> &UShip {
     sol.u_data.items.get(ship_key).get_ship().unwrap()
