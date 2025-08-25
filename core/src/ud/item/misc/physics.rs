@@ -1,23 +1,9 @@
-use crate::def::AttrVal;
+use crate::{def::AttrVal, util::Xyz};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub(crate) struct UPhysics {
-    pub(crate) coordinates: UCoordinates,
-    pub(crate) direction: UDirection,
+    pub(crate) coordinates: Xyz,
+    // Direction as a unit vector relatively object coordinates
+    pub(crate) direction: Xyz,
     pub(crate) speed: AttrVal,
-}
-
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub(crate) struct UCoordinates {
-    pub(crate) x: AttrVal,
-    pub(crate) y: AttrVal,
-    pub(crate) z: AttrVal,
-}
-
-// Direction as a unit vector relatively center
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub(crate) struct UDirection {
-    pub(crate) x: AttrVal,
-    pub(crate) y: AttrVal,
-    pub(crate) z: AttrVal,
 }

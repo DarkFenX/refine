@@ -84,6 +84,7 @@ pub(crate) const CHARGE_GROUP3: EAttrId = 606;
 pub(crate) const CHARGE_GROUP4: EAttrId = 609;
 pub(crate) const CHARGE_GROUP5: EAttrId = 610;
 pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: EAttrId = 619;
+pub(crate) const OPTIMAL_SIG_RADIUS: EAttrId = 620;
 pub(crate) const AOE_VELOCITY: EAttrId = 653;
 pub(crate) const AOE_CLOUD_SIZE: EAttrId = 654;
 pub(crate) const MOD_REACTIVATION_DELAY: EAttrId = 669;

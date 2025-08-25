@@ -1,9 +1,6 @@
 use ordered_float::Float;
 
-use crate::{
-    def::AttrVal,
-    ud::{UDirection, UPhysics},
-};
+use crate::{def::AttrVal, ud::UPhysics, util::Xyz};
 
 #[derive(Copy, Clone)]
 pub struct Movement {
@@ -28,18 +25,18 @@ pub struct Direction {
     /// Degrees of elevation.
     pub elevation: AttrVal,
 }
-impl From<UDirection> for Direction {
-    fn from(u_direction: UDirection) -> Self {
+impl From<Xyz> for Direction {
+    fn from(direction: Xyz) -> Self {
         Self {
-            azimuth: u_direction.y.atan2(u_direction.x).to_degrees(),
-            elevation: u_direction
+            azimuth: direction.y.atan2(direction.x).to_degrees(),
+            elevation: direction
                 .z
-                .atan2((u_direction.x.powi(2) + u_direction.y.powi(2)).sqrt())
+                .atan2((direction.x.powi(2) + direction.y.powi(2)).sqrt())
                 .to_degrees(),
         }
     }
 }
-impl From<Direction> for UDirection {
+impl From<Direction> for Xyz {
     fn from(direction: Direction) -> Self {
         let (az_sin, az_cos) = direction.azimuth.to_radians().sin_cos();
         let (el_sin, el_cos) = direction.elevation.to_radians().sin_cos();

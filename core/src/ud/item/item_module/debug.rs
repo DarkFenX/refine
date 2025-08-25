@@ -21,10 +21,10 @@ impl UModule {
                 Some(proj_data) => proj_data,
                 None => return Err(DebugError {}),
             };
-            if proj_data.get_src_rad() != ship_radius {
+            if proj_data.get_src_radius() != ship_radius {
                 return Err(DebugError {});
             }
-            if proj_data.get_tgt_rad() != u_data.items.get(projectee_key).get_radius() {
+            if proj_data.get_tgt_radius() != u_data.items.get(projectee_key).get_radius() {
                 return Err(DebugError {});
             }
         }

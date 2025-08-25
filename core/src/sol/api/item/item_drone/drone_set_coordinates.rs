@@ -1,20 +1,17 @@
 use crate::{
     misc::Coordinates,
     sol::{SolarSystem, api::DroneMut},
-    ud::{UCoordinates, UItemKey},
+    ud::UItemKey,
+    util::Xyz,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_set_drone_coordinates(
-        &mut self,
-        drone_key: UItemKey,
-        u_coordinates: UCoordinates,
-    ) {
+    pub(in crate::sol::api) fn internal_set_drone_coordinates(&mut self, drone_key: UItemKey, coordinates: Xyz) {
         let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
-        if u_drone.get_physics().coordinates == u_coordinates {
+        if u_drone.get_physics().coordinates == coordinates {
             return;
         }
-        u_drone.get_physics_mut().coordinates = u_coordinates;
+        u_drone.get_physics_mut().coordinates = coordinates;
         SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);
     }
 }

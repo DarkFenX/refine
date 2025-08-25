@@ -7,6 +7,7 @@ pub(crate) use storage::{MapSet, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, exte
 pub(crate) use str_err::StrMsgError;
 pub(crate) use traits::{GetId, Named};
 pub use unit_interval::{UnitInterval, UnitIntervalError};
+pub(crate) use xyz::Xyz;
 
 mod funcs;
 mod inf_count;
@@ -14,3 +15,4 @@ mod storage;
 mod str_err;
 mod traits;
 mod unit_interval;
+mod xyz;

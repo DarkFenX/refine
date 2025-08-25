@@ -1,4 +1,4 @@
-use crate::{def::AttrVal, ud::UCoordinates};
+use crate::{def::AttrVal, util::Xyz};
 
 #[derive(Copy, Clone)]
 pub struct Coordinates {
@@ -11,16 +11,16 @@ impl Coordinates {
         Self { x, y, z }
     }
 }
-impl From<UCoordinates> for Coordinates {
-    fn from(u_coordinates: UCoordinates) -> Self {
+impl From<Xyz> for Coordinates {
+    fn from(coordinates: Xyz) -> Self {
         Self {
-            x: u_coordinates.x,
-            y: u_coordinates.y,
-            z: u_coordinates.z,
+            x: coordinates.x,
+            y: coordinates.y,
+            z: coordinates.z,
         }
     }
 }
-impl From<Coordinates> for UCoordinates {
+impl From<Coordinates> for Xyz {
     fn from(coordinates: Coordinates) -> Self {
         Self {
             x: coordinates.x,

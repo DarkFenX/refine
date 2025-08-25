@@ -1,9 +1,48 @@
 use crate::{
     ac,
     def::{AttrVal, OF},
+    rd::REffect,
     svc::{SvcCtx, calc::Calc, item_funcs},
     ud::{UItemKey, UProjData},
+    util::Xyz,
 };
+
+pub(super) fn get_application_mult_turret(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    let angular_speed = calc_angular(ctx, calc, projector_key, projectee_key, proj_data);
+    let turret_sig_radius = calc
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::OPTIMAL_SIG_RADIUS)
+        .unwrap()
+        .extra
+        .max(OF(0.0));
+    let turret_tracking_speed = match projector_effect.get_track_attr_id() {
+        Some(tracking_speed_attr_id) => calc
+            .get_item_attr_val_full(ctx, projector_key, &tracking_speed_attr_id)
+            .unwrap()
+            .extra
+            .max(OF(0.0)),
+        None => OF(0.0),
+    };
+    let tgt_sig_radius = calc
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::SIG_RADIUS)
+        .unwrap()
+        .extra
+        .max(OF(0.0));
+    let result = ordered_float::Float::powf(
+        OF(0.5),
+        OF((angular_speed * turret_sig_radius / turret_tracking_speed / tgt_sig_radius).powi(2)),
+    );
+    match result.is_nan() {
+        true => OF(0.0),
+        false => result.clamp(OF(0.0), OF(1.0)),
+    }
+}
 
 pub(super) fn get_application_mult_missile(
     ctx: SvcCtx,
@@ -59,4 +98,48 @@ pub(super) fn get_application_mult_bomb(
         return OF(0.0);
     }
     radius_ratio.clamp(OF(0.0), OF(1.0))
+}
+
+// Utility
+fn calc_angular(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    let src_vector = get_vector(
+        ctx,
+        calc,
+        projector_key,
+        proj_data.get_src_direction(),
+        proj_data.get_src_speed(),
+    );
+    let tgt_vector = get_vector(
+        ctx,
+        calc,
+        projectee_key,
+        proj_data.get_tgt_direction(),
+        proj_data.get_tgt_speed(),
+    );
+    let dot_product = Xyz::get_vector_dot_product(src_vector, tgt_vector);
+    let magnitude_product = src_vector.get_vector_magnitude() * tgt_vector.get_vector_magnitude();
+    let result = ordered_float::Float::acos(dot_product / magnitude_product);
+    // Process NaN just in case acos argument is out of [-1, +1] range due to float inaccuracies,
+    // which seems to be possible when vectors are equal or almost equal.
+    match result.is_nan() {
+        true => OF(0.0),
+        false => result,
+    }
+}
+
+fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, direction: Xyz, speed_perc: AttrVal) -> Xyz {
+    if speed_perc <= OF(0.0) {
+        return Xyz::default();
+    }
+    let speed_max = item_funcs::get_speed(ctx, calc, item_key).unwrap();
+    if speed_max <= OF(0.0) {
+        return Xyz::default();
+    }
+    direction * (speed_perc * speed_max)
 }

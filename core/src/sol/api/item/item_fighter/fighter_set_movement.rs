@@ -2,22 +2,23 @@ use crate::{
     def::AttrVal,
     misc::Movement,
     sol::{SolarSystem, api::FighterMut},
-    ud::{UDirection, UItemKey},
+    ud::UItemKey,
+    util::Xyz,
 };
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fighter_movement(
         &mut self,
         fighter_key: UItemKey,
-        u_direction: UDirection,
+        direction: Xyz,
         speed: AttrVal,
     ) {
         let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
         let fighter_u_physics = u_fighter.get_physics_mut();
-        if fighter_u_physics.direction == u_direction && fighter_u_physics.speed == speed {
+        if fighter_u_physics.direction == direction && fighter_u_physics.speed == speed {
             return;
         }
-        fighter_u_physics.direction = u_direction;
+        fighter_u_physics.direction = direction;
         fighter_u_physics.speed = speed;
         SolarSystem::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_key);
     }

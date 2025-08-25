@@ -31,7 +31,7 @@ impl SolarSystem {
         for projector_key in self.rev_projs.iter_projectors(&ship_key) {
             let projector_u_item = self.u_data.items.get_mut(projector_key);
             if let Some(u_proj_data) = projector_u_item.get_projs_mut().unwrap().get_proj_data_mut(&ship_key)
-                && u_proj_data.update_tgt_rad(ship_radius)
+                && u_proj_data.update_tgt_radius(ship_radius)
             {
                 let u_proj_data = Some(*u_proj_data);
                 SolarSystem::util_change_item_proj_data(

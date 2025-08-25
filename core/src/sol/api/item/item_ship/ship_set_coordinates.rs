@@ -1,20 +1,17 @@
 use crate::{
     misc::Coordinates,
     sol::{SolarSystem, api::ShipMut},
-    ud::{UCoordinates, UItemKey},
+    ud::UItemKey,
+    util::Xyz,
 };
 
 impl SolarSystem {
-    pub(in crate::sol::api) fn internal_set_ship_coordinates(
-        &mut self,
-        ship_key: UItemKey,
-        u_coordinates: UCoordinates,
-    ) {
+    pub(in crate::sol::api) fn internal_set_ship_coordinates(&mut self, ship_key: UItemKey, coordinates: Xyz) {
         let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
-        if u_ship.get_physics().coordinates == u_coordinates {
+        if u_ship.get_physics().coordinates == coordinates {
             return;
         }
-        u_ship.get_physics_mut().coordinates = u_coordinates;
+        u_ship.get_physics_mut().coordinates = coordinates;
         SolarSystem::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_key);
     }
 }

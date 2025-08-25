@@ -197,8 +197,8 @@ pub(super) fn get_range_mult_bomb(
         // When flight time is aligned to ticks, need to do fewer calculations
         true => {
             let flight_range = calc_flight_range(max_velocity, flight_time, mass, agility);
-            let short_range = flight_range - aoe_range - proj_data.get_tgt_rad();
-            let long_range = flight_range + aoe_range + proj_data.get_tgt_rad();
+            let short_range = flight_range - aoe_range - proj_data.get_tgt_radius();
+            let long_range = flight_range + aoe_range + proj_data.get_tgt_radius();
             match proj_range >= short_range && proj_range <= long_range {
                 true => OF(1.0),
                 false => OF(0.0),
@@ -212,10 +212,10 @@ pub(super) fn get_range_mult_bomb(
             let flight_range_higher = calc_flight_range(max_velocity, flight_time_higher, mass, agility);
             let chance_higher = OF((flight_time * SERVER_TICK_HZ as f64).fract());
             let chance_lower = OF(1.0) - chance_higher;
-            let lower_short_range = flight_range_lower - aoe_range - proj_data.get_tgt_rad();
-            let lower_long_range = flight_range_lower + aoe_range + proj_data.get_tgt_rad();
-            let higher_short_range = flight_range_higher - aoe_range - proj_data.get_tgt_rad();
-            let higher_long_range = flight_range_higher + aoe_range + proj_data.get_tgt_rad();
+            let lower_short_range = flight_range_lower - aoe_range - proj_data.get_tgt_radius();
+            let lower_long_range = flight_range_lower + aoe_range + proj_data.get_tgt_radius();
+            let higher_short_range = flight_range_higher - aoe_range - proj_data.get_tgt_radius();
+            let higher_long_range = flight_range_higher + aoe_range + proj_data.get_tgt_radius();
             let mut mult = OF(0.0);
             if proj_range >= lower_short_range && proj_range <= lower_long_range {
                 mult += chance_lower;
