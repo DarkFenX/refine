@@ -16,6 +16,28 @@ impl Xyz {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 }
+impl std::ops::Add<Xyz> for Xyz {
+    type Output = Self;
+
+    fn add(self, rhs: Xyz) -> Self::Output {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+impl std::ops::Sub<Xyz> for Xyz {
+    type Output = Self;
+
+    fn sub(self, rhs: Xyz) -> Self::Output {
+        Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
 impl std::ops::Mul<AttrVal> for Xyz {
     type Output = Self;
 

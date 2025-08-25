@@ -29,11 +29,7 @@ pub(super) fn get_application_mult_turret(
             .max(OF(0.0)),
         None => OF(0.0),
     };
-    let tgt_sig_radius = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::SIG_RADIUS)
-        .unwrap()
-        .extra
-        .max(OF(0.0));
+    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap_or(OF(0.0));
     let result = ordered_float::Float::powf(
         OF(0.5),
         OF((angular_speed * turret_sig_radius / turret_tracking_speed / tgt_sig_radius).powi(2)),
@@ -108,6 +104,7 @@ fn calc_angular(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
+    let rel_coords_t0 = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
     let src_vector = get_vector(
         ctx,
         calc,
@@ -122,8 +119,9 @@ fn calc_angular(
         proj_data.get_tgt_direction(),
         proj_data.get_tgt_speed(),
     );
-    let dot_product = Xyz::get_vector_dot_product(src_vector, tgt_vector);
-    let magnitude_product = src_vector.get_vector_magnitude() * tgt_vector.get_vector_magnitude();
+    let rel_coords_t1 = rel_coords_t0 + tgt_vector - src_vector;
+    let dot_product = Xyz::get_vector_dot_product(rel_coords_t0, rel_coords_t1);
+    let magnitude_product = rel_coords_t0.get_vector_magnitude() * rel_coords_t1.get_vector_magnitude();
     let result = ordered_float::Float::acos(dot_product / magnitude_product);
     // Process NaN just in case acos argument is out of [-1, +1] range due to float inaccuracies,
     // which seems to be possible when vectors are equal or almost equal.
@@ -137,7 +135,7 @@ fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, direction: Xyz, 
     if speed_perc <= OF(0.0) {
         return Xyz::default();
     }
-    let speed_max = item_funcs::get_speed(ctx, calc, item_key).unwrap();
+    let speed_max = item_funcs::get_speed(ctx, calc, item_key).unwrap_or(OF(0.0));
     if speed_max <= OF(0.0) {
         return Xyz::default();
     }
