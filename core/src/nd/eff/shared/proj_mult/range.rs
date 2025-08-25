@@ -160,33 +160,33 @@ pub(super) fn get_range_mult_missile(
 pub(super) fn get_range_mult_bomb(
     ctx: SvcCtx,
     calc: &mut Calc,
-    affector_key: UItemKey,
+    projector_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
     // Bomb is similar to missile, but they have fixed flight range and AoE effect
     let max_velocity = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MAX_VELOCITY)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MAX_VELOCITY)
         .unwrap()
         .extra
         .max(OF(0.0));
     let flight_time = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::EXPLOSION_DELAY)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::EXPLOSION_DELAY)
         .unwrap()
         .extra
         .max(OF(0.0))
         / OF(1000.0);
     let mass = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::MASS)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MASS)
         .unwrap()
         .extra
         .max(OF(0.0));
     let agility = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::AGILITY)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AGILITY)
         .unwrap()
         .extra
         .max(OF(0.0));
     let aoe_range = calc
-        .get_item_attr_val_full(ctx, affector_key, &ac::attrs::EMP_FIELD_RANGE)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::EMP_FIELD_RANGE)
         .unwrap()
         .extra
         .max(OF(0.0));

@@ -66,8 +66,8 @@ pub(super) fn get_application_mult_missile(
         .unwrap()
         .extra
         .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap();
-    let tgt_speed = proj_data.get_tgt_speed() * item_funcs::get_speed(ctx, calc, projectee_key).unwrap();
+    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap_or(OF(0.0));
+    let tgt_speed = proj_data.get_tgt_speed() * item_funcs::get_speed(ctx, calc, projectee_key).unwrap_or(OF(0.0));
     // "Static" part
     let radius_ratio = tgt_sig_radius / src_er;
     if radius_ratio.is_nan() {
@@ -92,7 +92,7 @@ pub(super) fn get_application_mult_bomb(
         .unwrap()
         .extra
         .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap();
+    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap_or(OF(0.0));
     let radius_ratio = tgt_sig_radius / src_er;
     if radius_ratio.is_nan() {
         return OF(0.0);
