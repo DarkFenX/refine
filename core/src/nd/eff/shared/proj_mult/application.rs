@@ -104,7 +104,7 @@ fn calc_angular(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    let relative_coordinates = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
+    let coordinates = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
     let src_velocity = match ctx.u_data.get_physic_item_key(projector_key) {
         Some(projector_physic_key) => get_vector(
             ctx,
@@ -122,10 +122,10 @@ fn calc_angular(
         proj_data.get_tgt_direction(),
         proj_data.get_tgt_speed(),
     );
-    let relative_velocity = tgt_velocity - src_velocity;
-    let radial_component = Xyz::get_vector_dot_product(relative_velocity, relative_coordinates);
-    let radial_velocity = relative_velocity * radial_component;
-    let transversal_velocity = relative_velocity - radial_velocity;
+    let velocity = tgt_velocity - src_velocity;
+    let radial_component = Xyz::get_vector_dot_product(velocity, coordinates);
+    let radial_velocity = velocity * radial_component;
+    let transversal_velocity = velocity - radial_velocity;
     let result = transversal_velocity.get_vector_magnitude() / proj_data.get_range_c2c();
     match result.is_nan() {
         true => OF(0.0),
