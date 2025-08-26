@@ -33,6 +33,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "angle-sc"
+version = "1.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cee3caa5b14e42e5cb9430d0cef8122d91f766ca0e3097c3de966fdcd5b04013"
+dependencies = [
+ "libm",
+ "serde",
+]
+
+[[package]]
 name = "arraydeque"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1061,6 +1071,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a82ae493e598baaea5209805c49bbf2ea7de956d50d7da0da1164f9c6d28543"
 
 [[package]]
+name = "libm"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9fbbcab51052fe104eb5e5d351cf728d30a5be1fe14d9be8a3b097481fb97de"
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1504,6 +1520,7 @@ dependencies = [
 name = "reefast-core"
 version = "0.0.1"
 dependencies = [
+ "angle-sc",
  "either",
  "itertools",
  "lender",
