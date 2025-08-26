@@ -236,7 +236,11 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
             charge_type_id=24523)
     api_src_fit.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
     # T2 med cap booster with navy 800
-    api_src_fit.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
+    api_src_fit.add_module(
+        type_id=2024,
+        rack=consts.ApiRack.mid,
+        state=consts.ApiModuleState.active,
+        charge_type_id=32014)
     api_src_fit.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 EM hardener
     api_src_fit.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 scram
     api_src_fit.add_module(type_id=2281, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 multispec
@@ -251,12 +255,12 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
     # T1 CDFEs
     for _ in range(2):
         api_src_fit.add_rig(type_id=26088)
-    # # T2 ogres
-    # for _ in range(5):
-    #     api_src_fit.add_drone(type_id=2446, state=consts.ApiMinionState.engaging)
-    # # T2 ogres
-    # for _ in range(3):
-    #     api_src_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
+    # T2 ogres
+    for _ in range(5):
+        api_src_fit.add_drone(type_id=2446, state=consts.ApiMinionState.engaging)
+    # T2 ogres
+    for _ in range(3):
+        api_src_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
 
     api_tgt_fit = api_sol.create_fit()
     api_tgt_fit.set_character(type_id=1373)
