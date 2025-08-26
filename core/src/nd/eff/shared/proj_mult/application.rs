@@ -104,8 +104,8 @@ fn calc_angular(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    let rel_coords_t0 = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
-    let src_vector = match ctx.u_data.get_physic_item_key(projector_key) {
+    let relative_coordinates = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
+    let src_velocity = match ctx.u_data.get_physic_item_key(projector_key) {
         Some(projector_physic_key) => get_vector(
             ctx,
             calc,
@@ -115,19 +115,18 @@ fn calc_angular(
         ),
         None => Xyz::default(),
     };
-    let tgt_vector = get_vector(
+    let tgt_velocity = get_vector(
         ctx,
         calc,
         projectee_key,
         proj_data.get_tgt_direction(),
         proj_data.get_tgt_speed(),
     );
-    let rel_coords_t1 = rel_coords_t0 + tgt_vector - src_vector;
-    let dot_product = Xyz::get_vector_dot_product(rel_coords_t0, rel_coords_t1);
-    let magnitude_product = rel_coords_t0.get_vector_magnitude() * rel_coords_t1.get_vector_magnitude();
-    let result = ordered_float::Float::acos(dot_product / magnitude_product);
-    // Process NaN just in case acos argument is out of [-1, +1] range due to float inaccuracies,
-    // which seems to be possible when vectors are equal or almost equal.
+    let relative_velocity = tgt_velocity - src_velocity;
+    let radial_component = Xyz::get_vector_dot_product(relative_velocity, relative_coordinates);
+    let radial_velocity = relative_velocity * radial_component;
+    let transversal_velocity = relative_velocity - radial_velocity;
+    let result = transversal_velocity.get_vector_magnitude() / proj_data.get_range_c2c();
     match result.is_nan() {
         true => OF(0.0),
         false => result,
