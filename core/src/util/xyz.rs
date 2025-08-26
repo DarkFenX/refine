@@ -15,6 +15,14 @@ impl Xyz {
     pub(crate) fn get_vector_magnitude(self) -> AttrVal {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
+    pub(crate) fn get_vector_unit(self) -> Self {
+        let magnitude = self.get_vector_magnitude();
+        Self {
+            x: self.x / magnitude,
+            y: self.y / magnitude,
+            z: self.z / magnitude,
+        }
+    }
 }
 impl std::ops::Add<Xyz> for Xyz {
     type Output = Self;

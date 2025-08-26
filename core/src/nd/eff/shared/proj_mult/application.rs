@@ -123,8 +123,9 @@ fn calc_angular(
         proj_data.get_tgt_speed(),
     );
     let velocity = tgt_velocity - src_velocity;
-    let radial_component = Xyz::get_vector_dot_product(velocity, coordinates);
-    let radial_velocity = velocity * radial_component;
+    let radial_unit = coordinates.get_vector_unit();
+    let radial_component = Xyz::get_vector_dot_product(velocity, radial_unit);
+    let radial_velocity = radial_unit * radial_component;
     let transversal_velocity = velocity - radial_velocity;
     let result = transversal_velocity.get_vector_magnitude() / proj_data.get_range_c2c();
     match result.is_nan() {

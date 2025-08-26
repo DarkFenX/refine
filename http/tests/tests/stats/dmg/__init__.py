@@ -37,6 +37,9 @@ class DmgBasicInfo:
     sig_radius_attr_id: int
     radius_attr_id: int
     max_range_attr_id: int
+    falloff_attr_id: int
+    tracking_attr_id: int
+    sig_resolution_attr_id: int
     emp_field_range_attr_id: int
     max_velocity_attr_id: int
     flight_time_attr_id: int
@@ -69,6 +72,7 @@ def setup_dmg_basics(
         consts,  # noqa: ANN001
         effect_duration: bool = True,
         effect_range: bool = True,
+        effect_tracking: bool = True,
 ) -> DmgBasicInfo:
     eve_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
     eve_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg)
@@ -96,6 +100,9 @@ def setup_dmg_basics(
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_max_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
+    eve_falloff_attr_id = client.mk_eve_attr(id_=consts.EveAttr.falloff)
+    eve_tracking_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tracking_speed)
+    eve_sig_resolution_attr_id = client.mk_eve_attr(id_=consts.EveAttr.optimal_sig_radius)
     eve_emp_field_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
     eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
@@ -111,15 +118,24 @@ def setup_dmg_basics(
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_max_range_attr_id if effect_range else Default,
+        falloff_attr_id=eve_falloff_attr_id if effect_range else Default,
+        tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
     eve_turret_spool_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.tgt_disintegrator_attack,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_max_range_attr_id if effect_range else Default,
+        falloff_attr_id=eve_falloff_attr_id if effect_range else Default,
+        tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
     eve_tgt_attack_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.tgt_attack,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_max_range_attr_id if effect_range else Default,
+        falloff_attr_id=eve_falloff_attr_id if effect_range else Default,
+        tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
     eve_vorton_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.chain_lightning,
         cat_id=consts.EveEffCat.target,
@@ -192,6 +208,9 @@ def setup_dmg_basics(
         sig_radius_attr_id=eve_sig_radius_attr_id,
         radius_attr_id=eve_radius_attr_id,
         max_range_attr_id=eve_max_range_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        tracking_attr_id=eve_tracking_attr_id,
+        sig_resolution_attr_id=eve_sig_resolution_attr_id,
         emp_field_range_attr_id=eve_emp_field_range_attr_id,
         max_velocity_attr_id=eve_max_velocity_attr_id,
         flight_time_attr_id=eve_flight_time_attr_id,
@@ -248,12 +267,20 @@ def make_eve_turret_proj(
         cycle_time: float | None = None,
         capacity: float | None = None,
         reload_time: float | None = None,
+        range_optimal: float | None = None,
+        range_falloff: float | None = None,
+        tracking: float | None = None,
+        sig_resolution: float | None = None,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
     _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.turret_proj_effect_id],
@@ -268,12 +295,20 @@ def make_eve_turret_laser(
         cycle_time: float | None = None,
         capacity: float | None = None,
         reload_time: float | None = None,
+        range_optimal: float | None = None,
+        range_falloff: float | None = None,
+        tracking: float | None = None,
+        sig_resolution: float | None = None,
 ) -> int:
     attrs = {}
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
     _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
@@ -290,6 +325,10 @@ def make_eve_turret_spool(
         cycle_time: float | None = None,
         capacity: float | None = None,
         reload_time: float | None = None,
+        range_optimal: float | None = None,
+        range_falloff: float | None = None,
+        tracking: float | None = None,
+        sig_resolution: float | None = None,
 ) -> int:
     attrs = {}
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
@@ -298,6 +337,10 @@ def make_eve_turret_spool(
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
     _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.turret_spool_effect_id],

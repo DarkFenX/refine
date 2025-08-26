@@ -254,6 +254,7 @@ class EveAttr(IntEnum):
     charge_size = 128
     launcher_group = 137
     falloff = 158
+    tracking_speed = 160
     volume = 161
     radius = 162
     missile_dmg_mult = 212
@@ -286,6 +287,7 @@ class EveAttr(IntEnum):
     charge_group4 = 609
     charge_group5 = 610
     cloaking_targeting_delay_bonus = 619
+    optimal_sig_radius = 620
     aoe_velocity = 653
     aoe_cloud_size = 654
     module_reactivation_delay = 669
