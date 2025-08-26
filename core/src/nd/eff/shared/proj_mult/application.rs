@@ -105,13 +105,16 @@ fn calc_angular(
     proj_data: UProjData,
 ) -> AttrVal {
     let rel_coords_t0 = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
-    let src_vector = get_vector(
-        ctx,
-        calc,
-        projector_key,
-        proj_data.get_src_direction(),
-        proj_data.get_src_speed(),
-    );
+    let src_vector = match ctx.u_data.get_physic_item_key(projector_key) {
+        Some(projector_physic_key) => get_vector(
+            ctx,
+            calc,
+            projector_physic_key,
+            proj_data.get_src_direction(),
+            proj_data.get_src_speed(),
+        ),
+        None => Xyz::default(),
+    };
     let tgt_vector = get_vector(
         ctx,
         calc,
