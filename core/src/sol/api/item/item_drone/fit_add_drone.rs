@@ -1,7 +1,7 @@
 use crate::{
     ad::AItemId,
     def::ItemTypeId,
-    misc::{Coordinates, ItemMutationRequest, MinionState, Movement},
+    misc::{Coordinates, ItemMutationRequest, MinionState, Movement, NpcProp},
     sol::{
         SolarSystem,
         api::{DroneMut, FitMut},
@@ -17,6 +17,7 @@ impl SolarSystem {
         state: MinionState,
         mutation: Option<ItemMutationRequest>,
         physics: UPhysics,
+        prop_mode: UNpcProp,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let item_id = self.u_data.items.alloc_id();
@@ -27,7 +28,7 @@ impl SolarSystem {
             state,
             mutation,
             physics,
-            UNpcProp::Chase,
+            prop_mode,
             &self.u_data.src,
         );
         let u_item = UItem::Drone(u_drone);
@@ -46,6 +47,7 @@ impl<'a> FitMut<'a> {
         state: MinionState,
         coordinates: Option<Coordinates>,
         movement: Option<Movement>,
+        prop_mode: NpcProp,
     ) -> DroneMut<'_> {
         let mut u_physics = UPhysics::default();
         if let Some(coordinates) = coordinates {
@@ -56,9 +58,15 @@ impl<'a> FitMut<'a> {
             u_physics.speed = movement.speed;
         }
         let mut reuse_eupdates = UEffectUpdates::new();
-        let drone_key = self
-            .sol
-            .internal_add_drone(self.key, type_id, state, None, u_physics, &mut reuse_eupdates);
+        let drone_key = self.sol.internal_add_drone(
+            self.key,
+            type_id,
+            state,
+            None,
+            u_physics,
+            prop_mode.into(),
+            &mut reuse_eupdates,
+        );
         DroneMut::new(self.sol, drone_key)
     }
 }

@@ -5,7 +5,7 @@ use crate::{
     rd,
     sol::{SolarSystem, api::FitMut},
     svc::vast::{ValOptions, ValOptionsInt},
-    ud::{UData, UEffectUpdates, UFitKey, UItemKey, UPhysics},
+    ud::{UData, UEffectUpdates, UFitKey, UItemKey, UNpcProp, UPhysics},
 };
 
 impl SolarSystem {
@@ -37,8 +37,15 @@ impl SolarSystem {
                     self.internal_remove_booster(booster_key, reuse_eupdates);
                 }
                 rd::RItemKind::Drone => {
-                    let drone_key =
-                        self.internal_add_drone(fit_key, *type_id, MinionState::InBay, None, u_physics, reuse_eupdates);
+                    let drone_key = self.internal_add_drone(
+                        fit_key,
+                        *type_id,
+                        MinionState::InBay,
+                        None,
+                        u_physics,
+                        UNpcProp::Chase,
+                        reuse_eupdates,
+                    );
                     if self.internal_validate_fit_fast(fit_key, val_options) {
                         valid.push(*type_id)
                     }

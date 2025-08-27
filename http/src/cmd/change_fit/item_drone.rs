@@ -3,7 +3,7 @@ use crate::{
         HItemIdsResp, change_item,
         shared::{HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
     },
-    shared::{HCoordinates, HMinionState, HMovement},
+    shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
     util::HExecError,
 };
 
@@ -14,6 +14,7 @@ pub(crate) struct HAddDroneCmd {
     mutation: Option<HMutationOnAdd>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
+    prop_mode: Option<HNpcProp>,
 }
 impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(
@@ -27,6 +28,7 @@ impl HAddDroneCmd {
             (&self.state).into(),
             self.coordinates.map(|v| v.into()),
             self.movement.map(|v| v.into()),
+            self.prop_mode.unwrap_or(HNpcProp::Chase).into(),
         );
         if let Some(h_mutation) = self.mutation.as_ref() {
             match h_mutation {
