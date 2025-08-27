@@ -327,7 +327,6 @@ def make_eve_turret_spool(
         capacity: float | None = None,
         reload_time: float | None = None,
         range_optimal: float | None = None,
-        range_falloff: float | None = None,
         tracking: float | None = None,
         sig_resolution: float | None = None,
 ) -> int:
@@ -339,7 +338,6 @@ def make_eve_turret_spool(
     _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
     _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
     _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
     _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
     _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
     return client.mk_eve_item(
