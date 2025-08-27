@@ -72,6 +72,7 @@ def setup_dmg_basics(
         consts,  # noqa: ANN001
         effect_duration: bool = True,
         effect_range: bool = True,
+        effect_falloff: bool = True,
         effect_tracking: bool = True,
 ) -> DmgBasicInfo:
     eve_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
@@ -120,21 +121,21 @@ def setup_dmg_basics(
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_max_range_attr_id if effect_range else Default,
-        falloff_attr_id=eve_falloff_attr_id if effect_range else Default,
+        falloff_attr_id=eve_falloff_attr_id if effect_falloff else Default,
         tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
     eve_turret_spool_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.tgt_disintegrator_attack,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_max_range_attr_id if effect_range else Default,
-        falloff_attr_id=eve_falloff_attr_id if effect_range else Default,
+        falloff_attr_id=eve_falloff_attr_id if effect_falloff else Default,
         tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
     eve_tgt_attack_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.tgt_attack,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_max_range_attr_id if effect_range else Default,
-        falloff_attr_id=eve_falloff_attr_id if effect_range else Default,
+        falloff_attr_id=eve_falloff_attr_id if effect_falloff else Default,
         tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
     eve_vorton_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.chain_lightning,
