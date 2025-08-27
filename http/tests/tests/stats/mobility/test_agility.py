@@ -259,7 +259,7 @@ def test_fighter_modified_agility(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fighter = api_fit.add_drone(type_id=eve_fighter_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_fighter_stats.agility == approx(0.9704061)
