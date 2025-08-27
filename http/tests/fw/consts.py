@@ -532,6 +532,12 @@ class ApiSideEffectOp(StrEnum):
 
 
 @unique
+class ApiNpcPropMode(StrEnum):
+    cruise = 'cruise'
+    chase = 'chase'
+
+
+@unique
 class ApiValItemType(StrEnum):
     booster = 'booster'
     character = 'character'

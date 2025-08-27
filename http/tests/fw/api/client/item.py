@@ -195,6 +195,7 @@ class ApiClientItem(ApiClientBase):
             mutation: MutaAdd | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
+            prop_mode: str | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
@@ -205,6 +206,7 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['coordinates'], value=coordinates)
         conditional_insert(container=body, path=['movement'], value=movement)
+        conditional_insert(container=body, path=['prop_mode'], value=prop_mode)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -225,6 +227,7 @@ class ApiClientItem(ApiClientBase):
             rm_projs: list[str] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
+            prop_mode: str | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -236,6 +239,7 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
         conditional_insert(container=body, path=['coordinates'], value=coordinates)
         conditional_insert(container=body, path=['movement'], value=movement)
+        conditional_insert(container=body, path=['prop_mode'], value=prop_mode)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)

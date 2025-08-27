@@ -175,6 +175,7 @@ class Item(AttrDict):
             rm_projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
+            prop_mode: str | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -189,6 +190,7 @@ class Item(AttrDict):
             rm_projs=rm_projs,
             coordinates=coordinates,
             movement=movement,
+            prop_mode=prop_mode,
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
