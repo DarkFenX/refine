@@ -7,8 +7,8 @@ use crate::{
     rd::{REffectKey, RItemAXt},
     src::Src,
     ud::{
-        UFitKey, UPhysics,
-        item::{Autocharges, Projs, UEffectUpdates, UItemBase},
+        UFitKey,
+        item::{Autocharges, Projs, UEffectUpdates, UItemBase, UPhysics},
     },
     util::{Named, RMap, RSet},
 };

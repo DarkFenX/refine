@@ -1,5 +1,5 @@
 use crate::{
-    misc::{Coordinates, MinionState, Movement},
+    misc::{Coordinates, MinionState, Movement, NpcProp},
     sol::{
         SolarSystem,
         api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
@@ -26,6 +26,9 @@ impl<'a> Drone<'a> {
     }
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.key)
+    }
+    pub fn get_prop_mode(&self) -> NpcProp {
+        get_prop_mode(self.sol, self.key)
     }
 }
 impl<'a> ItemSealed for Drone<'a> {
@@ -62,6 +65,9 @@ impl<'a> DroneMut<'a> {
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.key)
     }
+    pub fn get_prop_mode(&self) -> NpcProp {
+        get_prop_mode(self.sol, self.key)
+    }
 }
 impl<'a> ItemSealed for DroneMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -91,6 +97,9 @@ fn get_coordinates(sol: &SolarSystem, drone_key: UItemKey) -> Coordinates {
 }
 fn get_movement(sol: &SolarSystem, drone_key: UItemKey) -> Movement {
     get_u_drone(sol, drone_key).get_physics().into()
+}
+fn get_prop_mode(sol: &SolarSystem, drone_key: UItemKey) -> NpcProp {
+    get_u_drone(sol, drone_key).get_prop_mode().into()
 }
 fn get_u_drone(sol: &SolarSystem, drone_key: UItemKey) -> &UDrone {
     sol.u_data.items.get(drone_key).get_drone().unwrap()

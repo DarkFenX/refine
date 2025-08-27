@@ -5,6 +5,7 @@ mod drone;
 mod drone_remove;
 mod drone_set_coordinates;
 mod drone_set_movement;
+mod drone_set_prop_mode;
 mod drone_set_state;
 mod drone_set_type_id;
 mod fit_add_drone;

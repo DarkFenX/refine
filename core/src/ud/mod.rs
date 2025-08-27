@@ -8,7 +8,7 @@ pub(crate) use fit::{UFit, UFitSkill, UFits, UItemVec};
 pub(crate) use fleet::UFleet;
 pub(crate) use item::{
     UAutocharge, UBooster, UCharacter, UCharge, UDrone, UEffectUpdates, UFighter, UFwEffect, UImplant, UItem, UItems,
-    UModule, UPhysics, UProjData, UProjEffect, URig, UService, UShip, UShipKind, USkill, UStance, USubsystem,
+    UModule, UNpcProp, UPhysics, UProjData, UProjEffect, URig, UService, UShip, UShipKind, USkill, UStance, USubsystem,
     USwEffect, get_combined_attr_values,
 };
 pub(crate) use primitives::{UFitKey, UFleetKey, UItemKey};

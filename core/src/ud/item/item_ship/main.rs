@@ -6,8 +6,8 @@ use crate::{
     rd::{REffectKey, RItemAXt, RShipKind},
     src::Src,
     ud::{
-        UFitKey, UPhysics,
-        item::{UEffectUpdates, UItemBase, UShipKind, bool_to_state_offline, state_to_bool},
+        UFitKey,
+        item::{UEffectUpdates, UItemBase, UPhysics, UShipKind, bool_to_state_offline, state_to_bool},
     },
     util::{Named, RMap, RSet},
 };

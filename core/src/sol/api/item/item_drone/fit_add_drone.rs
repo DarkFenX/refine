@@ -6,7 +6,7 @@ use crate::{
         SolarSystem,
         api::{DroneMut, FitMut},
     },
-    ud::{UDrone, UEffectUpdates, UFitKey, UItem, UItemKey, UPhysics},
+    ud::{UDrone, UEffectUpdates, UFitKey, UItem, UItemKey, UNpcProp, UPhysics},
 };
 
 impl SolarSystem {
@@ -20,7 +20,16 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {
         let item_id = self.u_data.items.alloc_id();
-        let u_drone = UDrone::new(item_id, type_id, fit_key, state, mutation, physics, &self.u_data.src);
+        let u_drone = UDrone::new(
+            item_id,
+            type_id,
+            fit_key,
+            state,
+            mutation,
+            physics,
+            UNpcProp::Chase,
+            &self.u_data.src,
+        );
         let u_item = UItem::Drone(u_drone);
         let drone_key = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_key);
