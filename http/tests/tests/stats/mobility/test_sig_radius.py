@@ -116,6 +116,7 @@ def test_struct_modified(client, consts):
 
 def test_drone_modified(client, consts):
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_prop_blow_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
@@ -126,16 +127,26 @@ def test_drone_modified(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 300},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 1350})
+    eve_drone_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 1350, eve_prop_blow_attr_id: 6})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, prop_mode=consts.ApiNpcPropMode.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
     assert api_drone_stats.sig_radius == approx(1350)
     # Action
+    api_drone.change_drone(prop_mode=consts.ApiNpcPropMode.chase)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
+    assert api_drone_stats.sig_radius == approx(8100)
+    # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
+    assert api_drone_stats.sig_radius == approx(32400)
+    # Action
+    api_drone.change_drone(prop_mode=consts.ApiNpcPropMode.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
     assert api_drone_stats.sig_radius == approx(5400)
@@ -163,7 +174,7 @@ def test_fighter_modified(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fighter = api_fit.add_drone(type_id=eve_fighter_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(sig_radius=True))
     assert api_fighter_stats.sig_radius == approx(873)

@@ -275,6 +275,7 @@ class EveAttr(IntEnum):
     rof_bonus = 293
     implantness = 331
     max_active_drones = 352
+    entity_cruise_speed = 508
     sig_radius = 552
     sig_radius_bonus = 554
     cloaking_targeting_delay = 560
@@ -302,6 +303,7 @@ class EveAttr(IntEnum):
     disallow_in_empire_space = 1074
     boosterness = 1087
     upgrade_capacity = 1132
+    entity_max_velocity_sig_radius_mult = 1133
     upgrade_cost = 1153
     upgrade_slots_left = 1154
     overload_self_duration_bonus = 1206
