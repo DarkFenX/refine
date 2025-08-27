@@ -607,13 +607,23 @@ def make_eve_drone(
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
         dmg_mult: float | None = None,
         cycle_time: float | None = None,
-        velocity: float | None = None,
+        range_optimal: float | None = None,
+        range_falloff: float | None = None,
+        tracking: float | None = None,
+        sig_resolution: float | None = None,
+        speed: float | None = None,
+        radius: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=velocity)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],

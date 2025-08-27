@@ -94,9 +94,9 @@ def test_stacking(client, consts):
 def test_item_kind(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_drone1_id = make_eve_drone(
-        client=client, basic_info=eve_basic_info, dmgs=(0, 13, 19, 0), dmg_mult=41, cycle_time=4000, velocity=2500)
+        client=client, basic_info=eve_basic_info, dmgs=(0, 13, 19, 0), dmg_mult=41, cycle_time=4000, speed=2500)
     eve_drone2_id = make_eve_drone(
-        client=client, basic_info=eve_basic_info, dmgs=(64, 0, 0, 0), dmg_mult=6.2, cycle_time=4000, velocity=0.00001)
+        client=client, basic_info=eve_basic_info, dmgs=(64, 0, 0, 0), dmg_mult=6.2, cycle_time=4000, speed=0.00001)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
