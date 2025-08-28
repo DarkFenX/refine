@@ -130,6 +130,18 @@ pub(in crate::nd::eff) fn get_bomb_proj_mult(
         * get_application_mult_bomb(ctx, calc, projector_key, projectee_key)
 }
 
+pub(in crate::nd::eff) fn get_guided_bomb_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    _projector_effect: &REffect,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_missile(ctx, calc, projector_key, proj_data)
+        * get_application_mult_bomb(ctx, calc, projector_key, projectee_key)
+}
+
 pub(in crate::nd::eff) fn get_bubble_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,

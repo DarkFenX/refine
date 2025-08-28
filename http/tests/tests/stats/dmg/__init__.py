@@ -620,6 +620,8 @@ def make_eve_bomb_guided(
         agility: float | None = None,
         exp_range: float | None = None,
         exp_radius: float | None = None,
+        exp_speed: float | None = None,
+        drf: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
@@ -630,6 +632,8 @@ def make_eve_bomb_guided(
     _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
     _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=exp_range)
     _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
     return client.mk_eve_item(
         grp_id=basic_info.guided_bomb_group_id,
         attrs=attrs,

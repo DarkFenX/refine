@@ -397,6 +397,29 @@ def test_application(client, consts):
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
     assert api_charge_nonproj_stats.dps.one() == [approx(23.387097), 0, 0, 0]
     assert api_charge_nonproj_stats.volley.one() == [approx(1812.5), 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 1))
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.dps.one() == [approx(46.774194), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(3625), 0, 0, 0]
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_fit_stats.dps.one() == [approx(46.774194), 0, 0, 0]
+    assert api_src_fit_stats.volley.one() == [approx(3625), 0, 0, 0]
+    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_charge_proj_stats.dps.one() == [approx(23.387097), 0, 0, 0]
+    assert api_charge_proj_stats.volley.one() == [approx(1812.5), 0, 0, 0]
+    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_charge_nonproj_stats.dps.one() == [approx(23.387097), 0, 0, 0]
+    assert api_charge_nonproj_stats.volley.one() == [approx(1812.5), 0, 0, 0]
 
 
 def test_npc_prop_mode(client, consts):

@@ -7,7 +7,10 @@ use crate::{
     misc::{DmgKinds, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::{dmg_opc::get_dmg_opc_missile, proj_mult::get_missile_proj_mult},
+        eff::shared::{
+            dmg_opc::get_dmg_opc_missile,
+            proj_mult::{get_guided_bomb_proj_mult, get_missile_proj_mult},
+        },
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -31,12 +34,9 @@ pub(super) fn mk_n_effect() -> NEffect {
 }
 
 fn internal_get_dmg_kind(u_item: &UItem) -> NEffectDmgKind {
-    // There seems to be no way to see the difference between regular missiles and guided bombs,
-    // except for item type ID, group or some attributes. We stick to checking group, just because
-    // it seems to be the easiest way
-    match u_item.get_group_id() {
-        Some(ac::itemgrps::GUIDED_BOMB) => NEffectDmgKind::Bomb,
-        _ => NEffectDmgKind::Missile,
+    match is_guided_bomb(u_item) {
+        true => NEffectDmgKind::Bomb,
+        false => NEffectDmgKind::Missile,
     }
 }
 
@@ -48,12 +48,26 @@ fn internal_get_dmg_opc(
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
+    let proj_mult_getter = match is_guided_bomb(ctx.u_data.items.get(projector_key)) {
+        true => get_guided_bomb_proj_mult,
+        false => get_missile_proj_mult,
+    };
     get_dmg_opc_missile(
         ctx,
         calc,
         projector_key,
         projector_effect,
         projectee_key,
-        get_missile_proj_mult,
+        proj_mult_getter,
     )
+}
+
+fn is_guided_bomb(u_item: &UItem) -> bool {
+    // There seems to be no way to see the difference between regular missiles and guided bombs,
+    // except for item type ID, group or some attributes. We stick to checking group, just because
+    // it seems to be the easiest way
+    match u_item.get_group_id() {
+        Some(ac::itemgrps::GUIDED_BOMB) => true,
+        _ => false,
+    }
 }
