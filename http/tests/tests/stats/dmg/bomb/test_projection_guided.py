@@ -14,8 +14,8 @@ from tests.tests.stats.dmg import make_eve_bomb_guided, make_eve_drone, make_eve
 def test_range(client, consts):
     # Guided bomb range follows regular missile mechanics. In this case, stats are taken off heavy
     # guided bomb launched from a keepstar. It has terrible agility for a charge, so takes a while
-    # to accelerate, but very high flight time. On top of that, it gets a sizeable bonus from the
-    # keepstar having large radius.
+    # to accelerate, but very high flight time. On top of that, it gets a sizeable flight time bonus
+    # from the keepstar due to it having huge radius
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=400, cycle_time=33600, reload_time=60000)
