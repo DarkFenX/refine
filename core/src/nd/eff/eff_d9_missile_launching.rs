@@ -30,8 +30,14 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Missile
+fn internal_get_dmg_kind(u_item: &UItem) -> NEffectDmgKind {
+    // There seems to be no way to see the difference between regular missiles and guided bombs,
+    // except for item type ID, group or some attributes. We stick to checking group, just because
+    // it seems to be the easiest way
+    match u_item.get_group_id() {
+        Some(ac::itemgrps::GUIDED_BOMB) => NEffectDmgKind::Bomb,
+        _ => NEffectDmgKind::Missile,
+    }
 }
 
 fn internal_get_dmg_opc(
