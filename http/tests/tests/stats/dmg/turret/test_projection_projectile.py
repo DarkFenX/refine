@@ -427,7 +427,7 @@ def test_turret_effect_range_optimal_absent(client, consts):
 
 
 def test_turret_effect_range_falloff_absent(client, consts):
-    # No optimal range defined - it is considered equal to 0
+    # No falloff range defined - it is considered equal to 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_falloff=False)
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
@@ -873,7 +873,7 @@ def test_tgt_attr_not_loaded(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 623, 0), movement=(0, 0, 0))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - in case angular is 0 and sig radius is 0, the lib nullifies damage
+    # Verification
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
