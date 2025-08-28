@@ -5,7 +5,7 @@ use super::err::{
     IterItemModifiersError,
 };
 use crate::{
-    def::{AttrId, AttrVal, ItemId, ItemTypeId},
+    def::{AttrId, AttrVal, Count, ItemId, ItemTypeId},
     err::basic::{ItemLoadedError, ItemReceiveProjError},
     misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
     sol::SolarSystem,
@@ -150,6 +150,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_mass(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_locks(&mut self) -> Result<Count, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_locks(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - damage

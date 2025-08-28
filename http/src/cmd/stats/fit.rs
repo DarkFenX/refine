@@ -46,6 +46,7 @@ pub(crate) struct HGetFitStatsCmd {
     align_time: Option<bool>,
     sig_radius: Option<bool>,
     mass: Option<bool>,
+    locks: Option<bool>,
     hp: Option<bool>,
     dps: Option<HStatOption<HStatOptionFitDps>>,
     volley: Option<HStatOption<HStatOptionFitVolley>>,
@@ -141,6 +142,9 @@ impl HGetFitStatsCmd {
         }
         if self.mass.unwrap_or(self.default) {
             stats.mass = core_fit.get_stat_mass().into();
+        }
+        if self.locks.unwrap_or(self.default) {
+            stats.locks = core_fit.get_stat_locks().into();
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();
