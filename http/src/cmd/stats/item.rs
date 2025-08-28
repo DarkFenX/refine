@@ -25,6 +25,7 @@ pub(crate) struct HGetItemStatsCmd {
     agility: Option<bool>,
     align_time: Option<bool>,
     sig_radius: Option<bool>,
+    mass: Option<bool>,
     dps: Option<HStatOption<HStatOptionItemDps>>,
     volley: Option<HStatOption<HStatOptionItemVolley>>,
     hp: Option<bool>,
@@ -55,6 +56,9 @@ impl HGetItemStatsCmd {
         }
         if self.sig_radius.unwrap_or(self.default) {
             stats.sig_radius = core_item.get_stat_sig_radius().into();
+        }
+        if self.mass.unwrap_or(self.default) {
+            stats.mass = core_item.get_stat_mass().into();
         }
         let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
         if dps_opt.enabled {

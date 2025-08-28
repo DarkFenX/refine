@@ -33,4 +33,11 @@ impl Svc {
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_sig_radius(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
+    pub(crate) fn get_stat_item_mass(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
+        Vast::get_stat_item_mass(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
 }

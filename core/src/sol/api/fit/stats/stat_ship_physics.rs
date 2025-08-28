@@ -17,4 +17,7 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_sig_radius(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_sig_radius()?)
     }
+    pub fn get_stat_mass(&mut self) -> Result<AttrVal, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_mass()?)
+    }
 }

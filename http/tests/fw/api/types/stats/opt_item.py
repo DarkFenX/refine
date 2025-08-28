@@ -17,6 +17,7 @@ class ItemStatsOptions:
     agility: StatOptionAlias = Absent
     align_time: StatOptionAlias = Absent
     sig_radius: StatOptionAlias = Absent
+    mass: StatOptionAlias = Absent
     dps: StatOptionItemDpsAlias = Absent
     volley: StatOptionItemVolleyAlias = Absent
     hp: StatOptionAlias = Absent

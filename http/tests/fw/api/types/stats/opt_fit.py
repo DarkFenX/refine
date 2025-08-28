@@ -43,6 +43,7 @@ class FitStatsOptions:
     agility: StatOptionAlias = Absent
     align_time: StatOptionAlias = Absent
     sig_radius: StatOptionAlias = Absent
+    mass: StatOptionAlias = Absent
     dps: StatOptionFitDpsAlias = Absent
     volley: StatOptionFitVolleyAlias = Absent
     hp: StatOptionAlias = Absent
