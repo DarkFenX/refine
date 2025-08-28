@@ -1,3 +1,3 @@
-pub(crate) use mobility::{get_sig_radius, get_speed};
+pub(crate) use physics::{get_sig_radius, get_speed};
 
-mod mobility;
+mod physics;
