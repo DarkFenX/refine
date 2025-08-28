@@ -28,13 +28,16 @@ In no particular order:
   - auto-charges are exposed as regular items so that it's possible to check their attributes and effects (but there are some limits, e.g. you cannot remove them)
 - fast & flexible fit validation
   - "try fit items" functionality which accepts list of items, checks which can be fit to a fit according to passed validation settings, and returns those which can be fit
+- fleet, fit and item stats
+  - some stats support various options, e.g. it is possible to get raw DPS output of a fit, or only vorton DPS of a fit applied to a specific item
 - reactive armor hardener support
-  - it is possible to fit multiple RAHs with different stats (validation fails, but they are properly simulated nevertheless)
+  - it is possible to fit multiple RAHs with different attributes (validation fails, but they are properly simulated nevertheless)
 - modifications applied via space component EVE system: things like insurgency tackle range, skyhook silo link, nexus event buff "mines", Pochven subpylons are defined via it
 - exposure of 3 attribute values for every attribute: base value, dogma value (like you see in game), and value with extra/hidden modifications applied (e.g. AAR rep amount multiplied by 3 if there is paste loaded, or hidden missile flight time bonus based on ship radius)
 - ability to disable most items (or special "ghost" state for modules) to completely disable modifications applied by them, with ability to check their attributes with all the received modifications
 - modification resistance support
 - falloff effect reduction
+- drone propulsion mode (cruise/chase), which affects their speed and signature, and can affect ability of various items apply to them
 - ability to override amount of fighters in a squad
 - ability to control effect run mode (force stop, force run, state compliance, full compliance)
 - list modifications applied upon an attribute, with meaningless modifications filtered out (e.g. multiplication by 1)
