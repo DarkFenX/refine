@@ -15,7 +15,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::UItemKey,
+    ud::{UItem, UItemKey},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::TGT_ATTACK;
@@ -26,7 +26,6 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         hc: NEffectHc {
-            dmg_kind: Some(NEffectDmgKind::Turret),
             charge: Some(NEffectCharge {
                 // Autocharge attribute ID is defined just for completeness of data. CCP Kestrel
                 // confirmed civilian guns use on-gun damage attributes, and ammo is possibly loaded
@@ -36,11 +35,16 @@ pub(super) fn mk_n_effect() -> NEffect {
                 location: NEffectChargeLoc::TargetAttack(ac::attrs::AMMO_LOADED),
                 activates_charge: false,
             }),
+            dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(get_dmg_opc),
             ..
         },
         ..
     }
+}
+
+fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
+    NEffectDmgKind::Turret
 }
 
 fn get_dmg_opc(

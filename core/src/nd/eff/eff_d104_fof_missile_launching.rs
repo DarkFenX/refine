@@ -11,7 +11,7 @@ use crate::{
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
-    ud::{UItemKey, UProjData},
+    ud::{UItem, UItemKey, UProjData},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::FOF_MISSILE_LAUNCHING;
@@ -22,12 +22,16 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         hc: NEffectHc {
-            dmg_kind: Some(NEffectDmgKind::Missile),
+            dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(internal_get_dmg_opc),
             ..
         },
         ..
     }
+}
+
+fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
+    NEffectDmgKind::Missile
 }
 
 fn internal_get_dmg_opc(

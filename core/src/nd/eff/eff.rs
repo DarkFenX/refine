@@ -10,7 +10,7 @@ use crate::{
         calc::{Calc, RawModifier},
         output::{Output, OutputDmgBreacher},
     },
-    ud::{UItemKey, UProjData},
+    ud::{UItem, UItemKey, UProjData},
     util::RMap,
 };
 
@@ -21,6 +21,7 @@ pub(crate) type NModProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2
 pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, EffectSpec);
 pub(crate) type NSpoolResolver = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, UItemKey, UProjData) -> AttrVal;
+pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
 pub(crate) type NNormalDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
@@ -48,7 +49,6 @@ pub(crate) struct NEffect {
 
 #[derive(Copy, Clone, Default)]
 pub(crate) struct NEffectHc {
-    pub(crate) dmg_kind: Option<NEffectDmgKind> = None,
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) kills_item: bool = false,
     // Effect modifier customization function ran during runtime in calculator service
@@ -61,6 +61,7 @@ pub(crate) struct NEffectHc {
     pub(crate) local_armor_rep_opc_getter: Option<NLocalRepGetter> = None,
     pub(crate) local_hull_rep_opc_getter: Option<NLocalRepGetter> = None,
     // Damage output
+    pub(crate) dmg_kind_getter: Option<NDmgKindGetter> = None,
     pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter> = None,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
     // Rep output

@@ -8,7 +8,7 @@ use crate::{
     nd::{NEffect, NEffectDmgKind, NEffectHc, eff::shared::proj_mult::get_breacher_proj_mult},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::OutputDmgBreacher},
-    ud::UItemKey,
+    ud::{UItem, UItemKey},
     util::trunc_unerr,
 };
 
@@ -20,12 +20,16 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         hc: NEffectHc {
-            dmg_kind: Some(NEffectDmgKind::Breacher),
+            dmg_kind_getter: Some(internal_get_dmg_kind),
             breacher_dmg_opc_getter: Some(get_dmg_opc),
             ..
         },
         ..
     }
+}
+
+fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
+    NEffectDmgKind::Breacher
 }
 
 fn get_dmg_opc(

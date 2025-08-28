@@ -15,10 +15,9 @@ use crate::{
         calc::Calc,
         output::{Output, OutputComplex, OutputSimple},
     },
-    ud::UItemKey,
+    ud::{UItem, UItemKey},
     util::floor_unerr,
 };
-
 // TODO: test if it uses surface-to-surface range (might use center-to-surface), and check if damage
 // TODO: radius is needed to be added to range or not
 
@@ -41,13 +40,17 @@ pub(super) fn mk_n_effect() -> NEffect {
         }),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
-            dmg_kind: Some(NEffectDmgKind::Superweapon),
             modifier_proj_mult_getter: Some(get_noapp_simple_proj_mult),
+            dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(get_dmg_opc),
             ..
         },
         ..
     }
+}
+
+fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
+    NEffectDmgKind::Superweapon
 }
 
 fn get_dmg_opc(

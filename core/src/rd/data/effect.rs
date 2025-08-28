@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AState},
     nd::{
-        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
+        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEffectCharge, NEffectChargeLoc, NEffectHc,
         NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
     },
     rd::{REffectKey, RItem},
@@ -98,9 +98,6 @@ impl REffect {
     pub(crate) fn kills_item(&self) -> bool {
         self.n_effect_hc.kills_item
     }
-    pub(crate) fn get_dmg_kind(&self) -> Option<NEffectDmgKind> {
-        self.n_effect_hc.dmg_kind
-    }
     pub(crate) fn get_calc_customizer(&self) -> Option<NCalcCustomizer> {
         self.n_effect_hc.calc_customizer
     }
@@ -118,6 +115,9 @@ impl REffect {
     }
     pub(crate) fn get_local_hull_rep_opc_getter(&self) -> Option<NLocalRepGetter> {
         self.n_effect_hc.local_hull_rep_opc_getter
+    }
+    pub(crate) fn get_dmg_kind_getter(&self) -> Option<NDmgKindGetter> {
+        self.n_effect_hc.dmg_kind_getter
     }
     pub(crate) fn get_normal_dmg_opc_getter(&self) -> Option<NNormalDmgGetter> {
         self.n_effect_hc.normal_dmg_opc_getter
