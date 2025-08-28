@@ -221,7 +221,7 @@ def test_application(client, consts):
     assert api_module_nonproj_stats.dps.one() == [0, 0, approx(0), approx(0)]
     assert api_module_nonproj_stats.volley.one() == [0, 0, approx(0), approx(0)]
     # Action
-    api_tgt_ship.change_ship(coordinates=(0, 13623, 0), movement=(90, 0, 1))
+    api_tgt_ship.change_ship(movement=(90, 0, 1))
     # Verification - no misses due to tracking, since target is moving directly away
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
