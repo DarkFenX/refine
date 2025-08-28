@@ -66,6 +66,7 @@ class DmgBasicInfo:
     bomb_effect_id: int
     smartbomb_effect_id: int
     dd_lance_debuff_effect_id: int
+    guided_bomb_group_id: int
 
 
 def setup_dmg_basics(
@@ -241,7 +242,8 @@ def setup_dmg_basics(
         breacher_effect_id=eve_breacher_effect_id,
         bomb_effect_id=eve_bomb_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
-        dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id)
+        dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id,
+        guided_bomb_group_id=consts.EveItemGrp.guided_bomb)
 
 
 def make_eve_ship(
@@ -604,6 +606,35 @@ def make_eve_bomb(
         attrs=attrs,
         eff_ids=[basic_info.bomb_effect_id],
         defeff_id=basic_info.bomb_effect_id)
+
+
+def make_eve_bomb_guided(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        volume: float | None = None,
+        speed: float | None = None,
+        flight_time: float | None = None,
+        mass: float | None = None,
+        agility: float | None = None,
+        exp_range: float | None = None,
+        exp_radius: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=exp_range)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
+    return client.mk_eve_item(
+        grp_id=basic_info.guided_bomb_group_id,
+        attrs=attrs,
+        eff_ids=[basic_info.missile_effect_id],
+        defeff_id=basic_info.missile_effect_id)
 
 
 def make_eve_drone(
