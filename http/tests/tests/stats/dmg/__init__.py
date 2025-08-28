@@ -35,12 +35,14 @@ class DmgBasicInfo:
     crystal_volatility_dmg_attr_id: int
     ammo_loaded_attr_id: int
     sig_radius_attr_id: int
+    prop_sig_radius_mult_attr_id: int
     radius_attr_id: int
     max_range_attr_id: int
     falloff_attr_id: int
     tracking_attr_id: int
     sig_resolution_attr_id: int
     emp_field_range_attr_id: int
+    entity_cruise_speed_attr_id: int
     max_velocity_attr_id: int
     flight_time_attr_id: int
     mass_attr_id: int
@@ -99,12 +101,14 @@ def setup_dmg_basics(
     eve_crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
     eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_prop_sig_radius_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_max_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
     eve_falloff_attr_id = client.mk_eve_attr(id_=consts.EveAttr.falloff)
     eve_tracking_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tracking_speed)
     eve_sig_resolution_attr_id = client.mk_eve_attr(id_=consts.EveAttr.optimal_sig_radius)
     eve_emp_field_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
+    eve_entity_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
     eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
@@ -207,12 +211,14 @@ def setup_dmg_basics(
         crystal_volatility_dmg_attr_id=eve_crystal_volatility_dmg_attr_id,
         ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
         sig_radius_attr_id=eve_sig_radius_attr_id,
+        prop_sig_radius_mult_attr_id=eve_prop_sig_radius_mult_attr_id,
         radius_attr_id=eve_radius_attr_id,
         max_range_attr_id=eve_max_range_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         tracking_attr_id=eve_tracking_attr_id,
         sig_resolution_attr_id=eve_sig_resolution_attr_id,
         emp_field_range_attr_id=eve_emp_field_range_attr_id,
+        entity_cruise_speed_attr_id=eve_entity_cruise_speed_attr_id,
         max_velocity_attr_id=eve_max_velocity_attr_id,
         flight_time_attr_id=eve_flight_time_attr_id,
         mass_attr_id=eve_mass_attr_id,
@@ -611,19 +617,25 @@ def make_eve_drone(
         range_falloff: float | None = None,
         tracking: float | None = None,
         sig_resolution: float | None = None,
-        speed: float | None = None,
+        speed_cruise: float | None = None,
+        speed_chase: float | None = None,
         radius: float | None = None,
+        sig_radius: float | None = None,
+        prop_sig_radius_mult: float | None = None,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
     _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
     _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
     _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
     _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.entity_cruise_speed_attr_id, value=speed_cruise)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed_chase)
     _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=sig_radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.prop_sig_radius_mult_attr_id, value=prop_sig_radius_mult)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],

@@ -15,7 +15,7 @@ def test_range(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_drone_id = make_eve_drone(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 64, 0), dmg_mult=8.6, cycle_time=4000,
-        range_optimal=6000, range_falloff=5000, tracking=0.97, sig_resolution=400, speed=2670, radius=35)
+        range_optimal=6000, range_falloff=5000, tracking=0.97, sig_resolution=400, speed_chase=2670, radius=35)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, speed=1600, sig_radius=1880, radius=215)
     client.create_sources()
     api_sol = client.create_sol()
