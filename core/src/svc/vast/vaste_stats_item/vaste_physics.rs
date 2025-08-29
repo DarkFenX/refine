@@ -9,7 +9,7 @@ use crate::{
         vast::Vast,
     },
     ud::{UItem, UItemKey, UShipKind},
-    util::{ceil_tick, ceil_unerr},
+    util::{ceil_tick, round_unerr},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -108,8 +108,8 @@ impl Vast {
                 item_locks = item_locks.min(character_locks)
             }
         }
-        // Non-integer locks can happen in Pochven where locks are halved
-        ceil_unerr(item_locks).into_inner() as Count
+        // Non-integer locks can happen in Pochven where locks are halved, halves are rounded up
+        round_unerr(item_locks).into_inner() as Count
     }
 }
 
