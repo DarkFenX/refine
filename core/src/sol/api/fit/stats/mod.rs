@@ -1,8 +1,9 @@
-pub use err::FitShipStatError;
+pub use err::{FitCharacterStatError, FitShipStatError};
 pub use stat_dmg::FitStatDmgAppliedError;
 
 mod err;
 mod shared;
+mod stat_char;
 mod stat_dmg;
 mod stat_remote_rps;
 mod stat_resource;

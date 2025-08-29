@@ -278,6 +278,7 @@ class EveAttr(IntEnum):
     rof_bonus = 293
     implantness = 331
     max_active_drones = 352
+    drone_control_distance = 458
     entity_cruise_speed = 508
     sig_radius = 552
     sig_radius_bonus = 554

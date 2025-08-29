@@ -21,6 +21,7 @@ class ItemStatsOptions:
     locks: StatOptionAlias = Absent
     lock_range: StatOptionAlias = Absent
     scan_res: StatOptionAlias = Absent
+    drone_control_range: StatOptionAlias = Absent
     dps: StatOptionItemDpsAlias = Absent
     volley: StatOptionItemVolleyAlias = Absent
     hp: StatOptionAlias = Absent

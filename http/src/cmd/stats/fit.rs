@@ -49,6 +49,7 @@ pub(crate) struct HGetFitStatsCmd {
     locks: Option<bool>,
     lock_range: Option<bool>,
     scan_res: Option<bool>,
+    drone_control_range: Option<bool>,
     hp: Option<bool>,
     dps: Option<HStatOption<HStatOptionFitDps>>,
     volley: Option<HStatOption<HStatOptionFitVolley>>,
@@ -153,6 +154,9 @@ impl HGetFitStatsCmd {
         }
         if self.scan_res.unwrap_or(self.default) {
             stats.scan_res = core_fit.get_stat_scan_res().into();
+        }
+        if self.drone_control_range.unwrap_or(self.default) {
+            stats.drone_control_range = core_fit.get_stat_drone_control_range().into();
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_fit.get_stat_hp().into();

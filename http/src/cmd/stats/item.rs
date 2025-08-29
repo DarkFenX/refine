@@ -29,6 +29,7 @@ pub(crate) struct HGetItemStatsCmd {
     locks: Option<bool>,
     lock_range: Option<bool>,
     scan_res: Option<bool>,
+    drone_control_range: Option<bool>,
     dps: Option<HStatOption<HStatOptionItemDps>>,
     volley: Option<HStatOption<HStatOptionItemVolley>>,
     hp: Option<bool>,
@@ -71,6 +72,9 @@ impl HGetItemStatsCmd {
         }
         if self.scan_res.unwrap_or(self.default) {
             stats.scan_res = core_item.get_stat_scan_res().into();
+        }
+        if self.drone_control_range.unwrap_or(self.default) {
+            stats.drone_control_range = core_item.get_stat_drone_control_range().into();
         }
         let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
         if dps_opt.enabled {
