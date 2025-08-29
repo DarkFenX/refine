@@ -53,7 +53,7 @@ def test_ship_no_value(client, consts):
     assert api_ship_stats.mass == 0
 
 
-def test_ship_no_ship(client, consts):
+def test_ship_absent(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.mass)
     client.create_sources()
     api_sol = client.create_sol()
@@ -126,7 +126,7 @@ def test_drone_modified(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 300},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 1350})
+    eve_drone_id = client.mk_eve_item(attrs={eve_mass_attr_id: 1350})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -159,7 +159,7 @@ def test_fighter_modified(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 300},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 873, eve_max_count_attr_id: 9})
+    eve_fighter_id = client.mk_eve_item(attrs={eve_mass_attr_id: 873, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -181,11 +181,11 @@ def test_fighter_modified(client, consts):
 
 def test_other(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
-    eve_drone_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 100})
+    eve_module_id = client.mk_eve_item(attrs={eve_mass_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_drone_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mass=True))
     assert api_module_stats.mass is None

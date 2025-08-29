@@ -158,7 +158,7 @@ def test_ship_no_value_agility(client, consts):
     assert api_ship_stats.align_time is None
 
 
-def test_ship_no_ship(client, consts):
+def test_ship_absent(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.agility)
     client.mk_eve_attr(id_=consts.EveAttr.mass)
     client.create_sources()
@@ -217,7 +217,7 @@ def test_drone_modified_agility(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -50},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_ship(attrs={eve_agility_attr_id: 100, eve_mass_attr_id: 10000})
+    eve_drone_id = client.mk_eve_item(attrs={eve_agility_attr_id: 100, eve_mass_attr_id: 10000})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -254,7 +254,7 @@ def test_fighter_modified_agility(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -50},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_ship(
+    eve_fighter_id = client.mk_eve_item(
         attrs={eve_agility_attr_id: 700, eve_mass_attr_id: 1000, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
@@ -281,7 +281,7 @@ def test_fighter_modified_agility(client, consts):
 def test_other(client, consts):
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
-    eve_module_id = client.mk_eve_ship(attrs={eve_agility_attr_id: 3.2, eve_mass_attr_id: 1050000})
+    eve_module_id = client.mk_eve_item(attrs={eve_agility_attr_id: 3.2, eve_mass_attr_id: 1050000})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

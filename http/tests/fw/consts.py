@@ -258,6 +258,7 @@ class EveAttr(IntEnum):
     tracking_speed = 160
     volume = 161
     radius = 162
+    max_locked_targets = 192
     missile_dmg_mult = 212
     shield_capacity = 263
     armor_hp = 265
