@@ -27,6 +27,8 @@ pub(crate) struct HGetItemStatsCmd {
     sig_radius: Option<bool>,
     mass: Option<bool>,
     locks: Option<bool>,
+    lock_range: Option<bool>,
+    scan_res: Option<bool>,
     dps: Option<HStatOption<HStatOptionItemDps>>,
     volley: Option<HStatOption<HStatOptionItemVolley>>,
     hp: Option<bool>,
@@ -63,6 +65,12 @@ impl HGetItemStatsCmd {
         }
         if self.locks.unwrap_or(self.default) {
             stats.locks = core_item.get_stat_locks().into();
+        }
+        if self.lock_range.unwrap_or(self.default) {
+            stats.lock_range = core_item.get_stat_lock_range().into();
+        }
+        if self.scan_res.unwrap_or(self.default) {
+            stats.scan_res = core_item.get_stat_scan_res().into();
         }
         let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
         if dps_opt.enabled {

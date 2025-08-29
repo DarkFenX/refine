@@ -4,3 +4,4 @@ mod tank;
 mod vaste_dmg;
 mod vaste_physics;
 mod vaste_rr;
+mod vaste_sensors;

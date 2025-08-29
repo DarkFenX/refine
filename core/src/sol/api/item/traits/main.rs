@@ -152,11 +152,26 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_mass(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+    // Stats - sensors
     fn get_stat_locks(&mut self) -> Result<Count, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_locks(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_lock_range(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_lock_range(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_scan_res(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_scan_res(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - damage

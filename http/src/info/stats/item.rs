@@ -20,6 +20,10 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) locks: TriStateField<rc::Count>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) lock_range: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) scan_res: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) dps: TriStateField<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) volley: TriStateField<Vec<Option<HStatDmg>>>,
@@ -49,6 +53,8 @@ impl HItemStats {
             sig_radius: TriStateField::default(),
             mass: TriStateField::default(),
             locks: TriStateField::default(),
+            lock_range: TriStateField::default(),
+            scan_res: TriStateField::default(),
             dps: TriStateField::default(),
             volley: TriStateField::default(),
             hp: TriStateField::default(),

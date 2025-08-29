@@ -45,6 +45,8 @@ class FitStatsOptions:
     sig_radius: StatOptionAlias = Absent
     mass: StatOptionAlias = Absent
     locks: StatOptionAlias = Absent
+    lock_range: StatOptionAlias = Absent
+    scan_res: StatOptionAlias = Absent
     dps: StatOptionFitDpsAlias = Absent
     volley: StatOptionFitVolleyAlias = Absent
     hp: StatOptionAlias = Absent

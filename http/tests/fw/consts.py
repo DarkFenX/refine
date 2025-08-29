@@ -234,6 +234,7 @@ class EveAttr(IntEnum):
     shield_bonus = 68
     agility = 70
     duration = 73
+    max_target_range = 76
     structure_dmg_amount = 83
     armor_dmg_amount = 84
     power_transfer_amount = 90
@@ -281,6 +282,7 @@ class EveAttr(IntEnum):
     sig_radius = 552
     sig_radius_bonus = 554
     cloaking_targeting_delay = 560
+    scan_resolution = 564
     speed_boost_factor = 567
     launcher_group2 = 602
     launcher_group3 = 603

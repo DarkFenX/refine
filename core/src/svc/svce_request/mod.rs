@@ -4,6 +4,7 @@ mod svce_req_stat_dmg;
 mod svce_req_stat_orr;
 mod svce_req_stat_phys;
 mod svce_req_stat_res;
+mod svce_req_stat_sens;
 mod svce_req_stat_slot;
 mod svce_req_stat_tank;
 mod svce_req_validation;

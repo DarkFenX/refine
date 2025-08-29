@@ -1,6 +1,6 @@
 use super::err::FitShipStatError;
 use crate::{
-    def::{AttrVal, Count},
+    def::AttrVal,
     sol::api::{FitMut, ItemMutCommon},
 };
 
@@ -19,8 +19,5 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_stat_mass(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_mass()?)
-    }
-    pub fn get_stat_locks(&mut self) -> Result<Count, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_locks()?)
     }
 }
