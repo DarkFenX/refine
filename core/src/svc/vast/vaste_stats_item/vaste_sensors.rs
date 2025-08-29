@@ -28,12 +28,11 @@ impl Vast {
         let u_item = ctx.u_data.items.get(item_key);
         if let UItem::Ship(u_ship) = u_item {
             let u_fit = ctx.u_data.fits.get(u_ship.get_fit_key());
-            if let Some(character_key) = u_fit.character {
-                if let Ok(character_locks) =
+            if let Some(character_key) = u_fit.character
+                && let Ok(character_locks) =
                     calc.get_item_attr_val_extra(ctx, character_key, &ac::attrs::MAX_LOCKED_TARGETS)
-                {
-                    item_locks = item_locks.min(character_locks)
-                }
+            {
+                item_locks = item_locks.min(character_locks)
             }
         }
         // Non-integer locks can happen in Pochven where locks are halved, halves are rounded up

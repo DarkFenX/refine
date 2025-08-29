@@ -8,7 +8,13 @@ from tests.fw.api import (
     StatsOptionItemDps,
     StatsOptionItemVolley,
 )
-from tests.tests.stats.dmg import make_eve_bomb_guided, make_eve_drone, make_eve_launcher, make_eve_ship, setup_dmg_basics
+from tests.tests.stats.dmg import (
+    make_eve_bomb_guided,
+    make_eve_drone,
+    make_eve_launcher,
+    make_eve_ship,
+    setup_dmg_basics,
+)
 
 
 def test_range(client, consts):
