@@ -67,7 +67,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Sensor, StatItemCheckError> {
-        item_check_sensors_no_drones(ctx, item_key)?;
+        item_check_sensors(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_sensor_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Sensor {

@@ -260,6 +260,10 @@ class EveAttr(IntEnum):
     volume = 161
     radius = 162
     max_locked_targets = 192
+    scan_radar_strength = 208
+    scan_ladar_strength = 209
+    scan_magnetometric_strength = 210
+    scan_gravimetric_strength = 211
     missile_dmg_mult = 212
     shield_capacity = 263
     armor_hp = 265
