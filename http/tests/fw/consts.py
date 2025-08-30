@@ -533,6 +533,14 @@ class ApiModRmMode(StrEnum):
 
 
 @unique
+class ApiSensorKind(StrEnum):
+    radar = 'radar'
+    gravimetric = 'gravimetric'
+    magnetometric = 'magnetometric'
+    ladar = 'ladar'
+
+
+@unique
 class ApiSideEffectOp(StrEnum):
     add = 'add'
     perc = 'perc'

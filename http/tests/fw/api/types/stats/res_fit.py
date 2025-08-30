@@ -7,6 +7,7 @@ from .stat_remote_rps import StatRemoteRps
 from .stat_resists import StatResists
 from .stat_resource import StatResource
 from .stat_rps import StatRps
+from .stat_sensor import StatSensor
 from .stat_slot import StatSlot
 
 
@@ -36,6 +37,7 @@ class FitStats(AttrDict):
             'drone_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
             'drone_bandwidth': AttrHookDef(func=lambda d: StatResource(data=d)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
+            'sensor': AttrHookDef(func=lambda d: StatSensor(data=d) if d is not None else None),
             'dps': AttrHookDef(func=lambda d: (
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),

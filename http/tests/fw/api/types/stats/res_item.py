@@ -6,12 +6,14 @@ from .stat_hp import StatHp
 from .stat_remote_rps import StatRemoteRps
 from .stat_resists import StatResists
 from .stat_rps import StatRps
+from .stat_sensor import StatSensor
 
 
 class ItemStats(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
+            'sensor': AttrHookDef(func=lambda d: StatSensor(data=d) if d is not None else None),
             'dps': AttrHookDef(func=lambda d: (
                 NttList(StatDmg(data=e) if e is not None else None for e in d )
                 if d is not None else None)),
