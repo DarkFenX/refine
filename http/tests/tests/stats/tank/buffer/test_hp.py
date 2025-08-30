@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 from tests.tests.stats.tank import (
     make_eve_local_aar,
@@ -1156,3 +1156,19 @@ def test_item_not_loaded(client, consts):
     assert api_drone_stats.hp is None
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(hp=True))
     assert api_fighter_stats.hp is None
+
+
+def test_not_requested(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), ship=True)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=False))
+    with check_no_field():
+        api_fit_stats.hp  # noqa: B018
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(hp=False))
+    with check_no_field():
+        api_ship_stats.hp  # noqa: B018

@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 
 
@@ -417,3 +417,20 @@ def test_limit(client, consts):
     assert api_fit_stats.probing_size == approx(1.08)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
     assert api_ship_stats.probing_size == approx(1.08)
+
+
+def test_not_requested(client, consts):
+    eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 20, eve_sig_radius_attr_id: 40})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=False))
+    with check_no_field():
+        api_fit_stats.probing_size  # noqa: B018
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=False))
+    with check_no_field():
+        api_ship_stats.probing_size  # noqa: B018

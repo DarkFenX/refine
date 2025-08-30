@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 
 
@@ -290,3 +290,24 @@ def test_other(client, consts):
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
     assert api_module_stats.agility is None
     assert api_module_stats.align_time is None
+
+
+def test_not_requested(client, consts):
+    eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_agility_attr_id: 3.2, eve_mass_attr_id: 1050000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=False, align_time=False))
+    with check_no_field():
+        api_fit_stats.agility  # noqa: B018
+    with check_no_field():
+        api_fit_stats.align_time  # noqa: B018
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=False, align_time=False))
+    with check_no_field():
+        api_ship_stats.agility  # noqa: B018
+    with check_no_field():
+        api_ship_stats.align_time  # noqa: B018

@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 
 
@@ -179,3 +179,19 @@ def test_other(client, consts):
     # Verification
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(speed=True))
     assert api_module_stats.speed is None
+
+
+def test_not_requested(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(speed=False))
+    with check_no_field():
+        api_fit_stats.speed  # noqa: B018
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(speed=False))
+    with check_no_field():
+        api_ship_stats.speed  # noqa: B018
