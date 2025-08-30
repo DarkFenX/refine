@@ -1,7 +1,6 @@
 use crate::{
     ac,
     def::{AttrVal, Count},
-    misc::{Sensor, SensorKind},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -104,6 +103,20 @@ impl Vast {
         }
         sensor
     }
+}
+
+#[derive(Copy, Clone)]
+pub struct Sensor {
+    pub kind: SensorKind,
+    pub strength: AttrVal,
+}
+
+#[derive(Copy, Clone)]
+pub enum SensorKind {
+    Radar,
+    Gravimetric,
+    Magnetometric,
+    Ladar,
 }
 
 fn item_check_sensors(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {

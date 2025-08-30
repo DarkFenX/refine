@@ -1,7 +1,10 @@
 use crate::{
     def::{AttrVal, Count},
-    misc::Sensor,
-    svc::{Svc, SvcCtx, err::StatItemCheckError, vast::Vast},
+    svc::{
+        Svc, SvcCtx,
+        err::StatItemCheckError,
+        vast::{Sensor, Vast},
+    },
     ud::{UData, UItemKey},
 };
 

@@ -7,11 +7,11 @@ use super::err::{
 use crate::{
     def::{AttrId, AttrVal, Count, ItemId, ItemTypeId},
     err::basic::{ItemLoadedError, ItemReceiveProjError},
-    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Sensor, Spool},
+    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
     sol::SolarSystem,
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
-        vast::{StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
+        vast::{Sensor, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
     },
     ud::{UEffectUpdates, UItemKey},
     util::GetId,

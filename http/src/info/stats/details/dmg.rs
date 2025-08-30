@@ -31,7 +31,7 @@ impl From<rc::stats::StatDmgApplied> for HStatDmg {
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]
-pub(crate) enum HStatDmgBreacher {
+enum HStatDmgBreacher {
     Raw(HStatDmgBreacherRaw),
     Applied(rc::AttrVal),
 }
@@ -50,7 +50,7 @@ impl From<rc::AttrVal> for HStatDmgBreacher {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
-pub(crate) struct HStatDmgBreacherRaw {
+struct HStatDmgBreacherRaw {
     absolute_max: rc::AttrVal,
     relative_max: rc::AttrVal,
 }

@@ -1,8 +1,8 @@
 use super::err::FitShipStatError;
 use crate::{
     def::{AttrVal, Count},
-    misc::Sensor,
     sol::api::{FitMut, ItemMutCommon},
+    svc::vast::Sensor,
 };
 
 impl<'a> FitMut<'a> {
