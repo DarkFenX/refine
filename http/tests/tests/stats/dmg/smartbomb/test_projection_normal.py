@@ -51,7 +51,7 @@ def test_range(client, consts):
     assert api_module_nonproj_stats.volley.one() == [approx(45), approx(45), approx(45), approx(45)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 10800, 0))
-    # Verification - since now smartbomb is barely out of range, it deals no damage
+    # Verification - since target is now barely out of range, smartbomb deals no damage
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
