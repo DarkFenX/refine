@@ -52,6 +52,7 @@ pub(crate) const FTR_ABIL_EVASION: EEffectId = 6439;
 pub(crate) const FTR_ABIL_AB: EEffectId = 6440;
 pub(crate) const FTR_ABIL_MWD: EEffectId = 6441;
 pub(crate) const FTR_ABIL_MJD: EEffectId = 6442;
+pub(crate) const POINT_DEFENSE: EEffectId = 6443;
 pub(crate) const FTR_ABIL_TACKLE: EEffectId = 6464;
 pub(crate) const FTR_ABIL_ATK_MISSILE: EEffectId = 6465;
 pub(crate) const DOOMSDAY_AOE_WEB: EEffectId = 6476;
