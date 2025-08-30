@@ -44,6 +44,8 @@ class FitStatsOptions:
     align_time: StatOptionAlias = Absent
     sig_radius: StatOptionAlias = Absent
     mass: StatOptionAlias = Absent
+    warp_speed: StatOptionAlias = Absent
+    max_warp_range: StatOptionAlias = Absent
     locks: StatOptionAlias = Absent
     lock_range: StatOptionAlias = Absent
     scan_res: StatOptionAlias = Absent

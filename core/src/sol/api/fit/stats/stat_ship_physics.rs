@@ -20,4 +20,10 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_mass(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_mass()?)
     }
+    pub fn get_stat_warp_speed(&mut self) -> Result<Option<AttrVal>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_warp_speed()?)
+    }
+    pub fn get_stat_max_warp_range(&mut self) -> Result<Option<AttrVal>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_max_warp_range()?)
+    }
 }

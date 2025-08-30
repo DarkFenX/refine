@@ -40,4 +40,18 @@ impl Svc {
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_mass(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
+    pub(crate) fn get_stat_item_warp_speed(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
+        Vast::get_stat_item_warp_speed(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
+    pub(crate) fn get_stat_item_max_warp_range(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
+        Vast::get_stat_item_max_warp_range(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
 }

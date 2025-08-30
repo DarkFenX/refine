@@ -63,6 +63,10 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) mass: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) warp_speed: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) max_warp_range: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) locks: TriStateField<rc::Count>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) lock_range: TriStateField<rc::AttrVal>,
@@ -125,6 +129,8 @@ impl HFitStats {
             align_time: TriStateField::default(),
             sig_radius: TriStateField::default(),
             mass: TriStateField::default(),
+            warp_speed: TriStateField::default(),
+            max_warp_range: TriStateField::default(),
             locks: TriStateField::default(),
             lock_range: TriStateField::default(),
             scan_res: TriStateField::default(),

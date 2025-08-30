@@ -89,6 +89,61 @@ impl Vast {
     fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
         calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MASS).unwrap()
     }
+    pub(in crate::svc) fn get_stat_item_warp_speed(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
+        item_check_warpable(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_warp_speed_unchecked(ctx, calc, item_key))
+    }
+    fn internal_get_stat_item_warp_speed_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Option<AttrVal> {
+        let base = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::BASE_WARP_SPEED)
+            .unwrap();
+        let mult = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_SPEED_MULTIPLIER)
+            .unwrap();
+        let result = base * mult;
+        match result > OF(0.0) {
+            true => Some(result),
+            false => None,
+        }
+    }
+    pub(in crate::svc) fn get_stat_item_max_warp_range(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
+        item_check_warpable(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_max_warp_range_unchecked(
+            ctx, calc, item_key,
+        ))
+    }
+    fn internal_get_stat_item_max_warp_range_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Option<AttrVal> {
+        // TODO: switch to using unchecked capacitor stat instead of direct attribute fetch, once
+        // TODO: the stat is implemented
+        let cap = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::CAPACITOR_CAPACITY)
+            .unwrap();
+        let mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key);
+        let warp_cap = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_CAPACITOR_NEED)
+            .unwrap();
+        let result = cap / mass / warp_cap;
+        match result.is_finite() && result > OF(0.0) {
+            true => Some(result),
+            false => None,
+        }
+    }
 }
 
 fn item_check_physic(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
@@ -109,6 +164,22 @@ fn item_check_physic_and_movable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), 
     let u_item = ctx.u_data.items.get(item_key);
     let is_loaded = match u_item {
         UItem::Drone(u_drone) => u_drone.is_loaded(),
+        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
+        UItem::Ship(u_ship) => match u_ship.get_kind() {
+            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
+            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
+        },
+        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
+    };
+    match is_loaded {
+        true => Ok(()),
+        false => Err(KeyedItemLoadedError { item_key }.into()),
+    }
+}
+
+fn item_check_warpable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let u_item = ctx.u_data.items.get(item_key);
+    let is_loaded = match u_item {
         UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
         UItem::Ship(u_ship) => match u_ship.get_kind() {
             UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),

@@ -46,6 +46,8 @@ pub(crate) struct HGetFitStatsCmd {
     align_time: Option<bool>,
     sig_radius: Option<bool>,
     mass: Option<bool>,
+    warp_speed: Option<bool>,
+    max_warp_range: Option<bool>,
     locks: Option<bool>,
     lock_range: Option<bool>,
     scan_res: Option<bool>,
@@ -147,6 +149,12 @@ impl HGetFitStatsCmd {
         }
         if self.mass.unwrap_or(self.default) {
             stats.mass = core_fit.get_stat_mass().into();
+        }
+        if self.warp_speed.unwrap_or(self.default) {
+            stats.warp_speed = core_fit.get_stat_warp_speed().unwrap_or_default().into();
+        }
+        if self.max_warp_range.unwrap_or(self.default) {
+            stats.max_warp_range = core_fit.get_stat_max_warp_range().unwrap_or_default().into();
         }
         if self.locks.unwrap_or(self.default) {
             stats.locks = core_fit.get_stat_locks().into();
