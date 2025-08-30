@@ -9,9 +9,9 @@ from tests.fw.api import (
     StatsOptionItemVolley,
 )
 from tests.tests.stats.dmg import (
+    make_eve_charge_normal,
     make_eve_drone,
     make_eve_ship,
-    make_eve_turret_charge_normal,
     make_eve_turret_proj,
     setup_dmg_basics,
 )
@@ -22,7 +22,7 @@ def test_range(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -136,7 +136,7 @@ def test_application(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -319,7 +319,7 @@ def test_npc_prop_mode(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_drone_id = make_eve_drone(
@@ -385,7 +385,7 @@ def test_turret_effect_range_optimal_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -432,7 +432,7 @@ def test_turret_effect_range_falloff_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -479,7 +479,7 @@ def test_turret_effect_tracking_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -513,7 +513,7 @@ def test_turret_attr_range_optimal_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -560,7 +560,7 @@ def test_turret_attr_range_falloff_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -607,7 +607,7 @@ def test_turret_attr_tracking_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -641,7 +641,7 @@ def test_turret_attr_sig_res_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -687,7 +687,7 @@ def test_turret_ship_attr_speed_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -733,7 +733,7 @@ def test_turret_ship_not_loaded(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = client.alloc_item_id()
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
@@ -779,7 +779,7 @@ def test_tgt_attr_speed_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, sig_radius=316)
@@ -825,7 +825,7 @@ def test_tgt_attr_sig_radius_absent(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300)
@@ -858,7 +858,7 @@ def test_tgt_attr_not_loaded(client, consts):
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
         range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
     eve_tgt_ship_id = client.alloc_item_id()

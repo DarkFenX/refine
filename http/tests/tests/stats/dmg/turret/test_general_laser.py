@@ -9,14 +9,14 @@ from tests.fw.api import (
     StatsOptionItemDps,
     StatsOptionItemVolley,
 )
-from tests.tests.stats.dmg import make_eve_turret_charge_crystal, make_eve_turret_laser, setup_dmg_basics
+from tests.tests.stats.dmg import make_eve_charge_crystal, make_eve_turret_laser, setup_dmg_basics
 
 
 def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=15, capacity=1, cycle_time=2050, reload_time=0.01)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
     client.create_sources()
@@ -74,10 +74,10 @@ def test_stacking(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=15, capacity=1, cycle_time=2050, reload_time=0.01)
-    eve_charge1_id = make_eve_turret_charge_crystal(
+    eve_charge1_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
-    eve_charge2_id = make_eve_turret_charge_crystal(
+    eve_charge2_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(8.9, 8.9, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
     client.create_sources()
@@ -105,7 +105,7 @@ def test_item_kind(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=15, capacity=1, cycle_time=2050, reload_time=0.01)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
     client.create_sources()
@@ -155,10 +155,10 @@ def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=15, capacity=1, cycle_time=2050, reload_time=0.01)
-    eve_charge1_id = make_eve_turret_charge_crystal(
+    eve_charge1_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
-    eve_charge2_id = make_eve_turret_charge_crystal(
+    eve_charge2_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(9, 2, 0, 0), volume=1,
         get_damaged=0, hp=1, vol_dmg=0.01, vol_chance=0.1)
     client.create_sources()

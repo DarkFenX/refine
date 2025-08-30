@@ -9,9 +9,9 @@ from tests.fw.api import (
     StatsOptionItemVolley,
 )
 from tests.tests.stats.dmg import (
+    make_eve_charge_normal,
     make_eve_drone,
     make_eve_ship,
-    make_eve_turret_charge_normal,
     make_eve_vorton,
     setup_dmg_basics,
 )
@@ -22,7 +22,7 @@ def test_range(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=1000)
@@ -94,7 +94,7 @@ def test_application(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
@@ -189,7 +189,7 @@ def test_npc_prop_mode(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_drone_id = make_eve_drone(
@@ -258,7 +258,7 @@ def test_vorton_effect_range_absent(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=1000)
@@ -308,7 +308,7 @@ def test_vorton_attr_range_absent(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=1000)
@@ -358,7 +358,7 @@ def test_vorton_attr_exp_radius_zero(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=0, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
@@ -408,7 +408,7 @@ def test_vorton_attr_exp_radius_absent(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
@@ -458,7 +458,7 @@ def test_vorton_attr_exp_speed_absent(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
@@ -508,7 +508,7 @@ def test_vorton_attr_drf_absent(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
@@ -558,7 +558,7 @@ def test_vorton_ship_not_loaded(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = client.alloc_item_id()
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100)
@@ -595,7 +595,7 @@ def test_tgt_attr_speed_absent(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, sig_radius=100)
@@ -645,7 +645,7 @@ def test_tgt_attr_sig_radius_absent(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000)
@@ -695,7 +695,7 @@ def test_tgt_not_loaded(client, consts):
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=166)
     eve_tgt_ship_id = client.alloc_item_id()

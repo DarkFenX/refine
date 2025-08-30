@@ -107,6 +107,7 @@ class EveEffect(IntEnum):
     ftr_abil_missiles = 6431
     ftr_abil_mwd = 6441
     ftr_abil_mjd = 6442
+    point_defense = 6443
     ftr_abil_attack_m = 6465
     doomsday_aoe_web = 6476
     ftr_abil_launch_bomb = 6485

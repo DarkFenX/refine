@@ -8,7 +8,7 @@ from tests.fw.api import (
     StatsOptionItemDps,
     StatsOptionItemVolley,
 )
-from tests.tests.stats.dmg import make_eve_ship, make_eve_turret_charge_crystal, make_eve_turret_laser, setup_dmg_basics
+from tests.tests.stats.dmg import make_eve_charge_crystal, make_eve_ship, make_eve_turret_laser, setup_dmg_basics
 
 
 def test_range(client, consts):
@@ -16,7 +16,7 @@ def test_range(client, consts):
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=36.25, capacity=1, cycle_time=6400, reload_time=0.01,
         range_optimal=220000, range_falloff=42200, tracking=0.6, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(20, 12, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=1550)
@@ -131,7 +131,7 @@ def test_application(client, consts):
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=36.25, capacity=1, cycle_time=6400, reload_time=0.01,
         range_optimal=220000, range_falloff=42200, tracking=0.6, sig_resolution=40000)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(20, 12, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=1550)

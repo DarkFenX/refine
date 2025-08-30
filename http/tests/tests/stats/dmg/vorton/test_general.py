@@ -9,14 +9,14 @@ from tests.fw.api import (
     StatsOptionItemDps,
     StatsOptionItemVolley,
 )
-from tests.tests.stats.dmg import make_eve_turret_charge_normal, make_eve_vorton, setup_dmg_basics
+from tests.tests.stats.dmg import make_eve_charge_normal, make_eve_vorton, setup_dmg_basics
 
 
 def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     client.create_sources()
     api_sol = client.create_sol()
@@ -73,9 +73,9 @@ def test_stacking(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
-    eve_charge1_id = make_eve_turret_charge_normal(
+    eve_charge1_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
-    eve_charge2_id = make_eve_turret_charge_normal(
+    eve_charge2_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(218, 0, 212, 0), volume=0.0125)
     client.create_sources()
     api_sol = client.create_sol()
@@ -102,7 +102,7 @@ def test_item_kind(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     client.create_sources()
     api_sol = client.create_sol()
@@ -151,7 +151,7 @@ def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
         client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
-    eve_charge_id = make_eve_turret_charge_normal(
+    eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     client.create_sources()
     api_sol = client.create_sol()

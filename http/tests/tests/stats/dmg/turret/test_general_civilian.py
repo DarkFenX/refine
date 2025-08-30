@@ -9,12 +9,12 @@ from tests.fw.api import (
     StatsOptionItemDps,
     StatsOptionItemVolley,
 )
-from tests.tests.stats.dmg import make_eve_turret_charge_crystal, make_eve_turret_civilian, setup_dmg_basics
+from tests.tests.stats.dmg import make_eve_charge_crystal, make_eve_turret_civilian, setup_dmg_basics
 
 
 def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 2, 3), volume=1,
         get_damaged=0, hp=1, vol_dmg=0.00025, vol_chance=1)
     eve_module_id = make_eve_turret_civilian(
@@ -70,7 +70,7 @@ def test_state(client, consts):
 
 def test_stacking(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 2, 3), volume=1,
         get_damaged=0, hp=1, vol_dmg=0.00025, vol_chance=1)
     eve_module_id = make_eve_turret_civilian(
@@ -99,7 +99,7 @@ def test_stacking(client, consts):
 
 def test_item_kind(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 2, 3), volume=1,
         get_damaged=0, hp=1, vol_dmg=0.00025, vol_chance=1)
     eve_module_id = make_eve_turret_civilian(
@@ -150,7 +150,7 @@ def test_item_kind(client, consts):
 
 def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_charge_id = make_eve_turret_charge_crystal(
+    eve_charge_id = make_eve_charge_crystal(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 2, 3), volume=1,
         get_damaged=0, hp=1, vol_dmg=0.00025, vol_chance=1)
     eve_module_id = make_eve_turret_civilian(
