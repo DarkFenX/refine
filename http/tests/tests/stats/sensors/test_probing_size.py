@@ -95,14 +95,22 @@ def test_ship_highest(client, consts):
     assert api_ship_stats.probing_size == approx(5.714286)
 
 
-def test_ship_sensors_value_zero(client, consts):
+def test_ship_sensors_value(client, consts):
     eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 0, eve_sig_radius_attr_id: 40})
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 0, eve_sig_radius_attr_id: 40})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 40})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
+    assert api_fit_stats.probing_size is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
+    assert api_ship_stats.probing_size is None
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
     assert api_fit_stats.probing_size is None
@@ -110,59 +118,22 @@ def test_ship_sensors_value_zero(client, consts):
     assert api_ship_stats.probing_size is None
 
 
-def test_ship_sensors_value_absent(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
-    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 40})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size is None
-
-
-def test_ship_sig_radius_value_zero(client, consts):
+def test_ship_sig_radius_value(client, consts):
     eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 20, eve_sig_radius_attr_id: 0})
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 20, eve_sig_radius_attr_id: 0})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 20})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
     assert api_fit_stats.probing_size == approx(1.08)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
     assert api_ship_stats.probing_size == approx(1.08)
-
-
-def test_ship_sig_radius_value_absent(client, consts):
-    eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
-    client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 20})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.08)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(1.08)
-
-
-def test_ship_both_values_zero(client, consts):
-    eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
-    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 0, eve_sig_radius_attr_id: 0})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
     assert api_fit_stats.probing_size is None
@@ -170,14 +141,22 @@ def test_ship_both_values_zero(client, consts):
     assert api_ship_stats.probing_size is None
 
 
-def test_ship_both_values_absent(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
-    client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
-    eve_ship_id = client.mk_eve_ship()
+def test_ship_both_values(client, consts):
+    eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_sensor_attr_id: 0, eve_sig_radius_attr_id: 0})
+    eve_ship2_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
+    assert api_fit_stats.probing_size is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
+    assert api_ship_stats.probing_size is None
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
     assert api_fit_stats.probing_size is None

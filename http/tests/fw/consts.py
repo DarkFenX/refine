@@ -255,6 +255,7 @@ class EveAttr(IntEnum):
     ammo_loaded = 127
     charge_size = 128
     launcher_group = 137
+    warp_capacitor_need = 153
     falloff = 158
     tracking_speed = 160
     volume = 161
@@ -283,12 +284,14 @@ class EveAttr(IntEnum):
     implantness = 331
     max_active_drones = 352
     drone_control_distance = 458
+    capacitor_capacity = 482
     entity_cruise_speed = 508
     sig_radius = 552
     sig_radius_bonus = 554
     cloaking_targeting_delay = 560
     scan_resolution = 564
     speed_boost_factor = 567
+    warp_speed_mult = 600
     launcher_group2 = 602
     launcher_group3 = 603
     charge_group1 = 604

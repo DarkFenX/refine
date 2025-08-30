@@ -102,13 +102,9 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Option<AttrVal> {
-        let base = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::BASE_WARP_SPEED)
+        let result = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_SPEED_MULT)
             .unwrap();
-        let mult = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_SPEED_MULTIPLIER)
-            .unwrap();
-        let result = base * mult;
         match result > OF(0.0) {
             true => Some(result),
             false => None,
@@ -119,7 +115,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check_warpable(ctx, item_key)?;
+        item_check_ship_warpable(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_max_warp_range_unchecked(
             ctx, calc, item_key,
         ))
@@ -135,10 +131,10 @@ impl Vast {
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::CAPACITOR_CAPACITY)
             .unwrap();
         let mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key);
-        let warp_cap = calc
+        let cap_need = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_CAPACITOR_NEED)
             .unwrap();
-        let result = cap / mass / warp_cap;
+        let result = cap / mass / cap_need;
         match result.is_finite() && result > OF(0.0) {
             true => Some(result),
             false => None,
@@ -181,6 +177,21 @@ fn item_check_warpable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCh
     let u_item = ctx.u_data.items.get(item_key);
     let is_loaded = match u_item {
         UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
+        UItem::Ship(u_ship) => match u_ship.get_kind() {
+            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
+            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
+        },
+        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
+    };
+    match is_loaded {
+        true => Ok(()),
+        false => Err(KeyedItemLoadedError { item_key }.into()),
+    }
+}
+
+fn item_check_ship_warpable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let u_item = ctx.u_data.items.get(item_key);
+    let is_loaded = match u_item {
         UItem::Ship(u_ship) => match u_ship.get_kind() {
             UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
             UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
