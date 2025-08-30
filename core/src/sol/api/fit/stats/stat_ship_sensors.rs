@@ -1,6 +1,7 @@
 use super::err::FitShipStatError;
 use crate::{
     def::{AttrVal, Count},
+    misc::Sensor,
     sol::api::{FitMut, ItemMutCommon},
 };
 
@@ -13,5 +14,8 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_stat_scan_res(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_scan_res()?)
+    }
+    pub fn get_stat_sensor(&mut self) -> Result<Sensor, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_sensor()?)
     }
 }

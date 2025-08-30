@@ -7,7 +7,7 @@ use super::err::{
 use crate::{
     def::{AttrId, AttrVal, Count, ItemId, ItemTypeId},
     err::basic::{ItemLoadedError, ItemReceiveProjError},
-    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
+    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Sensor, Spool},
     sol::SolarSystem,
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
@@ -172,6 +172,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_scan_res(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_sensor(&mut self) -> Result<Sensor, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_sensor(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - damage

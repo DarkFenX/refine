@@ -1,6 +1,7 @@
 use crate::{
     ac,
     def::{AttrVal, Count},
+    misc::{Sensor, SensorKind},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -61,6 +62,47 @@ impl Vast {
     fn internal_get_stat_item_scan_res_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
         calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_RESOLUTION)
             .unwrap()
+    }
+    pub(in crate::svc) fn get_stat_item_sensor(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Result<Sensor, StatItemCheckError> {
+        item_check_sensors_no_drones(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key))
+    }
+    fn internal_get_stat_item_sensor_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Sensor {
+        // Strength ties are resolved using the following order:
+        // Radar > ladar > magnetometric > gravimetric
+        let str_radar = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_RADAR_STRENGTH)
+            .unwrap();
+        let str_ladar = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_LADAR_STRENGTH)
+            .unwrap();
+        let str_magnet = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH)
+            .unwrap();
+        let str_grav = calc
+            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_GRAVIMETRIC_STRENGTH)
+            .unwrap();
+        let mut sensor = Sensor {
+            kind: SensorKind::Radar,
+            strength: str_radar,
+        };
+        if str_ladar > sensor.strength {
+            sensor.kind = SensorKind::Ladar;
+            sensor.strength = str_ladar;
+        }
+        if str_magnet > sensor.strength {
+            sensor.kind = SensorKind::Magnetometric;
+            sensor.strength = str_magnet;
+        }
+        if str_grav > sensor.strength {
+            sensor.kind = SensorKind::Gravimetric;
+            sensor.strength = str_grav;
+        }
+        sensor
     }
 }
 
