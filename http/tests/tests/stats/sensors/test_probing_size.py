@@ -136,9 +136,9 @@ def test_ship_sig_radius_value(client, consts):
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size is None
+    assert api_fit_stats.probing_size == approx(1.08)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size is None
+    assert api_ship_stats.probing_size == approx(1.08)
 
 
 def test_ship_both_values(client, consts):
