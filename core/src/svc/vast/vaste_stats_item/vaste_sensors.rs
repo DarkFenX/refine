@@ -107,14 +107,22 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
         item_check_sensors(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_probing_size_unchecked(ctx, calc, item_key))
     }
-    fn internal_get_stat_item_probing_size_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+    fn internal_get_stat_item_probing_size_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Option<AttrVal> {
         let sensor_str = Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key).strength;
         let sig_radius = Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key);
-        (sig_radius / sensor_str).max(OF(1.08))
+        let ratio = sig_radius / sensor_str;
+        match ratio.is_finite() {
+            true => Some(ratio.max(OF(1.08))),
+            false => None,
+        }
     }
 }
 

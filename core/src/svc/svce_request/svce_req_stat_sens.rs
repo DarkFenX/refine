@@ -41,7 +41,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_probing_size(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
 }

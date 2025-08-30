@@ -79,7 +79,7 @@ impl HGetItemStatsCmd {
             stats.sensor = core_item.get_stat_sensor().into();
         }
         if self.probing_size.unwrap_or(self.default) {
-            stats.probing_size = core_item.get_stat_probing_size().into();
+            stats.probing_size = core_item.get_stat_probing_size().unwrap_or_default().into();
         }
         if self.drone_control_range.unwrap_or(self.default) {
             stats.drone_control_range = core_item.get_stat_drone_control_range().into();

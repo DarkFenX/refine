@@ -161,7 +161,7 @@ impl HGetFitStatsCmd {
             stats.sensor = core_fit.get_stat_sensor().into();
         }
         if self.probing_size.unwrap_or(self.default) {
-            stats.probing_size = core_fit.get_stat_probing_size().into();
+            stats.probing_size = core_fit.get_stat_probing_size().unwrap_or_default().into();
         }
         if self.drone_control_range.unwrap_or(self.default) {
             stats.drone_control_range = core_fit.get_stat_drone_control_range().into();
