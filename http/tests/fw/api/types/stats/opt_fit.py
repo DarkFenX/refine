@@ -48,6 +48,7 @@ class FitStatsOptions:
     lock_range: StatOptionAlias = Absent
     scan_res: StatOptionAlias = Absent
     sensor: StatOptionAlias = Absent
+    probing_size: StatOptionAlias = Absent
     drone_control_range: StatOptionAlias = Absent
     dps: StatOptionFitDpsAlias = Absent
     volley: StatOptionFitVolleyAlias = Absent

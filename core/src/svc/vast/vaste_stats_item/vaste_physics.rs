@@ -71,7 +71,11 @@ impl Vast {
         item_check_physic(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key))
     }
-    fn internal_get_stat_item_sig_radius_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+    pub(super) fn internal_get_stat_item_sig_radius_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> AttrVal {
         item_funcs::get_sig_radius(ctx, calc, item_key).unwrap()
     }
     pub(in crate::svc) fn get_stat_item_mass(

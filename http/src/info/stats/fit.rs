@@ -71,6 +71,8 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) sensor: TriStateField<HSensor>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) probing_size: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) drone_control_range: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) dps: Option<Vec<Option<HStatDmg>>>,
@@ -127,6 +129,7 @@ impl HFitStats {
             lock_range: TriStateField::default(),
             scan_res: TriStateField::default(),
             sensor: TriStateField::default(),
+            probing_size: TriStateField::default(),
             drone_control_range: TriStateField::default(),
             dps: Option::default(),
             volley: Option::default(),

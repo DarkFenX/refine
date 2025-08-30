@@ -181,6 +181,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_sensor(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+    fn get_stat_probing_size(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_probing_size(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
     // Stats - damage
     fn get_stat_dps(
         &mut self,

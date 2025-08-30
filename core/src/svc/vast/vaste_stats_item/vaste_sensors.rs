@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    def::{AttrVal, Count},
+    def::{AttrVal, Count, OF},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -102,6 +102,19 @@ impl Vast {
             sensor.strength = str_grav;
         }
         sensor
+    }
+    pub(in crate::svc) fn get_stat_item_probing_size(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
+        item_check_sensors(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_probing_size_unchecked(ctx, calc, item_key))
+    }
+    fn internal_get_stat_item_probing_size_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+        let sensor_str = Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key).strength;
+        let sig_radius = Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key);
+        (sig_radius / sensor_str).max(OF(1.08))
     }
 }
 
