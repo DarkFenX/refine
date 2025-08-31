@@ -12,7 +12,7 @@ Data cachers for core library, which allow it to cache adapted data. Adapted dat
 HTTP interface to the library.
 
 # Documentation
-HTTP is considered as main interface, and it will be documented later. Until then, the easiest way to see how it works is to check tests and test framework client. 
+HTTP is considered as main interface, and it will be documented later. Until then, the easiest way to see how it works is to check tests and test framework client, as well as [non-synthetic-data tests](http/tests/playground/actual_data.py) which use it.
 
 # Features
 In no particular order:
