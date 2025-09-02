@@ -14,9 +14,9 @@ use chrono::Utc;
 use itertools::Itertools;
 use rand::{Rng, SeedableRng};
 use rc::{
-    AddMode, ItemCommon, ItemMutCommon, Lender, MinionState, ModRack, ModuleState, SecZone, SecZoneCorruption,
+    AddMode, ItemCommon, ItemMutCommon, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone, SecZoneCorruption,
     SkillLevel, SolarSystem, Src, VERSION,
-    ad::{AItemKind, AState, AdaptedDataCacher},
+    ad::{AState, AdaptedDataCacher},
     ed::EveDataHandler,
     val::ValOptions,
 };
@@ -62,7 +62,7 @@ fn test_random(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     let src = Src::new(dh, Some(ch)).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let mut fit = sol_sys.add_fit();
-    let mut fighter = fit.add_fighter(40562, MinionState::InBay);
+    let mut fighter = fit.add_fighter(40562, MinionState::InBay, None, None);
     let autocharges: Vec<_> = fighter
         .iter_autocharges_mut()
         .map_into_iter(|v| v.get_item_id())
@@ -75,7 +75,7 @@ fn test_crusader(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     let src = Src::new(dh, Some(ch)).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let mut fit = sol_sys.add_fit();
-    let ship_id = fit.set_ship(11184).get_item_id();
+    let ship_id = fit.set_ship(11184, None, None).get_item_id();
     for skill_id in skill_ids.iter() {
         fit.add_skill(skill_id.to_owned(), SkillLevel::new_clamped(5));
     }
@@ -158,7 +158,7 @@ fn test_nphoon(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     fit.add_booster(45999); // Pyro 2
 
     // Ship
-    fit.set_ship(32311); // NTyphoon
+    fit.set_ship(32311, None, None); // NTyphoon
 
     // High slots
     for _ in 0..2 {
@@ -211,10 +211,10 @@ fn test_nphoon(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
 
     // Drones
     for _ in 0..5 {
-        fit.add_drone(2446, MinionState::Engaging); // T2 ogre
+        fit.add_drone(2446, MinionState::Engaging, None, None, NpcProp::Chase); // T2 ogre
     }
     for _ in 0..2 {
-        fit.add_drone(2446, MinionState::InBay); // T2 ogre
+        fit.add_drone(2446, MinionState::InBay, None, None, NpcProp::Chase); // T2 ogre
     }
 
     let val_options = ValOptions::all_enabled();
