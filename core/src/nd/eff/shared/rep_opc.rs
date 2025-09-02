@@ -210,12 +210,6 @@ fn get_remote_rep_opc(
         false => eff_funcs::get_effect_duration_s(ctx, calc, projector_key, projector_effect)?,
     };
     if let Some(projectee_key) = projectee_key {
-        // Effect resistance reduction
-        if let Some(rr_mult) =
-            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
-        {
-            amount *= rr_mult;
-        }
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
@@ -223,6 +217,12 @@ fn get_remote_rep_opc(
             projectee_key,
         );
         amount *= proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        // Effect resistance reduction
+        if let Some(rr_mult) =
+            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
+        {
+            amount *= rr_mult;
+        }
         // Total resource pool limit
         if let Some(hp) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, limit_attr_id) {
             amount = amount.min(hp);

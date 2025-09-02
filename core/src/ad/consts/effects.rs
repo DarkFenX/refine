@@ -60,6 +60,7 @@ pub(crate) const FTR_ABIL_MJD: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_MJD);
 pub(crate) const POINT_DEFENSE: AEffectId = AEffectId::Dogma(ece::POINT_DEFENSE);
 pub(crate) const FTR_ABIL_TACKLE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_TACKLE);
 pub(crate) const FTR_ABIL_ATK_MISSILE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_ATK_MISSILE);
+pub(crate) const REMOTE_ECM_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_ECM_FALLOFF);
 pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_WEB);
 pub(crate) const DOOMSDAY_AOE_TRACK: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_TRACK);
 pub(crate) const DOOMSDAY_AOE_DAMP: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_DAMP);

@@ -55,6 +55,7 @@ pub(crate) const FTR_ABIL_MJD: EEffectId = 6442;
 pub(crate) const POINT_DEFENSE: EEffectId = 6443;
 pub(crate) const FTR_ABIL_TACKLE: EEffectId = 6464;
 pub(crate) const FTR_ABIL_ATK_MISSILE: EEffectId = 6465;
+pub(crate) const REMOTE_ECM_FALLOFF: EEffectId = 6470;
 pub(crate) const DOOMSDAY_AOE_WEB: EEffectId = 6476;
 pub(crate) const DOOMSDAY_AOE_TRACK: EEffectId = 6479;
 pub(crate) const DOOMSDAY_AOE_DAMP: EEffectId = 6481;

@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::AttrVal,
     ed,
-    misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
+    misc::{DmgKinds, Ecm, EffectSpec, ResolvedSpool, Spool},
     nd::{NEffectCharge, NEffectDmgKind},
     rd,
     svc::{
@@ -29,6 +29,7 @@ pub(crate) type NBreacherDmgGetter =
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<AttrVal>>;
 pub(crate) type NRemoteRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
+pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Ecm>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -69,4 +70,6 @@ pub(crate) struct NEffectHc {
     pub(crate) remote_armor_rep_opc_getter: Option<NRemoteRepGetter> = None,
     pub(crate) remote_hull_rep_opc_getter: Option<NRemoteRepGetter> = None,
     pub(crate) remote_cap_rep_opc_getter: Option<NRemoteRepGetter> = None,
+    // Ewar
+    pub(crate) ecm_opc_getter: Option<NEcmGetter> = None,
 }

@@ -83,10 +83,10 @@ fn get_dmg_opc(
     Some(
         match calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_CYCLE_TIME)? {
             interval_ms if interval_ms > OF(0.0) => {
-                let duration =
+                let duration_s =
                     calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_DURATION)?
                         / OF(1000.0);
-                let repeats = floor_unerr(duration / (interval_ms / OF(1000.0))).into_inner() as Count;
+                let repeats = floor_unerr(duration_s / (interval_ms / OF(1000.0))).into_inner() as Count;
                 Output::Complex(OutputComplex {
                     amount: DmgKinds {
                         em: dmg_em,

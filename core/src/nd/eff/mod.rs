@@ -1,8 +1,8 @@
 use std::{collections::HashMap, sync::LazyLock};
 
 pub(crate) use eff::{
-    NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEffect, NEffectHc, NLocalRepGetter, NNormalDmgGetter,
-    NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
+    NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NEffect, NEffectHc, NLocalRepGetter,
+    NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
 };
 pub(crate) use shared::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind};
 
@@ -48,6 +48,7 @@ mod eff_d6424_ship_mod_tracking_disruptor;
 mod eff_d6426_remote_webifier_falloff;
 mod eff_d6427_remote_sensor_boost_falloff;
 mod eff_d6443_point_defense;
+mod eff_d6470_remote_ecm_falloff;
 mod eff_d6476_doomsday_aoe_web;
 mod eff_d6479_doomsday_aoe_track;
 mod eff_d6481_doomsday_aoe_damp;
@@ -144,6 +145,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6426_remote_webifier_falloff::mk_n_effect(),
         eff_d6427_remote_sensor_boost_falloff::mk_n_effect(),
         eff_d6443_point_defense::mk_n_effect(),
+        eff_d6470_remote_ecm_falloff::mk_n_effect(),
         eff_d6476_doomsday_aoe_web::mk_n_effect(),
         eff_d6479_doomsday_aoe_track::mk_n_effect(),
         eff_d6481_doomsday_aoe_damp::mk_n_effect(),
