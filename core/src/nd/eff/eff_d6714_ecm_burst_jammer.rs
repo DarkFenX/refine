@@ -1,56 +1,29 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::{AttrVal, OF},
+    def::OF,
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, Spool},
-    nd::{
-        NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::{dmg_opc::get_dmg_opc_missile, proj_mult::get_bomb_proj_mult},
-    },
+    misc::{Ecm, EffectSpec},
+    nd::{NEffect, NEffectHc, eff::shared::proj_mult::get_noapp_simple_proj_mult},
     rd::REffect,
-    svc::{SvcCtx, calc::Calc, eff_funcs, output::Output},
-    ud::{UItem, UItemKey},
+    svc::{SvcCtx, calc::Calc, eff_funcs},
+    ud::UItemKey,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::BOMB_LAUNCHING;
-const A_EFFECT_ID: AEffectId = ac::effects::BOMB_LAUNCHING;
+const E_EFFECT_ID: EEffectId = ec::effects::ECM_BURST_JAMMER;
+const A_EFFECT_ID: AEffectId = ac::effects::ECM_BURST_JAMMER;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         hc: NEffectHc {
-            dmg_kind_getter: Some(internal_get_dmg_kind),
-            normal_dmg_opc_getter: Some(internal_get_dmg_opc),
             ecm_opc_getter: Some(internal_get_ecm_opc),
             ..
         },
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Bomb
-}
-
-fn internal_get_dmg_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _spool: Option<Spool>,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<DmgKinds<AttrVal>>> {
-    get_dmg_opc_missile(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        projectee_key,
-        get_bomb_proj_mult,
-    )
 }
 
 fn internal_get_ecm_opc(
@@ -66,10 +39,6 @@ fn internal_get_ecm_opc(
     let mut str_grav =
         calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_BONUS)?;
     let mut str_ladar = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_LADAR_STRENGTH_BONUS)?;
-    // Do not return ECM stats for non-ecm bombs
-    if str_radar <= OF(0.0) && str_magnet <= OF(0.0) && str_grav <= OF(0.0) && str_ladar <= OF(0.0) {
-        return None;
-    }
     if let Some(projectee_key) = projectee_key {
         let mut mult = OF(1.0);
         // Projection reduction
@@ -78,7 +47,7 @@ fn internal_get_ecm_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        mult *= get_bomb_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        mult *= get_noapp_simple_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Effect resistance reduction
         if let Some(rr_mult) =
             eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)

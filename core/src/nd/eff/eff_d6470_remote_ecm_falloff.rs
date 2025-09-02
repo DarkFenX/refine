@@ -19,14 +19,14 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         hc: NEffectHc {
-            ecm_opc_getter: Some(get_ecm_opc),
+            ecm_opc_getter: Some(internal_get_ecm_opc),
             ..
         },
         ..
     }
 }
 
-fn get_ecm_opc(
+fn internal_get_ecm_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

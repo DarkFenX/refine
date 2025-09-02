@@ -53,6 +53,7 @@ mod eff_d6476_doomsday_aoe_web;
 mod eff_d6479_doomsday_aoe_track;
 mod eff_d6481_doomsday_aoe_damp;
 mod eff_d6485_ftr_abil_bomb;
+mod eff_d6513_doomsday_aoe_ecm;
 mod eff_d660_missile_em_dmg_bonus;
 mod eff_d661_missile_expl_dmg_bonus;
 mod eff_d662_missile_therm_dmg_bonus;
@@ -60,6 +61,7 @@ mod eff_d6651_ship_mod_ancillary_remote_armor_repairer;
 mod eff_d6652_ship_mod_ancillary_remote_shield_booster;
 mod eff_d6682_struct_mod_effect_stasis_webifier;
 mod eff_d6684_struct_mod_effect_remote_sensor_dampener;
+mod eff_d6685_struct_mod_effect_ecm;
 mod eff_d6686_struct_mod_effect_weapon_disruption;
 mod eff_d6687_npc_entity_remote_armor_repairer;
 mod eff_d6688_npc_entity_remote_shield_booster;
@@ -68,6 +70,8 @@ mod eff_d668_missile_kin_dmg_bonus;
 mod eff_d6690_remote_webifier_entity;
 mod eff_d6693_remote_sensor_damp_entity;
 mod eff_d6694_npc_entity_weapon_disruptor;
+mod eff_d6695_entity_ecm_falloff;
+mod eff_d6714_ecm_burst_jammer;
 mod eff_d6730_mod_bonus_microwarpdrive;
 mod eff_d6731_mod_bonus_afterburner;
 mod eff_d6732_warfare_link_armor;
@@ -150,10 +154,12 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6479_doomsday_aoe_track::mk_n_effect(),
         eff_d6481_doomsday_aoe_damp::mk_n_effect(),
         eff_d6485_ftr_abil_bomb::mk_n_effect(),
+        eff_d6513_doomsday_aoe_ecm::mk_n_effect(),
         eff_d6651_ship_mod_ancillary_remote_armor_repairer::mk_n_effect(),
         eff_d6652_ship_mod_ancillary_remote_shield_booster::mk_n_effect(),
         eff_d6682_struct_mod_effect_stasis_webifier::mk_n_effect(),
         eff_d6684_struct_mod_effect_remote_sensor_dampener::mk_n_effect(),
+        eff_d6685_struct_mod_effect_ecm::mk_n_effect(),
         eff_d6686_struct_mod_effect_weapon_disruption::mk_n_effect(),
         eff_d6687_npc_entity_remote_armor_repairer::mk_n_effect(),
         eff_d6688_npc_entity_remote_shield_booster::mk_n_effect(),
@@ -161,6 +167,8 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6690_remote_webifier_entity::mk_n_effect(),
         eff_d6693_remote_sensor_damp_entity::mk_n_effect(),
         eff_d6694_npc_entity_weapon_disruptor::mk_n_effect(),
+        eff_d6695_entity_ecm_falloff::mk_n_effect(),
+        eff_d6714_ecm_burst_jammer::mk_n_effect(),
         eff_d6730_mod_bonus_microwarpdrive::mk_n_effect(),
         eff_d6731_mod_bonus_afterburner::mk_n_effect(),
         eff_d6732_warfare_link_armor::mk_n_effect(),

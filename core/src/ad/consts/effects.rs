@@ -65,6 +65,7 @@ pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AO
 pub(crate) const DOOMSDAY_AOE_TRACK: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_TRACK);
 pub(crate) const DOOMSDAY_AOE_DAMP: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_DAMP);
 pub(crate) const FTR_ABIL_BOMB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_BOMB);
+pub(crate) const DOOMSDAY_AOE_ECM: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_ECM);
 pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_KAMIKAZE);
 pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: AEffectId =
     AEffectId::Dogma(ece::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER);
@@ -74,6 +75,7 @@ pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: AEffectId =
     AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
 pub(crate) const STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER: AEffectId =
     AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER);
+pub(crate) const STRUCT_MOD_EFFECT_ECM: AEffectId = AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_ECM);
 pub(crate) const STRUCT_MOD_EFFECT_WEAPON_DISRUPTION: AEffectId =
     AEffectId::Dogma(ece::STRUCT_MOD_EFFECT_WEAPON_DISRUPTION);
 pub(crate) const NPC_ENTITY_REMOTE_ARMOR_REPAIRER: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_REMOTE_ARMOR_REPAIRER);
@@ -82,6 +84,8 @@ pub(crate) const NPC_ENTITY_REMOTE_HULL_REPAIRER: AEffectId = AEffectId::Dogma(e
 pub(crate) const REMOTE_SENSOR_DAMP_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_SENSOR_DAMP_ENTITY);
 pub(crate) const NPC_ENTITY_WEAPON_DISRUPTOR: AEffectId = AEffectId::Dogma(ece::NPC_ENTITY_WEAPON_DISRUPTOR);
 pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_ENTITY);
+pub(crate) const ENTITY_ECM_FALLOFF: AEffectId = AEffectId::Dogma(ece::ENTITY_ECM_FALLOFF);
+pub(crate) const ECM_BURST_JAMMER: AEffectId = AEffectId::Dogma(ece::ECM_BURST_JAMMER);
 pub(crate) const MOD_BONUS_MICROWARPDRIVE: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_MICROWARPDRIVE);
 pub(crate) const MOD_BONUS_AFTERBURNER: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_AFTERBURNER);
 pub(crate) const MOD_BONUS_WARFARE_LINK_ARMOR: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_WARFARE_LINK_ARMOR);
