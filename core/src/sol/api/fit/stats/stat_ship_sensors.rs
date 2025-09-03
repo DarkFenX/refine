@@ -21,4 +21,7 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_probing_size(&mut self) -> Result<Option<AttrVal>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_probing_size()?)
     }
+    pub fn get_stat_jam_chance(&mut self) -> Result<AttrVal, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_jam_chance()?)
+    }
 }
