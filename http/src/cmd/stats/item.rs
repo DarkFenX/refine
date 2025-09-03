@@ -33,6 +33,7 @@ pub(crate) struct HGetItemStatsCmd {
     scan_res: Option<bool>,
     sensor: Option<bool>,
     probing_size: Option<bool>,
+    jam_chance: Option<bool>,
     drone_control_range: Option<bool>,
     dps: Option<HStatOption<HStatOptionItemDps>>,
     volley: Option<HStatOption<HStatOptionItemVolley>>,
@@ -88,6 +89,9 @@ impl HGetItemStatsCmd {
         }
         if self.probing_size.unwrap_or(self.default) {
             stats.probing_size = core_item.get_stat_probing_size().unwrap_or_default().into();
+        }
+        if self.jam_chance.unwrap_or(self.default) {
+            stats.jam_chance = core_item.get_stat_jam_chance().into();
         }
         if self.drone_control_range.unwrap_or(self.default) {
             stats.drone_control_range = core_item.get_stat_drone_control_range().into();

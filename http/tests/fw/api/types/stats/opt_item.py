@@ -25,6 +25,7 @@ class ItemStatsOptions:
     scan_res: StatOptionAlias = Absent
     sensor: StatOptionAlias = Absent
     probing_size: StatOptionAlias = Absent
+    jam_chance: StatOptionAlias = Absent
     drone_control_range: StatOptionAlias = Absent
     dps: StatOptionItemDpsAlias = Absent
     volley: StatOptionItemVolleyAlias = Absent
