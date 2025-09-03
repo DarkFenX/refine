@@ -1,8 +1,8 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AState},
     nd::{
-        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEffectCharge, NEffectChargeLoc, NEffectHc,
-        NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
+        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NEffectCharge, NEffectChargeLoc,
+        NEffectHc, NLocalRepGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
     },
     rd::{REffectKey, RItem},
     util::{GetId, Named, RMap},
@@ -136,6 +136,9 @@ impl REffect {
     }
     pub(crate) fn get_remote_cap_rep_opc_getter(&self) -> Option<NRemoteRepGetter> {
         self.n_effect_hc.remote_cap_rep_opc_getter
+    }
+    pub(crate) fn get_ecm_opc_getter(&self) -> Option<NEcmGetter> {
+        self.n_effect_hc.ecm_opc_getter
     }
     // Methods which expose info generated during runtime
     pub(crate) fn get_key(&self) -> REffectKey {

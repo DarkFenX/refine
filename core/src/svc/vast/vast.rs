@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
-    nd::{NBreacherDmgGetter, NLocalRepGetter, NNormalDmgGetter, NRemoteRepGetter},
+    nd::{NBreacherDmgGetter, NEcmGetter, NLocalRepGetter, NNormalDmgGetter, NRemoteRepGetter},
     rd::{REffectKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -22,6 +22,8 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    // Ewar
+    pub(in crate::svc::vast) iecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
@@ -33,6 +35,7 @@ impl Vast {
             irr_armor: RMapRMapRMap::new(),
             irr_armor_limitable: RMapRMapRMap::new(),
             irr_hull: RMapRMapRMap::new(),
+            iecm: RMapRMapRMap::new(),
         }
     }
     pub(in crate::svc) fn get_fit_data(&self, fit_key: &UFitKey) -> &VastFitData {

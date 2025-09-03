@@ -67,6 +67,10 @@ impl Vast {
             self.irr_hull
                 .add_entry(projectee_key, projector_key, r_effect.get_key(), rep_getter);
         }
+        if let Some(ecm_getter) = r_effect.get_ecm_opc_getter() {
+            self.iecm
+                .add_entry(projectee_key, projector_key, r_effect.get_key(), ecm_getter);
+        }
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
@@ -127,6 +131,9 @@ impl Vast {
         if r_effect.get_remote_hull_rep_opc_getter().is_some() {
             self.irr_hull
                 .remove_l3(&projectee_key, &projector_key, &r_effect.get_key());
+        }
+        if r_effect.get_ecm_opc_getter().is_some() {
+            self.iecm.remove_l3(&projectee_key, &projector_key, &r_effect.get_key());
         }
     }
 }

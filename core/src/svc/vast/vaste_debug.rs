@@ -14,7 +14,7 @@ impl Vast {
             check_item_key(u_data, item_key, false)?;
         }
         for (projectee_key, projector_data) in self.irr_shield.iter() {
-            // Projectee are not guaranteed to be loaded
+            // Projectees are not guaranteed to be loaded
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
@@ -24,7 +24,7 @@ impl Vast {
             }
         }
         for (projectee_key, projector_data) in self.irr_shield_limitable.iter() {
-            // Projectee are not guaranteed to be loaded
+            // Projectees are not guaranteed to be loaded
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
@@ -34,7 +34,7 @@ impl Vast {
             }
         }
         for (projectee_key, projector_data) in self.irr_armor.iter() {
-            // Projectee are not guaranteed to be loaded
+            // Projectees are not guaranteed to be loaded
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
@@ -44,7 +44,7 @@ impl Vast {
             }
         }
         for (projectee_key, projector_data) in self.irr_armor_limitable.iter() {
-            // Projectee are not guaranteed to be loaded
+            // Projectees are not guaranteed to be loaded
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
@@ -54,7 +54,17 @@ impl Vast {
             }
         }
         for (projectee_key, projector_data) in self.irr_hull.iter() {
-            // Projectee are not guaranteed to be loaded
+            // Projectees are not guaranteed to be loaded
+            check_item_key(u_data, *projectee_key, false)?;
+            for (&projector_key, projector_data) in projector_data.iter() {
+                check_item_key(u_data, projector_key, true)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
+                }
+            }
+        }
+        for (projectee_key, projector_data) in self.iecm.iter() {
+            // Projectees are not guaranteed to be loaded
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
                 check_item_key(u_data, projector_key, true)?;
