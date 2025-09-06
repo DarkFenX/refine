@@ -109,6 +109,7 @@ class EveEffect(IntEnum):
     ftr_abil_mjd = 6442
     point_defense = 6443
     ftr_abil_attack_m = 6465
+    remote_ecm_falloff = 6470
     doomsday_aoe_web = 6476
     ftr_abil_launch_bomb = 6485
     ship_mod_ancillary_remote_armor_repairer = 6651
@@ -267,6 +268,10 @@ class EveAttr(IntEnum):
     scan_magnetometric_strength = 210
     scan_gravimetric_strength = 211
     missile_dmg_mult = 212
+    scan_gravimetric_strength_bonus = 238
+    scan_ladar_strength_bonus = 239
+    scan_magnetometric_strength_bonus = 240
+    scan_radar_strength_bonus = 241
     shield_capacity = 263
     armor_hp = 265
     armor_em_dmg_resonance = 267
