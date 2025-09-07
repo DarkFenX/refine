@@ -366,6 +366,7 @@ class EveAttr(IntEnum):
     disallow_in_hisec = 1970
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
+    energy_warfare_resist = 2045
     ftr_capacity = 2055
     service_slots = 2056
     can_fit_ship_group9 = 2065

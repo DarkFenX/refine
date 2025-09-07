@@ -54,6 +54,8 @@ class DmgBasicInfo:
     shield_hp_attr_id: int
     armor_hp_attr_id: int
     hull_hp_attr_id: int
+    resist_def_attr_id: int
+    neut_resist_attr_id: int
     turret_proj_effect_id: int
     turret_spool_effect_id: int
     tgt_attack_effect_id: int
@@ -122,6 +124,8 @@ def setup_dmg_basics(
     eve_shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
     eve_armor_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
     eve_hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
+    eve_neut_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_warfare_resist)
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
@@ -238,6 +242,8 @@ def setup_dmg_basics(
         shield_hp_attr_id=eve_shield_hp_attr_id,
         armor_hp_attr_id=eve_armor_hp_attr_id,
         hull_hp_attr_id=eve_hull_hp_attr_id,
+        resist_def_attr_id=eve_resist_def_attr_id,
+        neut_resist_attr_id=eve_neut_resist_attr_id,
         turret_proj_effect_id=eve_turret_proj_effect_id,
         turret_spool_effect_id=eve_turret_spool_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
@@ -261,6 +267,7 @@ def make_eve_ship(
         hps: tuple[float | None, float | None, float | None] | None = None,
         speed: float | None = None,
         sig_radius: float | None = None,
+        neut_resist: float | None = None,
         radius: float | None = None,
 ) -> int:
     attrs = {}
@@ -272,6 +279,7 @@ def make_eve_ship(
         attrs.update({k: v for k, v in zip(hp_attr_ids, hps, strict=True) if v is not None})
     _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
     _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=sig_radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.neut_resist_attr_id, value=neut_resist)
     _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
     return client.mk_eve_ship(attrs=attrs)
 
@@ -600,6 +608,7 @@ def make_eve_bomb(
         agility: float | None = None,
         exp_range: float | None = None,
         exp_radius: float | None = None,
+        neut_resist_attr: bool = False,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
@@ -610,6 +619,8 @@ def make_eve_bomb(
     _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
     _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=exp_range)
     _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
+    if neut_resist_attr:
+        attrs[basic_info.resist_def_attr_id] = basic_info.neut_resist_attr_id
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.bomb_effect_id],

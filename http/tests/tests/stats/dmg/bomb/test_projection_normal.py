@@ -422,6 +422,46 @@ def test_application(client, consts):
     assert api_charge_nonproj_stats.volley.one() == [approx(1812.5), 0, 0, 0]
 
 
+def test_resist(client, consts):
+    # Resistance attribute is defined on void and lockbreaker bombs, but applies only to ECM and
+    # neut effect, damage shouldn't be affected. Tested in August 2025 on Thunderdome by void
+    # bombing polarized vindicator with cap batteries
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_launcher(
+        client=client, basic_info=eve_basic_info, capacity=300,
+        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+    eve_charge_id = make_eve_bomb(
+        client=client, basic_info=eve_basic_info, dmgs=(8.75, 7, 7, 7), volume=75, speed=2500, flight_time=12000,
+        mass=1000, agility=0.0275, exp_range=15000, exp_radius=400, neut_resist_attr=True)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=20.5)
+    eve_tgt_ship_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=100, neut_resist=0.5)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 30000, 0), movement=(0, 0, 0))
+    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_charge_proj_stats.dps.one() == [
+        approx(0.02822581), approx(0.02258065), approx(0.02258065), approx(0.02258065)]
+    assert api_charge_proj_stats.volley.one() == [approx(2.1875), approx(1.75), approx(1.75), approx(1.75)]
+    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
+    assert api_charge_nonproj_stats.dps.one() == [
+        approx(0.02822581), approx(0.02258065), approx(0.02258065), approx(0.02258065)]
+    assert api_charge_nonproj_stats.volley.one() == [approx(2.1875), approx(1.75), approx(1.75), approx(1.75)]
+
+
 def test_npc_prop_mode(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
