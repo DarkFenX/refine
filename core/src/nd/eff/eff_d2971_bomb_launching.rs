@@ -7,7 +7,10 @@ use crate::{
     misc::{DmgKinds, Ecm, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::{dmg_opc::get_dmg_opc_missile, proj_mult::get_bomb_proj_mult},
+        eff::shared::{
+            dmg_opc::get_dmg_opc_missile,
+            proj_mult::{get_bomb_proj_mult, get_noapp_bomb_proj_mult},
+        },
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, eff_funcs, output::Output},
@@ -71,19 +74,20 @@ fn internal_get_ecm_opc(
         return None;
     }
     if let Some(projectee_key) = projectee_key {
-        let mut mult = OF(1.0);
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        mult *= get_bomb_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        // Lockbreaker bombs have perfect application whenever they hit, regardless of target
+        // signature radius
+        let mut mult = get_noapp_bomb_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Effect resistance reduction
-        if let Some(rr_mult) =
+        if let Some(resist_mult) =
             eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
         {
-            mult *= rr_mult;
+            mult *= resist_mult;
         }
         // Apply multiplier
         str_radar *= mult;

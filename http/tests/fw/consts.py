@@ -119,6 +119,7 @@ class EveEffect(IntEnum):
     npc_entity_remote_armor_repairer = 6687
     npc_entity_remote_shield_booster = 6688
     npc_entity_remote_hull_repairer = 6689
+    entity_ecm_falloff = 6695
     ecm_burst_jammer = 6714
     mod_bonus_microwarpdrive = 6730
     mod_bonus_afterburner = 6731
@@ -429,6 +430,7 @@ class EveAttr(IntEnum):
     can_fit_ship_type11 = 2758
     repair_mult_bonus_per_cycle = 2796
     repair_mult_bonus_max = 2797
+    ecm_jam_duration = 2822
     disallow_in_hazard = 5561
     allow_in_fully_corrupted_lowsec = 5599
     allow_in_fully_corrupted_hisec = 5600

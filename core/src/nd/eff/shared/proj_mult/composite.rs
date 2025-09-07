@@ -23,28 +23,6 @@ pub(in crate::nd::eff) fn get_null_proj_mult(
     OF(0.0)
 }
 
-pub(in crate::nd::eff) fn get_noapp_simple_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    get_range_mult_simple_s2s(ctx, calc, projector_key, projector_effect, proj_data)
-}
-
-pub(in crate::nd::eff) fn get_noapp_full_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    get_range_mult_full_restricted(ctx, calc, projector_key, projector_effect, proj_data)
-}
-
 pub(in crate::nd::eff) fn get_turret_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -162,6 +140,40 @@ pub(in crate::nd::eff) fn get_aoe_burst_proj_mult(
     proj_data: UProjData,
 ) -> AttrVal {
     get_range_mult_aoe_burst(ctx, calc, projector_key, projector_effect, proj_data)
+}
+
+// Just range projection, application factor is excluded
+pub(in crate::nd::eff) fn get_noapp_simple_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_simple_s2s(ctx, calc, projector_key, projector_effect, proj_data)
+}
+
+pub(in crate::nd::eff) fn get_noapp_full_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_full_restricted(ctx, calc, projector_key, projector_effect, proj_data)
+}
+
+pub(in crate::nd::eff) fn get_noapp_bomb_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    _projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_bomb(ctx, calc, projector_key, proj_data)
 }
 
 // Utility
