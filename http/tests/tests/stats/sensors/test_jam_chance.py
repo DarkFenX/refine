@@ -532,3 +532,89 @@ def test_stacking(client, consts):
     assert api_tgt_fit_stats.jam_chance == approx(0.5661157)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
     assert api_tgt_ship_stats.jam_chance == approx(0.5661157)
+
+
+def test_sensors_zero(client, consts):
+    eve_sensor_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
+    eve_sensor_magnet_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_magnetometric_strength)
+    eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
+    eve_sensor_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength)
+    eve_jam_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength_bonus)
+    eve_jam_magnet_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_magnetometric_strength_bonus)
+    eve_jam_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength_bonus)
+    eve_jam_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength_bonus)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ecm_jam_duration)
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_jam_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.entity_ecm_falloff,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id,
+        range_attr_id=eve_optimal_attr_id)
+    eve_drone_id = client.mk_eve_item(
+        attrs={
+            eve_jam_radar_attr_id: 1, eve_jam_magnet_attr_id: 1, eve_jam_grav_attr_id: 1, eve_jam_ladar_attr_id: 1,
+            eve_cycle_time_attr_id: 20000, eve_duration_attr_id: 5000, eve_optimal_attr_id: 7500},
+        eff_ids=[eve_jam_effect_id],
+        defeff_id=eve_jam_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 300})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={
+        eve_sensor_radar_attr_id: 0, eve_sensor_magnet_attr_id: 0,
+        eve_sensor_grav_attr_id: 0, eve_sensor_ladar_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id)
+    api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
+    api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
+    assert api_tgt_fit_stats.jam_chance == 1
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
+    assert api_tgt_ship_stats.jam_chance == 1
+
+
+def test_both_zero(client, consts):
+    eve_sensor_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
+    eve_sensor_magnet_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_magnetometric_strength)
+    eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
+    eve_sensor_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength)
+    eve_jam_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength_bonus)
+    eve_jam_magnet_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_magnetometric_strength_bonus)
+    eve_jam_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength_bonus)
+    eve_jam_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength_bonus)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ecm_jam_duration)
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_jam_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.entity_ecm_falloff,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id,
+        range_attr_id=eve_optimal_attr_id)
+    eve_drone_id = client.mk_eve_item(
+        attrs={
+            eve_jam_radar_attr_id: 0, eve_jam_magnet_attr_id: 0, eve_jam_grav_attr_id: 0, eve_jam_ladar_attr_id: 0,
+            eve_cycle_time_attr_id: 20000, eve_duration_attr_id: 5000, eve_optimal_attr_id: 7500},
+        eff_ids=[eve_jam_effect_id],
+        defeff_id=eve_jam_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 300})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={
+        eve_sensor_radar_attr_id: 0, eve_sensor_magnet_attr_id: 0,
+        eve_sensor_grav_attr_id: 0, eve_sensor_ladar_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id)
+    api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
+    api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
+    assert api_tgt_fit_stats.jam_chance == 0
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
+    assert api_tgt_ship_stats.jam_chance == 0
