@@ -102,7 +102,7 @@ class EveEffect(IntEnum):
     ship_mod_remote_hull_repairer = 6185
     ship_mod_remote_shield_booster = 6186
     ship_mod_remote_armor_repairer = 6188
-    structure_warp_scramble_block_mwd_with_npc = 6222
+    struct_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
     ftr_abil_missiles = 6431
     ftr_abil_mwd = 6441
@@ -112,8 +112,10 @@ class EveEffect(IntEnum):
     remote_ecm_falloff = 6470
     doomsday_aoe_web = 6476
     ftr_abil_launch_bomb = 6485
+    doomsday_aoe_ecm = 6513
     ship_mod_ancillary_remote_armor_repairer = 6651
     ship_mod_ancillary_remote_shield_booster = 6652
+    struct_mod_effect_ecm = 6685
     npc_entity_remote_armor_repairer = 6687
     npc_entity_remote_shield_booster = 6688
     npc_entity_remote_hull_repairer = 6689
@@ -382,6 +384,7 @@ class EveAttr(IntEnum):
     doomsday_dmg_duration = 2264
     doomsday_dmg_cycle_time = 2265
     doomsday_aoe_range = 2279
+    doomsday_aoe_duration = 2280
     ftr_abil_launch_bomb_type = 2324
     hisec_modifier = 2355
     lowsec_modifier = 2356

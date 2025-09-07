@@ -6,7 +6,7 @@ def test_warp_scram_status(client, consts):
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
     eve_point_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.structure_warp_scramble_block_mwd_with_npc,
+        id_=consts.EveEffect.struct_warp_scramble_block_mwd_with_npc,
         cat_id=consts.EveEffCat.target)
     eve_point_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 100},
@@ -32,7 +32,7 @@ def test_module_mwd_block(client, consts):
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
     eve_point_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.structure_warp_scramble_block_mwd_with_npc,
+        id_=consts.EveEffect.struct_warp_scramble_block_mwd_with_npc,
         cat_id=consts.EveEffCat.target)
     eve_point_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 0},
@@ -87,7 +87,7 @@ def test_module_mjd_block(client, consts):
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
     eve_point_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.structure_warp_scramble_block_mwd_with_npc,
+        id_=consts.EveEffect.struct_warp_scramble_block_mwd_with_npc,
         cat_id=consts.EveEffCat.target)
     eve_point_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 0},
@@ -139,7 +139,7 @@ def test_module_mjd_block(client, consts):
 def test_fighter_mwd_mjd_block(client, consts):
     # As of 2024-11-05, point blocks fighter MWD and MJD even without scram script
     eve_point_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.structure_warp_scramble_block_mwd_with_npc,
+        id_=consts.EveEffect.struct_warp_scramble_block_mwd_with_npc,
         cat_id=consts.EveEffCat.target)
     eve_point_id = client.mk_eve_item(eff_ids=[eve_point_effect_id], defeff_id=eve_point_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
