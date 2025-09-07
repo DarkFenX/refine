@@ -119,6 +119,7 @@ class EveEffect(IntEnum):
     npc_entity_remote_armor_repairer = 6687
     npc_entity_remote_shield_booster = 6688
     npc_entity_remote_hull_repairer = 6689
+    ecm_burst_jammer = 6714
     mod_bonus_microwarpdrive = 6730
     mod_bonus_afterburner = 6731
     mod_bonus_warfare_link_armor = 6732
