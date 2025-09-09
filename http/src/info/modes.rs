@@ -1,60 +1,40 @@
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Default, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HSolInfoMode {
     Id,
+    #[default]
     Full,
 }
-impl Default for HSolInfoMode {
-    fn default() -> Self {
-        Self::Full
-    }
-}
 
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Default, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HFitInfoMode {
     Id,
+    #[default]
     Full,
 }
-impl Default for HFitInfoMode {
-    fn default() -> Self {
-        Self::Full
-    }
-}
 
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Default, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HItemInfoMode {
     Id,
+    #[default]
     Partial,
     Full,
 }
-impl Default for HItemInfoMode {
-    fn default() -> Self {
-        Self::Partial
-    }
-}
 
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Default, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HFleetInfoMode {
+    #[default]
     Id,
     Full,
 }
-impl Default for HFleetInfoMode {
-    fn default() -> Self {
-        Self::Id
-    }
-}
 
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Default, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HValidInfoMode {
     Simple,
+    #[default]
     Detailed,
-}
-impl Default for HValidInfoMode {
-    fn default() -> Self {
-        Self::Detailed
-    }
 }
