@@ -9,7 +9,7 @@ rc = { package = "reefast-core", path = "../core" }
 redh = { package = "reefast-edh", path = "../data-handler", features = ["phb-http"] }
 radc = { package = "reefast-adc", path = "../data-cacher", features = ["json-zfile"] }
 axum = { version = ">=0.8.4", features = ["query"] }
-chrono = ">=0.4.41"
+chrono = ">=0.4.42"
 config = { version = ">=0.15.15", features = ["toml"] }
 educe = { version = ">=0.6.0", features = ["Default"], default-features = false }
 parking_lot = { version = ">=0.12.4", features = ["nightly"] }
