@@ -10,19 +10,19 @@ redh = { package = "reefast-edh", path = "../data-handler", features = ["phb-htt
 radc = { package = "reefast-adc", path = "../data-cacher", features = ["json-zfile"] }
 axum = { version = ">=0.8.4", features = ["query"] }
 chrono = ">=0.4.42"
-config = { version = ">=0.15.15", features = ["toml"] }
+config = { version = ">=0.15.17", features = ["toml"] }
 educe = { version = ">=0.6.0", features = ["Default"], default-features = false }
 parking_lot = { version = ">=0.12.4", features = ["nightly"] }
-serde = { version = ">=1.0.219", features = ["derive"] }
+serde = { version = ">=1.0.227", features = ["derive"] }
 serde_tuple = ">=1.1.2"
-serde_with = ">=3.14.0"
+serde_with = ">=3.14.1"
 thiserror = ">=2.0.16"
 tokio = { version = ">=1.47.1", features = ["full"] }
 tokio-rayon = ">=2.1.0"
 tower = ">=0.5.2"
 tower-http = { version = ">=0.6.6", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
-time = { version = ">=0.3.43", features = ["macros"] }
+time = { version = ">=0.3.44", features = ["macros"] }
 tracing = ">=0.1.41"
 tracing-subscriber = { version = ">=0.3.20", features = ["time"] }
 tracing-appender = ">=0.2.3"

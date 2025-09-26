@@ -13,10 +13,10 @@ json-zfile = ["dep:ordered-float", "dep:serde", "dep:serde_repr", "dep:serde_tup
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }
 ordered-float = { version = ">=5.0.0", features = ["serde"], optional = true }
-serde = { version = ">=1.0.219", features = ["derive"], optional = true }
+serde = { version = ">=1.0.227", features = ["derive"], optional = true }
 serde_repr = { version = ">=0.1.20", optional = true }
 serde_tuple = { version = ">=1.1.2", optional = true }
-serde_json = { version = ">=1.0.143", optional = true }
+serde_json = { version = ">=1.0.145", optional = true }
 thiserror = ">=2.0.16"
 tracing = { version = ">=0.1.41", optional = true }
 zstd = { version = ">=0.13.3", optional = true }
