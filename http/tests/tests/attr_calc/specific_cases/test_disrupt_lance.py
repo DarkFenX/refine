@@ -237,3 +237,36 @@ def test_drone(client, consts):
     assert api_mod.initial_val == approx(-50)
     assert api_mod.affectors.one().item_id == api_affector_module.id
     assert api_mod.affectors.one().attr_id is None
+
+
+def test_range(client, consts):
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
+    eve_range_attr_id = client.mk_eve_attr()
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    client.mk_eve_buff(
+        id_=consts.EveBuff.remote_repair_impedance,
+        aggr_mode=consts.EveBuffAggrMode.min,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.debuff_lance, cat_id=consts.EveEffCat.active, range_attr_id=eve_range_attr_id)
+    eve_affector_module_id = client.mk_eve_item(
+        attrs={eve_range_attr_id: 100000}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_affector_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 15000})
+    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1, eve_radius_attr_id: 8000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affector_fit.set_ship(type_id=eve_affector_ship_id, coordinates=(0, 0, 0))
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(0, 107999, 0))
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    # Verification - within center-to-surface range
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    # Action
+    api_affectee_ship.change_ship(coordinates=(0, 108001, 0))
+    # Verification - slightly out of center-to-surface range
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1)
