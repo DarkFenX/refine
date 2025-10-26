@@ -96,6 +96,25 @@ pub(super) fn get_application_mult_bomb(
     radius_ratio.clamp(OF(0.0), OF(1.0))
 }
 
+pub(super) fn get_application_mult_aoe_dd(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projectee_key: UItemKey,
+) -> AttrVal {
+    let src_dmg_radius = calc
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_RADIUS)
+        .unwrap()
+        .extra
+        .max(OF(0.0));
+    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap_or(OF(0.0));
+    let radius_ratio = tgt_sig_radius / src_dmg_radius;
+    if radius_ratio.is_nan() {
+        return OF(0.0);
+    }
+    radius_ratio.clamp(OF(0.0), OF(1.0))
+}
+
 // Utility
 fn calc_angular(
     ctx: SvcCtx,

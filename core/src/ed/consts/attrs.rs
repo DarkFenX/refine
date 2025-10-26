@@ -175,6 +175,7 @@ pub(crate) const FTR_LIGHT_SLOTS: EAttrId = 2217;
 pub(crate) const FTR_SUPPORT_SLOTS: EAttrId = 2218;
 pub(crate) const FTR_HEAVY_SLOTS: EAttrId = 2219;
 pub(crate) const DOOMSDAY_WARNING_DURATION: EAttrId = 2262;
+pub(crate) const DOOMSDAY_DAMAGE_RADIUS: EAttrId = 2263;
 pub(crate) const DOOMSDAY_DAMAGE_DURATION: EAttrId = 2264;
 pub(crate) const DOOMSDAY_DAMAGE_CYCLE_TIME: EAttrId = 2265;
 pub(crate) const DOOMSDAY_AOE_RANGE: EAttrId = 2279;

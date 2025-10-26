@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::proj_mult::{get_noapp_simple_proj_mult, get_simple_mod_proj_attrs},
+        eff::shared::proj_mult::{get_dd_lance_proj_mult, get_noapp_simple_c2s_proj_mult, get_simple_mod_proj_attrs},
     },
     rd,
     svc::{
@@ -18,14 +18,14 @@ use crate::{
     ud::{UItem, UItemKey},
     util::floor_unerr,
 };
-// TODO: test if it uses surface-to-surface range (might use center-to-surface), and check if damage
-// TODO: radius is needed to be added to range or not
+// TODO: test if it uses center-to-surface range (might use surface-to-surface), and check if damage
+// TODO: radius is needed to be added to range or not. Range is used in modifier application and
+// TODO: damage application
 
 const E_EFFECT_ID: EEffectId = ec::effects::DEBUFF_LANCE;
 const A_EFFECT_ID: AEffectId = ac::effects::DEBUFF_LANCE;
 
 pub(super) fn mk_n_effect() -> NEffect {
-    // Dreadnought lance
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
@@ -40,7 +40,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         }),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_noapp_simple_proj_mult),
+            modifier_proj_mult_getter: Some(get_noapp_simple_c2s_proj_mult),
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(get_dmg_opc),
             ..
@@ -74,7 +74,7 @@ fn get_dmg_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        let mult = get_noapp_simple_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mult = get_dd_lance_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         dmg_em *= mult;
         dmg_therm *= mult;
         dmg_kin *= mult;

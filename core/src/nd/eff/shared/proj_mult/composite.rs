@@ -1,5 +1,8 @@
 use super::{
-    application::{get_application_mult_bomb, get_application_mult_missile, get_application_mult_turret},
+    application::{
+        get_application_mult_aoe_dd, get_application_mult_bomb, get_application_mult_missile,
+        get_application_mult_turret,
+    },
     range::{
         get_range_mult_aoe_burst, get_range_mult_bomb, get_range_mult_full_restricted,
         get_range_mult_full_unrestricted, get_range_mult_missile, get_range_mult_simple_c2s, get_range_mult_simple_s2s,
@@ -69,8 +72,11 @@ pub(in crate::nd::eff) fn get_vorton_proj_mult(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_range_mult_simple_s2s(ctx, calc, projector_key, projector_effect, proj_data)
-        * get_application_mult_missile(ctx, calc, projector_key, projectee_key, proj_data)
+    let mult = get_range_mult_simple_s2s(ctx, calc, projector_key, projector_effect, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_application_mult_missile(ctx, calc, projector_key, projectee_key, proj_data)
 }
 
 pub(in crate::nd::eff) fn get_missile_proj_mult(
@@ -81,8 +87,11 @@ pub(in crate::nd::eff) fn get_missile_proj_mult(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_range_mult_missile(ctx, calc, projector_key, proj_data)
-        * get_application_mult_missile(ctx, calc, projector_key, projectee_key, proj_data)
+    let mult = get_range_mult_missile(ctx, calc, projector_key, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_application_mult_missile(ctx, calc, projector_key, projectee_key, proj_data)
 }
 
 pub(in crate::nd::eff) fn get_breacher_proj_mult(
@@ -104,8 +113,11 @@ pub(in crate::nd::eff) fn get_bomb_proj_mult(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_range_mult_bomb(ctx, calc, projector_key, proj_data)
-        * get_application_mult_bomb(ctx, calc, projector_key, projectee_key)
+    let mult = get_range_mult_bomb(ctx, calc, projector_key, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_application_mult_bomb(ctx, calc, projector_key, projectee_key)
 }
 
 pub(in crate::nd::eff) fn get_guided_bomb_proj_mult(
@@ -116,8 +128,11 @@ pub(in crate::nd::eff) fn get_guided_bomb_proj_mult(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_range_mult_missile(ctx, calc, projector_key, proj_data)
-        * get_application_mult_bomb(ctx, calc, projector_key, projectee_key)
+    let mult = get_range_mult_missile(ctx, calc, projector_key, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_application_mult_bomb(ctx, calc, projector_key, projectee_key)
 }
 
 pub(in crate::nd::eff) fn get_bubble_proj_mult(
@@ -142,8 +157,23 @@ pub(in crate::nd::eff) fn get_aoe_burst_proj_mult(
     get_range_mult_aoe_burst(ctx, calc, projector_key, projector_effect, proj_data)
 }
 
+pub(in crate::nd::eff) fn get_dd_lance_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    let mult = get_range_mult_simple_c2s(ctx, calc, projector_key, projector_effect, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_application_mult_aoe_dd(ctx, calc, projector_key, projectee_key)
+}
+
 // Just range projection, application factor is excluded
-pub(in crate::nd::eff) fn get_noapp_simple_proj_mult(
+pub(in crate::nd::eff) fn get_noapp_simple_s2s_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -152,6 +182,17 @@ pub(in crate::nd::eff) fn get_noapp_simple_proj_mult(
     proj_data: UProjData,
 ) -> AttrVal {
     get_range_mult_simple_s2s(ctx, calc, projector_key, projector_effect, proj_data)
+}
+
+pub(in crate::nd::eff) fn get_noapp_simple_c2s_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_simple_c2s(ctx, calc, projector_key, projector_effect, proj_data)
 }
 
 pub(in crate::nd::eff) fn get_noapp_full_proj_mult(

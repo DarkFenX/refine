@@ -6,7 +6,7 @@ use crate::{
     nd::{
         NEffect, NEffectHc,
         eff::shared::{
-            proj_mult::{get_noapp_simple_proj_mult, get_simple_mod_proj_attrs},
+            proj_mult::{get_noapp_simple_s2s_proj_mult, get_simple_mod_proj_attrs},
             web::update_effect,
         },
     },
@@ -22,7 +22,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         adg_update_effect_fn: Some(|a_effect| update_effect(A_EFFECT_ID, a_effect)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_noapp_simple_proj_mult),
+            modifier_proj_mult_getter: Some(get_noapp_simple_s2s_proj_mult),
             ..
         },
         ..
