@@ -853,7 +853,7 @@ def test_tgt_attr_sig_radius_absent(client, consts):
     assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
 
 
-def test_tgt_attr_not_loaded(client, consts):
+def test_tgt_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_proj(
         client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
