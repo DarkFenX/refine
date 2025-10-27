@@ -17,7 +17,7 @@ pub(in crate::svc) fn get_resist_a_attr_id(item: &UItem, effect: &REffect) -> Op
     }
 }
 
-pub(in crate::svc) fn get_resist_mult_val_by_projectee_aspec(
+pub(crate) fn get_resist_mult_val_by_projectee_aspec(
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_aspec: &AttrSpec,

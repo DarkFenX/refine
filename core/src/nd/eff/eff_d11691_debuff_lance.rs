@@ -4,7 +4,7 @@ use crate::{
     def::{AttrVal, Count, OF},
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, EffectSpec, Spool},
+    misc::{AttrSpec, DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
@@ -52,6 +52,7 @@ pub(super) fn mk_n_effect() -> NEffect {
             modifier_proj_mult_getter: Some(get_noapp_simple_c2s_proj_mult),
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(internal_get_dmg_opc),
+            neut_opc_getter: Some(internal_get_neut_opc),
             ..
         },
         ..
@@ -138,9 +139,8 @@ fn internal_get_neut_opc(
         );
         amount *= get_dd_neut_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Effect resistance reduction
-        if let Some(resist_mult) =
-            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
-        {
+        let projectee_aspec = AttrSpec::new(projectee_key, ac::attrs::DOOMSDAY_ENERGY_NEUT_RESIST_ID);
+        if let Some(resist_mult) = eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, calc, &projectee_aspec) {
             amount *= resist_mult;
         }
     }
