@@ -2,7 +2,8 @@ use crate::{
     cmd::{
         shared::get_primary_fleet,
         stats::options::{
-            HStatOption, HStatOptionFitDps, HStatOptionFitRemoteRps, HStatOptionFitVolley, HStatResolvedOption,
+            HStatOption, HStatOptionFitDps, HStatOptionFitRemoteNps, HStatOptionFitRemoteRps, HStatOptionFitVolley,
+            HStatResolvedOption,
         },
     },
     info::{
@@ -22,6 +23,7 @@ pub(crate) struct HGetFleetStatsCmd {
     volley: Option<HStatOption<HStatOptionFitVolley>>,
     remote_rps: Option<HStatOption<HStatOptionFitRemoteRps>>,
     remote_cps: Option<bool>,
+    remote_nps: Option<HStatOption<HStatOptionFitRemoteNps>>,
 }
 impl HGetFleetStatsCmd {
     pub(crate) fn execute(
@@ -45,6 +47,10 @@ impl HGetFleetStatsCmd {
         }
         if self.remote_cps.unwrap_or(self.default) {
             stats.remote_cps = Some(core_fleet.get_stat_remote_cps());
+        }
+        let rnps_opt = HStatResolvedOption::new(&self.remote_nps, self.default);
+        if rnps_opt.enabled {
+            stats.remote_nps = Some(get_remote_nps_stats(&mut core_fleet, rnps_opt.options));
         }
         Ok(stats)
     }
@@ -105,6 +111,16 @@ fn get_remote_rps_stats(
             let core_item_kinds = (&option.item_kinds).into();
             let core_spool = option.spool.map(|h_spool| h_spool.into());
             core_fleet.get_stat_remote_rps(core_item_kinds, core_spool).into()
+        })
+        .collect()
+}
+
+fn get_remote_nps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitRemoteNps>) -> Vec<rc::AttrVal> {
+    options
+        .iter()
+        .map(|option| {
+            let core_item_kinds = (&option.item_kinds).into();
+            core_fleet.get_stat_remote_nps(core_item_kinds).into()
         })
         .collect()
 }

@@ -5,7 +5,8 @@ use crate::{
         shared::get_primary_item,
         stats::options::{
             HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps, HStatOptionItemRemoteCps,
-            HStatOptionItemRemoteRps, HStatOptionItemVolley, HStatOptionRps, HStatResolvedOption,
+            HStatOptionItemRemoteNps, HStatOptionItemRemoteRps, HStatOptionItemVolley, HStatOptionRps,
+            HStatResolvedOption,
         },
     },
     info::{
@@ -45,6 +46,7 @@ pub(crate) struct HGetItemStatsCmd {
     resists: Option<bool>,
     remote_rps: Option<HStatOption<HStatOptionItemRemoteRps>>,
     remote_cps: Option<HStatOption<HStatOptionItemRemoteCps>>,
+    remote_nps: Option<HStatOption<HStatOptionItemRemoteNps>>,
 }
 impl HGetItemStatsCmd {
     pub(crate) fn execute(
@@ -131,7 +133,11 @@ impl HGetItemStatsCmd {
         }
         let rcps_opt = HStatResolvedOption::new(&self.remote_cps, self.default);
         if rcps_opt.enabled {
-            stats.remote_cps = get_cap_rr_stats(&mut core_item, rcps_opt.options).into();
+            stats.remote_cps = get_remote_cps_stats(&mut core_item, rcps_opt.options).into();
+        }
+        let rnps_opt = HStatResolvedOption::new(&self.remote_nps, self.default);
+        if rnps_opt.enabled {
+            stats.remote_nps = get_remote_nps_stats(&mut core_item, rnps_opt.options).into();
         }
         Ok(stats)
     }
@@ -274,10 +280,27 @@ fn get_remote_rps_stats(
     Some(results)
 }
 
-fn get_cap_rr_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemRemoteCps>) -> Option<Vec<rc::AttrVal>> {
+fn get_remote_cps_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionItemRemoteCps>,
+) -> Option<Vec<rc::AttrVal>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         match core_item.get_stat_remote_cps(option.ignore_state) {
+            Ok(result) => results.push(result),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
+}
+
+fn get_remote_nps_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionItemRemoteNps>,
+) -> Option<Vec<rc::AttrVal>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        match core_item.get_stat_remote_nps(option.ignore_state) {
             Ok(result) => results.push(result),
             Err(_) => return None,
         }
