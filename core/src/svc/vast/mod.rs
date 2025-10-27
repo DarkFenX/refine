@@ -2,7 +2,8 @@ pub use options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
 pub use result::{ValResultFit, ValResultSol};
 pub use shared::{
-    Sensor, SensorKind, StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatRemoteRpsItemKinds, StatTank,
+    Sensor, SensorKind, StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatRemoteNpsItemKinds,
+    StatRemoteRpsItemKinds, StatTank,
 };
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
