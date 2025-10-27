@@ -1,10 +1,10 @@
 use super::{
     application::{
-        get_application_mult_aoe_dd, get_application_mult_bomb, get_application_mult_missile,
-        get_application_mult_turret,
+        get_application_mult_bomb, get_application_mult_dd_dmg, get_application_mult_dd_neut,
+        get_application_mult_missile, get_application_mult_turret,
     },
     range::{
-        get_range_mult_aoe_burst, get_range_mult_bomb, get_range_mult_full_restricted,
+        get_range_mult_aoe_burst, get_range_mult_bomb, get_range_mult_dd_neut, get_range_mult_full_restricted,
         get_range_mult_full_unrestricted, get_range_mult_missile, get_range_mult_simple_c2s, get_range_mult_simple_s2s,
     },
 };
@@ -169,7 +169,22 @@ pub(in crate::nd::eff) fn get_dd_lance_proj_mult(
     if mult == OF(0.0) {
         return OF(0.0);
     }
-    mult * get_application_mult_aoe_dd(ctx, calc, projector_key, projectee_key)
+    mult * get_application_mult_dd_dmg(ctx, calc, projector_key, projectee_key)
+}
+
+pub(in crate::nd::eff) fn get_dd_neut_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    _projector_effect: &REffect,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    let mult = get_range_mult_dd_neut(ctx, calc, projector_key, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_application_mult_dd_neut(ctx, calc, projector_key, projectee_key)
 }
 
 // Just range projection, application factor is excluded

@@ -257,6 +257,20 @@ pub(super) fn get_range_mult_aoe_burst(
     }
 }
 
+pub(super) fn get_range_mult_dd_neut(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    let neut_optimal = get_effect_range(ctx, calc, projector_key, Some(ac::attrs::DOOMSDAY_ENERGY_NEUT_RADIUS));
+    // TODO: check if side-effect AoE neut range is s2s (could be c2s)
+    match proj_data.get_range_s2s() <= neut_optimal {
+        true => OF(1.0),
+        false => OF(0.0),
+    }
+}
+
 // Utility
 fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey, attr_id: Option<AAttrId>) -> AttrVal {
     match attr_id {
