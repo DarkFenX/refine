@@ -1,7 +1,5 @@
-pub use err::{FitCharacterStatError, FitShipStatError};
-pub use stat_dmg::FitStatDmgAppliedError;
+pub use shared::{FitCharacterStatError, FitShipStatError, FitStatAppliedError};
 
-mod err;
 mod shared;
 mod stat_char;
 mod stat_dmg;

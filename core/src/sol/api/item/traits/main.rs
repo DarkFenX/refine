@@ -1,7 +1,7 @@
 pub(in crate::sol::api) use private::{ItemMutSealed, ItemSealed};
 
 use super::err::{
-    GetItemAttrError, ItemStatDmgAppliedError, ItemStatError, IterItemAttrsError, IterItemEffectsError,
+    GetItemAttrError, ItemStatAppliedError, ItemStatError, IterItemAttrsError, IterItemEffectsError,
     IterItemModifiersError,
 };
 use crate::{
@@ -230,10 +230,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, ItemStatDmgAppliedError> {
+    ) -> Result<StatDmgApplied, ItemStatAppliedError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        let projectee_key = get_stat_dmg_projectee_key(sol, projectee_item_id)?;
+        let projectee_key = get_stat_applied_projectee_key(sol, projectee_item_id)?;
         sol.svc
             .get_stat_item_dps_applied(
                 &sol.u_data,
@@ -244,7 +244,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 ignore_state,
                 projectee_key,
             )
-            .map_err(|e| ItemStatDmgAppliedError::from_svc_err(&sol.u_data.items, e))
+            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_volley(
         &mut self,
@@ -264,10 +264,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, ItemStatDmgAppliedError> {
+    ) -> Result<StatDmgApplied, ItemStatAppliedError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        let projectee_key = get_stat_dmg_projectee_key(sol, projectee_item_id)?;
+        let projectee_key = get_stat_applied_projectee_key(sol, projectee_item_id)?;
         sol.svc
             .get_stat_item_volley_applied(
                 &sol.u_data,
@@ -277,7 +277,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 ignore_state,
                 projectee_key,
             )
-            .map_err(|e| ItemStatDmgAppliedError::from_svc_err(&sol.u_data.items, e))
+            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - tank
     fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, ItemStatError> {
@@ -360,15 +360,27 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_remote_nps(&sol.u_data, item_key, ignore_state)
+            .get_stat_item_remote_nps(&sol.u_data, item_key, ignore_state, None)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_remote_nps_applied(
+        &mut self,
+        ignore_state: bool,
+        projectee_item_id: &ItemId,
+    ) -> Result<AttrVal, ItemStatAppliedError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        let projectee_key = get_stat_applied_projectee_key(sol, projectee_item_id)?;
+        sol.svc
+            .get_stat_item_remote_nps(&sol.u_data, item_key, ignore_state, Some(projectee_key))
+            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
 }
 
-fn get_stat_dmg_projectee_key(
+fn get_stat_applied_projectee_key(
     sol: &SolarSystem,
     projectee_item_id: &ItemId,
-) -> Result<UItemKey, ItemStatDmgAppliedError> {
+) -> Result<UItemKey, ItemStatAppliedError> {
     let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
     let projectee_u_item = sol.u_data.items.get(projectee_key);
     if !projectee_u_item.can_receive_projs() {

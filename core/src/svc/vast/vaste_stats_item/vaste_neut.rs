@@ -21,6 +21,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         ignore_state: bool,
+        projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
         item_check_neuting(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_remote_nps_unchecked(
@@ -28,6 +29,7 @@ impl Vast {
             calc,
             item_key,
             ignore_state,
+            projectee_key,
         ))
     }
     fn internal_get_stat_item_remote_nps_unchecked(
@@ -35,6 +37,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         ignore_state: bool,
+        projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         let mut item_nps = OF(0.0);
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, ignore_state) {
@@ -47,7 +50,7 @@ impl Vast {
             }
             let r_effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(neut_getter) = r_effect.get_neut_opc_getter()
-                && let Some(neut_amount) = neut_getter(ctx, calc, item_key, r_effect, None)
+                && let Some(neut_amount) = neut_getter(ctx, calc, item_key, r_effect, projectee_key)
             {
                 item_nps += neut_amount.get_total() / effect_cycle.get_average_cycle_time();
             }

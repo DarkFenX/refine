@@ -1,8 +1,8 @@
 pub use fit::{
-    Fit, FitCharacterStatError, FitMut, FitShipStatError, FitStatDmgAppliedError, GetFitError,
+    Fit, FitCharacterStatError, FitMut, FitShipStatError, FitStatAppliedError, GetFitError,
     RemoveFitRahIncomingDpsError, SetFitFleetError, UnsetFitFleetError,
 };
-pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, FleetStatDmgAppliedError, GetFleetError};
+pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, FleetStatAppliedError, GetFleetError};
 pub use item::{
     Ability, AbilityIter, AbilityMut, AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, Autocharge,
     AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut, EffectiveMutation,
@@ -12,7 +12,7 @@ pub use item::{
     GetModuleError, GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError,
     GetServiceError, GetShipError, GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant,
     ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon,
-    ItemStatDmgAppliedError, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, Module,
+    ItemStatAppliedError, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, Module,
     ModuleIter, ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj,
     RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError, Rig, RigMut, Service,
     ServiceMut, SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr,

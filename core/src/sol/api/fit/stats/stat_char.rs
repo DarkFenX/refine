@@ -1,7 +1,6 @@
-use super::err::FitCharacterStatError;
 use crate::{
     def::AttrVal,
-    sol::api::{FitMut, ItemMutCommon},
+    sol::api::{FitCharacterStatError, FitMut, ItemMutCommon},
 };
 
 impl<'a> FitMut<'a> {

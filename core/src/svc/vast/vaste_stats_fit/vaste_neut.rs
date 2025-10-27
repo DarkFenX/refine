@@ -19,9 +19,10 @@ impl Vast {
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatRemoteNpsItemKinds,
+        projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         fit_keys
-            .map(|fit_key| get_nps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).neuts))
+            .map(|fit_key| get_nps(ctx, calc, item_kinds, projectee_key, &self.get_fit_data(&fit_key).neuts))
             .sum()
     }
     pub(in crate::svc) fn get_stat_fit_remote_nps(
@@ -30,9 +31,10 @@ impl Vast {
         calc: &mut Calc,
         fit_key: UFitKey,
         item_kinds: StatRemoteNpsItemKinds,
+        projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
-        get_nps(ctx, calc, item_kinds, &fit_data.neuts)
+        get_nps(ctx, calc, item_kinds, projectee_key, &fit_data.neuts)
     }
 }
 
@@ -45,6 +47,7 @@ fn get_nps(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_kinds: StatRemoteNpsItemKinds,
+    projectee_key: Option<UItemKey>,
     fit_data: &RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 ) -> AttrVal {
     let mut nps = OF(0.0);
@@ -59,7 +62,7 @@ fn get_nps(
         }
         for (&effect_key, neut_getter) in item_data.iter() {
             let r_effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle = match neut_getter(ctx, calc, item_key, r_effect, None) {
+            let output_per_cycle = match neut_getter(ctx, calc, item_key, r_effect, projectee_key) {
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };

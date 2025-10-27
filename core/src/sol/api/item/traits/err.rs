@@ -45,7 +45,7 @@ impl ItemStatError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ItemStatDmgAppliedError {
+pub enum ItemStatAppliedError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
     #[error("{0}")]
@@ -55,7 +55,7 @@ pub enum ItemStatDmgAppliedError {
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
-impl ItemStatDmgAppliedError {
+impl ItemStatAppliedError {
     pub(crate) fn from_svc_err(u_items: &UItems, svc_err: StatItemCheckError) -> Self {
         match svc_err {
             StatItemCheckError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(u_items, svc_err).into(),

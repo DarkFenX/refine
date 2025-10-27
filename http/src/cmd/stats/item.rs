@@ -159,10 +159,10 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(core_err) => {
                         match core_err {
-                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_)
-                            | rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
-                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_)
-                            | rc::err::ItemStatDmgAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
+                            rc::err::ItemStatAppliedError::ItemNotLoaded(_)
+                            | rc::err::ItemStatAppliedError::UnsupportedStat(_) => return None,
+                            rc::err::ItemStatAppliedError::ProjecteeNotFound(_)
+                            | rc::err::ItemStatAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
                         };
                     }
                 };
@@ -199,10 +199,10 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(core_err) => {
                         match core_err {
-                            rc::err::ItemStatDmgAppliedError::ItemNotLoaded(_)
-                            | rc::err::ItemStatDmgAppliedError::UnsupportedStat(_) => return None,
-                            rc::err::ItemStatDmgAppliedError::ProjecteeNotFound(_)
-                            | rc::err::ItemStatDmgAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
+                            rc::err::ItemStatAppliedError::ItemNotLoaded(_)
+                            | rc::err::ItemStatAppliedError::UnsupportedStat(_) => return None,
+                            rc::err::ItemStatAppliedError::ProjecteeNotFound(_)
+                            | rc::err::ItemStatAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
                         };
                     }
                 };

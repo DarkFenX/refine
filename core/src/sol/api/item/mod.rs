@@ -26,7 +26,7 @@ pub use shared::{
 };
 pub(in crate::sol::api) use shared::{get_ship_axt, iter_projectee_keys, iter_ranged_projs};
 pub use traits::{
-    GetItemAttrError, ItemCommon, ItemMutCommon, ItemStatDmgAppliedError, ItemStatError, IterItemAttrsError,
+    GetItemAttrError, ItemCommon, ItemMutCommon, ItemStatAppliedError, ItemStatError, IterItemAttrsError,
     IterItemEffectsError, IterItemModifiersError,
 };
 pub(in crate::sol::api) use traits::{ItemMutSealed, ItemSealed};

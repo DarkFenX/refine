@@ -1,7 +1,6 @@
-use super::err::FitShipStatError;
 use crate::{
     def::{AttrVal, Count},
-    sol::api::{FitMut, ItemMutCommon},
+    sol::api::{FitMut, FitShipStatError, ItemMutCommon},
     svc::vast::Sensor,
 };
 
