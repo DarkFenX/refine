@@ -13,7 +13,12 @@ use crate::{
         },
     },
     rd::REffect,
-    svc::{SvcCtx, calc::Calc, eff_funcs, output::Output},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        eff_funcs,
+        output::{Output, OutputSimple},
+    },
     ud::{UItem, UItemKey},
 };
 
@@ -27,6 +32,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         hc: NEffectHc {
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(internal_get_dmg_opc),
+            neut_opc_getter: Some(internal_get_neut_opc),
             ecm_opc_getter: Some(internal_get_ecm_opc),
             ..
         },
@@ -54,6 +60,36 @@ fn internal_get_dmg_opc(
         projectee_key,
         get_bomb_proj_mult,
     )
+}
+
+fn internal_get_neut_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    projectee_key: Option<UItemKey>,
+) -> Option<Output<AttrVal>> {
+    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ENERGY_NEUT_AMOUNT)?;
+    // Do not return neut stats for non-neut bombs
+    if amount <= OF(0.0) {
+        return None;
+    }
+    if let Some(projectee_key) = projectee_key {
+        // Projection reduction
+        let proj_data = ctx.eff_projs.get_or_make_proj_data(
+            ctx.u_data,
+            EffectSpec::new(projector_key, projector_effect.get_key()),
+            projectee_key,
+        );
+        amount *= get_bomb_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        // Effect resistance reduction
+        if let Some(resist_mult) =
+            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
+        {
+            amount *= resist_mult;
+        }
+    }
+    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }
 
 fn internal_get_ecm_opc(

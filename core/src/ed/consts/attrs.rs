@@ -22,6 +22,7 @@ pub(crate) const MAX_TARGET_RANGE: EAttrId = 76;
 pub(crate) const STRUCT_DMG_AMOUNT: EAttrId = 83;
 pub(crate) const ARMOR_DMG_AMOUNT: EAttrId = 84;
 pub(crate) const POWER_TRANSFER_AMOUNT: EAttrId = 90;
+pub(crate) const ENERGY_NEUT_AMOUNT: EAttrId = 97;
 pub(crate) const EMP_FIELD_RANGE: EAttrId = 99;
 pub(crate) const LAUNCHER_SLOTS_LEFT: EAttrId = 101;
 pub(crate) const TURRET_SLOTS_LEFT: EAttrId = 102;
