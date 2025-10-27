@@ -108,6 +108,7 @@ pub(crate) const AOE_CLOUD_SIZE_BONUS: EAttrId = 848;
 pub(crate) const SIEGE_MODE_WARP_STATUS: EAttrId = 852;
 pub(crate) const DISALLOW_ASSISTANCE: EAttrId = 854;
 pub(crate) const DISALLOW_OFFENSIVE_MODIFIERS: EAttrId = 872;
+pub(crate) const SIG_RADIUS_BONUS_PERCENT: EAttrId = 973;
 pub(crate) const MAX_GROUP_ONLINE: EAttrId = 978;
 pub(crate) const SCAN_GRAVIMETRIC_STRENGTH_PERCENT: EAttrId = 1027;
 pub(crate) const SCAN_LADAR_STRENGTH_PERCENT: EAttrId = 1028;

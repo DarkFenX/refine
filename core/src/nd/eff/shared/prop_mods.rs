@@ -31,9 +31,18 @@ pub(in crate::nd::eff) fn mk_a_modifier_mass() -> AEffectModifier {
     }
 }
 
-pub(in crate::nd::eff) fn mk_a_modifier_sig() -> AEffectModifier {
+pub(in crate::nd::eff) fn mk_a_modifier_sig_mwd() -> AEffectModifier {
     AEffectModifier {
         affector_attr_id: ac::attrs::SIG_RADIUS_BONUS,
+        op: AOp::PostPerc,
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
+        affectee_attr_id: ac::attrs::SIG_RADIUS,
+    }
+}
+
+pub(in crate::nd::eff) fn mk_a_modifier_sig_mjd() -> AEffectModifier {
+    AEffectModifier {
+        affector_attr_id: ac::attrs::SIG_RADIUS_BONUS_PERCENT,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: ac::attrs::SIG_RADIUS,

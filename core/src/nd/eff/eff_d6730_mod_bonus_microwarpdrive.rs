@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::prop_mods::{calc_add_custom_modifier, mk_a_modifier_mass, mk_a_modifier_sig},
+        eff::shared::prop_mods::{calc_add_custom_modifier, mk_a_modifier_mass, mk_a_modifier_sig_mwd},
     },
 };
 
@@ -31,5 +31,5 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.mods.clear();
     }
     a_effect.mods.push(mk_a_modifier_mass());
-    a_effect.mods.push(mk_a_modifier_sig());
+    a_effect.mods.push(mk_a_modifier_sig_mwd());
 }

@@ -3,7 +3,7 @@ use crate::{
     ad::{AEffect, AEffectId},
     ec,
     ed::EEffectId,
-    nd::{NEffect, eff::shared::prop_mods::mk_a_modifier_sig},
+    nd::{NEffect, eff::shared::prop_mods::mk_a_modifier_sig_mjd},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MICRO_JUMP_PORTAL_DRIVE;
@@ -23,5 +23,5 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {A_EFFECT_ID}: MJFG effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    a_effect.mods.push(mk_a_modifier_sig());
+    a_effect.mods.push(mk_a_modifier_sig_mjd());
 }
