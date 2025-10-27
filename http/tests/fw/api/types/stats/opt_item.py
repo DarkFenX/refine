@@ -7,6 +7,7 @@ type StatOptionItemDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItem
 type StatOptionItemVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemVolley]]
 type StatOptionItemRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteRps]]
 type StatOptionItemRemoteCpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteCps]]
+type StatOptionItemRemoteNpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteNps]]
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -37,6 +38,7 @@ class ItemStatsOptions:
     resists: StatOptionAlias = Absent
     remote_rps: StatOptionItemRemoteRpsAlias = Absent
     remote_cps: StatOptionItemRemoteCpsAlias = Absent
+    remote_nps: StatOptionItemRemoteNpsAlias = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
@@ -81,6 +83,16 @@ class StatsOptionItemRemoteRps:
 class StatsOptionItemRemoteCps:
 
     ignore_state: bool | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionItemRemoteNps:
+
+    ignore_state: bool | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

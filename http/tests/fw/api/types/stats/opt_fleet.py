@@ -4,6 +4,7 @@ from tests.fw.util import Absent
 from .opt_shared import (
     StatOptionAlias,
     StatOptionFitDpsAlias,
+    StatOptionFitRemoteNpsAlias,
     StatOptionFitRemoteRpsAlias,
     StatOptionFitVolleyAlias,
     dc_to_dict,
@@ -18,6 +19,7 @@ class FleetStatsOptions:
     volley: StatOptionFitVolleyAlias = Absent
     remote_rps: StatOptionFitRemoteRpsAlias = Absent
     remote_cps: StatOptionAlias = Absent
+    remote_nps: StatOptionFitRemoteNpsAlias = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

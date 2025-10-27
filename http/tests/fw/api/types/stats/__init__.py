@@ -5,14 +5,17 @@ from .opt_item import (
     ItemStatsOptions,
     StatsOptionItemDps,
     StatsOptionItemRemoteCps,
+    StatsOptionItemRemoteNps,
     StatsOptionItemRemoteRps,
     StatsOptionItemVolley,
 )
+from .opt_remote_nps import StatRemoteNpsItemKinds
 from .opt_remote_rps import StatRemoteRpsItemKinds
 from .opt_shared import (
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDps,
+    StatsOptionFitRemoteNps,
     StatsOptionFitRemoteRps,
     StatsOptionFitVolley,
     StatsOptionRps,

@@ -6,6 +6,7 @@ from tests.fw.util import Absent
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
     from .opt_dmg import StatDmgItemKinds
+    from .opt_remote_nps import StatRemoteNpsItemKinds
     from .opt_remote_rps import StatRemoteRpsItemKinds
 
 type StatOptionAlias = bool | type[Absent]
@@ -15,6 +16,7 @@ type StatOptionErpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionErps]]
 type StatOptionFitDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitDps]]
 type StatOptionFitVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitVolley]]
 type StatOptionFitRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteRps]]
+type StatOptionFitRemoteNpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteNps]]
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -73,6 +75,16 @@ class StatsOptionFitRemoteRps:
 
     item_kinds: StatRemoteRpsItemKinds | type[Absent] = Absent
     spool: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionFitRemoteNps:
+
+    item_kinds: StatRemoteNpsItemKinds | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

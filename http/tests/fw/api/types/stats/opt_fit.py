@@ -6,6 +6,7 @@ from .opt_shared import (
     StatOptionEhpAlias,
     StatOptionErpsAlias,
     StatOptionFitDpsAlias,
+    StatOptionFitRemoteNpsAlias,
     StatOptionFitRemoteRpsAlias,
     StatOptionFitVolleyAlias,
     StatOptionRpsAlias,
@@ -63,6 +64,7 @@ class FitStatsOptions:
     resists: StatOptionAlias = Absent
     remote_rps: StatOptionFitRemoteRpsAlias = Absent
     remote_cps: StatOptionAlias = Absent
+    remote_nps: StatOptionFitRemoteNpsAlias = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
