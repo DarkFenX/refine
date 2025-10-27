@@ -22,6 +22,7 @@ mod eff_d103_defender_missile_launching;
 mod eff_d104_fof_missile_launching;
 mod eff_d10_tgt_attack;
 mod eff_d11691_debuff_lance;
+mod eff_d12126_micro_jump_portal_drive_capital;
 mod eff_d12174_dot_missile_launching;
 mod eff_d1730_drone_dmg_bonus;
 mod eff_d1851_self_rof;
@@ -33,6 +34,7 @@ mod eff_d34_projectile_fired;
 mod eff_d3773_hardpoint_modifier_effect;
 mod eff_d3774_slot_modifier;
 mod eff_d38_emp_wave;
+mod eff_d4921_micro_jump_drive;
 mod eff_d4928_adaptive_armor_hardener;
 mod eff_d4936_fueled_shield_boosting;
 mod eff_d4_shield_boosting;
@@ -41,6 +43,7 @@ mod eff_d6184_ship_mod_remote_capacitor_transmitter;
 mod eff_d6185_ship_mod_remote_hull_repairer;
 mod eff_d6186_ship_mod_remote_shield_booster;
 mod eff_d6188_ship_mod_remote_armor_repairer;
+mod eff_d6208_micro_jump_portal_drive;
 mod eff_d6222_struct_warp_scram_block_mwd_with_npc;
 mod eff_d6422_remote_sensor_damp_falloff;
 mod eff_d6423_ship_module_guidance_disruptor;
@@ -135,6 +138,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d3380_warp_disrupt_sphere::mk_n_effect(),
         eff_d3773_hardpoint_modifier_effect::mk_n_effect(),
         eff_d3774_slot_modifier::mk_n_effect(),
+        eff_d4921_micro_jump_drive::mk_n_effect(),
         eff_d4928_adaptive_armor_hardener::mk_n_effect(),
         eff_d4936_fueled_shield_boosting::mk_n_effect(),
         eff_d5275_fueled_armor_repair::mk_n_effect(),
@@ -142,6 +146,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6185_ship_mod_remote_hull_repairer::mk_n_effect(),
         eff_d6186_ship_mod_remote_shield_booster::mk_n_effect(),
         eff_d6188_ship_mod_remote_armor_repairer::mk_n_effect(),
+        eff_d6208_micro_jump_portal_drive::mk_n_effect(),
         eff_d6222_struct_warp_scram_block_mwd_with_npc::mk_n_effect(),
         eff_d6422_remote_sensor_damp_falloff::mk_n_effect(),
         eff_d6423_ship_module_guidance_disruptor::mk_n_effect(),
@@ -192,6 +197,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d7166_ship_mod_remote_armor_mutadaptive_repairer::mk_n_effect(),
         eff_d8037_chain_lightning::mk_n_effect(),
         eff_d11691_debuff_lance::mk_n_effect(),
+        eff_d12126_micro_jump_portal_drive_capital::mk_n_effect(),
         eff_d12174_dot_missile_launching::mk_n_effect(),
         test::eff_d10000000_mod_proj_simple::mk_n_effect(),
         test::eff_d10000001_mod_proj_normal1::mk_n_effect(),

@@ -31,21 +31,20 @@ pub(in crate::nd::eff) fn update_effect_wd(a_effect_id: AEffectId, a_effect: &mu
 }
 
 fn add_td_modifiers(mods: &mut Vec<AEffectModifier>) {
-    mods.reserve_exact(3);
-    mods.push(make_td_mod(ac::attrs::MAX_RANGE_BONUS, ac::attrs::MAX_RANGE));
-    mods.push(make_td_mod(ac::attrs::FALLOFF_BONUS, ac::attrs::FALLOFF));
-    mods.push(make_td_mod(ac::attrs::TRACKING_SPEED_BONUS, ac::attrs::TRACKING_SPEED));
+    mods.extend([
+        make_td_mod(ac::attrs::MAX_RANGE_BONUS, ac::attrs::MAX_RANGE),
+        make_td_mod(ac::attrs::FALLOFF_BONUS, ac::attrs::FALLOFF),
+        make_td_mod(ac::attrs::TRACKING_SPEED_BONUS, ac::attrs::TRACKING_SPEED),
+    ]);
 }
 
 fn add_gd_modifiers(mods: &mut Vec<AEffectModifier>) {
-    mods.reserve_exact(4);
-    mods.push(make_gd_mod(ac::attrs::MISSILE_VELOCITY_BONUS, ac::attrs::MAX_VELOCITY));
-    mods.push(make_gd_mod(
-        ac::attrs::EXPLOSION_DELAY_BONUS,
-        ac::attrs::EXPLOSION_DELAY,
-    ));
-    mods.push(make_gd_mod(ac::attrs::AOE_CLOUD_SIZE_BONUS, ac::attrs::AOE_CLOUD_SIZE));
-    mods.push(make_gd_mod(ac::attrs::AOE_VELOCITY_BONUS, ac::attrs::AOE_VELOCITY));
+    mods.extend([
+        make_gd_mod(ac::attrs::MISSILE_VELOCITY_BONUS, ac::attrs::MAX_VELOCITY),
+        make_gd_mod(ac::attrs::EXPLOSION_DELAY_BONUS, ac::attrs::EXPLOSION_DELAY),
+        make_gd_mod(ac::attrs::AOE_CLOUD_SIZE_BONUS, ac::attrs::AOE_CLOUD_SIZE),
+        make_gd_mod(ac::attrs::AOE_VELOCITY_BONUS, ac::attrs::AOE_VELOCITY),
+    ]);
 }
 
 fn make_td_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {

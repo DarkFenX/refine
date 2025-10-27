@@ -32,6 +32,7 @@ pub(crate) const BOMB_LAUNCHING: AEffectId = AEffectId::Dogma(ece::BOMB_LAUNCHIN
 pub(crate) const HARDPOINT_MODIFIER_EFFECT: AEffectId = AEffectId::Dogma(ece::HARDPOINT_MODIFIER_EFFECT);
 pub(crate) const SLOT_MODIFIER: AEffectId = AEffectId::Dogma(ece::SLOT_MODIFIER);
 pub(crate) const WARP_DISRUPT_SPHERE: AEffectId = AEffectId::Dogma(ece::WARP_DISRUPT_SPHERE);
+pub(crate) const MICRO_JUMP_DRIVE: AEffectId = AEffectId::Dogma(ece::MICRO_JUMP_DRIVE);
 pub(crate) const ADAPTIVE_ARMOR_HARDENER: AEffectId = AEffectId::Dogma(ece::ADAPTIVE_ARMOR_HARDENER);
 pub(crate) const FUELED_SHIELD_BOOSTING: AEffectId = AEffectId::Dogma(ece::FUELED_SHIELD_BOOSTING);
 pub(crate) const FUELED_ARMOR_REPAIR: AEffectId = AEffectId::Dogma(ece::FUELED_ARMOR_REPAIR);
@@ -40,6 +41,7 @@ pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: AEffectId =
 pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_REMOTE_HULL_REPAIRER);
 pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_REMOTE_SHIELD_BOOSTER);
 pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_REMOTE_ARMOR_REPAIRER);
+pub(crate) const MICRO_JUMP_PORTAL_DRIVE: AEffectId = AEffectId::Dogma(ece::MICRO_JUMP_PORTAL_DRIVE);
 pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: AEffectId =
     AEffectId::Dogma(ece::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC);
 pub(crate) const SERVICE_SLOT: AEffectId = AEffectId::Dogma(ece::SERVICE_SLOT);
@@ -112,6 +114,7 @@ pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: AEffectId =
     AEffectId::Dogma(ece::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER);
 pub(crate) const CHAIN_LIGHTNING: AEffectId = AEffectId::Dogma(ece::CHAIN_LIGHTNING);
 pub(crate) const DEBUFF_LANCE: AEffectId = AEffectId::Dogma(ece::DEBUFF_LANCE);
+pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: AEffectId = AEffectId::Dogma(ece::MICRO_JUMP_PORTAL_DRIVE_CAPITAL);
 pub(crate) const DOT_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::DOT_MISSILE_LAUNCHING);
 
 // Library-specific effects
