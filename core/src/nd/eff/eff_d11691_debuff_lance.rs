@@ -7,7 +7,10 @@ use crate::{
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::proj_mult::{get_dd_lance_proj_mult, get_noapp_simple_c2s_proj_mult, get_simple_mod_proj_attrs},
+        eff::shared::{
+            dd_mods::update_effect,
+            proj_mult::{get_dd_lance_proj_mult, get_noapp_simple_c2s_proj_mult, get_simple_mod_proj_attrs},
+        },
     },
     rd,
     svc::{
@@ -38,6 +41,7 @@ pub(super) fn mk_n_effect() -> NEffect {
             ]),
             scope: AEffectBuffScope::Everything,
         }),
+        adg_update_effect_fn: Some(|a_effect| update_effect(A_EFFECT_ID, a_effect)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
             modifier_proj_mult_getter: Some(get_noapp_simple_c2s_proj_mult),

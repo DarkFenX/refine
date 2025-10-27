@@ -2,6 +2,7 @@ pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect_charge::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 
 pub(in crate::nd::eff) mod damp;
+pub(in crate::nd::eff) mod dd_mods;
 mod dmg_kind;
 pub(in crate::nd::eff) mod dmg_opc;
 mod effect_charge;
