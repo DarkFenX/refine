@@ -6,7 +6,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatRemoteRpsItemKinds, StatTank, Vast},
     },
-    ud::{UData, UFitKey},
+    ud::{UData, UFitKey, UItemKey},
 };
 
 impl Svc {
@@ -43,7 +43,7 @@ impl Svc {
     pub(crate) fn get_stat_item_remote_rps(
         &mut self,
         u_data: &UData,
-        item_key: UFitKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
@@ -70,7 +70,7 @@ impl Svc {
     pub(crate) fn get_stat_item_remote_cps(
         &mut self,
         u_data: &UData,
-        item_key: UFitKey,
+        item_key: UItemKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_remote_cps(
