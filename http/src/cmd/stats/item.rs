@@ -297,12 +297,27 @@ fn get_remote_cps_stats(
 fn get_remote_nps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionItemRemoteNps>,
-) -> Option<Vec<rc::AttrVal>> {
+) -> Option<Vec<Option<rc::AttrVal>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_item.get_stat_remote_nps(option.ignore_state) {
-            Ok(result) => results.push(result),
-            Err(_) => return None,
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_remote_nps_applied(option.ignore_state, &projectee_item_id) {
+                    Ok(result) => results.push(Some(result)),
+                    Err(core_err) => {
+                        match core_err {
+                            rc::err::ItemStatAppliedError::ItemNotLoaded(_)
+                            | rc::err::ItemStatAppliedError::UnsupportedStat(_) => return None,
+                            rc::err::ItemStatAppliedError::ProjecteeNotFound(_)
+                            | rc::err::ItemStatAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
+                        };
+                    }
+                }
+            }
+            None => match core_item.get_stat_remote_nps(option.ignore_state) {
+                Ok(result) => results.push(Some(result)),
+                Err(_) => return None,
+            },
         }
     }
     Some(results)

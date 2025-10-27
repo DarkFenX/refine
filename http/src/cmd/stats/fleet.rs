@@ -35,11 +35,11 @@ impl HGetFleetStatsCmd {
         let mut stats = HFleetStats::new();
         let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
         if dps_opt.enabled {
-            stats.dps = get_dps_stats(&mut core_fleet, dps_opt.options);
+            stats.dps = Some(get_dps_stats(&mut core_fleet, dps_opt.options));
         }
         let volley_opt = HStatResolvedOption::new(&self.volley, self.default);
         if volley_opt.enabled {
-            stats.volley = get_volley_stats(&mut core_fleet, volley_opt.options);
+            stats.volley = Some(get_volley_stats(&mut core_fleet, volley_opt.options));
         }
         let rrps_opt = HStatResolvedOption::new(&self.remote_rps, self.default);
         if rrps_opt.enabled {
@@ -56,7 +56,7 @@ impl HGetFleetStatsCmd {
     }
 }
 
-fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>) -> Option<Vec<Option<HStatDmg>>> {
+fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>) -> Vec<Option<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
@@ -74,13 +74,10 @@ fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>)
             }
         }
     }
-    Some(results)
+    results
 }
 
-fn get_volley_stats(
-    core_fleet: &mut rc::FleetMut,
-    options: Vec<HStatOptionFitVolley>,
-) -> Option<Vec<Option<HStatDmg>>> {
+fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVolley>) -> Vec<Option<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
@@ -98,7 +95,7 @@ fn get_volley_stats(
             }
         }
     }
-    Some(results)
+    results
 }
 
 fn get_remote_rps_stats(
@@ -115,12 +112,25 @@ fn get_remote_rps_stats(
         .collect()
 }
 
-fn get_remote_nps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitRemoteNps>) -> Vec<rc::AttrVal> {
-    options
-        .iter()
-        .map(|option| {
-            let core_item_kinds = (&option.item_kinds).into();
-            core_fleet.get_stat_remote_nps(core_item_kinds).into()
-        })
-        .collect()
+fn get_remote_nps_stats(
+    core_fleet: &mut rc::FleetMut,
+    options: Vec<HStatOptionFitRemoteNps>,
+) -> Vec<Option<rc::AttrVal>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_item_kinds = (&option.item_kinds).into();
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fleet.get_stat_remote_nps_applied(core_item_kinds, &projectee_item_id) {
+                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Err(_) => results.push(None),
+                }
+            }
+            None => {
+                let core_stat = core_fleet.get_stat_remote_nps(core_item_kinds);
+                results.push(Some(core_stat.into()));
+            }
+        }
+    }
+    results
 }
