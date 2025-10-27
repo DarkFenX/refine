@@ -18,6 +18,7 @@ impl Vast {
                 for effect in effects {
                     if effect.is_active() {
                         self.handle_dmg_start(effect, item_key, &charge.get_fit_key());
+                        self.handle_neut_start(effect, item_key, &charge.get_fit_key());
                     }
                 }
             }
@@ -26,6 +27,7 @@ impl Vast {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_start(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &drone.get_fit_key());
+                        self.handle_neut_start(effect, item_key, &drone.get_fit_key());
                     }
                 }
             }
@@ -34,6 +36,7 @@ impl Vast {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_start(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &fighter.get_fit_key());
+                        self.handle_neut_start(effect, item_key, &fighter.get_fit_key());
                     }
                 }
             }
@@ -66,6 +69,8 @@ impl Vast {
                         }
                         // Remote reps
                         self.handle_orrs_start(effect, item_key, &module.get_fit_key());
+                        // Misc
+                        self.handle_neut_start(effect, item_key, &module.get_fit_key());
                     }
                 }
             }
@@ -85,6 +90,7 @@ impl Vast {
                 for effect in effects {
                     if effect.is_active() {
                         self.handle_dmg_stop(effect, item_key, &charge.get_fit_key());
+                        self.handle_neut_stop(effect, item_key, &charge.get_fit_key());
                     }
                 }
             }
@@ -93,6 +99,7 @@ impl Vast {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_stop(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &drone.get_fit_key());
+                        self.handle_neut_stop(effect, item_key, &drone.get_fit_key());
                     }
                 }
             }
@@ -101,6 +108,7 @@ impl Vast {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_stop(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &fighter.get_fit_key());
+                        self.handle_neut_stop(effect, item_key, &fighter.get_fit_key());
                     }
                 }
             }
@@ -129,6 +137,8 @@ impl Vast {
                         }
                         // Remote reps
                         self.handle_orrs_stop(effect, item_key, &module.get_fit_key());
+                        // Misc
+                        self.handle_neut_stop(effect, item_key, &module.get_fit_key());
                     }
                 }
             }
@@ -189,6 +199,18 @@ impl Vast {
         if effect.get_remote_cap_rep_opc_getter().is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_cap.remove_l2(&item_key, &effect.get_key());
+        }
+    }
+    fn handle_neut_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if let Some(neut_getter) = effect.get_neut_opc_getter() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.neuts.add_entry(item_key, effect.get_key(), neut_getter);
+        }
+    }
+    fn handle_neut_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if effect.get_neut_opc_getter().is_some() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.neuts.remove_l2(&item_key, &effect.get_key());
         }
     }
 }

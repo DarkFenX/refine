@@ -5,6 +5,7 @@ mod err;
 mod shared;
 mod stat_char;
 mod stat_dmg;
+mod stat_remote_nps;
 mod stat_remote_rps;
 mod stat_resource;
 mod stat_ship_physics;

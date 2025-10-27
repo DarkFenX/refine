@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
-    nd::{NBreacherDmgGetter, NEcmGetter, NLocalRepGetter, NNormalDmgGetter, NRemoteRepGetter},
+    nd::{NBreacherDmgGetter, NEcmGetter, NLocalRepGetter, NNeutGetter, NNormalDmgGetter, NRemoteRepGetter},
     rd::{REffectKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -47,7 +47,7 @@ impl Vast {
 }
 
 // TODO: check if some of data containers can be merged to save time and memory (e.g. drone
-// bandwidth, active drone count)
+// TODO: bandwidth, active drone count)
 #[derive(Clone)]
 pub(in crate::svc) struct VastFitData {
     // Validation-related
@@ -124,6 +124,8 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
+    // Stats-related - misc
+    pub(in crate::svc::vast) neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -200,6 +202,7 @@ impl VastFitData {
             orr_armor: RMapRMap::new(),
             orr_hull: RMapRMap::new(),
             orr_cap: RMapRMap::new(),
+            neuts: RMapRMap::new(),
         }
     }
 }
