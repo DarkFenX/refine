@@ -1,5 +1,6 @@
 use crate::{
     ac,
+    ad::AAttrId,
     def::{AttrVal, OF},
     misc::EffectSpec,
     nd::NProjMultGetter,
@@ -20,8 +21,14 @@ pub(crate) fn get_neut_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
     proj_mult_getter: NProjMultGetter,
+    amount_attr_id: &AAttrId,
+    applied_at_start: bool,
 ) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ENERGY_NEUT_AMOUNT)?;
+    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, amount_attr_id)?;
+    let delay = match applied_at_start {
+        true => OF(0.0),
+        false => eff_funcs::get_effect_duration_s(ctx, calc, projector_key, projector_effect)?,
+    };
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
@@ -37,9 +44,9 @@ pub(crate) fn get_neut_opc(
             amount *= rr_mult;
         }
         // Total resource pool limit
-        if let Some(hp) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, &ac::attrs::CAPACITOR_CAPACITY) {
-            amount = amount.min(hp);
+        if let Some(cap) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, &ac::attrs::CAPACITOR_CAPACITY) {
+            amount = amount.min(cap);
         }
     }
-    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
+    Some(Output::Simple(OutputSimple { amount, delay }))
 }

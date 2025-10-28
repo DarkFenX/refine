@@ -1,7 +1,7 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::AttrVal,
+    def::{AttrVal, OF},
     ec,
     ed::EEffectId,
     nd::{
@@ -13,8 +13,8 @@ use crate::{
     ud::UItemKey,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::ENERGY_NEUT_FALLOFF;
-const A_EFFECT_ID: AEffectId = ac::effects::ENERGY_NEUT_FALLOFF;
+const E_EFFECT_ID: EEffectId = ec::effects::ENERGY_NOSF_FALLOFF;
+const A_EFFECT_ID: AEffectId = ac::effects::ENERGY_NOSF_FALLOFF;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -35,6 +35,10 @@ fn internal_get_neut_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
+    // Not a blood raider ship - not considered as a neut
+    if calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::NOS_OVERRIDE)? == OF(0.0) {
+        return None;
+    }
     get_neut_opc(
         ctx,
         calc,
@@ -42,7 +46,7 @@ fn internal_get_neut_opc(
         projector_effect,
         projectee_key,
         get_neut_proj_mult,
-        &ac::attrs::ENERGY_NEUT_AMOUNT,
-        true,
+        &ac::attrs::POWER_TRANSFER_AMOUNT,
+        false,
     )
 }

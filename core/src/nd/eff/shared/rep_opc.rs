@@ -195,11 +195,11 @@ fn get_remote_rep_opc(
     spool_resolver: Option<NSpoolResolver>,
     projectee_key: Option<UItemKey>,
     proj_mult_getter: NProjMultGetter,
-    rep_attr_id: &AAttrId,
+    amount_attr_id: &AAttrId,
     limit_attr_id: &AAttrId,
     applied_at_start: bool,
 ) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, rep_attr_id)?;
+    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, amount_attr_id)?;
     if let Some(spool_resolver) = spool_resolver
         && let Some(resolved_spool) = spool_resolver(ctx, calc, projector_key, projector_effect, spool)
     {

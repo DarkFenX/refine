@@ -158,6 +158,7 @@ pub(crate) const CAN_FIT_SHIP_GROUP7: EAttrId = 1880;
 pub(crate) const CAN_FIT_SHIP_GROUP8: EAttrId = 1881;
 pub(crate) const CHARGED_ARMOR_DMG_MULT: EAttrId = 1886;
 pub(crate) const CAN_FIT_SHIP_TYPE5: EAttrId = 1944;
+pub(crate) const NOS_OVERRIDE: EAttrId = 1945;
 pub(crate) const DISALLOW_IN_HISEC: EAttrId = 1970;
 pub(crate) const GATE_SCRAMBLE_STATUS: EAttrId = 1973;
 pub(crate) const GATE_SCRAMBLE_STRENGTH: EAttrId = 1974;
