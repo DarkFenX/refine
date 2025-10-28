@@ -273,6 +273,17 @@ pub(in crate::nd::eff) fn get_noapp_bomb_proj_mult(
     get_range_mult_bomb(ctx, calc, projector_key, proj_data)
 }
 
+pub(in crate::nd::eff) fn get_noapp_aoe_burst_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    _projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    get_range_mult_aoe_burst(ctx, calc, projector_key, projector_effect, proj_data)
+}
+
 // Utility
 fn calc_turret_mult(chance_to_hit: AttrVal) -> AttrVal {
     // https://wiki.eveuniversity.org/Turret_mechanics#Damage
