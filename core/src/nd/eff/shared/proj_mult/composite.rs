@@ -149,10 +149,20 @@ pub(in crate::nd::eff) fn get_aoe_burst_proj_mult(
     calc: &mut Calc,
     projector_key: UItemKey,
     projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_range_mult_aoe_burst(ctx, calc, projector_key, projector_effect, proj_data)
+    let mult = get_range_mult_aoe_burst(ctx, calc, projector_key, projector_effect, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_radius_ratio_mult(
+        ctx,
+        calc,
+        projector_key,
+        projectee_key,
+        &ac::attrs::DOOMSDAY_AOE_SIG_RADIUS,
+    )
 }
 
 pub(in crate::nd::eff) fn get_dd_lance_proj_mult(

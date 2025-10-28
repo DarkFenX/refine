@@ -188,6 +188,7 @@ pub(crate) const DOOMSDAY_DAMAGE_DURATION: EAttrId = 2264;
 pub(crate) const DOOMSDAY_DAMAGE_CYCLE_TIME: EAttrId = 2265;
 pub(crate) const DOOMSDAY_AOE_RANGE: EAttrId = 2279;
 pub(crate) const DOOMSDAY_AOE_DURATION: EAttrId = 2280;
+pub(crate) const DOOMSDAY_AOE_SIG_RADIUS: EAttrId = 2281;
 pub(crate) const FTR_ABIL_BOMB_TYPE: EAttrId = 2324;
 pub(crate) const DISALLOW_TETHERING: EAttrId = 2343;
 pub(crate) const DISALLOW_DOCKING: EAttrId = 2354;
