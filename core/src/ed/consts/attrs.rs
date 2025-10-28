@@ -196,6 +196,7 @@ pub(crate) const NULLSEC_MODIFIER: EAttrId = 2357;
 pub(crate) const SECURITY_MODIFIER: EAttrId = 2358;
 pub(crate) const CAN_FIT_SHIP_GROUP10: EAttrId = 2396;
 pub(crate) const MAX_TYPE_FITTED: EAttrId = 2431;
+pub(crate) const ENERGY_NEUT_SIG_RESOLUTION: EAttrId = 2451;
 pub(crate) const CAN_FIT_SHIP_TYPE7: EAttrId = 2463;
 pub(crate) const WARFARE_BUFF1_ID: EAttrId = 2468;
 pub(crate) const WARFARE_BUFF1_VAL: EAttrId = 2469;

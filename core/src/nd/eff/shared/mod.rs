@@ -7,6 +7,7 @@ mod dmg_kind;
 pub(in crate::nd::eff) mod dmg_opc;
 mod effect_charge;
 pub(in crate::nd::eff) mod missile_dmg_self_srq;
+pub(in crate::nd::eff) mod neut_opc;
 pub(in crate::nd::eff) mod proj_mult;
 pub(in crate::nd::eff) mod prop_mods;
 pub(in crate::nd::eff) mod rep_opc;

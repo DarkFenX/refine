@@ -36,6 +36,7 @@ pub(crate) const FUELED_ARMOR_REPAIR: EEffectId = 5275;
 pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: EEffectId = 6184;
 pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: EEffectId = 6185;
 pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: EEffectId = 6186;
+pub(crate) const ENERGY_NEUT_FALLOFF: EEffectId = 6187;
 pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: EEffectId = 6188;
 pub(crate) const MICRO_JUMP_PORTAL_DRIVE: EEffectId = 6208;
 pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: EEffectId = 6222;

@@ -42,6 +42,7 @@ mod eff_d5275_fueled_armor_repair;
 mod eff_d6184_ship_mod_remote_capacitor_transmitter;
 mod eff_d6185_ship_mod_remote_hull_repairer;
 mod eff_d6186_ship_mod_remote_shield_booster;
+mod eff_d6187_energy_neut_falloff;
 mod eff_d6188_ship_mod_remote_armor_repairer;
 mod eff_d6208_micro_jump_portal_drive;
 mod eff_d6222_struct_warp_scram_block_mwd_with_npc;
@@ -145,6 +146,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6184_ship_mod_remote_capacitor_transmitter::mk_n_effect(),
         eff_d6185_ship_mod_remote_hull_repairer::mk_n_effect(),
         eff_d6186_ship_mod_remote_shield_booster::mk_n_effect(),
+        eff_d6187_energy_neut_falloff::mk_n_effect(),
         eff_d6188_ship_mod_remote_armor_repairer::mk_n_effect(),
         eff_d6208_micro_jump_portal_drive::mk_n_effect(),
         eff_d6222_struct_warp_scram_block_mwd_with_npc::mk_n_effect(),

@@ -1,5 +1,6 @@
 use crate::{
     ac,
+    ad::AAttrId,
     def::{AttrVal, OF},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, item_funcs},
@@ -77,57 +78,20 @@ pub(super) fn get_application_mult_missile(
     radius_ratio.min(mobile_mult).clamp(OF(0.0), OF(1.0))
 }
 
-pub(super) fn get_application_mult_bomb(
+pub(super) fn get_radius_ratio_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
     projectee_key: UItemKey,
+    src_attr_id: &AAttrId,
 ) -> AttrVal {
-    let src_er = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AOE_CLOUD_SIZE)
+    let src_effect_radius = calc
+        .get_item_attr_val_full(ctx, projector_key, src_attr_id)
         .unwrap()
         .extra
         .max(OF(0.0));
     let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap_or(OF(0.0));
-    let radius_ratio = tgt_sig_radius / src_er;
-    if radius_ratio.is_nan() {
-        return OF(0.0);
-    }
-    radius_ratio.clamp(OF(0.0), OF(1.0))
-}
-
-pub(super) fn get_application_mult_dd_dmg(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projectee_key: UItemKey,
-) -> AttrVal {
-    let src_dmg_radius = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_RADIUS)
-        .unwrap()
-        .extra
-        .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap_or(OF(0.0));
-    let radius_ratio = tgt_sig_radius / src_dmg_radius;
-    if radius_ratio.is_nan() {
-        return OF(0.0);
-    }
-    radius_ratio.clamp(OF(0.0), OF(1.0))
-}
-
-pub(super) fn get_application_mult_dd_neut(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projectee_key: UItemKey,
-) -> AttrVal {
-    let src_neut_radius = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::DOOMSDAY_ENERGY_NEUT_SIG_RADIUS)
-        .unwrap()
-        .extra
-        .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key).unwrap_or(OF(0.0));
-    let radius_ratio = tgt_sig_radius / src_neut_radius;
+    let radius_ratio = tgt_sig_radius / src_effect_radius;
     if radius_ratio.is_nan() {
         return OF(0.0);
     }
