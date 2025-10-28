@@ -243,3 +243,4 @@ pub(crate) const ALLOW_IN_FULLY_CORRUPTED_HISEC: EAttrId = 5600;
 pub(crate) const DOT_DURATION: EAttrId = 5735;
 pub(crate) const DOT_MAX_DMG_PER_TICK: EAttrId = 5736;
 pub(crate) const DOT_MAX_HP_PERC_PER_TICK: EAttrId = 5737;
+pub(crate) const CAN_FIT_SHIP_TYPE12: EAttrId = 5948;

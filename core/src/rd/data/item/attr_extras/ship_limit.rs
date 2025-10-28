@@ -6,7 +6,7 @@ use crate::{
     util::RMap,
 };
 
-const TYPE_ATTRS: [AAttrId; 12] = [
+const TYPE_ATTRS: [AAttrId; 13] = [
     ac::attrs::CAN_FIT_SHIP_TYPE1,
     ac::attrs::CAN_FIT_SHIP_TYPE2,
     ac::attrs::CAN_FIT_SHIP_TYPE3,
@@ -18,6 +18,7 @@ const TYPE_ATTRS: [AAttrId; 12] = [
     ac::attrs::CAN_FIT_SHIP_TYPE9,
     ac::attrs::CAN_FIT_SHIP_TYPE10,
     ac::attrs::CAN_FIT_SHIP_TYPE11,
+    ac::attrs::CAN_FIT_SHIP_TYPE12,
     ac::attrs::FITS_TO_SHIP_TYPE,
 ];
 

@@ -264,7 +264,7 @@ def test_struct(client, consts):
 
 def test_rig(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type12, unit_id=consts.EveAttrUnit.item_id)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_rig_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_allowed_ship_id})
@@ -290,7 +290,7 @@ def test_rig(client, consts):
 
 def test_service(client, consts):
     eve_struct_grp_id = client.mk_eve_struct_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type11, unit_id=consts.EveAttrUnit.item_id)
     eve_allowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
     eve_disallowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
     eve_service_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_allowed_struct_id})

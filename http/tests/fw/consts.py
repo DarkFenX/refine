@@ -439,6 +439,7 @@ class EveAttr(IntEnum):
     dot_duration = 5735
     dot_max_dmg_per_tick = 5736
     dot_max_hp_perc_per_tick = 5737
+    can_fit_ship_type12 = 5948
 
 
 @unique
