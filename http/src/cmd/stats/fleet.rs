@@ -122,13 +122,13 @@ fn get_remote_nps_stats(
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_remote_nps_applied(core_item_kinds, &projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(result) => results.push(Some(result)),
                     Err(_) => results.push(None),
                 }
             }
             None => {
-                let core_stat = core_fleet.get_stat_remote_nps(core_item_kinds);
-                results.push(Some(core_stat.into()));
+                let result = core_fleet.get_stat_remote_nps(core_item_kinds);
+                results.push(Some(result));
             }
         }
     }
