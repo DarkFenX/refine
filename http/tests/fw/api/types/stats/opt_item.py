@@ -91,6 +91,7 @@ class StatsOptionItemRemoteCps:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemRemoteNps:
 
+    include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 

@@ -43,6 +43,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
+        include_charges: bool,
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
@@ -50,6 +51,7 @@ impl Svc {
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
+            include_charges,
             ignore_state,
             projectee_key,
         )

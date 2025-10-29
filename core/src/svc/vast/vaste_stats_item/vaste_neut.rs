@@ -20,6 +20,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
+        include_charges: bool,
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
@@ -28,6 +29,7 @@ impl Vast {
             ctx,
             calc,
             item_key,
+            include_charges,
             ignore_state,
             projectee_key,
         ))
@@ -36,6 +38,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
+        include_charges: bool,
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
@@ -55,6 +58,15 @@ impl Vast {
                 item_nps += neut_amount.get_total() / effect_cycle.get_average_cycle_time();
             }
         }
+        if include_charges {
+            for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
+                if let Ok(charge_nps) =
+                    Vast::get_stat_item_remote_nps(ctx, calc, charge_key, false, ignore_state, projectee_key)
+                {
+                    item_nps += charge_nps;
+                }
+            }
+        }
         item_nps
     }
 }
@@ -62,6 +74,7 @@ impl Vast {
 fn item_check_neuting(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
     let u_item = ctx.u_data.items.get(item_key);
     let is_loaded = match u_item {
+        UItem::Charge(charge) => charge.is_loaded(),
         UItem::Drone(drone) => drone.is_loaded(),
         UItem::Fighter(fighter) => fighter.is_loaded(),
         UItem::Module(module) => module.is_loaded(),

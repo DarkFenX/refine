@@ -302,7 +302,11 @@ fn get_remote_nps_stats(
     for option in options {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_item.get_stat_remote_nps_applied(option.ignore_state, &projectee_item_id) {
+                match core_item.get_stat_remote_nps_applied(
+                    option.include_charges,
+                    option.ignore_state,
+                    &projectee_item_id,
+                ) {
                     Ok(result) => results.push(Some(result)),
                     Err(core_err) => {
                         match core_err {
@@ -314,7 +318,7 @@ fn get_remote_nps_stats(
                     }
                 }
             }
-            None => match core_item.get_stat_remote_nps(option.ignore_state) {
+            None => match core_item.get_stat_remote_nps(option.include_charges, option.ignore_state) {
                 Ok(result) => results.push(Some(result)),
                 Err(_) => return None,
             },
