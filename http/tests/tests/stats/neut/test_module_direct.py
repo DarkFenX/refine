@@ -55,11 +55,11 @@ def test_state(client, consts):
     api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(remote_nps=(True, [
         StatsOptionItemRemoteNps(ignore_state=False),
         StatsOptionItemRemoteNps(ignore_state=True)])))
-    assert api_module_ship_stats.remote_nps.map(lambda i: i) == [0, approx(25)]
+    assert api_module_ship_stats.remote_nps == [0, approx(25)]
     api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(remote_nps=(True, [
         StatsOptionItemRemoteNps(ignore_state=False),
         StatsOptionItemRemoteNps(ignore_state=True)])))
-    assert api_module_struct_stats.remote_nps.map(lambda i: i) == [0, approx(120)]
+    assert api_module_struct_stats.remote_nps == [0, approx(120)]
     # Action
     api_module_ship.change_module(state=consts.ApiModuleState.active)
     api_module_struct.change_module(state=consts.ApiModuleState.active)
@@ -74,7 +74,7 @@ def test_state(client, consts):
     assert api_module_struct_stats.remote_nps.one() == approx(120)
 
 
-def test_cap_limit_and_range(client, consts):
+def test_range_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_optimal_attr_id = client.mk_eve_attr()
@@ -200,7 +200,7 @@ def test_cap_limit_and_range(client, consts):
     assert api_src_module_nonproj_stats.remote_nps.one() == 0
 
 
-def test_cap_limit_and_application(client, consts):
+def test_application_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_neut_sig_res_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_sig_res)

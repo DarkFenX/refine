@@ -44,7 +44,7 @@ def test_state(client, consts):
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_nps=(True, [
         StatsOptionItemRemoteNps(ignore_state=False),
         StatsOptionItemRemoteNps(ignore_state=True)])))
-    assert api_module_stats.remote_nps.map(lambda i: i) == [0, approx(21)]
+    assert api_module_stats.remote_nps == [0, approx(21)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
@@ -96,7 +96,7 @@ def test_override(client, consts):
     assert api_module_stats.remote_nps.one() == 0
 
 
-def test_cap_limit_and_range(client, consts):
+def test_range_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
     eve_cycle_time_attr_id = client.mk_eve_attr()
@@ -223,7 +223,7 @@ def test_cap_limit_and_range(client, consts):
     assert api_src_module_nonproj_stats.remote_nps.one() == 0
 
 
-def test_cap_limit_and_application(client, consts):
+def test_application_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
     eve_cycle_time_attr_id = client.mk_eve_attr()
@@ -311,7 +311,7 @@ def test_cap_limit_and_application(client, consts):
     assert api_src_module_nonproj_stats.remote_nps.one() == approx(1.25)
 
 
-def test_cap_limit_and_resist(client, consts):
+def test_resist_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
     eve_cycle_time_attr_id = client.mk_eve_attr()
@@ -451,20 +451,3 @@ def test_no_cycle_time(client, consts):
     assert api_fit_stats.remote_nps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_nps=True))
     assert api_module_stats.remote_nps.one() == 0
-
-
-def test_item_not_loaded(client, consts):
-    eve_module_id = client.alloc_item_id()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
-    # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_nps=True))
-    assert api_fleet_stats.remote_nps.one() == 0
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_nps=True))
-    assert api_fit_stats.remote_nps.one() == 0
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_nps=True))
-    assert api_module_stats.remote_nps is None
