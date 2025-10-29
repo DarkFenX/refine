@@ -46,6 +46,7 @@ mod eff_d6187_energy_neut_falloff;
 mod eff_d6188_ship_mod_remote_armor_repairer;
 mod eff_d6197_energy_nosf_falloff;
 mod eff_d6208_micro_jump_portal_drive;
+mod eff_d6216_struct_energy_neut_falloff;
 mod eff_d6222_struct_warp_scram_block_mwd_with_npc;
 mod eff_d6422_remote_sensor_damp_falloff;
 mod eff_d6423_ship_module_guidance_disruptor;
@@ -153,6 +154,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6188_ship_mod_remote_armor_repairer::mk_n_effect(),
         eff_d6197_energy_nosf_falloff::mk_n_effect(),
         eff_d6208_micro_jump_portal_drive::mk_n_effect(),
+        eff_d6216_struct_energy_neut_falloff::mk_n_effect(),
         eff_d6222_struct_warp_scram_block_mwd_with_npc::mk_n_effect(),
         eff_d6422_remote_sensor_damp_falloff::mk_n_effect(),
         eff_d6423_ship_module_guidance_disruptor::mk_n_effect(),

@@ -40,6 +40,7 @@ pub(crate) const ENERGY_NEUT_FALLOFF: EEffectId = 6187;
 pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: EEffectId = 6188;
 pub(crate) const ENERGY_NOSF_FALLOFF: EEffectId = 6197;
 pub(crate) const MICRO_JUMP_PORTAL_DRIVE: EEffectId = 6208;
+pub(crate) const STRUCT_ENERGY_NEUT_FALLOFF: EEffectId = 6216;
 pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: EEffectId = 6222;
 pub(crate) const SERVICE_SLOT: EEffectId = 6306;
 pub(crate) const REMOTE_SENSOR_DAMP_FALLOFF: EEffectId = 6422;

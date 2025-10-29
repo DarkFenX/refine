@@ -102,7 +102,9 @@ class EveEffect(IntEnum):
     ship_mod_remote_hull_repairer = 6185
     ship_mod_remote_shield_booster = 6186
     energy_neut_falloff = 6187
+    energy_nosf_falloff = 6197
     ship_mod_remote_armor_repairer = 6188
+    struct_energy_neut_falloff = 6216
     struct_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
     ftr_abil_missiles = 6431
@@ -365,6 +367,7 @@ class EveAttr(IntEnum):
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
     can_fit_ship_type5 = 1944
+    nos_override = 1945
     disallow_in_hisec = 1970
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
