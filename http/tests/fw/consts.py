@@ -114,6 +114,7 @@ class EveEffect(IntEnum):
     ftr_abil_attack_m = 6465
     remote_ecm_falloff = 6470
     doomsday_aoe_web = 6476
+    doomsday_aoe_neut = 6477
     ftr_abil_launch_bomb = 6485
     doomsday_aoe_ecm = 6513
     ship_mod_ancillary_remote_armor_repairer = 6651
@@ -394,6 +395,7 @@ class EveAttr(IntEnum):
     doomsday_dmg_duration = 2264
     doomsday_dmg_cycle_time = 2265
     doomsday_aoe_range = 2279
+    doomsday_aoe_sig_radius = 2281
     doomsday_aoe_duration = 2280
     ftr_abil_launch_bomb_type = 2324
     hisec_modifier = 2355

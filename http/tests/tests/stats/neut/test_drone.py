@@ -230,7 +230,9 @@ def test_zero_cycle_time(client, consts):
 def test_no_cycle_time(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.entity_energy_neut_falloff, cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.entity_energy_neut_falloff,
+        cat_id=consts.EveEffCat.target)
     eve_drone_id = client.mk_eve_item(
         attrs={eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 6000},
         eff_ids=[eve_effect_id],
