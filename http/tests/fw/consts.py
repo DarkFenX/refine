@@ -398,6 +398,7 @@ class EveAttr(IntEnum):
     security_modifier = 2358
     can_fit_ship_group10 = 2396
     max_type_fitted = 2431
+    energy_neut_sig_res = 2451
     can_fit_ship_type7 = 2463
     warfare_buff_1_id = 2468
     warfare_buff_1_value = 2469
