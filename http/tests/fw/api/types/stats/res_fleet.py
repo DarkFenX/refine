@@ -15,4 +15,5 @@ class FleetStats(AttrDict):
                 if d is not None else None)),
             'remote_rps': AttrHookDef(func=lambda d: (
                 NttList(StatRemoteRps(data=e) for e in d)
-                if d is not None else None))})
+                if d is not None else None)),
+            'remote_nps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None)})

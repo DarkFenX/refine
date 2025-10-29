@@ -101,6 +101,7 @@ class EveEffect(IntEnum):
     ship_mod_remote_capacitor_transmitter = 6184
     ship_mod_remote_hull_repairer = 6185
     ship_mod_remote_shield_booster = 6186
+    energy_neut_falloff = 6187
     ship_mod_remote_armor_repairer = 6188
     struct_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
@@ -244,6 +245,7 @@ class EveAttr(IntEnum):
     structure_dmg_amount = 83
     armor_dmg_amount = 84
     power_transfer_amount = 90
+    energy_neut_amount = 97
     emp_field_range = 99
     launcher_slots_left = 101
     turret_slots_left = 102
