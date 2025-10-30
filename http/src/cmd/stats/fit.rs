@@ -366,7 +366,7 @@ fn get_cap_regen_stats(
     Some(
         options
             .iter()
-            .map(|option| core_fit.get_stat_cap_regen(option.cap_perc).ok()?.into())
+            .map(|option| core_fit.get_stat_cap_regen(option.cap_perc).ok()?)
             .collect(),
     )
 }

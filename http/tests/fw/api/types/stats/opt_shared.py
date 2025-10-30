@@ -13,6 +13,7 @@ type StatOptionAlias = bool | type[Absent]
 type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
 type StatOptionRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionRps]]
 type StatOptionErpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionErps]]
+type StatOptionCapRegenAlias = StatOptionAlias | tuple[bool, list[StatsOptionCapRegen]]
 type StatOptionFitDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitDps]]
 type StatOptionFitVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitVolley]]
 type StatOptionFitRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteRps]]
@@ -42,6 +43,15 @@ class StatsOptionErps:
 
     incoming_dps: DpsProfile | type[Absent] = Absent
     spool: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionCapRegen:
+
+    cap_perc: float | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

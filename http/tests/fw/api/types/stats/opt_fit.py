@@ -1,17 +1,21 @@
 import dataclasses
+import typing
 
 from tests.fw.util import Absent
-from .opt_shared import (
-    StatOptionAlias,
-    StatOptionEhpAlias,
-    StatOptionErpsAlias,
-    StatOptionFitDpsAlias,
-    StatOptionFitRemoteNpsAlias,
-    StatOptionFitRemoteRpsAlias,
-    StatOptionFitVolleyAlias,
-    StatOptionRpsAlias,
-    dc_to_dict,
-)
+from .opt_shared import dc_to_dict
+
+if typing.TYPE_CHECKING:
+    from .opt_shared import (
+        StatOptionAlias,
+        StatOptionCapRegenAlias,
+        StatOptionEhpAlias,
+        StatOptionErpsAlias,
+        StatOptionFitDpsAlias,
+        StatOptionFitRemoteNpsAlias,
+        StatOptionFitRemoteRpsAlias,
+        StatOptionFitVolleyAlias,
+        StatOptionRpsAlias,
+    )
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -67,6 +71,7 @@ class FitStatsOptions:
     remote_cps: StatOptionAlias = Absent
     remote_nps: StatOptionFitRemoteNpsAlias = Absent
     cap: StatOptionAlias = Absent
+    cap_regen: StatOptionCapRegenAlias = Absent
     neut_resist: StatOptionAlias = Absent
 
     def to_dict(self) -> dict:

@@ -1,7 +1,17 @@
 import dataclasses
+import typing
 
 from tests.fw.util import Absent
-from .opt_shared import StatOptionAlias, StatOptionEhpAlias, StatOptionErpsAlias, StatOptionRpsAlias, dc_to_dict
+from .opt_shared import dc_to_dict
+
+if typing.TYPE_CHECKING:
+    from .opt_shared import (
+        StatOptionAlias,
+        StatOptionCapRegenAlias,
+        StatOptionEhpAlias,
+        StatOptionErpsAlias,
+        StatOptionRpsAlias,
+    )
 
 type StatOptionItemDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemDps]]
 type StatOptionItemVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemVolley]]
@@ -41,6 +51,7 @@ class ItemStatsOptions:
     remote_cps: StatOptionItemRemoteCpsAlias = Absent
     remote_nps: StatOptionItemRemoteNpsAlias = Absent
     cap: StatOptionAlias = Absent
+    cap_regen: StatOptionCapRegenAlias = Absent
     neut_resist: StatOptionAlias = Absent
 
     def to_dict(self) -> dict:
