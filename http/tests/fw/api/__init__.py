@@ -6,6 +6,7 @@ from .types import (
     StatDmgItemKinds,
     StatRemoteNpsItemKinds,
     StatRemoteRpsItemKinds,
+    StatsOptionCapRegen,
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDps,

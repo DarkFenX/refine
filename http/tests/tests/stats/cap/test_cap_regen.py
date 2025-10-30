@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapRegen
 
 
 def test_ship_modified(client, consts):
@@ -92,6 +92,28 @@ def test_other(client, consts):
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(cap_regen=True))
     assert api_drone_stats.cap_regen is None
+
+
+def test_cap_perc(client, consts):
+    eve_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_amount_attr_id: 518.76, eve_regen_attr_id: 233437.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_cap_regen_options = [
+        StatsOptionCapRegen(cap_perc=0.25),
+        StatsOptionCapRegen(),
+        StatsOptionCapRegen(cap_perc=0),
+        StatsOptionCapRegen(cap_perc=0.7),
+        StatsOptionCapRegen(cap_perc=0.9),
+        StatsOptionCapRegen(cap_perc=1)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=(True, api_cap_regen_options)))
+    assert api_fit_stats.cap_regen == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=(True, api_cap_regen_options)))
+    assert api_ship_stats.cap_regen == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
 
 
 def test_ship_not_loaded(client, consts):

@@ -12,6 +12,7 @@ from .opt_item import (
 from .opt_remote_nps import StatRemoteNpsItemKinds
 from .opt_remote_rps import StatRemoteRpsItemKinds
 from .opt_shared import (
+    StatsOptionCapRegen,
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDps,
