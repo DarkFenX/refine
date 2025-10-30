@@ -12,6 +12,14 @@ impl Svc {
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_cap(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
+    pub(crate) fn get_stat_item_cap_regen(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+        cap_perc: Option<AttrVal>,
+    ) -> Result<Option<AttrVal>, StatItemCheckError> {
+        Vast::get_stat_item_cap_regen(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key, cap_perc)
+    }
     pub(crate) fn get_stat_item_neut_resist(
         &mut self,
         u_data: &UData,

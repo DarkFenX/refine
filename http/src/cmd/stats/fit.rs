@@ -2,8 +2,9 @@ use crate::{
     cmd::{
         shared::get_primary_fit,
         stats::options::{
-            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps, HStatOptionFitRemoteNps,
-            HStatOptionFitRemoteRps, HStatOptionFitVolley, HStatOptionRps, HStatResolvedOption,
+            HStatOption, HStatOptionCapRegen, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
+            HStatOptionFitRemoteNps, HStatOptionFitRemoteRps, HStatOptionFitVolley, HStatOptionRps,
+            HStatResolvedOption,
         },
     },
     info::{
@@ -68,6 +69,7 @@ pub(crate) struct HGetFitStatsCmd {
     remote_cps: Option<bool>,
     remote_nps: Option<HStatOption<HStatOptionFitRemoteNps>>,
     cap: Option<bool>,
+    cap_regen: Option<HStatOption<HStatOptionCapRegen>>,
     neut_resist: Option<bool>,
 }
 impl HGetFitStatsCmd {
@@ -228,6 +230,10 @@ impl HGetFitStatsCmd {
         if self.cap.unwrap_or(self.default) {
             stats.cap = core_fit.get_stat_cap().into();
         }
+        let creg_opt = HStatResolvedOption::new(&self.cap_regen, self.default);
+        if creg_opt.enabled {
+            stats.cap_regen = get_cap_regen_stats(&mut core_fit, creg_opt.options).into();
+        }
         if self.neut_resist.unwrap_or(self.default) {
             stats.neut_resist = core_fit.get_stat_neut_resist().into();
         }
@@ -351,4 +357,16 @@ fn get_remote_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRe
         }
     }
     results
+}
+
+fn get_cap_regen_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<HStatOptionCapRegen>,
+) -> Option<Vec<Option<rc::AttrVal>>> {
+    Some(
+        options
+            .iter()
+            .map(|option| core_fit.get_stat_cap_regen(option.cap_perc).ok()?.into())
+            .collect(),
+    )
 }

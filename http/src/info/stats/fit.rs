@@ -107,6 +107,8 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) cap_regen: TriStateField<Vec<Option<rc::AttrVal>>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) neut_resist: TriStateField<rc::AttrVal>,
 }
 impl HFitStats {
@@ -161,6 +163,7 @@ impl HFitStats {
             remote_cps: Option::default(),
             remote_nps: Option::default(),
             cap: TriStateField::default(),
+            cap_regen: TriStateField::default(),
             neut_resist: TriStateField::default(),
         }
     }

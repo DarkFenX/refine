@@ -123,11 +123,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Option<AttrVal> {
-        // TODO: switch to using unchecked capacitor stat instead of direct attribute fetch, once
-        // TODO: the stat is implemented
-        let cap = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::CAPACITOR_CAPACITY)
-            .unwrap();
+        let cap = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
         let mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key);
         let cap_need = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_CAPACITOR_NEED)

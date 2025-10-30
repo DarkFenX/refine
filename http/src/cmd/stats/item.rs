@@ -4,9 +4,9 @@ use crate::{
     cmd::{
         shared::get_primary_item,
         stats::options::{
-            HStatOption, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps, HStatOptionItemRemoteCps,
-            HStatOptionItemRemoteNps, HStatOptionItemRemoteRps, HStatOptionItemVolley, HStatOptionRps,
-            HStatResolvedOption,
+            HStatOption, HStatOptionCapRegen, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps,
+            HStatOptionItemRemoteCps, HStatOptionItemRemoteNps, HStatOptionItemRemoteRps, HStatOptionItemVolley,
+            HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -49,6 +49,7 @@ pub(crate) struct HGetItemStatsCmd {
     remote_cps: Option<HStatOption<HStatOptionItemRemoteCps>>,
     remote_nps: Option<HStatOption<HStatOptionItemRemoteNps>>,
     cap: Option<bool>,
+    cap_regen: Option<HStatOption<HStatOptionCapRegen>>,
     neut_resist: Option<bool>,
 }
 impl HGetItemStatsCmd {
@@ -147,6 +148,10 @@ impl HGetItemStatsCmd {
         }
         if self.cap.unwrap_or(self.default) {
             stats.cap = core_item.get_stat_cap().into();
+        }
+        let creg_opt = HStatResolvedOption::new(&self.cap_regen, self.default);
+        if creg_opt.enabled {
+            stats.cap_regen = get_cap_regen_stats(&mut core_item, creg_opt.options).into();
         }
         if self.neut_resist.unwrap_or(self.default) {
             stats.neut_resist = core_item.get_stat_neut_resist().into();
@@ -337,4 +342,16 @@ fn get_remote_nps_stats(
         }
     }
     Some(results)
+}
+
+fn get_cap_regen_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionCapRegen>,
+) -> Option<Vec<Option<rc::AttrVal>>> {
+    Some(
+        options
+            .iter()
+            .map(|option| core_item.get_stat_cap_regen(option.cap_perc).ok()?.into())
+            .collect(),
+    )
 }
