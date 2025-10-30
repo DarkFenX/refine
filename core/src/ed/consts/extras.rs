@@ -1,4 +1,8 @@
-use crate::{ec::attrs, ed::EAttrId, def::AttrVal, def::OF};
+use crate::{
+    def::{AttrVal, OF},
+    ec::attrs,
+    ed::EAttrId,
+};
 
 pub(crate) const BUFF_STDATTR_IDS: [EAttrId; 4] = [
     attrs::WARFARE_BUFF1_ID,

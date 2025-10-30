@@ -1,4 +1,4 @@
-use super::checks::check_item_key_drone_fighter_ship;
+use super::checks::check_item_key_drone_fighter_module;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
@@ -22,7 +22,7 @@ impl Vast {
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
-        check_item_key_drone_fighter_ship(ctx, item_key)?;
+        check_item_key_drone_fighter_module(ctx, item_key)?;
         Ok(Vast::get_stat_item_remote_rps_unchecked(
             ctx,
             calc,
@@ -50,7 +50,7 @@ impl Vast {
         item_key: UItemKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_drone_fighter_ship(ctx, item_key)?;
+        check_item_key_drone_fighter_module(ctx, item_key)?;
         Ok(Vast::get_stat_item_remote_cps_unchecked(
             ctx,
             calc,
