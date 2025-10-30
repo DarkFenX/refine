@@ -51,12 +51,14 @@ mod eff_d6222_struct_warp_scram_block_mwd_with_npc;
 mod eff_d6422_remote_sensor_damp_falloff;
 mod eff_d6423_ship_module_guidance_disruptor;
 mod eff_d6424_ship_mod_tracking_disruptor;
+mod eff_d6425_remote_target_paint_falloff;
 mod eff_d6426_remote_webifier_falloff;
 mod eff_d6427_remote_sensor_boost_falloff;
 mod eff_d6443_point_defense;
 mod eff_d6470_remote_ecm_falloff;
 mod eff_d6476_doomsday_aoe_web;
 mod eff_d6477_doomsday_aoe_neut;
+mod eff_d6478_doomsday_aoe_paint;
 mod eff_d6479_doomsday_aoe_track;
 mod eff_d6481_doomsday_aoe_damp;
 mod eff_d6485_ftr_abil_bomb;
@@ -67,6 +69,7 @@ mod eff_d662_missile_therm_dmg_bonus;
 mod eff_d6651_ship_mod_ancillary_remote_armor_repairer;
 mod eff_d6652_ship_mod_ancillary_remote_shield_booster;
 mod eff_d6682_struct_mod_effect_stasis_webifier;
+mod eff_d6683_struct_mod_effect_target_painter;
 mod eff_d6684_struct_mod_effect_remote_sensor_dampener;
 mod eff_d6685_struct_mod_effect_ecm;
 mod eff_d6686_struct_mod_effect_weapon_disruption;
@@ -76,6 +79,7 @@ mod eff_d6689_npc_entity_remote_hull_repairer;
 mod eff_d668_missile_kin_dmg_bonus;
 mod eff_d6690_remote_webifier_entity;
 mod eff_d6691_entity_energy_neut_falloff;
+mod eff_d6692_remote_target_paint_entity;
 mod eff_d6693_remote_sensor_damp_entity;
 mod eff_d6694_npc_entity_weapon_disruptor;
 mod eff_d6695_entity_ecm_falloff;
@@ -159,12 +163,14 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6422_remote_sensor_damp_falloff::mk_n_effect(),
         eff_d6423_ship_module_guidance_disruptor::mk_n_effect(),
         eff_d6424_ship_mod_tracking_disruptor::mk_n_effect(),
+        eff_d6425_remote_target_paint_falloff::mk_n_effect(),
         eff_d6426_remote_webifier_falloff::mk_n_effect(),
         eff_d6427_remote_sensor_boost_falloff::mk_n_effect(),
         eff_d6443_point_defense::mk_n_effect(),
         eff_d6470_remote_ecm_falloff::mk_n_effect(),
         eff_d6476_doomsday_aoe_web::mk_n_effect(),
         eff_d6477_doomsday_aoe_neut::mk_n_effect(),
+        eff_d6478_doomsday_aoe_paint::mk_n_effect(),
         eff_d6479_doomsday_aoe_track::mk_n_effect(),
         eff_d6481_doomsday_aoe_damp::mk_n_effect(),
         eff_d6485_ftr_abil_bomb::mk_n_effect(),
@@ -172,6 +178,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6651_ship_mod_ancillary_remote_armor_repairer::mk_n_effect(),
         eff_d6652_ship_mod_ancillary_remote_shield_booster::mk_n_effect(),
         eff_d6682_struct_mod_effect_stasis_webifier::mk_n_effect(),
+        eff_d6683_struct_mod_effect_target_painter::mk_n_effect(),
         eff_d6684_struct_mod_effect_remote_sensor_dampener::mk_n_effect(),
         eff_d6685_struct_mod_effect_ecm::mk_n_effect(),
         eff_d6686_struct_mod_effect_weapon_disruption::mk_n_effect(),
@@ -180,6 +187,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6689_npc_entity_remote_hull_repairer::mk_n_effect(),
         eff_d6690_remote_webifier_entity::mk_n_effect(),
         eff_d6691_entity_energy_neut_falloff::mk_n_effect(),
+        eff_d6692_remote_target_paint_entity::mk_n_effect(),
         eff_d6693_remote_sensor_damp_entity::mk_n_effect(),
         eff_d6694_npc_entity_weapon_disruptor::mk_n_effect(),
         eff_d6695_entity_ecm_falloff::mk_n_effect(),

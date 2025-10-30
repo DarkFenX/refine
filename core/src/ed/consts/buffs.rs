@@ -14,6 +14,7 @@ pub(crate) const WD_BURST_MISSILE_EXPLOSION_VELOCITY: EBuffId = 33;
 pub(crate) const WD_BURST_MISSILE_EXPLOSION_RADIUS: EBuffId = 34;
 pub(crate) const DAMP_BURST_SCAN_RESOLUTION_PENALTY: EBuffId = 35;
 pub(crate) const DAMP_BURST_TARGETING_RANGE_PENALTY: EBuffId = 36;
+pub(crate) const SIGNATURE_RADIUS_PENALTY: EBuffId = 37;
 pub(crate) const DISALLOW_TETHER: EBuffId = 57;
 pub(crate) const REMOTE_REPAIR_IMPEDANCE: EBuffId = 2201;
 pub(crate) const SOV_SMOD_SHIELD_HITPOINT_BONUS: EBuffId = 2433;
