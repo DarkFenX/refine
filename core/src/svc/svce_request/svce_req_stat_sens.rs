@@ -37,6 +37,13 @@ impl Svc {
     ) -> Result<Sensor, StatItemCheckError> {
         Vast::get_stat_item_sensor(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
+    pub(crate) fn get_stat_dscan_range(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
+        Vast::get_stat_item_dscan_range(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
     pub(crate) fn get_stat_item_probing_size(
         &mut self,
         u_data: &UData,

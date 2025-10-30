@@ -195,6 +195,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_sensor(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+    fn get_stat_dscan_range(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_dscan_range(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
     fn get_stat_probing_size(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();

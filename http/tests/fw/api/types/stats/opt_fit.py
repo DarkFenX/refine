@@ -51,6 +51,7 @@ class FitStatsOptions:
     lock_range: StatOptionAlias = Absent
     scan_res: StatOptionAlias = Absent
     sensor: StatOptionAlias = Absent
+    dscan_range: StatOptionAlias = Absent
     probing_size: StatOptionAlias = Absent
     jam_chance: StatOptionAlias = Absent
     drone_control_range: StatOptionAlias = Absent

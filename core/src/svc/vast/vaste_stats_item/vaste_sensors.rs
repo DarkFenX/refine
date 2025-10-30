@@ -1,4 +1,4 @@
-use super::checks::{check_item_key_drone_fighter_ship, check_item_key_fighter_ship};
+use super::checks::{check_item_key_drone_fighter_ship, check_item_key_fighter_ship, check_item_key_ship};
 use crate::{
     ac,
     def::{AttrVal, Count, OF},
@@ -103,6 +103,19 @@ impl Vast {
             sensor.strength = str_grav;
         }
         sensor
+    }
+    pub(in crate::svc) fn get_stat_item_dscan_range(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Result<AttrVal, StatItemCheckError> {
+        check_item_key_ship(ctx, item_key)?;
+        Ok(Vast::internal_get_stat_item_dscan_range_unchecked(ctx, calc, item_key))
+    }
+    fn internal_get_stat_item_dscan_range_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_DIRECTIONAL_SCAN_RANGE)
+            .unwrap()
+            / ac::extras::AU
     }
     pub(in crate::svc) fn get_stat_item_probing_size(
         ctx: SvcCtx,

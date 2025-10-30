@@ -17,6 +17,9 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_sensor(&mut self) -> Result<Sensor, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_sensor()?)
     }
+    pub fn get_stat_dscan_range(&mut self) -> Result<AttrVal, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_dscan_range()?)
+    }
     pub fn get_stat_probing_size(&mut self) -> Result<Option<AttrVal>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_probing_size()?)
     }

@@ -1,4 +1,4 @@
-pub(crate) use crate::ed::consts::extras::BUFF_STDATTR_IDS;
+pub(crate) use crate::ed::consts::extras::{AU, BUFF_STDATTR_IDS, LY};
 use crate::{
     ad::{AAttrId, AAttrVal, consts::attrs},
     def::OF,
