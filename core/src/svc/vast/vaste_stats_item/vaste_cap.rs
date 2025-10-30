@@ -39,7 +39,8 @@ impl Vast {
         let max_amount = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
         let cap_regen_time = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
-            .unwrap();
+            .unwrap()
+            / OF(1000.0);
         let cap_perc = match cap_perc {
             Some(cap_perc) => cap_perc.clamp(OF(0.0), OF(1.0)),
             None => OF(0.25),

@@ -240,6 +240,7 @@ class EveAttr(IntEnum):
     cpu = 50
     speed = 51
     max_range = 54
+    recharge_rate = 55
     charge_rate = 56
     dmg_mult = 64
     shield_bonus = 68

@@ -348,10 +348,12 @@ fn get_cap_regen_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionCapRegen>,
 ) -> Option<Vec<Option<rc::AttrVal>>> {
-    Some(
-        options
-            .iter()
-            .map(|option| core_item.get_stat_cap_regen(option.cap_perc).ok()?)
-            .collect(),
-    )
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        match core_item.get_stat_cap_regen(option.cap_perc) {
+            Ok(result) => results.push(result),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
 }
