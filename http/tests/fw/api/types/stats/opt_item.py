@@ -39,6 +39,8 @@ class ItemStatsOptions:
     remote_rps: StatOptionItemRemoteRpsAlias = Absent
     remote_cps: StatOptionItemRemoteCpsAlias = Absent
     remote_nps: StatOptionItemRemoteNpsAlias = Absent
+    cap: StatOptionAlias = Absent
+    neut_resist: StatOptionAlias = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

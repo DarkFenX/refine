@@ -65,6 +65,8 @@ class FitStatsOptions:
     remote_rps: StatOptionFitRemoteRpsAlias = Absent
     remote_cps: StatOptionAlias = Absent
     remote_nps: StatOptionFitRemoteNpsAlias = Absent
+    cap: StatOptionAlias = Absent
+    neut_resist: StatOptionAlias = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

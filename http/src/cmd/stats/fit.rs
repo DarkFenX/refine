@@ -66,6 +66,8 @@ pub(crate) struct HGetFitStatsCmd {
     remote_rps: Option<HStatOption<HStatOptionFitRemoteRps>>,
     remote_cps: Option<bool>,
     remote_nps: Option<HStatOption<HStatOptionFitRemoteNps>>,
+    cap: Option<bool>,
+    neut_resist: Option<bool>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -218,6 +220,12 @@ impl HGetFitStatsCmd {
         let rnps_opt = HStatResolvedOption::new(&self.remote_nps, self.default);
         if rnps_opt.enabled {
             stats.remote_nps = Some(get_remote_nps_stats(&mut core_fit, rnps_opt.options));
+        }
+        if self.cap.unwrap_or(self.default) {
+            stats.cap = core_fit.get_stat_cap().into();
+        }
+        if self.neut_resist.unwrap_or(self.default) {
+            stats.neut_resist = core_fit.get_stat_neut_resist().into();
         }
         Ok(stats)
     }

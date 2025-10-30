@@ -102,6 +102,10 @@ pub(crate) struct HFitStats {
     pub(crate) remote_cps: Option<rc::AttrVal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) remote_nps: Option<Vec<Option<rc::AttrVal>>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) cap: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) neut_resist: TriStateField<rc::AttrVal>,
 }
 impl HFitStats {
     pub fn new() -> Self {
@@ -153,6 +157,8 @@ impl HFitStats {
             remote_rps: Option::default(),
             remote_cps: Option::default(),
             remote_nps: Option::default(),
+            cap: TriStateField::default(),
+            neut_resist: TriStateField::default(),
         }
     }
 }

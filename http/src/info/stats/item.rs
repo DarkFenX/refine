@@ -57,6 +57,10 @@ pub(crate) struct HItemStats {
     pub(crate) remote_cps: TriStateField<Vec<rc::AttrVal>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) remote_nps: TriStateField<Vec<Option<rc::AttrVal>>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) cap: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) neut_resist: TriStateField<rc::AttrVal>,
 }
 impl HItemStats {
     pub fn new() -> Self {
@@ -86,6 +90,8 @@ impl HItemStats {
             remote_rps: TriStateField::default(),
             remote_cps: TriStateField::default(),
             remote_nps: TriStateField::default(),
+            cap: TriStateField::default(),
+            neut_resist: TriStateField::default(),
         }
     }
 }

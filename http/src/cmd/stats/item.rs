@@ -47,6 +47,8 @@ pub(crate) struct HGetItemStatsCmd {
     remote_rps: Option<HStatOption<HStatOptionItemRemoteRps>>,
     remote_cps: Option<HStatOption<HStatOptionItemRemoteCps>>,
     remote_nps: Option<HStatOption<HStatOptionItemRemoteNps>>,
+    cap: Option<bool>,
+    neut_resist: Option<bool>,
 }
 impl HGetItemStatsCmd {
     pub(crate) fn execute(
@@ -138,6 +140,12 @@ impl HGetItemStatsCmd {
         let rnps_opt = HStatResolvedOption::new(&self.remote_nps, self.default);
         if rnps_opt.enabled {
             stats.remote_nps = get_remote_nps_stats(&mut core_item, rnps_opt.options).into();
+        }
+        if self.cap.unwrap_or(self.default) {
+            stats.cap = core_item.get_stat_cap().into();
+        }
+        if self.neut_resist.unwrap_or(self.default) {
+            stats.neut_resist = core_item.get_stat_neut_resist().into();
         }
         Ok(stats)
     }
