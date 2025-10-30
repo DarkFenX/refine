@@ -1,13 +1,14 @@
+use super::checks::check_item_key_charge_drone_fighter_module;
 use crate::{
     def::{AttrVal, OF},
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+        err::StatItemCheckError,
         vast::Vast,
     },
-    ud::{UItem, UItemKey},
+    ud::UItemKey,
 };
 
 const NEUT_CYCLE_OPTIONS: CycleOptions = CycleOptions {
@@ -24,7 +25,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check_neuting(ctx, item_key)?;
+        check_item_key_charge_drone_fighter_module(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_remote_nps_unchecked(
             ctx,
             calc,
@@ -68,20 +69,5 @@ impl Vast {
             }
         }
         item_nps
-    }
-}
-
-fn item_check_neuting(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Charge(charge) => charge.is_loaded(),
-        UItem::Drone(drone) => drone.is_loaded(),
-        UItem::Fighter(fighter) => fighter.is_loaded(),
-        UItem::Module(module) => module.is_loaded(),
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
     }
 }

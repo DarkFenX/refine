@@ -1,10 +1,11 @@
+use super::checks::{check_item_key_drone_fighter_ship, check_item_key_fighter_ship};
 use crate::{
     ac,
     def::{AttrVal, Count, OF},
     svc::{
         SvcCtx,
         calc::Calc,
-        err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+        err::StatItemCheckError,
         vast::{Sensor, SensorKind, Vast},
     },
     ud::{UItem, UItemKey},
@@ -17,7 +18,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Count, StatItemCheckError> {
-        item_check_sensors(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_locks(ctx, calc, item_key))
     }
     fn internal_get_stat_item_locks(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Count {
@@ -43,7 +44,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check_sensors_no_drones(ctx, item_key)?;
+        check_item_key_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_lock_range_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_lock_range_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -55,7 +56,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check_sensors_no_drones(ctx, item_key)?;
+        check_item_key_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_scan_res_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_scan_res_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -67,7 +68,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Sensor, StatItemCheckError> {
-        item_check_sensors(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_sensor_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Sensor {
@@ -108,7 +109,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check_sensors(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_probing_size_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_probing_size_unchecked(
@@ -130,7 +131,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check_sensors(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(self.internal_get_stat_item_jam_chance_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_jam_chance_unchecked(
@@ -165,32 +166,5 @@ impl Vast {
             }
         }
         OF(1.0) - item_unjam_chance
-    }
-}
-
-fn item_check_sensors(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Drone(u_drone) => u_drone.is_loaded(),
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => u_ship.is_loaded(),
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
-    }
-}
-
-fn item_check_sensors_no_drones(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => u_ship.is_loaded(),
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
     }
 }

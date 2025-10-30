@@ -1,5 +1,6 @@
 pub use tank::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps};
 
+mod checks;
 mod tank;
 mod vaste_cap;
 mod vaste_dmg;

@@ -1,3 +1,4 @@
+use super::checks::check_item_key_drone_fighter_ship;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
@@ -7,10 +8,10 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{Cycle, CycleOptionReload, CycleOptions, get_item_cycle_info},
-        err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+        err::StatItemCheckError,
         vast::{StatTank, Vast},
     },
-    ud::{UItem, UItemKey},
+    ud::UItemKey,
 };
 
 impl Vast {
@@ -21,7 +22,7 @@ impl Vast {
         spool: Option<Spool>,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
-        item_key_check(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::get_stat_item_remote_rps_unchecked(
             ctx,
             calc,
@@ -49,7 +50,7 @@ impl Vast {
         item_key: UItemKey,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_key_check(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::get_stat_item_remote_cps_unchecked(
             ctx,
             calc,
@@ -64,20 +65,6 @@ impl Vast {
         ignore_state: bool,
     ) -> AttrVal {
         get_orr_item_key(ctx, calc, item_key, None, ignore_state, get_getter_cap)
-    }
-}
-
-fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Drone(drone) => drone.is_loaded(),
-        UItem::Fighter(fighter) => fighter.is_loaded(),
-        UItem::Module(module) => module.is_loaded(),
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
     }
 }
 

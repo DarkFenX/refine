@@ -1,4 +1,4 @@
-use super::shared::item_key_check;
+use super::super::checks::check_item_key_drone_fighter_ship;
 use crate::{
     ac, ad,
     def::{AttrVal, OF},
@@ -18,7 +18,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<StatTank<DmgKinds<AttrVal>>, StatItemCheckError> {
-        item_key_check(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::get_stat_item_resists_unchecked(ctx, calc, item_key))
     }
     pub(super) fn get_stat_item_resists_unchecked(

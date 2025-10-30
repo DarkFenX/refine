@@ -1,4 +1,4 @@
-use super::shared::item_check;
+use super::super::checks::check_item_drone_fighter_ship;
 use crate::{
     ac,
     def::{AttrVal, OF},
@@ -29,7 +29,7 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<StatTank<StatLayerHp>, StatItemCheckError> {
         let u_item = ctx.u_data.items.get(item_key);
-        item_check(item_key, u_item)?;
+        check_item_drone_fighter_ship(item_key, u_item)?;
         Ok(self.get_stat_item_hp_unchecked(ctx, calc, item_key, u_item))
     }
     pub(super) fn get_stat_item_hp_unchecked(

@@ -1,14 +1,12 @@
+use super::checks::{
+    check_item_key_drone_fighter_ship, check_item_key_drone_fighter_ship_no_struct,
+    check_item_key_fighter_ship_no_struct, check_item_key_ship_no_struct,
+};
 use crate::{
     ac,
     def::{AttrVal, OF},
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
-        item_funcs,
-        vast::Vast,
-    },
-    ud::{UItem, UItemKey, UShipKind},
+    svc::{SvcCtx, calc::Calc, err::StatItemCheckError, item_funcs, vast::Vast},
+    ud::UItemKey,
     util::ceil_tick,
 };
 
@@ -21,7 +19,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check_physic_and_movable(ctx, item_key)?;
+        check_item_key_drone_fighter_ship_no_struct(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_speed_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -32,7 +30,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check_physic_and_movable(ctx, item_key)?;
+        check_item_key_drone_fighter_ship_no_struct(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
@@ -53,7 +51,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check_physic_and_movable(ctx, item_key)?;
+        check_item_key_drone_fighter_ship_no_struct(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_align_time_unchecked(
@@ -68,7 +66,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check_physic(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key))
     }
     pub(super) fn internal_get_stat_item_sig_radius_unchecked(
@@ -83,7 +81,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        item_check_physic(ctx, item_key)?;
+        check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -94,7 +92,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check_warpable(ctx, item_key)?;
+        check_item_key_fighter_ship_no_struct(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_warp_speed_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_warp_speed_unchecked(
@@ -115,7 +113,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        item_check_ship_warpable(ctx, item_key)?;
+        check_item_key_ship_no_struct(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_max_warp_range_unchecked(
             ctx, calc, item_key,
         ))
@@ -139,67 +137,5 @@ impl Vast {
             true => Some(result),
             false => None,
         }
-    }
-}
-
-fn item_check_physic(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Drone(u_drone) => u_drone.is_loaded(),
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => u_ship.is_loaded(),
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
-    }
-}
-
-fn item_check_physic_and_movable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Drone(u_drone) => u_drone.is_loaded(),
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => match u_ship.get_kind() {
-            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
-            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
-        },
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
-    }
-}
-
-fn item_check_warpable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => match u_ship.get_kind() {
-            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
-            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
-        },
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
-    }
-}
-
-fn item_check_ship_warpable(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Ship(u_ship) => match u_ship.get_kind() {
-            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
-            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
-        },
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
     }
 }

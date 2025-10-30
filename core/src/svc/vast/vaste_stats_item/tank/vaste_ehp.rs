@@ -1,4 +1,4 @@
-use super::shared::{get_tanking_efficiency, item_check};
+use super::{super::checks::check_item_drone_fighter_ship, shared::get_tanking_efficiency};
 use crate::{
     def::{AttrVal, OF},
     misc::{DmgKinds, DpsProfile},
@@ -27,7 +27,7 @@ impl Vast {
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let u_item = ctx.u_data.items.get(item_key);
-        item_check(item_key, u_item)?;
+        check_item_drone_fighter_ship(item_key, u_item)?;
         Ok(self.get_stat_item_ehp_unchecked(ctx, calc, item_key, u_item, incoming_dps))
     }
     fn get_stat_item_ehp_unchecked(
@@ -53,7 +53,7 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let u_item = ctx.u_data.items.get(item_key);
-        item_check(item_key, u_item)?;
+        check_item_drone_fighter_ship(item_key, u_item)?;
         Ok(self.get_stat_item_wc_ehp_unchecked(ctx, calc, item_key, u_item))
     }
     fn get_stat_item_wc_ehp_unchecked(

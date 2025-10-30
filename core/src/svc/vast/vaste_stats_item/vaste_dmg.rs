@@ -1,3 +1,4 @@
+use super::checks::check_item_key_autocharge_charge_drone_fighter_module;
 use crate::{
     def::AttrVal,
     misc::{DmgKinds, Spool},
@@ -5,13 +6,13 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+        err::StatItemCheckError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
             shared::{BreacherAccum, apply_breacher},
         },
     },
-    ud::{UItem, UItemKey},
+    ud::UItemKey,
 };
 
 const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
@@ -98,7 +99,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
-        item_key_check(ctx, item_key)?;
+        check_item_key_autocharge_charge_drone_fighter_module(ctx, item_key)?;
         Vast::internal_get_stat_item_dps_unchecked(
             ctx,
             calc,
@@ -241,7 +242,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
-        item_key_check(ctx, item_key)?;
+        check_item_key_autocharge_charge_drone_fighter_module(ctx, item_key)?;
         Vast::internal_get_stat_item_volley_unchecked(
             ctx,
             calc,
@@ -298,21 +299,5 @@ impl Vast {
                 );
             }
         }
-    }
-}
-
-fn item_key_check(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let u_item = ctx.u_data.items.get(item_key);
-    let is_loaded = match u_item {
-        UItem::Autocharge(autocharge) => autocharge.is_loaded(),
-        UItem::Charge(charge) => charge.is_loaded(),
-        UItem::Drone(drone) => drone.is_loaded(),
-        UItem::Fighter(fighter) => fighter.is_loaded(),
-        UItem::Module(module) => module.is_loaded(),
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
     }
 }

@@ -1,4 +1,4 @@
-use super::shared::{get_tanking_efficiency, item_check};
+use super::{super::checks::check_item_drone_fighter_ship, shared::get_tanking_efficiency};
 use crate::{
     def::AttrVal,
     misc::{DpsProfile, Spool},
@@ -28,7 +28,7 @@ impl Vast {
         spool: Option<Spool>,
     ) -> Result<StatTank<Option<StatLayerErps>>, StatItemCheckError> {
         let u_item = ctx.u_data.items.get(item_key);
-        item_check(item_key, u_item)?;
+        check_item_drone_fighter_ship(item_key, u_item)?;
         Ok(self.get_stat_item_erps_unchecked(ctx, calc, item_key, u_item, incoming_dps, spool))
     }
     fn get_stat_item_erps_unchecked(
