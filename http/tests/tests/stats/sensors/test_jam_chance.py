@@ -299,10 +299,10 @@ def test_charge_bomb(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
     eve_expl_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
-    eve_expl_radius_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_cloud_size)
+    eve_expl_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_cloud_size)
     eve_resist_attr_id = client.mk_eve_attr()
     eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
-    eve_sig_radius_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_launcher_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
@@ -316,15 +316,15 @@ def test_charge_bomb(client, consts):
             eve_jam_grav_attr_id: 12.5, eve_jam_ladar_attr_id: 12.5,
             eve_flight_speed_attr_id: 4000, eve_flight_time_attr_id: 7500,
             eve_mass_attr_id: 1000, eve_agility_attr_id: 0.0000251,
-            eve_expl_range_attr_id: 15000, eve_expl_radius_id: 400,
+            eve_expl_range_attr_id: 15000, eve_expl_radius_attr_id: 400,
             eve_resist_def_attr_id: eve_resist_attr_id},
         eff_ids=[eve_bomb_effect_id],
         defeff_id=eve_bomb_effect_id)
     eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 20.5})
     eve_tgt_ship1_id = client.mk_eve_ship(attrs={
-        eve_sensor_ladar_attr_id: 30.7, eve_radius_attr_id: 258, eve_sig_radius_id: 177, eve_resist_attr_id: 0.5})
+        eve_sensor_ladar_attr_id: 30.7, eve_radius_attr_id: 258, eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.5})
     eve_tgt_ship2_id = client.mk_eve_ship(attrs={
-        eve_sensor_grav_attr_id: 39.2, eve_radius_attr_id: 263, eve_sig_radius_id: 266, eve_resist_attr_id: 1})
+        eve_sensor_grav_attr_id: 39.2, eve_radius_attr_id: 263, eve_sig_radius_attr_id: 266, eve_resist_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()

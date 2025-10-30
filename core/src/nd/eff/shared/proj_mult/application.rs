@@ -78,7 +78,7 @@ pub(super) fn get_application_mult_missile(
     radius_ratio.min(mobile_mult).clamp(OF(0.0), OF(1.0))
 }
 
-pub(super) fn get_radius_ratio_mult(
+pub(in crate::nd::eff) fn get_radius_ratio_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

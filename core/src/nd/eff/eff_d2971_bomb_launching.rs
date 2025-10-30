@@ -9,7 +9,7 @@ use crate::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
             dmg_opc::get_dmg_opc_missile,
-            proj_mult::{get_bomb_proj_mult, get_noapp_bomb_proj_mult},
+            proj_mult::{get_bomb_proj_mult, get_noapp_bomb_proj_mult, get_radius_ratio_mult, get_range_mult_bomb},
         },
     },
     rd::REffect,
@@ -75,19 +75,27 @@ fn internal_get_neut_opc(
         return None;
     }
     if let Some(projectee_key) = projectee_key {
-        // Projection reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
-            projectee_key,
-        );
-        amount *= get_bomb_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        // Here, projection reduction is split into 2 separate parts, range and application
+        // reduction. This is done to correctly process cases when target has 50% chance to hit, and
+        // target's cap pool is below post-application/resist bomb neut value
+        amount *= get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::AOE_CLOUD_SIZE);
         // Effect resistance reduction
         if let Some(resist_mult) =
             eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
         {
             amount *= resist_mult;
         }
+        // Total resource pool limit
+        if let Some(cap) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, &ac::attrs::CAPACITOR_CAPACITY) {
+            amount = amount.min(cap);
+        }
+        // Range reduction
+        let proj_data = ctx.eff_projs.get_or_make_proj_data(
+            ctx.u_data,
+            EffectSpec::new(projector_key, projector_effect.get_key()),
+            projectee_key,
+        );
+        amount *= get_range_mult_bomb(ctx, calc, projector_key, proj_data);
     }
     Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }

@@ -157,7 +157,7 @@ pub(super) fn get_range_mult_missile(
     }
 }
 
-pub(super) fn get_range_mult_bomb(
+pub(in crate::nd::eff) fn get_range_mult_bomb(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
