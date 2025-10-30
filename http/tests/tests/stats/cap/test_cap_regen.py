@@ -116,6 +116,36 @@ def test_cap_perc(client, consts):
     assert api_ship_stats.cap_regen == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
 
 
+def test_attr_regen_zero(client, consts):
+    eve_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_amount_attr_id: 518.76, eve_regen_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
+    assert api_fit_stats.cap_regen.one() is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
+    assert api_ship_stats.cap_regen.one() is None
+
+
+def test_attr_both_zero(client, consts):
+    eve_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_amount_attr_id: 0, eve_regen_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
+    assert api_fit_stats.cap_regen.one() is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
+    assert api_ship_stats.cap_regen.one() is None
+
+
 def test_ship_not_loaded(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
