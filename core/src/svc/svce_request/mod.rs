@@ -1,5 +1,6 @@
 mod svce_req_calc;
 mod svce_req_misc;
+mod svce_req_stat_cap;
 mod svce_req_stat_dmg;
 mod svce_req_stat_misc;
 mod svce_req_stat_neut;

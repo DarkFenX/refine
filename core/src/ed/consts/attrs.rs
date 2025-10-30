@@ -162,6 +162,7 @@ pub(crate) const NOS_OVERRIDE: EAttrId = 1945;
 pub(crate) const DISALLOW_IN_HISEC: EAttrId = 1970;
 pub(crate) const GATE_SCRAMBLE_STATUS: EAttrId = 1973;
 pub(crate) const GATE_SCRAMBLE_STRENGTH: EAttrId = 1974;
+pub(crate) const ENERGY_WARFARE_RESIST: EAttrId = 2045;
 pub(crate) const FTR_CAPACITY: EAttrId = 2055;
 pub(crate) const SERVICE_SLOTS: EAttrId = 2056;
 pub(crate) const CAN_FIT_SHIP_GROUP9: EAttrId = 2065;
