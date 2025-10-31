@@ -5,6 +5,7 @@ from tests.fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
+    from .opt_cap import StatCapSrcKinds
     from .opt_dmg import StatDmgItemKinds
     from .opt_remote_nps import StatNeutItemKinds
     from .opt_remote_rps import StatRemoteRepItemKinds
@@ -51,6 +52,7 @@ class StatsOptionErps:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionCapBalance:
 
+    src_kinds: StatCapSrcKinds | type[Absent] = Absent
     regen_perc: float | type[Absent] = Absent
 
     def to_dict(self) -> dict:

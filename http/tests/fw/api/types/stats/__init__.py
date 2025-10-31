@@ -1,3 +1,4 @@
+from .opt_cap import StatCapSrcKinds
 from .opt_dmg import StatDmgItemKinds
 from .opt_fit import FitStatsOptions
 from .opt_fleet import FleetStatsOptions
