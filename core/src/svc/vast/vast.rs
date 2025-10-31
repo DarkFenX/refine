@@ -22,8 +22,11 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    // Cap
+    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NNeutGetter>,
     // Ewar
-    pub(in crate::svc::vast) iecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
+    pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
@@ -35,7 +38,9 @@ impl Vast {
             irr_armor: RMapRMapRMap::new(),
             irr_armor_limitable: RMapRMapRMap::new(),
             irr_hull: RMapRMapRMap::new(),
-            iecm: RMapRMapRMap::new(),
+            in_cap: RMapRMapRMap::new(),
+            in_neuts: RMapRMapRMap::new(),
+            in_ecm: RMapRMapRMap::new(),
         }
     }
     pub(in crate::svc) fn get_fit_data(&self, fit_key: &UFitKey) -> &VastFitData {
@@ -123,9 +128,11 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
-    pub(in crate::svc::vast) orr_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
+    // Stats-related - cap
+    pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
+    pub(in crate::svc::vast) cap_users: RMapRSet<UItemKey, REffectKey>,
     // Stats-related - misc
-    pub(in crate::svc::vast) neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
+    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -201,8 +208,9 @@ impl VastFitData {
             orr_shield: RMapRMap::new(),
             orr_armor: RMapRMap::new(),
             orr_hull: RMapRMap::new(),
-            orr_cap: RMapRMap::new(),
-            neuts: RMapRMap::new(),
+            out_cap: RMapRMap::new(),
+            cap_users: RMapRSet::new(),
+            out_neuts: RMapRMap::new(),
         }
     }
 }

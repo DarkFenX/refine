@@ -63,7 +63,7 @@ impl Vast {
                     calc,
                     StatRemoteRpsItemKinds::all_enabled(),
                     None,
-                    &self.get_fit_data(&fit_key).orr_cap,
+                    &self.get_fit_data(&fit_key).out_cap,
                 )
             })
             .sum()
@@ -75,7 +75,7 @@ impl Vast {
             calc,
             StatRemoteRpsItemKinds::all_enabled(),
             None,
-            &fit_data.orr_cap,
+            &fit_data.out_cap,
         )
     }
 }

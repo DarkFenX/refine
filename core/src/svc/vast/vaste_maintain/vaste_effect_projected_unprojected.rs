@@ -68,7 +68,7 @@ impl Vast {
                 .add_entry(projectee_key, projector_key, r_effect.get_key(), rep_getter);
         }
         if let Some(ecm_getter) = r_effect.get_ecm_opc_getter() {
-            self.iecm
+            self.in_ecm
                 .add_entry(projectee_key, projector_key, r_effect.get_key(), ecm_getter);
         }
     }
@@ -133,7 +133,8 @@ impl Vast {
                 .remove_l3(&projectee_key, &projector_key, &r_effect.get_key());
         }
         if r_effect.get_ecm_opc_getter().is_some() {
-            self.iecm.remove_l3(&projectee_key, &projector_key, &r_effect.get_key());
+            self.in_ecm
+                .remove_l3(&projectee_key, &projector_key, &r_effect.get_key());
         }
     }
 }

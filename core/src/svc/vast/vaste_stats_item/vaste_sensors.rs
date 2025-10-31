@@ -153,7 +153,7 @@ impl Vast {
         calc: &mut Calc,
         projectee_item_key: UItemKey,
     ) -> AttrVal {
-        let incoming_ecms = match self.iecm.get_l1(&projectee_item_key) {
+        let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_key) {
             Some(incoming_ecms) => incoming_ecms,
             None => return OF(0.0),
         };

@@ -22,7 +22,15 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         fit_keys
-            .map(|fit_key| get_nps(ctx, calc, item_kinds, projectee_key, &self.get_fit_data(&fit_key).neuts))
+            .map(|fit_key| {
+                get_nps(
+                    ctx,
+                    calc,
+                    item_kinds,
+                    projectee_key,
+                    &self.get_fit_data(&fit_key).out_neuts,
+                )
+            })
             .sum()
     }
     pub(in crate::svc) fn get_stat_fit_remote_nps(
@@ -34,7 +42,7 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
-        get_nps(ctx, calc, item_kinds, projectee_key, &fit_data.neuts)
+        get_nps(ctx, calc, item_kinds, projectee_key, &fit_data.out_neuts)
     }
 }
 

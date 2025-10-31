@@ -180,7 +180,7 @@ impl Vast {
         }
         if let Some(rep_getter) = effect.get_remote_cap_rep_opc_getter() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_cap.add_entry(item_key, effect.get_key(), rep_getter);
+            fit_data.out_cap.add_entry(item_key, effect.get_key(), rep_getter);
         }
     }
     fn handle_orrs_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
@@ -198,19 +198,19 @@ impl Vast {
         }
         if effect.get_remote_cap_rep_opc_getter().is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_cap.remove_l2(&item_key, &effect.get_key());
+            fit_data.out_cap.remove_l2(&item_key, &effect.get_key());
         }
     }
     fn handle_neut_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
         if let Some(neut_getter) = effect.get_neut_opc_getter() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.neuts.add_entry(item_key, effect.get_key(), neut_getter);
+            fit_data.out_neuts.add_entry(item_key, effect.get_key(), neut_getter);
         }
     }
     fn handle_neut_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
         if effect.get_neut_opc_getter().is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.neuts.remove_l2(&item_key, &effect.get_key());
+            fit_data.out_neuts.remove_l2(&item_key, &effect.get_key());
         }
     }
 }

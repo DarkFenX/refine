@@ -63,7 +63,27 @@ impl Vast {
                 }
             }
         }
-        for (projectee_key, projector_data) in self.iecm.iter() {
+        for (projectee_key, projector_data) in self.in_cap.iter() {
+            // Projectees are not guaranteed to be loaded
+            check_item_key(u_data, *projectee_key, false)?;
+            for (&projector_key, projector_data) in projector_data.iter() {
+                check_item_key(u_data, projector_key, true)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
+                }
+            }
+        }
+        for (projectee_key, projector_data) in self.in_neuts.iter() {
+            // Projectees are not guaranteed to be loaded
+            check_item_key(u_data, *projectee_key, false)?;
+            for (&projector_key, projector_data) in projector_data.iter() {
+                check_item_key(u_data, projector_key, true)?;
+                for &effect_key in projector_data.keys() {
+                    check_effect_key(u_data, effect_key)?;
+                }
+            }
+        }
+        for (projectee_key, projector_data) in self.in_ecm.iter() {
             // Projectees are not guaranteed to be loaded
             check_item_key(u_data, *projectee_key, false)?;
             for (&projector_key, projector_data) in projector_data.iter() {
@@ -355,13 +375,19 @@ impl VastFitData {
                 check_effect_key(u_data, effect_key)?;
             }
         }
-        for (&item_key, item_data) in self.orr_cap.iter() {
+        for (&item_key, item_data) in self.out_cap.iter() {
             check_item_key(u_data, item_key, true)?;
             for &effect_key in item_data.keys() {
                 check_effect_key(u_data, effect_key)?;
             }
         }
-        for (&item_key, item_data) in self.neuts.iter() {
+        for (&item_key, item_data) in self.cap_users.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        for (&item_key, item_data) in self.out_neuts.iter() {
             check_item_key(u_data, item_key, true)?;
             for &effect_key in item_data.keys() {
                 check_effect_key(u_data, effect_key)?;
