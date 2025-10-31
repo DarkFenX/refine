@@ -4,7 +4,7 @@ from tests.fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatRemoteNpsItemKinds:
+class StatNeutItemKinds:
 
     default: bool = False
     module: bool | type[Absent] = Absent

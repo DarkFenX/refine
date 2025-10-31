@@ -2,7 +2,8 @@
 pub use crate::{
     misc::DmgKinds,
     svc::vast::{
-        Sensor, SensorKind, StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatLayerEhp, StatLayerErps,
-        StatLayerHp, StatLayerRps, StatRemoteNpsItemKinds, StatRemoteRpsItemKinds, StatRes, StatSlot, StatTank,
+        StatCapSrcKinds, StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatLayerEhp, StatLayerErps,
+        StatLayerHp, StatLayerRps, StatNeutItemKinds, StatRemoteRepItemKinds, StatRes, StatSensor, StatSensorKind,
+        StatSlot, StatTank,
     },
 };

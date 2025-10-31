@@ -1,4 +1,4 @@
-pub(in crate::cmd::stats) use cap::HStatOptionCapRegen;
+pub(in crate::cmd::stats) use cap::HStatOptionCapBalance;
 pub(in crate::cmd::stats) use dmg_dps::{HStatOptionFitDps, HStatOptionItemDps};
 pub(in crate::cmd::stats) use dmg_volley::{HStatOptionFitVolley, HStatOptionItemVolley};
 pub(in crate::cmd::stats) use option::HStatOption;

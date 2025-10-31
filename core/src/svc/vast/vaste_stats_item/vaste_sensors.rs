@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         err::StatItemCheckError,
-        vast::{Sensor, SensorKind, Vast},
+        vast::{StatSensor, StatSensorKind, Vast},
     },
     ud::{UItem, UItemKey},
     util::round_unerr,
@@ -67,11 +67,11 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-    ) -> Result<Sensor, StatItemCheckError> {
+    ) -> Result<StatSensor, StatItemCheckError> {
         check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key))
     }
-    fn internal_get_stat_item_sensor_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Sensor {
+    fn internal_get_stat_item_sensor_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> StatSensor {
         // Strength ties are resolved using the following order:
         // Radar > ladar > magnetometric > gravimetric
         let str_radar = calc
@@ -86,20 +86,20 @@ impl Vast {
         let str_grav = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_GRAVIMETRIC_STRENGTH)
             .unwrap();
-        let mut sensor = Sensor {
-            kind: SensorKind::Radar,
+        let mut sensor = StatSensor {
+            kind: StatSensorKind::Radar,
             strength: str_radar,
         };
         if str_ladar > sensor.strength {
-            sensor.kind = SensorKind::Ladar;
+            sensor.kind = StatSensorKind::Ladar;
             sensor.strength = str_ladar;
         }
         if str_magnet > sensor.strength {
-            sensor.kind = SensorKind::Magnetometric;
+            sensor.kind = StatSensorKind::Magnetometric;
             sensor.strength = str_magnet;
         }
         if str_grav > sensor.strength {
-            sensor.kind = SensorKind::Gravimetric;
+            sensor.kind = StatSensorKind::Gravimetric;
             sensor.strength = str_grav;
         }
         sensor
@@ -164,10 +164,10 @@ impl Vast {
                 let r_effect = ctx.u_data.src.get_effect(effect_key);
                 let ecm_str = match ecm_getter(ctx, calc, projector_item_key, r_effect, Some(projectee_item_key)) {
                     Some(ecm_data) => match sensor.kind {
-                        SensorKind::Radar => ecm_data.radar,
-                        SensorKind::Magnetometric => ecm_data.magnetometric,
-                        SensorKind::Gravimetric => ecm_data.gravimetric,
-                        SensorKind::Ladar => ecm_data.ladar,
+                        StatSensorKind::Radar => ecm_data.radar,
+                        StatSensorKind::Magnetometric => ecm_data.magnetometric,
+                        StatSensorKind::Gravimetric => ecm_data.gravimetric,
+                        StatSensorKind::Ladar => ecm_data.ladar,
                     },
                     None => continue,
                 };

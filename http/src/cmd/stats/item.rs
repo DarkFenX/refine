@@ -4,7 +4,7 @@ use crate::{
     cmd::{
         shared::get_primary_item,
         stats::options::{
-            HStatOption, HStatOptionCapRegen, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps,
+            HStatOption, HStatOptionCapBalance, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps,
             HStatOptionItemRemoteCps, HStatOptionItemRemoteNps, HStatOptionItemRemoteRps, HStatOptionItemVolley,
             HStatOptionRps, HStatResolvedOption,
         },
@@ -48,8 +48,8 @@ pub(crate) struct HGetItemStatsCmd {
     remote_rps: Option<HStatOption<HStatOptionItemRemoteRps>>,
     remote_cps: Option<HStatOption<HStatOptionItemRemoteCps>>,
     remote_nps: Option<HStatOption<HStatOptionItemRemoteNps>>,
-    cap: Option<bool>,
-    cap_regen: Option<HStatOption<HStatOptionCapRegen>>,
+    cap_amount: Option<bool>,
+    cap_balance: Option<HStatOption<HStatOptionCapBalance>>,
     neut_resist: Option<bool>,
 }
 impl HGetItemStatsCmd {
@@ -146,12 +146,12 @@ impl HGetItemStatsCmd {
         if rnps_opt.enabled {
             stats.remote_nps = get_remote_nps_stats(&mut core_item, rnps_opt.options).into();
         }
-        if self.cap.unwrap_or(self.default) {
-            stats.cap = core_item.get_stat_cap().into();
+        if self.cap_amount.unwrap_or(self.default) {
+            stats.cap_amount = core_item.get_stat_cap_amount().into();
         }
-        let creg_opt = HStatResolvedOption::new(&self.cap_regen, self.default);
-        if creg_opt.enabled {
-            stats.cap_regen = get_cap_regen_stats(&mut core_item, creg_opt.options).into();
+        let cblc_opt = HStatResolvedOption::new(&self.cap_balance, self.default);
+        if cblc_opt.enabled {
+            stats.cap_balance = get_cap_balance_stats(&mut core_item, cblc_opt.options).into();
         }
         if self.neut_resist.unwrap_or(self.default) {
             stats.neut_resist = core_item.get_stat_neut_resist().into();
@@ -344,13 +344,11 @@ fn get_remote_nps_stats(
     Some(results)
 }
 
-fn get_cap_regen_stats(
-    core_item: &mut rc::ItemMut,
-    options: Vec<HStatOptionCapRegen>,
-) -> Option<Vec<Option<rc::AttrVal>>> {
+fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<rc::AttrVal>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_item.get_stat_cap_regen(option.cap_perc) {
+        let core_src_kinds = (&option.src_kinds).into();
+        match core_item.get_stat_cap_balance(core_src_kinds, option.regen_perc) {
             Ok(result) => results.push(result),
             Err(_) => return None,
         }

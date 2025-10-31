@@ -2,12 +2,12 @@ use crate::ud::UItem;
 
 /// Items which will be included in neut stats.
 #[derive(Copy, Clone)]
-pub struct StatRemoteNpsItemKinds {
+pub struct StatNeutItemKinds {
     pub module: bool,
     pub minion: bool,
     pub bomb: bool,
 }
-impl StatRemoteNpsItemKinds {
+impl StatNeutItemKinds {
     /// Include all item types in neut stats.
     pub fn all_enabled() -> Self {
         Self {

@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatRemoteNpsItemKinds, Vast},
+        vast::{StatNeutItemKinds, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
@@ -18,7 +18,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
-        item_kinds: StatRemoteNpsItemKinds,
+        item_kinds: StatNeutItemKinds,
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         fit_keys
@@ -38,7 +38,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_key: UFitKey,
-        item_kinds: StatRemoteNpsItemKinds,
+        item_kinds: StatNeutItemKinds,
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
@@ -54,7 +54,7 @@ const NEUT_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_nps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_kinds: StatRemoteNpsItemKinds,
+    item_kinds: StatNeutItemKinds,
     projectee_key: Option<UItemKey>,
     fit_data: &RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 ) -> AttrVal {

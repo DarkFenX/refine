@@ -6,14 +6,14 @@ from tests.fw.util import Absent
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
     from .opt_dmg import StatDmgItemKinds
-    from .opt_remote_nps import StatRemoteNpsItemKinds
-    from .opt_remote_rps import StatRemoteRpsItemKinds
+    from .opt_remote_nps import StatNeutItemKinds
+    from .opt_remote_rps import StatRemoteRepItemKinds
 
 type StatOptionAlias = bool | type[Absent]
 type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
 type StatOptionRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionRps]]
 type StatOptionErpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionErps]]
-type StatOptionCapRegenAlias = StatOptionAlias | tuple[bool, list[StatsOptionCapRegen]]
+type StatOptionCapBalanceAlias = StatOptionAlias | tuple[bool, list[StatsOptionCapBalance]]
 type StatOptionFitDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitDps]]
 type StatOptionFitVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitVolley]]
 type StatOptionFitRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteRps]]
@@ -49,9 +49,9 @@ class StatsOptionErps:
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionCapRegen:
+class StatsOptionCapBalance:
 
-    cap_perc: float | type[Absent] = Absent
+    regen_perc: float | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
@@ -83,7 +83,7 @@ class StatsOptionFitVolley:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitRemoteRps:
 
-    item_kinds: StatRemoteRpsItemKinds | type[Absent] = Absent
+    item_kinds: StatRemoteRepItemKinds | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
@@ -93,7 +93,7 @@ class StatsOptionFitRemoteRps:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitRemoteNps:
 
-    item_kinds: StatRemoteNpsItemKinds | type[Absent] = Absent
+    item_kinds: StatNeutItemKinds | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:

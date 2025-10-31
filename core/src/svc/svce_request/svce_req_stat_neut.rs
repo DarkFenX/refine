@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatRemoteNpsItemKinds, Vast},
+        vast::{StatNeutItemKinds, Vast},
     },
     ud::{UData, UFitKey, UItemKey},
 };
@@ -13,7 +13,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
-        item_kinds: StatRemoteNpsItemKinds,
+        item_kinds: StatNeutItemKinds,
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         self.vast.get_stat_fits_remote_nps(
@@ -28,7 +28,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         fit_key: UFitKey,
-        item_kinds: StatRemoteNpsItemKinds,
+        item_kinds: StatNeutItemKinds,
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         self.vast.get_stat_fit_remote_nps(

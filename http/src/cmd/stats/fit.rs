@@ -2,7 +2,7 @@ use crate::{
     cmd::{
         shared::get_primary_fit,
         stats::options::{
-            HStatOption, HStatOptionCapRegen, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
+            HStatOption, HStatOptionCapBalance, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
             HStatOptionFitRemoteNps, HStatOptionFitRemoteRps, HStatOptionFitVolley, HStatOptionRps,
             HStatResolvedOption,
         },
@@ -68,8 +68,8 @@ pub(crate) struct HGetFitStatsCmd {
     remote_rps: Option<HStatOption<HStatOptionFitRemoteRps>>,
     remote_cps: Option<bool>,
     remote_nps: Option<HStatOption<HStatOptionFitRemoteNps>>,
-    cap: Option<bool>,
-    cap_regen: Option<HStatOption<HStatOptionCapRegen>>,
+    cap_amount: Option<bool>,
+    cap_balance: Option<HStatOption<HStatOptionCapBalance>>,
     neut_resist: Option<bool>,
 }
 impl HGetFitStatsCmd {
@@ -227,12 +227,12 @@ impl HGetFitStatsCmd {
         if rnps_opt.enabled {
             stats.remote_nps = Some(get_remote_nps_stats(&mut core_fit, rnps_opt.options));
         }
-        if self.cap.unwrap_or(self.default) {
-            stats.cap = core_fit.get_stat_cap().into();
+        if self.cap_amount.unwrap_or(self.default) {
+            stats.cap_amount = core_fit.get_stat_cap_amount().into();
         }
-        let creg_opt = HStatResolvedOption::new(&self.cap_regen, self.default);
-        if creg_opt.enabled {
-            stats.cap_regen = get_cap_regen_stats(&mut core_fit, creg_opt.options).into();
+        let cblc_opt = HStatResolvedOption::new(&self.cap_balance, self.default);
+        if cblc_opt.enabled {
+            stats.cap_balance = get_cap_balance_stats(&mut core_fit, cblc_opt.options).into();
         }
         if self.neut_resist.unwrap_or(self.default) {
             stats.neut_resist = core_fit.get_stat_neut_resist().into();
@@ -359,13 +359,11 @@ fn get_remote_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRe
     results
 }
 
-fn get_cap_regen_stats(
-    core_fit: &mut rc::FitMut,
-    options: Vec<HStatOptionCapRegen>,
-) -> Option<Vec<Option<rc::AttrVal>>> {
+fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<rc::AttrVal>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_fit.get_stat_cap_regen(option.cap_perc) {
+        let core_src_kinds = (&option.src_kinds).into();
+        match core_fit.get_stat_cap_balance(core_src_kinds, option.regen_perc) {
             Ok(result) => results.push(result),
             Err(_) => return None,
         }

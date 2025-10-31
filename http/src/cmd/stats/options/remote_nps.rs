@@ -2,7 +2,7 @@
 #[derive(Copy, Clone, Default, serde::Deserialize)]
 pub(in crate::cmd) struct HStatOptionFitRemoteNps {
     #[serde(default)]
-    pub(in crate::cmd) item_kinds: HRemoteNpsItemKinds,
+    pub(in crate::cmd) item_kinds: HStatNeutItemKinds,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
     pub(in crate::cmd) projectee_item_id: Option<rc::ItemId>,
 }
@@ -23,7 +23,7 @@ pub(in crate::cmd) struct HStatOptionItemRemoteNps {
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
-pub(in crate::cmd) struct HRemoteNpsItemKinds {
+pub(in crate::cmd) struct HStatNeutItemKinds {
     #[serde(default)]
     #[educe(Default = true)]
     default: bool,
@@ -31,11 +31,11 @@ pub(in crate::cmd) struct HRemoteNpsItemKinds {
     minion: Option<bool>,
     bomb: Option<bool>,
 }
-impl From<&HRemoteNpsItemKinds> for rc::stats::StatRemoteNpsItemKinds {
-    fn from(h_item_kinds: &HRemoteNpsItemKinds) -> Self {
+impl From<&HStatNeutItemKinds> for rc::stats::StatNeutItemKinds {
+    fn from(h_item_kinds: &HStatNeutItemKinds) -> Self {
         let mut core_item_kinds = match h_item_kinds.default {
-            true => rc::stats::StatRemoteNpsItemKinds::all_enabled(),
-            false => rc::stats::StatRemoteNpsItemKinds::all_disabled(),
+            true => rc::stats::StatNeutItemKinds::all_enabled(),
+            false => rc::stats::StatNeutItemKinds::all_disabled(),
         };
         if let Some(modules) = h_item_kinds.module {
             core_item_kinds.module = modules;

@@ -9,9 +9,10 @@ use crate::{
     err::basic::{ItemLoadedError, ItemReceiveProjError},
     misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
     sol::SolarSystem,
+    stats::StatCapSrcKinds,
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
-        vast::{Sensor, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank},
+        vast::{StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatSensor, StatTank},
     },
     ud::{UEffectUpdates, UItemKey},
     util::GetId,
@@ -188,7 +189,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_scan_res(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_sensor(&mut self) -> Result<Sensor, ItemStatError> {
+    fn get_stat_sensor(&mut self) -> Result<StatSensor, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
@@ -356,18 +357,22 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - cap
-    fn get_stat_cap(&mut self) -> Result<AttrVal, ItemStatError> {
+    fn get_stat_cap_amount(&mut self) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_cap(&sol.u_data, item_key)
+            .get_stat_item_cap_amount(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_cap_regen(&mut self, cap_perc: Option<AttrVal>) -> Result<Option<AttrVal>, ItemStatError> {
+    fn get_stat_cap_balance(
+        &mut self,
+        src_kinds: StatCapSrcKinds,
+        regen_perc: Option<AttrVal>,
+    ) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_cap_regen(&sol.u_data, item_key, cap_perc)
+            .get_stat_item_cap_balance(&sol.u_data, item_key, src_kinds, regen_perc)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_neut_resist(&mut self) -> Result<AttrVal, ItemStatError> {

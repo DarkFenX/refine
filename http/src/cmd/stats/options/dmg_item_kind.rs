@@ -1,6 +1,6 @@
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
-pub(in crate::cmd) struct HDmgItemKinds {
+pub(in crate::cmd) struct HStatDmgItemKinds {
     #[serde(default)]
     #[educe(Default = true)]
     default: bool,
@@ -14,8 +14,8 @@ pub(in crate::cmd) struct HDmgItemKinds {
     minion_mobile: Option<bool>,
     minion_static: Option<bool>,
 }
-impl From<&HDmgItemKinds> for rc::stats::StatDmgItemKinds {
-    fn from(h_item_kinds: &HDmgItemKinds) -> Self {
+impl From<&HStatDmgItemKinds> for rc::stats::StatDmgItemKinds {
+    fn from(h_item_kinds: &HStatDmgItemKinds) -> Self {
         let mut core_item_kinds = match h_item_kinds.default {
             true => rc::stats::StatDmgItemKinds::all_enabled(),
             false => rc::stats::StatDmgItemKinds::all_disabled(),

@@ -19,24 +19,24 @@ def test_ship_modified(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=True))
-    assert api_fit_stats.cap == approx(500)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap=True))
-    assert api_ship_stats.cap == approx(500)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
+    assert api_fit_stats.cap_amount == approx(500)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
+    assert api_ship_stats.cap_amount == approx(500)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=True))
-    assert api_fit_stats.cap == approx(575)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap=True))
-    assert api_ship_stats.cap == approx(575)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
+    assert api_fit_stats.cap_amount == approx(575)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
+    assert api_ship_stats.cap_amount == approx(575)
     # Action
     api_rig.remove()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=True))
-    assert api_fit_stats.cap == approx(500)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap=True))
-    assert api_ship_stats.cap == approx(500)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
+    assert api_fit_stats.cap_amount == approx(500)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
+    assert api_ship_stats.cap_amount == approx(500)
 
 
 def test_ship_no_value(client, consts):
@@ -47,10 +47,10 @@ def test_ship_no_value(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=True))
-    assert api_fit_stats.cap == 0
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap=True))
-    assert api_ship_stats.cap == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
+    assert api_fit_stats.cap_amount == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
+    assert api_ship_stats.cap_amount == 0
 
 
 def test_ship_absent(client, consts):
@@ -59,8 +59,8 @@ def test_ship_absent(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=True))
-    assert api_fit_stats.cap is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
+    assert api_fit_stats.cap_amount is None
 
 
 def test_struct(client, consts):
@@ -71,10 +71,10 @@ def test_struct(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=True))
-    assert api_fit_stats.cap == approx(500)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap=True))
-    assert api_ship_stats.cap == approx(500)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
+    assert api_fit_stats.cap_amount == approx(500)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
+    assert api_ship_stats.cap_amount == approx(500)
 
 
 def test_other(client, consts):
@@ -85,8 +85,8 @@ def test_other(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(cap=True))
-    assert api_drone_stats.cap is None
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(cap_amount=True))
+    assert api_drone_stats.cap_amount is None
 
 
 def test_ship_not_loaded(client, consts):
@@ -97,10 +97,10 @@ def test_ship_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=True))
-    assert api_fit_stats.cap is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap=True))
-    assert api_ship_stats.cap is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
+    assert api_fit_stats.cap_amount is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
+    assert api_ship_stats.cap_amount is None
 
 
 def test_not_requested(client, consts):
@@ -111,9 +111,9 @@ def test_not_requested(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap=False))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=False))
     with check_no_field():
-        api_fit_stats.cap  # noqa: B018
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap=False))
+        api_fit_stats.cap_amount  # noqa: B018
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=False))
     with check_no_field():
-        api_ship_stats.cap  # noqa: B018
+        api_ship_stats.cap_amount  # noqa: B018

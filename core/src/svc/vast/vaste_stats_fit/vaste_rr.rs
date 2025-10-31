@@ -7,7 +7,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatRemoteRpsItemKinds, StatTank, Vast},
+        vast::{StatRemoteRepItemKinds, StatTank, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
@@ -19,7 +19,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
-        item_kinds: StatRemoteRpsItemKinds,
+        item_kinds: StatRemoteRepItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
         let mut rps = StatTank {
@@ -40,7 +40,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_key: UFitKey,
-        item_kinds: StatRemoteRpsItemKinds,
+        item_kinds: StatRemoteRepItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
         let fit_data = self.get_fit_data(&fit_key);
@@ -61,7 +61,7 @@ impl Vast {
                 get_orrps(
                     ctx,
                     calc,
-                    StatRemoteRpsItemKinds::all_enabled(),
+                    StatRemoteRepItemKinds::all_enabled(),
                     None,
                     &self.get_fit_data(&fit_key).out_cap,
                 )
@@ -73,7 +73,7 @@ impl Vast {
         get_orrps(
             ctx,
             calc,
-            StatRemoteRpsItemKinds::all_enabled(),
+            StatRemoteRepItemKinds::all_enabled(),
             None,
             &fit_data.out_cap,
         )
@@ -88,7 +88,7 @@ const ORR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_orrps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_kinds: StatRemoteRpsItemKinds,
+    item_kinds: StatRemoteRepItemKinds,
     spool: Option<Spool>,
     fit_data: &RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
 ) -> AttrVal {

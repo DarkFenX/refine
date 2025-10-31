@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapRegen
+from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapBalance
 
 
 def test_ship_modified(client, consts):
@@ -20,24 +20,24 @@ def test_ship_modified(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen.one() == approx(5.555663)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen.one() == approx(5.555663)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(5.555663)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == approx(5.555663)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen.one() == approx(4.44453)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen.one() == approx(4.44453)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(4.44453)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == approx(4.44453)
     # Action
     api_rig.remove()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen.one() == approx(5.555663)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen.one() == approx(5.555663)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(5.555663)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == approx(5.555663)
 
 
 def test_ship_no_value(client, consts):
@@ -49,10 +49,10 @@ def test_ship_no_value(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen.one() is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen.one() is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == 0
 
 
 def test_ship_absent(client, consts):
@@ -62,8 +62,8 @@ def test_ship_absent(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance is None
 
 
 def test_struct(client, consts):
@@ -75,10 +75,10 @@ def test_struct(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen.one() == approx(419.773318)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen.one() == approx(419.773318)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(419.773318)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == approx(419.773318)
 
 
 def test_other(client, consts):
@@ -90,8 +90,8 @@ def test_other(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_drone_stats.cap_regen is None
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_drone_stats.cap_balance is None
 
 
 def test_cap_perc(client, consts):
@@ -103,17 +103,17 @@ def test_cap_perc(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_cap_regen_options = [
-        StatsOptionCapRegen(cap_perc=0.25),
-        StatsOptionCapRegen(),
-        StatsOptionCapRegen(cap_perc=0),
-        StatsOptionCapRegen(cap_perc=0.7),
-        StatsOptionCapRegen(cap_perc=0.9),
-        StatsOptionCapRegen(cap_perc=1)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=(True, api_cap_regen_options)))
-    assert api_fit_stats.cap_regen == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=(True, api_cap_regen_options)))
-    assert api_ship_stats.cap_regen == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
+    api_cap_balance_options = [
+        StatsOptionCapBalance(regen_perc=0.25),
+        StatsOptionCapBalance(),
+        StatsOptionCapBalance(regen_perc=0),
+        StatsOptionCapBalance(regen_perc=0.7),
+        StatsOptionCapBalance(regen_perc=0.9),
+        StatsOptionCapBalance(regen_perc=1)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_cap_balance_options)))
+    assert api_fit_stats.cap_balance == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_cap_balance_options)))
+    assert api_ship_stats.cap_balance == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
 
 
 def test_attr_regen_zero(client, consts):
@@ -125,10 +125,10 @@ def test_attr_regen_zero(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen.one() is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen.one() is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == 0
 
 
 def test_attr_both_zero(client, consts):
@@ -140,10 +140,10 @@ def test_attr_both_zero(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen.one() is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen.one() is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == 0
 
 
 def test_ship_not_loaded(client, consts):
@@ -155,10 +155,10 @@ def test_ship_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=True))
-    assert api_fit_stats.cap_regen is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=True))
-    assert api_ship_stats.cap_regen is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance is None
 
 
 def test_not_requested(client, consts):
@@ -170,9 +170,9 @@ def test_not_requested(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_regen=False))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=False))
     with check_no_field():
-        api_fit_stats.cap_regen  # noqa: B018
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_regen=False))
+        api_fit_stats.cap_balance  # noqa: B018
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=False))
     with check_no_field():
-        api_ship_stats.cap_regen  # noqa: B018
+        api_ship_stats.cap_balance  # noqa: B018

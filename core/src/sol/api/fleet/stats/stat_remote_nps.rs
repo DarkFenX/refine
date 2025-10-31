@@ -1,11 +1,11 @@
 use crate::{
     def::{AttrVal, ItemId},
     sol::api::{FleetMut, FleetStatAppliedError},
-    svc::vast::StatRemoteNpsItemKinds,
+    svc::vast::StatNeutItemKinds,
 };
 
 impl<'a> FleetMut<'a> {
-    pub fn get_stat_remote_nps(&mut self, item_kinds: StatRemoteNpsItemKinds) -> AttrVal {
+    pub fn get_stat_remote_nps(&mut self, item_kinds: StatNeutItemKinds) -> AttrVal {
         let u_fleet = self.sol.u_data.fleets.get(self.key);
         self.sol
             .svc
@@ -13,7 +13,7 @@ impl<'a> FleetMut<'a> {
     }
     pub fn get_stat_remote_nps_applied(
         &mut self,
-        item_kinds: StatRemoteNpsItemKinds,
+        item_kinds: StatNeutItemKinds,
         projectee_item_id: &ItemId,
     ) -> Result<AttrVal, FleetStatAppliedError> {
         let projectee_key = self.get_stat_applied_projectee_key(projectee_item_id)?;

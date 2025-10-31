@@ -1,10 +1,10 @@
 #[derive(serde_tuple::Serialize_tuple)]
-pub(crate) struct HSensor {
-    kind: HSensorKind,
+pub(crate) struct HStatSensor {
+    kind: HStatSensorKind,
     strength: rc::AttrVal,
 }
-impl From<rc::stats::Sensor> for HSensor {
-    fn from(core_stat: rc::stats::Sensor) -> Self {
+impl From<rc::stats::StatSensor> for HStatSensor {
+    fn from(core_stat: rc::stats::StatSensor) -> Self {
         Self {
             kind: core_stat.kind.into(),
             strength: core_stat.strength,
@@ -14,19 +14,19 @@ impl From<rc::stats::Sensor> for HSensor {
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
-enum HSensorKind {
+enum HStatSensorKind {
     Radar,
     Gravimetric,
     Magnetometric,
     Ladar,
 }
-impl From<rc::stats::SensorKind> for HSensorKind {
-    fn from(core_stat: rc::stats::SensorKind) -> Self {
+impl From<rc::stats::StatSensorKind> for HStatSensorKind {
+    fn from(core_stat: rc::stats::StatSensorKind) -> Self {
         match core_stat {
-            rc::stats::SensorKind::Radar => Self::Radar,
-            rc::stats::SensorKind::Gravimetric => Self::Gravimetric,
-            rc::stats::SensorKind::Magnetometric => Self::Magnetometric,
-            rc::stats::SensorKind::Ladar => Self::Ladar,
+            rc::stats::StatSensorKind::Radar => Self::Radar,
+            rc::stats::StatSensorKind::Gravimetric => Self::Gravimetric,
+            rc::stats::StatSensorKind::Magnetometric => Self::Magnetometric,
+            rc::stats::StatSensorKind::Ladar => Self::Ladar,
         }
     }
 }

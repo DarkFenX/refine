@@ -1,11 +1,11 @@
-use crate::{cmd::stats::options::dmg_item_kind::HDmgItemKinds, shared::HSpool};
+use crate::{cmd::stats::options::dmg_item_kind::HStatDmgItemKinds, shared::HSpool};
 
 #[serde_with::serde_as]
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionFitDps {
     #[serde(default)]
-    pub(in crate::cmd) item_kinds: HDmgItemKinds,
+    pub(in crate::cmd) item_kinds: HStatDmgItemKinds,
     #[serde(default)]
     #[educe(Default = false)]
     pub(in crate::cmd) reload: bool,

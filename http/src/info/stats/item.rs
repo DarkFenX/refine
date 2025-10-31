@@ -1,6 +1,6 @@
 use crate::{
     info::stats::details::{
-        HSensor, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatTank,
+        HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatSensor, HStatTank,
     },
     util::TriStateField,
 };
@@ -28,7 +28,7 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) scan_res: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) sensor: TriStateField<HSensor>,
+    pub(crate) sensor: TriStateField<HStatSensor>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) dscan_range: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -60,9 +60,9 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) remote_nps: TriStateField<Vec<Option<rc::AttrVal>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) cap: TriStateField<rc::AttrVal>,
+    pub(crate) cap_amount: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) cap_regen: TriStateField<Vec<Option<rc::AttrVal>>>,
+    pub(crate) cap_balance: TriStateField<Vec<rc::AttrVal>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) neut_resist: TriStateField<rc::AttrVal>,
 }
@@ -95,8 +95,8 @@ impl HItemStats {
             remote_rps: TriStateField::default(),
             remote_cps: TriStateField::default(),
             remote_nps: TriStateField::default(),
-            cap: TriStateField::default(),
-            cap_regen: TriStateField::default(),
+            cap_amount: TriStateField::default(),
+            cap_balance: TriStateField::default(),
             neut_resist: TriStateField::default(),
         }
     }

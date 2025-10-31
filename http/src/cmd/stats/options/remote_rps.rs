@@ -3,7 +3,7 @@ use crate::shared::HSpool;
 #[derive(Copy, Clone, Default, serde::Deserialize)]
 pub(in crate::cmd) struct HStatOptionFitRemoteRps {
     #[serde(default)]
-    pub(in crate::cmd) item_kinds: HRemoteRpsItemKinds,
+    pub(in crate::cmd) item_kinds: HRemoteRepItemKinds,
     pub(in crate::cmd) spool: Option<HSpool>,
 }
 
@@ -18,18 +18,18 @@ pub(in crate::cmd) struct HStatOptionItemRemoteRps {
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
-pub(in crate::cmd) struct HRemoteRpsItemKinds {
+pub(in crate::cmd) struct HRemoteRepItemKinds {
     #[serde(default)]
     #[educe(Default = true)]
     default: bool,
     module: Option<bool>,
     minion: Option<bool>,
 }
-impl From<&HRemoteRpsItemKinds> for rc::stats::StatRemoteRpsItemKinds {
-    fn from(h_item_kinds: &HRemoteRpsItemKinds) -> Self {
+impl From<&HRemoteRepItemKinds> for rc::stats::StatRemoteRepItemKinds {
+    fn from(h_item_kinds: &HRemoteRepItemKinds) -> Self {
         let mut core_item_kinds = match h_item_kinds.default {
-            true => rc::stats::StatRemoteRpsItemKinds::all_enabled(),
-            false => rc::stats::StatRemoteRpsItemKinds::all_disabled(),
+            true => rc::stats::StatRemoteRepItemKinds::all_enabled(),
+            false => rc::stats::StatRemoteRepItemKinds::all_disabled(),
         };
         if let Some(modules) = h_item_kinds.module {
             core_item_kinds.module = modules;

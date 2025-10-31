@@ -2,13 +2,13 @@ use crate::{
     def::AttrVal,
     misc::Spool,
     sol::api::FleetMut,
-    svc::vast::{StatRemoteRpsItemKinds, StatTank},
+    svc::vast::{StatRemoteRepItemKinds, StatTank},
 };
 
 impl<'a> FleetMut<'a> {
     pub fn get_stat_remote_rps(
         &mut self,
-        item_kinds: StatRemoteRpsItemKinds,
+        item_kinds: StatRemoteRepItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
         let u_fleet = self.sol.u_data.fleets.get(self.key);

@@ -3,7 +3,7 @@ from tests.fw.api import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
-    StatRemoteNpsItemKinds,
+    StatNeutItemKinds,
     StatsOptionFitRemoteNps,
     StatsOptionItemRemoteNps,
 )
@@ -191,13 +191,13 @@ def test_item_kind(client, consts):
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_nps=(True, [
         StatsOptionFitRemoteNps(),
-        StatsOptionFitRemoteNps(item_kinds=StatRemoteNpsItemKinds(default=False, minion=True)),
-        StatsOptionFitRemoteNps(item_kinds=StatRemoteNpsItemKinds(default=True, minion=False))])))
+        StatsOptionFitRemoteNps(item_kinds=StatNeutItemKinds(default=False, minion=True)),
+        StatsOptionFitRemoteNps(item_kinds=StatNeutItemKinds(default=True, minion=False))])))
     assert api_fleet_stats.remote_nps == [approx(1.666667), approx(1.666667), 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_nps=(True, [
         StatsOptionFitRemoteNps(),
-        StatsOptionFitRemoteNps(item_kinds=StatRemoteNpsItemKinds(default=False, minion=True)),
-        StatsOptionFitRemoteNps(item_kinds=StatRemoteNpsItemKinds(default=True, minion=False))])))
+        StatsOptionFitRemoteNps(item_kinds=StatNeutItemKinds(default=False, minion=True)),
+        StatsOptionFitRemoteNps(item_kinds=StatNeutItemKinds(default=True, minion=False))])))
     assert api_fit_stats.remote_nps == [approx(1.666667), approx(1.666667), 0]
 
 

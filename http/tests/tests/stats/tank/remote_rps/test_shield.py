@@ -3,7 +3,7 @@ from tests.fw.api import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
-    StatRemoteRpsItemKinds,
+    StatRemoteRepItemKinds,
     StatsOptionFitRemoteRps,
     StatsOptionItemRemoteRps,
 )
@@ -83,16 +83,16 @@ def test_item_kind(client, consts):
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=(True, [
         StatsOptionFitRemoteRps(),
-        StatsOptionFitRemoteRps(item_kinds=StatRemoteRpsItemKinds(default=False, module=True)),
-        StatsOptionFitRemoteRps(item_kinds=StatRemoteRpsItemKinds(default=False, minion=True))])))
+        StatsOptionFitRemoteRps(item_kinds=StatRemoteRepItemKinds(default=False, module=True)),
+        StatsOptionFitRemoteRps(item_kinds=StatRemoteRepItemKinds(default=False, minion=True))])))
     api_fleet_rrps_default, api_fleet_rrps_module, api_fleet_rrps_minion = api_fleet_stats.remote_rps
     assert api_fleet_rrps_default.shield == approx(196.65)
     assert api_fleet_rrps_module.shield == approx(182.25)
     assert api_fleet_rrps_minion.shield == approx(14.4)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=(True, [
         StatsOptionFitRemoteRps(),
-        StatsOptionFitRemoteRps(item_kinds=StatRemoteRpsItemKinds(default=False, module=True)),
-        StatsOptionFitRemoteRps(item_kinds=StatRemoteRpsItemKinds(default=False, minion=True))])))
+        StatsOptionFitRemoteRps(item_kinds=StatRemoteRepItemKinds(default=False, module=True)),
+        StatsOptionFitRemoteRps(item_kinds=StatRemoteRepItemKinds(default=False, minion=True))])))
     api_fit_rrps_default, api_fit_rrps_module, api_fit_rrps_minion = api_fit_stats.remote_rps
     assert api_fit_rrps_default.shield == approx(196.65)
     assert api_fit_rrps_module.shield == approx(182.25)

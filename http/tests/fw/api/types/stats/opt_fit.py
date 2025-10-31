@@ -7,7 +7,7 @@ from .opt_shared import dc_to_dict
 if typing.TYPE_CHECKING:
     from .opt_shared import (
         StatOptionAlias,
-        StatOptionCapRegenAlias,
+        StatOptionCapBalanceAlias,
         StatOptionEhpAlias,
         StatOptionErpsAlias,
         StatOptionFitDpsAlias,
@@ -70,8 +70,8 @@ class FitStatsOptions:
     remote_rps: StatOptionFitRemoteRpsAlias = Absent
     remote_cps: StatOptionAlias = Absent
     remote_nps: StatOptionFitRemoteNpsAlias = Absent
-    cap: StatOptionAlias = Absent
-    cap_regen: StatOptionCapRegenAlias = Absent
+    cap_amount: StatOptionAlias = Absent
+    cap_balance: StatOptionCapBalanceAlias = Absent
     neut_resist: StatOptionAlias = Absent
 
     def to_dict(self) -> dict:
