@@ -21,7 +21,7 @@ if typing.TYPE_CHECKING:
 @dataclasses.dataclass(kw_only=True)
 class FitStatsOptions:
 
-    default: StatOptionAlias = Absent
+    default: StatOptionAlias = False
     high_slots: StatOptionAlias = Absent
     mid_slots: StatOptionAlias = Absent
     low_slots: StatOptionAlias = Absent

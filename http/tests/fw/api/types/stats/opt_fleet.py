@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
 @dataclasses.dataclass(kw_only=True)
 class FleetStatsOptions:
 
-    default: StatOptionAlias = Absent
+    default: StatOptionAlias = False
     dps: StatOptionFitDpsAlias = Absent
     volley: StatOptionFitVolleyAlias = Absent
     remote_rps: StatOptionFitRemoteRpsAlias = Absent

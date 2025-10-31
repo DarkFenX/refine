@@ -23,7 +23,7 @@ type StatOptionItemRemoteNpsAlias = StatOptionAlias | tuple[bool, list[StatsOpti
 @dataclasses.dataclass(kw_only=True)
 class ItemStatsOptions:
 
-    default: StatOptionAlias = Absent
+    default: StatOptionAlias = False
     speed: StatOptionAlias = Absent
     agility: StatOptionAlias = Absent
     align_time: StatOptionAlias = Absent
