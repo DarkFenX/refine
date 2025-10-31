@@ -17,6 +17,7 @@ pub(crate) const MAX_RANGE: EAttrId = 54;
 pub(crate) const RECHARGE_RATE: EAttrId = 55;
 pub(crate) const CHARGE_RATE: EAttrId = 56;
 pub(crate) const DMG_MULT: EAttrId = 64;
+pub(crate) const CAPACITOR_BONUS: EAttrId = 67;
 pub(crate) const SHIELD_BONUS: EAttrId = 68;
 pub(crate) const AGILITY: EAttrId = 70;
 pub(crate) const MAX_TARGET_RANGE: EAttrId = 76;

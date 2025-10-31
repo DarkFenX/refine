@@ -2,7 +2,10 @@ use crate::{
     ad,
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
-    nd::{NBreacherDmgGetter, NEcmGetter, NLocalRepGetter, NNeutGetter, NNormalDmgGetter, NRemoteRepGetter},
+    nd::{
+        NBreacherDmgGetter, NCapBoostGetter, NEcmGetter, NLocalRepGetter, NNeutGetter, NNormalDmgGetter,
+        NRemoteRepGetter,
+    },
     rd::{REffectKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -22,8 +25,8 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
-    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     // Cap
+    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NNeutGetter>,
     // Ewar
     pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
@@ -131,6 +134,7 @@ pub(in crate::svc) struct VastFitData {
     // Stats-related - cap
     pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) cap_users: RMapRSet<UItemKey, REffectKey>,
+    pub(in crate::svc::vast) cap_boosts: RMapRMap<UItemKey, REffectKey, NCapBoostGetter>,
     // Stats-related - misc
     pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 }
@@ -210,6 +214,7 @@ impl VastFitData {
             orr_hull: RMapRMap::new(),
             out_cap: RMapRMap::new(),
             cap_users: RMapRSet::new(),
+            cap_boosts: RMapRMap::new(),
             out_neuts: RMapRMap::new(),
         }
     }

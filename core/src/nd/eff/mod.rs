@@ -1,8 +1,8 @@
 use std::{collections::HashMap, sync::LazyLock};
 
 pub(crate) use eff::{
-    NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NEffect, NEffectHc, NLocalRepGetter, NNeutGetter,
-    NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
+    NBreacherDmgGetter, NCalcCustomizer, NCapBoostGetter, NDmgKindGetter, NEcmGetter, NEffect, NEffectHc,
+    NLocalRepGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
 };
 pub(crate) use shared::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind};
 
@@ -34,6 +34,7 @@ mod eff_d34_projectile_fired;
 mod eff_d3773_hardpoint_modifier_effect;
 mod eff_d3774_slot_modifier;
 mod eff_d38_emp_wave;
+mod eff_d48_power_booster;
 mod eff_d4921_micro_jump_drive;
 mod eff_d4928_adaptive_armor_hardener;
 mod eff_d4936_fueled_shield_boosting;
@@ -132,6 +133,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d27_armor_repair::mk_n_effect(),
         eff_d34_projectile_fired::mk_n_effect(),
         eff_d38_emp_wave::mk_n_effect(),
+        eff_d48_power_booster::mk_n_effect(),
         eff_d67_mining_laser::mk_n_effect(),
         eff_d101_use_missiles::mk_n_effect(),
         eff_d103_defender_missile_launching::mk_n_effect(),

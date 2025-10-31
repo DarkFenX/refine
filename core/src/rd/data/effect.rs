@@ -1,8 +1,9 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AState},
     nd::{
-        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NEffectCharge, NEffectChargeLoc,
-        NEffectHc, NLocalRepGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
+        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapBoostGetter, NDmgKindGetter, NEcmGetter, NEffectCharge,
+        NEffectChargeLoc, NEffectHc, NLocalRepGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter,
+        NSpoolResolver,
     },
     rd::{REffectKey, RItem},
     util::{GetId, Named, RMap},
@@ -139,6 +140,9 @@ impl REffect {
     }
     pub(crate) fn get_neut_opc_getter(&self) -> Option<NNeutGetter> {
         self.n_effect_hc.neut_opc_getter
+    }
+    pub(crate) fn get_cap_boost_opc_getter(&self) -> Option<NCapBoostGetter> {
+        self.n_effect_hc.cap_boost_opc_getter
     }
     pub(crate) fn get_ecm_opc_getter(&self) -> Option<NEcmGetter> {
         self.n_effect_hc.ecm_opc_getter

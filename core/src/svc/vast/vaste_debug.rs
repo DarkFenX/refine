@@ -387,6 +387,12 @@ impl VastFitData {
                 check_effect_key(u_data, effect_key)?;
             }
         }
+        for (&item_key, item_data) in self.cap_boosts.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
         for (&item_key, item_data) in self.out_neuts.iter() {
             check_item_key(u_data, item_key, true)?;
             for &effect_key in item_data.keys() {

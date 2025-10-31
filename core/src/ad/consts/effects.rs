@@ -16,6 +16,7 @@ pub(crate) const PROJECTILE_FIRED: AEffectId = AEffectId::Dogma(ece::PROJECTILE_
 pub(crate) const EMP_WAVE: AEffectId = AEffectId::Dogma(ece::EMP_WAVE);
 pub(crate) const LAUNCHER_FITTED: AEffectId = AEffectId::Dogma(ece::LAUNCHER_FITTED);
 pub(crate) const TURRET_FITTED: AEffectId = AEffectId::Dogma(ece::TURRET_FITTED);
+pub(crate) const POWER_BOOSTER: AEffectId = AEffectId::Dogma(ece::POWER_BOOSTER);
 pub(crate) const MINING_LASER: AEffectId = AEffectId::Dogma(ece::MINING_LASER);
 pub(crate) const USE_MISSILES: AEffectId = AEffectId::Dogma(ece::USE_MISSILES);
 pub(crate) const DEFENDER_MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::DEFENDER_MISSILE_LAUNCHING);
