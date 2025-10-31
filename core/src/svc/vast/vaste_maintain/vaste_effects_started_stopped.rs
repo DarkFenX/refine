@@ -69,8 +69,12 @@ impl Vast {
                         }
                         // Remote reps
                         self.handle_orrs_start(effect, item_key, &module.get_fit_key());
-                        // Misc
+                        // Cap
                         self.handle_neut_start(effect, item_key, &module.get_fit_key());
+                        if effect.get_discharge_attr_id().is_some() {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_key());
+                            fit_data.cap_users.add_entry(item_key, effect.get_key());
+                        }
                     }
                 }
             }
@@ -137,8 +141,12 @@ impl Vast {
                         }
                         // Remote reps
                         self.handle_orrs_stop(effect, item_key, &module.get_fit_key());
-                        // Misc
+                        // Cap
                         self.handle_neut_stop(effect, item_key, &module.get_fit_key());
+                        if effect.get_discharge_attr_id().is_some() {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_key());
+                            fit_data.cap_users.remove_entry(&item_key, &effect.get_key());
+                        }
                     }
                 }
             }
