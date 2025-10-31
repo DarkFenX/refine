@@ -10,13 +10,13 @@ use crate::{
         HFleetStats,
         stats::{HStatDmg, HStatTank},
     },
-    util::HExecError,
+    util::{HExecError, default_true},
 };
 
 #[derive(educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(crate) struct HGetFleetStatsCmd {
-    #[serde(default)]
+    #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
     dps: Option<HStatOption<HStatOptionFitDps>>,

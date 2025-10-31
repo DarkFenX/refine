@@ -8,7 +8,7 @@ type ValOption = bool | tuple[bool, list[int]] | type[Absent]
 @dataclasses.dataclass(kw_only=True)
 class ValOptions:
 
-    default: bool = False
+    default: bool | type[Absent] = False
     # Generic
     not_loaded_item: ValOption = Absent
     item_kind: ValOption = Absent

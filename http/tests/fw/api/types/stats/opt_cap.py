@@ -6,7 +6,7 @@ from tests.fw.util import Absent
 @dataclasses.dataclass(kw_only=True)
 class StatCapSrcKinds:
 
-    default: bool = True
+    default: bool | type[Absent] = Absent
     regen: bool | type[Absent] = Absent
     cap_boosters: bool | type[Absent] = Absent
     consumers: bool | type[Absent] = Absent

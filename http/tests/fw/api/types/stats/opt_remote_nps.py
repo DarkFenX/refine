@@ -6,7 +6,7 @@ from tests.fw.util import Absent
 @dataclasses.dataclass(kw_only=True)
 class StatNeutItemKinds:
 
-    default: bool = False
+    default: bool | type[Absent] = Absent
     module: bool | type[Absent] = Absent
     minion: bool | type[Absent] = Absent
     bomb: bool | type[Absent] = Absent

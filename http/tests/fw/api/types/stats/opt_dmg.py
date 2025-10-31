@@ -6,7 +6,7 @@ from tests.fw.util import Absent
 @dataclasses.dataclass(kw_only=True)
 class StatDmgItemKinds:
 
-    default: bool = False
+    default: bool | type[Absent] = Absent
     turret: bool | type[Absent] = Absent
     missile: bool | type[Absent] = Absent
     breacher: bool | type[Absent] = Absent

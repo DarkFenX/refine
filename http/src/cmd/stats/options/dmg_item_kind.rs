@@ -1,7 +1,9 @@
+use crate::util::default_true;
+
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatDmgItemKinds {
-    #[serde(default)]
+    #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
     turret: Option<bool>,

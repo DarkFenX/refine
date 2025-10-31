@@ -11,13 +11,13 @@ use crate::{
         HFitStats,
         stats::{HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
     },
-    util::HExecError,
+    util::{HExecError, default_true},
 };
 
 #[derive(educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(crate) struct HGetFitStatsCmd {
-    #[serde(default)]
+    #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
     high_slots: Option<bool>,

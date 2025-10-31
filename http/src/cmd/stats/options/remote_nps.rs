@@ -1,3 +1,5 @@
+use crate::util::default_true;
+
 #[serde_with::serde_as]
 #[derive(Copy, Clone, Default, serde::Deserialize)]
 pub(in crate::cmd) struct HStatOptionFitRemoteNps {
@@ -24,7 +26,7 @@ pub(in crate::cmd) struct HStatOptionItemRemoteNps {
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatNeutItemKinds {
-    #[serde(default)]
+    #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
     module: Option<bool>,
