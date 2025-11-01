@@ -71,7 +71,7 @@ def test_modified(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_fit_stats.cap_balance.one() == approx(-2)
