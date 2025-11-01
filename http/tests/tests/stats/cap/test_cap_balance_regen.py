@@ -123,13 +123,13 @@ def test_cap_perc(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_options = [
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0.25))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions(cap_perc=0.25)))),
         StatsOptionCapBalance(),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0))),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0.7))),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions())),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0.9))),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=1)))]
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions(cap_perc=0)))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions(cap_perc=0.7)))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions()))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions(cap_perc=0.9)))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions(cap_perc=1))))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
     assert api_fit_stats.cap_balance == [
         approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(5.555663), approx(1.081871), 0]

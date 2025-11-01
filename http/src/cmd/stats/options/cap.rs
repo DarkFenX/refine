@@ -25,18 +25,14 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
             false => rc::stats::StatCapSrcKinds::all_disabled(),
         };
         if let Some(regen) = h_src_kinds.regen {
-            if let Some(regen_enabled) = regen.is_enabled() {
-                core_src_kinds.regen.enabled = regen_enabled;
-            }
+            core_src_kinds.regen.enabled = regen.is_enabled();
             core_src_kinds.regen.cap_perc = regen.get_cap_perc();
         }
         if let Some(cap_boosters) = h_src_kinds.cap_boosters {
             core_src_kinds.cap_boosters = cap_boosters;
         }
         if let Some(consumers) = h_src_kinds.consumers {
-            if let Some(consumers_enabled) = consumers.is_enabled() {
-                core_src_kinds.consumers.enabled = consumers_enabled;
-            }
+            core_src_kinds.consumers.enabled = consumers.is_enabled();
             if let Some(reload) = consumers.is_reload() {
                 core_src_kinds.consumers.reload = reload;
             }
@@ -55,25 +51,24 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
 #[serde(untagged)]
 enum HStatCapRegenOptions {
     Simple(bool),
-    Full(HStatCapRegenOptionsFull),
+    Extended(bool, HStatCapRegenOptionsFull),
 }
 impl HStatCapRegenOptions {
-    fn is_enabled(&self) -> Option<bool> {
+    fn is_enabled(&self) -> bool {
         match self {
-            Self::Simple(enabled) => Some(*enabled),
-            Self::Full(options) => options.enabled,
+            Self::Simple(enabled) => *enabled,
+            Self::Extended(enabled, _) => *enabled,
         }
     }
     fn get_cap_perc(&self) -> Option<rc::AttrVal> {
         match self {
             Self::Simple(_) => None,
-            Self::Full(options) => options.cap_perc,
+            Self::Extended(_, options) => options.cap_perc,
         }
     }
 }
 #[derive(Copy, Clone, serde::Deserialize)]
 struct HStatCapRegenOptionsFull {
-    enabled: Option<bool>,
     cap_perc: Option<rc::AttrVal>,
 }
 
@@ -81,24 +76,23 @@ struct HStatCapRegenOptionsFull {
 #[serde(untagged)]
 enum HStatCapConsumerOptions {
     Simple(bool),
-    Full(HStatCapConsumerOptionsFull),
+    Extended(bool, HStatCapConsumerOptionsFull),
 }
 impl HStatCapConsumerOptions {
-    fn is_enabled(&self) -> Option<bool> {
+    fn is_enabled(&self) -> bool {
         match self {
-            Self::Simple(enabled) => Some(*enabled),
-            Self::Full(options) => options.enabled,
+            Self::Simple(enabled) => *enabled,
+            Self::Extended(enabled, _) => *enabled,
         }
     }
     fn is_reload(&self) -> Option<bool> {
         match self {
             Self::Simple(_) => None,
-            Self::Full(options) => options.reload,
+            Self::Extended(_, options) => options.reload,
         }
     }
 }
 #[derive(Copy, Clone, serde::Deserialize)]
 struct HStatCapConsumerOptionsFull {
-    enabled: Option<bool>,
     reload: Option<bool>,
 }
