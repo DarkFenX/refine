@@ -1,9 +1,18 @@
-use super::super::checks::check_item_key_ship;
+use super::super::checks::check_item_ship;
 use crate::{
     ac,
     def::{AttrVal, OF},
-    svc::{SvcCtx, calc::Calc, err::StatItemCheckError, vast::Vast},
+    nd::NCapBoostGetter,
+    rd::REffectKey,
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
+        err::StatItemCheckError,
+        vast::Vast,
+    },
     ud::UItemKey,
+    util::RMapRMap,
 };
 
 /// Capacitor change sources which will be considered for cap balance stats.
@@ -38,18 +47,29 @@ impl StatCapSrcKinds {
     }
 }
 
+const CAP_BOOST_OPTIONS: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Sim,
+    charged_optionals: false,
+};
+
 impl Vast {
     pub(in crate::svc) fn get_stat_item_cap_balance(
+        &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
         src_kinds: StatCapSrcKinds,
         regen_perc: Option<AttrVal>,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_ship(ctx, item_key)?;
+        let item = ctx.u_data.items.get(item_key);
+        check_item_ship(item_key, item)?;
+        let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
         let mut balance = OF(0.0);
         if src_kinds.regen {
             balance += Vast::internal_get_stat_item_cap_regen_unchecked(ctx, calc, item_key, regen_perc);
+        }
+        if src_kinds.cap_boosters {
+            balance += Vast::internal_get_stat_item_cap_boosts_unchecked(ctx, calc, &fit_data.cap_boosts);
         }
         Ok(balance)
     }
@@ -73,5 +93,33 @@ impl Vast {
             true => result,
             false => OF(0.0),
         }
+    }
+    fn internal_get_stat_item_cap_boosts_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_data: &RMapRMap<UItemKey, REffectKey, NCapBoostGetter>,
+    ) -> AttrVal {
+        let mut cps = OF(0.0);
+        for (&item_key, item_data) in fit_data.iter() {
+            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, CAP_BOOST_OPTIONS, false) {
+                Some(cycle_map) => cycle_map,
+                None => continue,
+            };
+            for (&effect_key, rep_getter) in item_data.iter() {
+                let output_per_cycle = match rep_getter(ctx, calc, item_key) {
+                    Some(output_per_cycle) => output_per_cycle,
+                    None => continue,
+                };
+                let effect_cycles = match cycle_map.get(&effect_key) {
+                    Some(effect_cycles) => effect_cycles,
+                    None => continue,
+                };
+                if !effect_cycles.is_infinite() {
+                    continue;
+                }
+                cps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
+            }
+        }
+        cps
     }
 }

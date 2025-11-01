@@ -23,7 +23,7 @@ impl Svc {
         src_kinds: StatCapSrcKinds,
         regen_perc: Option<AttrVal>,
     ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_cap_balance(
+        self.vast.get_stat_item_cap_balance(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
