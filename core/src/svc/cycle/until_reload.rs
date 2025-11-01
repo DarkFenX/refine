@@ -32,15 +32,20 @@ pub(super) fn get_charge_rate_cycle_count(
     ctx: SvcCtx,
     module: &UModule,
     can_run_uncharged: bool,
-    charged_optionals: bool,
+    reload_optionals: bool,
 ) -> InfCount {
-    if can_run_uncharged && !charged_optionals {
+    if can_run_uncharged && !reload_optionals {
         return InfCount::Infinite;
     }
     let charge_count = match module.get_charge_count(ctx.u_data) {
         Some(charge_count) => charge_count,
-        // When effect wants charge, but doesn't have one / it is not loaded - it can't cycle
-        None => return InfCount::Count(0),
+        None => {
+            return match can_run_uncharged {
+                true => InfCount::Infinite,
+                // When effect needs charge, but doesn't have one / it is not loaded - it can't cycle
+                false => InfCount::Count(0),
+            };
+        }
     };
     let charges_per_cycle = module.get_axt().unwrap().charge_rate;
     match charges_per_cycle == 0 {
@@ -57,17 +62,22 @@ pub(super) fn get_crystal_cycle_count(
     ctx: SvcCtx,
     module: &UModule,
     can_run_uncharged: bool,
-    charged_optionals: bool,
+    reload_optionals: bool,
 ) -> InfCount {
-    if can_run_uncharged && !charged_optionals {
+    if can_run_uncharged && !reload_optionals {
         return InfCount::Infinite;
     }
     let charge_count = match module.get_charge_count(ctx.u_data) {
         // Not enough space to fit a single charge - can't cycle
         Some(0) => return InfCount::Count(0),
         Some(charge_count) => charge_count,
-        // When effect wants charge, but doesn't have one / it is not loaded - can't cycle
-        None => return InfCount::Count(0),
+        None => {
+            return match can_run_uncharged {
+                true => InfCount::Infinite,
+                // When effect needs charge, but doesn't have one / it is not loaded - it can't cycle
+                false => InfCount::Count(0),
+            };
+        }
     };
     let charge_item = ctx.u_data.items.get(module.get_charge_key().unwrap());
     let charge_attrs = match charge_item.get_attrs() {

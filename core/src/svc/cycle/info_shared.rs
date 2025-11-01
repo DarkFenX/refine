@@ -4,8 +4,8 @@ use crate::{def::AttrVal, rd::REffectKey};
 pub(in crate::svc) struct CycleOptions {
     pub(in crate::svc) reload_mode: CycleOptionReload,
     // Controls if effects which can run with/without charges (e.g. ancillary reps) are forced to
-    // have charges to run, and can't run otherwise
-    pub(in crate::svc) charged_optionals: bool,
+    // reload once they run out of charges
+    pub(in crate::svc) reload_optionals: bool,
 }
 
 #[derive(Copy, Clone)]

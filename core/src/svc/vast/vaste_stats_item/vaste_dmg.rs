@@ -17,7 +17,7 @@ use crate::{
 
 const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    charged_optionals: false,
+    reload_optionals: false,
 };
 
 impl Vast {
@@ -131,7 +131,7 @@ impl Vast {
                 true => CycleOptionReload::Sim,
                 false => CycleOptionReload::Burst,
             },
-            charged_optionals: false,
+            reload_optionals: false,
         };
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, ignore_state) {
             Some(cycle_map) => cycle_map,

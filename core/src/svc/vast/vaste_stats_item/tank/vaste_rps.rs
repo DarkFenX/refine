@@ -78,7 +78,7 @@ impl Vast {
 
 const RPS_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    charged_optionals: false,
+    reload_optionals: false,
 };
 
 fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMapRMap<UItemKey, REffectKey, NLocalRepGetter>) -> AttrVal {

@@ -70,7 +70,7 @@ impl Vast {
 
 const RR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    charged_optionals: false,
+    reload_optionals: false,
 };
 
 fn get_orr_item_key(

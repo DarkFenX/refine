@@ -84,10 +84,10 @@ fn fill_module_effect_info(
             NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(item, effect),
             NEffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
                 NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
-                    get_charge_rate_cycle_count(ctx, module, can_run_uncharged, options.charged_optionals)
+                    get_charge_rate_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
                 }
                 NEffectChargeDepl::Crystal { can_run_uncharged } => {
-                    get_crystal_cycle_count(ctx, module, can_run_uncharged, options.charged_optionals)
+                    get_crystal_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
                 }
                 NEffectChargeDepl::None => InfCount::Infinite,
             },
@@ -96,7 +96,7 @@ fn fill_module_effect_info(
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
             NEffectChargeLoc::TargetAttack(_) => match module.get_axt().unwrap().capacity > OF(0.0) {
-                true => get_crystal_cycle_count(ctx, module, false, options.charged_optionals),
+                true => get_crystal_cycle_count(ctx, module, false, options.reload_optionals),
                 false => InfCount::Infinite,
             },
         },

@@ -82,7 +82,7 @@ impl Vast {
 
 const ORR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    charged_optionals: false,
+    reload_optionals: false,
 };
 
 fn get_orrps(

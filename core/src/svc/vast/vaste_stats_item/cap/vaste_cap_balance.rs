@@ -58,12 +58,12 @@ pub struct StatCapConsumerOptions {
 
 const CYCLE_OPTIONS_SIM: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Sim,
-    charged_optionals: true,
+    reload_optionals: true,
 };
 
 const CYCLE_OPTIONS_BURST: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    charged_optionals: false,
+    reload_optionals: false,
 };
 
 impl Vast {

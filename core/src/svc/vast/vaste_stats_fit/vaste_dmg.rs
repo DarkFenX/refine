@@ -15,7 +15,7 @@ use crate::{
 
 const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions {
     reload_mode: CycleOptionReload::Burst,
-    charged_optionals: false,
+    reload_optionals: false,
 };
 
 impl Vast {
@@ -68,7 +68,7 @@ impl Vast {
                 true => CycleOptionReload::Sim,
                 false => CycleOptionReload::Burst,
             },
-            charged_optionals: false,
+            reload_optionals: false,
         };
         for fit_key in fit_keys {
             self.get_fit_data(&fit_key).fill_stat_dps(
@@ -133,7 +133,7 @@ impl Vast {
                 true => CycleOptionReload::Sim,
                 false => CycleOptionReload::Burst,
             },
-            charged_optionals: false,
+            reload_optionals: false,
         };
         self.get_fit_data(&fit_key).fill_stat_dps(
             ctx,
