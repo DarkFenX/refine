@@ -72,10 +72,10 @@ impl Vast {
             balance += get_cap_regen(ctx, calc, item_key, src_kinds.regen.cap_perc);
         }
         if src_kinds.cap_boosters {
-            balance += get_cap_boosts(ctx, calc, &fit_data);
+            balance += get_cap_boosts(ctx, calc, fit_data);
         }
         if src_kinds.consumers.enabled {
-            balance -= get_cap_consumed(ctx, calc, src_kinds.consumers.reload, &fit_data);
+            balance -= get_cap_consumed(ctx, calc, src_kinds.consumers.reload, fit_data);
         }
         if src_kinds.incoming_transfers {
             balance += get_cap_transfers(ctx, calc, item_key, self);
