@@ -4,54 +4,42 @@ import typing
 from tests.fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
-    from .opt_shared import (
-        StatOptionAlias,
-        StatOptionCapBalanceAlias,
-        StatOptionEhpAlias,
-        StatOptionErpsAlias,
-        StatOptionRpsAlias,
-    )
-
-type StatOptionItemDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemDps]]
-type StatOptionItemVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemVolley]]
-type StatOptionItemRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteRps]]
-type StatOptionItemRemoteCpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteCps]]
-type StatOptionItemRemoteNpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionItemRemoteNps]]
+    from .opt_shared import StatsOptionCapBalance, StatsOptionEhp, StatsOptionErps, StatsOptionRps
 
 
 @dataclasses.dataclass(kw_only=True)
 class ItemStatsOptions:
 
-    default: StatOptionAlias = False
-    speed: StatOptionAlias = Absent
-    agility: StatOptionAlias = Absent
-    align_time: StatOptionAlias = Absent
-    sig_radius: StatOptionAlias = Absent
-    mass: StatOptionAlias = Absent
-    warp_speed: StatOptionAlias = Absent
-    max_warp_range: StatOptionAlias = Absent
-    locks: StatOptionAlias = Absent
-    lock_range: StatOptionAlias = Absent
-    scan_res: StatOptionAlias = Absent
-    sensor: StatOptionAlias = Absent
-    dscan_range: StatOptionAlias = Absent
-    probing_size: StatOptionAlias = Absent
-    jam_chance: StatOptionAlias = Absent
-    drone_control_range: StatOptionAlias = Absent
-    dps: StatOptionItemDpsAlias = Absent
-    volley: StatOptionItemVolleyAlias = Absent
-    hp: StatOptionAlias = Absent
-    ehp: StatOptionEhpAlias = Absent
-    wc_ehp: StatOptionAlias = Absent
-    rps: StatOptionRpsAlias = Absent
-    erps: StatOptionErpsAlias = Absent
-    resists: StatOptionAlias = Absent
-    remote_rps: StatOptionItemRemoteRpsAlias = Absent
-    remote_cps: StatOptionItemRemoteCpsAlias = Absent
-    remote_nps: StatOptionItemRemoteNpsAlias = Absent
-    cap_amount: StatOptionAlias = Absent
-    cap_balance: StatOptionCapBalanceAlias = Absent
-    neut_resist: StatOptionAlias = Absent
+    default: bool | type[Absent] = False
+    speed: bool | type[Absent] = Absent
+    agility: bool | type[Absent] = Absent
+    align_time: bool | type[Absent] = Absent
+    sig_radius: bool | type[Absent] = Absent
+    mass: bool | type[Absent] = Absent
+    warp_speed: bool | type[Absent] = Absent
+    max_warp_range: bool | type[Absent] = Absent
+    locks: bool | type[Absent] = Absent
+    lock_range: bool | type[Absent] = Absent
+    scan_res: bool | type[Absent] = Absent
+    sensor: bool | type[Absent] = Absent
+    dscan_range: bool | type[Absent] = Absent
+    probing_size: bool | type[Absent] = Absent
+    jam_chance: bool | type[Absent] = Absent
+    drone_control_range: bool | type[Absent] = Absent
+    dps: bool | tuple[bool, list[StatsOptionItemDps]] | type[Absent] = Absent
+    volley: bool | tuple[bool, list[StatsOptionItemVolley]] | type[Absent] = Absent
+    hp: bool | type[Absent] = Absent
+    ehp: bool | tuple[bool, list[StatsOptionEhp]] | type[Absent] = Absent
+    wc_ehp: bool | type[Absent] = Absent
+    rps: bool | tuple[bool, list[StatsOptionRps]] | type[Absent] = Absent
+    erps: bool | tuple[bool, list[StatsOptionErps]] | type[Absent] = Absent
+    resists: bool | type[Absent] = Absent
+    remote_rps: bool | tuple[bool, list[StatsOptionItemRemoteRps]] | type[Absent] = Absent
+    remote_cps: bool | tuple[bool, list[StatsOptionItemRemoteCps]] | type[Absent] = Absent
+    remote_nps: bool | tuple[bool, list[StatsOptionItemRemoteNps]] | type[Absent] = Absent
+    cap_amount: bool | type[Absent] = Absent
+    cap_balance: bool | tuple[bool, list[StatsOptionCapBalance]] | type[Absent] = Absent
+    neut_resist: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

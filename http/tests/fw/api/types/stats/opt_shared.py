@@ -10,16 +10,6 @@ if typing.TYPE_CHECKING:
     from .opt_remote_nps import StatNeutItemKinds
     from .opt_remote_rps import StatRemoteRepItemKinds
 
-type StatOptionAlias = bool | type[Absent]
-type StatOptionEhpAlias = StatOptionAlias | tuple[bool, list[StatsOptionEhp]]
-type StatOptionRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionRps]]
-type StatOptionErpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionErps]]
-type StatOptionCapBalanceAlias = StatOptionAlias | tuple[bool, list[StatsOptionCapBalance]]
-type StatOptionFitDpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitDps]]
-type StatOptionFitVolleyAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitVolley]]
-type StatOptionFitRemoteRpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteRps]]
-type StatOptionFitRemoteNpsAlias = StatOptionAlias | tuple[bool, list[StatsOptionFitRemoteNps]]
-
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionEhp:
