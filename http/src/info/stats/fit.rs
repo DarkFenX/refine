@@ -112,7 +112,7 @@ pub(crate) struct HFitStats {
     pub(crate) neut_resist: TriStateField<rc::AttrVal>,
 }
 impl HFitStats {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self {
             high_slots: Option::default(),
             mid_slots: Option::default(),

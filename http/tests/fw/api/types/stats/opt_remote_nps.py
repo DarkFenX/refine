@@ -1,6 +1,6 @@
 import dataclasses
 
-from tests.fw.util import Absent
+from tests.fw.util import Absent, dc_to_dict
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -12,4 +12,4 @@ class StatNeutItemKinds:
     bomb: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:
-        return dataclasses.asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
+        return dc_to_dict(data=self)

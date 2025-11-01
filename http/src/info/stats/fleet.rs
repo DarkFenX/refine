@@ -14,7 +14,7 @@ pub(crate) struct HFleetStats {
     pub(crate) remote_nps: Option<Vec<Option<rc::AttrVal>>>,
 }
 impl HFleetStats {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self {
             dps: Option::default(),
             volley: Option::default(),

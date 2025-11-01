@@ -18,7 +18,7 @@ use crate::{
 /// Capacitor change sources which will be considered for cap balance stats.
 #[derive(Copy, Clone)]
 pub struct StatCapSrcKinds {
-    pub regen: bool,
+    pub regen: StatCapRegenOptions,
     pub cap_boosters: bool,
     pub consumers: bool,
     pub incoming_transfers: bool,
@@ -28,7 +28,7 @@ impl StatCapSrcKinds {
     /// Include all capacitor change sources.
     pub fn all_enabled() -> Self {
         Self {
-            regen: true,
+            regen: StatCapRegenOptions { enabled: true, .. },
             cap_boosters: true,
             consumers: true,
             incoming_transfers: true,
@@ -38,13 +38,19 @@ impl StatCapSrcKinds {
     /// Exclude all capacitor change sources.
     pub fn all_disabled() -> Self {
         Self {
-            regen: false,
+            regen: StatCapRegenOptions { enabled: false, .. },
             cap_boosters: false,
             consumers: false,
             incoming_transfers: false,
             incoming_neuts: false,
         }
     }
+}
+
+#[derive(Copy, Clone)]
+pub struct StatCapRegenOptions {
+    pub enabled: bool,
+    pub cap_perc: Option<AttrVal> = None,
 }
 
 const CAP_BOOST_OPTIONS: CycleOptions = CycleOptions {
@@ -59,14 +65,13 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         src_kinds: StatCapSrcKinds,
-        regen_perc: Option<AttrVal>,
     ) -> Result<AttrVal, StatItemCheckError> {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
         let mut balance = OF(0.0);
-        if src_kinds.regen {
-            balance += Vast::internal_get_stat_item_cap_regen_unchecked(ctx, calc, item_key, regen_perc);
+        if src_kinds.regen.enabled {
+            balance += Vast::internal_get_stat_item_cap_regen_unchecked(ctx, calc, item_key, src_kinds.regen.cap_perc);
         }
         if src_kinds.cap_boosters {
             balance += Vast::internal_get_stat_item_cap_boosts_unchecked(ctx, calc, &fit_data.cap_boosts);
@@ -77,14 +82,14 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        regen_perc: Option<AttrVal>,
+        cap_perc: Option<AttrVal>,
     ) -> AttrVal {
         let max_amount = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
         let cap_regen_time = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
             .unwrap()
             / OF(1000.0);
-        let cap_perc = match regen_perc {
+        let cap_perc = match cap_perc {
             Some(cap_perc) => cap_perc.clamp(OF(0.0), OF(1.0)),
             None => OF(0.25),
         };

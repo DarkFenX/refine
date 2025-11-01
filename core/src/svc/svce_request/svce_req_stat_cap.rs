@@ -21,14 +21,12 @@ impl Svc {
         u_data: &UData,
         item_key: UItemKey,
         src_kinds: StatCapSrcKinds,
-        regen_perc: Option<AttrVal>,
     ) -> Result<AttrVal, StatItemCheckError> {
         self.vast.get_stat_item_cap_balance(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             src_kinds,
-            regen_perc,
         )
     }
     pub(crate) fn get_stat_item_neut_resist(

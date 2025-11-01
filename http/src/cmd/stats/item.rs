@@ -348,7 +348,7 @@ fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCa
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = (&option.src_kinds).into();
-        match core_item.get_stat_cap_balance(core_src_kinds, option.regen_perc) {
+        match core_item.get_stat_cap_balance(core_src_kinds) {
             Ok(result) => results.push(result),
             Err(_) => return None,
         }

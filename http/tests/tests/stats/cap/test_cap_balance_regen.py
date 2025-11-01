@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
+from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatCapRegenOptions, StatCapSrcKinds, StatsOptionCapBalance
 
 
 def test_ship_modified(client, consts):
@@ -123,16 +123,19 @@ def test_cap_perc(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_options = [
-        StatsOptionCapBalance(regen_perc=0.25),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0.25))),
         StatsOptionCapBalance(),
-        StatsOptionCapBalance(regen_perc=0),
-        StatsOptionCapBalance(regen_perc=0.7),
-        StatsOptionCapBalance(regen_perc=0.9),
-        StatsOptionCapBalance(regen_perc=1)]
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0.7))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions())),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=0.9))),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=StatCapRegenOptions(cap_perc=1)))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
-    assert api_fit_stats.cap_balance == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
+    assert api_fit_stats.cap_balance == [
+        approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(5.555663), approx(1.081871), 0]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
-    assert api_ship_stats.cap_balance == [approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(1.081871), 0]
+    assert api_ship_stats.cap_balance == [
+        approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(5.555663), approx(1.081871), 0]
 
 
 def test_attr_regen_zero(client, consts):

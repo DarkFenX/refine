@@ -1,6 +1,6 @@
 #[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum HNpcProp {
+pub(crate) enum HNpcProp {
     Cruise,
     Chase,
 }

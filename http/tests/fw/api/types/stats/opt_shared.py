@@ -1,7 +1,7 @@
 import dataclasses
 import typing
 
-from tests.fw.util import Absent
+from tests.fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.aliases import DpsProfile
@@ -53,7 +53,6 @@ class StatsOptionErps:
 class StatsOptionCapBalance:
 
     src_kinds: StatCapSrcKinds | type[Absent] = Absent
-    regen_perc: float | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
@@ -100,12 +99,3 @@ class StatsOptionFitRemoteNps:
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
-
-
-def dc_to_dict(data) -> dict:  # noqa: ANN001
-    return dataclasses.asdict(
-        data, dict_factory=lambda d: {k: dc_to_dict(v) if _is_dc_instance(v) else v for k, v in d if v is not Absent})
-
-
-def _is_dc_instance(obj: object) -> bool:
-    return dataclasses.is_dataclass(obj) and not isinstance(obj, type)

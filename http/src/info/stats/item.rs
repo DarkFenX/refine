@@ -67,7 +67,7 @@ pub(crate) struct HItemStats {
     pub(crate) neut_resist: TriStateField<rc::AttrVal>,
 }
 impl HItemStats {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self {
             speed: TriStateField::default(),
             agility: TriStateField::default(),

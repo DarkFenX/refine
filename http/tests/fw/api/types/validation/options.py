@@ -1,6 +1,6 @@
 import dataclasses
 
-from tests.fw.util import Absent
+from tests.fw.util import Absent, dc_to_dict
 
 type ValOption = bool | tuple[bool, list[int]] | type[Absent]
 
@@ -88,4 +88,4 @@ class ValOptions:
     sec_zone_unactivable: ValOption = Absent
 
     def to_dict(self) -> dict:
-        return dataclasses.asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})
+        return dc_to_dict(data=self)

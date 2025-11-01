@@ -4,7 +4,6 @@ use crate::util::default_true;
 pub(in crate::cmd) struct HStatOptionCapBalance {
     #[serde(default)]
     pub(in crate::cmd) src_kinds: HStatCapSrcKinds,
-    pub(in crate::cmd) regen_perc: Option<rc::AttrVal>,
 }
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
@@ -13,7 +12,7 @@ pub(in crate::cmd) struct HStatCapSrcKinds {
     #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
-    regen: Option<bool>,
+    regen: Option<HStatCapRegenOptions>,
     cap_boosters: Option<bool>,
     consumers: Option<bool>,
     incoming_transfers: Option<bool>,
@@ -26,7 +25,10 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
             false => rc::stats::StatCapSrcKinds::all_disabled(),
         };
         if let Some(regen) = h_src_kinds.regen {
-            core_src_kinds.regen = regen;
+            if let Some(regen_enabled) = regen.is_enabled() {
+                core_src_kinds.regen.enabled = regen_enabled;
+            }
+            core_src_kinds.regen.cap_perc = regen.get_cap_perc();
         }
         if let Some(cap_boosters) = h_src_kinds.cap_boosters {
             core_src_kinds.cap_boosters = cap_boosters;
@@ -42,4 +44,31 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
         }
         core_src_kinds
     }
+}
+
+#[derive(Copy, Clone, serde::Deserialize)]
+#[serde(untagged)]
+enum HStatCapRegenOptions {
+    Simple(bool),
+    Full(HStatCapRegenOptionsFull),
+}
+impl HStatCapRegenOptions {
+    fn is_enabled(&self) -> Option<bool> {
+        match self {
+            Self::Simple(enabled) => Some(*enabled),
+            Self::Full(options) => options.enabled,
+        }
+    }
+    fn get_cap_perc(&self) -> Option<rc::AttrVal> {
+        match self {
+            Self::Simple(_) => None,
+            Self::Full(options) => options.cap_perc,
+        }
+    }
+}
+
+#[derive(Copy, Clone, serde::Deserialize)]
+struct HStatCapRegenOptionsFull {
+    enabled: Option<bool>,
+    cap_perc: Option<rc::AttrVal>,
 }

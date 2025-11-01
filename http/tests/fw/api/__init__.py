@@ -3,6 +3,7 @@ from .types import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
+    StatCapRegenOptions,
     StatCapSrcKinds,
     StatDmgItemKinds,
     StatNeutItemKinds,
