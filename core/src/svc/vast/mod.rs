@@ -8,7 +8,10 @@ pub use shared::{
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 pub use vaste_stats_fit::{StatRes, StatSlot};
-pub use vaste_stats_item::{StatCapSrcKinds, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps};
+pub use vaste_stats_item::{
+    StatCapConsumerOptions, StatCapRegenOptions, StatCapSrcKinds, StatLayerEhp, StatLayerErps, StatLayerHp,
+    StatLayerRps,
+};
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupFail, ValChargeParentGroupInfo, ValChargeSizeChargeInfo, ValChargeSizeFail,

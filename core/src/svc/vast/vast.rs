@@ -133,7 +133,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     // Stats-related - cap
     pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
-    pub(in crate::svc::vast) cap_users: RMapRSet<UItemKey, REffectKey>,
+    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, ad::AAttrId>,
     pub(in crate::svc::vast) cap_boosts: RMapRMap<UItemKey, REffectKey, NCapBoostGetter>,
     // Stats-related - misc
     pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
@@ -213,7 +213,7 @@ impl VastFitData {
             orr_armor: RMapRMap::new(),
             orr_hull: RMapRMap::new(),
             out_cap: RMapRMap::new(),
-            cap_users: RMapRSet::new(),
+            cap_consumers: RMapRMap::new(),
             cap_boosts: RMapRMap::new(),
             out_neuts: RMapRMap::new(),
         }

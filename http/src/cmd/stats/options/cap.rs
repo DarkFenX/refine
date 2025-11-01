@@ -14,7 +14,7 @@ pub(in crate::cmd) struct HStatCapSrcKinds {
     default: bool,
     regen: Option<HStatCapRegenOptions>,
     cap_boosters: Option<bool>,
-    consumers: Option<bool>,
+    consumers: Option<HStatCapConsumerOptions>,
     incoming_transfers: Option<bool>,
     incoming_neuts: Option<bool>,
 }
@@ -34,7 +34,12 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
             core_src_kinds.cap_boosters = cap_boosters;
         }
         if let Some(consumers) = h_src_kinds.consumers {
-            core_src_kinds.consumers = consumers;
+            if let Some(consumers_enabled) = consumers.is_enabled() {
+                core_src_kinds.consumers.enabled = consumers_enabled;
+            }
+            if let Some(reload) = consumers.is_reload() {
+                core_src_kinds.consumers.reload = reload;
+            }
         }
         if let Some(incoming_transfers) = h_src_kinds.incoming_transfers {
             core_src_kinds.incoming_transfers = incoming_transfers;
@@ -66,9 +71,34 @@ impl HStatCapRegenOptions {
         }
     }
 }
-
 #[derive(Copy, Clone, serde::Deserialize)]
 struct HStatCapRegenOptionsFull {
     enabled: Option<bool>,
     cap_perc: Option<rc::AttrVal>,
+}
+
+#[derive(Copy, Clone, serde::Deserialize)]
+#[serde(untagged)]
+enum HStatCapConsumerOptions {
+    Simple(bool),
+    Full(HStatCapConsumerOptionsFull),
+}
+impl HStatCapConsumerOptions {
+    fn is_enabled(&self) -> Option<bool> {
+        match self {
+            Self::Simple(enabled) => Some(*enabled),
+            Self::Full(options) => options.enabled,
+        }
+    }
+    fn is_reload(&self) -> Option<bool> {
+        match self {
+            Self::Simple(_) => None,
+            Self::Full(options) => options.reload,
+        }
+    }
+}
+#[derive(Copy, Clone, serde::Deserialize)]
+struct HStatCapConsumerOptionsFull {
+    enabled: Option<bool>,
+    reload: Option<bool>,
 }

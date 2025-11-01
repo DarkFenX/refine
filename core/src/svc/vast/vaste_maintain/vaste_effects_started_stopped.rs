@@ -77,9 +77,11 @@ impl Vast {
                                 .add_entry(item_key, effect.get_key(), cap_boost_getter);
                         }
                         self.handle_neut_start(effect, item_key, &module.get_fit_key());
-                        if effect.get_discharge_attr_id().is_some() {
+                        if let Some(use_attr_id) = effect.get_discharge_attr_id() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.cap_users.add_entry(item_key, effect.get_key());
+                            fit_data
+                                .cap_consumers
+                                .add_entry(item_key, effect.get_key(), use_attr_id);
                         }
                     }
                 }
@@ -155,7 +157,7 @@ impl Vast {
                         self.handle_neut_stop(effect, item_key, &module.get_fit_key());
                         if effect.get_discharge_attr_id().is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.cap_users.remove_entry(&item_key, &effect.get_key());
+                            fit_data.cap_consumers.remove_l2(&item_key, &effect.get_key());
                         }
                     }
                 }
