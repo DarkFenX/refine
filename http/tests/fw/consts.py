@@ -77,6 +77,7 @@ class EveEffect(IntEnum):
     emp_wave = 38
     launcher_fitted = 40
     turret_fitted = 42
+    power_booster = 48
     use_missiles = 101
     defender_missile_launching = 103
     fof_missile_launching = 104
@@ -243,6 +244,7 @@ class EveAttr(IntEnum):
     recharge_rate = 55
     charge_rate = 56
     dmg_mult = 64
+    capacitor_bonus = 67
     shield_bonus = 68
     agility = 70
     duration = 73
