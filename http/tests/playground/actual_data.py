@@ -8,7 +8,14 @@ from pathlib import Path
 from time import time
 
 from tests import approx
-from tests.fw.api import FitStatsOptions, StatsOptionFitDps, StatsOptionFitVolley, ValOptions
+from tests.fw.api import (
+    FitStatsOptions,
+    StatCapSrcKinds,
+    StatsOptionCapBalance,
+    StatsOptionFitDps,
+    StatsOptionFitVolley,
+    ValOptions,
+)
 
 if typing.TYPE_CHECKING:
     from tests.fw.api.types.item import Item
@@ -271,9 +278,14 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
 
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
+        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)]),
+        cap_balance=(True, [
+            StatsOptionCapBalance(),
+            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True, cap_boosters=True)),
+            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))])))
     print(api_src_fit_stats.dps.one())  # noqa: T201
     print(api_src_fit_stats.volley.one())  # noqa: T201
+    print(api_src_fit_stats.cap_balance)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001

@@ -190,18 +190,18 @@ fn get_cap_transfers(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast:
 
 fn get_neuts(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast: &Vast) -> AttrVal {
     let mut nps = OF(0.0);
-    let transfer_data = match vast.in_neuts.get_l1(&cap_item_key) {
+    let neut_data = match vast.in_neuts.get_l1(&cap_item_key) {
         Some(transfer_data) => transfer_data,
         None => return nps,
     };
-    for (&transfer_item_key, item_data) in transfer_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
+    for (&neut_item_key, item_data) in neut_data.iter() {
+        let cycle_map = match get_item_cycle_info(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
         for (&effect_key, cap_getter) in item_data.iter() {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle = match cap_getter(ctx, calc, transfer_item_key, effect, Some(cap_item_key)) {
+            let output_per_cycle = match cap_getter(ctx, calc, neut_item_key, effect, Some(cap_item_key)) {
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };
