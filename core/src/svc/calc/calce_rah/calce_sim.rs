@@ -1,6 +1,7 @@
 use std::collections::BTreeMap;
 
 use itertools::Itertools;
+use lender::Lender;
 use ordered_float::Float;
 
 use super::{
@@ -62,7 +63,8 @@ impl Calc {
         history_entries_seen.insert(sim_history_entry.clone());
         sim_history.push(sim_history_entry);
         // Run simulation
-        for tick_data in RahSimTickIter::new(sim_datas.iter()) {
+        let mut tick_iter = RahSimTickIter::new(sim_datas.iter());
+        while let Some(tick_data) = tick_iter.next() {
             // For each RAH, calculate damage received during this tick
             let ship_stats = match self.get_ship_stats(ctx, ship_key) {
                 Some(ship_stats) => ship_stats,
@@ -93,7 +95,7 @@ impl Calc {
                 }
             }
             // If RAH just finished its cycle, make resist switch
-            for cycled_item_key in tick_data.cycled {
+            for &cycled_item_key in tick_data.cycled {
                 let item_sim_data = sim_datas.get_mut(&cycled_item_key).unwrap();
                 let mut taken_dmg = DmgKinds {
                     em: OF(0.0),

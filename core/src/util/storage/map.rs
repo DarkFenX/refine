@@ -72,6 +72,12 @@ where
     pub fn insert(&mut self, key: K, val: V) -> Option<V> {
         self.data.insert(key, val)
     }
+    pub fn extend<I>(&mut self, iter: I)
+    where
+        I: IntoIterator<Item = (K, V)>,
+    {
+        self.data.extend(iter)
+    }
     pub fn remove(&mut self, key: &K) -> Option<V> {
         self.data.remove(key)
     }
