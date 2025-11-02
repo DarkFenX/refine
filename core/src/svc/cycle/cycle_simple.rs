@@ -1,4 +1,7 @@
-use crate::{def::AttrVal, util::InfCount};
+use crate::{
+    def::{AttrVal, Count},
+    util::InfCount,
+};
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSimple {
@@ -12,5 +15,39 @@ impl CycleSimple {
     }
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.active_time + self.inactive_time
+    }
+    pub(super) fn iter_cycles(&self) -> CycleSimpleIter {
+        CycleSimpleIter::new(self)
+    }
+}
+
+pub(super) struct CycleSimpleIter {
+    total_cycle_time: AttrVal,
+    repeat_count: InfCount,
+    cycles_done: Count,
+}
+impl CycleSimpleIter {
+    pub(super) fn new(cycle: &CycleSimple) -> Self {
+        Self {
+            total_cycle_time: cycle.get_average_cycle_time(),
+            repeat_count: cycle.get_cycles_until_empty(),
+            cycles_done: 0,
+        }
+    }
+}
+impl Iterator for CycleSimpleIter {
+    type Item = AttrVal;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.repeat_count {
+            InfCount::Count(count) => match self.cycles_done >= count {
+                true => None,
+                false => {
+                    self.cycles_done += 1;
+                    Some(self.total_cycle_time)
+                }
+            },
+            InfCount::Infinite => None,
+        }
     }
 }
