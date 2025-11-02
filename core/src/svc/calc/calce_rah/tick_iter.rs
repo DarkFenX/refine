@@ -61,6 +61,9 @@ impl Lender for RahSimTickIter {
             return None;
         }
         self.tick += 1;
+        // Clear state exposed to iter caller
+        self.cycled.clear();
+        self.cycling_times.clear();
         // Pick time remaining until some RAH finishes its cycle
         let time_passed = self
             .rah_iter_data
@@ -69,7 +72,6 @@ impl Lender for RahSimTickIter {
             .min()
             .unwrap();
         // Compose list of RAHs which finish their cycle this tick
-        self.cycled.clear();
         for (item_key, item_iter_data) in self.rah_iter_data.iter() {
             // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH
             // configurations which the engine allows, e.g. when normal RAH does 17 cycles,
@@ -85,7 +87,6 @@ impl Lender for RahSimTickIter {
                 false => item_iter_data.cycling_time += time_passed,
             }
         }
-        self.cycling_times.clear();
         self.cycling_times
             .extend(self.rah_iter_data.iter().map(|(k, v)| (*k, v.cycling_time)));
         Some(RahSimTickData {

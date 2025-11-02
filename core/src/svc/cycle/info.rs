@@ -1,99 +1,13 @@
 use super::{
-    info_autocharge::get_autocharge_cycle_info, info_charge::get_charge_cycle_info, info_drone::get_drone_cycle_info,
-    info_module::get_module_cycle_info, info_shared::CycleOptions,
+    cycle::Cycle, info_autocharge::get_autocharge_cycle_info, info_charge::get_charge_cycle_info,
+    info_drone::get_drone_cycle_info, info_module::get_module_cycle_info, info_shared::CycleOptions,
 };
 use crate::{
-    def::{AttrVal, Count},
     rd::REffectKey,
     svc::{SvcCtx, calc::Calc},
     ud::{UItem, UItemKey},
-    util::{InfCount, RMap},
+    util::RMap,
 };
-
-#[derive(Copy, Clone)]
-pub(in crate::svc) enum Cycle {
-    Simple(CycleSimple),
-    Reload1(CycleReload1),
-    Reload2(CycleReload2),
-}
-impl Cycle {
-    pub(in crate::svc) fn is_infinite(&self) -> bool {
-        match &self {
-            Self::Simple(simple) => matches!(simple.repeat_count, InfCount::Infinite),
-            Self::Reload1(_) => true,
-            Self::Reload2(_) => true,
-        }
-    }
-    pub(in crate::svc) fn get_cycles_until_empty(&self) -> InfCount {
-        match self {
-            Self::Simple(simple) => simple.get_cycles_until_empty(),
-            Self::Reload1(reload1) => reload1.get_cycles_until_empty(),
-            Self::Reload2(reload2) => reload2.get_cycles_until_empty(),
-        }
-    }
-    pub(in crate::svc) fn get_average_cycle_time(&self) -> AttrVal {
-        match self {
-            Self::Simple(simple) => simple.get_average_cycle_time(),
-            Self::Reload1(reload1) => reload1.get_average_cycle_time(),
-            Self::Reload2(reload2) => reload2.get_average_cycle_time(),
-        }
-    }
-}
-
-#[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleSimple {
-    pub(in crate::svc) active_time: AttrVal,
-    pub(in crate::svc) inactive_time: AttrVal,
-    pub(in crate::svc) repeat_count: InfCount,
-}
-impl CycleSimple {
-    fn get_cycles_until_empty(&self) -> InfCount {
-        self.repeat_count
-    }
-    fn get_average_cycle_time(&self) -> AttrVal {
-        self.active_time + self.inactive_time
-    }
-}
-
-#[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleReload1 {
-    pub(in crate::svc) inner: CycleInner,
-}
-impl CycleReload1 {
-    fn get_cycles_until_empty(&self) -> InfCount {
-        InfCount::Count(self.inner.repeat_count)
-    }
-    fn get_average_cycle_time(&self) -> AttrVal {
-        self.inner.active_time + self.inner.inactive_time
-    }
-}
-
-#[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleReload2 {
-    pub(in crate::svc) inner_early: CycleInner,
-    pub(in crate::svc) inner_final: CycleInner,
-}
-impl CycleReload2 {
-    fn get_cycles_until_empty(&self) -> InfCount {
-        InfCount::Count(self.inner_early.repeat_count + self.inner_final.repeat_count)
-    }
-    fn get_average_cycle_time(&self) -> AttrVal {
-        (self.inner_early.get_total_time() + self.inner_final.get_total_time())
-            / (self.inner_early.repeat_count + self.inner_final.repeat_count) as f64
-    }
-}
-
-#[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleInner {
-    pub(in crate::svc) active_time: AttrVal,
-    pub(in crate::svc) inactive_time: AttrVal,
-    pub(in crate::svc) repeat_count: Count,
-}
-impl CycleInner {
-    fn get_total_time(&self) -> AttrVal {
-        (self.active_time + self.inactive_time) * self.repeat_count as f64
-    }
-}
 
 pub(in crate::svc) fn get_item_cycle_info(
     ctx: SvcCtx,

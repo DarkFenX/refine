@@ -1,6 +1,6 @@
 use either::Either;
 
-use super::info::{Cycle, CycleSimple};
+use super::{cycle::Cycle, cycle_simple::CycleSimple};
 use crate::{
     def::OF,
     rd::REffectKey,
