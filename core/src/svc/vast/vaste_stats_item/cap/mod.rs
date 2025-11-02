@@ -2,3 +2,4 @@ pub use vaste_cap_balance::{StatCapConsumerOptions, StatCapRegenOptions, StatCap
 
 mod vaste_cap;
 mod vaste_cap_balance;
+mod vaste_cap_sim;
