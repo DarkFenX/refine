@@ -79,9 +79,7 @@ impl Vast {
             self.in_cap
                 .add_entry(projectee_key, projector_key, effect.get_key(), rep_getter);
         }
-        if let Some(neut_getter) = effect.get_neut_opc_getter()
-            && effect.is_active_with_duration()
-        {
+        if let Some(neut_getter) = effect.get_neut_opc_getter() {
             self.in_neuts
                 .add_entry(projectee_key, projector_key, effect.get_key(), neut_getter);
         }
@@ -157,7 +155,7 @@ impl Vast {
         if effect.get_remote_cap_rep_opc_getter().is_some() && effect.is_active_with_duration() {
             self.in_cap.remove_l3(&projectee_key, &projector_key, &effect.get_key());
         }
-        if effect.get_neut_opc_getter().is_some() && effect.is_active_with_duration() {
+        if effect.get_neut_opc_getter().is_some() {
             self.in_neuts
                 .remove_l3(&projectee_key, &projector_key, &effect.get_key());
         }
