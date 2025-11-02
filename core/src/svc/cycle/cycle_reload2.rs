@@ -14,4 +14,7 @@ impl CycleReload2 {
         (self.inner_early.get_total_time() + self.inner_final.get_total_time())
             / (self.inner_early.repeat_count + self.inner_final.repeat_count) as f64
     }
+    pub(super) fn iter_cycles(&self) -> impl Iterator<Item = AttrVal> {
+        std::iter::chain(self.inner_early.iter_cycles(), self.inner_final.iter_cycles())
+    }
 }

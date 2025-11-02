@@ -12,4 +12,7 @@ impl CycleReload1 {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.inner.active_time + self.inner.inactive_time
     }
+    pub(super) fn iter_cycles(&self) -> impl Iterator<Item = AttrVal> {
+        self.inner.iter_cycles()
+    }
 }

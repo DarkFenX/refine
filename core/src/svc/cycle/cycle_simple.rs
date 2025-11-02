@@ -16,7 +16,7 @@ impl CycleSimple {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.active_time + self.inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> CycleSimpleIter {
+    pub(super) fn iter_cycles(&self) -> impl Iterator<Item = AttrVal> {
         CycleSimpleIter::new(self)
     }
 }
@@ -29,8 +29,8 @@ pub(super) struct CycleSimpleIter {
 impl CycleSimpleIter {
     pub(super) fn new(cycle: &CycleSimple) -> Self {
         Self {
-            total_cycle_time: cycle.get_average_cycle_time(),
-            repeat_count: cycle.get_cycles_until_empty(),
+            total_cycle_time: cycle.active_time + cycle.inactive_time,
+            repeat_count: cycle.repeat_count,
             cycles_done: 0,
         }
     }
