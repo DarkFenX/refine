@@ -21,13 +21,13 @@ impl CycleSimple {
     }
 }
 
-pub(super) struct CycleSimpleIter {
+struct CycleSimpleIter {
     total_cycle_time: AttrVal,
     repeat_count: InfCount,
     cycles_done: Count,
 }
 impl CycleSimpleIter {
-    pub(super) fn new(cycle: &CycleSimple) -> Self {
+    fn new(cycle: &CycleSimple) -> Self {
         Self {
             total_cycle_time: cycle.active_time + cycle.inactive_time,
             repeat_count: cycle.repeat_count,

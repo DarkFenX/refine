@@ -15,13 +15,13 @@ impl CycleInner {
     }
 }
 
-pub(super) struct CycleInnerIter {
+struct CycleInnerIter {
     total_cycle_time: AttrVal,
     repeat_count: Count,
     cycles_done: Count,
 }
 impl CycleInnerIter {
-    pub(super) fn new(cycle: &CycleInner) -> Self {
+    fn new(cycle: &CycleInner) -> Self {
         Self {
             total_cycle_time: cycle.active_time + cycle.inactive_time,
             repeat_count: cycle.repeat_count,

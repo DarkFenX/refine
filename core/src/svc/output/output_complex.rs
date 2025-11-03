@@ -16,6 +16,9 @@ where
     pub(in crate::svc) fn get_max(&self) -> T {
         self.amount
     }
+    pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
+        OutputComplexIter::new(self)
+    }
 }
 impl<T> OutputComplex<T>
 where
@@ -23,5 +26,41 @@ where
 {
     pub(in crate::svc) fn get_total(&self) -> T {
         self.amount * OF(self.repeats as f64)
+    }
+}
+
+struct OutputComplexIter<'a, T>
+where
+    T: Copy + Clone,
+{
+    output: &'a OutputComplex<T>,
+    cycles_done: Count,
+}
+impl<'a, T> OutputComplexIter<'a, T>
+where
+    T: Copy + Clone,
+{
+    fn new(output: &'a OutputComplex<T>) -> Self {
+        Self { output, cycles_done: 0 }
+    }
+}
+impl<T> Iterator for OutputComplexIter<'_, T>
+where
+    T: Copy + Clone,
+{
+    type Item = (AttrVal, T);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.cycles_done {
+            0 => {
+                self.cycles_done += 1;
+                Some((self.output.delay, self.output.amount))
+            }
+            n if n <= self.output.repeats => {
+                self.cycles_done += 1;
+                Some((self.output.interval, self.output.amount))
+            }
+            _ => None,
+        }
     }
 }

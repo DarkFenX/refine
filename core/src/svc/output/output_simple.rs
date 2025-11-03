@@ -17,4 +17,39 @@ where
     pub(in crate::svc) fn get_max(&self) -> T {
         self.amount
     }
+    pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
+        OutputSimpleIter::new(self)
+    }
+}
+
+struct OutputSimpleIter<'a, T>
+where
+    T: Copy + Clone,
+{
+    output: &'a OutputSimple<T>,
+    done: bool,
+}
+impl<'a, T> OutputSimpleIter<'a, T>
+where
+    T: Copy + Clone,
+{
+    fn new(output: &'a OutputSimple<T>) -> Self {
+        Self { output, done: false }
+    }
+}
+impl<T> Iterator for OutputSimpleIter<'_, T>
+where
+    T: Copy + Clone,
+{
+    type Item = (AttrVal, T);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.done {
+            true => None,
+            false => {
+                self.done = true;
+                Some((self.output.delay, self.output.amount))
+            }
+        }
+    }
 }
