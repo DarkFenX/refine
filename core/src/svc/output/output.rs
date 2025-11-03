@@ -36,6 +36,19 @@ where
         }
     }
 }
+impl<T> std::ops::Neg for Output<T>
+where
+    T: Copy + Clone + std::ops::Neg<Output = T>,
+{
+    type Output = Self;
+
+    fn neg(mut self) -> Self::Output {
+        match self {
+            Self::Simple(inner) => Self::Simple(-inner),
+            Self::Complex(inner) => Self::Complex(-inner),
+        }
+    }
+}
 
 pub(in crate::svc) enum OutputIter<S, C> {
     Simple(S),

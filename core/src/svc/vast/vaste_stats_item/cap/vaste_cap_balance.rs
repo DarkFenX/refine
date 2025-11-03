@@ -1,11 +1,14 @@
-use super::super::checks::check_item_ship;
+use super::{
+    super::checks::check_item_ship,
+    shared::{CYCLE_OPTIONS_BURST, CYCLE_OPTIONS_SIM},
+};
 use crate::{
     ac,
     def::{AttrVal, OF},
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
+        cycle::get_item_cycle_info,
         err::StatItemCheckError,
         vast::{Vast, VastFitData},
     },
@@ -86,15 +89,6 @@ impl Vast {
         Ok(balance)
     }
 }
-
-const CYCLE_OPTIONS_SIM: CycleOptions = CycleOptions {
-    reload_mode: CycleOptionReload::Sim,
-    reload_optionals: true,
-};
-const CYCLE_OPTIONS_BURST: CycleOptions = CycleOptions {
-    reload_mode: CycleOptionReload::Burst,
-    reload_optionals: false,
-};
 
 fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: Option<AttrVal>) -> AttrVal {
     let max_amount = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
@@ -191,7 +185,7 @@ fn get_cap_transfers(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast:
 fn get_neuts(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast: &Vast) -> AttrVal {
     let mut nps = OF(0.0);
     let neut_data = match vast.in_neuts.get_l1(&cap_item_key) {
-        Some(transfer_data) => transfer_data,
+        Some(neut_data) => neut_data,
         None => return nps,
     };
     for (&neut_item_key, item_data) in neut_data.iter() {

@@ -21,6 +21,17 @@ where
         OutputSimpleIter::new(self)
     }
 }
+impl<T> std::ops::Neg for OutputSimple<T>
+where
+    T: Copy + Clone + std::ops::Neg<Output = T>,
+{
+    type Output = Self;
+
+    fn neg(mut self) -> Self::Output {
+        self.amount = -self.amount;
+        self
+    }
+}
 
 struct OutputSimpleIter<'a, T>
 where
