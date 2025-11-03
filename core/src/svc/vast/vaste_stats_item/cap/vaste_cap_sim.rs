@@ -1,4 +1,7 @@
-use super::{super::checks::check_item_ship, shared::CYCLE_OPTIONS_BURST, shared::CYCLE_OPTIONS_SIM};
+use super::{
+    super::checks::check_item_ship,
+    shared::{CYCLE_OPTIONS_BURST, CYCLE_OPTIONS_SIM},
+};
 use crate::{
     def::{AttrVal, OF},
     svc::{
@@ -6,8 +9,8 @@ use crate::{
         calc::Calc,
         cycle::{Cycle, get_item_cycle_info},
         err::StatItemCheckError,
-        output::Output,
-        vast::Vast,
+        output::{Output, OutputSimple},
+        vast::{Vast, VastFitData},
     },
     ud::UItemKey,
 };
@@ -28,6 +31,8 @@ impl Vast {
     ) -> Result<StatCapSimResult, StatItemCheckError> {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
+        let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
+        for _ in CapSimIter::new(ctx, calc, self, fit_data, item_key) {}
         Ok(StatCapSimResult::Stable(OF(0.25)))
     }
 }
@@ -37,9 +42,33 @@ struct CapSimIter {
     injectors: Vec<(Cycle, Output<AttrVal>)>,
 }
 impl CapSimIter {
-    fn new(ctx: SvcCtx, calc: &mut Calc, vast: &Vast, cap_item_key: UItemKey) -> Self {
+    fn new(ctx: SvcCtx, calc: &mut Calc, vast: &Vast, fit_data: &VastFitData, cap_item_key: UItemKey) -> Self {
         let mut general = Vec::new();
         let mut injectors = Vec::new();
+        // Consumers
+        for (&item_key, item_data) in fit_data.cap_consumers.iter() {
+            let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+                Some(cycle_map) => cycle_map,
+                None => continue,
+            };
+            for (&effect_key, attr_id) in item_data.iter() {
+                let cap_used = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
+                    Ok(cap_used) => cap_used,
+                    Err(_) => continue,
+                };
+                let effect_cycles = match cycle_map.remove(&effect_key) {
+                    Some(effect_cycles) => effect_cycles,
+                    None => continue,
+                };
+                general.push((
+                    effect_cycles,
+                    Output::Simple(OutputSimple {
+                        amount: -cap_used,
+                        delay: OF(0.0),
+                    }),
+                ));
+            }
+        }
         // Neuts
         if let Some(neut_data) = vast.in_neuts.get_l1(&cap_item_key) {
             for (&neut_item_key, item_data) in neut_data.iter() {
