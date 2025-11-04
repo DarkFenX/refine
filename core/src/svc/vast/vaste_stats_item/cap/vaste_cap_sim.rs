@@ -1,3 +1,5 @@
+use std::{cmp::Ordering, collections::BinaryHeap};
+
 use super::{
     super::checks::check_item_ship,
     shared::{CYCLE_OPTIONS_BURST, CYCLE_OPTIONS_SIM},
@@ -32,19 +34,72 @@ impl Vast {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
-        for _ in CapSimIter::new(ctx, calc, self, fit_data, item_key) {}
+        // for _ in CapSimIter::new(ctx, calc, self, fit_data, item_key) {}
         Ok(StatCapSimResult::Stable(OF(0.25)))
     }
 }
 
-struct CapSimIter {
+enum CapSimTick<T> {
+    // Next event time, amount
+    CapChange(AttrVal, AttrVal),
+    // Next event time, iterator, output
+    Cycle(AttrVal, T, Output<AttrVal>),
+}
+impl<T> CapSimTick<T> {
+    fn get_time(&self) -> AttrVal {
+        match self {
+            Self::CapChange(time, _) => *time,
+            Self::Cycle(time, _, _) => *time,
+        }
+    }
+    fn get_amount(&self) -> Option<AttrVal> {
+        match self {
+            Self::CapChange(_, amount) => Some(*amount),
+            Self::Cycle(_, _, _) => None,
+        }
+    }
+}
+impl<T> PartialOrd for CapSimTick<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl<T> Ord for CapSimTick<T> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        // Since sim is using max-heap, adjust parameters so that:
+        // - events which have lower time are processed earlier
+        // - with equal time, cycle events are processed first, then cap change events amount desc
+        match other.get_time().cmp(&self.get_time()) {
+            Ordering::Equal => match (self.get_amount(), other.get_amount()) {
+                (Some(s), Some(o)) => s.cmp(&o),
+                (Some(_), None) => Ordering::Less,
+                (None, Some(_)) => Ordering::Greater,
+                (None, None) => Ordering::Equal,
+            },
+            result => result,
+        }
+    }
+}
+impl<T> PartialEq<Self> for CapSimTick<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.get_time() == other.get_time() && self.get_amount() == other.get_amount()
+    }
+}
+impl<T> Eq for CapSimTick<T> {}
+
+struct CapSimIter<T> {
+    events: BinaryHeap<CapSimTick<T>>,
     general: Vec<(Cycle, Output<AttrVal>)>,
     injectors: Vec<(Cycle, Output<AttrVal>)>,
 }
-impl CapSimIter {
+impl<T> CapSimIter<T>
+where
+    T: Iterator<Item = AttrVal>,
+{
     fn new(ctx: SvcCtx, calc: &mut Calc, vast: &Vast, fit_data: &VastFitData, cap_item_key: UItemKey) -> Self {
         let mut general = Vec::new();
         let mut injectors = Vec::new();
+        let mut events = BinaryHeap::new();
         // Consumers
         for (&item_key, item_data) in fit_data.cap_consumers.iter() {
             let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
@@ -60,13 +115,11 @@ impl CapSimIter {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                general.push((
-                    effect_cycles,
-                    Output::Simple(OutputSimple {
-                        amount: -cap_used,
-                        delay: OF(0.0),
-                    }),
-                ));
+                let output = Output::Simple(OutputSimple {
+                    amount: -cap_used,
+                    delay: OF(0.0),
+                });
+                events.push(CapSimTick::Cycle(OF(0.0), effect_cycles.iter_cycles(), output));
             }
         }
         // Neuts
@@ -113,11 +166,18 @@ impl CapSimIter {
                 }
             }
         }
-        Self { general, injectors }
+        Self {
+            events,
+            general,
+            injectors,
+        }
     }
 }
-impl Iterator for CapSimIter {
-    type Item = (AttrVal, AttrVal);
+impl<T> Iterator for CapSimIter<T>
+where
+    T: Iterator<Item = AttrVal>,
+{
+    type Item = CapSimTick<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         None
