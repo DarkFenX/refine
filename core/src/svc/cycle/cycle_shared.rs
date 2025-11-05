@@ -10,12 +10,12 @@ impl CycleInner {
     pub(super) fn get_total_time(&self) -> AttrVal {
         (self.active_time + self.inactive_time) * self.repeat_count as f64
     }
-    pub(super) fn iter_cycles(&self) -> impl Iterator<Item = AttrVal> {
+    pub(super) fn iter_cycles(&self) -> CycleInnerIter {
         CycleInnerIter::new(self)
     }
 }
 
-struct CycleInnerIter {
+pub(super) struct CycleInnerIter {
     total_cycle_time: AttrVal,
     repeat_count: Count,
     cycles_done: Count,

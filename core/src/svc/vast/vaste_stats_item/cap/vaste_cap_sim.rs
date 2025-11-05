@@ -9,7 +9,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, get_item_cycle_info},
+        cycle::{Cycle, CycleIter, get_item_cycle_info},
         err::StatItemCheckError,
         output::{Output, OutputSimple},
         vast::{Vast, VastFitData},
@@ -39,13 +39,13 @@ impl Vast {
     }
 }
 
-enum CapSimTick<T> {
+enum CapSimTick {
     // Next event time, amount
     CapChange(AttrVal, AttrVal),
     // Next event time, iterator, output
-    Cycle(AttrVal, T, Output<AttrVal>),
+    Cycle(AttrVal, CycleIter, Output<AttrVal>),
 }
-impl<T> CapSimTick<T> {
+impl CapSimTick {
     fn get_time(&self) -> AttrVal {
         match self {
             Self::CapChange(time, _) => *time,
@@ -59,12 +59,12 @@ impl<T> CapSimTick<T> {
         }
     }
 }
-impl<T> PartialOrd for CapSimTick<T> {
+impl PartialOrd for CapSimTick {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
-impl<T> Ord for CapSimTick<T> {
+impl Ord for CapSimTick {
     fn cmp(&self, other: &Self) -> Ordering {
         // Since sim is using max-heap, adjust parameters so that:
         // - events which have lower time are processed earlier
@@ -80,22 +80,19 @@ impl<T> Ord for CapSimTick<T> {
         }
     }
 }
-impl<T> PartialEq<Self> for CapSimTick<T> {
+impl PartialEq<Self> for CapSimTick {
     fn eq(&self, other: &Self) -> bool {
         self.get_time() == other.get_time() && self.get_amount() == other.get_amount()
     }
 }
-impl<T> Eq for CapSimTick<T> {}
+impl Eq for CapSimTick {}
 
-struct CapSimIter<T> {
-    events: BinaryHeap<CapSimTick<T>>,
+struct CapSimIter {
+    events: BinaryHeap<CapSimTick>,
     general: Vec<(Cycle, Output<AttrVal>)>,
     injectors: Vec<(Cycle, Output<AttrVal>)>,
 }
-impl<T> CapSimIter<T>
-where
-    T: Iterator<Item = AttrVal>,
-{
+impl CapSimIter {
     fn new(ctx: SvcCtx, calc: &mut Calc, vast: &Vast, fit_data: &VastFitData, cap_item_key: UItemKey) -> Self {
         let mut general = Vec::new();
         let mut injectors = Vec::new();
@@ -173,11 +170,8 @@ where
         }
     }
 }
-impl<T> Iterator for CapSimIter<T>
-where
-    T: Iterator<Item = AttrVal>,
-{
-    type Item = CapSimTick<T>;
+impl Iterator for CapSimIter {
+    type Item = CapSimTick;
 
     fn next(&mut self) -> Option<Self::Item> {
         None

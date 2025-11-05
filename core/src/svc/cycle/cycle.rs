@@ -1,4 +1,11 @@
-use super::{cycle_reload1::CycleReload1, cycle_reload2::CycleReload2, cycle_simple::CycleSimple};
+use std::iter::Chain;
+
+use super::{
+    cycle_reload1::CycleReload1,
+    cycle_reload2::CycleReload2,
+    cycle_shared::CycleInnerIter,
+    cycle_simple::{CycleSimple, CycleSimpleIter},
+};
 use crate::{def::AttrVal, util::InfCount};
 
 #[derive(Copy, Clone)]
@@ -29,7 +36,7 @@ impl Cycle {
             Self::Reload2(reload2) => reload2.get_average_cycle_time(),
         }
     }
-    pub(in crate::svc) fn iter_cycles(&self) -> impl Iterator<Item = AttrVal> {
+    pub(in crate::svc) fn iter_cycles(&self) -> CycleIter {
         match self {
             Self::Simple(simple) => CycleIter::Simple(simple.iter_cycles()),
             Self::Reload1(reload1) => CycleIter::Reload1(reload1.iter_cycles()),
@@ -38,17 +45,12 @@ impl Cycle {
     }
 }
 
-pub(in crate::svc) enum CycleIter<S, R1, R2> {
-    Simple(S),
-    Reload1(R1),
-    Reload2(R2),
+pub(in crate::svc) enum CycleIter {
+    Simple(CycleSimpleIter),
+    Reload1(CycleInnerIter),
+    Reload2(Chain<CycleInnerIter, CycleInnerIter>),
 }
-impl<S, R1, R2> Iterator for CycleIter<S, R1, R2>
-where
-    S: Iterator<Item = AttrVal>,
-    R1: Iterator<Item = AttrVal>,
-    R2: Iterator<Item = AttrVal>,
-{
+impl Iterator for CycleIter {
     type Item = AttrVal;
 
     fn next(&mut self) -> Option<Self::Item> {

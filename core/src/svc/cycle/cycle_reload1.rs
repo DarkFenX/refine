@@ -1,4 +1,4 @@
-use super::cycle_shared::CycleInner;
+use super::cycle_shared::{CycleInner, CycleInnerIter};
 use crate::{def::AttrVal, util::InfCount};
 
 #[derive(Copy, Clone)]
@@ -12,7 +12,7 @@ impl CycleReload1 {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.inner.active_time + self.inner.inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> impl Iterator<Item = AttrVal> {
+    pub(super) fn iter_cycles(&self) -> CycleInnerIter {
         self.inner.iter_cycles()
     }
 }
