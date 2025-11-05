@@ -72,7 +72,7 @@ impl CapSimIter {
                     events.push(CapSimEvent::Cycle(
                         OF(0.0),
                         effect_cycles.iter_cycles(),
-                        output_per_cycle,
+                        -output_per_cycle,
                     ));
                 }
             }

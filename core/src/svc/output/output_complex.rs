@@ -33,6 +33,17 @@ impl OutputComplex<AttrVal> {
         self.amount != OF(0.0)
     }
 }
+impl<T> std::ops::Neg for OutputComplex<T>
+where
+    T: Copy + Clone + std::ops::Neg<Output = T>,
+{
+    type Output = Self;
+
+    fn neg(mut self) -> Self::Output {
+        self.amount = -self.amount;
+        self
+    }
+}
 
 struct OutputComplexIter<'a, T>
 where
