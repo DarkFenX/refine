@@ -109,7 +109,6 @@ impl CapSimIter {
             };
             for (&effect_key, attr_id) in item_data.iter() {
                 let cap_used = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
-                    // Do not process any 0 change events
                     Ok(cap_used) if cap_used != OF(0.0) => cap_used,
                     _ => continue,
                 };
@@ -134,8 +133,8 @@ impl CapSimIter {
                 for (&effect_key, cap_getter) in item_data.iter() {
                     let effect = ctx.u_data.src.get_effect(effect_key);
                     let output_per_cycle = match cap_getter(ctx, calc, neut_item_key, effect, Some(cap_item_key)) {
-                        Some(output_per_cycle) => output_per_cycle,
-                        None => continue,
+                        Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
+                        _ => continue,
                     };
                     let effect_cycles = match cycle_map.remove(&effect_key) {
                         Some(effect_cycles) => effect_cycles,
@@ -161,8 +160,8 @@ impl CapSimIter {
                     let effect = ctx.u_data.src.get_effect(effect_key);
                     let output_per_cycle =
                         match cap_getter(ctx, calc, transfer_item_key, effect, None, Some(cap_item_key)) {
-                            Some(output_per_cycle) => output_per_cycle,
-                            None => continue,
+                            Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
+                            _ => continue,
                         };
                     let effect_cycles = match cycle_map.remove(&effect_key) {
                         Some(effect_cycles) => effect_cycles,
@@ -184,8 +183,8 @@ impl CapSimIter {
             };
             for (&effect_key, cap_getter) in item_data.iter() {
                 let output_per_cycle = match cap_getter(ctx, calc, item_key) {
-                    Some(output_per_cycle) => output_per_cycle,
-                    None => continue,
+                    Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
+                    _ => continue,
                 };
                 let effect_cycles = match cycle_map.remove(&effect_key) {
                     Some(effect_cycles) => effect_cycles,

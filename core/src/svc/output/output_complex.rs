@@ -28,6 +28,11 @@ where
         self.amount * OF(self.repeats as f64)
     }
 }
+impl OutputComplex<AttrVal> {
+    pub(super) fn has_impact(&self) -> bool {
+        self.amount != OF(0.0)
+    }
+}
 
 struct OutputComplexIter<'a, T>
 where

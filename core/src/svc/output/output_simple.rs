@@ -1,4 +1,4 @@
-use crate::def::AttrVal;
+use crate::def::{AttrVal, OF};
 
 pub(crate) struct OutputSimple<T>
 where
@@ -19,6 +19,11 @@ where
     }
     pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
         OutputSimpleIter::new(self)
+    }
+}
+impl OutputSimple<AttrVal> {
+    pub(super) fn has_impact(&self) -> bool {
+        self.amount != OF(0.0)
     }
 }
 

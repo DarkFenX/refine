@@ -36,6 +36,14 @@ where
         }
     }
 }
+impl Output<AttrVal> {
+    pub(in crate::svc) fn has_impact(&self) -> bool {
+        match self {
+            Output::Simple(simple) => simple.has_impact(),
+            Output::Complex(complex) => complex.has_impact(),
+        }
+    }
+}
 
 pub(in crate::svc) enum OutputIter<S, C> {
     Simple(S),
