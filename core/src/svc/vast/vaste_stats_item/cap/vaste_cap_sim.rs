@@ -109,8 +109,9 @@ impl CapSimIter {
             };
             for (&effect_key, attr_id) in item_data.iter() {
                 let cap_used = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
-                    Ok(cap_used) => cap_used,
-                    Err(_) => continue,
+                    // Do not process any 0 change events
+                    Ok(cap_used) if cap_used != OF(0.0) => cap_used,
+                    _ => continue,
                 };
                 let effect_cycles = match cycle_map.remove(&effect_key) {
                     Some(effect_cycles) => effect_cycles,

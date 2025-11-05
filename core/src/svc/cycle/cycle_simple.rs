@@ -47,7 +47,7 @@ impl Iterator for CycleSimpleIter {
                     Some(self.total_cycle_time)
                 }
             },
-            InfCount::Infinite => None,
+            InfCount::Infinite => Some(self.total_cycle_time),
         }
     }
 }
