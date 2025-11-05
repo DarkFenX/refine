@@ -18,7 +18,7 @@ where
             Output::Complex(complex) => complex.get_max(),
         }
     }
-    pub(in crate::svc) fn iter_cycles(&self) -> impl Iterator<Item = (AttrVal, T)> {
+    pub(in crate::svc) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
         match self {
             Self::Simple(simple) => OutputIter::Simple(simple.iter_output()),
             Self::Complex(complex) => OutputIter::Complex(complex.iter_output()),

@@ -17,6 +17,8 @@ use crate::{
     ud::UItemKey,
 };
 
+const TIME_LIMIT: AttrVal = OF(24.0 * 60.0 * 60.0);
+
 pub enum StatCapSimResult {
     // Low watermark of stability value
     Stable(AttrVal),
@@ -34,18 +36,22 @@ impl Vast {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
-        for _ in CapSimIter::new(ctx, calc, self, fit_data, item_key) {}
+        for (time, amount) in CapSimIter::new(ctx, calc, self, fit_data, item_key) {
+            if time > TIME_LIMIT {
+                break;
+            }
+        }
         Ok(StatCapSimResult::Stable(OF(0.25)))
     }
 }
 
-enum CapSimTick {
+enum CapSimEvent {
     // Next event time, amount
     CapChange(AttrVal, AttrVal),
     // Next event time, iterator, output
     Cycle(AttrVal, CycleIter, Output<AttrVal>),
 }
-impl CapSimTick {
+impl CapSimEvent {
     fn get_time(&self) -> AttrVal {
         match self {
             Self::CapChange(time, _) => *time,
@@ -59,12 +65,12 @@ impl CapSimTick {
         }
     }
 }
-impl PartialOrd for CapSimTick {
+impl PartialOrd for CapSimEvent {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
-impl Ord for CapSimTick {
+impl Ord for CapSimEvent {
     fn cmp(&self, other: &Self) -> Ordering {
         // Since sim is using max-heap, adjust parameters so that:
         // - events which have lower time are processed earlier
@@ -80,15 +86,15 @@ impl Ord for CapSimTick {
         }
     }
 }
-impl PartialEq<Self> for CapSimTick {
+impl PartialEq<Self> for CapSimEvent {
     fn eq(&self, other: &Self) -> bool {
         self.get_time() == other.get_time() && self.get_amount() == other.get_amount()
     }
 }
-impl Eq for CapSimTick {}
+impl Eq for CapSimEvent {}
 
 struct CapSimIter {
-    events: BinaryHeap<CapSimTick>,
+    events: BinaryHeap<CapSimEvent>,
     injectors: Vec<(Cycle, Output<AttrVal>)>,
 }
 impl CapSimIter {
@@ -114,7 +120,7 @@ impl CapSimIter {
                     amount: -cap_used,
                     delay: OF(0.0),
                 });
-                events.push(CapSimTick::Cycle(OF(0.0), effect_cycles.iter_cycles(), output));
+                events.push(CapSimEvent::Cycle(OF(0.0), effect_cycles.iter_cycles(), output));
             }
         }
         // Neuts
@@ -134,7 +140,7 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    events.push(CapSimTick::Cycle(
+                    events.push(CapSimEvent::Cycle(
                         OF(0.0),
                         effect_cycles.iter_cycles(),
                         output_per_cycle,
@@ -161,7 +167,7 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    events.push(CapSimTick::Cycle(
+                    events.push(CapSimEvent::Cycle(
                         OF(0.0),
                         effect_cycles.iter_cycles(),
                         output_per_cycle,
@@ -191,9 +197,27 @@ impl CapSimIter {
     }
 }
 impl Iterator for CapSimIter {
-    type Item = CapSimTick;
+    type Item = (AttrVal, AttrVal);
 
     fn next(&mut self) -> Option<Self::Item> {
+        while let Some(event) = self.events.pop() {
+            match event {
+                CapSimEvent::Cycle(event_time, mut cycle_iter, output_per_cycle) => {
+                    // Add outputs for this cycle
+                    for (output_delay, output_value) in output_per_cycle.iter_output() {
+                        let next_event = CapSimEvent::CapChange(event_time + output_delay, output_value);
+                        self.events.push(next_event);
+                    }
+                    // Schedule next cycle, if any
+                    if let Some(next_cycle_delay) = cycle_iter.next() {
+                        let next_event =
+                            CapSimEvent::Cycle(event_time + next_cycle_delay, cycle_iter, output_per_cycle);
+                        self.events.push(next_event);
+                    }
+                }
+                CapSimEvent::CapChange(event_time, cap_change_amount) => return Some((event_time, cap_change_amount)),
+            }
+        }
         None
     }
 }

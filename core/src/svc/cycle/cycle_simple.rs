@@ -21,7 +21,7 @@ impl CycleSimple {
     }
 }
 
-pub(super) struct CycleSimpleIter {
+pub(in crate::svc) struct CycleSimpleIter {
     total_cycle_time: AttrVal,
     repeat_count: InfCount,
     cycles_done: Count,
