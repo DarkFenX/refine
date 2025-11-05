@@ -133,7 +133,9 @@ impl Iterator for CapSimIter {
             match event {
                 CapSimEvent::Cycle(event_time, mut cycle_iter, output_per_cycle) => {
                     // Add outputs for this cycle
-                    for (output_delay, output_value) in output_per_cycle.iter_output() {
+                    let mut output_delay = OF(0.0);
+                    for (output_interval, output_value) in output_per_cycle.iter_output() {
+                        output_delay += output_interval;
                         let next_event = CapSimEvent::CapChange(event_time + output_delay, output_value);
                         self.events.push(next_event);
                     }
