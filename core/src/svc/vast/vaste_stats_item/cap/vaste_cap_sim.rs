@@ -34,7 +34,7 @@ impl Vast {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
-        // for _ in CapSimIter::new(ctx, calc, self, fit_data, item_key) {}
+        for _ in CapSimIter::new(ctx, calc, self, fit_data, item_key) {}
         Ok(StatCapSimResult::Stable(OF(0.25)))
     }
 }
@@ -89,12 +89,10 @@ impl Eq for CapSimTick {}
 
 struct CapSimIter {
     events: BinaryHeap<CapSimTick>,
-    general: Vec<(Cycle, Output<AttrVal>)>,
     injectors: Vec<(Cycle, Output<AttrVal>)>,
 }
 impl CapSimIter {
     fn new(ctx: SvcCtx, calc: &mut Calc, vast: &Vast, fit_data: &VastFitData, cap_item_key: UItemKey) -> Self {
-        let mut general = Vec::new();
         let mut injectors = Vec::new();
         let mut events = BinaryHeap::new();
         // Consumers
@@ -136,7 +134,11 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    general.push((effect_cycles, -output_per_cycle));
+                    events.push(CapSimTick::Cycle(
+                        OF(0.0),
+                        effect_cycles.iter_cycles(),
+                        output_per_cycle,
+                    ));
                 }
             }
         };
@@ -159,15 +161,33 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    general.push((effect_cycles, output_per_cycle));
+                    events.push(CapSimTick::Cycle(
+                        OF(0.0),
+                        effect_cycles.iter_cycles(),
+                        output_per_cycle,
+                    ));
                 }
             }
         }
-        Self {
-            events,
-            general,
-            injectors,
+        // Cap injectors
+        for (&item_key, item_data) in fit_data.cap_boosts.iter() {
+            let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+                Some(cycle_map) => cycle_map,
+                None => continue,
+            };
+            for (&effect_key, cap_getter) in item_data.iter() {
+                let output_per_cycle = match cap_getter(ctx, calc, item_key) {
+                    Some(output_per_cycle) => output_per_cycle,
+                    None => continue,
+                };
+                let effect_cycles = match cycle_map.remove(&effect_key) {
+                    Some(effect_cycles) => effect_cycles,
+                    None => continue,
+                };
+                injectors.push((effect_cycles, output_per_cycle));
+            }
         }
+        Self { events, injectors }
     }
 }
 impl Iterator for CapSimIter {
