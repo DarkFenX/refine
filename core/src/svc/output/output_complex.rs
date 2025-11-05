@@ -28,17 +28,6 @@ where
         self.amount * OF(self.repeats as f64)
     }
 }
-impl<T> std::ops::Neg for OutputComplex<T>
-where
-    T: Copy + Clone + std::ops::Neg<Output = T>,
-{
-    type Output = Self;
-
-    fn neg(mut self) -> Self::Output {
-        self.amount = -self.amount;
-        self
-    }
-}
 
 struct OutputComplexIter<'a, T>
 where
