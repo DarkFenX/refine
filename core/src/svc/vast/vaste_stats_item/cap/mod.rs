@@ -1,7 +1,7 @@
+pub use cap_sim::StatCapSimResult;
 pub use vaste_cap_balance::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSrcKinds};
-pub use vaste_cap_sim::StatCapSimResult;
 
+mod cap_sim;
 mod shared;
 mod vaste_cap;
 mod vaste_cap_balance;
-mod vaste_cap_sim;
