@@ -282,10 +282,12 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
         cap_balance=(True, [
             StatsOptionCapBalance(),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True, cap_boosters=True)),
-            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))])))
+            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))]),
+        cap_sim=True))
     print(api_src_fit_stats.dps.one())  # noqa: T201
     print(api_src_fit_stats.volley.one())  # noqa: T201
     print(api_src_fit_stats.cap_balance)  # noqa: T201
+    print(api_src_fit_stats.cap_sim)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
