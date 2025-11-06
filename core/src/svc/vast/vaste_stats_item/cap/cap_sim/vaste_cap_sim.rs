@@ -48,17 +48,19 @@ impl Vast {
                 break;
             }
             if event_time > current_time {
-                current_cap = (OF(1.0)
-                    + ((current_cap / max_cap).sqrt() - OF(1.0)) * ((current_time - event_time) / tau).exp())
-                .powi(2)
-                    * max_cap;
+                current_cap = calc_regen(current_cap, max_cap, tau, current_time, event_time);
                 current_time = event_time;
             }
             current_cap += cap_added;
             if current_cap < OF(0.0) {
                 return Ok(StatCapSim::Time(current_time));
             }
+            current_cap = Float::min(current_cap, max_cap);
         }
         Ok(StatCapSim::Stable(OF(0.25)))
     }
+}
+
+fn calc_regen(c0: AttrVal, c_max: AttrVal, tau: AttrVal, t0: AttrVal, t1: AttrVal) -> AttrVal {
+    (OF(1.0) + ((c0 / c_max).sqrt() - OF(1.0)) * ((t0 - t1) / tau).exp()).powi(2) * c_max
 }
