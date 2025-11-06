@@ -10,13 +10,13 @@ use crate::{
     ud::UItemKey,
 };
 
-const TIME_LIMIT: AttrVal = OF(24.0 * 60.0 * 60.0);
+const TIME_LIMIT: AttrVal = OF(4.0 * 60.0 * 60.0);
 
-pub enum StatCapSimResult {
+pub enum StatCapSim {
     // Low watermark of stability value
     Stable(AttrVal),
     // Time in seconds it takes to drain cap to 0
-    Unstable(AttrVal),
+    Time(AttrVal),
 }
 
 impl Vast {
@@ -25,7 +25,8 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-    ) -> Result<StatCapSimResult, StatItemCheckError> {
+        cap_perc: Option<AttrVal>,
+    ) -> Result<StatCapSim, StatItemCheckError> {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
@@ -34,6 +35,6 @@ impl Vast {
                 break;
             }
         }
-        Ok(StatCapSimResult::Stable(OF(0.25)))
+        Ok(StatCapSim::Stable(OF(0.25)))
     }
 }

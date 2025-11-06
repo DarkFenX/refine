@@ -1,4 +1,4 @@
-pub use cap::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSimResult, StatCapSrcKinds};
+pub use cap::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSrcKinds};
 pub use tank::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps};
 
 mod cap;

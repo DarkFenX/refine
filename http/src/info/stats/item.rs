@@ -1,6 +1,7 @@
 use crate::{
     info::stats::details::{
-        HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatSensor, HStatTank,
+        HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps,
+        HStatSensor, HStatTank,
     },
     util::TriStateField,
 };
@@ -64,6 +65,8 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_balance: TriStateField<Vec<rc::AttrVal>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) cap_sim: TriStateField<Vec<HStatCapSim>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) neut_resist: TriStateField<rc::AttrVal>,
 }
 impl HItemStats {
@@ -97,6 +100,7 @@ impl HItemStats {
             remote_nps: TriStateField::default(),
             cap_amount: TriStateField::default(),
             cap_balance: TriStateField::default(),
+            cap_sim: TriStateField::default(),
             neut_resist: TriStateField::default(),
         }
     }

@@ -1,4 +1,4 @@
-pub use cap_sim::StatCapSimResult;
+pub use cap_sim::StatCapSim;
 pub use vaste_cap_balance::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSrcKinds};
 
 mod cap_sim;

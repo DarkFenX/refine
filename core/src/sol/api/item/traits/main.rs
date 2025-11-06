@@ -13,8 +13,8 @@ use crate::{
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{
-            StatCapSimResult, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps,
-            StatSensor, StatTank,
+            StatCapSim, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatSensor,
+            StatTank,
         },
     },
     ud::{UEffectUpdates, UItemKey},
@@ -374,11 +374,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_cap_balance(&sol.u_data, item_key, src_kinds)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_cap_sim(&mut self) -> Result<StatCapSimResult, ItemStatError> {
+    fn get_stat_cap_sim(&mut self, cap_perc: Option<AttrVal>) -> Result<StatCapSim, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_cap_sim(&sol.u_data, item_key)
+            .get_stat_item_cap_sim(&sol.u_data, item_key, cap_perc)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_neut_resist(&mut self) -> Result<AttrVal, ItemStatError> {

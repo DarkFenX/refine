@@ -1,4 +1,5 @@
-pub(in crate::cmd::stats) use cap::HStatOptionCapBalance;
+pub(in crate::cmd::stats) use cap_balance::HStatOptionCapBalance;
+pub(in crate::cmd::stats) use cap_sim::HStatOptionCapSim;
 pub(in crate::cmd::stats) use dmg_dps::{HStatOptionFitDps, HStatOptionItemDps};
 pub(in crate::cmd::stats) use dmg_volley::{HStatOptionFitVolley, HStatOptionItemVolley};
 pub(in crate::cmd::stats) use option::HStatOption;
@@ -10,7 +11,8 @@ pub(in crate::cmd::stats) use tank_ehp::HStatOptionEhp;
 pub(in crate::cmd::stats) use tank_erps::HStatOptionErps;
 pub(in crate::cmd::stats) use tank_rps::HStatOptionRps;
 
-mod cap;
+mod cap_balance;
+mod cap_sim;
 mod dmg_dps;
 mod dmg_item_kind;
 mod dmg_volley;

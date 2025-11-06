@@ -1,4 +1,4 @@
-pub use vaste_cap_sim::StatCapSimResult;
+pub use vaste_cap_sim::StatCapSim;
 
 mod event;
 mod iter;

@@ -1,7 +1,7 @@
 use crate::{
     def::AttrVal,
     sol::api::{FitMut, FitShipStatError, ItemMutCommon},
-    svc::vast::{StatCapSimResult, StatCapSrcKinds},
+    svc::vast::{StatCapSim, StatCapSrcKinds},
 };
 
 impl<'a> FitMut<'a> {
@@ -11,8 +11,8 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_cap_balance(&mut self, src_kinds: StatCapSrcKinds) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_cap_balance(src_kinds)?)
     }
-    pub fn get_stat_cap_sim(&mut self) -> Result<StatCapSimResult, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_cap_sim()?)
+    pub fn get_stat_cap_sim(&mut self, cap_perc: Option<AttrVal>) -> Result<StatCapSim, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_cap_sim(cap_perc)?)
     }
     pub fn get_stat_neut_resist(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_neut_resist()?)

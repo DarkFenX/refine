@@ -50,7 +50,7 @@ where
 {
     type Output = Self;
 
-    fn neg(mut self) -> Self::Output {
+    fn neg(self) -> Self::Output {
         match self {
             Self::Simple(inner) => Self::Simple(-inner),
             Self::Complex(inner) => Self::Complex(-inner),
