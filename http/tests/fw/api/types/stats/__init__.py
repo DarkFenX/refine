@@ -14,6 +14,7 @@ from .opt_remote_nps import StatNeutItemKinds
 from .opt_remote_rps import StatRemoteRepItemKinds
 from .opt_shared import (
     StatsOptionCapBalance,
+    StatsOptionCapSim,
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDps,

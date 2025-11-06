@@ -31,4 +31,5 @@ class ItemStats(AttrDict):
                 if d is not None else None)),
             'remote_cps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             'remote_nps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
-            'cap_balance': AttrHookDef(func=lambda d: NttList(d) if d is not None else None)})
+            'cap_balance': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
+            'cap_sim': AttrHookDef(func=lambda d: NttList(d) if d is not None else None)})

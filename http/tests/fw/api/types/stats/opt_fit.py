@@ -6,6 +6,7 @@ from tests.fw.util import Absent, dc_to_dict
 if typing.TYPE_CHECKING:
     from .opt_shared import (
         StatsOptionCapBalance,
+        StatsOptionCapSim,
         StatsOptionEhp,
         StatsOptionErps,
         StatsOptionFitDps,
@@ -70,6 +71,7 @@ class FitStatsOptions:
     remote_nps: bool | tuple[bool, list[StatsOptionFitRemoteNps]] | type[Absent] = Absent
     cap_amount: bool | type[Absent] = Absent
     cap_balance: bool | tuple[bool, list[StatsOptionCapBalance]] | type[Absent] = Absent
+    cap_sim: bool | tuple[bool, list[StatsOptionCapSim]] | type[Absent] = Absent
     neut_resist: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:

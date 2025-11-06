@@ -49,6 +49,15 @@ class StatsOptionCapBalance:
 
 
 @dataclasses.dataclass(kw_only=True)
+class StatsOptionCapSim:
+
+    cap_perc: float | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
 class StatsOptionFitDps:
 
     item_kinds: StatDmgItemKinds | type[Absent] = Absent

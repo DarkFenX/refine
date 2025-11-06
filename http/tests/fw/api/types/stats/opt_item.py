@@ -4,7 +4,7 @@ import typing
 from tests.fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
-    from .opt_shared import StatsOptionCapBalance, StatsOptionEhp, StatsOptionErps, StatsOptionRps
+    from .opt_shared import StatsOptionCapBalance, StatsOptionCapSim, StatsOptionEhp, StatsOptionErps, StatsOptionRps
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -39,6 +39,7 @@ class ItemStatsOptions:
     remote_nps: bool | tuple[bool, list[StatsOptionItemRemoteNps]] | type[Absent] = Absent
     cap_amount: bool | type[Absent] = Absent
     cap_balance: bool | tuple[bool, list[StatsOptionCapBalance]] | type[Absent] = Absent
+    cap_sim: bool | tuple[bool, list[StatsOptionCapSim]] | type[Absent] = Absent
     neut_resist: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:

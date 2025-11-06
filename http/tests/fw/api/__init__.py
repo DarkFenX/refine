@@ -10,6 +10,7 @@ from .types import (
     StatNeutItemKinds,
     StatRemoteRepItemKinds,
     StatsOptionCapBalance,
+    StatsOptionCapSim,
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDps,
