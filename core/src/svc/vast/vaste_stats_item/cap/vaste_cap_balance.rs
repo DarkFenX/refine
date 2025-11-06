@@ -115,15 +115,15 @@ fn get_cap_boosts(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> AttrV
             None => continue,
         };
         for (&effect_key, cap_getter) in item_data.iter() {
-            let output_per_cycle = match cap_getter(ctx, calc, item_key) {
-                Some(output_per_cycle) => output_per_cycle,
+            let cap_injected = match cap_getter(ctx, calc, item_key) {
+                Some(cap_injected) => cap_injected,
                 None => continue,
             };
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            cps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
+            cps += cap_injected / effect_cycles.get_average_cycle_time();
         }
     }
     cps

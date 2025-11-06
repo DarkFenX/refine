@@ -18,7 +18,7 @@ use crate::{
 
 pub(super) struct CapSimIter {
     events: BinaryHeap<CapSimEvent>,
-    injectors: Vec<(Cycle, Output<AttrVal>)>,
+    injectors: Vec<(Cycle, AttrVal)>,
 }
 impl CapSimIter {
     pub(super) fn new(
@@ -111,15 +111,15 @@ impl CapSimIter {
                 None => continue,
             };
             for (&effect_key, cap_getter) in item_data.iter() {
-                let output_per_cycle = match cap_getter(ctx, calc, item_key) {
-                    Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
+                let cap_injected = match cap_getter(ctx, calc, item_key) {
+                    Some(cap_injected) if cap_injected != OF(0.0) => cap_injected,
                     _ => continue,
                 };
                 let effect_cycles = match cycle_map.remove(&effect_key) {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                injectors.push((effect_cycles, output_per_cycle));
+                injectors.push((effect_cycles, cap_injected));
             }
         }
         Self { events, injectors }

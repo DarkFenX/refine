@@ -5,11 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        output::{Output, OutputSimple},
-    },
+    svc::{SvcCtx, calc::Calc},
     ud::UItemKey,
 };
 
@@ -34,7 +30,7 @@ pub(super) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn get_cap_boost_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<Output<AttrVal>> {
+fn get_cap_boost_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
     let item = ctx.u_data.items.get(item_key);
     let charge_key = item.get_charge_key()?;
     let charge_amount = calc
@@ -49,5 +45,5 @@ fn get_cap_boost_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option
         None => OF(0.0),
     };
     let amount = AttrVal::min(charge_amount, ship_amount);
-    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
+    Some(amount)
 }

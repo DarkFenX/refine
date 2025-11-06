@@ -31,7 +31,7 @@ pub(crate) type NRemoteRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NNeutGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
-pub(crate) type NCapBoostGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Output<AttrVal>>;
+pub(crate) type NCapBoostGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Ecm>;
 
 pub(crate) struct NEffect {
