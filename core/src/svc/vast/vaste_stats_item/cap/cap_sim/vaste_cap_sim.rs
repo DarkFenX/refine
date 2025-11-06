@@ -37,25 +37,25 @@ impl Vast {
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
             .unwrap()
             / OF(5000.0);
-        let mut current_time = OF(0.0);
-        let mut current_cap = match cap_perc {
+        let mut sim_time = OF(0.0);
+        let mut sim_cap = match cap_perc {
             Some(perc) => max_cap * perc,
             None => max_cap,
         };
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
-        for (event_time, cap_added) in CapSimIter::new(ctx, calc, self, fit_data, item_key) {
-            if event_time > TIME_LIMIT {
+        for event in CapSimIter::new(ctx, calc, self, fit_data, item_key) {
+            if event.time > TIME_LIMIT {
                 break;
             }
-            if event_time > current_time {
-                current_cap = calc_regen(current_cap, max_cap, tau, current_time, event_time);
-                current_time = event_time;
+            if event.time > sim_time {
+                sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
+                sim_time = event.time;
             }
-            current_cap += cap_added;
-            if current_cap < OF(0.0) {
-                return Ok(StatCapSim::Time(current_time));
+            sim_cap += event.amount;
+            if sim_cap < OF(0.0) {
+                return Ok(StatCapSim::Time(sim_time));
             }
-            current_cap = Float::min(current_cap, max_cap);
+            sim_cap = Float::min(sim_cap, max_cap);
         }
         Ok(StatCapSim::Stable(OF(0.25)))
     }

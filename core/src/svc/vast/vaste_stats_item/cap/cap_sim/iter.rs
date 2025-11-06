@@ -1,6 +1,6 @@
 use std::collections::BinaryHeap;
 
-use super::event::CapSimEvent;
+use super::iter_event::{CapSimIterEvent, CapSimIterEventCapGain, CapSimIterEventCycle};
 use crate::{
     def::{AttrVal, OF},
     svc::{
@@ -17,7 +17,7 @@ use crate::{
 };
 
 pub(super) struct CapSimIter {
-    events: BinaryHeap<CapSimEvent>,
+    events: BinaryHeap<CapSimIterEvent>,
     injectors: Vec<(Cycle, AttrVal)>,
 }
 impl CapSimIter {
@@ -45,11 +45,15 @@ impl CapSimIter {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                let output = Output::Simple(OutputSimple {
+                let output_per_cycle = Output::Simple(OutputSimple {
                     amount: -cap_used,
                     delay: OF(0.0),
                 });
-                events.push(CapSimEvent::Cycle(OF(0.0), effect_cycles.iter_cycles(), output));
+                events.push(CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                    time: OF(0.0),
+                    cycle_iter: effect_cycles.iter_cycles(),
+                    output: output_per_cycle,
+                }));
             }
         }
         // Neuts
@@ -69,11 +73,11 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    events.push(CapSimEvent::Cycle(
-                        OF(0.0),
-                        effect_cycles.iter_cycles(),
-                        -output_per_cycle,
-                    ));
+                    events.push(CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                        time: OF(0.0),
+                        cycle_iter: effect_cycles.iter_cycles(),
+                        output: -output_per_cycle,
+                    }));
                 }
             }
         };
@@ -96,11 +100,11 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    events.push(CapSimEvent::Cycle(
-                        OF(0.0),
-                        effect_cycles.iter_cycles(),
-                        output_per_cycle,
-                    ));
+                    events.push(CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                        time: OF(0.0),
+                        cycle_iter: effect_cycles.iter_cycles(),
+                        output: output_per_cycle,
+                    }));
                 }
             }
         }
@@ -126,27 +130,36 @@ impl CapSimIter {
     }
 }
 impl Iterator for CapSimIter {
-    type Item = (AttrVal, AttrVal);
+    type Item = CapSimIterEventCapGain;
 
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(event) = self.events.pop() {
             match event {
-                CapSimEvent::Cycle(event_time, mut cycle_iter, output_per_cycle) => {
+                CapSimIterEvent::Cycle(mut event) => {
                     // Add outputs for this cycle
                     let mut output_delay = OF(0.0);
-                    for (output_interval, output_value) in output_per_cycle.iter_output() {
+                    for (output_interval, output_value) in event.output.iter_output() {
                         output_delay += output_interval;
-                        let next_event = CapSimEvent::CapChange(event_time + output_delay, output_value);
-                        self.events.push(next_event);
+                        let new_event = CapSimIterEvent::CapGain(CapSimIterEventCapGain {
+                            time: event.time + output_delay,
+                            amount: output_value,
+                        });
+                        self.events.push(new_event);
                     }
                     // Schedule next cycle, if any
-                    if let Some(next_cycle_delay) = cycle_iter.next() {
-                        let next_event =
-                            CapSimEvent::Cycle(event_time + next_cycle_delay, cycle_iter, output_per_cycle);
+                    if let Some(next_cycle_delay) = event.cycle_iter.next() {
+                        let next_event = CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                            time: event.time + next_cycle_delay,
+                            cycle_iter: event.cycle_iter,
+                            output: event.output,
+                        });
                         self.events.push(next_event);
                     }
                 }
-                CapSimEvent::CapChange(event_time, cap_change_amount) => return Some((event_time, cap_change_amount)),
+                CapSimIterEvent::CapGain(event) => {
+                    return Some(event);
+                }
+                _ => (),
             }
         }
         None
