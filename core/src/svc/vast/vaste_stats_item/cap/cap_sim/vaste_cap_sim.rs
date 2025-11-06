@@ -1,6 +1,7 @@
+use std::collections::BinaryHeap;
+
 use ordered_float::Float;
 
-use super::{event_sim::CapSimEvent, iter::CapSimIter};
 use crate::{
     ac,
     def::{AttrVal, OF},
@@ -8,7 +9,16 @@ use crate::{
         SvcCtx,
         calc::Calc,
         err::StatItemCheckError,
-        vast::{Vast, vaste_stats_item::checks::check_item_ship},
+        vast::{
+            Vast,
+            vaste_stats_item::{
+                cap::cap_sim::{
+                    event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycle, CapSimEventInjector},
+                    prepare::prepare_events,
+                },
+                checks::check_item_ship,
+            },
+        },
     },
     ud::UItemKey,
 };
@@ -45,29 +55,56 @@ impl Vast {
         // Injectors available for immediate use
         let mut injectors = Vec::new();
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
-        let mut event_iter = CapSimIter::new(ctx, calc, self, fit_data, item_key);
-        for event in event_iter {
-            let event_time = event.get_time();
-            if event_time > TIME_LIMIT {
-                break;
-            }
-            if event_time > sim_time {
-                sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event_time);
-                sim_time = event_time;
-            }
+        let mut events = prepare_events(ctx, calc, self, fit_data, item_key);
+        while let Some(event) = events.pop() {
             match event {
+                CapSimEvent::Cycle(mut event) => {
+                    // Add outputs for this cycle
+                    let mut output_delay = OF(0.0);
+                    for (output_interval, output_value) in event.output.iter_output() {
+                        output_delay += output_interval;
+                        let new_event = CapSimEvent::CapGain(CapSimEventCapGain {
+                            time: event.time + output_delay,
+                            amount: output_value,
+                        });
+                        events.push(new_event);
+                    }
+                    // Schedule next cycle, if any
+                    if let Some(next_cycle_delay) = event.cycle_iter.next() {
+                        let next_event = CapSimEvent::Cycle(CapSimEventCycle {
+                            time: event.time + next_cycle_delay,
+                            cycle_iter: event.cycle_iter,
+                            output: event.output,
+                        });
+                        events.push(next_event);
+                    }
+                }
                 CapSimEvent::InjectorReady(event) => {
-                    let injected_cap = sim_cap + event.output;
-                    match injected_cap > max_cap {
+                    if event.time > TIME_LIMIT {
+                        break;
+                    }
+                    if event.time > sim_time {
+                        sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
+                        sim_time = event.time;
+                    }
+                    let post_inject_cap = sim_cap + event.output;
+                    match post_inject_cap > max_cap {
                         // Postpone use of injector if it overshoots max cap
                         true => injectors.push(event),
                         false => {
-                            sim_cap = injected_cap;
-                            event_iter.injector_used(sim_time, event);
+                            sim_cap = post_inject_cap;
+                            injector_used(&mut events, sim_time, event);
                         }
                     }
                 }
                 CapSimEvent::CapGain(event) => {
+                    if event.time > TIME_LIMIT {
+                        break;
+                    }
+                    if event.time > sim_time {
+                        sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
+                        sim_time = event.time;
+                    }
                     sim_cap += event.amount;
                     if sim_cap < OF(0.0) {
                         return Ok(StatCapSim::Time(sim_time));
@@ -82,4 +119,11 @@ impl Vast {
 
 fn calc_regen(c0: AttrVal, c_max: AttrVal, tau: AttrVal, t0: AttrVal, t1: AttrVal) -> AttrVal {
     (OF(1.0) + ((c0 / c_max).sqrt() - OF(1.0)) * ((t0 - t1) / tau).exp()).powi(2) * c_max
+}
+
+fn injector_used(events: &mut BinaryHeap<CapSimEvent>, sim_time: AttrVal, mut injector_event: CapSimEventInjector) {
+    if let Some(next_cycle_delay) = injector_event.cycle_iter.next() {
+        injector_event.time = sim_time + next_cycle_delay;
+        events.push(CapSimEvent::InjectorReady(injector_event));
+    }
 }

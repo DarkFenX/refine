@@ -1,17 +1,16 @@
 use std::cmp::Ordering;
 
-use super::event_shared::{CapSimEventCapGain, CapSimEventInjector};
 use crate::{
     def::AttrVal,
     svc::{cycle::CycleIter, output::Output},
 };
 
-pub(super) enum CapSimIterEvent {
+pub(super) enum CapSimEvent {
     Cycle(CapSimEventCycle),
     InjectorReady(CapSimEventInjector),
     CapGain(CapSimEventCapGain),
 }
-impl CapSimIterEvent {
+impl CapSimEvent {
     pub(super) fn get_time(&self) -> AttrVal {
         match self {
             Self::Cycle(event) => event.time,
@@ -20,12 +19,12 @@ impl CapSimIterEvent {
         }
     }
 }
-impl PartialOrd for CapSimIterEvent {
+impl PartialOrd for CapSimEvent {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
-impl Ord for CapSimIterEvent {
+impl Ord for CapSimEvent {
     fn cmp(&self, other: &Self) -> Ordering {
         // Since sim is using max-heap, adjust parameters so that:
         // - events which have lower time are processed earlier
@@ -46,7 +45,7 @@ impl Ord for CapSimIterEvent {
         }
     }
 }
-impl PartialEq<Self> for CapSimIterEvent {
+impl PartialEq<Self> for CapSimEvent {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (Self::Cycle(e1), Self::Cycle(e2)) => e1.time.eq(&e2.time),
@@ -56,10 +55,21 @@ impl PartialEq<Self> for CapSimIterEvent {
         }
     }
 }
-impl Eq for CapSimIterEvent {}
+impl Eq for CapSimEvent {}
 
 pub(super) struct CapSimEventCycle {
     pub(super) time: AttrVal,
     pub(super) cycle_iter: CycleIter,
     pub(super) output: Output<AttrVal>,
+}
+
+pub(super) struct CapSimEventCapGain {
+    pub(super) time: AttrVal,
+    pub(super) amount: AttrVal,
+}
+
+pub(super) struct CapSimEventInjector {
+    pub(super) time: AttrVal,
+    pub(super) cycle_iter: CycleIter,
+    pub(super) output: AttrVal,
 }
