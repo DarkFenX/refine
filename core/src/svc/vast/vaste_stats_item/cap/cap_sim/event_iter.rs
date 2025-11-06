@@ -1,21 +1,22 @@
 use std::cmp::Ordering;
 
+use super::event_shared::{CapSimEventCapGain, CapSimEventInjectorAvailable};
 use crate::{
     def::AttrVal,
     svc::{cycle::CycleIter, output::Output},
 };
 
 pub(super) enum CapSimIterEvent {
-    Cycle(CapSimIterEventCycle),
-    InjectorAvailable(CapSimIterEventInjectorAvailable),
-    CapGain(CapSimIterEventCapGain),
+    Cycle(CapSimEventCycle),
+    InjectorAvailable(CapSimEventInjectorAvailable),
+    CapGain(CapSimEventCapGain),
 }
 impl CapSimIterEvent {
     pub(super) fn get_time(&self) -> AttrVal {
         match self {
-            Self::CapGain(event) => event.time,
             Self::Cycle(event) => event.time,
             Self::InjectorAvailable(event) => event.time,
+            Self::CapGain(event) => event.time,
         }
     }
 }
@@ -57,19 +58,8 @@ impl PartialEq<Self> for CapSimIterEvent {
 }
 impl Eq for CapSimIterEvent {}
 
-pub(super) struct CapSimIterEventCycle {
+pub(super) struct CapSimEventCycle {
     pub(super) time: AttrVal,
     pub(super) cycle_iter: CycleIter,
     pub(super) output: Output<AttrVal>,
-}
-
-pub(super) struct CapSimIterEventInjectorAvailable {
-    pub(super) time: AttrVal,
-    pub(super) cycle_iter: CycleIter,
-    pub(super) output: AttrVal,
-}
-
-pub(super) struct CapSimIterEventCapGain {
-    pub(super) time: AttrVal,
-    pub(super) amount: AttrVal,
 }

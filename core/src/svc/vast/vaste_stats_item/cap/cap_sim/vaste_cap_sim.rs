@@ -1,6 +1,6 @@
 use ordered_float::Float;
 
-use super::iter::CapSimIter;
+use super::{event_sim::CapSimEvent, iter::CapSimIter};
 use crate::{
     ac,
     def::{AttrVal, OF},
@@ -44,18 +44,23 @@ impl Vast {
         };
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
         for event in CapSimIter::new(ctx, calc, self, fit_data, item_key) {
-            if event.time > TIME_LIMIT {
-                break;
+            match event {
+                CapSimEvent::InjectorAvailable(_) => (),
+                CapSimEvent::CapGain(event) => {
+                    if event.time > TIME_LIMIT {
+                        break;
+                    }
+                    if event.time > sim_time {
+                        sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
+                        sim_time = event.time;
+                    }
+                    sim_cap += event.amount;
+                    if sim_cap < OF(0.0) {
+                        return Ok(StatCapSim::Time(sim_time));
+                    }
+                    sim_cap = Float::min(sim_cap, max_cap);
+                }
             }
-            if event.time > sim_time {
-                sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
-                sim_time = event.time;
-            }
-            sim_cap += event.amount;
-            if sim_cap < OF(0.0) {
-                return Ok(StatCapSim::Time(sim_time));
-            }
-            sim_cap = Float::min(sim_cap, max_cap);
         }
         Ok(StatCapSim::Stable(OF(0.25)))
     }

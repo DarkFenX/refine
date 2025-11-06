@@ -1,6 +1,10 @@
 use std::collections::BinaryHeap;
 
-use super::iter_event::{CapSimIterEvent, CapSimIterEventCapGain, CapSimIterEventCycle};
+use super::{
+    event_iter::{CapSimEventCycle, CapSimIterEvent},
+    event_shared::CapSimEventCapGain,
+    event_sim::CapSimEvent,
+};
 use crate::{
     def::{AttrVal, OF},
     svc::{
@@ -49,7 +53,7 @@ impl CapSimIter {
                     amount: -cap_used,
                     delay: OF(0.0),
                 });
-                events.push(CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                events.push(CapSimIterEvent::Cycle(CapSimEventCycle {
                     time: OF(0.0),
                     cycle_iter: effect_cycles.iter_cycles(),
                     output: output_per_cycle,
@@ -73,7 +77,7 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    events.push(CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                    events.push(CapSimIterEvent::Cycle(CapSimEventCycle {
                         time: OF(0.0),
                         cycle_iter: effect_cycles.iter_cycles(),
                         output: -output_per_cycle,
@@ -100,7 +104,7 @@ impl CapSimIter {
                         Some(effect_cycles) => effect_cycles,
                         None => continue,
                     };
-                    events.push(CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                    events.push(CapSimIterEvent::Cycle(CapSimEventCycle {
                         time: OF(0.0),
                         cycle_iter: effect_cycles.iter_cycles(),
                         output: output_per_cycle,
@@ -130,7 +134,7 @@ impl CapSimIter {
     }
 }
 impl Iterator for CapSimIter {
-    type Item = CapSimIterEventCapGain;
+    type Item = CapSimEvent;
 
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(event) = self.events.pop() {
@@ -140,7 +144,7 @@ impl Iterator for CapSimIter {
                     let mut output_delay = OF(0.0);
                     for (output_interval, output_value) in event.output.iter_output() {
                         output_delay += output_interval;
-                        let new_event = CapSimIterEvent::CapGain(CapSimIterEventCapGain {
+                        let new_event = CapSimIterEvent::CapGain(CapSimEventCapGain {
                             time: event.time + output_delay,
                             amount: output_value,
                         });
@@ -148,7 +152,7 @@ impl Iterator for CapSimIter {
                     }
                     // Schedule next cycle, if any
                     if let Some(next_cycle_delay) = event.cycle_iter.next() {
-                        let next_event = CapSimIterEvent::Cycle(CapSimIterEventCycle {
+                        let next_event = CapSimIterEvent::Cycle(CapSimEventCycle {
                             time: event.time + next_cycle_delay,
                             cycle_iter: event.cycle_iter,
                             output: event.output,
@@ -156,10 +160,10 @@ impl Iterator for CapSimIter {
                         self.events.push(next_event);
                     }
                 }
+                CapSimIterEvent::InjectorAvailable(event) => return Some(CapSimEvent::InjectorAvailable(event)),
                 CapSimIterEvent::CapGain(event) => {
-                    return Some(event);
+                    return Some(CapSimEvent::CapGain(event));
                 }
-                _ => (),
             }
         }
         None
