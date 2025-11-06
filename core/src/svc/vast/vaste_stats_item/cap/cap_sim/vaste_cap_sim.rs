@@ -42,18 +42,32 @@ impl Vast {
             Some(perc) => max_cap * perc,
             None => max_cap,
         };
+        // Injectors available for immediate use
+        let mut injectors = Vec::new();
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
-        for event in CapSimIter::new(ctx, calc, self, fit_data, item_key) {
+        let mut event_iter = CapSimIter::new(ctx, calc, self, fit_data, item_key);
+        for event in event_iter {
+            let event_time = event.get_time();
+            if event_time > TIME_LIMIT {
+                break;
+            }
+            if event_time > sim_time {
+                sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event_time);
+                sim_time = event_time;
+            }
             match event {
-                CapSimEvent::InjectorAvailable(_) => (),
+                CapSimEvent::InjectorReady(event) => {
+                    let injected_cap = sim_cap + event.output;
+                    match injected_cap > max_cap {
+                        // Postpone use of injector if it overshoots max cap
+                        true => injectors.push(event),
+                        false => {
+                            sim_cap = injected_cap;
+                            event_iter.injector_used(sim_time, event);
+                        }
+                    }
+                }
                 CapSimEvent::CapGain(event) => {
-                    if event.time > TIME_LIMIT {
-                        break;
-                    }
-                    if event.time > sim_time {
-                        sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
-                        sim_time = event.time;
-                    }
                     sim_cap += event.amount;
                     if sim_cap < OF(0.0) {
                         return Ok(StatCapSim::Time(sim_time));

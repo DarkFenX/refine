@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use super::event_shared::{CapSimEventCapGain, CapSimEventInjectorAvailable};
+use super::event_shared::{CapSimEventCapGain, CapSimEventInjector};
 use crate::{
     def::AttrVal,
     svc::{cycle::CycleIter, output::Output},
@@ -8,14 +8,14 @@ use crate::{
 
 pub(super) enum CapSimIterEvent {
     Cycle(CapSimEventCycle),
-    InjectorAvailable(CapSimEventInjectorAvailable),
+    InjectorReady(CapSimEventInjector),
     CapGain(CapSimEventCapGain),
 }
 impl CapSimIterEvent {
     pub(super) fn get_time(&self) -> AttrVal {
         match self {
             Self::Cycle(event) => event.time,
-            Self::InjectorAvailable(event) => event.time,
+            Self::InjectorReady(event) => event.time,
             Self::CapGain(event) => event.time,
         }
     }
@@ -31,14 +31,14 @@ impl Ord for CapSimIterEvent {
         // - events which have lower time are processed earlier
         // - with equal time, order of processing:
         //   - cycle events
-        //   - injector available events
+        //   - injector ready events
         //   - cap gain events, from highest to lowest
         match other.get_time().cmp(&self.get_time()) {
             Ordering::Equal => match (self, other) {
                 (Self::Cycle(_), Self::Cycle(_)) => Ordering::Equal,
                 (Self::Cycle(_), _) => Ordering::Greater,
-                (Self::InjectorAvailable(_), Self::InjectorAvailable(_)) => Ordering::Equal,
-                (Self::InjectorAvailable(_), _) => Ordering::Greater,
+                (Self::InjectorReady(_), Self::InjectorReady(_)) => Ordering::Equal,
+                (Self::InjectorReady(_), _) => Ordering::Greater,
                 (Self::CapGain(e1), Self::CapGain(e2)) => e1.amount.cmp(&e2.amount),
                 (Self::CapGain(_), _) => Ordering::Less,
             },
@@ -50,7 +50,7 @@ impl PartialEq<Self> for CapSimIterEvent {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (Self::Cycle(e1), Self::Cycle(e2)) => e1.time.eq(&e2.time),
-            (Self::InjectorAvailable(e1), Self::InjectorAvailable(e2)) => e1.time.eq(&e2.time),
+            (Self::InjectorReady(e1), Self::InjectorReady(e2)) => e1.time.eq(&e2.time),
             (Self::CapGain(e1), Self::CapGain(e2)) => e1.time.eq(&e2.time) && e1.amount.eq(&e2.amount),
             _ => false,
         }

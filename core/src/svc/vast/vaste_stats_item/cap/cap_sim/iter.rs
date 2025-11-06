@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use super::{
     event_iter::{CapSimEventCycle, CapSimIterEvent},
-    event_shared::CapSimEventCapGain,
+    event_shared::{CapSimEventCapGain, CapSimEventInjector},
     event_sim::CapSimEvent,
 };
 use crate::{
@@ -22,7 +22,6 @@ use crate::{
 
 pub(super) struct CapSimIter {
     events: BinaryHeap<CapSimIterEvent>,
-    injectors: Vec<(Cycle, AttrVal)>,
 }
 impl CapSimIter {
     pub(super) fn new(
@@ -32,7 +31,6 @@ impl CapSimIter {
         fit_data: &VastFitData,
         cap_item_key: UItemKey,
     ) -> Self {
-        let mut injectors = Vec::new();
         let mut events = BinaryHeap::new();
         // Consumers
         for (&item_key, item_data) in fit_data.cap_consumers.iter() {
@@ -127,10 +125,20 @@ impl CapSimIter {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                injectors.push((effect_cycles, cap_injected));
+                events.push(CapSimIterEvent::InjectorReady(CapSimEventInjector {
+                    time: OF(0.0),
+                    cycle_iter: effect_cycles.iter_cycles(),
+                    output: cap_injected,
+                }));
             }
         }
-        Self { events, injectors }
+        Self { events }
+    }
+    pub(super) fn injector_used(&mut self, sim_time: AttrVal, mut injector_event: CapSimEventInjector) {
+        if let Some(next_cycle_delay) = injector_event.cycle_iter.next() {
+            injector_event.time = sim_time + next_cycle_delay;
+            self.events.push(CapSimIterEvent::InjectorReady(injector_event));
+        }
     }
 }
 impl Iterator for CapSimIter {
@@ -160,7 +168,7 @@ impl Iterator for CapSimIter {
                         self.events.push(next_event);
                     }
                 }
-                CapSimIterEvent::InjectorAvailable(event) => return Some(CapSimEvent::InjectorAvailable(event)),
+                CapSimIterEvent::InjectorReady(event) => return Some(CapSimEvent::InjectorReady(event)),
                 CapSimIterEvent::CapGain(event) => {
                     return Some(CapSimEvent::CapGain(event));
                 }
