@@ -108,13 +108,15 @@ impl Vast {
                     }
                     // Process cap change from event
                     match event.amount >= OF(0.0) {
+                        // Cap amount is increased
                         true => {
                             sim_cap += event.amount;
                             sim_cap = Float::min(sim_cap, max_cap);
                         }
+                        // Cap amount is decreased
                         false => {
                             if -event.amount > sim_cap {
-                                top_up_insufficient(
+                                inject_emergency(
                                     sim_time,
                                     &mut sim_cap,
                                     max_cap,
@@ -128,7 +130,7 @@ impl Vast {
                                 return Ok(StatCapSim::Time(sim_time));
                             }
                             // After some cap was removed, check if we can top up using injector
-                            top_up_after(sim_time, &mut sim_cap, max_cap, &mut injectors, &mut events);
+                            inject_topup(sim_time, &mut sim_cap, max_cap, &mut injectors, &mut events);
                         }
                     }
                 }
@@ -160,7 +162,7 @@ fn use_injector(
     }
 }
 
-fn top_up_insufficient(
+fn inject_emergency(
     sim_time: AttrVal,
     sim_cap: &mut AttrVal,
     max_cap: AttrVal,
@@ -192,7 +194,7 @@ fn top_up_insufficient(
     }
 }
 
-fn top_up_after(
+fn inject_topup(
     sim_time: AttrVal,
     sim_cap: &mut AttrVal,
     max_cap: AttrVal,
