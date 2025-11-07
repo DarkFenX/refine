@@ -1,9 +1,6 @@
-use std::iter::Chain;
-
 use super::{
-    cycle_reload1::CycleReload1,
-    cycle_reload2::CycleReload2,
-    cycle_shared::CycleInnerIter,
+    cycle_reload1::{CycleReload1, CycleReload1Iter},
+    cycle_reload2::{CycleReload2, CycleReload2Iter},
     cycle_simple::{CycleSimple, CycleSimpleIter},
 };
 use crate::{def::AttrVal, util::InfCount};
@@ -47,8 +44,8 @@ impl Cycle {
 
 pub(in crate::svc) enum CycleIter {
     Simple(CycleSimpleIter),
-    Reload1(CycleInnerIter),
-    Reload2(Chain<CycleInnerIter, CycleInnerIter>),
+    Reload1(CycleReload1Iter),
+    Reload2(CycleReload2Iter),
 }
 impl Iterator for CycleIter {
     type Item = AttrVal;

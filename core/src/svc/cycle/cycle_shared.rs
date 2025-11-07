@@ -15,7 +15,7 @@ impl CycleInner {
     }
 }
 
-pub(in crate::svc) struct CycleInnerIter {
+pub(super) struct CycleInnerIter {
     total_cycle_time: AttrVal,
     repeat_count: Count,
     cycles_done: Count,
@@ -27,6 +27,9 @@ impl CycleInnerIter {
             repeat_count: cycle.repeat_count,
             cycles_done: 0,
         }
+    }
+    pub(super) fn reset(&mut self) {
+        self.cycles_done = 0;
     }
 }
 impl Iterator for CycleInnerIter {
