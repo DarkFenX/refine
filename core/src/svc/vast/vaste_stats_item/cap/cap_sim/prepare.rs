@@ -1,6 +1,6 @@
 use std::collections::BinaryHeap;
 
-use super::event::{CapSimEvent, CapSimEventCycle, CapSimEventInjector};
+use super::event::{CapSimEvent, CapSimEventCycleCheck, CapSimEventInjector};
 use crate::{
     def::OF,
     svc::{
@@ -50,7 +50,7 @@ fn fill_consumers(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
                 amount: -cap_used,
                 delay: OF(0.0),
             });
-            events.push(CapSimEvent::Cycle(CapSimEventCycle {
+            events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
                 time: OF(0.0),
                 cycle_iter: effect_cycles.iter_cycles(),
                 output: output_per_cycle,
@@ -79,7 +79,7 @@ fn fill_neuts(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            events.push(CapSimEvent::Cycle(CapSimEventCycle {
+            events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
                 time: OF(0.0),
                 cycle_iter: effect_cycles.iter_cycles(),
                 output: -output_per_cycle,
@@ -114,7 +114,7 @@ fn fill_transfers(
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            events.push(CapSimEvent::Cycle(CapSimEventCycle {
+            events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
                 time: OF(0.0),
                 cycle_iter: effect_cycles.iter_cycles(),
                 output: output_per_cycle,

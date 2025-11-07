@@ -13,7 +13,7 @@ use crate::{
             Vast,
             vaste_stats_item::{
                 cap::cap_sim::{
-                    event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycle, CapSimEventInjector},
+                    event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector},
                     prepare::prepare_events,
                 },
                 checks::check_item_ship,
@@ -58,7 +58,7 @@ impl Vast {
         let mut injectors = Vec::new();
         while let Some(event) = events.pop() {
             match event {
-                CapSimEvent::Cycle(mut event) => {
+                CapSimEvent::CycleCheck(mut event) => {
                     // Check if it can cycle altogether
                     if let Some(next_cycle_delay) = event.cycle_iter.next() {
                         // Add outputs for this cycle
@@ -72,7 +72,7 @@ impl Vast {
                             events.push(new_event);
                         }
                         // Schedule next cycle check
-                        let next_event = CapSimEvent::Cycle(CapSimEventCycle {
+                        let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
                             time: event.time + next_cycle_delay,
                             cycle_iter: event.cycle_iter,
                             output: event.output,
