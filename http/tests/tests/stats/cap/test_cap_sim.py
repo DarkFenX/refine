@@ -2,7 +2,7 @@ from tests import approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 
 
-def test_injector_mixed(client, consts):
+def test_injector_emergency(client, consts):
     eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_boost_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_bonus)
     eve_use_amount_attr_id = client.mk_eve_attr()
