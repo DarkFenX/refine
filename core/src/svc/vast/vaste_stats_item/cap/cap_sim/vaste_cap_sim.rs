@@ -113,6 +113,16 @@ impl Vast {
                             sim_cap = Float::min(sim_cap, max_cap);
                         }
                         false => {
+                            if -event.amount > sim_cap {
+                                top_up_insufficient(
+                                    sim_time,
+                                    &mut sim_cap,
+                                    max_cap,
+                                    -event.amount,
+                                    &mut injectors,
+                                    &mut events,
+                                );
+                            }
                             sim_cap += event.amount;
                             if sim_cap < OF(0.0) {
                                 return Ok(StatCapSim::Time(sim_time));
@@ -147,6 +157,38 @@ fn use_injector(
         // Schedule next cycle
         injector_event.time = sim_time + next_cycle_delay;
         events.push(CapSimEvent::InjectorReady(injector_event));
+    }
+}
+
+fn top_up_insufficient(
+    sim_time: AttrVal,
+    sim_cap: &mut AttrVal,
+    max_cap: AttrVal,
+    needed_cap: AttrVal,
+    injectors: &mut Vec<CapSimEventInjector>,
+    events: &mut BinaryHeap<CapSimEvent>,
+) {
+    while !injectors.is_empty() && needed_cap > *sim_cap && max_cap > *sim_cap {
+        let needed_extra = Float::min(needed_cap - *sim_cap, max_cap - *sim_cap);
+        // Take injector which either provides just enough or more cap than needed
+        let idx = match injectors
+            .iter()
+            .enumerate()
+            .filter(|(_, v)| v.output >= needed_extra)
+            .min_by_key(|(_, v)| v.output)
+            .map(|(i, _)| i)
+        {
+            Some(idx) => idx,
+            // If there are no such injectors, just take injector which provides the most cap
+            None => injectors
+                .iter()
+                .enumerate()
+                .max_by_key(|(_, v)| v.output)
+                .map(|(i, _)| i)
+                .unwrap(),
+        };
+        let injector = injectors.remove(idx);
+        use_injector(sim_time, sim_cap, max_cap, injector, events);
     }
 }
 
