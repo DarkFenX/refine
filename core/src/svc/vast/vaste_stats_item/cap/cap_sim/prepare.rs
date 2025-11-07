@@ -131,7 +131,9 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
         };
         for (&effect_key, cap_getter) in item_data.iter() {
             let cap_injected = match cap_getter(ctx, calc, item_key) {
-                Some(cap_injected) if cap_injected != OF(0.0) => cap_injected,
+                // Even if some injector has negative value, player doesn't have to use it, so it is
+                // just ignored
+                Some(cap_injected) if cap_injected > OF(0.0) => cap_injected,
                 _ => continue,
             };
             let effect_cycles = match cycle_map.remove(&effect_key) {

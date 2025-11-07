@@ -53,24 +53,25 @@ impl Vast {
             None => max_cap,
         };
         // Injectors available for immediate use
-        let mut injectors = Vec::new();
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
         let mut events = prepare_events(ctx, calc, self, fit_data, item_key);
+        let mut injectors = Vec::new();
         while let Some(event) = events.pop() {
             match event {
                 CapSimEvent::Cycle(mut event) => {
-                    // Add outputs for this cycle
-                    let mut output_delay = OF(0.0);
-                    for (output_interval, output_value) in event.output.iter_output() {
-                        output_delay += output_interval;
-                        let new_event = CapSimEvent::CapGain(CapSimEventCapGain {
-                            time: event.time + output_delay,
-                            amount: output_value,
-                        });
-                        events.push(new_event);
-                    }
-                    // Schedule next cycle, if any
+                    // Check if it can cycle altogether
                     if let Some(next_cycle_delay) = event.cycle_iter.next() {
+                        // Add outputs for this cycle
+                        let mut output_delay = OF(0.0);
+                        for (output_interval, output_value) in event.output.iter_output() {
+                            output_delay += output_interval;
+                            let new_event = CapSimEvent::CapGain(CapSimEventCapGain {
+                                time: event.time + output_delay,
+                                amount: output_value,
+                            });
+                            events.push(new_event);
+                        }
+                        // Schedule next cycle check
                         let next_event = CapSimEvent::Cycle(CapSimEventCycle {
                             time: event.time + next_cycle_delay,
                             cycle_iter: event.cycle_iter,
@@ -80,6 +81,7 @@ impl Vast {
                     }
                 }
                 CapSimEvent::InjectorReady(event) => {
+                    // Update basic sim state according to time progression
                     if event.time > TIME_LIMIT {
                         break;
                     }
@@ -87,17 +89,16 @@ impl Vast {
                         sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
                         sim_time = event.time;
                     }
-                    let post_inject_cap = sim_cap + event.output;
-                    match post_inject_cap > max_cap {
-                        // Postpone use of injector if it overshoots max cap
+                    // Use injector right away if it does not overshoot cap, or postpone if it does
+                    match sim_cap + event.output > max_cap {
                         true => injectors.push(event),
                         false => {
-                            sim_cap = post_inject_cap;
-                            injector_used(&mut events, sim_time, event);
+                            use_injector(sim_time, &mut sim_cap, max_cap, event, &mut events);
                         }
                     }
                 }
                 CapSimEvent::CapGain(event) => {
+                    // Update basic sim state according to time progression
                     if event.time > TIME_LIMIT {
                         break;
                     }
@@ -105,11 +106,21 @@ impl Vast {
                         sim_cap = calc_regen(sim_cap, max_cap, tau, sim_time, event.time);
                         sim_time = event.time;
                     }
-                    sim_cap += event.amount;
-                    if sim_cap < OF(0.0) {
-                        return Ok(StatCapSim::Time(sim_time));
+                    // Process cap change from event
+                    match event.amount >= OF(0.0) {
+                        true => {
+                            sim_cap += event.amount;
+                            sim_cap = Float::min(sim_cap, max_cap);
+                        }
+                        false => {
+                            sim_cap += event.amount;
+                            if sim_cap < OF(0.0) {
+                                return Ok(StatCapSim::Time(sim_time));
+                            }
+                            // After some cap was removed, check if we can top up using injector
+                            top_up_after(sim_time, &mut sim_cap, max_cap, &mut injectors, &mut events);
+                        }
                     }
-                    sim_cap = Float::min(sim_cap, max_cap);
                 }
             }
         }
@@ -121,9 +132,45 @@ fn calc_regen(c0: AttrVal, c_max: AttrVal, tau: AttrVal, t0: AttrVal, t1: AttrVa
     (OF(1.0) + ((c0 / c_max).sqrt() - OF(1.0)) * ((t0 - t1) / tau).exp()).powi(2) * c_max
 }
 
-fn injector_used(events: &mut BinaryHeap<CapSimEvent>, sim_time: AttrVal, mut injector_event: CapSimEventInjector) {
+fn use_injector(
+    sim_time: AttrVal,
+    sim_cap: &mut AttrVal,
+    max_cap: AttrVal,
+    mut injector_event: CapSimEventInjector,
+    events: &mut BinaryHeap<CapSimEvent>,
+) {
+    // Check if injector can cycle
     if let Some(next_cycle_delay) = injector_event.cycle_iter.next() {
+        // If it can, update cap value
+        *sim_cap += injector_event.output;
+        *sim_cap = Float::min(*sim_cap, max_cap);
+        // Schedule next cycle
         injector_event.time = sim_time + next_cycle_delay;
         events.push(CapSimEvent::InjectorReady(injector_event));
+    }
+}
+
+fn top_up_after(
+    sim_time: AttrVal,
+    sim_cap: &mut AttrVal,
+    max_cap: AttrVal,
+    injectors: &mut Vec<CapSimEventInjector>,
+    events: &mut BinaryHeap<CapSimEvent>,
+) {
+    while !injectors.is_empty() && *sim_cap < max_cap {
+        let max_injection = max_cap - *sim_cap;
+        // Find an injector which does not overshoot and has the highest injection value
+        let idx = match injectors
+            .iter()
+            .enumerate()
+            .filter(|(_, v)| v.output <= max_injection)
+            .max_by_key(|(_, v)| v.output)
+            .map(|(i, _)| i)
+        {
+            Some(idx) => idx,
+            None => return,
+        };
+        let injector = injectors.remove(idx);
+        use_injector(sim_time, sim_cap, max_cap, injector, events);
     }
 }
