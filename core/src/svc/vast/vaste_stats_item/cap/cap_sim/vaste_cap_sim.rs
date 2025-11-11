@@ -127,15 +127,17 @@ impl Vast {
                                 );
                             }
                             sim_cap += event.amount;
-                            if sim_cap < OF(0.0) {
-                                return Ok(StatCapSim::Time(sim_time));
+                            // Record low watermark, and stop simulation if cap drain being
+                            // processed cannot be applied
+                            if sim_cap < watermark_low {
+                                watermark_low = sim_cap;
+                                if sim_cap < OF(0.0) {
+                                    return Ok(StatCapSim::Time(sim_time));
+                                }
                             }
                             // After some cap was removed, check if we can top up using injector
                             inject_topup(sim_time, &mut sim_cap, max_cap, &mut injectors, &mut events);
                         }
-                    }
-                    if sim_cap < watermark_low {
-                        watermark_low = sim_cap;
                     }
                 }
             }
