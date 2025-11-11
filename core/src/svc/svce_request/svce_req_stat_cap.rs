@@ -6,6 +6,7 @@ use crate::{
         vast::{StatCapSim, StatCapSrcKinds, Vast},
     },
     ud::{UData, UItemKey},
+    util::UnitInterval,
 };
 
 impl Svc {
@@ -33,7 +34,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-        cap_perc: Option<AttrVal>,
+        cap_perc: Option<UnitInterval>,
     ) -> Result<StatCapSim, StatItemCheckError> {
         self.vast
             .get_stat_item_cap_sim(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key, cap_perc)

@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    def::{AttrVal, OF},
+    def::OF,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -17,6 +17,7 @@ use crate::{
         },
     },
     ud::UItemKey,
+    util::UnitInterval,
 };
 
 impl Vast {
@@ -25,7 +26,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        cap_perc: Option<AttrVal>,
+        cap_perc: Option<UnitInterval>,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
@@ -35,7 +36,7 @@ impl Vast {
             .unwrap()
             / OF(1000.0);
         let start_cap = match cap_perc {
-            Some(perc) => max_cap * perc,
+            Some(perc) => max_cap * perc.get_inner(),
             None => max_cap,
         };
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();

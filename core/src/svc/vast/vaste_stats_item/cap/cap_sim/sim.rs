@@ -3,13 +3,16 @@ use std::collections::BinaryHeap;
 use ordered_float::Float;
 
 use super::event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector};
-use crate::def::{AttrVal, OF};
+use crate::{
+    def::{AttrVal, OF},
+    util::UnitInterval,
+};
 
 const TIME_LIMIT: AttrVal = OF(4.0 * 60.0 * 60.0);
 
 pub enum StatCapSim {
-    // Low watermark of stability value
-    Stable(AttrVal),
+    // Average stability value
+    Stable(UnitInterval),
     // Time in seconds it takes to drain cap to 0
     Time(AttrVal),
 }
@@ -122,7 +125,7 @@ impl CapSim {
         }
         // No drains - cap regens up to 100% even if no other gains are registered
         if self.only_gains {
-            return StatCapSim::Stable(OF(1.0));
+            return StatCapSim::Stable(UnitInterval::new_clamped_of64(OF(1.0)));
         }
         // Instead of trying to detect event loops and averaging over looped period (which is
         // expensive), cap sim tracks global and auxiliary high and low watermarks. After new value
@@ -134,10 +137,10 @@ impl CapSim {
             false => (self.wm_low_cap + self.wm_aux_high) / (OF(2.0) * self.max_cap),
         };
         // Extra checks for case when max cap is 0
-        StatCapSim::Stable(match stability.is_finite() {
+        StatCapSim::Stable(UnitInterval::new_clamped_of64(match stability.is_finite() {
             true => stability,
             false => OF(1.0),
-        })
+        }))
     }
     fn advance_time(&mut self, new_time: AttrVal) {
         if new_time > self.time {

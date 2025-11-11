@@ -26,7 +26,7 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
         };
         if let Some(regen) = h_src_kinds.regen {
             core_src_kinds.regen.enabled = regen.is_enabled();
-            core_src_kinds.regen.cap_perc = regen.get_cap_perc();
+            core_src_kinds.regen.cap_perc = regen.get_cap_perc().map(rc::UnitInterval::new_clamped);
         }
         if let Some(cap_boosters) = h_src_kinds.cap_boosters {
             core_src_kinds.cap_boosters = cap_boosters;

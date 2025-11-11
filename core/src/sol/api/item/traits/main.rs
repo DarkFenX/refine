@@ -18,7 +18,7 @@ use crate::{
         },
     },
     ud::{UEffectUpdates, UItemKey},
-    util::GetId,
+    util::{GetId, UnitInterval},
 };
 
 mod private {
@@ -374,7 +374,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_cap_balance(&sol.u_data, item_key, src_kinds)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_cap_sim(&mut self, cap_perc: Option<AttrVal>) -> Result<StatCapSim, ItemStatError> {
+    fn get_stat_cap_sim(&mut self, cap_perc: Option<UnitInterval>) -> Result<StatCapSim, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
