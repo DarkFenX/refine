@@ -27,6 +27,8 @@ pub(super) struct CapSim {
     wm_high_cap: AttrVal,
     wm_low_time: AttrVal,
     wm_low_cap: AttrVal,
+    wm_aux_high: AttrVal,
+    wm_aux_low: AttrVal,
 }
 impl CapSim {
     pub(super) fn new(
@@ -42,12 +44,13 @@ impl CapSim {
             injectors: Vec::new(),
             time: OF(0.0),
             cap: start_cap,
-            // Initialize low watermark with so far highest value, and high watermark with zero, so
-            // that they can freely move towards proper value
+            // Watermark data
             wm_high_time: OF(0.0),
-            wm_high_cap: OF(0.0),
+            wm_high_cap: start_cap,
             wm_low_time: OF(0.0),
             wm_low_cap: start_cap,
+            wm_aux_high: start_cap,
+            wm_aux_low: start_cap,
         }
     }
     pub(super) fn run(&mut self) -> StatCapSim {
@@ -78,6 +81,7 @@ impl CapSim {
                 CapSimEvent::InjectorReady(event) => {
                     // Update basic sim state according to time progression
                     if event.time > TIME_LIMIT {
+                        self.advance_time(TIME_LIMIT);
                         break;
                     }
                     self.advance_time(event.time);
@@ -90,29 +94,22 @@ impl CapSim {
                 CapSimEvent::CapGain(event) => {
                     // Update basic sim state according to time progression
                     if event.time > TIME_LIMIT {
+                        self.advance_time(TIME_LIMIT);
                         break;
                     }
                     self.advance_time(event.time);
                     // Process cap change from event
                     match event.amount >= OF(0.0) {
                         // Cap amount is increased
-                        true => {
-                            self.cap += event.amount;
-                            self.cap = Float::min(self.cap, self.max_cap);
-                        }
+                        true => self.increase_cap(event.amount),
                         // Cap amount is decreased
                         false => {
                             if -event.amount > self.cap {
                                 self.inject_emergency(-event.amount);
                             }
-                            self.cap += event.amount;
-                            // Record low watermark, and stop simulation if cap drain being
-                            // processed cannot be applied
-                            if self.cap < self.wm_low_cap {
-                                self.wm_low_cap = self.cap;
-                                if self.cap < OF(0.0) {
-                                    return StatCapSim::Time(self.time);
-                                }
+                            self.decrease_cap(-event.amount);
+                            if self.cap < OF(0.0) {
+                                return StatCapSim::Time(self.time);
                             }
                             // After some cap was removed, check if we can top up using injector
                             self.inject_topup();
@@ -121,24 +118,60 @@ impl CapSim {
                 }
             }
         }
-        let stability = match self.wm_low_cap / self.max_cap {
-            n if n.is_finite() => n,
-            _ => OF(1.0),
+        // Instead of trying to detect event loops and averaging over looped period (which is
+        // expensive), cap sim tracks global and auxiliary high and low watermarks. After new value
+        // of high/low global watermark is reached, sim resets opposite auxiliary watermark. Final
+        // stability value is average between last global watermark, and its opposite auxiliary
+        // watermark
+        let stability = match self.wm_high_time > self.wm_low_time {
+            true => (self.wm_high_cap + self.wm_aux_low) / (OF(2.0) * self.max_cap),
+            false => (self.wm_low_cap + self.wm_aux_high) / (OF(2.0) * self.max_cap),
         };
-        StatCapSim::Stable(stability)
+        StatCapSim::Stable(match stability.is_finite() {
+            true => stability,
+            false => OF(1.0),
+        })
     }
     fn advance_time(&mut self, new_time: AttrVal) {
         if new_time > self.time {
             self.cap = calc_regen(self.cap, self.max_cap, self.tau, self.time, new_time);
             self.time = new_time;
+            if self.cap > self.wm_high_cap {
+                self.wm_high_time = self.time;
+                self.wm_high_cap = self.cap;
+            }
+        }
+    }
+    fn increase_cap(&mut self, amount: AttrVal) {
+        self.cap += amount;
+        self.cap = Float::min(self.cap, self.max_cap);
+        if self.cap > self.wm_high_cap {
+            self.wm_high_time = self.time;
+            self.wm_high_cap = self.cap;
+            // Each time new high watermark is recorded, reset auxiliary low watermark
+            self.wm_aux_low = self.cap;
+        }
+        if self.cap > self.wm_aux_high {
+            self.wm_aux_high = self.cap;
+        }
+    }
+    fn decrease_cap(&mut self, amount: AttrVal) {
+        self.cap -= amount;
+        if self.cap < self.wm_low_cap {
+            self.wm_low_time = self.time;
+            self.wm_low_cap = self.cap;
+            // Each time new low watermark is recorded, reset auxiliary high watermark
+            self.wm_aux_high = self.cap;
+        }
+        if self.cap < self.wm_aux_low {
+            self.wm_aux_low = self.cap;
         }
     }
     fn use_injector(&mut self, mut injector_event: CapSimEventInjector) {
         // Check if injector can cycle
         if let Some(next_cycle_delay) = injector_event.cycle_iter.next() {
             // If it can, update cap value
-            self.cap += injector_event.output;
-            self.cap = Float::min(self.cap, self.max_cap);
+            self.increase_cap(injector_event.output);
             // Schedule next cycle
             injector_event.time = self.time + next_cycle_delay;
             self.events.push(CapSimEvent::InjectorReady(injector_event));

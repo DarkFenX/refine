@@ -1,7 +1,3 @@
-use std::collections::BinaryHeap;
-
-use ordered_float::Float;
-
 use crate::{
     ac,
     def::{AttrVal, OF},
@@ -13,7 +9,6 @@ use crate::{
             Vast,
             vaste_stats_item::{
                 cap::cap_sim::{
-                    event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector},
                     prepare::prepare_events,
                     sim::{CapSim, StatCapSim},
                 },
