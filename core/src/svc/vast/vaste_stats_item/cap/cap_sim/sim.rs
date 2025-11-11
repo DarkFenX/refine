@@ -23,6 +23,7 @@ pub(super) struct CapSim {
     // Current sim state
     time: AttrVal,
     cap: AttrVal,
+    only_gains: bool,
     wm_high_time: AttrVal,
     wm_high_cap: AttrVal,
     wm_low_time: AttrVal,
@@ -44,6 +45,7 @@ impl CapSim {
             injectors: Vec::new(),
             time: OF(0.0),
             cap: start_cap,
+            only_gains: true,
             // Watermark data
             wm_high_time: OF(0.0),
             wm_high_cap: start_cap,
@@ -118,6 +120,10 @@ impl CapSim {
                 }
             }
         }
+        // No drains - cap regens up to 100% even if no other gains are registered
+        if self.only_gains {
+            return StatCapSim::Stable(OF(1.0));
+        }
         // Instead of trying to detect event loops and averaging over looped period (which is
         // expensive), cap sim tracks global and auxiliary high and low watermarks. After new value
         // of high/low global watermark is reached, sim resets opposite auxiliary watermark. Final
@@ -127,6 +133,7 @@ impl CapSim {
             true => (self.wm_high_cap + self.wm_aux_low) / (OF(2.0) * self.max_cap),
             false => (self.wm_low_cap + self.wm_aux_high) / (OF(2.0) * self.max_cap),
         };
+        // Extra checks for case when max cap is 0
         StatCapSim::Stable(match stability.is_finite() {
             true => stability,
             false => OF(1.0),
@@ -136,15 +143,20 @@ impl CapSim {
         if new_time > self.time {
             self.cap = calc_regen(self.cap, self.max_cap, self.tau, self.time, new_time);
             self.time = new_time;
-            if self.cap > self.wm_high_cap {
-                self.wm_high_time = self.time;
-                self.wm_high_cap = self.cap;
-            }
+            self.process_high_watermark();
         }
     }
     fn increase_cap(&mut self, amount: AttrVal) {
         self.cap += amount;
         self.cap = Float::min(self.cap, self.max_cap);
+        self.process_high_watermark();
+    }
+    fn decrease_cap(&mut self, amount: AttrVal) {
+        self.cap -= amount;
+        self.only_gains = false;
+        self.process_low_watermark();
+    }
+    fn process_high_watermark(&mut self) {
         if self.cap > self.wm_high_cap {
             self.wm_high_time = self.time;
             self.wm_high_cap = self.cap;
@@ -155,8 +167,7 @@ impl CapSim {
             self.wm_aux_high = self.cap;
         }
     }
-    fn decrease_cap(&mut self, amount: AttrVal) {
-        self.cap -= amount;
+    fn process_low_watermark(&mut self) {
         if self.cap < self.wm_low_cap {
             self.wm_low_time = self.time;
             self.wm_low_cap = self.cap;

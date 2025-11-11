@@ -614,6 +614,12 @@ class ApiValShipType(StrEnum):
 
 
 @unique
+class ApiCapSimResult(StrEnum):
+    stable = 'stable'
+    time = 'time'
+
+
+@unique
 class ApiSolInfoMode(StrEnum):
     id = 'id'
     full = 'full'
