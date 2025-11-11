@@ -20,7 +20,7 @@ use crate::{
 #[derive(Copy, Clone)]
 pub struct StatCapSrcKinds {
     pub regen: StatCapRegenOptions,
-    pub cap_boosters: bool,
+    pub cap_injectors: bool,
     pub consumers: StatCapConsumerOptions,
     pub incoming_transfers: bool,
     pub incoming_neuts: bool,
@@ -30,7 +30,7 @@ impl StatCapSrcKinds {
     pub fn all_enabled() -> Self {
         Self {
             regen: StatCapRegenOptions { enabled: true, .. },
-            cap_boosters: true,
+            cap_injectors: true,
             consumers: StatCapConsumerOptions { enabled: true, .. },
             incoming_transfers: true,
             incoming_neuts: true,
@@ -40,7 +40,7 @@ impl StatCapSrcKinds {
     pub fn all_disabled() -> Self {
         Self {
             regen: StatCapRegenOptions { enabled: false, .. },
-            cap_boosters: false,
+            cap_injectors: false,
             consumers: StatCapConsumerOptions { enabled: false, .. },
             incoming_transfers: false,
             incoming_neuts: false,
@@ -75,8 +75,8 @@ impl Vast {
         if src_kinds.regen.enabled {
             balance += get_cap_regen(ctx, calc, item_key, src_kinds.regen.cap_perc);
         }
-        if src_kinds.cap_boosters {
-            balance += get_cap_boosts(ctx, calc, fit_data);
+        if src_kinds.cap_injectors {
+            balance += get_cap_injects(ctx, calc, fit_data);
         }
         if src_kinds.consumers.enabled {
             balance -= get_cap_consumed(ctx, calc, src_kinds.consumers.reload, fit_data);
@@ -108,9 +108,9 @@ fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: Opt
     }
 }
 
-fn get_cap_boosts(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> AttrVal {
+fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> AttrVal {
     let mut cps = OF(0.0);
-    for (&item_key, item_data) in fit_data.cap_boosts.iter() {
+    for (&item_key, item_data) in fit_data.cap_injects.iter() {
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,

@@ -3,7 +3,7 @@ use crate::{
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
     nd::{
-        NBreacherDmgGetter, NCapBoostGetter, NEcmGetter, NLocalRepGetter, NNeutGetter, NNormalDmgGetter,
+        NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NLocalRepGetter, NNeutGetter, NNormalDmgGetter,
         NRemoteRepGetter,
     },
     rd::{REffectKey, RItemShipLimit},
@@ -134,7 +134,7 @@ pub(in crate::svc) struct VastFitData {
     // Stats-related - cap
     pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, ad::AAttrId>,
-    pub(in crate::svc::vast) cap_boosts: RMapRMap<UItemKey, REffectKey, NCapBoostGetter>,
+    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,
     // Stats-related - misc
     pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 }
@@ -214,7 +214,7 @@ impl VastFitData {
             orr_hull: RMapRMap::new(),
             out_cap: RMapRMap::new(),
             cap_consumers: RMapRMap::new(),
-            cap_boosts: RMapRMap::new(),
+            cap_injects: RMapRMap::new(),
             out_neuts: RMapRMap::new(),
         }
     }

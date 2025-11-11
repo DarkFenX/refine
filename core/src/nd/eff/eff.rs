@@ -31,7 +31,7 @@ pub(crate) type NRemoteRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NNeutGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
-pub(crate) type NCapBoostGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
+pub(crate) type NCapInjectGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Ecm>;
 
 pub(crate) struct NEffect {
@@ -75,7 +75,7 @@ pub(crate) struct NEffectHc {
     pub(crate) remote_cap_rep_opc_getter: Option<NRemoteRepGetter> = None,
     // Cap
     pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
-    pub(crate) cap_boost_opc_getter: Option<NCapBoostGetter> = None,
+    pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,
     // Misc
     pub(crate) ecm_opc_getter: Option<NEcmGetter> = None,
 }

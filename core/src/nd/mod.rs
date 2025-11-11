@@ -4,9 +4,9 @@
 //! entities, and entities derived from them.
 
 pub(crate) use eff::{
-    N_EFFECT_MAP, N_EFFECTS, NBreacherDmgGetter, NCalcCustomizer, NCapBoostGetter, NDmgKindGetter, NEcmGetter, NEffect,
-    NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc, NLocalRepGetter, NNeutGetter,
-    NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
+    N_EFFECT_MAP, N_EFFECTS, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter,
+    NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc, NLocalRepGetter,
+    NNeutGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter, NSpoolResolver,
 };
 
 mod eff;

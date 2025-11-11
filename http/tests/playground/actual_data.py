@@ -282,7 +282,7 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)]),
         cap_balance=(True, [
             StatsOptionCapBalance(),
-            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True, cap_boosters=True)),
+            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True, cap_injectors=True)),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))]),
         cap_sim=(True, [StatsOptionCapSim(cap_perc=1)])))
     print(api_src_fit_stats.dps.one())  # noqa: T201

@@ -13,7 +13,7 @@ pub(in crate::cmd) struct HStatCapSrcKinds {
     #[educe(Default = true)]
     default: bool,
     regen: Option<HStatCapRegenOptions>,
-    cap_boosters: Option<bool>,
+    cap_injectors: Option<bool>,
     consumers: Option<HStatCapConsumerOptions>,
     incoming_transfers: Option<bool>,
     incoming_neuts: Option<bool>,
@@ -28,8 +28,8 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
             core_src_kinds.regen.enabled = regen.is_enabled();
             core_src_kinds.regen.cap_perc = regen.get_cap_perc().map(rc::UnitInterval::new_clamped);
         }
-        if let Some(cap_boosters) = h_src_kinds.cap_boosters {
-            core_src_kinds.cap_boosters = cap_boosters;
+        if let Some(cap_injectors) = h_src_kinds.cap_injectors {
+            core_src_kinds.cap_injectors = cap_injectors;
         }
         if let Some(consumers) = h_src_kinds.consumers {
             core_src_kinds.consumers.enabled = consumers.is_enabled();

@@ -23,14 +23,14 @@ pub(super) fn mk_n_effect() -> NEffect {
                 }),
                 activates_charge: false,
             }),
-            cap_boost_opc_getter: Some(get_cap_boost_opc),
+            cap_inject_getter: Some(get_cap_inject),
             ..
         },
         ..
     }
 }
 
-fn get_cap_boost_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
+fn get_cap_inject(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
     let item = ctx.u_data.items.get(item_key);
     let charge_key = item.get_charge_key()?;
     let charge_amount = calc

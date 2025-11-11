@@ -172,8 +172,8 @@ def test_src_kind(client, consts):
     # Verification
     api_options = [
         StatsOptionCapBalance(),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, cap_boosters=True)),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=True, cap_boosters=False))]
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, cap_injectors=True)),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=True, cap_injectors=False))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
     assert api_fit_stats.cap_balance == [approx(9.782609), approx(9.782609), 0]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))

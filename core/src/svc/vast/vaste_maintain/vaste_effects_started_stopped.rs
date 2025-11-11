@@ -70,11 +70,11 @@ impl Vast {
                         // Remote reps
                         self.handle_orrs_start(effect, item_key, &module.get_fit_key());
                         // Cap
-                        if let Some(cap_boost_getter) = effect.get_cap_boost_opc_getter() {
+                        if let Some(cap_inject_getter) = effect.get_cap_inject_getter() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data
-                                .cap_boosts
-                                .add_entry(item_key, effect.get_key(), cap_boost_getter);
+                                .cap_injects
+                                .add_entry(item_key, effect.get_key(), cap_inject_getter);
                         }
                         self.handle_neut_start(effect, item_key, &module.get_fit_key());
                         if let Some(use_attr_id) = effect.get_discharge_attr_id() {
@@ -150,9 +150,9 @@ impl Vast {
                         // Remote reps
                         self.handle_orrs_stop(effect, item_key, &module.get_fit_key());
                         // Cap
-                        if effect.get_cap_boost_opc_getter().is_some() {
+                        if effect.get_cap_inject_getter().is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.cap_boosts.remove_l2(&item_key, &effect.get_key());
+                            fit_data.cap_injects.remove_l2(&item_key, &effect.get_key());
                         }
                         self.handle_neut_stop(effect, item_key, &module.get_fit_key());
                         if effect.get_discharge_attr_id().is_some() {

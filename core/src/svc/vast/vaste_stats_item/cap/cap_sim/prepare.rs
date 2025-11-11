@@ -124,7 +124,7 @@ fn fill_transfers(
 }
 
 fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>, fit_data: &VastFitData) {
-    for (&item_key, item_data) in fit_data.cap_boosts.iter() {
+    for (&item_key, item_data) in fit_data.cap_injects.iter() {
         let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
