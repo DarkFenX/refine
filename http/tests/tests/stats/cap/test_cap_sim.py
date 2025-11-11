@@ -42,3 +42,19 @@ def test_injector_emergency(client, consts):
     assert api_fit_stats.cap_sim.one() == {'time': approx(20)}
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
     assert api_ship_stats.cap_sim.one() == {'time': approx(20)}
+
+
+def test_zeros(client, consts):
+    # Zero cap, no cap use
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 0, eve_regen_attr_id: 90000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification - stability value of 100% is exposed for this case
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=True))
+    assert api_fit_stats.cap_sim.one() == {'stable': 1}
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
+    assert api_ship_stats.cap_sim.one() == {'stable': 1}

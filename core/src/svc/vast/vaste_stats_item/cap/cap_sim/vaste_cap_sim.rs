@@ -52,6 +52,7 @@ impl Vast {
             Some(perc) => max_cap * perc,
             None => max_cap,
         };
+        let mut watermark_low = sim_cap;
         // Injectors available for immediate use
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
         let mut events = prepare_events(ctx, calc, self, fit_data, item_key);
@@ -133,10 +134,17 @@ impl Vast {
                             inject_topup(sim_time, &mut sim_cap, max_cap, &mut injectors, &mut events);
                         }
                     }
+                    if sim_cap < watermark_low {
+                        watermark_low = sim_cap;
+                    }
                 }
             }
         }
-        Ok(StatCapSim::Stable(OF(0.25)))
+        let stability = match watermark_low / max_cap {
+            n if n.is_finite() => n,
+            _ => OF(1.0),
+        };
+        Ok(StatCapSim::Stable(stability))
     }
 }
 
