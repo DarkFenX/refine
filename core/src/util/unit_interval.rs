@@ -25,6 +25,9 @@ impl UnitInterval {
             inner: value.clamp(VAL_MIN, VAL_MAX),
         }
     }
+    pub(crate) const fn new_const(value: OF<f64>) -> Self {
+        Self { inner: value }
+    }
     pub fn get_inner(&self) -> OF<f64> {
         self.inner
     }

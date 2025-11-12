@@ -51,7 +51,7 @@ impl StatCapSrcKinds {
 #[derive(Copy, Clone)]
 pub struct StatCapRegenOptions {
     pub enabled: bool,
-    pub cap_perc: Option<UnitInterval> = None,
+    pub cap_perc: UnitInterval = UnitInterval::new_const(OF(0.25)),
 }
 
 #[derive(Copy, Clone)]
@@ -91,17 +91,13 @@ impl Vast {
     }
 }
 
-fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: Option<UnitInterval>) -> AttrVal {
+fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: UnitInterval) -> AttrVal {
     let max_amount = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
     let cap_regen_time = calc
         .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
         .unwrap()
         / OF(1000.0);
-    let cap_perc = match cap_perc {
-        Some(cap_perc) => cap_perc.get_inner(),
-        None => OF(0.25),
-    };
-    let result = OF(10.0) * max_amount / cap_regen_time * (OF(cap_perc.sqrt()) - cap_perc);
+    let result = OF(10.0) * max_amount / cap_regen_time * (OF(cap_perc.get_inner().sqrt()) - cap_perc.get_inner());
     match result.is_finite() {
         true => result,
         false => OF(0.0),

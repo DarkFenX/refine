@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatCapSim, StatCapSrcKinds, Vast},
+        vast::{StatCapSim, StatCapSimStaggerInt, StatCapSrcKinds, Vast},
     },
     ud::{UData, UItemKey},
     util::UnitInterval,
@@ -34,10 +34,16 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-        cap_perc: Option<UnitInterval>,
+        cap_perc: UnitInterval,
+        stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
-        self.vast
-            .get_stat_item_cap_sim(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key, cap_perc)
+        self.vast.get_stat_item_cap_sim(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            item_key,
+            cap_perc,
+            stagger,
+        )
     }
     pub(crate) fn get_stat_item_neut_resist(
         &mut self,

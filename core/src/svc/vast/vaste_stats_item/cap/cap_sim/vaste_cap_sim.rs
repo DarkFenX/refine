@@ -11,6 +11,7 @@ use crate::{
                 cap::cap_sim::{
                     prepare::prepare_events,
                     sim::{CapSim, StatCapSim},
+                    stagger::StatCapSimStaggerInt,
                 },
                 checks::check_item_ship,
             },
@@ -26,7 +27,8 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        cap_perc: Option<UnitInterval>,
+        cap_perc: UnitInterval,
+        stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
@@ -35,10 +37,7 @@ impl Vast {
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
             .unwrap()
             / OF(1000.0);
-        let start_cap = match cap_perc {
-            Some(perc) => max_cap * perc.get_inner(),
-            None => max_cap,
-        };
+        let start_cap = max_cap * cap_perc.get_inner();
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
         let events = prepare_events(ctx, calc, self, fit_data, item_key);
         let mut sim = CapSim::new(start_cap, max_cap, recharge_time, events);

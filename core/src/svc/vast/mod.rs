@@ -1,16 +1,17 @@
-pub use options::{ValOption, ValOptions, ValOptionsSol};
-pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
-pub use result::{ValResultFit, ValResultSol};
 pub use shared::{
     StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatNeutItemKinds, StatRemoteRepItemKinds, StatSensor,
     StatSensorKind, StatTank,
 };
+pub use val_options::{ValOption, ValOptions, ValOptionsSol};
+pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
+pub use val_result::{ValResultFit, ValResultSol};
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 pub use vaste_stats_fit::{StatRes, StatSlot};
+pub(crate) use vaste_stats_item::StatCapSimStaggerInt;
 pub use vaste_stats_item::{
-    StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSrcKinds, StatLayerEhp, StatLayerErps, StatLayerHp,
-    StatLayerRps,
+    StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatLayerEhp,
+    StatLayerErps, StatLayerHp, StatLayerRps,
 };
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
@@ -23,9 +24,9 @@ pub use vaste_vals::{
     ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };
 
-mod options;
-mod result;
 mod shared;
+mod val_options;
+mod val_result;
 mod vast;
 mod vaste_debug;
 mod vaste_maintain;

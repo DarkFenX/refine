@@ -26,7 +26,8 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
         };
         if let Some(regen) = h_src_kinds.regen {
             core_src_kinds.regen.enabled = regen.is_enabled();
-            core_src_kinds.regen.cap_perc = regen.get_cap_perc().map(rc::UnitInterval::new_clamped);
+            core_src_kinds.regen.cap_perc =
+                rc::UnitInterval::new_clamped(regen.get_cap_perc().unwrap_or(rc::AttrVal::from(0.25)));
         }
         if let Some(cap_injectors) = h_src_kinds.cap_injectors {
             core_src_kinds.cap_injectors = cap_injectors;

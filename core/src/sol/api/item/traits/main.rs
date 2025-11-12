@@ -13,8 +13,8 @@ use crate::{
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{
-            StatCapSim, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatSensor,
-            StatTank,
+            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps,
+            StatLayerHp, StatLayerRps, StatSensor, StatTank,
         },
     },
     ud::{UEffectUpdates, UItemKey},
@@ -374,11 +374,20 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_cap_balance(&sol.u_data, item_key, src_kinds)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_cap_sim(&mut self, cap_perc: Option<UnitInterval>) -> Result<StatCapSim, ItemStatError> {
+    fn get_stat_cap_sim(
+        &mut self,
+        cap_perc: UnitInterval,
+        stagger: StatCapSimStagger,
+    ) -> Result<StatCapSim, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_cap_sim(&sol.u_data, item_key, cap_perc)
+            .get_stat_item_cap_sim(
+                &sol.u_data,
+                item_key,
+                cap_perc,
+                StatCapSimStaggerInt::from_pub(sol, &stagger),
+            )
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_neut_resist(&mut self) -> Result<AttrVal, ItemStatError> {

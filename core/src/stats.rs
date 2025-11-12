@@ -2,8 +2,8 @@
 pub use crate::{
     misc::DmgKinds,
     svc::vast::{
-        StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSrcKinds, StatDmg, StatDmgApplied,
-        StatDmgBreacher, StatDmgItemKinds, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatNeutItemKinds,
-        StatRemoteRepItemKinds, StatRes, StatSensor, StatSensorKind, StatSlot, StatTank,
+        StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatDmg,
+        StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps,
+        StatNeutItemKinds, StatRemoteRepItemKinds, StatRes, StatSensor, StatSensorKind, StatSlot, StatTank,
     },
 };

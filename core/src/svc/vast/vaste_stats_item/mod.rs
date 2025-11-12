@@ -1,4 +1,5 @@
-pub use cap::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSrcKinds};
+pub(crate) use cap::StatCapSimStaggerInt;
+pub use cap::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
 pub use tank::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps};
 
 mod cap;
