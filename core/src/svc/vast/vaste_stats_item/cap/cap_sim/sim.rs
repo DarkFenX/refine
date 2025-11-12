@@ -112,7 +112,7 @@ impl CapSim {
                             if -event.amount > self.cap {
                                 self.inject_emergency(-event.amount);
                             }
-                            self.decrease_cap(-event.amount);
+                            self.decrease_cap(event.amount);
                             if self.cap < OF(0.0) {
                                 return StatCapSim::Time(self.time);
                             }
@@ -155,7 +155,7 @@ impl CapSim {
         self.process_high_watermark();
     }
     fn decrease_cap(&mut self, amount: AttrVal) {
-        self.cap -= amount;
+        self.cap += amount;
         self.only_gains = false;
         self.process_low_watermark();
     }
