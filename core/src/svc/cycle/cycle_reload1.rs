@@ -1,7 +1,7 @@
 use super::cycle_shared::{CycleInner, CycleInnerIter};
 use crate::{def::AttrVal, util::InfCount};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleReload1 {
     pub(in crate::svc) inner: CycleInner,
 }

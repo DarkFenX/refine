@@ -3,7 +3,7 @@ use crate::{
     util::InfCount,
 };
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleSimple {
     pub(in crate::svc) active_time: AttrVal,
     pub(in crate::svc) inactive_time: AttrVal,

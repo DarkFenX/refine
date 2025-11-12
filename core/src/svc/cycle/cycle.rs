@@ -5,7 +5,7 @@ use super::{
 };
 use crate::{def::AttrVal, util::InfCount};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum Cycle {
     Simple(CycleSimple),
     Reload1(CycleReload1),
