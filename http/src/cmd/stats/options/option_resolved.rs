@@ -6,7 +6,7 @@ pub(in crate::cmd::stats) struct HStatResolvedOption<T> {
 }
 impl<T> HStatResolvedOption<T>
 where
-    T: Copy + Clone + Default,
+    T: Clone + Default,
 {
     pub(in crate::cmd::stats) fn new(root_opt: &Option<HStatOption<T>>, default: bool) -> Self {
         match root_opt {

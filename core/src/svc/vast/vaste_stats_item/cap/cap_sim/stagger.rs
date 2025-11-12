@@ -9,8 +9,8 @@ use crate::{
 };
 
 pub struct StatCapSimStagger {
-    default: bool,
-    exception_item_ids: Vec<ItemId>,
+    pub default: bool,
+    pub exception_item_ids: Vec<ItemId>,
 }
 impl StatCapSimStagger {
     pub fn new(default: bool) -> Self {

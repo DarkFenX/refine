@@ -1,12 +1,36 @@
 use crate::util::default_one;
 
-#[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
+#[derive(Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionCapSim {
     #[serde(default = "default_one")]
     #[educe(Default = 1)]
     pub(in crate::cmd) cap_perc: rc::AttrVal,
     #[serde(default)]
-    #[educe(Default = false)]
-    pub(in crate::cmd) stagger: bool,
+    pub(in crate::cmd) stagger: HStatOptionCapSimStagger,
+}
+
+#[serde_with::serde_as]
+#[derive(Clone, educe::Educe, serde::Deserialize)]
+#[educe(Default)]
+#[serde(untagged)]
+pub(in crate::cmd) enum HStatOptionCapSimStagger {
+    #[educe(Default)]
+    Simple(bool),
+    Extended(
+        bool,
+        #[serde_as(as = "Vec<serde_with::DisplayFromStr>")] Vec<rc::ItemId>,
+    ),
+}
+impl From<&HStatOptionCapSimStagger> for rc::stats::StatCapSimStagger {
+    fn from(h_stagger: &HStatOptionCapSimStagger) -> Self {
+        match h_stagger {
+            HStatOptionCapSimStagger::Simple(default) => rc::stats::StatCapSimStagger::new(*default),
+            HStatOptionCapSimStagger::Extended(default, exceptions) => {
+                let mut core_stagger = rc::stats::StatCapSimStagger::new(*default);
+                core_stagger.exception_item_ids.extend(exceptions);
+                core_stagger
+            }
+        }
+    }
 }

@@ -1,16 +1,15 @@
-#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd::stats) enum HStatOption<T>
 where
-    T: Copy + Clone + Default,
+    T: Clone + Default,
 {
     Simple(bool),
     Extended(bool, Vec<T>),
 }
 impl<T> HStatOption<T>
 where
-    T: Copy + Clone + Default,
+    T: Clone + Default,
 {
     pub(in crate::cmd::stats) fn is_enabled(&self) -> bool {
         match self {
