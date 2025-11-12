@@ -503,6 +503,49 @@ def test_injector_emergency(client, consts):
     assert api_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(20)}
 
 
+def test_injector_topup(client, consts):
+    # Whenever injector is ready, cap sim knows not to use it when not necessary. It will postpone
+    # its use until it can make most use of its cap. We can check it indirectly by sim returning
+    # lower stability value
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_boost_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_bonus)
+    eve_use_amount_attr_id = client.mk_eve_attr()
+    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_reload_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
+    eve_use_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.active,
+        discharge_attr_id=eve_use_amount_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_user_id = client.mk_eve_item(
+        attrs={eve_use_amount_attr_id: 40, eve_cycle_time_attr_id: 4500},
+        eff_ids=[eve_use_effect_id],
+        defeff_id=eve_use_effect_id)
+    eve_inject_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.power_booster,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_injector_id = client.mk_eve_item(
+        attrs={eve_capacity_attr_id: 15, eve_cycle_time_attr_id: 12000, eve_reload_attr_id: 10000},
+        eff_ids=[eve_inject_effect_id],
+        defeff_id=eve_inject_effect_id)
+    eve_charge_id = client.mk_eve_item(attrs={eve_boost_amount_attr_id: 150, eve_volume_attr_id: 4.5})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 375, eve_regen_attr_id: 93750})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_user_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_injector_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=True))
+    assert api_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.7859468)}
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
+    assert api_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.7859468)}
+
+
 def test_zeros(client, consts):
     # Zero cap, no cap use
     eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
@@ -517,3 +560,25 @@ def test_zeros(client, consts):
     assert api_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: 1}
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
     assert api_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: 1}
+
+
+def test_ship_not_loaded(client, consts):
+    eve_ship_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=True))
+    assert api_fit_stats.cap_sim is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
+    assert api_ship_stats.cap_sim is None
+
+
+def test_ship_absent(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=True))
+    assert api_fit_stats.cap_sim is None
