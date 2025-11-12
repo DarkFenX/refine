@@ -1,3 +1,5 @@
+use ordered_float::Float;
+
 use crate::def::{AttrVal, OF};
 
 pub(crate) struct OutputSimple<T>
@@ -24,6 +26,9 @@ where
 impl OutputSimple<AttrVal> {
     pub(super) fn has_impact(&self) -> bool {
         self.amount != OF(0.0)
+    }
+    pub(super) fn absolute_impact(&self) -> AttrVal {
+        self.amount.abs()
     }
 }
 impl<T> std::ops::Neg for OutputSimple<T>

@@ -43,6 +43,12 @@ impl Output<AttrVal> {
             Output::Complex(complex) => complex.has_impact(),
         }
     }
+    pub(in crate::svc) fn absolute_impact(&self) -> AttrVal {
+        match self {
+            Output::Simple(simple) => simple.absolute_impact(),
+            Output::Complex(complex) => complex.absolute_impact(),
+        }
+    }
 }
 impl<T> std::ops::Neg for Output<T>
 where

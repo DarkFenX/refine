@@ -1,3 +1,5 @@
+use ordered_float::Float;
+
 use crate::def::{AttrVal, Count, OF};
 
 pub(crate) struct OutputComplex<T>
@@ -31,6 +33,9 @@ where
 impl OutputComplex<AttrVal> {
     pub(super) fn has_impact(&self) -> bool {
         self.amount != OF(0.0)
+    }
+    pub(super) fn absolute_impact(&self) -> AttrVal {
+        self.amount.abs() * self.repeats as f64
     }
 }
 impl<T> std::ops::Neg for OutputComplex<T>

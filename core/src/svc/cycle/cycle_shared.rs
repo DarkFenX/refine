@@ -14,6 +14,13 @@ pub(in crate::svc) struct CycleInner {
     pub(in crate::svc) repeat_count: Count,
 }
 impl CycleInner {
+    pub(super) fn get_total_time(&self) -> AttrVal {
+        (self.active_time + self.inactive_time) * self.repeat_count as f64
+    }
+    pub(super) fn iter_cycles(&self) -> CycleInnerIter {
+        CycleInnerIter::new(self)
+    }
+    // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             active_time: time_round(self.active_time),
@@ -21,11 +28,8 @@ impl CycleInner {
             repeat_count: self.repeat_count,
         }
     }
-    pub(super) fn get_total_time(&self) -> AttrVal {
-        (self.active_time + self.inactive_time) * self.repeat_count as f64
-    }
-    pub(super) fn iter_cycles(&self) -> CycleInnerIter {
-        CycleInnerIter::new(self)
+    pub(super) fn get_cycle_time_for_stagger(&self) -> AttrVal {
+        self.active_time + self.inactive_time
     }
 }
 

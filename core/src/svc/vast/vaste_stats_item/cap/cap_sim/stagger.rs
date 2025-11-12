@@ -31,4 +31,7 @@ impl StatCapSimStaggerInt {
                 .collect(),
         }
     }
+    pub(in crate::svc::vast) fn is_staggered(&self, item_key: UItemKey) -> bool {
+        self.default ^ self.exception_item_keys.contains(&item_key)
+    }
 }

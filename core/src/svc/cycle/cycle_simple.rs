@@ -11,13 +11,6 @@ pub(in crate::svc) struct CycleSimple {
     pub(in crate::svc) repeat_count: InfCount,
 }
 impl CycleSimple {
-    pub(super) fn copy_rounded(&self) -> Self {
-        Self {
-            active_time: time_round(self.active_time),
-            inactive_time: time_round(self.inactive_time),
-            repeat_count: self.repeat_count,
-        }
-    }
     pub(super) fn get_cycles_until_empty(&self) -> InfCount {
         self.repeat_count
     }
@@ -26,6 +19,17 @@ impl CycleSimple {
     }
     pub(super) fn iter_cycles(&self) -> CycleSimpleIter {
         CycleSimpleIter::new(self)
+    }
+    // Methods used in cycle staggering
+    pub(super) fn copy_rounded(&self) -> Self {
+        Self {
+            active_time: time_round(self.active_time),
+            inactive_time: time_round(self.inactive_time),
+            repeat_count: self.repeat_count,
+        }
+    }
+    pub(super) fn get_cycle_time_for_stagger(&self) -> AttrVal {
+        self.active_time + self.inactive_time
     }
 }
 

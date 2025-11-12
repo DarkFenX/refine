@@ -1,6 +1,11 @@
 use std::collections::BinaryHeap;
 
-use super::event::{CapSimEvent, CapSimEventCycleCheck, CapSimEventInjector};
+use itertools::Itertools;
+
+use super::{
+    event::{CapSimEvent, CapSimEventCycleCheck, CapSimEventInjector},
+    stagger::StatCapSimStaggerInt,
+};
 use crate::{
     def::OF,
     svc::{
@@ -14,24 +19,33 @@ use crate::{
         },
     },
     ud::UItemKey,
+    util::RMapVec,
 };
 
 pub(super) fn prepare_events(
     ctx: SvcCtx,
     calc: &mut Calc,
     vast: &Vast,
+    stagger: StatCapSimStaggerInt,
     fit_data: &VastFitData,
     cap_item_key: UItemKey,
 ) -> BinaryHeap<CapSimEvent> {
     let mut events = BinaryHeap::new();
-    fill_consumers(ctx, calc, &mut events, fit_data);
+    fill_consumers(ctx, calc, &mut events, stagger, fit_data);
     fill_neuts(ctx, calc, &mut events, vast, cap_item_key);
     fill_transfers(ctx, calc, &mut events, vast, cap_item_key);
     fill_injectors(ctx, calc, &mut events, fit_data);
     events
 }
 
-fn fill_consumers(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>, fit_data: &VastFitData) {
+fn fill_consumers(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    events: &mut BinaryHeap<CapSimEvent>,
+    stagger: StatCapSimStaggerInt,
+    fit_data: &VastFitData,
+) {
+    let mut stagger_map = RMapVec::new();
     for (&item_key, item_data) in fit_data.cap_consumers.iter() {
         let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
@@ -50,11 +64,39 @@ fn fill_consumers(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
                 amount: -cap_used,
                 delay: OF(0.0),
             });
+            match stagger.is_staggered(item_key) {
+                true => stagger_map.add_entry(effect_cycles.copy_rounded(), (effect_cycles, output_per_cycle)),
+                false => events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
+                    time: OF(0.0),
+                    cycle_iter: effect_cycles.iter_cycles(),
+                    output: output_per_cycle,
+                })),
+            }
+        }
+    }
+    for (rounded_cycles, stagger_group) in stagger_map.into_iter() {
+        if stagger_group.len() < 2 {
+            for (cycles, output) in stagger_group.into_iter() {
+                events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
+                    time: OF(0.0),
+                    cycle_iter: cycles.iter_cycles(),
+                    output,
+                }));
+            }
+            return;
+        }
+        // Sort by output value, from highest to lowest
+        let stagger_period = rounded_cycles.get_cycle_time_for_stagger() / stagger_group.len() as f64;
+        for (i, (cycles, output)) in stagger_group
+            .into_iter()
+            .sorted_by_key(|(_, o)| -o.absolute_impact())
+            .enumerate()
+        {
             events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                time: OF(0.0),
-                cycle_iter: effect_cycles.iter_cycles(),
-                output: output_per_cycle,
-            }));
+                time: stagger_period * i as f64,
+                cycle_iter: cycles.iter_cycles(),
+                output,
+            }))
         }
     }
 }

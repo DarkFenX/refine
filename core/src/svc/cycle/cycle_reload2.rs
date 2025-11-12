@@ -7,12 +7,6 @@ pub(in crate::svc) struct CycleReload2 {
     pub(in crate::svc) inner_final: CycleInner,
 }
 impl CycleReload2 {
-    pub(super) fn copy_rounded(&self) -> Self {
-        Self {
-            inner_early: self.inner_early.copy_rounded(),
-            inner_final: self.inner_final.copy_rounded(),
-        }
-    }
     pub(super) fn get_cycles_until_empty(&self) -> InfCount {
         InfCount::Count(self.inner_early.repeat_count + self.inner_final.repeat_count)
     }
@@ -22,6 +16,16 @@ impl CycleReload2 {
     }
     pub(super) fn iter_cycles(&self) -> CycleReload2Iter {
         CycleReload2Iter::new(self)
+    }
+    // Methods used in cycle staggering
+    pub(super) fn copy_rounded(&self) -> Self {
+        Self {
+            inner_early: self.inner_early.copy_rounded(),
+            inner_final: self.inner_final.copy_rounded(),
+        }
+    }
+    pub(super) fn get_cycle_time_for_stagger(&self) -> AttrVal {
+        self.inner_early.get_cycle_time_for_stagger()
     }
 }
 

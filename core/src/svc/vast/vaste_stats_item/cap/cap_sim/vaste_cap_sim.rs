@@ -39,7 +39,7 @@ impl Vast {
             / OF(1000.0);
         let start_cap = max_cap * cap_perc.get_inner();
         let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
-        let events = prepare_events(ctx, calc, self, fit_data, item_key);
+        let events = prepare_events(ctx, calc, self, stagger, fit_data, item_key);
         let mut sim = CapSim::new(start_cap, max_cap, recharge_time, events);
         Ok(sim.run())
     }
