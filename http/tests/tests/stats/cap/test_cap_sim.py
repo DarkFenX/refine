@@ -224,35 +224,33 @@ def test_stagger_transfers(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_consumer_id = client.mk_eve_item(
-        attrs={eve_use_amount_attr_id: 140, eve_cycle_time_attr_id: 2048},
+        attrs={eve_use_amount_attr_id: 215, eve_cycle_time_attr_id: 3000},
         eff_ids=[eve_use_effect_id],
         defeff_id=eve_use_effect_id)
     eve_transfer_id = client.mk_eve_item(
-        attrs={eve_transfer_amount_attr_id: 117, eve_cycle_time_attr_id: 5000},
+        attrs={eve_transfer_amount_attr_id: 150, eve_cycle_time_attr_id: 5000},
         eff_ids=[eve_transfer_effect_id],
         defeff_id=eve_transfer_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_regen_attr_id: 10000000})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_regen_attr_id: 93750})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
-    for _ in range(3):
+    for _ in range(2):
         api_src_module = api_src_fit.add_module(type_id=eve_transfer_id, state=consts.ApiModuleState.active)
         api_src_module.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - transfers apply cap in the end of their cycle, so if they are staggered, ship
-    # just can't get enough cap soon after first one applies. When they all are applied together,
-    # ship can permarun its consumer
+    # Verification
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(6.144)},
-        {consts.ApiCapSimResult.stable: approx(0.5803601)}]
+        {consts.ApiCapSimResult.stable: approx(0.3963343)},
+        {consts.ApiCapSimResult.time: approx(54)}]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(6.144)},
-        {consts.ApiCapSimResult.stable: approx(0.5803601)}]
+        {consts.ApiCapSimResult.stable: approx(0.3963343)},
+        {consts.ApiCapSimResult.time: approx(54)}]
 
 
 def test_stagger_cross_group(client, consts):

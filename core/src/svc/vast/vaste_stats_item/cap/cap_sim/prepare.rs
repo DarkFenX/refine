@@ -23,6 +23,21 @@ use crate::{
     util::RMapVec,
 };
 
+struct CycleEventIr {
+    start_delay: AttrVal,
+    cycles: Cycle,
+    output: Output<AttrVal>,
+}
+impl From<CycleEventIr> for CapSimEvent {
+    fn from(intermediate: CycleEventIr) -> Self {
+        CapSimEvent::CycleCheck(CapSimEventCycleCheck {
+            time: intermediate.start_delay,
+            cycle_iter: intermediate.cycles.iter_cycles(),
+            output: intermediate.output,
+        })
+    }
+}
+
 pub(super) fn prepare_events(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -31,10 +46,12 @@ pub(super) fn prepare_events(
     fit_data: &VastFitData,
     cap_item_key: UItemKey,
 ) -> BinaryHeap<CapSimEvent> {
+    let mut intermediates = Vec::new();
+    fill_consumers(ctx, calc, &mut intermediates, &stagger, fit_data);
+    fill_neuts(ctx, calc, &mut intermediates, &stagger, vast, cap_item_key);
+    fill_transfers(ctx, calc, &mut intermediates, &stagger, vast, cap_item_key);
     let mut events = BinaryHeap::new();
-    fill_consumers(ctx, calc, &mut events, &stagger, fit_data);
-    fill_neuts(ctx, calc, &mut events, &stagger, vast, cap_item_key);
-    fill_transfers(ctx, calc, &mut events, &stagger, vast, cap_item_key);
+    events.extend(intermediates.into_iter().map(|v| v.into()));
     fill_injectors(ctx, calc, &mut events, fit_data);
     events
 }
@@ -42,7 +59,7 @@ pub(super) fn prepare_events(
 fn fill_consumers(
     ctx: SvcCtx,
     calc: &mut Calc,
-    events: &mut BinaryHeap<CapSimEvent>,
+    intermediates: &mut Vec<CycleEventIr>,
     stagger: &StatCapSimStaggerInt,
     fit_data: &VastFitData,
 ) {
@@ -70,21 +87,21 @@ fn fill_consumers(
                     StaggerKey::new(&effect_cycles, &output_per_cycle),
                     (effect_cycles, output_per_cycle),
                 ),
-                false => events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                    time: OF(0.0),
-                    cycle_iter: effect_cycles.iter_cycles(),
+                false => intermediates.push(CycleEventIr {
+                    start_delay: OF(0.0),
+                    cycles: effect_cycles,
                     output: output_per_cycle,
-                })),
+                }),
             }
         }
     }
-    process_staggers(stagger_map, events);
+    process_staggers(stagger_map, intermediates);
 }
 
 fn fill_neuts(
     ctx: SvcCtx,
     calc: &mut Calc,
-    events: &mut BinaryHeap<CapSimEvent>,
+    intermediates: &mut Vec<CycleEventIr>,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_key: UItemKey,
@@ -116,21 +133,21 @@ fn fill_neuts(
                     StaggerKey::new(&effect_cycles, &output_per_cycle),
                     (effect_cycles, output_per_cycle),
                 ),
-                false => events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                    time: OF(0.0),
-                    cycle_iter: effect_cycles.iter_cycles(),
+                false => intermediates.push(CycleEventIr {
+                    start_delay: OF(0.0),
+                    cycles: effect_cycles,
                     output: output_per_cycle,
-                })),
+                }),
             }
         }
     }
-    process_staggers(stagger_map, events);
+    process_staggers(stagger_map, intermediates);
 }
 
 fn fill_transfers(
     ctx: SvcCtx,
     calc: &mut Calc,
-    events: &mut BinaryHeap<CapSimEvent>,
+    intermediates: &mut Vec<CycleEventIr>,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_key: UItemKey,
@@ -160,14 +177,15 @@ fn fill_transfers(
                     StaggerKey::new(&effect_cycles, &output_per_cycle),
                     (effect_cycles, output_per_cycle),
                 ),
-                false => events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                    time: OF(0.0),
-                    cycle_iter: effect_cycles.iter_cycles(),
+                false => intermediates.push(CycleEventIr {
+                    start_delay: OF(0.0),
+                    cycles: effect_cycles,
                     output: output_per_cycle,
-                })),
+                }),
             }
         }
     }
+    process_staggers(stagger_map, intermediates);
 }
 
 fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>, fit_data: &VastFitData) {
@@ -196,15 +214,15 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
     }
 }
 
-fn process_staggers(stagger_map: RMapVec<StaggerKey, (Cycle, Output<AttrVal>)>, events: &mut BinaryHeap<CapSimEvent>) {
+fn process_staggers(stagger_map: RMapVec<StaggerKey, (Cycle, Output<AttrVal>)>, intermediates: &mut Vec<CycleEventIr>) {
     for (stagger_key, stagger_group) in stagger_map.into_iter() {
         if stagger_group.len() < 2 {
             for (cycles, output) in stagger_group.into_iter() {
-                events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                    time: OF(0.0),
-                    cycle_iter: cycles.iter_cycles(),
+                intermediates.push(CycleEventIr {
+                    start_delay: OF(0.0),
+                    cycles,
                     output,
-                }));
+                });
             }
             continue;
         }
@@ -215,11 +233,11 @@ fn process_staggers(stagger_map: RMapVec<StaggerKey, (Cycle, Output<AttrVal>)>, 
             .sorted_by_key(|(_, o)| -o.absolute_impact())
             .enumerate()
         {
-            events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                time: stagger_period * i as f64,
-                cycle_iter: cycles.iter_cycles(),
+            intermediates.push(CycleEventIr {
+                start_delay: stagger_period * i as f64,
+                cycles,
                 output,
-            }))
+            })
         }
     }
 }
