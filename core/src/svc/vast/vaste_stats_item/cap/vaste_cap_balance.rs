@@ -138,15 +138,15 @@ fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, reload: bool, fit_data: &VastF
             None => continue,
         };
         for (&effect_key, attr_id) in item_data.iter() {
-            let cap_used = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
-                Ok(cap_used) => cap_used,
+            let cap_consumed = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
+                Ok(cap_consumed) => cap_consumed,
                 Err(_) => continue,
             };
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            cps += cap_used / effect_cycles.get_average_cycle_time();
+            cps += cap_consumed / effect_cycles.get_average_cycle_time();
         }
     }
     cps

@@ -138,6 +138,41 @@ def test_stability_only_transfers(client, consts):
         {consts.ApiCapSimResult.stable: 1}]
 
 
+def test_stagger_consumers(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
+    eve_use_amount_attr_id = client.mk_eve_attr()
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_neut_falloff,
+        cat_id=consts.EveEffCat.target,
+        discharge_attr_id=eve_use_amount_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_use_amount_attr_id: 240, eve_cycle_time_attr_id: 60000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 375, eve_regen_attr_id: 93750})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    # Verification - no cap to run mods at all when not staggered
+    api_options = [StatsOptionCapSim(), StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    assert api_fit_stats.cap_sim == [
+        {consts.ApiCapSimResult.time: 0},
+        {consts.ApiCapSimResult.stable: approx(0.4264583)},
+        {consts.ApiCapSimResult.time: 0}]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    assert api_ship_stats.cap_sim == [
+        {consts.ApiCapSimResult.time: 0},
+        {consts.ApiCapSimResult.stable: approx(0.4264583)},
+        {consts.ApiCapSimResult.time: 0}]
+
+
 def test_stagger_neuts(client, consts):
     eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
@@ -166,17 +201,61 @@ def test_stagger_neuts(client, consts):
         api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification - when neuts are applied together, they break through peak regen, but when
     # staggered, they do not
-    api_options = [StatsOptionCapSim(), StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
+    api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(390)},
         {consts.ApiCapSimResult.stable: approx(0.2891368)},
         {consts.ApiCapSimResult.time: approx(390)}]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(390)},
         {consts.ApiCapSimResult.stable: approx(0.2891368)},
         {consts.ApiCapSimResult.time: approx(390)}]
+
+
+def test_stagger_transfers(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_use_amount_attr_id = client.mk_eve_attr()
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_use_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.active,
+        discharge_attr_id=eve_use_amount_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_transfer_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_consumer_id = client.mk_eve_item(
+        attrs={eve_use_amount_attr_id: 140, eve_cycle_time_attr_id: 2048},
+        eff_ids=[eve_use_effect_id],
+        defeff_id=eve_use_effect_id)
+    eve_transfer_id = client.mk_eve_item(
+        attrs={eve_transfer_amount_attr_id: 117, eve_cycle_time_attr_id: 5000},
+        eff_ids=[eve_transfer_effect_id],
+        defeff_id=eve_transfer_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_regen_attr_id: 10000000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
+    for _ in range(3):
+        api_src_module = api_src_fit.add_module(type_id=eve_transfer_id, state=consts.ApiModuleState.active)
+        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - transfers apply cap in the end of their cycle, so if they are staggered, ship
+    # just can't get enough cap soon after first one applies. When they all are applied together,
+    # ship can permarun its consumer
+    api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    assert api_tgt_fit_stats.cap_sim == [
+        {consts.ApiCapSimResult.time: approx(6.144)},
+        {consts.ApiCapSimResult.stable: approx(0.5803601)}]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    assert api_tgt_ship_stats.cap_sim == [
+        {consts.ApiCapSimResult.time: approx(6.144)},
+        {consts.ApiCapSimResult.stable: approx(0.5803601)}]
 
 
 def test_stagger_different_amounts(client, consts):

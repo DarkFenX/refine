@@ -53,8 +53,8 @@ fn fill_consumers(
             None => continue,
         };
         for (&effect_key, attr_id) in item_data.iter() {
-            let cap_used = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
-                Ok(cap_used) if cap_used != OF(0.0) => cap_used,
+            let cap_consumed = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
+                Ok(cap_consumed) if cap_consumed != OF(0.0) => cap_consumed,
                 _ => continue,
             };
             let effect_cycles = match cycle_map.remove(&effect_key) {
@@ -62,7 +62,7 @@ fn fill_consumers(
                 None => continue,
             };
             let output_per_cycle = Output::Simple(OutputSimple {
-                amount: -cap_used,
+                amount: -cap_consumed,
                 delay: OF(0.0),
             });
             match stagger.is_staggered(item_key) {
