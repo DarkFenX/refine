@@ -52,7 +52,7 @@ class StatsOptionCapBalance:
 class StatsOptionCapSim:
 
     cap_perc: float | type[Absent] = Absent
-    stagger: bool | type[Absent] = Absent
+    stagger: bool | tuple[bool, list[str]] | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
