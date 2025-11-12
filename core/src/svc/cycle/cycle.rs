@@ -12,6 +12,13 @@ pub(in crate::svc) enum Cycle {
     Reload2(CycleReload2),
 }
 impl Cycle {
+    pub(in crate::svc) fn copy_rounded(&self) -> Self {
+        match self {
+            Self::Simple(simple) => Self::Simple(simple.copy_rounded()),
+            Self::Reload1(reload1) => Self::Reload1(reload1.copy_rounded()),
+            Self::Reload2(reload2) => Self::Reload2(reload2.copy_rounded()),
+        }
+    }
     pub(in crate::svc) fn is_infinite(&self) -> bool {
         match &self {
             Self::Simple(simple) => matches!(simple.repeat_count, InfCount::Infinite),

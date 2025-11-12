@@ -6,6 +6,11 @@ pub(in crate::svc) struct CycleReload1 {
     pub(in crate::svc) inner: CycleInner,
 }
 impl CycleReload1 {
+    pub(super) fn copy_rounded(&self) -> Self {
+        Self {
+            inner: self.inner.copy_rounded(),
+        }
+    }
     pub(super) fn get_cycles_until_empty(&self) -> InfCount {
         InfCount::Count(self.inner.repeat_count)
     }

@@ -8,6 +8,7 @@ pub(crate) fn vec_push_opt<T>(vec: &mut Vec<T>, opt: Option<T>) {
     };
 }
 
+/// Round number to a specified significant digit.
 pub(crate) fn sig_round(val: OF<f64>, sig_digits: u32) -> OF<f64> {
     if val == OF(0.0) {
         return val;
@@ -17,6 +18,7 @@ pub(crate) fn sig_round(val: OF<f64>, sig_digits: u32) -> OF<f64> {
     round(val, digits)
 }
 
+/// Round number to a specific digit after decimal dot.
 pub(crate) fn round(val: OF<f64>, digits: i32) -> OF<f64> {
     let mul = OF(10.0).powi(digits);
     (val * mul).round() / mul

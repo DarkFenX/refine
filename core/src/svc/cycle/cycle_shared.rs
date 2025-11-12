@@ -1,4 +1,11 @@
-use crate::def::{AttrVal, Count};
+use crate::{
+    def::{AttrVal, Count},
+    util::sig_round,
+};
+
+pub(super) fn time_round(val: AttrVal) -> AttrVal {
+    sig_round(val, 10)
+}
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleInner {
@@ -7,6 +14,13 @@ pub(in crate::svc) struct CycleInner {
     pub(in crate::svc) repeat_count: Count,
 }
 impl CycleInner {
+    pub(super) fn copy_rounded(&self) -> Self {
+        Self {
+            active_time: time_round(self.active_time),
+            inactive_time: time_round(self.inactive_time),
+            repeat_count: self.repeat_count,
+        }
+    }
     pub(super) fn get_total_time(&self) -> AttrVal {
         (self.active_time + self.inactive_time) * self.repeat_count as f64
     }

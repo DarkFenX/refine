@@ -1,3 +1,4 @@
+use super::cycle_shared::time_round;
 use crate::{
     def::{AttrVal, Count},
     util::InfCount,
@@ -10,6 +11,13 @@ pub(in crate::svc) struct CycleSimple {
     pub(in crate::svc) repeat_count: InfCount,
 }
 impl CycleSimple {
+    pub(super) fn copy_rounded(&self) -> Self {
+        Self {
+            active_time: time_round(self.active_time),
+            inactive_time: time_round(self.inactive_time),
+            repeat_count: self.repeat_count,
+        }
+    }
     pub(super) fn get_cycles_until_empty(&self) -> InfCount {
         self.repeat_count
     }
