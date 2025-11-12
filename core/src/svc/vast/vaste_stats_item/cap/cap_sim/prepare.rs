@@ -206,7 +206,7 @@ fn process_staggers(stagger_map: RMapVec<StaggerKey, (Cycle, Output<AttrVal>)>, 
                     output,
                 }));
             }
-            return;
+            continue;
         }
         // Sort by output value, from highest to lowest
         let stagger_period = stagger_key.cycle.get_cycle_time_for_stagger() / stagger_group.len() as f64;
