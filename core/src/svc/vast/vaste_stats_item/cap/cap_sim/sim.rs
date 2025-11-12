@@ -8,7 +8,7 @@ use crate::{
     util::UnitInterval,
 };
 
-const TIME_LIMIT: AttrVal = OF(4.0 * 60.0 * 60.0);
+const TIME_LIMIT: AttrVal = OF(6.0 * 60.0 * 60.0);
 
 pub enum StatCapSim {
     // Average stability value
