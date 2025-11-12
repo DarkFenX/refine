@@ -1,7 +1,6 @@
-use super::cycle_shared::time_round;
 use crate::{
     def::{AttrVal, Count},
-    util::InfCount,
+    util::{InfCount, sig_round},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -23,8 +22,8 @@ impl CycleSimple {
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            active_time: time_round(self.active_time),
-            inactive_time: time_round(self.inactive_time),
+            active_time: sig_round(self.active_time, 10),
+            inactive_time: sig_round(self.inactive_time, 10),
             repeat_count: self.repeat_count,
         }
     }

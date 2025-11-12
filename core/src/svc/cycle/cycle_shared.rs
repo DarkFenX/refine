@@ -3,10 +3,6 @@ use crate::{
     util::sig_round,
 };
 
-pub(super) fn time_round(val: AttrVal) -> AttrVal {
-    sig_round(val, 10)
-}
-
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleInner {
     pub(in crate::svc) active_time: AttrVal,
@@ -23,8 +19,8 @@ impl CycleInner {
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            active_time: time_round(self.active_time),
-            inactive_time: time_round(self.inactive_time),
+            active_time: sig_round(self.active_time, 10),
+            inactive_time: sig_round(self.inactive_time, 10),
             repeat_count: self.repeat_count,
         }
     }

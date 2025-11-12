@@ -18,6 +18,9 @@ where
     pub(in crate::svc) fn get_max(&self) -> T {
         self.amount
     }
+    pub(in crate::svc) fn get_delay(&self) -> AttrVal {
+        self.delay
+    }
     pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
         OutputComplexIter::new(self)
     }

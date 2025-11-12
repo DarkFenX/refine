@@ -18,6 +18,12 @@ where
             Output::Complex(complex) => complex.get_max(),
         }
     }
+    pub(in crate::svc) fn get_delay(&self) -> AttrVal {
+        match self {
+            Output::Simple(simple) => simple.get_delay(),
+            Output::Complex(complex) => complex.get_delay(),
+        }
+    }
     pub(in crate::svc) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
         match self {
             Self::Simple(simple) => OutputIter::Simple(simple.iter_output()),
