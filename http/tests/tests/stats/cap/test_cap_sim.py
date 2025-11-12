@@ -562,7 +562,7 @@ def test_zeros(client, consts):
     assert api_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: 1}
 
 
-def test_ship_not_loaded(client, consts):
+def test_ship_not_loaded(client):
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -575,7 +575,7 @@ def test_ship_not_loaded(client, consts):
     assert api_ship_stats.cap_sim is None
 
 
-def test_ship_absent(client, consts):
+def test_ship_absent(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
