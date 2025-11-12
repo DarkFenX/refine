@@ -257,8 +257,9 @@ def test_stagger_different_delays(client, consts):
     for eve_module_id in (eve_neut_id, eve_nosf_id):
         api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
         api_src_module.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - if nosf and neut were staggerable, target ship cap would've been stable. But
-    # they are not staggerable, since neut is applied immediately, and nosf is after delay
+    # Verification - if nosf and neut were staggerable, target ship cap would've been stable. The
+    # reason for that is that they have different application delays (neut is applied immediately,
+    # nosf in the end of cycle), so the sim puts those into different staggering groups
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
     assert api_tgt_fit_stats.cap_sim == [
