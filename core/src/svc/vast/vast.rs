@@ -3,8 +3,8 @@ use crate::{
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
     nd::{
-        NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NLocalRepGetter, NNeutGetter, NNormalDmgGetter,
-        NRemoteRepGetter,
+        NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NLocalRepGetter, NMiningGetter, NNeutGetter,
+        NNormalDmgGetter, NRemoteRepGetter,
     },
     rd::{REffectKey, RItemShipLimit},
     svc::vast::{
@@ -135,6 +135,10 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
     pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, ad::AAttrId>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,
+    // Stats-related - mining
+    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
+    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
+    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
     // Stats-related - misc
     pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 }
@@ -215,6 +219,9 @@ impl VastFitData {
             out_cap: RMapRMap::new(),
             cap_consumers: RMapRMap::new(),
             cap_injects: RMapRMap::new(),
+            mining_ore: RMapRMap::new(),
+            mining_ice: RMapRMap::new(),
+            mining_gas: RMapRMap::new(),
             out_neuts: RMapRMap::new(),
         }
     }
