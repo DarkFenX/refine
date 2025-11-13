@@ -1,18 +1,16 @@
 use std::collections::BinaryHeap;
 
-use itertools::Itertools;
-
 use super::{
-    event::{CapSimEvent, CapSimEventCycleCheck, CapSimEventInjector},
-    stagger::{StaggerKey, StatCapSimStaggerInt},
+    aggregate::Aggregator,
+    event::{CapSimEvent, CapSimEventInjector},
+    stagger::{StaggerKey, StatCapSimStaggerInt, process_staggers},
 };
 use crate::{
-    AttrVal,
     def::OF,
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, get_item_cycle_info},
+        cycle::get_item_cycle_info,
         output::{Output, OutputSimple},
         vast::{
             Vast, VastFitData,
@@ -23,21 +21,6 @@ use crate::{
     util::RMapVec,
 };
 
-struct CycleEventIr {
-    start_delay: AttrVal,
-    cycles: Cycle,
-    output: Output<AttrVal>,
-}
-impl From<CycleEventIr> for CapSimEvent {
-    fn from(intermediate: CycleEventIr) -> Self {
-        CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-            time: intermediate.start_delay,
-            cycle_iter: intermediate.cycles.iter_cycles(),
-            output: intermediate.output,
-        })
-    }
-}
-
 pub(super) fn prepare_events(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -46,12 +29,12 @@ pub(super) fn prepare_events(
     fit_data: &VastFitData,
     cap_item_key: UItemKey,
 ) -> BinaryHeap<CapSimEvent> {
-    let mut intermediates = Vec::new();
-    fill_consumers(ctx, calc, &mut intermediates, &stagger, fit_data);
-    fill_neuts(ctx, calc, &mut intermediates, &stagger, vast, cap_item_key);
-    fill_transfers(ctx, calc, &mut intermediates, &stagger, vast, cap_item_key);
+    let mut aggregator = Aggregator::new();
+    fill_consumers(ctx, calc, &mut aggregator, &stagger, fit_data);
+    fill_neuts(ctx, calc, &mut aggregator, &stagger, vast, cap_item_key);
+    fill_transfers(ctx, calc, &mut aggregator, &stagger, vast, cap_item_key);
     let mut events = BinaryHeap::new();
-    events.extend(intermediates.into_iter().map(|v| v.into()));
+    aggregator.into_sim_events(&mut events);
     fill_injectors(ctx, calc, &mut events, fit_data);
     events
 }
@@ -59,7 +42,7 @@ pub(super) fn prepare_events(
 fn fill_consumers(
     ctx: SvcCtx,
     calc: &mut Calc,
-    intermediates: &mut Vec<CycleEventIr>,
+    aggregator: &mut Aggregator,
     stagger: &StatCapSimStaggerInt,
     fit_data: &VastFitData,
 ) {
@@ -87,21 +70,17 @@ fn fill_consumers(
                     StaggerKey::new(&effect_cycles, &output_per_cycle),
                     (effect_cycles, output_per_cycle),
                 ),
-                false => intermediates.push(CycleEventIr {
-                    start_delay: OF(0.0),
-                    cycles: effect_cycles,
-                    output: output_per_cycle,
-                }),
+                false => aggregator.add_entry(OF(0.0), effect_cycles, output_per_cycle),
             }
         }
     }
-    process_staggers(stagger_map, intermediates);
+    process_staggers(stagger_map, aggregator);
 }
 
 fn fill_neuts(
     ctx: SvcCtx,
     calc: &mut Calc,
-    intermediates: &mut Vec<CycleEventIr>,
+    aggregator: &mut Aggregator,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_key: UItemKey,
@@ -133,21 +112,17 @@ fn fill_neuts(
                     StaggerKey::new(&effect_cycles, &output_per_cycle),
                     (effect_cycles, output_per_cycle),
                 ),
-                false => intermediates.push(CycleEventIr {
-                    start_delay: OF(0.0),
-                    cycles: effect_cycles,
-                    output: output_per_cycle,
-                }),
+                false => aggregator.add_entry(OF(0.0), effect_cycles, output_per_cycle),
             }
         }
     }
-    process_staggers(stagger_map, intermediates);
+    process_staggers(stagger_map, aggregator);
 }
 
 fn fill_transfers(
     ctx: SvcCtx,
     calc: &mut Calc,
-    intermediates: &mut Vec<CycleEventIr>,
+    aggregator: &mut Aggregator,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_key: UItemKey,
@@ -177,15 +152,11 @@ fn fill_transfers(
                     StaggerKey::new(&effect_cycles, &output_per_cycle),
                     (effect_cycles, output_per_cycle),
                 ),
-                false => intermediates.push(CycleEventIr {
-                    start_delay: OF(0.0),
-                    cycles: effect_cycles,
-                    output: output_per_cycle,
-                }),
+                false => aggregator.add_entry(OF(0.0), effect_cycles, output_per_cycle),
             }
         }
     }
-    process_staggers(stagger_map, intermediates);
+    process_staggers(stagger_map, aggregator);
 }
 
 fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>, fit_data: &VastFitData) {
@@ -210,34 +181,6 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
                 cycle_iter: effect_cycles.iter_cycles(),
                 output: cap_injected,
             }));
-        }
-    }
-}
-
-fn process_staggers(stagger_map: RMapVec<StaggerKey, (Cycle, Output<AttrVal>)>, intermediates: &mut Vec<CycleEventIr>) {
-    for (stagger_key, stagger_group) in stagger_map.into_iter() {
-        if stagger_group.len() < 2 {
-            for (cycles, output) in stagger_group.into_iter() {
-                intermediates.push(CycleEventIr {
-                    start_delay: OF(0.0),
-                    cycles,
-                    output,
-                });
-            }
-            continue;
-        }
-        // Sort by output value, from highest to lowest
-        let stagger_period = stagger_key.cycle.get_cycle_time_for_stagger() / stagger_group.len() as f64;
-        for (i, (cycles, output)) in stagger_group
-            .into_iter()
-            .sorted_by_key(|(_, o)| -o.absolute_impact())
-            .enumerate()
-        {
-            intermediates.push(CycleEventIr {
-                start_delay: stagger_period * i as f64,
-                cycles,
-                output,
-            })
         }
     }
 }

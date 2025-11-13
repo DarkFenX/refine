@@ -45,6 +45,10 @@ where
             .or_insert_with(|| Vec::with_capacity(entries.len()));
         values.extend(entries);
     }
+    // Consumption methods
+    pub(crate) fn into_values(self) -> impl Iterator<Item = Vec<V>> {
+        self.data.into_values()
+    }
 }
 impl<K, V, H> Default for MapVec<K, V, H>
 where

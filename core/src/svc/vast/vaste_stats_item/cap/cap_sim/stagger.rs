@@ -1,11 +1,12 @@
 use itertools::Itertools;
 
+use super::aggregate::Aggregator;
 use crate::{
-    def::{AttrVal, ItemId},
+    def::{AttrVal, ItemId, OF},
     sol::SolarSystem,
     svc::{cycle::Cycle, output::Output},
     ud::UItemKey,
-    util::sig_round,
+    util::{RMapVec, sig_round},
 };
 
 pub struct StatCapSimStagger {
@@ -54,6 +55,29 @@ impl StaggerKey {
         Self {
             cycle: cycle.copy_rounded(),
             delay: sig_round(output.get_delay(), 10),
+        }
+    }
+}
+
+pub(super) fn process_staggers(
+    stagger_map: RMapVec<StaggerKey, (Cycle, Output<AttrVal>)>,
+    aggregator: &mut Aggregator,
+) {
+    for (stagger_key, stagger_group) in stagger_map.into_iter() {
+        if stagger_group.len() < 2 {
+            for (cycle, output) in stagger_group.into_iter() {
+                aggregator.add_entry(OF(0.0), cycle, output);
+            }
+            continue;
+        }
+        // Sort by output value, from highest to lowest
+        let stagger_period = stagger_key.cycle.get_cycle_time_for_stagger() / stagger_group.len() as f64;
+        for (i, (cycle, output)) in stagger_group
+            .into_iter()
+            .sorted_by_key(|(_, o)| -o.absolute_impact())
+            .enumerate()
+        {
+            aggregator.add_entry(stagger_period * i as f64, cycle, output)
         }
     }
 }
