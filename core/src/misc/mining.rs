@@ -48,11 +48,3 @@ impl std::ops::Div<AttrVal> for Mining {
         }
     }
 }
-impl std::iter::Sum<Mining> for Mining {
-    fn sum<I>(iter: I) -> Self
-    where
-        I: Iterator<Item = Self>,
-    {
-        iter.reduce(|acc, v| acc + v).unwrap_or_default()
-    }
-}

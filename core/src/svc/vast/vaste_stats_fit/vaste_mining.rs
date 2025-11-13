@@ -1,6 +1,6 @@
 use crate::{
     def::OF,
-    misc::Mining,
+    misc::{Mining, MiningKinds},
     nd::NMiningGetter,
     rd::REffectKey,
     svc::{
@@ -14,68 +14,34 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_fits_mps_ore(
+    pub(in crate::svc) fn get_stat_fits_mps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatMiningItemKinds,
-    ) -> Mining {
+    ) -> MiningKinds {
         fit_keys
-            .map(|fit_key| get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ore))
+            .map(|fit_key| MiningKinds {
+                ore: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ore),
+                ice: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ice),
+                gas: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_gas),
+            })
             .sum()
     }
-    pub(in crate::svc) fn get_stat_fits_mps_ice(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
-        item_kinds: StatMiningItemKinds,
-    ) -> Mining {
-        fit_keys
-            .map(|fit_key| get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ice))
-            .sum()
-    }
-    pub(in crate::svc) fn get_stat_fits_mps_gas(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
-        item_kinds: StatMiningItemKinds,
-    ) -> Mining {
-        fit_keys
-            .map(|fit_key| get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_gas))
-            .sum()
-    }
-    pub(in crate::svc) fn get_stat_fit_mps_ore(
+    pub(in crate::svc) fn get_stat_fit_mps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_key: UFitKey,
         item_kinds: StatMiningItemKinds,
-    ) -> Mining {
+    ) -> MiningKinds {
         let fit_data = self.get_fit_data(&fit_key);
-        get_mps(ctx, calc, item_kinds, &fit_data.mining_ore)
-    }
-    pub(in crate::svc) fn get_stat_fit_mps_ice(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        fit_key: UFitKey,
-        item_kinds: StatMiningItemKinds,
-    ) -> Mining {
-        let fit_data = self.get_fit_data(&fit_key);
-        get_mps(ctx, calc, item_kinds, &fit_data.mining_ice)
-    }
-    pub(in crate::svc) fn get_stat_fit_mps_gas(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        fit_key: UFitKey,
-        item_kinds: StatMiningItemKinds,
-    ) -> Mining {
-        let fit_data = self.get_fit_data(&fit_key);
-        get_mps(ctx, calc, item_kinds, &fit_data.mining_gas)
+        MiningKinds {
+            ore: get_mps(ctx, calc, item_kinds, &fit_data.mining_ore),
+            ice: get_mps(ctx, calc, item_kinds, &fit_data.mining_ice),
+            gas: get_mps(ctx, calc, item_kinds, &fit_data.mining_gas),
+        }
     }
 }
 
