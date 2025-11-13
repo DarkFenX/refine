@@ -26,8 +26,8 @@ impl HAddDroneCmd {
         let mut core_drone = core_fit.add_drone(
             self.type_id,
             (&self.state).into(),
-            self.coordinates.map(|v| v.into()),
-            self.movement.map(|v| v.into()),
+            self.coordinates.map(Into::into),
+            self.movement.map(Into::into),
             self.prop_mode.unwrap_or(HNpcProp::Chase).into(),
         );
         if let Some(h_mutation) = self.mutation.as_ref() {

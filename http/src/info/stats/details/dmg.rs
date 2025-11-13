@@ -13,7 +13,7 @@ impl From<rc::stats::StatDmg> for HStatDmg {
             thermal: core_stat.thermal,
             kinetic: core_stat.kinetic,
             explosive: core_stat.explosive,
-            breacher: core_stat.breacher.map(|v| v.into()),
+            breacher: core_stat.breacher.map(Into::into),
         }
     }
 }
@@ -24,7 +24,7 @@ impl From<rc::stats::StatDmgApplied> for HStatDmg {
             thermal: core_stat.thermal,
             kinetic: core_stat.kinetic,
             explosive: core_stat.explosive,
-            breacher: core_stat.breacher.map(|v| v.into()),
+            breacher: core_stat.breacher.map(Into::into),
         }
     }
 }

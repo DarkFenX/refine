@@ -19,7 +19,7 @@ impl From<&rc::ModificationInfo> for HModificationInfo {
             resist_mult: core_mod_info.resist_mult,
             stacking_mult: core_mod_info.stacking_mult,
             applied_val: core_mod_info.applied_val,
-            src: core_mod_info.affectors.iter().map(|v| v.into()).collect(),
+            src: core_mod_info.affectors.iter().map(Into::into).collect(),
         }
     }
 }

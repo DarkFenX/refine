@@ -38,10 +38,7 @@ impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
             coordinates: core_drone.get_coordinates().into(),
             movement: core_drone.get_movement().into(),
             prop_mode: core_drone.get_prop_mode().into(),
-            projs: core_drone
-                .iter_projs()
-                .map(|core_ranged_proj| core_ranged_proj.into())
-                .collect(),
+            projs: core_drone.iter_projs().map(Into::into).collect(),
         }
     }
 }

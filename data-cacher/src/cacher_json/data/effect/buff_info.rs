@@ -59,7 +59,7 @@ impl From<&rc::ad::AEffectBuffSrc> for CEffectBuffSrc {
         match a_buff_src {
             rc::ad::AEffectBuffSrc::DefaultAttrs => Self::DefaultAttrs,
             rc::ad::AEffectBuffSrc::Customized(buff_custom_srcs) => {
-                Self::Customized(buff_custom_srcs.iter().map(|v| v.into()).collect())
+                Self::Customized(buff_custom_srcs.iter().map(Into::into).collect())
             }
         }
     }
@@ -69,7 +69,7 @@ impl From<&CEffectBuffSrc> for rc::ad::AEffectBuffSrc {
         match c_buff_src {
             CEffectBuffSrc::DefaultAttrs => Self::DefaultAttrs,
             CEffectBuffSrc::Customized(buff_custom_srcs) => {
-                Self::Customized(buff_custom_srcs.iter().map(|v| v.into()).collect())
+                Self::Customized(buff_custom_srcs.iter().map(Into::into).collect())
             }
         }
     }

@@ -20,10 +20,7 @@ impl From<&mut rc::ProjEffectMut<'_>> for HProjEffectInfoPartial {
             kind: "proj_effect",
             type_id: core_proj_effect.get_type_id(),
             enabled: core_proj_effect.get_state(),
-            projs: core_proj_effect
-                .iter_projs()
-                .map(|core_proj| core_proj.into())
-                .collect(),
+            projs: core_proj_effect.iter_projs().map(Into::into).collect(),
         }
     }
 }

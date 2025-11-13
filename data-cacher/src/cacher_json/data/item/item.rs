@@ -28,7 +28,7 @@ impl From<&rc::ad::AItem> for CItem {
             cat_id: a_item.cat_id,
             attrs: (&a_item.attrs).into(),
             effect_datas: a_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
-            defeff_id: a_item.defeff_id.as_ref().map(|v| v.into()),
+            defeff_id: a_item.defeff_id.as_ref().map(Into::into),
             abil_ids: a_item.abil_ids.clone(),
             srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.get_inner())).collect(),
             max_state: (&a_item.max_state).into(),
@@ -47,7 +47,7 @@ impl From<&CItem> for rc::ad::AItem {
             cat_id: c_item.cat_id,
             attrs: (&c_item.attrs).into(),
             effect_datas: c_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
-            defeff_id: c_item.defeff_id.as_ref().map(|v| v.into()),
+            defeff_id: c_item.defeff_id.as_ref().map(Into::into),
             abil_ids: c_item.abil_ids.clone(),
             srqs: c_item
                 .srqs

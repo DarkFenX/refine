@@ -22,8 +22,8 @@ impl HSetShipCmd {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let mut core_ship = core_fit.set_ship(
             self.type_id,
-            self.coordinates.map(|v| v.into()),
-            self.movement.map(|v| v.into()),
+            self.coordinates.map(Into::into),
+            self.movement.map(Into::into),
         );
         if let Some(state) = self.state {
             core_ship.set_state(state);

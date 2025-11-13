@@ -13,7 +13,7 @@ impl From<&rc::ad::ABuff> for CBuff {
             id: a_buff.id,
             aggr_mode: (&a_buff.aggr_mode).into(),
             op: (&a_buff.op).into(),
-            mods: a_buff.mods.iter().map(|v| v.into()).collect(),
+            mods: a_buff.mods.iter().map(Into::into).collect(),
         }
     }
 }
@@ -23,7 +23,7 @@ impl From<&CBuff> for rc::ad::ABuff {
             id: c_buff.id,
             aggr_mode: (&c_buff.aggr_mode).into(),
             op: (&c_buff.op).into(),
-            mods: c_buff.mods.iter().map(|v| v.into()).collect(),
+            mods: c_buff.mods.iter().map(Into::into).collect(),
         }
     }
 }

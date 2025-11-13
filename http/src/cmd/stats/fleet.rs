@@ -60,7 +60,7 @@ fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>)
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
-        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        let core_spool = option.spool.map(Into::into);
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, &projectee_item_id) {
@@ -81,7 +81,7 @@ fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVo
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
-        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        let core_spool = option.spool.map(Into::into);
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_volley_applied(core_item_kinds, core_spool, &projectee_item_id) {
@@ -106,7 +106,7 @@ fn get_remote_rps_stats(
         .iter()
         .map(|option| {
             let core_item_kinds = (&option.item_kinds).into();
-            let core_spool = option.spool.map(|h_spool| h_spool.into());
+            let core_spool = option.spool.map(Into::into);
             core_fleet.get_stat_remote_rps(core_item_kinds, core_spool).into()
         })
         .collect()

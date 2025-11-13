@@ -42,7 +42,7 @@ impl HFighterInfoPartial {
             type_id: core_fighter.get_type_id(),
             fit_id: core_fighter.get_fit().get_fit_id(),
             state: (&core_fighter.get_state()).into(),
-            count: core_fighter.get_count().map(|v| v.into()),
+            count: core_fighter.get_count().map(Into::into),
             abilities: core_fighter.iter_abilities().map(|v| (v.get_id(), v.into())).collect(),
             autocharges: core_fighter
                 .iter_autocharges_mut()
@@ -55,10 +55,7 @@ impl HFighterInfoPartial {
                 .collect(),
             coordinates: core_fighter.get_coordinates().into(),
             movement: core_fighter.get_movement().into(),
-            projs: core_fighter
-                .iter_projs()
-                .map(|core_ranged_proj| core_ranged_proj.into())
-                .collect(),
+            projs: core_fighter.iter_projs().map(Into::into).collect(),
         }
     }
 }

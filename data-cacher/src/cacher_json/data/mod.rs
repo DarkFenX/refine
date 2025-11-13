@@ -35,12 +35,12 @@ pub(in crate::cacher_json) struct CData {
 impl From<&rc::ad::AData> for CData {
     fn from(a_data: &rc::ad::AData) -> Self {
         Self {
-            items: a_data.items.values().map(|v| v.into()).collect(),
-            attrs: a_data.attrs.values().map(|v| v.into()).collect(),
-            mutas: a_data.mutas.values().map(|v| v.into()).collect(),
-            effects: a_data.effects.values().map(|v| v.into()).collect(),
-            buffs: a_data.buffs.values().map(|v| v.into()).collect(),
-            abils: a_data.abils.values().map(|v| v.into()).collect(),
+            items: a_data.items.values().map(Into::into).collect(),
+            attrs: a_data.attrs.values().map(Into::into).collect(),
+            mutas: a_data.mutas.values().map(Into::into).collect(),
+            effects: a_data.effects.values().map(Into::into).collect(),
+            buffs: a_data.buffs.values().map(Into::into).collect(),
+            abils: a_data.abils.values().map(Into::into).collect(),
         }
     }
 }

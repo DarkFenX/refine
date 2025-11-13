@@ -52,5 +52,5 @@ fn get_range(sol: &SolarSystem, projector_key: UItemKey, projectee_key: &UItemKe
         .unwrap()
         .get(projectee_key)
         .unwrap()
-        .map(|v| v.into())
+        .map(Into::into)
 }

@@ -26,8 +26,8 @@ impl HAddFighterCmd {
         let mut core_fighter = core_fit.add_fighter(
             self.type_id,
             (&self.state).into(),
-            self.coordinates.map(|v| v.into()),
-            self.movement.map(|v| v.into()),
+            self.coordinates.map(Into::into),
+            self.movement.map(Into::into),
         );
         if let Some(count) = self.count {
             let fighter_count_override = rc::FighterCountOverride::new_checked(count)?;

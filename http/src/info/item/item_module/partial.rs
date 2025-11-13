@@ -70,11 +70,8 @@ impl HModuleInfoPartial {
             charge: charge_info,
             charge_count,
             cycles_until_empty,
-            spool_cycles: core_module.get_spool_cycle_count().map(|v| v.into()),
-            projs: core_module
-                .iter_projs()
-                .map(|core_ranged_proj| core_ranged_proj.into())
-                .collect(),
+            spool_cycles: core_module.get_spool_cycle_count().map(Into::into),
+            projs: core_module.iter_projs().map(Into::into).collect(),
         }
     }
 }

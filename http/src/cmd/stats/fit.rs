@@ -250,7 +250,7 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
-        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        let core_spool = option.spool.map(Into::into);
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, &projectee_item_id) {
@@ -271,7 +271,7 @@ fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
-        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        let core_spool = option.spool.map(Into::into);
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_volley_applied(core_item_kinds, core_spool, &projectee_item_id) {
@@ -294,7 +294,7 @@ fn get_ehp_stats(
 ) -> Option<Vec<HStatTank<Option<HStatLayerEhp>>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
+        let core_incoming_dps = option.incoming_dps.map(Into::into);
         match core_fit.get_stat_ehp(core_incoming_dps) {
             Ok(core_result) => results.push(HStatTank::from_opt(core_result)),
             Err(_) => return None,
@@ -306,7 +306,7 @@ fn get_ehp_stats(
 fn get_rps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionRps>) -> Option<Vec<HStatTank<HStatLayerRps>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_fit.get_stat_rps(option.spool.map(|v| v.into())) {
+        match core_fit.get_stat_rps(option.spool.map(Into::into)) {
             Ok(core_result) => results.push(core_result.into()),
             Err(_) => return None,
         }
@@ -320,8 +320,8 @@ fn get_erps_stats(
 ) -> Option<Vec<HStatTank<Option<HStatLayerErps>>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_incoming_dps = option.incoming_dps.map(|h_incoming_dps| h_incoming_dps.into());
-        let core_spool = option.spool.map(|h_spool| h_spool.into());
+        let core_incoming_dps = option.incoming_dps.map(Into::into);
+        let core_spool = option.spool.map(Into::into);
         match core_fit.get_stat_erps(core_incoming_dps, core_spool) {
             Ok(core_result) => results.push(HStatTank::from_opt(core_result)),
             Err(_) => return None,
@@ -338,7 +338,7 @@ fn get_remote_rps_stats(
         .iter()
         .map(|option| {
             let core_item_kinds = (&option.item_kinds).into();
-            let core_spool = option.spool.map(|h_spool| h_spool.into());
+            let core_spool = option.spool.map(Into::into);
             core_fit.get_stat_remote_rps(core_item_kinds, core_spool).into()
         })
         .collect()

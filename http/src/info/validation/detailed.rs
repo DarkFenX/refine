@@ -382,5 +382,5 @@ fn conv<T, U>(core_val: &Option<T>) -> Option<U>
 where
     U: for<'a> From<&'a T>,
 {
-    core_val.as_ref().map(|v| v.into())
+    core_val.as_ref().map(Into::into)
 }

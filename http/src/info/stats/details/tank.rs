@@ -16,9 +16,9 @@ where
         U: Into<T>,
     {
         Self {
-            shield: core_stat.shield.map(|v| v.into()),
-            armor: core_stat.armor.map(|v| v.into()),
-            hull: core_stat.hull.map(|v| v.into()),
+            shield: core_stat.shield.map(Into::into),
+            armor: core_stat.armor.map(Into::into),
+            hull: core_stat.hull.map(Into::into),
         }
     }
 }
