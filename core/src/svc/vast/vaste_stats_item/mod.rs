@@ -6,6 +6,7 @@ mod cap;
 mod checks;
 mod tank;
 mod vaste_dmg;
+mod vaste_mining;
 mod vaste_misc;
 mod vaste_neut;
 mod vaste_physics;

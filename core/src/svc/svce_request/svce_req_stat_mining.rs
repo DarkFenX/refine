@@ -1,7 +1,10 @@
 use crate::{
-    misc::MiningKinds,
-    svc::{Svc, SvcCtx, vast::StatMiningItemKinds},
-    ud::{UData, UFitKey},
+    svc::{
+        Svc, SvcCtx,
+        err::StatItemCheckError,
+        vast::{StatMiningItemKinds, StatMiningKinds, Vast},
+    },
+    ud::{UData, UFitKey, UItemKey},
 };
 
 impl Svc {
@@ -10,7 +13,7 @@ impl Svc {
         u_data: &UData,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatMiningItemKinds,
-    ) -> MiningKinds {
+    ) -> StatMiningKinds {
         self.vast.get_stat_fits_mps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -23,12 +26,25 @@ impl Svc {
         u_data: &UData,
         fit_key: UFitKey,
         item_kinds: StatMiningItemKinds,
-    ) -> MiningKinds {
+    ) -> StatMiningKinds {
         self.vast.get_stat_fit_mps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_key,
             item_kinds,
+        )
+    }
+    pub(crate) fn get_stat_item_mps(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+        ignore_state: bool,
+    ) -> Result<StatMiningKinds, StatItemCheckError> {
+        Vast::get_stat_item_mps(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            item_key,
+            ignore_state,
         )
     }
 }

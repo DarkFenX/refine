@@ -1,13 +1,12 @@
 use crate::{
     def::OF,
-    misc::{Mining, MiningKinds},
     nd::NMiningGetter,
     rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatMiningItemKinds, Vast},
+        vast::{StatMiningAmount, StatMiningItemKinds, StatMiningKinds, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
@@ -20,9 +19,9 @@ impl Vast {
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatMiningItemKinds,
-    ) -> MiningKinds {
+    ) -> StatMiningKinds {
         fit_keys
-            .map(|fit_key| MiningKinds {
+            .map(|fit_key| StatMiningKinds {
                 ore: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ore),
                 ice: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ice),
                 gas: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_gas),
@@ -35,9 +34,9 @@ impl Vast {
         calc: &mut Calc,
         fit_key: UFitKey,
         item_kinds: StatMiningItemKinds,
-    ) -> MiningKinds {
+    ) -> StatMiningKinds {
         let fit_data = self.get_fit_data(&fit_key);
-        MiningKinds {
+        StatMiningKinds {
             ore: get_mps(ctx, calc, item_kinds, &fit_data.mining_ore),
             ice: get_mps(ctx, calc, item_kinds, &fit_data.mining_ice),
             gas: get_mps(ctx, calc, item_kinds, &fit_data.mining_gas),
@@ -55,8 +54,8 @@ fn get_mps(
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     fit_data: &RMapRMap<UItemKey, REffectKey, NMiningGetter>,
-) -> Mining {
-    let mut mps = Mining::new(OF(0.0), OF(0.0));
+) -> StatMiningAmount {
+    let mut mps = StatMiningAmount::new(OF(0.0), OF(0.0));
     for (&item_key, item_data) in fit_data.iter() {
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, MINING_CYCLE_OPTIONS, false) {
             Some(cycle_map) => cycle_map,

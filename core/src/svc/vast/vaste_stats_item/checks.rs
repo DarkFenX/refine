@@ -130,6 +130,19 @@ pub(super) fn check_item_key_drone_fighter_module(ctx: SvcCtx, item_key: UItemKe
     }
 }
 
+pub(super) fn check_item_key_drone_module(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = ctx.u_data.items.get(item_key);
+    let is_loaded = match item {
+        UItem::Drone(drone) => drone.is_loaded(),
+        UItem::Module(module) => module.is_loaded(),
+        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
+    };
+    match is_loaded {
+        true => Ok(()),
+        false => Err(KeyedItemLoadedError { item_key }.into()),
+    }
+}
+
 pub(super) fn check_item_key_charge_drone_fighter_module(
     ctx: SvcCtx,
     item_key: UItemKey,

@@ -1,7 +1,10 @@
-use crate::{misc::MiningKinds, sol::api::FleetMut, svc::vast::StatMiningItemKinds};
+use crate::{
+    sol::api::FleetMut,
+    svc::vast::{StatMiningItemKinds, StatMiningKinds},
+};
 
 impl<'a> FleetMut<'a> {
-    pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds) -> MiningKinds {
+    pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds) -> StatMiningKinds {
         let u_fleet = self.sol.u_data.fleets.get(self.key);
         self.sol
             .svc

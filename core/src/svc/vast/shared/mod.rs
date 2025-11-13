@@ -1,6 +1,8 @@
 pub(in crate::svc::vast) use breacher::{BreacherAccum, apply_breacher};
 pub use dmg_opt::StatDmgItemKinds;
 pub use dmg_stat::{StatDmg, StatDmgApplied, StatDmgBreacher};
+pub use mining_amount::StatMiningAmount;
+pub use mining_kinds::StatMiningKinds;
 pub use mining_opt::StatMiningItemKinds;
 pub use remote_nps_opt::StatNeutItemKinds;
 pub use remote_rps_opt::StatRemoteRepItemKinds;
@@ -11,6 +13,8 @@ pub use tank::StatTank;
 mod breacher;
 mod dmg_opt;
 mod dmg_stat;
+mod mining_amount;
+mod mining_kinds;
 mod mining_opt;
 mod remote_nps_opt;
 mod remote_rps_opt;

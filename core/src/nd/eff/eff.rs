@@ -2,13 +2,14 @@ use crate::{
     ad,
     def::AttrVal,
     ed,
-    misc::{DmgKinds, Ecm, EffectSpec, Mining, ResolvedSpool, Spool},
+    misc::{DmgKinds, Ecm, EffectSpec, ResolvedSpool, Spool},
     nd::{NEffectCharge, NEffectDmgKind},
     rd,
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
         output::{Output, OutputDmgBreacher},
+        vast::StatMiningAmount,
     },
     ud::{UItem, UItemKey, UProjData},
     util::RMap,
@@ -26,7 +27,7 @@ pub(crate) type NNormalDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
-pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Output<Mining>>;
+pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Output<StatMiningAmount>>;
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<AttrVal>>;
 pub(crate) type NRemoteRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
