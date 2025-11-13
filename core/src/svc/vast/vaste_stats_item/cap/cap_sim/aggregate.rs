@@ -19,7 +19,7 @@ impl Aggregator {
     }
     pub(super) fn add_entry(&mut self, start_delay: AttrVal, cycle: Cycle, output: Output<AttrVal>) {
         self.data.add_entry(
-            AggrKey::new(&cycle, &output),
+            AggrKey::new(start_delay, &cycle, &output),
             AggrEventInfo {
                 start_delay,
                 cycle,
@@ -58,11 +58,11 @@ struct AggrEventInfo {
     output: Output<AttrVal>,
 }
 impl From<AggrEventInfo> for CapSimEvent {
-    fn from(intermediate: AggrEventInfo) -> Self {
+    fn from(aggr_info: AggrEventInfo) -> Self {
         CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-            time: intermediate.start_delay,
-            cycle_iter: intermediate.cycle.iter_cycles(),
-            output: intermediate.output,
+            time: aggr_info.start_delay,
+            cycle_iter: aggr_info.cycle.iter_cycles(),
+            output: aggr_info.output,
         })
     }
 }
@@ -70,12 +70,14 @@ impl From<AggrEventInfo> for CapSimEvent {
 // Aggregation key with rounded floats
 #[derive(Eq, PartialEq, Hash)]
 struct AggrKey {
+    start_delay: AttrVal,
     cycle: Cycle,
     output: AggrKeyOutput,
 }
 impl AggrKey {
-    fn new(cycle: &Cycle, output: &Output<AttrVal>) -> Self {
+    fn new(start_delay: AttrVal, cycle: &Cycle, output: &Output<AttrVal>) -> Self {
         Self {
+            start_delay: sig_round(start_delay, 10),
             cycle: cycle.copy_rounded(),
             output: output.into(),
         }
