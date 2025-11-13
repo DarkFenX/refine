@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AState},
     nd::{
         N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffectCharge,
-        NEffectChargeLoc, NEffectHc, NLocalRepGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter, NRemoteRepGetter,
-        NSpoolResolver,
+        NEffectChargeLoc, NEffectHc, NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter,
+        NRemoteRepGetter, NSpoolResolver,
     },
     rd::{REffectKey, RItem},
     util::{GetId, Named, RMap},
@@ -143,6 +143,15 @@ impl REffect {
     }
     pub(crate) fn get_cap_inject_getter(&self) -> Option<NCapInjectGetter> {
         self.n_effect_hc.cap_inject_getter
+    }
+    pub(crate) fn get_mining_ore_opc_getter(&self) -> Option<NMiningGetter> {
+        self.n_effect_hc.mining_ore_opc_getter
+    }
+    pub(crate) fn get_mining_ice_opc_getter(&self) -> Option<NMiningGetter> {
+        self.n_effect_hc.mining_ice_opc_getter
+    }
+    pub(crate) fn get_mining_gas_opc_getter(&self) -> Option<NMiningGetter> {
+        self.n_effect_hc.mining_gas_opc_getter
     }
     pub(crate) fn get_ecm_opc_getter(&self) -> Option<NEcmGetter> {
         self.n_effect_hc.ecm_opc_getter

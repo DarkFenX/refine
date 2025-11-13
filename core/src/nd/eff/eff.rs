@@ -2,7 +2,7 @@ use crate::{
     ad,
     def::AttrVal,
     ed,
-    misc::{DmgKinds, Ecm, EffectSpec, ResolvedSpool, Spool},
+    misc::{DmgKinds, Ecm, EffectSpec, Mining, ResolvedSpool, Spool},
     nd::{NEffectCharge, NEffectDmgKind},
     rd,
     svc::{
@@ -33,6 +33,7 @@ pub(crate) type NNeutGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NCapInjectGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Ecm>;
+pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Mining>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -76,6 +77,10 @@ pub(crate) struct NEffectHc {
     // Cap
     pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,
+    // Mining
+    pub(crate) mining_ore_opc_getter: Option<NMiningGetter> = None,
+    pub(crate) mining_ice_opc_getter: Option<NMiningGetter> = None,
+    pub(crate) mining_gas_opc_getter: Option<NMiningGetter> = None,
     // Misc
     pub(crate) ecm_opc_getter: Option<NEcmGetter> = None,
 }
