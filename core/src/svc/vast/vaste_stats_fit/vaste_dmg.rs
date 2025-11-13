@@ -346,7 +346,7 @@ impl VastFitData {
                 if !cycle_map.contains_key(&effect_key) {
                     continue;
                 };
-                *volley_normal += output_per_cycle.get_max();
+                *volley_normal += output_per_cycle.get_amount();
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {

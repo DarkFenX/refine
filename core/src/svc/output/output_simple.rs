@@ -13,13 +13,13 @@ impl<T> OutputSimple<T>
 where
     T: Copy + Clone,
 {
-    pub(in crate::svc) fn get_total(&self) -> T {
+    pub(super) fn get_total(&self) -> T {
         self.amount
     }
-    pub(in crate::svc) fn get_max(&self) -> T {
+    pub(super) fn get_amount(&self) -> T {
         self.amount
     }
-    pub(in crate::svc) fn get_delay(&self) -> AttrVal {
+    pub(super) fn get_delay(&self) -> AttrVal {
         self.delay
     }
     pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {

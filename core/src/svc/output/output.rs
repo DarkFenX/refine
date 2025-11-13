@@ -12,10 +12,10 @@ impl<T> Output<T>
 where
     T: Copy + Clone,
 {
-    pub(in crate::svc) fn get_max(&self) -> T {
+    pub(in crate::svc) fn get_amount(&self) -> T {
         match self {
-            Output::Simple(simple) => simple.get_max(),
-            Output::Complex(complex) => complex.get_max(),
+            Output::Simple(simple) => simple.get_amount(),
+            Output::Complex(complex) => complex.get_amount(),
         }
     }
     pub(in crate::svc) fn get_delay(&self) -> AttrVal {

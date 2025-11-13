@@ -276,7 +276,7 @@ impl Vast {
             if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
-                *volley_normal += dmg_opc.get_max();
+                *volley_normal += dmg_opc.get_amount();
             }
             if let Some(dmg_getter) = effect.get_breacher_dmg_opc_getter()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
