@@ -4,6 +4,7 @@ pub use crate::{
     svc::vast::{
         StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatDmg,
         StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps,
-        StatNeutItemKinds, StatRemoteRepItemKinds, StatRes, StatSensor, StatSensorKind, StatSlot, StatTank,
+        StatMiningItemKinds, StatNeutItemKinds, StatRemoteRepItemKinds, StatRes, StatSensor, StatSensorKind, StatSlot,
+        StatTank,
     },
 };

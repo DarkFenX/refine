@@ -26,7 +26,7 @@ pub(crate) type NNormalDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
-pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Mining>;
+pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Output<Mining>>;
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<AttrVal>>;
 pub(crate) type NRemoteRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
