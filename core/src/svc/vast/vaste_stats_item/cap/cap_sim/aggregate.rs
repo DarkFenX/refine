@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use super::event::{CapSimEvent, CapSimEventCycleCheck};
 use crate::{
-    def::{AttrVal, Count},
+    def::{AttrVal, Count, OF},
     svc::{
         cycle::Cycle,
         output::{Output, OutputComplex, OutputSimple},
@@ -28,9 +28,25 @@ impl Aggregator {
         )
     }
     pub(super) fn into_sim_events(self, events: &mut BinaryHeap<CapSimEvent>) {
-        for aggr_group in self.data.into_values() {
-            events.extend(aggr_group.into_iter().map(Into::into));
+        for mut aggr_group in self.data.into_values() {
+            Aggregator::process_aggr_group(&mut aggr_group, events, |l, r| l > r);
+            Aggregator::process_aggr_group(&mut aggr_group, events, |l, r| l < r);
         }
+    }
+    fn process_aggr_group(
+        aggr_group: &mut Vec<AggrEventInfo>,
+        events: &mut BinaryHeap<CapSimEvent>,
+        filter_fn: fn(AttrVal, AttrVal) -> bool,
+    ) {
+        events.extend(
+            aggr_group
+                .extract_if(.., |v| filter_fn(v.output.get_amount(), OF(0.0)))
+                .reduce(|mut l, r| {
+                    l.output.add_amount(r.output.get_amount());
+                    l
+                })
+                .map(Into::into),
+        );
     }
 }
 

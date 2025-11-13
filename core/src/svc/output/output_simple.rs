@@ -33,6 +33,9 @@ impl OutputSimple<AttrVal> {
     pub(super) fn absolute_impact(&self) -> AttrVal {
         self.amount.abs()
     }
+    pub(super) fn add_amount(&mut self, amount: AttrVal) {
+        self.amount += amount;
+    }
 }
 impl<T> std::ops::Neg for OutputSimple<T>
 where

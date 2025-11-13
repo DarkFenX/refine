@@ -55,6 +55,12 @@ impl Output<AttrVal> {
             Output::Complex(complex) => complex.absolute_impact(),
         }
     }
+    pub(in crate::svc) fn add_amount(&mut self, amount: AttrVal) {
+        match self {
+            Output::Simple(simple) => simple.add_amount(amount),
+            Output::Complex(complex) => complex.add_amount(amount),
+        }
+    }
 }
 impl<T> std::ops::Neg for Output<T>
 where
