@@ -126,6 +126,15 @@ impl REffect {
     pub(crate) fn get_breacher_dmg_opc_getter(&self) -> Option<NBreacherDmgGetter> {
         self.n_effect_hc.breacher_dmg_opc_getter
     }
+    pub(crate) fn get_mining_ore_opc_getter(&self) -> Option<NMiningGetter> {
+        self.n_effect_hc.mining_ore_opc_getter
+    }
+    pub(crate) fn get_mining_ice_opc_getter(&self) -> Option<NMiningGetter> {
+        self.n_effect_hc.mining_ice_opc_getter
+    }
+    pub(crate) fn get_mining_gas_opc_getter(&self) -> Option<NMiningGetter> {
+        self.n_effect_hc.mining_gas_opc_getter
+    }
     pub(crate) fn get_remote_shield_rep_opc_getter(&self) -> Option<NRemoteRepGetter> {
         self.n_effect_hc.remote_shield_rep_opc_getter
     }
@@ -143,15 +152,6 @@ impl REffect {
     }
     pub(crate) fn get_cap_inject_getter(&self) -> Option<NCapInjectGetter> {
         self.n_effect_hc.cap_inject_getter
-    }
-    pub(crate) fn get_mining_ore_opc_getter(&self) -> Option<NMiningGetter> {
-        self.n_effect_hc.mining_ore_opc_getter
-    }
-    pub(crate) fn get_mining_ice_opc_getter(&self) -> Option<NMiningGetter> {
-        self.n_effect_hc.mining_ice_opc_getter
-    }
-    pub(crate) fn get_mining_gas_opc_getter(&self) -> Option<NMiningGetter> {
-        self.n_effect_hc.mining_gas_opc_getter
     }
     pub(crate) fn get_ecm_opc_getter(&self) -> Option<NEcmGetter> {
         self.n_effect_hc.ecm_opc_getter

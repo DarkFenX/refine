@@ -26,6 +26,7 @@ impl Vast {
                 for effect in effects {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_start(effect, item_key, &drone.get_fit_key());
+                        self.handle_mining_start(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &drone.get_fit_key());
                         self.handle_neut_start(effect, item_key, &drone.get_fit_key());
                     }
@@ -44,6 +45,7 @@ impl Vast {
                 for effect in effects {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_start(effect, item_key, &module.get_fit_key());
+                        self.handle_mining_start(effect, item_key, &module.get_fit_key());
                         // Local reps
                         if let Some(rep_getter) = effect.get_local_shield_rep_opc_getter() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
@@ -110,6 +112,7 @@ impl Vast {
                 for effect in effects {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_stop(effect, item_key, &drone.get_fit_key());
+                        self.handle_mining_stop(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &drone.get_fit_key());
                         self.handle_neut_stop(effect, item_key, &drone.get_fit_key());
                     }
@@ -128,6 +131,7 @@ impl Vast {
                 for effect in effects {
                     if effect.is_active_with_duration() {
                         self.handle_dmg_stop(effect, item_key, &module.get_fit_key());
+                        self.handle_mining_stop(effect, item_key, &module.get_fit_key());
                         // Local reps
                         if effect.get_local_shield_rep_opc_getter().is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
@@ -183,6 +187,34 @@ impl Vast {
         if effect.get_breacher_dmg_opc_getter().is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.dmg_breacher.remove_l2(&item_key, &effect.get_key());
+        }
+    }
+    fn handle_mining_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if let Some(mining_getter) = effect.get_mining_ore_opc_getter() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.mining_ore.add_entry(item_key, effect.get_key(), mining_getter);
+        }
+        if let Some(mining_getter) = effect.get_mining_ice_opc_getter() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.mining_ice.add_entry(item_key, effect.get_key(), mining_getter);
+        }
+        if let Some(mining_getter) = effect.get_mining_gas_opc_getter() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.mining_gas.add_entry(item_key, effect.get_key(), mining_getter);
+        }
+    }
+    fn handle_mining_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if effect.get_mining_ore_opc_getter().is_some() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.mining_ore.remove_l2(&item_key, &effect.get_key());
+        }
+        if effect.get_mining_ice_opc_getter().is_some() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.mining_ice.remove_l2(&item_key, &effect.get_key());
+        }
+        if effect.get_mining_gas_opc_getter().is_some() {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.mining_gas.remove_l2(&item_key, &effect.get_key());
         }
     }
     fn handle_orrs_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {

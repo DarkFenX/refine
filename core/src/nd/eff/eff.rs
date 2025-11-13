@@ -26,6 +26,7 @@ pub(crate) type NNormalDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
+pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Mining>;
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<AttrVal>>;
 pub(crate) type NRemoteRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
@@ -33,7 +34,6 @@ pub(crate) type NNeutGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NCapInjectGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Ecm>;
-pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<Mining>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -69,6 +69,10 @@ pub(crate) struct NEffectHc {
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter> = None,
     pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter> = None,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
+    // Mining
+    pub(crate) mining_ore_opc_getter: Option<NMiningGetter> = None,
+    pub(crate) mining_ice_opc_getter: Option<NMiningGetter> = None,
+    pub(crate) mining_gas_opc_getter: Option<NMiningGetter> = None,
     // Rep output
     pub(crate) remote_shield_rep_opc_getter: Option<NRemoteRepGetter> = None,
     pub(crate) remote_armor_rep_opc_getter: Option<NRemoteRepGetter> = None,
@@ -77,10 +81,6 @@ pub(crate) struct NEffectHc {
     // Cap
     pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,
-    // Mining
-    pub(crate) mining_ore_opc_getter: Option<NMiningGetter> = None,
-    pub(crate) mining_ice_opc_getter: Option<NMiningGetter> = None,
-    pub(crate) mining_gas_opc_getter: Option<NMiningGetter> = None,
     // Misc
     pub(crate) ecm_opc_getter: Option<NEcmGetter> = None,
 }
