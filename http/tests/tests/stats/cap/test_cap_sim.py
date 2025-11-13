@@ -514,8 +514,8 @@ def test_injector_topup(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reload_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
     eve_use_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.energy_nosf_falloff,
-        cat_id=consts.EveEffCat.target,
+        cat_id=consts.EveEffCat.active,
+        discharge_attr_id=eve_use_amount_attr_id,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_user_id = client.mk_eve_item(
         attrs={eve_use_amount_attr_id: 40, eve_cycle_time_attr_id: 4500},
