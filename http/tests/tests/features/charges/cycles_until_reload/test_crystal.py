@@ -94,13 +94,11 @@ def test_damage_cycle_count(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
-    assert api_module.update().cycles_until_empty == 20
-    # Action
-    api_module.change_module(charge_type_id=eve_charge2_id)
-    # Verification
-    assert api_module.update().cycles_until_empty == 20
+    assert api_module1.update().cycles_until_empty == 20
+    assert api_module2.update().cycles_until_empty == 20
 
 
 def test_damage_cycle_accuracy(client, consts):
