@@ -89,6 +89,7 @@ class EveEffect(IntEnum):
     drone_dmg_bonus = 1730
     self_rof = 1851
     rig_slot = 2663
+    mining_clouds = 2726
     bomb_launching = 2971
     overload_self_duration_bonus = 3002
     warp_disrupt_sphere = 3380
@@ -249,6 +250,7 @@ class EveAttr(IntEnum):
     agility = 70
     duration = 73
     max_target_range = 76
+    mining_amount = 77
     structure_dmg_amount = 83
     armor_dmg_amount = 84
     power_transfer_amount = 90
@@ -445,6 +447,8 @@ class EveAttr(IntEnum):
     repair_mult_bonus_per_cycle = 2796
     repair_mult_bonus_max = 2797
     ecm_jam_duration = 2822
+    mining_wasted_volume_mult = 3153
+    mining_waste_probability = 3154
     disallow_in_hazard = 5561
     allow_in_fully_corrupted_lowsec = 5599
     allow_in_fully_corrupted_hisec = 5600

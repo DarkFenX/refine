@@ -13,6 +13,7 @@ class FleetStats(AttrDict):
             'volley': AttrHookDef(func=lambda d: (
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),
+            'mps': AttrHookDef(func=lambda d: NttList(AttrDict(data=e) for e in d) if d is not None else None),
             'remote_rps': AttrHookDef(func=lambda d: (
                 NttList(StatRemoteRps(data=e) for e in d)
                 if d is not None else None)),

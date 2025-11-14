@@ -16,7 +16,7 @@ from .side_effect_info import SideEffectInfo
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
-    from tests.fw.api.aliases import MutaAdd, MutaChange, ProjRange
+    from tests.fw.api.aliases import MutaAdd, MutaChange
     from tests.fw.api.types import ItemStatsOptions
     from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
 
