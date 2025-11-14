@@ -3,6 +3,7 @@ from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps
 from .stat_hp import StatHp
+from .stat_mining import StatMining
 from .stat_remote_rps import StatRemoteRps
 from .stat_resists import StatResists
 from .stat_resource import StatResource
@@ -44,7 +45,7 @@ class FitStats(AttrDict):
             'volley': AttrHookDef(func=lambda d: (
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),
-            'mps': AttrHookDef(func=lambda d: NttList(AttrDict(data=e) for e in d) if d is not None else None),
+            'mps': AttrHookDef(func=lambda d: NttList(StatMining(data=e) for e in d)),
             'hp': AttrHookDef(func=lambda d: StatHp(data=d) if d is not None else None),
             'ehp': AttrHookDef(func=lambda d: (NttList(StatEhp(data=e) for e in d) if d is not None else None)),
             'wc_ehp': AttrHookDef(func=lambda d: StatEhp(data=d) if d is not None else None),

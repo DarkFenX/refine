@@ -41,13 +41,13 @@ def test_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().gas == [0, 0]
+    assert api_fleet_stats.mps.one().gas is None
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one() == [0, 0]
+    assert api_fit_stats.mps.one().gas is None
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
     api_module_mps_normal, api_module_mps_ignored = api_module_stats.mps
-    assert api_module_mps_normal.gas == [0, 0]
+    assert api_module_mps_normal.gas is None
     assert api_module_mps_ignored.gas == [approx(1.333333), approx(0.4533333)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
