@@ -10,6 +10,7 @@ from .opt_item import (
     StatsOptionItemRemoteRps,
     StatsOptionItemVolley,
 )
+from .opt_mining import StatMiningItemKinds, StatsOptionFitMining, StatsOptionItemMining
 from .opt_remote_nps import StatNeutItemKinds
 from .opt_remote_rps import StatRemoteRepItemKinds
 from .opt_shared import (

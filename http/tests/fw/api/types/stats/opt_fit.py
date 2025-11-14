@@ -4,6 +4,7 @@ import typing
 from tests.fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
+    from .opt_mining import StatsOptionFitMining
     from .opt_shared import (
         StatsOptionCapBalance,
         StatsOptionCapSim,
@@ -60,6 +61,7 @@ class FitStatsOptions:
     drone_control_range: bool | type[Absent] = Absent
     dps: bool | tuple[bool, list[StatsOptionFitDps]] | type[Absent] = Absent
     volley: bool | tuple[bool, list[StatsOptionFitVolley]] | type[Absent] = Absent
+    mps: bool | tuple[bool, list[StatsOptionFitMining]] | type[Absent] = Absent
     hp: bool | type[Absent] = Absent
     ehp: bool | tuple[bool, list[StatsOptionEhp]] | type[Absent] = Absent
     wc_ehp: bool | type[Absent] = Absent
