@@ -10,6 +10,7 @@ pub(crate) const LO_POWER: AEffectId = AEffectId::Dogma(ece::LO_POWER);
 pub(crate) const HI_POWER: AEffectId = AEffectId::Dogma(ece::HI_POWER);
 pub(crate) const MED_POWER: AEffectId = AEffectId::Dogma(ece::MED_POWER);
 pub(crate) const ONLINE: AEffectId = AEffectId::Dogma(ece::ONLINE);
+pub(crate) const MINING: AEffectId = AEffectId::Dogma(ece::MINING);
 pub(crate) const STRUCTURE_REPAIR: AEffectId = AEffectId::Dogma(ece::STRUCTURE_REPAIR);
 pub(crate) const ARMOR_REPAIR: AEffectId = AEffectId::Dogma(ece::ARMOR_REPAIR);
 pub(crate) const PROJECTILE_FIRED: AEffectId = AEffectId::Dogma(ece::PROJECTILE_FIRED);

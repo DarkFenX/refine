@@ -14,7 +14,7 @@ use crate::{
     ud::UItemKey,
 };
 
-pub(crate) fn get_neut_opc(
+pub(in crate::nd::eff) fn get_neut_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

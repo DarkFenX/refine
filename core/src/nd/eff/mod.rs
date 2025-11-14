@@ -25,6 +25,7 @@ mod eff_d11691_debuff_lance;
 mod eff_d12126_micro_jump_portal_drive_capital;
 mod eff_d12174_dot_missile_launching;
 mod eff_d1730_drone_dmg_bonus;
+mod eff_d17_mining;
 mod eff_d1851_self_rof;
 mod eff_d26_structure_repair;
 mod eff_d2726_mining_clouds;
@@ -130,6 +131,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d4_shield_boosting::mk_n_effect(),
         eff_d9_missile_launching::mk_n_effect(),
         eff_d10_tgt_attack::mk_n_effect(),
+        eff_d17_mining::mk_n_effect(),
         eff_d26_structure_repair::mk_n_effect(),
         eff_d27_armor_repair::mk_n_effect(),
         eff_d34_projectile_fired::mk_n_effect(),

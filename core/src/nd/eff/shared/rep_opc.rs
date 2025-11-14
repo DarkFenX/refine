@@ -14,7 +14,7 @@ use crate::{
     ud::UItemKey,
 };
 
-pub(crate) fn get_local_shield_rep_opc(
+pub(in crate::nd::eff) fn get_local_shield_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -31,7 +31,7 @@ pub(crate) fn get_local_shield_rep_opc(
     )
 }
 
-pub(crate) fn get_local_armor_rep_opc(
+pub(in crate::nd::eff) fn get_local_armor_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -48,7 +48,7 @@ pub(crate) fn get_local_armor_rep_opc(
     )
 }
 
-pub(crate) fn get_local_hull_rep_opc(
+pub(in crate::nd::eff) fn get_local_hull_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -86,7 +86,7 @@ fn get_local_rep_opc(
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
 
-pub(crate) fn get_remote_shield_rep_opc(
+pub(in crate::nd::eff) fn get_remote_shield_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -111,7 +111,7 @@ pub(crate) fn get_remote_shield_rep_opc(
     )
 }
 
-pub(crate) fn get_remote_armor_rep_opc(
+pub(in crate::nd::eff) fn get_remote_armor_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -136,7 +136,7 @@ pub(crate) fn get_remote_armor_rep_opc(
     )
 }
 
-pub(crate) fn get_remote_hull_rep_opc(
+pub(in crate::nd::eff) fn get_remote_hull_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -161,7 +161,7 @@ pub(crate) fn get_remote_hull_rep_opc(
     )
 }
 
-pub(crate) fn get_remote_cap_rep_opc(
+pub(in crate::nd::eff) fn get_remote_cap_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

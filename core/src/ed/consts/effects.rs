@@ -7,6 +7,7 @@ pub(crate) const LO_POWER: EEffectId = 11;
 pub(crate) const HI_POWER: EEffectId = 12;
 pub(crate) const MED_POWER: EEffectId = 13;
 pub(crate) const ONLINE: EEffectId = 16;
+pub(crate) const MINING: EEffectId = 17;
 pub(crate) const STRUCTURE_REPAIR: EEffectId = 26;
 pub(crate) const ARMOR_REPAIR: EEffectId = 27;
 pub(crate) const PROJECTILE_FIRED: EEffectId = 34;

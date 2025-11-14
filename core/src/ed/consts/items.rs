@@ -4,6 +4,7 @@ pub(crate) const MISSILE_LAUNCHER_OPERATION: EItemId = 3319;
 pub(crate) const GUNNERY: EItemId = 3300;
 pub(crate) const HIGH_SPEED_MANEUVERING: EItemId = 3454;
 pub(crate) const MICRO_JUMP_DRIVE_OPERATION: EItemId = 4385;
+pub(crate) const ICE_HARVESTING: EItemId = 16281;
 pub(crate) const CAPITAL_SHIPS: EItemId = 20533;
 pub(crate) const THERMODYNAMICS: EItemId = 28164;
 pub(crate) const NANITE_REPAIR_PASTE: EItemId = 28668;

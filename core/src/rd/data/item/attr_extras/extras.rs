@@ -13,6 +13,7 @@ use super::{
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
     kind::{get_item_kind_inherited, get_item_kind_initial},
+    mining::is_ice_harvester,
     mobility::is_mobile,
     overload_td_lvl::get_overload_td_lvl,
     sec_zone::is_sec_zone_limitable,
@@ -91,6 +92,8 @@ pub(crate) struct RItemAXt {
     pub(crate) charge_rate: ACount,
     // True if item has some speed
     pub(crate) is_mobile: bool,
+    // True if item has ice harvesting in skill requirement
+    pub(crate) is_ice_harvester: bool,
 }
 impl RItemAXt {
     // Build extras out of item with its original attributes
@@ -125,6 +128,7 @@ impl RItemAXt {
             charge_size: get_charge_size(&a_item.attrs),
             charge_rate: get_charge_rate(&a_item.attrs),
             is_mobile: is_mobile(&a_item.attrs),
+            is_ice_harvester: is_ice_harvester(&a_item.srqs),
         }
     }
     // Build extras out of item with overridden attributes
@@ -165,6 +169,7 @@ impl RItemAXt {
             charge_size: get_charge_size(attrs),
             charge_rate: get_charge_rate(attrs),
             is_mobile: is_mobile(attrs),
+            is_ice_harvester: is_ice_harvester(r_item.get_srqs()),
         }
     }
 }

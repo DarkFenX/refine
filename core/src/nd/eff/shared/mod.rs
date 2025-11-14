@@ -6,6 +6,7 @@ pub(in crate::nd::eff) mod dd_mods;
 mod dmg_kind;
 pub(in crate::nd::eff) mod dmg_opc;
 mod effect_charge;
+pub(in crate::nd::eff) mod mining_opc;
 pub(in crate::nd::eff) mod missile_dmg_self_srq;
 pub(in crate::nd::eff) mod neut_opc;
 pub(in crate::nd::eff) mod proj_mult;
