@@ -14,7 +14,7 @@ use crate::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps,
-            StatLayerHp, StatLayerRps, StatMiningKinds, StatSensor, StatTank,
+            StatLayerHp, StatLayerRps, StatMining, StatSensor, StatTank,
         },
     },
     ud::{UEffectUpdates, UItemKey},
@@ -291,7 +291,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
     // Stats - mining
-    fn get_stat_mps(&mut self, ignore_state: bool) -> Result<StatMiningKinds, ItemStatError> {
+    fn get_stat_mps(&mut self, ignore_state: bool) -> Result<StatMining, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc

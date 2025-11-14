@@ -7,7 +7,7 @@ use crate::{
         calc::Calc,
         cycle::{Cycle, CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::StatItemCheckError,
-        vast::{StatMiningAmount, StatMiningKinds, Vast},
+        vast::{StatMining, StatMiningAmount, Vast},
     },
     ud::UItemKey,
 };
@@ -18,17 +18,12 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         ignore_state: bool,
-    ) -> Result<StatMiningKinds, StatItemCheckError> {
+    ) -> Result<StatMining, StatItemCheckError> {
         check_item_key_drone_module(ctx, item_key)?;
         Ok(Vast::get_stat_item_mps_unchecked(ctx, calc, item_key, ignore_state))
     }
-    fn get_stat_item_mps_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        ignore_state: bool,
-    ) -> StatMiningKinds {
-        StatMiningKinds {
+    fn get_stat_item_mps_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, ignore_state: bool) -> StatMining {
+        StatMining {
             ore: get_mps_item_key(ctx, calc, item_key, ignore_state, get_getter_ore),
             ice: get_mps_item_key(ctx, calc, item_key, ignore_state, get_getter_ice),
             gas: get_mps_item_key(ctx, calc, item_key, ignore_state, get_getter_gas),

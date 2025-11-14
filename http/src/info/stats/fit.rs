@@ -1,7 +1,7 @@
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps, HStatRes,
-        HStatSensor, HStatSlot, HStatTank,
+        HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps,
+        HStatMining, HStatRes, HStatSensor, HStatSlot, HStatTank,
     },
     util::TriStateField,
 };
@@ -86,6 +86,8 @@ pub(crate) struct HFitStats {
     pub(crate) dps: Option<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) volley: Option<Vec<Option<HStatDmg>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) mps: Option<Vec<HStatMining>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -155,6 +157,7 @@ impl HFitStats {
             drone_control_range: TriStateField::default(),
             dps: Option::default(),
             volley: Option::default(),
+            mps: Option::default(),
             hp: TriStateField::default(),
             ehp: TriStateField::default(),
             wc_ehp: TriStateField::default(),

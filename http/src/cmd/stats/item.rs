@@ -5,13 +5,13 @@ use crate::{
         shared::get_primary_item,
         stats::options::{
             HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps,
-            HStatOptionItemRemoteCps, HStatOptionItemRemoteNps, HStatOptionItemRemoteRps, HStatOptionItemVolley,
-            HStatOptionRps, HStatResolvedOption,
+            HStatOptionItemMining, HStatOptionItemRemoteCps, HStatOptionItemRemoteNps, HStatOptionItemRemoteRps,
+            HStatOptionItemVolley, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
         HItemStats,
-        stats::{HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
+        stats::{HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatMining, HStatTank},
     },
     util::{HExecError, default_true},
 };
@@ -39,6 +39,7 @@ pub(crate) struct HGetItemStatsCmd {
     drone_control_range: Option<bool>,
     dps: Option<HStatOption<HStatOptionItemDps>>,
     volley: Option<HStatOption<HStatOptionItemVolley>>,
+    mps: Option<HStatOption<HStatOptionItemMining>>,
     hp: Option<bool>,
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
@@ -113,6 +114,10 @@ impl HGetItemStatsCmd {
         let volley_opt = HStatResolvedOption::new(&self.volley, self.default);
         if volley_opt.enabled {
             stats.volley = get_volley_stats(&mut core_item, volley_opt.options).into()
+        }
+        let mps_opt = HStatResolvedOption::new(&self.mps, self.default);
+        if mps_opt.enabled {
+            stats.mps = get_mps_stats(&mut core_item, mps_opt.options).into()
         }
         if self.hp.unwrap_or(self.default) {
             stats.hp = core_item.get_stat_hp().into();
@@ -241,6 +246,17 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
                     }
                 };
             }
+        }
+    }
+    Some(results)
+}
+
+fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemMining>) -> Option<Vec<HStatMining>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        match core_item.get_stat_mps(option.ignore_state) {
+            Ok(core_stat) => results.push(core_stat.into()),
+            Err(_) => return None,
         }
     }
     Some(results)

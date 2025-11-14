@@ -2,13 +2,13 @@ use crate::{
     cmd::{
         shared::get_primary_fleet,
         stats::options::{
-            HStatOption, HStatOptionFitDps, HStatOptionFitRemoteNps, HStatOptionFitRemoteRps, HStatOptionFitVolley,
-            HStatResolvedOption,
+            HStatOption, HStatOptionFitDps, HStatOptionFitMining, HStatOptionFitRemoteNps, HStatOptionFitRemoteRps,
+            HStatOptionFitVolley, HStatResolvedOption,
         },
     },
     info::{
         HFleetStats,
-        stats::{HStatDmg, HStatTank},
+        stats::{HStatDmg, HStatMining, HStatTank},
     },
     util::{HExecError, default_true},
 };
@@ -21,6 +21,7 @@ pub(crate) struct HGetFleetStatsCmd {
     default: bool,
     dps: Option<HStatOption<HStatOptionFitDps>>,
     volley: Option<HStatOption<HStatOptionFitVolley>>,
+    mps: Option<HStatOption<HStatOptionFitMining>>,
     remote_rps: Option<HStatOption<HStatOptionFitRemoteRps>>,
     remote_cps: Option<bool>,
     remote_nps: Option<HStatOption<HStatOptionFitRemoteNps>>,
@@ -40,6 +41,10 @@ impl HGetFleetStatsCmd {
         let volley_opt = HStatResolvedOption::new(&self.volley, self.default);
         if volley_opt.enabled {
             stats.volley = Some(get_volley_stats(&mut core_fleet, volley_opt.options));
+        }
+        let mps_opt = HStatResolvedOption::new(&self.mps, self.default);
+        if mps_opt.enabled {
+            stats.mps = Some(get_mps_stats(&mut core_fleet, mps_opt.options));
         }
         let rrps_opt = HStatResolvedOption::new(&self.remote_rps, self.default);
         if rrps_opt.enabled {
@@ -94,6 +99,15 @@ fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVo
                 results.push(Some(core_stat.into()));
             }
         }
+    }
+    results
+}
+
+fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMining>) -> Vec<HStatMining> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_result = core_fleet.get_stat_mps((&option.item_kinds).into());
+        results.push(core_result.into());
     }
     results
 }

@@ -1,17 +1,17 @@
 use super::mining_amount::StatMiningAmount;
 
 #[derive(Copy, Clone)]
-pub struct StatMiningKinds {
+pub struct StatMining {
     pub ore: StatMiningAmount,
     pub ice: StatMiningAmount,
     pub gas: StatMiningAmount,
 }
-impl StatMiningKinds {
-    pub(crate) fn new(ore: StatMiningAmount, ice: StatMiningAmount, gas: StatMiningAmount) -> StatMiningKinds {
+impl StatMining {
+    pub(crate) fn new(ore: StatMiningAmount, ice: StatMiningAmount, gas: StatMiningAmount) -> StatMining {
         Self { ore, ice, gas }
     }
 }
-impl Default for StatMiningKinds {
+impl Default for StatMining {
     fn default() -> Self {
         Self::new(
             StatMiningAmount::default(),
@@ -20,9 +20,9 @@ impl Default for StatMiningKinds {
         )
     }
 }
-impl std::ops::Add<StatMiningKinds> for StatMiningKinds {
-    type Output = StatMiningKinds;
-    fn add(self, rhs: StatMiningKinds) -> Self::Output {
+impl std::ops::Add<StatMining> for StatMining {
+    type Output = StatMining;
+    fn add(self, rhs: StatMining) -> Self::Output {
         Self {
             ore: self.ore + rhs.ore,
             ice: self.ice + rhs.ice,
@@ -30,7 +30,7 @@ impl std::ops::Add<StatMiningKinds> for StatMiningKinds {
         }
     }
 }
-impl std::iter::Sum<StatMiningKinds> for StatMiningKinds {
+impl std::iter::Sum<StatMining> for StatMining {
     fn sum<I>(iter: I) -> Self
     where
         I: Iterator<Item = Self>,

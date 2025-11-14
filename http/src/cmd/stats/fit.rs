@@ -3,13 +3,13 @@ use crate::{
         shared::get_primary_fit,
         stats::options::{
             HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
-            HStatOptionFitRemoteNps, HStatOptionFitRemoteRps, HStatOptionFitVolley, HStatOptionRps,
-            HStatResolvedOption,
+            HStatOptionFitMining, HStatOptionFitRemoteNps, HStatOptionFitRemoteRps, HStatOptionFitVolley,
+            HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
         HFitStats,
-        stats::{HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatTank},
+        stats::{HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerRps, HStatMining, HStatTank},
     },
     util::{HExecError, default_true},
 };
@@ -60,6 +60,7 @@ pub(crate) struct HGetFitStatsCmd {
     hp: Option<bool>,
     dps: Option<HStatOption<HStatOptionFitDps>>,
     volley: Option<HStatOption<HStatOptionFitVolley>>,
+    mps: Option<HStatOption<HStatOptionFitMining>>,
     ehp: Option<HStatOption<HStatOptionEhp>>,
     wc_ehp: Option<bool>,
     rps: Option<HStatOption<HStatOptionRps>>,
@@ -199,6 +200,10 @@ impl HGetFitStatsCmd {
         if volley_opt.enabled {
             stats.volley = Some(get_volley_stats(&mut core_fit, volley_opt.options));
         }
+        let mps_opt = HStatResolvedOption::new(&self.mps, self.default);
+        if mps_opt.enabled {
+            stats.mps = Some(get_mps_stats(&mut core_fit, mps_opt.options));
+        }
         let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
             stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options).into();
@@ -284,6 +289,15 @@ fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley
                 results.push(Some(core_stat.into()));
             }
         }
+    }
+    results
+}
+
+fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitMining>) -> Vec<HStatMining> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_result = core_fit.get_stat_mps((&option.item_kinds).into());
+        results.push(core_result.into());
     }
     results
 }

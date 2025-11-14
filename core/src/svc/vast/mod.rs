@@ -1,5 +1,5 @@
 pub use shared::{
-    StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatMiningAmount, StatMiningItemKinds, StatMiningKinds,
+    StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatMining, StatMiningAmount, StatMiningItemKinds,
     StatNeutItemKinds, StatRemoteRepItemKinds, StatSensor, StatSensorKind, StatTank,
 };
 pub use val_options::{ValOption, ValOptions, ValOptionsSol};

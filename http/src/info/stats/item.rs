@@ -1,7 +1,7 @@
 use crate::{
     info::stats::details::{
         HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerHp, HStatLayerResist, HStatLayerRps,
-        HStatSensor, HStatTank,
+        HStatMining, HStatSensor, HStatTank,
     },
     util::TriStateField,
 };
@@ -42,6 +42,8 @@ pub(crate) struct HItemStats {
     pub(crate) dps: TriStateField<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) volley: TriStateField<Vec<Option<HStatDmg>>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) mps: TriStateField<Vec<HStatMining>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -89,6 +91,7 @@ impl HItemStats {
             drone_control_range: TriStateField::default(),
             dps: TriStateField::default(),
             volley: TriStateField::default(),
+            mps: TriStateField::default(),
             hp: TriStateField::default(),
             ehp: TriStateField::default(),
             wc_ehp: TriStateField::default(),
