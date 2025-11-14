@@ -29,6 +29,7 @@ pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: AEffectId = AEffectId::Dogma(ec
 pub(crate) const DRONE_DMG_BONUS: AEffectId = AEffectId::Dogma(ece::DRONE_DMG_BONUS);
 pub(crate) const SELF_ROF: AEffectId = AEffectId::Dogma(ece::SELF_ROF);
 pub(crate) const RIG_SLOT: AEffectId = AEffectId::Dogma(ece::RIG_SLOT);
+pub(crate) const MINING_CLOUDS: AEffectId = AEffectId::Dogma(ece::MINING_CLOUDS);
 pub(crate) const BOMB_LAUNCHING: AEffectId = AEffectId::Dogma(ece::BOMB_LAUNCHING);
 pub(crate) const HARDPOINT_MODIFIER_EFFECT: AEffectId = AEffectId::Dogma(ece::HARDPOINT_MODIFIER_EFFECT);
 pub(crate) const SLOT_MODIFIER: AEffectId = AEffectId::Dogma(ece::SLOT_MODIFIER);

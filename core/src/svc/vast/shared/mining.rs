@@ -1,22 +1,22 @@
-use super::mining_amount::StatMiningAmount;
+use crate::misc::MiningAmount;
 
 #[derive(Copy, Clone)]
 pub struct StatMining {
-    pub ore: StatMiningAmount,
-    pub ice: StatMiningAmount,
-    pub gas: StatMiningAmount,
+    pub ore: MiningAmount,
+    pub ice: MiningAmount,
+    pub gas: MiningAmount,
 }
 impl StatMining {
-    pub(crate) fn new(ore: StatMiningAmount, ice: StatMiningAmount, gas: StatMiningAmount) -> StatMining {
+    pub(crate) fn new(ore: MiningAmount, ice: MiningAmount, gas: MiningAmount) -> StatMining {
         Self { ore, ice, gas }
     }
 }
 impl Default for StatMining {
     fn default() -> Self {
         Self::new(
-            StatMiningAmount::default(),
-            StatMiningAmount::default(),
-            StatMiningAmount::default(),
+            MiningAmount::default(),
+            MiningAmount::default(),
+            MiningAmount::default(),
         )
     }
 }

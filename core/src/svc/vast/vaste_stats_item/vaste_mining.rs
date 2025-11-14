@@ -1,5 +1,6 @@
 use super::checks::check_item_key_drone_module;
 use crate::{
+    misc::MiningAmount,
     nd::NMiningGetter,
     rd::REffect,
     svc::{
@@ -7,7 +8,7 @@ use crate::{
         calc::Calc,
         cycle::{Cycle, CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::StatItemCheckError,
-        vast::{StatMining, StatMiningAmount, Vast},
+        vast::{StatMining, Vast},
     },
     ud::UItemKey,
 };
@@ -42,15 +43,15 @@ fn get_mps_item_key(
     item_key: UItemKey,
     ignore_state: bool,
     mining_getter_getter: fn(&REffect) -> Option<NMiningGetter>,
-) -> StatMiningAmount {
-    let mut item_mps = StatMiningAmount::default();
+) -> MiningAmount {
+    let mut item_mps = MiningAmount::default();
     let cycle_map = match get_item_cycle_info(ctx, calc, item_key, MINING_CYCLE_OPTIONS, ignore_state) {
         Some(cycle_map) => cycle_map,
         None => return item_mps,
     };
     for (effect_key, cycle) in cycle_map {
-        let r_effect = ctx.u_data.src.get_effect(effect_key);
-        if let Some(effect_mps) = get_mps_effect(ctx, calc, item_key, r_effect, cycle, mining_getter_getter) {
+        let effect = ctx.u_data.src.get_effect(effect_key);
+        if let Some(effect_mps) = get_mps_effect(ctx, calc, item_key, effect, cycle, mining_getter_getter) {
             item_mps += effect_mps;
         }
     }
@@ -64,12 +65,12 @@ fn get_mps_effect(
     effect: &REffect,
     effect_cycle: Cycle,
     mining_getter_getter: fn(&REffect) -> Option<NMiningGetter>,
-) -> Option<StatMiningAmount> {
+) -> Option<MiningAmount> {
     if !effect_cycle.is_infinite() {
         return None;
     }
     let mining_getter = mining_getter_getter(effect)?;
-    let mining_amount = mining_getter(ctx, calc, item_key)?;
+    let mining_amount = mining_getter(ctx, calc, item_key, effect)?;
     Some(mining_amount.get_total() / effect_cycle.get_average_cycle_time())
 }
 

@@ -1,12 +1,13 @@
 use crate::{
     def::OF,
+    misc::MiningAmount,
     nd::NMiningGetter,
     rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatMining, StatMiningAmount, StatMiningItemKinds, Vast},
+        vast::{StatMining, StatMiningItemKinds, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
@@ -54,8 +55,8 @@ fn get_mps(
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     fit_data: &RMapRMap<UItemKey, REffectKey, NMiningGetter>,
-) -> StatMiningAmount {
-    let mut mps = StatMiningAmount::new(OF(0.0), OF(0.0));
+) -> MiningAmount {
+    let mut mps = MiningAmount::new(OF(0.0), OF(0.0));
     for (&item_key, item_data) in fit_data.iter() {
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, MINING_CYCLE_OPTIONS, false) {
             Some(cycle_map) => cycle_map,
@@ -66,7 +67,8 @@ fn get_mps(
             continue;
         }
         for (&effect_key, neut_getter) in item_data.iter() {
-            let output_per_cycle = match neut_getter(ctx, calc, item_key) {
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            let output_per_cycle = match neut_getter(ctx, calc, item_key, effect) {
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };

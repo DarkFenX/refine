@@ -20,18 +20,18 @@ impl From<rc::stats::StatMining> for HStatMining {
 #[derive(serde_tuple::Serialize_tuple)]
 struct HStatMiningAmount {
     yield_: rc::AttrVal,
-    residue: rc::AttrVal,
+    waste: rc::AttrVal,
 }
 impl HStatMiningAmount {
     fn is_null(&self) -> bool {
-        self.yield_.into_inner() == 0.0 && self.residue.into_inner() == 0.0
+        self.yield_.into_inner() == 0.0 && self.waste.into_inner() == 0.0
     }
 }
-impl From<rc::stats::StatMiningAmount> for HStatMiningAmount {
-    fn from(core_stat: rc::stats::StatMiningAmount) -> Self {
+impl From<rc::MiningAmount> for HStatMiningAmount {
+    fn from(core_stat: rc::MiningAmount) -> Self {
         Self {
             yield_: core_stat.yield_,
-            residue: core_stat.residue,
+            waste: core_stat.waste,
         }
     }
 }
