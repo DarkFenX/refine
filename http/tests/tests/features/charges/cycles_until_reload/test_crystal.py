@@ -61,6 +61,83 @@ def test_basic_damaged(client, consts):
     assert api_module.update().cycles_until_empty == 1000
 
 
+def test_damage_cycle_count(client, consts):
+    # Count of cycles to kill a crystal is integer, so there should be no difference between some
+    # float damage values
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_dmg_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
+    eve_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_chance)
+    eve_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_crystal,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_charge1_id = client.mk_eve_item(attrs={
+        eve_volume_attr_id: 1,
+        eve_dmg_flag_attr_id: 1,
+        eve_hp_attr_id: 1,
+        eve_chance_attr_id: 0.1,
+        eve_dmg_attr_id: 0.5})
+    eve_charge2_id = client.mk_eve_item(attrs={
+        eve_volume_attr_id: 1,
+        eve_dmg_flag_attr_id: 1,
+        eve_hp_attr_id: 1,
+        eve_chance_attr_id: 0.1,
+        eve_dmg_attr_id: 0.99})
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_capacity_attr_id: 1, eve_cycle_time_attr_id: 1000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
+    # Verification
+    assert api_module.update().cycles_until_empty == 20
+    # Action
+    api_module.change_module(charge_type_id=eve_charge2_id)
+    # Verification
+    assert api_module.update().cycles_until_empty == 20
+
+
+def test_damage_cycle_accuracy(client, consts):
+    # This is an actual case in EVE, as of 2025-11-15 - B-type mining crystals have 0.05 damage and
+    # 0.05 chance. If calculation was like in pyfa, it'd be 1 / (0.05 * 0.05) = 399.99999999999994,
+    # which would be rounded down to 399. Implementation in the lib is different now, so this case
+    # wouldn't happen even without rounding, but test case is here just in case implementation
+    # changes.
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    eve_dmg_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
+    eve_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_chance)
+    eve_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.cycle_crystal,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_charge_id = client.mk_eve_item(attrs={
+        eve_volume_attr_id: 1,
+        eve_dmg_flag_attr_id: 1,
+        eve_hp_attr_id: 1,
+        eve_chance_attr_id: 0.05,
+        eve_dmg_attr_id: 0.05})
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_capacity_attr_id: 1, eve_cycle_time_attr_id: 1000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    # Verification
+    assert api_module.update().cycles_until_empty == 400
+
+
 def test_damage_flag_values(client, consts):
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)

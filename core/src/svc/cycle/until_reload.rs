@@ -4,7 +4,7 @@ use crate::{
     rd,
     svc::SvcCtx,
     ud::{UItem, UModule},
-    util::{InfCount, trunc_unerr},
+    util::{InfCount, ceil_unerr, trunc_unerr},
 };
 
 pub(super) fn get_autocharge_cycle_count(item: &UItem, effect: &rd::REffect) -> InfCount {
@@ -105,6 +105,7 @@ pub(super) fn get_crystal_cycle_count(
         None => return InfCount::Infinite,
     };
     let hp = charge_attrs.get(&ac::attrs::HP).copied().unwrap_or(OF(0.0));
-    let cycle_count_per_charge = trunc_unerr(hp / (dmg * chance)).into_inner() as Count;
+    let procs_until_killed = ceil_unerr(hp / dmg);
+    let cycle_count_per_charge = trunc_unerr(procs_until_killed / chance).into_inner() as Count;
     InfCount::Count(charge_count * cycle_count_per_charge)
 }
