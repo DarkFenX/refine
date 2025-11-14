@@ -4,8 +4,14 @@ import typing
 from tests.fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
+    from .opt_cap import StatsOptionCapBalance, StatsOptionCapSim
+    from .opt_dmg import StatsOptionItemDps, StatsOptionItemVolley
+    from .opt_ehp import StatsOptionEhp
     from .opt_mining import StatsOptionItemMining
-    from .opt_shared import StatsOptionCapBalance, StatsOptionCapSim, StatsOptionEhp, StatsOptionErps, StatsOptionRps
+    from .opt_remote_cps import StatsOptionItemRemoteCps
+    from .opt_remote_nps import StatsOptionItemRemoteNps
+    from .opt_remote_rps import StatsOptionItemRemoteRps
+    from .opt_rps import StatsOptionErps, StatsOptionRps
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -43,61 +49,6 @@ class ItemStatsOptions:
     cap_balance: bool | tuple[bool, list[StatsOptionCapBalance]] | type[Absent] = Absent
     cap_sim: bool | tuple[bool, list[StatsOptionCapSim]] | type[Absent] = Absent
     neut_resist: bool | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatsOptionItemDps:
-
-    reload: bool | type[Absent] = Absent
-    spool: str | type[Absent] = Absent
-    include_charges: bool | type[Absent] = Absent
-    ignore_state: bool | type[Absent] = Absent
-    projectee_item_id: str | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatsOptionItemVolley:
-
-    spool: str | type[Absent] = Absent
-    include_charges: bool | type[Absent] = Absent
-    ignore_state: bool | type[Absent] = Absent
-    projectee_item_id: str | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatsOptionItemRemoteRps:
-
-    spool: str | type[Absent] = Absent
-    ignore_state: bool | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatsOptionItemRemoteCps:
-
-    ignore_state: bool | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatsOptionItemRemoteNps:
-
-    include_charges: bool | type[Absent] = Absent
-    ignore_state: bool | type[Absent] = Absent
-    projectee_item_id: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

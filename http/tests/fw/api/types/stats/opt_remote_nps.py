@@ -4,6 +4,27 @@ from tests.fw.util import Absent, dc_to_dict
 
 
 @dataclasses.dataclass(kw_only=True)
+class StatsOptionFitRemoteNps:
+
+    item_kinds: StatNeutItemKinds | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionItemRemoteNps:
+
+    include_charges: bool | type[Absent] = Absent
+    ignore_state: bool | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
 class StatNeutItemKinds:
 
     default: bool | type[Absent] = Absent

@@ -4,6 +4,15 @@ from tests.fw.util import Absent, dc_to_dict
 
 
 @dataclasses.dataclass(kw_only=True)
+class StatsOptionCapBalance:
+
+    src_kinds: StatCapSrcKinds | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
 class StatCapSrcKinds:
 
     default: bool | type[Absent] = Absent
@@ -30,6 +39,16 @@ class StatCapRegenOptions:
 class StatCapConsumerOptions:
 
     reload: bool | type[Absent] = Absent
+
+    def to_dict(self) -> dict:
+        return dc_to_dict(data=self)
+
+
+@dataclasses.dataclass(kw_only=True)
+class StatsOptionCapSim:
+
+    cap_perc: float | type[Absent] = Absent
+    stagger: bool | tuple[bool, list[str]] | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

@@ -4,8 +4,10 @@ import typing
 from tests.fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
+    from .opt_dmg import StatsOptionFitDps, StatsOptionFitVolley
     from .opt_mining import StatsOptionFitMining
-    from .opt_shared import StatsOptionFitDps, StatsOptionFitRemoteNps, StatsOptionFitRemoteRps, StatsOptionFitVolley
+    from .opt_remote_nps import StatsOptionFitRemoteNps
+    from .opt_remote_rps import StatsOptionFitRemoteRps
 
 
 @dataclasses.dataclass(kw_only=True)
