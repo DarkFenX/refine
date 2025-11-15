@@ -70,6 +70,7 @@ pub(crate) const DOOMSDAY_AOE_NEUT: EEffectId = 6477;
 pub(crate) const DOOMSDAY_AOE_PAINT: EEffectId = 6478;
 pub(crate) const DOOMSDAY_AOE_TRACK: EEffectId = 6479;
 pub(crate) const DOOMSDAY_AOE_DAMP: EEffectId = 6481;
+pub(crate) const EMERGENCY_HULL_ENERGIZER: EEffectId = 6484;
 pub(crate) const FTR_ABIL_BOMB: EEffectId = 6485;
 pub(crate) const DOOMSDAY_AOE_ECM: EEffectId = 6513;
 pub(crate) const FTR_ABIL_KAMIKAZE: EEffectId = 6554;

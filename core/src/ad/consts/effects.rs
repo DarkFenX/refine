@@ -75,6 +75,7 @@ pub(crate) const DOOMSDAY_AOE_NEUT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_A
 pub(crate) const DOOMSDAY_AOE_PAINT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_PAINT);
 pub(crate) const DOOMSDAY_AOE_TRACK: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_TRACK);
 pub(crate) const DOOMSDAY_AOE_DAMP: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_DAMP);
+pub(crate) const EMERGENCY_HULL_ENERGIZER: AEffectId = AEffectId::Dogma(ece::EMERGENCY_HULL_ENERGIZER);
 pub(crate) const FTR_ABIL_BOMB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_BOMB);
 pub(crate) const DOOMSDAY_AOE_ECM: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_ECM);
 pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_KAMIKAZE);

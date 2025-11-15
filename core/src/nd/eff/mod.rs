@@ -57,6 +57,7 @@ mod eff_d6424_ship_mod_tracking_disruptor;
 mod eff_d6425_remote_target_paint_falloff;
 mod eff_d6426_remote_webifier_falloff;
 mod eff_d6427_remote_sensor_boost_falloff;
+mod eff_d6442_ftr_abil_micro_jump_drive;
 mod eff_d6443_point_defense;
 mod eff_d6470_remote_ecm_falloff;
 mod eff_d6476_doomsday_aoe_web;
@@ -64,6 +65,7 @@ mod eff_d6477_doomsday_aoe_neut;
 mod eff_d6478_doomsday_aoe_paint;
 mod eff_d6479_doomsday_aoe_track;
 mod eff_d6481_doomsday_aoe_damp;
+mod eff_d6484_emergency_hull_energizer;
 mod eff_d6485_ftr_abil_bomb;
 mod eff_d6513_doomsday_aoe_ecm;
 mod eff_d660_missile_em_dmg_bonus;
@@ -172,6 +174,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6425_remote_target_paint_falloff::mk_n_effect(),
         eff_d6426_remote_webifier_falloff::mk_n_effect(),
         eff_d6427_remote_sensor_boost_falloff::mk_n_effect(),
+        eff_d6442_ftr_abil_micro_jump_drive::mk_n_effect(),
         eff_d6443_point_defense::mk_n_effect(),
         eff_d6470_remote_ecm_falloff::mk_n_effect(),
         eff_d6476_doomsday_aoe_web::mk_n_effect(),
@@ -179,6 +182,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6478_doomsday_aoe_paint::mk_n_effect(),
         eff_d6479_doomsday_aoe_track::mk_n_effect(),
         eff_d6481_doomsday_aoe_damp::mk_n_effect(),
+        eff_d6484_emergency_hull_energizer::mk_n_effect(),
         eff_d6485_ftr_abil_bomb::mk_n_effect(),
         eff_d6513_doomsday_aoe_ecm::mk_n_effect(),
         eff_d6651_ship_mod_ancillary_remote_armor_repairer::mk_n_effect(),
