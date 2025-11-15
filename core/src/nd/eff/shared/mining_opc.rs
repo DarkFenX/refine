@@ -37,7 +37,7 @@ pub(in crate::nd::eff) fn get_mining_values(
     let waste = match waste_chance > OF(0.0) {
         true => {
             let waste_mult = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::MINING_WASTED_VOLUME_MULT)?;
-            waste_chance * yield_ * waste_mult / OF(100.0)
+            yield_ * waste_mult * (waste_chance / OF(100.0)).clamp(OF(0.0), OF(1.0))
         }
         false => OF(0.0),
     };

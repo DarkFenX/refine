@@ -69,7 +69,7 @@ fn get_mining_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, effect: &REf
     let yield_ = match crit_chance > OF(0.0) {
         true => {
             let crit_bonus = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::MINING_CRIT_BONUS_YIELD)?;
-            yield_ * (OF(1.0) + crit_chance * crit_bonus)
+            yield_ * (OF(1.0) + crit_chance.clamp(OF(0.0), OF(1.0)) * crit_bonus)
         }
         false => yield_,
     };
