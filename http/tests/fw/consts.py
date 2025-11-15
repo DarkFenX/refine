@@ -6,6 +6,7 @@ class EveItem(IntEnum):
     missile_launcher_operation = 3319
     high_speed_maneuvering = 3454
     micro_jump_drive_operation = 4385
+    ice_harvesting = 16281
     capital_ships = 20533
     thermodynamics = 28164
     nanite_repair_paste = 28668
@@ -71,6 +72,7 @@ class EveEffect(IntEnum):
     hi_power = 12
     med_power = 13
     online = 16
+    mining = 17
     structure_repair = 26
     armor_repair = 27
     projectile_fired = 34
