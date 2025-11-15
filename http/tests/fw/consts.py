@@ -80,6 +80,7 @@ class EveEffect(IntEnum):
     launcher_fitted = 40
     turret_fitted = 42
     power_booster = 48
+    mining_laser = 67
     use_missiles = 101
     defender_missile_launching = 103
     fof_missile_launching = 104
@@ -459,6 +460,8 @@ class EveAttr(IntEnum):
     dot_max_hp_perc_per_tick = 5737
     max_directional_scan_range = 5796
     can_fit_ship_type12 = 5948
+    mining_crit_chance = 5967
+    mining_crit_bonus_yield = 5969
 
 
 @unique
