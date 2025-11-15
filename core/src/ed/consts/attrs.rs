@@ -251,3 +251,5 @@ pub(crate) const DOT_MAX_DMG_PER_TICK: EAttrId = 5736;
 pub(crate) const DOT_MAX_HP_PERC_PER_TICK: EAttrId = 5737;
 pub(crate) const MAX_DIRECTIONAL_SCAN_RANGE: EAttrId = 5796;
 pub(crate) const CAN_FIT_SHIP_TYPE12: EAttrId = 5948;
+pub(crate) const MINING_CRIT_CHANCE: EAttrId = 5967;
+pub(crate) const MINING_CRIT_BONUS_YIELD: EAttrId = 5969;
