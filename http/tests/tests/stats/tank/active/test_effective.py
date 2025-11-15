@@ -241,3 +241,31 @@ def test_immunity(client, consts):
         approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(31.746032), approx(1.428571)]
     assert api_ship_uniform.armor == [approx(7619.047619), approx(3273.904761), approx(3273.904761), approx(1.904762)]
     assert api_ship_uniform.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
+
+
+def test_shield_regen(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        hps=(100000, 100000, 100000),
+        shield_regen=11250000,
+        resos_shield=(1, 0.8, 0.6, 0.4))
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_options = [
+        StatsOptionErps(),
+        StatsOptionErps(shield_perc=0),
+        StatsOptionErps(shield_perc=0.1),
+        StatsOptionErps(shield_perc=0.25),
+        StatsOptionErps(shield_perc=0.7),
+        StatsOptionErps(shield_perc=1)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(erps=(True, api_options)))
+    assert api_fit_stats.erps.map(lambda i: i.shield.regen) == [
+        approx(31.746032), 0, approx(27.457494), approx(31.746032), approx(17.353654), 0]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(erps=(True, api_options)))
+    assert api_ship_stats.erps.map(lambda i: i.shield.regen) == [
+        approx(31.746032), 0, approx(27.457494), approx(31.746032), approx(17.353654), 0]

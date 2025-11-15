@@ -1,5 +1,5 @@
 from tests import ANY_VALUE, approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
 from tests.tests.stats.tank import (
     make_eve_drone_shield,
     make_eve_local_asb,
@@ -250,3 +250,57 @@ def test_no_cycle_time(client, consts):
     assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
+
+
+def test_regen_shield_perc(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(
+        client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000), shield_regen=900000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_options = [
+        StatsOptionRps(),
+        StatsOptionRps(shield_perc=0),
+        StatsOptionRps(shield_perc=0.1),
+        StatsOptionRps(shield_perc=0.25),
+        StatsOptionRps(shield_perc=0.7),
+        StatsOptionRps(shield_perc=1),
+        StatsOptionRps(shield_perc=-2),
+        StatsOptionRps(shield_perc=25)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rps=(True, api_options)))
+    assert api_fit_stats.rps.map(lambda i: i.shield.regen) == [
+        approx(8.333333), 0, approx(7.207592), approx(8.333333), approx(4.555334), 0, 0, 0]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(rps=(True, api_options)))
+    assert api_ship_stats.rps.map(lambda i: i.shield.regen) == [
+        approx(8.333333), 0, approx(7.207592), approx(8.333333), approx(4.555334), 0, 0, 0]
+
+
+def test_regen_time_zero(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000), shield_regen=0)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_fit_stats.rps.one().shield.regen == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_ship_stats.rps.one().shield.regen == 0
+
+
+def test_regen_capacity_and_time_zero(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(0, 1000, 1000), shield_regen=0)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_fit_stats.rps.one().shield.regen == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_ship_stats.rps.one().shield.regen == 0

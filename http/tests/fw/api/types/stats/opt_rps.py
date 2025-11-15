@@ -10,6 +10,7 @@ if typing.TYPE_CHECKING:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionRps:
 
+    shield_perc: float | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
@@ -20,6 +21,7 @@ class StatsOptionRps:
 class StatsOptionErps:
 
     incoming_dps: DpsProfile | type[Absent] = Absent
+    shield_perc: float | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
