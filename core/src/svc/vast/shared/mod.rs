@@ -7,7 +7,7 @@ pub use remote_nps_opt::StatNeutItemKinds;
 pub use remote_rps_opt::StatRemoteRepItemKinds;
 pub use sensor::{StatSensor, StatSensorKind};
 pub(in crate::svc::vast) use slot::get_attr_as_count;
-pub use tank::StatTank;
+pub use tank::{StatTank, StatTankRegen};
 
 mod breacher;
 mod dmg_opt;

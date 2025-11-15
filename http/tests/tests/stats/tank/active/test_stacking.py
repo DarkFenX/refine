@@ -1,4 +1,4 @@
-from tests import Spool, approx
+from tests import ANY_VALUE, Spool, approx
 from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
 from tests.tests.stats.tank import (
     make_eve_remote_ar,
@@ -33,22 +33,22 @@ def test_layers(client, consts):
     add_reps()
     # Verification - due to penalty formula, one rep per layer is never penalized
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(1718.8), approx(1718.8)]
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(1718.8), approx(1718.8), ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [0, approx(1718.8), approx(1718.8)]
     assert api_tgt_fit_stats.rps.one().hull == [0, approx(1718.8), approx(1718.8)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(1718.8), approx(1718.8)]
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(1718.8), approx(1718.8), ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, approx(1718.8), approx(1718.8)]
     assert api_tgt_ship_stats.rps.one().hull == [0, approx(1718.8), approx(1718.8)]
     # Action
     add_reps()
     # Verification - penalties appear from 2nd rep
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(3437.6), approx(3432.543077)]
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(3437.6), approx(3432.543077), ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [0, approx(3437.6), approx(3432.543077)]
     assert api_tgt_fit_stats.rps.one().hull == [0, approx(3437.6), approx(3432.543077)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(3437.6), approx(3432.543077)]
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(3437.6), approx(3432.543077), ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, approx(3437.6), approx(3432.543077)]
     assert api_tgt_ship_stats.rps.one().hull == [0, approx(3437.6), approx(3432.543077)]
     # Action
@@ -56,11 +56,11 @@ def test_layers(client, consts):
         add_reps()
     # Verification - as reps get added, penalty increases
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(17188), approx(15988.777992)]
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(17188), approx(15988.777992), ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [0, approx(17188), approx(15988.777992)]
     assert api_tgt_fit_stats.rps.one().hull == [0, approx(17188), approx(15988.777992)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(17188), approx(15988.777992)]
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(17188), approx(15988.777992), ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, approx(17188), approx(15988.777992)]
     assert api_tgt_ship_stats.rps.one().hull == [0, approx(17188), approx(15988.777992)]
 
@@ -86,9 +86,9 @@ def test_rounding(client, consts):
         api_mod.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427)]
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427)]
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427), ANY_VALUE]
     # Action
     for api_mod in api_mods:
         api_mod.change_module(type_id=eve_module2_id)
@@ -96,9 +96,9 @@ def test_rounding(client, consts):
     # second in RR penalty multiplier calculation. In extreme cases like this, faster cycling rep
     # can lead to lower amount of RR/s applied to target ship
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027)]
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027)]
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027), ANY_VALUE]
 
 
 def test_range(client, consts):
@@ -124,16 +124,16 @@ def test_range(client, consts):
         api_mod.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516)]
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516)]
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516), ANY_VALUE]
     # Action
     api_tgt_ship.change_ship(coordinates=(79500, 0, 0))
     # Verification - raw reps are cut in half, penalized are cut less
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313)]
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313)]
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313), ANY_VALUE]
 
 
 def test_spool(client, consts):

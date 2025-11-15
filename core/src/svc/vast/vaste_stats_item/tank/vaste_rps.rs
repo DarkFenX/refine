@@ -9,10 +9,10 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::StatItemCheckError,
-        vast::{StatTank, Vast},
+        vast::{StatTankRegen, Vast},
     },
     ud::{UItem, UItemKey},
-    util::{RMapRMap, RMapRMapRMap, trunc_unerr},
+    util::{RMapRMap, RMapRMapRMap, UnitInterval, trunc_unerr},
 };
 
 pub struct StatLayerRps {
@@ -21,17 +21,25 @@ pub struct StatLayerRps {
     pub remote_penalized: AttrVal,
 }
 
+pub struct StatLayerRpsRegen {
+    pub local: AttrVal,
+    pub remote: AttrVal,
+    pub remote_penalized: AttrVal,
+    pub regen: AttrVal,
+}
+
 impl Vast {
     pub(in crate::svc) fn get_stat_item_rps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
+        shield_perc: UnitInterval,
         spool: Option<Spool>,
-    ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
+    ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, StatItemCheckError> {
         let u_item = ctx.u_data.items.get(item_key);
         check_item_drone_fighter_ship(item_key, u_item)?;
-        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, u_item, spool))
+        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, u_item, shield_perc, spool))
     }
     pub(super) fn get_stat_item_rps_unchecked(
         &self,
@@ -39,8 +47,9 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         u_item: &UItem,
+        shield_perc: UnitInterval,
         spool: Option<Spool>,
-    ) -> StatTank<StatLayerRps> {
+    ) -> StatTankRegen<StatLayerRps, StatLayerRpsRegen> {
         // Local reps
         let (local_shield, local_armor, local_hull) = match u_item {
             UItem::Ship(u_ship) => {
@@ -56,11 +65,12 @@ impl Vast {
         let shield_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_shield);
         let armor_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_armor);
         let hull_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_hull);
-        StatTank {
-            shield: StatLayerRps {
+        StatTankRegen {
+            shield: StatLayerRpsRegen {
                 local: local_shield,
                 remote: irr_data_to_raw(&shield_irr_data),
                 remote_penalized: irr_data_to_penalized(shield_irr_data),
+                regen: OF(0.0),
             },
             armor: StatLayerRps {
                 local: local_armor,

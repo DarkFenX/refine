@@ -5,13 +5,13 @@ import typing
 @dataclasses.dataclass
 class StatRps:
 
-    shield: StatLayerRps
+    shield: StatLayerRpsRegen
     armor: StatLayerRps
     hull: StatLayerRps
 
     def __init__(self, *, data: list | tuple) -> None:
         shield, armor, hull = data
-        self.shield = StatLayerRps(data=shield)
+        self.shield = StatLayerRpsRegen(data=shield)
         self.armor = StatLayerRps(data=armor)
         self.hull = StatLayerRps(data=hull)
 
@@ -43,3 +43,24 @@ class StatLayerRps:
         if isinstance(other, tuple):
             other = list(other)
         return [self.local, self.remote, self.remote_penalized] == other
+
+
+@dataclasses.dataclass
+class StatLayerRpsRegen:
+
+    local: float
+    remote: float
+    remote_penalized: float
+    regen: float
+
+    def __init__(self, *, data: list | tuple) -> None:
+        self.local, self.remote, self.remote_penalized, self.regen = data
+
+    def __getitem__(self, item: int) -> typing.Any:
+        field = dataclasses.fields(self)[item]
+        return getattr(self, field.name)
+
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.local, self.remote, self.remote_penalized, self.regen] == other

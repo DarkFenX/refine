@@ -14,7 +14,8 @@ use crate::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps,
-            StatLayerHp, StatLayerRps, StatMining, StatSensor, StatTank,
+            StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensor, StatTank,
+            StatTankRegen,
         },
     },
     ud::{UEffectUpdates, UItemKey},
@@ -323,22 +324,27 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_wc_ehp(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_rps(&mut self, spool: Option<Spool>) -> Result<StatTank<StatLayerRps>, ItemStatError> {
+    fn get_stat_rps(
+        &mut self,
+        shield_perc: UnitInterval,
+        spool: Option<Spool>,
+    ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_rps(&sol.u_data, item_key, spool)
+            .get_stat_item_rps(&sol.u_data, item_key, shield_perc, spool)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_erps(
         &mut self,
         incoming_dps: Option<DpsProfile>,
+        shield_perc: UnitInterval,
         spool: Option<Spool>,
-    ) -> Result<StatTank<Option<StatLayerErps>>, ItemStatError> {
+    ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_erps(&sol.u_data, item_key, incoming_dps, spool)
+            .get_stat_item_erps(&sol.u_data, item_key, incoming_dps, shield_perc, spool)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, ItemStatError> {

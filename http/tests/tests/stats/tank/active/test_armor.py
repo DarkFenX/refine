@@ -43,11 +43,11 @@ def test_state_ship(client, consts):
     api_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [approx(96.583333), approx(234.9), ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [approx(96.583333), approx(234.9), ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
     # Action
@@ -59,11 +59,11 @@ def test_state_ship(client, consts):
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
     # Action
@@ -75,11 +75,11 @@ def test_state_ship(client, consts):
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [approx(96.583333), approx(234.9), ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [approx(96.583333), approx(234.9), ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
 
@@ -114,7 +114,7 @@ def test_drone(client, consts):
     api_src_drone.change_drone(add_projs=[api_tgt_drone.id])
     # Verification - local reps do not affect drones
     api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_drone_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_drone_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_drone_stats.rps.one().armor == [0, approx(234.9), ANY_VALUE]
     assert api_tgt_drone_stats.rps.one().hull == [0, 0, ANY_VALUE]
 
@@ -151,11 +151,11 @@ def test_hp_limit_and_resist(client, consts):
     # but not limited, ancillary is boosted enough by paste to be limited despite resistance, spool
     # rep is resisted and limited, drone is just resisted
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [approx(35), approx(108.533333), ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [approx(35), approx(108.533333), ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
 
@@ -216,11 +216,11 @@ def test_hp_limit_and_range(client, consts):
     # Verification - range completely disables drone and spool rep, the rest work the same as in the
     # resistance test
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [approx(35), approx(66.333333), ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [approx(35), approx(66.333333), ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
 
@@ -280,11 +280,11 @@ def test_zero_cycle_time(client, consts):
     api_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
 
@@ -319,10 +319,10 @@ def test_no_cycle_time(client, consts):
     api_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE]
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]

@@ -22,12 +22,55 @@ where
         }
     }
 }
-impl<T, U> From<rc::stats::StatTank<U>> for HStatTank<T>
+impl<T, CT> From<rc::stats::StatTank<CT>> for HStatTank<T>
 where
     T: serde::Serialize,
-    U: Into<T>,
+    CT: Into<T>,
 {
-    fn from(core_stat: rc::stats::StatTank<U>) -> Self {
+    fn from(core_stat: rc::stats::StatTank<CT>) -> Self {
+        Self {
+            shield: core_stat.shield.into(),
+            armor: core_stat.armor.into(),
+            hull: core_stat.hull.into(),
+        }
+    }
+}
+
+#[derive(serde_tuple::Serialize_tuple)]
+pub(crate) struct HStatTankRegen<T, U>
+where
+    T: serde::Serialize,
+    U: serde::Serialize,
+{
+    shield: U,
+    armor: T,
+    hull: T,
+}
+impl<T, U> HStatTankRegen<Option<T>, Option<U>>
+where
+    T: serde::Serialize,
+    U: serde::Serialize,
+{
+    pub(crate) fn from_opt<CT, CU>(core_stat: rc::stats::StatTankRegen<Option<CT>, Option<CU>>) -> Self
+    where
+        CT: Into<T>,
+        CU: Into<U>,
+    {
+        Self {
+            shield: core_stat.shield.map(Into::into),
+            armor: core_stat.armor.map(Into::into),
+            hull: core_stat.hull.map(Into::into),
+        }
+    }
+}
+impl<T, U, CT, CU> From<rc::stats::StatTankRegen<CT, CU>> for HStatTankRegen<T, U>
+where
+    T: serde::Serialize,
+    U: serde::Serialize,
+    CT: Into<T>,
+    CU: Into<U>,
+{
+    fn from(core_stat: rc::stats::StatTankRegen<CT, CU>) -> Self {
         Self {
             shield: core_stat.shield.into(),
             armor: core_stat.armor.into(),
@@ -87,6 +130,24 @@ impl From<rc::stats::StatLayerRps> for HStatLayerRps {
 }
 
 #[derive(serde_tuple::Serialize_tuple)]
+pub(crate) struct HStatLayerRpsRegen {
+    local: rc::AttrVal,
+    remote: rc::AttrVal,
+    remote_penalized: rc::AttrVal,
+    regen: rc::AttrVal,
+}
+impl From<rc::stats::StatLayerRpsRegen> for HStatLayerRpsRegen {
+    fn from(core_stat: rc::stats::StatLayerRpsRegen) -> Self {
+        Self {
+            local: core_stat.local,
+            remote: core_stat.remote,
+            remote_penalized: core_stat.remote_penalized,
+            regen: core_stat.regen,
+        }
+    }
+}
+
+#[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HStatLayerErps {
     local: rc::AttrVal,
     remote: rc::AttrVal,
@@ -99,6 +160,26 @@ impl From<rc::stats::StatLayerErps> for HStatLayerErps {
             local: core_stat.local,
             remote: core_stat.remote,
             remote_penalized: core_stat.remote_penalized,
+            mult: core_stat.mult,
+        }
+    }
+}
+
+#[derive(serde_tuple::Serialize_tuple)]
+pub(crate) struct HStatLayerErpsRegen {
+    local: rc::AttrVal,
+    remote: rc::AttrVal,
+    remote_penalized: rc::AttrVal,
+    regen: rc::AttrVal,
+    mult: rc::AttrVal,
+}
+impl From<rc::stats::StatLayerErpsRegen> for HStatLayerErpsRegen {
+    fn from(core_stat: rc::stats::StatLayerErpsRegen) -> Self {
+        Self {
+            local: core_stat.local,
+            remote: core_stat.remote,
+            remote_penalized: core_stat.remote_penalized,
+            regen: core_stat.regen,
             mult: core_stat.mult,
         }
     }

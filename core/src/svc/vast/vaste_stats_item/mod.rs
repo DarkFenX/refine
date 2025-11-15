@@ -1,6 +1,6 @@
 pub(crate) use cap::StatCapSimStaggerInt;
 pub use cap::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
-pub use tank::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps};
+pub use tank::{StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen};
 
 mod cap;
 mod checks;

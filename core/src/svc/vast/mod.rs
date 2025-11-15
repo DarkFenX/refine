@@ -1,6 +1,6 @@
 pub use shared::{
     StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
-    StatRemoteRepItemKinds, StatSensor, StatSensorKind, StatTank,
+    StatRemoteRepItemKinds, StatSensor, StatSensorKind, StatTank, StatTankRegen,
 };
 pub use val_options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
@@ -11,7 +11,7 @@ pub use vaste_stats_fit::{StatRes, StatSlot};
 pub(crate) use vaste_stats_item::StatCapSimStaggerInt;
 pub use vaste_stats_item::{
     StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatLayerEhp,
-    StatLayerErps, StatLayerHp, StatLayerRps,
+    StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen,
 };
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,

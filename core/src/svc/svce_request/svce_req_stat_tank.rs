@@ -4,9 +4,13 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatLayerEhp, StatLayerErps, StatLayerHp, StatLayerRps, StatTank, Vast},
+        vast::{
+            StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatTank,
+            StatTankRegen, Vast,
+        },
     },
     ud::{UData, UItemKey},
+    util::UnitInterval,
 };
 
 impl Svc {
@@ -43,23 +47,31 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
+        shield_perc: UnitInterval,
         spool: Option<Spool>,
-    ) -> Result<StatTank<StatLayerRps>, StatItemCheckError> {
-        self.vast
-            .get_stat_item_rps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key, spool)
+    ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, StatItemCheckError> {
+        self.vast.get_stat_item_rps(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            item_key,
+            shield_perc,
+            spool,
+        )
     }
     pub(crate) fn get_stat_item_erps(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
         incoming_dps: Option<DpsProfile>,
+        shield_perc: UnitInterval,
         spool: Option<Spool>,
-    ) -> Result<StatTank<Option<StatLayerErps>>, StatItemCheckError> {
+    ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, StatItemCheckError> {
         self.vast.get_stat_item_erps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             incoming_dps,
+            shield_perc,
             spool,
         )
     }
