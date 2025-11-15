@@ -17,7 +17,6 @@ pub(in crate::nd::eff) fn get_mining_opc(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    crits: bool,
 ) -> Option<Output<MiningAmount>> {
     let delay = eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;
     let yield_amount = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::MINING_AMOUNT)?;

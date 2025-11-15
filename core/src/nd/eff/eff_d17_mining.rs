@@ -36,7 +36,7 @@ fn get_mining_ore_opc(
     if item.get_axt()?.is_ice_harvester {
         return None;
     }
-    mining_opc::get_mining_opc(ctx, calc, item_key, effect, false)
+    mining_opc::get_mining_opc(ctx, calc, item_key, effect)
 }
 
 fn get_mining_ice_opc(
@@ -49,5 +49,5 @@ fn get_mining_ice_opc(
     if !item.get_axt()?.is_ice_harvester {
         return None;
     }
-    mining_opc::get_mining_opc(ctx, calc, item_key, effect, false)
+    mining_opc::get_mining_opc(ctx, calc, item_key, effect)
 }
