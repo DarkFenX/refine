@@ -78,6 +78,7 @@ pub(crate) const FALLOFF_BONUS: EAttrId = 349;
 pub(crate) const MAX_RANGE_BONUS: EAttrId = 351;
 pub(crate) const MAX_ACTIVE_DRONES: EAttrId = 352;
 pub(crate) const DRONE_CONTROL_DISTANCE: EAttrId = 458;
+pub(crate) const SHIELD_RECHARGE_RATE: EAttrId = 479;
 pub(crate) const CAPACITOR_CAPACITY: EAttrId = 482;
 pub(crate) const ENTITY_CRUISE_SPEED: EAttrId = 508;
 pub(crate) const MISSILE_VELOCITY_BONUS: EAttrId = 547;

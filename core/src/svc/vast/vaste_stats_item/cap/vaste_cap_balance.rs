@@ -10,7 +10,7 @@ use crate::{
         calc::Calc,
         cycle::get_item_cycle_info,
         err::StatItemCheckError,
-        vast::{Vast, VastFitData},
+        vast::{Vast, VastFitData, shared::calc_regen},
     },
     ud::UItemKey,
     util::UnitInterval,
@@ -97,11 +97,7 @@ fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: Uni
         .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
         .unwrap()
         / OF(1000.0);
-    let result = OF(10.0) * max_amount / cap_regen_time * (OF(cap_perc.get_inner().sqrt()) - cap_perc.get_inner());
-    match result.is_finite() {
-        true => result,
-        false => OF(0.0),
-    }
+    calc_regen(max_amount, cap_regen_time, cap_perc.get_inner())
 }
 
 fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> AttrVal {

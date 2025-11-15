@@ -5,6 +5,7 @@ use ordered_float::Float;
 use super::event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector};
 use crate::{
     def::{AttrVal, OF},
+    svc::vast::shared::regenerate,
     util::UnitInterval,
 };
 
@@ -144,7 +145,7 @@ impl CapSim {
     }
     fn advance_time(&mut self, new_time: AttrVal) {
         if new_time > self.time {
-            self.cap = calc_regen(self.cap, self.max_cap, self.tau, self.time, new_time);
+            self.cap = regenerate(self.cap, self.max_cap, self.tau, self.time, new_time);
             self.time = new_time;
             self.process_high_watermark();
         }
@@ -236,8 +237,4 @@ impl CapSim {
             self.use_injector(injector);
         }
     }
-}
-
-fn calc_regen(c0: AttrVal, c_max: AttrVal, tau: AttrVal, t0: AttrVal, t1: AttrVal) -> AttrVal {
-    (OF(1.0) + ((c0 / c_max).sqrt() - OF(1.0)) * ((t0 - t1) / tau).exp()).powi(2) * c_max
 }

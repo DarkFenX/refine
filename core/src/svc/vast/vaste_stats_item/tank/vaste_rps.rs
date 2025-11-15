@@ -1,5 +1,6 @@
 use super::super::checks::check_item_drone_fighter_ship;
 use crate::{
+    ac,
     def::{AttrVal, OF},
     misc::Spool,
     nd::{NLocalRepGetter, NRemoteRepGetter},
@@ -9,7 +10,7 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::StatItemCheckError,
-        vast::{StatTankRegen, Vast},
+        vast::{StatTankRegen, Vast, shared::calc_regen},
     },
     ud::{UItem, UItemKey},
     util::{RMapRMap, RMapRMapRMap, UnitInterval, trunc_unerr},
@@ -65,12 +66,14 @@ impl Vast {
         let shield_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_shield);
         let armor_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_armor);
         let hull_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_hull);
+        // Regen
+        let shield_regen = get_shield_regen(ctx, calc, item_key, shield_perc);
         StatTankRegen {
             shield: StatLayerRpsRegen {
                 local: local_shield,
                 remote: irr_data_to_raw(&shield_irr_data),
                 remote_penalized: irr_data_to_penalized(shield_irr_data),
-                regen: OF(0.0),
+                regen: shield_regen,
             },
             armor: StatLayerRps {
                 local: local_armor,
@@ -181,4 +184,14 @@ fn irr_data_to_penalized(irr_data: Vec<IrrEntry>) -> AttrVal {
         result += mult * entry.amount / entry.cycle_time;
     }
     result
+}
+
+fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, shield_perc: UnitInterval) -> AttrVal {
+    let shield_hp = calc
+        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)
+        .unwrap();
+    let shield_regen_time = calc
+        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_RECHARGE_RATE)
+        .unwrap();
+    calc_regen(shield_hp, shield_regen_time, shield_perc.get_inner())
 }
