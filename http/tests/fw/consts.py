@@ -308,6 +308,7 @@ class EveAttr(IntEnum):
     implantness = 331
     max_active_drones = 352
     drone_control_distance = 458
+    shield_recharge_rate = 479
     capacitor_capacity = 482
     entity_cruise_speed = 508
     sig_radius = 552

@@ -12,6 +12,7 @@ class TankBasicInfo:
     # Buffer attrs
     res_max_attr_id: int
     shield_hp_attr_id: int
+    shield_regen_attr_id: int
     shield_res_em_attr_id: int
     shield_res_therm_attr_id: int
     shield_res_kin_attr_id: int
@@ -67,6 +68,7 @@ def setup_tank_basics(
     # Attributes - buffer
     eve_res_max_attr_id = client.mk_eve_attr(def_val=1)
     eve_shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
+    eve_shield_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_recharge_rate)
     eve_shield_em_attr_id = client.mk_eve_attr(
         id_=consts.EveAttr.shield_em_dmg_resonance,
         def_val=1,
@@ -235,6 +237,7 @@ def setup_tank_basics(
     return TankBasicInfo(
         res_max_attr_id=eve_res_max_attr_id,
         shield_hp_attr_id=eve_shield_hp_attr_id,
+        shield_regen_attr_id=eve_shield_regen_attr_id,
         shield_res_em_attr_id=eve_shield_em_attr_id,
         shield_res_therm_attr_id=eve_shield_therm_attr_id,
         shield_res_kin_attr_id=eve_shield_kin_attr_id,
@@ -284,6 +287,7 @@ def make_eve_tankable(
         client: TestClient,
         basic_info: TankBasicInfo,
         hps: tuple[float | None, float | None, float | None] | None = None,
+        shield_regen: float | None = None,
         resos_shield: tuple[float | None, float | None, float | None, float | None] | None = None,
         resos_armor: tuple[float | None, float | None, float | None, float | None] | None = None,
         resos_hull: tuple[float | None, float | None, float | None, float | None] | None = None,
@@ -295,6 +299,7 @@ def make_eve_tankable(
     if hps is not None:
         hp_attr_ids = (basic_info.shield_hp_attr_id, basic_info.armor_hp_attr_id, basic_info.hull_hp_attr_id)
         attrs.update({k: v for k, v in zip(hp_attr_ids, hps, strict=True) if v is not None})
+    conditional_insert(attrs=attrs, attr_id=basic_info.shield_regen_attr_id, value=shield_regen)
     if resos_shield is not None:
         shield_res_attr_ids = (
             basic_info.shield_res_em_attr_id,

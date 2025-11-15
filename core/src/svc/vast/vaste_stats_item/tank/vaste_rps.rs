@@ -192,6 +192,7 @@ fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, shield_per
         .unwrap();
     let shield_regen_time = calc
         .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_RECHARGE_RATE)
-        .unwrap();
+        .unwrap()
+        / OF(1000.0);
     calc_regen(shield_hp, shield_regen_time, shield_perc.get_inner())
 }
