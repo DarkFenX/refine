@@ -3,11 +3,11 @@ use crate::def::AttrVal;
 #[derive(Copy, Clone)]
 pub struct MiningAmount {
     pub yield_: AttrVal,
-    pub waste: AttrVal,
+    pub drain: AttrVal,
 }
 impl MiningAmount {
-    pub(crate) fn new(yield_: AttrVal, waste: AttrVal) -> MiningAmount {
-        Self { yield_, waste }
+    pub(crate) fn new(yield_: AttrVal, drain: AttrVal) -> MiningAmount {
+        Self { yield_, drain }
     }
 }
 impl Default for MiningAmount {
@@ -20,14 +20,14 @@ impl std::ops::Add<MiningAmount> for MiningAmount {
     fn add(self, rhs: MiningAmount) -> Self::Output {
         Self {
             yield_: self.yield_ + rhs.yield_,
-            waste: self.waste + rhs.waste,
+            drain: self.drain + rhs.drain,
         }
     }
 }
 impl std::ops::AddAssign<MiningAmount> for MiningAmount {
     fn add_assign(&mut self, rhs: MiningAmount) {
         self.yield_ += rhs.yield_;
-        self.waste += rhs.waste;
+        self.drain += rhs.drain;
     }
 }
 impl std::ops::Mul<AttrVal> for MiningAmount {
@@ -35,7 +35,7 @@ impl std::ops::Mul<AttrVal> for MiningAmount {
     fn mul(self, rhs: AttrVal) -> Self::Output {
         Self {
             yield_: self.yield_ * rhs,
-            waste: self.waste * rhs,
+            drain: self.drain * rhs,
         }
     }
 }
@@ -44,7 +44,7 @@ impl std::ops::Div<AttrVal> for MiningAmount {
     fn div(self, rhs: AttrVal) -> Self::Output {
         Self {
             yield_: self.yield_ / rhs,
-            waste: self.waste / rhs,
+            drain: self.drain / rhs,
         }
     }
 }

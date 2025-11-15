@@ -34,11 +34,11 @@ def test_state(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(0.4533333)]
+    assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(0.4533333)]
+    assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().gas == [approx(1.333333), approx(0.4533333)]
+    assert api_module_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
@@ -50,16 +50,16 @@ def test_state(client, consts):
         mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
     api_module_mps_normal, api_module_mps_ignored = api_module_stats.mps
     assert api_module_mps_normal.gas is None
-    assert api_module_mps_ignored.gas == [approx(1.333333), approx(0.4533333)]
+    assert api_module_mps_ignored.gas == [approx(1.333333), approx(1.786667)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(0.4533333)]
+    assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(0.4533333)]
+    assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().gas == [approx(1.333333), approx(0.4533333)]
+    assert api_module_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
 
 
 def test_stacking(client, consts):
@@ -90,11 +90,11 @@ def test_stacking(client, consts):
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().gas == [approx(4), approx(1.36)]
+    assert api_fleet_stats.mps.one().gas == [approx(4), approx(5.36)]
     api_fit1_stats = api_fit1.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit1_stats.mps.one().gas == [approx(2.666667), approx(0.9066667)]
+    assert api_fit1_stats.mps.one().gas == [approx(2.666667), approx(3.573333)]
     api_fit2_stats = api_fit2.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit2_stats.mps.one().gas == [approx(1.333333), approx(0.4533333)]
+    assert api_fit2_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
 
 
 def test_waste_chance(client, consts):
@@ -123,11 +123,11 @@ def test_waste_chance(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(1.333333)]
+    assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(2.666667)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(1.333333)]
+    assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(2.666667)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().gas == [approx(1.333333), approx(1.333333)]
+    assert api_module_stats.mps.one().gas == [approx(1.333333), approx(2.666667)]
 
 
 def test_no_waste(client, consts):
@@ -164,13 +164,13 @@ def test_no_waste(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().gas == [approx(2.666667), 0]
+    assert api_fleet_stats.mps.one().gas == [approx(2.666667), approx(2.666667)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().gas == [approx(2.666667), 0]
+    assert api_fit_stats.mps.one().gas == [approx(2.666667), approx(2.666667)]
     api_module1_stats = api_module1.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module1_stats.mps.one().gas == [approx(1.333333), 0]
+    assert api_module1_stats.mps.one().gas == [approx(1.333333), approx(1.333333)]
     api_module2_stats = api_module2.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module2_stats.mps.one().gas == [approx(1.333333), 0]
+    assert api_module2_stats.mps.one().gas == [approx(1.333333), approx(1.333333)]
 
 
 def test_item_kind(client, consts):
@@ -203,9 +203,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, module=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))])))
     assert api_fleet_stats.mps.map(lambda i: i.gas) == [
-        [approx(1.333333), approx(0.4533333)],
-        [approx(1.333333), approx(0.4533333)],
-        [approx(1.333333), approx(0.4533333)],
+        [approx(1.333333), approx(1.786667)],
+        [approx(1.333333), approx(1.786667)],
+        [approx(1.333333), approx(1.786667)],
         None]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
         StatsOptionFitMining(),
@@ -213,9 +213,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, module=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))])))
     assert api_fit_stats.mps.map(lambda i: i.gas) == [
-        [approx(1.333333), approx(0.4533333)],
-        [approx(1.333333), approx(0.4533333)],
-        [approx(1.333333), approx(0.4533333)],
+        [approx(1.333333), approx(1.786667)],
+        [approx(1.333333), approx(1.786667)],
+        [approx(1.333333), approx(1.786667)],
         None]
 
 

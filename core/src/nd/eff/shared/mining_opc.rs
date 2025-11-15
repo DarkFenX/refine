@@ -18,9 +18,9 @@ pub(in crate::nd::eff) fn get_mining_opc(
     item_key: UItemKey,
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
-    let (delay, yield_, waste) = get_mining_values(ctx, calc, item_key, effect)?;
+    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
     Some(Output::Simple(OutputSimple {
-        amount: MiningAmount { yield_, waste },
+        amount: MiningAmount { yield_, drain },
         delay,
     }))
 }
@@ -41,5 +41,5 @@ pub(in crate::nd::eff) fn get_mining_values(
         }
         false => OF(0.0),
     };
-    Some((delay, yield_, waste))
+    Some((delay, yield_, yield_ + waste))
 }

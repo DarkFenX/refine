@@ -36,11 +36,11 @@ def test_state(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(45.514024), approx(27.308414)]
+    assert api_fleet_stats.mps.one().ice == [approx(45.514024), approx(72.822438)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(45.514024), approx(27.308414)]
+    assert api_fit_stats.mps.one().ice == [approx(45.514024), approx(72.822438)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ice == [approx(45.514024), approx(27.308414)]
+    assert api_drone_stats.mps.one().ice == [approx(45.514024), approx(72.822438)]
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
@@ -52,16 +52,16 @@ def test_state(client, consts):
         mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
     api_drone_mps_normal, api_drone_mps_ignored = api_drone_stats.mps
     assert api_drone_mps_normal.ice is None
-    assert api_drone_mps_ignored.ice == [approx(45.514024), approx(27.308414)]
+    assert api_drone_mps_ignored.ice == [approx(45.514024), approx(72.822438)]
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(45.514024), approx(27.308414)]
+    assert api_fleet_stats.mps.one().ice == [approx(45.514024), approx(72.822438)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(45.514024), approx(27.308414)]
+    assert api_fit_stats.mps.one().ice == [approx(45.514024), approx(72.822438)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ice == [approx(45.514024), approx(27.308414)]
+    assert api_drone_stats.mps.one().ice == [approx(45.514024), approx(72.822438)]
 
 
 def test_stacking(client, consts):
@@ -94,11 +94,11 @@ def test_stacking(client, consts):
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(136.542072), approx(81.925243)]
+    assert api_fleet_stats.mps.one().ice == [approx(136.542072), approx(218.467315)]
     api_fit1_stats = api_fit1.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit1_stats.mps.one().ice == [approx(91.028048), approx(54.616829)]
+    assert api_fit1_stats.mps.one().ice == [approx(91.028048), approx(145.644877)]
     api_fit2_stats = api_fit2.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit2_stats.mps.one().ice == [approx(45.514024), approx(27.308414)]
+    assert api_fit2_stats.mps.one().ice == [approx(45.514024), approx(72.822438)]
 
 
 def test_waste_chance(client, consts):
@@ -129,11 +129,11 @@ def test_waste_chance(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(45.514024), approx(45.514024)]
+    assert api_fleet_stats.mps.one().ice == [approx(45.514024), approx(91.028048)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(45.514024), approx(45.514024)]
+    assert api_fit_stats.mps.one().ice == [approx(45.514024), approx(91.028048)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ice == [approx(45.514024), approx(45.514024)]
+    assert api_drone_stats.mps.one().ice == [approx(45.514024), approx(91.028048)]
 
 
 def test_no_waste(client, consts):
@@ -173,13 +173,13 @@ def test_no_waste(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(91.028048), 0]
+    assert api_fleet_stats.mps.one().ice == [approx(91.028048), approx(91.028048)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(91.028048), 0]
+    assert api_fit_stats.mps.one().ice == [approx(91.028048), approx(91.028048)]
     api_drone1_stats = api_drone1.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone1_stats.mps.one().ice == [approx(45.514024), 0]
+    assert api_drone1_stats.mps.one().ice == [approx(45.514024), approx(45.514024)]
     api_drone2_stats = api_drone2.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone2_stats.mps.one().ice == [approx(45.514024), 0]
+    assert api_drone2_stats.mps.one().ice == [approx(45.514024), approx(45.514024)]
 
 
 def test_item_kind(client, consts):
@@ -214,9 +214,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, minion=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, minion=False))])))
     assert api_fleet_stats.mps.map(lambda i: i.ice) == [
-        [approx(45.514024), approx(27.308414)],
-        [approx(45.514024), approx(27.308414)],
-        [approx(45.514024), approx(27.308414)],
+        [approx(45.514024), approx(72.822438)],
+        [approx(45.514024), approx(72.822438)],
+        [approx(45.514024), approx(72.822438)],
         None]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
         StatsOptionFitMining(),
@@ -224,9 +224,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, minion=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, minion=False))])))
     assert api_fit_stats.mps.map(lambda i: i.ice) == [
-        [approx(45.514024), approx(27.308414)],
-        [approx(45.514024), approx(27.308414)],
-        [approx(45.514024), approx(27.308414)],
+        [approx(45.514024), approx(72.822438)],
+        [approx(45.514024), approx(72.822438)],
+        [approx(45.514024), approx(72.822438)],
         None]
 
 

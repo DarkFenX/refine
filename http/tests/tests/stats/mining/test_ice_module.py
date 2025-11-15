@@ -40,11 +40,11 @@ def test_state(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(5.037037)]
+    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(5.037037)]
+    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(5.037037)]
+    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
@@ -56,16 +56,16 @@ def test_state(client, consts):
         mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
     api_module_mps_normal, api_module_mps_ignored = api_module_stats.mps
     assert api_module_mps_normal.ice is None
-    assert api_module_mps_ignored.ice == [approx(15.37037), approx(5.037037)]
+    assert api_module_mps_ignored.ice == [approx(15.37037), approx(19.851852)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(5.037037)]
+    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(5.037037)]
+    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(5.037037)]
+    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
 
 
 def test_stacking(client, consts):
@@ -102,11 +102,11 @@ def test_stacking(client, consts):
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(46.111111), approx(15.111111)]
+    assert api_fleet_stats.mps.one().ice == [approx(46.111111), approx(59.555556)]
     api_fit1_stats = api_fit1.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit1_stats.mps.one().ice == [approx(30.740741), approx(10.074074)]
+    assert api_fit1_stats.mps.one().ice == [approx(30.740741), approx(39.703704)]
     api_fit2_stats = api_fit2.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit2_stats.mps.one().ice == [approx(15.37037), approx(5.037037)]
+    assert api_fit2_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
 
 
 def test_crit_chance(client, consts):
@@ -141,11 +141,11 @@ def test_crit_chance(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(51.851852), approx(5.037037)]
+    assert api_fleet_stats.mps.one().ice == [approx(51.851852), approx(19.851852)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(51.851852), approx(5.037037)]
+    assert api_fit_stats.mps.one().ice == [approx(51.851852), approx(19.851852)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().ice == [approx(51.851852), approx(5.037037)]
+    assert api_module_stats.mps.one().ice == [approx(51.851852), approx(19.851852)]
 
 
 def test_waste_chance(client, consts):
@@ -180,11 +180,11 @@ def test_waste_chance(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(14.814815)]
+    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(29.62963)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(14.814815)]
+    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(29.62963)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(14.814815)]
+    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(29.62963)]
 
 
 def test_no_waste(client, consts):
@@ -230,13 +230,13 @@ def test_no_waste(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice == [approx(30.740741), 0]
+    assert api_fleet_stats.mps.one().ice == [approx(30.740741), approx(29.62963)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice == [approx(30.740741), 0]
+    assert api_fit_stats.mps.one().ice == [approx(30.740741), approx(29.62963)]
     api_module1_stats = api_module1.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module1_stats.mps.one().ice == [approx(15.37037), 0]
+    assert api_module1_stats.mps.one().ice == [approx(15.37037), approx(14.814815)]
     api_module2_stats = api_module2.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module2_stats.mps.one().ice == [approx(15.37037), 0]
+    assert api_module2_stats.mps.one().ice == [approx(15.37037), approx(14.814815)]
 
 
 def test_item_kind(client, consts):
@@ -275,9 +275,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, module=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))])))
     assert api_fleet_stats.mps.map(lambda i: i.ice) == [
-        [approx(15.37037), approx(5.037037)],
-        [approx(15.37037), approx(5.037037)],
-        [approx(15.37037), approx(5.037037)],
+        [approx(15.37037), approx(19.851852)],
+        [approx(15.37037), approx(19.851852)],
+        [approx(15.37037), approx(19.851852)],
         None]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
         StatsOptionFitMining(),
@@ -285,9 +285,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, module=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))])))
     assert api_fit_stats.mps.map(lambda i: i.ice) == [
-        [approx(15.37037), approx(5.037037)],
-        [approx(15.37037), approx(5.037037)],
-        [approx(15.37037), approx(5.037037)],
+        [approx(15.37037), approx(19.851852)],
+        [approx(15.37037), approx(19.851852)],
+        [approx(15.37037), approx(19.851852)],
         None]
 
 

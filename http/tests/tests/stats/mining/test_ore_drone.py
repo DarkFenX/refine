@@ -34,11 +34,11 @@ def test_state(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(9.9)]
+    assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ore == [approx(16.5), approx(9.9)]
+    assert api_fit_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ore == [approx(16.5), approx(9.9)]
+    assert api_drone_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
@@ -50,16 +50,16 @@ def test_state(client, consts):
         mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
     api_drone_mps_normal, api_drone_mps_ignored = api_drone_stats.mps
     assert api_drone_mps_normal.ore is None
-    assert api_drone_mps_ignored.ore == [approx(16.5), approx(9.9)]
+    assert api_drone_mps_ignored.ore == [approx(16.5), approx(26.4)]
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(9.9)]
+    assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ore == [approx(16.5), approx(9.9)]
+    assert api_fit_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ore == [approx(16.5), approx(9.9)]
+    assert api_drone_stats.mps.one().ore == [approx(16.5), approx(26.4)]
 
 
 def test_stacking(client, consts):
@@ -90,11 +90,11 @@ def test_stacking(client, consts):
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ore == [approx(49.5), approx(29.7)]
+    assert api_fleet_stats.mps.one().ore == [approx(49.5), approx(79.2)]
     api_fit1_stats = api_fit1.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit1_stats.mps.one().ore == [approx(33), approx(19.8)]
+    assert api_fit1_stats.mps.one().ore == [approx(33), approx(52.8)]
     api_fit2_stats = api_fit2.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit2_stats.mps.one().ore == [approx(16.5), approx(9.9)]
+    assert api_fit2_stats.mps.one().ore == [approx(16.5), approx(26.4)]
 
 
 def test_waste_chance(client, consts):
@@ -123,11 +123,11 @@ def test_waste_chance(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(16.5)]
+    assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(33)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ore == [approx(16.5), approx(16.5)]
+    assert api_fit_stats.mps.one().ore == [approx(16.5), approx(33)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ore == [approx(16.5), approx(16.5)]
+    assert api_drone_stats.mps.one().ore == [approx(16.5), approx(33)]
 
 
 def test_no_waste(client, consts):
@@ -164,13 +164,13 @@ def test_no_waste(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ore == [approx(33), 0]
+    assert api_fleet_stats.mps.one().ore == [approx(33), approx(33)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ore == [approx(33), 0]
+    assert api_fit_stats.mps.one().ore == [approx(33), approx(33)]
     api_drone1_stats = api_drone1.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone1_stats.mps.one().ore == [approx(16.5), 0]
+    assert api_drone1_stats.mps.one().ore == [approx(16.5), approx(16.5)]
     api_drone2_stats = api_drone2.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone2_stats.mps.one().ore == [approx(16.5), 0]
+    assert api_drone2_stats.mps.one().ore == [approx(16.5), approx(16.5)]
 
 
 def test_item_kind(client, consts):
@@ -203,9 +203,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, minion=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, minion=False))])))
     assert api_fleet_stats.mps.map(lambda i: i.ore) == [
-        [approx(16.5), approx(9.9)],
-        [approx(16.5), approx(9.9)],
-        [approx(16.5), approx(9.9)],
+        [approx(16.5), approx(26.4)],
+        [approx(16.5), approx(26.4)],
+        [approx(16.5), approx(26.4)],
         None]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
         StatsOptionFitMining(),
@@ -213,9 +213,9 @@ def test_item_kind(client, consts):
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, minion=True)),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, minion=False))])))
     assert api_fit_stats.mps.map(lambda i: i.ore) == [
-        [approx(16.5), approx(9.9)],
-        [approx(16.5), approx(9.9)],
-        [approx(16.5), approx(9.9)],
+        [approx(16.5), approx(26.4)],
+        [approx(16.5), approx(26.4)],
+        [approx(16.5), approx(26.4)],
         None]
 
 

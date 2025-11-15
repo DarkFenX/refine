@@ -28,10 +28,10 @@ class StatMining:
 class StatMiningAmount:
 
     yield_: float
-    waste: float
+    drain: float
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.yield_, self.waste = data
+        self.yield_, self.drain = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -40,4 +40,4 @@ class StatMiningAmount:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.yield_, self.waste] == other
+        return [self.yield_, self.drain] == other

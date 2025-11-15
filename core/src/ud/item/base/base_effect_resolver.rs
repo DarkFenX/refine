@@ -54,7 +54,7 @@ pub(super) fn process_effects(
 }
 
 fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectKey>, src: &Src, item: &RItem) {
-    // We don't want waste time resolving effects when we want them to just stop (which happens
+    // We don't want to waste time resolving effects when we want them to just stop (which happens
     // before e.g. item removal)
     reuse_eupdates.to_stop.reserve(reffs.len());
     for effect_key in reffs.drain() {
