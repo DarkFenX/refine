@@ -13,6 +13,15 @@ use crate::{
     ud::UItemKey,
 };
 
+const CYCLE_OPTIONS_SIM: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Sim,
+    reload_optionals: true,
+};
+const CYCLE_OPTIONS_BURST: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Burst,
+    reload_optionals: false,
+};
+
 impl Vast {
     pub(in crate::svc) fn get_stat_item_mps(
         ctx: SvcCtx,
@@ -37,12 +46,9 @@ impl Vast {
         reload: bool,
         ignore_state: bool,
     ) -> StatMining {
-        let cycle_options = CycleOptions {
-            reload_mode: match reload {
-                true => CycleOptionReload::Sim,
-                false => CycleOptionReload::Burst,
-            },
-            reload_optionals: true,
+        let cycle_options = match reload {
+            true => CYCLE_OPTIONS_SIM,
+            false => CYCLE_OPTIONS_BURST,
         };
         StatMining {
             ore: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_ore),

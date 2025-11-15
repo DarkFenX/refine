@@ -7,6 +7,7 @@ from tests.fw.util import Absent, dc_to_dict
 class StatsOptionFitMining:
 
     item_kinds: StatMiningItemKinds | type[Absent] = Absent
+    reload: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
@@ -15,6 +16,7 @@ class StatsOptionFitMining:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemMining:
 
+    reload: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:

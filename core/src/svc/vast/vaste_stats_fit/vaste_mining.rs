@@ -13,6 +13,15 @@ use crate::{
     util::RMapRMap,
 };
 
+const CYCLE_OPTIONS_SIM: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Sim,
+    reload_optionals: true,
+};
+const CYCLE_OPTIONS_BURST: CycleOptions = CycleOptions {
+    reload_mode: CycleOptionReload::Burst,
+    reload_optionals: false,
+};
+
 impl Vast {
     pub(in crate::svc) fn get_stat_fits_mps(
         &self,
@@ -54,12 +63,9 @@ fn get_mps(
     reload: bool,
     fit_data: &RMapRMap<UItemKey, REffectKey, NMiningGetter>,
 ) -> MiningAmount {
-    let cycle_options = CycleOptions {
-        reload_mode: match reload {
-            true => CycleOptionReload::Sim,
-            false => CycleOptionReload::Burst,
-        },
-        reload_optionals: true,
+    let cycle_options = match reload {
+        true => CYCLE_OPTIONS_SIM,
+        false => CYCLE_OPTIONS_BURST,
     };
     let mut mps = MiningAmount::new(OF(0.0), OF(0.0));
     for (&item_key, item_data) in fit_data.iter() {
