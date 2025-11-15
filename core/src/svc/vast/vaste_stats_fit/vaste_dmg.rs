@@ -61,8 +61,6 @@ impl Vast {
         spool: Option<Spool>,
         projectee_key: Option<UItemKey>,
     ) -> (DmgKinds<AttrVal>, BreacherAccum) {
-        let mut dps_normal = DmgKinds::new();
-        let mut breacher_accum = BreacherAccum::new();
         let cycle_options = CycleOptions {
             reload_mode: match reload {
                 true => CycleOptionReload::Sim,
@@ -70,6 +68,8 @@ impl Vast {
             },
             reload_optionals: false,
         };
+        let mut dps_normal = DmgKinds::new();
+        let mut breacher_accum = BreacherAccum::new();
         for fit_key in fit_keys {
             self.get_fit_data(&fit_key).fill_stat_dps(
                 ctx,

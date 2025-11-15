@@ -20,12 +20,13 @@ impl Vast {
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatMiningItemKinds,
+        reload: bool,
     ) -> StatMining {
         fit_keys
             .map(|fit_key| StatMining {
-                ore: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ore),
-                ice: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_ice),
-                gas: get_mps(ctx, calc, item_kinds, &self.get_fit_data(&fit_key).mining_gas),
+                ore: get_mps(ctx, calc, item_kinds, reload, &self.get_fit_data(&fit_key).mining_ore),
+                ice: get_mps(ctx, calc, item_kinds, reload, &self.get_fit_data(&fit_key).mining_ice),
+                gas: get_mps(ctx, calc, item_kinds, reload, &self.get_fit_data(&fit_key).mining_gas),
             })
             .sum()
     }
@@ -35,30 +36,34 @@ impl Vast {
         calc: &mut Calc,
         fit_key: UFitKey,
         item_kinds: StatMiningItemKinds,
+        reload: bool,
     ) -> StatMining {
         let fit_data = self.get_fit_data(&fit_key);
         StatMining {
-            ore: get_mps(ctx, calc, item_kinds, &fit_data.mining_ore),
-            ice: get_mps(ctx, calc, item_kinds, &fit_data.mining_ice),
-            gas: get_mps(ctx, calc, item_kinds, &fit_data.mining_gas),
+            ore: get_mps(ctx, calc, item_kinds, reload, &fit_data.mining_ore),
+            ice: get_mps(ctx, calc, item_kinds, reload, &fit_data.mining_ice),
+            gas: get_mps(ctx, calc, item_kinds, reload, &fit_data.mining_gas),
         }
     }
 }
-
-const MINING_CYCLE_OPTIONS: CycleOptions = CycleOptions {
-    reload_mode: CycleOptionReload::Sim,
-    reload_optionals: true,
-};
 
 fn get_mps(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
+    reload: bool,
     fit_data: &RMapRMap<UItemKey, REffectKey, NMiningGetter>,
 ) -> MiningAmount {
+    let cycle_options = CycleOptions {
+        reload_mode: match reload {
+            true => CycleOptionReload::Sim,
+            false => CycleOptionReload::Burst,
+        },
+        reload_optionals: true,
+    };
     let mut mps = MiningAmount::new(OF(0.0), OF(0.0));
     for (&item_key, item_data) in fit_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, MINING_CYCLE_OPTIONS, false) {
+        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };

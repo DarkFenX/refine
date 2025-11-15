@@ -18,34 +18,50 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
+        reload: bool,
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_item_key_drone_module(ctx, item_key)?;
-        Ok(Vast::get_stat_item_mps_unchecked(ctx, calc, item_key, ignore_state))
+        Ok(Vast::get_stat_item_mps_unchecked(
+            ctx,
+            calc,
+            item_key,
+            reload,
+            ignore_state,
+        ))
     }
-    fn get_stat_item_mps_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, ignore_state: bool) -> StatMining {
+    fn get_stat_item_mps_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+        reload: bool,
+        ignore_state: bool,
+    ) -> StatMining {
+        let cycle_options = CycleOptions {
+            reload_mode: match reload {
+                true => CycleOptionReload::Sim,
+                false => CycleOptionReload::Burst,
+            },
+            reload_optionals: true,
+        };
         StatMining {
-            ore: get_mps_item_key(ctx, calc, item_key, ignore_state, get_getter_ore),
-            ice: get_mps_item_key(ctx, calc, item_key, ignore_state, get_getter_ice),
-            gas: get_mps_item_key(ctx, calc, item_key, ignore_state, get_getter_gas),
+            ore: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_ore),
+            ice: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_ice),
+            gas: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_gas),
         }
     }
 }
-
-const MINING_CYCLE_OPTIONS: CycleOptions = CycleOptions {
-    reload_mode: CycleOptionReload::Sim,
-    reload_optionals: true,
-};
 
 fn get_mps_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
+    cycle_options: CycleOptions,
     ignore_state: bool,
     mining_getter_getter: fn(&REffect) -> Option<NMiningGetter>,
 ) -> MiningAmount {
     let mut item_mps = MiningAmount::default();
-    let cycle_map = match get_item_cycle_info(ctx, calc, item_key, MINING_CYCLE_OPTIONS, ignore_state) {
+    let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, ignore_state) {
         Some(cycle_map) => cycle_map,
         None => return item_mps,
     };

@@ -4,7 +4,9 @@ use crate::{
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds) -> StatMining {
-        self.sol.svc.get_stat_fit_mps(&self.sol.u_data, self.key, item_kinds)
+    pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds, reload: bool) -> StatMining {
+        self.sol
+            .svc
+            .get_stat_fit_mps(&self.sol.u_data, self.key, item_kinds, reload)
     }
 }

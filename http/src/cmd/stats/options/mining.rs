@@ -1,14 +1,21 @@
 use crate::util::default_true;
 
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+#[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
+#[educe(Default)]
 pub(in crate::cmd) struct HStatOptionFitMining {
     #[serde(default)]
     pub(in crate::cmd) item_kinds: HStatMiningItemKinds,
+    #[serde(default)]
+    #[educe(Default = false)]
+    pub(in crate::cmd) reload: bool,
 }
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionItemMining {
+    #[serde(default)]
+    #[educe(Default = false)]
+    pub(in crate::cmd) reload: bool,
     #[serde(default)]
     #[educe(Default = false)]
     pub(in crate::cmd) ignore_state: bool,

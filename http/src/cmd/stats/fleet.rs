@@ -106,7 +106,7 @@ fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVo
 fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMining>) -> Vec<HStatMining> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_result = core_fleet.get_stat_mps((&option.item_kinds).into());
+        let core_result = core_fleet.get_stat_mps((&option.item_kinds).into(), option.reload);
         results.push(core_result.into());
     }
     results
