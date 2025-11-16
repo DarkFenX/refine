@@ -52,6 +52,7 @@ pub(crate) const SHIP_MOD_TRACKING_DISRUPTOR: EEffectId = 6424;
 pub(crate) const REMOTE_TARGET_PAINT_FALLOFF: EEffectId = 6425;
 pub(crate) const REMOTE_WEBIFIER_FALLOFF: EEffectId = 6426;
 pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: EEffectId = 6427;
+pub(crate) const SHIP_MOD_REMOTE_TRACKING_COMPUTER: EEffectId = 6428;
 pub(crate) const FTR_ABIL_MISSILES: EEffectId = 6431;
 pub(crate) const FTR_ABIL_NEUT: EEffectId = 6434;
 pub(crate) const FTR_ABIL_WEB: EEffectId = 6435;

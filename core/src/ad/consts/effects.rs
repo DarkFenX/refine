@@ -57,6 +57,8 @@ pub(crate) const SHIP_MOD_TRACKING_DISRUPTOR: AEffectId = AEffectId::Dogma(ece::
 pub(crate) const REMOTE_TARGET_PAINT_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_TARGET_PAINT_FALLOFF);
 pub(crate) const REMOTE_WEBIFIER_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_WEBIFIER_FALLOFF);
 pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_SENSOR_BOOST_FALLOFF);
+pub(crate) const SHIP_MOD_REMOTE_TRACKING_COMPUTER: AEffectId =
+    AEffectId::Dogma(ece::SHIP_MOD_REMOTE_TRACKING_COMPUTER);
 pub(crate) const FTR_ABIL_MISSILES: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_MISSILES);
 pub(crate) const FTR_ABIL_NEUT: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_NEUT);
 pub(crate) const FTR_ABIL_WEB: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_WEB);

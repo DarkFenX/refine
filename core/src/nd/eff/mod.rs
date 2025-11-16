@@ -57,6 +57,7 @@ mod eff_d6424_ship_mod_tracking_disruptor;
 mod eff_d6425_remote_target_paint_falloff;
 mod eff_d6426_remote_webifier_falloff;
 mod eff_d6427_remote_sensor_boost_falloff;
+mod eff_d6428_ship_mod_remote_tracking_computer;
 mod eff_d6442_ftr_abil_micro_jump_drive;
 mod eff_d6443_point_defense;
 mod eff_d6470_remote_ecm_falloff;
@@ -174,6 +175,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6425_remote_target_paint_falloff::mk_n_effect(),
         eff_d6426_remote_webifier_falloff::mk_n_effect(),
         eff_d6427_remote_sensor_boost_falloff::mk_n_effect(),
+        eff_d6428_ship_mod_remote_tracking_computer::mk_n_effect(),
         eff_d6442_ftr_abil_micro_jump_drive::mk_n_effect(),
         eff_d6443_point_defense::mk_n_effect(),
         eff_d6470_remote_ecm_falloff::mk_n_effect(),

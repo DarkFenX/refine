@@ -31,30 +31,20 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {A_EFFECT_ID}: RSB effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    a_effect.mods.push(make_rsb_mod(
-        ac::attrs::MAX_TARGET_RANGE_BONUS,
-        ac::attrs::MAX_TARGET_RANGE,
-    ));
-    a_effect.mods.push(make_rsb_mod(
-        ac::attrs::SCAN_RESOLUTION_BONUS,
-        ac::attrs::SCAN_RESOLUTION,
-    ));
-    a_effect.mods.push(make_rsb_mod(
-        ac::attrs::SCAN_RADAR_STRENGTH_PERCENT,
-        ac::attrs::SCAN_RADAR_STRENGTH,
-    ));
-    a_effect.mods.push(make_rsb_mod(
-        ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_PERCENT,
-        ac::attrs::SCAN_GRAVIMETRIC_STRENGTH,
-    ));
-    a_effect.mods.push(make_rsb_mod(
-        ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_PERCENT,
-        ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH,
-    ));
-    a_effect.mods.push(make_rsb_mod(
-        ac::attrs::SCAN_LADAR_STRENGTH_PERCENT,
-        ac::attrs::SCAN_LADAR_STRENGTH,
-    ));
+    a_effect.mods.extend([
+        make_rsb_mod(ac::attrs::MAX_TARGET_RANGE_BONUS, ac::attrs::MAX_TARGET_RANGE),
+        make_rsb_mod(ac::attrs::SCAN_RESOLUTION_BONUS, ac::attrs::SCAN_RESOLUTION),
+        make_rsb_mod(ac::attrs::SCAN_RADAR_STRENGTH_PERCENT, ac::attrs::SCAN_RADAR_STRENGTH),
+        make_rsb_mod(
+            ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_PERCENT,
+            ac::attrs::SCAN_GRAVIMETRIC_STRENGTH,
+        ),
+        make_rsb_mod(
+            ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_PERCENT,
+            ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH,
+        ),
+        make_rsb_mod(ac::attrs::SCAN_LADAR_STRENGTH_PERCENT, ac::attrs::SCAN_LADAR_STRENGTH),
+    ]);
 }
 
 fn make_rsb_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
