@@ -23,13 +23,9 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {A_EFFECT_ID}: slot modifier effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    a_effect
-        .mods
-        .push(make_modifier(ac::attrs::HI_SLOT_MODIFIER, ac::attrs::HI_SLOTS));
-    a_effect
-        .mods
-        .push(make_modifier(ac::attrs::MED_SLOT_MODIFIER, ac::attrs::MED_SLOTS));
-    a_effect
-        .mods
-        .push(make_modifier(ac::attrs::LOW_SLOT_MODIFIER, ac::attrs::LOW_SLOTS));
+    a_effect.mods.extend([
+        make_modifier(ac::attrs::HI_SLOT_MODIFIER, ac::attrs::HI_SLOTS),
+        make_modifier(ac::attrs::MED_SLOT_MODIFIER, ac::attrs::MED_SLOTS),
+        make_modifier(ac::attrs::LOW_SLOT_MODIFIER, ac::attrs::LOW_SLOTS),
+    ]);
 }

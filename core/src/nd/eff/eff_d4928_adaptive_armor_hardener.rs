@@ -23,18 +23,12 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {A_EFFECT_ID}: RAH effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    a_effect
-        .mods
-        .push(mk_rah_resonance_mod(ac::attrs::ARMOR_EM_DMG_RESONANCE));
-    a_effect
-        .mods
-        .push(mk_rah_resonance_mod(ac::attrs::ARMOR_THERM_DMG_RESONANCE));
-    a_effect
-        .mods
-        .push(mk_rah_resonance_mod(ac::attrs::ARMOR_KIN_DMG_RESONANCE));
-    a_effect
-        .mods
-        .push(mk_rah_resonance_mod(ac::attrs::ARMOR_EXPL_DMG_RESONANCE));
+    a_effect.mods.extend([
+        mk_rah_resonance_mod(ac::attrs::ARMOR_EM_DMG_RESONANCE),
+        mk_rah_resonance_mod(ac::attrs::ARMOR_THERM_DMG_RESONANCE),
+        mk_rah_resonance_mod(ac::attrs::ARMOR_KIN_DMG_RESONANCE),
+        mk_rah_resonance_mod(ac::attrs::ARMOR_EXPL_DMG_RESONANCE),
+    ]);
 }
 
 fn mk_rah_resonance_mod(attr_id: AAttrId) -> AEffectModifier {

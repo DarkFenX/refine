@@ -29,44 +29,47 @@ pub(super) fn mk_n_effect() -> NEffect {
 fn update_effect(a_effect: &mut AEffect) {
     // Effect is expected to have some modifiers, so we're silently clearing them up
     a_effect.mods.clear();
-    // Warp scrambling
-    a_effect.mods.push(AEffectModifier {
-        affector_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,
-        op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
-        affectee_attr_id: ac::attrs::WARP_SCRAMBLE_STATUS,
-    });
-    // MWD blocker
-    a_effect.mods.push(AEffectModifier {
-        affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
-        op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::LocSrq(
-            AEffectLocation::Target,
-            AModifierSrq::ItemId(ac::items::HIGH_SPEED_MANEUVERING),
-        ),
-        affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
-    });
-    // MJD/subcap MJFG blocker
-    a_effect.mods.push(AEffectModifier {
-        affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
-        op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::LocSrq(
-            AEffectLocation::Target,
-            AModifierSrq::ItemId(ac::items::MICRO_JUMP_DRIVE_OPERATION),
-        ),
-        affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
-    });
-    // Capital MJFG blocker
-    a_effect.mods.push(AEffectModifier {
-        affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
-        op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::LocSrq(
-            AEffectLocation::Target,
-            AModifierSrq::ItemId(ac::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
-        ),
-        affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
-    });
+    a_effect.mods.extend([
+        // Warp scrambling
+        AEffectModifier {
+            affector_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
+            affectee_attr_id: ac::attrs::WARP_SCRAMBLE_STATUS,
+        },
+        // MWD blocker
+        AEffectModifier {
+            affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::LocSrq(
+                AEffectLocation::Target,
+                AModifierSrq::ItemId(ac::items::HIGH_SPEED_MANEUVERING),
+            ),
+            affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
+        },
+        // MJD/subcap MJFG blocker
+        AEffectModifier {
+            affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::LocSrq(
+                AEffectLocation::Target,
+                AModifierSrq::ItemId(ac::items::MICRO_JUMP_DRIVE_OPERATION),
+            ),
+            affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
+        },
+        // Capital MJFG blocker
+        AEffectModifier {
+            affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::LocSrq(
+                AEffectLocation::Target,
+                AModifierSrq::ItemId(ac::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
+            ),
+            affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
+        },
+    ]);
     // Fighter MWD and MJD stoppers
-    a_effect.stoped_effect_ids.push(ac::effects::FTR_ABIL_MWD);
-    a_effect.stoped_effect_ids.push(ac::effects::FTR_ABIL_MJD);
+    a_effect
+        .stoped_effect_ids
+        .extend([ac::effects::FTR_ABIL_MWD, ac::effects::FTR_ABIL_MJD]);
 }

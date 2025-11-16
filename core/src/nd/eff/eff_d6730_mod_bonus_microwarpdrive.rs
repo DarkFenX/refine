@@ -30,6 +30,5 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {A_EFFECT_ID}: MWD effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    a_effect.mods.push(mk_a_modifier_mass());
-    a_effect.mods.push(mk_a_modifier_sig_mwd());
+    a_effect.mods.extend([mk_a_modifier_mass(), mk_a_modifier_sig_mwd()]);
 }
