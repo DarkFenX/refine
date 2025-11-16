@@ -73,5 +73,31 @@ fn update_effect(a_effect: &mut AEffect) {
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
             affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
         },
+        // Modifiers which have been "disabled" by setting appropriate attributes to 0, but
+        // modifiers themselves seem to stay according to effect code in decompiled client
+        AEffectModifier {
+            affector_attr_id: ac::attrs::IMPLANT_BONUS_VELOCITY,
+            op: AOp::PostPerc,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
+            affectee_attr_id: ac::attrs::MAX_VELOCITY,
+        },
+        AEffectModifier {
+            affector_attr_id: ac::attrs::MASS_BONUS_PERCENTAGE,
+            op: AOp::PostPerc,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
+            affectee_attr_id: ac::attrs::MASS,
+        },
+        AEffectModifier {
+            affector_attr_id: ac::attrs::SPEED_FACTOR_BONUS,
+            op: AOp::PostPerc,
+            affectee_filter: AEffectAffecteeFilter::LocGrp(AEffectLocation::Ship, ac::itemgrps::PROPULSION_MODULE),
+            affectee_attr_id: ac::attrs::SPEED_FACTOR,
+        },
+        AEffectModifier {
+            affector_attr_id: ac::attrs::SPEED_BOOST_FACTOR_BONUS,
+            op: AOp::PostPerc,
+            affectee_filter: AEffectAffecteeFilter::LocGrp(AEffectLocation::Ship, ac::itemgrps::PROPULSION_MODULE),
+            affectee_attr_id: ac::attrs::SPEED_BOOST_FACTOR,
+        },
     ]);
 }
