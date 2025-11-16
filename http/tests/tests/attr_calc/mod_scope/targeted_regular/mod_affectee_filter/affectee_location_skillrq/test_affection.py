@@ -55,6 +55,34 @@ def test_affected_child_struct(client, consts):
     assert api_rig.update().attrs[eve_attr2_id].dogma == approx(96)
 
 
+def test_affected_charge(client, consts):
+    # Make sure items on ship location which pass skill requirement check are affected
+    eve_skill_id = client.mk_eve_item()
+    eve_attr1_id = client.mk_eve_attr()
+    eve_attr2_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_srq,
+        loc=consts.EveModLoc.tgt,
+        srq=eve_skill_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_attr1_id,
+        affectee_attr_id=eve_attr2_id)
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_module1_id = client.mk_eve_item(attrs={eve_attr1_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module2_id = client.mk_eve_item()
+    eve_charge_id = client.mk_eve_item(attrs={eve_attr2_id: 80}, srqs={eve_skill_id: 1})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_module1 = api_fit1.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
+    api_ship = api_fit2.set_ship(type_id=eve_ship_id)
+    api_module2 = api_fit2.add_module(type_id=eve_module2_id, charge_type_id=eve_charge_id)
+    api_module1.change_module(add_projs=[api_ship.id])
+    assert api_module2.charge.update().attrs[eve_attr2_id].dogma == approx(96)
+
+
 def test_unaffected_root(client, consts):
     # Ship shouldn't be affected
     eve_skill_id = client.mk_eve_item()
