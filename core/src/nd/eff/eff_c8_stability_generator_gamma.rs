@@ -31,7 +31,10 @@ fn make_effect() -> AEffect {
                 AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SHIELD_BOOSTER_BONUS, OF(5.0)),
                 AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_CAPACITOR_CAPACITY_BONUS, OF(10.0)),
             ]),
-            scope: AEffectBuffScope::Ships,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS,
+                ..
+            },
         }),
         ..
     }

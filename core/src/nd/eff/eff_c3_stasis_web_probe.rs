@@ -41,7 +41,10 @@ fn make_effect() -> AEffect {
                 ac::buffs::STASIS_WEBIFICATION_BURST,
                 ac::attrs::SPEED_FACTOR,
             )]),
-            scope: AEffectBuffScope::Everything,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
+                ..
+            },
         }),
         ..
     }

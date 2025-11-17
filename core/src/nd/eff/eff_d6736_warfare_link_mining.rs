@@ -15,7 +15,11 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
             source: AEffectBuffSrc::DefaultAttrs,
-            scope: AEffectBuffScope::FleetShips,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS,
+                fleet_only: true,
+                ..
+            },
         }),
         hc: NEffectHc {
             charge: Some(NEffectCharge {

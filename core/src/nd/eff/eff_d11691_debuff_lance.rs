@@ -44,7 +44,10 @@ pub(super) fn mk_n_effect() -> NEffect {
                 AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_DOCK_JUMP, OF(1.0)),
                 AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_TETHER, OF(1.0)),
             ]),
-            scope: AEffectBuffScope::Everything,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
+                ..
+            },
         }),
         adg_update_effect_fn: Some(|a_effect| update_effect(A_EFFECT_ID, a_effect)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),

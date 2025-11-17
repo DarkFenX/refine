@@ -30,7 +30,10 @@ fn make_effect() -> AEffect {
                 AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_WARP_SPEED_ADD, OF(2.0)),
                 AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SCAN_RESOLUTION_BONUS, OF(25.0)),
             ]),
-            scope: AEffectBuffScope::Ships,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS,
+                ..
+            },
         }),
         ..
     }

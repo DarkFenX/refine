@@ -17,7 +17,10 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
             source: AEffectBuffSrc::DefaultAttrs,
-            scope: AEffectBuffScope::Everything,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
+                ..
+            },
         }),
         ..
     }

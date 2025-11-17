@@ -21,7 +21,10 @@ pub(super) fn mk_n_effect() -> NEffect {
                 ac::buffs::STASIS_WEBIFICATION_BURST,
                 ac::attrs::SPEED_FACTOR,
             )]),
-            scope: AEffectBuffScope::Everything,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
+                ..
+            },
         }),
         modifier_proj_attrs_getter: Some(get_aoe_burst_mod_proj_attrs),
         hc: NEffectHc {

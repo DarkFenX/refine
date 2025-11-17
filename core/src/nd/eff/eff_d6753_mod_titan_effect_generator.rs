@@ -18,7 +18,10 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
             source: AEffectBuffSrc::DefaultAttrs,
-            scope: AEffectBuffScope::Ships,
+            scope: AEffectBuffScope {
+                item_list_id: ac::itemlists::SHIPS,
+                ..
+            },
         }),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {

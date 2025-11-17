@@ -1,4 +1,4 @@
-use crate::ad::{AAttrId, AAttrVal, ABuffId};
+use crate::ad::{AAttrId, AAttrVal, ABuffId, AItemListId};
 
 #[derive(Clone)]
 pub struct AEffectBuffInfo {
@@ -7,10 +7,9 @@ pub struct AEffectBuffInfo {
 }
 
 #[derive(Copy, Clone)]
-pub enum AEffectBuffScope {
-    Everything,
-    Ships,
-    FleetShips,
+pub struct AEffectBuffScope {
+    item_list_id: AItemListId,
+    fleet_only: bool = false,
 }
 
 #[derive(Clone)]

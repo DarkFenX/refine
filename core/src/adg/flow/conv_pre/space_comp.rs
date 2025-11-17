@@ -56,7 +56,10 @@ fn process_buffs(e_sc_buffs: &[EItemSpaceCompBuff], a_data: &mut AData, item_id:
                 .map(|v| AEffectBuffSrcCustom::HardcodedVal(v.id, AAttrVal::from(v.value)))
                 .collect(),
         ),
-        scope: AEffectBuffScope::Ships,
+        scope: AEffectBuffScope {
+            item_list_id: ac::itemlists::SHIPS,
+            ..
+        },
     };
     let effect = AEffect {
         id: effect_id,
