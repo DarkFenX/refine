@@ -35,6 +35,7 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSuppo
             defeff_id: defeff_id.map(AEffectId::Dogma),
             abil_ids: Vec::new(),
             srqs: RMap::new(),
+            buff_itemlist_ids: Vec::new(),
             disallowed_in_wspace: is_disallowed_in_wspace(&e_item.id, &g_supp.rendered_type_lists),
             // Following fields are set to some default values, actual values will be set after
             // customization

@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
 use crate::cacher_json::data::{
-    CAbilId, CAttrId, CAttrVal, CEffectId, CItemCatId, CItemEffectData, CItemGrpId, CItemId, CSkillLevel, CState,
+    CAbilId, CAttrId, CAttrVal, CEffectId, CItemCatId, CItemEffectData, CItemGrpId, CItemId, CItemListId, CSkillLevel,
+    CState,
 };
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -14,6 +15,7 @@ pub(in crate::cacher_json) struct CItem {
     defeff_id: Option<CEffectId>,
     abil_ids: Vec<CAbilId>,
     srqs: HashMap<CItemId, CSkillLevel>,
+    buff_itemlist_ids: Vec<CItemListId>,
     max_state: CState,
     val_fitted_group_id: Option<CItemGrpId>,
     val_online_group_id: Option<CItemGrpId>,
@@ -31,6 +33,7 @@ impl From<&rc::ad::AItem> for CItem {
             defeff_id: a_item.defeff_id.as_ref().map(Into::into),
             abil_ids: a_item.abil_ids.clone(),
             srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.get_inner())).collect(),
+            buff_itemlist_ids: a_item.buff_itemlist_ids.clone(),
             max_state: (&a_item.max_state).into(),
             val_fitted_group_id: a_item.val_fitted_group_id,
             val_online_group_id: a_item.val_online_group_id,
@@ -54,6 +57,7 @@ impl From<&CItem> for rc::ad::AItem {
                 .iter()
                 .map(|(k, v)| (*k, rc::ad::ASkillLevel::new(*v)))
                 .collect(),
+            buff_itemlist_ids: c_item.buff_itemlist_ids.clone(),
             max_state: (&c_item.max_state).into(),
             val_fitted_group_id: c_item.val_fitted_group_id,
             val_online_group_id: c_item.val_online_group_id,

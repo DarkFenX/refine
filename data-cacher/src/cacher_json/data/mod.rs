@@ -9,7 +9,7 @@ use mod_shared::{CModifierSrq, COp};
 use muta::{CMuta, CMutaAttrRange};
 use primitives::{
     CAbilId, CAttrId, CAttrVal, CBuffId, CCount, CCustomEffectId, CDogmaEffectId, CEffectCatId, CItemCatId, CItemGrpId,
-    CItemId, CSkillLevel,
+    CItemId, CItemListId, CSkillLevel,
 };
 use shared::CState;
 

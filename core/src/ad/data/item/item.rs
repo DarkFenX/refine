@@ -1,6 +1,7 @@
 use crate::{
     ad::{
-        AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState,
+        AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
+        ASkillLevel, AState,
     },
     util::{Named, RMap},
 };
@@ -14,6 +15,7 @@ pub struct AItem {
     pub defeff_id: Option<AEffectId>,
     pub abil_ids: Vec<AAbilId>,
     pub srqs: RMap<AItemId, ASkillLevel>,
+    pub buff_itemlist_ids: Vec<AItemListId>,
     pub max_state: AState,
     pub val_fitted_group_id: Option<AItemGrpId>,
     pub val_online_group_id: Option<AItemGrpId>,

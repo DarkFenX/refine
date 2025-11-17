@@ -11,7 +11,7 @@ pub use muta::{AMuta, AMutaAttrRange};
 pub(crate) use primitives::ASlotIndex;
 pub use primitives::{
     AAbilId, AAttrId, AAttrVal, ABuffId, ACount, ACustomEffectId, ADogmaEffectId, AEffectCatId, AItemCatId, AItemGrpId,
-    AItemId,
+    AItemId, AItemListId,
 };
 pub use shared::{AModifierSrq, AOp, AState};
 

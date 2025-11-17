@@ -10,7 +10,7 @@ pub use data::{
     AAbil, AAbilId, AAttr, AAttrId, AAttrVal, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier,
     ACount, ACustomEffectId, AData, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope,
     AEffectBuffSrc, AEffectBuffSrcCustom, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItem, AItemCatId,
-    AItemEffectData, AItemGrpId, AItemId, AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState,
+    AItemEffectData, AItemGrpId, AItemId, AItemListId, AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState,
 };
 pub use result::AResult;
 
