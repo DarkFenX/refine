@@ -5,14 +5,15 @@ use crate::{
         GSupport,
         rels::{KeyDb, Pk},
     },
-    ec, ed,
+    ec,
+    ed::{EData, EDataCont},
     util::{Named, RSet, StrMsgError},
 };
 
 const MAX_CYCLES: u32 = 100;
 
-pub(in crate::adg) fn clean_unused(alive: &mut ed::EData, g_supp: &GSupport) -> Result<(), StrMsgError> {
-    let mut trash = ed::EData::new();
+pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &GSupport) -> Result<(), StrMsgError> {
+    let mut trash = EData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, g_supp);
     restore_attrs(alive, &mut trash);
@@ -33,7 +34,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut ed::EData, g_supp: &GSupport) -> 
     Ok(())
 }
 
-fn move_data<T, F>(src_cont: &mut ed::EDataCont<T>, dst_cont: &mut ed::EDataCont<T>, filter: F) -> bool
+fn move_data<T, F>(src_cont: &mut EDataCont<T>, dst_cont: &mut EDataCont<T>, filter: F) -> bool
 where
     F: FnMut(&mut T) -> bool,
 {
@@ -46,7 +47,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initial preparation functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn trash_all(alive: &mut ed::EData, trash: &mut ed::EData) {
+fn trash_all(alive: &mut EData, trash: &mut EData) {
     move_data(&mut alive.items, &mut trash.items, |_| true);
     move_data(&mut alive.groups, &mut trash.groups, |_| true);
     move_data(&mut alive.attrs, &mut trash.attrs, |_| true);
@@ -62,7 +63,7 @@ fn trash_all(alive: &mut ed::EData, trash: &mut ed::EData) {
     move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
 }
 
-fn restore_core_items(alive: &mut ed::EData, trash: &mut ed::EData, g_supp: &GSupport) {
+fn restore_core_items(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) {
     let cats = [
         ec::itemcats::CHARGE,
         ec::itemcats::DRONE,
@@ -88,7 +89,7 @@ fn restore_core_items(alive: &mut ed::EData, trash: &mut ed::EData, g_supp: &GSu
     move_data(&mut trash.items, &mut alive.items, |v| grps.contains(&v.group_id));
 }
 
-fn restore_attrs(alive: &mut ed::EData, trash: &mut ed::EData) {
+fn restore_attrs(alive: &mut EData, trash: &mut EData) {
     // Some attributes are known to be used by EVE, despite them not referred from anywhere.
     // Oftentimes, those are needed, due to how attribute calculation works: a user can request
     // calculation of any attribute on any item, and this would use on-attribute info for
@@ -96,7 +97,7 @@ fn restore_attrs(alive: &mut ed::EData, trash: &mut ed::EData) {
     move_data(&mut trash.attrs, &mut alive.attrs, |_| true);
 }
 
-fn restore_hardcoded_buffs(alive: &mut ed::EData, trash: &mut ed::EData) {
+fn restore_hardcoded_buffs(alive: &mut EData, trash: &mut EData) {
     // Used in custom wubble effect
     move_data(&mut trash.buffs, &mut alive.buffs, |v| {
         v.id == ec::buffs::STASIS_WEBIFICATION_BURST
@@ -106,7 +107,7 @@ fn restore_hardcoded_buffs(alive: &mut ed::EData, trash: &mut ed::EData) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn restore_item_data(alive: &mut ed::EData, trash: &mut ed::EData) -> bool {
+fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
     let mut item_ids = RSet::new();
     for item in alive.items.data.iter() {
         item_ids.extend(item.get_pk());
@@ -136,7 +137,7 @@ fn restore_item_data(alive: &mut ed::EData, trash: &mut ed::EData) -> bool {
     })
 }
 
-fn restore_fk_tgts(alive: &mut ed::EData, trash: &mut ed::EData, g_supp: &GSupport) -> bool {
+fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> bool {
     let fkdb = KeyDb::new_fkdb(alive, g_supp);
     move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
         || move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
@@ -149,7 +150,7 @@ fn restore_fk_tgts(alive: &mut ed::EData, trash: &mut ed::EData, g_supp: &GSuppo
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn cleanup_report(alive: &ed::EData, trash: &ed::EData) {
+fn cleanup_report(alive: &EData, trash: &EData) {
     let cleaned = false;
     let cleaned = cont_report(&alive.items, &trash.items) || cleaned;
     let cleaned = cont_report(&alive.groups, &trash.groups) || cleaned;
@@ -169,7 +170,7 @@ fn cleanup_report(alive: &ed::EData, trash: &ed::EData) {
     }
 }
 
-fn cont_report<T: Named>(alive: &ed::EDataCont<T>, trash: &ed::EDataCont<T>) -> bool {
+fn cont_report<T: Named>(alive: &EDataCont<T>, trash: &EDataCont<T>) -> bool {
     let total = alive.data.len() + trash.data.len();
     if total == 0 {
         return false;

@@ -5,12 +5,12 @@ use crate::{
         GSupport, get_abil_effect,
         rels::{Fk, KeyDb, KeyPart, Pk},
     },
-    ed,
+    ed::{EAttr, EBuff, EData, EDataCont, EEffect, EFighterAbil, EItem, EItemFighterAbil, EItemGroup},
     util::{Named, RMap, RSet},
 };
 
 /// Ensure that assumptions reefast makes about the data are true.
-pub(in crate::adg) fn validate(e_data: &mut ed::EData, g_supp: &GSupport) {
+pub(in crate::adg) fn validate(e_data: &mut EData, g_supp: &GSupport) {
     fk_check(e_data, g_supp);
     default_effects(e_data);
     unmapped_abilities(e_data);
@@ -20,7 +20,7 @@ pub(in crate::adg) fn validate(e_data: &mut ed::EData, g_supp: &GSupport) {
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
 /// a good idea, since it can help trace down the case when some adapted type fails to load.
-fn fk_check(e_data: &ed::EData, g_supp: &GSupport) {
+fn fk_check(e_data: &EData, g_supp: &GSupport) {
     let pkdb = KeyDb::new_pkdb(e_data);
     fk_check_referer(&e_data.items, &pkdb, g_supp);
     fk_check_referer(&e_data.groups, &pkdb, g_supp);
@@ -36,39 +36,16 @@ fn fk_check(e_data: &ed::EData, g_supp: &GSupport) {
     fk_check_referer(&e_data.muta_items, &pkdb, g_supp);
     fk_check_referer(&e_data.muta_attrs, &pkdb, g_supp);
 }
-fn fk_check_referer<T: Fk + Named>(rer_cont: &ed::EDataCont<T>, pkdb: &KeyDb, g_supp: &GSupport) {
-    fk_check_referee(rer_cont, &pkdb.items, g_supp, T::get_item_fks, ed::EItem::get_name());
-    fk_check_referee(
-        rer_cont,
-        &pkdb.groups,
-        g_supp,
-        T::get_group_fks,
-        ed::EItemGroup::get_name(),
-    );
-    fk_check_referee(rer_cont, &pkdb.attrs, g_supp, T::get_attr_fks, ed::EAttr::get_name());
-    fk_check_referee(
-        rer_cont,
-        &pkdb.effects,
-        g_supp,
-        T::get_effect_fks,
-        ed::EEffect::get_name(),
-    );
-    fk_check_referee(
-        rer_cont,
-        &pkdb.abils,
-        g_supp,
-        T::get_abil_fks,
-        ed::EFighterAbil::get_name(),
-    );
-    fk_check_referee(rer_cont, &pkdb.buffs, g_supp, T::get_buff_fks, ed::EBuff::get_name());
+fn fk_check_referer<T: Fk + Named>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, g_supp: &GSupport) {
+    fk_check_referee(rer_cont, &pkdb.items, g_supp, T::get_item_fks, EItem::get_name());
+    fk_check_referee(rer_cont, &pkdb.groups, g_supp, T::get_group_fks, EItemGroup::get_name());
+    fk_check_referee(rer_cont, &pkdb.attrs, g_supp, T::get_attr_fks, EAttr::get_name());
+    fk_check_referee(rer_cont, &pkdb.effects, g_supp, T::get_effect_fks, EEffect::get_name());
+    fk_check_referee(rer_cont, &pkdb.abils, g_supp, T::get_abil_fks, EFighterAbil::get_name());
+    fk_check_referee(rer_cont, &pkdb.buffs, g_supp, T::get_buff_fks, EBuff::get_name());
 }
-fn fk_check_referee<T, F>(
-    rer_cont: &ed::EDataCont<T>,
-    ree_pks: &RSet<KeyPart>,
-    g_supp: &GSupport,
-    func: F,
-    ree_name: &str,
-) where
+fn fk_check_referee<T, F>(rer_cont: &EDataCont<T>, ree_pks: &RSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
+where
     T: Fk + Named,
     F: Fn(&T, &GSupport) -> Vec<KeyPart>,
 {
@@ -88,7 +65,7 @@ fn fk_check_referee<T, F>(
 }
 
 /// One default effect per item max. Needed for adapted item generation.
-fn default_effects(e_data: &mut ed::EData) {
+fn default_effects(e_data: &mut EData) {
     let mut unsets = 0;
     let mut seen_defeffs = RSet::new();
     for e_item_effect in e_data.item_effects.data.iter_mut() {
@@ -104,7 +81,7 @@ fn default_effects(e_data: &mut ed::EData) {
 }
 
 /// Remove fighter abilities which cannot be mapped to existing effect.
-fn unmapped_abilities(e_data: &mut ed::EData) {
+fn unmapped_abilities(e_data: &mut EData) {
     let effect_ids: RSet<_> = e_data.effects.data.iter().map(|v| v.id).collect();
     let mut unknown_ids = RSet::new();
     let abils = e_data
@@ -134,9 +111,9 @@ fn unmapped_abilities(e_data: &mut ed::EData) {
         let msg = format!(
             "removed {} {} and {} {} with unmappable fighter ability IDs, showing up to {}: {}",
             abils,
-            ed::EFighterAbil::get_name(),
+            EFighterAbil::get_name(),
             item_abils,
-            ed::EItemFighterAbil::get_name(),
+            EItemFighterAbil::get_name(),
             max_logged,
             unknown_ids.iter().sorted_unstable().take(max_logged).join(", ")
         );
@@ -145,7 +122,7 @@ fn unmapped_abilities(e_data: &mut ed::EData) {
 }
 
 /// Remove fighter abilities which do not have corresponding ability entry.
-fn broken_ability_links(e_data: &mut ed::EData) {
+fn broken_ability_links(e_data: &mut EData) {
     let abil_ids: RSet<_> = e_data.abils.data.iter().map(|v| v.id).collect();
     let mut broken_ids = RSet::new();
     let item_abils = e_data
@@ -161,8 +138,8 @@ fn broken_ability_links(e_data: &mut ed::EData) {
         let msg = format!(
             "removed {} {} with invalid target {}, showing up to {}: {}",
             item_abils,
-            ed::EItemFighterAbil::get_name(),
-            ed::EFighterAbil::get_name(),
+            EItemFighterAbil::get_name(),
+            EFighterAbil::get_name(),
             max_logged,
             broken_ids.iter().sorted_unstable().take(max_logged).join(", ")
         );
@@ -171,7 +148,7 @@ fn broken_ability_links(e_data: &mut ed::EData) {
 }
 
 /// Remove item abilities which have no effect on item to handle them.
-fn item_ability_handler_effect(e_data: &mut ed::EData) {
+fn item_ability_handler_effect(e_data: &mut EData) {
     let mut item_eff_map = RMap::new();
     for item_eff in e_data.item_effects.data.iter() {
         item_eff_map
@@ -198,7 +175,7 @@ fn item_ability_handler_effect(e_data: &mut ed::EData) {
         let msg = format!(
             "removed {} {} with references to missing on-item effects, showing up to {}: {}",
             invalids.len(),
-            ed::EItemFighterAbil::get_name(),
+            EItemFighterAbil::get_name(),
             max_logged,
             invalids
                 .iter()

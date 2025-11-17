@@ -1,12 +1,12 @@
 use crate::{
-    ed,
+    ed::{EData, EDataCont, EveDataHandler},
     util::{Named, StrMsgError},
 };
 
 const MAX_WARNS: usize = 5;
 
 /// Report warnings.
-fn report_warnings<T>(data_cont: &ed::EDataCont<T>)
+fn report_warnings<T>(data_cont: &EDataCont<T>)
 where
     T: Named,
 {
@@ -24,7 +24,7 @@ where
     }
 }
 
-pub(in crate::adg) fn fetch_data(ed_handler: &dyn ed::EveDataHandler) -> Result<ed::EData, StrMsgError> {
+pub(in crate::adg) fn fetch_data(ed_handler: &dyn EveDataHandler) -> Result<EData, StrMsgError> {
     tracing::debug!("fetching EVE data");
     let e_data = ed_handler.get_data().map_err(|e| StrMsgError { msg: e.to_string() })?;
     report_warnings(&e_data.items);

@@ -2,11 +2,11 @@
 
 use crate::{
     adg::rels::Pk,
-    ed,
+    ed::{EData, EDataCont},
     util::{Named, RSet},
 };
 
-fn dedup_pks_vec<T: Pk + Named>(cont: &mut ed::EDataCont<T>) {
+fn dedup_pks_vec<T: Pk + Named>(cont: &mut EDataCont<T>) {
     let mut seen_pks = RSet::new();
     let removed = cont
         .data
@@ -26,7 +26,7 @@ fn dedup_pks_vec<T: Pk + Named>(cont: &mut ed::EDataCont<T>) {
     }
 }
 
-pub(in crate::adg) fn dedup_pks(e_data: &mut ed::EData) {
+pub(in crate::adg) fn dedup_pks(e_data: &mut EData) {
     dedup_pks_vec(&mut e_data.items);
     dedup_pks_vec(&mut e_data.groups);
     dedup_pks_vec(&mut e_data.item_lists);

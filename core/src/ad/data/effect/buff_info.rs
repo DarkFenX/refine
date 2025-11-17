@@ -8,8 +8,8 @@ pub struct AEffectBuffInfo {
 
 #[derive(Copy, Clone)]
 pub struct AEffectBuffScope {
-    item_list_id: AItemListId,
-    fleet_only: bool = false,
+    pub item_list_id: AItemListId,
+    pub fleet_only: bool = false,
 }
 
 #[derive(Clone)]
