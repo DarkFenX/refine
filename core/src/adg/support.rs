@@ -1,12 +1,12 @@
 use crate::{
-    ad, ed, nd,
+    ac, ad, ed, nd,
     util::{RMap, RMapRSet, RSet},
 };
 
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
-    pub(in crate::adg) grp_cat_map: RMap<ed::EItemGrpId, ed::EItemCatId>,
     pub(in crate::adg) item_lists: RMap<ad::AItemListId, ad::AItemList>,
+    pub(in crate::adg) grp_cat_map: RMap<ed::EItemGrpId, ed::EItemCatId>,
     pub(in crate::adg) attr_unit_map: RMap<ed::EAttrId, ed::EAttrUnitId>,
     pub(in crate::adg) eff_buff_map: RMap<ed::EEffectId, ad::AEffectBuffInfo>,
     // Buffs which can be used, but are not attached to any effect
@@ -15,8 +15,8 @@ pub(in crate::adg) struct GSupport {
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
         Self {
-            grp_cat_map: RMap::new(),
             item_lists: RMap::new(),
+            grp_cat_map: RMap::new(),
             attr_unit_map: RMap::new(),
             eff_buff_map: RMap::new(),
             standalone_buffs: Vec::new(),
@@ -24,16 +24,12 @@ impl GSupport {
     }
     pub(in crate::adg) fn fill(&mut self, e_data: &ed::EData) {
         self.fill_grp_cat_map(e_data);
-        self.fill_rendered_type_lists(e_data);
+        self.create_item_lists(e_data);
         self.fill_attr_units(e_data);
         self.fill_buff_data();
     }
-    fn fill_grp_cat_map(&mut self, e_data: &ed::EData) {
-        for grp in e_data.groups.data.iter() {
-            self.grp_cat_map.insert(grp.id, grp.category_id);
-        }
-    }
-    fn fill_rendered_type_lists(&mut self, e_data: &ed::EData) {
+    fn create_item_lists(&mut self, e_data: &ed::EData) {
+        // Prepare data
         let mut types_by_grp = RMapRSet::new();
         for item in e_data.items.data.iter() {
             types_by_grp.add_entry(item.group_id, item.id);
@@ -42,6 +38,7 @@ impl GSupport {
         for group in e_data.groups.data.iter() {
             types_by_cat.extend_entries(group.category_id, types_by_grp.get(&group.id).copied());
         }
+        // Convert EVE item lists
         for item_list in &e_data.item_lists.data {
             let mut includes = RSet::new();
             includes.extend(item_list.included_item_ids.iter().copied());
@@ -65,6 +62,20 @@ impl GSupport {
             };
             self.item_lists.insert(item_list.id, item_list);
         }
+        // Add custom type lists
+        let item_list = make_item_list(&types_by_cat, ac::itemlists::SHIPS, &vec![ac::itemcats::SHIP]);
+        self.item_lists.insert(item_list.id, item_list);
+        let item_list = make_item_list(
+            &types_by_cat,
+            ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
+            &vec![ac::itemcats::SHIP, ac::itemcats::DRONE, ac::itemcats::FIGHTER],
+        );
+        self.item_lists.insert(item_list.id, item_list);
+    }
+    fn fill_grp_cat_map(&mut self, e_data: &ed::EData) {
+        for grp in e_data.groups.data.iter() {
+            self.grp_cat_map.insert(grp.id, grp.category_id);
+        }
     }
     fn fill_buff_data(&mut self) {
         for n_effect in nd::N_EFFECTS.iter() {
@@ -87,4 +98,19 @@ impl GSupport {
             }
         }
     }
+}
+
+fn make_item_list(
+    cat_to_item_map: &RMapRSet<ed::EItemCatId, ed::EItemId>,
+    item_list_id: ad::AItemListId,
+    include_cats: &[ed::EItemCatId],
+) -> ad::AItemList {
+    let mut item_list = ad::AItemList {
+        id: item_list_id,
+        item_ids: RSet::new(),
+    };
+    for item_cat in include_cats {
+        item_list.item_ids.extend(cat_to_item_map.get(item_cat).copied());
+    }
+    item_list
 }
