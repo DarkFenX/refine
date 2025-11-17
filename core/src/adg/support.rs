@@ -6,7 +6,7 @@ use crate::{
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
     pub(in crate::adg) grp_cat_map: RMap<ed::EItemGrpId, ed::EItemCatId>,
-    pub(in crate::adg) rendered_type_lists: RMap<ed::EItemListId, RSet<ad::AItemId>>,
+    pub(in crate::adg) item_lists: RMap<ad::AItemListId, ad::AItemList>,
     pub(in crate::adg) attr_unit_map: RMap<ed::EAttrId, ed::EAttrUnitId>,
     pub(in crate::adg) eff_buff_map: RMap<ed::EEffectId, ad::AEffectBuffInfo>,
     // Buffs which can be used, but are not attached to any effect
@@ -16,7 +16,7 @@ impl GSupport {
     pub(in crate::adg) fn new() -> Self {
         Self {
             grp_cat_map: RMap::new(),
-            rendered_type_lists: RMap::new(),
+            item_lists: RMap::new(),
             attr_unit_map: RMap::new(),
             eff_buff_map: RMap::new(),
             standalone_buffs: Vec::new(),
@@ -59,8 +59,11 @@ impl GSupport {
             for excluded_cat_id in item_list.excluded_cat_ids.iter() {
                 excludes.extend(types_by_cat.get(excluded_cat_id).copied());
             }
-            self.rendered_type_lists
-                .insert(item_list.id, includes.difference(&excludes).copied().collect());
+            let item_list = ad::AItemList {
+                id: ad::AItemListId::Eve(item_list.id),
+                item_ids: includes.difference(&excludes).copied().collect(),
+            };
+            self.item_lists.insert(item_list.id, item_list);
         }
     }
     fn fill_buff_data(&mut self) {
