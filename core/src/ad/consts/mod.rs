@@ -4,3 +4,4 @@ pub(crate) use crate::ed::consts::{attrs, buffs, effcats, itemcats, itemgrps, it
 
 pub(crate) mod effects;
 pub(crate) mod extras;
+pub(crate) mod itemlists;
