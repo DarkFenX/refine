@@ -5,11 +5,12 @@ use attr::CAttr;
 use buff::{CBuff, CBuffAffecteeFilter, CBuffAggrMode, CBuffModifier};
 use effect::{CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectId, CEffectLocation, CEffectModifier};
 use item::{CItem, CItemEffectData};
+use item_list::CItemListId;
 use mod_shared::{CModifierSrq, COp};
 use muta::{CMuta, CMutaAttrRange};
 use primitives::{
-    CAbilId, CAttrId, CAttrVal, CBuffId, CCount, CCustomEffectId, CDogmaEffectId, CEffectCatId, CItemCatId, CItemGrpId,
-    CItemId, CItemListId, CSkillLevel,
+    CAbilId, CAttrId, CAttrVal, CBuffId, CCount, CCustomEffectId, CCustomItemListId, CDogmaEffectId, CEffectCatId,
+    CEveItemListId, CItemCatId, CItemGrpId, CItemId, CSkillLevel,
 };
 use shared::CState;
 
@@ -18,6 +19,7 @@ mod attr;
 mod buff;
 mod effect;
 mod item;
+mod item_list;
 mod mod_shared;
 mod muta;
 mod primitives;

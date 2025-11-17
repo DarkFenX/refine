@@ -8,7 +8,8 @@ pub(in crate::cacher_json) type CEffectCatId = rc::ad::AEffectCatId;
 pub(in crate::cacher_json) type CItemId = rc::ad::AItemId;
 pub(in crate::cacher_json) type CItemGrpId = rc::ad::AItemGrpId;
 pub(in crate::cacher_json) type CItemCatId = rc::ad::AItemCatId;
-pub(in crate::cacher_json) type CItemListId = rc::ad::AItemListId;
+pub(in crate::cacher_json) type CEveItemListId = rc::ad::AEveItemListId;
+pub(in crate::cacher_json) type CCustomItemListId = rc::ad::ACustomItemListId;
 // Misc
 pub(in crate::cacher_json) type CAttrVal = rc::ad::AAttrVal;
 pub(in crate::cacher_json) type CCount = rc::ad::ACount;

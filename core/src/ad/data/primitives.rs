@@ -10,7 +10,8 @@ pub type AEffectCatId = i32;
 pub type AItemId = i32;
 pub type AItemGrpId = i32;
 pub type AItemCatId = i32;
-pub type AItemListId = i32;
+pub type AEveItemListId = i32;
+pub type ACustomItemListId = i32;
 // Misc
 pub type AAttrVal = OF<f64>;
 pub type ACount = u32;
