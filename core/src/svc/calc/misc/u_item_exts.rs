@@ -35,12 +35,7 @@ impl UItem {
     }
     pub(in crate::svc::calc) fn is_buffable(&self) -> bool {
         match self {
-            Self::Drone(_) | Self::Fighter(_) => true,
-            Self::Ship(ship) => match ship.get_kind() {
-                UShipKind::Ship => true,
-                UShipKind::Structure => false,
-                UShipKind::Unknown => false,
-            },
+            Self::Drone(_) | Self::Fighter(_) | Self::Ship(_) => true,
             _ => false,
         }
     }

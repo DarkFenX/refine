@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AMutaAttrRange, ASkillLevel,
-        AState,
+        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId, AMutaAttrRange,
+        ASkillLevel, AState,
     },
     def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
@@ -142,6 +142,9 @@ impl UItemBaseMutable {
     }
     pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base.get_skill_reqs()
+    }
+    pub(in crate::ud::item) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+        self.base.get_buff_item_lists()
     }
     // Extra data access methods
     pub(in crate::ud::item) fn get_axt(&self) -> Option<&RItemAXt> {

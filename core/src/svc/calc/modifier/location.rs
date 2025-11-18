@@ -1,33 +1,29 @@
-use crate::ad;
+use crate::ad::{AEffectBuffScope, AEffectLocation, AItemListId};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum Location {
-    Everything,
     Ship,
     Structure,
     Char,
     Item,
     Other,
     Target,
+    ItemList(AItemListId),
 }
-impl From<&ad::AEffectLocation> for Location {
-    fn from(a_effect_loc: &ad::AEffectLocation) -> Self {
+impl From<&AEffectLocation> for Location {
+    fn from(a_effect_loc: &AEffectLocation) -> Self {
         match a_effect_loc {
-            ad::AEffectLocation::Ship => Self::Ship,
-            ad::AEffectLocation::Structure => Self::Structure,
-            ad::AEffectLocation::Char => Self::Char,
-            ad::AEffectLocation::Item => Self::Item,
-            ad::AEffectLocation::Other => Self::Other,
-            ad::AEffectLocation::Target => Self::Target,
+            AEffectLocation::Ship => Self::Ship,
+            AEffectLocation::Structure => Self::Structure,
+            AEffectLocation::Char => Self::Char,
+            AEffectLocation::Item => Self::Item,
+            AEffectLocation::Other => Self::Other,
+            AEffectLocation::Target => Self::Target,
         }
     }
 }
-impl From<&ad::AEffectBuffScope> for Location {
-    fn from(a_buff_scope: &ad::AEffectBuffScope) -> Self {
-        match a_buff_scope {
-            ad::AEffectBuffScope::Everything => Self::Everything,
-            ad::AEffectBuffScope::Ships => Self::Ship,
-            ad::AEffectBuffScope::FleetShips => Self::Ship,
-        }
+impl From<&AEffectBuffScope> for Location {
+    fn from(a_buff_scope: &AEffectBuffScope) -> Self {
+        Self::ItemList(a_buff_scope.item_list_id)
     }
 }

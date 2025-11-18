@@ -1,8 +1,8 @@
 use crate::{
     ac,
     ad::{
-        AAbilId, AAttrId, AAttrVal, AEffectId, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel,
-        AState,
+        AAbilId, AAttrId, AAttrVal, AEffectId, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
+        ASkillLevel, AState,
     },
     rd::{REffectKey, RItemAXt, RShipKind},
     util::{GetId, Named, RMap},
@@ -71,6 +71,9 @@ impl RItem {
     }
     pub(crate) fn get_srqs(&self) -> &RMap<AItemId, ASkillLevel> {
         &self.a_item.srqs
+    }
+    pub(crate) fn get_buff_item_lists(&self) -> &Vec<AItemListId> {
+        &self.a_item.buff_item_list_ids
     }
     pub(crate) fn get_max_state(&self) -> AState {
         self.a_item.max_state

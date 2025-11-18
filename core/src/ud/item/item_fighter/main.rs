@@ -1,6 +1,7 @@
 use crate::{
     ad::{
-        AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState,
+        AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
+        ASkillLevel, AState,
     },
     def::{AttrVal, ItemId, OF},
     misc::{AdjustableCount, EffectMode, FighterCountOverride, MinionState},
@@ -70,6 +71,9 @@ impl UFighter {
     }
     pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base.get_skill_reqs()
+    }
+    pub(in crate::ud::item) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+        self.base.get_buff_item_lists()
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
         self.base.get_axt()

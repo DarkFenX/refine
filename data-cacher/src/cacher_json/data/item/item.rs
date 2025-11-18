@@ -33,7 +33,7 @@ impl From<&rc::ad::AItem> for CItem {
             defeff_id: a_item.defeff_id.as_ref().map(Into::into),
             abil_ids: a_item.abil_ids.clone(),
             srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.get_inner())).collect(),
-            buff_itemlist_ids: a_item.buff_itemlist_ids.iter().map(Into::into).collect(),
+            buff_itemlist_ids: a_item.buff_item_list_ids.iter().map(Into::into).collect(),
             max_state: (&a_item.max_state).into(),
             val_fitted_group_id: a_item.val_fitted_group_id,
             val_online_group_id: a_item.val_online_group_id,
@@ -57,7 +57,7 @@ impl From<&CItem> for rc::ad::AItem {
                 .iter()
                 .map(|(k, v)| (*k, rc::ad::ASkillLevel::new(*v)))
                 .collect(),
-            buff_itemlist_ids: c_item.buff_itemlist_ids.iter().map(Into::into).collect(),
+            buff_item_list_ids: c_item.buff_itemlist_ids.iter().map(Into::into).collect(),
             max_state: (&c_item.max_state).into(),
             val_fitted_group_id: c_item.val_fitted_group_id,
             val_online_group_id: c_item.val_online_group_id,

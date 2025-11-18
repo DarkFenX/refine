@@ -13,7 +13,7 @@ pub(in crate::adg::flow::conv_post) fn fill_buff_item_lists(a_data: &mut AData, 
         if let Some(a_item_list) = g_supp.item_lists.get(&a_item_list_id) {
             for a_item_id in a_item_list.item_ids.iter() {
                 if let Some(a_item) = a_data.items.get_mut(a_item_id) {
-                    a_item.buff_itemlist_ids.push(a_item_list_id);
+                    a_item.buff_item_list_ids.push(a_item_list_id);
                 }
             }
         }

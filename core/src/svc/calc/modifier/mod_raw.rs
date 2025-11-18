@@ -191,9 +191,9 @@ fn get_mod_kind(r_effect: &rd::REffect, affectee_filter: &AffecteeFilter) -> Opt
             Some(ModifierKind::Local)
         }
         // Buffs
-        (ac::effcats::ACTIVE, Some(a_buff_info)) => match a_buff_info.scope {
-            ad::AEffectBuffScope::FleetShips => Some(ModifierKind::FleetBuff),
-            _ => Some(ModifierKind::Buff),
+        (ac::effcats::ACTIVE, Some(a_buff_info)) => match a_buff_info.scope.fleet_only {
+            true => Some(ModifierKind::FleetBuff),
+            false => Some(ModifierKind::Buff),
         },
         // Lib system-wide effects are EVE system effects and buffs
         (ac::effcats::SYSTEM, None) => Some(ModifierKind::System),
