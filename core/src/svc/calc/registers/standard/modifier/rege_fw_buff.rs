@@ -33,7 +33,7 @@ impl StandardRegister {
                     add_cmod(&mut self.cmods_direct, affectee_key, cmod, &mut self.cmods_by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_sw_buff_direct.insert(rmod);
+                self.rmods_fw_buff_direct.add_entry(fit_key, rmod);
                 true
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
