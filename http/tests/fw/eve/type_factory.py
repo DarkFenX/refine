@@ -277,6 +277,20 @@ class EveTypeFactory(EveDataManager):
     ) -> int:
         return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.structure)
 
+    def mk_eve_drone_group(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+    ) -> int:
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.drone)
+
+    def mk_eve_fighter_group(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+    ) -> int:
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.fighter)
+
     def mk_eve_item_list(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,

@@ -26,7 +26,7 @@ impl StandardRegister {
                 // TODO: consider optimizations (extra map with item list IDs
                 // TODO: as keys to know fits instead of iterating over them?)
                 for fit_key in ctx.u_data.fits.keys() {
-                    let affectee_keys = self.affectee_buffable_new.get(&(fit_key, item_list_id));
+                    let affectee_keys = self.affectee_buffable.get(&(fit_key, item_list_id));
                     reuse_cmods.reserve(affectee_keys.len());
                     for &affectee_key in affectee_keys {
                         let cmod = CtxModifier::from_raw_with_item(rmod, affectee_key);
@@ -38,7 +38,7 @@ impl StandardRegister {
                 true
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
-                let fit_keys = self.fit_buffable.get(&item_list_id);
+                let fit_keys = self.fits_buffable.get(&item_list_id);
                 reuse_cmods.reserve(fit_keys.len());
                 for &fit_key in fit_keys {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
@@ -54,7 +54,7 @@ impl StandardRegister {
                 true
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), a_item_grp_id) => {
-                let fit_keys = self.fit_buffable.get(&item_list_id);
+                let fit_keys = self.fits_buffable.get(&item_list_id);
                 reuse_cmods.reserve(fit_keys.len());
                 for &fit_key in fit_keys {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
@@ -70,7 +70,7 @@ impl StandardRegister {
                 true
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_a_item_id) => {
-                let fit_keys = self.fit_buffable.get(&item_list_id);
+                let fit_keys = self.fits_buffable.get(&item_list_id);
                 reuse_cmods.reserve(fit_keys.len());
                 for &fit_key in fit_keys {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
@@ -104,7 +104,7 @@ impl StandardRegister {
                 // TODO: consider optimizations (extra map with item list IDs
                 // TODO: as keys to know fits instead of iterating over them?)
                 for fit_key in ctx.u_data.fits.keys() {
-                    let affectee_keys = self.affectee_buffable_new.get(&(fit_key, item_list_id));
+                    let affectee_keys = self.affectee_buffable.get(&(fit_key, item_list_id));
                     reuse_cmods.reserve(affectee_keys.len());
                     for affectee_key in affectee_keys {
                         let cmod = CtxModifier::from_raw_with_item(*rmod, *affectee_key);
@@ -115,7 +115,7 @@ impl StandardRegister {
                 self.rmods_sw_buff_direct.remove(rmod);
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
-                let fit_keys = self.fit_buffable.get(&item_list_id);
+                let fit_keys = self.fits_buffable.get(&item_list_id);
                 reuse_cmods.reserve(fit_keys.len());
                 for &fit_key in fit_keys {
                     let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
@@ -130,7 +130,7 @@ impl StandardRegister {
                 self.rmods_sw_buff_indirect.remove(rmod);
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), a_item_grp_id) => {
-                let fit_keys = self.fit_buffable.get(&item_list_id);
+                let fit_keys = self.fits_buffable.get(&item_list_id);
                 reuse_cmods.reserve(fit_keys.len());
                 for &fit_key in fit_keys {
                     let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
@@ -145,7 +145,7 @@ impl StandardRegister {
                 self.rmods_sw_buff_indirect.remove(rmod);
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_a_item_id) => {
-                let fit_keys = self.fit_buffable.get(&item_list_id);
+                let fit_keys = self.fits_buffable.get(&item_list_id);
                 reuse_cmods.reserve(fit_keys.len());
                 for &fit_key in fit_keys {
                     let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);

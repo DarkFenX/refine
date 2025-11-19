@@ -111,7 +111,7 @@ def test_unaffected_child_char(client, consts):
 
 def test_unaffected_targeted_child(client, consts):
     # When it's not ship which is getting targeted, target item shouldn't be affected
-    eve_grp_id = client.mk_eve_item_group()
+    eve_grp_id = client.mk_eve_drone_group()
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()

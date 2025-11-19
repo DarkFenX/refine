@@ -39,6 +39,11 @@ impl StandardRegister {
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.reg_buffable_for_sw(item_key, buffable_item_lists);
+            if let UItem::Ship(ship) = item {
+                for &item_list_id in buffable_item_lists {
+                    self.fits_buffable.add_entry(item_list_id, ship.get_fit_key());
+                }
+            }
         }
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
@@ -65,7 +70,7 @@ impl StandardRegister {
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
             for &buffable_item_list_id in buffable_item_lists {
-                self.affectee_buffable_new
+                self.affectee_buffable
                     .add_entry((fit_key, buffable_item_list_id), item_key);
             }
             self.reg_buffable_for_fw(item_key, fit_key, buffable_item_lists);
@@ -75,6 +80,11 @@ impl StandardRegister {
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.unreg_buffable_for_sw(item_key, buffable_item_lists);
+            if let UItem::Ship(ship) = item {
+                for item_list_id in buffable_item_lists {
+                    self.fits_buffable.remove_entry(item_list_id, &ship.get_fit_key());
+                }
+            }
         }
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
@@ -104,7 +114,7 @@ impl StandardRegister {
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
             for &buffable_item_list_id in buffable_item_lists {
-                self.affectee_buffable_new
+                self.affectee_buffable
                     .remove_entry(&(fit_key, buffable_item_list_id), &item_key);
             }
             self.unreg_buffable_for_fw(item_key, fit_key, buffable_item_lists);
@@ -131,7 +141,7 @@ impl StandardRegister {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::ItemList(item_list_id) => {
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_buffable_new, &(fit_key, item_list_id))
+                    extend_vec_from_map_set_l1(affectees, &self.affectee_buffable, &(fit_key, item_list_id))
                 }
                 _ => {
                     if let Ok(loc_kind) = loc.try_into() {
