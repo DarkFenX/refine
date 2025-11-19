@@ -154,7 +154,7 @@ impl StandardRegister {
             },
             AffecteeFilter::Loc(loc) => match loc {
                 Location::ItemList(item_list_id) => {
-                    if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id).is_some() {
                         extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &(fit_key, LocationKind::Ship))
                     }
                 }
@@ -169,7 +169,7 @@ impl StandardRegister {
             },
             AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc {
                 Location::ItemList(item_list_id) => {
-                    if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id).is_some() {
                         extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_grp,
@@ -192,7 +192,7 @@ impl StandardRegister {
             },
             AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc {
                 Location::ItemList(item_list_id) => {
-                    if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id).is_some() {
                         extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_srq,

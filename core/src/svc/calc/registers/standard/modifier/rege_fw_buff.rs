@@ -38,8 +38,8 @@ impl StandardRegister {
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 let fit_key = fw_effect.get_fit_key();
-                if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
-                    let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
                     add_cmod(
                         &mut self.cmods_loc,
                         (fit_key, LocationKind::Ship),
@@ -53,8 +53,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), a_item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
-                    let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
                     add_cmod(
                         &mut self.cmods_loc_grp,
                         (fit_key, LocationKind::Ship, a_item_grp_id),
@@ -68,8 +68,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_a_item_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
-                    let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
                     add_cmod(
                         &mut self.cmods_loc_srq,
                         (fit_key, LocationKind::Ship, srq_a_item_id),
@@ -110,8 +110,8 @@ impl StandardRegister {
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 let fit_key = fw_effect.get_fit_key();
-                if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
-                    let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
                     remove_cmod(
                         &mut self.cmods_loc,
                         &(fit_key, LocationKind::Ship),
@@ -124,8 +124,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), a_item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
-                    let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
                     remove_cmod(
                         &mut self.cmods_loc_grp,
                         &(fit_key, LocationKind::Ship, a_item_grp_id),
@@ -138,8 +138,8 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_a_item_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
-                    let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
+                    let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
                     remove_cmod(
                         &mut self.cmods_loc_srq,
                         &(fit_key, LocationKind::Ship, srq_a_item_id),
