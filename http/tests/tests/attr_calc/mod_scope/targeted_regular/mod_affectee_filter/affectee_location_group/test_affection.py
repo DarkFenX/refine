@@ -139,20 +139,28 @@ def test_unaffected_char_child(client, consts):
 
 def test_unaffected_targeted_child(client, consts):
     # When it's not ship/structure which is getting targeted, target item shouldn't be affected
-    eve_grp_id = client.mk_eve_ship_group()
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_drone_grp_id = client.mk_eve_drone_group()
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
-    eve_mod = client.mk_eve_effect_mod(
+    eve_ship_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
         loc=consts.EveModLoc.tgt,
-        grp=eve_grp_id,
+        grp=eve_ship_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
-    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_drone_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        loc=consts.EveModLoc.tgt,
+        grp=eve_drone_grp_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_attr1_id,
+        affectee_attr_id=eve_attr2_id)
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_ship_mod, eve_drone_mod])
     eve_module_id = client.mk_eve_item(attrs={eve_attr1_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_drone(grp_id=eve_grp_id, attrs={eve_attr2_id: 80})
-    eve_ship_id = client.mk_eve_ship(grp_id=eve_grp_id)
+    eve_drone_id = client.mk_eve_drone(grp_id=eve_drone_grp_id, attrs={eve_attr2_id: 80})
+    eve_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()

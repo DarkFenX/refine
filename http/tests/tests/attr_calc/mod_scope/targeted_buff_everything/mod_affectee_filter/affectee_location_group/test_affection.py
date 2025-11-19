@@ -111,21 +111,24 @@ def test_unaffected_child_char(client, consts):
 
 def test_unaffected_targeted_child(client, consts):
     # When it's not ship/structure which is getting targeted, target item shouldn't be affected
-    eve_grp_id = client.mk_eve_ship_group()
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_drone_grp_id = client.mk_eve_drone_group()
     eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr_id = client.mk_eve_attr()
     client.mk_eve_buff(
         id_=consts.EveBuff.stasis_webification_burst,
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
-        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
+        loc_grp_mods=[
+            client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_ship_grp_id),
+            client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_drone_grp_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_drone(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 200})
-    eve_ship_id = client.mk_eve_ship(grp_id=eve_grp_id)
+    eve_drone_id = client.mk_eve_drone(grp_id=eve_drone_grp_id, attrs={eve_affectee_attr_id: 200})
+    eve_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
