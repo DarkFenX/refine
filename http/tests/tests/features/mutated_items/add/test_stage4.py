@@ -645,23 +645,23 @@ def test_item_default_effect(client, consts):
 def test_drone(client):
     eve_roll_attr_id = client.mk_eve_attr()
     eve_absolute_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(attrs={eve_roll_attr_id: 100, eve_absolute_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_base_item_id = client.mk_eve_drone(attrs={eve_roll_attr_id: 100, eve_absolute_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_drone()
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_drone(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_drone = api_fit.add_drone(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_roll_attr_id: Muta.roll_to_api(val=0.3),
         eve_absolute_attr_id: Muta.abs_to_api(val=105)}))
     # Verification
-    api_item.update()
-    assert len(api_item.mutation.attrs) == 2
-    assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(92)
-    assert api_item.mutation.attrs[eve_absolute_attr_id].roll == approx(0.625)
-    assert api_item.mutation.attrs[eve_absolute_attr_id].absolute == approx(105)
-    assert api_item.attrs[eve_roll_attr_id].base == approx(92)
-    assert api_item.attrs[eve_absolute_attr_id].base == approx(105)
+    api_drone.update()
+    assert len(api_drone.mutation.attrs) == 2
+    assert api_drone.mutation.attrs[eve_roll_attr_id].roll == approx(0.3)
+    assert api_drone.mutation.attrs[eve_roll_attr_id].absolute == approx(92)
+    assert api_drone.mutation.attrs[eve_absolute_attr_id].roll == approx(0.625)
+    assert api_drone.mutation.attrs[eve_absolute_attr_id].absolute == approx(105)
+    assert api_drone.attrs[eve_roll_attr_id].base == approx(92)
+    assert api_drone.attrs[eve_absolute_attr_id].base == approx(105)

@@ -692,7 +692,7 @@ def make_eve_drone(
     _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
     _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=sig_radius)
     _conditional_insert(attrs=attrs, attr_id=basic_info.prop_sig_radius_mult_attr_id, value=prop_sig_radius_mult)
-    return client.mk_eve_item(
+    return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
         defeff_id=basic_info.tgt_attack_effect_id)

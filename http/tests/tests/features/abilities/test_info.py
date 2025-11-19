@@ -10,19 +10,19 @@ def test_charge_count(client, consts):
         cat_id=consts.EveEffCat.target)
     eve_primary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.pulse_cannon)
     eve_secondary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.heavy_rocket_salvo)
-    eve_fighter1_id = client.mk_eve_item(
+    eve_fighter1_id = client.mk_eve_fighter(
         eff_ids=[eve_primary_effect_id, eve_secondary_effect_id],
         defeff_id=eve_primary_effect_id,
         abils=[
             client.mk_eve_item_abil(id_=eve_primary_abil_id),
             client.mk_eve_item_abil(id_=eve_secondary_abil_id, charge_count=12, charge_rearm_time=5)])
-    eve_fighter2_id = client.mk_eve_item(
+    eve_fighter2_id = client.mk_eve_fighter(
         eff_ids=[eve_primary_effect_id, eve_secondary_effect_id],
         defeff_id=eve_primary_effect_id,
         abils=[
             client.mk_eve_item_abil(id_=eve_primary_abil_id),
             client.mk_eve_item_abil(id_=eve_secondary_abil_id, charge_count=15, charge_rearm_time=5)])
-    eve_fighter3_id = client.mk_eve_item(
+    eve_fighter3_id = client.mk_eve_fighter(
         eff_ids=[eve_primary_effect_id, eve_secondary_effect_id],
         defeff_id=eve_primary_effect_id,
         abils=[

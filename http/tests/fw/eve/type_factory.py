@@ -189,6 +189,64 @@ class EveTypeFactory(EveDataManager):
             radius=radius,
             volume=volume)
 
+    def mk_eve_drone(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | None | type[Absent | Default] = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.drone,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_fighter(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | None | type[Absent | Default] = Default,
+            abils: list[ItemAbilityData] | type[Absent] = Absent,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.fighter,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            abils=abils,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
     def mk_eve_item_group(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,

@@ -116,7 +116,7 @@ def test_child_add_afor_afee_proj_remove_state_proj_fit(client, consts):
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_drone_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -150,7 +150,7 @@ def test_child_add_afee_afor_proj_state_remove_afor_afee(client, consts):
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_drone_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()
@@ -186,7 +186,7 @@ def test_child_add_afee_afor_proj_remove_afee(client, consts):
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_fighter_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    eve_affectee_fighter_id = client.mk_eve_fighter(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()

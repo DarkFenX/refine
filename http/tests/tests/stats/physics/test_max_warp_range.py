@@ -249,7 +249,7 @@ def test_fighter(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_cap_need_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_capacitor_need)
     eve_max_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_fighter_id = client.mk_eve_item(attrs={
+    eve_fighter_id = client.mk_eve_fighter(attrs={
         eve_cap_attr_id: 500, eve_mass_attr_id: 1050000, eve_cap_need_attr_id: 0.000000835, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()

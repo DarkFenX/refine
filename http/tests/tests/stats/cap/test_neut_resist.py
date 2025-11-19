@@ -79,7 +79,7 @@ def test_struct(client, consts):
 
 def test_other(client, consts):
     eve_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_warfare_resist)
-    eve_drone_id = client.mk_eve_item(attrs={eve_resist_attr_id: 0.6})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_resist_attr_id: 0.6})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

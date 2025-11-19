@@ -17,7 +17,7 @@ def test_add_afor_afee_proj_remove_state_proj_fit(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
     eve_affectee_struct_id = client.mk_eve_struct()
     client.create_sources()
     api_sol = client.create_sol()
@@ -56,7 +56,7 @@ def test_add_afee_afor_proj_state_remove_afor_afee(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
     eve_affectee_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
@@ -97,7 +97,7 @@ def test_add_afee_afor_proj_remove_afee(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
     eve_affectee_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()

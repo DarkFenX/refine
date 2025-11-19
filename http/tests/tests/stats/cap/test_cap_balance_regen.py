@@ -84,7 +84,7 @@ def test_struct(client, consts):
 def test_other(client, consts):
     eve_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
-    eve_drone_id = client.mk_eve_item(attrs={eve_amount_attr_id: 518.76, eve_regen_attr_id: 233437.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_amount_attr_id: 518.76, eve_regen_attr_id: 233437.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

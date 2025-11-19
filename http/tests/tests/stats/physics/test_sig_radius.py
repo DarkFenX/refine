@@ -127,7 +127,7 @@ def test_drone_modified(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 300},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_sig_radius_attr_id: 1350, eve_prop_blow_attr_id: 6})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_sig_radius_attr_id: 1350, eve_prop_blow_attr_id: 6})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -170,7 +170,7 @@ def test_fighter_modified(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 300},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_item(attrs={eve_sig_radius_attr_id: 873, eve_max_count_attr_id: 9})
+    eve_fighter_id = client.mk_eve_fighter(attrs={eve_sig_radius_attr_id: 873, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

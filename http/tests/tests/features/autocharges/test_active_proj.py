@@ -25,7 +25,7 @@ def test_proj_unproj(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_charge_id},
         eff_ids=[eve_autocharge_effect_id],
         defeff_id=eve_autocharge_effect_id)
@@ -66,7 +66,7 @@ def test_add_remove(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_charge_id},
         eff_ids=[eve_autocharge_effect_id],
         defeff_id=eve_autocharge_effect_id)
@@ -114,7 +114,7 @@ def test_states(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_charge_id},
         eff_ids=[eve_autocharge_effect_id],
         defeff_id=eve_autocharge_effect_id,
@@ -230,7 +230,7 @@ def test_range(client, consts):
         attrs={eve_affector_attr_id: 20, eve_optimal_attr_id: 10000, eve_falloff_attr_id: 5000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_charge_id},
         eff_ids=[eve_autocharge_effect_id],
         defeff_id=eve_autocharge_effect_id)
@@ -310,13 +310,13 @@ def test_switch_src(client, consts):
         defeff_id=eve_d2_effect_id)
     # The same fighter ID
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d1],
         id_=eve_fighter_id,
         attrs={eve_autocharge_attr_id: eve_d1_autocharge_id},
         eff_ids=[eve_autocharge_effect_id],
         defeff_id=eve_autocharge_effect_id)
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d2],
         id_=eve_fighter_id,
         attrs={eve_autocharge_attr_id: eve_d2_autocharge_id},

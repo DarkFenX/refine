@@ -116,7 +116,7 @@ def test_struct_modified(client, consts):
 
 def test_other(client, consts):
     eve_dscan_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_directional_scan_range)
-    eve_drone_id = client.mk_eve_item(attrs={eve_dscan_range_attr_id: 2147483647000})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_dscan_range_attr_id: 2147483647000})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

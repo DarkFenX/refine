@@ -9,10 +9,10 @@ def test_specified_same(client, consts):
         id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge_id = client.mk_eve_item(attrs={eve_attr_id: 50})
-    eve_fighter1_id = client.mk_eve_item(
+    eve_fighter1_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_autocharge_id},
         eff_ids=[eve_effect_id])
-    eve_fighter2_id = client.mk_eve_item(
+    eve_fighter2_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_autocharge_id},
         eff_ids=[eve_effect_id])
     client.create_sources()
@@ -46,8 +46,8 @@ def test_specified_different(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_autocharge1_id = client.mk_eve_item(attrs={eve_attr1_id: 50})
     eve_autocharge2_id = client.mk_eve_item(attrs={eve_attr2_id: 70})
-    eve_fighter1_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
-    eve_fighter2_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge2_id}, eff_ids=[eve_effect_id])
+    eve_fighter1_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
+    eve_fighter2_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge2_id}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
@@ -77,8 +77,8 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_autocharge1_id = client.mk_eve_item(attrs={eve_attr_id: 50})
     eve_autocharge2_id = client.alloc_item_id()
-    eve_fighter1_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
-    eve_fighter2_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge2_id}, eff_ids=[eve_effect_id])
+    eve_fighter1_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
+    eve_fighter2_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge2_id}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
@@ -113,8 +113,8 @@ def test_valid_to_no_reference_to_valid(client, consts):
         id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_autocharge1_id = client.mk_eve_item(attrs={eve_attr_id: 50})
-    eve_fighter1_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
-    eve_fighter2_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_fighter1_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
+    eve_fighter2_id = client.mk_eve_fighter(eff_ids=[eve_effect_id])
     client.create_sources()
     api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()

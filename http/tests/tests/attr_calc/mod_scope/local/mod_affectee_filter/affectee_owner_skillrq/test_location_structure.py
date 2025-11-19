@@ -16,7 +16,7 @@ def test_unaffected(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
-    eve_affectee_item_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1})
+    eve_affectee_item_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1})
     eve_struct_id = client.mk_eve_struct()
     client.create_sources()
     api_sol = client.create_sol()

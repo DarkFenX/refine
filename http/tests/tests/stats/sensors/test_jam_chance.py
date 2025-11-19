@@ -422,7 +422,7 @@ def test_drone(client, consts):
         duration_attr_id=eve_cycle_time_attr_id,
         range_attr_id=eve_optimal_attr_id,
         resist_attr_id=eve_resist_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_jam_radar_attr_id: 1, eve_jam_magnet_attr_id: 1, eve_jam_grav_attr_id: 1, eve_jam_ladar_attr_id: 1,
             eve_cycle_time_attr_id: 20000, eve_duration_attr_id: 5000,
@@ -497,7 +497,7 @@ def test_stacking(client, consts):
             eve_cycle_time_attr_id: 20000, eve_optimal_attr_id: 50000, eve_falloff_attr_id: 25000},
         eff_ids=[eve_jam_effect_id],
         defeff_id=eve_jam_effect_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_jam_radar_attr_id: 1, eve_jam_magnet_attr_id: 1, eve_jam_grav_attr_id: 1, eve_jam_ladar_attr_id: 1,
             eve_cycle_time_attr_id: 20000, eve_duration_attr_id: 5000,
@@ -552,7 +552,7 @@ def test_sensors_zero(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id,
         range_attr_id=eve_optimal_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_jam_radar_attr_id: 1, eve_jam_magnet_attr_id: 1, eve_jam_grav_attr_id: 1, eve_jam_ladar_attr_id: 1,
             eve_cycle_time_attr_id: 20000, eve_duration_attr_id: 5000, eve_optimal_attr_id: 7500},
@@ -595,7 +595,7 @@ def test_both_zero(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id,
         range_attr_id=eve_optimal_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_jam_radar_attr_id: 0, eve_jam_magnet_attr_id: 0, eve_jam_grav_attr_id: 0, eve_jam_ladar_attr_id: 0,
             eve_cycle_time_attr_id: 20000, eve_duration_attr_id: 5000, eve_optimal_attr_id: 7500},

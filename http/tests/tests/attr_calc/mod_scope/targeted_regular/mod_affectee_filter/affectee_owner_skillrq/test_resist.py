@@ -31,7 +31,7 @@ def test_resisted_value_change(client, consts):
     eve_rig_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_rig_mod])
     eve_affectee_rig_id = client.mk_eve_item(attrs={eve_boost_attr_id: -25}, eff_ids=[eve_rig_effect_id])
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_resist_attr_id: 0.4})
-    eve_affectee_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 500}, srqs={eve_skill_id: 1})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 500}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()

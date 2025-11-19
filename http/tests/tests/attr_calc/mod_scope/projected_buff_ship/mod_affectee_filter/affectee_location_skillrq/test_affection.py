@@ -173,7 +173,7 @@ def test_unaffected_via_child(client, consts):
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

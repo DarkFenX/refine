@@ -67,7 +67,7 @@ def test_resisted_value_change_child(client, consts):
         affectee_attr_id=eve_resist_attr_id)
     eve_rig_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_rig_mod])
     eve_rig_id = client.mk_eve_item(attrs={eve_boost_attr_id: -25}, eff_ids=[eve_rig_effect_id])
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={eve_affectee_attr_id: 7.5, eve_resist_attr_id: 0.4},
         srqs={eve_skill_id: 1})
     client.create_sources()

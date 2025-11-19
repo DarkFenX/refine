@@ -27,7 +27,7 @@ def test_propagation(client, consts):
         attrs={eve_middle_attr_id: 20},
         eff_ids=[eve_middle_effect_id],
         defeff_id=eve_middle_effect_id)
-    eve_affectee_item_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
+    eve_affectee_item_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
     eve_ship_id = client.mk_eve_ship()
     eve_char_item_id = client.mk_eve_item()
     client.create_sources()
@@ -63,7 +63,7 @@ def test_replace_root(client, consts):
         affectee_attr_id=eve_attr2_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module_id = client.mk_eve_item(attrs={eve_attr1_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_attr2_id: 80}, srqs={eve_skill_id: 1})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_attr2_id: 80}, srqs={eve_skill_id: 1})
     eve_char_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
@@ -95,7 +95,7 @@ def test_replace_proj(client, consts):
         affectee_attr_id=eve_attr2_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module_id = client.mk_eve_item(attrs={eve_attr1_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_attr2_id: 80}, srqs={eve_skill_id: 1})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_attr2_id: 80}, srqs={eve_skill_id: 1})
     eve_char_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()

@@ -19,7 +19,7 @@ def test_proj_add_change_outgoing(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
-    eve_affector_drone_id = client.mk_eve_item(
+    eve_affector_drone_id = client.mk_eve_drone(
         attrs={
             eve_radius_attr_id: 25,
             eve_affector_attr_id: -85,
@@ -79,7 +79,7 @@ def test_proj_add_change_incoming(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_affector_ship_id = client.mk_eve_ship()
-    eve_affectee_drone_id = client.mk_eve_item(attrs={eve_radius_attr_id: 100, eve_affectee_attr_id: 1000})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 100, eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -131,7 +131,7 @@ def test_mutation_outgoing(client, consts):
             eve_falloff_attr_id: 10000}
         if radius is not None:
             attrs[eve_radius_attr_id] = radius
-        return client.mk_eve_item(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+        return client.mk_eve_drone(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
 
     eve_affector_drone1_base1_id = make_eve_drone(radius=100)
     eve_affector_drone1_base2_id = make_eve_drone(radius=10)
@@ -293,11 +293,11 @@ def test_mutation_incoming(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_affector_ship_id = client.mk_eve_ship()
-    eve_affectee_drone1_base1_id = client.mk_eve_item(attrs={eve_radius_attr_id: 100, eve_affectee_attr_id: 1000})
-    eve_affectee_drone1_base2_id = client.mk_eve_item(attrs={eve_radius_attr_id: 10, eve_affectee_attr_id: 1000})
-    eve_affectee_drone1_mutated1_id = client.mk_eve_item(attrs={eve_radius_attr_id: 500, eve_affectee_attr_id: 1000})
-    eve_affectee_drone1_mutated2_id = client.mk_eve_item(attrs={eve_radius_attr_id: 1000, eve_affectee_attr_id: 1000})
-    eve_affectee_drone1_mutated3_id = client.mk_eve_item(attrs={eve_radius_attr_id: 2000, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_base1_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 100, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_base2_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 10, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_mutated1_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 500, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_mutated2_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 1000, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_mutated3_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 2000, eve_affectee_attr_id: 1000})
     eve_affectee_drone1_mutator1_id = client.mk_eve_mutator(
         items=[
             ([eve_affectee_drone1_base1_id], eve_affectee_drone1_mutated1_id),
@@ -471,7 +471,7 @@ def test_switch_type_id_outgoing(client, consts):
             eve_falloff_attr_id: 10000}
         if radius is not None:
             attrs[eve_radius_attr_id] = radius
-        return client.mk_eve_item(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+        return client.mk_eve_drone(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
 
     eve_affector_drone1_id = make_eve_drone(radius=25)
     eve_affector_drone2_id = make_eve_drone(radius=2500)
@@ -536,9 +536,9 @@ def test_switch_type_id_incoming(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_affector_ship_id = client.mk_eve_ship()
-    eve_affectee_drone1_id = client.mk_eve_item(attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
-    eve_affectee_drone2_id = client.mk_eve_item(attrs={eve_radius_attr_id: 2500, eve_affectee_attr_id: 1000})
-    eve_affectee_drone3_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
+    eve_affectee_drone2_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 2500, eve_affectee_attr_id: 1000})
+    eve_affectee_drone3_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 1000})
     eve_affectee_drone4_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -601,7 +601,7 @@ def test_switch_src_outgoing(client, consts):
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
     eve_affector_drone_id = client.alloc_item_id(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
-    client.mk_eve_item(
+    client.mk_eve_drone(
         datas=[eve_d1],
         id_=eve_affector_drone_id,
         attrs={
@@ -611,7 +611,7 @@ def test_switch_src_outgoing(client, consts):
             eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    client.mk_eve_item(
+    client.mk_eve_drone(
         datas=[eve_d2],
         id_=eve_affector_drone_id,
         attrs={
@@ -621,7 +621,7 @@ def test_switch_src_outgoing(client, consts):
             eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    client.mk_eve_item(
+    client.mk_eve_drone(
         datas=[eve_d3],
         id_=eve_affector_drone_id,
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
@@ -693,15 +693,15 @@ def test_switch_src_incoming(client, consts):
         defeff_id=eve_effect_id)
     eve_affector_ship_id = client.mk_eve_ship()
     eve_affectee_drone_id = client.alloc_item_id(datas=[eve_d1, eve_d2, eve_d3, eve_d4])
-    client.mk_eve_item(
+    client.mk_eve_drone(
         datas=[eve_d1],
         id_=eve_affectee_drone_id,
         attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000})
-    client.mk_eve_item(
+    client.mk_eve_drone(
         datas=[eve_d2],
         id_=eve_affectee_drone_id,
         attrs={eve_radius_attr_id: 2500, eve_affectee_attr_id: 1000})
-    client.mk_eve_item(datas=[eve_d3], id_=eve_affectee_drone_id, attrs={eve_affectee_attr_id: 1000})
+    client.mk_eve_drone(datas=[eve_d3], id_=eve_affectee_drone_id, attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_affector_fit = api_sol.create_fit()
@@ -758,7 +758,7 @@ def test_modified_radius_outgoing(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
-    eve_affector_drone_id = client.mk_eve_item(
+    eve_affector_drone_id = client.mk_eve_drone(
         attrs={
             eve_radius_attr_id: 25,
             eve_affector_attr_id: -85,
@@ -833,7 +833,7 @@ def test_modified_radius_incoming(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_affector_ship_id = client.mk_eve_ship()
-    eve_affectee_drone_id = client.mk_eve_item(
+    eve_affectee_drone_id = client.mk_eve_drone(
         attrs={eve_radius_attr_id: 25, eve_affectee_attr_id: 1000},
         srqs={eve_skill_id: 1})
     eve_radius_mod = client.mk_eve_effect_mod(

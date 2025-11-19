@@ -103,7 +103,7 @@ def test_proj_add_change_incoming(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
-    eve_affector_fighter_id = client.mk_eve_item(
+    eve_affector_fighter_id = client.mk_eve_fighter(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -340,7 +340,7 @@ def test_switch_type_id_incoming(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
-    eve_affector_fighter_id = client.mk_eve_item(
+    eve_affector_fighter_id = client.mk_eve_fighter(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -510,7 +510,7 @@ def test_switch_src_incoming(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
-    eve_affector_fighter_id = client.mk_eve_item(
+    eve_affector_fighter_id = client.mk_eve_fighter(
         datas=[eve_d1, eve_d2, eve_d3, eve_d4],
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect_id],
@@ -666,7 +666,7 @@ def test_modified_radius_incoming(client, consts):
         range_attr_id=eve_optimal_attr_id,
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
-    eve_affector_fighter_id = client.mk_eve_item(
+    eve_affector_fighter_id = client.mk_eve_fighter(
         attrs={eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)

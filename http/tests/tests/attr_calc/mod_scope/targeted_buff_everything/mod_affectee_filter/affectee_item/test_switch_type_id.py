@@ -184,8 +184,8 @@ def test_affectee_child_drone(client, consts):
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_drone1_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
-    eve_drone2_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
+    eve_drone1_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 200})
+    eve_drone2_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 100})
     eve_drone3_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

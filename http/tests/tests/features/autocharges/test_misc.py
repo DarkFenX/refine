@@ -10,7 +10,7 @@ def test_switch_state_invalid_reference(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_charge_id = client.alloc_item_id()
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_charge_id},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id,
@@ -35,7 +35,7 @@ def test_switch_state_no_reference(client, consts):
         id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
     eve_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id,
         abils=[client.mk_eve_item_abil(id_=eve_abil_id)])

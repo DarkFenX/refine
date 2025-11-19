@@ -217,7 +217,7 @@ def test_drone(client, consts):
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.debuff_lance, cat_id=consts.EveEffCat.active)
     eve_affector_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_affectee_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1})
+    eve_affectee_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()

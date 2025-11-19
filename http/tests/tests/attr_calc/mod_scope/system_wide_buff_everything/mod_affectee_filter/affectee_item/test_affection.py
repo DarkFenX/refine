@@ -39,7 +39,7 @@ def test_affected_child(client, consts):
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()

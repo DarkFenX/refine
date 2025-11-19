@@ -19,7 +19,7 @@ def test_specified_same(client, consts):
     eve_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_autocharge_id, attrs={eve_d1_attr_id: 50})
     client.mk_eve_item(datas=[eve_d2], id_=eve_autocharge_id, attrs={eve_d2_attr_id: 70})
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         datas=[eve_d1, eve_d2],
         attrs={eve_autocharge_attr_id: eve_autocharge_id},
         eff_ids=[eve_effect_id])
@@ -64,12 +64,12 @@ def test_specified_different(client, consts):
     eve_d2_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d2], id_=eve_d2_autocharge_id, attrs={eve_d2_attr_id: 70})
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d1],
         id_=eve_fighter_id,
         attrs={eve_autocharge_attr_id: eve_d1_autocharge_id},
         eff_ids=[eve_effect_id])
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d2],
         id_=eve_fighter_id,
         attrs={eve_autocharge_attr_id: eve_d2_autocharge_id},
@@ -115,12 +115,12 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     # Just allocate ID, but do not create item
     eve_d2_autocharge_id = client.alloc_item_id(datas=[eve_d2])
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d1],
         id_=eve_fighter_id,
         attrs={eve_autocharge_attr_id: eve_d1d2_autocharge_id},
         eff_ids=[eve_effect_id])
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d2],
         id_=eve_fighter_id,
         attrs={eve_autocharge_attr_id: eve_d2_autocharge_id},
@@ -167,12 +167,12 @@ def test_valid_to_no_reference_to_valid(client, consts):
     eve_d1_autocharge_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_d1_autocharge_id, attrs={eve_d1_attr_id: 50})
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d1],
         id_=eve_fighter_id,
         attrs={eve_autocharge_attr_id: eve_d1_autocharge_id},
         eff_ids=[eve_effect_id])
-    client.mk_eve_item(
+    client.mk_eve_fighter(
         datas=[eve_d2],
         id_=eve_fighter_id,
         eff_ids=[eve_effect_id])

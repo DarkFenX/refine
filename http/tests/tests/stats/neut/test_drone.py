@@ -16,7 +16,7 @@ def test_state(client, consts):
         id_=consts.EveEffect.entity_energy_neut_falloff,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 6000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -66,7 +66,7 @@ def test_range(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id,
         range_attr_id=eve_optimal_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 6000,
             eve_optimal_attr_id: 7500, eve_radius_attr_id: 15},
@@ -125,7 +125,7 @@ def test_resist_and_cap_limit(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id,
         resist_attr_id=eve_resist_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 6000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -178,7 +178,7 @@ def test_item_kind(client, consts):
         id_=consts.EveEffect.entity_energy_neut_falloff,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 6000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -208,7 +208,7 @@ def test_zero_cycle_time(client, consts):
         id_=consts.EveEffect.entity_energy_neut_falloff,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 0},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -233,7 +233,7 @@ def test_no_cycle_time(client, consts):
     eve_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.entity_energy_neut_falloff,
         cat_id=consts.EveEffCat.target)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 6000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)

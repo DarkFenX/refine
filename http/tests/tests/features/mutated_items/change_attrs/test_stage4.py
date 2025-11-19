@@ -1233,13 +1233,13 @@ def test_drone(client):
     eve_change_roll_attr_id = client.mk_eve_attr()
     eve_change_absolute_attr_id = client.mk_eve_attr()
     eve_remove_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(attrs={
+    eve_base_item_id = client.mk_eve_drone(attrs={
         eve_add_roll_attr_id: 100,
         eve_add_absolute_attr_id: 100,
         eve_change_roll_attr_id: 100,
         eve_change_absolute_attr_id: 100,
         eve_remove_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_drone()
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attrs={
         eve_add_roll_attr_id: (0.8, 1.2),
         eve_add_absolute_attr_id: (0.8, 1.2),
@@ -1249,50 +1249,50 @@ def test_drone(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_drone(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_drone = api_fit.add_drone(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_change_roll_attr_id: Muta.roll_to_api(val=0.6),
         eve_change_absolute_attr_id: Muta.abs_to_api(val=111),
         eve_remove_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
-    api_item.update()
-    assert len(api_item.mutation.attrs) == 5
-    assert api_item.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_add_roll_attr_id].absolute == approx(100)
-    assert api_item.mutation.attrs[eve_add_absolute_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_add_absolute_attr_id].absolute == approx(100)
-    assert api_item.mutation.attrs[eve_change_roll_attr_id].roll == approx(0.6)
-    assert api_item.mutation.attrs[eve_change_roll_attr_id].absolute == approx(104)
-    assert api_item.mutation.attrs[eve_change_absolute_attr_id].roll == approx(0.775)
-    assert api_item.mutation.attrs[eve_change_absolute_attr_id].absolute == approx(111)
-    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.8)
-    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(112)
-    assert api_item.attrs[eve_add_roll_attr_id].base == approx(100)
-    assert api_item.attrs[eve_add_absolute_attr_id].base == approx(100)
-    assert api_item.attrs[eve_change_roll_attr_id].base == approx(104)
-    assert api_item.attrs[eve_change_absolute_attr_id].base == approx(111)
-    assert api_item.attrs[eve_remove_attr_id].base == approx(112)
+    api_drone.update()
+    assert len(api_drone.mutation.attrs) == 5
+    assert api_drone.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.5)
+    assert api_drone.mutation.attrs[eve_add_roll_attr_id].absolute == approx(100)
+    assert api_drone.mutation.attrs[eve_add_absolute_attr_id].roll == approx(0.5)
+    assert api_drone.mutation.attrs[eve_add_absolute_attr_id].absolute == approx(100)
+    assert api_drone.mutation.attrs[eve_change_roll_attr_id].roll == approx(0.6)
+    assert api_drone.mutation.attrs[eve_change_roll_attr_id].absolute == approx(104)
+    assert api_drone.mutation.attrs[eve_change_absolute_attr_id].roll == approx(0.775)
+    assert api_drone.mutation.attrs[eve_change_absolute_attr_id].absolute == approx(111)
+    assert api_drone.mutation.attrs[eve_remove_attr_id].roll == approx(0.8)
+    assert api_drone.mutation.attrs[eve_remove_attr_id].absolute == approx(112)
+    assert api_drone.attrs[eve_add_roll_attr_id].base == approx(100)
+    assert api_drone.attrs[eve_add_absolute_attr_id].base == approx(100)
+    assert api_drone.attrs[eve_change_roll_attr_id].base == approx(104)
+    assert api_drone.attrs[eve_change_absolute_attr_id].base == approx(111)
+    assert api_drone.attrs[eve_remove_attr_id].base == approx(112)
     # Action
-    api_item.change_drone(mutation={
+    api_drone.change_drone(mutation={
         eve_add_roll_attr_id: Muta.roll_to_api(val=0.3),
         eve_add_absolute_attr_id: Muta.abs_to_api(val=105),
         eve_change_roll_attr_id: Muta.roll_to_api(val=0.55),
         eve_change_absolute_attr_id: Muta.abs_to_api(val=109),
         eve_remove_attr_id: None})
     # Verification
-    api_item.update()
-    assert len(api_item.mutation.attrs) == 5
-    assert api_item.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_add_roll_attr_id].absolute == approx(92)
-    assert api_item.mutation.attrs[eve_add_absolute_attr_id].roll == approx(0.625)
-    assert api_item.mutation.attrs[eve_add_absolute_attr_id].absolute == approx(105)
-    assert api_item.mutation.attrs[eve_change_roll_attr_id].roll == approx(0.55)
-    assert api_item.mutation.attrs[eve_change_roll_attr_id].absolute == approx(102)
-    assert api_item.mutation.attrs[eve_change_absolute_attr_id].roll == approx(0.725)
-    assert api_item.mutation.attrs[eve_change_absolute_attr_id].absolute == approx(109)
-    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(100)
-    assert api_item.attrs[eve_add_roll_attr_id].base == approx(92)
-    assert api_item.attrs[eve_add_absolute_attr_id].base == approx(105)
-    assert api_item.attrs[eve_change_roll_attr_id].base == approx(102)
-    assert api_item.attrs[eve_change_absolute_attr_id].base == approx(109)
-    assert api_item.attrs[eve_remove_attr_id].base == approx(100)
+    api_drone.update()
+    assert len(api_drone.mutation.attrs) == 5
+    assert api_drone.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.3)
+    assert api_drone.mutation.attrs[eve_add_roll_attr_id].absolute == approx(92)
+    assert api_drone.mutation.attrs[eve_add_absolute_attr_id].roll == approx(0.625)
+    assert api_drone.mutation.attrs[eve_add_absolute_attr_id].absolute == approx(105)
+    assert api_drone.mutation.attrs[eve_change_roll_attr_id].roll == approx(0.55)
+    assert api_drone.mutation.attrs[eve_change_roll_attr_id].absolute == approx(102)
+    assert api_drone.mutation.attrs[eve_change_absolute_attr_id].roll == approx(0.725)
+    assert api_drone.mutation.attrs[eve_change_absolute_attr_id].absolute == approx(109)
+    assert api_drone.mutation.attrs[eve_remove_attr_id].roll == approx(0.5)
+    assert api_drone.mutation.attrs[eve_remove_attr_id].absolute == approx(100)
+    assert api_drone.attrs[eve_add_roll_attr_id].base == approx(92)
+    assert api_drone.attrs[eve_add_absolute_attr_id].base == approx(105)
+    assert api_drone.attrs[eve_change_roll_attr_id].base == approx(102)
+    assert api_drone.attrs[eve_change_absolute_attr_id].base == approx(109)
+    assert api_drone.attrs[eve_remove_attr_id].base == approx(100)

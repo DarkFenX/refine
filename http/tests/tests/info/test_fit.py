@@ -92,11 +92,11 @@ def test_booster(client):
 
 
 def test_ship(client):
-    eve_item_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_ship(type_id=eve_item_id)
+    api_item = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     assert api_fit.update().ship.id == api_item.id
     # Action
@@ -217,11 +217,11 @@ def test_rig(client):
 
 
 def test_drone(client):
-    eve_item_id = client.mk_eve_item()
+    eve_drone_id = client.mk_eve_drone()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_drone(type_id=eve_item_id)
+    api_item = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
     api_fit.update()
     assert len(api_fit.drones) == 1
@@ -235,11 +235,11 @@ def test_drone(client):
 
 
 def test_fighter(client):
-    eve_item_id = client.mk_eve_item()
+    eve_fighter_id = client.mk_eve_fighter()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_fighter(type_id=eve_item_id)
+    api_item = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fit.update()
     assert len(api_fit.fighters) == 1

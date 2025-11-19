@@ -135,7 +135,7 @@ def test_application_and_cap_limit(client, consts):
         defeff_id=eve_effect_id)
     eve_tgt_ship1_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 1000, eve_cap_attr_id: 3000})
     eve_tgt_ship2_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 200, eve_cap_attr_id: 3000})
-    eve_tgt_drone_id = client.mk_eve_item(
+    eve_tgt_drone_id = client.mk_eve_drone(
         attrs={eve_sig_radius_attr_id: 100, eve_prop_blow_attr_id: 6, eve_cap_attr_id: 10000})
     client.create_sources()
     api_sol = client.create_sol()

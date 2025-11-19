@@ -102,7 +102,7 @@ def test_child_add_pe_item_proj_remove_state_proj_fit(client, consts):
     eve_proj_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
@@ -132,7 +132,7 @@ def test_child_add_item_pe_proj_state_remove_pe_item(client, consts):
     eve_proj_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -163,7 +163,7 @@ def test_child_add_item_pe_proj_remove_item(client, consts):
     eve_proj_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

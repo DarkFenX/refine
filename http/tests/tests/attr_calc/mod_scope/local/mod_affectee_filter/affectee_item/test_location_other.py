@@ -105,7 +105,7 @@ def test_unaffected_fighter_to_autocharge(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_other_effect_id = client.mk_eve_effect(mod_info=[eve_other_mod])
     eve_autocharge_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100})
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_autocharge_id, eve_affector_attr_id: 20},
         eff_ids=[eve_other_effect_id, eve_autocharge_effect_id])
     client.create_sources()
@@ -136,7 +136,7 @@ def test_unaffected_autocharge_to_fighter(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_other_effect_id = client.mk_eve_effect(mod_info=[eve_other_mod])
     eve_autocharge_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_other_effect_id])
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_autocharge_attr_id: eve_autocharge_id, eve_affectee_attr_id: 100},
         eff_ids=[eve_autocharge_effect_id])
     client.create_sources()

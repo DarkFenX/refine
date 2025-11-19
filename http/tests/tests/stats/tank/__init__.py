@@ -469,7 +469,7 @@ def make_eve_drone_shield(
     conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
     conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    return client.mk_eve_item(
+    return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.remote_dsb_effect_id],
         defeff_id=basic_info.remote_dsb_effect_id)
@@ -553,7 +553,7 @@ def make_eve_drone_armor(
     conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
     conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    return client.mk_eve_item(
+    return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.remote_dar_effect_id],
         defeff_id=basic_info.remote_dar_effect_id)
@@ -591,7 +591,7 @@ def make_eve_drone_hull(
     conditional_insert(attrs=attrs, attr_id=basic_info.hull_rep_amount_attr_id, value=rep_amount)
     conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
     conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    return client.mk_eve_item(
+    return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.remote_dhr_effect_id],
         defeff_id=basic_info.remote_dhr_effect_id)

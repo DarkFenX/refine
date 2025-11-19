@@ -19,7 +19,7 @@ def test_state(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,
@@ -74,7 +74,7 @@ def test_stacking(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,
@@ -112,7 +112,7 @@ def test_waste_chance(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,
@@ -146,7 +146,7 @@ def test_no_waste(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone1_id = client.mk_eve_item(
+    eve_drone1_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,
@@ -155,7 +155,7 @@ def test_no_waste(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id,
         srqs={eve_skill_id: 1})
-    eve_drone2_id = client.mk_eve_item(
+    eve_drone2_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,
@@ -192,7 +192,7 @@ def test_item_kind(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,
@@ -240,7 +240,7 @@ def test_other_mining_kinds(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,
@@ -277,7 +277,7 @@ def test_cycle_time_zero(client, consts):
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 0,
@@ -308,7 +308,7 @@ def test_cycle_time_absent(client, consts):
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mining, cat_id=consts.EveEffCat.target)
     eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
-    eve_drone_id = client.mk_eve_item(
+    eve_drone_id = client.mk_eve_drone(
         attrs={
             eve_yield_attr_id: 1000,
             eve_cycle_time_attr_id: 21971.25,

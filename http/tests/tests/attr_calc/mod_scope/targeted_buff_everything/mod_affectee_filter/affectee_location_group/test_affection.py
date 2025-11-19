@@ -124,7 +124,7 @@ def test_unaffected_targeted_child(client, consts):
         attrs={eve_affector_attr_id: -55},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 200})
+    eve_drone_id = client.mk_eve_drone(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 200})
     eve_ship_id = client.mk_eve_ship(grp_id=eve_grp_id)
     client.create_sources()
     api_sol = client.create_sol()
@@ -153,7 +153,7 @@ def test_unaffected_via_child_target(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_rig_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 200})
-    eve_drone_id = client.mk_eve_item(grp_id=eve_grp_id)
+    eve_drone_id = client.mk_eve_drone(grp_id=eve_grp_id)
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()

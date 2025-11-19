@@ -81,7 +81,7 @@ def test_unaffected_child(client, consts):
     eve_proj_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -130,7 +130,7 @@ def test_unaffected_root_via_child(client, consts):
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -156,7 +156,7 @@ def test_unaffected_child_via_root(client, consts):
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

@@ -118,7 +118,7 @@ def test_child_add_sw_fit_item_remove_sw_item_fit(client, consts):
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id)
@@ -144,7 +144,7 @@ def test_child_add_fit_sw_item_remove_item_sw_fit(client, consts):
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -169,7 +169,7 @@ def test_child_add_fit_item_sw_remove_fit_sw(client, consts):
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -194,7 +194,7 @@ def test_child_add_sw_fit_item_state_remove_state_item_fit_sw(client, consts):
     eve_sw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id, state=False)

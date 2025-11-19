@@ -17,7 +17,7 @@ def setup_ship_test(*, client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
+    eve_affectee_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
     eve_char_id = client.mk_eve_item()
     eve_root_ship_id = client.mk_eve_ship()
     eve_root_struct_id = client.mk_eve_struct()
@@ -195,7 +195,7 @@ def setup_char_test(*, client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_affectee_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
+    eve_affectee_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 80}, srqs={eve_skill_id: 1})
     eve_char_loaded_id = client.mk_eve_item()
     eve_char_not_loaded_id = client.alloc_item_id()
     eve_ship_id = client.mk_eve_ship()

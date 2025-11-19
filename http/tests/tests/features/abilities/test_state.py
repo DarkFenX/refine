@@ -28,7 +28,7 @@ def test_switch_state(client, consts):
         mod_info=[eve_mod2])
     eve_primary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.pulse_cannon)
     eve_secondary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.heavy_rocket_salvo)
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_affector_attr1_id: 20, eve_affector_attr2_id: 30},
         eff_ids=[eve_primary_effect_id, eve_secondary_effect_id],
         defeff_id=eve_primary_effect_id,

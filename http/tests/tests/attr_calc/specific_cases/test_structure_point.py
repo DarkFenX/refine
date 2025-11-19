@@ -152,7 +152,7 @@ def test_fighter_mwd_mjd_block(client, consts):
     eve_ftr_mjd_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ftr_abil_mjd,
         cat_id=consts.EveEffCat.active)
-    eve_fighter_id = client.mk_eve_item(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
+    eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
     api_ftr_mwd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
     api_ftr_mjd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
