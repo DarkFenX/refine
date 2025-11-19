@@ -54,7 +54,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), a_item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
                 if is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
-                    let cmod = CtxModifier::from_raw_with_item(rmod, fit_key);
+                    let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                     add_cmod(
                         &mut self.cmods_loc_grp,
                         (fit_key, LocationKind::Ship, a_item_grp_id),
