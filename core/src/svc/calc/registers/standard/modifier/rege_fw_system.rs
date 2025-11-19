@@ -1,6 +1,11 @@
-use super::{add_cmod, remove_cmod};
 use crate::{
-    svc::calc::{AffecteeFilter, CtxModifier, RawModifier, registers::StandardRegister},
+    svc::calc::{
+        AffecteeFilter, CtxModifier, RawModifier,
+        registers::standard::{
+            StandardRegister,
+            func::{add_cmod, remove_cmod},
+        },
+    },
     ud::UFwEffect,
 };
 

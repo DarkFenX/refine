@@ -1,7 +1,3 @@
-use func::{add_cmod, remove_cmod};
-use iter_loc_act::ActiveLocations;
-
-mod func;
 mod iter_loc_act;
 mod rege_fleet_buff;
 mod rege_fw_buff;

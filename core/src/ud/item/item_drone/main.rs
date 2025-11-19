@@ -71,7 +71,7 @@ impl UDrone {
     pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base.get_skill_reqs()
     }
-    pub(in crate::ud::item) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+    pub(crate) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
         self.base.get_buff_item_lists()
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {

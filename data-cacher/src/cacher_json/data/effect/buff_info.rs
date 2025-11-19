@@ -1,4 +1,4 @@
-use crate::cacher_json::data::{CAttrId, CAttrVal, CBuffId};
+use crate::cacher_json::data::{CAttrId, CAttrVal, CBuffId, CItemListId};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::cacher_json) struct CEffectBuffInfo {
@@ -22,28 +22,24 @@ impl From<&CEffectBuffInfo> for rc::ad::AEffectBuffInfo {
     }
 }
 
-#[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
-#[repr(u8)]
-pub(in crate::cacher_json) enum CEffectBuffScope {
-    Everything,
-    Ships,
-    FleetShips,
+#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+pub(in crate::cacher_json) struct CEffectBuffScope {
+    item_list_id: CItemListId,
+    fleet_only: bool,
 }
 impl From<&rc::ad::AEffectBuffScope> for CEffectBuffScope {
     fn from(a_buff_scope: &rc::ad::AEffectBuffScope) -> Self {
-        match a_buff_scope {
-            rc::ad::AEffectBuffScope::Everything => Self::Everything,
-            rc::ad::AEffectBuffScope::Ships => Self::Ships,
-            rc::ad::AEffectBuffScope::FleetShips => Self::FleetShips,
+        Self {
+            item_list_id: (&a_buff_scope.item_list_id).into(),
+            fleet_only: a_buff_scope.fleet_only,
         }
     }
 }
 impl From<&CEffectBuffScope> for rc::ad::AEffectBuffScope {
     fn from(c_buff_scope: &CEffectBuffScope) -> Self {
-        match c_buff_scope {
-            CEffectBuffScope::Everything => Self::Everything,
-            CEffectBuffScope::Ships => Self::Ships,
-            CEffectBuffScope::FleetShips => Self::FleetShips,
+        Self {
+            item_list_id: (&c_buff_scope.item_list_id).into(),
+            fleet_only: c_buff_scope.fleet_only,
         }
     }
 }

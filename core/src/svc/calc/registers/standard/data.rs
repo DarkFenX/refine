@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::{AItemGrpId, AItemId, AItemListId},
     misc::{AttrSpec, EffectSpec},
     svc::calc::{CtxModifier, LocationKind, RawModifier},
     ud::{UFitKey, UItemKey},
@@ -16,16 +16,13 @@ pub(in crate::svc::calc) struct StandardRegister {
     pub(super) affectee_loc: RMapRSet<(UFitKey, LocationKind), UItemKey>,
     // Items belonging to certain fit, location kind and group
     // Map<(affectee fit key, affectee location kind, affectee agroup ID), affectee item keys>
-    pub(super) affectee_loc_grp: RMapRSet<(UFitKey, LocationKind, ad::AItemGrpId), UItemKey>,
+    pub(super) affectee_loc_grp: RMapRSet<(UFitKey, LocationKind, AItemGrpId), UItemKey>,
     // Items belonging to certain fit and location kind, and having certain skill requirement
     // Map<(affectee fit key, affectee location kind, affectee srq aitem ID), affectee item keys>
-    pub(super) affectee_loc_srq: RMapRSet<(UFitKey, LocationKind, ad::AItemId), UItemKey>,
+    pub(super) affectee_loc_srq: RMapRSet<(UFitKey, LocationKind, AItemId), UItemKey>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Map<(affectee fit key, affectee srq aitem ID), affectee item keys>
-    pub(super) affectee_own_srq: RMapRSet<(UFitKey, ad::AItemId), UItemKey>,
-    // Everything-buff-modifiable items which belong to certain fit
-    // Map<affectee fit key, affectee item keys>
-    pub(super) affectee_buffable: RMapRSet<UFitKey, UItemKey>,
+    pub(super) affectee_own_srq: RMapRSet<(UFitKey, AItemId), UItemKey>,
     // All raw modifiers tracked by register
     // Map<affector effect spec, modifiers>
     pub(super) rmods_all: RMapRSet<EffectSpec, RawModifier>,
@@ -71,15 +68,19 @@ pub(in crate::svc::calc) struct StandardRegister {
     pub(super) cmods_loc: RMapRSet<(UFitKey, LocationKind), CtxModifier>,
     // Modifiers influencing items belonging to certain fit, location and group
     // Map<(affectee fit key, affectee location, affectee agroup ID), modifiers>
-    pub(super) cmods_loc_grp: RMapRSet<(UFitKey, LocationKind, ad::AItemGrpId), CtxModifier>,
+    pub(super) cmods_loc_grp: RMapRSet<(UFitKey, LocationKind, AItemGrpId), CtxModifier>,
     // Modifiers influencing items belonging to certain fit and location, and having certain skill
     // requirement
     // Map<(affectee fit key, affectee location, affectee srq aitem ID), modifiers>
-    pub(super) cmods_loc_srq: RMapRSet<(UFitKey, LocationKind, ad::AItemId), CtxModifier>,
+    pub(super) cmods_loc_srq: RMapRSet<(UFitKey, LocationKind, AItemId), CtxModifier>,
     // Modifiers influencing owner-modifiable items belonging to certain fit and having certain
     // skill requirement
     // Map<(affectee fit key, affectee srq aitem ID), modifiers>
-    pub(super) cmods_own_srq: RMapRSet<(UFitKey, ad::AItemId), CtxModifier>,
+    pub(super) cmods_own_srq: RMapRSet<(UFitKey, AItemId), CtxModifier>,
+    // TODO: section with new maps, should be redistributed later
+    // TODO: don't forget to add to debug
+    pub(super) affectee_buffable_new: RMapRSet<(UFitKey, AItemListId), UItemKey>,
+    pub(super) fit_buffable: RMapRSet<AItemListId, UFitKey>,
 }
 impl StandardRegister {
     pub(in crate::svc::calc) fn new() -> Self {
@@ -89,7 +90,6 @@ impl StandardRegister {
             affectee_loc_grp: RMapRSet::new(),
             affectee_loc_srq: RMapRSet::new(),
             affectee_own_srq: RMapRSet::new(),
-            affectee_buffable: RMapRSet::new(),
             rmods_all: RMapRSet::new(),
             rmods_proj: RMapRSet::new(),
             rmods_fleet: RMapRSet::new(),
@@ -108,6 +108,9 @@ impl StandardRegister {
             cmods_loc_grp: RMapRSet::new(),
             cmods_loc_srq: RMapRSet::new(),
             cmods_own_srq: RMapRSet::new(),
+            // TODO: section with new maps, should be redistributed later
+            affectee_buffable_new: RMapRSet::new(),
+            fit_buffable: RMapRSet::new(),
         }
     }
 }

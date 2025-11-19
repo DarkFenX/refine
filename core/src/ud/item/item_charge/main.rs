@@ -1,8 +1,5 @@
 use crate::{
-    ad::{
-        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId, ASkillLevel,
-        AState,
-    },
+    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
     def::ItemId,
     misc::EffectMode,
     rd::{REffectKey, RItemAXt},
@@ -69,9 +66,6 @@ impl UCharge {
     }
     pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base.get_skill_reqs()
-    }
-    pub(in crate::ud::item) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
-        self.base.get_buff_item_lists()
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
         self.base.get_axt()

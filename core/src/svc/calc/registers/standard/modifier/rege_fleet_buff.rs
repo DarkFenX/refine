@@ -1,8 +1,13 @@
-use super::{add_cmod, remove_cmod};
 use crate::{
     svc::{
         SvcCtx,
-        calc::{AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier, registers::StandardRegister},
+        calc::{
+            AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier,
+            registers::standard::{
+                StandardRegister,
+                func::{add_cmod, remove_cmod},
+            },
+        },
     },
     ud::{UFitKey, UFleet, UItem},
 };

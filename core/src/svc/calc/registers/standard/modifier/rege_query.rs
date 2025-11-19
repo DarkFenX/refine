@@ -1,10 +1,12 @@
 use std::hash::{BuildHasher, Hash};
 
-use super::ActiveLocations;
 use crate::{
     ad,
     misc::{AttrSpec, EffectSpec},
-    svc::calc::{CtxModifier, RawModifier, registers::StandardRegister},
+    svc::calc::{
+        CtxModifier, RawModifier,
+        registers::standard::{StandardRegister, modifier::iter_loc_act::ActiveLocations},
+    },
     ud::{UFits, UItem, UItemKey},
     util::MapSet,
 };
@@ -67,9 +69,11 @@ impl StandardRegister {
         item_key: UItemKey,
         item: &UItem,
     ) -> Vec<CtxModifier> {
-        if let UItem::Ship(u_ship) = item {
-            self.reg_loc_root_for_fw_buff(item_key, u_ship, u_ship.get_fit_key());
-            self.reg_loc_root_for_sw_buff(item_key, u_ship);
+        if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
+            && let UItem::Ship(u_ship) = item
+        {
+            self.reg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
+            self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
         }
         self.reg_loc_root_for_proj(item_key, item);
         self.get_mods_for_changed_root(item)
@@ -80,9 +84,11 @@ impl StandardRegister {
         item: &UItem,
     ) -> Vec<CtxModifier> {
         let cmods = self.get_mods_for_changed_root(item);
-        if let UItem::Ship(u_ship) = item {
-            self.unreg_loc_root_for_fw_buff(item_key, u_ship, u_ship.get_fit_key());
-            self.unreg_loc_root_for_sw_buff(item_key, u_ship);
+        if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
+            && let UItem::Ship(u_ship) = item
+        {
+            self.unreg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
+            self.unreg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
         }
         self.unreg_loc_root_for_proj(item_key, item);
         cmods

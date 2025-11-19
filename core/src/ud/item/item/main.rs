@@ -1,10 +1,7 @@
 use either::Either;
 
 use crate::{
-    ad::{
-        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId, ASkillLevel,
-        AState,
-    },
+    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
     def::{AttrVal, Count, ItemId, OF},
     misc::{EffectMode, Spool},
     rd::{REffectKey, RItemAXt},
@@ -226,27 +223,6 @@ impl UItem {
             Self::Stance(stance) => stance.get_skill_reqs(),
             Self::Subsystem(subsystem) => subsystem.get_skill_reqs(),
             Self::SwEffect(sw_effect) => sw_effect.get_skill_reqs(),
-        }
-    }
-    pub(crate) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_buff_item_lists(),
-            Self::Booster(booster) => booster.get_buff_item_lists(),
-            Self::Character(character) => character.get_buff_item_lists(),
-            Self::Charge(charge) => charge.get_buff_item_lists(),
-            Self::Drone(drone) => drone.get_buff_item_lists(),
-            Self::Fighter(fighter) => fighter.get_buff_item_lists(),
-            Self::FwEffect(fw_effect) => fw_effect.get_buff_item_lists(),
-            Self::Implant(implant) => implant.get_buff_item_lists(),
-            Self::Module(module) => module.get_buff_item_lists(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_buff_item_lists(),
-            Self::Rig(rig) => rig.get_buff_item_lists(),
-            Self::Service(service) => service.get_buff_item_lists(),
-            Self::Ship(ship) => ship.get_buff_item_lists(),
-            Self::Skill(skill) => skill.get_buff_item_lists(),
-            Self::Stance(stance) => stance.get_buff_item_lists(),
-            Self::Subsystem(subsystem) => subsystem.get_buff_item_lists(),
-            Self::SwEffect(sw_effect) => sw_effect.get_buff_item_lists(),
         }
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
