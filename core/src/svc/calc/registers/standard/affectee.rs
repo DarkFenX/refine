@@ -41,7 +41,8 @@ impl StandardRegister {
             self.reg_buffable_for_sw(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for &item_list_id in buffable_item_lists {
-                    self.fits_buffable.add_entry(item_list_id, ship.get_fit_key());
+                    self.affectee_buffable_ships
+                        .add_entry(item_list_id, (ship.get_fit_key(), item_key));
                 }
             }
         }
@@ -82,7 +83,8 @@ impl StandardRegister {
             self.unreg_buffable_for_sw(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for item_list_id in buffable_item_lists {
-                    self.fits_buffable.remove_entry(item_list_id, &ship.get_fit_key());
+                    self.affectee_buffable_ships
+                        .remove_entry(item_list_id, &(ship.get_fit_key(), item_key));
                 }
             }
         }

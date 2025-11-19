@@ -43,6 +43,12 @@ impl StandardRegister {
                 check_item_key(u_data, *item_key, true)?;
             }
         }
+        for afectee_infos in self.affectee_buffable_ships.values() {
+            for (fit_key, item_key) in afectee_infos {
+                check_fit_key(u_data, *fit_key)?;
+                check_item_key(u_data, *item_key, true)?;
+            }
+        }
         for (espec, rmods) in self.rmods_all.iter() {
             check_item_key(u_data, espec.item_key, true)?;
             check_effect_key(u_data, espec.effect_key)?;
@@ -149,11 +155,6 @@ impl StandardRegister {
             check_fit_key(u_data, *fit_key)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
-            }
-        }
-        for fit_keys in self.fits_buffable.values() {
-            for fit_key in fit_keys {
-                check_fit_key(u_data, *fit_key)?;
             }
         }
         Ok(())

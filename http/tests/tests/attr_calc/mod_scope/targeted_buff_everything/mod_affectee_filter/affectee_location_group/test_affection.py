@@ -139,7 +139,7 @@ def test_unaffected_targeted_child(client, consts):
 
 def test_unaffected_via_child_target(client, consts):
     # Ship items shouldn't be affected when target is something which isn't ship (e.g. drone)
-    eve_grp_id = client.mk_eve_item_group()
+    eve_grp_id = client.mk_eve_drone_group()
     eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr_id = client.mk_eve_attr()
     client.mk_eve_buff(
