@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from tests.fw.util import Default
 
 if typing.TYPE_CHECKING:
+    from collections.abc import Callable
+
     from tests.fw.client import TestClient
 
 
@@ -293,7 +295,7 @@ def make_eve_tankable(
         resos_hull: tuple[float | None, float | None, float | None, float | None] | None = None,
         rr_resist: float | None = None,
         fighter_count: float | None = None,
-        ship: bool = False,
+        maker: Callable | None = None,
 ) -> int:
     attrs = {}
     if hps is not None:
@@ -325,7 +327,8 @@ def make_eve_tankable(
         attrs[basic_info.rr_res_attr_id] = rr_resist
     if fighter_count is not None:
         attrs[basic_info.max_fighter_count_attr_id] = fighter_count
-    maker = client.mk_eve_ship if ship else client.mk_eve_item
+    if maker is None:
+        maker = client.mk_eve_item
     return maker(attrs=attrs)
 
 

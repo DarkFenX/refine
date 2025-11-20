@@ -11,7 +11,7 @@ def test_ship_modified(client, consts):
         resos_shield=(1, 0.8, 0.6, 0.4),
         resos_armor=(0.5, 0.65, 0.75, 0.7),
         resos_hull=(0.67, 0.67, 0.67, 0.67),
-        ship=True)
+        maker=client.mk_eve_ship)
     eve_shield_mod_attr_id = client.mk_eve_attr()
     eve_armor_mod_attr_id = client.mk_eve_attr()
     eve_hull_em_mod_attr_id = client.mk_eve_attr()
@@ -105,7 +105,8 @@ def test_drone_modified(client, consts):
         basic_info=eve_basic_info,
         resos_shield=(1, 0.8, 0.6, 0.5),
         resos_armor=(0.5, 0.55, 0.75, 0.9),
-        resos_hull=(1, 1, 1, 1))
+        resos_hull=(1, 1, 1, 1),
+        maker=client.mk_eve_drone)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
@@ -150,7 +151,8 @@ def test_fighter_modified(client, consts):
         client=client,
         basic_info=eve_basic_info,
         resos_shield=(0.7, 0.85, 1, 1),
-        fighter_count=9)
+        fighter_count=9,
+        maker=client.mk_eve_fighter)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_buff_id = client.mk_eve_buff(
@@ -227,7 +229,7 @@ def test_not_requested(client, consts):
         resos_shield=(1, 0.8, 0.6, 0.4),
         resos_armor=(0.5, 0.65, 0.75, 0.7),
         resos_hull=(0.67, 0.67, 0.67, 0.67),
-        ship=True)
+        maker=client.mk_eve_ship)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
