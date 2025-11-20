@@ -999,9 +999,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "lender"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1be15bcb008455f62df9154c02f5bbe9411fff6776a547497198e203c151ca77"
+checksum = "c150e24afda8f769930a339cb5ad6e182101fdf1165c30c157b33ce5050fd7ad"
 dependencies = [
  "fallible-iterator",
  "lender-derive",
