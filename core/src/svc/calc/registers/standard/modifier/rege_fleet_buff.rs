@@ -141,8 +141,10 @@ impl StandardRegister {
     }
     // Private methods
     fn apply_fleet_mod(&mut self, rmod: RawModifier, fit_key: UFitKey) -> Option<CtxModifier> {
+        // Assume all fleet buffs affect ships. This is controlled by the lib, so whenever
+        // item-specific buffs are added to EVE, this implementation has to be changed
         match rmod.affectee_filter {
-            AffecteeFilter::Direct(Location::Ship) => {
+            AffecteeFilter::Direct(Location::ItemList(_)) => {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
                     &mut self.cmods_root,
@@ -152,7 +154,7 @@ impl StandardRegister {
                 );
                 Some(cmod)
             }
-            AffecteeFilter::Loc(Location::Ship) => {
+            AffecteeFilter::Loc(Location::ItemList(_)) => {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
                     &mut self.cmods_loc,
@@ -162,7 +164,7 @@ impl StandardRegister {
                 );
                 Some(cmod)
             }
-            AffecteeFilter::LocGrp(Location::Ship, a_item_grp_id) => {
+            AffecteeFilter::LocGrp(Location::ItemList(_), a_item_grp_id) => {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
                     &mut self.cmods_loc_grp,
@@ -172,7 +174,7 @@ impl StandardRegister {
                 );
                 Some(cmod)
             }
-            AffecteeFilter::LocSrq(Location::Ship, srq_a_item_id) => {
+            AffecteeFilter::LocSrq(Location::ItemList(_), srq_a_item_id) => {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
                     &mut self.cmods_loc_srq,
