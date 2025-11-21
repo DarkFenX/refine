@@ -58,7 +58,10 @@ where
     pub fn insert(&mut self, val: V) -> bool {
         self.data.insert(val)
     }
-    pub fn extend<I: IntoIterator<Item = V>>(&mut self, iter: I) {
+    pub fn extend<I>(&mut self, iter: I)
+    where
+        I: IntoIterator<Item = V>,
+    {
         self.data.extend(iter)
     }
     pub fn remove(&mut self, val: &V) -> bool {
@@ -66,6 +69,12 @@ where
     }
     pub fn drain(&mut self) -> impl ExactSizeIterator<Item = V> {
         self.data.drain()
+    }
+    pub(crate) fn extract_if<F>(&mut self, pred: F) -> impl Iterator<Item = V>
+    where
+        F: FnMut(&V) -> bool,
+    {
+        self.data.extract_if(pred)
     }
     pub fn clear(&mut self) {
         self.data.clear()

@@ -38,7 +38,7 @@ impl Calc {
     }
     pub(in crate::svc) fn item_added(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
         // Char/ship switches
-        self.handle_location_owner_add(ctx, item_key, item);
+        self.handle_location_root_add(ctx, item_key, item);
         // Custom modifiers
         let cmods = self
             .revs
@@ -68,7 +68,7 @@ impl Calc {
             }
         }
         // Char/ship switches
-        self.handle_location_owner_remove(ctx, item_key, item);
+        self.handle_location_root_remove(ctx, item_key, item);
     }
     pub(in crate::svc) fn item_loaded(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
         // Notify core calc services
@@ -418,7 +418,7 @@ impl Calc {
             self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_key, cmod.raw.affectee_attr_id));
         }
     }
-    fn handle_location_owner_add(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
+    fn handle_location_root_add(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
         if matches!(item, UItem::Ship(_) | UItem::Character(_)) {
             let mut reuse_affectees = Vec::new();
             for cmod in self.std.get_mods_for_added_root(item_key, item) {
@@ -426,7 +426,7 @@ impl Calc {
             }
         }
     }
-    fn handle_location_owner_remove(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
+    fn handle_location_root_remove(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
         if matches!(item, UItem::Ship(_) | UItem::Character(_)) {
             let mut reuse_affectees = Vec::new();
             for cmod in self.std.get_mods_for_removed_root(item_key, item) {

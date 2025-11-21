@@ -39,6 +39,7 @@ impl StandardRegister {
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.reg_buffable_for_sw(item_key, buffable_item_lists);
+            self.reg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for &item_list_id in buffable_item_lists {
                     self.affectee_buffable_ships
@@ -81,6 +82,7 @@ impl StandardRegister {
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.unreg_buffable_for_sw(item_key, buffable_item_lists);
+            self.unreg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for item_list_id in buffable_item_lists {
                     self.affectee_buffable_ships

@@ -1,4 +1,5 @@
 use crate::{
+    ad::AItemListId,
     svc::calc::{
         AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier,
         registers::standard::{
@@ -244,6 +245,40 @@ impl StandardRegister {
                 self.rmods_proj_inactive.add_entry(projectee_key, rmod);
             }
             _ => (),
+        }
+    }
+    pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_direct_proj_buff(
+        &mut self,
+        projectee_key: UItemKey,
+        buffable_item_lists: &Vec<AItemListId>,
+    ) {
+        for rmod in self
+            .rmods_proj_inactive
+            .extract_if(&projectee_key, |r| match r.affectee_filter {
+                AffecteeFilter::Direct(Location::ItemList(item_list_id)) => buffable_item_lists.contains(&item_list_id),
+                _ => false,
+            })
+        {
+            let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+            add_cmod(&mut self.cmods_direct, projectee_key, cmod, &mut self.cmods_by_aspec);
+            self.rmods_proj_active.add_entry(projectee_key, rmod);
+        }
+    }
+    pub(in crate::svc::calc::registers::standard) fn unreg_affectee_for_direct_proj_buff(
+        &mut self,
+        projectee_key: UItemKey,
+        buffable_item_lists: &Vec<AItemListId>,
+    ) {
+        for rmod in self
+            .rmods_proj_active
+            .extract_if(&projectee_key, |r| match r.affectee_filter {
+                AffecteeFilter::Direct(Location::ItemList(item_list_id)) => buffable_item_lists.contains(&item_list_id),
+                _ => false,
+            })
+        {
+            let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+            remove_cmod(&mut self.cmods_direct, &projectee_key, &cmod, &mut self.cmods_by_aspec);
+            self.rmods_proj_inactive.add_entry(projectee_key, rmod);
         }
     }
 }
