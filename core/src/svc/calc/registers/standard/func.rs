@@ -22,7 +22,7 @@ pub(super) fn add_cmod<K, H1, H2>(
     H2: BuildHasher + Default,
 {
     main_storage.add_entry(key, cmod);
-    if let Some(affector_attr_id) = cmod.raw.get_affector_a_attr_id() {
+    if let Some(affector_attr_id) = cmod.raw.get_affector_attr_id() {
         let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, affector_attr_id);
         aspec_storage.add_entry(affector_aspec, cmod);
     }
@@ -47,7 +47,7 @@ pub(super) fn remove_cmod<K, H1, H2>(
     H2: BuildHasher + Default,
 {
     main_storage.remove_entry(key, cmod);
-    if let Some(affector_attr_id) = cmod.raw.get_affector_a_attr_id() {
+    if let Some(affector_attr_id) = cmod.raw.get_affector_attr_id() {
         let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, affector_attr_id);
         aspec_storage.remove_entry(affector_aspec, cmod);
     }

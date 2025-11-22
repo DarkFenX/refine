@@ -64,26 +64,6 @@ impl StandardRegister {
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
         self.cmods_by_aspec.get(affector_aspec)
     }
-    // TODO: consider where to move it
-    pub(in crate::svc::calc::registers::standard) fn get_mods_for_changed_ship(
-        &self,
-        item: &UItem,
-        cmods: &mut Vec<CtxModifier>,
-    ) {
-        if let (Some(item_fit_key), Some(item_loc)) = (item.get_fit_key(), item.get_ship_loc_kind()) {
-            cmods.extend(self.cmods_loc.get(&(item_fit_key, item_loc)));
-            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods_loc_grp.iter() {
-                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
-                    cmods.extend(stored_cmods);
-                }
-            }
-            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods_loc_srq.iter() {
-                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
-                    cmods.extend(stored_cmods);
-                }
-            }
-        }
-    }
     pub(in crate::svc::calc) fn extract_raw_mods_for_effect(
         &mut self,
         reuse_raw_modifiers: &mut Vec<RawModifier>,
@@ -100,16 +80,11 @@ fn filter_and_extend<K, H1, H2>(
     vec: &mut Vec<CtxModifier>,
     storage: &MapSet<K, CtxModifier, H1, H2>,
     key: &K,
-    a_attr_id: &ad::AAttrId,
+    attr_id: &ad::AAttrId,
 ) where
     K: Eq + Hash,
     H1: BuildHasher + Default,
     H2: BuildHasher + Default,
 {
-    vec.extend(
-        storage
-            .get(key)
-            .filter(|v| &v.raw.affectee_attr_id == a_attr_id)
-            .copied(),
-    )
+    vec.extend(storage.get(key).filter(|v| &v.raw.affectee_attr_id == attr_id).copied())
 }

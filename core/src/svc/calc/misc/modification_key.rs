@@ -18,7 +18,7 @@ impl From<&CtxModifier> for ModificationKey {
     fn from(cmod: &CtxModifier) -> Self {
         ModificationKey {
             affector_key: cmod.raw.affector_espec.item_key,
-            affector_a_attr_id: cmod.raw.get_affector_a_attr_id(),
+            affector_a_attr_id: cmod.raw.get_affector_attr_id(),
             op: cmod.raw.op,
         }
     }

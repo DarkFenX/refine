@@ -78,7 +78,7 @@ impl StandardRegister {
                 },
                 _ => None,
             },
-            AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc {
+            AffecteeFilter::LocGrp(loc, item_grp_id) => match loc {
                 Location::Target => match projectee_item {
                     UItem::Ship(projectee_ship) => match projectee_ship.get_kind() {
                         UShipKind::Ship => {
@@ -86,7 +86,7 @@ impl StandardRegister {
                             if register {
                                 add_cmod(
                                     &mut self.cmods_loc_grp,
-                                    (projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
+                                    (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id),
                                     cmod,
                                     &mut self.cmods_by_aspec,
                                 );
@@ -99,7 +99,7 @@ impl StandardRegister {
                             if register {
                                 add_cmod(
                                     &mut self.cmods_loc_grp,
-                                    (projectee_ship.get_fit_key(), LocationKind::Structure, a_item_grp_id),
+                                    (projectee_ship.get_fit_key(), LocationKind::Structure, item_grp_id),
                                     cmod,
                                     &mut self.cmods_by_aspec,
                                 );
@@ -113,7 +113,7 @@ impl StandardRegister {
                 },
                 _ => None,
             },
-            AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc {
+            AffecteeFilter::LocSrq(loc, srq_type_id) => match loc {
                 Location::Target => match projectee_item {
                     UItem::Ship(projectee_ship) => match projectee_ship.get_kind() {
                         UShipKind::Ship => {
@@ -121,7 +121,7 @@ impl StandardRegister {
                             if register {
                                 add_cmod(
                                     &mut self.cmods_loc_srq,
-                                    (projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
+                                    (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id),
                                     cmod,
                                     &mut self.cmods_by_aspec,
                                 );
@@ -134,7 +134,7 @@ impl StandardRegister {
                             if register {
                                 add_cmod(
                                     &mut self.cmods_loc_srq,
-                                    (projectee_ship.get_fit_key(), LocationKind::Structure, srq_a_item_id),
+                                    (projectee_ship.get_fit_key(), LocationKind::Structure, srq_type_id),
                                     cmod,
                                     &mut self.cmods_by_aspec,
                                 );
@@ -148,13 +148,13 @@ impl StandardRegister {
                 },
                 _ => None,
             },
-            AffecteeFilter::OwnSrq(srq_a_item_id) => match projectee_item {
+            AffecteeFilter::OwnSrq(srq_type_id) => match projectee_item {
                 UItem::Ship(projectee_ship) => {
                     let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                     if register {
                         add_cmod(
                             &mut self.cmods_own_srq,
-                            (projectee_ship.get_fit_key(), srq_a_item_id),
+                            (projectee_ship.get_fit_key(), srq_type_id),
                             cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -213,14 +213,14 @@ impl StandardRegister {
                 },
                 _ => None,
             },
-            AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc {
+            AffecteeFilter::LocGrp(loc, item_grp_id) => match loc {
                 Location::Target => match projectee_item {
                     UItem::Ship(projectee_ship) => match projectee_ship.get_kind() {
                         UShipKind::Ship => {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_grp,
-                                (projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -231,7 +231,7 @@ impl StandardRegister {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_grp,
-                                (projectee_ship.get_fit_key(), LocationKind::Structure, a_item_grp_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Structure, item_grp_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -244,14 +244,14 @@ impl StandardRegister {
                 },
                 _ => None,
             },
-            AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc {
+            AffecteeFilter::LocSrq(loc, srq_type_id) => match loc {
                 Location::Target => match projectee_item {
                     UItem::Ship(projectee_ship) => match projectee_ship.get_kind() {
                         UShipKind::Ship => {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_srq,
-                                (projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -262,7 +262,7 @@ impl StandardRegister {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_srq,
-                                (projectee_ship.get_fit_key(), LocationKind::Structure, srq_a_item_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Structure, srq_type_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -275,12 +275,12 @@ impl StandardRegister {
                 },
                 _ => None,
             },
-            AffecteeFilter::OwnSrq(srq_a_item_id) => match projectee_item {
+            AffecteeFilter::OwnSrq(srq_type_id) => match projectee_item {
                 UItem::Ship(projectee_ship) => {
                     let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                     remove_cmod(
                         &mut self.cmods_own_srq,
-                        (projectee_ship.get_fit_key(), srq_a_item_id),
+                        (projectee_ship.get_fit_key(), srq_type_id),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
@@ -343,7 +343,7 @@ impl StandardRegister {
                     }
                 }
             }
-            AffecteeFilter::LocGrp(loc, a_item_grp_id) => {
+            AffecteeFilter::LocGrp(loc, item_grp_id) => {
                 if let Location::Target = loc
                     && let UItem::Ship(projectee_ship) = projectee_item
                 {
@@ -352,7 +352,7 @@ impl StandardRegister {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_grp,
-                                (projectee_ship.get_fit_key(), LocationKind::Ship, a_item_grp_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -362,7 +362,7 @@ impl StandardRegister {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_grp,
-                                (projectee_ship.get_fit_key(), LocationKind::Structure, a_item_grp_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Structure, item_grp_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -372,7 +372,7 @@ impl StandardRegister {
                     }
                 }
             }
-            AffecteeFilter::LocSrq(loc, srq_a_item_id) => {
+            AffecteeFilter::LocSrq(loc, srq_type_id) => {
                 if let Location::Target = loc
                     && let UItem::Ship(projectee_ship) = projectee_item
                 {
@@ -381,7 +381,7 @@ impl StandardRegister {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_srq,
-                                (projectee_ship.get_fit_key(), LocationKind::Ship, srq_a_item_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -391,7 +391,7 @@ impl StandardRegister {
                             let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                             remove_cmod(
                                 &mut self.cmods_loc_srq,
-                                (projectee_ship.get_fit_key(), LocationKind::Structure, srq_a_item_id),
+                                (projectee_ship.get_fit_key(), LocationKind::Structure, srq_type_id),
                                 &cmod,
                                 &mut self.cmods_by_aspec,
                             );
@@ -401,12 +401,12 @@ impl StandardRegister {
                     }
                 }
             }
-            AffecteeFilter::OwnSrq(srq_a_item_id) => {
+            AffecteeFilter::OwnSrq(srq_type_id) => {
                 if let UItem::Ship(projectee_ship) = projectee_item {
                     let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
                     remove_cmod(
                         &mut self.cmods_own_srq,
-                        (projectee_ship.get_fit_key(), srq_a_item_id),
+                        (projectee_ship.get_fit_key(), srq_type_id),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
