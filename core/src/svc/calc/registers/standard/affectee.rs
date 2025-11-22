@@ -43,7 +43,6 @@ impl StandardRegister {
                 self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
             }
             self.reg_loc_root_for_proj(item_key, item);
-            self.get_mods_for_changed_ship(item, &mut cmods);
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.reg_buffable_for_sw(item_key, buffable_item_lists);
@@ -89,6 +88,9 @@ impl StandardRegister {
                 _ => false,
             };
             self.reg_affectee_for_fw_buff(item_key, is_ship, fit_key, buffable_item_lists);
+        }
+        if let UItem::Ship(_) = item {
+            self.get_mods_for_changed_ship(item, &mut cmods);
         }
         cmods
     }
