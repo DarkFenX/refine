@@ -64,16 +64,9 @@ pub(super) fn remove_cmod<K, H1, H2>(
 // TODO: look for a way to optimize it by moving ship info to fit, or something in the register
 pub(super) fn is_fit_ship_on_item_list(ctx: SvcCtx, fit_key: UFitKey, item_list_id: &AItemListId) -> Option<UItemKey> {
     let fit = ctx.u_data.fits.get(fit_key);
-    let ship_key = match fit.ship {
-        Some(ship_key) => ship_key,
-        None => return None,
-    };
+    let ship_key = fit.ship?;
     let ship = ctx.u_data.items.get(ship_key);
-    let buff_item_lists = match ship.get_item_buff_item_lists() {
-        Some(buff_item_lists) => buff_item_lists,
-        None => return None,
-    };
-    match buff_item_lists.contains(item_list_id) {
+    match ship.get_item_buff_item_lists()?.contains(item_list_id) {
         true => Some(ship_key),
         false => None,
     }

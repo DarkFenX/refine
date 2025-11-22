@@ -50,7 +50,7 @@ where
     }
     // Modification methods
     pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
-        let ks1l = self.data.entry(key1).or_insert_with(MapSet::new);
+        let ks1l = self.data.entry(key1).or_default();
         ks1l.add_entry(key2, value);
     }
     pub(crate) fn remove_entry(&mut self, key1: K1, key2: K2, value: &V) {

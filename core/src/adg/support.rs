@@ -63,12 +63,12 @@ impl GSupport {
             self.item_lists.insert(item_list.id, item_list);
         }
         // Add custom type lists
-        let item_list = make_item_list(&types_by_cat, ac::itemlists::SHIPS, &vec![ac::itemcats::SHIP]);
+        let item_list = make_item_list(&types_by_cat, ac::itemlists::SHIPS, &[ac::itemcats::SHIP]);
         self.item_lists.insert(item_list.id, item_list);
         let item_list = make_item_list(
             &types_by_cat,
             ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-            &vec![ac::itemcats::SHIP, ac::itemcats::DRONE, ac::itemcats::FIGHTER],
+            &[ac::itemcats::SHIP, ac::itemcats::DRONE, ac::itemcats::FIGHTER],
         );
         self.item_lists.insert(item_list.id, item_list);
     }

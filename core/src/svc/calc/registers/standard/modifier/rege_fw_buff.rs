@@ -157,7 +157,7 @@ impl StandardRegister {
         &mut self,
         item_key: UItemKey,
         fit_key: UFitKey,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
@@ -172,7 +172,7 @@ impl StandardRegister {
         &mut self,
         item_key: UItemKey,
         fit_key: UFitKey,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
@@ -188,7 +188,7 @@ impl StandardRegister {
         &mut self,
         ship_key: UItemKey,
         ship: &UShip,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         let fit_key = ship.get_fit_key();
         for rmod in self.rmods_fw_buff_indirect.get(&fit_key) {
@@ -245,7 +245,7 @@ impl StandardRegister {
         &mut self,
         ship_key: UItemKey,
         ship: &UShip,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         let fit_key = ship.get_fit_key();
         for rmod in self.rmods_fw_buff_indirect.get(&fit_key) {

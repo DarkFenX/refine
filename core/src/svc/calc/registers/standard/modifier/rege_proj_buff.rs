@@ -250,7 +250,7 @@ impl StandardRegister {
     pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_direct_proj_buff(
         &mut self,
         projectee_key: UItemKey,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         self.rmods_proj_inactive
             .buffer_if(projectee_key, |r| match r.affectee_filter {
@@ -267,7 +267,7 @@ impl StandardRegister {
     pub(in crate::svc::calc::registers::standard) fn unreg_affectee_for_direct_proj_buff(
         &mut self,
         projectee_key: UItemKey,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         self.rmods_proj_active
             .buffer_if(projectee_key, |r| match r.affectee_filter {

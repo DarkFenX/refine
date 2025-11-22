@@ -34,7 +34,7 @@ where
     }
     // Modification methods
     pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, value: V) {
-        let m2l = self.data.entry(key1).or_insert_with(MapMap::new);
+        let m2l = self.data.entry(key1).or_default();
         m2l.add_entry(key2, key3, value);
     }
     pub(crate) fn remove_l3(&mut self, key1: K1, key2: K2, key3: &K3) {

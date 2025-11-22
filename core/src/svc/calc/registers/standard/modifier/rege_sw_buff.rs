@@ -165,7 +165,7 @@ impl StandardRegister {
     pub(in crate::svc::calc::registers::standard) fn reg_buffable_for_sw(
         &mut self,
         item_key: UItemKey,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         for rmod in self.rmods_sw_buff_direct.iter() {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
@@ -179,7 +179,7 @@ impl StandardRegister {
     pub(in crate::svc::calc::registers::standard) fn unreg_buffable_for_sw(
         &mut self,
         item_key: UItemKey,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         for rmod in self.rmods_sw_buff_direct.iter() {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
@@ -194,7 +194,7 @@ impl StandardRegister {
         &mut self,
         ship_key: UItemKey,
         ship: &UShip,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         for rmod in self.rmods_sw_buff_indirect.iter() {
             match rmod.affectee_filter {
@@ -251,7 +251,7 @@ impl StandardRegister {
         &mut self,
         ship_key: UItemKey,
         ship: &UShip,
-        buffable_item_lists: &Vec<AItemListId>,
+        buffable_item_lists: &[AItemListId],
     ) {
         for rmod in self.rmods_sw_buff_indirect.iter() {
             match rmod.affectee_filter {
