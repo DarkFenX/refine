@@ -63,6 +63,9 @@ where
             .insert(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
+        if entries.is_empty() {
+            return;
+        }
         self.data
             .entry(key)
             .or_insert_with(|| Set::with_capacity(entries.len()))
