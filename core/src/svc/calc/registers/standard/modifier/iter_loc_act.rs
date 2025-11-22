@@ -29,13 +29,13 @@ impl Iterator for ActiveLocations<'_> {
                 }
                 1 => {
                     self.index += 1;
-                    if self.item.is_on_ship_root() && matches!(self.fit.kind, UShipKind::Ship) {
+                    if self.item.is_on_ship_root() && matches!(self.fit.ship_kind, UShipKind::Ship) {
                         return Some(LocationKind::Ship);
                     }
                 }
                 2 => {
                     self.index += 1;
-                    if self.item.is_on_struct_root() && matches!(self.fit.kind, UShipKind::Structure) {
+                    if self.item.is_on_struct_root() && matches!(self.fit.ship_kind, UShipKind::Structure) {
                         return Some(LocationKind::Structure);
                     }
                 }

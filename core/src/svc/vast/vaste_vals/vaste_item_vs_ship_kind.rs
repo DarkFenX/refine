@@ -54,7 +54,7 @@ impl VastFitData {
         match items.is_empty() {
             true => None,
             false => Some(ValItemVsShipKindFail {
-                ship_kind: fit.kind.into(),
+                ship_kind: fit.ship_kind.into(),
                 items,
             }),
         }

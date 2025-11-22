@@ -19,7 +19,7 @@ impl SolarSystem {
         // Remove ship from user data
         let u_fit = self.u_data.fits.get_mut(fit_key);
         u_fit.ship = None;
-        u_fit.kind = UShipKind::Unknown;
+        u_fit.ship_kind = UShipKind::Unknown;
         self.u_data.items.remove(ship_key);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_key, OF(0.0));

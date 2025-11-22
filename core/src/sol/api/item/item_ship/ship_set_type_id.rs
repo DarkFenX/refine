@@ -23,7 +23,7 @@ impl SolarSystem {
         // Update on-fit ship kind
         let ship_kind = u_ship.get_kind();
         let u_fit = self.u_data.fits.get_mut(fit_key);
-        u_fit.kind = ship_kind;
+        u_fit.ship_kind = ship_kind;
         // Update outgoing projections for all on-ship items
         let ship_radius = self.u_data.get_ship_radius_by_fit_key(fit_key);
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_key, ship_radius);

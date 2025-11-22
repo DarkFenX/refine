@@ -81,7 +81,7 @@ impl SolarSystem {
         }
         // Update fit kind
         for fit in self.u_data.fits.values_mut() {
-            fit.kind = match fit.ship {
+            fit.ship_kind = match fit.ship {
                 Some(ship_key) => self.u_data.items.get(ship_key).get_ship().unwrap().get_kind(),
                 None => UShipKind::Unknown,
             }

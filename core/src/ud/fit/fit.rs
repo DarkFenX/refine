@@ -15,7 +15,6 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UFit {
     pub(crate) id: FitId,
-    pub(crate) kind: UShipKind,
     pub(crate) fleet: Option<UFleetKey>,
     pub(crate) character: Option<UItemKey>,
     pub(crate) skills: RMap<ad::AItemId, UFitSkill>,
@@ -34,12 +33,13 @@ pub(crate) struct UFit {
     pub(crate) fw_effects: RSet<UItemKey>,
     pub(crate) sec_status: FitSecStatus,
     pub(crate) rah_incoming_dps: Option<DpsProfile>,
+    // Extra info for fast access
+    pub(crate) ship_kind: UShipKind,
 }
 impl UFit {
     pub(crate) fn new(id: FitId) -> Self {
         Self {
             id,
-            kind: UShipKind::Unknown,
             fleet: None,
             character: None,
             skills: RMap::new(),
@@ -58,6 +58,7 @@ impl UFit {
             fw_effects: RSet::new(),
             sec_status: FitSecStatus::new_clamped(0.0),
             rah_incoming_dps: None,
+            ship_kind: UShipKind::Unknown,
         }
     }
     pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = UItemKey> {

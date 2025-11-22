@@ -284,12 +284,12 @@ impl Vast {
                     if let Some(item_cat_id) = item.get_category_id() {
                         match item_cat_id {
                             ac::itemcats::MODULE => {
-                                if !matches!(fit.kind, UShipKind::Ship) {
+                                if !matches!(fit.ship_kind, UShipKind::Ship) {
                                     fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_key, ValShipKind::Ship);
                                 }
                             }
                             ac::itemcats::STRUCTURE_MODULE => {
-                                if !matches!(fit.kind, UShipKind::Structure) {
+                                if !matches!(fit.ship_kind, UShipKind::Structure) {
                                     fit_data
                                         .mods_rigs_svcs_vs_ship_kind
                                         .insert(item_key, ValShipKind::Structure);
@@ -584,7 +584,7 @@ fn item_vs_ship_kind_add(
         None => return,
     };
     match item_cat {
-        ac::itemcats::MODULE => match fit.kind {
+        ac::itemcats::MODULE => match fit.ship_kind {
             UShipKind::Ship => (),
             UShipKind::Structure => {
                 fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_key, ValShipKind::Ship);
@@ -596,7 +596,7 @@ fn item_vs_ship_kind_add(
                 }
             }
         },
-        ac::itemcats::STRUCTURE_MODULE => match fit.kind {
+        ac::itemcats::STRUCTURE_MODULE => match fit.ship_kind {
             UShipKind::Ship => {
                 fit_data
                     .mods_rigs_svcs_vs_ship_kind

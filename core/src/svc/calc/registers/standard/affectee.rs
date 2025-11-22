@@ -557,8 +557,8 @@ impl StandardRegister {
 fn check_loc_owner(loc: Location, fit: &UFit) -> bool {
     match loc {
         Location::Char => true,
-        Location::Ship => matches!(fit.kind, UShipKind::Ship),
-        Location::Structure => matches!(fit.kind, UShipKind::Structure),
+        Location::Ship => matches!(fit.ship_kind, UShipKind::Ship),
+        Location::Structure => matches!(fit.ship_kind, UShipKind::Structure),
         _ => false,
     }
 }
