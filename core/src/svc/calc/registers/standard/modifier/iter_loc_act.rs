@@ -22,7 +22,7 @@ impl Iterator for ActiveLocations<'_> {
             match self.index {
                 0 => {
                     self.index += 1;
-                    if self.item.is_on_char_root() && self.fit.character.is_some() {
+                    if self.item.is_on_char_root() {
                         return Some(LocationKind::Character);
                     }
                 }

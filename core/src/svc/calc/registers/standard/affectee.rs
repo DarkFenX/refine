@@ -37,10 +37,8 @@ impl StandardRegister {
     // Modification methods
     pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
-        if let UItem::Ship(_) = item {
-            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
-                && let UItem::Ship(u_ship) = item
-            {
+        if let UItem::Ship(u_ship) = item {
+            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty() {
                 self.reg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
                 self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
             }
@@ -92,11 +90,9 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
-        if let UItem::Ship(_) = item {
+        if let UItem::Ship(u_ship) = item {
             self.get_mods_for_changed_root(item, &mut cmods);
-            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
-                && let UItem::Ship(u_ship) = item
-            {
+            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty() {
                 self.unreg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
                 self.unreg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
             }
