@@ -95,13 +95,13 @@ where
             self.data.remove(key);
         }
     }
-    pub(crate) fn extract_if<F>(&mut self, key: &K, pred: F) -> impl Iterator<Item = V>
+    pub(crate) fn extract_if<F>(&mut self, key: &K, filter: F) -> impl Iterator<Item = V>
     where
         F: FnMut(&V) -> bool,
     {
         match self.data.get_mut(key) {
-            Some(v) => v.extract_if(pred),
-            None => self.empty.extract_if(pred),
+            Some(v) => v.extract_if(filter),
+            None => self.empty.extract_if(filter),
         }
     }
 }

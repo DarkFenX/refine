@@ -70,11 +70,11 @@ where
     pub fn drain(&mut self) -> impl ExactSizeIterator<Item = V> {
         self.data.drain()
     }
-    pub(crate) fn extract_if<F>(&mut self, pred: F) -> impl Iterator<Item = V>
+    pub(crate) fn extract_if<F>(&mut self, filter: F) -> impl Iterator<Item = V>
     where
         F: FnMut(&V) -> bool,
     {
-        self.data.extract_if(pred)
+        self.data.extract_if(filter)
     }
     pub fn clear(&mut self) {
         self.data.clear()
