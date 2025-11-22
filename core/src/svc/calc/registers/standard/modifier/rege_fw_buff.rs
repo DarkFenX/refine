@@ -33,7 +33,7 @@ impl StandardRegister {
                     add_cmod(&mut self.cmods_direct, affectee_key, cmod, &mut self.cmods_by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_direct.add_entry(fit_key, rmod);
+                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
@@ -48,7 +48,7 @@ impl StandardRegister {
                     );
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_indirect.add_entry(fit_key, rmod);
+                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
@@ -63,7 +63,7 @@ impl StandardRegister {
                     );
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_indirect.add_entry(fit_key, rmod);
+                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
@@ -78,7 +78,7 @@ impl StandardRegister {
                     );
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_indirect.add_entry(fit_key, rmod);
+                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             _ => false,
@@ -106,7 +106,7 @@ impl StandardRegister {
                     remove_cmod(&mut self.cmods_direct, affectee_key, &cmod, &mut self.cmods_by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_direct.remove_entry(fit_key, &rmod);
+                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 let fit_key = fw_effect.get_fit_key();
@@ -120,7 +120,7 @@ impl StandardRegister {
                     );
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_indirect.remove_entry(fit_key, &rmod);
+                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
@@ -134,7 +134,7 @@ impl StandardRegister {
                     );
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_indirect.remove_entry(fit_key, &rmod);
+                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
                 let fit_key = fw_effect.get_fit_key();
@@ -148,7 +148,7 @@ impl StandardRegister {
                     );
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff_indirect.remove_entry(fit_key, &rmod);
+                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             _ => (),
         }
@@ -160,7 +160,8 @@ impl StandardRegister {
         fit_key: UFitKey,
         buffable_item_lists: &[AItemListId],
     ) {
-        for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
+        // Direct changes can affect all buffable items
+        for rmod in self.rmods_fw_buff.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
                 && buffable_item_lists.contains(&item_list_id)
             {
@@ -168,22 +169,12 @@ impl StandardRegister {
                 add_cmod(&mut self.cmods_direct, item_key, cmod, &mut self.cmods_by_aspec);
             }
         }
+        // Indirect changes can be applied only via ships
         if !is_ship {
             return;
         }
-        for rmod in self.rmods_fw_buff_indirect.get(&fit_key) {
+        for rmod in self.rmods_fw_buff.get(&fit_key) {
             match rmod.affectee_filter {
-                AffecteeFilter::Direct(Location::ItemList(item_list_id))
-                    if buffable_item_lists.contains(&item_list_id) =>
-                {
-                    let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    add_cmod(
-                        &mut self.cmods_root,
-                        (fit_key, LocationKind::Ship),
-                        cmod,
-                        &mut self.cmods_by_aspec,
-                    );
-                }
                 AffecteeFilter::Loc(Location::ItemList(item_list_id))
                     if buffable_item_lists.contains(&item_list_id) =>
                 {
@@ -228,7 +219,8 @@ impl StandardRegister {
         fit_key: UFitKey,
         buffable_item_lists: &[AItemListId],
     ) {
-        for rmod in self.rmods_fw_buff_direct.get(&fit_key) {
+        // Direct changes can affect all buffable items
+        for rmod in self.rmods_fw_buff.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
                 && buffable_item_lists.contains(&item_list_id)
             {
@@ -236,22 +228,12 @@ impl StandardRegister {
                 remove_cmod(&mut self.cmods_direct, item_key, &cmod, &mut self.cmods_by_aspec);
             }
         }
+        // Indirect changes can be applied only via ships
         if !is_ship {
             return;
         }
-        for rmod in self.rmods_fw_buff_indirect.get(&fit_key) {
+        for rmod in self.rmods_fw_buff.get(&fit_key) {
             match rmod.affectee_filter {
-                AffecteeFilter::Direct(Location::ItemList(item_list_id))
-                    if buffable_item_lists.contains(&item_list_id) =>
-                {
-                    let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    remove_cmod(
-                        &mut self.cmods_root,
-                        (fit_key, LocationKind::Ship),
-                        &cmod,
-                        &mut self.cmods_by_aspec,
-                    );
-                }
                 AffecteeFilter::Loc(Location::ItemList(item_list_id))
                     if buffable_item_lists.contains(&item_list_id) =>
                 {

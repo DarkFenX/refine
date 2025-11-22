@@ -78,13 +78,7 @@ impl StandardRegister {
         for rmod in self.rmods_sw_buff_indirect.iter() {
             check_rmod(u_data, rmod)?;
         }
-        for (fit_key, rmods) in self.rmods_fw_buff_direct.iter() {
-            check_fit_key(u_data, *fit_key)?;
-            for rmod in rmods {
-                check_rmod(u_data, rmod)?;
-            }
-        }
-        for (fit_key, rmods) in self.rmods_fw_buff_indirect.iter() {
+        for (fit_key, rmods) in self.rmods_fw_buff.iter() {
             check_fit_key(u_data, *fit_key)?;
             for rmod in rmods {
                 check_rmod(u_data, rmod)?;
