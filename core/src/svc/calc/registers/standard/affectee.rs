@@ -44,7 +44,7 @@ impl StandardRegister {
                 self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
             }
             self.reg_loc_root_for_proj(item_key, item);
-            self.get_mods_for_changed_root(item, &mut cmods);
+            self.get_mods_for_changed_ship(item, &mut cmods);
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.reg_buffable_for_sw(item_key, buffable_item_lists);
@@ -93,7 +93,7 @@ impl StandardRegister {
         let mut cmods = Vec::new();
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let UItem::Ship(u_ship) = item {
-            self.get_mods_for_changed_root(item, &mut cmods);
+            self.get_mods_for_changed_ship(item, &mut cmods);
             if let Some(buffable_item_lists) = buffable_item_lists {
                 self.unreg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
                 self.unreg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
@@ -126,14 +126,14 @@ impl StandardRegister {
             self.affectee_loc.remove_entry((fit_key, loc), &item_key);
             self.affectee_loc_grp
                 .remove_entry((fit_key, loc, item_grp_id), &item_key);
-            for srq_type_id in srqs.keys() {
+            for &srq_type_id in srqs.keys() {
                 self.affectee_loc_srq
-                    .remove_entry((fit_key, loc, *srq_type_id), &item_key);
+                    .remove_entry((fit_key, loc, srq_type_id), &item_key);
             }
         }
         if item.is_owner_modifiable() {
-            for srq_type_id in srqs.keys() {
-                self.affectee_own_srq.remove_entry((fit_key, *srq_type_id), &item_key);
+            for &srq_type_id in srqs.keys() {
+                self.affectee_own_srq.remove_entry((fit_key, srq_type_id), &item_key);
             }
         }
         if let Some(buffable_item_lists) = buffable_item_lists {

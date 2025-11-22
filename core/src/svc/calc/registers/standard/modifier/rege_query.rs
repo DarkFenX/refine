@@ -16,47 +16,47 @@ impl StandardRegister {
         &self,
         item_key: &UItemKey,
         item: &UItem,
-        a_attr_id: &ad::AAttrId,
+        attr_id: &ad::AAttrId,
         fits: &UFits,
     ) -> Vec<CtxModifier> {
         let fit_key = item.get_fit_key();
         let root_loc = item.get_root_loc_kind();
-        let a_item_grp_id = item.get_group_id().unwrap();
-        let a_srqs = item.get_skill_reqs().unwrap();
-        let mut mods = Vec::new();
-        filter_and_extend(&mut mods, &self.cmods_direct, item_key, a_attr_id);
+        let item_grp_id = item.get_group_id().unwrap();
+        let srqs = item.get_skill_reqs().unwrap();
+        let mut cmods = Vec::new();
+        filter_and_extend(&mut cmods, &self.cmods_direct, item_key, attr_id);
         if let Some(other_item_key) = item.get_other_key() {
-            filter_and_extend(&mut mods, &self.cmods_other, &other_item_key, a_attr_id);
+            filter_and_extend(&mut cmods, &self.cmods_other, &other_item_key, attr_id);
         }
         if let Some(fit_key) = fit_key {
             let fit = fits.get(fit_key);
             if let Some(root_loc) = root_loc {
-                filter_and_extend(&mut mods, &self.cmods_root, &(fit_key, root_loc), a_attr_id);
+                filter_and_extend(&mut cmods, &self.cmods_root, &(fit_key, root_loc), attr_id);
             }
             for loc_kind in ActiveLocations::new(item, fit) {
-                filter_and_extend(&mut mods, &self.cmods_loc, &(fit_key, loc_kind), a_attr_id);
+                filter_and_extend(&mut cmods, &self.cmods_loc, &(fit_key, loc_kind), attr_id);
                 filter_and_extend(
-                    &mut mods,
+                    &mut cmods,
                     &self.cmods_loc_grp,
-                    &(fit_key, loc_kind, a_item_grp_id),
-                    a_attr_id,
+                    &(fit_key, loc_kind, item_grp_id),
+                    attr_id,
                 );
-                for srq_a_item_id in a_srqs.keys() {
+                for &srq_type_id in srqs.keys() {
                     filter_and_extend(
-                        &mut mods,
+                        &mut cmods,
                         &self.cmods_loc_srq,
-                        &(fit_key, loc_kind, *srq_a_item_id),
-                        a_attr_id,
+                        &(fit_key, loc_kind, srq_type_id),
+                        attr_id,
                     );
                 }
             }
             if item.is_owner_modifiable() {
-                for srq_a_item_id in a_srqs.keys() {
-                    filter_and_extend(&mut mods, &self.cmods_own_srq, &(fit_key, *srq_a_item_id), a_attr_id);
+                for &srq_type_id in srqs.keys() {
+                    filter_and_extend(&mut cmods, &self.cmods_own_srq, &(fit_key, srq_type_id), attr_id);
                 }
             }
         }
-        mods
+        cmods
     }
     pub(in crate::svc::calc) fn iter_affector_spec_cmods(
         &self,
@@ -65,21 +65,21 @@ impl StandardRegister {
         self.cmods_by_aspec.get(affector_aspec)
     }
     // TODO: consider where to move it
-    pub(in crate::svc::calc::registers::standard) fn get_mods_for_changed_root(
+    pub(in crate::svc::calc::registers::standard) fn get_mods_for_changed_ship(
         &self,
         item: &UItem,
         cmods: &mut Vec<CtxModifier>,
     ) {
-        if let (Some(fit_key), Some(loc)) = (item.get_fit_key(), item.get_root_loc_kind()) {
-            cmods.extend(self.cmods_loc.get(&(fit_key, loc)));
-            for ((st_fit_key, st_loc, _), st_cmods) in self.cmods_loc_grp.iter() {
-                if fit_key == *st_fit_key && loc == *st_loc {
-                    cmods.extend(st_cmods);
+        if let (Some(item_fit_key), Some(item_loc)) = (item.get_fit_key(), item.get_ship_loc_kind()) {
+            cmods.extend(self.cmods_loc.get(&(item_fit_key, item_loc)));
+            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods_loc_grp.iter() {
+                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
+                    cmods.extend(stored_cmods);
                 }
             }
-            for ((st_fit_key, st_loc, _), st_cmods) in self.cmods_loc_srq.iter() {
-                if fit_key == *st_fit_key && loc == *st_loc {
-                    cmods.extend(st_cmods);
+            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods_loc_srq.iter() {
+                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
+                    cmods.extend(stored_cmods);
                 }
             }
         }

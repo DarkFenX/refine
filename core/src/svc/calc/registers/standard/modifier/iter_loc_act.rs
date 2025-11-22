@@ -22,6 +22,7 @@ impl Iterator for ActiveLocations<'_> {
             match self.index {
                 0 => {
                     self.index += 1;
+                    // Character is considered as always-active, even if fit has no character
                     if self.item.is_on_char_root() {
                         return Some(LocationKind::Character);
                     }

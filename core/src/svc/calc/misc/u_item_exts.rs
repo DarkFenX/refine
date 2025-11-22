@@ -16,6 +16,16 @@ impl UItem {
             _ => None,
         }
     }
+    pub(in crate::svc::calc) fn get_ship_loc_kind(&self) -> Option<LocationKind> {
+        match self {
+            Self::Ship(ship) => match ship.get_kind() {
+                UShipKind::Ship => Some(LocationKind::Ship),
+                UShipKind::Structure => Some(LocationKind::Structure),
+                _ => None,
+            },
+            _ => None,
+        }
+    }
     pub(in crate::svc::calc) fn is_on_char_root(&self) -> bool {
         matches!(self, Self::Booster(_) | Self::Implant(_) | Self::Skill(_))
     }
