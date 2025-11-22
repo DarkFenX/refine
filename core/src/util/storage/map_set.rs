@@ -1,4 +1,7 @@
-use std::hash::{BuildHasher, Hash};
+use std::{
+    collections::hash_map::Entry,
+    hash::{BuildHasher, Hash},
+};
 
 use rustc_hash::FxBuildHasher;
 
@@ -9,7 +12,7 @@ pub(crate) type RMapRSet<K, V> = MapSet<K, V, FxBuildHasher, FxBuildHasher>;
 #[derive(Clone)]
 pub(crate) struct MapSet<K, V, H1, H2> {
     data: Map<K, Set<V, H2>, H1>,
-    empty: Set<V, H2>,
+    buffer: Set<V, H2>,
 }
 impl<K, V, H1, H2> MapSet<K, V, H1, H2>
 where
@@ -21,13 +24,14 @@ where
     pub(crate) fn new() -> Self {
         Self {
             data: Map::new(),
-            empty: Set::new(),
+            buffer: Set::new(),
         }
     }
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V, H1, H2> {
         match self.data.get(key) {
             Some(v) => v.iter(),
-            None => self.empty.iter(),
+            // Buffer should be empty when this method is called
+            None => self.buffer.iter(),
         }
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
@@ -78,31 +82,24 @@ where
     pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V, H1, H2>> {
         self.data.remove(key).map(|v| v.into_iter())
     }
-    pub(crate) fn drain_entries<'a>(&mut self, key: &K, entries: impl Iterator<Item = &'a V>)
-    where
-        V: 'a,
-    {
-        let need_cleanup = match self.data.get_mut(key) {
-            None => return,
-            Some(v) => {
-                for entry in entries {
-                    v.remove(entry);
-                }
-                v.is_empty()
-            }
-        };
-        if need_cleanup {
-            self.data.remove(key);
-        }
-    }
-    pub(crate) fn extract_if<F>(&mut self, key: &K, filter: F) -> impl Iterator<Item = V>
+    // Buffer methods
+    pub(crate) fn buffer_if<F>(&mut self, key: K, filter: F)
     where
         F: FnMut(&V) -> bool,
     {
-        match self.data.get_mut(key) {
-            Some(v) => v.extract_if(filter),
-            None => self.empty.extract_if(filter),
+        if let Entry::Occupied(mut entry) = self.data.entry(key) {
+            let set = entry.get_mut();
+            self.buffer.extend(set.extract_if(filter));
+            if set.is_empty() {
+                entry.remove();
+            }
         }
+    }
+    pub(crate) fn iter_buffer(&self) -> impl ExactSizeIterator<Item = &V> {
+        self.buffer.iter()
+    }
+    pub(crate) fn drain_buffer(&mut self) -> impl ExactSizeIterator<Item = V> {
+        self.buffer.drain()
     }
 }
 impl<K, V, H1, H2> Default for MapSet<K, V, H1, H2>
