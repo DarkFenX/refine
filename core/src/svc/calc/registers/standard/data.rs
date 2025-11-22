@@ -40,10 +40,8 @@ pub(in crate::svc::calc) struct StandardRegister {
     pub(super) rmods_fleet: RMapRSet<UFitKey, RawModifier>,
     // System-wide system effect modifiers
     pub(super) rmods_sw_system: RSet<RawModifier>,
-    // System-wide direct buff modifiers
-    pub(super) rmods_sw_buff_direct: RSet<RawModifier>,
-    // System-wide indirect buff modifiers
-    pub(super) rmods_sw_buff_indirect: RSet<RawModifier>,
+    // System-wide buff modifiers
+    pub(super) rmods_sw_buff: RSet<RawModifier>,
     // Fit-wide buff modifiers
     pub(super) rmods_fw_buff: RMapRSet<UFitKey, RawModifier>,
     // Valid item-targeted modifiers which target eligible item kind, with projectee item passing
@@ -96,8 +94,7 @@ impl StandardRegister {
             rmods_proj: RMapRSet::new(),
             rmods_fleet: RMapRSet::new(),
             rmods_sw_system: RSet::new(),
-            rmods_sw_buff_direct: RSet::new(),
-            rmods_sw_buff_indirect: RSet::new(),
+            rmods_sw_buff: RSet::new(),
             rmods_fw_buff: RMapRSet::new(),
             rmods_proj_active: RMapRSet::new(),
             rmods_proj_inactive: RMapRSet::new(),

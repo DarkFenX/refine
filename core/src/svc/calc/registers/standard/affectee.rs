@@ -38,14 +38,10 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
-        if let UItem::Ship(u_ship) = item {
-            if let Some(buffable_item_lists) = buffable_item_lists {
-                self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
-            }
+        if let UItem::Ship(_) = item {
             self.reg_loc_root_for_proj(item_key, item);
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
-            self.reg_buffable_for_sw(item_key, buffable_item_lists);
             self.reg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for &item_list_id in buffable_item_lists {
@@ -83,11 +79,12 @@ impl StandardRegister {
                 self.affectee_buffable
                     .add_entry((fit_key, buffable_item_list_id), item_key);
             }
-            let is_ship = match item {
-                UItem::Ship(_) => true,
-                _ => false,
+            let ship = match item {
+                UItem::Ship(ship) => Some(ship),
+                _ => None,
             };
-            self.reg_affectee_for_fw_buff(item_key, is_ship, fit_key, buffable_item_lists);
+            self.reg_affectee_for_sw_buff(item_key, ship, buffable_item_lists);
+            self.reg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
         }
         if let UItem::Ship(_) = item {
             self.get_mods_for_changed_ship(item, &mut cmods);
@@ -97,15 +94,11 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
-        if let UItem::Ship(u_ship) = item {
+        if let UItem::Ship(_) = item {
             self.get_mods_for_changed_ship(item, &mut cmods);
-            if let Some(buffable_item_lists) = buffable_item_lists {
-                self.unreg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
-            }
             self.unreg_loc_root_for_proj(item_key, item);
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
-            self.unreg_buffable_for_sw(item_key, buffable_item_lists);
             self.unreg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for &item_list_id in buffable_item_lists {
@@ -145,11 +138,12 @@ impl StandardRegister {
                 self.affectee_buffable
                     .remove_entry((fit_key, buffable_item_list_id), &item_key);
             }
-            let is_ship = match item {
-                UItem::Ship(_) => true,
-                _ => false,
+            let ship = match item {
+                UItem::Ship(ship) => Some(ship),
+                _ => None,
             };
-            self.unreg_affectee_for_fw_buff(item_key, is_ship, fit_key, buffable_item_lists);
+            self.unreg_affectee_for_sw_buff(item_key, ship, buffable_item_lists);
+            self.unreg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
         }
         cmods
     }
