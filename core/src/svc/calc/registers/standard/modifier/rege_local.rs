@@ -33,79 +33,61 @@ impl StandardRegister {
                     );
                     Some(cmod)
                 }
-                _ => match loc.try_into() {
-                    Ok(loc_kind) => match item.get_fit_key() {
-                        Some(fit_key) => {
-                            let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                            add_cmod(
-                                &mut self.cmods_root,
-                                (fit_key, loc_kind),
-                                cmod,
-                                &mut self.cmods_by_aspec,
-                            );
-                            Some(cmod)
-                        }
-                        None => None,
-                    },
-                    _ => None,
-                },
-            },
-            AffecteeFilter::Loc(loc) => match loc.try_into() {
-                Ok(loc_kind) => match item.get_fit_key() {
-                    Some(fit_key) => {
-                        let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                        add_cmod(&mut self.cmods_loc, (fit_key, loc_kind), cmod, &mut self.cmods_by_aspec);
-                        Some(cmod)
-                    }
-                    None => None,
-                },
-                _ => None,
-            },
-            AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
-                Ok(loc_kind) => match item.get_fit_key() {
-                    Some(fit_key) => {
-                        let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                        add_cmod(
-                            &mut self.cmods_loc_grp,
-                            (fit_key, loc_kind, a_item_grp_id),
-                            cmod,
-                            &mut self.cmods_by_aspec,
-                        );
-                        Some(cmod)
-                    }
-                    None => None,
-                },
-                _ => None,
-            },
-            AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
-                Ok(loc_kind) => match item.get_fit_key() {
-                    Some(fit_key) => {
-                        let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                        add_cmod(
-                            &mut self.cmods_loc_srq,
-                            (fit_key, loc_kind, srq_a_item_id),
-                            cmod,
-                            &mut self.cmods_by_aspec,
-                        );
-                        Some(cmod)
-                    }
-                    None => None,
-                },
-                _ => None,
-            },
-            AffecteeFilter::OwnSrq(srq_a_item_id) => match item.get_fit_key() {
-                Some(fit_key) => {
+                _ => {
+                    let loc_kind = loc.try_into().ok()?;
+                    let fit_key = item.get_fit_key()?;
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                     add_cmod(
-                        &mut self.cmods_own_srq,
-                        (fit_key, srq_a_item_id),
+                        &mut self.cmods_root,
+                        (fit_key, loc_kind),
                         cmod,
                         &mut self.cmods_by_aspec,
                     );
                     Some(cmod)
                 }
-                None => None,
             },
+            AffecteeFilter::Loc(loc) => {
+                let loc_kind = loc.try_into().ok()?;
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                add_cmod(&mut self.cmods_loc, (fit_key, loc_kind), cmod, &mut self.cmods_by_aspec);
+                Some(cmod)
+            }
+            AffecteeFilter::LocGrp(loc, a_item_grp_id) => {
+                let loc_kind = loc.try_into().ok()?;
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                add_cmod(
+                    &mut self.cmods_loc_grp,
+                    (fit_key, loc_kind, a_item_grp_id),
+                    cmod,
+                    &mut self.cmods_by_aspec,
+                );
+                Some(cmod)
+            }
+            AffecteeFilter::LocSrq(loc, srq_a_item_id) => {
+                let loc_kind = loc.try_into().ok()?;
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                add_cmod(
+                    &mut self.cmods_loc_srq,
+                    (fit_key, loc_kind, srq_a_item_id),
+                    cmod,
+                    &mut self.cmods_by_aspec,
+                );
+                Some(cmod)
+            }
+            AffecteeFilter::OwnSrq(srq_a_item_id) => {
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                add_cmod(
+                    &mut self.cmods_own_srq,
+                    (fit_key, srq_a_item_id),
+                    cmod,
+                    &mut self.cmods_by_aspec,
+                );
+                Some(cmod)
+            }
         };
         // If we received a modifier with context, it means that raw modifier was valid
         if cmod.is_some() {
@@ -136,84 +118,66 @@ impl StandardRegister {
                     );
                     Some(cmod)
                 }
-                _ => match loc.try_into() {
-                    Ok(loc_kind) => match item.get_fit_key() {
-                        Some(fit_key) => {
-                            let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                            remove_cmod(
-                                &mut self.cmods_root,
-                                (fit_key, loc_kind),
-                                &cmod,
-                                &mut self.cmods_by_aspec,
-                            );
-                            Some(cmod)
-                        }
-                        None => None,
-                    },
-                    _ => None,
-                },
-            },
-            AffecteeFilter::Loc(loc) => match loc.try_into() {
-                Ok(loc_kind) => match item.get_fit_key() {
-                    Some(fit_key) => {
-                        let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                        remove_cmod(
-                            &mut self.cmods_loc,
-                            (fit_key, loc_kind),
-                            &cmod,
-                            &mut self.cmods_by_aspec,
-                        );
-                        Some(cmod)
-                    }
-                    None => None,
-                },
-                _ => None,
-            },
-            AffecteeFilter::LocGrp(loc, a_item_grp_id) => match loc.try_into() {
-                Ok(loc_kind) => match item.get_fit_key() {
-                    Some(fit_key) => {
-                        let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                        remove_cmod(
-                            &mut self.cmods_loc_grp,
-                            (fit_key, loc_kind, a_item_grp_id),
-                            &cmod,
-                            &mut self.cmods_by_aspec,
-                        );
-                        Some(cmod)
-                    }
-                    None => None,
-                },
-                _ => None,
-            },
-            AffecteeFilter::LocSrq(loc, srq_a_item_id) => match loc.try_into() {
-                Ok(loc_kind) => match item.get_fit_key() {
-                    Some(fit_key) => {
-                        let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                        remove_cmod(
-                            &mut self.cmods_loc_srq,
-                            (fit_key, loc_kind, srq_a_item_id),
-                            &cmod,
-                            &mut self.cmods_by_aspec,
-                        );
-                        Some(cmod)
-                    }
-                    None => None,
-                },
-                _ => None,
-            },
-            AffecteeFilter::OwnSrq(srq_a_item_id) => match item.get_fit_key() {
-                Some(fit_key) => {
+                _ => {
+                    let loc_kind = loc.try_into().ok()?;
+                    let fit_key = item.get_fit_key()?;
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                     remove_cmod(
-                        &mut self.cmods_own_srq,
-                        (fit_key, srq_a_item_id),
+                        &mut self.cmods_root,
+                        (fit_key, loc_kind),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
                     Some(cmod)
                 }
-                None => None,
             },
+            AffecteeFilter::Loc(loc) => {
+                let loc_kind = loc.try_into().ok()?;
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                remove_cmod(
+                    &mut self.cmods_loc,
+                    (fit_key, loc_kind),
+                    &cmod,
+                    &mut self.cmods_by_aspec,
+                );
+                Some(cmod)
+            }
+            AffecteeFilter::LocGrp(loc, a_item_grp_id) => {
+                let loc_kind = loc.try_into().ok()?;
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                remove_cmod(
+                    &mut self.cmods_loc_grp,
+                    (fit_key, loc_kind, a_item_grp_id),
+                    &cmod,
+                    &mut self.cmods_by_aspec,
+                );
+                Some(cmod)
+            }
+            AffecteeFilter::LocSrq(loc, srq_a_item_id) => {
+                let loc_kind = loc.try_into().ok()?;
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                remove_cmod(
+                    &mut self.cmods_loc_srq,
+                    (fit_key, loc_kind, srq_a_item_id),
+                    &cmod,
+                    &mut self.cmods_by_aspec,
+                );
+                Some(cmod)
+            }
+            AffecteeFilter::OwnSrq(srq_a_item_id) => {
+                let fit_key = item.get_fit_key()?;
+                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                remove_cmod(
+                    &mut self.cmods_own_srq,
+                    (fit_key, srq_a_item_id),
+                    &cmod,
+                    &mut self.cmods_by_aspec,
+                );
+                Some(cmod)
+            }
         }
     }
 }

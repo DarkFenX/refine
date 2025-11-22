@@ -56,27 +56,28 @@ impl StandardRegister {
                 }
             }
         }
+        // All the logic which should work for items which do not belong to a fit should be done by
+        // this point
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
             None => return cmods,
         };
         let root_loc = item.get_root_loc_kind();
-        let a_item_grp_id = item.get_group_id().unwrap();
-        let a_srqs = item.get_skill_reqs().unwrap();
+        let item_grp_id = item.get_group_id().unwrap();
+        let srqs = item.get_skill_reqs().unwrap();
         if let Some(root_loc) = root_loc {
             self.affectee_root.add_entry((fit_key, root_loc), item_key);
         }
         for loc in PotentialLocations::new(item) {
             self.affectee_loc.add_entry((fit_key, loc), item_key);
-            self.affectee_loc_grp.add_entry((fit_key, loc, a_item_grp_id), item_key);
-            for srq_a_item_id in a_srqs.keys() {
-                self.affectee_loc_srq
-                    .add_entry((fit_key, loc, *srq_a_item_id), item_key);
+            self.affectee_loc_grp.add_entry((fit_key, loc, item_grp_id), item_key);
+            for &srq_type_id in srqs.keys() {
+                self.affectee_loc_srq.add_entry((fit_key, loc, srq_type_id), item_key);
             }
         }
         if item.is_owner_modifiable() {
-            for srq_a_item_id in a_srqs.keys() {
-                self.affectee_own_srq.add_entry((fit_key, *srq_a_item_id), item_key);
+            for &srq_type_id in srqs.keys() {
+                self.affectee_own_srq.add_entry((fit_key, srq_type_id), item_key);
             }
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
@@ -109,29 +110,30 @@ impl StandardRegister {
                 }
             }
         }
+        // All the logic which should work for items which do not belong to a fit should be done by
+        // this point
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
             None => return cmods,
         };
         let root_loc = item.get_root_loc_kind();
-        let a_item_grp_id = item.get_group_id().unwrap();
-        let a_srqs = item.get_skill_reqs().unwrap();
-
+        let item_grp_id = item.get_group_id().unwrap();
+        let srqs = item.get_skill_reqs().unwrap();
         if let Some(root_loc) = root_loc {
             self.affectee_root.remove_entry((fit_key, root_loc), &item_key);
         }
         for loc in PotentialLocations::new(item) {
             self.affectee_loc.remove_entry((fit_key, loc), &item_key);
             self.affectee_loc_grp
-                .remove_entry((fit_key, loc, a_item_grp_id), &item_key);
-            for srq_a_item_id in a_srqs.keys() {
+                .remove_entry((fit_key, loc, item_grp_id), &item_key);
+            for srq_type_id in srqs.keys() {
                 self.affectee_loc_srq
-                    .remove_entry((fit_key, loc, *srq_a_item_id), &item_key);
+                    .remove_entry((fit_key, loc, *srq_type_id), &item_key);
             }
         }
         if item.is_owner_modifiable() {
-            for srq_a_item_id in a_srqs.keys() {
-                self.affectee_own_srq.remove_entry((fit_key, *srq_a_item_id), &item_key);
+            for srq_type_id in srqs.keys() {
+                self.affectee_own_srq.remove_entry((fit_key, *srq_type_id), &item_key);
             }
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
