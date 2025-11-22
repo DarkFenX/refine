@@ -37,8 +37,6 @@ impl Calc {
         self.rah_fit_rah_dps_profile_changed(ctx, fit_key);
     }
     pub(in crate::svc) fn item_added(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
-        // Char/ship switches
-        self.handle_location_root_add(ctx, item_key, item);
         // Custom modifiers
         let cmods = self
             .revs
@@ -67,12 +65,17 @@ impl Calc {
                 self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
             }
         }
-        // Char/ship switches
-        self.handle_location_root_remove(ctx, item_key, item);
     }
     pub(in crate::svc) fn item_loaded(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
         // Notify core calc services
         self.attrs.item_loaded(item_key, item);
+        let cmods = self.std.reg_affectee(item_key, item);
+        if !cmods.is_empty() {
+            let mut reuse_affectees = Vec::new();
+            for cmod in cmods {
+                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
+            }
+        }
         self.std.reg_affectee(item_key, item);
         // Notify RAH sim
         self.rah_item_loaded(ctx, item);
@@ -81,7 +84,13 @@ impl Calc {
         // Notify RAH sim
         self.rah_item_unloaded(ctx, item);
         // Notify core calc services
-        self.std.unreg_affectee(item_key, item);
+        let cmods = self.std.unreg_affectee(item_key, item);
+        if !cmods.is_empty() {
+            let mut reuse_affectees = Vec::new();
+            for cmod in cmods {
+                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
+            }
+        }
         self.deps.remove_item(item_key);
         self.attrs.item_unloaded(&item_key);
     }
@@ -416,22 +425,6 @@ impl Calc {
         self.std.fill_affectees(reuse_affectees, ctx, cmod);
         for &affectee_key in reuse_affectees.iter() {
             self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_key, cmod.raw.affectee_attr_id));
-        }
-    }
-    fn handle_location_root_add(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
-        if matches!(item, UItem::Ship(_) | UItem::Character(_)) {
-            let mut reuse_affectees = Vec::new();
-            for cmod in self.std.get_mods_for_added_root(item_key, item) {
-                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
-            }
-        }
-    }
-    fn handle_location_root_remove(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
-        if matches!(item, UItem::Ship(_) | UItem::Character(_)) {
-            let mut reuse_affectees = Vec::new();
-            for cmod in self.std.get_mods_for_removed_root(item_key, item) {
-                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
-            }
         }
     }
 }

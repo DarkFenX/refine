@@ -89,7 +89,11 @@ impl StandardRegister {
         }
         cmods
     }
-    pub(super) fn reg_loc_root_for_proj(&mut self, projectee_key: UItemKey, projectee_item: &UItem) {
+    pub(in crate::svc::calc::registers::standard) fn reg_loc_root_for_proj(
+        &mut self,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
+    ) {
         // Do necessary changes to projected modifiers after adding location root.
         if let Some(rmods) = self.rmods_proj_inactive.remove_key(&projectee_key) {
             for rmod in rmods {
@@ -106,7 +110,11 @@ impl StandardRegister {
             }
         }
     }
-    pub(super) fn unreg_loc_root_for_proj(&mut self, projectee_key: UItemKey, projectee_item: &UItem) {
+    pub(in crate::svc::calc::registers::standard) fn unreg_loc_root_for_proj(
+        &mut self,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
+    ) {
         // Do necessary changes to projected modifiers before removing location root.
         if let Some(rmods) = self.rmods_proj_active.remove_key(&projectee_key) {
             for rmod in rmods {

@@ -184,7 +184,7 @@ impl StandardRegister {
         }
     }
     // Is supposed to be called only for buffable location roots (ships)
-    pub(super) fn reg_loc_root_for_fw_buff(
+    pub(in crate::svc::calc::registers::standard) fn reg_loc_root_for_fw_buff(
         &mut self,
         ship_key: UItemKey,
         ship: &UShip,
@@ -241,7 +241,7 @@ impl StandardRegister {
             };
         }
     }
-    pub(super) fn unreg_loc_root_for_fw_buff(
+    pub(in crate::svc::calc::registers::standard) fn unreg_loc_root_for_fw_buff(
         &mut self,
         ship_key: UItemKey,
         ship: &UShip,

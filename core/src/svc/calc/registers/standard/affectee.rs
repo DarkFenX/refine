@@ -35,7 +35,18 @@ impl StandardRegister {
         }
     }
     // Modification methods
-    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) {
+    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
+        let mut cmods = Vec::new();
+        if let UItem::Ship(_) = item {
+            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
+                && let UItem::Ship(u_ship) = item
+            {
+                self.reg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
+                self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
+            }
+            self.reg_loc_root_for_proj(item_key, item);
+            self.get_mods_for_changed_root(item, &mut cmods);
+        }
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.reg_buffable_for_sw(item_key, buffable_item_lists);
@@ -49,7 +60,7 @@ impl StandardRegister {
         }
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
-            None => return,
+            None => return cmods,
         };
         let root_loc = item.get_root_loc_kind();
         let a_item_grp_id = item.get_group_id().unwrap();
@@ -77,8 +88,20 @@ impl StandardRegister {
             }
             self.reg_buffable_for_fw(item_key, fit_key, buffable_item_lists);
         }
+        cmods
     }
-    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) {
+    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
+        let mut cmods = Vec::new();
+        if let UItem::Ship(_) = item {
+            self.get_mods_for_changed_root(item, &mut cmods);
+            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
+                && let UItem::Ship(u_ship) = item
+            {
+                self.unreg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
+                self.unreg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
+            }
+            self.unreg_loc_root_for_proj(item_key, item);
+        }
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.unreg_buffable_for_sw(item_key, buffable_item_lists);
@@ -92,7 +115,7 @@ impl StandardRegister {
         }
         let fit_key = match item.get_fit_key() {
             Some(fit_key) => fit_key,
-            None => return,
+            None => return cmods,
         };
         let root_loc = item.get_root_loc_kind();
         let a_item_grp_id = item.get_group_id().unwrap();
@@ -122,6 +145,7 @@ impl StandardRegister {
             }
             self.unreg_buffable_for_fw(item_key, fit_key, buffable_item_lists);
         }
+        cmods
     }
     // Private methods
     fn fill_affectees_no_context(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier) {

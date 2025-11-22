@@ -64,37 +64,12 @@ impl StandardRegister {
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
         self.cmods_by_aspec.get(affector_aspec)
     }
-    pub(in crate::svc::calc) fn get_mods_for_added_root(
-        &mut self,
-        item_key: UItemKey,
+    // TODO: consider where to move it
+    pub(in crate::svc::calc::registers::standard) fn get_mods_for_changed_root(
+        &self,
         item: &UItem,
-    ) -> Vec<CtxModifier> {
-        if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
-            && let UItem::Ship(u_ship) = item
-        {
-            self.reg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
-            self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
-        }
-        self.reg_loc_root_for_proj(item_key, item);
-        self.get_mods_for_changed_root(item)
-    }
-    pub(in crate::svc::calc) fn get_mods_for_removed_root(
-        &mut self,
-        item_key: UItemKey,
-        item: &UItem,
-    ) -> Vec<CtxModifier> {
-        let cmods = self.get_mods_for_changed_root(item);
-        if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty()
-            && let UItem::Ship(u_ship) = item
-        {
-            self.unreg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
-            self.unreg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
-        }
-        self.unreg_loc_root_for_proj(item_key, item);
-        cmods
-    }
-    fn get_mods_for_changed_root(&self, item: &UItem) -> Vec<CtxModifier> {
-        let mut cmods = Vec::new();
+        cmods: &mut Vec<CtxModifier>,
+    ) {
         if let (Some(fit_key), Some(loc)) = (item.get_fit_key(), item.get_root_loc_kind()) {
             cmods.extend(self.cmods_loc.get(&(fit_key, loc)));
             for ((st_fit_key, st_loc, _), st_cmods) in self.cmods_loc_grp.iter() {
@@ -108,7 +83,6 @@ impl StandardRegister {
                 }
             }
         }
-        cmods
     }
     pub(in crate::svc::calc) fn extract_raw_mods_for_effect(
         &mut self,
