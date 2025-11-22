@@ -17,7 +17,7 @@ impl SolarSystem {
         // Update services
         SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, drone_key, projectee_key);
         // Update user data
-        self.rev_projs.unreg_projectee(&drone_key, &projectee_key);
+        self.rev_projs.unreg_projectee(&drone_key, projectee_key);
         let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
         u_drone.get_projs_mut().remove(&projectee_key);
         Ok(())

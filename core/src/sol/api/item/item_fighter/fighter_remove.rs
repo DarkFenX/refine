@@ -25,7 +25,7 @@ impl SolarSystem {
         if !u_fighter.get_projs().is_empty() {
             for projectee_key in u_fighter.get_projs().iter_projectees() {
                 SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, fighter_key, projectee_key);
-                self.rev_projs.unreg_projectee(&fighter_key, &projectee_key);
+                self.rev_projs.unreg_projectee(&fighter_key, projectee_key);
             }
             let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
             u_fighter.get_projs_mut().clear();

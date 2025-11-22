@@ -17,7 +17,7 @@ impl SolarSystem {
                 // Update services
                 SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, charge_key, projectee_key);
                 // Reverse projections
-                self.rev_projs.unreg_projectee(&charge_key, &projectee_key);
+                self.rev_projs.unreg_projectee(&charge_key, projectee_key);
             }
             let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
             u_charge.get_projs_mut().clear();

@@ -25,12 +25,12 @@ impl SolarSystem {
         SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, fighter_key, projectee_key);
         // Update user data for autocharges
         for autocharge_key in autocharge_keys.into_iter() {
-            self.rev_projs.unreg_projectee(&autocharge_key, &projectee_key);
+            self.rev_projs.unreg_projectee(&autocharge_key, projectee_key);
             let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
             u_autocharge.get_projs_mut().remove(&projectee_key);
         }
         // Update user data for fighter
-        self.rev_projs.unreg_projectee(&fighter_key, &projectee_key);
+        self.rev_projs.unreg_projectee(&fighter_key, projectee_key);
         let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
         u_fighter.get_projs_mut().remove(&projectee_key);
         Ok(())

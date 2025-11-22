@@ -129,7 +129,7 @@ impl SolarSystem {
                     // Remove projections from services
                     SolarSystem::util_remove_item_projection(u_data, svc, autocharge_key, projectee_key);
                     // Update reverse projections (just because it's convenient to do it here)
-                    rev_projs.unreg_projectee(&autocharge_key, &projectee_key);
+                    rev_projs.unreg_projectee(&autocharge_key, projectee_key);
                 }
                 let u_autocharge = u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
                 u_autocharge.get_projs_mut().clear();

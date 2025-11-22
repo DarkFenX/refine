@@ -46,9 +46,9 @@ where
     pub(crate) fn values_inner(&self) -> impl ExactSizeIterator<Item = &Set<V, H2>> {
         self.data.values()
     }
-    pub(crate) fn contains_entry(&self, key: &K, entry: &V) -> bool {
+    pub(crate) fn contains_entry(&self, key: &K, value: &V) -> bool {
         match self.data.get(key) {
-            Some(v) => v.contains(entry),
+            Some(set) => set.contains(value),
             None => false,
         }
     }
@@ -56,11 +56,11 @@ where
         self.data.is_empty()
     }
     // Modification methods
-    pub(crate) fn add_entry(&mut self, key: K, entry: V) {
+    pub(crate) fn add_entry(&mut self, key: K, value: V) {
         self.data
             .entry(key)
             .or_insert_with(|| Set::with_capacity(1))
-            .insert(entry);
+            .insert(value);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
         if entries.is_empty() {
@@ -71,16 +71,14 @@ where
             .or_insert_with(|| Set::with_capacity(entries.len()))
             .extend(entries);
     }
-    pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) -> bool {
-        // Returns true only if key has been removed
-        let need_cleanup = match self.data.get_mut(key) {
-            None => return false,
-            Some(v) => v.remove(entry) && v.is_empty(),
-        };
-        if need_cleanup {
-            self.data.remove(key);
+    pub(crate) fn remove_entry(&mut self, key: K, value: &V) {
+        if let Entry::Occupied(mut entry) = self.data.entry(key) {
+            let set = entry.get_mut();
+            set.remove(value);
+            if set.is_empty() {
+                entry.remove();
+            }
         }
-        need_cleanup
     }
     pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V, H1, H2>> {
         self.data.remove(key).map(|v| v.into_iter())

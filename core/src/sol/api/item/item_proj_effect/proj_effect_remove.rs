@@ -14,7 +14,7 @@ impl SolarSystem {
         if !u_proj_effect.get_projs().is_empty() {
             for projectee_key in u_proj_effect.get_projs().iter_projectees() {
                 SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, proj_effect_key, projectee_key);
-                self.rev_projs.unreg_projectee(&proj_effect_key, &projectee_key);
+                self.rev_projs.unreg_projectee(&proj_effect_key, projectee_key);
             }
             let u_proj_effect = self
                 .u_data

@@ -38,7 +38,7 @@ pub(super) fn add_cmod<K, H1, H2>(
 
 pub(super) fn remove_cmod<K, H1, H2>(
     main_storage: &mut MapSet<K, CtxModifier, H1, H2>,
-    key: &K,
+    key: K,
     cmod: &CtxModifier,
     aspec_storage: &mut RMapRSet<AttrSpec, CtxModifier>,
 ) where
@@ -49,15 +49,15 @@ pub(super) fn remove_cmod<K, H1, H2>(
     main_storage.remove_entry(key, cmod);
     if let Some(affector_attr_id) = cmod.raw.get_affector_a_attr_id() {
         let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, affector_attr_id);
-        aspec_storage.remove_entry(&affector_aspec, cmod);
+        aspec_storage.remove_entry(affector_aspec, cmod);
     }
     if let (Some(resist_attr_id), Context::Item(ctx_item_id)) = (cmod.raw.resist_attr_id, cmod.ctx) {
         let affector_aspec = AttrSpec::new(ctx_item_id, resist_attr_id);
-        aspec_storage.remove_entry(&affector_aspec, cmod);
+        aspec_storage.remove_entry(affector_aspec, cmod);
     }
     for proj_attr_id in cmod.raw.proj_attr_ids.into_iter().flatten() {
         let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, proj_attr_id);
-        aspec_storage.remove_entry(&affector_aspec, cmod);
+        aspec_storage.remove_entry(affector_aspec, cmod);
     }
 }
 

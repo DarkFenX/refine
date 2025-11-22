@@ -23,7 +23,7 @@ impl SolarSystem {
                 // Remove module outgoing projections from services
                 SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, module_key, projectee_key);
                 // Remove module outgoing projections from reverse projection tracker
-                self.rev_projs.unreg_projectee(&module_key, &projectee_key);
+                self.rev_projs.unreg_projectee(&module_key, projectee_key);
             }
             let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
             u_module.get_projs_mut().clear();
@@ -34,7 +34,7 @@ impl SolarSystem {
                     // Remove charge outgoing projections from services
                     SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, charge_key, projectee_key);
                     // Remove charge outgoing projections from reverse projection tracker
-                    self.rev_projs.unreg_projectee(&charge_key, &projectee_key);
+                    self.rev_projs.unreg_projectee(&charge_key, projectee_key);
                 }
                 let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
                 u_charge.get_projs_mut().clear();

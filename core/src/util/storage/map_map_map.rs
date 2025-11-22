@@ -30,9 +30,9 @@ where
         self.data.get(key1)
     }
     // Modification methods
-    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, entry: V) {
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, value: V) {
         let m2l = self.data.entry(key1).or_insert_with(|| MapMap::new());
-        m2l.add_entry(key2, key3, entry);
+        m2l.add_entry(key2, key3, value);
     }
     pub(crate) fn remove_l3(&mut self, key1: &K1, key2: &K2, key3: &K3) {
         let need_cleanup = match self.data.get_mut(key1) {

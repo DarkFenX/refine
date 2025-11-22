@@ -31,7 +31,7 @@ impl BuffRegister {
     }
     pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemKey, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.effect_keys.remove_entry(&item_key, &effect.get_key());
+            self.effect_keys.remove_entry(item_key, &effect.get_key());
         }
     }
     // Modifier methods
@@ -44,7 +44,7 @@ impl BuffRegister {
     pub(in crate::svc::calc) fn reg_dependent_mod(&mut self, aspec: AttrSpec, rmod: RawModifier) {
         self.rmods.add_entry(aspec, rmod)
     }
-    pub(in crate::svc::calc) fn unreg_dependent_mod(&mut self, aspec: &AttrSpec, rmod: &RawModifier) {
+    pub(in crate::svc::calc) fn unreg_dependent_mod(&mut self, aspec: AttrSpec, rmod: &RawModifier) {
         self.rmods.remove_entry(aspec, rmod);
     }
 }

@@ -69,9 +69,9 @@ impl DependencyRegister {
     pub(in crate::svc::calc) fn remove_by_source(&mut self, source_espec: &EffectSpec) {
         if let Some(spec_iter) = self.by_source.remove_key(source_espec) {
             for (affector_spec, affectee_spec) in spec_iter {
-                self.data.remove_entry(&affector_spec, &affectee_spec);
-                self.source_by_item.remove_entry(&affector_spec.item_key, source_espec);
-                self.source_by_item.remove_entry(&affectee_spec.item_key, source_espec);
+                self.data.remove_entry(affector_spec, &affectee_spec);
+                self.source_by_item.remove_entry(affector_spec.item_key, source_espec);
+                self.source_by_item.remove_entry(affectee_spec.item_key, source_espec);
             }
         }
     }
@@ -81,7 +81,7 @@ impl DependencyRegister {
             for (affector_a_attr_id, affectee_a_attr_id) in attrs_iter {
                 let affector_spec = AttrSpec::new(item_key, affector_a_attr_id);
                 let affectee_spec = AttrSpec::new(item_key, affectee_a_attr_id);
-                self.data.remove_entry(&affector_spec, &affectee_spec);
+                self.data.remove_entry(affector_spec, &affectee_spec);
             }
         }
         // Dependencies with source
@@ -89,7 +89,7 @@ impl DependencyRegister {
             for source in sources {
                 if let Some(aspec_iter) = self.by_source.remove_key(&source) {
                     for (affector_spec, affectee_spec) in aspec_iter {
-                        self.data.remove_entry(&affector_spec, &affectee_spec);
+                        self.data.remove_entry(affector_spec, &affectee_spec);
                     }
                 }
             }

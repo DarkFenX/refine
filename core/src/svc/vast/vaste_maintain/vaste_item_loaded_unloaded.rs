@@ -334,7 +334,7 @@ impl Vast {
         if let Some(a_srqs) = item.get_effective_skill_reqs()
             && !a_srqs.is_empty()
         {
-            for skill_a_item_id in a_srqs.keys() {
+            for &skill_a_item_id in a_srqs.keys() {
                 fit_data.srqs_skill_item_map.remove_entry(skill_a_item_id, item_key);
             }
             fit_data.srqs_missing.remove(item_key);
@@ -344,7 +344,7 @@ impl Vast {
                 let item_axt = booster.get_axt().unwrap();
                 item_kind_remove(fit_data, item_key, item_axt.kind, rd::RItemKind::Booster);
                 if let Some(slot) = booster.get_slot() {
-                    fit_data.slotted_boosters.remove_entry(&slot, item_key);
+                    fit_data.slotted_boosters.remove_entry(slot, item_key);
                 }
             }
             UItem::Character(character) => {
@@ -406,7 +406,7 @@ impl Vast {
                 let item_axt = implant.get_axt().unwrap();
                 item_kind_remove(fit_data, item_key, item_axt.kind, rd::RItemKind::Implant);
                 if let Some(slot) = implant.get_slot() {
-                    fit_data.slotted_implants.remove_entry(&slot, item_key);
+                    fit_data.slotted_implants.remove_entry(slot, item_key);
                 }
             }
             UItem::Module(module) => {
@@ -424,7 +424,7 @@ impl Vast {
                 if let Some(a_item_grp_id) = module.get_val_fitted_group_id() {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(&a_item_grp_id, item_key);
+                        .remove_entry(a_item_grp_id, item_key);
                     fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
                 }
                 if let Some(charge_key) = module.get_charge_key() {
@@ -463,7 +463,7 @@ impl Vast {
                 if let Some(a_item_grp_id) = rig.get_val_fitted_group_id() {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(&a_item_grp_id, item_key);
+                        .remove_entry(a_item_grp_id, item_key);
                     fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
                 }
                 if item_axt.sec_zone_limitable {
@@ -480,7 +480,7 @@ impl Vast {
                 if let Some(a_item_grp_id) = service.get_val_fitted_group_id() {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(&a_item_grp_id, item_key);
+                        .remove_entry(a_item_grp_id, item_key);
                     fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
                 }
                 if item_axt.max_type_fitted.is_some() {
@@ -527,7 +527,7 @@ impl Vast {
                 let item_axt = subsystem.get_axt().unwrap();
                 item_kind_remove(fit_data, item_key, item_axt.kind, rd::RItemKind::Subsystem);
                 if let Some(slot) = subsystem.get_slot() {
-                    fit_data.slotted_subsystems.remove_entry(&slot, item_key);
+                    fit_data.slotted_subsystems.remove_entry(slot, item_key);
                 }
                 if item_axt.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(item_key);

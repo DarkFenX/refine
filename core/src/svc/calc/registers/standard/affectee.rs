@@ -84,7 +84,7 @@ impl StandardRegister {
             self.unreg_buffable_for_sw(item_key, buffable_item_lists);
             self.unreg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
-                for item_list_id in buffable_item_lists {
+                for &item_list_id in buffable_item_lists {
                     self.affectee_buffable_ships
                         .remove_entry(item_list_id, &(ship.get_fit_key(), item_key));
                 }
@@ -99,27 +99,26 @@ impl StandardRegister {
         let a_srqs = item.get_skill_reqs().unwrap();
 
         if let Some(root_loc) = root_loc {
-            self.affectee_root.remove_entry(&(fit_key, root_loc), &item_key);
+            self.affectee_root.remove_entry((fit_key, root_loc), &item_key);
         }
         for loc in PotentialLocations::new(item) {
-            self.affectee_loc.remove_entry(&(fit_key, loc), &item_key);
+            self.affectee_loc.remove_entry((fit_key, loc), &item_key);
             self.affectee_loc_grp
-                .remove_entry(&(fit_key, loc, a_item_grp_id), &item_key);
+                .remove_entry((fit_key, loc, a_item_grp_id), &item_key);
             for srq_a_item_id in a_srqs.keys() {
                 self.affectee_loc_srq
-                    .remove_entry(&(fit_key, loc, *srq_a_item_id), &item_key);
+                    .remove_entry((fit_key, loc, *srq_a_item_id), &item_key);
             }
         }
         if item.is_owner_modifiable() {
             for srq_a_item_id in a_srqs.keys() {
-                self.affectee_own_srq
-                    .remove_entry(&(fit_key, *srq_a_item_id), &item_key);
+                self.affectee_own_srq.remove_entry((fit_key, *srq_a_item_id), &item_key);
             }
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
             for &buffable_item_list_id in buffable_item_lists {
                 self.affectee_buffable
-                    .remove_entry(&(fit_key, buffable_item_list_id), &item_key);
+                    .remove_entry((fit_key, buffable_item_list_id), &item_key);
             }
             self.unreg_buffable_for_fw(item_key, fit_key, buffable_item_lists);
         }

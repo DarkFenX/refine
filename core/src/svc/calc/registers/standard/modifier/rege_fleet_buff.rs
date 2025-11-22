@@ -77,7 +77,7 @@ impl StandardRegister {
                 }
             }
         }
-        self.rmods_fleet.remove_entry(&fit_key, &rmod);
+        self.rmods_fleet.remove_entry(fit_key, &rmod);
     }
     pub(in crate::svc::calc) fn reg_fleet_for_fit(&mut self, fleet: &UFleet, fit_key: UFitKey) -> Vec<CtxModifier> {
         let mut rmods = Vec::new();
@@ -195,7 +195,7 @@ impl StandardRegister {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
                     &mut self.cmods_root,
-                    &(fit_key, LocationKind::Ship),
+                    (fit_key, LocationKind::Ship),
                     &cmod,
                     &mut self.cmods_by_aspec,
                 );
@@ -205,7 +205,7 @@ impl StandardRegister {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
                     &mut self.cmods_loc,
-                    &(fit_key, LocationKind::Ship),
+                    (fit_key, LocationKind::Ship),
                     &cmod,
                     &mut self.cmods_by_aspec,
                 );
@@ -215,7 +215,7 @@ impl StandardRegister {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
                     &mut self.cmods_loc_grp,
-                    &(fit_key, LocationKind::Ship, a_item_grp_id),
+                    (fit_key, LocationKind::Ship, a_item_grp_id),
                     &cmod,
                     &mut self.cmods_by_aspec,
                 );
@@ -225,7 +225,7 @@ impl StandardRegister {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
                     &mut self.cmods_loc_srq,
-                    &(fit_key, LocationKind::Ship, srq_a_item_id),
+                    (fit_key, LocationKind::Ship, srq_a_item_id),
                     &cmod,
                     &mut self.cmods_by_aspec,
                 );

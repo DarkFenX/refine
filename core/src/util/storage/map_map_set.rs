@@ -1,4 +1,7 @@
-use std::hash::{BuildHasher, Hash};
+use std::{
+    collections::hash_map::Entry,
+    hash::{BuildHasher, Hash},
+};
 
 use rustc_hash::FxBuildHasher;
 
@@ -46,17 +49,17 @@ where
         }
     }
     // Modification methods
-    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, entry: V) {
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
         let ks1l = self.data.entry(key1).or_insert_with(|| MapSet::new());
-        ks1l.add_entry(key2, entry);
+        ks1l.add_entry(key2, value);
     }
-    pub(crate) fn remove_entry(&mut self, key1: &K1, key2: &K2, entry: &V) {
-        let need_cleanup = match self.data.get_mut(key1) {
-            None => return,
-            Some(ks1l) => ks1l.remove_entry(key2, entry) && ks1l.is_empty(),
-        };
-        if need_cleanup {
-            self.data.remove(key1);
+    pub(crate) fn remove_entry(&mut self, key1: K1, key2: K2, value: &V) {
+        if let Entry::Occupied(mut entry) = self.data.entry(key1) {
+            let mapset = entry.get_mut();
+            mapset.remove_entry(key2, value);
+            if mapset.is_empty() {
+                entry.remove();
+            }
         }
     }
     pub(crate) fn remove_l1(&mut self, key: &K1) -> Option<MapSet<K2, V, H2, H3>> {

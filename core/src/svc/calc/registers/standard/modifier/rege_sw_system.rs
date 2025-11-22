@@ -119,7 +119,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_root,
-                            &(fit_key, loc_kind),
+                            (fit_key, loc_kind),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -134,7 +134,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc,
-                            &(fit_key, loc_kind),
+                            (fit_key, loc_kind),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -149,7 +149,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc_grp,
-                            &(fit_key, loc_kind, a_item_grp_id),
+                            (fit_key, loc_kind, a_item_grp_id),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -164,7 +164,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc_srq,
-                            &(fit_key, loc_kind, srq_a_item_id),
+                            (fit_key, loc_kind, srq_a_item_id),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -178,7 +178,7 @@ impl StandardRegister {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                     remove_cmod(
                         &mut self.cmods_own_srq,
-                        &(fit_key, srq_a_item_id),
+                        (fit_key, srq_a_item_id),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
@@ -252,7 +252,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_root,
-                            &(fit_key, loc_kind),
+                            (fit_key, loc_kind),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -263,7 +263,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc,
-                            &(fit_key, loc_kind),
+                            (fit_key, loc_kind),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -274,7 +274,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc_grp,
-                            &(fit_key, loc_kind, a_item_grp_id),
+                            (fit_key, loc_kind, a_item_grp_id),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -285,7 +285,7 @@ impl StandardRegister {
                         let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
                         remove_cmod(
                             &mut self.cmods_loc_srq,
-                            &(fit_key, loc_kind, srq_a_item_id),
+                            (fit_key, loc_kind, srq_a_item_id),
                             &cmod,
                             &mut self.cmods_by_aspec,
                         );
@@ -295,7 +295,7 @@ impl StandardRegister {
                     let cmod = CtxModifier::from_raw_with_fit(*rmod, fit_key);
                     remove_cmod(
                         &mut self.cmods_own_srq,
-                        &(fit_key, srq_a_item_id),
+                        (fit_key, srq_a_item_id),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );

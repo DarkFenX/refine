@@ -200,7 +200,7 @@ impl Vast {
                     if let Some(a_item_grp_id) = module.get_val_online_group_id() {
                         fit_data
                             .mods_svcs_max_group_online_all
-                            .remove_entry(&a_item_grp_id, item_key);
+                            .remove_entry(a_item_grp_id, item_key);
                         fit_data.mods_svcs_max_group_online_limited.remove(item_key);
                     }
                     if item_axt.online_max_sec_class.is_some() {
@@ -217,7 +217,7 @@ impl Vast {
                     if let Some(a_item_grp_id) = service.get_val_online_group_id() {
                         fit_data
                             .mods_svcs_max_group_online_all
-                            .remove_entry(&a_item_grp_id, item_key);
+                            .remove_entry(a_item_grp_id, item_key);
                         fit_data.mods_svcs_max_group_online_limited.remove(item_key);
                     }
                     if item_axt.online_max_sec_class.is_some() {
@@ -237,7 +237,7 @@ impl Vast {
                     if let Some(a_item_grp_id) = module.get_val_active_group_id() {
                         fit_data
                             .mods_max_group_active_all
-                            .remove_entry(&a_item_grp_id, item_key);
+                            .remove_entry(a_item_grp_id, item_key);
                         fit_data.mods_max_group_active_limited.remove(item_key);
                     }
                     match module.get_max_state().unwrap() {

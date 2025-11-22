@@ -13,7 +13,7 @@ impl RevProjs {
     pub(in crate::sol) fn reg_projectee(&mut self, projector_key: UItemKey, projectee_key: UItemKey) {
         self.data.add_entry(projectee_key, projector_key)
     }
-    pub(in crate::sol) fn unreg_projectee(&mut self, projector_key: &UItemKey, projectee_key: &UItemKey) {
+    pub(in crate::sol) fn unreg_projectee(&mut self, projector_key: &UItemKey, projectee_key: UItemKey) {
         self.data.remove_entry(projectee_key, projector_key);
     }
     pub(in crate::sol) fn iter_projectors(&self, projectee_key: &UItemKey) -> impl ExactSizeIterator<Item = UItemKey> {

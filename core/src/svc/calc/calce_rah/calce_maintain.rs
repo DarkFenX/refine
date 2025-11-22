@@ -105,7 +105,7 @@ impl Calc {
             item_attr_data.postprocs.remove(&ARMOR_EXPL_ATTR_ID);
             // Remove sim data for RAH being stopped
             self.rah.resonances.remove(item_key);
-            self.rah.by_fit.remove_entry(&fit_key, item_key);
+            self.rah.by_fit.remove_entry(fit_key, item_key);
             // Clear sim data for other RAHs on the same fit
             self.clear_fit_rah_results(ctx, fit_key);
         }

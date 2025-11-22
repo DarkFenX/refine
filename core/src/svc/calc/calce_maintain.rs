@@ -409,7 +409,7 @@ impl Calc {
     fn unreg_raw_mod_for_buff(&mut self, item_key: UItemKey, rmod: &RawModifier) {
         if let Some(buff_type_attr_id) = rmod.buff_type_attr_id {
             self.buffs
-                .unreg_dependent_mod(&AttrSpec::new(item_key, buff_type_attr_id), rmod);
+                .unreg_dependent_mod(AttrSpec::new(item_key, buff_type_attr_id), rmod);
         }
     }
     fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<UItemKey>, ctx: SvcCtx, cmod: &CtxModifier) {

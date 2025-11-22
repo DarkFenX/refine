@@ -37,7 +37,7 @@ impl SolarSystem {
                     );
                     // Update user data for charge - do not touch projections container on charge
                     // itself, because we're removing it anyway
-                    self.rev_projs.unreg_projectee(&old_charge_key, &projectee_key);
+                    self.rev_projs.unreg_projectee(&old_charge_key, projectee_key);
                 }
                 let old_u_charge = self.u_data.items.get_mut(old_charge_key).get_charge_mut().unwrap();
                 old_u_charge.get_projs_mut().clear();

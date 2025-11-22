@@ -96,7 +96,7 @@ impl StandardRegister {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fw_effect.get_fit_key());
                     remove_cmod(
                         &mut self.cmods_root,
-                        &(fw_effect.get_fit_key(), loc_kind),
+                        (fw_effect.get_fit_key(), loc_kind),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
@@ -109,7 +109,7 @@ impl StandardRegister {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fw_effect.get_fit_key());
                     remove_cmod(
                         &mut self.cmods_loc,
-                        &(fw_effect.get_fit_key(), loc_kind),
+                        (fw_effect.get_fit_key(), loc_kind),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
@@ -122,7 +122,7 @@ impl StandardRegister {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fw_effect.get_fit_key());
                     remove_cmod(
                         &mut self.cmods_loc_grp,
-                        &(fw_effect.get_fit_key(), loc_kind, a_item_grp_id),
+                        (fw_effect.get_fit_key(), loc_kind, a_item_grp_id),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
@@ -135,7 +135,7 @@ impl StandardRegister {
                     let cmod = CtxModifier::from_raw_with_fit(rmod, fw_effect.get_fit_key());
                     remove_cmod(
                         &mut self.cmods_loc_srq,
-                        &(fw_effect.get_fit_key(), loc_kind, srq_a_item_id),
+                        (fw_effect.get_fit_key(), loc_kind, srq_a_item_id),
                         &cmod,
                         &mut self.cmods_by_aspec,
                     );
@@ -147,7 +147,7 @@ impl StandardRegister {
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fw_effect.get_fit_key());
                 remove_cmod(
                     &mut self.cmods_own_srq,
-                    &(fw_effect.get_fit_key(), srq_a_item_id),
+                    (fw_effect.get_fit_key(), srq_a_item_id),
                     &cmod,
                     &mut self.cmods_by_aspec,
                 );

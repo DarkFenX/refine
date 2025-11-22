@@ -104,7 +104,7 @@ impl Vast {
                 let stopper = EffectSpec::new(projector_key, effect.get_key());
                 for stop_a_effect_id in effect.get_stopped_effect_keys().iter() {
                     let stopped = EffectSpec::new(projectee_key, *stop_a_effect_id);
-                    projectee_fit_data.stopped_effects.remove_entry(&stopped, &stopper);
+                    projectee_fit_data.stopped_effects.remove_entry(stopped, &stopper);
                 }
             }
             if let Some(projector_fit_key) = projector_item.get_fit_key() {
@@ -113,18 +113,18 @@ impl Vast {
                 if effect.is_assist() {
                     projector_fit_data
                         .blockable_assistance
-                        .remove_entry(&projectee_key, &projector_espec);
+                        .remove_entry(projectee_key, &projector_espec);
                 }
                 if is_offense_blockable(projector_item, effect) {
                     projector_fit_data
                         .blockable_offense
-                        .remove_entry(&projectee_key, &projector_espec);
+                        .remove_entry(projectee_key, &projector_espec);
                 }
                 if let Some(resist_a_attr_id) = eff_funcs::get_resist_a_attr_id(projector_item, effect) {
                     let projectee_aspec = AttrSpec::new(projectee_key, resist_a_attr_id);
                     projector_fit_data
                         .resist_immunity
-                        .remove_entry(&projectee_aspec, &projector_espec);
+                        .remove_entry(projectee_aspec, &projector_espec);
                 }
             }
         }

@@ -23,12 +23,12 @@ impl SolarSystem {
         SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, module_key, projectee_key);
         // Update user data for charge
         if let Some(charge_key) = charge_key {
-            self.rev_projs.unreg_projectee(&charge_key, &projectee_key);
+            self.rev_projs.unreg_projectee(&charge_key, projectee_key);
             let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
             u_charge.get_projs_mut().remove(&projectee_key);
         }
         // Update user data for module
-        self.rev_projs.unreg_projectee(&module_key, &projectee_key);
+        self.rev_projs.unreg_projectee(&module_key, projectee_key);
         let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
         u_module.get_projs_mut().remove(&projectee_key);
         Ok(())

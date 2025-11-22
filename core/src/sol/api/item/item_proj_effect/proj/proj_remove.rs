@@ -21,7 +21,7 @@ impl SolarSystem {
         // Update services
         SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, proj_effect_key, projectee_key);
         // Update user data
-        self.rev_projs.unreg_projectee(&proj_effect_key, &projectee_key);
+        self.rev_projs.unreg_projectee(&proj_effect_key, projectee_key);
         let u_proj_effect = self
             .u_data
             .items

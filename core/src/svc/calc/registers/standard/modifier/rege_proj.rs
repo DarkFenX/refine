@@ -15,7 +15,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unreg_proj_mod(&mut self, rmod: &RawModifier) {
         // Unregister projectable modifiers. The rmods_all container should be emptied by the
         // caller, so we do not need to take care about it here.
-        self.rmods_proj.remove_entry(&rmod.affector_espec, rmod);
+        self.rmods_proj.remove_entry(rmod.affector_espec, rmod);
     }
     pub(in crate::svc::calc) fn project_effect(
         &mut self,
@@ -138,7 +138,7 @@ impl StandardRegister {
     pub(super) fn unreg_inactive_proj_rmod(
         &mut self,
         rmod: &RawModifier,
-        projectee_key: &UItemKey,
+        projectee_key: UItemKey,
     ) -> Option<CtxModifier> {
         self.rmods_proj_inactive.remove_entry(projectee_key, rmod);
         None
