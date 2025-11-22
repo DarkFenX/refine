@@ -37,15 +37,15 @@ impl StandardRegister {
     // Modification methods
     pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
+        let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let UItem::Ship(u_ship) = item {
-            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty() {
+            if let Some(buffable_item_lists) = buffable_item_lists {
                 self.reg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
                 self.reg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
             }
             self.reg_loc_root_for_proj(item_key, item);
             self.get_mods_for_changed_root(item, &mut cmods);
         }
-        let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.reg_buffable_for_sw(item_key, buffable_item_lists);
             self.reg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
@@ -90,15 +90,15 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
+        let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let UItem::Ship(u_ship) = item {
             self.get_mods_for_changed_root(item, &mut cmods);
-            if let Some(buffable_item_lists) = item.get_item_buff_item_lists_nonempty() {
+            if let Some(buffable_item_lists) = buffable_item_lists {
                 self.unreg_loc_root_for_fw_buff(item_key, u_ship, buffable_item_lists);
                 self.unreg_loc_root_for_sw_buff(item_key, u_ship, buffable_item_lists);
             }
             self.unreg_loc_root_for_proj(item_key, item);
         }
-        let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let Some(buffable_item_lists) = buffable_item_lists {
             self.unreg_buffable_for_sw(item_key, buffable_item_lists);
             self.unreg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
