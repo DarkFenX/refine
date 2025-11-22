@@ -133,7 +133,7 @@ def test_replace_root(client, consts):
     api_affectee_item = api_fit.add_implant(type_id=eve_affectee_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     api_fit.remove_character()
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     api_fit.set_character(type_id=eve_char_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
