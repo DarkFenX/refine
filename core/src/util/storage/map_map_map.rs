@@ -1,4 +1,7 @@
-use std::hash::{BuildHasher, Hash};
+use std::{
+    collections::hash_map::Entry,
+    hash::{BuildHasher, Hash},
+};
 
 use rustc_hash::FxBuildHasher;
 
@@ -31,16 +34,15 @@ where
     }
     // Modification methods
     pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, value: V) {
-        let m2l = self.data.entry(key1).or_insert_with(|| MapMap::new());
+        let m2l = self.data.entry(key1).or_insert_with(MapMap::new);
         m2l.add_entry(key2, key3, value);
     }
-    pub(crate) fn remove_l3(&mut self, key1: &K1, key2: &K2, key3: &K3) {
-        let need_cleanup = match self.data.get_mut(key1) {
-            None => return,
-            Some(m2l) => m2l.remove_l2(key2, key3) && m2l.is_empty(),
-        };
-        if need_cleanup {
-            self.data.remove(key1);
+    pub(crate) fn remove_l3(&mut self, key1: K1, key2: K2, key3: &K3) {
+        if let Entry::Occupied(mut entry_l1) = self.data.entry(key1) {
+            let map_l2 = entry_l1.get_mut();
+            if map_l2.remove_l2(key2, key3) && map_l2.is_empty() {
+                entry_l1.remove();
+            }
         }
     }
 }

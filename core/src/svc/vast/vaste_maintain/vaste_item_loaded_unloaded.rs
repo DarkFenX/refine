@@ -443,7 +443,7 @@ impl Vast {
                 if item_axt.max_type_fitted.is_some() {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .remove_l2(&module.get_type_id(), item_key);
+                        .remove_l2(module.get_type_id(), item_key);
                 }
                 if item_axt.online_max_sec_class.is_some() {
                     fit_data.sec_zone_unonlineable_class.remove(item_key);
@@ -486,7 +486,7 @@ impl Vast {
                 if item_axt.max_type_fitted.is_some() {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .remove_l2(&service.get_type_id(), item_key);
+                        .remove_l2(service.get_type_id(), item_key);
                 }
                 if item_axt.sec_zone_limitable {
                     fit_data.sec_zone_fitted.remove(item_key);

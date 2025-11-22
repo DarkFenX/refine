@@ -235,9 +235,7 @@ impl Vast {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                     let item_axt = module.get_axt().unwrap();
                     if let Some(a_item_grp_id) = module.get_val_active_group_id() {
-                        fit_data
-                            .mods_max_group_active_all
-                            .remove_entry(a_item_grp_id, item_key);
+                        fit_data.mods_max_group_active_all.remove_entry(a_item_grp_id, item_key);
                         fit_data.mods_max_group_active_limited.remove(item_key);
                     }
                     match module.get_max_state().unwrap() {

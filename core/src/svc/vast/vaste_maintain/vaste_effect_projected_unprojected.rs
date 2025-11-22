@@ -131,36 +131,34 @@ impl Vast {
         if effect.get_remote_shield_rep_opc_getter().is_some() {
             if effect.is_active_with_duration() {
                 self.irr_shield
-                    .remove_l3(&projectee_key, &projector_key, &effect.get_key());
+                    .remove_l3(projectee_key, projector_key, &effect.get_key());
             }
             if effect.get_charge_info().is_some() {
                 self.irr_shield_limitable
-                    .remove_l3(&projectee_key, &projector_key, &effect.get_key());
+                    .remove_l3(projectee_key, projector_key, &effect.get_key());
             }
         }
         if effect.get_remote_armor_rep_opc_getter().is_some() {
             if effect.is_active_with_duration() {
                 self.irr_armor
-                    .remove_l3(&projectee_key, &projector_key, &effect.get_key());
+                    .remove_l3(projectee_key, projector_key, &effect.get_key());
             }
             if effect.get_charge_info().is_some() {
                 self.irr_armor_limitable
-                    .remove_l3(&projectee_key, &projector_key, &effect.get_key());
+                    .remove_l3(projectee_key, projector_key, &effect.get_key());
             }
         }
         if effect.get_remote_hull_rep_opc_getter().is_some() && effect.is_active_with_duration() {
-            self.irr_hull
-                .remove_l3(&projectee_key, &projector_key, &effect.get_key());
+            self.irr_hull.remove_l3(projectee_key, projector_key, &effect.get_key());
         }
         if effect.get_remote_cap_rep_opc_getter().is_some() && effect.is_active_with_duration() {
-            self.in_cap.remove_l3(&projectee_key, &projector_key, &effect.get_key());
+            self.in_cap.remove_l3(projectee_key, projector_key, &effect.get_key());
         }
         if effect.get_neut_opc_getter().is_some() {
-            self.in_neuts
-                .remove_l3(&projectee_key, &projector_key, &effect.get_key());
+            self.in_neuts.remove_l3(projectee_key, projector_key, &effect.get_key());
         }
         if effect.get_ecm_opc_getter().is_some() {
-            self.in_ecm.remove_l3(&projectee_key, &projector_key, &effect.get_key());
+            self.in_ecm.remove_l3(projectee_key, projector_key, &effect.get_key());
         }
     }
 }
