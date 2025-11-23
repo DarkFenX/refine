@@ -21,10 +21,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
-                    &mut self.cmods_root,
+                    &mut self.cmods.root,
                     (fit_key, loc_kind),
                     cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -32,7 +32,7 @@ impl StandardRegister {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
-                add_cmod(&mut self.cmods_loc, (fit_key, loc_kind), cmod, &mut self.cmods_by_aspec);
+                add_cmod(&mut self.cmods.loc, (fit_key, loc_kind), cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
             }
             AffecteeFilter::LocGrp(loc, item_grp_id) => {
@@ -40,10 +40,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
-                    &mut self.cmods_loc_grp,
+                    &mut self.cmods.loc_grp,
                     (fit_key, loc_kind, item_grp_id),
                     cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -52,10 +52,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
-                    &mut self.cmods_loc_srq,
+                    &mut self.cmods.loc_srq,
                     (fit_key, loc_kind, srq_type_id),
                     cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -63,10 +63,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 add_cmod(
-                    &mut self.cmods_own_srq,
+                    &mut self.cmods.own_srq,
                     (fit_key, srq_type_id),
                     cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -88,10 +88,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
-                    &mut self.cmods_root,
+                    &mut self.cmods.root,
                     (fit_key, loc_kind),
                     &cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -100,10 +100,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
-                    &mut self.cmods_loc,
+                    &mut self.cmods.loc,
                     (fit_key, loc_kind),
                     &cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -112,10 +112,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
-                    &mut self.cmods_loc_grp,
+                    &mut self.cmods.loc_grp,
                     (fit_key, loc_kind, item_grp_id),
                     &cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -124,10 +124,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
-                    &mut self.cmods_loc_srq,
+                    &mut self.cmods.loc_srq,
                     (fit_key, loc_kind, srq_type_id),
                     &cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }
@@ -135,10 +135,10 @@ impl StandardRegister {
                 let fit_key = fw_effect.get_fit_key();
                 let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
                 remove_cmod(
-                    &mut self.cmods_own_srq,
+                    &mut self.cmods.own_srq,
                     (fit_key, srq_type_id),
                     &cmod,
-                    &mut self.cmods_by_aspec,
+                    &mut self.cmods.by_aspec,
                 );
                 Some(cmod)
             }

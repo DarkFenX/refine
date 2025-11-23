@@ -97,13 +97,13 @@ impl StandardRegister {
         }
         // Attributes of attr specs are not checked, because we do not verify if those do exist when
         // adding modifiers
-        for (aspec, cmods) in self.cmods_by_aspec.iter() {
+        for (aspec, cmods) in self.cmods.by_aspec.iter() {
             check_item_key(u_data, aspec.item_key, true)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
             }
         }
-        for (item_key, cmods) in self.cmods_direct.iter() {
+        for (item_key, cmods) in self.cmods.direct.iter() {
             // TODO: if/when typelist-filtered buffs are added, and direct modification processing
             // TODO: of non-ship entities is added, item key should be always loaded again
             // Sometimes direct modifications can target non-loaded items (e.g. drones)
@@ -112,37 +112,37 @@ impl StandardRegister {
                 check_cmod(u_data, cmod)?;
             }
         }
-        for (item_key, cmods) in self.cmods_other.iter() {
+        for (item_key, cmods) in self.cmods.other.iter() {
             check_item_key(u_data, *item_key, true)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
             }
         }
-        for ((fit_key, _), cmods) in self.cmods_root.iter() {
+        for ((fit_key, _), cmods) in self.cmods.root.iter() {
             check_fit_key(u_data, *fit_key)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
             }
         }
-        for ((fit_key, _), cmods) in self.cmods_loc.iter() {
+        for ((fit_key, _), cmods) in self.cmods.loc.iter() {
             check_fit_key(u_data, *fit_key)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
             }
         }
-        for ((fit_key, _, _), cmods) in self.cmods_loc_grp.iter() {
+        for ((fit_key, _, _), cmods) in self.cmods.loc_grp.iter() {
             check_fit_key(u_data, *fit_key)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
             }
         }
-        for ((fit_key, _, _), cmods) in self.cmods_loc_srq.iter() {
+        for ((fit_key, _, _), cmods) in self.cmods.loc_srq.iter() {
             check_fit_key(u_data, *fit_key)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
             }
         }
-        for ((fit_key, _), cmods) in self.cmods_own_srq.iter() {
+        for ((fit_key, _), cmods) in self.cmods.own_srq.iter() {
             check_fit_key(u_data, *fit_key)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;

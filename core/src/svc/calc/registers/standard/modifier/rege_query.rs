@@ -24,27 +24,27 @@ impl StandardRegister {
         let item_grp_id = item.get_group_id().unwrap();
         let srqs = item.get_skill_reqs().unwrap();
         let mut cmods = Vec::new();
-        filter_and_extend(&mut cmods, &self.cmods_direct, item_key, attr_id);
+        filter_and_extend(&mut cmods, &self.cmods.direct, item_key, attr_id);
         if let Some(other_item_key) = item.get_other_key() {
-            filter_and_extend(&mut cmods, &self.cmods_other, &other_item_key, attr_id);
+            filter_and_extend(&mut cmods, &self.cmods.other, &other_item_key, attr_id);
         }
         if let Some(fit_key) = fit_key {
             let fit = fits.get(fit_key);
             if let Some(root_loc) = root_loc {
-                filter_and_extend(&mut cmods, &self.cmods_root, &(fit_key, root_loc), attr_id);
+                filter_and_extend(&mut cmods, &self.cmods.root, &(fit_key, root_loc), attr_id);
             }
             for loc_kind in ActiveLocations::new(item, fit) {
-                filter_and_extend(&mut cmods, &self.cmods_loc, &(fit_key, loc_kind), attr_id);
+                filter_and_extend(&mut cmods, &self.cmods.loc, &(fit_key, loc_kind), attr_id);
                 filter_and_extend(
                     &mut cmods,
-                    &self.cmods_loc_grp,
+                    &self.cmods.loc_grp,
                     &(fit_key, loc_kind, item_grp_id),
                     attr_id,
                 );
                 for &srq_type_id in srqs.keys() {
                     filter_and_extend(
                         &mut cmods,
-                        &self.cmods_loc_srq,
+                        &self.cmods.loc_srq,
                         &(fit_key, loc_kind, srq_type_id),
                         attr_id,
                     );
@@ -52,7 +52,7 @@ impl StandardRegister {
             }
             if item.is_owner_modifiable() {
                 for &srq_type_id in srqs.keys() {
-                    filter_and_extend(&mut cmods, &self.cmods_own_srq, &(fit_key, srq_type_id), attr_id);
+                    filter_and_extend(&mut cmods, &self.cmods.own_srq, &(fit_key, srq_type_id), attr_id);
                 }
             }
         }
@@ -62,7 +62,7 @@ impl StandardRegister {
         &self,
         affector_aspec: &AttrSpec,
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
-        self.cmods_by_aspec.get(affector_aspec)
+        self.cmods.by_aspec.get(affector_aspec)
     }
     pub(in crate::svc::calc) fn extract_raw_mods_for_effect(
         &mut self,
