@@ -180,7 +180,7 @@ impl StandardRegister {
 // Functions which are called when already projectee item is loaded/unloaded. Only modifiers which
 // depend on projectee item properties should be processed by those functions.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn affectee_for_proj_buff_reg(
+pub(super) fn load_affectee_for_proj_buff(
     cdata: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
     projectee_key: UItemKey,
@@ -228,7 +228,7 @@ pub(super) fn affectee_for_proj_buff_reg(
         _ => false,
     }
 }
-pub(super) fn affectee_for_proj_buff_unreg(
+pub(super) fn unload_affectee_for_proj_buff(
     cdata: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
     projectee_key: UItemKey,

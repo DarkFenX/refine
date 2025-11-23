@@ -1,9 +1,9 @@
 use itertools::Itertools;
 
 use super::{
-    rege_proj_buff::{affectee_for_proj_buff_reg, affectee_for_proj_buff_unreg},
-    rege_proj_system::{affectee_for_proj_system_reg, affectee_for_proj_system_unreg},
-    rege_proj_target::{affectee_for_proj_target_reg, affectee_for_proj_target_unreg},
+    rege_proj_buff::{load_affectee_for_proj_buff, unload_affectee_for_proj_buff},
+    rege_proj_system::{load_affectee_for_proj_system, unload_affectee_for_proj_system},
+    rege_proj_target::{load_affectee_for_proj_target, unload_affectee_for_proj_target},
 };
 use crate::{
     misc::EffectSpec,
@@ -94,29 +94,31 @@ impl StandardRegister {
         }
         cmods
     }
-    pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_proj(
+    pub(in crate::svc::calc::registers::standard) fn load_affectee_for_proj(
         &mut self,
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_inactive.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::System => affectee_for_proj_system_reg(&mut self.cmods, r, projectee_key, projectee_item),
-            ModifierKind::Targeted => affectee_for_proj_target_reg(&mut self.cmods, r, projectee_key, projectee_item),
-            ModifierKind::Buff => affectee_for_proj_buff_reg(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::System => load_affectee_for_proj_system(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::Targeted => load_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::Buff => load_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
             _ => false,
         });
         self.rmods_proj_active
             .extend_entries(projectee_key, self.rmods_proj_inactive.drain_buffer());
     }
-    pub(in crate::svc::calc::registers::standard) fn unreg_affectee_for_proj(
+    pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_proj(
         &mut self,
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_active.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::System => affectee_for_proj_system_unreg(&mut self.cmods, r, projectee_key, projectee_item),
-            ModifierKind::Targeted => affectee_for_proj_target_unreg(&mut self.cmods, r, projectee_key, projectee_item),
-            ModifierKind::Buff => affectee_for_proj_buff_unreg(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::System => unload_affectee_for_proj_system(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::Targeted => {
+                unload_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
+            }
+            ModifierKind::Buff => unload_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
             _ => false,
         });
         self.rmods_proj_inactive
