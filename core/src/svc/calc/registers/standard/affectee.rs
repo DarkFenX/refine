@@ -38,11 +38,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
-        if let UItem::Ship(_) = item {
-            self.reg_loc_root_for_proj(item_key, item);
-        }
         if let Some(buffable_item_lists) = buffable_item_lists {
-            self.reg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for &item_list_id in buffable_item_lists {
                     self.affectee_buffable_ships
@@ -85,8 +81,10 @@ impl StandardRegister {
             };
             self.reg_affectee_for_sw_buff(item_key, ship, buffable_item_lists);
             self.reg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
+            self.reg_affectee_for_proj_buff(item_key, ship, buffable_item_lists);
         }
         if let UItem::Ship(_) = item {
+            self.reg_loc_root_for_proj(item_key, item);
             self.get_mods_for_changed_ship(item, &mut cmods);
         }
         cmods
@@ -96,10 +94,8 @@ impl StandardRegister {
         let buffable_item_lists = item.get_item_buff_item_lists_nonempty();
         if let UItem::Ship(_) = item {
             self.get_mods_for_changed_ship(item, &mut cmods);
-            self.unreg_loc_root_for_proj(item_key, item);
         }
         if let Some(buffable_item_lists) = buffable_item_lists {
-            self.unreg_affectee_for_direct_proj_buff(item_key, buffable_item_lists);
             if let UItem::Ship(ship) = item {
                 for &item_list_id in buffable_item_lists {
                     self.affectee_buffable_ships
@@ -144,6 +140,10 @@ impl StandardRegister {
             };
             self.unreg_affectee_for_sw_buff(item_key, ship, buffable_item_lists);
             self.unreg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
+            self.unreg_affectee_for_proj_buff(item_key, ship, buffable_item_lists);
+            if ship.is_some() {
+                self.unreg_loc_root_for_proj(item_key, item);
+            }
         }
         cmods
     }
