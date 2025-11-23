@@ -81,7 +81,6 @@ impl StandardRegister {
             };
             self.reg_affectee_for_sw_buff(item_key, ship, buffable_item_lists);
             self.reg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
-            self.reg_affectee_for_proj_buff(item_key, ship, buffable_item_lists);
         }
         if let UItem::Ship(_) = item {
             self.reg_loc_root_for_proj(item_key, item);
@@ -140,7 +139,6 @@ impl StandardRegister {
             };
             self.unreg_affectee_for_sw_buff(item_key, ship, buffable_item_lists);
             self.unreg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
-            self.unreg_affectee_for_proj_buff(item_key, ship, buffable_item_lists);
             if ship.is_some() {
                 self.unreg_loc_root_for_proj(item_key, item);
             }

@@ -2,7 +2,7 @@ use crate::{
     svc::calc::{
         AffecteeFilter, CtxModifier, Location, LocationKind, RawModifier,
         registers::standard::{
-            StandardRegister,
+            data::{StandardRegister, StandardRegisterCtxMods},
             func::{add_cmod, remove_cmod},
         },
     },
@@ -707,5 +707,255 @@ impl StandardRegister {
                 }
             }
         }
+    }
+}
+
+pub(super) fn affectee_for_proj_system_reg(
+    cdata: &mut StandardRegisterCtxMods,
+    rmod: &RawModifier,
+    projectee_key: UItemKey,
+    projectee_item: &UItem,
+) -> bool {
+    match rmod.affectee_filter {
+        AffecteeFilter::Direct(loc) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
+                add_cmod(&mut cdata.root, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure);
+                add_cmod(&mut cdata.root, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character);
+                add_cmod(&mut cdata.root, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::Loc(loc) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
+                add_cmod(&mut cdata.loc, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure);
+                add_cmod(&mut cdata.loc, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character);
+                add_cmod(&mut cdata.loc, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::LocGrp(loc, item_grp_id) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
+                add_cmod(&mut cdata.loc_grp, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure, item_grp_id);
+                add_cmod(&mut cdata.loc_grp, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character, item_grp_id);
+                add_cmod(&mut cdata.loc_grp, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::LocSrq(loc, srq_type_id) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
+                add_cmod(&mut cdata.loc_srq, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure, srq_type_id);
+                add_cmod(&mut cdata.loc_srq, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character, srq_type_id);
+                add_cmod(&mut cdata.loc_srq, key, cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::OwnSrq(srq_type_id) if let UItem::Ship(projectee_ship) = projectee_item => {
+            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let key = (projectee_ship.get_fit_key(), srq_type_id);
+            add_cmod(&mut cdata.own_srq, key, cmod, &mut cdata.by_aspec);
+            true
+        }
+        _ => false,
+    }
+}
+
+pub(super) fn affectee_for_proj_system_unreg(
+    cdata: &mut StandardRegisterCtxMods,
+    rmod: &RawModifier,
+    projectee_key: UItemKey,
+    projectee_item: &UItem,
+) -> bool {
+    match rmod.affectee_filter {
+        AffecteeFilter::Direct(loc) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
+                remove_cmod(&mut cdata.root, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure);
+                remove_cmod(&mut cdata.root, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character);
+                remove_cmod(&mut cdata.root, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::Loc(loc) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
+                remove_cmod(&mut cdata.loc, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure);
+                remove_cmod(&mut cdata.loc, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character);
+                remove_cmod(&mut cdata.loc, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::LocGrp(loc, item_grp_id) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
+                remove_cmod(&mut cdata.loc_grp, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure, item_grp_id);
+                remove_cmod(&mut cdata.loc_grp, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character, item_grp_id);
+                remove_cmod(&mut cdata.loc_grp, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::LocSrq(loc, srq_type_id) => match loc {
+            Location::Ship
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Ship = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
+                remove_cmod(&mut cdata.loc_srq, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Structure
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let UShipKind::Structure = projectee_ship.get_kind() =>
+            {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Structure, srq_type_id);
+                remove_cmod(&mut cdata.loc_srq, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            Location::Char if let UItem::Ship(projectee_ship) = projectee_item => {
+                let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+                let key = (projectee_ship.get_fit_key(), LocationKind::Character, srq_type_id);
+                remove_cmod(&mut cdata.loc_srq, key, &cmod, &mut cdata.by_aspec);
+                true
+            }
+            _ => false,
+        },
+        AffecteeFilter::OwnSrq(srq_type_id) if let UItem::Ship(projectee_ship) = projectee_item => {
+            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let key = (projectee_ship.get_fit_key(), srq_type_id);
+            remove_cmod(&mut cdata.own_srq, key, &cmod, &mut cdata.by_aspec);
+            true
+        }
+        _ => false,
     }
 }

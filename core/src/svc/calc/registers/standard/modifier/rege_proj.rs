@@ -1,5 +1,9 @@
 use itertools::Itertools;
 
+use super::{
+    rege_proj_buff::{affectee_for_proj_buff_reg, affectee_for_proj_buff_unreg},
+    rege_proj_system::{affectee_for_proj_system_reg, affectee_for_proj_system_unreg},
+};
 use crate::{
     misc::EffectSpec,
     svc::calc::{CtxModifier, ModifierKind, RawModifier, registers::StandardRegister},
@@ -88,6 +92,34 @@ impl StandardRegister {
             }
         }
         cmods
+    }
+    pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_proj(
+        &mut self,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
+    ) {
+        self.rmods_proj_inactive.buffer_if(projectee_key, |r| match r.kind {
+            ModifierKind::System => affectee_for_proj_system_reg(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::Targeted => true,
+            ModifierKind::Buff => affectee_for_proj_buff_reg(&mut self.cmods, r, projectee_key, projectee_item),
+            _ => false,
+        });
+        self.rmods_proj_active
+            .extend_entries(projectee_key, self.rmods_proj_inactive.drain_buffer());
+    }
+    pub(in crate::svc::calc::registers::standard) fn unreg_affectee_for_proj(
+        &mut self,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
+    ) {
+        self.rmods_proj_active.buffer_if(projectee_key, |r| match r.kind {
+            ModifierKind::System => affectee_for_proj_system_unreg(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::Targeted => true,
+            ModifierKind::Buff => affectee_for_proj_buff_unreg(&mut self.cmods, r, projectee_key, projectee_item),
+            _ => false,
+        });
+        self.rmods_proj_inactive
+            .extend_entries(projectee_key, self.rmods_proj_active.drain_buffer());
     }
     pub(in crate::svc::calc::registers::standard) fn reg_loc_root_for_proj(
         &mut self,
