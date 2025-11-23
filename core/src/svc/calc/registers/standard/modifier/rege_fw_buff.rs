@@ -33,57 +33,42 @@ impl StandardRegister {
                     add_cmod(&mut self.cmods.direct, affectee_key, cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 let fit_key = fw_effect.get_fit_key();
                 if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
                     let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
-                    add_cmod(
-                        &mut self.cmods.loc,
-                        (fit_key, LocationKind::Ship),
-                        cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship);
+                    add_cmod(&mut self.cmods.loc, key, cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
                 if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
                     let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
-                    add_cmod(
-                        &mut self.cmods.loc_grp,
-                        (fit_key, LocationKind::Ship, item_grp_id),
-                        cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, item_grp_id);
+                    add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
                 let fit_key = fw_effect.get_fit_key();
                 if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
                     let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
-                    add_cmod(
-                        &mut self.cmods.loc_srq,
-                        (fit_key, LocationKind::Ship, srq_type_id),
-                        cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, srq_type_id);
+                    add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.add_entry(fit_key, rmod);
                 true
             }
             _ => false,
         };
         if valid {
+            self.rmods_fw_buff.add_entry(fw_effect.get_fit_key(), rmod);
             self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
         valid
@@ -106,52 +91,39 @@ impl StandardRegister {
                     remove_cmod(&mut self.cmods.direct, affectee_key, &cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 let fit_key = fw_effect.get_fit_key();
                 if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
                     let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
-                    remove_cmod(
-                        &mut self.cmods.loc,
-                        (fit_key, LocationKind::Ship),
-                        &cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship);
+                    remove_cmod(&mut self.cmods.loc, key, &cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
                 let fit_key = fw_effect.get_fit_key();
                 if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
                     let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
-                    remove_cmod(
-                        &mut self.cmods.loc_grp,
-                        (fit_key, LocationKind::Ship, item_grp_id),
-                        &cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, item_grp_id);
+                    remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
                 let fit_key = fw_effect.get_fit_key();
                 if let Some(ship_key) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id) {
                     let cmod = CtxModifier::from_raw_with_item(rmod, ship_key);
-                    remove_cmod(
-                        &mut self.cmods.loc_srq,
-                        (fit_key, LocationKind::Ship, srq_type_id),
-                        &cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, srq_type_id);
+                    remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
-                self.rmods_fw_buff.remove_entry(fit_key, &rmod);
             }
             _ => (),
-        }
+        };
+        // Only modifiers which passed validation during registration should reach this function, so
+        // we don't do extra validation and just remove them
+        self.rmods_fw_buff.remove_entry(fw_effect.get_fit_key(), &rmod);
     }
     pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_fw_buff(
         &mut self,
@@ -179,34 +151,22 @@ impl StandardRegister {
                     if buffable_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    add_cmod(
-                        &mut self.cmods.loc,
-                        (fit_key, LocationKind::Ship),
-                        cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship);
+                    add_cmod(&mut self.cmods.loc, key, cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id)
                     if buffable_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    add_cmod(
-                        &mut self.cmods.loc_grp,
-                        (fit_key, LocationKind::Ship, item_grp_id),
-                        cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, item_grp_id);
+                    add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id)
                     if buffable_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    add_cmod(
-                        &mut self.cmods.loc_srq,
-                        (fit_key, LocationKind::Ship, srq_type_id),
-                        cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, srq_type_id);
+                    add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
                 }
                 _ => (),
             };
@@ -238,34 +198,22 @@ impl StandardRegister {
                     if buffable_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    remove_cmod(
-                        &mut self.cmods.loc,
-                        (fit_key, LocationKind::Ship),
-                        &cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship);
+                    remove_cmod(&mut self.cmods.loc, key, &cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id)
                     if buffable_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    remove_cmod(
-                        &mut self.cmods.loc_grp,
-                        (fit_key, LocationKind::Ship, item_grp_id),
-                        &cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, item_grp_id);
+                    remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id)
                     if buffable_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::from_raw_with_item(*rmod, item_key);
-                    remove_cmod(
-                        &mut self.cmods.loc_srq,
-                        (fit_key, LocationKind::Ship, srq_type_id),
-                        &cmod,
-                        &mut self.cmods.by_aspec,
-                    );
+                    let key = (fit_key, LocationKind::Ship, srq_type_id);
+                    remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
                 }
                 _ => (),
             };
