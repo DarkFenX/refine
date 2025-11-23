@@ -46,6 +46,7 @@ impl StandardRegister {
                 }
             }
         }
+        self.reg_affectee_for_proj(item_key, item);
         // All the logic which should work for items which do not belong to a fit should be done by
         // this point
         let fit_key = match item.get_fit_key() {
@@ -83,7 +84,6 @@ impl StandardRegister {
             self.reg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
         }
         if let UItem::Ship(_) = item {
-            self.reg_loc_root_for_proj(item_key, item);
             self.get_mods_for_changed_ship(item, &mut cmods);
         }
         cmods
@@ -102,6 +102,7 @@ impl StandardRegister {
                 }
             }
         }
+        self.unreg_affectee_for_proj(item_key, item);
         // All the logic which should work for items which do not belong to a fit should be done by
         // this point
         let fit_key = match item.get_fit_key() {
@@ -139,9 +140,6 @@ impl StandardRegister {
             };
             self.unreg_affectee_for_sw_buff(item_key, ship, buffable_item_lists);
             self.unreg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, buffable_item_lists);
-            if ship.is_some() {
-                self.unreg_loc_root_for_proj(item_key, item);
-            }
         }
         cmods
     }

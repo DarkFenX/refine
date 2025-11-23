@@ -3,6 +3,7 @@ use itertools::Itertools;
 use super::{
     rege_proj_buff::{affectee_for_proj_buff_reg, affectee_for_proj_buff_unreg},
     rege_proj_system::{affectee_for_proj_system_reg, affectee_for_proj_system_unreg},
+    rege_proj_target::{affectee_for_proj_target_reg, affectee_for_proj_target_unreg},
 };
 use crate::{
     misc::EffectSpec,
@@ -100,7 +101,7 @@ impl StandardRegister {
     ) {
         self.rmods_proj_inactive.buffer_if(projectee_key, |r| match r.kind {
             ModifierKind::System => affectee_for_proj_system_reg(&mut self.cmods, r, projectee_key, projectee_item),
-            ModifierKind::Targeted => true,
+            ModifierKind::Targeted => affectee_for_proj_target_reg(&mut self.cmods, r, projectee_key, projectee_item),
             ModifierKind::Buff => affectee_for_proj_buff_reg(&mut self.cmods, r, projectee_key, projectee_item),
             _ => false,
         });
@@ -114,52 +115,12 @@ impl StandardRegister {
     ) {
         self.rmods_proj_active.buffer_if(projectee_key, |r| match r.kind {
             ModifierKind::System => affectee_for_proj_system_unreg(&mut self.cmods, r, projectee_key, projectee_item),
-            ModifierKind::Targeted => true,
+            ModifierKind::Targeted => affectee_for_proj_target_unreg(&mut self.cmods, r, projectee_key, projectee_item),
             ModifierKind::Buff => affectee_for_proj_buff_unreg(&mut self.cmods, r, projectee_key, projectee_item),
             _ => false,
         });
         self.rmods_proj_inactive
             .extend_entries(projectee_key, self.rmods_proj_active.drain_buffer());
-    }
-    pub(in crate::svc::calc::registers::standard) fn reg_loc_root_for_proj(
-        &mut self,
-        projectee_key: UItemKey,
-        projectee_item: &UItem,
-    ) {
-        // Do necessary changes to projected modifiers after adding location root.
-        if let Some(rmods) = self.rmods_proj_inactive.remove_key(&projectee_key) {
-            for rmod in rmods {
-                // Store appropriate context modifiers, and put raw modifier into either active or
-                // inactive storage, depending on projectee. I.e. the same thing done when adding
-                // projected modifier. Emptying of inactive projected modifier storage has already
-                // been done before, so modifier kind-specific methods are not handling that.
-                match rmod.kind {
-                    ModifierKind::System => self.reg_loc_root_for_proj_system(rmod, projectee_key, projectee_item),
-                    ModifierKind::Targeted => self.reg_loc_root_for_proj_target(rmod, projectee_key, projectee_item),
-                    _ => (),
-                }
-            }
-        }
-    }
-    pub(in crate::svc::calc::registers::standard) fn unreg_loc_root_for_proj(
-        &mut self,
-        projectee_key: UItemKey,
-        projectee_item: &UItem,
-    ) {
-        // Do necessary changes to projected modifiers before removing location root.
-        if let Some(rmods) = self.rmods_proj_active.remove_key(&projectee_key) {
-            for rmod in rmods {
-                // Remove context modifiers for passed raw modifier + projection target, and add raw
-                // modifier to inactive storage. Emptying of inactive projected modifier storage has
-                // already been done before, so modifier kind-specific methods are not handling
-                // that.
-                match rmod.kind {
-                    ModifierKind::System => self.unreg_loc_root_for_proj_system(rmod, projectee_key, projectee_item),
-                    ModifierKind::Targeted => self.unreg_loc_root_for_proj_target(rmod, projectee_key, projectee_item),
-                    _ => (),
-                }
-            }
-        }
     }
     // Utility methods for use in more specific modules
     pub(super) fn reg_inactive_proj_rmod(
