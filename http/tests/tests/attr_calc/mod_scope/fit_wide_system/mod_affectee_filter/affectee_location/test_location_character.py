@@ -73,7 +73,6 @@ def test_unaffected_other_fit(client, consts):
 
 
 def test_replace_root(client, consts):
-    # Modifiers which target items on character location shouldn't apply when character isn't set
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

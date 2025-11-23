@@ -106,7 +106,6 @@ def test_unaffected_other_fit(client, consts):
 
 
 def test_replace_root(client, consts):
-    # Modifiers which target items on character location shouldn't apply when character isn't set
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -130,7 +129,7 @@ def test_replace_root(client, consts):
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_implant.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     api_fit.remove_character()
-    assert api_implant.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_implant.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     api_fit.set_character(type_id=eve_char_id)
     assert api_implant.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 

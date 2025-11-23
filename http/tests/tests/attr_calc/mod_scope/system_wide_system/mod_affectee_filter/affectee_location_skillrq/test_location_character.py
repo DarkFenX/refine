@@ -83,7 +83,6 @@ def test_unaffected_other_skillreq(client, consts):
 
 
 def test_replace_root(client, consts):
-    # Modifiers which target items on character location shouldn't apply when character isn't set
     eve_skill_id = client.mk_eve_item()
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
@@ -112,7 +111,6 @@ def test_replace_root(client, consts):
 
 
 def setup_switch_type_id_root_test(*, client, consts):
-
     eve_skill_id = client.mk_eve_item()
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
