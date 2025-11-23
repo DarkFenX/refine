@@ -293,6 +293,10 @@ impl StandardRegister {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Functions which are called when already projectee item is loaded/unloaded. Only modifiers which
+// depend on projectee item properties should be processed by those functions.
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) fn affectee_for_proj_target_reg(
     cdata: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
@@ -300,11 +304,6 @@ pub(super) fn affectee_for_proj_target_reg(
     projectee_item: &UItem,
 ) -> bool {
     match rmod.affectee_filter {
-        AffecteeFilter::Direct(loc) if let Location::Target = loc => {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
-            add_cmod(&mut cdata.direct, projectee_key, cmod, &mut cdata.by_aspec);
-            true
-        }
         AffecteeFilter::Loc(loc)
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
@@ -365,16 +364,9 @@ pub(super) fn affectee_for_proj_target_reg(
                 _ => false,
             }
         }
-        AffecteeFilter::OwnSrq(srq_type_id) if let UItem::Ship(projectee_ship) = projectee_item => {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
-            let key = (projectee_ship.get_fit_key(), srq_type_id);
-            add_cmod(&mut cdata.own_srq, key, cmod, &mut cdata.by_aspec);
-            true
-        }
         _ => false,
     }
 }
-
 pub(super) fn affectee_for_proj_target_unreg(
     cdata: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
@@ -382,11 +374,6 @@ pub(super) fn affectee_for_proj_target_unreg(
     projectee_item: &UItem,
 ) -> bool {
     match rmod.affectee_filter {
-        AffecteeFilter::Direct(loc) if let Location::Target = loc => {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
-            remove_cmod(&mut cdata.direct, projectee_key, &cmod, &mut cdata.by_aspec);
-            true
-        }
         AffecteeFilter::Loc(loc)
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
@@ -446,12 +433,6 @@ pub(super) fn affectee_for_proj_target_unreg(
                 }
                 _ => false,
             }
-        }
-        AffecteeFilter::OwnSrq(srq_type_id) if let UItem::Ship(projectee_ship) = projectee_item => {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
-            let key = (projectee_ship.get_fit_key(), srq_type_id);
-            remove_cmod(&mut cdata.own_srq, key, &cmod, &mut cdata.by_aspec);
-            true
         }
         _ => false,
     }

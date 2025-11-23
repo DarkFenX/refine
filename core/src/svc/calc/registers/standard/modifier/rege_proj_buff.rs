@@ -176,6 +176,10 @@ impl StandardRegister {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Functions which are called when already projectee item is loaded/unloaded. Only modifiers which
+// depend on projectee item properties should be processed by those functions.
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) fn affectee_for_proj_buff_reg(
     cdata: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
@@ -224,7 +228,6 @@ pub(super) fn affectee_for_proj_buff_reg(
         _ => false,
     }
 }
-
 pub(super) fn affectee_for_proj_buff_unreg(
     cdata: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
