@@ -39,7 +39,7 @@ where
         values.push(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
-        if entries.is_empty() {
+        if entries.len() == 0 {
             return;
         }
         let values = self

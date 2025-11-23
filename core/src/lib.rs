@@ -1,4 +1,3 @@
-#![feature(exact_size_is_empty)]
 #![feature(default_field_values)]
 #![feature(if_let_guard)]
 

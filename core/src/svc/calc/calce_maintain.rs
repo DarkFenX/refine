@@ -217,7 +217,7 @@ impl Calc {
             }
             // Generate new modifiers using new value and apply them
             let effect_keys = self.buffs.get_effects(&aspec.item_key);
-            if !effect_keys.is_empty() {
+            if effect_keys.len() > 0 {
                 let effect_keys = effect_keys.collect_vec();
                 let rmods =
                     self.generate_dependent_buff_mods(ctx, aspec.item_key, item, effect_keys.iter(), aspec.a_attr_id);

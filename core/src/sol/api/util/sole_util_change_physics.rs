@@ -15,7 +15,7 @@ impl SolarSystem {
         physics: UPhysics,
     ) {
         let projector_keys = rev_projs.iter_projectors(&item_key);
-        if !projector_keys.is_empty() {
+        if projector_keys.len() > 0 {
             let projector_keys = projector_keys.collect_vec();
             for projector_key in projector_keys {
                 let projector_u_item = u_data.items.get_mut(projector_key);

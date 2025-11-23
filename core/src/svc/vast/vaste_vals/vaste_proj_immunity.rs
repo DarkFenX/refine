@@ -103,7 +103,7 @@ impl VastFitData {
         let mut items = HashMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
             if eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
-                && !projector_especs.is_empty()
+                && projector_especs.len() > 0
             {
                 let projectee_item_id = ctx.u_data.items.id_by_key(projectee_aspec.item_key);
                 for projector_espec in projector_especs {
@@ -156,7 +156,7 @@ fn validate_verbose(
 ) -> Option<ValProjImmunityFail> {
     let mut items = HashMap::new();
     for (projectee_key, projector_especs) in blockable.iter() {
-        if is_flag_set(ctx, calc, *projectee_key, a_attr_id) && !projector_especs.is_empty() {
+        if is_flag_set(ctx, calc, *projectee_key, a_attr_id) && projector_especs.len() > 0 {
             let projectee_item_id = ctx.u_data.items.id_by_key(*projectee_key);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_key) {
