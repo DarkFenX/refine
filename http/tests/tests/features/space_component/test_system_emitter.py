@@ -1,8 +1,10 @@
 """
 As of 2025-03-27, system buff emitter is used just for insurgency suppression tackle range bonus.
 Since it applies only location-based changes, it is not really possible to test if it affects all
-entities like drones, or just ships. In the library, system buff emitter buffs are limited to just
-ships.
+entities like drones, or just ships.
+
+In EVE, it uses a function named "FW_OCCUPIER_FACTIONS" to filter targets. Library does not support
+parameters like this, so buffs are just applied to all the ships instead.
 """
 
 from tests import Effect, approx

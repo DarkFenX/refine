@@ -3,6 +3,11 @@ Space component proximity traps were initially used by the Dr Who event, and in 
 events. As of 2025-03-28, there seems to be no items which actively use it, so there seems to be no
 normal way of testing it. However, thanks to CCP Kestrel, we know that as of 2025-03-28 traps do not
 apply to drones.
+
+Proximity traps have an item list attached, which, judging by the name, defines which entities can
+trigger those traps. Possibly, this is the list which is used to define which items buff applies to
+as well. The library uses this list to filter modifications, i.e. anything which can't trigger the
+trap can't receive its buffs.
 """
 
 from tests import Effect, approx

@@ -1,7 +1,9 @@
 """
 Lots of items seem to use proxy effects (pochven subpylons and dread wrecks, proving ground weather
-effects, ESS), some are in use in the game. As of 2025-03-28, proxy effects do not affect non-ship
-targets like drones (tested using Stasis Field Effect Subpylon).
+effects, ESS), some are in use in the game.
+
+As of 2025-03-28, proxy effects do not affect non-ship targets like drones (tested using Stasis Field Effect Subpylon),
+so proxy effects use built-in ship type list ID to apply their modifications.
 """
 
 from tests import Effect, approx

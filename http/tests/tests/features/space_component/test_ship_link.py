@@ -1,6 +1,10 @@
 """
 As of 2025-03-27, used only by ships linked to a CRAB or a skyhook. Does not affect child entities
-like drones, otherwise linking to a CRAB would make carriers/supercarriers' fighters inoperable.
+like drones directly, otherwise linking to a CRAB would make carriers/supercarriers' fighters
+inoperable.
+
+Ship links have a list of items which are allowed to link to them. The library uses this list to
+define if an item can receive ship link effect or not.
 """
 
 from tests import Effect, approx
