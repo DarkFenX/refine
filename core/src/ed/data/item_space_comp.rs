@@ -7,7 +7,9 @@ use crate::{
 pub struct EItemSpaceComp {
     /// Refers an item type this data is attached to.
     pub item_id: EItemId,
-    /// Buffs applicable to a filtered set of pilots in a solar system.
+    /// Buffs applicable to pilots in a solar system, with custom function as a filter.
+    pub system_wide_effects: Vec<EItemSpaceCompBuff>,
+    /// Buffs applicable to pilots in a solar system, with custom function as a filter.
     pub system_emitter_buffs: Vec<EItemSpaceCompBuff>,
     /// Buffs applicable to entities close to effect carrier.
     pub proxy_effect_buffs: Vec<EItemSpaceCompBuff>,
@@ -18,7 +20,8 @@ pub struct EItemSpaceComp {
 }
 impl EItemSpaceComp {
     pub(crate) fn has_buffs(&self) -> bool {
-        !self.system_emitter_buffs.is_empty()
+        !self.system_wide_effects.is_empty()
+            || !self.system_emitter_buffs.is_empty()
             || !self.proxy_effect_buffs.is_empty()
             || !self.proxy_trigger_buffs.is_empty()
             || !self.ship_link_buffs.is_empty()

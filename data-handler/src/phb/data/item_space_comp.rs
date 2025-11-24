@@ -4,6 +4,8 @@ use crate::phb::fsd::{FsdId, FsdMerge};
 
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemSpaceComp {
+    #[serde(rename = "systemWideEffects", default)]
+    pub(in crate::phb) system_wide_effects: Option<PItemSpaceCompSw>,
     #[serde(rename = "systemDbuffEmitter", default)]
     pub(in crate::phb) system_dbuff_emitter: Option<PItemSpaceCompSe>,
     #[serde(rename = "appliedProximityEffects", default)]
@@ -17,6 +19,17 @@ impl FsdMerge<rc::ed::EItemSpaceComp> for PItemSpaceComp {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemSpaceComp> {
         vec![rc::ed::EItemSpaceComp {
             item_id: id,
+            system_wide_effects: match self.system_wide_effects {
+                Some(data) => match data.global_debuffs {
+                    Some(data) => data
+                        .buffs
+                        .into_iter()
+                        .map(|(id, value)| rc::ed::EItemSpaceCompBuff { id, value })
+                        .collect(),
+                    None => Vec::new(),
+                },
+                None => Vec::new(),
+            },
             system_emitter_buffs: match self.system_dbuff_emitter {
                 Some(data) => data
                     .buffs
@@ -51,6 +64,20 @@ impl FsdMerge<rc::ed::EItemSpaceComp> for PItemSpaceComp {
             },
         }]
     }
+}
+
+#[derive(serde::Deserialize)]
+pub(in crate::phb) struct PItemSpaceCompSw {
+    #[serde(rename = "globalDebuffs", default)]
+    pub(in crate::phb) global_debuffs: Option<PItemSpaceCompSwGlobal>,
+}
+
+#[derive(serde::Deserialize)]
+pub(in crate::phb) struct PItemSpaceCompSwGlobal {
+    #[serde(rename = "dbuffs", default)]
+    pub(in crate::phb) buffs: HashMap<rc::ed::EBuffId, rc::ed::EAttrVal>,
+    #[serde(rename = "eligibleTypeListID", default)]
+    pub(in crate::phb) item_list_filter: Option<rc::ed::EItemListId>,
 }
 
 #[derive(serde::Deserialize)]
