@@ -459,6 +459,7 @@ class EveTypeFactory(EveDataManager):
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
             type_id: int,
+            sw_buffs: dict[int, float] | type[Absent | Default] = Default,
             se_buffs: dict[int, float] | type[Absent | Default] = Default,
             pe_buffs: dict[int, float] | type[Absent | Default] = Default,
             pt_buffs: dict[int, float] | type[Absent | Default] = Default,
@@ -472,6 +473,7 @@ class EveTypeFactory(EveDataManager):
             data.alloc_item_id(id_=type_id)
             data.mk_space_comp(
                 type_id=type_id,
+                sw_buffs=Absent if sw_buffs is Default else sw_buffs,
                 se_buffs=Absent if se_buffs is Default else se_buffs,
                 pe_buffs=Absent if pe_buffs is Default else pe_buffs,
                 pt_buffs=Absent if pt_buffs is Default else pt_buffs,

@@ -85,6 +85,10 @@ class Effect:
         return f'c{custom_effect_id}'
 
     @staticmethod
+    def scsw_to_api(*, type_id: int) -> str:
+        return f'scsw{type_id}'
+
+    @staticmethod
     def scse_to_api(*, type_id: int) -> str:
         return f'scse{type_id}'
 

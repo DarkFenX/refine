@@ -277,6 +277,7 @@ class EveObjects:
     def mk_space_comp(
             self, *,
             type_id: int,
+            sw_buffs: dict[int, float] | type[Absent],
             se_buffs: dict[int, float] | type[Absent],
             pe_buffs: dict[int, float] | type[Absent],
             pt_buffs: dict[int, float] | type[Absent],
@@ -284,6 +285,7 @@ class EveObjects:
     ) -> SpaceComponent:
         space_comp = SpaceComponent(
             type_id=type_id,
+            system_wide_buffs=sw_buffs,
             system_emitter_buffs=se_buffs,
             proxy_effect_buffs=pe_buffs,
             proxy_trap_buffs=pt_buffs,

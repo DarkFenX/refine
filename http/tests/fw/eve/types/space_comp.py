@@ -12,6 +12,7 @@ if typing.TYPE_CHECKING:
 class SpaceComponent:
 
     type_id: int
+    system_wide_buffs: dict[int, float] | type[Absent]
     system_emitter_buffs: dict[int, float] | type[Absent]
     proxy_effect_buffs: dict[int, float] | type[Absent]
     proxy_trap_buffs: dict[int, float] | type[Absent]
@@ -19,6 +20,10 @@ class SpaceComponent:
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         space_comp_entry = {}
+        conditional_insert(
+            container=space_comp_entry,
+            path=['systemWideEffects', 'globalDebuffs', 'dbuffs'],
+            value=self.system_wide_buffs)
         conditional_insert(
             container=space_comp_entry,
             path=['systemDbuffEmitter', 'dbuffCollections'],
