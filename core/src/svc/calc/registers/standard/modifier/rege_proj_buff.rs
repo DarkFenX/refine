@@ -16,90 +16,64 @@ impl StandardRegister {
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) -> Option<CtxModifier> {
-        self.process_buff_mod(rmod, projectee_key, projectee_item, true)
-    }
-    // TODO: check if ther needs to be any complex logic, maybe can use active container
-    pub(super) fn query_buff_mod(
-        &mut self,
-        rmod: RawModifier,
-        projectee_key: UItemKey,
-        projectee_item: &UItem,
-    ) -> Option<CtxModifier> {
-        self.process_buff_mod(rmod, projectee_key, projectee_item, false)
-    }
-    fn process_buff_mod(
-        &mut self,
-        rmod: RawModifier,
-        projectee_key: UItemKey,
-        projectee_item: &UItem,
-        register: bool,
-    ) -> Option<CtxModifier> {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_item_buffable_by_item_list(&item_list_id) {
                     true => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        if register {
-                            add_cmod(&mut self.cmods.direct, projectee_key, cmod, &mut self.cmods.by_aspec);
-                            self.rmods_proj_active.add_entry(projectee_key, rmod);
-                        }
+                        add_cmod(&mut self.cmods.direct, projectee_key, cmod, &mut self.cmods.by_aspec);
+                        self.rmods_proj_active.add_entry(projectee_key, rmod);
                         Some(cmod)
                     }
-                    false => self.reg_inactive_proj_rmod(rmod, projectee_key, register),
+                    false => {
+                        self.rmods_proj_inactive.add_entry(projectee_key, rmod);
+                        None
+                    }
                 }
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        if register {
-                            add_cmod(
-                                &mut self.cmods.loc,
-                                (projectee_ship.get_fit_key(), LocationKind::Ship),
-                                cmod,
-                                &mut self.cmods.by_aspec,
-                            );
-                            self.rmods_proj_active.add_entry(projectee_key, rmod);
-                        }
+                        let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
+                        add_cmod(&mut self.cmods.loc, key, cmod, &mut self.cmods.by_aspec);
+                        self.rmods_proj_active.add_entry(projectee_key, rmod);
                         Some(cmod)
                     }
-                    None => self.reg_inactive_proj_rmod(rmod, projectee_key, register),
+                    None => {
+                        self.rmods_proj_inactive.add_entry(projectee_key, rmod);
+                        None
+                    }
                 }
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        if register {
-                            add_cmod(
-                                &mut self.cmods.loc_grp,
-                                (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id),
-                                cmod,
-                                &mut self.cmods.by_aspec,
-                            );
-                            self.rmods_proj_active.add_entry(projectee_key, rmod);
-                        }
+                        let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
+                        add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
+                        self.rmods_proj_active.add_entry(projectee_key, rmod);
                         Some(cmod)
                     }
-                    None => self.reg_inactive_proj_rmod(rmod, projectee_key, register),
+                    None => {
+                        self.rmods_proj_inactive.add_entry(projectee_key, rmod);
+                        None
+                    }
                 }
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        if register {
-                            add_cmod(
-                                &mut self.cmods.loc_srq,
-                                (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id),
-                                cmod,
-                                &mut self.cmods.by_aspec,
-                            );
-                            self.rmods_proj_active.add_entry(projectee_key, rmod);
-                        }
+                        let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
+                        add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
+                        self.rmods_proj_active.add_entry(projectee_key, rmod);
                         Some(cmod)
                     }
-                    None => self.reg_inactive_proj_rmod(rmod, projectee_key, register),
+                    None => {
+                        self.rmods_proj_inactive.add_entry(projectee_key, rmod);
+                        None
+                    }
                 }
             }
             _ => None,
@@ -111,6 +85,8 @@ impl StandardRegister {
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) -> Option<CtxModifier> {
+        // Modifiers passed to this method were not validated, so for every valid configuration we
+        // have to remove a modifier from appropriate raw modifier container
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_item_buffable_by_item_list(&item_list_id) {
@@ -120,56 +96,78 @@ impl StandardRegister {
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
                         Some(cmod)
                     }
-                    false => self.unreg_inactive_proj_rmod(&rmod, projectee_key),
+                    false => {
+                        self.rmods_proj_inactive.remove_entry(projectee_key, &rmod);
+                        None
+                    }
                 }
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        remove_cmod(
-                            &mut self.cmods.loc,
-                            (projectee_ship.get_fit_key(), LocationKind::Ship),
-                            &cmod,
-                            &mut self.cmods.by_aspec,
-                        );
+                        let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
+                        remove_cmod(&mut self.cmods.loc, key, &cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
                         Some(cmod)
                     }
-                    None => self.unreg_inactive_proj_rmod(&rmod, projectee_key),
+                    None => {
+                        self.rmods_proj_inactive.remove_entry(projectee_key, &rmod);
+                        None
+                    }
                 }
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        remove_cmod(
-                            &mut self.cmods.loc_grp,
-                            (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id),
-                            &cmod,
-                            &mut self.cmods.by_aspec,
-                        );
+                        let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
+                        remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
                         Some(cmod)
                     }
-                    None => self.unreg_inactive_proj_rmod(&rmod, projectee_key),
+                    None => {
+                        self.rmods_proj_inactive.remove_entry(projectee_key, &rmod);
+                        None
+                    }
                 }
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
                         let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
-                        remove_cmod(
-                            &mut self.cmods.loc_srq,
-                            (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id),
-                            &cmod,
-                            &mut self.cmods.by_aspec,
-                        );
+                        let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
+                        remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
                         Some(cmod)
                     }
-                    None => self.unreg_inactive_proj_rmod(&rmod, projectee_key),
+                    None => {
+                        self.rmods_proj_inactive.remove_entry(projectee_key, &rmod);
+                        None
+                    }
                 }
+            }
+            _ => None,
+        }
+    }
+    pub(super) fn query_buff_mod(
+        &mut self,
+        rmod: RawModifier,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
+    ) -> Option<CtxModifier> {
+        match rmod.affectee_filter {
+            AffecteeFilter::Direct(Location::ItemList(item_list_id))
+                if projectee_item.is_item_buffable_by_item_list(&item_list_id) =>
+            {
+                Some(CtxModifier::from_raw_with_item(rmod, projectee_key))
+            }
+            AffecteeFilter::Loc(Location::ItemList(item_list_id))
+            | AffecteeFilter::LocGrp(Location::ItemList(item_list_id), _)
+            | AffecteeFilter::LocSrq(Location::ItemList(item_list_id), _)
+                if projectee_item.is_ship_buffable_by_item_list(&item_list_id).is_some() =>
+            {
+                Some(CtxModifier::from_raw_with_item(rmod, projectee_key))
             }
             _ => None,
         }

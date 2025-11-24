@@ -124,24 +124,4 @@ impl StandardRegister {
         self.rmods_proj_inactive
             .extend_entries(projectee_key, self.rmods_proj_active.drain_buffer());
     }
-    // Utility methods for use in more specific modules
-    pub(super) fn reg_inactive_proj_rmod(
-        &mut self,
-        rmod: RawModifier,
-        projectee_key: UItemKey,
-        register: bool,
-    ) -> Option<CtxModifier> {
-        if register {
-            self.rmods_proj_inactive.add_entry(projectee_key, rmod);
-        }
-        None
-    }
-    pub(super) fn unreg_inactive_proj_rmod(
-        &mut self,
-        rmod: &RawModifier,
-        projectee_key: UItemKey,
-    ) -> Option<CtxModifier> {
-        self.rmods_proj_inactive.remove_entry(projectee_key, rmod);
-        None
-    }
 }
