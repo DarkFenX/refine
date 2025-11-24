@@ -70,13 +70,6 @@ impl UItem {
             _ => None,
         }
     }
-    pub(in crate::svc::calc) fn get_item_buff_item_lists_nonempty(&self) -> Option<&Vec<AItemListId>> {
-        let buff_item_lists = self.get_item_buff_item_lists()?;
-        match buff_item_lists.is_empty() {
-            true => None,
-            false => Some(buff_item_lists),
-        }
-    }
     pub(in crate::svc::calc) fn get_other_key(&self) -> Option<UItemKey> {
         match self {
             Self::Charge(charge) => Some(charge.get_cont_item_key()),
