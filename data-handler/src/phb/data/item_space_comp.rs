@@ -19,64 +19,50 @@ impl FsdMerge<rc::ed::EItemSpaceComp> for PItemSpaceComp {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemSpaceComp> {
         vec![rc::ed::EItemSpaceComp {
             item_id: id,
-            system_wide_buffs: match self.system_wide_effects {
-                Some(data) => match data.global_debuffs {
-                    Some(data) => Some(rc::ed::EItemSpaceCompBuffData {
-                        buffs: data
-                            .buffs
-                            .into_iter()
-                            .map(|(id, value)| rc::ed::EItemSpaceCompBuff { id, value })
-                            .collect(),
-                        item_list_filter: data.item_list_filter,
-                    }),
-                    None => None,
-                },
-                None => None,
-            },
-            system_emitter_buffs: match self.system_dbuff_emitter {
-                Some(data) => Some(rc::ed::EItemSpaceCompBuffData {
+            system_wide_buffs: self.system_wide_effects.and_then(|v| v.global_debuffs).map(|data| {
+                rc::ed::EItemSpaceCompBuffData {
                     buffs: data
                         .buffs
                         .into_iter()
-                        .map(|(id, value)| rc::ed::EItemSpaceCompBuff { id, value })
+                        .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry { id, value })
+                        .collect(),
+                    item_list_filter: data.item_list_filter,
+                }
+            }),
+            system_emitter_buffs: self.system_dbuff_emitter.map(|data| rc::ed::EItemSpaceCompBuffData {
+                buffs: data
+                    .buffs
+                    .into_iter()
+                    .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry { id, value })
+                    .collect(),
+                item_list_filter: None,
+            }),
+            proxy_effect_buffs: self
+                .applied_proximity_effects
+                .map(|data| rc::ed::EItemSpaceCompBuffData {
+                    buffs: data
+                        .buffs
+                        .into_iter()
+                        .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry { id, value })
                         .collect(),
                     item_list_filter: None,
                 }),
-                None => None,
-            },
-            proxy_effect_buffs: match self.applied_proximity_effects {
-                Some(data) => Some(rc::ed::EItemSpaceCompBuffData {
-                    buffs: data
-                        .buffs
-                        .into_iter()
-                        .map(|(id, value)| rc::ed::EItemSpaceCompBuff { id, value })
-                        .collect(),
-                    item_list_filter: None,
-                }),
-                None => None,
-            },
-            proxy_trigger_buffs: match self.proximity_trap {
-                Some(data) => Some(rc::ed::EItemSpaceCompBuffData {
-                    buffs: data
-                        .buffs
-                        .into_iter()
-                        .map(|(id, value)| rc::ed::EItemSpaceCompBuff { id, value })
-                        .collect(),
-                    item_list_filter: data.item_list_filter,
-                }),
-                None => None,
-            },
-            ship_link_buffs: match self.link_with_ship {
-                Some(data) => Some(rc::ed::EItemSpaceCompBuffData {
-                    buffs: data
-                        .buffs
-                        .into_iter()
-                        .map(|(id, value)| rc::ed::EItemSpaceCompBuff { id, value })
-                        .collect(),
-                    item_list_filter: data.item_list_filter,
-                }),
-                None => None,
-            },
+            proxy_trigger_buffs: self.proximity_trap.map(|data| rc::ed::EItemSpaceCompBuffData {
+                buffs: data
+                    .buffs
+                    .into_iter()
+                    .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry { id, value })
+                    .collect(),
+                item_list_filter: data.item_list_filter,
+            }),
+            ship_link_buffs: self.link_with_ship.map(|data| rc::ed::EItemSpaceCompBuffData {
+                buffs: data
+                    .buffs
+                    .into_iter()
+                    .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry { id, value })
+                    .collect(),
+                item_list_filter: data.item_list_filter,
+            }),
         }]
     }
 }

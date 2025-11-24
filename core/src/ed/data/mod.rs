@@ -8,7 +8,7 @@ pub use item_attr::EItemAttr;
 pub use item_effect::EItemEffect;
 pub use item_group::EItemGroup;
 pub use item_list::EItemList;
-pub use item_space_comp::{EItemSpaceComp, EItemSpaceCompBuff, EItemSpaceCompBuffData};
+pub use item_space_comp::{EItemSpaceComp, EItemSpaceCompBuffData, EItemSpaceCompBuffEntry};
 pub use item_srq::EItemSkillReq;
 pub use muta_attr_mod::EMutaAttrMod;
 pub use muta_item_conv::EMutaItemConv;

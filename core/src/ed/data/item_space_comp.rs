@@ -48,13 +48,13 @@ impl Named for EItemSpaceComp {
 /// Info about buffs attached to a space component.
 pub struct EItemSpaceCompBuffData {
     /// List of buffs to apply.
-    pub buffs: Vec<EItemSpaceCompBuff>,
+    pub buffs: Vec<EItemSpaceCompBuffEntry>,
     /// Buff modification strength.
     pub item_list_filter: Option<EItemListId>,
 }
 
 /// Info about one of space component buffs.
-pub struct EItemSpaceCompBuff {
+pub struct EItemSpaceCompBuffEntry {
     /// Buff ID to use.
     pub id: EBuffId,
     /// Buff modification strength.
