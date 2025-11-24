@@ -3,6 +3,7 @@ use std::str::FromStr;
 use crate::cacher_json::data::{CCustomEffectId, CDogmaEffectId, CItemId};
 
 const D_PREFIX: &str = "d";
+const SCSW_PREFIX: &str = "scsw";
 const SCSE_PREFIX: &str = "scse";
 const SCPE_PREFIX: &str = "scpe";
 const SCPT_PREFIX: &str = "scpt";
@@ -12,6 +13,7 @@ const C_PREFIX: &str = "c";
 #[derive(Eq, PartialEq, Hash)]
 pub(in crate::cacher_json) enum CEffectId {
     Dogma(CDogmaEffectId),
+    ScSystemWide(CItemId),
     ScSystemEmitter(CItemId),
     ScProxyEffect(CItemId),
     ScProxyTrap(CItemId),
@@ -22,6 +24,7 @@ impl From<&rc::ad::AEffectId> for CEffectId {
     fn from(a_effect_id: &rc::ad::AEffectId) -> Self {
         match a_effect_id {
             rc::ad::AEffectId::Dogma(id) => Self::Dogma(*id),
+            rc::ad::AEffectId::ScSystemWide(id) => Self::ScSystemWide(*id),
             rc::ad::AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             rc::ad::AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
             rc::ad::AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
@@ -34,6 +37,7 @@ impl From<&CEffectId> for rc::ad::AEffectId {
     fn from(c_effect_id: &CEffectId) -> Self {
         match c_effect_id {
             CEffectId::Dogma(id) => Self::Dogma(*id),
+            CEffectId::ScSystemWide(id) => Self::ScSystemWide(*id),
             CEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
             CEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
             CEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
@@ -49,6 +53,7 @@ impl serde::Serialize for CEffectId {
     {
         let string = match self {
             Self::Dogma(id) => format!("{D_PREFIX}{id}"),
+            Self::ScSystemWide(id) => format!("{SCSW_PREFIX}{id}"),
             Self::ScSystemEmitter(id) => format!("{SCSE_PREFIX}{id}"),
             Self::ScProxyEffect(id) => format!("{SCPE_PREFIX}{id}"),
             Self::ScProxyTrap(id) => format!("{SCPT_PREFIX}{id}"),
@@ -80,6 +85,10 @@ impl<'de> serde::Deserialize<'de> for CEffectId {
                     let id = CDogmaEffectId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::Dogma(id));
                 }
+                if let Some(id_str) = v.strip_prefix(SCSW_PREFIX) {
+                    let id = CItemId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    return Ok(Self::Value::ScSystemWide(id));
+                }
                 if let Some(id_str) = v.strip_prefix(SCSE_PREFIX) {
                     let id = CItemId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
                     return Ok(Self::Value::ScSystemEmitter(id));
@@ -101,8 +110,8 @@ impl<'de> serde::Deserialize<'de> for CEffectId {
                     return Ok(Self::Value::Custom(id));
                 }
                 let msg = format!(
-                    "expected an int prefixed by \"{D_PREFIX}\", \"{SCSE_PREFIX}\", \"{SCPE_PREFIX}\", \
-                    \"{SCPT_PREFIX}\", \"{SCSL_PREFIX}\", or \"{C_PREFIX}\", got \"{v}\""
+                    "expected an int prefixed by \"{D_PREFIX}\", \"{SCSW_PREFIX}\", \"{SCSE_PREFIX}\", \
+                    \"{SCPE_PREFIX}\", \"{SCPT_PREFIX}\", \"{SCSL_PREFIX}\", or \"{C_PREFIX}\", got \"{v}\""
                 );
                 Err(serde::de::Error::custom(msg))
             }
