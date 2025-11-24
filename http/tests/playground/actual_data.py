@@ -111,8 +111,11 @@ def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
     after = time()
     print('done with try-fit-items benchmark')  # noqa: T201
     delta = after - before
-    ips = iterations / delta
-    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # noqa: T201
+    iters_ps = iterations / delta
+    items_ps = iters_ps * len(try_fit_type_ids)
+    print(  # noqa: T201
+        f'{iterations} iterations done in {delta:.3f} seconds, {iters_ps:.2f} iterations per second,'
+        f' {items_ps:.2f} items per second')
 
 
 def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
