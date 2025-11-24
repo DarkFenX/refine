@@ -69,10 +69,14 @@ pub(in crate::phb) struct PItemSpaceCompPe {
 pub(in crate::phb) struct PItemSpaceCompPt {
     #[serde(rename = "dbuffs", default)]
     pub(in crate::phb) buffs: HashMap<rc::ed::EBuffId, rc::ed::EAttrVal>,
+    #[serde(rename = "triggerFilterTypeListID", default)]
+    pub(in crate::phb) item_list_filter: Option<rc::ed::EItemListId>,
 }
 
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSl {
     #[serde(rename = "dbuffs", default)]
     pub(in crate::phb) buffs: HashMap<rc::ed::EBuffId, rc::ed::EAttrVal>,
+    #[serde(rename = "linkableShipTypeListID", default)]
+    pub(in crate::phb) item_list_filter: Option<rc::ed::EItemListId>,
 }
