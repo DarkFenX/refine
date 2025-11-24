@@ -207,9 +207,11 @@ def test_item_attrs(client):  # noqa: ANN001, ANN201
     api_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_fit.set_ship(type_id=11172)  # Helios
-    api_module = api_fit.add_module(type_id=11578)  # Covops cloak
-    print_attrs(api_item=api_module.update())
+    api_ship = api_fit.set_ship(type_id=89607)  # Odysseus
+    api_attrs_before = api_ship.update().update().attrs
+    api_fit.add_fw_effect(type_id=30864)  # C6 magnetar
+    api_attrs_after = api_ship.update().attrs
+    print_attr_diff(attrs1=api_attrs_before, attrs2=api_attrs_after)
 
 
 def test_stats(client, consts):  # noqa: ANN001, ANN201
