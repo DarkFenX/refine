@@ -12,12 +12,13 @@ from tests.fw.eve.types import (
     ItemList,
     Mutator,
     SpaceComponent,
+    SpaceComponentBuffData,
 )
+from tests.fw.util import Absent
 from .primitives import EvePrimitives
 
 if typing.TYPE_CHECKING:
     from tests.fw.eve.types import BuffModifier, EffectModifier
-    from tests.fw.util import Absent
     from .strings import EveStrings
 
 
@@ -277,19 +278,19 @@ class EveObjects:
     def mk_space_comp(
             self, *,
             type_id: int,
-            sw_buffs: dict[int, float] | type[Absent],
+            sw_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent],
             se_buffs: dict[int, float] | type[Absent],
             pe_buffs: dict[int, float] | type[Absent],
-            pt_buffs: dict[int, float] | type[Absent],
-            sl_buffs: dict[int, float] | type[Absent],
+            pt_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent],
+            sl_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent],
     ) -> SpaceComponent:
         space_comp = SpaceComponent(
             type_id=type_id,
-            system_wide_buffs=sw_buffs,
-            system_emitter_buffs=se_buffs,
-            proxy_effect_buffs=pe_buffs,
-            proxy_trap_buffs=pt_buffs,
-            ship_link_buffs=sl_buffs)
+            system_wide_buffs=SpaceComponentBuffData.from_raw(data=sw_buffs) if sw_buffs is not Absent else Absent,
+            system_emitter_buffs=SpaceComponentBuffData.from_raw(data=se_buffs) if se_buffs is not Absent else Absent,
+            proxy_effect_buffs=SpaceComponentBuffData.from_raw(data=pe_buffs) if pe_buffs is not Absent else Absent,
+            proxy_trap_buffs=SpaceComponentBuffData.from_raw(data=pt_buffs) if pt_buffs is not Absent else Absent,
+            ship_link_buffs=SpaceComponentBuffData.from_raw(data=sl_buffs) if sl_buffs is not Absent else Absent)
         self.space_comps.setdefault(type_id, []).append(space_comp)
         return space_comp
 

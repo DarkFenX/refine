@@ -9,4 +9,4 @@ from .item import Item
 from .item_ability import ItemAbilityData
 from .item_list import ItemList
 from .mutator import Mutator
-from .space_comp import SpaceComponent
+from .space_comp import SpaceComponent, SpaceComponentBuffData

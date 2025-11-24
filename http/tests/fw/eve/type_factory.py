@@ -459,11 +459,11 @@ class EveTypeFactory(EveDataManager):
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
             type_id: int,
-            sw_buffs: dict[int, float] | type[Absent | Default] = Default,
+            sw_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent | Default] = Default,
             se_buffs: dict[int, float] | type[Absent | Default] = Default,
             pe_buffs: dict[int, float] | type[Absent | Default] = Default,
-            pt_buffs: dict[int, float] | type[Absent | Default] = Default,
-            sl_buffs: dict[int, float] | type[Absent | Default] = Default,
+            pt_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent | Default] = Default,
+            sl_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent | Default] = Default,
     ) -> None:
         if datas is Default:
             datas = [self._get_default_eve_data()]

@@ -86,7 +86,6 @@ pub(in crate::phb) struct PItemSpaceCompSw {
     #[serde(rename = "globalDebuffs", default)]
     pub(in crate::phb) global_debuffs: Option<PItemSpaceCompSwGlobal>,
 }
-
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSwGlobal {
     #[serde(rename = "dbuffs", default)]
