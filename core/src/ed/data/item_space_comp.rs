@@ -19,7 +19,7 @@ pub struct EItemSpaceComp {
     pub ship_link_buffs: Option<EItemSpaceCompBuffData>,
 }
 impl EItemSpaceComp {
-    pub(crate) fn iter_data(&self) -> impl Iterator<Item = &Option<EItemSpaceCompBuffData>> {
+    pub(crate) fn iter_data(&self) -> impl Iterator<Item = &EItemSpaceCompBuffData> {
         [
             &self.system_wide_buffs,
             &self.system_emitter_buffs,
@@ -28,9 +28,10 @@ impl EItemSpaceComp {
             &self.ship_link_buffs,
         ]
         .into_iter()
+        .filter_map(|v| v.as_ref())
     }
     pub(crate) fn has_buffs(&self) -> bool {
-        for buff_data in self.iter_data().filter_map(|v| v.as_ref()) {
+        for buff_data in self.iter_data() {
             if !buff_data.buffs.is_empty() {
                 return true;
             }

@@ -18,7 +18,7 @@ impl Fk for EItemSpaceComp {
     }
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        for buff_data in self.iter_data().filter_map(|v| v.as_ref()) {
+        for buff_data in self.iter_data() {
             vec.extend(buff_data.buffs.iter().map(|v| v.id));
         }
         vec
