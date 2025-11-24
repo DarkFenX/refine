@@ -15,16 +15,16 @@ impl CtxModifier {
             ctx: Context::None,
         }
     }
-    pub(in crate::svc::calc) fn from_raw_with_item(raw: RawModifier, ctx_item_key: UItemKey) -> Self {
-        Self {
-            raw,
-            ctx: Context::Item(ctx_item_key),
-        }
-    }
     pub(in crate::svc::calc) fn from_raw_with_fit(raw: RawModifier, ctx_fit_key: UFitKey) -> Self {
         Self {
             raw,
             ctx: Context::Fit(ctx_fit_key),
+        }
+    }
+    pub(in crate::svc::calc) fn from_raw_with_projectee_item(raw: RawModifier, ctx_item_key: UItemKey) -> Self {
+        Self {
+            raw,
+            ctx: Context::ProjItem(ctx_item_key),
         }
     }
 }

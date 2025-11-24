@@ -14,9 +14,13 @@ pub(in crate::svc) fn check_cmod(u_data: &UData, cmod: &CtxModifier) -> DebugRes
     match cmod.ctx {
         // Item modifier is applied to is not necessarily loaded (e.g. a module projected to a
         // non-loaded ship)
-        Context::Item(item_key) => check_item_key(u_data, item_key, false)?,
-        Context::Fit(fit_key) => check_fit_key(u_data, fit_key)?,
         Context::None => (),
+        Context::Fit(fit_key) => check_fit_key(u_data, fit_key)?,
+        Context::ProjItem(item_key) => check_item_key(u_data, item_key, false)?,
+        Context::ProjFitItem(fit_key, item_key) => {
+            check_fit_key(u_data, fit_key)?;
+            check_item_key(u_data, item_key, false)?;
+        }
     }
     check_rmod(u_data, &cmod.raw)?;
     Ok(())

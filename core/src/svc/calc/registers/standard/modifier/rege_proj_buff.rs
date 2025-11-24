@@ -20,7 +20,7 @@ impl StandardRegister {
             AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_item_buffable_by_item_list(&item_list_id) {
                     true => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         add_cmod(&mut self.cmods.direct, projectee_key, cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.add_entry(projectee_key, rmod);
                         Some(cmod)
@@ -34,7 +34,7 @@ impl StandardRegister {
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
                         add_cmod(&mut self.cmods.loc, key, cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.add_entry(projectee_key, rmod);
@@ -49,7 +49,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
                         add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.add_entry(projectee_key, rmod);
@@ -64,7 +64,7 @@ impl StandardRegister {
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
                         add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.add_entry(projectee_key, rmod);
@@ -91,7 +91,7 @@ impl StandardRegister {
             AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_item_buffable_by_item_list(&item_list_id) {
                     true => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         remove_cmod(&mut self.cmods.direct, projectee_key, &cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
                         Some(cmod)
@@ -105,7 +105,7 @@ impl StandardRegister {
             AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
                         remove_cmod(&mut self.cmods.loc, key, &cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
@@ -120,7 +120,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
                         remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
@@ -135,7 +135,7 @@ impl StandardRegister {
             AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
                 match projectee_item.is_ship_buffable_by_item_list(&item_list_id) {
                     Some(projectee_ship) => {
-                        let cmod = CtxModifier::from_raw_with_item(rmod, projectee_key);
+                        let cmod = CtxModifier::from_raw_with_projectee_item(rmod, projectee_key);
                         let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
                         remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
                         self.rmods_proj_active.remove_entry(projectee_key, &rmod);
@@ -160,14 +160,14 @@ impl StandardRegister {
             AffecteeFilter::Direct(Location::ItemList(item_list_id))
                 if projectee_item.is_item_buffable_by_item_list(&item_list_id) =>
             {
-                Some(CtxModifier::from_raw_with_item(rmod, projectee_key))
+                Some(CtxModifier::from_raw_with_projectee_item(rmod, projectee_key))
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id))
             | AffecteeFilter::LocGrp(Location::ItemList(item_list_id), _)
             | AffecteeFilter::LocSrq(Location::ItemList(item_list_id), _)
                 if projectee_item.is_ship_buffable_by_item_list(&item_list_id).is_some() =>
             {
-                Some(CtxModifier::from_raw_with_item(rmod, projectee_key))
+                Some(CtxModifier::from_raw_with_projectee_item(rmod, projectee_key))
             }
             _ => None,
         }
@@ -189,7 +189,7 @@ pub(super) fn load_affectee_for_proj_buff(
             if let Some(buffable_item_lists) = projectee_item.get_item_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             add_cmod(&mut cdata.direct, projectee_key, cmod, &mut cdata.by_aspec);
             true
         }
@@ -198,7 +198,7 @@ pub(super) fn load_affectee_for_proj_buff(
                 && let Some(buffable_item_lists) = projectee_ship.get_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
             add_cmod(&mut cdata.loc, key, cmod, &mut cdata.by_aspec);
             true
@@ -208,7 +208,7 @@ pub(super) fn load_affectee_for_proj_buff(
                 && let Some(buffable_item_lists) = projectee_ship.get_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
             add_cmod(&mut cdata.loc_grp, key, cmod, &mut cdata.by_aspec);
             true
@@ -218,7 +218,7 @@ pub(super) fn load_affectee_for_proj_buff(
                 && let Some(buffable_item_lists) = projectee_ship.get_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
             add_cmod(&mut cdata.loc_srq, key, cmod, &mut cdata.by_aspec);
             true
@@ -237,7 +237,7 @@ pub(super) fn unload_affectee_for_proj_buff(
             if let Some(buffable_item_lists) = projectee_item.get_item_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             remove_cmod(&mut cdata.direct, projectee_key, &cmod, &mut cdata.by_aspec);
             true
         }
@@ -246,7 +246,7 @@ pub(super) fn unload_affectee_for_proj_buff(
                 && let Some(buffable_item_lists) = projectee_ship.get_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
             remove_cmod(&mut cdata.loc, key, &cmod, &mut cdata.by_aspec);
             true
@@ -256,7 +256,7 @@ pub(super) fn unload_affectee_for_proj_buff(
                 && let Some(buffable_item_lists) = projectee_ship.get_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
             remove_cmod(&mut cdata.loc_grp, key, &cmod, &mut cdata.by_aspec);
             true
@@ -266,7 +266,7 @@ pub(super) fn unload_affectee_for_proj_buff(
                 && let Some(buffable_item_lists) = projectee_ship.get_buff_item_lists()
                 && buffable_item_lists.contains(&item_list_id) =>
         {
-            let cmod = CtxModifier::from_raw_with_item(*rmod, projectee_key);
+            let cmod = CtxModifier::from_raw_with_projectee_item(*rmod, projectee_key);
             let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
             remove_cmod(&mut cdata.loc_srq, key, &cmod, &mut cdata.by_aspec);
             true

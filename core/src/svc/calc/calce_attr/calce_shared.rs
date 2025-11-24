@@ -5,7 +5,7 @@ use crate::{
     rd,
     svc::{
         SvcCtx,
-        calc::{Calc, Context, CtxModifier, ModifierKind},
+        calc::{Calc, CtxModifier},
         eff_funcs,
     },
     ud::UItem,
@@ -21,15 +21,8 @@ pub(super) const LIMITED_PRECISION_A_ATTR_IDS: [ad::AAttrId; 4] = [
 
 impl Calc {
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
-        // Only buffs and targeted modifiers can be resisted
-        if !matches!(cmod.raw.kind, ModifierKind::Buff | ModifierKind::Targeted) {
-            return None;
-        }
         let resist_attr_id = cmod.raw.resist_attr_id?;
-        let projectee_key = match cmod.ctx {
-            Context::Item(projectee_key) => projectee_key,
-            _ => return None,
-        };
+        let projectee_key = cmod.ctx.get_projectee_key()?;
         let resist = eff_funcs::get_resist_mult_val_by_projectee_aspec(
             ctx,
             self,
@@ -38,10 +31,7 @@ impl Calc {
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
-        let projectee_key = match cmod.ctx {
-            Context::Item(projectee_key) => projectee_key,
-            _ => return None,
-        };
+        let projectee_key = cmod.ctx.get_projectee_key()?;
         let proj_mult_getter = cmod.raw.proj_mult_getter?;
         let r_effect = ctx.u_data.src.get_effect(cmod.raw.affector_espec.effect_key);
         let proj_data = ctx.eff_projs.get_proj_data(cmod.raw.affector_espec, projectee_key)?;

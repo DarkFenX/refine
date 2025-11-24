@@ -19,12 +19,12 @@ impl StandardRegister {
         cmod: &CtxModifier,
     ) {
         // All the context modifiers passed to this method have to come from the standard register.
-        // This way we can ensure context modifiers are valid, and make some of processing cheaper
+        // This way we can ensure context modifiers are valid, and make processing cheaper
         reuse_affectees.clear();
         match cmod.ctx {
             Context::None => self.fill_affectees_no_context(reuse_affectees, ctx, &cmod.raw),
             Context::Fit(fit_key) => self.fill_affectees_for_fit(reuse_affectees, ctx, &cmod.raw, fit_key),
-            Context::Item(item_key) => match cmod.raw.kind {
+            Context::ProjItem(item_key) => match cmod.raw.kind {
                 ModifierKind::System => self.fill_affectees_for_item_system(reuse_affectees, ctx, &cmod.raw, item_key),
                 ModifierKind::Targeted => {
                     self.fill_affectees_for_item_target(reuse_affectees, ctx, &cmod.raw, item_key)
@@ -32,6 +32,7 @@ impl StandardRegister {
                 ModifierKind::Buff => self.fill_affectees_for_item_buff(reuse_affectees, ctx, &cmod.raw, item_key),
                 _ => (),
             },
+            Context::ProjFitItem(_, _) => (),
         }
     }
     // Modification methods

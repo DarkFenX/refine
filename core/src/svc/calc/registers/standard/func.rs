@@ -3,10 +3,7 @@ use std::hash::{BuildHasher, Hash};
 use crate::{
     ad::AItemListId,
     misc::AttrSpec,
-    svc::{
-        SvcCtx,
-        calc::{Context, CtxModifier},
-    },
+    svc::{SvcCtx, calc::CtxModifier},
     ud::{UFitKey, UItemKey},
     util::{MapSet, RMapRSet},
 };
@@ -26,7 +23,7 @@ pub(super) fn add_cmod<K, H1, H2>(
         let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, affector_attr_id);
         aspec_storage.add_entry(affector_aspec, cmod);
     }
-    if let (Some(resist_attr_id), Context::Item(ctx_item_id)) = (cmod.raw.resist_attr_id, cmod.ctx) {
+    if let (Some(resist_attr_id), Some(ctx_item_id)) = (cmod.raw.resist_attr_id, cmod.ctx.get_projectee_key()) {
         let affector_aspec = AttrSpec::new(ctx_item_id, resist_attr_id);
         aspec_storage.add_entry(affector_aspec, cmod);
     }
@@ -51,7 +48,7 @@ pub(super) fn remove_cmod<K, H1, H2>(
         let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, affector_attr_id);
         aspec_storage.remove_entry(affector_aspec, cmod);
     }
-    if let (Some(resist_attr_id), Context::Item(ctx_item_id)) = (cmod.raw.resist_attr_id, cmod.ctx) {
+    if let (Some(resist_attr_id), Some(ctx_item_id)) = (cmod.raw.resist_attr_id, cmod.ctx.get_projectee_key()) {
         let affector_aspec = AttrSpec::new(ctx_item_id, resist_attr_id);
         aspec_storage.remove_entry(affector_aspec, cmod);
     }
