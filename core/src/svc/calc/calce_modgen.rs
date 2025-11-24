@@ -21,7 +21,7 @@ impl Calc {
         reuse_rmods.clear();
         // Regular modifiers
         for a_mod in r_effect.get_mods().iter() {
-            match RawModifier::try_from_amod(item_key, item, r_effect, a_mod) {
+            match RawModifier::try_from_effect_mod(item_key, item, r_effect, a_mod) {
                 Some(sol_mod) => reuse_rmods.push(sol_mod),
                 None => continue,
             };
@@ -135,7 +135,7 @@ fn add_buff_mods(
         None => return,
     };
     for buff_mod in r_buff.get_mods().iter() {
-        let rmod = match RawModifier::try_from_r_buff_regular(
+        let rmod = match RawModifier::try_from_buff_regular(
             item_key,
             item,
             r_effect,
@@ -167,7 +167,7 @@ fn add_buff_mods_hardcoded(
         None => return,
     };
     for buff_mod in r_buff.get_mods().iter() {
-        let rmod = match RawModifier::try_from_r_buff_hardcoded(
+        let rmod = match RawModifier::try_from_buff_hardcoded(
             item_key,
             item,
             r_effect,

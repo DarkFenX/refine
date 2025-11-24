@@ -61,103 +61,103 @@ impl Hash for RawModifier {
     }
 }
 impl RawModifier {
-    pub(in crate::svc::calc) fn try_from_amod(
+    pub(in crate::svc::calc) fn try_from_effect_mod(
         affector_key: UItemKey,
         affector_item: &UItem,
-        r_effect: &rd::REffect,
-        amod: &ad::AEffectModifier,
+        effect: &rd::REffect,
+        effect_mod: &ad::AEffectModifier,
     ) -> Option<Self> {
-        let affectee_filter = AffecteeFilter::from_a_affectee_filter(&amod.affectee_filter, affector_item);
-        let kind = get_mod_kind(r_effect, &affectee_filter)?;
-        // Targeted effects are affected resists
-        let resist_a_attr_id = match kind {
-            ModifierKind::Targeted => eff_funcs::get_resist_a_attr_id(affector_item, r_effect),
+        let affectee_filter = AffecteeFilter::from_effect_affectee_filter(&effect_mod.affectee_filter, affector_item);
+        let kind = get_mod_kind(effect, &affectee_filter)?;
+        // Targeted effects are affected by resists
+        let resist_attr_id = match kind {
+            ModifierKind::Targeted => eff_funcs::get_resist_attr_id(affector_item, effect),
             _ => None,
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_key, r_effect.get_key()),
-            affector_value: AffectorValue::AttrId(amod.affector_attr_id),
-            op: (&amod.op).into(),
+            affector_espec: EffectSpec::new(affector_key, effect.get_key()),
+            affector_value: AffectorValue::AttrId(effect_mod.affector_attr_id),
+            op: (&effect_mod.op).into(),
             aggr_mode: AggrMode::Stack,
             affectee_filter,
-            affectee_attr_id: amod.affectee_attr_id,
+            affectee_attr_id: effect_mod.affectee_attr_id,
             buff_type_attr_id: None,
-            proj_mult_getter: r_effect.get_modifier_proj_mult_getter(),
-            proj_attr_ids: r_effect.get_modifier_proj_attr_ids(),
-            resist_attr_id: resist_a_attr_id,
+            proj_mult_getter: effect.get_modifier_proj_mult_getter(),
+            proj_attr_ids: effect.get_modifier_proj_attr_ids(),
+            resist_attr_id,
             ..
         })
     }
-    pub(in crate::svc::calc) fn try_from_r_buff_regular(
+    pub(in crate::svc::calc) fn try_from_buff_regular(
         affector_key: UItemKey,
         affector_item: &UItem,
-        r_effect: &rd::REffect,
-        r_buff: &rd::RBuff,
-        a_mod: &ad::ABuffModifier,
-        affector_a_attr_id: ad::AAttrId,
+        effect: &rd::REffect,
+        buff: &rd::RBuff,
+        buff_mod: &ad::ABuffModifier,
+        affector_attr_id: ad::AAttrId,
         loc: Location,
-        buff_type_a_attr_id: Option<ad::AAttrId>,
+        buff_type_attr_id: Option<ad::AAttrId>,
     ) -> Option<Self> {
-        RawModifier::from_r_buff(
+        RawModifier::from_buff(
             affector_key,
             affector_item,
-            r_effect,
-            r_buff,
-            a_mod,
-            AffectorValue::AttrId(affector_a_attr_id),
+            effect,
+            buff,
+            buff_mod,
+            AffectorValue::AttrId(affector_attr_id),
             loc,
-            buff_type_a_attr_id,
+            buff_type_attr_id,
         )
     }
-    pub(in crate::svc::calc) fn try_from_r_buff_hardcoded(
+    pub(in crate::svc::calc) fn try_from_buff_hardcoded(
         affector_key: UItemKey,
         affector_item: &UItem,
-        r_effect: &rd::REffect,
-        r_buff: &rd::RBuff,
-        a_mod: &ad::ABuffModifier,
+        effect: &rd::REffect,
+        buff: &rd::RBuff,
+        buff_mod: &ad::ABuffModifier,
         affector_mod_val: AttrVal,
         loc: Location,
     ) -> Option<Self> {
-        RawModifier::from_r_buff(
+        RawModifier::from_buff(
             affector_key,
             affector_item,
-            r_effect,
-            r_buff,
-            a_mod,
+            effect,
+            buff,
+            buff_mod,
             AffectorValue::Hardcoded(affector_mod_val),
             loc,
             None,
         )
     }
-    fn from_r_buff(
+    fn from_buff(
         affector_key: UItemKey,
         affector_item: &UItem,
-        r_effect: &rd::REffect,
-        r_buff: &rd::RBuff,
-        a_mod: &ad::ABuffModifier,
+        effect: &rd::REffect,
+        buff: &rd::RBuff,
+        buff_mod: &ad::ABuffModifier,
         affector_value: AffectorValue,
         loc: Location,
-        buff_type_a_attr_id: Option<ad::AAttrId>,
+        buff_type_attr_id: Option<ad::AAttrId>,
     ) -> Option<Self> {
-        let affectee_filter = AffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
-        let kind = get_mod_kind(r_effect, &affectee_filter)?;
-        let resist_a_attr_id = match kind {
-            ModifierKind::Buff => eff_funcs::get_resist_a_attr_id(affector_item, r_effect),
+        let affectee_filter = AffecteeFilter::from_buff_affectee_filter(&buff_mod.affectee_filter, loc, affector_item);
+        let kind = get_mod_kind(effect, &affectee_filter)?;
+        let resist_attr_id = match kind {
+            ModifierKind::Buff => eff_funcs::get_resist_attr_id(affector_item, effect),
             _ => None,
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_key, r_effect.get_key()),
+            affector_espec: EffectSpec::new(affector_key, effect.get_key()),
             affector_value,
-            op: (&r_buff.get_op()).into(),
-            aggr_mode: AggrMode::from_r_buff(r_buff),
+            op: (&buff.get_op()).into(),
+            aggr_mode: AggrMode::from_r_buff(buff),
             affectee_filter,
-            affectee_attr_id: a_mod.affectee_attr_id,
-            buff_type_attr_id: buff_type_a_attr_id,
-            proj_mult_getter: r_effect.get_modifier_proj_mult_getter(),
-            proj_attr_ids: r_effect.get_modifier_proj_attr_ids(),
-            resist_attr_id: resist_a_attr_id,
+            affectee_attr_id: buff_mod.affectee_attr_id,
+            buff_type_attr_id,
+            proj_mult_getter: effect.get_modifier_proj_mult_getter(),
+            proj_attr_ids: effect.get_modifier_proj_attr_ids(),
+            resist_attr_id,
             ..
         })
     }
