@@ -198,8 +198,8 @@ impl Calc {
             for cmod in cmods.iter() {
                 self.std.fill_affectees(&mut reuse_affectees, ctx, cmod);
                 for &affectee_key in reuse_affectees.iter() {
-                    let projectee_aspec = AttrSpec::new(affectee_key, cmod.raw.affectee_attr_id);
-                    self.force_attr_value_recalc(ctx, projectee_aspec);
+                    let affectee_aspec = AttrSpec::new(affectee_key, cmod.raw.affectee_attr_id);
+                    self.force_attr_value_recalc(ctx, affectee_aspec);
                 }
             }
         }
