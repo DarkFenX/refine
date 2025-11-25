@@ -196,33 +196,31 @@ impl StandardRegister {
             _ => None,
         }
     }
-    pub(super) fn query_target_mod(
-        &mut self,
-        rmod: RawModifier,
-        projectee_key: UItemKey,
-        projectee_item: &UItem,
-    ) -> Option<CtxModifier> {
-        {
-            match rmod.affectee_filter {
-                AffecteeFilter::Direct(Location::Target) => {
-                    Some(CtxModifier::new_with_projectee_item(rmod, projectee_key))
+}
+
+pub(super) fn query_target_mod(
+    rmod: RawModifier,
+    projectee_key: UItemKey,
+    projectee_item: &UItem,
+) -> Option<CtxModifier> {
+    {
+        match rmod.affectee_filter {
+            AffecteeFilter::Direct(Location::Target) => Some(CtxModifier::new_with_projectee_item(rmod, projectee_key)),
+            AffecteeFilter::Loc(Location::Target)
+            | AffecteeFilter::LocGrp(Location::Target, _)
+            | AffecteeFilter::LocSrq(Location::Target, _)
+                if let UItem::Ship(projectee_ship) = projectee_item =>
+            {
+                match projectee_ship.get_kind() {
+                    UShipKind::Ship => Some(CtxModifier::new_with_projectee_item(rmod, projectee_key)),
+                    UShipKind::Structure => Some(CtxModifier::new_with_projectee_item(rmod, projectee_key)),
+                    _ => None,
                 }
-                AffecteeFilter::Loc(Location::Target)
-                | AffecteeFilter::LocGrp(Location::Target, _)
-                | AffecteeFilter::LocSrq(Location::Target, _)
-                    if let UItem::Ship(projectee_ship) = projectee_item =>
-                {
-                    match projectee_ship.get_kind() {
-                        UShipKind::Ship => Some(CtxModifier::new_with_projectee_item(rmod, projectee_key)),
-                        UShipKind::Structure => Some(CtxModifier::new_with_projectee_item(rmod, projectee_key)),
-                        _ => None,
-                    }
-                }
-                AffecteeFilter::OwnSrq(_) if let UItem::Ship(_) = projectee_item => {
-                    Some(CtxModifier::new_with_projectee_item(rmod, projectee_key))
-                }
-                _ => None,
             }
+            AffecteeFilter::OwnSrq(_) if let UItem::Ship(_) = projectee_item => {
+                Some(CtxModifier::new_with_projectee_item(rmod, projectee_key))
+            }
+            _ => None,
         }
     }
 }

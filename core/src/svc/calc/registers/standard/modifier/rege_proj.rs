@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use super::{
-    rege_proj_buff::{load_affectee_for_proj_buff, unload_affectee_for_proj_buff},
-    rege_proj_target::{load_affectee_for_proj_target, unload_affectee_for_proj_target},
+    rege_proj_buff::{load_affectee_for_proj_buff, query_buff_mod, unload_affectee_for_proj_buff},
+    rege_proj_target::{load_affectee_for_proj_target, query_target_mod, unload_affectee_for_proj_target},
 };
 use crate::{
     misc::EffectSpec,
@@ -31,10 +31,6 @@ impl StandardRegister {
         let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut cmods = Vec::with_capacity(rmods.len());
         for rmod in rmods.into_iter() {
-            // Validate raw modifier. If it is valid and target passes all checks, create and store
-            // appropriate context modifiers, put raw modifier into active projected modifier
-            // storage, and add context modifier to container. If it valid and target doesn't pass
-            // all checks, put raw modifier into inactive projected modifier storage.
             if let Some(cmod) = match rmod.kind {
                 ModifierKind::System => self.proj_system_mod(rmod, projectee_item),
                 ModifierKind::Targeted => self.proj_target_mod(rmod, projectee_key, projectee_item),
@@ -53,13 +49,14 @@ impl StandardRegister {
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Get context modifiers for projection.
-        let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
+        let rmods = self.rmods_proj.get(projector_espec);
         let mut cmods = Vec::with_capacity(rmods.len());
-        for rmod in rmods.into_iter() {
-            // Validate raw modifier and its target, return context modifier if both pass checks.
+        for &rmod in rmods {
             if let Some(cmod) = match rmod.kind {
-                ModifierKind::Targeted => self.query_target_mod(rmod, projectee_key, projectee_item),
-                ModifierKind::Buff => self.query_buff_mod(rmod, projectee_key, projectee_item),
+                // System modifiers are not requested, since their application does not depend on
+                // projection attributes (like range)
+                ModifierKind::Targeted => query_target_mod(rmod, projectee_key, projectee_item),
+                ModifierKind::Buff => query_buff_mod(rmod, projectee_key, projectee_item),
                 _ => None,
             } {
                 cmods.push(cmod);
@@ -77,10 +74,6 @@ impl StandardRegister {
         let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
         let mut cmods = Vec::with_capacity(rmods.len());
         for rmod in rmods.into_iter() {
-            // Validate raw modifier. If it is valid and target passes all checks, remove
-            // appropriate context modifiers, remove raw modifier from active projected modifier
-            // storage, and add context modifier to container. If it is valid and target doesn't
-            // pass all checks, remove raw modifier from inactive projected modifier storage.
             if let Some(cmod) = match rmod.kind {
                 ModifierKind::System => self.unproj_system_mod(rmod, projectee_item),
                 ModifierKind::Targeted => self.unproj_target_mod(rmod, projectee_key, projectee_item),

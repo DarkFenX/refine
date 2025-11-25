@@ -156,30 +156,30 @@ impl StandardRegister {
             _ => None,
         }
     }
-    pub(super) fn query_buff_mod(
-        &mut self,
-        rmod: RawModifier,
-        projectee_key: UItemKey,
-        projectee_item: &UItem,
-    ) -> Option<CtxModifier> {
-        match rmod.affectee_filter {
-            AffecteeFilter::Direct(Location::ItemList(item_list_id))
-                if projectee_item.is_item_buffable_by_item_list(&item_list_id) =>
-            {
-                let cmod = CtxModifier::new_with_projectee_item(rmod, projectee_key);
-                Some(cmod)
-            }
-            AffecteeFilter::Loc(Location::ItemList(item_list_id))
-            | AffecteeFilter::LocGrp(Location::ItemList(item_list_id), _)
-            | AffecteeFilter::LocSrq(Location::ItemList(item_list_id), _)
-                if let Some(projectee_ship) = projectee_item.is_ship_buffable_by_item_list(&item_list_id) =>
-            {
-                let fit_key = projectee_ship.get_fit_key();
-                let cmod = CtxModifier::new_with_projectee_fit_item(rmod, fit_key, projectee_key);
-                Some(cmod)
-            }
-            _ => None,
+}
+
+pub(super) fn query_buff_mod(
+    rmod: RawModifier,
+    projectee_key: UItemKey,
+    projectee_item: &UItem,
+) -> Option<CtxModifier> {
+    match rmod.affectee_filter {
+        AffecteeFilter::Direct(Location::ItemList(item_list_id))
+            if projectee_item.is_item_buffable_by_item_list(&item_list_id) =>
+        {
+            let cmod = CtxModifier::new_with_projectee_item(rmod, projectee_key);
+            Some(cmod)
         }
+        AffecteeFilter::Loc(Location::ItemList(item_list_id))
+        | AffecteeFilter::LocGrp(Location::ItemList(item_list_id), _)
+        | AffecteeFilter::LocSrq(Location::ItemList(item_list_id), _)
+            if let Some(projectee_ship) = projectee_item.is_ship_buffable_by_item_list(&item_list_id) =>
+        {
+            let fit_key = projectee_ship.get_fit_key();
+            let cmod = CtxModifier::new_with_projectee_fit_item(rmod, fit_key, projectee_key);
+            Some(cmod)
+        }
+        _ => None,
     }
 }
 
