@@ -25,11 +25,15 @@ impl StandardRegister {
             Context::None => self.fill_no_context(reuse_affectees, ctx, &cmod.raw),
             Context::Fit(fit_key) => self.fill_for_fit(reuse_affectees, ctx, &cmod.raw, fit_key),
             Context::ProjItem(item_key) => match cmod.raw.kind {
-                ModifierKind::Targeted => self.fill_for_item_target(reuse_affectees, ctx, &cmod.raw, item_key),
-                ModifierKind::Buff => self.fill_for_item_buff(reuse_affectees, &cmod.raw, item_key),
+                ModifierKind::Targeted | ModifierKind::Buff => {
+                    self.fill_direct_only(reuse_affectees, &cmod.raw, item_key)
+                }
                 _ => (),
             },
-            Context::ProjFitItem(fit_key, _) => match cmod.raw.kind {
+            Context::ProjFitItem(fit_key, item_key) => match cmod.raw.kind {
+                ModifierKind::Targeted => {
+                    self.fill_for_fit_item_target(reuse_affectees, ctx, &cmod.raw, fit_key, item_key)
+                }
                 ModifierKind::Buff => self.fill_for_fit_item_buff(reuse_affectees, &cmod.raw, fit_key),
                 _ => (),
             },
@@ -119,77 +123,47 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_for_item_target(
+    fn fill_for_fit_item_target(
         &self,
         affectees: &mut Vec<UItemKey>,
         ctx: SvcCtx,
         rmod: &RawModifier,
+        fit_key: UFitKey,
         projectee_key: UItemKey,
     ) {
         match rmod.affectee_filter {
-            AffecteeFilter::Direct(_) => {
-                affectees.push(projectee_key);
-            }
             AffecteeFilter::Loc(_) => {
                 let projectee_item = ctx.u_data.items.get(projectee_key);
-                if let UItem::Ship(projectee_ship) = projectee_item {
-                    match projectee_ship.get_kind() {
-                        UShipKind::Ship => {
-                            let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
-                            extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
-                        }
-                        UShipKind::Structure => {
-                            let key = (projectee_ship.get_fit_key(), LocationKind::Structure);
-                            extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
-                        }
-                        _ => (),
-                    }
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
+                {
+                    let key = (projectee_ship.get_fit_key(), loc_kind);
+                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
                 }
             }
             AffecteeFilter::LocGrp(_, item_grp_id) => {
                 let projectee_item = ctx.u_data.items.get(projectee_key);
-                if let UItem::Ship(projectee_ship) = projectee_item {
-                    match projectee_ship.get_kind() {
-                        UShipKind::Ship => {
-                            let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
-                            extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
-                        }
-                        UShipKind::Structure => {
-                            let key = (projectee_ship.get_fit_key(), LocationKind::Structure, item_grp_id);
-                            extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
-                        }
-                        _ => (),
-                    }
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
+                {
+                    let key = (projectee_ship.get_fit_key(), loc_kind, item_grp_id);
+                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
                 }
             }
             AffecteeFilter::LocSrq(_, srq_type_id) => {
                 let projectee_item = ctx.u_data.items.get(projectee_key);
-                if let UItem::Ship(projectee_ship) = projectee_item {
-                    match projectee_ship.get_kind() {
-                        UShipKind::Ship => {
-                            let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
-                            extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
-                        }
-                        UShipKind::Structure => {
-                            let key = (projectee_ship.get_fit_key(), LocationKind::Structure, srq_type_id);
-                            extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
-                        }
-                        _ => (),
-                    }
+                if let UItem::Ship(projectee_ship) = projectee_item
+                    && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
+                {
+                    let key = (projectee_ship.get_fit_key(), loc_kind, srq_type_id);
+                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
                 }
             }
             AffecteeFilter::OwnSrq(srq_type_id) => {
-                let projectee_item = ctx.u_data.items.get(projectee_key);
-                if let UItem::Ship(projectee_ship) = projectee_item {
-                    let key = (projectee_ship.get_fit_key(), srq_type_id);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_own_srq, &key);
-                }
+                let key = (fit_key, srq_type_id);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_own_srq, &key);
             }
-        }
-    }
-    fn fill_for_item_buff(&self, affectees: &mut Vec<UItemKey>, rmod: &RawModifier, projectee_key: UItemKey) {
-        if let AffecteeFilter::Direct(_) = rmod.affectee_filter {
-            affectees.push(projectee_key);
+            _ => (),
         }
     }
     fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemKey>, rmod: &RawModifier, fit_key: UFitKey) {
@@ -207,6 +181,11 @@ impl StandardRegister {
                 extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
             }
             _ => (),
+        }
+    }
+    fn fill_direct_only(&self, affectees: &mut Vec<UItemKey>, rmod: &RawModifier, projectee_key: UItemKey) {
+        if let AffecteeFilter::Direct(_) = rmod.affectee_filter {
+            affectees.push(projectee_key);
         }
     }
 }
