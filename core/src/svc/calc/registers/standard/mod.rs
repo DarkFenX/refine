@@ -1,6 +1,7 @@
 pub(in crate::svc::calc) use data::StandardRegister;
 
-mod affectee;
+mod affectee_fill;
+mod affectee_reg;
 mod data;
 mod debug;
 mod func;

@@ -3,7 +3,7 @@ use crate::{
         SvcCtx,
         calc::{
             AffecteeFilter, Context, CtxModifier, Location, LocationKind, ModifierKind, RawModifier,
-            registers::standard::{data::StandardRegister, iter_locs_pot::PotentialLocations},
+            registers::standard::data::StandardRegister,
         },
     },
     ud::{UFit, UFitKey, UItem, UItemKey, UShipKind},
@@ -22,134 +22,23 @@ impl StandardRegister {
         // This way we can ensure context modifiers are valid, and make processing cheaper
         reuse_affectees.clear();
         match cmod.ctx {
-            Context::None => self.fill_affectees_no_context(reuse_affectees, ctx, &cmod.raw),
-            Context::Fit(fit_key) => self.fill_affectees_for_fit(reuse_affectees, ctx, &cmod.raw, fit_key),
+            Context::None => self.fill_no_context(reuse_affectees, ctx, &cmod.raw),
+            Context::Fit(fit_key) => self.fill_for_fit(reuse_affectees, ctx, &cmod.raw, fit_key),
             Context::ProjItem(item_key) => match cmod.raw.kind {
-                ModifierKind::System => self.fill_affectees_for_item_system(reuse_affectees, ctx, &cmod.raw, item_key),
-                ModifierKind::Targeted => {
-                    self.fill_affectees_for_item_target(reuse_affectees, ctx, &cmod.raw, item_key)
-                }
-                ModifierKind::Buff => self.fill_affectees_for_item_buff(reuse_affectees, ctx, &cmod.raw, item_key),
+                ModifierKind::System => self.fill_for_item_system(reuse_affectees, ctx, &cmod.raw, item_key),
+                ModifierKind::Targeted => self.fill_for_item_target(reuse_affectees, ctx, &cmod.raw, item_key),
+                ModifierKind::Buff => self.fill_for_item_buff(reuse_affectees, &cmod.raw, item_key),
                 _ => (),
             },
-            Context::ProjFitItem(_, _) => (),
+            Context::ProjFitItem(fit_key, _) => match cmod.raw.kind {
+                ModifierKind::Buff => self.fill_for_fit_item_buff(reuse_affectees, &cmod.raw, fit_key),
+                _ => (),
+            },
         }
-    }
-    // Modification methods
-    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
-        // Let existing projections know their projectee got updated
-        self.load_affectee_for_proj(item_key, item);
-        let mut cmods = Vec::new();
-        // Past this point we process data only for fit-related items
-        let fit_key = match item.get_fit_key() {
-            Some(fit_key) => fit_key,
-            None => return cmods,
-        };
-        let root_loc = item.get_root_loc_kind();
-        let item_grp_id = item.get_group_id().unwrap();
-        let srqs = item.get_skill_reqs().unwrap();
-        if let Some(root_loc) = root_loc {
-            self.affectee_root.add_entry((fit_key, root_loc), item_key);
-        }
-        for loc in PotentialLocations::new(item) {
-            self.affectee_loc.add_entry((fit_key, loc), item_key);
-            self.affectee_loc_grp.add_entry((fit_key, loc, item_grp_id), item_key);
-            for &srq_type_id in srqs.keys() {
-                self.affectee_loc_srq.add_entry((fit_key, loc, srq_type_id), item_key);
-            }
-        }
-        if item.is_owner_modifiable() {
-            for &srq_type_id in srqs.keys() {
-                self.affectee_own_srq.add_entry((fit_key, srq_type_id), item_key);
-            }
-        }
-        // Buff-related processing
-        if let Some(item_list_ids) = item.get_item_buff_item_lists()
-            && !item_list_ids.is_empty()
-        {
-            for &item_list_id in item_list_ids {
-                self.affectee_buffable.add_entry((fit_key, item_list_id), item_key);
-            }
-            let ship = match item {
-                UItem::Ship(ship) => {
-                    for &item_list_id in item_list_ids {
-                        self.affectee_buffable_ships
-                            .add_entry(item_list_id, (ship.get_fit_key(), item_key));
-                    }
-                    Some(ship)
-                }
-                _ => None,
-            };
-            self.reg_affectee_for_sw_buff(item_key, ship, item_list_ids);
-            self.reg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, item_list_ids);
-        }
-        // If it's ship being unregistered, adding it might trigger attribute changes on various
-        // items like modules. Valid list of modifiers can be fetched only with ship in place, so
-        // do it after everything is processed
-        if let UItem::Ship(_) = item {
-            self.get_mods_for_changed_ship(item, &mut cmods);
-        }
-        cmods
-    }
-    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
-        // If it's ship being unregistered, removing it might trigger attribute changes on various
-        // items like modules. Valid list of modifiers can be fetched only with ship in place, so
-        // do it before anything is processed
-        let mut cmods = Vec::new();
-        if let UItem::Ship(_) = item {
-            self.get_mods_for_changed_ship(item, &mut cmods);
-        }
-        // Let existing projections know their projectee got updated
-        self.unload_affectee_for_proj(item_key, item);
-        // Past this point we process data only for fit-related items
-        let fit_key = match item.get_fit_key() {
-            Some(fit_key) => fit_key,
-            None => return cmods,
-        };
-        let root_loc = item.get_root_loc_kind();
-        let item_grp_id = item.get_group_id().unwrap();
-        let srqs = item.get_skill_reqs().unwrap();
-        if let Some(root_loc) = root_loc {
-            self.affectee_root.remove_entry((fit_key, root_loc), &item_key);
-        }
-        for loc in PotentialLocations::new(item) {
-            self.affectee_loc.remove_entry((fit_key, loc), &item_key);
-            self.affectee_loc_grp
-                .remove_entry((fit_key, loc, item_grp_id), &item_key);
-            for &srq_type_id in srqs.keys() {
-                self.affectee_loc_srq
-                    .remove_entry((fit_key, loc, srq_type_id), &item_key);
-            }
-        }
-        if item.is_owner_modifiable() {
-            for &srq_type_id in srqs.keys() {
-                self.affectee_own_srq.remove_entry((fit_key, srq_type_id), &item_key);
-            }
-        }
-        // Buff-related processing
-        if let Some(item_list_ids) = item.get_item_buff_item_lists()
-            && !item_list_ids.is_empty()
-        {
-            for &item_list_id in item_list_ids {
-                self.affectee_buffable.remove_entry((fit_key, item_list_id), &item_key);
-            }
-            let ship = match item {
-                UItem::Ship(ship) => {
-                    for &item_list_id in item_list_ids {
-                        self.affectee_buffable_ships
-                            .remove_entry(item_list_id, &(ship.get_fit_key(), item_key));
-                    }
-                    Some(ship)
-                }
-                _ => None,
-            };
-            self.unreg_affectee_for_sw_buff(item_key, ship, item_list_ids);
-            self.unreg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, item_list_ids);
-        }
-        cmods
     }
     // Private methods
-    fn fill_affectees_no_context(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier) {
+    fn fill_no_context(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier) {
+        // No-context modifiers are used only for self/other modifications
         if let AffecteeFilter::Direct(loc) = rmod.affectee_filter {
             match loc {
                 Location::Item => {
@@ -165,7 +54,7 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_affectees_for_fit(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitKey) {
+    fn fill_for_fit(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitKey) {
         // The only fit-context modifiers with item list filter are fleet buffs, and those are
         // hardcoded to use ship location during reg/unreg, follow that here as well
         match rmod.affectee_filter {
@@ -231,7 +120,7 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_affectees_for_item_system(
+    fn fill_for_item_system(
         &self,
         affectees: &mut Vec<UItemKey>,
         ctx: SvcCtx,
@@ -334,7 +223,7 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_affectees_for_item_target(
+    fn fill_for_item_target(
         &self,
         affectees: &mut Vec<UItemKey>,
         ctx: SvcCtx,
@@ -402,54 +291,26 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_affectees_for_item_buff(
-        &self,
-        affectees: &mut Vec<UItemKey>,
-        ctx: SvcCtx,
-        rmod: &RawModifier,
-        projectee_key: UItemKey,
-    ) {
-        match rmod.affectee_filter {
-            AffecteeFilter::Direct(_) => {
-                affectees.push(projectee_key);
-            }
-            AffecteeFilter::Loc(_) => {
-                let projectee_item = ctx.u_data.items.get(projectee_key);
-                if let UItem::Ship(projectee_ship) = projectee_item {
-                    let key = (projectee_ship.get_fit_key(), LocationKind::Ship);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
-                }
-            }
-            AffecteeFilter::LocGrp(_, item_grp_id) => {
-                let projectee_item = ctx.u_data.items.get(projectee_key);
-                if let UItem::Ship(projectee_ship) = projectee_item {
-                    let key = (projectee_ship.get_fit_key(), LocationKind::Ship, item_grp_id);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
-                }
-            }
-            AffecteeFilter::LocSrq(_, srq_type_id) => {
-                let projectee_item = ctx.u_data.items.get(projectee_key);
-                if let UItem::Ship(projectee_ship) = projectee_item {
-                    let key = (projectee_ship.get_fit_key(), LocationKind::Ship, srq_type_id);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
-                }
-            }
-            _ => (),
+    fn fill_for_item_buff(&self, affectees: &mut Vec<UItemKey>, rmod: &RawModifier, projectee_key: UItemKey) {
+        if let AffecteeFilter::Direct(_) = rmod.affectee_filter {
+            affectees.push(projectee_key);
         }
     }
-    fn get_mods_for_changed_ship(&self, item: &UItem, cmods: &mut Vec<CtxModifier>) {
-        if let (Some(item_fit_key), Some(item_loc)) = (item.get_fit_key(), item.get_ship_loc_kind()) {
-            cmods.extend(self.cmods.loc.get(&(item_fit_key, item_loc)));
-            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods.loc_grp.iter() {
-                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
-                    cmods.extend(stored_cmods);
-                }
+    fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemKey>, rmod: &RawModifier, fit_key: UFitKey) {
+        match rmod.affectee_filter {
+            AffecteeFilter::Loc(_) => {
+                let key = (fit_key, LocationKind::Ship);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
             }
-            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods.loc_srq.iter() {
-                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
-                    cmods.extend(stored_cmods);
-                }
+            AffecteeFilter::LocGrp(_, item_grp_id) => {
+                let key = (fit_key, LocationKind::Ship, item_grp_id);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
             }
+            AffecteeFilter::LocSrq(_, srq_type_id) => {
+                let key = (fit_key, LocationKind::Ship, srq_type_id);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
+            }
+            _ => (),
         }
     }
 }

@@ -19,7 +19,7 @@ impl StandardRegister {
             AffecteeFilter::Direct(loc) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind);
                 add_cmod(&mut self.cmods.root, key, cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
@@ -27,7 +27,7 @@ impl StandardRegister {
             AffecteeFilter::Loc(loc) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind);
                 add_cmod(&mut self.cmods.loc, key, cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
@@ -35,7 +35,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(loc, item_grp_id) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind, item_grp_id);
                 add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
@@ -43,14 +43,14 @@ impl StandardRegister {
             AffecteeFilter::LocSrq(loc, srq_type_id) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind, srq_type_id);
                 add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
             }
             AffecteeFilter::OwnSrq(srq_type_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, srq_type_id);
                 add_cmod(&mut self.cmods.own_srq, key, cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
@@ -71,7 +71,7 @@ impl StandardRegister {
             AffecteeFilter::Direct(loc) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind);
                 remove_cmod(&mut self.cmods.root, key, &cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
@@ -79,7 +79,7 @@ impl StandardRegister {
             AffecteeFilter::Loc(loc) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind);
                 remove_cmod(&mut self.cmods.loc, key, &cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
@@ -87,7 +87,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(loc, item_grp_id) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind, item_grp_id);
                 remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
@@ -95,14 +95,14 @@ impl StandardRegister {
             AffecteeFilter::LocSrq(loc, srq_type_id) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, loc_kind, srq_type_id);
                 remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
             }
             AffecteeFilter::OwnSrq(srq_type_id) => {
                 let fit_key = fw_effect.get_fit_key();
-                let cmod = CtxModifier::from_raw_with_fit(rmod, fit_key);
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
                 let key = (fit_key, srq_type_id);
                 remove_cmod(&mut self.cmods.own_srq, key, &cmod, &mut self.cmods.by_aspec);
                 Some(cmod)
