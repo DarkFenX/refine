@@ -59,7 +59,7 @@ impl StandardRegister {
         for rmod in rmods.into_iter() {
             // Validate raw modifier and its target, return context modifier if both pass checks.
             if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => self.query_system_mod(rmod, projectee_key, projectee_item),
+                ModifierKind::System => self.query_system_mod(rmod, projectee_item),
                 ModifierKind::Targeted => self.query_target_mod(rmod, projectee_key, projectee_item),
                 ModifierKind::Buff => self.query_buff_mod(rmod, projectee_key, projectee_item),
                 _ => None,
@@ -100,7 +100,7 @@ impl StandardRegister {
         projectee_item: &UItem,
     ) {
         self.rmods_proj_inactive.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::System => load_affectee_for_proj_system(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::System => load_affectee_for_proj_system(&mut self.cmods, r, projectee_item),
             ModifierKind::Targeted => load_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item),
             ModifierKind::Buff => load_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
             _ => false,
@@ -114,7 +114,7 @@ impl StandardRegister {
         projectee_item: &UItem,
     ) {
         self.rmods_proj_active.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::System => unload_affectee_for_proj_system(&mut self.cmods, r, projectee_key, projectee_item),
+            ModifierKind::System => unload_affectee_for_proj_system(&mut self.cmods, r, projectee_item),
             ModifierKind::Targeted => {
                 unload_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
             }
