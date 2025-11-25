@@ -44,16 +44,8 @@ pub(in crate::svc::calc) struct StandardRegister {
     pub(super) rmods_sw_buff: RSet<RawModifier>,
     // Fit-wide buff modifiers
     pub(super) rmods_fw_buff: RMapRSet<UFitKey, RawModifier>,
-    // Valid item-targeted modifiers which target eligible item kind, with projectee item passing
-    // all the checks
-    // Map<projectee item ID, modifiers>
-    pub(super) rmods_proj_active: RMapRSet<UItemKey, RawModifier>,
-    // Valid item-targeted modifiers which target eligible item kind, with projectee item failing
-    // some checks, and thus modifiers being inactive
-    // Map<projectee item ID, modifiers>
-    pub(super) rmods_proj_inactive: RMapRSet<UItemKey, RawModifier>,
-    // Modifiers which rely on an item-attribute pair value
-    // Map<attr spec, modifiers>
+    // Child containers
+    pub(super) rmods_proj_status: StandardRegisterRawProjStatus,
     pub(super) cmods: StandardRegisterCtxMods,
 }
 impl StandardRegister {
@@ -72,8 +64,7 @@ impl StandardRegister {
             rmods_sw_system: RSet::new(),
             rmods_sw_buff: RSet::new(),
             rmods_fw_buff: RMapRSet::new(),
-            rmods_proj_active: RMapRSet::new(),
-            rmods_proj_inactive: RMapRSet::new(),
+            rmods_proj_status: StandardRegisterRawProjStatus::new(),
             cmods: StandardRegisterCtxMods::new(),
         }
     }
@@ -120,6 +111,26 @@ impl StandardRegisterCtxMods {
             loc_grp: RMapRSet::new(),
             loc_srq: RMapRSet::new(),
             own_srq: RMapRSet::new(),
+        }
+    }
+}
+
+#[derive(Clone)]
+pub(in crate::svc::calc) struct StandardRegisterRawProjStatus {
+    // Valid item-targeted modifiers which target eligible item kind, with projectee item passing
+    // all the checks
+    // Map<projectee item ID, modifiers>
+    pub(super) active: RMapRSet<UItemKey, RawModifier>,
+    // Valid item-targeted modifiers which target eligible item kind, with projectee item failing
+    // some checks, and thus modifiers being inactive
+    // Map<projectee item ID, modifiers>
+    pub(super) inactive: RMapRSet<UItemKey, RawModifier>,
+}
+impl StandardRegisterRawProjStatus {
+    pub(in crate::svc::calc) fn new() -> Self {
+        Self {
+            active: RMapRSet::new(),
+            inactive: RMapRSet::new(),
         }
     }
 }

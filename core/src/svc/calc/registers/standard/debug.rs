@@ -81,14 +81,14 @@ impl StandardRegister {
                 check_rmod(u_data, rmod)?;
             }
         }
-        for (&projectee_key, rmods) in self.rmods_proj_active.iter() {
+        for (&projectee_key, rmods) in self.rmods_proj_status.active.iter() {
             // Projectees don't have to be loaded for an entry to be added here
             check_item_key(u_data, projectee_key, false)?;
             for rmod in rmods {
                 check_rmod(u_data, rmod)?;
             }
         }
-        for (&projectee_key, rmods) in self.rmods_proj_inactive.iter() {
+        for (&projectee_key, rmods) in self.rmods_proj_status.inactive.iter() {
             // Projectees don't have to be loaded for an entry to be added here
             check_item_key(u_data, projectee_key, false)?;
             for rmod in rmods {

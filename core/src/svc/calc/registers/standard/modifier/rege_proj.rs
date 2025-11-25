@@ -1,8 +1,12 @@
-use itertools::Itertools;
-
 use super::{
-    rege_proj_buff::{load_affectee_for_proj_buff, query_buff_mod, unload_affectee_for_proj_buff},
-    rege_proj_target::{load_affectee_for_proj_target, query_target_mod, unload_affectee_for_proj_target},
+    rege_proj_buff::{
+        load_affectee_for_proj_buff, proj_buff_mod, query_buff_mod, unload_affectee_for_proj_buff, unproj_buff_mod,
+    },
+    rege_proj_system::{proj_system_mod, unproj_system_mod},
+    rege_proj_target::{
+        load_affectee_for_proj_target, proj_target_mod, query_target_mod, unload_affectee_for_proj_target,
+        unproj_target_mod,
+    },
 };
 use crate::{
     misc::EffectSpec,
@@ -28,13 +32,58 @@ impl StandardRegister {
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Register projection and get appropriate context modifiers.
-        let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
+        let rmods = self.rmods_proj.get(projector_espec);
         let mut cmods = Vec::with_capacity(rmods.len());
-        for rmod in rmods.into_iter() {
+        for &rmod in rmods.into_iter() {
             if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => self.proj_system_mod(rmod, projectee_item),
-                ModifierKind::Targeted => self.proj_target_mod(rmod, projectee_key, projectee_item),
-                ModifierKind::Buff => self.proj_buff_mod(rmod, projectee_key, projectee_item),
+                ModifierKind::System => proj_system_mod(&mut self.cmods, rmod, projectee_item),
+                ModifierKind::Targeted => proj_target_mod(
+                    &mut self.rmods_proj_status,
+                    &mut self.cmods,
+                    rmod,
+                    projectee_key,
+                    projectee_item,
+                ),
+                ModifierKind::Buff => proj_buff_mod(
+                    &mut self.rmods_proj_status,
+                    &mut self.cmods,
+                    rmod,
+                    projectee_key,
+                    projectee_item,
+                ),
+                _ => None,
+            } {
+                cmods.push(cmod);
+            }
+        }
+        cmods
+    }
+    pub(in crate::svc::calc) fn unproject_effect(
+        &mut self,
+        projector_espec: &EffectSpec,
+        projectee_key: UItemKey,
+        projectee_item: &UItem,
+    ) -> Vec<CtxModifier> {
+        // Unregister projection and get appropriate context modifiers.
+        let rmods = self.rmods_proj.get(projector_espec);
+        let mut cmods = Vec::with_capacity(rmods.len());
+        for &rmod in rmods {
+            if let Some(cmod) = match rmod.kind {
+                ModifierKind::System => unproj_system_mod(&mut self.cmods, rmod, projectee_item),
+                ModifierKind::Targeted => unproj_target_mod(
+                    &mut self.rmods_proj_status,
+                    &mut self.cmods,
+                    rmod,
+                    projectee_key,
+                    projectee_item,
+                ),
+                ModifierKind::Buff => unproj_buff_mod(
+                    &mut self.rmods_proj_status,
+                    &mut self.cmods,
+                    rmod,
+                    projectee_key,
+                    projectee_item,
+                ),
                 _ => None,
             } {
                 cmods.push(cmod);
@@ -64,53 +113,40 @@ impl StandardRegister {
         }
         cmods
     }
-    pub(in crate::svc::calc) fn unproject_effect(
-        &mut self,
-        projector_espec: &EffectSpec,
-        projectee_key: UItemKey,
-        projectee_item: &UItem,
-    ) -> Vec<CtxModifier> {
-        // Unregister projection and get appropriate context modifiers.
-        let rmods = self.rmods_proj.get(projector_espec).copied().collect_vec();
-        let mut cmods = Vec::with_capacity(rmods.len());
-        for rmod in rmods.into_iter() {
-            if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => self.unproj_system_mod(rmod, projectee_item),
-                ModifierKind::Targeted => self.unproj_target_mod(rmod, projectee_key, projectee_item),
-                ModifierKind::Buff => self.unproj_buff_mod(rmod, projectee_key, projectee_item),
-                _ => None,
-            } {
-                cmods.push(cmod);
-            }
-        }
-        cmods
-    }
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_proj(
         &mut self,
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
-        self.rmods_proj_inactive.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::Targeted => load_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item),
-            ModifierKind::Buff => load_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
-            _ => false,
-        });
-        self.rmods_proj_active
-            .extend_entries(projectee_key, self.rmods_proj_inactive.drain_buffer());
+        self.rmods_proj_status
+            .inactive
+            .buffer_if(projectee_key, |r| match r.kind {
+                ModifierKind::Targeted => {
+                    load_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
+                }
+                ModifierKind::Buff => load_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
+                _ => false,
+            });
+        self.rmods_proj_status
+            .active
+            .extend_entries(projectee_key, self.rmods_proj_status.inactive.drain_buffer());
     }
     pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_proj(
         &mut self,
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
-        self.rmods_proj_active.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::Targeted => {
-                unload_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
-            }
-            ModifierKind::Buff => unload_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
-            _ => false,
-        });
-        self.rmods_proj_inactive
-            .extend_entries(projectee_key, self.rmods_proj_active.drain_buffer());
+        self.rmods_proj_status
+            .active
+            .buffer_if(projectee_key, |r| match r.kind {
+                ModifierKind::Targeted => {
+                    unload_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
+                }
+                ModifierKind::Buff => unload_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
+                _ => false,
+            });
+        self.rmods_proj_status
+            .inactive
+            .extend_entries(projectee_key, self.rmods_proj_status.active.drain_buffer());
     }
 }
