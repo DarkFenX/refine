@@ -2,7 +2,6 @@ use itertools::Itertools;
 
 use super::{
     rege_proj_buff::{load_affectee_for_proj_buff, unload_affectee_for_proj_buff},
-    rege_proj_system::{load_affectee_for_proj_system, unload_affectee_for_proj_system},
     rege_proj_target::{load_affectee_for_proj_target, unload_affectee_for_proj_target},
 };
 use crate::{
@@ -37,7 +36,7 @@ impl StandardRegister {
             // storage, and add context modifier to container. If it valid and target doesn't pass
             // all checks, put raw modifier into inactive projected modifier storage.
             if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => self.proj_system_mod(rmod, projectee_key, projectee_item),
+                ModifierKind::System => self.proj_system_mod(rmod, projectee_item),
                 ModifierKind::Targeted => self.proj_target_mod(rmod, projectee_key, projectee_item),
                 ModifierKind::Buff => self.proj_buff_mod(rmod, projectee_key, projectee_item),
                 _ => None,
@@ -59,7 +58,6 @@ impl StandardRegister {
         for rmod in rmods.into_iter() {
             // Validate raw modifier and its target, return context modifier if both pass checks.
             if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => self.query_system_mod(rmod, projectee_item),
                 ModifierKind::Targeted => self.query_target_mod(rmod, projectee_key, projectee_item),
                 ModifierKind::Buff => self.query_buff_mod(rmod, projectee_key, projectee_item),
                 _ => None,
@@ -84,7 +82,7 @@ impl StandardRegister {
             // storage, and add context modifier to container. If it is valid and target doesn't
             // pass all checks, remove raw modifier from inactive projected modifier storage.
             if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => self.unproj_system_mod(rmod, projectee_key, projectee_item),
+                ModifierKind::System => self.unproj_system_mod(rmod, projectee_item),
                 ModifierKind::Targeted => self.unproj_target_mod(rmod, projectee_key, projectee_item),
                 ModifierKind::Buff => self.unproj_buff_mod(rmod, projectee_key, projectee_item),
                 _ => None,
@@ -100,7 +98,6 @@ impl StandardRegister {
         projectee_item: &UItem,
     ) {
         self.rmods_proj_inactive.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::System => load_affectee_for_proj_system(&mut self.cmods, r, projectee_item),
             ModifierKind::Targeted => load_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item),
             ModifierKind::Buff => load_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
             _ => false,
@@ -114,7 +111,6 @@ impl StandardRegister {
         projectee_item: &UItem,
     ) {
         self.rmods_proj_active.buffer_if(projectee_key, |r| match r.kind {
-            ModifierKind::System => unload_affectee_for_proj_system(&mut self.cmods, r, projectee_item),
             ModifierKind::Targeted => {
                 unload_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
             }
