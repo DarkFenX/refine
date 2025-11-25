@@ -6,7 +6,7 @@ use super::shared::{
 };
 use crate::{
     misc::{AttrSpec, DmgKinds},
-    rd,
+    rd::RcEffect,
     svc::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
@@ -37,13 +37,13 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
         item: &UItem,
-        r_effects: &[rd::RcEffect],
+        effects: &[RcEffect],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UItem::Module(module) = item
-            && r_effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
+            && effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
         {
             let fit_key = module.get_fit_key();
             // Clear sim data for other RAHs on the same fit
@@ -88,13 +88,13 @@ impl Calc {
         ctx: SvcCtx,
         item_key: &UItemKey,
         item: &UItem,
-        r_effects: &[rd::RcEffect],
+        effects: &[RcEffect],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UItem::Module(module) = item
-            && r_effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
+            && effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
         {
             let fit_key = module.get_fit_key();
             // Remove postprocessors
@@ -119,7 +119,7 @@ impl Calc {
         if self.rah.resonances.is_empty() {
             return;
         }
-        match aspec.a_attr_id {
+        match aspec.attr_id {
             // Ship armor resonances and RAH resonances
             ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
                 match ctx.u_data.items.get(aspec.item_key) {
@@ -142,7 +142,7 @@ impl Calc {
                 }
             }
             // RAH cycle time
-            a_attr_id if Some(a_attr_id) == ctx.u_data.src.get_rah_duration_attr_id() => {
+            attr_id if Some(attr_id) == ctx.u_data.src.get_rah_duration_attr_id() => {
                 if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
@@ -203,7 +203,6 @@ impl Calc {
 fn rah_em_resonance_postproc_fast(calc: &mut Calc, ctx: SvcCtx, item_key: UItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
     calc.get_rah_resonances(ctx, item_key).em
 }
-
 fn rah_therm_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
@@ -212,7 +211,6 @@ fn rah_therm_resonance_postproc_fast(
 ) -> CalcAttrVal {
     calc.get_rah_resonances(ctx, item_key).thermal
 }
-
 fn rah_kin_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
@@ -221,7 +219,6 @@ fn rah_kin_resonance_postproc_fast(
 ) -> CalcAttrVal {
     calc.get_rah_resonances(ctx, item_key).kinetic
 }
-
 fn rah_expl_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
@@ -240,7 +237,6 @@ fn rah_em_resonance_postproc_info(
     info.value = calc.get_rah_resonances(ctx, item_key).em.extra;
     info
 }
-
 fn rah_therm_resonance_postproc_info(
     calc: &mut Calc,
     ctx: SvcCtx,
@@ -250,7 +246,6 @@ fn rah_therm_resonance_postproc_info(
     info.value = calc.get_rah_resonances(ctx, item_key).thermal.extra;
     info
 }
-
 fn rah_kin_resonance_postproc_info(
     calc: &mut Calc,
     ctx: SvcCtx,
@@ -260,7 +255,6 @@ fn rah_kin_resonance_postproc_info(
     info.value = calc.get_rah_resonances(ctx, item_key).kinetic.extra;
     info
 }
-
 fn rah_expl_resonance_postproc_info(
     calc: &mut Calc,
     ctx: SvcCtx,

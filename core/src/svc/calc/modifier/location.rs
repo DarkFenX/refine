@@ -11,8 +11,8 @@ pub(crate) enum Location {
     ItemList(AItemListId),
 }
 impl From<&AEffectLocation> for Location {
-    fn from(a_effect_loc: &AEffectLocation) -> Self {
-        match a_effect_loc {
+    fn from(effect_loc: &AEffectLocation) -> Self {
+        match effect_loc {
             AEffectLocation::Ship => Self::Ship,
             AEffectLocation::Structure => Self::Structure,
             AEffectLocation::Char => Self::Char,
@@ -23,7 +23,7 @@ impl From<&AEffectLocation> for Location {
     }
 }
 impl From<&AEffectBuffScope> for Location {
-    fn from(a_buff_scope: &AEffectBuffScope) -> Self {
-        Self::ItemList(a_buff_scope.item_list_id)
+    fn from(buff_scope: &AEffectBuffScope) -> Self {
+        Self::ItemList(buff_scope.item_list_id)
     }
 }

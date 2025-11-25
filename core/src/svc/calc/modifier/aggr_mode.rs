@@ -1,6 +1,10 @@
-use crate::{ad, rd, util::GetId};
+use crate::{
+    ad::{ABuffAggrMode, ABuffId},
+    rd::RBuff,
+    util::GetId,
+};
 
-pub(crate) type AggrKey = ad::ABuffId;
+pub(crate) type AggrKey = ABuffId;
 
 // Defines how a modification will be aggregated.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -13,10 +17,10 @@ pub(crate) enum AggrMode {
     Max(AggrKey),
 }
 impl AggrMode {
-    pub(in crate::svc::calc) fn from_r_buff(r_buff: &rd::RBuff) -> Self {
-        match r_buff.get_aggr_mode() {
-            ad::ABuffAggrMode::Min => Self::Min(r_buff.get_id()),
-            ad::ABuffAggrMode::Max => Self::Max(r_buff.get_id()),
+    pub(in crate::svc::calc) fn from_buff(buff: &RBuff) -> Self {
+        match buff.get_aggr_mode() {
+            ABuffAggrMode::Min => Self::Min(buff.get_id()),
+            ABuffAggrMode::Max => Self::Max(buff.get_id()),
         }
     }
 }

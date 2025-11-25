@@ -48,7 +48,7 @@ fn mk_modifier(affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
         affector_attr_id: ac::attrs::MISSILE_DMG_MULT,
         op: AOp::PostMulImmune,
-        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::ItemId(ac::items::MISSILE_LAUNCHER_OPERATION)),
+        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(ac::items::MISSILE_LAUNCHER_OPERATION)),
         affectee_attr_id,
     }
 }

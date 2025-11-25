@@ -1,8 +1,9 @@
 use crate::{
-    ac, ad,
+    ac,
+    ad::{AAttr, AAttrId},
     def::{AttrVal, OF},
     misc::AttrSpec,
-    rd,
+    rd::RAttr,
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier},
@@ -12,7 +13,7 @@ use crate::{
     util::GetId,
 };
 
-pub(super) const LIMITED_PRECISION_ATTR_IDS: [ad::AAttrId; 4] = [
+pub(super) const LIMITED_PRECISION_ATTR_IDS: [AAttrId; 4] = [
     ac::attrs::CPU,
     ac::attrs::POWER,
     ac::attrs::CPU_OUTPUT,
@@ -46,9 +47,9 @@ impl Calc {
     }
 }
 
-pub(super) fn get_attr(a_attr_id: ad::AAttrId) -> rd::RAttr {
-    rd::RAttr::new(ad::AAttr {
-        id: a_attr_id,
+pub(super) fn make_default_attr(attr_id: AAttrId) -> RAttr {
+    RAttr::new(AAttr {
+        id: attr_id,
         penalizable: false,
         hig: true,
         def_val: OF(0.0),
@@ -57,7 +58,7 @@ pub(super) fn get_attr(a_attr_id: ad::AAttrId) -> rd::RAttr {
     })
 }
 
-pub(super) fn get_base_attr_value(item: &UItem, attr: &rd::RAttr) -> AttrVal {
+pub(super) fn get_base_attr_value(item: &UItem, attr: &RAttr) -> AttrVal {
     // Fetch unmodified on-item attribute value, or use base attribute value if it is not available
     match item.get_attrs().unwrap().get(&attr.get_id()) {
         Some(orig_val) => *orig_val as AttrVal,

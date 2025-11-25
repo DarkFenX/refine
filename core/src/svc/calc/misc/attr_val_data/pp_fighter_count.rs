@@ -1,5 +1,6 @@
 use crate::{
-    ac, ad,
+    ac,
+    ad::AAttrId,
     def::OF,
     svc::{
         SvcCtx,
@@ -8,7 +9,7 @@ use crate::{
     ud::UItemKey,
 };
 
-pub(in crate::svc::calc) const FTR_COUNT_ATTR: ad::AAttrId = ac::attrs::FTR_SQ_SIZE;
+pub(in crate::svc::calc) const FTR_COUNT_ATTR: AAttrId = ac::attrs::FTR_SQ_SIZE;
 
 pub(super) fn fighter_count_postproc_fast(
     _calc: &mut Calc,

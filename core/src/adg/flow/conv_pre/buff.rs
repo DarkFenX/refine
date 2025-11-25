@@ -44,7 +44,7 @@ pub(in crate::adg::flow::conv_pre) fn conv_buffs(e_data: &EData) -> RMap<ABuffId
         }
         for e_locsrq_mod in e_buff.locsrq_mods.iter() {
             a_mods.push(ABuffModifier {
-                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::ItemId(e_locsrq_mod.skill_id)),
+                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::TypeId(e_locsrq_mod.skill_id)),
                 affectee_attr_id: e_locsrq_mod.attr_id,
             });
         }

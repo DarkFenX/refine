@@ -52,7 +52,7 @@ fn update_effect(a_effect: &mut AEffect) {
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,
-                AModifierSrq::ItemId(ac::items::HIGH_SPEED_MANEUVERING),
+                AModifierSrq::TypeId(ac::items::HIGH_SPEED_MANEUVERING),
             ),
             affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
         },
@@ -62,7 +62,7 @@ fn update_effect(a_effect: &mut AEffect) {
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,
-                AModifierSrq::ItemId(ac::items::MICRO_JUMP_DRIVE_OPERATION),
+                AModifierSrq::TypeId(ac::items::MICRO_JUMP_DRIVE_OPERATION),
             ),
             affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
         },
@@ -72,7 +72,7 @@ fn update_effect(a_effect: &mut AEffect) {
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,
-                AModifierSrq::ItemId(ac::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
+                AModifierSrq::TypeId(ac::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
             ),
             affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED,
         },

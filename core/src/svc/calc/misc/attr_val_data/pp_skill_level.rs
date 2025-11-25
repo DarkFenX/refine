@@ -1,5 +1,6 @@
 use crate::{
-    ac, ad,
+    ac,
+    ad::AAttrId,
     def::OF,
     svc::{
         SvcCtx,
@@ -8,7 +9,7 @@ use crate::{
     ud::UItemKey,
 };
 
-pub(in crate::svc::calc) const SKILL_LVL_ATTR: ad::AAttrId = ac::attrs::SKILL_LEVEL;
+pub(in crate::svc::calc) const SKILL_LVL_ATTR: AAttrId = ac::attrs::SKILL_LEVEL;
 
 pub(super) fn skill_level_postproc_fast(
     _calc: &mut Calc,

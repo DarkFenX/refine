@@ -1,7 +1,7 @@
 use std::hash::{BuildHasher, Hash};
 
 use crate::{
-    ad,
+    ad::AAttrId,
     misc::{AttrSpec, EffectSpec},
     svc::calc::{
         CtxModifier, RawModifier,
@@ -16,7 +16,7 @@ impl StandardRegister {
         &self,
         item_key: &UItemKey,
         item: &UItem,
-        attr_id: &ad::AAttrId,
+        attr_id: &AAttrId,
         fits: &UFits,
     ) -> Vec<CtxModifier> {
         let fit_key = item.get_fit_key();
@@ -80,7 +80,7 @@ fn filter_and_extend<K, H1, H2>(
     vec: &mut Vec<CtxModifier>,
     storage: &MapSet<K, CtxModifier, H1, H2>,
     key: &K,
-    attr_id: &ad::AAttrId,
+    attr_id: &AAttrId,
 ) where
     K: Eq + Hash,
     H1: BuildHasher + Default,

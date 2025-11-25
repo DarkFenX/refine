@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AAttrId,
     misc::{AttrSpec, EffectSpec},
     ud::UItemKey,
     util::RMapRSet,
@@ -20,7 +20,7 @@ pub(crate) struct DependencyRegister {
     // affectee attribute to be cleared whenever linked attribute changes its value.
     pub(super) data: RMapRSet<AttrSpec, AttrSpec>,
     // Map<item ID, (affector attr ID, affectee attr ID)>
-    pub(super) anonymous_by_item: RMapRSet<UItemKey, (ad::AAttrId, ad::AAttrId)>,
+    pub(super) anonymous_by_item: RMapRSet<UItemKey, (AAttrId, AAttrId)>,
     // Map<source, (affector spec, affectee spec)>
     pub(super) by_source: RMapRSet<EffectSpec, (AttrSpec, AttrSpec)>,
     // Map<item ID, sources>
@@ -46,14 +46,14 @@ impl DependencyRegister {
     pub(in crate::svc::calc) fn add_anonymous(
         &mut self,
         item_key: UItemKey,
-        affector_a_attr_id: ad::AAttrId,
-        affectee_a_attr_id: ad::AAttrId,
+        affector_attr_id: AAttrId,
+        affectee_attr_id: AAttrId,
     ) {
-        let affector_spec = AttrSpec::new(item_key, affector_a_attr_id);
-        let affectee_spec = AttrSpec::new(item_key, affectee_a_attr_id);
+        let affector_spec = AttrSpec::new(item_key, affector_attr_id);
+        let affectee_spec = AttrSpec::new(item_key, affectee_attr_id);
         self.data.add_entry(affector_spec, affectee_spec);
         self.anonymous_by_item
-            .add_entry(item_key, (affector_a_attr_id, affectee_a_attr_id));
+            .add_entry(item_key, (affector_attr_id, affectee_attr_id));
     }
     pub(crate) fn add_with_source(
         &mut self,
@@ -78,9 +78,9 @@ impl DependencyRegister {
     pub(in crate::svc::calc) fn remove_item(&mut self, item_key: UItemKey) {
         // Anonymous dependencies
         if let Some(attrs_iter) = self.anonymous_by_item.remove_key(&item_key) {
-            for (affector_a_attr_id, affectee_a_attr_id) in attrs_iter {
-                let affector_spec = AttrSpec::new(item_key, affector_a_attr_id);
-                let affectee_spec = AttrSpec::new(item_key, affectee_a_attr_id);
+            for (affector_attr_id, affectee_attr_id) in attrs_iter {
+                let affector_spec = AttrSpec::new(item_key, affector_attr_id);
+                let affectee_spec = AttrSpec::new(item_key, affectee_attr_id);
                 self.data.remove_entry(affector_spec, &affectee_spec);
             }
         }

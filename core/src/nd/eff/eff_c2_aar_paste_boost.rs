@@ -64,7 +64,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
         affector_espec: espec,
         affector_value: AffectorValue::Custom(CustomAffectorValue {
             kind: CustomAffectorValueKind::AarRepAmount,
-            affector_a_attr_id: Some(AAR_MULTIPLIER),
+            affector_attr_id: Some(AAR_MULTIPLIER),
             affector_info_getter: get_affector_info,
             mod_val_getter: get_mod_val,
             item_add_reviser: Some(revise_on_item_add_removal),

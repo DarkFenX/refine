@@ -181,7 +181,7 @@ fn conv_locsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             get_mod_location(e_modifier, a_effect)?,
-            AModifierSrq::ItemId(get_mod_skill_id(e_modifier)?),
+            AModifierSrq::TypeId(get_mod_skill_id(e_modifier)?),
         ),
         affectee_attr_id: get_mod_affectee_attr_id(e_modifier)?,
     })
@@ -202,7 +202,7 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
     Ok(AEffectModifier {
         affector_attr_id: get_mod_src_attr_id(e_modifier)?,
         op: get_mod_operation(e_modifier)?,
-        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::ItemId(get_mod_skill_id(e_modifier)?)),
+        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(get_mod_skill_id(e_modifier)?)),
         affectee_attr_id: get_mod_affectee_attr_id(e_modifier)?,
     })
 }

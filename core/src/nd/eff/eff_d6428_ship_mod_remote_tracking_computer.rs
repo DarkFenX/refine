@@ -44,7 +44,7 @@ fn make_rtc_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffect
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             AEffectLocation::Target,
-            AModifierSrq::ItemId(ac::items::GUNNERY),
+            AModifierSrq::TypeId(ac::items::GUNNERY),
         ),
         affectee_attr_id,
     }

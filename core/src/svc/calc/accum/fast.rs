@@ -9,7 +9,7 @@ use super::shared::{
     normalize_sub, preprocess_assign_diminish_mult,
 };
 use crate::{
-    ad,
+    ad::AItemCatId,
     def::{AttrVal, OF},
     svc::calc::{AggrKey, AggrMode, Op},
     util::RMap,
@@ -53,7 +53,7 @@ impl ModAccumFast {
         res_mult: Option<AttrVal>,
         op: &Op,
         attr_pen: bool,
-        a_item_cat: &ad::AItemCatId,
+        item_cat: &AItemCatId,
         aggr_mode: &AggrMode,
     ) {
         match op {
@@ -71,7 +71,7 @@ impl ModAccumFast {
                 res_mult,
                 normalize_noop,
                 diminish_mul,
-                is_penal(attr_pen, a_item_cat),
+                is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
             Op::PreDiv => self.pre_div.add_val(
@@ -80,7 +80,7 @@ impl ModAccumFast {
                 res_mult,
                 normalize_div,
                 diminish_mul,
-                is_penal(attr_pen, a_item_cat),
+                is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
             Op::Add => self
@@ -95,7 +95,7 @@ impl ModAccumFast {
                 res_mult,
                 normalize_noop,
                 diminish_mul,
-                is_penal(attr_pen, a_item_cat),
+                is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
             Op::PostMulImmune => {
@@ -108,7 +108,7 @@ impl ModAccumFast {
                 res_mult,
                 normalize_div,
                 diminish_mul,
-                is_penal(attr_pen, a_item_cat),
+                is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
             Op::PostPerc => self.post_perc.add_val(
@@ -117,7 +117,7 @@ impl ModAccumFast {
                 res_mult,
                 normalize_perc,
                 diminish_mul,
-                is_penal(attr_pen, a_item_cat),
+                is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
             Op::PostPercImmune => {

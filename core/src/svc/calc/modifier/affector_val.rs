@@ -1,7 +1,7 @@
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
-    ad,
+    ad::{AAttrId, AAttrVal},
     def::AttrVal,
     misc::EffectSpec,
     svc::{
@@ -13,19 +13,19 @@ use crate::{
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum AffectorValue {
-    AttrId(ad::AAttrId),
-    Hardcoded(ad::AAttrVal),
+    AttrId(AAttrId),
+    Hardcoded(AAttrVal),
     Custom(CustomAffectorValue),
 }
 impl AffectorValue {
     // Simple and fast way to get affector attribute. Variants which have actual affector attributes
     // but do not expose anything are designed to handle attribute cleanup in some other way (via
     // dependency/revision registers)
-    pub(super) fn get_affector_a_attr_id(&self) -> Option<ad::AAttrId> {
+    pub(super) fn get_affector_attr_id(&self) -> Option<AAttrId> {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
             Self::Hardcoded(_) => None,
-            Self::Custom(custom) => custom.affector_a_attr_id,
+            Self::Custom(custom) => custom.affector_attr_id,
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
@@ -44,7 +44,7 @@ impl AffectorValue {
     }
     pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
         match self {
-            Self::AttrId(a_attr_id) => Some(calc.get_item_attr_val_full(ctx, espec.item_key, a_attr_id).ok()?.dogma),
+            Self::AttrId(attr_id) => Some(calc.get_item_attr_val_full(ctx, espec.item_key, attr_id).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),
             Self::Custom(custom) => (custom.mod_val_getter)(calc, ctx, espec),
         }

@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     misc::{AttrSpec, EffectSpec},
-    rd,
+    rd::RcEffect,
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier, FTR_COUNT_ATTR, ModifierKind, RawModifier, SEC_STATUS_ATTR, SKILL_LVL_ATTR},
@@ -99,44 +99,44 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
         item: &UItem,
-        r_effects: &[rd::RcEffect],
+        effects: &[RcEffect],
     ) {
         // Notify core calc services
         let mut reuse_rmods = Vec::new();
         let mut reuse_items = Vec::new();
         let mut reuse_cmods = Vec::new();
-        for r_effect in r_effects.iter() {
-            self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_key, item, r_effect);
+        for effect in effects.iter() {
+            self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_key, item, effect);
             for &rmod in reuse_rmods.iter() {
                 self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod);
             }
             // Buff maintenance - add info about effects which use default buff attributes
-            self.buffs.reg_effect(item_key, r_effect);
+            self.buffs.reg_effect(item_key, effect);
         }
         // Notify RAH sim
-        self.rah_effects_started(ctx, item_key, item, r_effects);
+        self.rah_effects_started(ctx, item_key, item, effects);
     }
     pub(in crate::svc) fn effects_stopped(
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
         item: &UItem,
-        r_effects: &[rd::RcEffect],
+        effects: &[RcEffect],
     ) {
         // Notify RAH sim
-        self.rah_effects_stopped(ctx, &item_key, item, r_effects);
+        self.rah_effects_stopped(ctx, &item_key, item, effects);
         // Notify core calc services
         let mut reuse_rmods = Vec::new();
         let mut reuse_items = Vec::new();
         let mut reuse_cmods = Vec::new();
-        for r_effect in r_effects.iter() {
-            let espec = EffectSpec::new(item_key, r_effect.get_key());
+        for effect in effects.iter() {
+            let espec = EffectSpec::new(item_key, effect.get_key());
             self.std.extract_raw_mods_for_effect(&mut reuse_rmods, espec);
             for rmod in reuse_rmods.iter() {
                 self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod)
             }
             // Buff maintenance - remove info about effects which use default buff attributes
-            self.buffs.unreg_effect(item_key, r_effect);
+            self.buffs.unreg_effect(item_key, effect);
             // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used
             // by e.g. custom propulsion module modifier
             self.deps.remove_by_source(&espec);
@@ -204,7 +204,7 @@ impl Calc {
             }
         }
         // Process buffs which rely on attribute being modified
-        if ac::extras::BUFF_STDATTR_IDS.contains(&aspec.a_attr_id) {
+        if ac::extras::BUFF_STDATTR_IDS.contains(&aspec.attr_id) {
             let item = ctx.u_data.items.get(aspec.item_key);
             // Remove modifiers of buffs which rely on the attribute
             if let Some(rmods) = self.buffs.extract_dependent_mods(&aspec) {
@@ -220,7 +220,7 @@ impl Calc {
             if effect_keys.len() > 0 {
                 let effect_keys = effect_keys.collect_vec();
                 let rmods =
-                    self.generate_dependent_buff_mods(ctx, aspec.item_key, item, effect_keys.iter(), aspec.a_attr_id);
+                    self.generate_dependent_buff_mods(ctx, aspec.item_key, item, effect_keys.iter(), aspec.attr_id);
                 for rmod in rmods.iter() {
                     self.buffs.reg_dependent_mod(aspec, *rmod);
                 }
@@ -244,7 +244,7 @@ impl Calc {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). Removing attribute forces
             // recalculation
-            if item_attr_data.values.remove(&aspec.a_attr_id).is_some() {
+            if item_attr_data.values.remove(&aspec.attr_id).is_some() {
                 self.attr_value_changed(ctx, aspec);
             }
         }
@@ -257,7 +257,7 @@ impl Calc {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). In this case we do not remove
             // attribute, because only postprocessing output is supposed to change
-            if item_attr_data.values.contains_key(&aspec.a_attr_id) {
+            if item_attr_data.values.contains_key(&aspec.attr_id) {
                 self.attr_value_changed(ctx, aspec);
             }
         }

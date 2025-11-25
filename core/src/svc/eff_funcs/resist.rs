@@ -23,7 +23,7 @@ pub(crate) fn get_resist_mult_val_by_projectee_aspec(
     projectee_aspec: &AttrSpec,
 ) -> Option<AttrVal> {
     let mult = calc
-        .get_item_attr_val_full(ctx, projectee_aspec.item_key, &projectee_aspec.a_attr_id)
+        .get_item_attr_val_full(ctx, projectee_aspec.item_key, &projectee_aspec.attr_id)
         .ok()?
         .dogma;
     Some(match mult.abs() <= 0.0001 {

@@ -4,11 +4,12 @@ use smallvec::SmallVec;
 
 use super::AffectorValue;
 use crate::{
-    ac, ad,
+    ac,
+    ad::{AAttrId, ABuffModifier, AEffectModifier},
     def::AttrVal,
     misc::EffectSpec,
     nd::NProjMultGetter,
-    rd,
+    rd::{RBuff, REffect},
     svc::{
         SvcCtx,
         calc::{
@@ -27,13 +28,13 @@ pub(crate) struct RawModifier {
     pub(crate) op: Op,
     pub(crate) aggr_mode: AggrMode,
     pub(crate) affectee_filter: AffecteeFilter,
-    pub(crate) affectee_attr_id: ad::AAttrId,
+    pub(crate) affectee_attr_id: AAttrId,
     // Buff-related
-    pub(crate) buff_type_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) buff_type_attr_id: Option<AAttrId> = None,
     // Projection-related
     pub(crate) proj_mult_getter: Option<NProjMultGetter> = None,
-    pub(crate) proj_attr_ids: [Option<ad::AAttrId>; 2] = [None, None],
-    pub(crate) resist_attr_id: Option<ad::AAttrId> = None,
+    pub(crate) proj_attr_ids: [Option<AAttrId>; 2] = [None, None],
+    pub(crate) resist_attr_id: Option<AAttrId> = None,
 }
 impl PartialEq for RawModifier {
     fn eq(&self, other: &Self) -> bool {
@@ -64,8 +65,8 @@ impl RawModifier {
     pub(in crate::svc::calc) fn try_from_effect_mod(
         affector_key: UItemKey,
         affector_item: &UItem,
-        effect: &rd::REffect,
-        effect_mod: &ad::AEffectModifier,
+        effect: &REffect,
+        effect_mod: &AEffectModifier,
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_effect_affectee_filter(&effect_mod.affectee_filter, affector_item);
         let kind = get_mod_kind(effect, &affectee_filter)?;
@@ -92,12 +93,12 @@ impl RawModifier {
     pub(in crate::svc::calc) fn try_from_buff_regular(
         affector_key: UItemKey,
         affector_item: &UItem,
-        effect: &rd::REffect,
-        buff: &rd::RBuff,
-        buff_mod: &ad::ABuffModifier,
-        affector_attr_id: ad::AAttrId,
+        effect: &REffect,
+        buff: &RBuff,
+        buff_mod: &ABuffModifier,
+        affector_attr_id: AAttrId,
         loc: Location,
-        buff_type_attr_id: Option<ad::AAttrId>,
+        buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
         RawModifier::from_buff(
             affector_key,
@@ -113,9 +114,9 @@ impl RawModifier {
     pub(in crate::svc::calc) fn try_from_buff_hardcoded(
         affector_key: UItemKey,
         affector_item: &UItem,
-        effect: &rd::REffect,
-        buff: &rd::RBuff,
-        buff_mod: &ad::ABuffModifier,
+        effect: &REffect,
+        buff: &RBuff,
+        buff_mod: &ABuffModifier,
         affector_mod_val: AttrVal,
         loc: Location,
     ) -> Option<Self> {
@@ -133,12 +134,12 @@ impl RawModifier {
     fn from_buff(
         affector_key: UItemKey,
         affector_item: &UItem,
-        effect: &rd::REffect,
-        buff: &rd::RBuff,
-        buff_mod: &ad::ABuffModifier,
+        effect: &REffect,
+        buff: &RBuff,
+        buff_mod: &ABuffModifier,
         affector_value: AffectorValue,
         loc: Location,
-        buff_type_attr_id: Option<ad::AAttrId>,
+        buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_buff_affectee_filter(&buff_mod.affectee_filter, loc, affector_item);
         let kind = get_mod_kind(effect, &affectee_filter)?;
@@ -151,7 +152,7 @@ impl RawModifier {
             affector_espec: EffectSpec::new(affector_key, effect.get_key()),
             affector_value,
             op: (&buff.get_op()).into(),
-            aggr_mode: AggrMode::from_r_buff(buff),
+            aggr_mode: AggrMode::from_buff(buff),
             affectee_filter,
             affectee_attr_id: buff_mod.affectee_attr_id,
             buff_type_attr_id,
@@ -161,8 +162,8 @@ impl RawModifier {
             ..
         })
     }
-    pub(in crate::svc::calc) fn get_affector_attr_id(&self) -> Option<ad::AAttrId> {
-        self.affector_value.get_affector_a_attr_id()
+    pub(in crate::svc::calc) fn get_affector_attr_id(&self) -> Option<AAttrId> {
+        self.affector_value.get_affector_attr_id()
     }
     pub(in crate::svc::calc) fn get_affector_info(&self, ctx: SvcCtx) -> SmallVec<AffectorInfo, 1> {
         self.affector_value.get_affector_info(ctx, self.affector_espec.item_key)
@@ -179,19 +180,19 @@ impl RawModifier {
     }
 }
 
-fn get_mod_kind(r_effect: &rd::REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
+fn get_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
     if let AffecteeFilter::Direct(loc) = affectee_filter
         && matches!(loc, Location::Item | Location::Other)
     {
         return Some(ModifierKind::Local);
     }
-    match (r_effect.get_category(), &r_effect.get_buff_info()) {
+    match (effect.get_category(), &effect.get_buff_info()) {
         // Local modifications
         (ac::effcats::PASSIVE | ac::effcats::ACTIVE | ac::effcats::ONLINE | ac::effcats::OVERLOAD, None) => {
             Some(ModifierKind::Local)
         }
         // Buffs
-        (ac::effcats::ACTIVE, Some(a_buff_info)) => match a_buff_info.scope.fleet_only {
+        (ac::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope.fleet_only {
             true => Some(ModifierKind::FleetBuff),
             false => Some(ModifierKind::Buff),
         },

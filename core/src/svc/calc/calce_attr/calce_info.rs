@@ -4,9 +4,10 @@
 
 use smallvec::SmallVec;
 
-use super::calce_shared::{LIMITED_PRECISION_ATTR_IDS, get_attr, get_base_attr_value};
+use super::calce_shared::{LIMITED_PRECISION_ATTR_IDS, get_base_attr_value, make_default_attr};
 use crate::{
-    ac, ad,
+    ac,
+    ad::AAttrId,
     misc::{OpInfo, SecZone},
     svc::{
         SvcCtx,
@@ -28,7 +29,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AAttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for attr_id in self.iter_item_attr_ids(ctx, item_key)? {
             let mut attr_info = self.calc_item_attr_info(ctx, item_key, &attr_id);
@@ -46,7 +47,7 @@ impl Calc {
         &self,
         ctx: SvcCtx,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = ad::AAttrId> + use<>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = AAttrId> + use<>, KeyedItemLoadedError> {
         let item_attrs = match ctx.u_data.items.get(item_key).get_attrs() {
             Some(item_a_attrs) => item_a_attrs,
             None => return Err(KeyedItemLoadedError { item_key }),
@@ -60,7 +61,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: &UItemKey,
         item: &UItem,
-        attr_id: &ad::AAttrId,
+        attr_id: &AAttrId,
     ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();
         for cmod in self
@@ -91,11 +92,11 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemKey, attr_id: &ad::AAttrId) -> AttrValInfo {
+    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemKey, attr_id: &AAttrId) -> AttrValInfo {
         let item = ctx.u_data.items.get(item_key);
         let attr = match ctx.u_data.src.get_attr(attr_id) {
             Some(attr) => attr,
-            None => &get_attr(*attr_id),
+            None => &make_default_attr(*attr_id),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute
         // value.

@@ -1,9 +1,10 @@
 use crate::{
-    ac, ad,
+    ac,
+    ad::AItemCatId,
     def::{AttrVal, OF},
 };
 
-const PENALTY_IMMUNE_A_ITEM_CATS: [ad::AItemCatId; 5] = [
+const PENALTY_IMMUNE_ITEM_CATS: [AItemCatId; 5] = [
     ac::itemcats::SHIP,
     ac::itemcats::CHARGE,
     ac::itemcats::SKILL,
@@ -24,8 +25,8 @@ pub(super) const PENALTY_DENOMINATORS: [AttrVal; 8] = [
     OF(f64::from_bits(0x408e320fff24307e)),
 ];
 
-pub(in crate::svc::calc) fn is_penal(attr_penalizable: bool, affector_a_item_cat_id: &ad::AItemCatId) -> bool {
-    attr_penalizable && !PENALTY_IMMUNE_A_ITEM_CATS.contains(affector_a_item_cat_id)
+pub(in crate::svc::calc) fn is_penal(attr_penalizable: bool, affector_a_item_cat_id: &AItemCatId) -> bool {
+    attr_penalizable && !PENALTY_IMMUNE_ITEM_CATS.contains(affector_a_item_cat_id)
 }
 
 // Normalization functions
