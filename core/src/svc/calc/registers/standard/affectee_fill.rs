@@ -6,7 +6,7 @@ use crate::{
             registers::standard::data::StandardRegister,
         },
     },
-    ud::{UFit, UFitKey, UItem, UItemKey, UShipKind},
+    ud::{UData, UFitKey, UItem, UItemKey, UShipKind},
     util::extend_vec_from_map_set_l1,
 };
 
@@ -69,8 +69,7 @@ impl StandardRegister {
                         _ => return,
                     },
                 };
-                let fit = ctx.u_data.fits.get(fit_key);
-                if check_loc_owner(loc_kind, fit) {
+                if check_location_root(&ctx.u_data, loc_kind, fit_key) {
                     let key = (fit_key, loc_kind);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_root, &key);
                 }
@@ -83,8 +82,7 @@ impl StandardRegister {
                         _ => return,
                     },
                 };
-                let fit = ctx.u_data.fits.get(fit_key);
-                if check_loc_owner(loc_kind, fit) {
+                if check_location_root(&ctx.u_data, loc_kind, fit_key) {
                     let key = (fit_key, loc_kind);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
                 }
@@ -97,8 +95,7 @@ impl StandardRegister {
                         _ => return,
                     },
                 };
-                let fit = ctx.u_data.fits.get(fit_key);
-                if check_loc_owner(loc_kind, fit) {
+                if check_location_root(&ctx.u_data, loc_kind, fit_key) {
                     let key = (fit_key, loc_kind, item_grp_id);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
                 }
@@ -111,8 +108,7 @@ impl StandardRegister {
                         _ => return,
                     },
                 };
-                let fit = ctx.u_data.fits.get(fit_key);
-                if check_loc_owner(loc_kind, fit) {
+                if check_location_root(&ctx.u_data, loc_kind, fit_key) {
                     let key = (fit_key, loc_kind, srq_type_id);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
                 }
@@ -199,10 +195,16 @@ impl StandardRegister {
     }
 }
 
-fn check_loc_owner(loc: LocationKind, fit: &UFit) -> bool {
+fn check_location_root(u_data: &UData, loc: LocationKind, fit_key: UFitKey) -> bool {
     match loc {
         LocationKind::Character => true,
-        LocationKind::Ship => matches!(fit.ship_kind, UShipKind::Ship),
-        LocationKind::Structure => matches!(fit.ship_kind, UShipKind::Structure),
+        LocationKind::Ship => {
+            let fit = u_data.fits.get(fit_key);
+            matches!(fit.ship_kind, UShipKind::Ship)
+        }
+        LocationKind::Structure => {
+            let fit = u_data.fits.get(fit_key);
+            matches!(fit.ship_kind, UShipKind::Structure)
+        }
     }
 }
