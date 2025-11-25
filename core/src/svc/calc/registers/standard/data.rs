@@ -28,7 +28,7 @@ pub(in crate::svc::calc) struct StandardRegister {
     pub(super) affectee_buffable: RMapRSet<(UFitKey, AItemListId), UItemKey>,
     // Fits which have ships which are modifiable by buffs via specific item list
     // Map<item list ID, (fit key, ship key)>
-    pub(super) affectee_buffable_ships: RMapRSet<AItemListId, (UFitKey, UItemKey)>,
+    pub(super) affectee_buffable_ships: RMapRSet<AItemListId, (UFitKey, UItemKey, LocationKind)>,
     // All raw modifiers tracked by register
     // Map<affector effect spec, modifiers>
     pub(super) rmods_all: RMapRSet<EffectSpec, RawModifier>,

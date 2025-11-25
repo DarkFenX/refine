@@ -34,7 +34,7 @@ impl StandardRegister {
                 ModifierKind::Targeted => {
                     self.fill_for_fit_item_target(reuse_affectees, ctx, &cmod.raw, fit_key, item_key)
                 }
-                ModifierKind::Buff => self.fill_for_fit_item_buff(reuse_affectees, &cmod.raw, fit_key),
+                ModifierKind::Buff => self.fill_for_fit_item_buff(reuse_affectees, ctx, &cmod.raw, fit_key),
                 _ => (),
             },
         }
@@ -166,19 +166,28 @@ impl StandardRegister {
             _ => (),
         }
     }
-    fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemKey>, rmod: &RawModifier, fit_key: UFitKey) {
+    fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitKey) {
         match rmod.affectee_filter {
             AffecteeFilter::Loc(_) => {
-                let key = (fit_key, LocationKind::Ship);
-                extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
+                let fit = ctx.u_data.fits.get(fit_key);
+                if let Ok(loc_kind) = fit.ship_kind.try_into() {
+                    let key = (fit_key, loc_kind);
+                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
+                }
             }
             AffecteeFilter::LocGrp(_, item_grp_id) => {
-                let key = (fit_key, LocationKind::Ship, item_grp_id);
-                extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
+                let fit = ctx.u_data.fits.get(fit_key);
+                if let Ok(loc_kind) = fit.ship_kind.try_into() {
+                    let key = (fit_key, loc_kind, item_grp_id);
+                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
+                }
             }
             AffecteeFilter::LocSrq(_, srq_type_id) => {
-                let key = (fit_key, LocationKind::Ship, srq_type_id);
-                extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
+                let fit = ctx.u_data.fits.get(fit_key);
+                if let Ok(loc_kind) = fit.ship_kind.try_into() {
+                    let key = (fit_key, loc_kind, srq_type_id);
+                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
+                }
             }
             _ => (),
         }

@@ -44,7 +44,7 @@ impl StandardRegister {
             }
         }
         for afectee_infos in self.affectee_buffable_ships.values() {
-            for (fit_key, item_key) in afectee_infos {
+            for (fit_key, item_key, _) in afectee_infos {
                 check_fit_key(u_data, *fit_key)?;
                 check_item_key(u_data, *item_key, true)?;
             }

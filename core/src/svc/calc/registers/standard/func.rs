@@ -1,10 +1,8 @@
 use std::hash::{BuildHasher, Hash};
 
 use crate::{
-    ad::AItemListId,
     misc::AttrSpec,
-    svc::{SvcCtx, calc::CtxModifier},
-    ud::{UFitKey, UItemKey},
+    svc::calc::CtxModifier,
     util::{MapSet, RMapRSet},
 };
 
@@ -55,16 +53,5 @@ pub(super) fn remove_cmod<K, H1, H2>(
     for proj_attr_id in cmod.raw.proj_attr_ids.into_iter().flatten() {
         let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_key, proj_attr_id);
         aspec_storage.remove_entry(affector_aspec, cmod);
-    }
-}
-
-// TODO: look for a way to optimize it by moving ship info to fit, or something in the register
-pub(super) fn is_fit_ship_on_item_list(ctx: SvcCtx, fit_key: UFitKey, item_list_id: &AItemListId) -> Option<UItemKey> {
-    let fit = ctx.u_data.fits.get(fit_key);
-    let ship_key = fit.ship?;
-    let ship = ctx.u_data.items.get(ship_key);
-    match ship.get_item_buff_item_lists()?.contains(item_list_id) {
-        true => Some(ship_key),
-        false => None,
     }
 }

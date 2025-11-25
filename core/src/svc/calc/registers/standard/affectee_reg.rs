@@ -43,17 +43,17 @@ impl StandardRegister {
                 self.affectee_buffable.add_entry((fit_key, item_list_id), item_key);
             }
             let ship = match item {
-                UItem::Ship(ship) => {
+                UItem::Ship(ship) if let Ok(loc_kind) = ship.get_kind().try_into() => {
                     for &item_list_id in item_list_ids {
                         self.affectee_buffable_ships
-                            .add_entry(item_list_id, (ship.get_fit_key(), item_key));
+                            .add_entry(item_list_id, (ship.get_fit_key(), item_key, loc_kind));
                     }
                     Some(ship)
                 }
                 _ => None,
             };
             self.reg_affectee_for_sw_buff(item_key, ship, item_list_ids);
-            self.reg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, item_list_ids);
+            self.reg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_ids);
         }
         // If it's ship being unregistered, adding it might trigger attribute changes on various
         // items like modules. Valid list of modifiers can be fetched only with ship in place, so
@@ -106,17 +106,17 @@ impl StandardRegister {
                 self.affectee_buffable.remove_entry((fit_key, item_list_id), &item_key);
             }
             let ship = match item {
-                UItem::Ship(ship) => {
+                UItem::Ship(ship) if let Ok(loc_kind) = ship.get_kind().try_into() => {
                     for &item_list_id in item_list_ids {
                         self.affectee_buffable_ships
-                            .remove_entry(item_list_id, &(ship.get_fit_key(), item_key));
+                            .remove_entry(item_list_id, &(ship.get_fit_key(), item_key, loc_kind));
                     }
                     Some(ship)
                 }
                 _ => None,
             };
             self.unreg_affectee_for_sw_buff(item_key, ship, item_list_ids);
-            self.unreg_affectee_for_fw_buff(item_key, ship.is_some(), fit_key, item_list_ids);
+            self.unreg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_ids);
         }
         cmods
     }
