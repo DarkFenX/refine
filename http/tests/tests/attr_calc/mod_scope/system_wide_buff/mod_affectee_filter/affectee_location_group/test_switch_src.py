@@ -1,9 +1,10 @@
 from tests import approx
 
 
-def test_to_struct(client, consts):
+def test_onlist_to_offlist_to_onlist(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
+    eve_grp_id = client.mk_eve_item_group(datas=[eve_d1, eve_d2])
     eve_buff_type_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
@@ -11,7 +12,7 @@ def test_to_struct(client, consts):
         datas=[eve_d1, eve_d2],
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
     eve_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2],
         id_=consts.UtilEffect.buff_everything,
@@ -21,7 +22,7 @@ def test_to_struct(client, consts):
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_rig_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_affectee_attr_id: 7.5})
+    eve_rig_id = client.mk_eve_item(datas=[eve_d1, eve_d2], grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 7.5})
     eve_root_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_ship(datas=[eve_d1], id_=eve_root_id)
     client.mk_eve_struct(datas=[eve_d2], id_=eve_root_id)
