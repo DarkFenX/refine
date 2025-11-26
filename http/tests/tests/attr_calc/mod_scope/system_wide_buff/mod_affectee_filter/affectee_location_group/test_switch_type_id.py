@@ -186,7 +186,7 @@ def test_root_not_loaded_to_ship_remove(client, consts):
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_affected_child_module(client, consts):
+def test_child_module(client, consts):
     eve_grp_id = client.mk_eve_item_group()
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

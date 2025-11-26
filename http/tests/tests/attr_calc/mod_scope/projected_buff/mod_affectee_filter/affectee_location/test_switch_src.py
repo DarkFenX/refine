@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def test_to_struct(client, consts):
+def test_onlist_to_offlist_to_onlist(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_buff_type_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.warfare_buff_1_id)

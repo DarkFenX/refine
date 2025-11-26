@@ -1,7 +1,7 @@
 from tests import approx, check_no_field
 
 
-def setup_root_test(*, client, consts):
+def setup_test(*, client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_loaded_onlist_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
     eve_loaded_offlist_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
@@ -35,7 +35,7 @@ def test_loaded_onlist_to_loaded_offlist_remove(client, consts):
      _,
      _,
      api_fit,
-     api_fw_effect) = setup_root_test(client=client, consts=consts)
+     api_fw_effect) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
     assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
@@ -56,7 +56,7 @@ def test_loaded_onlist_to_unloaded_onlist_remove(client, consts):
      eve_unloaded_onlist_id,
      _,
      api_fit,
-     api_fw_effect) = setup_root_test(client=client, consts=consts)
+     api_fw_effect) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
     assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
@@ -81,7 +81,7 @@ def test_loaded_offlist_to_loaded_onlist_remove(client, consts):
      _,
      _,
      api_fit,
-     api_fw_effect) = setup_root_test(client=client, consts=consts)
+     api_fw_effect) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_loaded_offlist_id)
     # Verification
     assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
@@ -102,7 +102,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove(client, consts):
      _,
      eve_unloaded_offlist_id,
      api_fit,
-     api_fw_effect) = setup_root_test(client=client, consts=consts)
+     api_fw_effect) = setup_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_unloaded_offlist_id)
     # Verification
     api_root.update()
