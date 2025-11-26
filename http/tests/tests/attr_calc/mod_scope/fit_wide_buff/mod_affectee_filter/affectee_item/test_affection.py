@@ -110,21 +110,26 @@ def test_unaffected_root_char(client, consts):
 
 
 def test_unaffected_offlist_child(client, consts):
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()
-    eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5})
-    eve_item_list_id = client.mk_eve_item_list()
     eve_buff_id = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_fw_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_fw_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_ships, cat_id=consts.EveEffCat.active)
+    eve_fw_effect_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_drone_id = client.mk_eve_drone(attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone_id)
     api_fit.add_fw_effect(type_id=eve_fw_effect_id)
-    assert api_drone.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    api_drone2 = api_fit.add_drone(type_id=eve_drone_id)
+    assert api_drone1.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_drone2.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
 def test_unaffected_unbuffable_item_kind(client, consts):
