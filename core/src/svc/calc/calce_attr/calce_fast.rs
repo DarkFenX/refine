@@ -187,7 +187,7 @@ impl Calc {
                 let security_attr_id = match ctx.u_data.sec_zone {
                     SecZone::HiSec(_) => ac::attrs::HISEC_MODIFIER,
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
-                    _ => ac::attrs::NULLSEC_MODIFIER,
+                    SecZone::NullSec | SecZone::WSpace | SecZone::Hazard => ac::attrs::NULLSEC_MODIFIER,
                 };
                 // Fetch base value for the generic attribute depending on solar system sec zone,
                 // using its base value as a fallback

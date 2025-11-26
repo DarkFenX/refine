@@ -107,7 +107,7 @@ impl Calc {
                 let security_attr_id = match ctx.u_data.sec_zone {
                     SecZone::HiSec(_) => ac::attrs::HISEC_MODIFIER,
                     SecZone::LowSec(_) => ac::attrs::LOWSEC_MODIFIER,
-                    _ => ac::attrs::NULLSEC_MODIFIER,
+                    SecZone::NullSec | SecZone::WSpace | SecZone::Hazard => ac::attrs::NULLSEC_MODIFIER,
                 };
                 match self.get_item_attr_val_full(ctx, item_key, &security_attr_id) {
                     Ok(security_full_val) => {
