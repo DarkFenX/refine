@@ -1,7 +1,7 @@
 use crate::{
     ad,
     def::{AttrVal, OF},
-    misc::{AttrSpec, EffectSpec},
+    misc::AttrSpec,
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
     ud::{UItem, UItemKey},
@@ -30,16 +30,6 @@ pub(crate) fn get_resist_mult_val_by_projectee_aspec(
         true => OF(0.0),
         false => mult,
     })
-}
-
-pub(crate) fn get_espec_resist_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_espec: &EffectSpec,
-    projectee_key: UItemKey,
-) -> Option<AttrVal> {
-    let projector_r_effect = ctx.u_data.src.get_effect(projector_espec.effect_key);
-    get_effect_resist_mult(ctx, calc, projector_espec.item_key, projector_r_effect, projectee_key)
 }
 
 pub(crate) fn get_effect_resist_mult(
