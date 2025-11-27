@@ -1,7 +1,7 @@
 // TODO: after everything is implemented, remove this and see what needs to be cleaned up
 #![allow(dead_code)]
 
-use crate::{ad::AEffectId, ed::consts::effects as ece};
+use crate::{ad::AEffectId, ec::effects as ece};
 
 pub(crate) const SHIELD_BOOSTING: AEffectId = AEffectId::Dogma(ece::SHIELD_BOOSTING);
 pub(crate) const MISSILE_LAUNCHING: AEffectId = AEffectId::Dogma(ece::MISSILE_LAUNCHING);

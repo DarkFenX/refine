@@ -1,7 +1,7 @@
 // TODO: after everything is implemented, remove this and see what needs to be cleaned up
 #![allow(dead_code)]
 
-use crate::{ad::AItemListId, ed::consts::itemlists as ecil};
+use crate::{ad::AItemListId, ec::itemlists as ecil};
 
 pub(crate) const WORMHOLE_JUMP_BLACK_LIST: AItemListId = AItemListId::Eve(ecil::WORMHOLE_JUMP_BLACK_LIST);
 
