@@ -95,113 +95,134 @@ def test_add_remove(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
 
 
-def test_states(client, consts):
+def setup_state_test(*, client, consts):
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
-    eve_autocharge_effect_id = client.mk_eve_effect(
+    eve_fighter_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_autocharge,
         cat_id=consts.EveEffCat.active)
+    eve_fighter_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
-    eve_autocharge_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
-    eve_charge_id = client.mk_eve_item(
+    eve_autocharge_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_autocharge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 20},
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
-    eve_fighter_id = client.mk_eve_fighter(
-        attrs={eve_autocharge_attr_id: eve_charge_id},
         eff_ids=[eve_autocharge_effect_id],
-        defeff_id=eve_autocharge_effect_id,
-        abils=[client.mk_eve_item_abil(id_=eve_autocharge_abil_id)])
+        defeff_id=eve_autocharge_effect_id)
+    eve_fighter_id = client.mk_eve_fighter(
+        attrs={eve_autocharge_attr_id: eve_autocharge_id},
+        eff_ids=[eve_fighter_effect_id],
+        defeff_id=eve_fighter_effect_id,
+        abils=[client.mk_eve_item_abil(id_=eve_fighter_abil_id)])
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
+    api_fighter_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_fighter_effect_id)
     api_autocharge_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_autocharge_effect_id)
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
-    api_autocharge = api_affector_fighter.autocharges[api_autocharge_effect_id]
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_fighter.change_fighter(state=consts.ApiMinionState.engaging)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_fighter.change_fighter(state=consts.ApiMinionState.in_space)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_autocharge.change_autocharge(state=True)
-    # Verification - active charge state does not override too low module state
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_fighter.change_fighter(state=consts.ApiMinionState.engaging)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_autocharge.change_autocharge(state=False)
-    # Verification - disabled charge state stops effects, even if parent module is in high enough
-    # state
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_fighter.change_fighter(state=consts.ApiMinionState.in_space)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_fighter.change_fighter(state=consts.ApiMinionState.engaging)
-    # Verification - re-enabling module does not enable charge, since it was not enabled after
-    # getting disabled
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_autocharge.change_autocharge(state=True)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_autocharge.change_autocharge(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_autocharge.change_autocharge(effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_fighter.change_fighter(effect_modes={api_autocharge_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_fighter.change_fighter(effect_modes={api_autocharge_effect_id: consts.ApiEffMode.full_compliance})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_fighter.change_fighter(abilities={eve_autocharge_abil_id: False})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_fighter.change_fighter(abilities={eve_autocharge_abil_id: True})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_fighter.change_fighter(effect_modes={api_autocharge_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_autocharge.change_autocharge(effect_modes={api_effect_id: consts.ApiEffMode.force_run})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_fighter.change_fighter(state=consts.ApiMinionState.in_space)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    api_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_fighter.change_fighter(add_projs=[api_ship.id])
+    api_autocharge = api_fighter.autocharges[api_fighter_effect_id]
+    return api_ship, api_fighter, api_autocharge, api_fighter_effect_id, api_autocharge_effect_id, eve_affectee_attr_id
+
+
+def test_states_fighter(client, consts):
+    api_ship, api_fighter, api_ac, api_fighter_effect_id, api_ac_effect_id, eve_attr_id = setup_state_test(
+        client=client, consts=consts)
+    # Autocharge state on, autocharge effect default
+    api_ac.change_autocharge(state=True, effect_modes={api_ac_effect_id: consts.ApiEffMode.full_compliance})
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_fighter.change_fighter(
+        state=consts.ApiMinionState.in_space, effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Autocharge state on, autocharge effect off
+    api_ac.change_autocharge(state=True, effect_modes={api_ac_effect_id: consts.ApiEffMode.force_stop})
+    api_fighter.change_fighter(state=consts.ApiMinionState.engaging)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_fighter.change_fighter(
+        state=consts.ApiMinionState.in_space, effect_modes={api_fighter_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Autocharge state off, autocharge effect default
+    api_ac.change_autocharge(state=False, effect_modes={api_ac_effect_id: consts.ApiEffMode.full_compliance})
+    api_fighter.change_fighter(
+        state=consts.ApiMinionState.engaging, effect_modes={api_fighter_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Autocharge state off, autocharge effect on
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_fighter.change_fighter(
+        state=consts.ApiMinionState.engaging, effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_fighter.change_fighter(
+        state=consts.ApiMinionState.in_bay, effect_modes={api_fighter_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+
+
+def test_states_autocharge(client, consts):
+    api_ship, api_fighter, api_ac, api_fighter_effect_id, api_ac_effect_id, eve_attr_id = setup_state_test(
+        client=client, consts=consts)
+    # Fighter state on, fighter effect default
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(state=False)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(state=True, effect_modes={api_ac_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Fighter state on, fighter effect off
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_stop})
+    api_ac.change_autocharge(state=True, effect_modes={api_ac_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(state=False)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Fighter state off, fighter effect default
+    api_fighter.change_fighter(
+        state=consts.ApiMinionState.in_space, effect_modes={api_fighter_effect_id: consts.ApiEffMode.full_compliance})
+    api_ac.change_autocharge(state=True, effect_modes={api_ac_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(state=False)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Fighter state off, fighter effect on
+    api_fighter.change_fighter(effect_modes={api_fighter_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_ac.change_autocharge(state=True)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_ac.change_autocharge(effect_modes={api_ac_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_ac.change_autocharge(state=False, effect_modes={api_ac_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
 
 
 def test_range(client, consts):

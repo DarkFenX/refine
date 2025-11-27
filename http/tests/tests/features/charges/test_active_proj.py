@@ -168,8 +168,7 @@ def test_states_module(client, consts):
         client=client, consts=consts)
     # Charge state on, charge effect default
     api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
-    api_module.change_module(
-        state=consts.ApiModuleState.active, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
     api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
     assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
