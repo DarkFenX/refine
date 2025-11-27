@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def test_replace_root_onlist_to_onlist(client, consts):
+def test_root_onlist_to_onlist(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()
@@ -25,7 +25,7 @@ def test_replace_root_onlist_to_onlist(client, consts):
     assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(75)
 
 
-def test_replace_root_onlist_to_offlist(client, consts):
+def test_root_onlist_to_offlist(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()
