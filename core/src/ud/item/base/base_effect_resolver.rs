@@ -149,7 +149,7 @@ fn resolve_online_effect_status(item: &RItem, item_effect_modes: &EffectModes, i
         // mode, use simplified resolution for the online effect itself
         EffectMode::FullCompliance | EffectMode::StateCompliance => item_state >= AState::Online,
         // Shouldn't run anything in ghost state even with force run mode
-        EffectMode::ForceRun => item_state != AState::Ghost,
+        EffectMode::ForceRun => true,
         EffectMode::ForceStop => false,
     }
 }
