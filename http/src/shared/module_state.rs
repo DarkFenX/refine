@@ -1,7 +1,7 @@
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HModuleState {
-    Ghost,
+    Disabled,
     Offline,
     Online,
     Active,
@@ -10,7 +10,7 @@ pub(crate) enum HModuleState {
 impl From<&rc::ModuleState> for HModuleState {
     fn from(core_module_state: &rc::ModuleState) -> Self {
         match core_module_state {
-            rc::ModuleState::Ghost => Self::Ghost,
+            rc::ModuleState::Disabled => Self::Disabled,
             rc::ModuleState::Offline => Self::Offline,
             rc::ModuleState::Online => Self::Online,
             rc::ModuleState::Active => Self::Active,
@@ -21,7 +21,7 @@ impl From<&rc::ModuleState> for HModuleState {
 impl From<&HModuleState> for rc::ModuleState {
     fn from(h_module_state: &HModuleState) -> Self {
         match h_module_state {
-            HModuleState::Ghost => Self::Ghost,
+            HModuleState::Disabled => Self::Disabled,
             HModuleState::Offline => Self::Offline,
             HModuleState::Online => Self::Online,
             HModuleState::Active => Self::Active,

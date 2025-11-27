@@ -289,7 +289,7 @@ def test_criterion_module_state(client, consts):
     assert api_val.details.turret_slot_count.max == 0
     assert api_val.details.turret_slot_count.users == [api_module.id]
     # Action
-    api_module.change_module(state=consts.ApiModuleState.ghost)
+    api_module.change_module(state=consts.ApiModuleState.disabled)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(turret_slots=True))
     assert api_stats.turret_slots == (1, 0)

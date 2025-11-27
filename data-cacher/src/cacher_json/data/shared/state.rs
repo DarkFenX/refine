@@ -2,6 +2,7 @@
 #[repr(u8)]
 pub(in crate::cacher_json) enum CState {
     Ghost,
+    Disabled,
     Offline,
     Online,
     Active,
@@ -11,6 +12,7 @@ impl From<&rc::ad::AState> for CState {
     fn from(a_state: &rc::ad::AState) -> Self {
         match a_state {
             rc::ad::AState::Ghost => Self::Ghost,
+            rc::ad::AState::Disabled => Self::Disabled,
             rc::ad::AState::Offline => Self::Offline,
             rc::ad::AState::Online => Self::Online,
             rc::ad::AState::Active => Self::Active,
@@ -22,6 +24,7 @@ impl From<&CState> for rc::ad::AState {
     fn from(c_state: &CState) -> Self {
         match c_state {
             CState::Ghost => Self::Ghost,
+            CState::Disabled => Self::Disabled,
             CState::Offline => Self::Offline,
             CState::Online => Self::Online,
             CState::Active => Self::Active,

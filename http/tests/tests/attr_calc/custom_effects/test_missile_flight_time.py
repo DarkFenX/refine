@@ -120,7 +120,7 @@ def test_isolation(client, consts):
 
 
 def test_state(client, consts):
-    # Since hidden bonus is implemented as effect, it stops working when module has Ghost state
+    # Since hidden bonus is implemented as effect, it stops working when module is disabled
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)

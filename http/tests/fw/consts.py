@@ -504,7 +504,7 @@ class ApiItemKind(StrEnum):
 
 @unique
 class ApiModuleState(StrEnum):
-    ghost = 'ghost'
+    disabled = 'disabled'
     offline = 'offline'
     online = 'online'
     active = 'active'
@@ -513,7 +513,7 @@ class ApiModuleState(StrEnum):
 
 @unique
 class ApiServiceState(StrEnum):
-    ghost = 'ghost'
+    disabled = 'disabled'
     offline = 'offline'
     online = 'online'
 

@@ -794,7 +794,7 @@ def test_state(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_not_loaded_id, state=False)
     api_module = api_fit.add_module(
         type_id=eve_not_loaded_id,
-        state=consts.ApiModuleState.ghost,
+        state=consts.ApiModuleState.disabled,
         charge_type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))

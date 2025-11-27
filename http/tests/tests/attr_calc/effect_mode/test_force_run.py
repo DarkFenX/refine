@@ -38,10 +38,12 @@ def test_force_run(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_item.effects[api_effect_id].running is False
     assert api_item.effects[api_effect_id].mode == consts.ApiEffMode.full_compliance
-    # Action - ghost state has priority, even force-run effects do not affect anything
-    api_item.change_module(state=consts.ApiModuleState.ghost, effect_modes={api_effect_id: consts.ApiEffMode.force_run})
+    # Action
+    api_item.change_module(
+        state=consts.ApiModuleState.disabled,
+        effect_modes={api_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_item.update()
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_item.effects[api_effect_id].running is False
+    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_item.effects[api_effect_id].running is True
     assert api_item.effects[api_effect_id].mode == consts.ApiEffMode.force_run

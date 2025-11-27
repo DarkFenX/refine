@@ -415,7 +415,7 @@ def test_state(client, consts):
     api_module = api_fit.add_module(
         type_id=eve_module_id,
         charge_type_id=eve_charge_id,
-        state=consts.ApiModuleState.ghost)
+        state=consts.ApiModuleState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is False

@@ -264,14 +264,14 @@ def test_not_loaded(client, consts):
 
 
 def test_criterion_item_state(client, consts):
-    # Ghost modules and services are affected
+    # Disabled modules and services are affected
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_item_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
-    api_service = api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.ghost)
+    api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.disabled)
+    api_service = api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False

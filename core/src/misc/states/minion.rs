@@ -11,6 +11,7 @@ impl From<ad::AState> for MinionState {
     fn from(a_state: ad::AState) -> Self {
         match a_state {
             ad::AState::Ghost => Self::InBay,
+            ad::AState::Disabled => Self::InBay,
             ad::AState::Offline => Self::InBay,
             ad::AState::Online => Self::InSpace,
             ad::AState::Active => Self::Engaging,

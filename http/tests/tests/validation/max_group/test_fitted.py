@@ -260,14 +260,14 @@ def test_not_loaded(client, consts):
 
 
 def test_criterion_module_state(client, consts):
-    # Ghost modules and offline rigs are affected
+    # Disabled modules and offline rigs are affected
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_fitted)
     eve_item_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
+    api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.disabled)
     api_rig = api_fit.add_rig(type_id=eve_item_id, state=False)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))

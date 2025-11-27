@@ -35,7 +35,7 @@ def test_state_offline(client, consts):
     api_effect2_id = Effect.dogma_to_api(dogma_effect_id=eve_effect2_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
+    api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.disabled)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)

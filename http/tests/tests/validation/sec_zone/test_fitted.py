@@ -780,7 +780,7 @@ def test_criterion_item_state(client, consts):
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.lowsec)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_item_id, state=False)
-    api_service = api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.ghost)
+    api_service = api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.disabled)
     api_rig = api_fit.add_rig(type_id=eve_item_id, state=False)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))

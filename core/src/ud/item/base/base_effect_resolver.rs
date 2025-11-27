@@ -165,11 +165,10 @@ fn resolve_regular_effect_status(
     // wherever applicable
     match item_effect_modes.get_by_key(&effect.get_key()) {
         EffectMode::FullCompliance => {
-            item_state != AState::Ghost
-                && resolve_regular_effect_status_full(item_defeff_key, item_state, effect, online_running)
+            resolve_regular_effect_status_full(item_defeff_key, item_state, effect, online_running)
         }
-        EffectMode::StateCompliance => item_state != AState::Ghost && item_state >= effect.get_state(),
-        EffectMode::ForceRun => item_state != AState::Ghost,
+        EffectMode::StateCompliance => item_state >= effect.get_state(),
+        EffectMode::ForceRun => true,
         EffectMode::ForceStop => false,
     }
 }
@@ -181,7 +180,8 @@ fn resolve_regular_effect_status_full(
     online_running: bool,
 ) -> bool {
     match effect.get_state() {
-        AState::Ghost => unreachable!("ghost state should never reach full resolver"),
+        AState::Ghost => false,
+        AState::Disabled => false,
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
         AState::Offline => item_state >= effect.get_state() && effect.get_chance_attr_id().is_none(),

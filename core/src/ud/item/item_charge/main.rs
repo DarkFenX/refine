@@ -156,7 +156,7 @@ impl std::fmt::Display for UCharge {
 
 fn get_state(activated: bool, force_disabled: bool) -> AState {
     match force_disabled {
-        true => AState::Ghost,
+        true => AState::Disabled,
         false => match activated {
             true => AState::Active,
             false => AState::Offline,

@@ -1,5 +1,6 @@
-const STATES: [AState; 5] = [
+const STATES: [AState; 6] = [
     AState::Ghost,
+    AState::Disabled,
     AState::Offline,
     AState::Online,
     AState::Active,
@@ -9,9 +10,11 @@ const STATES: [AState; 5] = [
 /// States which are used on items and effects.
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum AState {
-    /// Item will receive modifications (thus its modified attributes can be checked), but will be
-    /// considered as absent otherwise.
+    /// Item will receive modifications (thus its modified attributes can be checked), but its
+    /// effects will not be active, regardless of their mode.
     Ghost,
+    /// State internal to the lib; only effects which are force-run will be active.
+    Disabled,
     /// For modules/services it means offline state, for drones/fighters it means that it is in
     /// drone bay.
     Offline,

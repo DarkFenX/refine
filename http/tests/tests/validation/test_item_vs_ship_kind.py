@@ -523,9 +523,9 @@ def test_criterion_item_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
-    api_ship_module = api_fit.add_module(type_id=eve_ship_item_id, state=consts.ApiModuleState.ghost)
+    api_ship_module = api_fit.add_module(type_id=eve_ship_item_id, state=consts.ApiModuleState.disabled)
     api_ship_rig = api_fit.add_rig(type_id=eve_ship_item_id, state=False)
-    api_ship_service = api_fit.add_service(type_id=eve_ship_item_id, state=consts.ApiServiceState.ghost)
+    api_ship_service = api_fit.add_service(type_id=eve_ship_item_id, state=consts.ApiServiceState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False

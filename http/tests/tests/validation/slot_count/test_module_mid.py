@@ -396,7 +396,7 @@ def test_no_value_max(client, consts):
 
 
 def test_criterion_module_state(client, consts):
-    # Slot is taken even when module is in ghost state
+    # Slot is taken even when module is disabled
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
@@ -414,7 +414,7 @@ def test_criterion_module_state(client, consts):
     assert api_val.details.mid_slot_count.max == 0
     assert api_val.details.mid_slot_count.users == [api_module.id]
     # Action
-    api_module.change_module(state=consts.ApiModuleState.ghost)
+    api_module.change_module(state=consts.ApiModuleState.disabled)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (1, 0)

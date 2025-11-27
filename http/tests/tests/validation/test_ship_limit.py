@@ -909,7 +909,7 @@ def test_not_loaded_ship(client, consts):
 
 
 def test_criterion_item_state(client, consts):
-    # Restriction applies even to ghosted mods and disabled rigs
+    # Restriction applies even to disabled mods and disabled rigs
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
@@ -920,7 +920,7 @@ def test_criterion_item_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.disabled)
     api_rig = api_fit.add_rig(type_id=eve_rig_id, state=False)
     api_subsystem = api_fit.add_subsystem(type_id=eve_rig_id, state=False)
     # Verification

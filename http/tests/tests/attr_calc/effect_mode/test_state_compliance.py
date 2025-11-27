@@ -26,7 +26,7 @@ def test_state_offline(client, consts):
     assert api_item.effects[api_effect_id].running is True
     assert api_item.effects[api_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_module(state=consts.ApiModuleState.ghost)
+    api_item.change_module(state=consts.ApiModuleState.disabled)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)

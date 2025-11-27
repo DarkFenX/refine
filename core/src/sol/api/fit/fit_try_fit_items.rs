@@ -189,7 +189,8 @@ fn get_chargeable_modules(u_data: &UData, fit_key: UFitKey) -> Vec<UItemKey> {
 
 fn conv_state(a_state: ad::AState) -> ModuleState {
     match a_state {
-        ad::AState::Ghost => ModuleState::Ghost,
+        ad::AState::Ghost => ModuleState::Disabled,
+        ad::AState::Disabled => ModuleState::Disabled,
         ad::AState::Offline => ModuleState::Offline,
         ad::AState::Online => ModuleState::Online,
         ad::AState::Active => ModuleState::Online,

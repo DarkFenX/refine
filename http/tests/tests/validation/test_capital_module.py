@@ -243,7 +243,7 @@ def test_criterion_module_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False

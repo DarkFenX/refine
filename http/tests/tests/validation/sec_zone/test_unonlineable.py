@@ -10,12 +10,12 @@ def test_main(client, consts):
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_hisec_item_id, state=consts.ApiModuleState.ghost)
-    api_lowsec_module = api_fit.add_module(type_id=eve_lowsec_item_id, state=consts.ApiModuleState.ghost)
-    api_nullsec_module = api_fit.add_module(type_id=eve_null_item_id, state=consts.ApiModuleState.ghost)
-    api_fit.add_service(type_id=eve_hisec_item_id, state=consts.ApiServiceState.ghost)
-    api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_item_id, state=consts.ApiServiceState.ghost)
-    api_nullsec_service = api_fit.add_service(type_id=eve_null_item_id, state=consts.ApiServiceState.ghost)
+    api_fit.add_module(type_id=eve_hisec_item_id, state=consts.ApiModuleState.disabled)
+    api_lowsec_module = api_fit.add_module(type_id=eve_lowsec_item_id, state=consts.ApiModuleState.disabled)
+    api_nullsec_module = api_fit.add_module(type_id=eve_null_item_id, state=consts.ApiModuleState.disabled)
+    api_fit.add_service(type_id=eve_hisec_item_id, state=consts.ApiServiceState.disabled)
+    api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_item_id, state=consts.ApiServiceState.disabled)
+    api_nullsec_service = api_fit.add_service(type_id=eve_null_item_id, state=consts.ApiServiceState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
@@ -103,9 +103,9 @@ def test_known_failures(client, consts):
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
     api_other = api_fit.add_rig(type_id=eve_other_id)
-    api_hisec_service = api_fit.add_service(type_id=eve_hisec_service_id, state=consts.ApiServiceState.ghost)
-    api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_service_id, state=consts.ApiServiceState.ghost)
-    api_nullsec_service = api_fit.add_service(type_id=eve_null_service_id, state=consts.ApiServiceState.ghost)
+    api_hisec_service = api_fit.add_service(type_id=eve_hisec_service_id, state=consts.ApiServiceState.disabled)
+    api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_service_id, state=consts.ApiServiceState.disabled)
+    api_nullsec_service = api_fit.add_service(type_id=eve_null_service_id, state=consts.ApiServiceState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=(True, [api_lowsec_service.id])))
     assert api_val.passed is False
@@ -144,8 +144,8 @@ def test_rounding(client, consts):
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
-    api_higher_service = api_fit.add_service(type_id=eve_higher_service_id, state=consts.ApiServiceState.ghost)
-    api_lower_service = api_fit.add_service(type_id=eve_lower_service_id, state=consts.ApiServiceState.ghost)
+    api_higher_service = api_fit.add_service(type_id=eve_higher_service_id, state=consts.ApiServiceState.disabled)
+    api_lower_service = api_fit.add_service(type_id=eve_lower_service_id, state=consts.ApiServiceState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is False
@@ -186,7 +186,7 @@ def test_modified(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_rig(type_id=eve_rig_id)
-    api_service = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.ghost)
+    api_service = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.disabled)
     # Verification - modification is ignored for the validation purposes
     assert api_service.update().attrs[eve_attr_id].extra == approx(2)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
@@ -212,7 +212,7 @@ def test_mutation_limit_priority(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(
         type_id=eve_base_module_id,
-        state=consts.ApiServiceState.ghost,
+        state=consts.ApiServiceState.disabled,
         mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(3)
@@ -248,7 +248,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(
         type_id=eve_base_module_id,
-        state=consts.ApiServiceState.ghost,
+        state=consts.ApiServiceState.disabled,
         mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(3)
@@ -280,7 +280,7 @@ def test_no_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
-    api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.ghost)
+    api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
@@ -294,7 +294,7 @@ def test_not_loaded(client, consts):
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
-    api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.ghost)
+    api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.disabled)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=True))
     assert api_val.passed is True
