@@ -12,4 +12,3 @@ pub(crate) const BUFF_STDATTR_IDS: [EAttrId; 4] = [
 ];
 
 pub(crate) const AU: AttrVal = OF(149_597_870_700.0);
-pub(crate) const LY: AttrVal = OF(9_460_000_000_000_000.0);
