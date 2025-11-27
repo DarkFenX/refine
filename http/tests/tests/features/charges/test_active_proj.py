@@ -131,96 +131,129 @@ def test_charge_charge_uncharge(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
 
 
-def test_states(client, consts):
+def setup_state_test(*, client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
+    eve_module_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_module_effect_id], defeff_id=eve_module_effect_id)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_charge_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_charge_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: 20},
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
-    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
+        eff_ids=[eve_charge_effect_id],
+        defeff_id=eve_charge_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
-    api_act_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_act_effect_id)
+    api_module_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_module_effect_id)
+    api_charge_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_charge_effect_id)
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_module(
+    api_module = api_affector_fit.add_module(
         type_id=eve_module_id,
-        state=consts.ApiModuleState.online,
+        state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_charge = api_affector_module.charge
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_module.change_module(state=consts.ApiModuleState.active)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_module.change_module(state=consts.ApiModuleState.online)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_charge.change_charge(state=True)
-    # Verification - active charge state does not override too low module state
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_module.change_module(state=consts.ApiModuleState.active)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_charge.change_charge(state=False)
-    # Verification - disabled charge state stops effects, even if parent module is in high enough
-    # state
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_module.change_module(state=consts.ApiModuleState.online)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_module.change_module(state=consts.ApiModuleState.active)
-    # Verification - re-enabling module does not enable charge, since it was not enabled after
-    # getting disabled
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_charge.change_charge(state=True)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_charge.change_charge(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_charge.change_charge(effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.force_stop})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.full_compliance})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
-    # Action
-    api_affector_module.change_module(state=consts.ApiModuleState.online)
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
-    # Action
-    api_affector_module.change_module(effect_modes={api_act_effect_id: consts.ApiEffMode.force_run})
-    # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
+    api_module.change_module(add_projs=[api_ship.id])
+    return api_ship, api_module, api_module.charge, api_module_effect_id, api_charge_effect_id, eve_affectee_attr_id
+
+
+def test_states_module(client, consts):
+    api_ship, api_module, api_charge, api_module_effect_id, api_charge_effect_id, eve_attr_id = setup_state_test(
+        client=client, consts=consts)
+    # Charge state on, charge effect default
+    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_module(
+        state=consts.ApiModuleState.active, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_module.change_module(
+        state=consts.ApiModuleState.online, effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Charge state on, charge effect off
+    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.force_stop})
+    api_module.change_module(state=consts.ApiModuleState.active)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_module.change_module(
+        state=consts.ApiModuleState.online, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Charge state off, charge effect default
+    api_charge.change_charge(state=False, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_module(
+        state=consts.ApiModuleState.active, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_module.change_module(state=consts.ApiModuleState.online)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Charge state off, charge effect on
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_module.change_module(
+        state=consts.ApiModuleState.active, effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_module.change_module(
+        state=consts.ApiModuleState.disabled, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+
+
+def test_states_charge(client, consts):
+    api_ship, api_module, api_charge, api_module_effect_id, api_charge_effect_id, eve_attr_id = setup_state_test(
+        client=client, consts=consts)
+    # Module state on, module effect default
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(state=False)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Module state on, module effect off
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
+    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(state=False)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Module state off, module effect default
+    api_module.change_module(
+        state=consts.ApiModuleState.online, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(state=False)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    # Module state off, module effect on
+    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_charge.change_charge(state=True)
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
+    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_stop})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1000)
+    api_charge.change_charge(state=False, effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    assert api_ship.update().attrs[eve_attr_id].dogma == approx(1200)
 
 
 def test_range(client, consts):
