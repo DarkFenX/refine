@@ -104,9 +104,6 @@ impl UAutocharge {
         unreachable!("autocharges should be removed/added outside of autocharge item handler");
     }
     // Item-specific methods
-    pub(crate) fn get_activated(&self) -> bool {
-        self.force_disabled
-    }
     pub(crate) fn set_activated(&mut self, activated: bool) {
         // No changes to state - nothing to do
         if self.activated == activated {

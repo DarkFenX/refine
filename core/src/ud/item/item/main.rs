@@ -2,7 +2,7 @@ use either::Either;
 
 use crate::{
     ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
-    def::{AttrVal, Count, ItemId, OF},
+    def::{AttrVal, ItemId, OF},
     misc::{EffectMode, Spool},
     rd::{REffectKey, RItemAXt},
     src::Src,
@@ -552,12 +552,6 @@ impl UItem {
     pub(crate) fn get_charge_key(&self) -> Option<UItemKey> {
         match self {
             Self::Module(module) => module.get_charge_key(),
-            _ => None,
-        }
-    }
-    pub(crate) fn get_charge_count(&self, u_data: &UData) -> Option<Count> {
-        match self {
-            Self::Module(module) => module.get_charge_count(u_data),
             _ => None,
         }
     }
