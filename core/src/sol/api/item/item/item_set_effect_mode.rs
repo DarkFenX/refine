@@ -14,9 +14,7 @@ impl SolarSystem {
         effect_id: AEffectId,
         effect_mode: EffectMode,
         reuse_eupdates: &mut UEffectUpdates,
-    ) where
-        Self: Sized,
-    {
+    ) {
         let u_item = self.u_data.items.get_mut(item_key);
         u_item.set_effect_mode(effect_id, effect_mode, &self.u_data.src);
         u_item.update_reffs(reuse_eupdates, &self.u_data.src);
@@ -27,9 +25,7 @@ impl SolarSystem {
         item_key: UItemKey,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         reuse_eupdates: &mut UEffectUpdates,
-    ) where
-        Self: Sized,
-    {
+    ) {
         let u_item = self.u_data.items.get_mut(item_key);
         u_item.set_effect_modes(effect_modes, &self.u_data.src);
         u_item.update_reffs(reuse_eupdates, &self.u_data.src);

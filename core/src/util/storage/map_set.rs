@@ -96,9 +96,6 @@ where
             }
         }
     }
-    pub(crate) fn iter_buffer(&self) -> impl ExactSizeIterator<Item = &V> {
-        self.buffer.iter()
-    }
     pub(crate) fn drain_buffer(&mut self) -> impl ExactSizeIterator<Item = V> {
         self.buffer.drain()
     }

@@ -100,19 +100,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .into()),
         }
     }
-    fn set_effect_mode(&mut self, effect_id: &EffectId, effect_mode: EffectMode)
-    where
-        Self: Sized,
-    {
+    fn set_effect_mode(&mut self, effect_id: &EffectId, effect_mode: EffectMode) {
         let item_key = self.get_key();
         let mut reuse_eupdates = UEffectUpdates::new();
         self.get_sol_mut()
             .internal_set_effect_id_mode(item_key, effect_id.into(), effect_mode, &mut reuse_eupdates);
     }
-    fn set_effect_modes(&mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>)
-    where
-        Self: Sized,
-    {
+    fn set_effect_modes(&mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) {
         let item_key = self.get_key();
         let mut reuse_eupdates = UEffectUpdates::new();
         self.get_sol_mut().internal_set_effect_id_modes(
