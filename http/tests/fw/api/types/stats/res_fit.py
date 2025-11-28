@@ -3,7 +3,7 @@ from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps
 from .stat_hp import StatHp
-from .stat_jam import StatOutgoingJam
+from .stat_jam import StatIncomingJam
 from .stat_mining import StatMining
 from .stat_remote_rps import StatRemoteRps
 from .stat_resists import StatResists
@@ -40,7 +40,7 @@ class FitStats(AttrDict):
             'drone_bandwidth': AttrHookDef(func=lambda d: StatResource(data=d)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: StatResource(data=d)),
             'sensor': AttrHookDef(func=lambda d: StatSensor(data=d) if d is not None else None),
-            'outgoing_jam': AttrHookDef(func=lambda d: StatOutgoingJam(data=d) if d is not None else None),
+            'incoming_jam': AttrHookDef(func=lambda d: StatIncomingJam(data=d) if d is not None else None),
             'dps': AttrHookDef(func=lambda d: (
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),

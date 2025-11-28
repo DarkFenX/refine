@@ -3,7 +3,7 @@ import typing
 
 
 @dataclasses.dataclass
-class StatOutgoingJam:
+class StatIncomingJam:
 
     chance: float
     uptime: float
