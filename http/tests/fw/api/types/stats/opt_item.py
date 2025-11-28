@@ -31,7 +31,7 @@ class ItemStatsOptions:
     sensor: bool | type[Absent] = Absent
     dscan_range: bool | type[Absent] = Absent
     probing_size: bool | type[Absent] = Absent
-    jam_chance: bool | type[Absent] = Absent
+    incoming_jam: bool | type[Absent] = Absent
     drone_control_range: bool | type[Absent] = Absent
     dps: bool | tuple[bool, list[StatsOptionItemDps]] | type[Absent] = Absent
     volley: bool | tuple[bool, list[StatsOptionItemVolley]] | type[Absent] = Absent

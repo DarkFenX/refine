@@ -3,6 +3,7 @@ from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps
 from .stat_hp import StatHp
+from .stat_jam import StatOutgoingJam
 from .stat_mining import StatMining
 from .stat_remote_rps import StatRemoteRps
 from .stat_resists import StatResists
@@ -15,6 +16,7 @@ class ItemStats(AttrDict):
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
             'sensor': AttrHookDef(func=lambda d: StatSensor(data=d) if d is not None else None),
+            'outgoing_jam': AttrHookDef(func=lambda d: StatOutgoingJam(data=d) if d is not None else None),
             'dps': AttrHookDef(func=lambda d: (
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),

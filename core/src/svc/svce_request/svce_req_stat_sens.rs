@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatSensor, Vast},
+        vast::{StatOutgoingJam, StatSensor, Vast},
     },
     ud::{UData, UItemKey},
 };
@@ -51,12 +51,12 @@ impl Svc {
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_probing_size(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
-    pub(crate) fn get_stat_item_jam_chance(
+    pub(crate) fn get_stat_item_incoming_jam(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<StatOutgoingJam, StatItemCheckError> {
         self.vast
-            .get_stat_item_jam_chance(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+            .get_stat_item_incoming_jam(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
 }

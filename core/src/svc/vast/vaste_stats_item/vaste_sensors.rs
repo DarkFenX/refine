@@ -71,7 +71,11 @@ impl Vast {
         check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key))
     }
-    fn internal_get_stat_item_sensor_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> StatSensor {
+    pub(super) fn internal_get_stat_item_sensor_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> StatSensor {
         // Strength ties are resolved using the following order:
         // Radar > ladar > magnetometric > gravimetric
         let str_radar = calc
@@ -137,47 +141,5 @@ impl Vast {
             true => Some(ratio.max(OF(1.08))),
             false => None,
         }
-    }
-    pub(in crate::svc) fn get_stat_item_jam_chance(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_drone_fighter_ship(ctx, item_key)?;
-        Ok(self.internal_get_stat_item_jam_chance_unchecked(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_jam_chance_unchecked(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        projectee_item_key: UItemKey,
-    ) -> AttrVal {
-        let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_key) {
-            Some(incoming_ecms) => incoming_ecms,
-            None => return OF(0.0),
-        };
-        let sensor = Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, projectee_item_key);
-        let mut item_unjam_chance = OF(1.0);
-        for (&projector_item_key, projector_data) in incoming_ecms.iter() {
-            for (&effect_key, ecm_getter) in projector_data.iter() {
-                let r_effect = ctx.u_data.src.get_effect(effect_key);
-                let ecm_str = match ecm_getter(ctx, calc, projector_item_key, r_effect, Some(projectee_item_key)) {
-                    Some(ecm_data) => match sensor.kind {
-                        StatSensorKind::Radar => ecm_data.radar,
-                        StatSensorKind::Magnetometric => ecm_data.magnetometric,
-                        StatSensorKind::Gravimetric => ecm_data.gravimetric,
-                        StatSensorKind::Ladar => ecm_data.ladar,
-                    },
-                    None => continue,
-                };
-                if ecm_str <= OF(0.0) {
-                    continue;
-                }
-                let ecm_jam_chance = (ecm_str / sensor.strength).clamp(OF(0.0), OF(1.0));
-                item_unjam_chance *= OF(1.0) - ecm_jam_chance;
-            }
-        }
-        OF(1.0) - item_unjam_chance
     }
 }

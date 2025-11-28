@@ -5,6 +5,7 @@ pub use crate::{
         StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatDmg,
         StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatLayerEhp, StatLayerErps, StatLayerErpsRegen,
         StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatMiningItemKinds, StatNeutItemKinds,
-        StatRemoteRepItemKinds, StatRes, StatSensor, StatSensorKind, StatSlot, StatTank, StatTankRegen,
+        StatOutgoingJam, StatRemoteRepItemKinds, StatRes, StatSensor, StatSensorKind, StatSlot, StatTank,
+        StatTankRegen,
     },
 };

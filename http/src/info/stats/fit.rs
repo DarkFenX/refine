@@ -1,7 +1,8 @@
 use crate::{
     info::stats::details::{
         HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp, HStatLayerResist,
-        HStatLayerRps, HStatLayerRpsRegen, HStatMining, HStatRes, HStatSensor, HStatSlot, HStatTank, HStatTankRegen,
+        HStatLayerRps, HStatLayerRpsRegen, HStatMining, HStatOutgoingJam, HStatRes, HStatSensor, HStatSlot, HStatTank,
+        HStatTankRegen,
     },
     util::TriStateField,
 };
@@ -79,7 +80,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) probing_size: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) jam_chance: TriStateField<rc::AttrVal>,
+    pub(crate) incoming_jam: TriStateField<HStatOutgoingJam>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) drone_control_range: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -153,7 +154,7 @@ impl HFitStats {
             sensor: TriStateField::default(),
             dscan_range: TriStateField::default(),
             probing_size: TriStateField::default(),
-            jam_chance: TriStateField::default(),
+            incoming_jam: TriStateField::default(),
             drone_control_range: TriStateField::default(),
             dps: Option::default(),
             volley: Option::default(),

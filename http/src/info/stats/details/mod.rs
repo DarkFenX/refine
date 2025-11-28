@@ -1,5 +1,6 @@
 pub(crate) use cap::HStatCapSim;
 pub(crate) use dmg::HStatDmg;
+pub(crate) use jam::HStatOutgoingJam;
 pub(crate) use mining::HStatMining;
 pub(crate) use resource::HStatRes;
 pub(crate) use sensor::HStatSensor;
@@ -11,6 +12,7 @@ pub(crate) use tank::{
 
 mod cap;
 mod dmg;
+mod jam;
 mod mining;
 mod resource;
 mod sensor;

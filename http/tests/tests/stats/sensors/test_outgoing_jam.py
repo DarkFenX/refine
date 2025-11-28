@@ -42,38 +42,38 @@ def test_module_targeted_ship(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.06)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.06)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.06), approx(0.06)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.06), approx(0.06)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.5454545)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.5454545)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.5454545), approx(0.5454545)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.5454545), approx(0.5454545)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 50450, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.5454545)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.5454545)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.5454545), approx(0.5454545)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.5454545), approx(0.5454545)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 75450, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.2727273)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.2727273)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.2727273), approx(0.2727273)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.2727273), approx(0.2727273)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 125451, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_module_targeted_struct(client, consts):
@@ -116,38 +116,38 @@ def test_module_targeted_struct(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.39)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.39)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.39), approx(0.39)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.39), approx(0.39)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 1
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 1
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [1, 1]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [1, 1]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 142650, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(1)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(1)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(1), approx(1)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(1), approx(1)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 240150, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.5571429)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.5571429)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.5571429), approx(0.5571429)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.5571429), approx(0.5571429)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 435151, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_module_doomsday(client, consts):
@@ -192,31 +192,31 @@ def test_module_doomsday(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.05)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.05)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.05), approx(0.01185185)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.05), approx(0.01185185)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.1428571)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.1428571)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.1428571), approx(0.03386243)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.1428571), approx(0.03386243)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 510149, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.1428571)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.1428571)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.1428571), approx(0.03386243)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.1428571), approx(0.03386243)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 510151, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_module_burst(client, consts):
@@ -256,31 +256,31 @@ def test_module_burst(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.46875)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.46875)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.46875), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.46875), 0]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.8333333)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.8333333)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.8333333), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.8333333), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 19899, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.8333333)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.8333333)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.8333333), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.8333333), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 19901, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_charge_bomb(client, consts):
@@ -335,73 +335,73 @@ def test_charge_bomb(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 30000, 0))
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.2035831)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.2035831)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.2035831), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.2035831), 0]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.3188776)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.3188776)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.3188776), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.3188776), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 12700, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 12800, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.1594388)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.1594388)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.1594388), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.1594388), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 16700, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.1594388)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.1594388)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.1594388), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.1594388), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 16800, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.3188776)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.3188776)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.3188776), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.3188776), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 43200, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.3188776)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.3188776)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.3188776), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.3188776), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 43300, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.1594388)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.1594388)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.1594388), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.1594388), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 47200, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.1594388)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.1594388)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.1594388), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.1594388), 0]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 47300, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_drone(client, consts):
@@ -444,31 +444,31 @@ def test_drone(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
     api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.04166667)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.04166667)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.04166667), approx(0.01041667)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.04166667), approx(0.01041667)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.05952381)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.05952381)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.05952381), approx(0.01488095)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.05952381), approx(0.01488095)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 7547, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.05952381)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.05952381)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.05952381), approx(0.01488095)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.05952381), approx(0.01488095)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 7549, 0))
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_stacking(client, consts):
@@ -521,17 +521,17 @@ def test_stacking(client, consts):
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.0788)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.0788)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.0788), approx(0.0788)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.0788), approx(0.0788)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == approx(0.5661157)
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == approx(0.5661157)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.5661157), approx(0.5661157)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.5661157), approx(0.5661157)]
 
 
 def test_sensors_zero(client, consts):
@@ -571,10 +571,10 @@ def test_sensors_zero(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 1
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 1
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [1, approx(0.25)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [1, approx(0.25)]
 
 
 def test_both_zero(client, consts):
@@ -614,7 +614,7 @@ def test_both_zero(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(jam_chance=True))
-    assert api_tgt_fit_stats.jam_chance == 0
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(jam_chance=True))
-    assert api_tgt_ship_stats.jam_chance == 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
