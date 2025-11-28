@@ -13,8 +13,8 @@ use crate::{
     svc::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{
-            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatLayerEhp, StatLayerErps,
-            StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatOutgoingJam, StatSensor,
+            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
+            StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensor,
             StatTank, StatTankRegen,
         },
     },
@@ -208,7 +208,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_probing_size(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_incoming_jam(&mut self) -> Result<StatOutgoingJam, ItemStatError> {
+    fn get_stat_incoming_jam(&mut self) -> Result<StatJamApplied, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc

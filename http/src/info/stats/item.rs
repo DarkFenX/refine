@@ -1,7 +1,7 @@
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp, HStatLayerResist,
-        HStatLayerRps, HStatLayerRpsRegen, HStatMining, HStatOutgoingJam, HStatSensor, HStatTank, HStatTankRegen,
+        HStatCapSim, HStatDmg, HStatJamApplied, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp,
+        HStatLayerResist, HStatLayerRps, HStatLayerRpsRegen, HStatMining, HStatSensor, HStatTank, HStatTankRegen,
     },
     util::TriStateField,
 };
@@ -35,7 +35,7 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) probing_size: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) incoming_jam: TriStateField<HStatOutgoingJam>,
+    pub(crate) incoming_jam: TriStateField<HStatJamApplied>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) drone_control_range: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

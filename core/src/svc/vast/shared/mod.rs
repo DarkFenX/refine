@@ -1,7 +1,7 @@
 pub(in crate::svc::vast) use breacher::{BreacherAccum, apply_breacher};
 pub use dmg_opt::StatDmgItemKinds;
 pub use dmg_stat::{StatDmg, StatDmgApplied, StatDmgBreacher};
-pub use jam::StatOutgoingJam;
+pub use jam::StatJamApplied;
 pub use mining::StatMining;
 pub use mining_opt::StatMiningItemKinds;
 pub(in crate::svc::vast) use regen::{calc_regen, regenerate};

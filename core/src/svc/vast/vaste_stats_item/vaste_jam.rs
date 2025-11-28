@@ -6,7 +6,7 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::StatItemCheckError,
-        vast::{StatOutgoingJam, StatSensorKind, Vast},
+        vast::{StatJamApplied, StatSensorKind, Vast},
     },
     ud::UItemKey,
 };
@@ -22,7 +22,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-    ) -> Result<StatOutgoingJam, StatItemCheckError> {
+    ) -> Result<StatJamApplied, StatItemCheckError> {
         check_item_key_drone_fighter_ship(ctx, item_key)?;
         Ok(self.internal_get_stat_item_incoming_jam_unchecked(ctx, calc, item_key))
     }
@@ -31,11 +31,11 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         projectee_item_key: UItemKey,
-    ) -> StatOutgoingJam {
+    ) -> StatJamApplied {
         let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_key) {
             Some(incoming_ecms) => incoming_ecms,
             None => {
-                return StatOutgoingJam {
+                return StatJamApplied {
                     chance: OF(0.0),
                     uptime: OF(0.0),
                 };
@@ -81,7 +81,7 @@ impl Vast {
                 }
             }
         }
-        StatOutgoingJam {
+        StatJamApplied {
             chance: OF(1.0) - item_unjam_chance,
             uptime: OF(1.0) - item_unjam_uptime,
         }

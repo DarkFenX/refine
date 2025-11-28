@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, Count},
     sol::api::{FitMut, FitShipStatError, ItemMutCommon},
-    svc::vast::{StatOutgoingJam, StatSensor},
+    svc::vast::{StatJamApplied, StatSensor},
 };
 
 impl<'a> FitMut<'a> {
@@ -23,7 +23,7 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_probing_size(&mut self) -> Result<Option<AttrVal>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_probing_size()?)
     }
-    pub fn get_stat_incoming_jam(&mut self) -> Result<StatOutgoingJam, FitShipStatError> {
+    pub fn get_stat_incoming_jam(&mut self) -> Result<StatJamApplied, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_incoming_jam()?)
     }
 }
