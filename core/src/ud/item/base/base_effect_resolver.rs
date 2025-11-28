@@ -181,7 +181,7 @@ fn resolve_regular_effect_status_full(
 ) -> bool {
     match effect.get_state() {
         AState::Ghost => false,
-        AState::Disabled => false,
+        AState::Disabled => item_state >= effect.get_state(),
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
         AState::Offline => item_state >= effect.get_state() && effect.get_chance_attr_id().is_none(),

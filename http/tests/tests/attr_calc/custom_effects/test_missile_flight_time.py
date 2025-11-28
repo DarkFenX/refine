@@ -1,4 +1,4 @@
-from tests import approx
+from tests import Effect, approx
 
 
 def test_missile_kinds(client, consts):
@@ -134,32 +134,25 @@ def test_state(client, consts):
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 2000})
     client.create_sources()
+    api_custom_effect_id = Effect.custom_to_api(custom_effect_id=consts.CustomEffect.missile_flight_time)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
     # Action
     api_module.charge.change_charge(state=False)
-    # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    # Verification - effect is applied even when effect is disabled
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
     # Action
     api_module.charge.change_charge(state=True)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
     # Action
-    api_module.charge.change_charge(state=False)
+    api_module.charge.change_charge(effect_modes={api_custom_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
     # Action - just check that solar system is in consistent state when charge is removed with the
     # effect disabled
     api_module.change_module(charge_type_id=None)

@@ -472,6 +472,13 @@ class EveAttrUnit(IntEnum):
 
 
 @unique
+class CustomEffect(IntEnum):
+    char_missile_dmg = 1
+    aar_paste_boost = 2
+    missile_flight_time = 4
+
+
+@unique
 class ApiSecZone(StrEnum):
     hisec = 'hisec'
     hisec_c5 = 'hisec_c5'

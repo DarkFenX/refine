@@ -1,4 +1,4 @@
-from tests import approx
+from tests import Effect, approx
 
 
 def test_filter(client, consts):
@@ -183,3 +183,58 @@ def test_penalization(client, consts):
     assert api_expl_mod2.initial_val == approx(1.3)
     assert api_expl_mod2.stacking_mult is None
     assert api_expl_mod2.applied_val == approx(1.3)
+
+
+def test_state(client, consts):
+    eve_attr_char_id = client.mk_eve_attr(id_=consts.EveAttr.missile_dmg_mult)
+    eve_attr_missile_em_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
+    eve_attr_missile_therm_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg)
+    eve_attr_missile_kin_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg)
+    eve_attr_missile_expl_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg)
+    eve_item_skill_id = client.mk_eve_item(id_=consts.EveItem.missile_launcher_operation)
+    eve_item_char_id = client.mk_eve_item(grp_id=consts.EveItemGrp.character, attrs={eve_attr_char_id: 5})
+    eve_item_launcher_id = client.mk_eve_item()
+    eve_item_missile_id = client.mk_eve_item(
+        attrs={
+            eve_attr_missile_em_id: 50, eve_attr_missile_therm_id: 70,
+            eve_attr_missile_kin_id: 80, eve_attr_missile_expl_id: 100},
+        srqs={eve_item_skill_id: 1})
+    client.create_sources()
+    api_custom_effect_id = Effect.custom_to_api(custom_effect_id=consts.CustomEffect.char_missile_dmg)
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_char = api_fit.set_character(type_id=eve_item_char_id)
+    api_launcher = api_fit.add_module(
+        type_id=eve_item_launcher_id,
+        rack=consts.ApiRack.high,
+        charge_type_id=eve_item_missile_id)
+    # Verification
+    api_launcher.update()
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(250)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(350)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(400)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(500)
+    # Action
+    api_char.change_character(state=False)
+    # Verification
+    api_launcher.update()
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(50)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(70)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(80)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(100)
+    # Action
+    api_char.change_character(state=True)
+    # Verification
+    api_launcher.update()
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(250)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(350)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(400)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(500)
+    # Action
+    api_char.change_character(effect_modes={api_custom_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    api_launcher.update()
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(50)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(70)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(80)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(100)

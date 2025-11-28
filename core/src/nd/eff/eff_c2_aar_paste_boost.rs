@@ -39,7 +39,7 @@ fn make_effect() -> AEffect {
     AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
-        state: AState::Offline,
+        state: AState::Disabled,
         ..
     }
 }

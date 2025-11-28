@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from tests import Effect, approx, check_no_field
 
 
 def test_local_aar(client, consts):
@@ -217,3 +217,39 @@ def test_penalties(client, consts):
     assert api_mod_rig.initial_val == approx(1.5)
     assert api_mod_rig.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_mod_rig.applied_val == approx(1.5)
+
+
+def test_state(client, consts):
+    eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair)
+    eve_aar_item_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 3, eve_affectee_attr_id: 100},
+        eff_ids=[eve_effect_id])
+    eve_paste_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    client.create_sources()
+    api_custom_effect_id = Effect.custom_to_api(custom_effect_id=consts.CustomEffect.aar_paste_boost)
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_aar_item = api_fit.add_module(
+        type_id=eve_aar_item_id,
+        rack=consts.ApiRack.low,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_paste_item_id)
+    # Verification
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(300)
+    # Action
+    api_aar_item.change_module(state=consts.ApiModuleState.disabled)
+    # Verification
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(300)
+    # Action
+    api_aar_item.change_module(state=consts.ApiModuleState.active)
+    # Verification
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(300)
+    # Action
+    api_aar_item.change_module(effect_modes={api_custom_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    # Action & verification
+    api_aar_item.change_module(charge_type_id=None)
+    api_aar_item.remove()
