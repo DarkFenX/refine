@@ -232,6 +232,7 @@ class EveAbil(IntEnum):
 @unique
 class EveAttr(IntEnum):
     mass = 4
+    capacitor_need = 6
     hp = 9
     power_output = 11
     low_slots = 12
