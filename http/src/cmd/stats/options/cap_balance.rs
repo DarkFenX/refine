@@ -14,6 +14,7 @@ pub(in crate::cmd) struct HStatCapSrcKinds {
     default: bool,
     regen: Option<HStatCapRegenOptions>,
     cap_injectors: Option<bool>,
+    nosfs: Option<bool>,
     consumers: Option<HStatCapConsumerOptions>,
     incoming_transfers: Option<bool>,
     incoming_neuts: Option<bool>,
@@ -31,6 +32,9 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
         }
         if let Some(cap_injectors) = h_src_kinds.cap_injectors {
             core_src_kinds.cap_injectors = cap_injectors;
+        }
+        if let Some(nosfs) = h_src_kinds.nosfs {
+            core_src_kinds.nosfs = nosfs;
         }
         if let Some(consumers) = h_src_kinds.consumers {
             core_src_kinds.consumers.enabled = consumers.is_enabled();

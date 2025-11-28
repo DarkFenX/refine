@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use super::{
     super::checks::check_item_ship,
     shared::{CYCLE_OPTIONS_BURST, CYCLE_OPTIONS_SIM},
@@ -21,6 +23,7 @@ use crate::{
 pub struct StatCapSrcKinds {
     pub regen: StatCapRegenOptions,
     pub cap_injectors: bool,
+    pub nosfs: bool,
     pub consumers: StatCapConsumerOptions,
     pub incoming_transfers: bool,
     pub incoming_neuts: bool,
@@ -31,6 +34,7 @@ impl StatCapSrcKinds {
         Self {
             regen: StatCapRegenOptions { enabled: true, .. },
             cap_injectors: true,
+            nosfs: true,
             consumers: StatCapConsumerOptions { enabled: true, .. },
             incoming_transfers: true,
             incoming_neuts: true,
@@ -41,6 +45,7 @@ impl StatCapSrcKinds {
         Self {
             regen: StatCapRegenOptions { enabled: false, .. },
             cap_injectors: false,
+            nosfs: false,
             consumers: StatCapConsumerOptions { enabled: false, .. },
             incoming_transfers: false,
             incoming_neuts: false,
@@ -78,8 +83,15 @@ impl Vast {
         if src_kinds.cap_injectors {
             balance += get_cap_injects(ctx, calc, fit_data);
         }
-        if src_kinds.consumers.enabled {
-            balance -= get_cap_consumed(ctx, calc, src_kinds.consumers.reload, fit_data);
+        if src_kinds.consumers.enabled || src_kinds.nosfs {
+            balance -= get_cap_consumed(
+                ctx,
+                calc,
+                src_kinds.consumers.reload,
+                fit_data,
+                src_kinds.consumers.enabled,
+                src_kinds.nosfs,
+            );
         }
         if src_kinds.incoming_transfers {
             balance += get_cap_transfers(ctx, calc, item_key, self);
@@ -122,7 +134,14 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> Attr
     cps
 }
 
-fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, reload: bool, fit_data: &VastFitData) -> AttrVal {
+fn get_cap_consumed(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    reload: bool,
+    fit_data: &VastFitData,
+    drains: bool,
+    gains: bool,
+) -> AttrVal {
     let mut cps = OF(0.0);
     let cycle_options = match reload {
         true => CYCLE_OPTIONS_SIM,
@@ -137,6 +156,10 @@ fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, reload: bool, fit_data: &VastF
             let cap_consumed = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
                 Ok(cap_consumed) => cap_consumed,
                 Err(_) => continue,
+            };
+            match (cap_consumed.cmp(&OF(0.0)), drains, gains) {
+                (Ordering::Greater, true, _) | (Ordering::Less, _, true) => (),
+                _ => continue,
             };
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
