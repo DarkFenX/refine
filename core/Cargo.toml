@@ -1,6 +1,6 @@
 [package]
 name = "reefast-core"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 description = "Rust Engine for Eve Fit Analysis, Statistics and Theorycrafting."
@@ -17,4 +17,4 @@ rustc-hash = ">=2.1.1"
 slab = ">=0.4.11"
 smallvec = ">=2.0.0-alpha.12"
 thiserror = ">=2.0.17"
-tracing = ">=0.1.41"
+tracing = ">=0.1.43"
