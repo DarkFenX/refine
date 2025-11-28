@@ -17,6 +17,7 @@ mod eff_c5_stability_generator_electric;
 mod eff_c6_stability_generator_plasma;
 mod eff_c7_stability_generator_exotic;
 mod eff_c8_stability_generator_gamma;
+mod eff_c9_nosf_cap_use;
 mod eff_d101_use_missiles;
 mod eff_d103_defender_missile_launching;
 mod eff_d104_fof_missile_launching;
@@ -131,6 +132,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_c6_stability_generator_plasma::mk_n_effect(),
         eff_c7_stability_generator_exotic::mk_n_effect(),
         eff_c8_stability_generator_gamma::mk_n_effect(),
+        eff_c9_nosf_cap_use::mk_n_effect(),
         eff_d4_shield_boosting::mk_n_effect(),
         eff_d9_missile_launching::mk_n_effect(),
         eff_d10_tgt_attack::mk_n_effect(),

@@ -1,3 +1,6 @@
+// There is nothing in static data which maps between stability generator items and buffs, so it's
+// hardcoded here
+
 use crate::{
     ac,
     ad::{

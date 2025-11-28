@@ -1,3 +1,8 @@
+// In EVE, missiles are launched from center of an attacking ship. Ships have non-zero radius, and
+// overview distance is calculated from surface to surface. To make missile range roughly match to
+// their theoretical range, CCP added hidden flight time bonus, which depends on radius of the
+// attacking ship. This effect implements it.
+
 use smallvec::{SmallVec, smallvec};
 
 use crate::{

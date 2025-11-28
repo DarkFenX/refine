@@ -1,6 +1,7 @@
 use crate::ed::EAttrId;
 
 pub(crate) const MASS: EAttrId = 4;
+pub(crate) const CAPACITOR_NEED: EAttrId = 6;
 pub(crate) const HP: EAttrId = 9;
 pub(crate) const POWER_OUTPUT: EAttrId = 11;
 pub(crate) const LOW_SLOTS: EAttrId = 12;

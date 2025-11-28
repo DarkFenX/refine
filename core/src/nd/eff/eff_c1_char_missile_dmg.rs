@@ -1,3 +1,9 @@
+// Some missile damage boosting effects (such as BCS and rigs) boost an attribute on character,
+// instead of damage attributes on missiles themselves. There is something which transfers value of
+// that attribute to missiles in EVE (possibly, useMissiles effect freezes missile attributes upon
+// launching, and apply damage changes in process). In the lib, it is handled via this custom
+// effect.
+
 use crate::{
     ac,
     ad::{

@@ -141,3 +141,4 @@ pub(crate) const STABILITY_GENERATOR_ELECTRIC: AEffectId = AEffectId::Custom(5);
 pub(crate) const STABILITY_GENERATOR_PLASMA: AEffectId = AEffectId::Custom(6);
 pub(crate) const STABILITY_GENERATOR_EXOTIC: AEffectId = AEffectId::Custom(7);
 pub(crate) const STABILITY_GENERATOR_GAMMA: AEffectId = AEffectId::Custom(8);
+pub(crate) const NOSF_CAP_USE: AEffectId = AEffectId::Custom(9);

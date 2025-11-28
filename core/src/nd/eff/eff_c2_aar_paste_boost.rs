@@ -1,3 +1,7 @@
+// AAR paste boost in EVE does not change rep amount attribute. It seems to be applied by AAR effect
+// when repairs actually happen. However, here we apply it to "extra" value of rep amount attribute
+// for usability and simplicity of effect itself.
+
 use smallvec::{SmallVec, smallvec};
 
 use crate::{

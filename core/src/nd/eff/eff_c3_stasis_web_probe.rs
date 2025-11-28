@@ -1,3 +1,7 @@
+// Web bubble doesn't have any effects specific to it. Since torpedoLaunching effect is shared
+// across multiple items (survey probes, regular bubbles), I decided to split wubble functionality
+// into separate custom effect specific to it.
+
 use crate::{
     ac,
     ad::{
