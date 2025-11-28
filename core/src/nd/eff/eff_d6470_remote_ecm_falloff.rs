@@ -33,8 +33,10 @@ fn internal_get_ecm_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
 ) -> Option<Ecm> {
-    let duration_attr_id = projector_effect.get_duration_attr_id()?;
-    let duration_s = calc.get_item_attr_val_extra_opt(ctx, projector_key, &duration_attr_id)? / OF(1000.0);
+    let duration_s = match projector_effect.get_duration_attr_id() {
+        Some(duration_attr_id) => calc.get_item_attr_val_extra_opt(ctx, projector_key, &duration_attr_id)? / OF(1000.0),
+        None => OF(0.0),
+    };
     let mut str_radar = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_RADAR_STRENGTH_BONUS)?;
     let mut str_magnet =
         calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_BONUS)?;
