@@ -4,9 +4,9 @@ from tests.fw.util import Absent, dc_to_dict
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionFitRemoteRps:
+class StatsOptionFitOutRps:
 
-    item_kinds: StatRemoteRepItemKinds | type[Absent] = Absent
+    item_kinds: StatOutRepItemKinds | type[Absent] = Absent
     spool: str | type[Absent] = Absent
 
     def to_dict(self) -> dict:
@@ -14,7 +14,7 @@ class StatsOptionFitRemoteRps:
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionItemRemoteRps:
+class StatsOptionItemOutRps:
 
     spool: str | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
@@ -24,7 +24,7 @@ class StatsOptionItemRemoteRps:
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatRemoteRepItemKinds:
+class StatOutRepItemKinds:
 
     default: bool | type[Absent] = Absent
     module: bool | type[Absent] = Absent

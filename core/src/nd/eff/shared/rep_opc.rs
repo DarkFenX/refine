@@ -86,7 +86,7 @@ fn get_local_rep_opc(
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
 
-pub(in crate::nd::eff) fn get_remote_shield_rep_opc(
+pub(in crate::nd::eff) fn get_outgoing_shield_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -96,7 +96,7 @@ pub(in crate::nd::eff) fn get_remote_shield_rep_opc(
     projectee_key: Option<UItemKey>,
     proj_mult_getter: NProjMultGetter,
 ) -> Option<Output<AttrVal>> {
-    get_remote_rep_opc(
+    get_outgoing_rep_opc(
         ctx,
         calc,
         projector_key,
@@ -111,7 +111,7 @@ pub(in crate::nd::eff) fn get_remote_shield_rep_opc(
     )
 }
 
-pub(in crate::nd::eff) fn get_remote_armor_rep_opc(
+pub(in crate::nd::eff) fn get_outgoing_armor_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -121,7 +121,7 @@ pub(in crate::nd::eff) fn get_remote_armor_rep_opc(
     projectee_key: Option<UItemKey>,
     proj_mult_getter: NProjMultGetter,
 ) -> Option<Output<AttrVal>> {
-    get_remote_rep_opc(
+    get_outgoing_rep_opc(
         ctx,
         calc,
         projector_key,
@@ -136,7 +136,7 @@ pub(in crate::nd::eff) fn get_remote_armor_rep_opc(
     )
 }
 
-pub(in crate::nd::eff) fn get_remote_hull_rep_opc(
+pub(in crate::nd::eff) fn get_outgoing_hull_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -146,7 +146,7 @@ pub(in crate::nd::eff) fn get_remote_hull_rep_opc(
     projectee_key: Option<UItemKey>,
     proj_mult_getter: NProjMultGetter,
 ) -> Option<Output<AttrVal>> {
-    get_remote_rep_opc(
+    get_outgoing_rep_opc(
         ctx,
         calc,
         projector_key,
@@ -161,7 +161,7 @@ pub(in crate::nd::eff) fn get_remote_hull_rep_opc(
     )
 }
 
-pub(in crate::nd::eff) fn get_remote_cap_rep_opc(
+pub(in crate::nd::eff) fn get_outgoing_cap_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -171,7 +171,7 @@ pub(in crate::nd::eff) fn get_remote_cap_rep_opc(
     projectee_key: Option<UItemKey>,
     proj_mult_getter: NProjMultGetter,
 ) -> Option<Output<AttrVal>> {
-    get_remote_rep_opc(
+    get_outgoing_rep_opc(
         ctx,
         calc,
         projector_key,
@@ -186,7 +186,7 @@ pub(in crate::nd::eff) fn get_remote_cap_rep_opc(
     )
 }
 
-fn get_remote_rep_opc(
+fn get_outgoing_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

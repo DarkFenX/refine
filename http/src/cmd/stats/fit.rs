@@ -3,8 +3,8 @@ use crate::{
         shared::get_primary_fit,
         stats::options::{
             HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
-            HStatOptionFitMining, HStatOptionFitRemoteNps, HStatOptionFitRemoteRps, HStatOptionFitVolley,
-            HStatOptionRps, HStatResolvedOption,
+            HStatOptionFitMining, HStatOptionFitOutNps, HStatOptionFitOutRps, HStatOptionFitVolley, HStatOptionRps,
+            HStatResolvedOption,
         },
     },
     info::{
@@ -69,9 +69,9 @@ pub(crate) struct HGetFitStatsCmd {
     rps: Option<HStatOption<HStatOptionRps>>,
     erps: Option<HStatOption<HStatOptionErps>>,
     resists: Option<bool>,
-    remote_rps: Option<HStatOption<HStatOptionFitRemoteRps>>,
-    remote_cps: Option<bool>,
-    remote_nps: Option<HStatOption<HStatOptionFitRemoteNps>>,
+    outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
+    outgoing_cps: Option<bool>,
+    outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     cap_amount: Option<bool>,
     cap_balance: Option<HStatOption<HStatOptionCapBalance>>,
     cap_sim: Option<HStatOption<HStatOptionCapSim>>,
@@ -225,16 +225,16 @@ impl HGetFitStatsCmd {
         if self.resists.unwrap_or(self.default) {
             stats.resists = core_fit.get_stat_resists().into();
         }
-        let rrps_opt = HStatResolvedOption::new(&self.remote_rps, self.default);
+        let rrps_opt = HStatResolvedOption::new(&self.outgoing_rps, self.default);
         if rrps_opt.enabled {
-            stats.remote_rps = Some(get_remote_rps_stats(&mut core_fit, rrps_opt.options));
+            stats.outgoing_rps = Some(get_outgoing_rps_stats(&mut core_fit, rrps_opt.options));
         }
-        if self.remote_cps.unwrap_or(self.default) {
-            stats.remote_cps = Some(core_fit.get_stat_remote_cps());
+        if self.outgoing_cps.unwrap_or(self.default) {
+            stats.outgoing_cps = Some(core_fit.get_stat_outgoing_cps());
         }
-        let rnps_opt = HStatResolvedOption::new(&self.remote_nps, self.default);
+        let rnps_opt = HStatResolvedOption::new(&self.outgoing_nps, self.default);
         if rnps_opt.enabled {
-            stats.remote_nps = Some(get_remote_nps_stats(&mut core_fit, rnps_opt.options));
+            stats.outgoing_nps = Some(get_outgoing_nps_stats(&mut core_fit, rnps_opt.options));
         }
         if self.cap_amount.unwrap_or(self.default) {
             stats.cap_amount = core_fit.get_stat_cap_amount().into();
@@ -353,33 +353,33 @@ fn get_erps_stats(
     Some(results)
 }
 
-fn get_remote_rps_stats(
+fn get_outgoing_rps_stats(
     core_fit: &mut rc::FitMut,
-    options: Vec<HStatOptionFitRemoteRps>,
+    options: Vec<HStatOptionFitOutRps>,
 ) -> Vec<HStatTank<rc::AttrVal>> {
     options
         .iter()
         .map(|option| {
             let core_item_kinds = (&option.item_kinds).into();
             let core_spool = option.spool.map(Into::into);
-            core_fit.get_stat_remote_rps(core_item_kinds, core_spool).into()
+            core_fit.get_stat_outgoing_rps(core_item_kinds, core_spool).into()
         })
         .collect()
 }
 
-fn get_remote_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitRemoteNps>) -> Vec<Option<rc::AttrVal>> {
+fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutNps>) -> Vec<Option<rc::AttrVal>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_remote_nps_applied(core_item_kinds, &projectee_item_id) {
+                match core_fit.get_stat_outgoing_nps_applied(core_item_kinds, &projectee_item_id) {
                     Ok(result) => results.push(Some(result)),
                     Err(_) => results.push(None),
                 }
             }
             None => {
-                let result = core_fit.get_stat_remote_nps(core_item_kinds);
+                let result = core_fit.get_stat_outgoing_nps(core_item_kinds);
                 results.push(Some(result));
             }
         }

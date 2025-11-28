@@ -13,7 +13,7 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_fits_remote_nps(
+    pub(in crate::svc) fn get_stat_fits_outgoing_nps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -33,7 +33,7 @@ impl Vast {
             })
             .sum()
     }
-    pub(in crate::svc) fn get_stat_fit_remote_nps(
+    pub(in crate::svc) fn get_stat_fit_outgoing_nps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,

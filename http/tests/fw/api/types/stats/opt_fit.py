@@ -8,8 +8,8 @@ if typing.TYPE_CHECKING:
     from .opt_dmg import StatsOptionFitDps, StatsOptionFitVolley
     from .opt_ehp import StatsOptionEhp
     from .opt_mining import StatsOptionFitMining
-    from .opt_remote_nps import StatsOptionFitRemoteNps
-    from .opt_remote_rps import StatsOptionFitRemoteRps
+    from .opt_outgoing_nps import StatsOptionFitOutNps
+    from .opt_outgoing_rps import StatsOptionFitOutRps
     from .opt_rps import StatsOptionErps, StatsOptionRps
 
 
@@ -63,9 +63,9 @@ class FitStatsOptions:
     rps: bool | tuple[bool, list[StatsOptionRps]] | type[Absent] = Absent
     erps: bool | tuple[bool, list[StatsOptionErps]] | type[Absent] = Absent
     resists: bool | type[Absent] = Absent
-    remote_rps: bool | tuple[bool, list[StatsOptionFitRemoteRps]] | type[Absent] = Absent
-    remote_cps: bool | type[Absent] = Absent
-    remote_nps: bool | tuple[bool, list[StatsOptionFitRemoteNps]] | type[Absent] = Absent
+    outgoing_rps: bool | tuple[bool, list[StatsOptionFitOutRps]] | type[Absent] = Absent
+    outgoing_cps: bool | type[Absent] = Absent
+    outgoing_nps: bool | tuple[bool, list[StatsOptionFitOutNps]] | type[Absent] = Absent
     cap_amount: bool | type[Absent] = Absent
     cap_balance: bool | tuple[bool, list[StatsOptionCapBalance]] | type[Absent] = Absent
     cap_sim: bool | tuple[bool, list[StatsOptionCapSim]] | type[Absent] = Absent

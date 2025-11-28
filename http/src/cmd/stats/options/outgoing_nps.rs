@@ -2,7 +2,7 @@ use crate::util::default_true;
 
 #[serde_with::serde_as]
 #[derive(Copy, Clone, Default, serde::Deserialize)]
-pub(in crate::cmd) struct HStatOptionFitRemoteNps {
+pub(in crate::cmd) struct HStatOptionFitOutNps {
     #[serde(default)]
     pub(in crate::cmd) item_kinds: HStatNeutItemKinds,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
@@ -12,7 +12,7 @@ pub(in crate::cmd) struct HStatOptionFitRemoteNps {
 #[serde_with::serde_as]
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
-pub(in crate::cmd) struct HStatOptionItemRemoteNps {
+pub(in crate::cmd) struct HStatOptionItemOutNps {
     #[serde(default)]
     #[educe(Default = false)]
     pub(in crate::cmd) include_charges: bool,

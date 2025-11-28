@@ -47,7 +47,7 @@ impl Vast {
                 }
             }
         }
-        if let Some(rep_getter) = effect.get_remote_shield_rep_opc_getter() {
+        if let Some(rep_getter) = effect.get_outgoing_shield_rep_opc_getter() {
             if effect.is_active_with_duration() {
                 self.irr_shield
                     .add_entry(projectee_key, projector_key, effect.get_key(), rep_getter);
@@ -57,7 +57,7 @@ impl Vast {
                     .add_entry(projectee_key, projector_key, effect.get_key(), rep_getter);
             }
         }
-        if let Some(rep_getter) = effect.get_remote_armor_rep_opc_getter() {
+        if let Some(rep_getter) = effect.get_outgoing_armor_rep_opc_getter() {
             if effect.is_active_with_duration() {
                 self.irr_armor
                     .add_entry(projectee_key, projector_key, effect.get_key(), rep_getter);
@@ -67,13 +67,13 @@ impl Vast {
                     .add_entry(projectee_key, projector_key, effect.get_key(), rep_getter);
             }
         }
-        if let Some(rep_getter) = effect.get_remote_hull_rep_opc_getter()
+        if let Some(rep_getter) = effect.get_outgoing_hull_rep_opc_getter()
             && effect.is_active_with_duration()
         {
             self.irr_hull
                 .add_entry(projectee_key, projector_key, effect.get_key(), rep_getter);
         }
-        if let Some(rep_getter) = effect.get_remote_cap_rep_opc_getter()
+        if let Some(rep_getter) = effect.get_outgoing_cap_rep_opc_getter()
             && effect.is_active_with_duration()
         {
             self.in_cap
@@ -128,7 +128,7 @@ impl Vast {
                 }
             }
         }
-        if effect.get_remote_shield_rep_opc_getter().is_some() {
+        if effect.get_outgoing_shield_rep_opc_getter().is_some() {
             if effect.is_active_with_duration() {
                 self.irr_shield
                     .remove_l3(projectee_key, projector_key, &effect.get_key());
@@ -138,7 +138,7 @@ impl Vast {
                     .remove_l3(projectee_key, projector_key, &effect.get_key());
             }
         }
-        if effect.get_remote_armor_rep_opc_getter().is_some() {
+        if effect.get_outgoing_armor_rep_opc_getter().is_some() {
             if effect.is_active_with_duration() {
                 self.irr_armor
                     .remove_l3(projectee_key, projector_key, &effect.get_key());
@@ -148,10 +148,10 @@ impl Vast {
                     .remove_l3(projectee_key, projector_key, &effect.get_key());
             }
         }
-        if effect.get_remote_hull_rep_opc_getter().is_some() && effect.is_active_with_duration() {
+        if effect.get_outgoing_hull_rep_opc_getter().is_some() && effect.is_active_with_duration() {
             self.irr_hull.remove_l3(projectee_key, projector_key, &effect.get_key());
         }
-        if effect.get_remote_cap_rep_opc_getter().is_some() && effect.is_active_with_duration() {
+        if effect.get_outgoing_cap_rep_opc_getter().is_some() && effect.is_active_with_duration() {
             self.in_cap.remove_l3(projectee_key, projector_key, &effect.get_key());
         }
         if effect.get_neut_opc_getter().is_some() {

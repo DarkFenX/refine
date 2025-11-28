@@ -4,7 +4,7 @@ from tests.fw.util import Absent, dc_to_dict
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionFitRemoteNps:
+class StatsOptionFitOutNps:
 
     item_kinds: StatNeutItemKinds | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
@@ -14,7 +14,7 @@ class StatsOptionFitRemoteNps:
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionItemRemoteNps:
+class StatsOptionItemOutNps:
 
     include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent

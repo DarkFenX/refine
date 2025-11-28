@@ -1,25 +1,25 @@
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::NRemoteRepGetter,
+    nd::NOutgoingRepGetter,
     rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
-        vast::{StatRemoteRepItemKinds, StatTank, Vast},
+        vast::{StatOutRepItemKinds, StatTank, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_fits_remote_rps(
+    pub(in crate::svc) fn get_stat_fits_outgoing_rps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
-        item_kinds: StatRemoteRepItemKinds,
+        item_kinds: StatOutRepItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
         let mut rps = StatTank {
@@ -35,12 +35,12 @@ impl Vast {
         }
         rps
     }
-    pub(in crate::svc) fn get_stat_fit_remote_rps(
+    pub(in crate::svc) fn get_stat_fit_outgoing_rps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_key: UFitKey,
-        item_kinds: StatRemoteRepItemKinds,
+        item_kinds: StatOutRepItemKinds,
         spool: Option<Spool>,
     ) -> StatTank<AttrVal> {
         let fit_data = self.get_fit_data(&fit_key);
@@ -50,7 +50,7 @@ impl Vast {
             hull: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_hull),
         }
     }
-    pub(in crate::svc) fn get_stat_fits_remote_cps(
+    pub(in crate::svc) fn get_stat_fits_outgoing_cps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -61,22 +61,16 @@ impl Vast {
                 get_orrps(
                     ctx,
                     calc,
-                    StatRemoteRepItemKinds::all_enabled(),
+                    StatOutRepItemKinds::all_enabled(),
                     None,
                     &self.get_fit_data(&fit_key).out_cap,
                 )
             })
             .sum()
     }
-    pub(in crate::svc) fn get_stat_fit_remote_cps(&self, ctx: SvcCtx, calc: &mut Calc, fit_key: UFitKey) -> AttrVal {
+    pub(in crate::svc) fn get_stat_fit_outgoing_cps(&self, ctx: SvcCtx, calc: &mut Calc, fit_key: UFitKey) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
-        get_orrps(
-            ctx,
-            calc,
-            StatRemoteRepItemKinds::all_enabled(),
-            None,
-            &fit_data.out_cap,
-        )
+        get_orrps(ctx, calc, StatOutRepItemKinds::all_enabled(), None, &fit_data.out_cap)
     }
 }
 
@@ -88,9 +82,9 @@ const ORR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 fn get_orrps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_kinds: StatRemoteRepItemKinds,
+    item_kinds: StatOutRepItemKinds,
     spool: Option<Spool>,
-    fit_data: &RMapRMap<UItemKey, REffectKey, NRemoteRepGetter>,
+    fit_data: &RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
 ) -> AttrVal {
     let mut rps = OF(0.0);
     for (&item_key, item_data) in fit_data.iter() {

@@ -2,7 +2,7 @@ use super::super::checks::check_item_drone_fighter_ship;
 use crate::{
     ac,
     def::{AttrVal, OF},
-    nd::{NLocalRepGetter, NRemoteRepGetter},
+    nd::{NLocalRepGetter, NOutgoingRepGetter},
     rd::REffectKey,
     svc::{
         SvcCtx,
@@ -120,7 +120,7 @@ fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_item_key: UItemKey,
-    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     let incoming_ancils = match ancil_data.get_l1(&projectee_item_key) {

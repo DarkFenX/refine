@@ -3,7 +3,7 @@ import typing
 
 
 @dataclasses.dataclass
-class StatRemoteRps:
+class StatOutRps:
 
     shield: float
     armor: float

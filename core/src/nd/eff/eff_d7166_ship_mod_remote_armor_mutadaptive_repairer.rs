@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectHc,
         eff::shared::{
-            proj_mult::get_noapp_simple_s2s_proj_mult, rep_opc::get_remote_armor_rep_opc, spool::get_resolved_spool,
+            proj_mult::get_noapp_simple_s2s_proj_mult, rep_opc::get_outgoing_armor_rep_opc, spool::get_resolved_spool,
         },
     },
     rd::REffect,
@@ -25,7 +25,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         hc: NEffectHc {
             spool_resolver: Some(internal_get_resolved_spool),
-            remote_armor_rep_opc_getter: Some(internal_get_remote_rep_opc),
+            outgoing_armor_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
             ..
         },
         ..
@@ -50,7 +50,7 @@ fn internal_get_resolved_spool(
     )
 }
 
-fn internal_get_remote_rep_opc(
+fn internal_get_outgoing_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -58,7 +58,7 @@ fn internal_get_remote_rep_opc(
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
-    get_remote_armor_rep_opc(
+    get_outgoing_armor_rep_opc(
         ctx,
         calc,
         projector_key,

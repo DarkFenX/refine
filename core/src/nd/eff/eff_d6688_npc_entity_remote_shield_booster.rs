@@ -7,7 +7,7 @@ use crate::{
     misc::Spool,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::{proj_mult::get_noapp_simple_s2s_proj_mult, rep_opc::get_remote_shield_rep_opc},
+        eff::shared::{proj_mult::get_noapp_simple_s2s_proj_mult, rep_opc::get_outgoing_shield_rep_opc},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -22,14 +22,14 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         hc: NEffectHc {
-            remote_shield_rep_opc_getter: Some(internal_get_remote_rep_opc),
+            outgoing_shield_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
             ..
         },
         ..
     }
 }
 
-fn internal_get_remote_rep_opc(
+fn internal_get_outgoing_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -37,7 +37,7 @@ fn internal_get_remote_rep_opc(
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
-    get_remote_shield_rep_opc(
+    get_outgoing_shield_rep_opc(
         ctx,
         calc,
         projector_key,

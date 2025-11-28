@@ -5,12 +5,12 @@ use crate::{
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_remote_nps(&mut self, item_kinds: StatNeutItemKinds) -> AttrVal {
+    pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds) -> AttrVal {
         self.sol
             .svc
-            .get_stat_fit_remote_nps(&self.sol.u_data, self.key, item_kinds, None)
+            .get_stat_fit_outgoing_nps(&self.sol.u_data, self.key, item_kinds, None)
     }
-    pub fn get_stat_remote_nps_applied(
+    pub fn get_stat_outgoing_nps_applied(
         &mut self,
         item_kinds: StatNeutItemKinds,
         projectee_item_id: &ItemId,
@@ -19,6 +19,6 @@ impl<'a> FitMut<'a> {
         Ok(self
             .sol
             .svc
-            .get_stat_fit_remote_nps(&self.sol.u_data, self.key, item_kinds, Some(projectee_key)))
+            .get_stat_fit_outgoing_nps(&self.sol.u_data, self.key, item_kinds, Some(projectee_key)))
     }
 }

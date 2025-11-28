@@ -1,7 +1,7 @@
 from tests.fw.util import AttrDict, AttrHookDef, NttList
 from .stat_dmg import StatDmg
 from .stat_mining import StatMining
-from .stat_remote_rps import StatRemoteRps
+from .stat_outgoing_rps import StatOutRps
 
 
 class FleetStats(AttrDict):
@@ -15,7 +15,7 @@ class FleetStats(AttrDict):
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),
             'mps': AttrHookDef(func=lambda d: NttList(StatMining(data=e) for e in d)),
-            'remote_rps': AttrHookDef(func=lambda d: (
-                NttList(StatRemoteRps(data=e) for e in d)
+            'outgoing_rps': AttrHookDef(func=lambda d: (
+                NttList(StatOutRps(data=e) for e in d)
                 if d is not None else None)),
-            'remote_nps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None)})
+            'outgoing_nps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None)})

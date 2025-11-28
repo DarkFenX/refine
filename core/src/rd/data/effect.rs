@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AState},
     nd::{
         N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffectCharge,
-        NEffectChargeLoc, NEffectHc, NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter,
-        NRemoteRepGetter, NSpoolResolver,
+        NEffectChargeLoc, NEffectHc, NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter,
+        NProjMultGetter, NSpoolResolver,
     },
     rd::{REffectKey, RItem},
     util::{GetId, Named, RMap},
@@ -135,17 +135,17 @@ impl REffect {
     pub(crate) fn get_mining_gas_opc_getter(&self) -> Option<NMiningGetter> {
         self.n_effect_hc.mining_gas_opc_getter
     }
-    pub(crate) fn get_remote_shield_rep_opc_getter(&self) -> Option<NRemoteRepGetter> {
-        self.n_effect_hc.remote_shield_rep_opc_getter
+    pub(crate) fn get_outgoing_shield_rep_opc_getter(&self) -> Option<NOutgoingRepGetter> {
+        self.n_effect_hc.outgoing_shield_rep_opc_getter
     }
-    pub(crate) fn get_remote_armor_rep_opc_getter(&self) -> Option<NRemoteRepGetter> {
-        self.n_effect_hc.remote_armor_rep_opc_getter
+    pub(crate) fn get_outgoing_armor_rep_opc_getter(&self) -> Option<NOutgoingRepGetter> {
+        self.n_effect_hc.outgoing_armor_rep_opc_getter
     }
-    pub(crate) fn get_remote_hull_rep_opc_getter(&self) -> Option<NRemoteRepGetter> {
-        self.n_effect_hc.remote_hull_rep_opc_getter
+    pub(crate) fn get_outgoing_hull_rep_opc_getter(&self) -> Option<NOutgoingRepGetter> {
+        self.n_effect_hc.outgoing_hull_rep_opc_getter
     }
-    pub(crate) fn get_remote_cap_rep_opc_getter(&self) -> Option<NRemoteRepGetter> {
-        self.n_effect_hc.remote_cap_rep_opc_getter
+    pub(crate) fn get_outgoing_cap_rep_opc_getter(&self) -> Option<NOutgoingRepGetter> {
+        self.n_effect_hc.outgoing_cap_rep_opc_getter
     }
     pub(crate) fn get_neut_opc_getter(&self) -> Option<NNeutGetter> {
         self.n_effect_hc.neut_opc_getter

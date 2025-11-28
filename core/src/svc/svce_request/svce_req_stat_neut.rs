@@ -9,14 +9,14 @@ use crate::{
 };
 
 impl Svc {
-    pub(crate) fn get_stat_fits_remote_nps(
+    pub(crate) fn get_stat_fits_outgoing_nps(
         &mut self,
         u_data: &UData,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatNeutItemKinds,
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
-        self.vast.get_stat_fits_remote_nps(
+        self.vast.get_stat_fits_outgoing_nps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_keys,
@@ -24,14 +24,14 @@ impl Svc {
             projectee_key,
         )
     }
-    pub(crate) fn get_stat_fit_remote_nps(
+    pub(crate) fn get_stat_fit_outgoing_nps(
         &mut self,
         u_data: &UData,
         fit_key: UFitKey,
         item_kinds: StatNeutItemKinds,
         projectee_key: Option<UItemKey>,
     ) -> AttrVal {
-        self.vast.get_stat_fit_remote_nps(
+        self.vast.get_stat_fit_outgoing_nps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_key,
@@ -39,7 +39,7 @@ impl Svc {
             projectee_key,
         )
     }
-    pub(crate) fn get_stat_item_remote_nps(
+    pub(crate) fn get_stat_item_outgoing_nps(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
@@ -47,7 +47,7 @@ impl Svc {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_remote_nps(
+        Vast::get_stat_item_outgoing_nps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,

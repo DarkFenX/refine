@@ -13,12 +13,12 @@ def test_not_requested(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_rps=False))
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=False))
     with check_no_field():
-        api_fleet_stats.remote_rps  # noqa: B018
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_rps=False))
+        api_fleet_stats.outgoing_rps  # noqa: B018
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=False))
     with check_no_field():
-        api_fit_stats.remote_rps  # noqa: B018
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_rps=False))
+        api_fit_stats.outgoing_rps  # noqa: B018
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=False))
     with check_no_field():
-        api_module_stats.remote_rps  # noqa: B018
+        api_module_stats.outgoing_rps  # noqa: B018

@@ -3,7 +3,7 @@ use crate::{
     ac,
     def::{AttrVal, OF},
     misc::Spool,
-    nd::{NLocalRepGetter, NRemoteRepGetter},
+    nd::{NLocalRepGetter, NOutgoingRepGetter},
     rd::REffectKey,
     svc::{
         SvcCtx,
@@ -130,7 +130,7 @@ fn get_irr_data(
     calc: &mut Calc,
     projectee_item_key: UItemKey,
     spool: Option<Spool>,
-    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NRemoteRepGetter>,
+    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match sol_irrs.get_l1(&projectee_item_key) {

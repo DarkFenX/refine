@@ -17,7 +17,7 @@ const NEUT_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_item_remote_nps(
+    pub(in crate::svc) fn get_stat_item_outgoing_nps(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -26,7 +26,7 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_item_key_charge_drone_fighter_module(ctx, item_key)?;
-        Ok(Vast::internal_get_stat_item_remote_nps_unchecked(
+        Ok(Vast::internal_get_stat_item_outgoing_nps_unchecked(
             ctx,
             calc,
             item_key,
@@ -35,7 +35,7 @@ impl Vast {
             projectee_key,
         ))
     }
-    fn internal_get_stat_item_remote_nps_unchecked(
+    fn internal_get_stat_item_outgoing_nps_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -62,7 +62,7 @@ impl Vast {
         if include_charges {
             for charge_key in ctx.u_data.items.get(item_key).iter_charges() {
                 if let Ok(charge_nps) =
-                    Vast::get_stat_item_remote_nps(ctx, calc, charge_key, false, ignore_state, projectee_key)
+                    Vast::get_stat_item_outgoing_nps(ctx, calc, charge_key, false, ignore_state, projectee_key)
                 {
                     item_nps += charge_nps;
                 }

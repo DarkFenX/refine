@@ -1,5 +1,5 @@
 from tests import approx, check_no_field
-from tests.fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionItemRemoteCps
+from tests.fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionItemOutCps
 
 
 def test_state(client, consts):
@@ -20,32 +20,32 @@ def test_state(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
-    assert api_fleet_stats.remote_cps == approx(70.2)
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
-    assert api_fit_stats.remote_cps == approx(70.2)
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
-    assert api_module_stats.remote_cps.one() == approx(70.2)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    assert api_fleet_stats.outgoing_cps == approx(70.2)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    assert api_fit_stats.outgoing_cps == approx(70.2)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    assert api_module_stats.outgoing_cps.one() == approx(70.2)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
-    assert api_fleet_stats.remote_cps == 0
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
-    assert api_fit_stats.remote_cps == 0
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=(True, [
-        StatsOptionItemRemoteCps(ignore_state=False),
-        StatsOptionItemRemoteCps(ignore_state=True)])))
-    assert api_module_stats.remote_cps == [0, approx(70.2)]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    assert api_fleet_stats.outgoing_cps == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    assert api_fit_stats.outgoing_cps == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=(True, [
+        StatsOptionItemOutCps(ignore_state=False),
+        StatsOptionItemOutCps(ignore_state=True)])))
+    assert api_module_stats.outgoing_cps == [0, approx(70.2)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
-    assert api_fleet_stats.remote_cps == approx(70.2)
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
-    assert api_fit_stats.remote_cps == approx(70.2)
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
-    assert api_module_stats.remote_cps.one() == approx(70.2)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    assert api_fleet_stats.outgoing_cps == approx(70.2)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    assert api_fit_stats.outgoing_cps == approx(70.2)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    assert api_module_stats.outgoing_cps.one() == approx(70.2)
 
 
 def test_zero_cycle_time(client, consts):
@@ -66,12 +66,12 @@ def test_zero_cycle_time(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
-    assert api_fleet_stats.remote_cps == 0
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
-    assert api_fit_stats.remote_cps == 0
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
-    assert api_module_stats.remote_cps.one() == 0
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    assert api_fleet_stats.outgoing_cps == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    assert api_fit_stats.outgoing_cps == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    assert api_module_stats.outgoing_cps.one() == 0
 
 
 def test_no_cycle_time(client, consts):
@@ -91,12 +91,12 @@ def test_no_cycle_time(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
-    assert api_fleet_stats.remote_cps == 0
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
-    assert api_fit_stats.remote_cps == 0
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
-    assert api_module_stats.remote_cps.one() == 0
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    assert api_fleet_stats.outgoing_cps == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    assert api_fit_stats.outgoing_cps == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    assert api_module_stats.outgoing_cps.one() == 0
 
 
 def test_item_not_loaded(client, consts):
@@ -108,12 +108,12 @@ def test_item_not_loaded(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=True))
-    assert api_fleet_stats.remote_cps == 0
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=True))
-    assert api_fit_stats.remote_cps == 0
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=True))
-    assert api_module_stats.remote_cps is None
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    assert api_fleet_stats.outgoing_cps == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    assert api_fit_stats.outgoing_cps == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    assert api_module_stats.outgoing_cps is None
 
 
 def test_not_requested(client, consts):
@@ -134,12 +134,12 @@ def test_not_requested(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(remote_cps=False))
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=False))
     with check_no_field():
-        api_fleet_stats.remote_cps  # noqa: B018
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(remote_cps=False))
+        api_fleet_stats.outgoing_cps  # noqa: B018
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=False))
     with check_no_field():
-        api_fit_stats.remote_cps  # noqa: B018
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(remote_cps=False))
+        api_fit_stats.outgoing_cps  # noqa: B018
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=False))
     with check_no_field():
-        api_module_stats.remote_cps  # noqa: B018
+        api_module_stats.outgoing_cps  # noqa: B018

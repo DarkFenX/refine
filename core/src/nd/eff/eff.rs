@@ -28,7 +28,7 @@ pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
 pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<MiningAmount>>;
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<AttrVal>>;
-pub(crate) type NRemoteRepGetter =
+pub(crate) type NOutgoingRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NNeutGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
@@ -74,10 +74,10 @@ pub(crate) struct NEffectHc {
     pub(crate) mining_ice_opc_getter: Option<NMiningGetter> = None,
     pub(crate) mining_gas_opc_getter: Option<NMiningGetter> = None,
     // Rep output
-    pub(crate) remote_shield_rep_opc_getter: Option<NRemoteRepGetter> = None,
-    pub(crate) remote_armor_rep_opc_getter: Option<NRemoteRepGetter> = None,
-    pub(crate) remote_hull_rep_opc_getter: Option<NRemoteRepGetter> = None,
-    pub(crate) remote_cap_rep_opc_getter: Option<NRemoteRepGetter> = None,
+    pub(crate) outgoing_shield_rep_opc_getter: Option<NOutgoingRepGetter> = None,
+    pub(crate) outgoing_armor_rep_opc_getter: Option<NOutgoingRepGetter> = None,
+    pub(crate) outgoing_hull_rep_opc_getter: Option<NOutgoingRepGetter> = None,
+    pub(crate) outgoing_cap_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     // Cap
     pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,

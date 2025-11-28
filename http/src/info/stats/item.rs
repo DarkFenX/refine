@@ -57,11 +57,11 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) remote_rps: TriStateField<Vec<HStatTank<rc::AttrVal>>>,
+    pub(crate) outgoing_rps: TriStateField<Vec<HStatTank<rc::AttrVal>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) remote_cps: TriStateField<Vec<rc::AttrVal>>,
+    pub(crate) outgoing_cps: TriStateField<Vec<rc::AttrVal>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) remote_nps: TriStateField<Vec<Option<rc::AttrVal>>>,
+    pub(crate) outgoing_nps: TriStateField<Vec<Option<rc::AttrVal>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_amount: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -98,9 +98,9 @@ impl HItemStats {
             rps: TriStateField::default(),
             erps: TriStateField::default(),
             resists: TriStateField::default(),
-            remote_rps: TriStateField::default(),
-            remote_cps: TriStateField::default(),
-            remote_nps: TriStateField::default(),
+            outgoing_rps: TriStateField::default(),
+            outgoing_cps: TriStateField::default(),
+            outgoing_nps: TriStateField::default(),
             cap_amount: TriStateField::default(),
             cap_balance: TriStateField::default(),
             cap_sim: TriStateField::default(),

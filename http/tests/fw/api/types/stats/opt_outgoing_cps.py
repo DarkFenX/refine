@@ -4,7 +4,7 @@ from tests.fw.util import Absent, dc_to_dict
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionItemRemoteCps:
+class StatsOptionItemOutCps:
 
     ignore_state: bool | type[Absent] = Absent
 
