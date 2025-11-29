@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     ac,
-    ad::{AEffectId, AItem, AItemEffectData, AItemId, AItemList, AItemListId, ASkillLevel, AState},
-    adg::{GSupport, get_abil_effect},
+    ad::{AEffectId, AItem, AItemEffectData, AItemId, AItemListId, ASkillLevel, AState},
+    adg::{GItemList, GSupport, get_abil_effect},
     def::OF,
     ed::{EData, EEffectId, EItemId},
     util::RMap,
@@ -102,7 +102,7 @@ fn make_item_defeff_map(e_data: &EData) -> RMap<EItemId, EEffectId> {
         .collect()
 }
 
-fn is_disallowed_in_wspace(e_item_id: &EItemId, type_lists: &RMap<AItemListId, AItemList>) -> bool {
+fn is_disallowed_in_wspace(e_item_id: &EItemId, type_lists: &RMap<AItemListId, GItemList>) -> bool {
     let type_list = match type_lists.get(&ac::itemlists::WORMHOLE_JUMP_BLACK_LIST) {
         Some(type_list) => type_list,
         None => return false,

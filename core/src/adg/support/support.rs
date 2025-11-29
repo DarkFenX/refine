@@ -1,16 +1,20 @@
 use crate::{
-    ac, ad, ed, nd,
+    ac,
+    ad::{AEffectBuffInfo, AItemListId},
+    adg::GItemList,
+    ed,
+    nd::N_EFFECTS,
     util::{RMap, RMapRSet, RSet},
 };
 
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
-    pub(in crate::adg) item_lists: RMap<ad::AItemListId, ad::AItemList>,
+    pub(in crate::adg) item_lists: RMap<AItemListId, GItemList>,
     pub(in crate::adg) grp_cat_map: RMap<ed::EItemGrpId, ed::EItemCatId>,
     pub(in crate::adg) attr_unit_map: RMap<ed::EAttrId, ed::EAttrUnitId>,
-    pub(in crate::adg) eff_buff_map: RMap<ed::EEffectId, ad::AEffectBuffInfo>,
+    pub(in crate::adg) eff_buff_map: RMap<ed::EEffectId, AEffectBuffInfo>,
     // Buffs which can be used, but are not attached to any effect
-    pub(in crate::adg) standalone_buffs: Vec<ad::AEffectBuffInfo>,
+    pub(in crate::adg) standalone_buffs: Vec<AEffectBuffInfo>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
@@ -56,8 +60,8 @@ impl GSupport {
             for excluded_cat_id in item_list.excluded_cat_ids.iter() {
                 excludes.extend(types_by_cat.get(excluded_cat_id).copied());
             }
-            let item_list = ad::AItemList {
-                id: ad::AItemListId::Eve(item_list.id),
+            let item_list = GItemList {
+                id: AItemListId::Eve(item_list.id),
                 item_ids: includes.difference(&excludes).copied().collect(),
             };
             self.item_lists.insert(item_list.id, item_list);
@@ -78,7 +82,7 @@ impl GSupport {
         }
     }
     fn fill_buff_data(&mut self) {
-        for n_effect in nd::N_EFFECTS.iter() {
+        for n_effect in N_EFFECTS.iter() {
             if let Some(buff_info) = &n_effect.adg_buff_info
                 && let Some(e_effect_id) = n_effect.eid
             {
@@ -102,10 +106,10 @@ impl GSupport {
 
 fn make_item_list(
     cat_to_item_map: &RMapRSet<ed::EItemCatId, ed::EItemId>,
-    item_list_id: ad::AItemListId,
+    item_list_id: AItemListId,
     include_cats: &[ed::EItemCatId],
-) -> ad::AItemList {
-    let mut item_list = ad::AItemList {
+) -> GItemList {
+    let mut item_list = GItemList {
         id: item_list_id,
         item_ids: RSet::new(),
     };

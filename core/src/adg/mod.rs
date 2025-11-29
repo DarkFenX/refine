@@ -2,7 +2,10 @@
 
 use crate::{
     ad,
-    adg::{eff_abil::get_abil_effect, support::GSupport},
+    adg::{
+        eff_abil::get_abil_effect,
+        support::{GItemList, GSupport},
+    },
     ed,
     src::SrcInitError,
 };
