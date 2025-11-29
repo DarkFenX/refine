@@ -41,7 +41,7 @@ class ItemStatsOptions:
     locks: bool | type[Absent] = Absent
     lock_range: bool | type[Absent] = Absent
     scan_res: bool | type[Absent] = Absent
-    sensor: bool | type[Absent] = Absent
+    sensors: bool | type[Absent] = Absent
     dscan_range: bool | type[Absent] = Absent
     probing_size: bool | type[Absent] = Absent
     incoming_jam: bool | type[Absent] = Absent

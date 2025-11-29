@@ -8,7 +8,7 @@ from .stat_mining import StatMining
 from .stat_outgoing_rps import StatOutRps
 from .stat_resists import StatResists
 from .stat_rps import StatRps
-from .stat_sensor import StatSensor
+from .stat_sensors import StatSensors
 
 
 class ItemStats(AttrDict):
@@ -39,5 +39,5 @@ class ItemStats(AttrDict):
             'cap_balance': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             'cap_sim': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             # Sensors
-            'sensor': AttrHookDef(func=lambda d: StatSensor(data=d) if d is not None else None),
+            'sensors': AttrHookDef(func=lambda d: StatSensors(data=d) if d is not None else None),
             'incoming_jam': AttrHookDef(func=lambda d: StatIncomingJam(data=d) if d is not None else None)})

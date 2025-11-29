@@ -3,7 +3,7 @@ import typing
 
 
 @dataclasses.dataclass
-class StatSensor:
+class StatSensors:
 
     kind: str
     strength: float

@@ -6,7 +6,7 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
         err::StatItemCheckError,
-        vast::{StatJamApplied, StatSensorKind, Vast},
+        vast::{StatJamApplied, StatSensorsKind, Vast},
     },
     ud::UItemKey,
 };
@@ -41,7 +41,7 @@ impl Vast {
                 };
             }
         };
-        let sensor = Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, projectee_item_key);
+        let sensors = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, projectee_item_key);
         let mut item_unjam_chance = OF(1.0);
         let mut item_unjam_uptime = OF(1.0);
         for (&projector_item_key, projector_data) in incoming_ecms.iter() {
@@ -51,17 +51,17 @@ impl Vast {
                     Some(item_ecm) => item_ecm,
                     None => continue,
                 };
-                let item_ecm_str = match sensor.kind {
-                    StatSensorKind::Radar => item_ecm.radar,
-                    StatSensorKind::Magnetometric => item_ecm.magnetometric,
-                    StatSensorKind::Gravimetric => item_ecm.gravimetric,
-                    StatSensorKind::Ladar => item_ecm.ladar,
+                let item_ecm_str = match sensors.kind {
+                    StatSensorsKind::Radar => item_ecm.radar,
+                    StatSensorsKind::Magnetometric => item_ecm.magnetometric,
+                    StatSensorsKind::Gravimetric => item_ecm.gravimetric,
+                    StatSensorsKind::Ladar => item_ecm.ladar,
                 };
                 if item_ecm_str <= OF(0.0) {
                     continue;
                 }
                 // Jam chance
-                let ecm_jam_chance = (item_ecm_str / sensor.strength).clamp(OF(0.0), OF(1.0));
+                let ecm_jam_chance = (item_ecm_str / sensors.strength).clamp(OF(0.0), OF(1.0));
                 item_unjam_chance *= OF(1.0) - ecm_jam_chance;
                 // Jam uptime
                 if let Some(cycle_map) = get_item_cycle_info(ctx, calc, projector_item_key, JAM_OPTIONS, false)

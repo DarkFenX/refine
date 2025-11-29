@@ -1,7 +1,7 @@
 use crate::{
     info::stats::details::{
         HStatCapSim, HStatDmg, HStatJamApplied, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp,
-        HStatLayerResist, HStatLayerRps, HStatLayerRpsRegen, HStatMining, HStatRes, HStatSensor, HStatSlot, HStatTank,
+        HStatLayerResist, HStatLayerRps, HStatLayerRpsRegen, HStatMining, HStatRes, HStatSensors, HStatSlot, HStatTank,
         HStatTankRegen,
     },
     util::TriStateField,
@@ -98,7 +98,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) scan_res: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) sensor: TriStateField<HStatSensor>,
+    pub(crate) sensors: TriStateField<HStatSensors>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) dscan_range: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -174,7 +174,7 @@ impl HFitStats {
             locks: TriStateField::default(),
             lock_range: TriStateField::default(),
             scan_res: TriStateField::default(),
-            sensor: TriStateField::default(),
+            sensors: TriStateField::default(),
             dscan_range: TriStateField::default(),
             probing_size: TriStateField::default(),
             incoming_jam: TriStateField::default(),

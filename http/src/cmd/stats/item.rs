@@ -48,7 +48,7 @@ pub(crate) struct HGetItemStatsCmd {
     locks: Option<bool>,
     lock_range: Option<bool>,
     scan_res: Option<bool>,
-    sensor: Option<bool>,
+    sensors: Option<bool>,
     dscan_range: Option<bool>,
     probing_size: Option<bool>,
     incoming_jam: Option<bool>,
@@ -151,8 +151,8 @@ impl HGetItemStatsCmd {
         if self.scan_res.unwrap_or(self.default) {
             stats.scan_res = core_item.get_stat_scan_res().into();
         }
-        if self.sensor.unwrap_or(self.default) {
-            stats.sensor = core_item.get_stat_sensor().into();
+        if self.sensors.unwrap_or(self.default) {
+            stats.sensors = core_item.get_stat_sensors().into();
         }
         if self.dscan_range.unwrap_or(self.default) {
             stats.dscan_range = core_item.get_stat_dscan_range().into();

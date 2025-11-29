@@ -3,7 +3,7 @@ pub(crate) use dmg::HStatDmg;
 pub(crate) use jam::HStatJamApplied;
 pub(crate) use mining::HStatMining;
 pub(crate) use resource::HStatRes;
-pub(crate) use sensor::HStatSensor;
+pub(crate) use sensors::HStatSensors;
 pub(crate) use slot::HStatSlot;
 pub(crate) use tank::{
     HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp, HStatLayerResist, HStatLayerRps,
@@ -15,6 +15,6 @@ mod dmg;
 mod jam;
 mod mining;
 mod resource;
-mod sensor;
+mod sensors;
 mod slot;
 mod tank;

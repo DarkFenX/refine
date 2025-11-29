@@ -1,6 +1,6 @@
 pub use shared::{
     StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatJamApplied, StatMining, StatMiningItemKinds,
-    StatNeutItemKinds, StatOutRepItemKinds, StatSensor, StatSensorKind, StatTank, StatTankRegen,
+    StatNeutItemKinds, StatOutRepItemKinds, StatSensors, StatSensorsKind, StatTank, StatTankRegen,
 };
 pub use val_options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};

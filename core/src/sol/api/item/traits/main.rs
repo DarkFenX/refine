@@ -14,7 +14,7 @@ use crate::{
         calc::{CalcAttrVal, ModificationInfo},
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
-            StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensor,
+            StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensors,
             StatTank, StatTankRegen,
         },
     },
@@ -359,11 +359,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_scan_res(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_sensor(&mut self) -> Result<StatSensor, ItemStatError> {
+    fn get_stat_sensors(&mut self) -> Result<StatSensors, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_sensor(&sol.u_data, item_key)
+            .get_stat_item_sensors(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_dscan_range(&mut self) -> Result<AttrVal, ItemStatError> {

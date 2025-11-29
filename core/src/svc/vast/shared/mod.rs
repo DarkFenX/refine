@@ -7,7 +7,7 @@ pub use mining_opt::StatMiningItemKinds;
 pub use outgoing_nps_opt::StatNeutItemKinds;
 pub use outgoing_rps_opt::StatOutRepItemKinds;
 pub(in crate::svc::vast) use regen::{calc_regen, regenerate};
-pub use sensor::{StatSensor, StatSensorKind};
+pub use sensors::{StatSensors, StatSensorsKind};
 pub(in crate::svc::vast) use slot::get_attr_as_count;
 pub use tank::{StatTank, StatTankRegen};
 
@@ -20,6 +20,6 @@ mod mining_opt;
 mod outgoing_nps_opt;
 mod outgoing_rps_opt;
 mod regen;
-mod sensor;
+mod sensors;
 mod slot;
 mod tank;

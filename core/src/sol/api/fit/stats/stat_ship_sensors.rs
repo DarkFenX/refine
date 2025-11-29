@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, Count},
     sol::api::{FitMut, FitShipStatError, ItemMutCommon},
-    svc::vast::{StatJamApplied, StatSensor},
+    svc::vast::{StatJamApplied, StatSensors},
 };
 
 impl<'a> FitMut<'a> {
@@ -14,8 +14,8 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_scan_res(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_scan_res()?)
     }
-    pub fn get_stat_sensor(&mut self) -> Result<StatSensor, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_sensor()?)
+    pub fn get_stat_sensors(&mut self) -> Result<StatSensors, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_sensors()?)
     }
     pub fn get_stat_dscan_range(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_dscan_range()?)

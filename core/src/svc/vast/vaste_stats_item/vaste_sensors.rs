@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         err::StatItemCheckError,
-        vast::{StatSensor, StatSensorKind, Vast},
+        vast::{StatSensors, StatSensorsKind, Vast},
     },
     ud::{UItem, UItemKey},
     util::round_unerr,
@@ -63,19 +63,19 @@ impl Vast {
         calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_RESOLUTION)
             .unwrap()
     }
-    pub(in crate::svc) fn get_stat_item_sensor(
+    pub(in crate::svc) fn get_stat_item_sensors(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-    ) -> Result<StatSensor, StatItemCheckError> {
+    ) -> Result<StatSensors, StatItemCheckError> {
         check_item_key_drone_fighter_ship(ctx, item_key)?;
-        Ok(Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key))
+        Ok(Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_key))
     }
-    pub(super) fn internal_get_stat_item_sensor_unchecked(
+    pub(super) fn internal_get_stat_item_sensors_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-    ) -> StatSensor {
+    ) -> StatSensors {
         // Strength ties are resolved using the following order:
         // Radar > ladar > magnetometric > gravimetric
         let str_radar = calc
@@ -90,23 +90,23 @@ impl Vast {
         let str_grav = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_GRAVIMETRIC_STRENGTH)
             .unwrap();
-        let mut sensor = StatSensor {
-            kind: StatSensorKind::Radar,
+        let mut sensors = StatSensors {
+            kind: StatSensorsKind::Radar,
             strength: str_radar,
         };
-        if str_ladar > sensor.strength {
-            sensor.kind = StatSensorKind::Ladar;
-            sensor.strength = str_ladar;
+        if str_ladar > sensors.strength {
+            sensors.kind = StatSensorsKind::Ladar;
+            sensors.strength = str_ladar;
         }
-        if str_magnet > sensor.strength {
-            sensor.kind = StatSensorKind::Magnetometric;
-            sensor.strength = str_magnet;
+        if str_magnet > sensors.strength {
+            sensors.kind = StatSensorsKind::Magnetometric;
+            sensors.strength = str_magnet;
         }
-        if str_grav > sensor.strength {
-            sensor.kind = StatSensorKind::Gravimetric;
-            sensor.strength = str_grav;
+        if str_grav > sensors.strength {
+            sensors.kind = StatSensorsKind::Gravimetric;
+            sensors.strength = str_grav;
         }
-        sensor
+        sensors
     }
     pub(in crate::svc) fn get_stat_item_dscan_range(
         ctx: SvcCtx,
@@ -134,7 +134,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Option<AttrVal> {
-        let sensor_str = Vast::internal_get_stat_item_sensor_unchecked(ctx, calc, item_key).strength;
+        let sensor_str = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_key).strength;
         let sig_radius = Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key);
         let ratio = sig_radius / sensor_str;
         match ratio.is_finite() {

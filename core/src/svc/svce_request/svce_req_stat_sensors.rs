@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatJamApplied, StatSensor, Vast},
+        vast::{StatJamApplied, StatSensors, Vast},
     },
     ud::{UData, UItemKey},
 };
@@ -30,12 +30,12 @@ impl Svc {
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_scan_res(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
-    pub(crate) fn get_stat_item_sensor(
+    pub(crate) fn get_stat_item_sensors(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-    ) -> Result<StatSensor, StatItemCheckError> {
-        Vast::get_stat_item_sensor(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    ) -> Result<StatSensors, StatItemCheckError> {
+        Vast::get_stat_item_sensors(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_dscan_range(
         &mut self,
