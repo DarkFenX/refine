@@ -3,7 +3,7 @@ use crate::{
     nd::N_EFFECT_MAP,
 };
 
-pub(in crate::adg::flow::conv_post) fn fill_autocharges(a_data: &mut AData) {
+pub(in crate::adg::flow::conv_post) fn fill_effect_autocharges(a_data: &mut AData) {
     // Since we use base item attributes here, this function works on assumption that specific item
     // always defines its autocharges. Scenarios with mutated items inheriting this attribute from
     // base item are not supported. In case CCP e.g. LR fighters mutable, with mutated item not
