@@ -1,11 +1,13 @@
 pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect_charge::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
+pub(crate) use effect_projectee_filter::NEffectProjecteeFilter;
 
 pub(in crate::nd::eff) mod damp;
 pub(in crate::nd::eff) mod dd_mods;
 mod dmg_kind;
 pub(in crate::nd::eff) mod dmg_opc;
 mod effect_charge;
+mod effect_projectee_filter;
 pub(in crate::nd::eff) mod mining_opc;
 pub(in crate::nd::eff) mod missile_dmg_self_srq;
 pub(in crate::nd::eff) mod neut_opc;

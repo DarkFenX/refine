@@ -1,3 +1,6 @@
+// Buffs specify what they can affect via item lists. For efficiency of attribute calculation,
+// information about item lists used by buffs stored on items belonging to those item lists.
+
 use crate::{ad::AData, adg::GSupport, util::RSet};
 
 pub(in crate::adg::flow::conv_post) fn fill_buff_item_lists(a_data: &mut AData, g_supp: &GSupport) {
