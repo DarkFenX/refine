@@ -6,6 +6,7 @@ pub(in crate::cacher_json) struct CItemEffectData {
     cd: Option<CAttrVal>,
     charge_count: Option<CCount>,
     charge_reload_time: Option<CAttrVal>,
+    projectee_filter: Option<Vec<CItemId>>,
 }
 impl From<&rc::ad::AItemEffectData> for CItemEffectData {
     fn from(a_item_effect_data: &rc::ad::AItemEffectData) -> Self {
@@ -14,6 +15,10 @@ impl From<&rc::ad::AItemEffectData> for CItemEffectData {
             cd: a_item_effect_data.cd,
             charge_count: a_item_effect_data.charge_count,
             charge_reload_time: a_item_effect_data.charge_reload_time,
+            projectee_filter: a_item_effect_data
+                .projectee_filter
+                .as_ref()
+                .map(|v| v.iter().copied().collect()),
         }
     }
 }
@@ -24,6 +29,10 @@ impl From<&CItemEffectData> for rc::ad::AItemEffectData {
             cd: c_item_effect_data.cd,
             charge_count: c_item_effect_data.charge_count,
             charge_reload_time: c_item_effect_data.charge_reload_time,
+            projectee_filter: c_item_effect_data
+                .projectee_filter
+                .as_ref()
+                .map(|v| v.iter().copied().collect()),
         }
     }
 }

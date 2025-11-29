@@ -45,7 +45,7 @@ impl RItem {
     pub(in crate::rd) fn fill_key_dependents(&mut self, effect_id_key_map: &RMap<AEffectId, REffectKey>) {
         for (a_effect_id, a_effect_data) in self.a_item.effect_datas.iter() {
             if let Some(&effect_key) = effect_id_key_map.get(a_effect_id) {
-                self.effect_datas.insert(effect_key, *a_effect_data);
+                self.effect_datas.insert(effect_key, a_effect_data.clone());
             }
         }
         self.defeff_key = self.a_item.defeff_id.and_then(|v| effect_id_key_map.get(&v).copied());
