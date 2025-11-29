@@ -2,7 +2,7 @@ use crate::{
     ad::{AData, AEveItemListId, AItemListId},
     adg::GSupport,
     nd::{N_EFFECT_MAP, NEffectProjecteeFilter},
-    util::{RSet, round_unerr},
+    util::RSet,
 };
 
 pub(in crate::adg::flow::conv_post) fn fill_effect_projectee_filters(a_data: &mut AData, g_supp: &GSupport) {
@@ -14,9 +14,7 @@ pub(in crate::adg::flow::conv_post) fn fill_effect_projectee_filters(a_data: &mu
                 let a_item_list_id = match n_projectee_filter {
                     NEffectProjecteeFilter::ItemList(a_item_list_id) => a_item_list_id,
                     NEffectProjecteeFilter::ItemListAttr(a_attr_id) => match a_item.attrs.get(&a_attr_id) {
-                        Some(&a_item_list_id) => {
-                            AItemListId::Eve(round_unerr(a_item_list_id).into_inner() as AEveItemListId)
-                        }
+                        Some(&a_item_list_id) => AItemListId::Eve(a_item_list_id.round() as AEveItemListId),
                         None => continue,
                     },
                 };

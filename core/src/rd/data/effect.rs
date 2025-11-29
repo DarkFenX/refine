@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectCatId, AEffectId, AEffectModifier, AState},
     nd::{
         N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffectCharge,
-        NEffectChargeLoc, NEffectHc, NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter,
-        NProjMultGetter, NSpoolResolver,
+        NEffectChargeLoc, NEffectHc, NEffectProjecteeFilter, NLocalRepGetter, NMiningGetter, NNeutGetter,
+        NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
     },
     rd::{REffectKey, RItem},
     util::{GetId, Named, RMap},
@@ -95,6 +95,9 @@ impl REffect {
     // Methods which expose hardcoded effect info
     pub(crate) fn get_charge_info(&self) -> Option<NEffectCharge> {
         self.n_effect_hc.charge
+    }
+    pub(crate) fn get_projectee_filter_info(&self) -> Option<NEffectProjecteeFilter> {
+        self.n_effect_hc.projectee_filter
     }
     pub(crate) fn kills_item(&self) -> bool {
         self.n_effect_hc.kills_item
