@@ -17,9 +17,9 @@ class FleetStatsOptions:
     dps: bool | tuple[bool, list[StatsOptionFitDps]] | type[Absent] = Absent
     volley: bool | tuple[bool, list[StatsOptionFitVolley]] | type[Absent] = Absent
     mps: bool | tuple[bool, list[StatsOptionFitMining]] | type[Absent] = Absent
+    outgoing_nps: bool | tuple[bool, list[StatsOptionFitOutNps]] | type[Absent] = Absent
     outgoing_rps: bool | tuple[bool, list[StatsOptionFitOutRps]] | type[Absent] = Absent
     outgoing_cps: bool | type[Absent] = Absent
-    outgoing_nps: bool | tuple[bool, list[StatsOptionFitOutNps]] | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

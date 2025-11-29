@@ -11,6 +11,9 @@ use crate::{
 };
 
 impl<'a> FitMut<'a> {
+    pub fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_resists()?)
+    }
     pub fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_hp()?)
     }
@@ -39,8 +42,5 @@ impl<'a> FitMut<'a> {
         Ok(self
             .get_ship_for_stats()?
             .get_stat_erps(incoming_dps, shield_perc, spool)?)
-    }
-    pub fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_resists()?)
     }
 }

@@ -15,7 +15,7 @@ class FleetStats(AttrDict):
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),
             'mps': AttrHookDef(func=lambda d: NttList(StatMining(data=e) for e in d)),
+            'outgoing_nps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             'outgoing_rps': AttrHookDef(func=lambda d: (
                 NttList(StatOutRps(data=e) for e in d)
-                if d is not None else None)),
-            'outgoing_nps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None)})
+                if d is not None else None))})

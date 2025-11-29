@@ -115,107 +115,9 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             &mut reuse_eupdates,
         );
     }
-    // Stats - physics
-    fn get_stat_speed(&mut self) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_speed(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_agility(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_agility(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_align_time(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_align_time(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_sig_radius(&mut self) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_sig_radius(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_mass(&mut self) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_mass(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_warp_speed(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_warp_speed(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_max_warp_range(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_max_warp_range(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    // Stats - sensors
-    fn get_stat_locks(&mut self) -> Result<Count, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_locks(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_lock_range(&mut self) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_lock_range(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_scan_res(&mut self) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_scan_res(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_sensor(&mut self) -> Result<StatSensor, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_sensor(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_dscan_range(&mut self) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_dscan_range(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_probing_size(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_probing_size(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_incoming_jam(&mut self) -> Result<StatJamApplied, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_incoming_jam(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    // Stats - damage
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Stats - output
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     fn get_stat_dps(
         &mut self,
         reload: bool,
@@ -285,7 +187,6 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             )
             .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
-    // Stats - mining
     fn get_stat_mps(&mut self, reload: bool, ignore_state: bool) -> Result<StatMining, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
@@ -293,7 +194,60 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_mps(&sol.u_data, item_key, reload, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+    fn get_stat_outgoing_nps(&mut self, include_charges: bool, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_outgoing_nps(&sol.u_data, item_key, include_charges, ignore_state, None)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_outgoing_nps_applied(
+        &mut self,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_item_id: &ItemId,
+    ) -> Result<AttrVal, ItemStatAppliedError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        let projectee_key = get_stat_applied_projectee_key(sol, projectee_item_id)?;
+        sol.svc
+            .get_stat_item_outgoing_nps(
+                &sol.u_data,
+                item_key,
+                include_charges,
+                ignore_state,
+                Some(projectee_key),
+            )
+            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_outgoing_rps(
+        &mut self,
+        spool: Option<Spool>,
+        ignore_state: bool,
+    ) -> Result<StatTank<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_outgoing_rps(&sol.u_data, item_key, spool, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_outgoing_cps(&mut self, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_outgoing_cps(&sol.u_data, item_key, ignore_state)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - tank
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_resists(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
     fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
@@ -341,33 +295,9 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_erps(&sol.u_data, item_key, incoming_dps, shield_perc, spool)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_resists(&sol.u_data, item_key)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    // Stats - RR
-    fn get_stat_outgoing_rps(
-        &mut self,
-        spool: Option<Spool>,
-        ignore_state: bool,
-    ) -> Result<StatTank<AttrVal>, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_outgoing_rps(&sol.u_data, item_key, spool, ignore_state)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_outgoing_cps(&mut self, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_outgoing_cps(&sol.u_data, item_key, ignore_state)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - cap
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     fn get_stat_cap_amount(&mut self) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
@@ -405,39 +335,119 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_neut_resist(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Stats - sensors
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    fn get_stat_locks(&mut self) -> Result<Count, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_locks(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_lock_range(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_lock_range(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_scan_res(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_scan_res(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_sensor(&mut self) -> Result<StatSensor, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_sensor(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_dscan_range(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_dscan_range(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_probing_size(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_probing_size(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_incoming_jam(&mut self) -> Result<StatJamApplied, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_incoming_jam(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Stats - mobility
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    fn get_stat_speed(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_speed(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_agility(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_agility(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_align_time(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_align_time(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_sig_radius(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_sig_radius(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_mass(&mut self) -> Result<AttrVal, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_mass(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_warp_speed(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_warp_speed(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_max_warp_range(&mut self) -> Result<Option<AttrVal>, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_max_warp_range(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - misc
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     fn get_stat_drone_control_range(&mut self) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_drone_control_range(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_outgoing_nps(&mut self, include_charges: bool, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_outgoing_nps(&sol.u_data, item_key, include_charges, ignore_state, None)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_outgoing_nps_applied(
-        &mut self,
-        include_charges: bool,
-        ignore_state: bool,
-        projectee_item_id: &ItemId,
-    ) -> Result<AttrVal, ItemStatAppliedError> {
-        let item_key = self.get_key();
-        let sol = self.get_sol_mut();
-        let projectee_key = get_stat_applied_projectee_key(sol, projectee_item_id)?;
-        sol.svc
-            .get_stat_item_outgoing_nps(
-                &sol.u_data,
-                item_key,
-                include_charges,
-                ignore_state,
-                Some(projectee_key),
-            )
-            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
 }
 

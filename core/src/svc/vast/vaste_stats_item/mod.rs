@@ -9,7 +9,7 @@ mod vaste_dmg;
 mod vaste_jam;
 mod vaste_mining;
 mod vaste_misc;
+mod vaste_mobility;
 mod vaste_neut;
-mod vaste_physics;
 mod vaste_rr;
 mod vaste_sensors;

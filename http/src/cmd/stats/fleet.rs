@@ -22,9 +22,9 @@ pub(crate) struct HGetFleetStatsCmd {
     dps: Option<HStatOption<HStatOptionFitDps>>,
     volley: Option<HStatOption<HStatOptionFitVolley>>,
     mps: Option<HStatOption<HStatOptionFitMining>>,
+    outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
     outgoing_cps: Option<bool>,
-    outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
 }
 impl HGetFleetStatsCmd {
     pub(crate) fn execute(
@@ -46,16 +46,16 @@ impl HGetFleetStatsCmd {
         if mps_opt.enabled {
             stats.mps = Some(get_mps_stats(&mut core_fleet, mps_opt.options));
         }
-        let rrps_opt = HStatResolvedOption::new(&self.outgoing_rps, self.default);
-        if rrps_opt.enabled {
-            stats.outgoing_rps = Some(get_outgoing_rps_stats(&mut core_fleet, rrps_opt.options));
+        let out_nps_opt = HStatResolvedOption::new(&self.outgoing_nps, self.default);
+        if out_nps_opt.enabled {
+            stats.outgoing_nps = Some(get_outgoing_nps_stats(&mut core_fleet, out_nps_opt.options));
+        }
+        let out_rps_opt = HStatResolvedOption::new(&self.outgoing_rps, self.default);
+        if out_rps_opt.enabled {
+            stats.outgoing_rps = Some(get_outgoing_rps_stats(&mut core_fleet, out_rps_opt.options));
         }
         if self.outgoing_cps.unwrap_or(self.default) {
             stats.outgoing_cps = Some(core_fleet.get_stat_outgoing_cps());
-        }
-        let rnps_opt = HStatResolvedOption::new(&self.outgoing_nps, self.default);
-        if rnps_opt.enabled {
-            stats.outgoing_nps = Some(get_outgoing_nps_stats(&mut core_fleet, rnps_opt.options));
         }
         Ok(stats)
     }
@@ -81,7 +81,6 @@ fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>)
     }
     results
 }
-
 fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVolley>) -> Vec<Option<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
@@ -102,7 +101,6 @@ fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVo
     }
     results
 }
-
 fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMining>) -> Vec<HStatMining> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
@@ -111,21 +109,6 @@ fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMinin
     }
     results
 }
-
-fn get_outgoing_rps_stats(
-    core_fleet: &mut rc::FleetMut,
-    options: Vec<HStatOptionFitOutRps>,
-) -> Vec<HStatTank<rc::AttrVal>> {
-    options
-        .iter()
-        .map(|option| {
-            let core_item_kinds = (&option.item_kinds).into();
-            let core_spool = option.spool.map(Into::into);
-            core_fleet.get_stat_outgoing_rps(core_item_kinds, core_spool).into()
-        })
-        .collect()
-}
-
 fn get_outgoing_nps_stats(
     core_fleet: &mut rc::FleetMut,
     options: Vec<HStatOptionFitOutNps>,
@@ -147,4 +130,17 @@ fn get_outgoing_nps_stats(
         }
     }
     results
+}
+fn get_outgoing_rps_stats(
+    core_fleet: &mut rc::FleetMut,
+    options: Vec<HStatOptionFitOutRps>,
+) -> Vec<HStatTank<rc::AttrVal>> {
+    options
+        .iter()
+        .map(|option| {
+            let core_item_kinds = (&option.item_kinds).into();
+            let core_spool = option.spool.map(Into::into);
+            core_fleet.get_stat_outgoing_rps(core_item_kinds, core_spool).into()
+        })
+        .collect()
 }
