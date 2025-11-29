@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
+        let u_autocharge = self.u_data.items.get_mut(autocharge_key).dc_autocharge_mut().unwrap();
         let old_a_state = u_autocharge.get_state();
         u_autocharge.set_force_disabled(!state);
         let new_a_state = u_autocharge.get_state();

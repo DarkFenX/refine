@@ -11,7 +11,7 @@ impl SolarSystem {
         module_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Option<UItemKey> {
-        let u_module = u_data.items.get_mut(module_key).get_module_mut().unwrap();
+        let u_module = u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.update_reffs(reuse_eupdates, &u_data.src);
         let charge_key = u_module.get_charge_key();
         SolarSystem::util_add_item(u_data, svc, module_key, reuse_eupdates);
@@ -38,7 +38,7 @@ impl SolarSystem {
         module_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Option<UItemKey> {
-        let u_module = u_data.items.get_mut(module_key).get_module_mut().unwrap();
+        let u_module = u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.stop_all_reffs(reuse_eupdates, &u_data.src);
         let charge_key = u_module.get_charge_key();
         SolarSystem::util_remove_item(u_data, svc, module_key, reuse_eupdates);

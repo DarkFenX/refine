@@ -88,13 +88,13 @@ impl SolarSystem {
                 let u_autocharge = u_data
                     .items
                     .get_mut(ac_data.autocharge_key)
-                    .get_autocharge_mut()
+                    .dc_autocharge_mut()
                     .unwrap();
                 for (projectee_key, range) in projections.iter() {
                     u_autocharge.get_projs_mut().add(*projectee_key, *range);
                     rev_projs.reg_projectee(ac_data.autocharge_key, *projectee_key);
                 }
-                let u_autocharge = u_data.items.get(ac_data.autocharge_key).get_autocharge().unwrap();
+                let u_autocharge = u_data.items.get(ac_data.autocharge_key).dc_autocharge().unwrap();
                 for (projectee_key, range) in u_autocharge.get_projs().iter() {
                     SolarSystem::util_add_item_projection(u_data, svc, ac_data.autocharge_key, projectee_key, range);
                 }
@@ -123,7 +123,7 @@ impl SolarSystem {
             return;
         }
         for &autocharge_key in autocharge_keys.iter() {
-            let u_autocharge = u_data.items.get(autocharge_key).get_autocharge().unwrap();
+            let u_autocharge = u_data.items.get(autocharge_key).dc_autocharge().unwrap();
             if !u_autocharge.get_projs().is_empty() {
                 for projectee_key in u_autocharge.get_projs().iter_projectees() {
                     // Remove projections from services
@@ -131,7 +131,7 @@ impl SolarSystem {
                     // Update reverse projections (just because it's convenient to do it here)
                     rev_projs.unreg_projectee(&autocharge_key, projectee_key);
                 }
-                let u_autocharge = u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
+                let u_autocharge = u_data.items.get_mut(autocharge_key).dc_autocharge_mut().unwrap();
                 u_autocharge.get_projs_mut().clear();
             }
             // Remove from services

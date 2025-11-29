@@ -11,14 +11,14 @@ impl SolarSystem {
         svc: &mut Svc,
         drone_key: UItemKey,
     ) {
-        let u_drone = u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
+        let u_drone = u_data.items.get_mut(drone_key).dc_drone_mut().unwrap();
         let u_physics = *u_drone.get_physics();
         // Handle outgoing projections
         if !u_drone.get_projs_mut().is_empty() {
             for u_proj_data in u_drone.get_projs_mut().iter_datas_mut() {
                 u_proj_data.update_src_physics(u_physics);
             }
-            let u_drone = u_data.items.get(drone_key).get_drone().unwrap();
+            let u_drone = u_data.items.get(drone_key).dc_drone().unwrap();
             for (projectee_key, u_proj_data) in u_drone.get_projs().iter_projectees_and_datas() {
                 SolarSystem::util_change_item_proj_data(u_data, svc, drone_key, projectee_key, Some(u_proj_data));
             }

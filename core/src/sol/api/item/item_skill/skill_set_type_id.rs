@@ -19,7 +19,7 @@ impl SolarSystem {
         if old_type_id == type_id {
             return Ok(());
         }
-        let fit_key = u_item.get_skill().unwrap().get_fit_key();
+        let fit_key = u_item.dc_skill().unwrap().get_fit_key();
         // Check for collisions before doing anything
         let u_fit = self.u_data.fits.get(fit_key);
         if let Some(fit_skill) = u_fit.skills.get(&type_id) {
@@ -32,7 +32,7 @@ impl SolarSystem {
         // Unload skill
         SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
         // Update type ID and reload adapted data
-        let u_skill = self.u_data.items.get_mut(skill_key).get_skill_mut().unwrap();
+        let u_skill = self.u_data.items.get_mut(skill_key).dc_skill_mut().unwrap();
         u_skill.set_type_id(type_id, &self.u_data.src);
         // Update fit skill map
         let u_fit = self.u_data.fits.get_mut(fit_key);

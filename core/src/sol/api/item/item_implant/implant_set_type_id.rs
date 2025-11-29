@@ -17,7 +17,7 @@ impl SolarSystem {
             return;
         }
         SolarSystem::util_remove_implant(&mut self.u_data, &mut self.svc, implant_key, reuse_eupdates);
-        let u_implant = self.u_data.items.get_mut(implant_key).get_implant_mut().unwrap();
+        let u_implant = self.u_data.items.get_mut(implant_key).dc_implant_mut().unwrap();
         u_implant.set_type_id(type_id, &self.u_data.src);
         SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_key, reuse_eupdates);
     }

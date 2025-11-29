@@ -84,5 +84,5 @@ fn get_state(sol: &SolarSystem, skill_key: UItemKey) -> bool {
     get_u_skill(sol, skill_key).get_skill_state()
 }
 fn get_u_skill(sol: &SolarSystem, skill_key: UItemKey) -> &USkill {
-    sol.u_data.items.get(skill_key).get_skill().unwrap()
+    sol.u_data.items.get(skill_key).dc_skill().unwrap()
 }

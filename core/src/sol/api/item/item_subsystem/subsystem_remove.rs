@@ -10,7 +10,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         SolarSystem::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_key, reuse_eupdates);
-        let u_subsystem = self.u_data.items.get(subsystem_key).get_subsystem().unwrap();
+        let u_subsystem = self.u_data.items.get(subsystem_key).dc_subsystem().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_subsystem.get_fit_key());
         u_fit.subsystems.remove(&subsystem_key);
         self.u_data.items.remove(subsystem_key);

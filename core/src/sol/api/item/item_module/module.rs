@@ -129,5 +129,5 @@ fn get_charge_count(sol: &SolarSystem, module_key: UItemKey) -> Option<Count> {
     get_u_module(sol, module_key).get_charge_count(&sol.u_data)
 }
 fn get_u_module(sol: &SolarSystem, module_key: UItemKey) -> &UModule {
-    sol.u_data.items.get(module_key).get_module().unwrap()
+    sol.u_data.items.get(module_key).dc_module().unwrap()
 }

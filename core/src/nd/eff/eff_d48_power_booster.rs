@@ -36,7 +36,7 @@ fn get_cap_inject(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<At
     let charge_amount = calc
         .get_item_attr_val_extra(ctx, charge_key, &ac::attrs::CAPACITOR_BONUS)
         .unwrap_or(OF(0.0));
-    let fit_key = ctx.u_data.items.get(charge_key).get_charge().unwrap().get_fit_key();
+    let fit_key = ctx.u_data.items.get(charge_key).dc_charge().unwrap().get_fit_key();
     let ship_key = ctx.u_data.fits.get(fit_key).ship;
     let ship_amount = match ship_key {
         Some(ship_key) => calc

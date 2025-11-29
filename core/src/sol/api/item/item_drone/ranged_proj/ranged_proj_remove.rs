@@ -7,7 +7,7 @@ impl SolarSystem {
         projectee_key: UItemKey,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
-        let u_drone = self.u_data.items.get(drone_key).get_drone().unwrap();
+        let u_drone = self.u_data.items.get(drone_key).dc_drone().unwrap();
         if !u_drone.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
                 projector_item_id: u_drone.get_item_id(),
@@ -18,7 +18,7 @@ impl SolarSystem {
         SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, drone_key, projectee_key);
         // Update user data
         self.rev_projs.unreg_projectee(&drone_key, projectee_key);
-        let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
+        let u_drone = self.u_data.items.get_mut(drone_key).dc_drone_mut().unwrap();
         u_drone.get_projs_mut().remove(&projectee_key);
         Ok(())
     }

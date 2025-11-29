@@ -84,5 +84,5 @@ fn get_state(sol: &SolarSystem, booster_key: UItemKey) -> bool {
     get_u_booster(sol, booster_key).get_booster_state()
 }
 fn get_u_booster(sol: &SolarSystem, booster_key: UItemKey) -> &UBooster {
-    sol.u_data.items.get(booster_key).get_booster().unwrap()
+    sol.u_data.items.get(booster_key).dc_booster().unwrap()
 }

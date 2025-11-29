@@ -13,7 +13,7 @@ impl SolarSystem {
         direction: Xyz,
         speed: AttrVal,
     ) {
-        let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         let fighter_u_physics = u_fighter.get_physics_mut();
         if fighter_u_physics.direction == direction && fighter_u_physics.speed == speed {
             return;

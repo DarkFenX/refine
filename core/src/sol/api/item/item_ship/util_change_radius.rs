@@ -14,14 +14,14 @@ impl SolarSystem {
     ) {
         let mut projections_to_update = Vec::new();
         for module_key in u_data.fits.get(fit_key).iter_module_keys() {
-            let u_module = u_data.items.get_mut(module_key).get_module_mut().unwrap();
+            let u_module = u_data.items.get_mut(module_key).dc_module_mut().unwrap();
             for (projectee_key, u_proj_data) in u_module.get_projs_mut().iter_projectees_and_datas_mut() {
                 if u_proj_data.update_src_radius(ship_radius) {
                     projections_to_update.push((module_key, projectee_key, *u_proj_data));
                 }
             }
             if let Some(charge_key) = u_module.get_charge_key() {
-                let u_charge = u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
+                let u_charge = u_data.items.get_mut(charge_key).dc_charge_mut().unwrap();
                 for (projectee_key, u_proj_data) in u_charge.get_projs_mut().iter_projectees_and_datas_mut() {
                     if u_proj_data.update_src_radius(ship_radius) {
                         projections_to_update.push((charge_key, projectee_key, *u_proj_data));

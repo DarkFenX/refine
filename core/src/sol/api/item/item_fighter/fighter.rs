@@ -102,5 +102,5 @@ fn get_movement(sol: &SolarSystem, fighter_key: UItemKey) -> Movement {
     get_u_fighter(sol, fighter_key).get_physics().into()
 }
 fn get_u_fighter(sol: &SolarSystem, fighter_key: UItemKey) -> &UFighter {
-    sol.u_data.items.get(fighter_key).get_fighter().unwrap()
+    sol.u_data.items.get(fighter_key).dc_fighter().unwrap()
 }

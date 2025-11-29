@@ -74,5 +74,5 @@ fn get_state(sol: &SolarSystem, character_key: UItemKey) -> bool {
     get_u_character(sol, character_key).get_character_state()
 }
 fn get_u_character(sol: &SolarSystem, character_key: UItemKey) -> &UCharacter {
-    sol.u_data.items.get(character_key).get_character().unwrap()
+    sol.u_data.items.get(character_key).dc_character().unwrap()
 }

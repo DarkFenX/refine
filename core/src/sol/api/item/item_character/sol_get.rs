@@ -10,12 +10,12 @@ use crate::{
 impl SolarSystem {
     pub fn get_character(&self, item_id: &ItemId) -> Result<Character<'_>, GetCharacterError> {
         let character_key = self.u_data.items.key_by_id_err(item_id)?;
-        self.u_data.items.get(character_key).get_character()?;
+        self.u_data.items.get(character_key).dc_character()?;
         Ok(Character::new(self, character_key))
     }
     pub fn get_character_mut(&mut self, item_id: &ItemId) -> Result<CharacterMut<'_>, GetCharacterError> {
         let character_key = self.u_data.items.key_by_id_err(item_id)?;
-        self.u_data.items.get(character_key).get_character()?;
+        self.u_data.items.get(character_key).dc_character()?;
         Ok(CharacterMut::new(self, character_key))
     }
 }

@@ -9,7 +9,7 @@ impl SolarSystem {
         projectee_key: UItemKey,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
-        let u_fighter = self.u_data.items.get(fighter_key).get_fighter().unwrap();
+        let u_fighter = self.u_data.items.get(fighter_key).dc_fighter().unwrap();
         if !u_fighter.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
                 projector_item_id: u_fighter.get_item_id(),
@@ -26,12 +26,12 @@ impl SolarSystem {
         // Update user data for autocharges
         for autocharge_key in autocharge_keys.into_iter() {
             self.rev_projs.unreg_projectee(&autocharge_key, projectee_key);
-            let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
+            let u_autocharge = self.u_data.items.get_mut(autocharge_key).dc_autocharge_mut().unwrap();
             u_autocharge.get_projs_mut().remove(&projectee_key);
         }
         // Update user data for fighter
         self.rev_projs.unreg_projectee(&fighter_key, projectee_key);
-        let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         u_fighter.get_projs_mut().remove(&projectee_key);
         Ok(())
     }

@@ -82,7 +82,7 @@ impl SolarSystem {
         // Update fit kind
         for fit in self.u_data.fits.values_mut() {
             fit.ship_kind = match fit.ship {
-                Some(ship_key) => self.u_data.items.get(ship_key).get_ship().unwrap().get_kind(),
+                Some(ship_key) => self.u_data.items.get(ship_key).dc_ship().unwrap().get_kind(),
                 None => UShipKind::Unknown,
             }
         }
@@ -213,7 +213,7 @@ impl SolarSystem {
             let ship_radius = self.u_data.get_ship_radius_by_fit_key(fit_key);
             for module_key in u_fit.iter_module_keys() {
                 record_projection(&mut projection_updates, &self.u_data, module_key, ship_radius);
-                let u_module = self.u_data.items.get(module_key).get_module().unwrap();
+                let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
                 if let Some(charge_key) = u_module.get_charge_key() {
                     record_projection(&mut projection_updates, &self.u_data, charge_key, ship_radius);
                 }

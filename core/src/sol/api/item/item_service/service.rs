@@ -75,5 +75,5 @@ fn get_state(sol: &SolarSystem, service_key: UItemKey) -> ServiceState {
     get_u_service(sol, service_key).get_service_state()
 }
 fn get_u_service(sol: &SolarSystem, service_key: UItemKey) -> &UService {
-    sol.u_data.items.get(service_key).get_service().unwrap()
+    sol.u_data.items.get(service_key).dc_service().unwrap()
 }

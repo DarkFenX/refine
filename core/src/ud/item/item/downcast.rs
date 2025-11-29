@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl UItem {
-    pub(crate) fn get_autocharge(&self) -> Result<&UAutocharge, ItemKindMatchError> {
+    pub(crate) fn dc_autocharge(&self) -> Result<&UAutocharge, ItemKindMatchError> {
         match self {
             Self::Autocharge(autocharge) => Ok(autocharge),
             _ => Err(ItemKindMatchError {
@@ -18,7 +18,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_autocharge_mut(&mut self) -> Result<&mut UAutocharge, ItemKindMatchError> {
+    pub(crate) fn dc_autocharge_mut(&mut self) -> Result<&mut UAutocharge, ItemKindMatchError> {
         match self {
             Self::Autocharge(autocharge) => Ok(autocharge),
             _ => Err(ItemKindMatchError {
@@ -28,7 +28,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_booster(&self) -> Result<&UBooster, ItemKindMatchError> {
+    pub(crate) fn dc_booster(&self) -> Result<&UBooster, ItemKindMatchError> {
         match self {
             Self::Booster(booster) => Ok(booster),
             _ => Err(ItemKindMatchError {
@@ -38,7 +38,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_booster_mut(&mut self) -> Result<&mut UBooster, ItemKindMatchError> {
+    pub(crate) fn dc_booster_mut(&mut self) -> Result<&mut UBooster, ItemKindMatchError> {
         match self {
             Self::Booster(booster) => Ok(booster),
             _ => Err(ItemKindMatchError {
@@ -48,7 +48,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_character(&self) -> Result<&UCharacter, ItemKindMatchError> {
+    pub(crate) fn dc_character(&self) -> Result<&UCharacter, ItemKindMatchError> {
         match self {
             Self::Character(character) => Ok(character),
             _ => Err(ItemKindMatchError {
@@ -58,7 +58,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_character_mut(&mut self) -> Result<&mut UCharacter, ItemKindMatchError> {
+    pub(crate) fn dc_character_mut(&mut self) -> Result<&mut UCharacter, ItemKindMatchError> {
         match self {
             Self::Character(character) => Ok(character),
             _ => Err(ItemKindMatchError {
@@ -68,7 +68,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_charge(&self) -> Result<&UCharge, ItemKindMatchError> {
+    pub(crate) fn dc_charge(&self) -> Result<&UCharge, ItemKindMatchError> {
         match self {
             Self::Charge(charge) => Ok(charge),
             _ => Err(ItemKindMatchError {
@@ -78,7 +78,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_charge_mut(&mut self) -> Result<&mut UCharge, ItemKindMatchError> {
+    pub(crate) fn dc_charge_mut(&mut self) -> Result<&mut UCharge, ItemKindMatchError> {
         match self {
             Self::Charge(charge) => Ok(charge),
             _ => Err(ItemKindMatchError {
@@ -88,7 +88,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_drone(&self) -> Result<&UDrone, ItemKindMatchError> {
+    pub(crate) fn dc_drone(&self) -> Result<&UDrone, ItemKindMatchError> {
         match self {
             Self::Drone(drone) => Ok(drone),
             _ => Err(ItemKindMatchError {
@@ -98,7 +98,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_drone_mut(&mut self) -> Result<&mut UDrone, ItemKindMatchError> {
+    pub(crate) fn dc_drone_mut(&mut self) -> Result<&mut UDrone, ItemKindMatchError> {
         match self {
             Self::Drone(drone) => Ok(drone),
             _ => Err(ItemKindMatchError {
@@ -108,7 +108,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_fighter(&self) -> Result<&UFighter, ItemKindMatchError> {
+    pub(crate) fn dc_fighter(&self) -> Result<&UFighter, ItemKindMatchError> {
         match self {
             Self::Fighter(fighter) => Ok(fighter),
             _ => Err(ItemKindMatchError {
@@ -118,7 +118,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_fighter_mut(&mut self) -> Result<&mut UFighter, ItemKindMatchError> {
+    pub(crate) fn dc_fighter_mut(&mut self) -> Result<&mut UFighter, ItemKindMatchError> {
         match self {
             Self::Fighter(fighter) => Ok(fighter),
             _ => Err(ItemKindMatchError {
@@ -128,7 +128,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_fw_effect(&self) -> Result<&UFwEffect, ItemKindMatchError> {
+    pub(crate) fn dc_fw_effect(&self) -> Result<&UFwEffect, ItemKindMatchError> {
         match self {
             Self::FwEffect(fw_effect) => Ok(fw_effect),
             _ => Err(ItemKindMatchError {
@@ -138,7 +138,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_fw_effect_mut(&mut self) -> Result<&mut UFwEffect, ItemKindMatchError> {
+    pub(crate) fn dc_fw_effect_mut(&mut self) -> Result<&mut UFwEffect, ItemKindMatchError> {
         match self {
             Self::FwEffect(fw_effect) => Ok(fw_effect),
             _ => Err(ItemKindMatchError {
@@ -148,7 +148,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_implant(&self) -> Result<&UImplant, ItemKindMatchError> {
+    pub(crate) fn dc_implant(&self) -> Result<&UImplant, ItemKindMatchError> {
         match self {
             Self::Implant(implant) => Ok(implant),
             _ => Err(ItemKindMatchError {
@@ -158,7 +158,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_implant_mut(&mut self) -> Result<&mut UImplant, ItemKindMatchError> {
+    pub(crate) fn dc_implant_mut(&mut self) -> Result<&mut UImplant, ItemKindMatchError> {
         match self {
             Self::Implant(implant) => Ok(implant),
             _ => Err(ItemKindMatchError {
@@ -168,7 +168,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_module(&self) -> Result<&UModule, ItemKindMatchError> {
+    pub(crate) fn dc_module(&self) -> Result<&UModule, ItemKindMatchError> {
         match self {
             Self::Module(module) => Ok(module),
             _ => Err(ItemKindMatchError {
@@ -178,7 +178,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_module_mut(&mut self) -> Result<&mut UModule, ItemKindMatchError> {
+    pub(crate) fn dc_module_mut(&mut self) -> Result<&mut UModule, ItemKindMatchError> {
         match self {
             Self::Module(module) => Ok(module),
             _ => Err(ItemKindMatchError {
@@ -188,7 +188,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_proj_effect(&self) -> Result<&UProjEffect, ItemKindMatchError> {
+    pub(crate) fn dc_proj_effect(&self) -> Result<&UProjEffect, ItemKindMatchError> {
         match self {
             Self::ProjEffect(proj_effect) => Ok(proj_effect),
             _ => Err(ItemKindMatchError {
@@ -198,7 +198,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_proj_effect_mut(&mut self) -> Result<&mut UProjEffect, ItemKindMatchError> {
+    pub(crate) fn dc_proj_effect_mut(&mut self) -> Result<&mut UProjEffect, ItemKindMatchError> {
         match self {
             Self::ProjEffect(proj_effect) => Ok(proj_effect),
             _ => Err(ItemKindMatchError {
@@ -208,7 +208,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_rig(&self) -> Result<&URig, ItemKindMatchError> {
+    pub(crate) fn dc_rig(&self) -> Result<&URig, ItemKindMatchError> {
         match self {
             Self::Rig(rig) => Ok(rig),
             _ => Err(ItemKindMatchError {
@@ -218,7 +218,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_rig_mut(&mut self) -> Result<&mut URig, ItemKindMatchError> {
+    pub(crate) fn dc_rig_mut(&mut self) -> Result<&mut URig, ItemKindMatchError> {
         match self {
             Self::Rig(rig) => Ok(rig),
             _ => Err(ItemKindMatchError {
@@ -228,7 +228,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_service(&self) -> Result<&UService, ItemKindMatchError> {
+    pub(crate) fn dc_service(&self) -> Result<&UService, ItemKindMatchError> {
         match self {
             Self::Service(service) => Ok(service),
             _ => Err(ItemKindMatchError {
@@ -238,7 +238,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_service_mut(&mut self) -> Result<&mut UService, ItemKindMatchError> {
+    pub(crate) fn dc_service_mut(&mut self) -> Result<&mut UService, ItemKindMatchError> {
         match self {
             Self::Service(service) => Ok(service),
             _ => Err(ItemKindMatchError {
@@ -248,7 +248,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_ship(&self) -> Result<&UShip, ItemKindMatchError> {
+    pub(crate) fn dc_ship(&self) -> Result<&UShip, ItemKindMatchError> {
         match self {
             Self::Ship(ship) => Ok(ship),
             _ => Err(ItemKindMatchError {
@@ -258,7 +258,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_ship_mut(&mut self) -> Result<&mut UShip, ItemKindMatchError> {
+    pub(crate) fn dc_ship_mut(&mut self) -> Result<&mut UShip, ItemKindMatchError> {
         match self {
             Self::Ship(ship) => Ok(ship),
             _ => Err(ItemKindMatchError {
@@ -268,7 +268,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_skill(&self) -> Result<&USkill, ItemKindMatchError> {
+    pub(crate) fn dc_skill(&self) -> Result<&USkill, ItemKindMatchError> {
         match self {
             Self::Skill(skill) => Ok(skill),
             _ => Err(ItemKindMatchError {
@@ -278,7 +278,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_skill_mut(&mut self) -> Result<&mut USkill, ItemKindMatchError> {
+    pub(crate) fn dc_skill_mut(&mut self) -> Result<&mut USkill, ItemKindMatchError> {
         match self {
             Self::Skill(skill) => Ok(skill),
             _ => Err(ItemKindMatchError {
@@ -288,7 +288,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_stance(&self) -> Result<&UStance, ItemKindMatchError> {
+    pub(crate) fn dc_stance(&self) -> Result<&UStance, ItemKindMatchError> {
         match self {
             Self::Stance(stance) => Ok(stance),
             _ => Err(ItemKindMatchError {
@@ -298,7 +298,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_stance_mut(&mut self) -> Result<&mut UStance, ItemKindMatchError> {
+    pub(crate) fn dc_stance_mut(&mut self) -> Result<&mut UStance, ItemKindMatchError> {
         match self {
             Self::Stance(stance) => Ok(stance),
             _ => Err(ItemKindMatchError {
@@ -308,7 +308,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_subsystem(&self) -> Result<&USubsystem, ItemKindMatchError> {
+    pub(crate) fn dc_subsystem(&self) -> Result<&USubsystem, ItemKindMatchError> {
         match self {
             Self::Subsystem(subsystem) => Ok(subsystem),
             _ => Err(ItemKindMatchError {
@@ -318,7 +318,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_subsystem_mut(&mut self) -> Result<&mut USubsystem, ItemKindMatchError> {
+    pub(crate) fn dc_subsystem_mut(&mut self) -> Result<&mut USubsystem, ItemKindMatchError> {
         match self {
             Self::Subsystem(subsystem) => Ok(subsystem),
             _ => Err(ItemKindMatchError {
@@ -328,7 +328,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_sw_effect(&self) -> Result<&USwEffect, ItemKindMatchError> {
+    pub(crate) fn dc_sw_effect(&self) -> Result<&USwEffect, ItemKindMatchError> {
         match self {
             Self::SwEffect(sw_effect) => Ok(sw_effect),
             _ => Err(ItemKindMatchError {
@@ -338,7 +338,7 @@ impl UItem {
             }),
         }
     }
-    pub(crate) fn get_sw_effect_mut(&mut self) -> Result<&mut USwEffect, ItemKindMatchError> {
+    pub(crate) fn dc_sw_effect_mut(&mut self) -> Result<&mut USwEffect, ItemKindMatchError> {
         match self {
             Self::SwEffect(sw_effect) => Ok(sw_effect),
             _ => Err(ItemKindMatchError {

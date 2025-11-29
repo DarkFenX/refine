@@ -23,7 +23,7 @@ impl SolarSystem {
             fighter_key,
             reuse_eupdates,
         );
-        let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         u_fighter.set_type_id(type_id, &self.u_data.src);
         // Update just fighter, autocharges will copy updated projection ranges
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_key);

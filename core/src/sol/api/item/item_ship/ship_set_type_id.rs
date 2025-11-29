@@ -17,7 +17,7 @@ impl SolarSystem {
             return;
         }
         SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_key, reuse_eupdates);
-        let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
+        let u_ship = self.u_data.items.get_mut(ship_key).dc_ship_mut().unwrap();
         let fit_key = u_ship.get_fit_key();
         u_ship.set_type_id(type_id, &self.u_data.src);
         // Update on-fit ship kind

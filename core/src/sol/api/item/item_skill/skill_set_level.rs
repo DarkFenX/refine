@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_skill_level(&mut self, skill_key: UItemKey, level: SkillLevel) {
-        let u_skill = self.u_data.items.get_mut(skill_key).get_skill_mut().unwrap();
+        let u_skill = self.u_data.items.get_mut(skill_key).dc_skill_mut().unwrap();
         if u_skill.get_level() == level {
             return;
         }
@@ -19,7 +19,7 @@ impl SolarSystem {
             .get_mut(&u_skill.get_type_id())
             .unwrap();
         fit_skill.level = level;
-        let u_skill = self.u_data.items.get(skill_key).get_skill().unwrap();
+        let u_skill = self.u_data.items.get(skill_key).dc_skill().unwrap();
         self.svc.notify_skill_level_changed(&self.u_data, skill_key, u_skill);
     }
 }

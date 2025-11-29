@@ -7,7 +7,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_ship_coordinates(&mut self, ship_key: UItemKey, coordinates: Xyz) {
-        let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
+        let u_ship = self.u_data.items.get_mut(ship_key).dc_ship_mut().unwrap();
         if u_ship.get_physics().coordinates == coordinates {
             return;
         }

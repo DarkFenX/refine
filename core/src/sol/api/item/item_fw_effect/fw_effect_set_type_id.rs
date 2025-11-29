@@ -17,7 +17,7 @@ impl SolarSystem {
             return;
         }
         SolarSystem::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_key, reuse_eupdates);
-        let u_fw_effect = self.u_data.items.get_mut(fw_effect_key).get_fw_effect_mut().unwrap();
+        let u_fw_effect = self.u_data.items.get_mut(fw_effect_key).dc_fw_effect_mut().unwrap();
         u_fw_effect.set_type_id(type_id, &self.u_data.src);
         SolarSystem::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_key, reuse_eupdates);
     }

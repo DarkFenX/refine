@@ -60,5 +60,5 @@ fn get_state(sol: &SolarSystem, proj_effect_key: UItemKey) -> bool {
     get_u_proj_effect(sol, proj_effect_key).get_proj_effect_state()
 }
 fn get_u_proj_effect(sol: &SolarSystem, proj_effect_key: UItemKey) -> &UProjEffect {
-    sol.u_data.items.get(proj_effect_key).get_proj_effect().unwrap()
+    sol.u_data.items.get(proj_effect_key).dc_proj_effect().unwrap()
 }

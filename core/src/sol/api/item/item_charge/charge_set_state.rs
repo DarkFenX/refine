@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
+        let u_charge = self.u_data.items.get_mut(charge_key).dc_charge_mut().unwrap();
         let old_a_state = u_charge.get_state();
         u_charge.set_force_disabled(!state);
         let new_a_state = u_charge.get_state();

@@ -84,5 +84,5 @@ fn get_state(sol: &SolarSystem, subsystem_key: UItemKey) -> bool {
     get_u_subsystem(sol, subsystem_key).get_subsystem_state()
 }
 fn get_u_subsystem(sol: &SolarSystem, subsystem_key: UItemKey) -> &USubsystem {
-    sol.u_data.items.get(subsystem_key).get_subsystem().unwrap()
+    sol.u_data.items.get(subsystem_key).dc_subsystem().unwrap()
 }

@@ -13,7 +13,7 @@ impl SolarSystem {
         direction: Xyz,
         speed: AttrVal,
     ) {
-        let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
+        let u_ship = self.u_data.items.get_mut(ship_key).dc_ship_mut().unwrap();
         let ship_u_physics = u_ship.get_physics_mut();
         if ship_u_physics.direction == direction && ship_u_physics.speed == speed {
             return;

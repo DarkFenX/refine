@@ -12,14 +12,14 @@ impl SolarSystem {
         // Remove incoming projections
         self.internal_remove_incoming_projections(drone_key);
         // Remove outgoing projections
-        let u_drone = self.u_data.items.get(drone_key).get_drone().unwrap();
+        let u_drone = self.u_data.items.get(drone_key).dc_drone().unwrap();
         let fit_key = u_drone.get_fit_key();
         if !u_drone.get_projs().is_empty() {
             for projectee_key in u_drone.get_projs().iter_projectees() {
                 SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, drone_key, projectee_key);
                 self.rev_projs.unreg_projectee(&drone_key, projectee_key);
             }
-            let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
+            let u_drone = self.u_data.items.get_mut(drone_key).dc_drone_mut().unwrap();
             u_drone.get_projs_mut().clear();
         }
         // Update services

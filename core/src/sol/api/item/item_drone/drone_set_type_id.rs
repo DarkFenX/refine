@@ -20,7 +20,7 @@ impl SolarSystem {
         self.u_data
             .items
             .get_mut(drone_key)
-            .get_drone_mut()
+            .dc_drone_mut()
             .unwrap()
             .set_type_id(type_id, &self.u_data.src);
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);

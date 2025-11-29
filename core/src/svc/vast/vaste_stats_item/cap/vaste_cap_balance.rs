@@ -75,7 +75,7 @@ impl Vast {
     ) -> Result<AttrVal, StatItemCheckError> {
         let item = ctx.u_data.items.get(item_key);
         check_item_ship(item_key, item)?;
-        let fit_data = self.fit_datas.get(&item.get_ship().unwrap().get_fit_key()).unwrap();
+        let fit_data = self.fit_datas.get(&item.dc_ship().unwrap().get_fit_key()).unwrap();
         let mut balance = OF(0.0);
         if src_kinds.regen.enabled {
             balance += get_cap_regen(ctx, calc, item_key, src_kinds.regen.cap_perc);

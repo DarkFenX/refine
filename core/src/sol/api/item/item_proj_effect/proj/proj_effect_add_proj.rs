@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<(), AddProjError> {
         // Check projector
         let u_item = self.u_data.items.get(proj_effect_key);
-        let u_proj_effect = u_item.get_proj_effect().unwrap();
+        let u_proj_effect = u_item.dc_proj_effect().unwrap();
         // Check if projection has already been defined
         let projectee_u_item = self.u_data.items.get(projectee_key);
         if u_proj_effect.get_projs().contains(&projectee_key) {
@@ -35,12 +35,7 @@ impl SolarSystem {
             .into());
         }
         // Update user data
-        let u_proj_effect = self
-            .u_data
-            .items
-            .get_mut(proj_effect_key)
-            .get_proj_effect_mut()
-            .unwrap();
+        let u_proj_effect = self.u_data.items.get_mut(proj_effect_key).dc_proj_effect_mut().unwrap();
         u_proj_effect.get_projs_mut().add(projectee_key, None);
         self.rev_projs.reg_projectee(proj_effect_key, projectee_key);
         // Update services

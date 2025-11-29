@@ -93,5 +93,5 @@ fn get_movement(sol: &SolarSystem, ship_key: UItemKey) -> Movement {
     get_u_ship(sol, ship_key).get_physics().into()
 }
 fn get_u_ship(sol: &SolarSystem, ship_key: UItemKey) -> &UShip {
-    sol.u_data.items.get(ship_key).get_ship().unwrap()
+    sol.u_data.items.get(ship_key).dc_ship().unwrap()
 }

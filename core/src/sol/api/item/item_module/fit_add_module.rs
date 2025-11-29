@@ -55,7 +55,7 @@ impl SolarSystem {
                             self.u_data
                                 .items
                                 .get_mut(*rack_module_key)
-                                .get_module_mut()
+                                .dc_module_mut()
                                 .unwrap()
                                 .set_pos(pos + 1 + i);
                         }
@@ -98,7 +98,7 @@ impl SolarSystem {
             None => None,
         };
         // Update on-module data regarding position and charge
-        let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
+        let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.set_pos(pos);
         u_module.set_charge_key(charge_key);
         // Add module to services. While adding module, effect updates structure records if charge
@@ -106,7 +106,7 @@ impl SolarSystem {
         SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_key, reuse_eupdates);
         if let Some(charge_key) = charge_key {
             if reuse_eupdates.charge.unwrap_or(false) {
-                let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
+                let u_charge = self.u_data.items.get_mut(charge_key).dc_charge_mut().unwrap();
                 u_charge.set_activated(true);
             }
             SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_key, reuse_eupdates);

@@ -74,5 +74,5 @@ fn get_state(sol: &SolarSystem, rig_key: UItemKey) -> bool {
     get_u_rig(sol, rig_key).get_rig_state()
 }
 fn get_u_rig(sol: &SolarSystem, rig_key: UItemKey) -> &URig {
-    sol.u_data.items.get(rig_key).get_rig().unwrap()
+    sol.u_data.items.get(rig_key).dc_rig().unwrap()
 }

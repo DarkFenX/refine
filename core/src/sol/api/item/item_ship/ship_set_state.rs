@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_ship = self.u_data.items.get_mut(ship_key).get_ship_mut().unwrap();
+        let u_ship = self.u_data.items.get_mut(ship_key).dc_ship_mut().unwrap();
         let old_a_state = u_ship.get_state();
         u_ship.set_ship_state(state);
         let new_a_state = u_ship.get_state();

@@ -84,5 +84,5 @@ fn get_state(sol: &SolarSystem, implant_key: UItemKey) -> bool {
     get_u_implant(sol, implant_key).get_implant_state()
 }
 fn get_u_implant(sol: &SolarSystem, implant_key: UItemKey) -> &UImplant {
-    sol.u_data.items.get(implant_key).get_implant().unwrap()
+    sol.u_data.items.get(implant_key).dc_implant().unwrap()
 }

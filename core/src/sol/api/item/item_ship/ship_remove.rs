@@ -10,7 +10,7 @@ impl SolarSystem {
         ship_key: UItemKey,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_ship = self.u_data.items.get(ship_key).get_ship().unwrap();
+        let u_ship = self.u_data.items.get(ship_key).dc_ship().unwrap();
         let fit_key = u_ship.get_fit_key();
         // Remove incoming projections
         self.internal_remove_incoming_projections(ship_key);

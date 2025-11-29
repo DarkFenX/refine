@@ -27,7 +27,7 @@ impl<'a> FighterMut<'a> {
 }
 
 fn check_ability(sol: &SolarSystem, fighter_key: UItemKey, ability_id: &AbilId) -> Result<(), AbilityFoundError> {
-    let u_fighter = sol.u_data.items.get(fighter_key).get_fighter().unwrap();
+    let u_fighter = sol.u_data.items.get(fighter_key).dc_fighter().unwrap();
     if let Some(abils) = u_fighter.get_abils()
         && abils.contains(ability_id)
     {

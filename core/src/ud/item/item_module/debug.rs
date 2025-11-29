@@ -34,7 +34,7 @@ impl UModule {
             let charge_projs = u_data
                 .items
                 .get(charge_key)
-                .get_charge()
+                .dc_charge()
                 .unwrap()
                 .get_projs()
                 .iter()

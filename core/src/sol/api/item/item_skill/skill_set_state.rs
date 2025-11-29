@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_skill = self.u_data.items.get_mut(skill_key).get_skill_mut().unwrap();
+        let u_skill = self.u_data.items.get_mut(skill_key).dc_skill_mut().unwrap();
         let old_a_state = u_skill.get_state();
         u_skill.set_skill_state(state);
         let new_a_state = u_skill.get_state();

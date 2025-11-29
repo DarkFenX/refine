@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_rig = self.u_data.items.get_mut(rig_key).get_rig_mut().unwrap();
+        let u_rig = self.u_data.items.get_mut(rig_key).dc_rig_mut().unwrap();
         let old_a_state = u_rig.get_state();
         u_rig.set_rig_state(state);
         let new_a_state = u_rig.get_state();

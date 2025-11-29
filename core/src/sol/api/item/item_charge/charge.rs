@@ -89,5 +89,5 @@ fn get_state(sol: &SolarSystem, charge_key: UItemKey) -> bool {
     !get_u_charge(sol, charge_key).get_force_disabled()
 }
 fn get_u_charge(sol: &SolarSystem, charge_key: UItemKey) -> &UCharge {
-    sol.u_data.items.get(charge_key).get_charge().unwrap()
+    sol.u_data.items.get(charge_key).dc_charge().unwrap()
 }

@@ -74,5 +74,5 @@ fn get_state(sol: &SolarSystem, stance_key: UItemKey) -> bool {
     get_u_stance(sol, stance_key).get_stance_state()
 }
 fn get_u_stance(sol: &SolarSystem, stance_key: UItemKey) -> &UStance {
-    sol.u_data.items.get(stance_key).get_stance().unwrap()
+    sol.u_data.items.get(stance_key).dc_stance().unwrap()
 }

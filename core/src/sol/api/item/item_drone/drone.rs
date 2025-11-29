@@ -102,5 +102,5 @@ fn get_prop_mode(sol: &SolarSystem, drone_key: UItemKey) -> NpcProp {
     get_u_drone(sol, drone_key).get_prop_mode().into()
 }
 fn get_u_drone(sol: &SolarSystem, drone_key: UItemKey) -> &UDrone {
-    sol.u_data.items.get(drone_key).get_drone().unwrap()
+    sol.u_data.items.get(drone_key).dc_drone().unwrap()
 }

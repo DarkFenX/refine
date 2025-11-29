@@ -101,5 +101,5 @@ fn get_state(sol: &SolarSystem, autocharge_key: UItemKey) -> bool {
     !get_u_autocharge(sol, autocharge_key).get_force_disabled()
 }
 fn get_u_autocharge(sol: &SolarSystem, autocharge_key: UItemKey) -> &UAutocharge {
-    sol.u_data.items.get(autocharge_key).get_autocharge().unwrap()
+    sol.u_data.items.get(autocharge_key).dc_autocharge().unwrap()
 }

@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_booster = self.u_data.items.get_mut(booster_key).get_booster_mut().unwrap();
+        let u_booster = self.u_data.items.get_mut(booster_key).dc_booster_mut().unwrap();
         let old_a_state = u_booster.get_state();
         u_booster.set_booster_state(state);
         let new_a_state = u_booster.get_state();

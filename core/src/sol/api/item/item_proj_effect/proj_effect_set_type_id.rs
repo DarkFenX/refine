@@ -17,12 +17,7 @@ impl SolarSystem {
             return;
         }
         SolarSystem::util_remove_proj_effect(&mut self.u_data, &mut self.svc, proj_effect_key, reuse_eupdates);
-        let u_proj_effect = self
-            .u_data
-            .items
-            .get_mut(proj_effect_key)
-            .get_proj_effect_mut()
-            .unwrap();
+        let u_proj_effect = self.u_data.items.get_mut(proj_effect_key).dc_proj_effect_mut().unwrap();
         u_proj_effect.set_type_id(type_id, &self.u_data.src);
         SolarSystem::util_add_proj_effect(&mut self.u_data, &mut self.svc, proj_effect_key, reuse_eupdates);
     }

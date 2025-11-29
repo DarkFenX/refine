@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> Result<(), AddProjError> {
         // Check projector
         let u_item = self.u_data.items.get(module_key);
-        let u_module = u_item.get_module().unwrap();
+        let u_module = u_item.dc_module().unwrap();
         // Check if projection has already been defined
         let projectee_u_item = self.u_data.items.get(projectee_key);
         if u_module.get_projs().contains(&projectee_key) {
@@ -46,12 +46,12 @@ impl SolarSystem {
         ));
         let charge_key = u_module.get_charge_key();
         // Update user data for module
-        let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
+        let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.get_projs_mut().add(projectee_key, u_proj_data);
         self.rev_projs.reg_projectee(module_key, projectee_key);
         // Update user data for charge
         if let Some(charge_key) = charge_key {
-            let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
+            let u_charge = self.u_data.items.get_mut(charge_key).dc_charge_mut().unwrap();
             u_charge.get_projs_mut().add(projectee_key, u_proj_data);
             self.rev_projs.reg_projectee(charge_key, projectee_key);
         }

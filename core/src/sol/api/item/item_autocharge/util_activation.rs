@@ -12,7 +12,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         for (ac_key, ac_activated) in ac_activations {
-            let u_autocharge = u_data.items.get_mut(ac_key).get_autocharge_mut().unwrap();
+            let u_autocharge = u_data.items.get_mut(ac_key).dc_autocharge_mut().unwrap();
             let old_a_state = u_autocharge.get_state();
             u_autocharge.set_activated(ac_activated);
             let new_a_state = u_autocharge.get_state();

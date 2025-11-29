@@ -248,7 +248,7 @@ fn is_fit_ship_on_item_list<'u>(
 ) -> Option<(UItemKey, &'u UShip)> {
     let fit = ctx.u_data.fits.get(fit_key);
     let ship_key = fit.ship?;
-    let ship = ctx.u_data.items.get(ship_key).get_ship().unwrap();
+    let ship = ctx.u_data.items.get(ship_key).dc_ship().unwrap();
     match ship.get_buff_item_lists()?.contains(item_list_id) {
         true => Some((ship_key, ship)),
         false => None,

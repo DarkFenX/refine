@@ -4,11 +4,6 @@ use crate::{
 };
 
 pub(in crate::adg::flow::conv_post) fn fill_effect_autocharges(a_data: &mut AData) {
-    // Since we use base item attributes here, this function works on assumption that specific item
-    // always defines its autocharges. Scenarios with mutated items inheriting this attribute from
-    // base item are not supported. In case CCP e.g. LR fighters mutable, with mutated item not
-    // defining autocharge attribute (and thus inheriting it from base item), autocharge support
-    // will have to be refactored
     for a_item in a_data.items.values_mut() {
         for (a_effect_id, a_effect_data) in a_item.effect_datas.iter_mut() {
             if let Some(n_effect) = N_EFFECT_MAP.get(a_effect_id)

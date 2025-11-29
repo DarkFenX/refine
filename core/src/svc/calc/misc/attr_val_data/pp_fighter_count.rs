@@ -21,7 +21,7 @@ pub(super) fn fighter_count_postproc_fast(
         .u_data
         .items
         .get(item_key)
-        .get_fighter()
+        .dc_fighter()
         .unwrap()
         .get_count()
         .unwrap();
@@ -41,7 +41,7 @@ pub(super) fn fighter_count_postproc_info(
         .u_data
         .items
         .get(item_key)
-        .get_fighter()
+        .dc_fighter()
         .unwrap()
         .get_count()
         .unwrap();

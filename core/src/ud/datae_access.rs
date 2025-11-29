@@ -38,7 +38,7 @@ impl UData {
     pub(crate) fn get_ship_physics_by_fit_key(&self, fit_key: UFitKey) -> UPhysics {
         let fit = self.fits.get(fit_key);
         match fit.ship {
-            Some(ship_key) => *self.items.get(ship_key).get_ship().unwrap().get_physics(),
+            Some(ship_key) => *self.items.get(ship_key).dc_ship().unwrap().get_physics(),
             None => UPhysics::default(),
         }
     }

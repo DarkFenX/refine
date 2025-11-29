@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_stance = self.u_data.items.get_mut(stance_key).get_stance_mut().unwrap();
+        let u_stance = self.u_data.items.get_mut(stance_key).dc_stance_mut().unwrap();
         let old_a_state = u_stance.get_state();
         u_stance.set_stance_state(state);
         let new_a_state = u_stance.get_state();

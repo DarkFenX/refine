@@ -17,7 +17,7 @@ impl SolarSystem {
         projectee_key: UItemKey,
     ) -> Result<(), AddProjError> {
         // Check projector
-        let u_fighter = self.u_data.items.get(fighter_key).get_fighter().unwrap();
+        let u_fighter = self.u_data.items.get(fighter_key).dc_fighter().unwrap();
         // Check if projection has already been defined
         let projectee_u_item = self.u_data.items.get(projectee_key);
         if u_fighter.get_projs().contains(&projectee_key) {
@@ -47,14 +47,14 @@ impl SolarSystem {
         ));
         let autocharge_keys = u_fighter.get_autocharges().values().collect_vec();
         // Update user data for fighter
-        let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         u_fighter.get_projs_mut().add(projectee_key, u_proj_data);
         self.rev_projs.reg_projectee(fighter_key, projectee_key);
         // Update services for fighte
         SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, fighter_key, projectee_key, u_proj_data);
         for autocharge_key in autocharge_keys {
             // Update user data for autocharge
-            let u_autocharge = self.u_data.items.get_mut(autocharge_key).get_autocharge_mut().unwrap();
+            let u_autocharge = self.u_data.items.get_mut(autocharge_key).dc_autocharge_mut().unwrap();
             u_autocharge.get_projs_mut().add(projectee_key, u_proj_data);
             self.rev_projs.reg_projectee(autocharge_key, projectee_key);
             // Update services for autocharge

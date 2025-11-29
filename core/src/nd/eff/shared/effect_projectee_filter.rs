@@ -9,3 +9,11 @@ pub(crate) enum NEffectProjecteeFilter {
     // the effect
     ItemListAttr(AAttrId),
 }
+impl NEffectProjecteeFilter {
+    pub(crate) fn get_item_list_attr_id(&self) -> Option<AAttrId> {
+        match self {
+            Self::ItemList(_) => None,
+            Self::ItemListAttr(attr_id) => Some(*attr_id),
+        }
+    }
+}

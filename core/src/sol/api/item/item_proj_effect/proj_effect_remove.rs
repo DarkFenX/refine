@@ -10,18 +10,13 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Remove outgoing projections
-        let u_proj_effect = self.u_data.items.get(proj_effect_key).get_proj_effect().unwrap();
+        let u_proj_effect = self.u_data.items.get(proj_effect_key).dc_proj_effect().unwrap();
         if !u_proj_effect.get_projs().is_empty() {
             for projectee_key in u_proj_effect.get_projs().iter_projectees() {
                 SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, proj_effect_key, projectee_key);
                 self.rev_projs.unreg_projectee(&proj_effect_key, projectee_key);
             }
-            let u_proj_effect = self
-                .u_data
-                .items
-                .get_mut(proj_effect_key)
-                .get_proj_effect_mut()
-                .unwrap();
+            let u_proj_effect = self.u_data.items.get_mut(proj_effect_key).dc_proj_effect_mut().unwrap();
             u_proj_effect.get_projs_mut().clear();
         }
         // Remove effect from services

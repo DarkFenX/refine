@@ -14,7 +14,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Update user data for fighter
-        let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();

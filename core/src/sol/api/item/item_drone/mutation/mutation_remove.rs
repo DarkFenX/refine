@@ -10,7 +10,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
         SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
-        let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
+        let u_drone = self.u_data.items.get_mut(drone_key).dc_drone_mut().unwrap();
         if let Err(error) = u_drone.unmutate(&self.u_data.src) {
             SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
             return Err(error);

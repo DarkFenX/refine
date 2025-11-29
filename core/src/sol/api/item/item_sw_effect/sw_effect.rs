@@ -60,5 +60,5 @@ fn get_state(sol: &SolarSystem, sw_effect_key: UItemKey) -> bool {
     get_u_sw_effect(sol, sw_effect_key).get_sw_effect_state()
 }
 fn get_u_sw_effect(sol: &SolarSystem, sw_effect_key: UItemKey) -> &USwEffect {
-    sol.u_data.items.get(sw_effect_key).get_sw_effect().unwrap()
+    sol.u_data.items.get(sw_effect_key).dc_sw_effect().unwrap()
 }

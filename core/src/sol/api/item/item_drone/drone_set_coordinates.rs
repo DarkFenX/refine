@@ -7,7 +7,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_drone_coordinates(&mut self, drone_key: UItemKey, coordinates: Xyz) {
-        let u_drone = self.u_data.items.get_mut(drone_key).get_drone_mut().unwrap();
+        let u_drone = self.u_data.items.get_mut(drone_key).dc_drone_mut().unwrap();
         if u_drone.get_physics().coordinates == coordinates {
             return;
         }

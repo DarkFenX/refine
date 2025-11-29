@@ -10,7 +10,7 @@ impl SolarSystem {
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_sw_effect = self.u_data.items.get_mut(sw_effect_key).get_sw_effect_mut().unwrap();
+        let u_sw_effect = self.u_data.items.get_mut(sw_effect_key).dc_sw_effect_mut().unwrap();
         let old_a_state = u_sw_effect.get_state();
         u_sw_effect.set_sw_effect_state(state);
         let new_a_state = u_sw_effect.get_state();

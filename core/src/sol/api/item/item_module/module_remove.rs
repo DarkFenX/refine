@@ -12,7 +12,7 @@ impl SolarSystem {
         pos_mode: RmMode,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_module = self.u_data.items.get(module_key).get_module().unwrap();
+        let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
         let fit_key = u_module.get_fit_key();
         let rack = u_module.get_rack();
         let charge_key = u_module.get_charge_key();
@@ -25,18 +25,18 @@ impl SolarSystem {
                 // Remove module outgoing projections from reverse projection tracker
                 self.rev_projs.unreg_projectee(&module_key, projectee_key);
             }
-            let u_module = self.u_data.items.get_mut(module_key).get_module_mut().unwrap();
+            let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
             u_module.get_projs_mut().clear();
             // Remove outgoing projections for charge
             if let Some(charge_key) = charge_key {
-                let u_charge = self.u_data.items.get(charge_key).get_charge().unwrap();
+                let u_charge = self.u_data.items.get(charge_key).dc_charge().unwrap();
                 for projectee_key in u_charge.get_projs().iter_projectees() {
                     // Remove charge outgoing projections from services
                     SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, charge_key, projectee_key);
                     // Remove charge outgoing projections from reverse projection tracker
                     self.rev_projs.unreg_projectee(&charge_key, projectee_key);
                 }
-                let u_charge = self.u_data.items.get_mut(charge_key).get_charge_mut().unwrap();
+                let u_charge = self.u_data.items.get_mut(charge_key).dc_charge_mut().unwrap();
                 u_charge.get_projs_mut().clear();
             }
         }
@@ -60,7 +60,7 @@ impl SolarSystem {
                             self.u_data
                                 .items
                                 .get_mut(*rack_module_key)
-                                .get_module_mut()
+                                .dc_module_mut()
                                 .unwrap()
                                 .set_pos(pos + i);
                         }

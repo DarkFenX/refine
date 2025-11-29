@@ -7,7 +7,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol::api) fn internal_set_fighter_coordinates(&mut self, fighter_key: UItemKey, coordinates: Xyz) {
-        let u_fighter = self.u_data.items.get_mut(fighter_key).get_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         if u_fighter.get_physics().coordinates == coordinates {
             return;
         }

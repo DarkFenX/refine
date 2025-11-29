@@ -33,7 +33,7 @@ impl UFighter {
                 let autocharge_projs = u_data
                     .items
                     .get(autocharge_key)
-                    .get_autocharge()
+                    .dc_autocharge()
                     .unwrap()
                     .get_projs()
                     .iter()

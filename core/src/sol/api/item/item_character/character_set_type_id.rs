@@ -17,7 +17,7 @@ impl SolarSystem {
             return;
         }
         SolarSystem::util_remove_character(&mut self.u_data, &mut self.svc, character_key, reuse_eupdates);
-        let u_character = self.u_data.items.get_mut(character_key).get_character_mut().unwrap();
+        let u_character = self.u_data.items.get_mut(character_key).dc_character_mut().unwrap();
         u_character.set_type_id(type_id, &self.u_data.src);
         SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_key, reuse_eupdates);
     }

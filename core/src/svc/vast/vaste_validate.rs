@@ -55,7 +55,7 @@ impl Vast {
     ) -> bool {
         let fit = ctx.u_data.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
-        let ship = fit.ship.map(|v| ctx.u_data.items.get(v).get_ship().unwrap());
+        let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be. This order was chosen to optimize for market
         // filtering capabilities, which takes into account following item distribution:
@@ -481,7 +481,7 @@ impl Vast {
     ) -> ValResultFit {
         let fit = ctx.u_data.fits.get(fit_key);
         let fit_data = self.get_fit_data_mut(&fit_key);
-        let ship = fit.ship.map(|v| ctx.u_data.items.get(v).get_ship().unwrap());
+        let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit::new();
         // Generic
         if options.not_loaded_item.enabled {
