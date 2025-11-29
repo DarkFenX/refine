@@ -22,7 +22,7 @@ pub(crate) fn generate_adapted_data(ed_handler: &dyn ed::EveDataHandler) -> Resu
     flow::dedup_pks(&mut e_data);
     flow::normalize(&mut e_data);
     g_supp.fill(&e_data);
-    flow::clean_unused(&mut e_data, &g_supp).map_err(|e| SrcInitError::EveDataCleanupFailed(e.to_string()))?;
+    flow::clean_unused(&mut e_data, &mut g_supp).map_err(|e| SrcInitError::EveDataCleanupFailed(e.to_string()))?;
     flow::validate(&mut e_data, &g_supp);
     flow::convert_pre(&e_data, &g_supp, &mut a_data);
     flow::customize(&mut a_data);

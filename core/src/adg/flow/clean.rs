@@ -12,7 +12,7 @@ use crate::{
 
 const MAX_CYCLES: u32 = 100;
 
-pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &GSupport) -> Result<(), StrMsgError> {
+pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &mut GSupport) -> Result<(), StrMsgError> {
     let mut trash = EData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, g_supp);
@@ -31,6 +31,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &GSupport) -> Resu
         changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, g_supp);
     }
     cleanup_report(alive, &trash);
+    clean_item_lists(alive, g_supp);
     Ok(())
 }
 
@@ -181,4 +182,11 @@ fn cont_report<T: Named>(alive: &EDataCont<T>, trash: &EDataCont<T>) -> bool {
         return true;
     }
     false
+}
+
+fn clean_item_lists(alive: &mut EData, g_supp: &mut GSupport) {
+    let item_ids: RSet<_> = alive.items.data.iter().map(|v| v.id).collect();
+    for item_list in g_supp.item_lists.values_mut() {
+        let _ = item_list.item_ids.extract_if(|v| !item_ids.contains(&v));
+    }
 }
