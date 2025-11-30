@@ -24,6 +24,7 @@ fn fk_check(e_data: &EData, g_supp: &GSupport) {
     let pkdb = KeyDb::new_pkdb(e_data);
     fk_check_referer(&e_data.items, &pkdb, g_supp);
     fk_check_referer(&e_data.groups, &pkdb, g_supp);
+    fk_check_referer(&e_data.item_lists, &pkdb, g_supp);
     fk_check_referer(&e_data.attrs, &pkdb, g_supp);
     fk_check_referer(&e_data.item_attrs, &pkdb, g_supp);
     fk_check_referer(&e_data.effects, &pkdb, g_supp);
@@ -39,6 +40,13 @@ fn fk_check(e_data: &EData, g_supp: &GSupport) {
 fn fk_check_referer<T: Fk + Named>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, g_supp: &GSupport) {
     fk_check_referee(rer_cont, &pkdb.items, g_supp, T::get_item_fks, EItem::get_name());
     fk_check_referee(rer_cont, &pkdb.groups, g_supp, T::get_group_fks, EItemGroup::get_name());
+    fk_check_referee(
+        rer_cont,
+        &pkdb.item_lists,
+        g_supp,
+        T::get_item_list_fks,
+        EItemGroup::get_name(),
+    );
     fk_check_referee(rer_cont, &pkdb.attrs, g_supp, T::get_attr_fks, EAttr::get_name());
     fk_check_referee(rer_cont, &pkdb.effects, g_supp, T::get_effect_fks, EEffect::get_name());
     fk_check_referee(rer_cont, &pkdb.abils, g_supp, T::get_abil_fks, EFighterAbil::get_name());
