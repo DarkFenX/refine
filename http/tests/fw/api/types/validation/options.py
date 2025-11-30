@@ -77,6 +77,7 @@ class ValOptions:
     activation_blocked: ValOption = Absent
     effect_stopper: ValOption = Absent
     # Projection, source side
+    projectee_filter: ValOption = Absent
     assist_immunity: ValOption = Absent
     offense_immunity: ValOption = Absent
     resist_immunity: ValOption = Absent

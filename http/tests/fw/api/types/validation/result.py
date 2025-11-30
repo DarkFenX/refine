@@ -16,6 +16,7 @@ from .val_module_state import ValModuleStateFail
 from .val_not_loaded_item import ValNotLoadedItemFail
 from .val_overload_skill import ValOverloadSkillFail
 from .val_proj_immunity import ValProjImmunityFail
+from .val_projectee_filter import ValProjFilterFail
 from .val_resources import ValResourceFail
 from .val_rig_size import ValRigSizeFail
 from .val_sec_zone import ValSecZoneFail
@@ -125,6 +126,7 @@ class FitValDetails(AttrDict):
             'activation_blocked': AttrHookDef(func=lambda d: ValActivationBlockedFail(data=d)),
             'effect_stopper': AttrHookDef(func=lambda d: ValEffectStopperFail(data=d)),
             # Projection, source side
+            'projectee_filter': AttrHookDef(func=lambda d: ValProjFilterFail(data=d)),
             'assist_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
             'offense_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
             'resist_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),

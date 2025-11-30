@@ -15,28 +15,18 @@ impl Vast {
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
-        if effect.get_category() == ac::effcats::TARGET {
-            if !effect.get_stopped_effect_keys().is_empty()
-                && let Some(projectee_fit_key) = projectee_item.get_fit_key()
+        if let Some(projector_fit_key) = projector_item.get_fit_key() {
+            let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
+            let projector_espec = EffectSpec::new(projector_key, effect.get_key());
+            if effect.get_projectee_filter_info().is_some()
+                && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.get_key())
+                && let Some(item_list_id) = effect_data.projectee_filter
             {
-                let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
-                let stopper = EffectSpec::new(projector_key, effect.get_key());
-                for stop_a_effect_id in effect.get_stopped_effect_keys().iter() {
-                    let stopped = EffectSpec::new(projectee_key, *stop_a_effect_id);
-                    projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
-                }
+                projector_fit_data
+                    .projectee_filter
+                    .add_entry(projector_espec, projectee_key, item_list_id);
             }
-            if let Some(projector_fit_key) = projector_item.get_fit_key() {
-                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-                let projector_espec = EffectSpec::new(projector_key, effect.get_key());
-                if effect.get_projectee_filter_info().is_some()
-                    && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.get_key())
-                    && let Some(item_list_id) = effect_data.projectee_filter
-                {
-                    projector_fit_data
-                        .projectee_filter
-                        .add_entry(projector_espec, projectee_key, item_list_id);
-                }
+            if effect.get_category() == ac::effcats::TARGET {
                 if effect.is_assist() {
                     projector_fit_data
                         .blockable_assistance
@@ -53,6 +43,17 @@ impl Vast {
                         .resist_immunity
                         .add_entry(projectee_aspec, projector_espec);
                 }
+            }
+        }
+        if let Some(projectee_fit_key) = projectee_item.get_fit_key()
+            && !effect.get_stopped_effect_keys().is_empty()
+            && effect.get_category() == ac::effcats::TARGET
+        {
+            let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
+            let stopper = EffectSpec::new(projector_key, effect.get_key());
+            for stop_a_effect_id in effect.get_stopped_effect_keys().iter() {
+                let stopped = EffectSpec::new(projectee_key, *stop_a_effect_id);
+                projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
             }
         }
         if let Some(rep_getter) = effect.get_outgoing_shield_rep_opc_getter() {
@@ -104,25 +105,15 @@ impl Vast {
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
-        if effect.get_category() == ac::effcats::TARGET {
-            if !effect.get_stopped_effect_keys().is_empty()
-                && let Some(projectee_fit_key) = projectee_item.get_fit_key()
-            {
-                let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
-                let stopper = EffectSpec::new(projector_key, effect.get_key());
-                for stop_a_effect_id in effect.get_stopped_effect_keys().iter() {
-                    let stopped = EffectSpec::new(projectee_key, *stop_a_effect_id);
-                    projectee_fit_data.stopped_effects.remove_entry(stopped, &stopper);
-                }
+        if let Some(projector_fit_key) = projector_item.get_fit_key() {
+            let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
+            let projector_espec = EffectSpec::new(projector_key, effect.get_key());
+            if effect.get_projectee_filter_info().is_some() {
+                projector_fit_data
+                    .projectee_filter
+                    .remove_l2(projector_espec, &projectee_key);
             }
-            if let Some(projector_fit_key) = projector_item.get_fit_key() {
-                let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-                let projector_espec = EffectSpec::new(projector_key, effect.get_key());
-                if effect.get_projectee_filter_info().is_some() {
-                    projector_fit_data
-                        .projectee_filter
-                        .remove_l2(projector_espec, &projectee_key);
-                }
+            if effect.get_category() == ac::effcats::TARGET {
                 if effect.is_assist() {
                     projector_fit_data
                         .blockable_assistance
@@ -139,6 +130,17 @@ impl Vast {
                         .resist_immunity
                         .remove_entry(projectee_aspec, &projector_espec);
                 }
+            }
+        }
+        if let Some(projectee_fit_key) = projectee_item.get_fit_key()
+            && !effect.get_stopped_effect_keys().is_empty()
+            && effect.get_category() == ac::effcats::TARGET
+        {
+            let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
+            let stopper = EffectSpec::new(projector_key, effect.get_key());
+            for stop_a_effect_id in effect.get_stopped_effect_keys().iter() {
+                let stopped = EffectSpec::new(projectee_key, *stop_a_effect_id);
+                projectee_fit_data.stopped_effects.remove_entry(stopped, &stopper);
             }
         }
         if effect.get_outgoing_shield_rep_opc_getter().is_some() {

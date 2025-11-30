@@ -460,6 +460,7 @@ class EveAttr(IntEnum):
     dot_duration = 5735
     dot_max_dmg_per_tick = 5736
     dot_max_hp_perc_per_tick = 5737
+    valid_tgt_whitelist = 5745
     max_directional_scan_range = 5796
     can_fit_ship_type12 = 5948
     mining_crit_chance = 5967
