@@ -3,7 +3,7 @@
 
 use crate::{ad::AData, util::RSet};
 
-pub(in crate::adg::flow::conv_post) fn fill_buff_item_lists(a_data: &mut AData) {
+pub(in crate::adg::flow::s8_conv_post) fn fill_buff_item_lists(a_data: &mut AData) {
     // Collect item lists which are used in buffs
     let mut involved_item_list_ids = RSet::new();
     for a_effect in a_data.effects.values() {

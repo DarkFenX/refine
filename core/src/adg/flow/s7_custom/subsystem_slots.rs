@@ -6,7 +6,7 @@ use crate::{ac, ad, def::OF};
 const SLOT_ATTR: ad::AAttrId = ac::attrs::MAX_SUBSYSTEMS;
 const SHIP_GROUP: ad::AItemGrpId = ac::itemgrps::STRATEGIC_CRUISER;
 
-pub(in crate::adg::flow::custom) fn fix_subsysem_slot_count(a_data: &mut ad::AData) {
+pub(in crate::adg::flow::s7_custom) fn fix_subsysem_slot_count(a_data: &mut ad::AData) {
     let mut applied = false;
     for item in a_data.items.values_mut() {
         if item.grp_id != SHIP_GROUP {

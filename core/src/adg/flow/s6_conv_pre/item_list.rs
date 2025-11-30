@@ -4,7 +4,7 @@ use crate::{
     util::{RMap, RMapRSet, RSet},
 };
 
-pub(in crate::adg::flow::conv_pre) fn conv_item_lists(e_data: &EData) -> RMap<AItemListId, AItemList> {
+pub(in crate::adg::flow::s6_conv_pre) fn conv_item_lists(e_data: &EData) -> RMap<AItemListId, AItemList> {
     // Prepare helper data containers
     let mut types_by_grp = RMapRSet::new();
     for item in e_data.items.data.iter() {

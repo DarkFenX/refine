@@ -5,7 +5,7 @@ use crate::{
     nd::{N_EFFECTS, NEffect},
 };
 
-pub(in crate::adg::flow::custom) fn customize_effects(a_data: &mut AData) {
+pub(in crate::adg::flow::s7_custom) fn customize_effects(a_data: &mut AData) {
     for n_effect in N_EFFECTS.iter() {
         if let Some(assigned) = assign_effect(a_data, n_effect) {
             match assigned {

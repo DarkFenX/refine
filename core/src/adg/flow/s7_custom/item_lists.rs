@@ -3,7 +3,7 @@ use crate::{
     ad::{AData, AItemCatId, AItemList, AItemListId},
 };
 
-pub(in crate::adg::flow::custom) fn customize_item_lists(a_data: &mut AData) {
+pub(in crate::adg::flow::s7_custom) fn customize_item_lists(a_data: &mut AData) {
     make_and_add_item_list(a_data, ac::itemlists::SHIPS, &[ac::itemcats::SHIP]);
     make_and_add_item_list(
         a_data,

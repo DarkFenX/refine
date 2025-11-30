@@ -9,7 +9,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSupport) -> RMap<AItemId, AItem> {
+pub(in crate::adg::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_supp: &GSupport) -> RMap<AItemId, AItem> {
     // Auxiliary maps
     let defeff_map = make_item_defeff_map(e_data);
     let mut a_items = RMap::new();

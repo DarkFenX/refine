@@ -9,7 +9,7 @@ use crate::{
     ed::{EData, EItemSpaceCompBuffData},
 };
 
-pub(in crate::adg::flow::conv_pre) fn apply_space_comps(e_data: &EData, a_data: &mut AData) {
+pub(in crate::adg::flow::s6_conv_pre) fn apply_space_comps(e_data: &EData, a_data: &mut AData) {
     for e_space_comp in e_data.space_comps.data.iter() {
         if !a_data.items.contains_key(&e_space_comp.item_id) {
             continue;

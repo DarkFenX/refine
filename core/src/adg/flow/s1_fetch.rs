@@ -5,25 +5,6 @@ use crate::{
 
 const MAX_WARNS: usize = 5;
 
-/// Report warnings.
-fn report_warnings<T>(data_cont: &EDataCont<T>)
-where
-    T: Named,
-{
-    let warn_count = data_cont.warns.len();
-    if warn_count > 0 {
-        tracing::warn!(
-            "{} warnings encountered during fetching of {}, showing up to {}:",
-            warn_count,
-            T::get_name(),
-            MAX_WARNS
-        );
-        for warn_msg in data_cont.warns.iter().take(MAX_WARNS) {
-            tracing::warn!("{warn_msg}");
-        }
-    }
-}
-
 pub(in crate::adg) fn fetch_data(ed_handler: &dyn EveDataHandler) -> Result<EData, StrMsgError> {
     tracing::debug!("fetching EVE data");
     let e_data = ed_handler.get_data().map_err(|e| StrMsgError { msg: e.to_string() })?;
@@ -42,4 +23,22 @@ pub(in crate::adg) fn fetch_data(ed_handler: &dyn EveDataHandler) -> Result<EDat
     report_warnings(&e_data.muta_items);
     report_warnings(&e_data.muta_attrs);
     Ok(e_data)
+}
+
+fn report_warnings<T>(data_cont: &EDataCont<T>)
+where
+    T: Named,
+{
+    let warn_count = data_cont.warns.len();
+    if warn_count > 0 {
+        tracing::warn!(
+            "{} warnings encountered during fetching of {}, showing up to {}:",
+            warn_count,
+            T::get_name(),
+            MAX_WARNS
+        );
+        for warn_msg in data_cont.warns.iter().take(MAX_WARNS) {
+            tracing::warn!("{warn_msg}");
+        }
+    }
 }

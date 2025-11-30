@@ -18,7 +18,7 @@ impl EFighterAbil {
     }
 }
 
-pub(in crate::adg::flow::conv_pre) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> RMap<AEffectId, AEffect> {
+pub(in crate::adg::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> RMap<AEffectId, AEffect> {
     let mut a_effects = RMap::new();
     for e_effect in e_data.effects.data.iter() {
         let state = match e_effect.category_id {

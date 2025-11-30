@@ -3,7 +3,7 @@ use crate::{
     nd::N_EFFECT_MAP,
 };
 
-pub(in crate::adg::flow::conv_post) fn fill_effect_autocharges(a_data: &mut AData) {
+pub(in crate::adg::flow::s8_conv_post) fn fill_effect_autocharges(a_data: &mut AData) {
     for a_item in a_data.items.values_mut() {
         for (a_effect_id, a_effect_data) in a_item.effect_datas.iter_mut() {
             if let Some(n_effect) = N_EFFECT_MAP.get(a_effect_id)

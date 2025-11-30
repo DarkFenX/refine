@@ -5,7 +5,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::adg::flow::conv_pre) fn conv_attrs(e_data: &EData) -> RMap<AAttrId, AAttr> {
+pub(in crate::adg::flow::s6_conv_pre) fn conv_attrs(e_data: &EData) -> RMap<AAttrId, AAttr> {
     e_data
         .attrs
         .data
