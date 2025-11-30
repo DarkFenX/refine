@@ -131,6 +131,8 @@ pub(in crate::cmd) struct HValOptions {
     effect_stopper: Option<HValOption>,
     // Projection, source side
     #[serde(default)]
+    projectee_filter: Option<HValOption>,
+    #[serde(default)]
     assist_immunity: Option<HValOption>,
     #[serde(default)]
     offense_immunity: Option<HValOption>,
@@ -267,6 +269,7 @@ impl From<&HValOptions> for rc::val::ValOptions {
         process_option(&h_options.activation_blocked, &mut core_options.activation_blocked);
         process_option(&h_options.effect_stopper, &mut core_options.effect_stopper);
         // Projection, source side
+        process_option(&h_options.projectee_filter, &mut core_options.projectee_filter);
         process_option(&h_options.assist_immunity, &mut core_options.assist_immunity);
         process_option(&h_options.offense_immunity, &mut core_options.offense_immunity);
         process_option(&h_options.resist_immunity, &mut core_options.resist_immunity);

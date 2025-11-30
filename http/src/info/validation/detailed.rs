@@ -4,8 +4,9 @@ use crate::info::validation::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail, HValChargeSizeFail,
     HValChargeVolumeFail, HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
     HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail,
-    HValOverloadSkillFail, HValProjImmunityFail, HValResFail, HValRigSizeFail, HValSecZoneFail, HValShipLimitFail,
-    HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
+    HValOverloadSkillFail, HValProjFilterFail, HValProjImmunityFail, HValResFail, HValRigSizeFail, HValSecZoneFail,
+    HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail,
+    HValUnusableSlotFail,
 };
 
 // Sol-specific
@@ -196,6 +197,8 @@ struct HValFitInfo {
     effect_stopper: Option<HValEffectStopperFail>,
     // Projection, source side
     #[serde(skip_serializing_if = "Option::is_none")]
+    projectee_filter: Option<HValProjFilterFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     assist_immunity: Option<HValProjImmunityFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     offense_immunity: Option<HValProjImmunityFail>,
@@ -283,6 +286,7 @@ impl HValFitInfo {
             && self.activation_blocked.is_none()
             && self.effect_stopper.is_none()
             // Projection, source side
+            && self.projectee_filter.is_none()
             && self.assist_immunity.is_none()
             && self.offense_immunity.is_none()
             && self.resist_immunity.is_none()
@@ -365,6 +369,7 @@ impl From<&rc::val::ValResultFit> for HValFitInfo {
             activation_blocked: conv(&core_val_result.activation_blocked),
             effect_stopper: conv(&core_val_result.effect_stopper),
             // Projection, source side
+            projectee_filter: conv(&core_val_result.projectee_filter),
             assist_immunity: conv(&core_val_result.assist_immunity),
             offense_immunity: conv(&core_val_result.offense_immunity),
             resist_immunity: conv(&core_val_result.resist_immunity),
