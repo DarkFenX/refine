@@ -781,7 +781,7 @@ impl Vast {
         // Projection, source side
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.projectee_filter.enabled {
-            result.projectee_filter = fit_data.validate_projectee_filter_verbose(&options.assist_immunity.kfs, ctx);
+            result.projectee_filter = fit_data.validate_projectee_filter_verbose(&options.projectee_filter.kfs, ctx);
         }
         if options.assist_immunity.enabled {
             result.assist_immunity = fit_data.validate_assist_immunity_verbose(&options.assist_immunity.kfs, ctx, calc);
