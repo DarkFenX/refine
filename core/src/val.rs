@@ -8,8 +8,8 @@ pub use crate::{
         ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo,
         ValItemVsShipKindFail, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo,
         ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOption, ValOptions, ValOptionsSol,
-        ValOverloadSkillFail, ValProjImmunityFail, ValResFail, ValResultFit, ValResultSol, ValRigSizeFail,
-        ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail,
-        ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
+        ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResFail, ValResultFit, ValResultSol,
+        ValRigSizeFail, ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail,
+        ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
     },
 };

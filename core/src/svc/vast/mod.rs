@@ -19,9 +19,9 @@ pub use vaste_vals::{
     ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail,
     ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemVsShipKindFail, ValMaxGroupFail,
     ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo,
-    ValNotLoadedItemFail, ValOverloadSkillFail, ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail,
-    ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
-    ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
+    ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResFail, ValRigSizeFail,
+    ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail,
+    ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
 };
 
 mod shared;

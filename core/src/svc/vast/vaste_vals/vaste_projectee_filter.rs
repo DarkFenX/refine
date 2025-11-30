@@ -1,23 +1,25 @@
+use std::collections::HashMap;
+
 use crate::{
+    ad::AItemListId,
+    def::ItemId,
+    misc::EffectSpec,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemKey,
     util::RSet,
 };
+
+pub struct ValProjFilterFail {
+    /// Map between projecting item IDs and targets they can't be projected to.
+    pub items: HashMap<ItemId, Vec<ItemId>>,
+}
 
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_projectee_filter_fast(&self, kfs: &RSet<UItemKey>, ctx: SvcCtx) -> bool {
         for (projector_espec, projectee_data) in self.projectee_filter.iter() {
             for (&projectee_key, allowed_type_list_id) in projectee_data.iter() {
-                // Can't fetch type list - assume it's empty, i.e. effect has no allowed targets
-                let allowed_type_list = match ctx.u_data.src.get_item_list(allowed_type_list_id) {
-                    Some(allowed_type_list) => allowed_type_list,
-                    None => return false,
-                };
-                let projectee_type_id = ctx.u_data.items.get(projectee_key).get_type_id();
-                if !allowed_type_list.get_item_ids().contains(&projectee_type_id)
-                    && !kfs.contains(&projector_espec.item_key)
-                {
+                if !validate_projection(kfs, ctx, projector_espec, allowed_type_list_id, projectee_key) {
                     return false;
                 }
             }
@@ -29,7 +31,42 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
-    ) -> Option<bool> {
-        None
+    ) -> Option<ValProjFilterFail> {
+        let mut items = HashMap::new();
+        for (projector_espec, projectee_data) in self.projectee_filter.iter() {
+            for (&projectee_key, allowed_type_list_id) in projectee_data.iter() {
+                if !validate_projection(kfs, ctx, projector_espec, allowed_type_list_id, projectee_key) {
+                    let projector_item_id = ctx.u_data.items.id_by_key(projector_espec.item_key);
+                    let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
+                    let projectee_item_id = ctx.u_data.items.id_by_key(projectee_key);
+                    if !projectee_item_ids.contains(&projectee_item_id) {
+                        projectee_item_ids.push(projectee_item_id)
+                    }
+                }
+            }
+        }
+        match items.is_empty() {
+            true => None,
+            false => Some(ValProjFilterFail { items }),
+        }
     }
+}
+
+fn validate_projection(
+    kfs: &RSet<UItemKey>,
+    ctx: SvcCtx,
+    projector_espec: &EffectSpec,
+    allowed_type_list_id: &AItemListId,
+    projectee_key: UItemKey,
+) -> bool {
+    // Can't fetch type list - assume it's empty, i.e. effect has no allowed targets
+    let allowed_type_list = match ctx.u_data.src.get_item_list(allowed_type_list_id) {
+        Some(allowed_type_list) => allowed_type_list,
+        None => return false,
+    };
+    let projectee_type_id = ctx.u_data.items.get(projectee_key).get_type_id();
+    if !allowed_type_list.get_item_ids().contains(&projectee_type_id) && !kfs.contains(&projector_espec.item_key) {
+        return false;
+    }
+    true
 }

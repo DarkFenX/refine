@@ -6,8 +6,9 @@ use crate::{
         ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail, ValChargeSizeFail,
         ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail,
         ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
-        ValOverloadSkillFail, ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail, ValShipLimitFail,
-        ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail, ValUnusableSlotFail,
+        ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail,
+        ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableResFail,
+        ValUnusableSlotFail,
     },
 };
 
@@ -101,7 +102,7 @@ pub struct ValResultFit {
     pub activation_blocked: Option<ValActivationBlockedFail>,
     pub effect_stopper: Option<ValEffectStopperFail>,
     // Projection, source side
-    pub projectee_filter: Option<bool>,
+    pub projectee_filter: Option<ValProjFilterFail>,
     pub assist_immunity: Option<ValProjImmunityFail>,
     pub offense_immunity: Option<ValProjImmunityFail>,
     pub resist_immunity: Option<ValProjImmunityFail>,

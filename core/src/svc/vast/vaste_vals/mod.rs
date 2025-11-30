@@ -15,6 +15,7 @@ pub use vaste_module_state::{ValModuleStateFail, ValModuleStateModuleInfo};
 pub use vaste_not_loaded_item::ValNotLoadedItemFail;
 pub use vaste_overload_skill::ValOverloadSkillFail;
 pub use vaste_proj_immunity::ValProjImmunityFail;
+pub use vaste_projectee_filter::ValProjFilterFail;
 pub use vaste_resource::ValResFail;
 pub use vaste_rig_size::ValRigSizeFail;
 pub use vaste_sec_zone::ValSecZoneFail;
