@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::{AAttrId, AAttrVal, AItemGrpId, AItemId, AItemListId, ASkillLevel, ASlotIndex},
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
     nd::{
@@ -60,11 +60,11 @@ impl Vast {
 pub(in crate::svc) struct VastFitData {
     // Validation-related
     pub(in crate::svc::vast) mods_svcs_online: RSet<UItemKey>,
-    pub(in crate::svc::vast) rigs_offline_calibration: RMap<UItemKey, ad::AAttrVal>,
-    pub(in crate::svc::vast) drones_volume: RMap<UItemKey, ad::AAttrVal>,
-    pub(in crate::svc::vast) drones_bandwidth: RMap<UItemKey, ad::AAttrVal>,
-    pub(in crate::svc::vast) drones_online_bandwidth: RMap<UItemKey, ad::AAttrVal>,
-    pub(in crate::svc::vast) fighters_volume: RMap<UItemKey, ad::AAttrVal>,
+    pub(in crate::svc::vast) rigs_offline_calibration: RMap<UItemKey, AAttrVal>,
+    pub(in crate::svc::vast) drones_volume: RMap<UItemKey, AAttrVal>,
+    pub(in crate::svc::vast) drones_bandwidth: RMap<UItemKey, AAttrVal>,
+    pub(in crate::svc::vast) drones_online_bandwidth: RMap<UItemKey, AAttrVal>,
+    pub(in crate::svc::vast) fighters_volume: RMap<UItemKey, AAttrVal>,
     pub(in crate::svc::vast) fighters_online: RSet<UItemKey>,
     pub(in crate::svc::vast) light_fighters: RSet<UItemKey>,
     pub(in crate::svc::vast) light_fighters_online: RSet<UItemKey>,
@@ -80,19 +80,19 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) st_support_fighters_online: RSet<UItemKey>,
     pub(in crate::svc::vast) mods_turret: RSet<UItemKey>,
     pub(in crate::svc::vast) mods_launcher: RSet<UItemKey>,
-    pub(in crate::svc::vast) slotted_implants: RMapRSet<ad::ASlotIndex, UItemKey>,
-    pub(in crate::svc::vast) slotted_boosters: RMapRSet<ad::ASlotIndex, UItemKey>,
-    pub(in crate::svc::vast) slotted_subsystems: RMapRSet<ad::ASlotIndex, UItemKey>,
+    pub(in crate::svc::vast) slotted_implants: RMapRSet<ASlotIndex, UItemKey>,
+    pub(in crate::svc::vast) slotted_boosters: RMapRSet<ASlotIndex, UItemKey>,
+    pub(in crate::svc::vast) slotted_subsystems: RMapRSet<ASlotIndex, UItemKey>,
     pub(in crate::svc::vast) ship_limited_items: RMap<UItemKey, RItemShipLimit>,
-    pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<ad::AItemGrpId, UItemKey>,
-    pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UItemKey, ad::AItemGrpId>,
-    pub(in crate::svc::vast) mods_svcs_max_group_online_all: RMapRSet<ad::AItemGrpId, UItemKey>,
-    pub(in crate::svc::vast) mods_svcs_max_group_online_limited: RMap<UItemKey, ad::AItemGrpId>,
-    pub(in crate::svc::vast) mods_max_group_active_all: RMapRSet<ad::AItemGrpId, UItemKey>,
-    pub(in crate::svc::vast) mods_max_group_active_limited: RMap<UItemKey, ad::AItemGrpId>,
-    pub(in crate::svc::vast) rigs_rig_size: RMap<UItemKey, Option<ad::AAttrVal>>,
-    pub(in crate::svc::vast) srqs_skill_item_map: RMapRSet<ad::AItemId, UItemKey>,
-    pub(in crate::svc::vast) srqs_missing: RMap<UItemKey, RMap<ad::AItemId, ValSrqSkillInfo>>,
+    pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<AItemGrpId, UItemKey>,
+    pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UItemKey, AItemGrpId>,
+    pub(in crate::svc::vast) mods_svcs_max_group_online_all: RMapRSet<AItemGrpId, UItemKey>,
+    pub(in crate::svc::vast) mods_svcs_max_group_online_limited: RMap<UItemKey, AItemGrpId>,
+    pub(in crate::svc::vast) mods_max_group_active_all: RMapRSet<AItemGrpId, UItemKey>,
+    pub(in crate::svc::vast) mods_max_group_active_limited: RMap<UItemKey, AItemGrpId>,
+    pub(in crate::svc::vast) rigs_rig_size: RMap<UItemKey, Option<AAttrVal>>,
+    pub(in crate::svc::vast) srqs_skill_item_map: RMapRSet<AItemId, UItemKey>,
+    pub(in crate::svc::vast) srqs_missing: RMap<UItemKey, RMap<AItemId, ValSrqSkillInfo>>,
     pub(in crate::svc::vast) charge_group: RMap<UItemKey, UItemKey>,
     pub(in crate::svc::vast) charge_cont_group: RMap<UItemKey, UItemKey>,
     pub(in crate::svc::vast) charge_size: RMap<UItemKey, UItemKey>,
@@ -101,16 +101,16 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) not_loaded: RSet<UItemKey>,
     pub(in crate::svc::vast) mods_state: RMap<UItemKey, ValModuleStateModuleInfo>,
     pub(in crate::svc::vast) item_kind: RMap<UItemKey, ValItemKindItemInfo>,
-    pub(in crate::svc::vast) drone_group_limit: Vec<ad::AItemGrpId>,
-    pub(in crate::svc::vast) drone_groups: RMap<UItemKey, ad::AItemGrpId>,
+    pub(in crate::svc::vast) drone_group_limit: Vec<AItemGrpId>,
+    pub(in crate::svc::vast) drone_groups: RMap<UItemKey, AItemGrpId>,
     pub(in crate::svc::vast) fighter_squad_size: RMap<UItemKey, ValFighterSquadSizeFighterInfo>,
-    pub(in crate::svc::vast) overload_td_lvl: RMap<UItemKey, ad::ASkillLevel>,
-    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<ad::AItemId, UItemKey, Count>,
+    pub(in crate::svc::vast) overload_td_lvl: RMap<UItemKey, ASkillLevel>,
+    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemKey, Count>,
     pub(in crate::svc::vast) sec_zone_fitted: RSet<UItemKey>,
     pub(in crate::svc::vast) sec_zone_fitted_wspace_banned: RSet<UItemKey>,
-    pub(in crate::svc::vast) sec_zone_online_class: RMap<UItemKey, ad::AAttrVal>,
+    pub(in crate::svc::vast) sec_zone_online_class: RMap<UItemKey, AAttrVal>,
     pub(in crate::svc::vast) sec_zone_active: RSet<UItemKey>,
-    pub(in crate::svc::vast) sec_zone_unonlineable_class: RMap<UItemKey, ad::AAttrVal>,
+    pub(in crate::svc::vast) sec_zone_unonlineable_class: RMap<UItemKey, AAttrVal>,
     pub(in crate::svc::vast) sec_zone_unactivable: RSet<UItemKey>,
     pub(in crate::svc::vast) mods_active: RSet<UItemKey>,
     pub(in crate::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<UItemKey, ValShipKind>,
@@ -118,29 +118,30 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_assistance: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
-    // Stats-related - damage
+    pub(in crate::svc::vast) projectee_filter: RMap<(EffectSpec, AItemListId), UItemKey>,
+    // Stats-related - damage output
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemKey, REffectKey, NNormalDmgGetter>,
     pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemKey, REffectKey, NBreacherDmgGetter>,
-    // Stats-related - local reps
+    // Stats-related - mining output
+    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
+    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
+    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
+    // Stats-related - RR output
+    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
+    // Stats-related - misc output
+    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
+    pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
+    // Stats-related - local active tank
     pub(in crate::svc::vast) lr_shield: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_armor: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
-    // Stats-related - outgoing remote reps
-    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
     // Stats-related - cap
-    pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, ad::AAttrId>,
+    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, AAttrId>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,
-    // Stats-related - mining
-    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
-    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
-    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
-    // Stats-related - misc
-    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -205,24 +206,30 @@ impl VastFitData {
             blockable_assistance: RMapRSet::new(),
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
-            // Stats-related
+            projectee_filter: RMap::new(),
+            // Stats-related - damage output
             dmg_normal: RMapRMap::new(),
             dmg_breacher: RMapRMap::new(),
+            // Stats-related - mining output
+            mining_ore: RMapRMap::new(),
+            mining_ice: RMapRMap::new(),
+            mining_gas: RMapRMap::new(),
+            // Stats-related - RR output
+            orr_shield: RMapRMap::new(),
+            orr_armor: RMapRMap::new(),
+            orr_hull: RMapRMap::new(),
+            // Stats-related - misc output
+            out_neuts: RMapRMap::new(),
+            out_cap: RMapRMap::new(),
+            // Stats-related - local active tank
             lr_shield: RMapRMap::new(),
             lr_shield_limitable: RMapRMap::new(),
             lr_armor: RMapRMap::new(),
             lr_armor_limitable: RMapRMap::new(),
             lr_hull: RMapRMap::new(),
-            orr_shield: RMapRMap::new(),
-            orr_armor: RMapRMap::new(),
-            orr_hull: RMapRMap::new(),
-            out_cap: RMapRMap::new(),
+            // Stats-related - cap
             cap_consumers: RMapRMap::new(),
             cap_injects: RMapRMap::new(),
-            mining_ore: RMapRMap::new(),
-            mining_ice: RMapRMap::new(),
-            mining_gas: RMapRMap::new(),
-            out_neuts: RMapRMap::new(),
         }
     }
 }

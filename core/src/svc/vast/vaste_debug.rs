@@ -315,6 +315,15 @@ impl VastFitData {
                 check_effect_key(u_data, projector_espec.effect_key)?;
             }
         }
+        for ((projector_espec, _), &projectee_key) in self.projectee_filter.iter() {
+            check_item_key(u_data, projector_espec.item_key, true)?;
+            check_effect_key(u_data, projector_espec.effect_key)?;
+            // Target is not guaranteed to be loaded
+            check_item_key(u_data, projectee_key, false)?;
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - damage output
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (&item_key, item_data) in self.dmg_normal.iter() {
             check_item_key(u_data, item_key, true)?;
             for &effect_key in item_data.keys() {
@@ -327,6 +336,66 @@ impl VastFitData {
                 check_effect_key(u_data, effect_key)?;
             }
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - mining output
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for (&item_key, item_data) in self.mining_ore.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        for (&item_key, item_data) in self.mining_ice.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        for (&item_key, item_data) in self.mining_gas.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - RR output
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for (&item_key, item_data) in self.orr_shield.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        for (&item_key, item_data) in self.orr_armor.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        for (&item_key, item_data) in self.orr_hull.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - misc output
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for (&item_key, item_data) in self.out_neuts.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        for (&item_key, item_data) in self.out_cap.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - local active tank
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (&item_key, item_data) in self.lr_shield.iter() {
             check_item_key(u_data, item_key, true)?;
             for &effect_key in item_data.keys() {
@@ -357,30 +426,9 @@ impl VastFitData {
                 check_effect_key(u_data, effect_key)?;
             }
         }
-        for (&item_key, item_data) in self.orr_shield.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
-        for (&item_key, item_data) in self.orr_armor.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
-        for (&item_key, item_data) in self.orr_hull.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
-        for (&item_key, item_data) in self.out_cap.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - cap
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (&item_key, item_data) in self.cap_consumers.iter() {
             check_item_key(u_data, item_key, true)?;
             for &effect_key in item_data.keys() {
@@ -388,30 +436,6 @@ impl VastFitData {
             }
         }
         for (&item_key, item_data) in self.cap_injects.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
-        for (&item_key, item_data) in self.mining_ore.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
-        for (&item_key, item_data) in self.mining_ice.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
-        for (&item_key, item_data) in self.mining_gas.iter() {
-            check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
-                check_effect_key(u_data, effect_key)?;
-            }
-        }
-        for (&item_key, item_data) in self.out_neuts.iter() {
             check_item_key(u_data, item_key, true)?;
             for &effect_key in item_data.keys() {
                 check_effect_key(u_data, effect_key)?;

@@ -45,6 +45,14 @@ impl Vast {
                         .resist_immunity
                         .add_entry(projectee_aspec, projector_espec);
                 }
+                if effect.get_projectee_filter_info().is_some()
+                    && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.get_key())
+                    && let Some(item_list_id) = effect_data.projectee_filter
+                {
+                    projector_fit_data
+                        .projectee_filter
+                        .insert((projector_espec, item_list_id), projectee_key);
+                }
             }
         }
         if let Some(rep_getter) = effect.get_outgoing_shield_rep_opc_getter() {
@@ -125,6 +133,15 @@ impl Vast {
                     projector_fit_data
                         .resist_immunity
                         .remove_entry(projectee_aspec, &projector_espec);
+                }
+                // TODO: refactor so that item list ID is not needed
+                if effect.get_projectee_filter_info().is_some()
+                    && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.get_key())
+                    && let Some(item_list_id) = effect_data.projectee_filter
+                {
+                    projector_fit_data
+                        .projectee_filter
+                        .remove(&(projector_espec, item_list_id));
                 }
             }
         }
