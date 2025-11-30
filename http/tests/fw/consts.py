@@ -34,6 +34,8 @@ class EveItem(IntEnum):
 @unique
 class EveItemGrp(IntEnum):
     character = 1
+    freighter = 513
+    jump_freighter = 902
     effect_beacon = 920
     strategic_cruiser = 963
     ship_modifier = 1306
@@ -286,6 +288,7 @@ class EveAttr(IntEnum):
     tracking_speed = 160
     volume = 161
     radius = 162
+    tgt_filter_typelist_id = 189
     max_locked_targets = 192
     scan_radar_strength = 208
     scan_ladar_strength = 209
