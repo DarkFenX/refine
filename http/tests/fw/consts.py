@@ -116,6 +116,7 @@ class EveEffect(IntEnum):
     ftr_abil_mwd = 6441
     ftr_abil_mjd = 6442
     point_defense = 6443
+    lightning_weapon = 6447
     ftr_abil_attack_m = 6465
     remote_ecm_falloff = 6470
     doomsday_aoe_web = 6476
@@ -376,6 +377,7 @@ class EveAttr(IntEnum):
     allowed_drone_group2 = 1783
     reload_time = 1795
     disallow_vs_ew_immune_tgt = 1798
+    dmg_delay_duration = 1839
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
     can_fit_ship_type5 = 1944

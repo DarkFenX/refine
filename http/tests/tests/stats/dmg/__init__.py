@@ -19,7 +19,8 @@ class DmgBasicInfo:
     dmg_breach_abs_attr_id: int
     dmg_breach_rel_attr_id: int
     dmg_breach_duration_attr_id: int
-    dd_delay_attr_id: int
+    dd_delay1_attr_id: int
+    dd_delay2_attr_id: int
     dd_dmg_interval_attr_id: int
     dd_dmg_duration_attr_id: int
     capacity_attr_id: int
@@ -68,6 +69,7 @@ class DmgBasicInfo:
     smartbomb_effect_id: int
     pds_effect_id: int
     dd_lance_debuff_effect_id: int
+    dd_vorton_effect_id: int
     guided_bomb_group_id: int
 
 
@@ -90,7 +92,8 @@ def setup_dmg_basics(
     eve_dmg_breach_abs_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_dmg_per_tick)
     eve_dmg_breach_rel_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_hp_perc_per_tick)
     eve_dmg_breach_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_duration)
-    eve_dd_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
+    eve_dd_delay1_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_delay_duration)
+    eve_dd_delay2_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
     eve_dd_dmg_interval_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_cycle_time)
     eve_dd_dmg_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_duration)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
@@ -184,6 +187,10 @@ def setup_dmg_basics(
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_max_range_attr_id if effect_range else Default)
+    eve_dd_vorton_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.lightning_weapon,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     # Ensure effects are not cleaned up even if not all of them are used in a test
     client.mk_eve_item(eff_ids=[
         eve_turret_proj_effect_id,
@@ -198,6 +205,7 @@ def setup_dmg_basics(
         eve_bomb_effect_id,
         eve_smartbomb_effect_id,
         eve_pds_effect_id,
+        eve_dd_vorton_effect_id,
         eve_dd_lance_debuff_effect_id])
     return DmgBasicInfo(
         dmg_em_attr_id=eve_dmg_em_attr_id,
@@ -210,7 +218,8 @@ def setup_dmg_basics(
         dmg_breach_abs_attr_id=eve_dmg_breach_abs_attr_id,
         dmg_breach_rel_attr_id=eve_dmg_breach_rel_attr_id,
         dmg_breach_duration_attr_id=eve_dmg_breach_duration_attr_id,
-        dd_delay_attr_id=eve_dd_delay_attr_id,
+        dd_delay1_attr_id=eve_dd_delay1_attr_id,
+        dd_delay2_attr_id=eve_dd_delay2_attr_id,
         dd_dmg_interval_attr_id=eve_dd_dmg_interval_attr_id,
         dd_dmg_duration_attr_id=eve_dd_dmg_duration_attr_id,
         cycle_time_attr_id=eve_cycle_time_attr_id,
@@ -259,6 +268,7 @@ def setup_dmg_basics(
         smartbomb_effect_id=eve_smartbomb_effect_id,
         pds_effect_id=eve_pds_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id,
+        dd_vorton_effect_id=eve_dd_vorton_effect_id,
         guided_bomb_group_id=consts.EveItemGrp.guided_bomb)
 
 
@@ -753,7 +763,7 @@ def make_eve_dd_lance_debuff(
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
     _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay_attr_id, value=delay)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay2_attr_id, value=delay)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_interval_attr_id, value=dmg_interval)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_duration_attr_id, value=dmg_duration)
     _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
@@ -762,6 +772,24 @@ def make_eve_dd_lance_debuff(
         attrs=attrs,
         eff_ids=[basic_info.dd_lance_debuff_effect_id],
         defeff_id=basic_info.dd_lance_debuff_effect_id)
+
+
+def make_eve_dd_vorton(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        cycle_time: float | None = None,
+        delay: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.dd_vorton_effect_id],
+        defeff_id=basic_info.dd_vorton_effect_id)
 
 
 def _add_dmgs(
