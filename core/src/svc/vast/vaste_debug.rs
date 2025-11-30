@@ -291,6 +291,14 @@ impl VastFitData {
                 check_item_key(u_data, stopper_espec.item_key, true)?;
             }
         }
+        for (projector_espec, projectee_keys) in self.projectee_filter.iter() {
+            check_item_key(u_data, projector_espec.item_key, true)?;
+            check_effect_key(u_data, projector_espec.effect_key)?;
+            for &projectee_key in projectee_keys.keys() {
+                // Target is not guaranteed to be loaded
+                check_item_key(u_data, projectee_key, false)?;
+            }
+        }
         for (projectee_key, projector_especs) in self.blockable_assistance.iter() {
             // There is no logic which ensures that projection target is loaded
             check_item_key(u_data, *projectee_key, false)?;
@@ -313,14 +321,6 @@ impl VastFitData {
             for projector_espec in projector_especs {
                 check_item_key(u_data, projector_espec.item_key, true)?;
                 check_effect_key(u_data, projector_espec.effect_key)?;
-            }
-        }
-        for (projector_espec, projectee_keys) in self.projectee_filter.iter() {
-            check_item_key(u_data, projector_espec.item_key, true)?;
-            check_effect_key(u_data, projector_espec.effect_key)?;
-            for &projectee_key in projectee_keys.keys() {
-                // Target is not guaranteed to be loaded
-                check_item_key(u_data, projectee_key, false)?;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////

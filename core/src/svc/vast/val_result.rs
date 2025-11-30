@@ -101,6 +101,7 @@ pub struct ValResultFit {
     pub activation_blocked: Option<ValActivationBlockedFail>,
     pub effect_stopper: Option<ValEffectStopperFail>,
     // Projection, source side
+    pub projectee_filter: Option<bool>,
     pub assist_immunity: Option<ValProjImmunityFail>,
     pub offense_immunity: Option<ValProjImmunityFail>,
     pub resist_immunity: Option<ValProjImmunityFail>,
@@ -182,6 +183,7 @@ impl ValResultFit {
             activation_blocked: None,
             effect_stopper: None,
             // Projection, source side
+            projectee_filter: None,
             assist_immunity: None,
             offense_immunity: None,
             resist_immunity: None,
@@ -262,6 +264,7 @@ impl ValResultFit {
             && self.activation_blocked.is_none()
             && self.effect_stopper.is_none()
             // Projection, source side
+            && self.projectee_filter.is_none()
             && self.assist_immunity.is_none()
             && self.offense_immunity.is_none()
             && self.resist_immunity.is_none()

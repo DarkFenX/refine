@@ -29,6 +29,14 @@ impl Vast {
             if let Some(projector_fit_key) = projector_item.get_fit_key() {
                 let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
                 let projector_espec = EffectSpec::new(projector_key, effect.get_key());
+                if effect.get_projectee_filter_info().is_some()
+                    && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.get_key())
+                    && let Some(item_list_id) = effect_data.projectee_filter
+                {
+                    projector_fit_data
+                        .projectee_filter
+                        .add_entry(projector_espec, projectee_key, item_list_id);
+                }
                 if effect.is_assist() {
                     projector_fit_data
                         .blockable_assistance
@@ -44,14 +52,6 @@ impl Vast {
                     projector_fit_data
                         .resist_immunity
                         .add_entry(projectee_aspec, projector_espec);
-                }
-                if effect.get_projectee_filter_info().is_some()
-                    && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.get_key())
-                    && let Some(item_list_id) = effect_data.projectee_filter
-                {
-                    projector_fit_data
-                        .projectee_filter
-                        .add_entry(projector_espec, projectee_key, item_list_id);
                 }
             }
         }
@@ -118,6 +118,11 @@ impl Vast {
             if let Some(projector_fit_key) = projector_item.get_fit_key() {
                 let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
                 let projector_espec = EffectSpec::new(projector_key, effect.get_key());
+                if effect.get_projectee_filter_info().is_some() {
+                    projector_fit_data
+                        .projectee_filter
+                        .remove_l2(projector_espec, &projectee_key);
+                }
                 if effect.is_assist() {
                     projector_fit_data
                         .blockable_assistance
@@ -133,11 +138,6 @@ impl Vast {
                     projector_fit_data
                         .resist_immunity
                         .remove_entry(projectee_aspec, &projector_espec);
-                }
-                if effect.get_projectee_filter_info().is_some() {
-                    projector_fit_data
-                        .projectee_filter
-                        .remove_l2(projector_espec, &projectee_key);
                 }
             }
         }

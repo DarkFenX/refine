@@ -44,6 +44,7 @@ mod vaste_module_state;
 mod vaste_not_loaded_item;
 mod vaste_overload_skill;
 mod vaste_proj_immunity;
+mod vaste_projectee_filter;
 mod vaste_resource;
 mod vaste_rig_size;
 mod vaste_sec_zone;

@@ -103,6 +103,7 @@ pub struct ValOptions {
     pub activation_blocked: ValOption,
     pub effect_stopper: ValOption,
     // Projection, source side
+    pub projectee_filter: ValOption,
     pub assist_immunity: ValOption,
     pub offense_immunity: ValOption,
     pub resist_immunity: ValOption,
@@ -185,6 +186,7 @@ impl ValOptions {
             activation_blocked: ValOption::new_enabled(),
             effect_stopper: ValOption::new_enabled(),
             // Projection, source side
+            projectee_filter: ValOption::new_enabled(),
             assist_immunity: ValOption::new_enabled(),
             offense_immunity: ValOption::new_enabled(),
             resist_immunity: ValOption::new_enabled(),
@@ -267,6 +269,7 @@ impl ValOptions {
             activation_blocked: ValOption::new_disabled(),
             effect_stopper: ValOption::new_disabled(),
             // Projection, source side
+            projectee_filter: ValOption::new_disabled(),
             assist_immunity: ValOption::new_disabled(),
             offense_immunity: ValOption::new_disabled(),
             resist_immunity: ValOption::new_disabled(),
@@ -396,6 +399,7 @@ pub(crate) struct ValOptionsInt {
     pub(in crate::svc::vast) activation_blocked: ValOptionInt,
     pub(in crate::svc::vast) effect_stopper: ValOptionInt,
     // Projection, source side
+    pub(in crate::svc::vast) projectee_filter: ValOptionInt,
     pub(in crate::svc::vast) assist_immunity: ValOptionInt,
     pub(in crate::svc::vast) offense_immunity: ValOptionInt,
     pub(in crate::svc::vast) resist_immunity: ValOptionInt,
@@ -477,6 +481,7 @@ impl ValOptionsInt {
             activation_blocked: ValOptionInt::from_pub(sol, &pub_opts.activation_blocked),
             effect_stopper: ValOptionInt::from_pub(sol, &pub_opts.effect_stopper),
             // Projection, source side
+            projectee_filter: ValOptionInt::from_pub(sol, &pub_opts.projectee_filter),
             assist_immunity: ValOptionInt::from_pub(sol, &pub_opts.assist_immunity),
             offense_immunity: ValOptionInt::from_pub(sol, &pub_opts.offense_immunity),
             resist_immunity: ValOptionInt::from_pub(sol, &pub_opts.resist_immunity),

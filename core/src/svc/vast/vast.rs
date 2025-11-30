@@ -203,10 +203,10 @@ impl VastFitData {
             mods_active: RSet::new(),
             mods_rigs_svcs_vs_ship_kind: RMap::new(),
             stopped_effects: RMapRSet::new(),
+            projectee_filter: RMapRMap::new(),
             blockable_assistance: RMapRSet::new(),
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
-            projectee_filter: RMapRMap::new(),
             // Stats-related - damage output
             dmg_normal: RMapRMap::new(),
             dmg_breacher: RMapRMap::new(),

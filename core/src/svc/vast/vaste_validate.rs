@@ -412,6 +412,11 @@ impl Vast {
         }
         // Outgoing projections - useless for try-fit functionality, since tried items do not get
         // outgoing projections added.
+        if options.projectee_filter.enabled
+            && !fit_data.validate_projectee_filter_fast(&options.projectee_filter.kfs, ctx)
+        {
+            return false;
+        }
         if options.assist_immunity.enabled
             && !fit_data.validate_assist_immunity_fast(&options.assist_immunity.kfs, ctx, calc)
         {
@@ -483,7 +488,9 @@ impl Vast {
         let fit_data = self.get_fit_data_mut(&fit_key);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit::new();
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Generic
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.not_loaded_item.enabled {
             result.not_loaded_item = fit_data.validate_not_loaded_item_verbose(&options.not_loaded_item.kfs, ctx);
         }
@@ -493,7 +500,9 @@ impl Vast {
         if options.skill_reqs.enabled {
             result.skill_reqs = fit_data.validate_skill_reqs_verbose(&options.skill_reqs.kfs, ctx);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Implants/boosters
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.implant_slot_index.enabled {
             result.implant_slot_index =
                 fit_data.validate_implant_slot_index_verbose(&options.implant_slot_index.kfs, ctx);
@@ -502,7 +511,9 @@ impl Vast {
             result.booster_slot_index =
                 fit_data.validate_booster_slot_index_verbose(&options.booster_slot_index.kfs, ctx);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Shared between mod-alike items
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.cpu.enabled {
             result.cpu = fit_data.validate_cpu_verbose(&options.cpu.kfs, ctx, calc, fit);
         }
@@ -531,7 +542,9 @@ impl Vast {
             result.item_vs_ship_kind =
                 fit_data.validate_item_vs_ship_kind_verbose(&options.item_vs_ship_kind.kfs, ctx, fit);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Modules
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.high_slot_count.enabled {
             result.high_slot_count =
                 fit_data.validate_high_slot_count_verbose(&options.high_slot_count.kfs, ctx, calc, fit);
@@ -561,7 +574,9 @@ impl Vast {
         if options.overload_skill.enabled {
             result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, ctx, fit);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Charges
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.charge_group.enabled {
             result.charge_group = fit_data.validate_charge_group_verbose(&options.charge_group.kfs, ctx);
         }
@@ -575,7 +590,9 @@ impl Vast {
         if options.charge_volume.enabled {
             result.charge_volume = fit_data.validate_charge_volume_verbose(&options.charge_volume.kfs, ctx);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Rigs
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.rig_slot_count.enabled {
             result.rig_slot_count =
                 fit_data.validate_rig_slot_count_verbose(&options.rig_slot_count.kfs, ctx, calc, fit);
@@ -586,12 +603,16 @@ impl Vast {
         if options.rig_size.enabled {
             result.rig_size = fit_data.validate_rig_size_verbose(&options.rig_size.kfs, ctx, ship);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Services
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.service_slot_count.enabled {
             result.service_slot_count =
                 fit_data.validate_service_slot_count_verbose(&options.service_slot_count.kfs, ctx, calc, fit);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // T3 subsystems/stances
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.subsystem_slot_count.enabled {
             result.subsystem_slot_count =
                 fit_data.validate_subsystem_slot_count_verbose(&options.subsystem_slot_count.kfs, ctx, calc, fit);
@@ -603,7 +624,9 @@ impl Vast {
         if options.ship_stance.enabled {
             result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, ctx, fit, ship);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Drones
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.drone_bay_volume.enabled {
             result.drone_bay_volume =
                 fit_data.validate_drone_bay_volume_verbose(&options.drone_bay_volume.kfs, ctx, calc, fit);
@@ -631,7 +654,9 @@ impl Vast {
         if options.drone_group.enabled {
             result.drone_group = fit_data.validate_drone_group_verbose(&options.drone_group.kfs, ctx);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Fighters
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.fighter_bay_volume.enabled {
             result.fighter_bay_volume =
                 fit_data.validate_fighter_bay_volume_verbose(&options.fighter_bay_volume.kfs, ctx, calc, fit);
@@ -752,7 +777,12 @@ impl Vast {
         if options.effect_stopper.enabled {
             result.effect_stopper = fit_data.validate_effect_stopper_verbose(&options.effect_stopper.kfs, ctx, calc);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Projection, source side
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if options.projectee_filter.enabled {
+            result.projectee_filter = fit_data.validate_projectee_filter_verbose(&options.assist_immunity.kfs, ctx);
+        }
         if options.assist_immunity.enabled {
             result.assist_immunity = fit_data.validate_assist_immunity_verbose(&options.assist_immunity.kfs, ctx, calc);
         }
@@ -763,7 +793,9 @@ impl Vast {
         if options.resist_immunity.enabled {
             result.resist_immunity = fit_data.validate_resist_immunity_verbose(&options.resist_immunity.kfs, ctx, calc);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Sec zone
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if options.sec_zone_fitted.enabled {
             result.sec_zone_fitted = fit_data.validate_sec_zone_fitted_verbose(&options.sec_zone_fitted.kfs, ctx, calc);
         }
