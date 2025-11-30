@@ -63,6 +63,7 @@ pub(crate) const FTR_ABIL_AB: EEffectId = 6440;
 pub(crate) const FTR_ABIL_MWD: EEffectId = 6441;
 pub(crate) const FTR_ABIL_MJD: EEffectId = 6442;
 pub(crate) const POINT_DEFENSE: EEffectId = 6443;
+pub(crate) const LIGHTNING_WEAPON: EEffectId = 6447;
 pub(crate) const FTR_ABIL_TACKLE: EEffectId = 6464;
 pub(crate) const FTR_ABIL_ATK_MISSILE: EEffectId = 6465;
 pub(crate) const REMOTE_ECM_FALLOFF: EEffectId = 6470;

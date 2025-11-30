@@ -169,6 +169,7 @@ pub(crate) const ALLOWED_DRONE_GROUP1: EAttrId = 1782;
 pub(crate) const ALLOWED_DRONE_GROUP2: EAttrId = 1783;
 pub(crate) const RELOAD_TIME: EAttrId = 1795;
 pub(crate) const DISALLOW_VS_EW_IMMUNE_TGT: EAttrId = 1798;
+pub(crate) const DMG_DELAY_DURATION: EAttrId = 1839;
 pub(crate) const RESIST_SHIFT_AMOUNT: EAttrId = 1849;
 pub(crate) const CAN_FIT_SHIP_GROUP5: EAttrId = 1872;
 pub(crate) const CAN_FIT_SHIP_GROUP6: EAttrId = 1879;
