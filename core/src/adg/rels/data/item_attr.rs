@@ -1,4 +1,5 @@
 use crate::{
+    ac,
     adg::{
         GSupport,
         rels::{Fk, KeyPart, Pk, attr_val_to_fk},
@@ -26,6 +27,18 @@ impl Fk for EItemAttr {
         let mut vec = Vec::new();
         if let Some(v) = self.get_fk_from_val(ec::units::GROUP_ID, g_supp) {
             vec.push(v);
+        }
+        vec
+    }
+    fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+        let mut vec = Vec::new();
+        match self.attr_id {
+            ac::attrs::VALID_TGT_WHITELIST | ac::attrs::TGT_FILTER_TYPELIST_ID
+                if let Some(v_fk) = attr_val_to_fk(self.value) =>
+            {
+                vec.push(v_fk)
+            }
+            _ => (),
         }
         vec
     }

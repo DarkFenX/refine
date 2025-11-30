@@ -48,6 +48,7 @@ pub(crate) const FALLOFF: EAttrId = 158;
 pub(crate) const TRACKING_SPEED: EAttrId = 160;
 pub(crate) const VOLUME: EAttrId = 161;
 pub(crate) const RADIUS: EAttrId = 162;
+pub(crate) const TGT_FILTER_TYPELIST_ID: EAttrId = 189;
 pub(crate) const MAX_LOCKED_TARGETS: EAttrId = 192;
 pub(crate) const SCAN_RADAR_STRENGTH: EAttrId = 208;
 pub(crate) const SCAN_LADAR_STRENGTH: EAttrId = 209;

@@ -10,6 +10,7 @@ use crate::{
 pub(in crate::adg) struct KeyDb {
     pub(in crate::adg) items: RSet<ed::EItemId>,
     pub(in crate::adg) groups: RSet<ed::EItemGrpId>,
+    pub(in crate::adg) item_lists: RSet<ed::EItemListId>,
     pub(in crate::adg) attrs: RSet<ed::EAttrId>,
     pub(in crate::adg) effects: RSet<ed::EEffectId>,
     pub(in crate::adg) abils: RSet<ed::EAbilId>,
@@ -20,6 +21,7 @@ impl KeyDb {
         Self {
             items: RSet::new(),
             groups: RSet::new(),
+            item_lists: RSet::new(),
             attrs: RSet::new(),
             effects: RSet::new(),
             abils: RSet::new(),
@@ -31,6 +33,7 @@ impl KeyDb {
         let mut pkdb = Self::new();
         Self::extend_pk_vec(&mut pkdb.items, &e_data.items);
         Self::extend_pk_vec(&mut pkdb.groups, &e_data.groups);
+        Self::extend_pk_vec(&mut pkdb.item_lists, &e_data.item_lists);
         Self::extend_pk_vec(&mut pkdb.attrs, &e_data.attrs);
         Self::extend_pk_vec(&mut pkdb.effects, &e_data.effects);
         Self::extend_pk_vec(&mut pkdb.abils, &e_data.abils);
@@ -47,6 +50,7 @@ impl KeyDb {
         let mut fkdb = Self::new();
         fkdb.extend_fk_vec(&e_data.items, g_supp);
         fkdb.extend_fk_vec(&e_data.groups, g_supp);
+        fkdb.extend_fk_vec(&e_data.item_lists, g_supp);
         fkdb.extend_fk_vec(&e_data.attrs, g_supp);
         fkdb.extend_fk_vec(&e_data.item_attrs, g_supp);
         fkdb.extend_fk_vec(&e_data.effects, g_supp);

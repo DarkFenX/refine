@@ -1,5 +1,5 @@
 use crate::{
-    ad::AEffectId,
+    ad::{AEffectId, AItemListId},
     adg::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
@@ -21,6 +21,15 @@ impl Fk for EEffect {
     }
     fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         self.get_fks_from_mod_args("groupID")
+    }
+    fn get_item_list_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
+        let mut vec = Vec::new();
+        if let Some(a_buff_data) = g_supp.eff_buff_map.get(&self.id)
+            && let AItemListId::Eve(e_item_list_id) = a_buff_data.scope.item_list_id
+        {
+            vec.push(e_item_list_id);
+        }
+        vec
     }
     fn get_attr_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();

@@ -2,10 +2,7 @@
 
 use crate::{
     ad,
-    adg::{
-        eff_abil::get_abil_effect,
-        support::{GItemList, GSupport},
-    },
+    adg::{eff_abil::get_abil_effect, support::GSupport},
     ed,
     src::SrcInitError,
 };
@@ -29,6 +26,6 @@ pub(crate) fn generate_adapted_data(ed_handler: &dyn ed::EveDataHandler) -> Resu
     flow::validate(&mut e_data, &g_supp);
     flow::convert_pre(&e_data, &g_supp, &mut a_data);
     flow::customize(&mut a_data);
-    flow::convert_post(&mut a_data, &g_supp);
+    flow::convert_post(&mut a_data);
     Ok(a_data)
 }

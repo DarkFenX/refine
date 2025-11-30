@@ -1,5 +1,8 @@
 use crate::{
-    ad::{AAbil, AAbilId, AAttr, AAttrId, ABuff, ABuffId, AEffect, AEffectId, AItem, AItemId, AMuta},
+    ad::{
+        AAbil, AAbilId, AAttr, AAttrId, ABuff, ABuffId, AEffect, AEffectId, AItem, AItemId, AItemList, AItemListId,
+        AMuta,
+    },
     util::RMap,
 };
 
@@ -11,6 +14,7 @@ pub struct AData {
     pub effects: RMap<AEffectId, AEffect>,
     pub buffs: RMap<ABuffId, ABuff>,
     pub abils: RMap<AAbilId, AAbil>,
+    pub item_lists: RMap<AItemListId, AItemList>,
 }
 impl AData {
     pub(crate) fn new() -> Self {
@@ -21,6 +25,7 @@ impl AData {
             effects: RMap::new(),
             buffs: RMap::new(),
             abils: RMap::new(),
+            item_lists: RMap::new(),
         }
     }
 }

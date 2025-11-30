@@ -1,11 +1,10 @@
 use crate::{
     ad::{AData, AEveItemListId, AItemListId},
-    adg::GSupport,
     nd::{N_EFFECT_MAP, NEffectProjecteeFilter},
     util::RSet,
 };
 
-pub(in crate::adg::flow::conv_post) fn fill_effect_projectee_filters(a_data: &mut AData, g_supp: &GSupport) {
+pub(in crate::adg::flow::conv_post) fn fill_effect_projectee_filters(a_data: &mut AData) {
     for a_item in a_data.items.values_mut() {
         for (a_effect_id, a_effect_data) in a_item.effect_datas.iter_mut() {
             if let Some(n_effect) = N_EFFECT_MAP.get(a_effect_id)
@@ -18,8 +17,8 @@ pub(in crate::adg::flow::conv_post) fn fill_effect_projectee_filters(a_data: &mu
                         None => continue,
                     },
                 };
-                let item_set = match g_supp.item_lists.get(&a_item_list_id) {
-                    Some(g_item_list) => g_item_list.item_ids.clone(),
+                let item_set = match a_data.item_lists.get(&a_item_list_id) {
+                    Some(a_item_list) => a_item_list.item_ids.clone(),
                     None => RSet::new(),
                 };
                 a_effect_data.projectee_filter = Some(item_set);

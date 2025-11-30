@@ -7,7 +7,7 @@ pub use effect::{
     AEffectLocation, AEffectModifier,
 };
 pub use item::{AItem, AItemEffectData, ASkillLevel};
-pub use item_list::AItemListId;
+pub use item_list::{AItemList, AItemListId};
 pub use muta::{AMuta, AMutaAttrRange};
 pub(crate) use primitives::ASlotIndex;
 pub use primitives::{

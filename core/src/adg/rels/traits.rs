@@ -11,6 +11,9 @@ pub(in crate::adg) trait Fk {
     fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         Vec::new()
     }
+    fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+        Vec::new()
+    }
     fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         Vec::new()
     }

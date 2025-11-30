@@ -16,3 +16,8 @@ impl Named for AAttr {
         "AAttr"
     }
 }
+impl std::fmt::Display for AAttr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}(id={})", Self::get_name(), self.id)
+    }
+}

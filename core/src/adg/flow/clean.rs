@@ -18,6 +18,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &mut GSupport) -> 
     restore_core_items(alive, &mut trash, g_supp);
     restore_attrs(alive, &mut trash);
     restore_hardcoded_buffs(alive, &mut trash);
+    restore_hardcoded_item_lists(alive, &mut trash);
 
     let mut counter = 0;
     let mut changes = true;
@@ -31,7 +32,6 @@ pub(in crate::adg) fn clean_unused(alive: &mut EData, g_supp: &mut GSupport) -> 
         changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, g_supp);
     }
     cleanup_report(alive, &trash);
-    clean_item_lists(alive, g_supp);
     Ok(())
 }
 
@@ -51,6 +51,7 @@ where
 fn trash_all(alive: &mut EData, trash: &mut EData) {
     move_data(&mut alive.items, &mut trash.items, |_| true);
     move_data(&mut alive.groups, &mut trash.groups, |_| true);
+    move_data(&mut alive.item_lists, &mut trash.item_lists, |_| true);
     move_data(&mut alive.attrs, &mut trash.attrs, |_| true);
     move_data(&mut alive.item_attrs, &mut trash.item_attrs, |_| true);
     move_data(&mut alive.effects, &mut trash.effects, |_| true);
@@ -105,6 +106,13 @@ fn restore_hardcoded_buffs(alive: &mut EData, trash: &mut EData) {
     });
 }
 
+fn restore_hardcoded_item_lists(alive: &mut EData, trash: &mut EData) {
+    // Used in sec zone validation
+    move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
+        v.id == ec::itemlists::WORMHOLE_JUMP_BLACK_LIST
+    });
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +150,9 @@ fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> b
     let fkdb = KeyDb::new_fkdb(alive, g_supp);
     move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
         || move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
+        || move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
+            fkdb.item_lists.contains(&v.id)
+        })
         || move_data(&mut trash.attrs, &mut alive.attrs, |v| fkdb.attrs.contains(&v.id))
         || move_data(&mut trash.effects, &mut alive.effects, |v| fkdb.effects.contains(&v.id))
         || move_data(&mut trash.abils, &mut alive.abils, |v| fkdb.abils.contains(&v.id))
@@ -155,6 +166,7 @@ fn cleanup_report(alive: &EData, trash: &EData) {
     let cleaned = false;
     let cleaned = cont_report(&alive.items, &trash.items) || cleaned;
     let cleaned = cont_report(&alive.groups, &trash.groups) || cleaned;
+    let cleaned = cont_report(&alive.item_lists, &trash.item_lists) || cleaned;
     let cleaned = cont_report(&alive.attrs, &trash.attrs) || cleaned;
     let cleaned = cont_report(&alive.item_attrs, &trash.item_attrs) || cleaned;
     let cleaned = cont_report(&alive.effects, &trash.effects) || cleaned;
@@ -182,11 +194,4 @@ fn cont_report<T: Named>(alive: &EDataCont<T>, trash: &EDataCont<T>) -> bool {
         return true;
     }
     false
-}
-
-fn clean_item_lists(alive: &mut EData, g_supp: &mut GSupport) {
-    let item_ids: RSet<_> = alive.items.data.iter().map(|v| v.id).collect();
-    for item_list in g_supp.item_lists.values_mut() {
-        let _ = item_list.item_ids.extract_if(|v| !item_ids.contains(&v));
-    }
 }

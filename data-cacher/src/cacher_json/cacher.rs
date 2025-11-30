@@ -6,7 +6,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::{VERSION, cacher_json::data, util::Error};
+use crate::{VERSION, cacher_json::data::CData, util::Error};
 
 /// JSON adapted data cacher implementation.
 ///
@@ -38,7 +38,7 @@ impl JsonZfileAdc {
             }
         }
     }
-    fn write_data(&self, c_data: &data::CData) {
+    fn write_data(&self, c_data: &CData) {
         let cache_path = self.get_cache_path();
         let file = match OpenOptions::new()
             .create(true)
@@ -102,8 +102,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
             .map_err(|e| Error::RamJsonReadFailed(e.to_string()))?;
         let mut raw = Vec::new();
         zstd::stream::copy_decode(file, &mut raw).map_err(|e| Error::RamJsonDecompFailed(e.to_string()))?;
-        let c_data =
-            serde_json::from_slice::<data::CData>(&raw).map_err(|e| Error::RamJsonParseFailed(e.to_string()))?;
+        let c_data = serde_json::from_slice::<CData>(&raw).map_err(|e| Error::RamJsonParseFailed(e.to_string()))?;
         Ok((&c_data).into())
     }
     #[tracing::instrument(name = "adc-json-zfile-update", level = "trace", skip_all)]

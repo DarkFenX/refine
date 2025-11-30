@@ -1,5 +1,5 @@
 use crate::{
-    adg::rels::{KeyPart, Pk},
+    adg::rels::{Fk, KeyPart, Pk},
     ed::EItemList,
 };
 
@@ -9,6 +9,6 @@ impl Pk for EItemList {
     }
 }
 
-// No FK implementation, we don't care what data is in item lists for cleanup purposes, since it's
-// used up during cache generation, and data in it is used just for membership checks, thus links
-// from it are not interesting enough to restore linked data
+// No actual implementation for item lists, since we do not plan to restore anything linked from
+// item lists, and item lists themselves will be cleaned up during conversion
+impl Fk for EItemList {}

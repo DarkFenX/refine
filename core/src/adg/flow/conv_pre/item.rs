@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{AEffectId, AItem, AItemEffectData, AItemId, AItemListId, ASkillLevel, AState},
-    adg::{GItemList, GSupport, get_abil_effect},
+    adg::{GSupport, get_abil_effect},
     def::OF,
     ed::{EData, EEffectId, EItemId},
     util::RMap,
@@ -36,13 +36,13 @@ pub(in crate::adg::flow::conv_pre) fn conv_items(e_data: &EData, g_supp: &GSuppo
             abil_ids: Vec::new(),
             srqs: RMap::new(),
             buff_item_list_ids: Vec::new(),
-            disallowed_in_wspace: is_disallowed_in_wspace(&e_item.id, &g_supp.item_lists),
             // Following fields are set to some default values, actual values will be set after
             // customization
             max_state: AState::Offline,
             val_fitted_group_id: None,
             val_online_group_id: None,
             val_active_group_id: None,
+            disallowed_in_wspace: false,
         };
         a_items.insert(a_item.id, a_item);
     }
@@ -100,12 +100,4 @@ fn make_item_defeff_map(e_data: &EData) -> RMap<EItemId, EEffectId> {
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
         .collect()
-}
-
-fn is_disallowed_in_wspace(e_item_id: &EItemId, type_lists: &RMap<AItemListId, GItemList>) -> bool {
-    let type_list = match type_lists.get(&ac::itemlists::WORMHOLE_JUMP_BLACK_LIST) {
-        Some(type_list) => type_list,
-        None => return false,
-    };
-    type_list.item_ids.contains(e_item_id)
 }
