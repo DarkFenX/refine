@@ -1,10 +1,7 @@
-use crate::{
-    ad::{AAttrVal, ACount, AItemId},
-    util::RSet,
-};
+use crate::ad::{AAttrVal, ACount, AItemId, AItemListId};
 
 /// Stores item-specific effect data.
-#[derive(Clone, Default)]
+#[derive(Copy, Clone, Default)]
 pub struct AItemEffectData {
     /// Type ID of autocharge this effect loads.
     pub autocharge: Option<AItemId> = None,
@@ -15,5 +12,5 @@ pub struct AItemEffectData {
     /// Defines how much time each charge of the effect takes to reload, in seconds.
     pub charge_reload_time: Option<AAttrVal> = None,
     /// Type IDs this effect is allowed to be projected to.
-    pub projectee_filter: Option<RSet<AItemId>> = None,
+    pub projectee_filter: Option<AItemListId> = None,
 }
