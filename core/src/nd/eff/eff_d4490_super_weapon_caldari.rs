@@ -4,7 +4,7 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKind, NEffectHc,
+        NEffect, NEffectDmgKind, NEffectHc, NEffectProjecteeFilter,
         eff::shared::{mods::add_dd_mods, opc::get_direct_dd_dmg_opc},
     },
     ud::UItem,
@@ -19,6 +19,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(|a_effect| add_dd_mods(A_EFFECT_ID, a_effect, false)),
         hc: NEffectHc {
+            projectee_filter: Some(NEffectProjecteeFilter::ItemList(ac::itemlists::CAPITALS_FREIGHTERS)),
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(get_direct_dd_dmg_opc),
             ..
