@@ -1,8 +1,8 @@
 use crate::{
     ac,
-    ad::{AAbilId, AAttrId, ABuffId, AEffectId, AItemId, AdaptedDataCacher},
+    ad::{AAbilId, AAttrId, ABuffId, AEffectId, AItemId, AItemListId, AdaptedDataCacher},
     ed::EveDataHandler,
-    rd::{RData, REffectKey, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcMuta},
+    rd::{RData, REffectKey, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcItemList, RcMuta},
     src::{SrcInitError, prepare::prepare_adapted_data},
     util::{GetId, RMap},
 };
@@ -63,6 +63,9 @@ impl Src {
     }
     pub(crate) fn get_item(&self, id: &AItemId) -> Option<&RcItem> {
         self.r_data.items.get(id)
+    }
+    pub(crate) fn get_item_list(&self, id: &AItemListId) -> Option<&RcItemList> {
+        self.r_data.item_lists.get(id)
     }
     pub(crate) fn get_attr(&self, id: &AAttrId) -> Option<&RcAttr> {
         self.r_data.attrs.get(id)

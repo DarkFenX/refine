@@ -6,14 +6,18 @@ use std::{
 use slab::Slab;
 
 use crate::{
-    ad::{AAbilId, AAttrId, ABuffId, AData, AItemId},
-    rd::{RAbil, RAttr, RBuff, REffect, RItem, RMuta, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcMuta},
+    ad::{AAbilId, AAttrId, ABuffId, AData, AItemId, AItemListId},
+    rd::{
+        RAbil, RAttr, RBuff, REffect, RItem, RItemList, RMuta, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcItemList,
+        RcMuta,
+    },
     util::{GetId, Map, RMap},
 };
 
 #[derive(Clone)]
 pub(crate) struct RData {
     pub(crate) items: RMap<AItemId, RcItem>,
+    pub(crate) item_lists: RMap<AItemListId, RcItemList>,
     pub(crate) attrs: RMap<AAttrId, RcAttr>,
     pub(crate) effects: Slab<RcEffect>,
     pub(crate) buffs: RMap<ABuffId, RcBuff>,
@@ -23,6 +27,7 @@ pub(crate) struct RData {
 impl From<AData> for RData {
     fn from(a_data: AData) -> Self {
         let mut items = move_to_arcmap(a_data.items.into_values().map(RItem::new));
+        let item_lists = move_to_arcmap(a_data.item_lists.into_values().map(RItemList::new));
         let attrs = move_to_arcmap(a_data.attrs.into_values().map(RAttr::new));
         let buffs = move_to_arcmap(a_data.buffs.into_values().map(RBuff::new));
         let mutas = move_to_arcmap(a_data.mutas.into_values().map(RMuta::new));
@@ -49,6 +54,7 @@ impl From<AData> for RData {
         }
         Self {
             items,
+            item_lists,
             attrs,
             effects,
             buffs,

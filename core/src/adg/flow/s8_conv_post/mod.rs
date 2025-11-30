@@ -1,4 +1,4 @@
-use crate::{ad::AData, adg::GSupport};
+use crate::ad::AData;
 
 mod buff_item_lists;
 mod disallowed_in_wspace;

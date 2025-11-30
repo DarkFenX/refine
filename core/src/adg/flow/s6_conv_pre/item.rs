@@ -1,8 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    ac,
-    ad::{AEffectId, AItem, AItemEffectData, AItemId, AItemListId, ASkillLevel, AState},
+    ad::{AEffectId, AItem, AItemEffectData, AItemId, ASkillLevel, AState},
     adg::{GSupport, get_abil_effect},
     def::OF,
     ed::{EData, EEffectId, EItemId},
