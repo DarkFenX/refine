@@ -118,7 +118,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_assistance: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
-    pub(in crate::svc::vast) projectee_filter: RMap<(EffectSpec, AItemListId), UItemKey>,
+    pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemKey, AItemListId>,
     // Stats-related - damage output
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemKey, REffectKey, NNormalDmgGetter>,
     pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemKey, REffectKey, NBreacherDmgGetter>,
@@ -206,7 +206,7 @@ impl VastFitData {
             blockable_assistance: RMapRSet::new(),
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
-            projectee_filter: RMap::new(),
+            projectee_filter: RMapRMap::new(),
             // Stats-related - damage output
             dmg_normal: RMapRMap::new(),
             dmg_breacher: RMapRMap::new(),

@@ -51,7 +51,7 @@ impl Vast {
                 {
                     projector_fit_data
                         .projectee_filter
-                        .insert((projector_espec, item_list_id), projectee_key);
+                        .add_entry(projector_espec, projectee_key, item_list_id);
                 }
             }
         }
@@ -134,14 +134,10 @@ impl Vast {
                         .resist_immunity
                         .remove_entry(projectee_aspec, &projector_espec);
                 }
-                // TODO: refactor so that item list ID is not needed
-                if effect.get_projectee_filter_info().is_some()
-                    && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.get_key())
-                    && let Some(item_list_id) = effect_data.projectee_filter
-                {
+                if effect.get_projectee_filter_info().is_some() {
                     projector_fit_data
                         .projectee_filter
-                        .remove(&(projector_espec, item_list_id));
+                        .remove_l2(projector_espec, &projectee_key);
                 }
             }
         }

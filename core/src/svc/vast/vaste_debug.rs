@@ -315,11 +315,13 @@ impl VastFitData {
                 check_effect_key(u_data, projector_espec.effect_key)?;
             }
         }
-        for ((projector_espec, _), &projectee_key) in self.projectee_filter.iter() {
+        for (projector_espec, projectee_keys) in self.projectee_filter.iter() {
             check_item_key(u_data, projector_espec.item_key, true)?;
             check_effect_key(u_data, projector_espec.effect_key)?;
-            // Target is not guaranteed to be loaded
-            check_item_key(u_data, projectee_key, false)?;
+            for &projectee_key in projectee_keys.keys() {
+                // Target is not guaranteed to be loaded
+                check_item_key(u_data, projectee_key, false)?;
+            }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - damage output
