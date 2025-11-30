@@ -5,7 +5,7 @@ use crate::{
         GSupport, get_abil_effect,
         rels::{Fk, KeyDb, KeyPart, Pk},
     },
-    ed::{EAttr, EBuff, EData, EDataCont, EEffect, EFighterAbil, EItem, EItemFighterAbil, EItemGroup},
+    ed::{EAttr, EBuff, EData, EDataCont, EEffect, EFighterAbil, EItem, EItemFighterAbil, EItemGroup, EItemList},
     util::{Named, RMap, RSet},
 };
 
@@ -45,7 +45,7 @@ fn fk_check_referer<T: Fk + Named>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, g_supp
         &pkdb.item_lists,
         g_supp,
         T::get_item_list_fks,
-        EItemGroup::get_name(),
+        EItemList::get_name(),
     );
     fk_check_referee(rer_cont, &pkdb.attrs, g_supp, T::get_attr_fks, EAttr::get_name());
     fk_check_referee(rer_cont, &pkdb.effects, g_supp, T::get_effect_fks, EEffect::get_name());
