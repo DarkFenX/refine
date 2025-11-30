@@ -69,6 +69,7 @@ impl KeyDb {
         for v in cont.data.iter() {
             self.items.extend(v.get_item_fks(g_supp));
             self.groups.extend(v.get_group_fks(g_supp));
+            self.item_lists.extend(v.get_item_list_fks(g_supp));
             self.attrs.extend(v.get_attr_fks(g_supp));
             self.effects.extend(v.get_effect_fks(g_supp));
             self.abils.extend(v.get_abil_fks(g_supp));
