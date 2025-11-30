@@ -99,6 +99,10 @@ class EveEffect(IntEnum):
     script_warp_scramble_range_bonus = 3648
     hardpoint_modifier_effect = 3773
     slot_modifier = 3774
+    super_weapon_amarr = 4489
+    super_weapon_caldari = 4490
+    super_weapon_gallente = 4491
+    super_weapon_minmatar = 4492
     max_range_hidden_preass_warp_scramble_range = 4894
     adaptive_armor_hardener = 4928
     fueled_shield_boosting = 4936

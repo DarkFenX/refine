@@ -68,6 +68,10 @@ class DmgBasicInfo:
     bomb_effect_id: int
     smartbomb_effect_id: int
     pds_effect_id: int
+    dd_direct_amarr_effect_id: int
+    dd_direct_caldari_effect_id: int
+    dd_direct_gallente_effect_id: int
+    dd_direct_minmatar_effect_id: int
     dd_lance_debuff_effect_id: int
     dd_vorton_effect_id: int
     guided_bomb_group_id: int
@@ -182,6 +186,22 @@ def setup_dmg_basics(
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_emp_field_range_attr_id if effect_range else Default)
+    eve_dd_direct_amarr_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.super_weapon_amarr,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_dd_direct_caldari_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.super_weapon_caldari,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_dd_direct_gallente_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.super_weapon_gallente,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+    eve_dd_direct_minmatar_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.super_weapon_minmatar,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
@@ -205,6 +225,10 @@ def setup_dmg_basics(
         eve_bomb_effect_id,
         eve_smartbomb_effect_id,
         eve_pds_effect_id,
+        eve_dd_direct_amarr_effect_id,
+        eve_dd_direct_caldari_effect_id,
+        eve_dd_direct_gallente_effect_id,
+        eve_dd_direct_minmatar_effect_id,
         eve_dd_vorton_effect_id,
         eve_dd_lance_debuff_effect_id])
     return DmgBasicInfo(
@@ -267,6 +291,10 @@ def setup_dmg_basics(
         bomb_effect_id=eve_bomb_effect_id,
         smartbomb_effect_id=eve_smartbomb_effect_id,
         pds_effect_id=eve_pds_effect_id,
+        dd_direct_amarr_effect_id=eve_dd_direct_amarr_effect_id,
+        dd_direct_caldari_effect_id=eve_dd_direct_caldari_effect_id,
+        dd_direct_gallente_effect_id=eve_dd_direct_gallente_effect_id,
+        dd_direct_minmatar_effect_id=eve_dd_direct_minmatar_effect_id,
         dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id,
         dd_vorton_effect_id=eve_dd_vorton_effect_id,
         guided_bomb_group_id=consts.EveItemGrp.guided_bomb)
@@ -746,6 +774,78 @@ def make_eve_pds(
         attrs=attrs,
         eff_ids=[basic_info.pds_effect_id],
         defeff_id=basic_info.pds_effect_id)
+
+
+def make_eve_dd_direct_amarr(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        cycle_time: float | None = None,
+        delay: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.dd_direct_amarr_effect_id],
+        defeff_id=basic_info.dd_direct_amarr_effect_id)
+
+
+def make_eve_dd_direct_caldari(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        cycle_time: float | None = None,
+        delay: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.dd_direct_caldari_effect_id],
+        defeff_id=basic_info.dd_direct_caldari_effect_id)
+
+
+def make_eve_dd_direct_gallente(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        cycle_time: float | None = None,
+        delay: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.dd_direct_gallente_effect_id],
+        defeff_id=basic_info.dd_direct_gallente_effect_id)
+
+
+def make_eve_dd_direct_minmatar(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        cycle_time: float | None = None,
+        delay: float | None = None,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    return client.mk_eve_item(
+        attrs=attrs,
+        eff_ids=[basic_info.dd_direct_minmatar_effect_id],
+        defeff_id=basic_info.dd_direct_minmatar_effect_id)
 
 
 def make_eve_dd_lance_debuff(
