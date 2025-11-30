@@ -29,6 +29,13 @@ impl Fk for EAttr {
         }
         vec
     }
+    fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+        let mut vec = Vec::new();
+        if let Some(v) = attr_val_to_fk(self.default_value) {
+            vec.push(v);
+        }
+        vec
+    }
     fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         vec_push_opt(&mut vec, self.min_attr_id);
@@ -50,8 +57,7 @@ impl Fk for EAttr {
     }
 }
 impl EAttr {
-    /// Receive unit ID, and if the attribute has such unit ID - push its default value to the
-    /// vector.
+    // Receive unit ID, and if the attribute has such unit ID - push its default value to the vector
     fn get_fk_from_defval(&self, unit: EAttrUnitId) -> Option<KeyPart> {
         match (self.unit_id, attr_val_to_fk(self.default_value)) {
             (Some(u), Some(dv_fk)) if u == unit => Some(dv_fk),

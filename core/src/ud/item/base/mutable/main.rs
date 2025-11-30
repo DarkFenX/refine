@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId, AMutaAttrRange,
-        ASkillLevel, AState,
+        AAttrId, AAttrVal, AEffectId, AEveItemListId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
+        AMutaAttrRange, ASkillLevel, AState,
     },
     def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
@@ -624,30 +624,53 @@ fn merge_effect_data(
     merged_attrs: &RMap<AAttrId, AAttrVal>,
 ) -> Option<RMap<REffectKey, AItemEffectData>> {
     let mut result = None;
-    // let effect_datas = mutated_item.get_effect_datas();
-    // for (&effect_key, effect_data) in effect_datas.iter() {
-    //     let effect = src.get_effect(effect_key);
-    //     // Autocharge
-    //     if let Some(charge_info) = effect.get_charge_info()
-    //         && let Some(attr_id) = charge_info.location.get_autocharge_attr_id()
-    //     {
-    //         let new_ac_type_id = merged_attrs.get(&attr_id).map(|v| v.round() as AItemId);
-    //         if new_ac_type_id != effect_data.autocharge {
-    //             let inner = result.get_or_insert_with(|| effect_datas.clone());
-    //             inner.get(&effect_key).unwrap().autocharge = new_ac_type_id;
-    //         }
-    //     }
-    //     // Projectee filter
-    //     if let Some(projectee_filter_info) = effect.get_projectee_filter_info()
-    //         && let Some(attr_id) = projectee_filter_info.get_item_list_attr_id()
-    //     {
-    //         let new_item_list_id = merged_attrs.get(&attr_id).map(|v| v.round() as AItemId);
-    //         if new_ac_type_id != effect_data.autocharge {
-    //             let inner = result.get_or_insert_with(|| effect_datas.clone());
-    //             inner.get(&effect_key).unwrap().autocharge = new_ac_type_id;
-    //         }
-    //     }
-    // }
+    let effect_datas = mutated_item.get_effect_datas();
+    for (&effect_key, effect_data) in effect_datas.iter() {
+        let effect = src.get_effect(effect_key);
+        // Autocharge - if effect defines autocharge attr ID, and its value references some non-zero
+        // type ID, compare it to what's already in effect data; if it's different, create a copy
+        // of effect data with new value
+        if let Some(charge_info) = effect.get_charge_info()
+            && let Some(attr_id) = charge_info.location.get_autocharge_attr_id()
+        {
+            let new_ac_type_id = match merged_attrs.get(&attr_id) {
+                Some(&value) => match value.round() as AItemId {
+                    0 => None,
+                    a_item_id => Some(a_item_id),
+                },
+                None => None,
+            };
+            if new_ac_type_id != effect_data.autocharge {
+                let inner = result.get_or_insert_with(|| effect_datas.clone());
+                inner.get_mut(&effect_key).unwrap().autocharge = new_ac_type_id;
+            }
+        }
+        // Projectee filter - if effect defines projectee filter, check if mutated item has value
+        // defined right on its attributes; if it does, then there is no need to modify already
+        // existing effect data, since it already uses correct value
+        // TODO: refactor - consider storing IDs in adapted data, and full lists in runtime data;
+        // TODO: consider 0 value as a removal of filter maybe (if it can ever happen)
+        if let Some(projectee_filter_info) = effect.get_projectee_filter_info()
+            && let Some(attr_id) = projectee_filter_info.get_item_list_attr_id()
+            && !mutated_item.get_attrs().contains_key(&attr_id)
+        {
+            let item_list_id = match merged_attrs.get(&attr_id) {
+                Some(&value) => match value.round() as AEveItemListId {
+                    0 => None,
+                    item_list_id => Some(AItemListId::Eve(item_list_id)),
+                },
+                None => None,
+            };
+            if let Some(item_list_id) = item_list_id {
+                let item_ids = match src.get_item_list(&item_list_id) {
+                    Some(item_list) => item_list.get_item_ids().clone(),
+                    None => RSet::new(),
+                };
+                let inner = result.get_or_insert_with(|| effect_datas.clone());
+                inner.get_mut(&effect_key).unwrap().projectee_filter = Some(item_ids);
+            }
+        }
+    }
     result
 }
 
