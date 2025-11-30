@@ -94,7 +94,7 @@ pub(super) fn get_crystal_cycle_count(
         return InfCount::Infinite;
     }
     // Damage or chance of 0 or not defined - can cycle infinitely
-    let dmg = match charge_attrs.get(&ac::attrs::CRYSTAL_VOLATILITY_DAMAGE) {
+    let dmg = match charge_attrs.get(&ac::attrs::CRYSTAL_VOLATILITY_DMG) {
         Some(OF(0.0)) => return InfCount::Infinite,
         Some(dmg) => *dmg,
         None => return InfCount::Infinite,

@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
-            dmg_opc::get_dmg_opc_missile,
+            opc::get_missile_dmg_opc,
             proj_mult::{get_bomb_proj_mult, get_noapp_bomb_proj_mult, get_radius_ratio_mult, get_range_mult_bomb},
         },
     },
@@ -52,7 +52,7 @@ fn internal_get_dmg_opc(
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
-    get_dmg_opc_missile(
+    get_missile_dmg_opc(
         ctx,
         calc,
         projector_key,

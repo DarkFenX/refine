@@ -22,7 +22,7 @@ const PROP_THRUST: AAttrId = ac::attrs::SPEED_BOOST_FACTOR;
 const PROP_BOOST: AAttrId = ac::attrs::SPEED_FACTOR;
 
 // ADG customizations
-pub(in crate::nd::eff) fn mk_a_modifier_mass() -> AEffectModifier {
+pub(in crate::nd::eff) fn mk_prop_mass_mod() -> AEffectModifier {
     AEffectModifier {
         affector_attr_id: ac::attrs::MASS_ADDITION,
         op: AOp::Add,
@@ -31,7 +31,7 @@ pub(in crate::nd::eff) fn mk_a_modifier_mass() -> AEffectModifier {
     }
 }
 
-pub(in crate::nd::eff) fn mk_a_modifier_sig_mwd() -> AEffectModifier {
+pub(in crate::nd::eff) fn mk_mwd_sig_mod() -> AEffectModifier {
     AEffectModifier {
         affector_attr_id: ac::attrs::SIG_RADIUS_BONUS,
         op: AOp::PostPerc,
@@ -40,7 +40,7 @@ pub(in crate::nd::eff) fn mk_a_modifier_sig_mwd() -> AEffectModifier {
     }
 }
 
-pub(in crate::nd::eff) fn mk_a_modifier_sig_mjd() -> AEffectModifier {
+pub(in crate::nd::eff) fn mk_mjd_sig_mod() -> AEffectModifier {
     AEffectModifier {
         affector_attr_id: ac::attrs::SIG_RADIUS_BONUS_PERCENT,
         op: AOp::PostPerc,
@@ -50,7 +50,7 @@ pub(in crate::nd::eff) fn mk_a_modifier_sig_mjd() -> AEffectModifier {
 }
 
 // Calc customizations
-pub(in crate::nd::eff) fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, affector_espec: EffectSpec) {
+pub(in crate::nd::eff) fn add_prop_speed_mod(rmods: &mut Vec<RawModifier>, affector_espec: EffectSpec) {
     let rmod = RawModifier {
         kind: ModifierKind::Local,
         affector_espec,

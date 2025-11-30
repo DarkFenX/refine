@@ -3,7 +3,7 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
 };
 
-pub(in crate::nd::eff) fn update_effect(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::eff) fn add_dd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect, cloak_mod: bool) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {a_effect_id}: doomsday effect has modifiers, overwriting them");
         a_effect.mods.clear();
@@ -15,10 +15,16 @@ pub(in crate::nd::eff) fn update_effect(a_effect_id: AEffectId, a_effect: &mut A
             AOp::Add,
             ac::attrs::WARP_SCRAMBLE_STATUS,
         ),
-        make_ship_mod(ac::attrs::CAN_CLOAK, AOp::PostAssign, ac::attrs::CAN_CLOAK),
         make_ship_mod(ac::attrs::DISALLOW_TETHERING, AOp::Add, ac::attrs::DISALLOW_TETHERING),
         make_ship_mod(ac::attrs::DISALLOW_DOCKING, AOp::Add, ac::attrs::DISALLOW_DOCKING),
     ]);
+    if cloak_mod {
+        a_effect.mods.push(make_ship_mod(
+            ac::attrs::CAN_CLOAK,
+            AOp::PostAssign,
+            ac::attrs::CAN_CLOAK,
+        ))
+    }
 }
 
 fn make_ship_mod(affector_attr_id: AAttrId, op: AOp, affectee_attr_id: AAttrId) -> AEffectModifier {

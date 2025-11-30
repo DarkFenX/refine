@@ -7,7 +7,7 @@ use crate::{
     misc::Spool,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::{proj_mult::get_noapp_simple_s2s_proj_mult, rep_opc::get_outgoing_cap_rep_opc},
+        eff::shared::{opc::get_outgoing_cap_rep_opc, proj_mult::get_noapp_simple_s2s_proj_mult},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},

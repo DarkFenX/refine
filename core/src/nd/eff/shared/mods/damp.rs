@@ -3,7 +3,7 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
 };
 
-pub(in crate::nd::eff) fn update_effect(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::eff) fn add_damp_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {a_effect_id}: damp effect has modifiers, overwriting them");
         a_effect.mods.clear();

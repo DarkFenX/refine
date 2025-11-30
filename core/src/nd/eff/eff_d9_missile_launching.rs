@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
-            dmg_opc::get_dmg_opc_missile,
+            opc::get_missile_dmg_opc,
             proj_mult::{get_guided_bomb_proj_mult, get_missile_proj_mult},
         },
     },
@@ -52,7 +52,7 @@ fn internal_get_dmg_opc(
         true => get_guided_bomb_proj_mult,
         false => get_missile_proj_mult,
     };
-    get_dmg_opc_missile(
+    get_missile_dmg_opc(
         ctx,
         calc,
         projector_key,

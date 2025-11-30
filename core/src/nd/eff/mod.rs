@@ -37,6 +37,10 @@ mod eff_d34_projectile_fired;
 mod eff_d3773_hardpoint_modifier_effect;
 mod eff_d3774_slot_modifier;
 mod eff_d38_emp_wave;
+mod eff_d4489_super_weapon_amarr;
+mod eff_d4490_super_weapon_caldari;
+mod eff_d4491_super_weapon_gallente;
+mod eff_d4492_super_weapon_minmatar;
 mod eff_d48_power_booster;
 mod eff_d4921_micro_jump_drive;
 mod eff_d4928_adaptive_armor_hardener;
@@ -159,6 +163,10 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d3380_warp_disrupt_sphere::mk_n_effect(),
         eff_d3773_hardpoint_modifier_effect::mk_n_effect(),
         eff_d3774_slot_modifier::mk_n_effect(),
+        eff_d4489_super_weapon_amarr::mk_n_effect(),
+        eff_d4490_super_weapon_caldari::mk_n_effect(),
+        eff_d4491_super_weapon_gallente::mk_n_effect(),
+        eff_d4492_super_weapon_minmatar::mk_n_effect(),
         eff_d4921_micro_jump_drive::mk_n_effect(),
         eff_d4928_adaptive_armor_hardener::mk_n_effect(),
         eff_d4936_fueled_shield_boosting::mk_n_effect(),

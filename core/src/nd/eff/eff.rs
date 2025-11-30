@@ -1,10 +1,10 @@
 use crate::{
-    ad,
+    ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectId, AItem, AItemId},
     def::AttrVal,
     ed,
     misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, ResolvedSpool, Spool},
     nd::{NEffectCharge, NEffectDmgKind, NEffectProjecteeFilter},
-    rd,
+    rd::REffect,
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
@@ -14,34 +14,33 @@ use crate::{
     util::RMap,
 };
 
-pub(crate) type NEffectMaker = fn() -> ad::AEffect;
-pub(crate) type NEffectAssigner = fn(&mut RMap<ad::AItemId, ad::AItem>) -> bool;
-pub(crate) type NEffectUpdater = fn(&mut ad::AEffect);
-pub(crate) type NModProjAttrGetter = fn(&ad::AEffect) -> [Option<ad::AAttrId>; 2];
+pub(crate) type NEffectMaker = fn() -> AEffect;
+pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
+pub(crate) type NEffectUpdater = fn(&mut AEffect);
+pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
 pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, EffectSpec);
-pub(crate) type NSpoolResolver = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>) -> Option<ResolvedSpool>;
-pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, UItemKey, UProjData) -> AttrVal;
+pub(crate) type NSpoolResolver = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>) -> Option<ResolvedSpool>;
+pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, UItemKey, UProjData) -> AttrVal;
 pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
 pub(crate) type NNormalDmgGetter =
-    fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
+    fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
-    fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
-pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<MiningAmount>>;
-pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect) -> Option<Output<AttrVal>>;
+    fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
+pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<MiningAmount>>;
+pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<AttrVal>>;
 pub(crate) type NOutgoingRepGetter =
-    fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
-pub(crate) type NNeutGetter =
-    fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
+    fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
+pub(crate) type NNeutGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NCapInjectGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
-pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &rd::REffect, Option<UItemKey>) -> Option<Ecm>;
+pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<Ecm>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
     pub(crate) eid: Option<ed::EEffectId>,
     // Adapted data effect ID
-    pub(crate) aid: ad::AEffectId,
+    pub(crate) aid: AEffectId,
     // Specifies if effect applies any buffs
-    pub(crate) adg_buff_info: Option<ad::AEffectBuffInfo> = None,
+    pub(crate) adg_buff_info: Option<AEffectBuffInfo> = None,
     // Data customization function ran during cache generation time
     pub(crate) adg_make_effect_fn: Option<NEffectMaker> = None,
     pub(crate) adg_assign_effect_fn: Option<NEffectAssigner> = None,

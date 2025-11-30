@@ -3,7 +3,7 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp},
 };
 
-pub(in crate::nd::eff) fn update_effect_td(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::eff) fn add_td_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {a_effect_id}: TD effect has modifiers, overwriting them");
         a_effect.mods.clear();
@@ -11,7 +11,7 @@ pub(in crate::nd::eff) fn update_effect_td(a_effect_id: AEffectId, a_effect: &mu
     add_td_modifiers(&mut a_effect.mods);
 }
 
-pub(in crate::nd::eff) fn update_effect_gd(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::eff) fn add_gd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {a_effect_id}: GD effect has modifiers, overwriting them");
         a_effect.mods.clear();
@@ -19,7 +19,7 @@ pub(in crate::nd::eff) fn update_effect_gd(a_effect_id: AEffectId, a_effect: &mu
     add_gd_modifiers(&mut a_effect.mods);
 }
 
-pub(in crate::nd::eff) fn update_effect_wd(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::eff) fn add_wd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.mods.is_empty() {
         tracing::info!("effect {a_effect_id}: WD effect has modifiers, overwriting them");
         a_effect.mods.clear();

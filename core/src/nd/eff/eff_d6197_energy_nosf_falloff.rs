@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::{neut_opc::get_neut_opc, proj_mult::get_neut_proj_mult},
+        eff::shared::{opc::get_generic_neut_opc, proj_mult::get_neut_proj_mult},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -39,7 +39,7 @@ fn internal_get_neut_opc(
     if calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::NOS_OVERRIDE)? == OF(0.0) {
         return None;
     }
-    get_neut_opc(
+    get_generic_neut_opc(
         ctx,
         calc,
         projector_key,

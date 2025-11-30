@@ -4,22 +4,19 @@ use crate::{
     def::{AttrVal, Count, OF},
     ec,
     ed::EEffectId,
-    misc::{AttrSpec, DmgKinds, EffectSpec, Spool},
+    misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
-            dd_mods::update_effect,
-            proj_mult::{
-                get_dd_lance_proj_mult, get_dd_neut_proj_mult, get_noapp_simple_c2s_proj_mult,
-                get_simple_mod_proj_attrs,
-            },
+            mods::add_dd_mods,
+            opc::get_aoe_dd_neut_opc,
+            proj_mult::{get_dd_lance_proj_mult, get_noapp_simple_c2s_proj_mult, get_simple_mod_proj_attrs},
         },
     },
-    rd,
+    rd::REffect,
     svc::{
         SvcCtx,
         calc::Calc,
-        eff_funcs,
         output::{Output, OutputComplex, OutputSimple},
     },
     ud::{UItem, UItemKey},
@@ -49,13 +46,13 @@ pub(super) fn mk_n_effect() -> NEffect {
                 ..
             },
         }),
-        adg_update_effect_fn: Some(|a_effect| update_effect(A_EFFECT_ID, a_effect)),
+        adg_update_effect_fn: Some(|a_effect| add_dd_mods(A_EFFECT_ID, a_effect, true)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
             modifier_proj_mult_getter: Some(get_noapp_simple_c2s_proj_mult),
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(internal_get_dmg_opc),
-            neut_opc_getter: Some(internal_get_neut_opc),
+            neut_opc_getter: Some(get_aoe_dd_neut_opc),
             ..
         },
         ..
@@ -70,7 +67,7 @@ fn internal_get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_effect: &rd::REffect,
+    projector_effect: &REffect,
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
@@ -94,10 +91,10 @@ fn internal_get_dmg_opc(
         dmg_expl *= mult;
     }
     Some(
-        match calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_CYCLE_TIME)? {
+        match calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DMG_CYCLE_TIME)? {
             interval_ms if interval_ms > OF(0.0) => {
                 let duration_s =
-                    calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DAMAGE_DURATION)?
+                    calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DMG_DURATION)?
                         / OF(1000.0);
                 let repeats = floor_unerr(duration_s / (interval_ms / OF(1000.0))).into_inner() as Count;
                 Output::Complex(OutputComplex {
@@ -123,29 +120,4 @@ fn internal_get_dmg_opc(
             }),
         },
     )
-}
-
-fn internal_get_neut_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &rd::REffect,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_ENERGY_NEUT_AMOUNT)?;
-    if let Some(projectee_key) = projectee_key {
-        // Projection reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
-            projectee_key,
-        );
-        amount *= get_dd_neut_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-        // Effect resistance reduction
-        let projectee_aspec = AttrSpec::new(projectee_key, ac::attrs::DOOMSDAY_ENERGY_NEUT_RESIST_ID);
-        if let Some(resist_mult) = eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, calc, &projectee_aspec) {
-            amount *= resist_mult;
-        }
-    }
-    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }

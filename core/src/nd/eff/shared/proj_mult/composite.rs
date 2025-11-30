@@ -177,13 +177,7 @@ pub(in crate::nd::eff) fn get_dd_lance_proj_mult(
     if mult == OF(0.0) {
         return OF(0.0);
     }
-    mult * get_radius_ratio_mult(
-        ctx,
-        calc,
-        projector_key,
-        projectee_key,
-        &ac::attrs::DOOMSDAY_DAMAGE_RADIUS,
-    )
+    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::DOOMSDAY_DMG_RADIUS)
 }
 
 pub(in crate::nd::eff) fn get_dd_neut_proj_mult(

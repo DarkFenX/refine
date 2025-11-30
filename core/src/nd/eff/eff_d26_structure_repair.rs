@@ -3,7 +3,7 @@ use crate::{
     ad::AEffectId,
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectHc, eff::shared::rep_opc::get_local_hull_rep_opc},
+    nd::{NEffect, NEffectHc, eff::shared::opc::get_local_hull_rep_opc},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::STRUCTURE_REPAIR;

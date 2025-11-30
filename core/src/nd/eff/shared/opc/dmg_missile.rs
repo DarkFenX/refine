@@ -12,7 +12,7 @@ use crate::{
     ud::UItemKey,
 };
 
-pub(in crate::nd::eff) fn get_dmg_opc_missile(
+pub(in crate::nd::eff) fn get_missile_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

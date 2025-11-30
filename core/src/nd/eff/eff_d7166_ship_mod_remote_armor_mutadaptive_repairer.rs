@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectHc,
         eff::shared::{
-            proj_mult::get_noapp_simple_s2s_proj_mult, rep_opc::get_outgoing_armor_rep_opc, spool::get_resolved_spool,
+            opc::get_outgoing_armor_rep_opc, proj_mult::get_noapp_simple_s2s_proj_mult, spool::get_resolved_spool,
         },
     },
     rd::REffect,

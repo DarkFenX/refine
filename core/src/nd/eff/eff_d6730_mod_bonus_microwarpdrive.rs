@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::prop_mods::{calc_add_custom_modifier, mk_a_modifier_mass, mk_a_modifier_sig_mwd},
+        eff::shared::mods::{add_prop_speed_mod, mk_mwd_sig_mod, mk_prop_mass_mod},
     },
 };
 
@@ -18,7 +18,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(update_effect),
         hc: NEffectHc {
-            calc_customizer: Some(calc_add_custom_modifier),
+            calc_customizer: Some(add_prop_speed_mod),
             ..
         },
         ..
@@ -30,5 +30,5 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {A_EFFECT_ID}: MWD effect has modifiers, overwriting them");
         a_effect.mods.clear();
     }
-    a_effect.mods.extend([mk_a_modifier_mass(), mk_a_modifier_sig_mwd()]);
+    a_effect.mods.extend([mk_prop_mass_mod(), mk_mwd_sig_mod()]);
 }

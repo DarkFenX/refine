@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::MiningAmount,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc, eff::shared::mining_opc},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc, eff::shared::opc::get_mining_values},
     rd::REffect,
     svc::{
         SvcCtx,
@@ -64,7 +64,7 @@ fn get_mining_ice_opc(
 }
 
 fn get_mining_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, effect: &REffect) -> Option<Output<MiningAmount>> {
-    let (delay, yield_, drain) = mining_opc::get_mining_values(ctx, calc, item_key, effect)?;
+    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
     let crit_chance = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::MINING_CRIT_CHANCE)?;
     let yield_ = match crit_chance > OF(0.0) {
         true => {

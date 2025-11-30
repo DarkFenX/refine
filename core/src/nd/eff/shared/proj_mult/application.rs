@@ -59,7 +59,7 @@ pub(super) fn get_application_mult_missile(
         .extra
         .max(OF(0.0));
     let src_drf = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AOE_DAMAGE_REDUCTION_FACTOR)
+        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::AOE_DMG_REDUCTION_FACTOR)
         .unwrap()
         .extra
         .max(OF(0.0));
